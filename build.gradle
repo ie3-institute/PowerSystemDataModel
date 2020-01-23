@@ -1,0 +1,41 @@
+plugins {
+	id 'java' //java support
+	id 'pmd' // code check, working on source code
+	id 'com.github.spotbugs' version '2.0.0' // code check, working on byte code
+	id 'com.diffplug.gradle.spotless' version '3.24.2'// code format
+}
+
+ext {
+	//version (changing these should be considered thoroughly!)
+	javaVersion = JavaVersion.VERSION_11
+	tscfgVersion = '0.9.9'
+	scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
+}
+
+group = 'com.github.ie3-institute'
+description = 'PowerSystemDataModel'
+version = '0.1-SNAPSHOT'
+targetCompatibility = javaVersion
+
+apply from: scriptsLocation + 'pmd.gradle'
+apply from: scriptsLocation + 'spotbugs.gradle'
+apply from: scriptsLocation + 'spotless.gradle'
+apply from: scriptsLocation + 'checkJavaVersion.gradle'
+
+repositories {
+	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
+	maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
+}
+
+dependencies {
+	// ie³ internal repository for units
+	compile 'com.github.ie3-institute:PowerSystemUtils:1.3'
+
+	compile 'tec.uom:uom-se:1.0.10'
+
+	compile 'com.vividsolutions:jts:1.13' //JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
+}
+
+wrapper {
+	gradleVersion = '6.0.1'
+}

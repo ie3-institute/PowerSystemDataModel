@@ -1,0 +1,9 @@
+// pmd is a code check tool, working on source code
+
+pmd {
+	ignoreFailures true // dont let the build fail on rule violations
+
+	// pmd rule priority is a range from 1 to 5, with 1 being the highest priority
+	// the default rule priority is 5
+	rulePriority 2
+}

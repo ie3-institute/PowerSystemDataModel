@@ -1,0 +1,22 @@
+// spotless is a code formatter
+
+spotless {
+
+	//sets a license header, removes unused imports and formats conforming to the google java format
+	java {
+		removeUnusedImports() // removes any unused imports
+		googleJavaFormat()
+		licenseHeader '/*\n' +
+				' * © $YEAR. TU Dortmund University,\n' +
+				' * Institute of Energy Systems, Energy Efficiency and Energy Economics,\n' +
+				' * Research group Distribution grid planning and operation\n' +
+				'*/'
+	}
+	// removes unnecessary whitespace, indents with tabs and ends on new line for gradle, md and gitignore files and config-XMLs
+	format 'misc', {
+		target '**/*.gradle', '**/*.md', '**/.gitignore', 'configs/**'
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+}

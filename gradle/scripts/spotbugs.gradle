@@ -1,0 +1,21 @@
+// spotBugs is a code check tool, working on byte code
+
+spotbugs{
+	ignoreFailures = true // dont let the build fail on rule violations
+	effort = 'max'
+	reportLevel = 'high'
+}
+
+spotbugsMain{
+	reports{
+		html.enabled = false
+		xml.enabled = true
+	}
+}
+
+spotbugsTest{
+	reports{
+		html.enabled = false
+		xml.enabled = true
+	}
+}
