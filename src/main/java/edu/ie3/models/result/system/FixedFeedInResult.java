@@ -10,7 +10,7 @@ import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 
-/** Represents calculation results of a {@link edu.ie3.models.input.system.FixedFeedInput} */
+/** Represents calculation results of a {@link edu.ie3.models.input.system.FixedFeedInInput} */
 public class FixedFeedInResult extends SystemParticipantResult {
 
   /**
