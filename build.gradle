@@ -1,26 +1,39 @@
 plugins {
+	id "com.jfrog.artifactory" version "4.9.7"
 	id 'java' //java support
+	id 'maven-publish'
+	id 'signing'
 	id 'pmd' // code check, working on source code
 	id 'com.github.spotbugs' version '2.0.0' // code check, working on byte code
-	id 'com.diffplug.gradle.spotless' version '3.24.2'// code format
+	id 'com.diffplug.gradle.spotless' version '3.27.1'//code format
+	id 'com.github.onslip.gradle-one-jar' version '1.0.5' // pack a self contained jar
+	id 'jacoco' // java code coverage plugin
+	id "org.sonarqube" version "2.7.1" // sonarqube
 }
 
 ext {
 	//version (changing these should be considered thoroughly!)
 	javaVersion = JavaVersion.VERSION_11
+	unitsOfMeasurementVersion = '1.0.10'
 	tscfgVersion = '0.9.9'
+
 	scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
 
 group = 'com.github.ie3-institute'
 description = 'PowerSystemDataModel'
 version = '0.1-SNAPSHOT'
+sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 
+apply from: scriptsLocation + 'tests.gradle'
 apply from: scriptsLocation + 'pmd.gradle'
 apply from: scriptsLocation + 'spotbugs.gradle'
 apply from: scriptsLocation + 'spotless.gradle'
 apply from: scriptsLocation + 'checkJavaVersion.gradle'
+apply from: scriptsLocation + 'selfContainedJar.gradle'
+apply from: scriptsLocation + 'jacoco.gradle' // jacoco java code coverage
+apply from: scriptsLocation + 'mavenCentralPublish.gradle'
 
 repositories {
 	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
@@ -31,11 +44,15 @@ dependencies {
 	// ie³ internal repository for units
 	compile 'com.github.ie3-institute:PowerSystemUtils:1.3'
 
-	compile 'tec.uom:uom-se:1.0.10'
+	compile "tec.uom:uom-se:$unitsOfMeasurementVersion"
 
 	compile 'com.vividsolutions:jts:1.13' //JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
 }
 
 wrapper {
 	gradleVersion = '6.0.1'
+}
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
 }
