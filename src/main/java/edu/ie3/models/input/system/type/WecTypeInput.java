@@ -19,13 +19,13 @@ import javax.measure.quantity.Power;
 /** Describes the type of a {@link edu.ie3.models.input.system.WecInput} */
 public class WecTypeInput extends SystemParticipantTypeInput {
   /** Efficiency of converter for this type of WEC (typically in %) */
-  Quantity<Dimensionless> etaConv;
+  private Quantity<Dimensionless> etaConv;
   /** Rated apparent power for this type of WEC (typically in kVA) */
-  Quantity<Power> sRated;
+  private Quantity<Power> sRated;
   /** Swept Area of blades for this type of WEC (typically in m²) */
-  Quantity<Area> rotorArea;
+  private Quantity<Area> rotorArea;
   /** Height from ground to center of rotor for this type of WEC (typically in m) */
-  Quantity<Length> hubHeight;
+  private Quantity<Length> hubHeight;
 
   /**
    * @param uuid of the input entity

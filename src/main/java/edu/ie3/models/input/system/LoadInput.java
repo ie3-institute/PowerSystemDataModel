@@ -20,11 +20,11 @@ import javax.measure.quantity.Power;
 /** Describes a load */
 public class LoadInput extends SystemParticipantInput {
   /** True, if demand side management is activated for this load */
-  boolean dsm;
+  private boolean dsm;
   /** Annually consumed energy (typically in kWh) */
-  Quantity<Energy> eConsAnnual;
+  private Quantity<Energy> eConsAnnual;
   /** Active Power (typically in kW) */
-  Quantity<Power> p;
+  private Quantity<Power> p;
   /**
    * @param uuid of the input entity
    * @param operationInterval Empty for a non-operated asset, Interval of operation period else

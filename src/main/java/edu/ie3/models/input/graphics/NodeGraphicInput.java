@@ -14,9 +14,9 @@ import java.util.UUID;
 /** Describes the graphic data belonging to a {@link NodeInput} */
 public class NodeGraphicInput extends GraphicInput {
   /** The NodeInput to this graphic data */
-  NodeInput node;
+  private NodeInput node;
   /** The geometric point of this node */
-  Point point;
+  private Point point;
 
   /**
    * @param uuid of the input entity

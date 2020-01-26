@@ -16,7 +16,7 @@ import java.util.UUID;
 /** Describes an electrical grid switch between two {@link NodeInput}s */
 public class SwitchInput extends ConnectorInput {
   /** Is the switching state 'closed'? */
-  boolean closed;
+  private boolean closed;
 
   /**
    * @param uuid of the input entity

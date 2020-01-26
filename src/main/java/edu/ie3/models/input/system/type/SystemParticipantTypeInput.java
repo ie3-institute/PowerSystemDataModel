@@ -15,11 +15,11 @@ import javax.measure.Quantity;
 /** Describes the type of a {@link edu.ie3.models.input.system.SystemParticipantInput} */
 public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   /** Capital expense for this type of system participant (typically in €) */
-  Quantity<Currency> capex;
+  private Quantity<Currency> capex;
   /** Operating expense for this type of system participant (typically in €) */
-  Quantity<EnergyPrice> opex;
+  private Quantity<EnergyPrice> opex;
   /** Power factor for this type of system participant */
-  double cosphi;
+  private double cosphi;
 
   /**
    * @param uuid of the input entity

@@ -21,13 +21,13 @@ import javax.measure.quantity.Length;
 public class LineInput extends ConnectorInput {
 
   /** Type of this line, containing default values for lines of this kind */
-  LineTypeInput type;
+  private LineTypeInput type;
   /** Length of this line */
-  Quantity<Length> length;
+  private Quantity<Length> length;
   /** Coordinates of this line */
-  LineString geoPosition;
+  private LineString geoPosition;
   /** Description of an optional weather dependent operation curve */
-  Optional<String> olmCharacteristic;
+  private Optional<String> olmCharacteristic;
 
   /**
    * @param uuid of the input entity

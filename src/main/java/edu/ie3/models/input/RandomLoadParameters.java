@@ -17,34 +17,34 @@ import java.util.UUID;
 public class RandomLoadParameters extends InputEntity {
 
   /** The respective quarter hour of the day */
-  int quarterHour;
+  private int quarterHour;
 
   /** Shape parameter for a working day */
-  double kWd;
+  private double kWd;
 
   /** Shape parameter for a Saturday */
-  double kSa;
+  private double kSa;
 
   /** Shape parameter for a Sunday */
-  double kSu;
+  private double kSu;
 
   /** Location parameter for a working day */
-  double myWd;
+  private double myWd;
 
   /** Location parameter for a Saturday */
-  double mySa;
+  private double mySa;
 
   /** Location parameter for a Sunday */
-  double mySu;
+  private double mySu;
 
   /** Scale parameter for a working day */
-  double sigmaWd;
+  private double sigmaWd;
 
   /** Scale parameter for a Saturday */
-  double sigmaSa;
+  private double sigmaSa;
 
   /** Scale parameter for a Sunday */
-  double sigmaSu;
+  private double sigmaSu;
 
   /**
    * @param uuid of the input entity
