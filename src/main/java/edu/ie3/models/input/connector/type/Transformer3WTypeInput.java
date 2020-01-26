@@ -12,46 +12,47 @@ import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.*;
 
+
 /** Describes the type of a {@link edu.ie3.models.input.connector.Transformer3WInput} */
 public class Transformer3WTypeInput extends AssetTypeInput {
   /** Rated apparent power of the high voltage winding (typically in MVA) */
-  Quantity<Power> sRatedA; // Hv
+  private Quantity<Power>             sRatedA; // Hv
   /** Rated apparent power of the medium voltage winding (typically in MVA) */
-  Quantity<Power> sRatedB; // Mv
+  private Quantity<Power>             sRatedB; // Mv
   /** Rated apparent power of the low voltage windings (typically in MVA) */
-  Quantity<Power> sRatedC; // Lv
+  private Quantity<Power>             sRatedC; // Lv
   /** Rated voltage magnitude of the high voltage winding (typically in kV) */
-  Quantity<ElectricPotential> vRatedA; // Hv
+  private Quantity<ElectricPotential> vRatedA; // Hv
   /** Rated voltage magnitude of the medium voltage winding (typically in kV) */
-  Quantity<ElectricPotential> vRatedB; // Mv
+  private Quantity<ElectricPotential> vRatedB; // Mv
   /** Rated voltage magnitude of the low voltage winding (typically in kV) */
-  Quantity<ElectricPotential> vRatedC; // Lv
+  private Quantity<ElectricPotential>  vRatedC; // Lv
   /** Short-circuit resistance of the high voltage winding (typically in Ohm) */
-  Quantity<ElectricResistance> rScA; // Hv
+  private Quantity<ElectricResistance> rScA; // Hv
   /** Short-circuit resistance of the medium voltage winding (typically in Ohm) */
-  Quantity<ElectricResistance> rScB; // Mv
+  private Quantity<ElectricResistance> rScB; // Mv
   /** Short-circuit resistance of the low voltage winding (typically in Ohm) */
-  Quantity<ElectricResistance> rScC; // Lv
+  private Quantity<ElectricResistance> rScC; // Lv
   /** Short-circuit reactance of the high voltage winding (typically in Ohm) */
-  Quantity<ElectricResistance> xScA; // Hv
+  private Quantity<ElectricResistance> xScA; // Hv
   /** Short-circuit reactance of the medium voltage winding (typically in Ohm) */
-  Quantity<ElectricResistance> xScB; // Mv
+  private Quantity<ElectricResistance> xScB; // Mv
   /** Short-circuit reactance of the low voltage winding (typically in Ohm) */
-  Quantity<ElectricResistance> xScC; // Lv
+  private Quantity<ElectricResistance> xScC; // Lv
   /** Phase-to-ground conductance (typically in nS) */
-  Quantity<ElectricConductance> gM;
+  private Quantity<ElectricConductance> gM;
   /** Phase-to-ground susceptance (typically in nS) */
-  Quantity<ElectricConductance> bM;
+  private Quantity<ElectricConductance> bM;
   /** Voltage magnitude deviation per tap position (typically in %) */
-  Quantity<Dimensionless> dV;
+  private Quantity<Dimensionless>       dV;
   /** Voltage angle deviation per tap position (typically in °) */
-  Quantity<Angle> dPhi;
+  private Quantity<Angle>               dPhi;
   /** Neutral tap position */
-  Integer tapNeutr;
+  private Integer tapNeutr;
   /** Minimum available tap position */
-  Integer tapMin;
+  private Integer tapMin;
   /** Maximum available tap position */
-  Integer tapMax;
+  private Integer tapMax;
 
   /**
    * @param uuid of the input entity

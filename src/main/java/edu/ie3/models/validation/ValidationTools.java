@@ -53,7 +53,6 @@ public class ValidationTools {
    */
   public static boolean checkNode(NodeInput node) {
     if (node == null) return false;
-    if (node.getSubnet() == null) throw new InvalidEntityException("subnet is null", node);
     if (node.getVRated() == null || node.getVTarget() == null)
       throw new InvalidEntityException("vRated or vTarget is null", node);
     if (node.getVRated().getValue().doubleValue() == 0d

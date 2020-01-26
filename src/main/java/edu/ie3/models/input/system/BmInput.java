@@ -20,17 +20,17 @@ import javax.measure.quantity.Power;
 /** Describes a biomass plant */
 public class BmInput extends SystemParticipantInput {
   /** Type of this BM plant, containing default values for BM plants of this kind */
-  BmTypeInput type;
+  private BmTypeInput type;
   /** Is this asset market oriented? */
-  Boolean marketReaction;
+  private Boolean marketReaction;
   /**
    * Does this plant increase the output power if the revenues exceed the energy generation costs?
    */
-  Boolean costControlled;
+  private Boolean costControlled;
   /** Granted feed in tariff (typically in €/kWh) */
-  Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff;
+  private Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff;
   /** Rated apparent power (typically in kW) */
-  Quantity<Power> sRated;
+  private Quantity<Power> sRated;
 
   /**
    * @param uuid of the input entity

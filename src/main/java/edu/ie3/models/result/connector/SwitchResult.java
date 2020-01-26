@@ -16,7 +16,7 @@ import javax.measure.quantity.ElectricCurrent;
 public class SwitchResult extends ConnectorResult {
 
   /** is the switching state 'closed'? */
-  Boolean closed;
+  private Boolean closed;
 
   /**
    * Standard constructor with automatic uuid generation.

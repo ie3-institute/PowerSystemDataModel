@@ -20,7 +20,7 @@ import java.util.UUID;
  */
 public class Transformer2WInput extends TransformerInput {
   /** Type of this 2W transformer, containing default values for transformers of this kind */
-  Transformer2WTypeInput type;
+  private Transformer2WTypeInput type;
 
   /**
    * @param uuid of the input entity
@@ -41,9 +41,9 @@ public class Transformer2WInput extends TransformerInput {
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      Integer parallelDevices,
+      int parallelDevices,
       Transformer2WTypeInput type,
-      Integer tapPos,
+      int tapPos,
       Boolean autoTap) {
     super(uuid, operationInterval, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
@@ -71,9 +71,9 @@ public class Transformer2WInput extends TransformerInput {
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      Integer parallelDevices,
+      int parallelDevices,
       Transformer2WTypeInput type,
-      Integer tapPos,
+      int tapPos,
       Boolean autoTap) {
     super(
         uuid,
@@ -106,9 +106,9 @@ public class Transformer2WInput extends TransformerInput {
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      Integer parallelDevices,
+      int parallelDevices,
       Transformer2WTypeInput type,
-      Integer tapPos,
+      int tapPos,
       Boolean autoTap) {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
@@ -124,11 +124,14 @@ public class Transformer2WInput extends TransformerInput {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
+    if(this == o)
+      return true;
+    if(o == null || getClass() != o.getClass())
+      return false;
+    if(!super.equals(o))
+      return false;
     Transformer2WInput that = (Transformer2WInput) o;
-    return Objects.equals(type, that.type);
+    return type.equals(that.type);
   }
 
   @Override

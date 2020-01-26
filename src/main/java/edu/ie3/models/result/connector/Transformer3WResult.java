@@ -15,10 +15,10 @@ import javax.measure.quantity.ElectricCurrent;
 public class Transformer3WResult extends Transformer {
 
   /** Electric current magnitude @ port C, normally provided in Ampere */
-  Quantity<ElectricCurrent> iCMag;
+  private Quantity<ElectricCurrent> iCMag;
 
   /** Electric current angle @ Port C in degree ° */
-  Quantity<Angle> iCAng;
+  private Quantity<Angle> iCAng;
 
   /**
    * @param timestamp date and time when the result is produced

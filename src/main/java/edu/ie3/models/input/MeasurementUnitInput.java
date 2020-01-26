@@ -14,19 +14,19 @@ import java.util.UUID;
 /** Model of a measuring unit attached to a certain {@link NodeInput}. */
 public class MeasurementUnitInput extends AssetInput {
   /** Grid node, the asset is attached to */
-  NodeInput node;
+  private NodeInput node;
 
   /** True, if the voltage magnitude is measured */
-  boolean vMag;
+  private boolean vMag;
 
   /** True, if the voltage angle is measured */
-  boolean vAng;
+  private boolean vAng;
 
   /** True, if the nodal residual active power is measured */
-  boolean p;
+  private boolean p;
 
   /** True, if the reactive power is measured */
-  boolean q;
+  private boolean q;
 
   /**
    * @param uuid of the input entity

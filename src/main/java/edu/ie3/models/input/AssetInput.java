@@ -17,11 +17,11 @@ import java.util.UUID;
 /** Describes a grid asset under the assumption that every asset could be operable */
 public abstract class AssetInput extends InputEntity implements Operable {
   /** Empty, if the asset is not operated, or the operation period interval else */
-  Optional<ClosedInterval<ZonedDateTime>> operationInterval;
+  private Optional<ClosedInterval<ZonedDateTime>> operationInterval;
   /** The operator of this asset */
   private OperatorInput operator;
   /** Name or ID of the asset */
-  String id;
+  private String id;
 
   /**
    * Constructor for an operated asset. An empty Optional indicates a non-operated asset. <br>

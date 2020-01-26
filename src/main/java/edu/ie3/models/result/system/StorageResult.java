@@ -16,7 +16,7 @@ import javax.measure.quantity.Power;
 public class StorageResult extends SystemParticipantResult {
 
   /** State of Charge (SoC) in % */
-  Quantity<Dimensionless> soc;
+  private Quantity<Dimensionless> soc;
 
   /**
    * Standard constructor with automatic uuid generation.

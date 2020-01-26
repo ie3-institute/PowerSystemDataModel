@@ -17,11 +17,11 @@ import java.util.UUID;
 /** Describes an asset that connects two {@link NodeInput}s */
 public abstract class ConnectorInput extends AssetInput {
   /** Grid node at one side of the connector */
-  NodeInput nodeA;
+  private NodeInput nodeA;
   /** Grid node at the other side of the connector */
-  NodeInput nodeB;
+  private NodeInput nodeB;
   /** Amount of parallelDevices */
-  Integer parallelDevices;
+  private int parallelDevices;
 
   /**
    * @param uuid of the input entity
@@ -39,7 +39,7 @@ public abstract class ConnectorInput extends AssetInput {
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      Integer parallelDevices) {
+      int parallelDevices) {
     super(uuid, operationInterval, operator, id);
     this.nodeA = nodeA;
     this.nodeB = nodeB;
@@ -66,7 +66,7 @@ public abstract class ConnectorInput extends AssetInput {
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      Integer parallelDevices) {
+      int parallelDevices) {
     super(uuid, operatesFrom, operatesUntil, operator, id);
     this.nodeA = nodeA;
     this.nodeB = nodeB;
@@ -83,7 +83,7 @@ public abstract class ConnectorInput extends AssetInput {
    * @param parallelDevices Amount of parallel devices
    */
   public ConnectorInput(
-      UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, Integer parallelDevices) {
+      UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, int parallelDevices) {
     super(uuid, id);
     this.nodeA = nodeA;
     this.nodeB = nodeB;
@@ -106,23 +106,24 @@ public abstract class ConnectorInput extends AssetInput {
     this.nodeB = nodeB;
   }
 
-  public Integer getParallelDevices() {
+  public int getParallelDevices() {
     return parallelDevices;
   }
 
-  public void setParallelDevices(Integer parallelDevices) {
+  public void setParallelDevices(int parallelDevices) {
     this.parallelDevices = parallelDevices;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
+    if(this == o)
+      return true;
+    if(o == null || getClass() != o.getClass())
+      return false;
+    if(!super.equals(o))
+      return false;
     ConnectorInput that = (ConnectorInput) o;
-    return Objects.equals(nodeA, that.nodeA)
-        && Objects.equals(nodeB, that.nodeB)
-        && Objects.equals(parallelDevices, that.parallelDevices);
+    return parallelDevices == that.parallelDevices && nodeA.equals(that.nodeA) && nodeB.equals(that.nodeB);
   }
 
   @Override

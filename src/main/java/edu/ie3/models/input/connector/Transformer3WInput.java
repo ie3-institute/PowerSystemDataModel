@@ -20,9 +20,9 @@ import java.util.UUID;
  */
 public class Transformer3WInput extends TransformerInput {
   /** Type of this 3W transformer, containing default values for transformers of this kind */
-  Transformer3WTypeInput type;
+  private Transformer3WTypeInput type;
   /** The lower voltage node */
-  NodeInput nodeC;
+  private NodeInput nodeC;
 
   /**
    * @param uuid of the input entity

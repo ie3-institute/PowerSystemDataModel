@@ -18,17 +18,17 @@ import javax.measure.quantity.ElectricPotential;
 /** Describes the type of a {@link edu.ie3.models.input.connector.LineInput} */
 public class LineTypeInput extends AssetTypeInput {
   /** Specific phase-to-ground susceptance for this type of line (typically in µS/km) */
-  Quantity<SpecificConductance> b;
+  private Quantity<SpecificConductance> b;
   /** Specific phase-to-ground conductance for this type of line (typically in µS/km) */
-  Quantity<SpecificConductance> g;
+  private Quantity<SpecificConductance> g;
   /** Specific resistance for this type of line (typically in Ohm/km) */
-  Quantity<SpecificResistance> r;
+  private Quantity<SpecificResistance> r;
   /** Specific reactance for this type of line (typically in Ohm/km) */
-  Quantity<SpecificResistance> x;
+  private Quantity<SpecificResistance> x;
   /** Maximum thermal current for this type of line (typically in A) */
-  Quantity<ElectricCurrent> iMax;
+  private Quantity<ElectricCurrent> iMax;
   /** Rated voltage for this type of line (typically in V) */
-  Quantity<ElectricPotential> vRated;
+  private Quantity<ElectricPotential> vRated;
 
   /**
    * @param uuid of the input entity

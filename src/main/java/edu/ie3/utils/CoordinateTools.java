@@ -10,14 +10,17 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
-/** Tools for coordinate transformations */
+/** @deprecated use {@link CoordinateUtils instead} */
+@Deprecated
 public class CoordinateTools {
 
   public static final int SPATIAL_REFERENCE_ID = 4326;
   private static GeometryFactory geometryFactory;
 
   /** Private Constructor as this class is not meant to be instantiated */
-  private CoordinateTools() {}
+  private CoordinateTools() {
+    throw new IllegalStateException("This is an Utility Class and not meant to be instantiated");
+  }
 
   static {
     geometryFactory =

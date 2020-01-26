@@ -13,7 +13,7 @@ import java.util.UUID;
 public abstract class AssetCharacteristicInput extends InputEntity {
 
   /** Type name of this characteristic */
-  String type;
+  private String type;
 
   /**
    * @param uuid of the input entity

@@ -20,20 +20,20 @@ import javax.measure.quantity.ElectricPotential;
 /** Describes an electrical grid node, that other assets can connect to */
 public class NodeInput extends AssetInput {
   /** Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.) */
-  Quantity<Dimensionless> vTarget;
+  private Quantity<Dimensionless> vTarget;
   /** Rated voltage magnitude of the node (typically in kV) */
-  Quantity<ElectricPotential> vRated;
+  private Quantity<ElectricPotential> vRated;
   /** Is this node a slack node? */
-  Boolean slack;
+  private boolean slack;
   /**
    * The coordinates of this node, especially relevant for geo-dependant systems, that are connected
    * to this node
    */
-  Point geoPosition;
+  private Point geoPosition;
   /** Voltage level of this node */
-  VoltageLevel voltLvl;
+  private VoltageLevel voltLvl;
   /** Subnet of this node */
-  Integer subnet;
+  private int subnet;
   /**
    * @param uuid of the input entity
    * @param operationInterval Empty for a non-operated asset, Interval of operation period else
@@ -54,10 +54,10 @@ public class NodeInput extends AssetInput {
       String id,
       Quantity<Dimensionless> vTarget,
       Quantity<ElectricPotential> vRated,
-      Boolean slack,
+      boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
-      Integer subnet) {
+      int subnet) {
     super(uuid, operationInterval, operator, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE);
     this.vRated = vRated.to(StandardUnits.V_RATED);
@@ -91,10 +91,10 @@ public class NodeInput extends AssetInput {
       String id,
       Quantity<Dimensionless> vTarget,
       Quantity<ElectricPotential> vRated,
-      Boolean slack,
+      boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
-      Integer subnet) {
+      int subnet) {
     super(uuid, operatesFrom, operatesUntil, operator, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE);
     this.vRated = vRated.to(StandardUnits.V_RATED);
@@ -122,10 +122,10 @@ public class NodeInput extends AssetInput {
       String id,
       Quantity<Dimensionless> vTarget,
       Quantity<ElectricPotential> vRated,
-      Boolean slack,
+      boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
-      Integer subnet) {
+      int subnet) {
     super(uuid, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE);
     this.vRated = vRated.to(StandardUnits.V_RATED);
@@ -151,11 +151,11 @@ public class NodeInput extends AssetInput {
     this.vRated = vRated.to(StandardUnits.V_RATED);
   }
 
-  public Boolean getSlack() {
+  public boolean getSlack() {
     return slack;
   }
 
-  public void setSlack(Boolean slack) {
+  public void setSlack(boolean slack) {
     this.slack = slack;
   }
 
@@ -175,26 +175,26 @@ public class NodeInput extends AssetInput {
     this.voltLvl = voltLvl;
   }
 
-  public Integer getSubnet() {
+  public int getSubnet() {
     return subnet;
   }
 
-  public void setSubnet(Integer subnet) {
+  public void setSubnet(int subnet) {
     this.subnet = subnet;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
+    if(this == o)
+      return true;
+    if(o == null || getClass() != o.getClass())
+      return false;
+    if(!super.equals(o))
+      return false;
     NodeInput nodeInput = (NodeInput) o;
-    return vTarget.equals(nodeInput.vTarget)
-        && vRated.equals(nodeInput.vRated)
-        && slack.equals(nodeInput.slack)
-        && geoPosition.equals(nodeInput.geoPosition)
-        && voltLvl.equals(nodeInput.voltLvl)
-        && subnet.equals(nodeInput.subnet);
+    return slack == nodeInput.slack && subnet == nodeInput.subnet && Objects.equals(vTarget, nodeInput.vTarget) &&
+           Objects.equals(vRated, nodeInput.vRated) && Objects.equals(geoPosition, nodeInput.geoPosition) &&
+           Objects.equals(voltLvl, nodeInput.voltLvl);
   }
 
   @Override
