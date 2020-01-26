@@ -77,4 +77,60 @@ public class AggregatedGridInput implements AggregatedEntities {
     }
     return true;
   }
+
+  public String getGridName() {
+    return gridName;
+  }
+
+  public void setGridName(String gridName) {
+    this.gridName = gridName;
+  }
+
+  public int getSubnet() {
+    return subnet;
+  }
+
+  public void setSubnet(int subnet) {
+    this.subnet = subnet;
+  }
+
+  public String getVoltLvl() {
+    return voltLvl;
+  }
+
+  public void setVoltLvl(String voltLvl) {
+    this.voltLvl = voltLvl;
+  }
+
+  public AggregatedRawGridInput getRawGrid() {
+    return rawGrid;
+  }
+
+  public void setRawGrid(AggregatedRawGridInput rawGrid) {
+    this.rawGrid = rawGrid;
+  }
+
+  public AggregatedSystemInput getSystemParticipants() {
+    return systemParticipants;
+  }
+
+  public void setSystemParticipants(AggregatedSystemInput systemParticipants) {
+    this.systemParticipants = systemParticipants;
+  }
+
+  public AggregatedGraphicInput getGraphics() {
+    return graphics;
+  }
+
+  public void setGraphics(AggregatedGraphicInput graphics) {
+    this.graphics = graphics;
+  }
+
+  public LinkedList<MeasurementUnitInput> getMeasurementUnits() {
+    return measurementUnits;
+  }
+
+  public void setMeasurementUnits(LinkedList<MeasurementUnitInput> measurementUnits) {
+    this.measurementUnits = measurementUnits;
+  }
 }
