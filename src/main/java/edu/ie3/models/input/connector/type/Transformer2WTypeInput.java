@@ -12,6 +12,7 @@ import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.*;
 
+
 /** Describes the type of a {@link edu.ie3.models.input.connector.Transformer2WInput} */
 public class Transformer2WTypeInput extends AssetTypeInput {
   /** Short circuit resistance (typically in Ohm) */
@@ -19,19 +20,19 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   /** Short circuit reactance (typically in Ohm) */
   private Quantity<ElectricResistance> xSc;
   /** Rated apparent power (typically in MVA) */
-  private Quantity<Power> sRated;
+  private Quantity<Power>              sRated;
   /** Rated voltage of the high voltage winding (typically in kV) */
-  private Quantity<ElectricPotential> vRatedA;
+  private Quantity<ElectricPotential>  vRatedA;
   /** Rated voltage of the low voltage winding (typically in kV) */
-  private Quantity<ElectricPotential> vRatedB;
+  private Quantity<ElectricPotential>   vRatedB;
   /** Phase-to-ground conductance (typically in nS) */
   private Quantity<ElectricConductance> gM;
   /** Phase-to-ground susceptance (typically in nS) */
   private Quantity<ElectricConductance> bM;
   /** Voltage magnitude deviation per tap position (typically in %) */
-  private Quantity<Dimensionless> dV;
+  private Quantity<Dimensionless>       dV;
   /** Voltage angle deviation per tap position (typically in °) */
-  private Quantity<Angle> dPhi;
+  private Quantity<Angle>               dPhi;
   /** Selection of winding, where the tap changer is installed. Low voltage, if true */
   private boolean tapSide;
   /** Neutral tap position */

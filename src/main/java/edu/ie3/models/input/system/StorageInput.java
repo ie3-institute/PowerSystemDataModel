@@ -17,10 +17,10 @@ import java.util.UUID;
 /** Describes a battery storage */
 public class StorageInput extends SystemParticipantInput {
   /** Type of this storage, containing default values for storages of this kind */
-  StorageTypeInput type;
+  private StorageTypeInput type;
 
   /** Selection of predefined behaviour of the storage */
-  StorageStrategy behaviour;
+  private StorageStrategy behaviour;
   /**
    * @param uuid of the input entity
    * @param operationInterval Empty for a non-operated asset, Interval of operation period else

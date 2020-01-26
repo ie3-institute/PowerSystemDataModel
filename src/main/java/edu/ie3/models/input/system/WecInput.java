@@ -18,9 +18,9 @@ import java.util.UUID;
 public class WecInput extends SystemParticipantInput {
 
   /** Type of this WEC, containing default values for WEC assets of this kind */
-  WecTypeInput type;
+  private WecTypeInput type;
   /** Is this asset market oriented? */
-  boolean marketReaction;
+  private boolean marketReaction;
   /**
    * @param uuid of the input entity
    * @param operationInterval Empty for a non-operated asset, Interval of operation period else

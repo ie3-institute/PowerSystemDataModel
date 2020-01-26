@@ -17,7 +17,7 @@ import java.util.UUID;
 /** Describes an electric vehicle */
 public class EvInput extends SystemParticipantInput {
   /** Type of this EV, containing default values for EVs of this kind */
-  EvTypeInput type;
+  private EvTypeInput type;
   /**
    * @param uuid of the input entity
    * @param operationInterval Empty for a non-operated asset, Interval of operation period else
