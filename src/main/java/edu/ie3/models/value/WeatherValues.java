@@ -15,13 +15,13 @@ import javax.measure.quantity.Temperature;
 /** Describes weather as a combination of irradiation, temperature and wind values */
 public class WeatherValues implements Value {
   /** The coordinate of this weather value set */
-  Point coordinate;
+  private Point coordinate;
   /** irradiation values for this coordinate */
-  IrradiationValue irradiation;
+  private IrradiationValue irradiation;
   /** Temperature value for this coordinate */
-  TemperatureValue temperature;
+  private TemperatureValue temperature;
   /** Wind values for this coordinate */
-  WindValue wind;
+  private WindValue wind;
 
   /**
    * @param coordinate of this weather value set

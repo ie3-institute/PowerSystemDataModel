@@ -18,12 +18,12 @@ public class TimeBasedValue<T extends Value> extends UniqueEntity {
 
   private T value;
 
+  private ZonedDateTime time;
+
   public TimeBasedValue(ZonedDateTime time, T value) {
     this.value = value;
     this.time = time;
   }
-
-  ZonedDateTime time;
 
   public T getValue() {
     return value;

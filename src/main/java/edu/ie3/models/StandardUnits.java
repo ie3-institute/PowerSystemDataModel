@@ -7,7 +7,6 @@ package edu.ie3.models;
 
 import static edu.ie3.util.quantities.PowerSystemUnits.*;
 
-import edu.ie3.util.quantities.interfaces.*;
 import javax.measure.Unit;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
@@ -23,6 +22,8 @@ import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Time;
 import javax.measure.quantity.Volume;
+
+import edu.ie3.util.quantities.interfaces.*;
 import tec.uom.se.unit.MetricPrefix;
 
 /** A collection of Units that fit to the different input and output models by convention */
@@ -46,21 +47,21 @@ public class StandardUnits {
   /* Other Units */
   public static final Unit<Dimensionless> TARGET_VOLTAGE = PU;
   public static final Unit<Dimensionless> DV_TAP = PERCENT;
-  public static final Unit<Angle> DPHI_TAP = DEGREE_GEOM;
+  public static final Unit<Angle>             DPHI_TAP      = DEGREE_GEOM;
   public static final Unit<DimensionlessRate> LOAD_GRADIENT = PERCENT_PER_HOUR;
-  public static final Unit<Dimensionless> EFFICIENCY = PERCENT;
+  public static final Unit<Dimensionless>     EFFICIENCY    = PERCENT;
   public static final Unit<Volume> VOLUME = CUBIC_METRE;
-  public static final Unit<Temperature> TEMPERATURE = CELSIUS;
-  public static final Unit<HeatCapacity> HEAT_CAPACITY = KILOWATTHOUR_PER_KELVIN;
+  public static final Unit<Temperature>          TEMPERATURE            = CELSIUS;
+  public static final Unit<HeatCapacity>         HEAT_CAPACITY          = KILOWATTHOUR_PER_KELVIN;
   public static final Unit<SpecificHeatCapacity> SPECIFIC_HEAT_CAPACITY =
       KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE;
-  public static final Unit<ThermalConductance> THERMAL_TRANSMISSION = KILOWATT_PER_KELVIN;
-  public static final Unit<Dimensionless> DOD = PERCENT;
+  public static final Unit<ThermalConductance>   THERMAL_TRANSMISSION   = KILOWATT_PER_KELVIN;
+  public static final Unit<Dimensionless>        DOD                    = PERCENT;
   public static final Unit<Time> LIFE_TIME = MILLISECOND;
   public static final Unit<Area> ROTOR_AREA = SQUARE_METRE;
-  public static final Unit<Length> HUB_HEIGHT = METRE;
+  public static final Unit<Length>      HUB_HEIGHT   = METRE;
   public static final Unit<EnergyPrice> ENERGY_PRICE = EURO_PER_MEGAWATTHOUR;
-  public static final Unit<Angle> AZIMUTH = DEGREE_GEOM;
+  public static final Unit<Angle>       AZIMUTH      = DEGREE_GEOM;
   public static final Unit<Angle> SOLAR_HEIGHT = DEGREE_GEOM;
   public static final Unit<Angle> WIND_DIRECTION = DEGREE_GEOM;
   public static final Unit<Speed> WIND_VELOCITY = METRE_PER_SECOND;
