@@ -22,21 +22,21 @@ import javax.measure.quantity.Power;
 public class PvInput extends SystemParticipantInput {
 
   /** Albedo value (typically a value between 0 and 1) */
-  Double albedo;
+  private Double albedo;
   /** Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦) */
-  Quantity<Angle> azimuth;
+  private Quantity<Angle> azimuth;
   /** Efficiency of converter (typically in %) */
-  Quantity<Dimensionless> etaConv;
+  private Quantity<Dimensionless> etaConv;
   /** Tilted inclination from horizontal (typically in °) */
-  Quantity<Angle> height;
+  private Quantity<Angle> height;
   /** Generator correction factor merging different technical influences */
-  Double kG;
+  private Double kG;
   /** Temperature correction factor */
-  Double kT;
+  private Double kT;
   /** Is this asset market oriented? */
-  boolean  marketReaction;
+  private boolean  marketReaction;
   /** Rated apparent power (typically in kVA) */
-  Quantity<Power> sRated;
+  private Quantity<Power> sRated;
   /**
    * @param uuid of the input entity
    * @param operationInterval Empty for a non-operated asset, Interval of operation period else

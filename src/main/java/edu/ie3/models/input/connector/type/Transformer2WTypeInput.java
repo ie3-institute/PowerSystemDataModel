@@ -15,31 +15,31 @@ import javax.measure.quantity.*;
 /** Describes the type of a {@link edu.ie3.models.input.connector.Transformer2WInput} */
 public class Transformer2WTypeInput extends AssetTypeInput {
   /** Short circuit resistance (typically in Ohm) */
-  Quantity<ElectricResistance> rSc;
+  private Quantity<ElectricResistance> rSc;
   /** Short circuit reactance (typically in Ohm) */
-  Quantity<ElectricResistance> xSc;
+  private Quantity<ElectricResistance> xSc;
   /** Rated apparent power (typically in MVA) */
-  Quantity<Power> sRated;
+  private Quantity<Power> sRated;
   /** Rated voltage of the high voltage winding (typically in kV) */
-  Quantity<ElectricPotential> vRatedA;
+  private Quantity<ElectricPotential> vRatedA;
   /** Rated voltage of the low voltage winding (typically in kV) */
-  Quantity<ElectricPotential> vRatedB;
+  private Quantity<ElectricPotential> vRatedB;
   /** Phase-to-ground conductance (typically in nS) */
-  Quantity<ElectricConductance> gM;
+  private Quantity<ElectricConductance> gM;
   /** Phase-to-ground susceptance (typically in nS) */
-  Quantity<ElectricConductance> bM;
+  private Quantity<ElectricConductance> bM;
   /** Voltage magnitude deviation per tap position (typically in %) */
-  Quantity<Dimensionless> dV;
+  private Quantity<Dimensionless> dV;
   /** Voltage angle deviation per tap position (typically in °) */
-  Quantity<Angle> dPhi;
+  private Quantity<Angle> dPhi;
   /** Selection of winding, where the tap changer is installed. Low voltage, if true */
-  boolean  tapSide;
+  private boolean  tapSide;
   /** Neutral tap position */
-  int  tapNeutr;
+  private int  tapNeutr;
   /** Minimum available tap position */
-  int  tapMin;
+  private int  tapMin;
   /** Maximum available tap position */
-  int  tapMax;
+  private int  tapMax;
 
   /**
    * @param uuid of the input entity
