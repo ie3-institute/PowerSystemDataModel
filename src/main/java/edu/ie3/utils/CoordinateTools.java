@@ -10,7 +10,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
-/** @deprecated use {@link CoordinateUtils instead} */
+/** @deprecated use {@link CoordinateUtil instead} */
 @Deprecated
 public class CoordinateTools {
 
