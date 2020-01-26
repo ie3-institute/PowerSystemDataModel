@@ -33,7 +33,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Maximum life time of the storage (typically in ms) */
   Quantity<Time> lifeTime;
   /** Maximum amount of full charging cycles */
-  Integer lifeCycle;
+  int  lifeCycle;
 
   /**
    * @param uuid of the input entity
@@ -63,7 +63,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       Quantity<Dimensionless> eta,
       Quantity<Dimensionless> dod,
       Quantity<Time> lifeTime,
-      Integer lifeCycle) {
+      int  lifeCycle) {
     super(uuid, id, capex, opex, cosphiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY);
     this.pRated = pRated.to(StandardUnits.ACTIVE_POWER_IN);
@@ -131,33 +131,30 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     this.lifeTime = lifeTime.to(StandardUnits.LIFE_TIME);
   }
 
-  public Integer getLifeCycle() {
+  public int  getLifeCycle() {
     return lifeCycle;
   }
 
-  public void setLifeCycle(Integer lifeCycle) {
+  public void setLifeCycle(int  lifeCycle) {
     this.lifeCycle = lifeCycle;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
+    if(this == o)
+      return true;
+    if(o == null || getClass() != o.getClass())
+      return false;
+    if(!super.equals(o))
+      return false;
     StorageTypeInput that = (StorageTypeInput) o;
-    return eStorage.equals(that.eStorage)
-        && pRated.equals(that.pRated)
-        && pMin.equals(that.pMin)
-        && pMax.equals(that.pMax)
-        && eta.equals(that.eta)
-        && dod.equals(that.dod)
-        && lifeTime.equals(that.lifeTime)
-        && lifeCycle.equals(that.lifeCycle);
+    return lifeCycle == that.lifeCycle && eStorage.equals(that.eStorage) && pRated.equals(that.pRated) &&
+           pMin.equals(that.pMin) && pMax.equals(that.pMax) && eta.equals(that.eta) && dod.equals(that.dod) &&
+           lifeTime.equals(that.lifeTime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), eStorage, pRated, pMin, pMax, eta, dod, lifeTime, lifeCycle);
+    return Objects.hash(super.hashCode(), eStorage, pRated, pMin, pMax, eta, dod, lifeTime, lifeCycle);
   }
 }

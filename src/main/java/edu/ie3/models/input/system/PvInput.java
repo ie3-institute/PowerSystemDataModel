@@ -34,7 +34,7 @@ public class PvInput extends SystemParticipantInput {
   /** Temperature correction factor */
   Double kT;
   /** Is this asset market oriented? */
-  Boolean marketReaction;
+  boolean  marketReaction;
   /** Rated apparent power (typically in kVA) */
   Quantity<Power> sRated;
   /**
@@ -68,7 +68,7 @@ public class PvInput extends SystemParticipantInput {
       Quantity<Angle> height,
       Double kG,
       Double kT,
-      Boolean marketReaction,
+      boolean  marketReaction,
       Quantity<Power> sRated) {
     super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphiRated);
     this.albedo = albedo;
@@ -116,7 +116,7 @@ public class PvInput extends SystemParticipantInput {
       Quantity<Angle> height,
       Double kG,
       Double kT,
-      Boolean marketReaction,
+      boolean  marketReaction,
       Quantity<Power> sRated) {
     super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphiRated);
     this.albedo = albedo;
@@ -157,7 +157,7 @@ public class PvInput extends SystemParticipantInput {
       Quantity<Angle> height,
       Double kG,
       Double kT,
-      Boolean marketReaction,
+      boolean  marketReaction,
       Quantity<Power> sRated) {
     super(uuid, id, node, qCharacteristics, cosphiRated);
     this.albedo = albedo;
@@ -218,11 +218,11 @@ public class PvInput extends SystemParticipantInput {
     this.kT = kT;
   }
 
-  public Boolean getMarketReaction() {
+  public boolean  getMarketReaction() {
     return marketReaction;
   }
 
-  public void setMarketReaction(Boolean marketReaction) {
+  public void setMarketReaction(boolean  marketReaction) {
     this.marketReaction = marketReaction;
   }
 
@@ -236,23 +236,20 @@ public class PvInput extends SystemParticipantInput {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
+    if(this == o)
+      return true;
+    if(o == null || getClass() != o.getClass())
+      return false;
+    if(!super.equals(o))
+      return false;
     PvInput pvInput = (PvInput) o;
-    return albedo.equals(pvInput.albedo)
-        && azimuth.equals(pvInput.azimuth)
-        && etaConv.equals(pvInput.etaConv)
-        && height.equals(pvInput.height)
-        && kG.equals(pvInput.kG)
-        && kT.equals(pvInput.kT)
-        && marketReaction.equals(pvInput.marketReaction)
-        && sRated.equals(pvInput.sRated);
+    return marketReaction == pvInput.marketReaction && albedo.equals(pvInput.albedo) &&
+           azimuth.equals(pvInput.azimuth) && etaConv.equals(pvInput.etaConv) && height.equals(pvInput.height) &&
+           kG.equals(pvInput.kG) && kT.equals(pvInput.kT) && sRated.equals(pvInput.sRated);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), albedo, azimuth, etaConv, height, kG, kT, marketReaction, sRated);
+    return Objects.hash(super.hashCode(), albedo, azimuth, etaConv, height, kG, kT, marketReaction, sRated);
   }
 }

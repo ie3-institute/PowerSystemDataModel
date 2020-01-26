@@ -17,7 +17,7 @@ import java.util.UUID;
 public class RandomLoadParameters extends InputEntity {
 
   /** The respective quarter hour of the day */
-  Integer quarterHour;
+  int  quarterHour;
 
   /** Shape parameter for a working day */
   Double kWd;
@@ -61,7 +61,7 @@ public class RandomLoadParameters extends InputEntity {
    */
   public RandomLoadParameters(
       UUID uuid,
-      Integer quarterHour,
+      int  quarterHour,
       Double kWd,
       Double kSa,
       Double kSu,
@@ -84,11 +84,11 @@ public class RandomLoadParameters extends InputEntity {
     this.sigmaSu = sigmaSu;
   }
 
-  public Integer getQuarterHour() {
+  public int  getQuarterHour() {
     return quarterHour;
   }
 
-  public void setQuarterHour(Integer quarterHour) {
+  public void setQuarterHour(int  quarterHour) {
     this.quarterHour = quarterHour;
   }
 

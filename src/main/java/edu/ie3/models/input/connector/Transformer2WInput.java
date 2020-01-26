@@ -44,7 +44,7 @@ public class Transformer2WInput extends TransformerInput {
       int parallelDevices,
       Transformer2WTypeInput type,
       int tapPos,
-      Boolean autoTap) {
+      boolean  autoTap) {
     super(uuid, operationInterval, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
   }
@@ -74,7 +74,7 @@ public class Transformer2WInput extends TransformerInput {
       int parallelDevices,
       Transformer2WTypeInput type,
       int tapPos,
-      Boolean autoTap) {
+      boolean  autoTap) {
     super(
         uuid,
         operatesFrom,
@@ -109,7 +109,7 @@ public class Transformer2WInput extends TransformerInput {
       int parallelDevices,
       Transformer2WTypeInput type,
       int tapPos,
-      Boolean autoTap) {
+      boolean  autoTap) {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
   }

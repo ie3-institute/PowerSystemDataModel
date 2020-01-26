@@ -20,7 +20,7 @@ public class WecInput extends SystemParticipantInput {
   /** Type of this WEC, containing default values for WEC assets of this kind */
   WecTypeInput type;
   /** Is this asset market oriented? */
-  Boolean marketReaction;
+  boolean  marketReaction;
   /**
    * @param uuid of the input entity
    * @param operationInterval Empty for a non-operated asset, Interval of operation period else
@@ -41,7 +41,7 @@ public class WecInput extends SystemParticipantInput {
       String qCharacteristics,
       Double cosphi,
       WecTypeInput type,
-      Boolean marketReaction) {
+      boolean  marketReaction) {
     super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphi);
     this.type = type;
     this.marketReaction = marketReaction;
@@ -71,7 +71,7 @@ public class WecInput extends SystemParticipantInput {
       String qCharacteristics,
       Double cosphi,
       WecTypeInput type,
-      Boolean marketReaction) {
+      boolean  marketReaction) {
     super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphi);
     this.type = type;
     this.marketReaction = marketReaction;
@@ -94,7 +94,7 @@ public class WecInput extends SystemParticipantInput {
       String qCharacteristics,
       Double cosphi,
       WecTypeInput type,
-      Boolean marketReaction) {
+      boolean  marketReaction) {
     super(uuid, id, node, qCharacteristics, cosphi);
     this.type = type;
     this.marketReaction = marketReaction;
@@ -108,11 +108,11 @@ public class WecInput extends SystemParticipantInput {
     this.type = type;
   }
 
-  public Boolean getMarketReaction() {
+  public boolean  getMarketReaction() {
     return marketReaction;
   }
 
-  public void setMarketReaction(Boolean marketReaction) {
+  public void setMarketReaction(boolean  marketReaction) {
     this.marketReaction = marketReaction;
   }
 
