@@ -12,20 +12,21 @@ import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.*;
 
+
 /** Describes the type of a {@link edu.ie3.models.input.connector.Transformer3WInput} */
 public class Transformer3WTypeInput extends AssetTypeInput {
   /** Rated apparent power of the high voltage winding (typically in MVA) */
-  private Quantity<Power> sRatedA; // Hv
+  private Quantity<Power>             sRatedA; // Hv
   /** Rated apparent power of the medium voltage winding (typically in MVA) */
-  private Quantity<Power> sRatedB; // Mv
+  private Quantity<Power>             sRatedB; // Mv
   /** Rated apparent power of the low voltage windings (typically in MVA) */
-  private Quantity<Power> sRatedC; // Lv
+  private Quantity<Power>             sRatedC; // Lv
   /** Rated voltage magnitude of the high voltage winding (typically in kV) */
   private Quantity<ElectricPotential> vRatedA; // Hv
   /** Rated voltage magnitude of the medium voltage winding (typically in kV) */
   private Quantity<ElectricPotential> vRatedB; // Mv
   /** Rated voltage magnitude of the low voltage winding (typically in kV) */
-  private Quantity<ElectricPotential> vRatedC; // Lv
+  private Quantity<ElectricPotential>  vRatedC; // Lv
   /** Short-circuit resistance of the high voltage winding (typically in Ohm) */
   private Quantity<ElectricResistance> rScA; // Hv
   /** Short-circuit resistance of the medium voltage winding (typically in Ohm) */
@@ -37,15 +38,15 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   /** Short-circuit reactance of the medium voltage winding (typically in Ohm) */
   private Quantity<ElectricResistance> xScB; // Mv
   /** Short-circuit reactance of the low voltage winding (typically in Ohm) */
-  private Quantity<ElectricResistance> xScC; // Lv
+  private Quantity<ElectricResistance>  xScC; // Lv
   /** Phase-to-ground conductance (typically in nS) */
   private Quantity<ElectricConductance> gM;
   /** Phase-to-ground susceptance (typically in nS) */
   private Quantity<ElectricConductance> bM;
   /** Voltage magnitude deviation per tap position (typically in %) */
-  private Quantity<Dimensionless> dV;
+  private Quantity<Dimensionless>       dV;
   /** Voltage angle deviation per tap position (typically in °) */
-  private Quantity<Angle> dPhi;
+  private Quantity<Angle>               dPhi;
   /** Neutral tap position */
   private int tapNeutr;
   /** Minimum available tap position */

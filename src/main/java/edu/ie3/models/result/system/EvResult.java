@@ -15,7 +15,7 @@ import javax.measure.quantity.Power;
 /** Represents calculation results of a {@link edu.ie3.models.input.system.EvInput} */
 public class EvResult extends SystemParticipantResult {
 
-  Quantity<Dimensionless> soc;
+  private Quantity<Dimensionless> soc;
 
   /**
    * Standard constructor with automatic uuid generation.

@@ -8,6 +8,7 @@ package edu.ie3.models.input.aggregated;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.EvcsInput;
 import edu.ie3.models.input.system.*;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,13 +18,13 @@ import java.util.List;
  * feed ins, heat pumps, loads, PV plants, storages, WECs)
  */
 public class AggregatedSystemInput implements AggregatedEntities {
-  private List<BmInput> bmPlants = new LinkedList<>();
-  private List<ChpInput> chpPlants = new LinkedList<>();
-  private List<EvcsInput> evcs = new LinkedList<>();
+  private List<BmInput>   bmPlants  = new LinkedList<>();
+  private List<ChpInput>  chpPlants = new LinkedList<>();
+  private List<EvcsInput>        evcs         = new LinkedList<>();
   private List<FixedFeedInInput> fixedFeedIns = new LinkedList<>();
-  private List<HpInput> heatpumps = new LinkedList<>();
-  private List<LoadInput> loads = new LinkedList<>();
-  private List<PvInput> pvPlants = new LinkedList<>();
+  private List<HpInput>   heatpumps = new LinkedList<>();
+  private List<LoadInput> loads     = new LinkedList<>();
+  private List<PvInput>   pvPlants  = new LinkedList<>();
   private List<StorageInput> storages = new LinkedList<>();
   private List<WecInput> wecPlants = new LinkedList<>();
 

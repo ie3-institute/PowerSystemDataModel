@@ -13,7 +13,7 @@ import java.util.HashMap;
 /** Describes a TimeSeries with individual values per timestep */
 public class IndividualTimeSeries<T extends Value> implements TimeSeries<T> {
   /** Maps a TimeBasedValue to its time to retrieve faster */
-  HashMap<ZonedDateTime, TimeBasedValue<T>> timeToTimeBasedValue = new HashMap<>();
+  private HashMap<ZonedDateTime, TimeBasedValue<T>> timeToTimeBasedValue = new HashMap<>();
 
   /**
    * Creates a {@link TimeBasedValue} from this data and adds it to the internal map

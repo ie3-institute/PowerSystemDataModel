@@ -17,16 +17,16 @@ import javax.measure.quantity.ElectricCurrent;
 public abstract class ConnectorResult extends ResultEntity {
 
   /** Electric current magnitude @ port A, normally provided in Ampere */
-  Quantity<ElectricCurrent> iAMag;
+  private Quantity<ElectricCurrent> iAMag;
 
   /** Electric current angle @ Port A in degree ° */
-  Quantity<Angle> iAAng;
+  private Quantity<Angle> iAAng;
 
   /** Electric current magnitude @ port B, normally provided in Ampere */
-  Quantity<ElectricCurrent> iBMag;
+  private Quantity<ElectricCurrent> iBMag;
 
   /** Electric current angle @ Port B in degree ° */
-  Quantity<Angle> iBAng;
+  private Quantity<Angle> iBAng;
 
   /**
    * Standard constructor with automatic uuid generation.

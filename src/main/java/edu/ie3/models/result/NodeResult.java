@@ -16,10 +16,10 @@ import javax.measure.quantity.Dimensionless;
 public class NodeResult extends ResultEntity {
 
   /** Voltage magnitude @ this node in p.u. */
-  Quantity<Dimensionless> vMag;
+  private Quantity<Dimensionless> vMag;
 
   /** Voltage angle @ this node in degree */
-  Quantity<Angle> vAng;
+  private Quantity<Angle> vAng;
 
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
