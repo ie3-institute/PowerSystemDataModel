@@ -42,7 +42,7 @@ public class HpInput extends SystemParticipantInput {
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       HpTypeInput type,
       ThermalUnitInput heatSink) {
     super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphi);
@@ -73,7 +73,7 @@ public class HpInput extends SystemParticipantInput {
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       HpTypeInput type,
       ThermalUnitInput heatSink) {
     super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphi);
@@ -98,7 +98,7 @@ public class HpInput extends SystemParticipantInput {
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       HpTypeInput type,
       ThermalUnitInput heatSink) {
     super(uuid, id, node, qCharacteristics, cosphi);

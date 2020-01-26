@@ -16,10 +16,10 @@ import java.util.Map;
 public class LoadProfileInput extends RepetitiveTimeSeries<PowerValue> {
 
   private final LoadProfileType type;
-  private final Map<DayOfWeek, Map<Integer , PowerValue>> dayOfWeekToHourlyValues;
+  private final Map<DayOfWeek, Map<Integer, PowerValue>> dayOfWeekToHourlyValues;
 
   public LoadProfileInput(
-      LoadProfileType type, Map<DayOfWeek, Map<Integer , PowerValue>> dayOfWeekToHourlyValues) {
+      LoadProfileType type, Map<DayOfWeek, Map<Integer, PowerValue>> dayOfWeekToHourlyValues) {
     this.type = type;
     this.dayOfWeekToHourlyValues = dayOfWeekToHourlyValues;
   }

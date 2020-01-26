@@ -45,10 +45,10 @@ public class Transformer3WInput extends TransformerInput {
       NodeInput nodeA,
       NodeInput nodeB,
       NodeInput nodeC,
-      int  parallelDevices,
+      int parallelDevices,
       Transformer3WTypeInput type,
-      int  tapPos,
-      boolean  autoTap) {
+      int tapPos,
+      boolean autoTap) {
     super(uuid, operationInterval, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
     this.nodeC = nodeC;
@@ -78,10 +78,10 @@ public class Transformer3WInput extends TransformerInput {
       NodeInput nodeA,
       NodeInput nodeB,
       NodeInput nodeC,
-      int  parallelDevices,
+      int parallelDevices,
       Transformer3WTypeInput type,
-      int  tapPos,
-      boolean  autoTap) {
+      int tapPos,
+      boolean autoTap) {
     super(
         uuid,
         operatesFrom,
@@ -116,10 +116,10 @@ public class Transformer3WInput extends TransformerInput {
       NodeInput nodeA,
       NodeInput nodeB,
       NodeInput nodeC,
-      int  parallelDevices,
+      int parallelDevices,
       Transformer3WTypeInput type,
-      int  tapPos,
-      boolean  autoTap) {
+      int tapPos,
+      boolean autoTap) {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
     this.nodeC = nodeC;

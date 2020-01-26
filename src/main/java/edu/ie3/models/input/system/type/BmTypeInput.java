@@ -40,7 +40,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      Double cosphiRated,
+      double cosphiRated,
       Quantity<DimensionlessRate> loadGradient,
       Quantity<Power> sRated,
       Quantity<Dimensionless> etaConv) {

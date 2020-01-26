@@ -42,7 +42,7 @@ public abstract class SystemParticipantInput extends AssetInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated) {
+      double cosphiRated) {
     super(uuid, operationInterval, operator, id);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
@@ -69,7 +69,7 @@ public abstract class SystemParticipantInput extends AssetInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated) {
+      double cosphiRated) {
     super(uuid, operatesFrom, operatesUntil, operator, id);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
@@ -86,7 +86,7 @@ public abstract class SystemParticipantInput extends AssetInput {
    * @param cosphiRated Power factor
    */
   public SystemParticipantInput(
-      UUID uuid, String id, NodeInput node, String qCharacteristics, Double cosphiRated) {
+      UUID uuid, String id, NodeInput node, String qCharacteristics, double cosphiRated) {
     super(uuid, id);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
@@ -109,11 +109,11 @@ public abstract class SystemParticipantInput extends AssetInput {
     this.qCharacteristics = qCharacteristics;
   }
 
-  public Double getCosphiRated() {
+  public double getCosphiRated() {
     return cosphiRated;
   }
 
-  public void setCosphiRated(Double cosphiRated) {
+  public void setCosphiRated(double cosphiRated) {
     this.cosphiRated = cosphiRated;
   }
 

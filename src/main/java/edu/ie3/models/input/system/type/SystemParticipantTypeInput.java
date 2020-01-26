@@ -19,7 +19,7 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   /** Operating expense for this type of system participant (typically in €) */
   Quantity<EnergyPrice> opex;
   /** Power factor for this type of system participant */
-  Double cosphi;
+  double cosphi;
 
   /**
    * @param uuid of the input entity
@@ -29,7 +29,7 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
    * @param cosphi Power factor for this type of system participant
    */
   public SystemParticipantTypeInput(
-      UUID uuid, String id, Quantity<Currency> capex, Quantity<EnergyPrice> opex, Double cosphi) {
+      UUID uuid, String id, Quantity<Currency> capex, Quantity<EnergyPrice> opex, double cosphi) {
     super(uuid, id);
     this.capex = capex;
     this.opex = opex;
@@ -52,11 +52,11 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     this.opex = opex;
   }
 
-  public Double getCosphi() {
+  public double getCosphi() {
     return cosphi;
   }
 
-  public void setCosphi(Double cosphi) {
+  public void setCosphi(double cosphi) {
     this.cosphi = cosphi;
   }
 
@@ -66,7 +66,9 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     SystemParticipantTypeInput that = (SystemParticipantTypeInput) o;
-    return capex.equals(that.capex) && opex.equals(that.opex) && cosphi.equals(that.cosphi);
+    return Double.compare(that.cosphi, cosphi) == 0
+        && capex.equals(that.capex)
+        && opex.equals(that.opex);
   }
 
   @Override

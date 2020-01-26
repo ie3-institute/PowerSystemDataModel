@@ -17,34 +17,34 @@ import java.util.UUID;
 public class RandomLoadParameters extends InputEntity {
 
   /** The respective quarter hour of the day */
-  int  quarterHour;
+  int quarterHour;
 
   /** Shape parameter for a working day */
-  Double kWd;
+  double kWd;
 
   /** Shape parameter for a Saturday */
-  Double kSa;
+  double kSa;
 
   /** Shape parameter for a Sunday */
-  Double kSu;
+  double kSu;
 
   /** Location parameter for a working day */
-  Double myWd;
+  double myWd;
 
   /** Location parameter for a Saturday */
-  Double mySa;
+  double mySa;
 
   /** Location parameter for a Sunday */
-  Double mySu;
+  double mySu;
 
   /** Scale parameter for a working day */
-  Double sigmaWd;
+  double sigmaWd;
 
   /** Scale parameter for a Saturday */
-  Double sigmaSa;
+  double sigmaSa;
 
   /** Scale parameter for a Sunday */
-  Double sigmaSu;
+  double sigmaSu;
 
   /**
    * @param uuid of the input entity
@@ -61,16 +61,16 @@ public class RandomLoadParameters extends InputEntity {
    */
   public RandomLoadParameters(
       UUID uuid,
-      int  quarterHour,
-      Double kWd,
-      Double kSa,
-      Double kSu,
-      Double myWd,
-      Double mySa,
-      Double mySu,
-      Double sigmaWd,
-      Double sigmaSa,
-      Double sigmaSu) {
+      int quarterHour,
+      double kWd,
+      double kSa,
+      double kSu,
+      double myWd,
+      double mySa,
+      double mySu,
+      double sigmaWd,
+      double sigmaSa,
+      double sigmaSu) {
     super(uuid);
     this.quarterHour = quarterHour;
     this.kWd = kWd;
@@ -84,83 +84,83 @@ public class RandomLoadParameters extends InputEntity {
     this.sigmaSu = sigmaSu;
   }
 
-  public int  getQuarterHour() {
+  public int getQuarterHour() {
     return quarterHour;
   }
 
-  public void setQuarterHour(int  quarterHour) {
+  public void setQuarterHour(int quarterHour) {
     this.quarterHour = quarterHour;
   }
 
-  public Double getKWd() {
+  public double getKWd() {
     return kWd;
   }
 
-  public void setKWd(Double kWd) {
+  public void setKWd(double kWd) {
     this.kWd = kWd;
   }
 
-  public Double getKSa() {
+  public double getKSa() {
     return kSa;
   }
 
-  public void setKSa(Double kSa) {
+  public void setKSa(double kSa) {
     this.kSa = kSa;
   }
 
-  public Double getKSu() {
+  public double getKSu() {
     return kSu;
   }
 
-  public void setKSu(Double kSu) {
+  public void setKSu(double kSu) {
     this.kSu = kSu;
   }
 
-  public Double getMyWd() {
+  public double getMyWd() {
     return myWd;
   }
 
-  public void setMyWd(Double myWd) {
+  public void setMyWd(double myWd) {
     this.myWd = myWd;
   }
 
-  public Double getMySa() {
+  public double getMySa() {
     return mySa;
   }
 
-  public void setMySa(Double mySa) {
+  public void setMySa(double mySa) {
     this.mySa = mySa;
   }
 
-  public Double getMySu() {
+  public double getMySu() {
     return mySu;
   }
 
-  public void setMySu(Double mySu) {
+  public void setMySu(double mySu) {
     this.mySu = mySu;
   }
 
-  public Double getSigmaWd() {
+  public double getSigmaWd() {
     return sigmaWd;
   }
 
-  public void setSigmaWd(Double sigmaWd) {
+  public void setSigmaWd(double sigmaWd) {
     this.sigmaWd = sigmaWd;
   }
 
-  public Double getSigmaSa() {
+  public double getSigmaSa() {
     return sigmaSa;
   }
 
-  public void setSigmaSa(Double sigmaSa) {
+  public void setSigmaSa(double sigmaSa) {
     this.sigmaSa = sigmaSa;
   }
 
-  public Double getSigmaSu() {
+  public double getSigmaSu() {
     return sigmaSu;
   }
 
-  public void setSigmaSu(Double sigmaSu) {
+  public void setSigmaSu(double sigmaSu) {
     this.sigmaSu = sigmaSu;
   }
 

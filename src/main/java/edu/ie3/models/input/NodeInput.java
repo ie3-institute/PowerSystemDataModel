@@ -185,16 +185,16 @@ public class NodeInput extends AssetInput {
 
   @Override
   public boolean equals(Object o) {
-    if(this == o)
-      return true;
-    if(o == null || getClass() != o.getClass())
-      return false;
-    if(!super.equals(o))
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     NodeInput nodeInput = (NodeInput) o;
-    return slack == nodeInput.slack && subnet == nodeInput.subnet && Objects.equals(vTarget, nodeInput.vTarget) &&
-           Objects.equals(vRated, nodeInput.vRated) && Objects.equals(geoPosition, nodeInput.geoPosition) &&
-           Objects.equals(voltLvl, nodeInput.voltLvl);
+    return slack == nodeInput.slack
+        && subnet == nodeInput.subnet
+        && Objects.equals(vTarget, nodeInput.vTarget)
+        && Objects.equals(vRated, nodeInput.vRated)
+        && Objects.equals(geoPosition, nodeInput.geoPosition)
+        && Objects.equals(voltLvl, nodeInput.voltLvl);
   }
 
   @Override

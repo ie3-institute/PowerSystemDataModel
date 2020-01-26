@@ -116,14 +116,13 @@ public abstract class ConnectorInput extends AssetInput {
 
   @Override
   public boolean equals(Object o) {
-    if(this == o)
-      return true;
-    if(o == null || getClass() != o.getClass())
-      return false;
-    if(!super.equals(o))
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     ConnectorInput that = (ConnectorInput) o;
-    return parallelDevices == that.parallelDevices && nodeA.equals(that.nodeA) && nodeB.equals(that.nodeB);
+    return parallelDevices == that.parallelDevices
+        && nodeA.equals(that.nodeA)
+        && nodeB.equals(that.nodeB);
   }
 
   @Override

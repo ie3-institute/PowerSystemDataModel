@@ -16,7 +16,7 @@ import java.util.UUID;
 /** Describes an electrical grid switch between two {@link NodeInput}s */
 public class SwitchInput extends ConnectorInput {
   /** Is the switching state 'closed'? */
-  boolean  closed;
+  boolean closed;
 
   /**
    * @param uuid of the input entity
@@ -35,8 +35,8 @@ public class SwitchInput extends ConnectorInput {
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      int  parallelDevices,
-      boolean  closed) {
+      int parallelDevices,
+      boolean closed) {
     super(uuid, operationInterval, operator, id, nodeA, nodeB, 1);
     this.closed = closed;
   }
@@ -62,8 +62,8 @@ public class SwitchInput extends ConnectorInput {
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      int  parallelDevices,
-      boolean  closed) {
+      int parallelDevices,
+      boolean closed) {
     super(uuid, operatesFrom, operatesUntil, operator, id, nodeA, nodeB, 1);
     this.closed = closed;
   }
@@ -77,16 +77,16 @@ public class SwitchInput extends ConnectorInput {
    * @param nodeB
    * @param closed Is the switching state 'closed'?
    */
-  public SwitchInput(UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, boolean  closed) {
+  public SwitchInput(UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, boolean closed) {
     super(uuid, id, nodeA, nodeB, 1);
     this.closed = closed;
   }
 
-  public boolean  getClosed() {
+  public boolean getClosed() {
     return closed;
   }
 
-  public void setClosed(boolean  closed) {
+  public void setClosed(boolean closed) {
     this.closed = closed;
   }
 

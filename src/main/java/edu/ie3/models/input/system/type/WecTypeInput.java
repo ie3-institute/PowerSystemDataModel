@@ -43,7 +43,7 @@ public class WecTypeInput extends SystemParticipantTypeInput {
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      Double cosphi,
+      double cosphi,
       Quantity<Dimensionless> etaConv,
       Quantity<Power> sRated,
       Quantity<Area> rotorArea,

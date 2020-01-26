@@ -12,21 +12,20 @@ import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.*;
 
-
 /** Describes the type of a {@link edu.ie3.models.input.connector.Transformer3WInput} */
 public class Transformer3WTypeInput extends AssetTypeInput {
   /** Rated apparent power of the high voltage winding (typically in MVA) */
-  private Quantity<Power>             sRatedA; // Hv
+  private Quantity<Power> sRatedA; // Hv
   /** Rated apparent power of the medium voltage winding (typically in MVA) */
-  private Quantity<Power>             sRatedB; // Mv
+  private Quantity<Power> sRatedB; // Mv
   /** Rated apparent power of the low voltage windings (typically in MVA) */
-  private Quantity<Power>             sRatedC; // Lv
+  private Quantity<Power> sRatedC; // Lv
   /** Rated voltage magnitude of the high voltage winding (typically in kV) */
   private Quantity<ElectricPotential> vRatedA; // Hv
   /** Rated voltage magnitude of the medium voltage winding (typically in kV) */
   private Quantity<ElectricPotential> vRatedB; // Mv
   /** Rated voltage magnitude of the low voltage winding (typically in kV) */
-  private Quantity<ElectricPotential>  vRatedC; // Lv
+  private Quantity<ElectricPotential> vRatedC; // Lv
   /** Short-circuit resistance of the high voltage winding (typically in Ohm) */
   private Quantity<ElectricResistance> rScA; // Hv
   /** Short-circuit resistance of the medium voltage winding (typically in Ohm) */
@@ -44,15 +43,15 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   /** Phase-to-ground susceptance (typically in nS) */
   private Quantity<ElectricConductance> bM;
   /** Voltage magnitude deviation per tap position (typically in %) */
-  private Quantity<Dimensionless>       dV;
+  private Quantity<Dimensionless> dV;
   /** Voltage angle deviation per tap position (typically in °) */
-  private Quantity<Angle>               dPhi;
+  private Quantity<Angle> dPhi;
   /** Neutral tap position */
-  private int  tapNeutr;
+  private int tapNeutr;
   /** Minimum available tap position */
-  private int  tapMin;
+  private int tapMin;
   /** Maximum available tap position */
-  private int  tapMax;
+  private int tapMax;
 
   /**
    * @param uuid of the input entity
@@ -96,9 +95,9 @@ public class Transformer3WTypeInput extends AssetTypeInput {
       Quantity<ElectricConductance> bM,
       Quantity<Dimensionless> dV,
       Quantity<Angle> dPhi,
-      int  tapNeutr,
-      int  tapMin,
-      int  tapMax) {
+      int tapNeutr,
+      int tapMin,
+      int tapMax) {
     super(uuid, id);
     this.sRatedA = sRatedA.to(StandardUnits.S_RATED);
     this.sRatedB = sRatedB.to(StandardUnits.S_RATED);
@@ -249,50 +248,79 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     this.dPhi = dPhi.to(StandardUnits.DPHI_TAP);
   }
 
-  public int  getTapNeutr() {
+  public int getTapNeutr() {
     return tapNeutr;
   }
 
-  public void setTapNeutr(int  tapNeutr) {
+  public void setTapNeutr(int tapNeutr) {
     this.tapNeutr = tapNeutr;
   }
 
-  public int  getTapMin() {
+  public int getTapMin() {
     return tapMin;
   }
 
-  public void setTapMin(int  tapMin) {
+  public void setTapMin(int tapMin) {
     this.tapMin = tapMin;
   }
 
-  public int  getTapMax() {
+  public int getTapMax() {
     return tapMax;
   }
 
-  public void setTapMax(int  tapMax) {
+  public void setTapMax(int tapMax) {
     this.tapMax = tapMax;
   }
 
   @Override
   public boolean equals(Object o) {
-    if(this == o)
-      return true;
-    if(o == null || getClass() != o.getClass())
-      return false;
-    if(!super.equals(o))
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     Transformer3WTypeInput that = (Transformer3WTypeInput) o;
-    return tapNeutr == that.tapNeutr && tapMin == that.tapMin && tapMax == that.tapMax &&
-           sRatedA.equals(that.sRatedA) && sRatedB.equals(that.sRatedB) && sRatedC.equals(that.sRatedC) &&
-           vRatedA.equals(that.vRatedA) && vRatedB.equals(that.vRatedB) && vRatedC.equals(that.vRatedC) &&
-           rScA.equals(that.rScA) && rScB.equals(that.rScB) && rScC.equals(that.rScC) && xScA.equals(that.xScA) &&
-           xScB.equals(that.xScB) && xScC.equals(that.xScC) && gM.equals(that.gM) && bM.equals(that.bM) &&
-           dV.equals(that.dV) && dPhi.equals(that.dPhi);
+    return tapNeutr == that.tapNeutr
+        && tapMin == that.tapMin
+        && tapMax == that.tapMax
+        && sRatedA.equals(that.sRatedA)
+        && sRatedB.equals(that.sRatedB)
+        && sRatedC.equals(that.sRatedC)
+        && vRatedA.equals(that.vRatedA)
+        && vRatedB.equals(that.vRatedB)
+        && vRatedC.equals(that.vRatedC)
+        && rScA.equals(that.rScA)
+        && rScB.equals(that.rScB)
+        && rScC.equals(that.rScC)
+        && xScA.equals(that.xScA)
+        && xScB.equals(that.xScB)
+        && xScC.equals(that.xScC)
+        && gM.equals(that.gM)
+        && bM.equals(that.bM)
+        && dV.equals(that.dV)
+        && dPhi.equals(that.dPhi);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA,
-                    xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax);
+    return Objects.hash(
+        super.hashCode(),
+        sRatedA,
+        sRatedB,
+        sRatedC,
+        vRatedA,
+        vRatedB,
+        vRatedC,
+        rScA,
+        rScB,
+        rScC,
+        xScA,
+        xScB,
+        xScC,
+        gM,
+        bM,
+        dV,
+        dPhi,
+        tapNeutr,
+        tapMin,
+        tapMax);
   }
 }

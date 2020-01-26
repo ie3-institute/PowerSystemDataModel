@@ -35,7 +35,7 @@ public class CoordinateTools {
    * @param y longitude value
    * @return JTS geometry Point
    */
-  public static Point xyCoordToPoint(Double x, Double y) {
+  public static Point xyCoordToPoint(double x, double y) {
     Coordinate coordinate = new Coordinate(x, y, 0);
     return geometryFactory.createPoint(coordinate);
   }

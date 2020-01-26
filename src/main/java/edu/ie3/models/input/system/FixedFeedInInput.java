@@ -38,7 +38,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       Quantity<Power> sRated) {
     super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphi);
     this.sRated = sRated.to(StandardUnits.S_RATED);
@@ -65,7 +65,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       Quantity<Power> sRated) {
     super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphi);
     this.sRated = sRated.to(StandardUnits.S_RATED);
@@ -86,7 +86,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       Quantity<Power> sRated) {
     super(uuid, id, node, qCharacteristics, cosphi);
     this.sRated = sRated.to(StandardUnits.S_RATED);

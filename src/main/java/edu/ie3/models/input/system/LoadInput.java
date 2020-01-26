@@ -20,7 +20,7 @@ import javax.measure.quantity.Power;
 /** Describes a load */
 public class LoadInput extends SystemParticipantInput {
   /** True, if demand side management is activated for this load */
-  boolean  dsm;
+  boolean dsm;
   /** Annually consumed energy (typically in kWh) */
   Quantity<Energy> eConsAnnual;
   /** Active Power (typically in kW) */
@@ -44,8 +44,8 @@ public class LoadInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated,
-      boolean  dsm,
+      double cosphiRated,
+      boolean dsm,
       Quantity<Energy> eConsAnnual,
       Quantity<Power> p) {
     super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphiRated);
@@ -77,8 +77,8 @@ public class LoadInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated,
-      boolean  dsm,
+      double cosphiRated,
+      boolean dsm,
       Quantity<Energy> eConsAnnual,
       Quantity<Power> p) {
     super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphiRated);
@@ -104,8 +104,8 @@ public class LoadInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated,
-      boolean  dsm,
+      double cosphiRated,
+      boolean dsm,
       Quantity<Energy> eConsAnnual,
       Quantity<Power> p) {
     super(uuid, id, node, qCharacteristics, cosphiRated);
@@ -114,11 +114,11 @@ public class LoadInput extends SystemParticipantInput {
     this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
-  public boolean  getDsm() {
+  public boolean getDsm() {
     return dsm;
   }
 
-  public void setDsm(boolean  dsm) {
+  public void setDsm(boolean dsm) {
     this.dsm = dsm;
   }
 
@@ -140,14 +140,13 @@ public class LoadInput extends SystemParticipantInput {
 
   @Override
   public boolean equals(Object o) {
-    if(this == o)
-      return true;
-    if(o == null || getClass() != o.getClass())
-      return false;
-    if(!super.equals(o))
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     LoadInput loadInput = (LoadInput) o;
-    return dsm == loadInput.dsm && eConsAnnual.equals(loadInput.eConsAnnual) && p.equals(loadInput.p);
+    return dsm == loadInput.dsm
+        && eConsAnnual.equals(loadInput.eConsAnnual)
+        && p.equals(loadInput.p);
   }
 
   @Override

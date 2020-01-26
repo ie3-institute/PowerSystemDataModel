@@ -52,7 +52,7 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      Double cosphi,
+      double cosphi,
       Quantity<Dimensionless> etaEl,
       Quantity<Dimensionless> etaThermal,
       Quantity<Power> pEl,

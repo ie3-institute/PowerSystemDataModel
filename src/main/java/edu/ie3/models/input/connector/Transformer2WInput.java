@@ -44,7 +44,7 @@ public class Transformer2WInput extends TransformerInput {
       int parallelDevices,
       Transformer2WTypeInput type,
       int tapPos,
-      boolean  autoTap) {
+      boolean autoTap) {
     super(uuid, operationInterval, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
   }
@@ -74,7 +74,7 @@ public class Transformer2WInput extends TransformerInput {
       int parallelDevices,
       Transformer2WTypeInput type,
       int tapPos,
-      boolean  autoTap) {
+      boolean autoTap) {
     super(
         uuid,
         operatesFrom,
@@ -109,7 +109,7 @@ public class Transformer2WInput extends TransformerInput {
       int parallelDevices,
       Transformer2WTypeInput type,
       int tapPos,
-      boolean  autoTap) {
+      boolean autoTap) {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
   }
@@ -124,12 +124,9 @@ public class Transformer2WInput extends TransformerInput {
 
   @Override
   public boolean equals(Object o) {
-    if(this == o)
-      return true;
-    if(o == null || getClass() != o.getClass())
-      return false;
-    if(!super.equals(o))
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     Transformer2WInput that = (Transformer2WInput) o;
     return type.equals(that.type);
   }

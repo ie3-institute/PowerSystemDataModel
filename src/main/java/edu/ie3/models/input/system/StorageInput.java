@@ -39,7 +39,7 @@ public class StorageInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated,
+      double cosphiRated,
       StorageTypeInput type,
       String behaviour) {
     super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphiRated);
@@ -69,7 +69,7 @@ public class StorageInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated,
+      double cosphiRated,
       StorageTypeInput type,
       String behaviour) {
     super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphiRated);
@@ -93,7 +93,7 @@ public class StorageInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated,
+      double cosphiRated,
       StorageTypeInput type,
       String behaviour) {
     super(uuid, id, node, qCharacteristics, cosphiRated);

@@ -33,13 +33,13 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   /** Voltage angle deviation per tap position (typically in °) */
   private Quantity<Angle> dPhi;
   /** Selection of winding, where the tap changer is installed. Low voltage, if true */
-  private boolean  tapSide;
+  private boolean tapSide;
   /** Neutral tap position */
-  private int  tapNeutr;
+  private int tapNeutr;
   /** Minimum available tap position */
-  private int  tapMin;
+  private int tapMin;
   /** Maximum available tap position */
-  private int  tapMax;
+  private int tapMax;
 
   /**
    * @param uuid of the input entity
@@ -70,10 +70,10 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       Quantity<ElectricConductance> bM,
       Quantity<Dimensionless> dV,
       Quantity<Angle> dPhi,
-      boolean  tapSide,
-      int  tapNeutr,
-      int  tapMin,
-      int  tapMax) {
+      boolean tapSide,
+      int tapNeutr,
+      int tapMin,
+      int tapMax) {
     super(uuid, id);
     this.rSc = rSc.to(StandardUnits.IMPEDANCE);
     this.xSc = xSc.to(StandardUnits.IMPEDANCE);
@@ -162,56 +162,75 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     this.dPhi = dPhi.to(StandardUnits.DPHI_TAP);
   }
 
-  public boolean  getTapSide() {
+  public boolean getTapSide() {
     return tapSide;
   }
 
-  public void setTapSide(boolean  tapSide) {
+  public void setTapSide(boolean tapSide) {
     this.tapSide = tapSide;
   }
 
-  public int  getTapNeutr() {
+  public int getTapNeutr() {
     return tapNeutr;
   }
 
-  public void setTapNeutr(int  tapNeutr) {
+  public void setTapNeutr(int tapNeutr) {
     this.tapNeutr = tapNeutr;
   }
 
-  public int  getTapMin() {
+  public int getTapMin() {
     return tapMin;
   }
 
-  public void setTapMin(int  tapMin) {
+  public void setTapMin(int tapMin) {
     this.tapMin = tapMin;
   }
 
-  public int  getTapMax() {
+  public int getTapMax() {
     return tapMax;
   }
 
-  public void setTapMax(int  tapMax) {
+  public void setTapMax(int tapMax) {
     this.tapMax = tapMax;
   }
 
   @Override
   public boolean equals(Object o) {
-    if(this == o)
-      return true;
-    if(o == null || getClass() != o.getClass())
-      return false;
-    if(!super.equals(o))
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     Transformer2WTypeInput that = (Transformer2WTypeInput) o;
-    return tapSide == that.tapSide && tapNeutr == that.tapNeutr && tapMin == that.tapMin && tapMax == that.tapMax &&
-           rSc.equals(that.rSc) && xSc.equals(that.xSc) && sRated.equals(that.sRated) && vRatedA.equals(that.vRatedA) &&
-           vRatedB.equals(that.vRatedB) && gM.equals(that.gM) && bM.equals(that.bM) && dV.equals(that.dV) &&
-           dPhi.equals(that.dPhi);
+    return tapSide == that.tapSide
+        && tapNeutr == that.tapNeutr
+        && tapMin == that.tapMin
+        && tapMax == that.tapMax
+        && rSc.equals(that.rSc)
+        && xSc.equals(that.xSc)
+        && sRated.equals(that.sRated)
+        && vRatedA.equals(that.vRatedA)
+        && vRatedB.equals(that.vRatedB)
+        && gM.equals(that.gM)
+        && bM.equals(that.bM)
+        && dV.equals(that.dV)
+        && dPhi.equals(that.dPhi);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr,
-                    tapMin, tapMax);
+    return Objects.hash(
+        super.hashCode(),
+        rSc,
+        xSc,
+        sRated,
+        vRatedA,
+        vRatedB,
+        gM,
+        bM,
+        dV,
+        dPhi,
+        tapSide,
+        tapNeutr,
+        tapMin,
+        tapMax);
   }
 }

@@ -22,7 +22,7 @@ import javax.measure.quantity.Power;
 public class PvInput extends SystemParticipantInput {
 
   /** Albedo value (typically a value between 0 and 1) */
-  private Double albedo;
+  private double albedo;
   /** Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦) */
   private Quantity<Angle> azimuth;
   /** Efficiency of converter (typically in %) */
@@ -30,11 +30,11 @@ public class PvInput extends SystemParticipantInput {
   /** Tilted inclination from horizontal (typically in °) */
   private Quantity<Angle> height;
   /** Generator correction factor merging different technical influences */
-  private Double kG;
+  private double kG;
   /** Temperature correction factor */
-  private Double kT;
+  private double kT;
   /** Is this asset market oriented? */
-  private boolean  marketReaction;
+  private boolean marketReaction;
   /** Rated apparent power (typically in kVA) */
   private Quantity<Power> sRated;
   /**
@@ -61,14 +61,14 @@ public class PvInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated,
-      Double albedo,
+      double cosphiRated,
+      double albedo,
       Quantity<Angle> azimuth,
       Quantity<Dimensionless> etaConv,
       Quantity<Angle> height,
-      Double kG,
-      Double kT,
-      boolean  marketReaction,
+      double kG,
+      double kT,
+      boolean marketReaction,
       Quantity<Power> sRated) {
     super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphiRated);
     this.albedo = albedo;
@@ -109,14 +109,14 @@ public class PvInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated,
-      Double albedo,
+      double cosphiRated,
+      double albedo,
       Quantity<Angle> azimuth,
       Quantity<Dimensionless> etaConv,
       Quantity<Angle> height,
-      Double kG,
-      Double kT,
-      boolean  marketReaction,
+      double kG,
+      double kT,
+      boolean marketReaction,
       Quantity<Power> sRated) {
     super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphiRated);
     this.albedo = albedo;
@@ -150,14 +150,14 @@ public class PvInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated,
-      Double albedo,
+      double cosphiRated,
+      double albedo,
       Quantity<Angle> azimuth,
       Quantity<Dimensionless> etaConv,
       Quantity<Angle> height,
-      Double kG,
-      Double kT,
-      boolean  marketReaction,
+      double kG,
+      double kT,
+      boolean marketReaction,
       Quantity<Power> sRated) {
     super(uuid, id, node, qCharacteristics, cosphiRated);
     this.albedo = albedo;
@@ -170,11 +170,11 @@ public class PvInput extends SystemParticipantInput {
     this.sRated = sRated.to(StandardUnits.S_RATED);
   }
 
-  public Double getAlbedo() {
+  public double getAlbedo() {
     return albedo;
   }
 
-  public void setAlbedo(Double albedo) {
+  public void setAlbedo(double albedo) {
     this.albedo = albedo;
   }
 
@@ -202,27 +202,27 @@ public class PvInput extends SystemParticipantInput {
     this.height = height.to(StandardUnits.SOLAR_HEIGHT);
   }
 
-  public Double getkG() {
+  public double getkG() {
     return kG;
   }
 
-  public void setkG(Double kG) {
+  public void setkG(double kG) {
     this.kG = kG;
   }
 
-  public Double getkT() {
+  public double getkT() {
     return kT;
   }
 
-  public void setkT(Double kT) {
+  public void setkT(double kT) {
     this.kT = kT;
   }
 
-  public boolean  getMarketReaction() {
+  public boolean getMarketReaction() {
     return marketReaction;
   }
 
-  public void setMarketReaction(boolean  marketReaction) {
+  public void setMarketReaction(boolean marketReaction) {
     this.marketReaction = marketReaction;
   }
 
@@ -236,20 +236,23 @@ public class PvInput extends SystemParticipantInput {
 
   @Override
   public boolean equals(Object o) {
-    if(this == o)
-      return true;
-    if(o == null || getClass() != o.getClass())
-      return false;
-    if(!super.equals(o))
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     PvInput pvInput = (PvInput) o;
-    return marketReaction == pvInput.marketReaction && albedo.equals(pvInput.albedo) &&
-           azimuth.equals(pvInput.azimuth) && etaConv.equals(pvInput.etaConv) && height.equals(pvInput.height) &&
-           kG.equals(pvInput.kG) && kT.equals(pvInput.kT) && sRated.equals(pvInput.sRated);
+    return Double.compare(pvInput.albedo, albedo) == 0
+        && Double.compare(pvInput.kG, kG) == 0
+        && Double.compare(pvInput.kT, kT) == 0
+        && marketReaction == pvInput.marketReaction
+        && azimuth.equals(pvInput.azimuth)
+        && etaConv.equals(pvInput.etaConv)
+        && height.equals(pvInput.height)
+        && sRated.equals(pvInput.sRated);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), albedo, azimuth, etaConv, height, kG, kT, marketReaction, sRated);
+    return Objects.hash(
+        super.hashCode(), albedo, azimuth, etaConv, height, kG, kT, marketReaction, sRated);
   }
 }

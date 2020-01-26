@@ -22,7 +22,7 @@ public class ChpInput extends SystemParticipantInput {
   /** Type of this CHP plant, containing default values for CHP plants of this kind */
   private ChpTypeInput type;
   /** Is this asset market oriented? */
-  private boolean  marketReaction;
+  private boolean marketReaction;
 
   /**
    * @param uuid of the input entity
@@ -44,9 +44,9 @@ public class ChpInput extends SystemParticipantInput {
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       ChpTypeInput type,
-      boolean  marketReaction) {
+      boolean marketReaction) {
     super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphi);
     this.thermalBus = thermalBus;
     this.type = type;
@@ -77,9 +77,9 @@ public class ChpInput extends SystemParticipantInput {
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       ChpTypeInput type,
-      boolean  marketReaction) {
+      boolean marketReaction) {
     super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphi);
     this.thermalBus = thermalBus;
     this.type = type;
@@ -104,9 +104,9 @@ public class ChpInput extends SystemParticipantInput {
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       ChpTypeInput type,
-      boolean  marketReaction) {
+      boolean marketReaction) {
     super(uuid, id, node, qCharacteristics, cosphi);
     this.thermalBus = thermalBus;
     this.type = type;
@@ -129,25 +129,23 @@ public class ChpInput extends SystemParticipantInput {
     this.type = type;
   }
 
-  public boolean  getMarketReaction() {
+  public boolean getMarketReaction() {
     return marketReaction;
   }
 
-  public void setMarketReaction(boolean  marketReaction) {
+  public void setMarketReaction(boolean marketReaction) {
     this.marketReaction = marketReaction;
   }
 
   @Override
   public boolean equals(Object o) {
-    if(this == o)
-      return true;
-    if(o == null || getClass() != o.getClass())
-      return false;
-    if(!super.equals(o))
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     ChpInput chpInput = (ChpInput) o;
-    return marketReaction == chpInput.marketReaction && thermalBus.equals(chpInput.thermalBus) &&
-           type.equals(chpInput.type);
+    return marketReaction == chpInput.marketReaction
+        && thermalBus.equals(chpInput.thermalBus)
+        && type.equals(chpInput.type);
   }
 
   @Override

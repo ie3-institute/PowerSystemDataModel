@@ -35,7 +35,7 @@ public class EvInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       EvTypeInput type) {
     super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphi);
     this.type = type;
@@ -62,7 +62,7 @@ public class EvInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       EvTypeInput type) {
     super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphi);
     this.type = type;
@@ -83,7 +83,7 @@ public class EvInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       EvTypeInput type) {
     super(uuid, id, node, qCharacteristics, cosphi);
     this.type = type;

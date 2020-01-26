@@ -22,11 +22,11 @@ public class BmInput extends SystemParticipantInput {
   /** Type of this BM plant, containing default values for BM plants of this kind */
   private BmTypeInput type;
   /** Is this asset market oriented? */
-  private boolean  marketReaction;
+  private boolean marketReaction;
   /**
    * Does this plant increase the output power if the revenues exceed the energy generation costs?
    */
-  private boolean  costControlled;
+  private boolean costControlled;
   /** Granted feed in tariff (typically in €/kWh) */
   private Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff;
   /** Rated apparent power (typically in kW) */
@@ -54,10 +54,10 @@ public class BmInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       BmTypeInput type,
-      boolean  marketReaction,
-      boolean  costControlled,
+      boolean marketReaction,
+      boolean costControlled,
       Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff,
       Quantity<Power> sRated) {
     super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphi);
@@ -94,10 +94,10 @@ public class BmInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       BmTypeInput type,
-      boolean  marketReaction,
-      boolean  costControlled,
+      boolean marketReaction,
+      boolean costControlled,
       Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff,
       Quantity<Power> sRated) {
     super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphi);
@@ -128,10 +128,10 @@ public class BmInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       BmTypeInput type,
-      boolean  marketReaction,
-      boolean  costControlled,
+      boolean marketReaction,
+      boolean costControlled,
       Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff,
       Quantity<Power> sRated) {
     super(uuid, id, node, qCharacteristics, cosphi);
@@ -150,19 +150,19 @@ public class BmInput extends SystemParticipantInput {
     this.type = type;
   }
 
-  public boolean  getMarketReaction() {
+  public boolean getMarketReaction() {
     return marketReaction;
   }
 
-  public void setMarketReaction(boolean  marketReaction) {
+  public void setMarketReaction(boolean marketReaction) {
     this.marketReaction = marketReaction;
   }
 
-  public boolean  getCostControlled() {
+  public boolean getCostControlled() {
     return costControlled;
   }
 
-  public void setCostControlled(boolean  costControlled) {
+  public void setCostControlled(boolean costControlled) {
     this.costControlled = costControlled;
   }
 
@@ -185,19 +185,20 @@ public class BmInput extends SystemParticipantInput {
 
   @Override
   public boolean equals(Object o) {
-    if(this == o)
-      return true;
-    if(o == null || getClass() != o.getClass())
-      return false;
-    if(!super.equals(o))
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     BmInput bmInput = (BmInput) o;
-    return marketReaction == bmInput.marketReaction && costControlled == bmInput.costControlled &&
-           type.equals(bmInput.type) && feedInTariff.equals(bmInput.feedInTariff) && sRated.equals(bmInput.sRated);
+    return marketReaction == bmInput.marketReaction
+        && costControlled == bmInput.costControlled
+        && type.equals(bmInput.type)
+        && feedInTariff.equals(bmInput.feedInTariff)
+        && sRated.equals(bmInput.sRated);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), type, marketReaction, costControlled, feedInTariff, sRated);
+    return Objects.hash(
+        super.hashCode(), type, marketReaction, costControlled, feedInTariff, sRated);
   }
 }

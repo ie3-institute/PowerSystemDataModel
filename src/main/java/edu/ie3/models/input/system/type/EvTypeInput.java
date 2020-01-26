@@ -38,7 +38,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      Double cosphi,
+      double cosphi,
       Quantity<Energy> eStorage,
       Quantity<SpecificEnergy> eCons,
       Quantity<Power> sRated) {
