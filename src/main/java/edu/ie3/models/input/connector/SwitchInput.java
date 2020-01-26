@@ -25,7 +25,6 @@ public class SwitchInput extends ConnectorInput {
    * @param id of the asset
    * @param nodeA
    * @param nodeB
-   * @param parallelDevices Amount of parallel switches
    * @param closed Is the switching state 'closed'?
    */
   public SwitchInput(
@@ -35,7 +34,6 @@ public class SwitchInput extends ConnectorInput {
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      int parallelDevices,
       boolean closed) {
     super(uuid, operationInterval, operator, id, nodeA, nodeB, 1);
     this.closed = closed;
@@ -51,7 +49,6 @@ public class SwitchInput extends ConnectorInput {
    * @param id of the asset
    * @param nodeA
    * @param nodeB
-   * @param parallelDevices Amount of parallel switches
    * @param closed Is the switching state 'closed'?
    */
   public SwitchInput(
@@ -62,7 +59,6 @@ public class SwitchInput extends ConnectorInput {
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      int parallelDevices,
       boolean closed) {
     super(uuid, operatesFrom, operatesUntil, operator, id, nodeA, nodeB, 1);
     this.closed = closed;
