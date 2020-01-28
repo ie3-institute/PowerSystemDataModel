@@ -11,7 +11,7 @@ import edu.ie3.models.input.connector.LineInput;
 import edu.ie3.models.input.connector.SwitchInput;
 import edu.ie3.models.input.connector.Transformer2WInput;
 import edu.ie3.models.input.connector.Transformer3WInput;
-import edu.ie3.models.validation.ValidationTools;
+import edu.ie3.utils.ValidationUtils;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,19 +55,19 @@ public class AggregatedRawGridInput implements AggregatedEntities {
   @Override
   public boolean areValuesValid() {
     for (NodeInput node : nodes) {
-      if (!ValidationTools.checkNode(node)) return false;
+      if (!ValidationUtils.checkNode(node)) return false;
     }
     for (LineInput line : lines) {
-      if (!ValidationTools.checkLine(line)) return false;
+      if (!ValidationUtils.checkLine(line)) return false;
     }
     for (Transformer2WInput transformer2W : transformer2Ws) {
-      if (!ValidationTools.checkTransformer2W(transformer2W)) return false;
+      if (!ValidationUtils.checkTransformer2W(transformer2W)) return false;
     }
     for (Transformer3WInput transformer3W : transformer3Ws) {
-      if (!ValidationTools.checkTransformer3W(transformer3W)) return false;
+      if (!ValidationUtils.checkTransformer3W(transformer3W)) return false;
     }
     for (SwitchInput switchInput : switches) {
-      if (!ValidationTools.checkConnector(switchInput)) return false;
+      if (!ValidationUtils.checkConnector(switchInput)) return false;
     }
     return true;
   }

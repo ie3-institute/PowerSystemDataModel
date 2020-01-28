@@ -5,6 +5,7 @@
 */
 package edu.ie3.io.factory;
 
+import edu.ie3.models.UniqueEntity;
 import java.util.Map;
 
 /**
@@ -16,7 +17,8 @@ import java.util.Map;
  */
 public class SimpleEntityData extends EntityData {
 
-  public SimpleEntityData(Map<String, String> fieldsToAttributes) {
-    super(fieldsToAttributes);
+  public SimpleEntityData(
+      Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> clazz) {
+    super(fieldsToAttributes, clazz);
   }
 }

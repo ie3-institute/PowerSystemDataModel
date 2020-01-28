@@ -5,6 +5,7 @@
 */
 package edu.ie3.io.factory;
 
+import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.OperatorInput;
 import java.util.Map;
 
@@ -20,8 +21,11 @@ public class OperatorEntityData extends EntityData {
 
   private final OperatorInput operatorInput;
 
-  public OperatorEntityData(Map<String, String> fieldsToAttributes, OperatorInput operatorInput) {
-    super(fieldsToAttributes);
+  public OperatorEntityData(
+      Map<String, String> fieldsToAttributes,
+      Class<? extends UniqueEntity> clazz,
+      OperatorInput operatorInput) {
+    super(fieldsToAttributes, clazz);
     this.operatorInput = operatorInput;
   }
 

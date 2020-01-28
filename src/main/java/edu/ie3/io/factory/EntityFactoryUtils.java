@@ -6,6 +6,7 @@
 package edu.ie3.io.factory;
 
 import edu.ie3.models.UniqueEntity;
+import java.util.Arrays;
 import java.util.Optional;
 
 /** Utility class that supports retrieving information for entity factories */
@@ -27,7 +28,7 @@ public class EntityFactoryUtils {
       Class<? extends UniqueEntity> clazz, Class<? extends EntityFactory<?>>... emClasses) {
     for (Class<? extends EntityFactory<?>> entityMapperClass : emClasses) {
       for (EntityFactory<?> emc : entityMapperClass.getEnumConstants()) {
-        if (clazz.equals(emc.clazz())) {
+        if (Arrays.asList(emc.classes()).contains(clazz)) {
           return Optional.of(emc);
         }
       }

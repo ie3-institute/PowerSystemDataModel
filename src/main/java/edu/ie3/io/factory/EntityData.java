@@ -5,6 +5,7 @@
 */
 package edu.ie3.io.factory;
 
+import edu.ie3.models.UniqueEntity;
 import java.util.Map;
 
 /**
@@ -16,12 +17,19 @@ import java.util.Map;
 abstract class EntityData {
 
   private final Map<String, String> fieldsToAttributes;
+  private final Class<? extends UniqueEntity> entityClass;
 
-  public EntityData(Map<String, String> fieldsToAttributes) {
+  public EntityData(
+      Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
     this.fieldsToAttributes = fieldsToAttributes;
+    this.entityClass = entityClass;
   }
 
   public Map<String, String> getFieldsToAttributes() {
     return fieldsToAttributes;
+  }
+
+  public Class<? extends UniqueEntity> getEntityClass() {
+    return entityClass;
   }
 }

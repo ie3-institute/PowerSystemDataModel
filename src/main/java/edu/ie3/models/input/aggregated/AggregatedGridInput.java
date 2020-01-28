@@ -7,7 +7,7 @@ package edu.ie3.models.input.aggregated;
 
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.MeasurementUnitInput;
-import edu.ie3.models.validation.ValidationTools;
+import edu.ie3.utils.ValidationUtils;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -73,7 +73,7 @@ public class AggregatedGridInput implements AggregatedEntities {
     if (!systemParticipants.areValuesValid()) return false;
     if (!graphics.areValuesValid()) return false;
     for (MeasurementUnitInput measurementUnit : measurementUnits) {
-      if (!ValidationTools.checkMeasurementUnit(measurementUnit)) return false;
+      if (!ValidationUtils.checkMeasurementUnit(measurementUnit)) return false;
     }
     return true;
   }

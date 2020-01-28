@@ -9,6 +9,7 @@ import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Enum containing all {@link EntityFactory}s that can be used to create an instance of an {@link
@@ -20,7 +21,12 @@ import java.util.Map;
 public enum OperatorEntityFactory implements EntityFactory<OperatorEntityFactory> {
   NodeInputFactory(NodeInput.class) {
     @Override
-    public NodeInput getEntity(EntityData entityData) {
+    public Class<? extends UniqueEntity>[] classes() {
+      return new Class[0]; // todo fix
+    }
+
+    @Override
+    public Optional<NodeInput> getEntity(EntityData entityData) {
 
       OperatorEntityData operatorEntityData =
           OperatorEntityFactory.getOperatorEntityData(entityData);
@@ -29,19 +35,19 @@ public enum OperatorEntityFactory implements EntityFactory<OperatorEntityFactory
 
       // todo sanity check
 
-      return new NodeInput(null, null, null, null, false, null, null, -1);
+      return Optional.empty();
     }
   };
 
-  OperatorEntityFactory(Class<? extends UniqueEntity> clazz) {
-    this.clazz = clazz;
+  OperatorEntityFactory(Class<? extends UniqueEntity>... classes) {
+    this.classes = classes;
   }
 
-  private final Class<? extends UniqueEntity> clazz;
+  private final Class<? extends UniqueEntity>[] classes;
 
   @Override
-  public Class<? extends UniqueEntity> clazz() {
-    return clazz;
+  public Class<? extends UniqueEntity>[] classes() {
+    return classes;
   }
 
   @Override
@@ -50,7 +56,7 @@ public enum OperatorEntityFactory implements EntityFactory<OperatorEntityFactory
   }
 
   @Override
-  public abstract UniqueEntity getEntity(EntityData metaData);
+  public abstract Optional<? extends UniqueEntity> getEntity(EntityData metaData);
 
   private static OperatorEntityData getOperatorEntityData(EntityData entityData) {
     if (!(entityData instanceof OperatorEntityData)) {

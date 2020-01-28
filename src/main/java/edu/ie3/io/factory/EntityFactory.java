@@ -6,6 +6,7 @@
 package edu.ie3.io.factory;
 
 import edu.ie3.models.UniqueEntity;
+import java.util.Optional;
 
 /**
  * Internal API Interface for EntityFactories
@@ -15,11 +16,11 @@ import edu.ie3.models.UniqueEntity;
  */
 interface EntityFactory<T extends Enum<T>> {
 
-  Class<? extends UniqueEntity> clazz();
+  Class<? extends UniqueEntity>[] classes();
 
   Class<T> getDeclaringClass();
 
   T getRaw();
 
-  UniqueEntity getEntity(EntityData entityData);
+  Optional<? extends UniqueEntity> getEntity(EntityData entityData);
 }
