@@ -3,8 +3,10 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.models.validation;
+package edu.ie3.utils;
 
+import edu.ie3.exceptions.InvalidEntityException;
+import edu.ie3.exceptions.UnsafeEntityException;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.MeasurementUnitInput;
 import edu.ie3.models.input.NodeInput;
@@ -17,10 +19,10 @@ import edu.ie3.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.models.input.connector.type.Transformer3WTypeInput;
 
 /** Basic Sanity validation tools for entities */
-public class ValidationTools {
+public class ValidationUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */
-  private ValidationTools() {
+  private ValidationUtils() {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
@@ -77,8 +79,8 @@ public class ValidationTools {
    * Validates a line if: <br>
    * - it is not null <br>
    * - line type is not null <br>
-   * - {@link ValidationTools#checkLineType(LineTypeInput)} and {@link
-   * ValidationTools#checkConnector(ConnectorInput)} confirm a valid type and valid connector
+   * - {@link ValidationUtils#checkLineType(LineTypeInput)} and {@link
+   * ValidationUtils#checkConnector(ConnectorInput)} confirm a valid type and valid connector
    * properties
    */
   public static boolean checkLine(LineInput line) {
@@ -116,8 +118,8 @@ public class ValidationTools {
    * Validates a transformer if: <br>
    * - it is not null <br>
    * - transformer type is not null <br>
-   * - {@link ValidationTools#checkTransformer2WType(Transformer2WTypeInput)} and {@link
-   * ValidationTools#checkConnector(ConnectorInput)} confirm a valid type and valid connector
+   * - {@link ValidationUtils#checkTransformer2WType(Transformer2WTypeInput)} and {@link
+   * ValidationUtils#checkConnector(ConnectorInput)} confirm a valid type and valid connector
    * properties
    */
   public static boolean checkTransformer2W(Transformer2WInput trafo) {
@@ -161,8 +163,8 @@ public class ValidationTools {
    * Validates a transformer if: <br>
    * - it is not null <br>
    * - transformer type is not null <br>
-   * - {@link ValidationTools#checkTransformer3WType(Transformer3WTypeInput)} and {@link
-   * ValidationTools#checkConnector(ConnectorInput)} confirm a valid type and valid connector
+   * - {@link ValidationUtils#checkTransformer3WType(Transformer3WTypeInput)} and {@link
+   * ValidationUtils#checkConnector(ConnectorInput)} confirm a valid type and valid connector
    * properties
    */
   public static boolean checkTransformer3W(Transformer3WInput trafo) {
