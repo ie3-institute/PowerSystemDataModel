@@ -23,7 +23,7 @@ import tec.uom.se.quantity.Quantities;
  * @since 28.01.20
  */
 public enum SimpleEntityFactory implements EntityFactory<SimpleEntityFactory> {
-  PvResultMapper(PvResult.class) {
+  PvResultFactory(PvResult.class) {
     @Override
     public UniqueEntity getEntity(EntityData entityData) {
 

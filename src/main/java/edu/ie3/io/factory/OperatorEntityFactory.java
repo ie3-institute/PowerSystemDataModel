@@ -18,7 +18,7 @@ import java.util.Map;
  * @since 28.01.20
  */
 public enum OperatorEntityFactory implements EntityFactory<OperatorEntityFactory> {
-  NodeInputMapper(NodeInput.class) {
+  NodeInputFactory(NodeInput.class) {
     @Override
     public NodeInput getEntity(EntityData entityData) {
 
