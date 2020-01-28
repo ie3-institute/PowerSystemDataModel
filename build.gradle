@@ -1,23 +1,24 @@
 plugins {
-	id "com.jfrog.artifactory" version "4.9.7"
-	id 'java' //java support
-	id 'maven-publish'
-	id 'signing'
-	id 'pmd' // code check, working on source code
-	id 'com.github.spotbugs' version '2.0.0' // code check, working on byte code
-	id 'com.diffplug.gradle.spotless' version '3.27.1'//code format
-	id 'com.github.onslip.gradle-one-jar' version '1.0.5' // pack a self contained jar
-	id 'jacoco' // java code coverage plugin
-	id "org.sonarqube" version "2.7.1" // sonarqube
+    id "com.jfrog.artifactory" version "4.9.7"
+    id 'java' //java support
+    id 'groovy' // groovy support
+    id 'maven-publish'
+    id 'signing'
+    id 'pmd' // code check, working on source code
+    id 'com.github.spotbugs' version '2.0.0' // code check, working on byte code
+    id 'com.diffplug.gradle.spotless' version '3.27.1'//code format
+    id 'com.github.onslip.gradle-one-jar' version '1.0.5' // pack a self contained jar
+    id 'jacoco' // java code coverage plugin
+    id "org.sonarqube" version "2.7.1" // sonarqube
 }
 
 ext {
-	//version (changing these should be considered thoroughly!)
-	javaVersion = JavaVersion.VERSION_11
-	unitsOfMeasurementVersion = '1.0.10'
-	tscfgVersion = '0.9.9'
+    //version (changing these should be considered thoroughly!)
+    javaVersion = JavaVersion.VERSION_11
+    unitsOfMeasurementVersion = '1.0.10'
+    tscfgVersion = '0.9.9'
 
-	scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
+    scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
 
 group = 'com.github.ie3-institute'
@@ -36,23 +37,27 @@ apply from: scriptsLocation + 'jacoco.gradle' // jacoco java code coverage
 apply from: scriptsLocation + 'mavenCentralPublish.gradle'
 
 repositories {
-	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
-	maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
+    jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
+    maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
 }
 
 dependencies {
-	// ie³ internal repository for units
-	compile 'com.github.ie3-institute:PowerSystemUtils:1.3'
+    // ie³ internal repository for units
+    compile 'com.github.ie3-institute:PowerSystemUtils:1.3'
 
-	compile "tec.uom:uom-se:$unitsOfMeasurementVersion"
+    compile "tec.uom:uom-se:$unitsOfMeasurementVersion"
 
-	compile 'com.vividsolutions:jts:1.13' //JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
+    compile 'com.vividsolutions:jts:1.13' //JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
+
+    // testing
+    testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
+
 }
 
 wrapper {
-	gradleVersion = '6.0.1'
+    gradleVersion = '6.0.1'
 }
 
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
