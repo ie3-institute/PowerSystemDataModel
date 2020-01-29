@@ -16,7 +16,7 @@ import javax.measure.quantity.ElectricCurrent;
  * Abstract class that adds a tap changer position attribute to the {@link ConnectorResult} which
  * actually creates a transformer representation.
  */
-public abstract class Transformer extends ConnectorResult {
+public abstract class TransformerResult extends ConnectorResult {
 
   /** Current tapping position if a transformer has a tap changer */
   private int tapPos;
@@ -32,7 +32,7 @@ public abstract class Transformer extends ConnectorResult {
    * @param iBAng electric current angle @ Port B in degree
    * @param tapPos the current position of the transformers tap changer
    */
-  public Transformer(
+  public TransformerResult(
       ZonedDateTime timestamp,
       UUID inputModel,
       Quantity<ElectricCurrent> iAMag,
@@ -55,7 +55,7 @@ public abstract class Transformer extends ConnectorResult {
    * @param iBAng electric current angle @ Port B in degree
    * @param tapPos the current position of the transformers tap changer
    */
-  public Transformer(
+  public TransformerResult(
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
@@ -81,7 +81,7 @@ public abstract class Transformer extends ConnectorResult {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    Transformer that = (Transformer) o;
+    TransformerResult that = (TransformerResult) o;
     return tapPos == that.tapPos;
   }
 
