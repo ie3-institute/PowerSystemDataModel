@@ -37,7 +37,8 @@ public class SystemParticipantResultFactory extends EntityFactoryImpl<SystemPart
         ChpResult.class,
         WecResult.class,
         StorageResult.class,
-        EvcsResult.class);
+        EvcsResult.class,
+        EvResult.class);
   }
 
   @Override
@@ -46,7 +47,8 @@ public class SystemParticipantResultFactory extends EntityFactoryImpl<SystemPart
     Set<String> minConstructorParams = newSet(timestamp, inputModel, power, reactivePower);
     Set<String> optionalFields = enhanceSet(minConstructorParams, entityUuid);
 
-    if (entityData.getEntityClass().equals(StorageResult.class)) {
+    if (entityData.getEntityClass().equals(StorageResult.class)
+        || entityData.getEntityClass().equals(EvResult.class)) {
       minConstructorParams = newSet(timestamp, inputModel, power, reactivePower, soc);
       optionalFields = enhanceSet(minConstructorParams, entityUuid);
     }
@@ -101,8 +103,14 @@ public class SystemParticipantResultFactory extends EntityFactoryImpl<SystemPart
       return uuidOpt
           .map(uuid -> new WecResult(uuid, zdtTimestamp, inputModelUuid, p, q))
           .orElseGet(() -> new WecResult(zdtTimestamp, inputModelUuid, p, q));
-    } else if (clazz.equals(StorageResult.class)) {
+    } else if (clazz.equals(EvResult.class)) {
+      Quantity<Dimensionless> quantSoc =
+          Quantities.getQuantity(Double.parseDouble(fieldsToValues.get(soc)), Units.PERCENT);
 
+      return uuidOpt
+          .map(uuid -> new EvResult(uuid, zdtTimestamp, inputModelUuid, p, q, quantSoc))
+          .orElseGet(() -> new EvResult(zdtTimestamp, inputModelUuid, p, q, quantSoc));
+    } else if (clazz.equals(StorageResult.class)) {
       Quantity<Dimensionless> quantSoc =
           Quantities.getQuantity(Double.parseDouble(fieldsToValues.get(soc)), Units.PERCENT);
 
