@@ -26,7 +26,7 @@ class EntityFactoryUtilsTest extends Specification {
 
         expect:
         knownClasses.forEach({ x ->
-            assert (EntityFactoryUtils.getFactory(x, knownFactoryEnums.toArray(new Class<? extends EntityFactory>[knownFactoryEnums.size()])).isPresent())
+            assert (EntityFactoryUtils.getFactory(x, knownFactoryEnums.toArray(new Class<? extends EntityFactory>[knownFactoryEnums.size()])).present)
         })
 
     }
