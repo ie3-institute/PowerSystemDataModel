@@ -1,6 +1,5 @@
 package edu.ie3.io.factory
 
-import edu.ie3.models.input.NodeInput
 import edu.ie3.models.input.system.ChpInput
 import edu.ie3.models.result.system.BmResult
 import edu.ie3.models.result.system.EvcsResult
@@ -15,15 +14,15 @@ import spock.lang.Specification
 class EntityFactoryUtilsTest extends Specification {
     def "EntityFactorUtils should list exactly all known factories when requested to do so"() {
         given: "all known factory enums as we as all classes we have factories for"
-        def knownClasses = [LoadResult.class,
-                            FixedFeedInResult.class,
-                            BmResult.class,
-                            PvResult.class,
-                            ChpInput.class,
-                            WecResult.class,
-                            StorageResult.class,
-                            EvcsResult.class]
-        def knownFactoryEnums = [SimpleEntityFactory.class, OperatorEntityFactory.class]
+        def knownClasses = [LoadResult,
+                            FixedFeedInResult,
+                            BmResult,
+                            PvResult,
+                            ChpInput,
+                            WecResult,
+                            StorageResult,
+                            EvcsResult]
+        def knownFactoryEnums = [SimpleEntityFactory, OperatorEntityFactory]
 
         expect:
         knownClasses.forEach({ x ->
