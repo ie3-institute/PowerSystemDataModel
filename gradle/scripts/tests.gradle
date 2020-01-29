@@ -21,6 +21,12 @@ integrationTest.dependsOn(test)
 
 task allTests(type: Test) {
 	description 'executes all tests'
+
+	useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+
 	filter {
 //		includeTestsMatching '*Test*.*'
 //		includeTestsMatching '*IT'
