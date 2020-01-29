@@ -1,30 +1,21 @@
-package edu.ie3.io.factory
+package edu.ie3.io.factory.result
 
 import edu.ie3.exceptions.FactoryException
-import edu.ie3.io.factory.result.SystemParticipantResultFactory
+import edu.ie3.io.factory.SimpleEntityData
 import edu.ie3.models.StandardUnits
-import edu.ie3.models.result.system.BmResult
-import edu.ie3.models.result.system.ChpResult
-import edu.ie3.models.result.system.EvcsResult
-import edu.ie3.models.result.system.FixedFeedInResult
-import edu.ie3.models.result.system.LoadResult
-import edu.ie3.models.result.system.PvResult
-import edu.ie3.models.result.system.StorageResult
-import edu.ie3.models.result.system.SystemParticipantResult
-import edu.ie3.models.result.system.WecResult
+import edu.ie3.models.result.system.*
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 import tec.uom.se.unit.Units
 
-
-class SimpleEntityFactoryTest2 extends Specification {
+class SystemParticipantResultFactoryTest extends Specification {
 
     def "A SystemParticipantResultFactory should contain all expected classes for parsing"() {
         given:
         def resultFactory = new SystemParticipantResultFactory()
         def expectedClasses = [LoadResult.class, FixedFeedInResult.class, BmResult.class, PvResult.class,
-                               ChpResult.class, WecResult.class, StorageResult.class, EvcsResult.class]
+                               ChpResult.class, WecResult.class, StorageResult.class, EvcsResult.class, EvResult.class]
 
         expect:
         resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
@@ -85,7 +76,7 @@ class SimpleEntityFactoryTest2 extends Specification {
         parameterMap.put("q", "2");
 
         when:
-        Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, WecResult.class))
+        resultFactory.getEntity(new SimpleEntityData(parameterMap, WecResult.class))
 
         then:
         FactoryException ex = thrown()
