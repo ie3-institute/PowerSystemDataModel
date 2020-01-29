@@ -12,7 +12,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 
 /** Represents calculation results of a {@link edu.ie3.models.input.connector.Transformer2WInput} */
-public class Transformer2wResult extends Transformer {
+public class Transformer2wResult extends TransformerResult {
 
   /**
    * Standard constructor with automatic uuid generation.
