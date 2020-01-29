@@ -14,7 +14,7 @@ import java.util.Map;
  * @version 0.1
  * @since 28.01.20
  */
-abstract class EntityData {
+public abstract class EntityData {
 
   private final Map<String, String> fieldsToAttributes;
   private final Class<? extends UniqueEntity> entityClass;
@@ -25,7 +25,7 @@ abstract class EntityData {
     this.entityClass = entityClass;
   }
 
-  public Map<String, String> getFieldsToAttributes() {
+  public Map<String, String> getFieldsToValues() {
     return fieldsToAttributes;
   }
 

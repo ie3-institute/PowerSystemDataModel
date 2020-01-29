@@ -103,7 +103,7 @@ public enum SimpleEntityFactory implements EntityFactory<SimpleEntityFactory> {
     }
 
     private SystemParticipantResult buildModel(SimpleEntityData simpleEntityData) {
-      Map<String, String> fieldsToAttributes = simpleEntityData.getFieldsToAttributes();
+      Map<String, String> fieldsToAttributes = simpleEntityData.getFieldsToValues();
       Class<? extends UniqueEntity> clazz = simpleEntityData.getEntityClass();
 
       ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToAttributes.get(timestamp));
@@ -194,7 +194,7 @@ public enum SimpleEntityFactory implements EntityFactory<SimpleEntityFactory> {
 
   private static int validParameters(SimpleEntityData simpleEntityData, Set<String>... fieldSets) {
 
-    Map<String, String> fieldsToAttributes = simpleEntityData.getFieldsToAttributes();
+    Map<String, String> fieldsToAttributes = simpleEntityData.getFieldsToValues();
 
     // get all sets that match the fields to attributes
     List<Set<String>> validFieldSets =

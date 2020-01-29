@@ -12,7 +12,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 
 /** Represents calculation results of a {@link edu.ie3.models.input.connector.Transformer2WInput} */
-public class Transformer2wResult extends Transformer {
+public class Transformer2WResult extends Transformer {
 
   /**
    * Standard constructor with automatic uuid generation.
@@ -24,7 +24,7 @@ public class Transformer2wResult extends Transformer {
    * @param iBMag electric current magnitude @ port B, normally provided in Ampere
    * @param iBAng electric current angle @ Port B in degree
    */
-  public Transformer2wResult(
+  public Transformer2WResult(
       ZonedDateTime timestamp,
       UUID inputModel,
       Quantity<ElectricCurrent> iAMag,
@@ -47,7 +47,7 @@ public class Transformer2wResult extends Transformer {
    * @param iBMag electric current magnitude @ port B, normally provided in Ampere
    * @param iBAng electric current angle @ Port B in degree
    */
-  public Transformer2wResult(
+  public Transformer2WResult(
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,

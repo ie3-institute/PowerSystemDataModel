@@ -30,7 +30,7 @@ public enum OperatorEntityFactory implements EntityFactory<OperatorEntityFactory
 
       OperatorEntityData operatorEntityData =
           OperatorEntityFactory.getOperatorEntityData(entityData);
-      Map<String, String> fieldsToAttributes = operatorEntityData.getFieldsToAttributes();
+      Map<String, String> fieldsToAttributes = operatorEntityData.getFieldsToValues();
       OperatorInput operatorInput = operatorEntityData.getOperatorInput();
 
       // todo sanity check
