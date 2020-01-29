@@ -51,7 +51,6 @@ dependencies {
 
 	// testing
 	testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
-
 }
 
 wrapper {

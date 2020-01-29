@@ -2,9 +2,7 @@ package edu.ie3.io.factory
 
 import edu.ie3.exceptions.FactoryException
 import edu.ie3.models.StandardUnits
-import edu.ie3.models.input.NodeInput
 import edu.ie3.models.input.system.ChpInput
-import edu.ie3.models.result.connector.Transformer2wResult
 import edu.ie3.models.result.system.BmResult
 import edu.ie3.models.result.system.EvcsResult
 import edu.ie3.models.result.system.FixedFeedInResult
