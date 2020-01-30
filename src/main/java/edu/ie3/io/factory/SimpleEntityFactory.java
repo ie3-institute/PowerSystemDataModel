@@ -53,10 +53,4 @@ public abstract class SimpleEntityFactory<T extends UniqueEntity>
     }
     return result;
   }
-
-  //    @Override
-  //    protected abstract List<Set<String>> getFields(SimpleEntityData simpleEntityData);
-  //
-  //    @Override
-  //    protected abstract T buildModel(SimpleEntityData simpleEntityData);
 }
