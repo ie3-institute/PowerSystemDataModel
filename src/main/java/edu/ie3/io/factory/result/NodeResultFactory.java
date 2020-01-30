@@ -10,13 +10,11 @@ import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.NodeResult;
 import edu.ie3.util.TimeTools;
-import tec.uom.se.quantity.Quantities;
-
+import java.time.ZonedDateTime;
+import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
-import java.time.ZonedDateTime;
-import java.util.*;
 
 public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
   private static final String entityUuid = "uuid";
@@ -38,20 +36,14 @@ public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
   }
 
   @Override
-  protected NodeResult buildModel(SimpleEntityData simpleEntityData) {
-    Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
-
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(timestamp));
-    UUID inputModelUuid = UUID.fromString(fieldsToValues.get(inputModel));
-    Quantity<Dimensionless> vMagValue =
-        Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(vMag)), StandardUnits.TARGET_VOLTAGE); // TODO
-    Quantity<Angle> vAngValue =
-        Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(vAng)), StandardUnits.DPHI_TAP); // TODO
+  protected NodeResult buildModel(SimpleEntityData data) {
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(timestamp));
+    UUID inputModelUuid = data.getUUID(inputModel);
+    Quantity<Dimensionless> vMagValue = data.get(vMag, StandardUnits.TARGET_VOLTAGE); // TODO
+    Quantity<Angle> vAngValue = data.get(vAng, StandardUnits.DPHI_TAP); // TODO
     Optional<UUID> uuidOpt =
-        fieldsToValues.containsKey(entityUuid)
-            ? Optional.of(UUID.fromString(fieldsToValues.get(entityUuid)))
+        data.containsKey(entityUuid)
+            ? Optional.of(data.getUUID(entityUuid))
             : Optional.empty();
 
     return uuidOpt

@@ -12,14 +12,12 @@ import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.result.system.*;
 import edu.ie3.util.TimeTools;
-import tec.uom.se.quantity.Quantities;
-import tec.uom.se.unit.Units;
-
+import java.time.ZonedDateTime;
+import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
-import java.time.ZonedDateTime;
-import java.util.*;
+import tec.uom.se.unit.Units;
 
 public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemParticipantResult> {
   private static final String entityUuid = "uuid";
@@ -58,68 +56,58 @@ public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemPa
   }
 
   @Override
-  protected SystemParticipantResult buildModel(SimpleEntityData simpleEntityData) {
-    Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
-    Class<? extends UniqueEntity> clazz = simpleEntityData.getEntityClass();
+  protected SystemParticipantResult buildModel(SimpleEntityData data) {
+    Class<? extends UniqueEntity> entityClass = data.getEntityClass();
 
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(timestamp));
-    UUID inputModelUuid = UUID.fromString(fieldsToValues.get(inputModel));
-    Quantity<Power> p =
-        Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(power)), StandardUnits.ACTIVE_POWER_OUT);
-    Quantity<Power> q =
-        Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(reactivePower)),
-            StandardUnits.REACTIVE_POWER_OUT);
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(timestamp));
+    UUID inputModelUuid = data.getUUID(inputModel);
+    Quantity<Power> p = data.get(power, StandardUnits.ACTIVE_POWER_OUT);
+    Quantity<Power> q = data.get(reactivePower, StandardUnits.REACTIVE_POWER_OUT);
     Optional<UUID> uuidOpt =
-        fieldsToValues.containsKey(entityUuid)
-            ? Optional.of(UUID.fromString(fieldsToValues.get(entityUuid)))
-            : Optional.empty();
+        data.containsKey(entityUuid) ? Optional.of(data.getUUID(entityUuid)) : Optional.empty();
 
-    if (clazz.equals(LoadResult.class)) {
+    if (entityClass.equals(LoadResult.class)) {
       return uuidOpt
           .map(uuid -> new LoadResult(uuid, zdtTimestamp, inputModelUuid, p, q))
           .orElseGet(() -> new LoadResult(zdtTimestamp, inputModelUuid, p, q));
-    } else if (clazz.equals(FixedFeedInResult.class)) {
+    } else if (entityClass.equals(FixedFeedInResult.class)) {
       return uuidOpt
           .map(uuid -> new FixedFeedInResult(uuid, zdtTimestamp, inputModelUuid, p, q))
           .orElseGet(() -> new FixedFeedInResult(zdtTimestamp, inputModelUuid, p, q));
-    } else if (clazz.equals(BmResult.class)) {
+    } else if (entityClass.equals(BmResult.class)) {
       return uuidOpt
           .map(uuid -> new BmResult(uuid, zdtTimestamp, inputModelUuid, p, q))
           .orElseGet(() -> new BmResult(zdtTimestamp, inputModelUuid, p, q));
-    } else if (clazz.equals(PvResult.class)) {
+    } else if (entityClass.equals(PvResult.class)) {
       return uuidOpt
           .map(uuid -> new PvResult(uuid, zdtTimestamp, inputModelUuid, p, q))
           .orElseGet(() -> new PvResult(zdtTimestamp, inputModelUuid, p, q));
-    } else if (clazz.equals(EvcsResult.class)) {
+    } else if (entityClass.equals(EvcsResult.class)) {
       return uuidOpt
           .map(uuid -> new EvcsResult(uuid, zdtTimestamp, inputModelUuid, p, q))
           .orElseGet(() -> new EvcsResult(zdtTimestamp, inputModelUuid, p, q));
-    } else if (clazz.equals(ChpResult.class)) {
+    } else if (entityClass.equals(ChpResult.class)) {
       return uuidOpt
           .map(uuid -> new ChpResult(uuid, zdtTimestamp, inputModelUuid, p, q))
           .orElseGet(() -> new ChpResult(zdtTimestamp, inputModelUuid, p, q));
-    } else if (clazz.equals(WecResult.class)) {
+    } else if (entityClass.equals(WecResult.class)) {
       return uuidOpt
           .map(uuid -> new WecResult(uuid, zdtTimestamp, inputModelUuid, p, q))
           .orElseGet(() -> new WecResult(zdtTimestamp, inputModelUuid, p, q));
-    } else if (clazz.equals(EvResult.class)) {
-      Quantity<Dimensionless> quantSoc =
-          Quantities.getQuantity(Double.parseDouble(fieldsToValues.get(soc)), Units.PERCENT);
+    } else if (entityClass.equals(EvResult.class)) {
+      Quantity<Dimensionless> socQuantity = data.get(soc, Units.PERCENT);
 
       return uuidOpt
-          .map(uuid -> new EvResult(uuid, zdtTimestamp, inputModelUuid, p, q, quantSoc))
-          .orElseGet(() -> new EvResult(zdtTimestamp, inputModelUuid, p, q, quantSoc));
-    } else if (clazz.equals(StorageResult.class)) {
-      Quantity<Dimensionless> socQuantity =
-          Quantities.getQuantity(Double.parseDouble(fieldsToValues.get(soc)), Units.PERCENT);
+          .map(uuid -> new EvResult(uuid, zdtTimestamp, inputModelUuid, p, q, socQuantity))
+          .orElseGet(() -> new EvResult(zdtTimestamp, inputModelUuid, p, q, socQuantity));
+    } else if (entityClass.equals(StorageResult.class)) {
+      Quantity<Dimensionless> socQuantity = data.get(soc, Units.PERCENT);
 
       return uuidOpt
           .map(uuid -> new StorageResult(uuid, zdtTimestamp, inputModelUuid, p, q, socQuantity))
           .orElseGet(() -> new StorageResult(zdtTimestamp, inputModelUuid, p, q, socQuantity));
     } else {
-      throw new FactoryException("Cannot process " + clazz.getSimpleName() + ".class.");
+      throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
     }
   }
 }

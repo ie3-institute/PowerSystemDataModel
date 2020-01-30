@@ -12,13 +12,11 @@ import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.result.connector.*;
 import edu.ie3.util.TimeTools;
-import tec.uom.se.quantity.Quantities;
-
+import java.time.ZonedDateTime;
+import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
-import java.time.ZonedDateTime;
-import java.util.*;
 
 public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult> {
   private static final String entityUuid = "uuid";
@@ -44,13 +42,14 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
     Set<String> minConstructorParams = newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
     Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
 
-    if (simpleEntityData.getEntityClass().equals(SwitchResult.class)) {
+    final Class<? extends UniqueEntity> entityClass = simpleEntityData.getEntityClass();
+    if (entityClass.equals(SwitchResult.class)) {
       minConstructorParams = newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, closed);
       optionalFields = expandSet(minConstructorParams, entityUuid);
-    } else if (simpleEntityData.getEntityClass().equals(Transformer2WResult.class)) {
+    } else if (entityClass.equals(Transformer2WResult.class)) {
       minConstructorParams = newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
       optionalFields = expandSet(minConstructorParams, entityUuid);
-    } else if (simpleEntityData.getEntityClass().equals(Transformer3WResult.class)) {
+    } else if (entityClass.equals(Transformer3WResult.class)) {
       minConstructorParams =
           newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos);
       optionalFields = expandSet(minConstructorParams, entityUuid);
@@ -60,30 +59,19 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
   }
 
   @Override
-  protected ConnectorResult buildModel(SimpleEntityData simpleEntityData) {
-    Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
-    Class<? extends UniqueEntity> clazz = simpleEntityData.getEntityClass();
+  protected ConnectorResult buildModel(SimpleEntityData data) {
+    final Class<? extends UniqueEntity> entityClass = data.getEntityClass();
 
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(timestamp));
-    UUID inputModelUuid = UUID.fromString(fieldsToValues.get(inputModel));
-    Quantity<ElectricCurrent> iAMagVal =
-        Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(iAMag)), StandardUnits.CURRENT);
-    Quantity<Angle> iAAngVal =
-        Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(iAAng)), StandardUnits.DPHI_TAP); // TODO
-    Quantity<ElectricCurrent> iBMagVal =
-        Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(iBMag)), StandardUnits.CURRENT);
-    Quantity<Angle> iBAngVal =
-        Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(iBAng)), StandardUnits.DPHI_TAP); // TODO
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(timestamp));
+    UUID inputModelUuid = data.getUUID(inputModel);
+    Quantity<ElectricCurrent> iAMagVal = data.get(iAMag, StandardUnits.CURRENT);
+    Quantity<Angle> iAAngVal = data.get(iAAng, StandardUnits.DPHI_TAP); // TODO
+    Quantity<ElectricCurrent> iBMagVal = data.get(iBMag, StandardUnits.CURRENT);
+    Quantity<Angle> iBAngVal = data.get(iBAng, StandardUnits.DPHI_TAP); // TODO
     Optional<UUID> uuidOpt =
-        fieldsToValues.containsKey(entityUuid)
-            ? Optional.of(UUID.fromString(fieldsToValues.get(entityUuid)))
-            : Optional.empty();
+        data.containsKey(entityUuid) ? Optional.of(data.getUUID(entityUuid)) : Optional.empty();
 
-    if (clazz.equals(LineResult.class)) {
+    if (entityClass.equals(LineResult.class)) {
       return uuidOpt
           .map(
               uuid ->
@@ -93,8 +81,8 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
               () ->
                   new LineResult(
                       zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal));
-    } else if (clazz.equals(SwitchResult.class)) {
-      final boolean closedVal = fieldsToValues.get(closed).trim().equals("1");
+    } else if (entityClass.equals(SwitchResult.class)) {
+      final boolean closedVal = data.get(closed).trim().equals("1");
 
       return uuidOpt
           .map(
@@ -118,8 +106,8 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
                       iBMagVal,
                       iBAngVal,
                       closedVal));
-    } else if (clazz.equals(Transformer2WResult.class)) {
-      final int tapPosValue = Integer.parseInt(fieldsToValues.get(tapPos).trim());
+    } else if (entityClass.equals(Transformer2WResult.class)) {
+      final int tapPosValue = Integer.parseInt(data.get(tapPos).trim());
 
       return uuidOpt
           .map(
@@ -143,14 +131,10 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
                       iBMagVal,
                       iBAngVal,
                       tapPosValue));
-    } else if (clazz.equals(Transformer3WResult.class)) {
-      Quantity<ElectricCurrent> iCMagVal =
-          Quantities.getQuantity(
-              Double.parseDouble(fieldsToValues.get(iCMag)), StandardUnits.CURRENT);
-      Quantity<Angle> iCAngVal =
-          Quantities.getQuantity(
-              Double.parseDouble(fieldsToValues.get(iCAng)), StandardUnits.DPHI_TAP); // TODO
-      final int tapPosValue = Integer.parseInt(fieldsToValues.get(tapPos).trim());
+    } else if (entityClass.equals(Transformer3WResult.class)) {
+      Quantity<ElectricCurrent> iCMagVal = data.get(iCMag, StandardUnits.CURRENT);
+      Quantity<Angle> iCAngVal = data.get(iCAng, StandardUnits.DPHI_TAP); // TODO
+      final int tapPosValue = Integer.parseInt(data.get(tapPos).trim());
 
       return uuidOpt
           .map(
@@ -179,7 +163,7 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
                       iCAngVal,
                       tapPosValue));
     } else {
-      throw new FactoryException("Cannot process " + clazz.getSimpleName() + ".class.");
+      throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
     }
   }
 }
