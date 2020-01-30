@@ -6,7 +6,7 @@
 package edu.ie3.io.factory.result;
 
 import edu.ie3.exceptions.FactoryException;
-import edu.ie3.io.factory.EntityData;
+import edu.ie3.io.factory.SimpleEntityData;
 import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
@@ -43,13 +43,13 @@ public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemPa
   }
 
   @Override
-  protected List<Set<String>> getFields(EntityData entityData) {
+  protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
     /// all result models have the same constructor except StorageResult
     Set<String> minConstructorParams = newSet(timestamp, inputModel, power, reactivePower);
     Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
 
-    if (entityData.getEntityClass().equals(StorageResult.class)
-        || entityData.getEntityClass().equals(EvResult.class)) {
+    if (simpleEntityData.getEntityClass().equals(StorageResult.class)
+        || simpleEntityData.getEntityClass().equals(EvResult.class)) {
       minConstructorParams = newSet(timestamp, inputModel, power, reactivePower, soc);
       optionalFields = expandSet(minConstructorParams, entityUuid);
     }
@@ -58,7 +58,7 @@ public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemPa
   }
 
   @Override
-  protected SystemParticipantResult buildModel(EntityData simpleEntityData) {
+  protected SystemParticipantResult buildModel(SimpleEntityData simpleEntityData) {
     Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
     Class<? extends UniqueEntity> clazz = simpleEntityData.getEntityClass();
 

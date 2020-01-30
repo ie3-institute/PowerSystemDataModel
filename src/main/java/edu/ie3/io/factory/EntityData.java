@@ -6,6 +6,7 @@
 package edu.ie3.io.factory;
 
 import edu.ie3.models.UniqueEntity;
+
 import java.util.Map;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Map;
  * @version 0.1
  * @since 28.01.20
  */
-public abstract class EntityData {
+abstract class EntityData {
 
   private final Map<String, String> fieldsToAttributes;
   private final Class<? extends UniqueEntity> entityClass;

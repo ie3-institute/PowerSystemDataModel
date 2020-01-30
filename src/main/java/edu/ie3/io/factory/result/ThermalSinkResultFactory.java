@@ -5,7 +5,7 @@
 */
 package edu.ie3.io.factory.result;
 
-import edu.ie3.io.factory.EntityData;
+import edu.ie3.io.factory.SimpleEntityData;
 import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.ThermalSinkResult;
@@ -28,7 +28,7 @@ public class ThermalSinkResultFactory extends SimpleEntityFactory<ThermalSinkRes
   }
 
   @Override
-  protected List<Set<String>> getFields(EntityData entityData) {
+  protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
     Set<String> minConstructorParams = newSet(timestamp, inputModel, qDemand);
     Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
 
@@ -36,7 +36,7 @@ public class ThermalSinkResultFactory extends SimpleEntityFactory<ThermalSinkRes
   }
 
   @Override
-  protected ThermalSinkResult buildModel(EntityData simpleEntityData) {
+  protected ThermalSinkResult buildModel(SimpleEntityData simpleEntityData) {
     Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
 
     ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(timestamp));

@@ -6,7 +6,7 @@
 package edu.ie3.io.factory.result;
 
 import edu.ie3.exceptions.FactoryException;
-import edu.ie3.io.factory.EntityData;
+import edu.ie3.io.factory.SimpleEntityData;
 import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
@@ -39,18 +39,18 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
   }
 
   @Override
-  protected List<Set<String>> getFields(EntityData entityData) {
+  protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
     /// all result models have the same constructor except StorageResult
     Set<String> minConstructorParams = newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
     Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
 
-    if (entityData.getEntityClass().equals(SwitchResult.class)) {
+    if (simpleEntityData.getEntityClass().equals(SwitchResult.class)) {
       minConstructorParams = newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, closed);
       optionalFields = expandSet(minConstructorParams, entityUuid);
-    } else if (entityData.getEntityClass().equals(Transformer2WResult.class)) {
+    } else if (simpleEntityData.getEntityClass().equals(Transformer2WResult.class)) {
       minConstructorParams = newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
       optionalFields = expandSet(minConstructorParams, entityUuid);
-    } else if (entityData.getEntityClass().equals(Transformer3WResult.class)) {
+    } else if (simpleEntityData.getEntityClass().equals(Transformer3WResult.class)) {
       minConstructorParams =
           newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos);
       optionalFields = expandSet(minConstructorParams, entityUuid);
@@ -60,7 +60,7 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
   }
 
   @Override
-  protected ConnectorResult buildModel(EntityData simpleEntityData) {
+  protected ConnectorResult buildModel(SimpleEntityData simpleEntityData) {
     Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
     Class<? extends UniqueEntity> clazz = simpleEntityData.getEntityClass();
 

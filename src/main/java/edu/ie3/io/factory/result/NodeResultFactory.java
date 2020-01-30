@@ -5,7 +5,7 @@
 */
 package edu.ie3.io.factory.result;
 
-import edu.ie3.io.factory.EntityData;
+import edu.ie3.io.factory.SimpleEntityData;
 import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.NodeResult;
@@ -30,7 +30,7 @@ public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
   }
 
   @Override
-  protected List<Set<String>> getFields(EntityData entityData) {
+  protected List<Set<String>> getFields(SimpleEntityData entityData) {
     Set<String> minConstructorParams = newSet(timestamp, inputModel, vMag, vAng);
     Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
 
@@ -38,7 +38,7 @@ public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
   }
 
   @Override
-  protected NodeResult buildModel(EntityData simpleEntityData) {
+  protected NodeResult buildModel(SimpleEntityData simpleEntityData) {
     Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
 
     ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(timestamp));
