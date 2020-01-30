@@ -10,10 +10,10 @@ import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.ThermalSinkResult;
 import edu.ie3.util.TimeTools;
+import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import tec.uom.se.quantity.Quantities;
 
 import javax.measure.Quantity;
-import javax.measure.quantity.Power;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -41,16 +41,17 @@ public class ThermalSinkResultFactory extends SimpleEntityFactory<ThermalSinkRes
 
     ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(timestamp));
     UUID inputModelUuid = UUID.fromString(fieldsToValues.get(inputModel));
-    Quantity<Power> q =
+    Quantity<HeatCapacity> qDemand =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(qDemand)), StandardUnits.REACTIVE_POWER_OUT);
+            Double.parseDouble(fieldsToValues.get(ThermalSinkResultFactory.qDemand)),
+            StandardUnits.HEAT_CAPACITY); // todo ensure that the unit is correct
     Optional<UUID> uuidOpt =
         fieldsToValues.containsKey(entityUuid)
             ? Optional.of(UUID.fromString(fieldsToValues.get(entityUuid)))
             : Optional.empty();
 
     return uuidOpt
-        .map(uuid -> new ThermalSinkResult(uuid, zdtTimestamp, inputModelUuid, q))
-        .orElseGet(() -> new ThermalSinkResult(zdtTimestamp, inputModelUuid, q));
+        .map(uuid -> new ThermalSinkResult(uuid, zdtTimestamp, inputModelUuid, qDemand))
+        .orElseGet(() -> new ThermalSinkResult(zdtTimestamp, inputModelUuid, qDemand));
   }
 }
