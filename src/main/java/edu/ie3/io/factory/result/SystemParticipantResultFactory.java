@@ -7,20 +7,21 @@ package edu.ie3.io.factory.result;
 
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.io.factory.EntityData;
-import edu.ie3.io.factory.EntityFactoryImpl;
+import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.result.system.*;
 import edu.ie3.util.TimeTools;
-import java.time.ZonedDateTime;
-import java.util.*;
-import javax.measure.Quantity;
-import javax.measure.quantity.Dimensionless;
-import javax.measure.quantity.Power;
 import tec.uom.se.quantity.Quantities;
 import tec.uom.se.unit.Units;
 
-public class SystemParticipantResultFactory extends EntityFactoryImpl<SystemParticipantResult> {
+import javax.measure.Quantity;
+import javax.measure.quantity.Dimensionless;
+import javax.measure.quantity.Power;
+import java.time.ZonedDateTime;
+import java.util.*;
+
+public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemParticipantResult> {
   private static final String entityUuid = "uuid";
   private static final String timestamp = "timestamp";
   private static final String inputModel = "inputModel";
@@ -45,12 +46,12 @@ public class SystemParticipantResultFactory extends EntityFactoryImpl<SystemPart
   protected List<Set<String>> getFields(EntityData entityData) {
     /// all result models have the same constructor except StorageResult
     Set<String> minConstructorParams = newSet(timestamp, inputModel, power, reactivePower);
-    Set<String> optionalFields = enhanceSet(minConstructorParams, entityUuid);
+    Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
 
     if (entityData.getEntityClass().equals(StorageResult.class)
         || entityData.getEntityClass().equals(EvResult.class)) {
       minConstructorParams = newSet(timestamp, inputModel, power, reactivePower, soc);
-      optionalFields = enhanceSet(minConstructorParams, entityUuid);
+      optionalFields = expandSet(minConstructorParams, entityUuid);
     }
 
     return Arrays.asList(minConstructorParams, optionalFields);
@@ -111,12 +112,12 @@ public class SystemParticipantResultFactory extends EntityFactoryImpl<SystemPart
           .map(uuid -> new EvResult(uuid, zdtTimestamp, inputModelUuid, p, q, quantSoc))
           .orElseGet(() -> new EvResult(zdtTimestamp, inputModelUuid, p, q, quantSoc));
     } else if (clazz.equals(StorageResult.class)) {
-      Quantity<Dimensionless> quantSoc =
+      Quantity<Dimensionless> socQuantity =
           Quantities.getQuantity(Double.parseDouble(fieldsToValues.get(soc)), Units.PERCENT);
 
       return uuidOpt
-          .map(uuid -> new StorageResult(uuid, zdtTimestamp, inputModelUuid, p, q, quantSoc))
-          .orElseGet(() -> new StorageResult(zdtTimestamp, inputModelUuid, p, q, quantSoc));
+          .map(uuid -> new StorageResult(uuid, zdtTimestamp, inputModelUuid, p, q, socQuantity))
+          .orElseGet(() -> new StorageResult(zdtTimestamp, inputModelUuid, p, q, socQuantity));
     } else {
       throw new FactoryException("Cannot process " + clazz.getSimpleName() + ".class.");
     }

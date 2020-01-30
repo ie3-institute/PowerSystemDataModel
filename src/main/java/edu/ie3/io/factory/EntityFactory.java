@@ -7,11 +7,12 @@ package edu.ie3.io.factory;
 
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.models.UniqueEntity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Internal API Interface for EntityFactories
@@ -19,64 +20,34 @@ import org.apache.logging.log4j.Logger;
  * @version 0.1
  * @since 28.01.20
  */
-public abstract class EntityFactoryImpl<T extends UniqueEntity> {
+public abstract class EntityFactory<T extends UniqueEntity> {
   public final Logger log = LogManager.getLogger(this.getClass());
 
-  private List<Class<? extends T>> classes;
+  protected final List<Class<? extends T>> classes;
 
-  public EntityFactoryImpl(Class<? extends T>... classes) {
+  public EntityFactory(Class<? extends T>... classes) {
     this.classes = Arrays.asList(classes);
   }
 
-  public List<Class<? extends T>> classes() {
-    return classes;
-  }
-
-  public Optional<? extends T> getEntity(EntityData entityData) {
-    if (!classes.contains(entityData.getEntityClass()))
-      throw new FactoryException(
-          "Cannot process "
-              + entityData.getEntityClass().getSimpleName()
-              + ".class with this factory!");
-
-    final List<Set<String>> allFields = getFields(entityData);
-
-    SimpleEntityData simpleEntityData = getSimpleEntityData(entityData);
-    validParameters(simpleEntityData, allFields.toArray(Set[]::new));
-
-    // build the model
-    Optional<? extends T> result = Optional.empty();
-    try {
-
-      result = Optional.of(buildModel(simpleEntityData));
-
-    } catch (Exception e) {
-      log.error(
-          "An error occurred when creating instance of "
-              + entityData.getEntityClass().getSimpleName()
-              + ".class.",
-          e);
-    }
-    return result;
-  }
+  public abstract Optional<T> getEntity(EntityData entityData);
 
   protected abstract List<Set<String>> getFields(EntityData entityData);
 
   protected abstract T buildModel(EntityData simpleEntityData);
 
-  protected static SimpleEntityData getSimpleEntityData(EntityData entityData) {
-    if (!(entityData instanceof SimpleEntityData)) {
-      throw new FactoryException(
-          "Invalid entity data "
-              + entityData.getClass().getSimpleName()
-              + " provided. Please use 'SimpleEntityData' for 'SimpleEntityFactory'!");
-    } else {
-      return (SimpleEntityData) entityData;
-    }
+  public List<Class<? extends T>> classes() {
+    return classes;
   }
 
-  protected static int validParameters(
-      SimpleEntityData simpleEntityData, Set<String>... fieldSets) {
+  protected <E> Set<E> newSet(E... items) {
+    return new HashSet<>(Arrays.asList(items));
+  }
+
+  protected <E> Set<E> expandSet(Set<E> set, E... more) {
+    return Stream.concat(Arrays.stream(more), set.stream()).collect(Collectors.toSet());
+  }
+
+  protected int validateParameters(EntityData simpleEntityData, Set<String>... fieldSets) {
 
     Map<String, String> fieldsToAttributes = simpleEntityData.getFieldsToValues();
 
@@ -119,13 +90,5 @@ public abstract class EntityFactoryImpl<T extends UniqueEntity> {
               + " are possible:\n"
               + possibleOptions.toString());
     }
-  }
-
-  protected static <E> Set<E> newSet(E... items) {
-    return new HashSet<>(Arrays.asList(items));
-  }
-
-  protected static <E> Set<E> enhanceSet(Set<E> set, E... more) {
-    return Stream.concat(Arrays.stream(more), set.stream()).collect(Collectors.toSet());
   }
 }

@@ -6,18 +6,19 @@
 package edu.ie3.io.factory.result;
 
 import edu.ie3.io.factory.EntityData;
-import edu.ie3.io.factory.EntityFactoryImpl;
+import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.NodeResult;
 import edu.ie3.util.TimeTools;
-import java.time.ZonedDateTime;
-import java.util.*;
+import tec.uom.se.quantity.Quantities;
+
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
-import tec.uom.se.quantity.Quantities;
+import java.time.ZonedDateTime;
+import java.util.*;
 
-public class NodeResultFactory extends EntityFactoryImpl<NodeResult> {
+public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
   private static final String entityUuid = "uuid";
   private static final String timestamp = "timestamp";
   private static final String inputModel = "inputModel";
@@ -31,7 +32,7 @@ public class NodeResultFactory extends EntityFactoryImpl<NodeResult> {
   @Override
   protected List<Set<String>> getFields(EntityData entityData) {
     Set<String> minConstructorParams = newSet(timestamp, inputModel, vMag, vAng);
-    Set<String> optionalFields = enhanceSet(minConstructorParams, entityUuid);
+    Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
 
     return Arrays.asList(minConstructorParams, optionalFields);
   }

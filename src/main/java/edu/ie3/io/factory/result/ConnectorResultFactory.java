@@ -7,19 +7,20 @@ package edu.ie3.io.factory.result;
 
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.io.factory.EntityData;
-import edu.ie3.io.factory.EntityFactoryImpl;
+import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.result.connector.*;
 import edu.ie3.util.TimeTools;
-import java.time.ZonedDateTime;
-import java.util.*;
+import tec.uom.se.quantity.Quantities;
+
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
-import tec.uom.se.quantity.Quantities;
+import java.time.ZonedDateTime;
+import java.util.*;
 
-public class ConnectorResultFactory extends EntityFactoryImpl<ConnectorResult> {
+public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult> {
   private static final String entityUuid = "uuid";
   private static final String timestamp = "timestamp";
   private static final String inputModel = "inputModel";
@@ -41,18 +42,18 @@ public class ConnectorResultFactory extends EntityFactoryImpl<ConnectorResult> {
   protected List<Set<String>> getFields(EntityData entityData) {
     /// all result models have the same constructor except StorageResult
     Set<String> minConstructorParams = newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
-    Set<String> optionalFields = enhanceSet(minConstructorParams, entityUuid);
+    Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
 
     if (entityData.getEntityClass().equals(SwitchResult.class)) {
       minConstructorParams = newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, closed);
-      optionalFields = enhanceSet(minConstructorParams, entityUuid);
+      optionalFields = expandSet(minConstructorParams, entityUuid);
     } else if (entityData.getEntityClass().equals(Transformer2WResult.class)) {
       minConstructorParams = newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
-      optionalFields = enhanceSet(minConstructorParams, entityUuid);
+      optionalFields = expandSet(minConstructorParams, entityUuid);
     } else if (entityData.getEntityClass().equals(Transformer3WResult.class)) {
       minConstructorParams =
           newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos);
-      optionalFields = enhanceSet(minConstructorParams, entityUuid);
+      optionalFields = expandSet(minConstructorParams, entityUuid);
     }
 
     return Arrays.asList(minConstructorParams, optionalFields);

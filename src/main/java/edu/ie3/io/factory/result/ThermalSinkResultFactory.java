@@ -6,17 +6,18 @@
 package edu.ie3.io.factory.result;
 
 import edu.ie3.io.factory.EntityData;
-import edu.ie3.io.factory.EntityFactoryImpl;
+import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.ThermalSinkResult;
 import edu.ie3.util.TimeTools;
-import java.time.ZonedDateTime;
-import java.util.*;
-import javax.measure.Quantity;
-import javax.measure.quantity.Power;
 import tec.uom.se.quantity.Quantities;
 
-public class ThermalSinkResultFactory extends EntityFactoryImpl<ThermalSinkResult> {
+import javax.measure.Quantity;
+import javax.measure.quantity.Power;
+import java.time.ZonedDateTime;
+import java.util.*;
+
+public class ThermalSinkResultFactory extends SimpleEntityFactory<ThermalSinkResult> {
   private static final String entityUuid = "uuid";
   private static final String timestamp = "timestamp";
   private static final String inputModel = "inputModel";
@@ -29,7 +30,7 @@ public class ThermalSinkResultFactory extends EntityFactoryImpl<ThermalSinkResul
   @Override
   protected List<Set<String>> getFields(EntityData entityData) {
     Set<String> minConstructorParams = newSet(timestamp, inputModel, qDemand);
-    Set<String> optionalFields = enhanceSet(minConstructorParams, entityUuid);
+    Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
 
     return Arrays.asList(minConstructorParams, optionalFields);
   }
