@@ -12,13 +12,12 @@ import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.result.connector.*;
 import edu.ie3.util.TimeTools;
-import tec.uom.se.quantity.Quantities;
-
+import java.time.ZonedDateTime;
+import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
-import java.time.ZonedDateTime;
-import java.util.*;
+import tec.uom.se.quantity.Quantities;
 
 public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult> {
   private static final String entityUuid = "uuid";

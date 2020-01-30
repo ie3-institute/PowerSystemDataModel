@@ -10,13 +10,12 @@ import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.NodeResult;
 import edu.ie3.util.TimeTools;
-import tec.uom.se.quantity.Quantities;
-
+import java.time.ZonedDateTime;
+import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
-import java.time.ZonedDateTime;
-import java.util.*;
+import tec.uom.se.quantity.Quantities;
 
 public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
   private static final String entityUuid = "uuid";

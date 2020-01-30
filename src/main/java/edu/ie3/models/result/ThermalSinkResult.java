@@ -6,11 +6,10 @@
 package edu.ie3.models.result;
 
 import edu.ie3.util.quantities.interfaces.HeatCapacity;
-
-import javax.measure.Quantity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
+import javax.measure.Quantity;
 
 /** Represents calculation results of a {@link edu.ie3.models.input.thermal.ThermalSinkInput} */
 public class ThermalSinkResult extends ResultEntity {

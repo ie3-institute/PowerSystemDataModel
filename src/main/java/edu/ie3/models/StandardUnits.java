@@ -5,13 +5,12 @@
 */
 package edu.ie3.models;
 
-import edu.ie3.util.quantities.interfaces.*;
-import tec.uom.se.unit.MetricPrefix;
+import static edu.ie3.util.quantities.PowerSystemUnits.*;
 
+import edu.ie3.util.quantities.interfaces.*;
 import javax.measure.Unit;
 import javax.measure.quantity.*;
-
-import static edu.ie3.util.quantities.PowerSystemUnits.*;
+import tec.uom.se.unit.MetricPrefix;
 
 /** A collection of Units that fit to the different input and output models by convention */
 public class StandardUnits {
