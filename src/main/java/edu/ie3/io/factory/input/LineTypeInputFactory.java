@@ -35,7 +35,6 @@ public class LineTypeInputFactory extends SimpleEntityFactory<LineTypeInput> {
 
   @Override
   protected LineTypeInput buildModel(SimpleEntityData data) {
-
     UUID uuid = data.getUUID(entityUuid);
     String id = data.get(entityId);
     Quantity<SpecificConductance> bVal = data.get(b, StandardUnits.SPECIFIC_ADMITTANCE);

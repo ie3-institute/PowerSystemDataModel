@@ -42,9 +42,7 @@ public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
     Quantity<Dimensionless> vMagValue = data.get(vMag, StandardUnits.TARGET_VOLTAGE); // TODO
     Quantity<Angle> vAngValue = data.get(vAng, StandardUnits.DPHI_TAP); // TODO
     Optional<UUID> uuidOpt =
-        data.containsKey(entityUuid)
-            ? Optional.of(data.getUUID(entityUuid))
-            : Optional.empty();
+        data.containsKey(entityUuid) ? Optional.of(data.getUUID(entityUuid)) : Optional.empty();
 
     return uuidOpt
         .map(uuid -> new NodeResult(uuid, zdtTimestamp, inputModelUuid, vMagValue, vAngValue))

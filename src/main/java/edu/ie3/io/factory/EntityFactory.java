@@ -28,11 +28,11 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
     this.classes = Arrays.asList(classes);
   }
 
-  public abstract Optional<T> getEntity(D entityData);
+  public abstract Optional<T> getEntity(D data);
 
-  protected abstract List<Set<String>> getFields(D entityData);
+  protected abstract List<Set<String>> getFields(D data);
 
-  protected abstract T buildModel(D simpleEntityData);
+  protected abstract T buildModel(D data);
 
   public List<Class<? extends T>> classes() {
     return classes;

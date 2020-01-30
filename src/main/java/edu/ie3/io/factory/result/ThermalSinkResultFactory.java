@@ -39,9 +39,7 @@ public class ThermalSinkResultFactory extends SimpleEntityFactory<ThermalSinkRes
     UUID inputModelUuid = data.getUUID(inputModel);
     Quantity<Power> q = data.get(qDemand, StandardUnits.REACTIVE_POWER_OUT);
     Optional<UUID> uuidOpt =
-        data.containsKey(entityUuid)
-            ? Optional.of(data.getUUID(entityUuid))
-            : Optional.empty();
+        data.containsKey(entityUuid) ? Optional.of(data.getUUID(entityUuid)) : Optional.empty();
 
     return uuidOpt
         .map(uuid -> new ThermalSinkResult(uuid, zdtTimestamp, inputModelUuid, q))
