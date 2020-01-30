@@ -5,10 +5,10 @@
 */
 package edu.ie3.models.input.connector;
 
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,41 +24,10 @@ public class Transformer3WInput extends TransformerInput {
   /** The lower voltage node */
   private NodeInput nodeC;
 
-  /**
-   * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
-   * @param operator of the asset
-   * @param id of the asset
-   * @param nodeA The higher voltage node
-   * @param nodeB The middle voltage node
-   * @param nodeC The lower voltage node
-   * @param parallelDevices Amount of singular transformers
-   * @param type of 3W transformer
-   * @param tapPos Tap Position of this transformer
-   * @param autoTap
-   */
-  public Transformer3WInput(
-      UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
-      OperatorInput operator,
-      String id,
-      NodeInput nodeA,
-      NodeInput nodeB,
-      NodeInput nodeC,
-      int parallelDevices,
-      Transformer3WTypeInput type,
-      int tapPos,
-      boolean autoTap) {
-    super(uuid, operationInterval, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    this.type = type;
-    this.nodeC = nodeC;
-  }
-  /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
+  /** Constructor for an operated three winding transformer
    *
    * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param nodeA The higher voltage node
@@ -70,35 +39,23 @@ public class Transformer3WInput extends TransformerInput {
    * @param autoTap
    */
   public Transformer3WInput(
-      UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
-      OperatorInput operator,
-      String id,
-      NodeInput nodeA,
-      NodeInput nodeB,
-      NodeInput nodeC,
-      int parallelDevices,
-      Transformer3WTypeInput type,
-      int tapPos,
-      boolean autoTap) {
-    super(
-        uuid,
-        operatesFrom,
-        operatesUntil,
-        operator,
-        id,
-        nodeA,
-        nodeB,
-        parallelDevices,
-        tapPos,
-        autoTap);
+          UUID uuid, OperationTime operationTime,
+          OperatorInput operator,
+          String id,
+          NodeInput nodeA,
+          NodeInput nodeB,
+          NodeInput nodeC,
+          int parallelDevices,
+          Transformer3WTypeInput type,
+          int tapPos,
+          boolean autoTap) {
+    super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
     this.nodeC = nodeC;
   }
 
   /**
-   * Constructor for a non-operated asset
+   * Constructor for a non-operated three winding transformer
    *
    * @param uuid of the input entity
    * @param id of the asset

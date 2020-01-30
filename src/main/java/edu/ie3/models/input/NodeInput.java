@@ -6,6 +6,7 @@
 package edu.ie3.models.input;
 
 import com.vividsolutions.jts.geom.Point;
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.VoltageLevel;
 import edu.ie3.util.interval.ClosedInterval;
@@ -34,45 +35,10 @@ public class NodeInput extends AssetInput {
   private VoltageLevel voltLvl;
   /** Subnet of this node */
   private int subnet;
-  /**
-   * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
-   * @param operator of the asset
-   * @param id of the asset
-   * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
-   * @param vRated Rated voltage magnitude of the node
-   * @param slack Is this node a slack node?
-   * @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
-   *     that are connected to this node
-   * @param voltLvl Voltage level of this node
-   * @param subnet of this node
-   */
-  public NodeInput(
-      UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
-      OperatorInput operator,
-      String id,
-      Quantity<Dimensionless> vTarget,
-      Quantity<ElectricPotential> vRated,
-      boolean slack,
-      Point geoPosition,
-      VoltageLevel voltLvl,
-      int subnet) {
-    super(uuid, operationInterval, operator, id);
-    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE);
-    this.vRated = vRated.to(StandardUnits.V_RATED);
-    this.slack = slack;
-    this.geoPosition = geoPosition;
-    this.voltLvl = voltLvl;
-    this.subnet = subnet;
-  }
-
-  /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
+  /** Constructor for an operated node
    *
    * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
@@ -84,18 +50,16 @@ public class NodeInput extends AssetInput {
    * @param subnet of this node
    */
   public NodeInput(
-      UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
-      OperatorInput operator,
-      String id,
-      Quantity<Dimensionless> vTarget,
-      Quantity<ElectricPotential> vRated,
-      boolean slack,
-      Point geoPosition,
-      VoltageLevel voltLvl,
-      int subnet) {
-    super(uuid, operatesFrom, operatesUntil, operator, id);
+          UUID uuid, OperationTime operationTime,
+          OperatorInput operator,
+          String id,
+          Quantity<Dimensionless> vTarget,
+          Quantity<ElectricPotential> vRated,
+          boolean slack,
+          Point geoPosition,
+          VoltageLevel voltLvl,
+          int subnet) {
+    super(uuid, operationTime, operator, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE);
     this.vRated = vRated.to(StandardUnits.V_RATED);
     this.slack = slack;

@@ -5,6 +5,7 @@
 */
 package edu.ie3.models.input.connector;
 
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.connector.type.Transformer2WTypeInput;
@@ -22,38 +23,10 @@ public class Transformer2WInput extends TransformerInput {
   /** Type of this 2W transformer, containing default values for transformers of this kind */
   private Transformer2WTypeInput type;
 
-  /**
-   * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
-   * @param operator of the asset
-   * @param id of the asset
-   * @param nodeA higher voltage node
-   * @param nodeB lower voltage node
-   * @param parallelDevices Amount of singular transformers
-   * @param type of 2W transformer
-   * @param tapPos Tap position of this transformer
-   * @param autoTap True, if the tap position of the transformer is adapted automatically
-   */
-  public Transformer2WInput(
-      UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
-      OperatorInput operator,
-      String id,
-      NodeInput nodeA,
-      NodeInput nodeB,
-      int parallelDevices,
-      Transformer2WTypeInput type,
-      int tapPos,
-      boolean autoTap) {
-    super(uuid, operationInterval, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    this.type = type;
-  }
-  /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
+  /** Constructor for an operated two winding transformer
    *
    * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param nodeA higher voltage node
@@ -64,33 +37,21 @@ public class Transformer2WInput extends TransformerInput {
    * @param autoTap True, if the tap position of the transformer is adapted automatically
    */
   public Transformer2WInput(
-      UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
-      OperatorInput operator,
-      String id,
-      NodeInput nodeA,
-      NodeInput nodeB,
-      int parallelDevices,
-      Transformer2WTypeInput type,
-      int tapPos,
-      boolean autoTap) {
-    super(
-        uuid,
-        operatesFrom,
-        operatesUntil,
-        operator,
-        id,
-        nodeA,
-        nodeB,
-        parallelDevices,
-        tapPos,
-        autoTap);
+          UUID uuid, OperationTime operationTime,
+          OperatorInput operator,
+          String id,
+          NodeInput nodeA,
+          NodeInput nodeB,
+          int parallelDevices,
+          Transformer2WTypeInput type,
+          int tapPos,
+          boolean autoTap) {
+    super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
   }
 
   /**
-   * Constructor for a non-operated asset
+   * Constructor for a non-operated two winding transformer
    *
    * @param uuid of the input entity
    * @param id of the asset

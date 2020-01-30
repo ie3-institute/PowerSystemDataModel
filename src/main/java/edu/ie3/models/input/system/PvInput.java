@@ -5,6 +5,7 @@
 */
 package edu.ie3.models.input.system;
 
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
@@ -37,9 +38,10 @@ public class PvInput extends SystemParticipantInput {
   private boolean marketReaction;
   /** Rated apparent power (typically in kVA) */
   private Quantity<Power> sRated;
-  /**
+  /** Constructor for an operated photovoltaic plant
+   *
    * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param node the asset is connected to
@@ -55,22 +57,21 @@ public class PvInput extends SystemParticipantInput {
    * @param sRated Rated apparent power (typically in kVA)
    */
   public PvInput(
-      UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
-      OperatorInput operator,
-      String id,
-      NodeInput node,
-      String qCharacteristics,
-      double cosphiRated,
-      double albedo,
-      Quantity<Angle> azimuth,
-      Quantity<Dimensionless> etaConv,
-      Quantity<Angle> height,
-      double kG,
-      double kT,
-      boolean marketReaction,
-      Quantity<Power> sRated) {
-    super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphiRated);
+          UUID uuid, OperationTime operationTime,
+          OperatorInput operator,
+          String id,
+          NodeInput node,
+          String qCharacteristics,
+          double cosphiRated,
+          double albedo,
+          Quantity<Angle> azimuth,
+          Quantity<Dimensionless> etaConv,
+          Quantity<Angle> height,
+          double kG,
+          double kT,
+          boolean marketReaction,
+          Quantity<Power> sRated) {
+    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphiRated);
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
@@ -82,54 +83,7 @@ public class PvInput extends SystemParticipantInput {
   }
 
   /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
-   *
-   * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
-   * @param operator of the asset
-   * @param id of the asset
-   * @param node the asset is connected to
-   * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphiRated Power factor
-   * @param albedo Albedo value (typically a value between 0 and 1)
-   * @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)
-   * @param etaConv Efficiency of converter (typically in %)
-   * @param height Tilted inclination from horizontal (typically in °)
-   * @param kG Generator correction factor merging different technical influences
-   * @param kT Generator correction factor merging different technical influences
-   * @param marketReaction Is this asset market oriented?
-   * @param sRated Rated apparent power (typically in kVA)
-   */
-  public PvInput(
-      UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
-      OperatorInput operator,
-      String id,
-      NodeInput node,
-      String qCharacteristics,
-      double cosphiRated,
-      double albedo,
-      Quantity<Angle> azimuth,
-      Quantity<Dimensionless> etaConv,
-      Quantity<Angle> height,
-      double kG,
-      double kT,
-      boolean marketReaction,
-      Quantity<Power> sRated) {
-    super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphiRated);
-    this.albedo = albedo;
-    this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
-    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
-    this.height = height.to(StandardUnits.SOLAR_HEIGHT);
-    this.kG = kG;
-    this.kT = kT;
-    this.marketReaction = marketReaction;
-    this.sRated = sRated.to(StandardUnits.S_RATED);
-  }
-  /**
-   * Constructor for a non-operated asset
+   * Constructor for a non-operated photovoltaic plant
    *
    * @param uuid of the input entity
    * @param id of the asset

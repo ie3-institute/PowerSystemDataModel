@@ -5,6 +5,7 @@
 */
 package edu.ie3.models.input.system;
 
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.HpTypeInput;
@@ -23,39 +24,10 @@ public class HpInput extends SystemParticipantInput {
   /** The thermal bus, this model is connected to */
   private ThermalBusInput thermalBus;
 
-  /**
-   * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
-   * @param operator of the asset
-   * @param id of the asset
-   * @param node the asset is connected to
-   * @param thermalBus The thermal bus, this model is connected to
-   * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphi Power factor
-   * @param type of HP
-   */
-  public HpInput(
-      UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
-      OperatorInput operator,
-      String id,
-      NodeInput node,
-      ThermalBusInput thermalBus,
-      String qCharacteristics,
-      double cosphi,
-      HpTypeInput type,
-      ThermalUnitInput heatSink) {
-    super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphi);
-    this.thermalBus = thermalBus;
-    this.type = type;
-  }
-
-  /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
+  /** Constructor for an operated heat pump
    *
    * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param node the asset is connected to
@@ -65,24 +37,22 @@ public class HpInput extends SystemParticipantInput {
    * @param type of HP
    */
   public HpInput(
-      UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
-      OperatorInput operator,
-      String id,
-      NodeInput node,
-      ThermalBusInput thermalBus,
-      String qCharacteristics,
-      double cosphi,
-      HpTypeInput type,
-      ThermalUnitInput heatSink) {
-    super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphi);
+          UUID uuid, OperationTime operationTime,
+          OperatorInput operator,
+          String id,
+          NodeInput node,
+          ThermalBusInput thermalBus,
+          String qCharacteristics,
+          double cosphi,
+          HpTypeInput type,
+          ThermalUnitInput heatSink) {
+    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
     this.thermalBus = thermalBus;
     this.type = type;
   }
 
   /**
-   * Constructor for a non-operated asset
+   * Constructor for a non-operated heat pump
    *
    * @param uuid of the input entity
    * @param id of the asset
