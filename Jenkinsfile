@@ -255,7 +255,7 @@ if (env.BRANCH_NAME == "master") {
                     }
 
                     // the first stage should always be the mainProject -> if it fails we can skip the rest!
-                    stage("gradle allTests ${projects.get(0)} with included builds") {
+                    stage("gradle allTests ${projects.get(0)}") {
 
                         // display java version
                         sh "java -version"
@@ -440,7 +440,7 @@ if (env.BRANCH_NAME == "master") {
 
                 }
                 // the first stage should always be the mainProject -> if it fails we can skip the rest!
-                stage("gradle allTests ${projects.get(0)} with included builds") {
+                stage("gradle allTests ${projects.get(0)}") {
 
                     // display java version
                     sh "java -version"
