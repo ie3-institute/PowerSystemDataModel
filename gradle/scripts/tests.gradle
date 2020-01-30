@@ -3,13 +3,33 @@ test {
 	filter {
 		excludeTestsMatching '*IT'
 	}
+	useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
 }
+
+task integrationTest(type: Test) {
+	description 'executes only the integration tests'
+	filter {
+		excludeTestsMatching '*Test*.*'
+		includeTestsMatching '*IT'
+	}
+	mustRunAfter test
+}
+integrationTest.dependsOn(test)
 
 task allTests(type: Test) {
 	description 'executes all tests'
+
+	useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+
 	filter {
-		includeTestsMatching '*Test*.*'
-		includeTestsMatching '*IT'
+//		includeTestsMatching '*Test*.*'
+//		includeTestsMatching '*IT'
 	}
 	mustRunAfter test
 }

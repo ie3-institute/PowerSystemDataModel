@@ -12,7 +12,7 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 
-public class Transformer3WResult extends Transformer {
+public class Transformer3WResult extends TransformerResult {
 
   /** Electric current magnitude @ port C, normally provided in Ampere */
   private Quantity<ElectricCurrent> iCMag;

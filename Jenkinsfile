@@ -86,19 +86,19 @@ def log(String level, String message) {
 }
 
 // disable scanning but load config parameters before
-if (isBranchIndexingCause()) {
-    println(env.BUILD_NUMBER)
-    println(currentBuild)
-    if (env.BUILD_NUMBER == 1) {
-        if (env.BRANCH_NAME == "master") {
-            getMasterBranchProps()
-        } else {
-            getFeatureBranchProps(resolveBranchNo(env.BRANCH_NAME))
-        }
-        currentBuild.result = 'FAILURE'
-    }
-    return
-}
+//if (isBranchIndexingCause()) {
+//    println(env.BUILD_NUMBER)
+//    println(currentBuild)
+//    if (env.BUILD_NUMBER == 1) {
+//        if (env.BRANCH_NAME == "master") {
+//            getMasterBranchProps()
+//        } else {
+//            getFeatureBranchProps(resolveBranchNo(env.BRANCH_NAME))
+//        }
+//        currentBuild.result = 'FAILURE'
+//    }
+//    return
+//}
 
 /////////////////////////
 // master branch script
@@ -210,10 +210,10 @@ if (env.BRANCH_NAME == "master") {
     } else {
         // merge mode
         // disable scan
-        if (params.pull_request_title == "") {
-            currentBuild.result = 'SUCCESS'
-            return
-        }
+//        if (params.pull_request_title == "") {
+//            currentBuild.result = 'SUCCESS'
+//            return
+//        }
 
         // merge into master
         // notify rocket chat about the started master branch deployment
@@ -255,7 +255,7 @@ if (env.BRANCH_NAME == "master") {
                     }
 
                     // the first stage should always be the mainProject -> if it fails we can skip the rest!
-                    stage("gradle allTests ${projects.get(0)} with included builds") {
+                    stage("gradle allTests ${projects.get(0)}") {
 
                         // display java version
                         sh "java -version"
@@ -373,13 +373,13 @@ if (env.BRANCH_NAME == "master") {
         getFeatureBranchProps(resolveBranchNo(env.BRANCH_NAME))
 
         // disable scan
-        if (params.triggered != "true" && params.comment_body != "!test") {
-
-            log(i, "Scan mode. Doing nothing!")
-            currentBuild.result = 'FAILURE'
-            // signals github that this branch hasn't build yet -> fail before first build
-            return
-        }
+//        if (params.triggered != "true" && params.comment_body != "!test") {
+//
+//            log(i, "Scan mode. Doing nothing!")
+//            currentBuild.result = 'FAILURE'
+//            // signals github that this branch hasn't build yet -> fail before first build
+//            return
+//        }
 
         // This displays colors using the 'xterm' ansi color map.
         ansiColor('xterm') {
@@ -440,7 +440,7 @@ if (env.BRANCH_NAME == "master") {
 
                 }
                 // the first stage should always be the mainProject -> if it fails we can skip the rest!
-                stage("gradle allTests ${projects.get(0)} with included builds") {
+                stage("gradle allTests ${projects.get(0)}") {
 
                     // display java version
                     sh "java -version"
