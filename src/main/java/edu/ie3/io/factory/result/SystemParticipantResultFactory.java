@@ -41,13 +41,13 @@ public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemPa
   }
 
   @Override
-  protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
+  protected List<Set<String>> getFields(SimpleEntityData data) {
     /// all result models have the same constructor except StorageResult
     Set<String> minConstructorParams = newSet(timestamp, inputModel, power, reactivePower);
     Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
 
-    if (simpleEntityData.getEntityClass().equals(StorageResult.class)
-        || simpleEntityData.getEntityClass().equals(EvResult.class)) {
+    if (data.getEntityClass().equals(StorageResult.class)
+        || data.getEntityClass().equals(EvResult.class)) {
       minConstructorParams = newSet(timestamp, inputModel, power, reactivePower, soc);
       optionalFields = expandSet(minConstructorParams, entityUuid);
     }
