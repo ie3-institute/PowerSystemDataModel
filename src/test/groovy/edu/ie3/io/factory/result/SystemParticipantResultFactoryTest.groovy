@@ -21,7 +21,7 @@ class SystemParticipantResultFactoryTest extends Specification {
         resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
     }
 
-    def "A SystemParticipantResultFactory should parse a WecResult correctly"() {
+    def "A SystemParticipantResultFactory should parse a valid result model correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
         HashMap<String, String> parameterMap = new HashMap<>();
@@ -31,15 +31,26 @@ class SystemParticipantResultFactoryTest extends Specification {
         parameterMap.put("q", "2");
 
         when:
-        Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, WecResult.class))
+        Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, modelClass))
 
         then:
         result.isPresent()
-        result.get().getClass() == WecResult.class
+        result.get().getClass() == resultingModelClass
         result.get().p == Quantities.getQuantity(Double.parseDouble(parameterMap.get("p")), StandardUnits.ACTIVE_POWER_OUT)
         result.get().q == Quantities.getQuantity(Double.parseDouble(parameterMap.get("q")), StandardUnits.REACTIVE_POWER_OUT)
         result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
         result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
+
+        where:
+        modelClass        || resultingModelClass
+        LoadResult        || LoadResult
+        FixedFeedInResult || FixedFeedInResult
+        BmResult          || BmResult
+        EvResult          || EvResult
+        PvResult          || PvResult
+        EvcsResult        || EvcsResult
+        ChpResult         || ChpResult
+        WecResult         || WecResult
 
     }
 
