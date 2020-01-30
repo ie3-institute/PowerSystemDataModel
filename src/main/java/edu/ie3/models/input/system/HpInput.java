@@ -11,10 +11,7 @@ import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.HpTypeInput;
 import edu.ie3.models.input.thermal.ThermalBusInput;
 import edu.ie3.models.input.thermal.ThermalUnitInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Describes a heat pump */
@@ -24,7 +21,8 @@ public class HpInput extends SystemParticipantInput {
   /** The thermal bus, this model is connected to */
   private ThermalBusInput thermalBus;
 
-  /** Constructor for an operated heat pump
+  /**
+   * Constructor for an operated heat pump
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -37,15 +35,16 @@ public class HpInput extends SystemParticipantInput {
    * @param type of HP
    */
   public HpInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput node,
-          ThermalBusInput thermalBus,
-          String qCharacteristics,
-          double cosphi,
-          HpTypeInput type,
-          ThermalUnitInput heatSink) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput node,
+      ThermalBusInput thermalBus,
+      String qCharacteristics,
+      double cosphi,
+      HpTypeInput type,
+      ThermalUnitInput heatSink) {
     super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
     this.thermalBus = thermalBus;
     this.type = type;

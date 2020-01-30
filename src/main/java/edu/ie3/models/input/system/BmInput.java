@@ -10,10 +10,7 @@ import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.BmTypeInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
@@ -33,7 +30,8 @@ public class BmInput extends SystemParticipantInput {
   /** Rated apparent power (typically in kW) */
   private Quantity<Power> sRated;
 
-  /** Constructor for an operated biomass plant
+  /**
+   * Constructor for an operated biomass plant
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -50,17 +48,18 @@ public class BmInput extends SystemParticipantInput {
    * @param sRated Rated apparent power (typically in kVA)
    */
   public BmInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput node,
-          String qCharacteristics,
-          double cosphi,
-          BmTypeInput type,
-          boolean marketReaction,
-          boolean costControlled,
-          Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff,
-          Quantity<Power> sRated) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput node,
+      String qCharacteristics,
+      double cosphi,
+      BmTypeInput type,
+      boolean marketReaction,
+      boolean costControlled,
+      Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff,
+      Quantity<Power> sRated) {
     super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
     this.type = type;
     this.marketReaction = marketReaction;

@@ -9,10 +9,7 @@ import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.StorageTypeInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Describes a battery storage */
@@ -22,7 +19,8 @@ public class StorageInput extends SystemParticipantInput {
 
   /** Selection of predefined behaviour of the storage */
   private StorageStrategy behaviour;
-  /** Constructor for an operated storage
+  /**
+   * Constructor for an operated storage
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -35,19 +33,19 @@ public class StorageInput extends SystemParticipantInput {
    * @param behaviour Selection of predefined behaviour of the storage
    */
   public StorageInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput node,
-          String qCharacteristics,
-          double cosphiRated,
-          StorageTypeInput type,
-          String behaviour) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput node,
+      String qCharacteristics,
+      double cosphiRated,
+      StorageTypeInput type,
+      String behaviour) {
     super(uuid, operationTime, operator, id, node, qCharacteristics, cosphiRated);
     this.type = type;
     this.behaviour = StorageStrategy.get(behaviour);
   }
-
 
   /**
    * Constructor for a non-operated storage

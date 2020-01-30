@@ -8,10 +8,7 @@ package edu.ie3.models.input.connector;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Describes an electrical grid transformer, is "located" in the inferior subnet */
@@ -21,7 +18,8 @@ public abstract class TransformerInput extends ConnectorInput {
   /** True, if the tap position of the transformer is adapted automatically */
   private boolean autoTap;
 
-  /** Constructor for an operated transformer
+  /**
+   * Constructor for an operated transformer
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -34,14 +32,15 @@ public abstract class TransformerInput extends ConnectorInput {
    * @param autoTap True, if the tap position of the transformer is adapted automatically
    */
   public TransformerInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput nodeA,
-          NodeInput nodeB,
-          int parallelDevices,
-          int tapPos,
-          boolean autoTap) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      int parallelDevices,
+      int tapPos,
+      boolean autoTap) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices);
     this.tapPos = tapPos;
     this.autoTap = autoTap;

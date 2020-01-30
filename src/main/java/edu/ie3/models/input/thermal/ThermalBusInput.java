@@ -8,14 +8,12 @@ package edu.ie3.models.input.thermal;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.AssetInput;
 import edu.ie3.models.input.OperatorInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 /** A thermal bus, to which different {@link ThermalUnitInput} units may be connected */
 public class ThermalBusInput extends AssetInput {
-  /** Constructor for an operated thermal bus
+  /**
+   * Constructor for an operated thermal bus
    *
    * @param uuid Unique identifier of a certain thermal bus
    * @param operationTime Time for which the entity is operated
@@ -23,9 +21,7 @@ public class ThermalBusInput extends AssetInput {
    * @param id of the asset
    */
   public ThermalBusInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id) {
+      UUID uuid, OperationTime operationTime, OperatorInput operator, String id) {
     super(uuid, operationTime, operator, id);
   }
 

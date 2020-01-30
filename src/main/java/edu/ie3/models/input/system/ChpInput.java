@@ -10,10 +10,7 @@ import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.ChpTypeInput;
 import edu.ie3.models.input.thermal.ThermalBusInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Describes a combined heat and power plant */
@@ -25,7 +22,8 @@ public class ChpInput extends SystemParticipantInput {
   /** Is this asset market oriented? */
   private boolean marketReaction;
 
-  /** Constructor for an operated combined heat and power plant
+  /**
+   * Constructor for an operated combined heat and power plant
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -39,15 +37,16 @@ public class ChpInput extends SystemParticipantInput {
    * @param marketReaction Is this asset market oriented?
    */
   public ChpInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput node,
-          ThermalBusInput thermalBus,
-          String qCharacteristics,
-          double cosphi,
-          ChpTypeInput type,
-          boolean marketReaction) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput node,
+      ThermalBusInput thermalBus,
+      String qCharacteristics,
+      double cosphi,
+      ChpTypeInput type,
+      boolean marketReaction) {
     super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
     this.thermalBus = thermalBus;
     this.type = type;

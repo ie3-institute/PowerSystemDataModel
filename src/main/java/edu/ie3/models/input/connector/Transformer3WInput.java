@@ -9,9 +9,7 @@ import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.connector.type.Transformer3WTypeInput;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -24,7 +22,8 @@ public class Transformer3WInput extends TransformerInput {
   /** The lower voltage node */
   private NodeInput nodeC;
 
-  /** Constructor for an operated three winding transformer
+  /**
+   * Constructor for an operated three winding transformer
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -39,16 +38,17 @@ public class Transformer3WInput extends TransformerInput {
    * @param autoTap
    */
   public Transformer3WInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput nodeA,
-          NodeInput nodeB,
-          NodeInput nodeC,
-          int parallelDevices,
-          Transformer3WTypeInput type,
-          int tapPos,
-          boolean autoTap) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      NodeInput nodeC,
+      int parallelDevices,
+      Transformer3WTypeInput type,
+      int tapPos,
+      boolean autoTap) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
     this.nodeC = nodeC;

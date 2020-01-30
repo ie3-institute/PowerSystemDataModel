@@ -6,10 +6,7 @@
 package edu.ie3.models.input;
 
 import edu.ie3.models.OperationTime;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Model of a measuring unit attached to a certain {@link NodeInput}. */
@@ -29,7 +26,8 @@ public class MeasurementUnitInput extends AssetInput {
   /** True, if the reactive power is measured */
   private boolean q;
 
-  /** Constructor for an operated measurement unit
+  /**
+   * Constructor for an operated measurement unit
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -42,14 +40,15 @@ public class MeasurementUnitInput extends AssetInput {
    * @param q True, if the reactive power is measured
    */
   public MeasurementUnitInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput node,
-          boolean vMag,
-          boolean vAng,
-          boolean p,
-          boolean q) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput node,
+      boolean vMag,
+      boolean vAng,
+      boolean p,
+      boolean q) {
     super(uuid, operationTime, operator, id);
     this.node = node;
     this.vMag = vMag;

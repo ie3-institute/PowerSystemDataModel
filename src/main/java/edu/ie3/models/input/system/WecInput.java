@@ -9,10 +9,7 @@ import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.WecTypeInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Describes a Wind Energy Converter */
@@ -22,7 +19,8 @@ public class WecInput extends SystemParticipantInput {
   private WecTypeInput type;
   /** Is this asset market oriented? */
   private boolean marketReaction;
-  /** Constructor for an operated wind energy converter
+  /**
+   * Constructor for an operated wind energy converter
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -35,14 +33,15 @@ public class WecInput extends SystemParticipantInput {
    * @param marketReaction Is this asset market oriented?
    */
   public WecInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput node,
-          String qCharacteristics,
-          double cosphi,
-          WecTypeInput type,
-          boolean marketReaction) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput node,
+      String qCharacteristics,
+      double cosphi,
+      WecTypeInput type,
+      boolean marketReaction) {
     super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
     this.type = type;
     this.marketReaction = marketReaction;

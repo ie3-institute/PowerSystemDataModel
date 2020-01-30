@@ -8,10 +8,7 @@ package edu.ie3.models.input.connector;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Describes an electrical grid switch between two {@link NodeInput}s */
@@ -19,7 +16,8 @@ public class SwitchInput extends ConnectorInput {
   /** Is the switching state 'closed'? */
   private boolean closed;
 
-  /** Constructor for an operated switch
+  /**
+   * Constructor for an operated switch
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -30,12 +28,13 @@ public class SwitchInput extends ConnectorInput {
    * @param closed Is the switching state 'closed'?
    */
   public SwitchInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput nodeA,
-          NodeInput nodeB,
-          boolean closed) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      boolean closed) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, 1);
     this.closed = closed;
   }

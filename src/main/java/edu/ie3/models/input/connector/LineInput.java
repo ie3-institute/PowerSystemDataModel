@@ -10,12 +10,11 @@ import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.connector.type.LineTypeInput;
-
-import javax.measure.Quantity;
-import javax.measure.quantity.Length;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import javax.measure.Quantity;
+import javax.measure.quantity.Length;
 
 /** Describes an electrical grid line that connects two {@link edu.ie3.models.input.NodeInput}s */
 public class LineInput extends ConnectorInput {
@@ -29,7 +28,8 @@ public class LineInput extends ConnectorInput {
   /** Description of an optional weather dependent operation curve */
   private Optional<String> olmCharacteristic;
 
-  /** Constructor for an operated line
+  /**
+   * Constructor for an operated line
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -44,16 +44,17 @@ public class LineInput extends ConnectorInput {
    * @param olmCharacteristic Description of an optional weather dependent operation curve
    */
   public LineInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput nodeA,
-          NodeInput nodeB,
-          int parallelDevices,
-          LineTypeInput type,
-          Quantity<Length> length,
-          LineString geoPosition,
-          Optional<String> olmCharacteristic) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      int parallelDevices,
+      LineTypeInput type,
+      Quantity<Length> length,
+      LineString geoPosition,
+      Optional<String> olmCharacteristic) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices);
     this.type = type;
     this.length = length;

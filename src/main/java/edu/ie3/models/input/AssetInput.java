@@ -7,7 +7,6 @@ package edu.ie3.models.input;
 
 import edu.ie3.models.Operable;
 import edu.ie3.models.OperationTime;
-
 import java.util.Objects;
 import java.util.UUID;
 
@@ -20,14 +19,8 @@ public abstract class AssetInput extends InputEntity implements Operable {
   /** Name or ID of the asset */
   private String id;
 
-  /**
-   * Constructor for an operated asset
-   */
-  public AssetInput(
-      UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
-      String id) {
+  /** Constructor for an operated asset */
+  public AssetInput(UUID uuid, OperationTime operationTime, OperatorInput operator, String id) {
     super(uuid);
     this.operationTime = operationTime;
     this.operator = operator;

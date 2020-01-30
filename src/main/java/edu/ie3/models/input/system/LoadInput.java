@@ -9,10 +9,7 @@ import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
@@ -26,7 +23,8 @@ public class LoadInput extends SystemParticipantInput {
   private Quantity<Energy> eConsAnnual;
   /** Active Power (typically in kW) */
   private Quantity<Power> p;
-  /** Constructor for an operated load
+  /**
+   * Constructor for an operated load
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -40,15 +38,16 @@ public class LoadInput extends SystemParticipantInput {
    * @param p Active Power (typically in KW)
    */
   public LoadInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput node,
-          String qCharacteristics,
-          double cosphiRated,
-          boolean dsm,
-          Quantity<Energy> eConsAnnual,
-          Quantity<Power> p) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput node,
+      String qCharacteristics,
+      double cosphiRated,
+      boolean dsm,
+      Quantity<Energy> eConsAnnual,
+      Quantity<Power> p) {
     super(uuid, operationTime, operator, id, node, qCharacteristics, cosphiRated);
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY);

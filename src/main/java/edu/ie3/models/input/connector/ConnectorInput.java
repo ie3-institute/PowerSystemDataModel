@@ -9,7 +9,6 @@ import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.AssetInput;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
-
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,7 +21,8 @@ public abstract class ConnectorInput extends AssetInput {
   /** Amount of parallelDevices */
   private int parallelDevices;
 
-  /** Constructor for an operated connector
+  /**
+   * Constructor for an operated connector
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -33,12 +33,13 @@ public abstract class ConnectorInput extends AssetInput {
    * @param parallelDevices Amount of parallel devices
    */
   public ConnectorInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput nodeA,
-          NodeInput nodeB,
-          int parallelDevices) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      int parallelDevices) {
     super(uuid, operationTime, operator, id);
     this.nodeA = nodeA;
     this.nodeB = nodeB;

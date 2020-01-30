@@ -9,10 +9,7 @@ import com.vividsolutions.jts.geom.Point;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.VoltageLevel;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
@@ -35,7 +32,8 @@ public class NodeInput extends AssetInput {
   private VoltageLevel voltLvl;
   /** Subnet of this node */
   private int subnet;
-  /** Constructor for an operated node
+  /**
+   * Constructor for an operated node
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -50,15 +48,16 @@ public class NodeInput extends AssetInput {
    * @param subnet of this node
    */
   public NodeInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          Quantity<Dimensionless> vTarget,
-          Quantity<ElectricPotential> vRated,
-          boolean slack,
-          Point geoPosition,
-          VoltageLevel voltLvl,
-          int subnet) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      Quantity<Dimensionless> vTarget,
+      Quantity<ElectricPotential> vRated,
+      boolean slack,
+      Point geoPosition,
+      VoltageLevel voltLvl,
+      int subnet) {
     super(uuid, operationTime, operator, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE);
     this.vRated = vRated.to(StandardUnits.V_RATED);

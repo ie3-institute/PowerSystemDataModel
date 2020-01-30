@@ -9,10 +9,7 @@ import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
@@ -22,7 +19,8 @@ public class FixedFeedInInput extends SystemParticipantInput {
   /** Rated apparent power (typically in kVA) */
   private Quantity<Power> sRated;
 
-  /** Constructor for an operated feed in
+  /**
+   * Constructor for an operated feed in
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -34,13 +32,14 @@ public class FixedFeedInInput extends SystemParticipantInput {
    * @param sRated Rated apparent power
    */
   public FixedFeedInInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput node,
-          String qCharacteristics,
-          double cosphi,
-          Quantity<Power> sRated) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput node,
+      String qCharacteristics,
+      double cosphi,
+      Quantity<Power> sRated) {
     super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
     this.sRated = sRated.to(StandardUnits.S_RATED);
   }

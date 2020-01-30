@@ -9,10 +9,7 @@ import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.connector.type.Transformer2WTypeInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -23,7 +20,8 @@ public class Transformer2WInput extends TransformerInput {
   /** Type of this 2W transformer, containing default values for transformers of this kind */
   private Transformer2WTypeInput type;
 
-  /** Constructor for an operated two winding transformer
+  /**
+   * Constructor for an operated two winding transformer
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -37,15 +35,16 @@ public class Transformer2WInput extends TransformerInput {
    * @param autoTap True, if the tap position of the transformer is adapted automatically
    */
   public Transformer2WInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput nodeA,
-          NodeInput nodeB,
-          int parallelDevices,
-          Transformer2WTypeInput type,
-          int tapPos,
-          boolean autoTap) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      int parallelDevices,
+      Transformer2WTypeInput type,
+      int tapPos,
+      boolean autoTap) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
   }

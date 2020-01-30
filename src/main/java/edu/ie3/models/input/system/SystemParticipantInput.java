@@ -9,10 +9,7 @@ import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.AssetInput;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Describes a system asset that is connected to a node */
@@ -27,7 +24,8 @@ public abstract class SystemParticipantInput extends AssetInput {
   /** Rated power factor */
   private double cosphiRated;
 
-  /** Constructor for an operated system participant
+  /**
+   * Constructor for an operated system participant
    *
    * @param uuid of the input entity
    * @param operationTime Time for which the entity is operated
@@ -38,12 +36,13 @@ public abstract class SystemParticipantInput extends AssetInput {
    * @param cosphiRated Power factor
    */
   public SystemParticipantInput(
-          UUID uuid, OperationTime operationTime,
-          OperatorInput operator,
-          String id,
-          NodeInput node,
-          String qCharacteristics,
-          double cosphiRated) {
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput node,
+      String qCharacteristics,
+      double cosphiRated) {
     super(uuid, operationTime, operator, id);
     this.node = node;
     this.qCharacteristics = qCharacteristics;

@@ -6,9 +6,7 @@
 package edu.ie3.models;
 
 import edu.ie3.models.input.OperatorInput;
-import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
-import java.util.Optional;
 
 /** Describes an operable Entity, with operation period interval */
 public interface Operable {
@@ -17,7 +15,7 @@ public interface Operable {
 
   void setOperationTime(OperationTime operationTime);
 
-  default boolean inOperationOn(ZonedDateTime date){
+  default boolean inOperationOn(ZonedDateTime date) {
     return getOperationTime().includes(date);
   }
 
