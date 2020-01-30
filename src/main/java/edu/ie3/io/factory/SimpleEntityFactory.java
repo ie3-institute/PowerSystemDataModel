@@ -19,23 +19,23 @@ import java.util.Set;
  * @version 0.1
  * @since 28.01.20
  */
-public abstract class SimpleEntityFactory<T extends UniqueEntity> extends EntityFactory<T> {
+public abstract class SimpleEntityFactory<T extends UniqueEntity>
+    extends EntityFactory<T, SimpleEntityData> {
 
   public SimpleEntityFactory(Class<? extends T>... classes) {
     super(classes);
   }
 
   @Override
-  public Optional<T> getEntity(EntityData entityData) {
-    if (!classes.contains(entityData.getEntityClass()))
+  public Optional<T> getEntity(SimpleEntityData simpleEntityData) {
+    if (!classes.contains(simpleEntityData.getEntityClass()))
       throw new FactoryException(
           "Cannot process "
-              + entityData.getEntityClass().getSimpleName()
+              + simpleEntityData.getEntityClass().getSimpleName()
               + ".class with this factory!");
 
-    final List<Set<String>> allFields = getFields(entityData);
+    final List<Set<String>> allFields = getFields(simpleEntityData);
 
-    SimpleEntityData simpleEntityData = getSimpleEntityData(entityData);
     validateParameters(simpleEntityData, allFields.toArray(Set[]::new));
 
     // build the model
@@ -47,21 +47,10 @@ public abstract class SimpleEntityFactory<T extends UniqueEntity> extends Entity
     } catch (Exception e) {
       log.error(
           "An error occurred when creating instance of "
-              + entityData.getEntityClass().getSimpleName()
+              + simpleEntityData.getEntityClass().getSimpleName()
               + ".class.",
           e);
     }
     return result;
-  }
-
-  protected SimpleEntityData getSimpleEntityData(EntityData entityData) {
-    if (!(entityData instanceof SimpleEntityData)) {
-      throw new FactoryException(
-          "Invalid entity data "
-              + entityData.getClass().getSimpleName()
-              + " provided. Please use 'SimpleEntityData' for 'SimpleEntityFactory'!");
-    } else {
-      return (SimpleEntityData) entityData;
-    }
   }
 }

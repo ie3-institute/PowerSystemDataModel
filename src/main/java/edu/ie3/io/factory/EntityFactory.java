@@ -20,7 +20,7 @@ import java.util.stream.Stream;
  * @version 0.1
  * @since 28.01.20
  */
-public abstract class EntityFactory<T extends UniqueEntity> {
+public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
   public final Logger log = LogManager.getLogger(this.getClass());
 
   protected final List<Class<? extends T>> classes;
@@ -29,7 +29,7 @@ public abstract class EntityFactory<T extends UniqueEntity> {
     this.classes = Arrays.asList(classes);
   }
 
-  public abstract Optional<T> getEntity(EntityData entityData);
+  public abstract Optional<T> getEntity(D entityData);
 
   protected abstract List<Set<String>> getFields(EntityData entityData);
 
