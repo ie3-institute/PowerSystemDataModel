@@ -61,6 +61,7 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
 
   @Override
   protected ConnectorResult buildModel(SimpleEntityData simpleEntityData) {
+
     Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
     Class<? extends UniqueEntity> clazz = simpleEntityData.getEntityClass();
 
@@ -71,13 +72,13 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
             Double.parseDouble(fieldsToValues.get(iAMag)), StandardUnits.CURRENT);
     Quantity<Angle> iAAngVal =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(iAAng)), StandardUnits.DPHI_TAP); // TODO
+            Double.parseDouble(fieldsToValues.get(iAAng)), StandardUnits.ELECTRIC_CURRENT_ANGLE);
     Quantity<ElectricCurrent> iBMagVal =
         Quantities.getQuantity(
             Double.parseDouble(fieldsToValues.get(iBMag)), StandardUnits.CURRENT);
     Quantity<Angle> iBAngVal =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(iBAng)), StandardUnits.DPHI_TAP); // TODO
+            Double.parseDouble(fieldsToValues.get(iBAng)), StandardUnits.ELECTRIC_CURRENT_ANGLE);
     Optional<UUID> uuidOpt =
         fieldsToValues.containsKey(entityUuid)
             ? Optional.of(UUID.fromString(fieldsToValues.get(entityUuid)))
@@ -94,7 +95,9 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
                   new LineResult(
                       zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal));
     } else if (clazz.equals(SwitchResult.class)) {
-      final boolean closedVal = fieldsToValues.get(closed).trim().equals("1");
+      final boolean closedVal =
+          fieldsToValues.get(closed).trim().equals("1")
+              || fieldsToValues.get(closed).trim().equals("true");
 
       return uuidOpt
           .map(
