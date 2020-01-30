@@ -8,7 +8,6 @@ package edu.ie3.models.input.aggregated;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.MeasurementUnitInput;
 import edu.ie3.utils.ValidationUtils;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
