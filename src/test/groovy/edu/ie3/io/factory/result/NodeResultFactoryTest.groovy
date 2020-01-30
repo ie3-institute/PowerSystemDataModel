@@ -13,7 +13,7 @@ class NodeResultFactoryTest extends Specification {
     def "A NodeResultFactory should contain all expected classes for parsing"() {
         given:
         def resultFactory = new NodeResultFactory()
-        def expectedClasses = [NodeResult.class]
+        def expectedClasses = [NodeResult]
 
         expect:
         resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
@@ -22,18 +22,18 @@ class NodeResultFactoryTest extends Specification {
     def "A NodeResultFactory should parse a WecResult correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new NodeResultFactory()
-        HashMap<String, String> parameterMap = new HashMap<>();
+        HashMap<String, String> parameterMap = [:]
         parameterMap.put("timestamp", "16/01/2010 17:27:46");
         parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7");
         parameterMap.put("vmag", "2");
         parameterMap.put("vang", "2");
 
         when:
-        Optional<? extends NodeResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, NodeResult.class))
+        Optional<? extends NodeResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, NodeResult))
 
         then:
-        result.isPresent()
-        result.get().getClass() == NodeResult.class
+        result.present
+        result.get().getClass() == NodeResult
         result.get().vMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("vmag")), StandardUnits.TARGET_VOLTAGE)
         result.get().vAng == Quantities.getQuantity(Double.parseDouble(parameterMap.get("vang")), StandardUnits.DPHI_TAP) //TODO
         result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
@@ -44,7 +44,7 @@ class NodeResultFactoryTest extends Specification {
     def "A NodeResultFactory should throw an exception on invalid or incomplete data"() {
         given: "a system participant factory and model data"
         def resultFactory = new NodeResultFactory()
-        HashMap<String, String> parameterMap = new HashMap<>();
+        HashMap<String, String> parameterMap = [:]
         parameterMap.put("timestamp", "16/01/2010 17:27:46");
         parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7");
         parameterMap.put("vmag", "2");

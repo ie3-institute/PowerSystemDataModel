@@ -12,7 +12,7 @@ class ThermalSinkResultFactoryTest extends Specification {
     def "A ThermalSinkResultFactory should contain all expected classes for parsing"() {
         given:
         def resultFactory = new ThermalSinkResultFactory()
-        def expectedClasses = [ThermalSinkResult.class]
+        def expectedClasses = [ThermalSinkResult]
 
         expect:
         resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
@@ -21,15 +21,15 @@ class ThermalSinkResultFactoryTest extends Specification {
     def "A ThermalSinkResultFactory should parse a WecResult correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new ThermalSinkResultFactory()
-        HashMap<String, String> parameterMap = new HashMap<>();
+        HashMap<String, String> parameterMap = [:]
         parameterMap.put("timestamp", "16/01/2010 17:27:46");
         parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7");
         parameterMap.put("qdemand", "2");
         when:
-        Optional<? extends ThermalSinkResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, ThermalSinkResult.class))
+        Optional<? extends ThermalSinkResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, ThermalSinkResult))
 
         then:
-        result.isPresent()
+        result.present
         result.get().getClass() == ThermalSinkResult
         result.get().qDemand == Quantities.getQuantity(Double.parseDouble(parameterMap.get("qdemand")),  StandardUnits.HEAT_CAPACITY)
         result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
