@@ -59,7 +59,7 @@ Class ChpResult
 Class WecResult
 
 Class ThermalSinkResult{
-    + qDemand: Quantity<Power>
+    + qDemand: Quantity<HeatCapacity>
 }
 
 Class EvcsResult

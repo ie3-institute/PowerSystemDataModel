@@ -68,6 +68,7 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
     Quantity<Angle> iAAngVal = data.get(iAAng, StandardUnits.DPHI_TAP); // TODO
     Quantity<ElectricCurrent> iBMagVal = data.get(iBMag, StandardUnits.CURRENT);
     Quantity<Angle> iBAngVal = data.get(iBAng, StandardUnits.DPHI_TAP); // TODO
+
     Optional<UUID> uuidOpt =
         data.containsKey(entityUuid) ? Optional.of(data.getUUID(entityUuid)) : Optional.empty();
 
@@ -82,7 +83,8 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
                   new LineResult(
                       zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal));
     } else if (entityClass.equals(SwitchResult.class)) {
-      final boolean closedVal = data.get(closed).trim().equals("1");
+      final boolean closedVal =
+          data.get(closed).trim().equals("1") || data.get(closed).trim().equals("true");
 
       return uuidOpt
           .map(

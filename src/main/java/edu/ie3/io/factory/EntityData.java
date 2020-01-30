@@ -7,6 +7,7 @@ package edu.ie3.io.factory;
 
 import edu.ie3.models.UniqueEntity;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -26,7 +27,11 @@ abstract class EntityData {
 
   public EntityData(
       Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
-    this.fieldsToAttributes = fieldsToAttributes;
+    // this does the magic: case-insensitive get/set calls on keys
+    TreeMap<String, String> insensitiveFieldsToAttribtues =
+        new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    insensitiveFieldsToAttribtues.putAll(fieldsToAttributes);
+    this.fieldsToAttributes = insensitiveFieldsToAttribtues;
     this.entityClass = entityClass;
   }
 

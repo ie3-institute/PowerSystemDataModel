@@ -10,6 +10,9 @@ import edu.ie3.models.UniqueEntity;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 
 /**
  * Internal API Interface for Entities that can be build without any dependencies on other complex
@@ -33,9 +36,19 @@ public abstract class SimpleEntityFactory<T extends UniqueEntity>
               + simpleEntityData.getEntityClass().getSimpleName()
               + ".class with this factory!");
 
-    final List<Set<String>> allFields = getFields(simpleEntityData);
+    // magic: case-insensitive get/set calls on set strings
+    final List<Set<String>> allFields =
+        getFields(simpleEntityData).stream()
+            .map(
+                set -> {
+                  Set<String> treeSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+                  treeSet.addAll(set);
+                  return treeSet;
+                })
+            .collect(Collectors.toList());
 
-    validateParameters(simpleEntityData, allFields.toArray(Set[]::new));
+    validateParameters(
+        simpleEntityData, allFields.toArray((IntFunction<Set<String>[]>) Set[]::new));
 
     // build the model
     Optional<T> result = Optional.empty();
@@ -52,10 +65,4 @@ public abstract class SimpleEntityFactory<T extends UniqueEntity>
     }
     return result;
   }
-
-  //    @Override
-  //    protected abstract List<Set<String>> getFields(SimpleEntityData simpleEntityData);
-  //
-  //    @Override
-  //    protected abstract T buildModel(SimpleEntityData simpleEntityData);
 }
