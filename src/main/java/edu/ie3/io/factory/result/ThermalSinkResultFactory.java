@@ -44,7 +44,7 @@ public class ThermalSinkResultFactory extends SimpleEntityFactory<ThermalSinkRes
     Quantity<HeatCapacity> qDemand =
         Quantities.getQuantity(
             Double.parseDouble(fieldsToValues.get(ThermalSinkResultFactory.qDemand)),
-            StandardUnits.HEAT_CAPACITY); // todo ensure that the unit is correct
+            StandardUnits.HEAT_CAPACITY); // todo CK ensure that the unit is correct
     Optional<UUID> uuidOpt =
         fieldsToValues.containsKey(entityUuid)
             ? Optional.of(UUID.fromString(fieldsToValues.get(entityUuid)))

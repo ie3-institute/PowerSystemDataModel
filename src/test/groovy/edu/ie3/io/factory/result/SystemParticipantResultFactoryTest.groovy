@@ -29,6 +29,8 @@ class SystemParticipantResultFactoryTest extends Specification {
         parameterMap.put("inputModel", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7");
         parameterMap.put("p", "2");
         parameterMap.put("q", "2");
+        if(modelClass == EvResult)
+            parameterMap.put("soc", "10")
 
         when:
         Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, modelClass))
@@ -40,6 +42,9 @@ class SystemParticipantResultFactoryTest extends Specification {
         result.get().q == Quantities.getQuantity(Double.parseDouble(parameterMap.get("q")), StandardUnits.REACTIVE_POWER_OUT)
         result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
         result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
+
+        if(modelClass == EvResult)
+            assert(((EvResult)result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameterMap.get("soc")), Units.PERCENT))
 
         where:
         modelClass        || resultingModelClass
@@ -91,10 +96,10 @@ class SystemParticipantResultFactoryTest extends Specification {
 
         then:
         FactoryException ex = thrown()
-        ex.message == "The provided fields [q, inputModel, timestamp] with data {q -> 2,inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,timestamp -> 16/01/2010 17:27:46} are invalid for instance of WecResult. \n" +
+        ex.message == "The provided fields [inputModel, q, timestamp] with data {inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,q -> 2,timestamp -> 16/01/2010 17:27:46} are invalid for instance of WecResult. \n" +
                 "The following fields to be passed to a constructor of WecResult are possible:\n" +
-                "0: [p, q, inputModel, timestamp]\n" +
-                "1: [p, q, inputModel, uuid, timestamp]\n"
+                "0: [inputModel, p, q, timestamp]\n" +
+                "1: [inputModel, p, q, timestamp, uuid]\n"
 
     }
 
