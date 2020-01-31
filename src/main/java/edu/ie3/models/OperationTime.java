@@ -45,27 +45,13 @@ public class OperationTime {
     return Optional.ofNullable(startDate);
   }
 
-  /** @param startDate date of operation start */
-  public void setStartDate(ZonedDateTime startDate) {
-    this.startDate = startDate;
-  }
-
   /** @return date of operation end, if present */
   public Optional<ZonedDateTime> getEndDate() {
     return Optional.ofNullable(endDate);
   }
 
-  /** @param endDate date of operation end */
-  public void setEndDate(ZonedDateTime endDate) {
-    this.endDate = endDate;
-  }
-
   public boolean isLimited() {
     return isLimited;
-  }
-
-  public void setLimited(boolean limited) {
-    isLimited = limited;
   }
 
   /**

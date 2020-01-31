@@ -47,6 +47,9 @@ dependencies {
 	compile "tec.uom:uom-se:$unitsOfMeasurementVersion"
 
 	compile 'com.vividsolutions:jts:1.13' //JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
+
+	//Testing
+	testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
 }
 
 wrapper {
@@ -55,4 +58,8 @@ wrapper {
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
+}
+
+test {
+	useJUnitPlatform()
 }
