@@ -5,12 +5,13 @@
 */
 package edu.ie3.models;
 
-import static edu.ie3.util.quantities.PowerSystemUnits.*;
-
 import edu.ie3.util.quantities.interfaces.*;
+import tec.uom.se.unit.MetricPrefix;
+
 import javax.measure.Unit;
 import javax.measure.quantity.*;
-import tec.uom.se.unit.MetricPrefix;
+
+import static edu.ie3.util.quantities.PowerSystemUnits.*;
 
 /** A collection of Units that fit to the different input and output models by convention */
 public class StandardUnits {
@@ -33,7 +34,10 @@ public class StandardUnits {
   /* Other Units */
   public static final Unit<Dimensionless> TARGET_VOLTAGE = PU;
   public static final Unit<Dimensionless> DV_TAP = PERCENT;
-  public static final Unit<Angle> ELECTRIC_CURRENT_ANGLE = DEGREE_GEOM;
+  public static final Unit<Angle> ELECTRIC_CURRENT_ANGLE =
+      DEGREE_GEOM; // todo ck review and check if we need this
+  public static final Unit<Angle> ELECTRIC_VOLTAGE_ANGLE =
+      DEGREE_GEOM; // todo ck review and check if we need this
   public static final Unit<Angle> DPHI_TAP = DEGREE_GEOM;
   public static final Unit<DimensionlessRate> LOAD_GRADIENT = PERCENT_PER_HOUR;
   public static final Unit<Dimensionless> EFFICIENCY = PERCENT;

@@ -8,6 +8,7 @@ package edu.ie3.io.processor.result;
 import edu.ie3.exceptions.EntityProcessorException;
 import edu.ie3.io.factory.result.SystemParticipantResultFactory;
 import edu.ie3.io.processor.EntityProcessor;
+import edu.ie3.models.result.ResultEntity;
 import edu.ie3.models.result.system.SystemParticipantResult;
 
 import javax.measure.Quantity;
@@ -25,15 +26,14 @@ import java.util.Optional;
  * @version 0.1
  * @since 31.01.20
  */
-public class SystemParticipantResultProcessor extends EntityProcessor<SystemParticipantResult> {
+public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
 
-  public SystemParticipantResultProcessor(
-      Class<? extends SystemParticipantResult> registeredClass) {
+  public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass) {
     super(registeredClass);
   }
 
   @Override
-  protected Optional<LinkedHashMap<String, String>> processEntity(SystemParticipantResult entity) {
+  protected Optional<LinkedHashMap<String, String>> processEntity(ResultEntity entity) {
 
     Optional<LinkedHashMap<String, String>> resultMapOpt;
 
@@ -65,15 +65,17 @@ public class SystemParticipantResultProcessor extends EntityProcessor<SystemPart
     switch (method.getReturnType().getSimpleName()) {
         // primitives (Boolean, Character, Byte, Short, Integer, Long, Float, Double, String,
       case "UUID":
+      case "boolean":
+      case "int":
         resultStringBuilder.append(methodReturnObject.toString());
         break;
       case "Quantity":
         resultStringBuilder.append(
-            processQuantity((Quantity<?>) methodReturnObject, fieldName, resultModel)
+            handleQuantity((Quantity<?>) methodReturnObject, fieldName, resultModel)
                 .orElseThrow(
                     () ->
                         new EntityProcessorException(
-                            "Unable to process value for attribute "
+                            "Unable to process quantity value for attribute "
                                 + fieldName
                                 + " in system participant result model"
                                 + getRegisteredClass().getSimpleName()
@@ -82,14 +84,15 @@ public class SystemParticipantResultProcessor extends EntityProcessor<SystemPart
       case "ZonedDateTime":
         resultStringBuilder.append(processZonedDateTime((ZonedDateTime) methodReturnObject));
         break;
-        // everything else (incl. unknown stuff)
       default:
         throw new EntityProcessorException(
-            "Unable to process value for attribute/field "
+            "Unable to process value for attribute/field '"
                 + fieldName
-                + " and method return type "
+                + "' and method return type '"
+                + method.getReturnType().getSimpleName()
+                + "' for method with name '"
                 + method.getName()
-                + " in system participant result model "
+                + "' in system participant result model "
                 + getRegisteredClass().getSimpleName()
                 + ".class.");
     }

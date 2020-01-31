@@ -11,11 +11,13 @@ import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.result.ResultEntity;
 import edu.ie3.util.TimeTools;
+import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.measure.Quantity;
+import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.Power;
 import java.beans.Introspector;
 import java.lang.reflect.Method;
@@ -147,34 +149,15 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
    *     or empty if an error occurred during processing
    */
-  protected Optional<String> processQuantity(
+  protected Optional<String> handleQuantity(
       Quantity<?> quantity, String fieldName, boolean resultModel) {
 
     Optional<String> normalizedQuantityValue = Optional.empty();
     // result models
     if (resultModel) {
-      switch (fieldName) {
-        case "p":
-          normalizedQuantityValue =
-              quantityValToOptionalString(
-                  quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_OUT));
-          break;
-        case "q":
-          normalizedQuantityValue =
-              quantityValToOptionalString(
-                  quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_OUT));
-          break;
-        case "soc":
-          normalizedQuantityValue = quantityValToOptionalString(quantity);
-          break;
-        default:
-          log.error(
-              "Cannot process quantity {} for field with name {} in result model processing!",
-              quantity,
-              fieldName);
-          break;
-      }
-      // input models
+      normalizedQuantityValue = handleResultEntityQuantity(quantity, fieldName);
+      // input models, not complete yet!
+      // might make sense to move this to another place as well in the future
     } else {
       switch (fieldName) {
         case "p":
@@ -188,7 +171,24 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
                   quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
           break;
         case "soc":
+        case "vAng":
+        case "vMag":
+        case "iAAng":
+        case "iBAng":
+        case "iCAng":
           normalizedQuantityValue = quantityValToOptionalString(quantity);
+          break;
+        case "iAMag":
+        case "iBMag":
+        case "iCMag":
+          normalizedQuantityValue =
+              quantityValToOptionalString(
+                  quantity.asType(ElectricCurrent.class).to(StandardUnits.CURRENT));
+          break;
+        case "qDemand":
+          normalizedQuantityValue =
+              quantityValToOptionalString(
+                  quantity.asType(HeatCapacity.class).to(StandardUnits.HEAT_CAPACITY));
           break;
         default:
           log.error(
@@ -197,6 +197,49 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
               fieldName);
           break;
       }
+    }
+    return normalizedQuantityValue;
+  }
+
+  private Optional<String> handleResultEntityQuantity(Quantity<?> quantity, String fieldName) {
+    Optional<String> normalizedQuantityValue = Optional.empty();
+    switch (fieldName) {
+      case "p":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_OUT));
+        break;
+      case "q":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_OUT));
+        break;
+      case "soc":
+      case "vAng":
+      case "vMag":
+      case "iAAng":
+      case "iBAng":
+      case "iCAng":
+        normalizedQuantityValue = quantityValToOptionalString(quantity);
+        break;
+      case "iAMag":
+      case "iBMag":
+      case "iCMag":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(ElectricCurrent.class).to(StandardUnits.CURRENT));
+        break;
+      case "qDemand":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(HeatCapacity.class).to(StandardUnits.HEAT_CAPACITY));
+        break;
+      default:
+        log.error(
+            "Cannot process quantity {} for field with name {} in result model processing!",
+            quantity,
+            fieldName);
+        break;
     }
     return normalizedQuantityValue;
   }
