@@ -1,0 +1,104 @@
+@startuml
+
+abstract Class UniqueEntity{
+    + UUID:  uuid
+}
+
+abstract Class ResultEntity{
+    + ZonedDateTime:  timestamp
+    + UUID:  inputModel
+}
+
+abstract Class SystemParticipantResult{
+    + p: Quantity<Power>
+    + q: Quantity<Power>
+}
+
+abstract Class ConnectorResult{
+    + iAMag: Quantity<ElectricCurrent>
+    + iAAng: Quantity<Angle>
+    + iBMag: Quantity<ElectricCurrent>
+    + iBAng: Quantity<Angle>
+}
+
+abstract Class TransformerResult{
+    + tapPos: int
+}
+
+Class NodeResult{
+    + vMag: Quantity<ElectricCurrent>
+    + vAng: Quantity<Angle>
+}
+
+Class LineResult{
+
+}
+
+Class TransformerResult2wResult{
+}
+
+Class TransformerResult3wResult{
+    + iCMag: Quantity<ElectricCurrent>
+    + iCAng: Quantity<Angle>
+}
+
+Class LoadResult
+
+Class FixedFeedInResult
+
+
+Class BmResult
+
+
+Class PvResult
+
+
+Class ChpResult
+
+
+Class WecResult
+
+Class ThermalSinkResult{
+    + qDemand: Quantity<HeatCapacity>
+}
+
+Class EvcsResult
+
+
+Class EvResult{
+    + soc: double
+    + systemUuid: UUID
+    + id: String
+}
+
+Class StorageResult{
+    + soc: double
+}
+
+Class SwitchResult{
+    + closed: boolean
+}
+
+UniqueEntity <|-- ResultEntity
+ResultEntity <|-- ConnectorResult
+ResultEntity <|-- SystemParticipantResult
+ResultEntity <|-- NodeResult
+ResultEntity <|-- EvResult
+ResultEntity <|-- ThermalSinkResult
+SystemParticipantResult <|-- FixedFeedInResult
+SystemParticipantResult <|-- BmResult
+SystemParticipantResult <|-- PvResult
+SystemParticipantResult <|-- ChpResult
+SystemParticipantResult <|-- WecResult
+SystemParticipantResult <|-- EvcsResult
+SystemParticipantResult <|-- StorageResult
+SystemParticipantResult <|-- LoadResult
+ConnectorResult <|-- SwitchResult
+EvResult --> "uuid" EvcsResult
+
+ConnectorResult <|-- LineResult
+ConnectorResult <|-- TransformerResult
+TransformerResult <|-- TransformerResult2wResult
+TransformerResult <|-- TransformerResult3wResult
+
+@enduml

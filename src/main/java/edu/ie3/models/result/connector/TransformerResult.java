@@ -6,13 +6,20 @@
 package edu.ie3.models.result.connector;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 
-/** Represents calculation results of a {@link edu.ie3.models.input.connector.Transformer2WInput} */
-public class Transformer2wResult extends Transformer {
+/**
+ * Abstract class that adds a tap changer position attribute to the {@link ConnectorResult} which
+ * actually creates a transformer representation.
+ */
+public abstract class TransformerResult extends ConnectorResult {
+
+  /** Current tapping position if a transformer has a tap changer */
+  private int tapPos;
 
   /**
    * Standard constructor with automatic uuid generation.
@@ -23,8 +30,9 @@ public class Transformer2wResult extends Transformer {
    * @param iAAng electric current angle @ Port A in degree
    * @param iBMag electric current magnitude @ port B, normally provided in Ampere
    * @param iBAng electric current angle @ Port B in degree
+   * @param tapPos the current position of the transformers tap changer
    */
-  public Transformer2wResult(
+  public TransformerResult(
       ZonedDateTime timestamp,
       UUID inputModel,
       Quantity<ElectricCurrent> iAMag,
@@ -32,12 +40,11 @@ public class Transformer2wResult extends Transformer {
       Quantity<ElectricCurrent> iBMag,
       Quantity<Angle> iBAng,
       int tapPos) {
-    super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+    super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
+    this.tapPos = tapPos;
   }
 
   /**
-   * Standard constructor which allows uuid provision
-   *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
    * @param timestamp date and time when the result is produced
@@ -46,8 +53,9 @@ public class Transformer2wResult extends Transformer {
    * @param iAAng electric current angle @ Port A in degree
    * @param iBMag electric current magnitude @ port B, normally provided in Ampere
    * @param iBAng electric current angle @ Port B in degree
+   * @param tapPos the current position of the transformers tap changer
    */
-  public Transformer2wResult(
+  public TransformerResult(
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
@@ -56,6 +64,29 @@ public class Transformer2wResult extends Transformer {
       Quantity<ElectricCurrent> iBMag,
       Quantity<Angle> iBAng,
       int tapPos) {
-    super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+    super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
+    this.tapPos = tapPos;
+  }
+
+  public int getTapPos() {
+    return tapPos;
+  }
+
+  public void setTapPos(int tapPos) {
+    this.tapPos = tapPos;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    TransformerResult that = (TransformerResult) o;
+    return tapPos == that.tapPos;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), tapPos);
   }
 }

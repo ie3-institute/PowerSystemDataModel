@@ -1,6 +1,7 @@
 plugins {
 	id "com.jfrog.artifactory" version "4.9.7"
 	id 'java' //java support
+	id 'groovy' // groovy support
 	id 'maven-publish'
 	id 'signing'
 	id 'pmd' // code check, working on source code
@@ -48,8 +49,9 @@ dependencies {
 
 	compile 'com.vividsolutions:jts:1.13' //JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
 
-	//Testing
-	testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
+	// testing
+	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
+	testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
 }
 
 wrapper {

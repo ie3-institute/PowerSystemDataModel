@@ -6,6 +6,7 @@
 package edu.ie3.models.input.aggregated;
 
 import edu.ie3.models.UniqueEntity;
+import edu.ie3.utils.ValidationUtils;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,6 +29,6 @@ public interface AggregatedEntities {
   /** @return unmodifiable List of all entities */
   List<UniqueEntity> allEntitiesAsList();
 
-  /** checks all values using {@link edu.ie3.models.validation.ValidationTools} */
+  /** checks all values using {@link ValidationUtils} */
   boolean areValuesValid();
 }

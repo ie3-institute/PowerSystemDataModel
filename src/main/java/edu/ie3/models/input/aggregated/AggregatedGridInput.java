@@ -7,7 +7,7 @@ package edu.ie3.models.input.aggregated;
 
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.MeasurementUnitInput;
-import edu.ie3.models.validation.ValidationTools;
+import edu.ie3.utils.ValidationUtils;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class AggregatedGridInput implements AggregatedEntities {
   private AggregatedGraphicInput graphics;
 
   /** Measurement units in this grid */
-  private LinkedList<MeasurementUnitInput> measurementUnits = new LinkedList<>();
+  private List<MeasurementUnitInput> measurementUnits = new LinkedList<>();
 
   @Override
   public void add(UniqueEntity entity) {
@@ -73,7 +73,7 @@ public class AggregatedGridInput implements AggregatedEntities {
     if (!systemParticipants.areValuesValid()) return false;
     if (!graphics.areValuesValid()) return false;
     for (MeasurementUnitInput measurementUnit : measurementUnits) {
-      if (!ValidationTools.checkMeasurementUnit(measurementUnit)) return false;
+      if (!ValidationUtils.checkMeasurementUnit(measurementUnit)) return false;
     }
     return true;
   }
@@ -126,11 +126,11 @@ public class AggregatedGridInput implements AggregatedEntities {
     this.graphics = graphics;
   }
 
-  public LinkedList<MeasurementUnitInput> getMeasurementUnits() {
+  public List<MeasurementUnitInput> getMeasurementUnits() {
     return measurementUnits;
   }
 
-  public void setMeasurementUnits(LinkedList<MeasurementUnitInput> measurementUnits) {
+  public void setMeasurementUnits(List<MeasurementUnitInput> measurementUnits) {
     this.measurementUnits = measurementUnits;
   }
 }
