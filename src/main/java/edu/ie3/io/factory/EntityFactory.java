@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Internal API Interface for EntityFactories
- *
  * @version 0.1
  * @since 28.01.20
  */
