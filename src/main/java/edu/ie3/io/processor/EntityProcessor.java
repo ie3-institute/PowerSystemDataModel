@@ -41,7 +41,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   protected final boolean resultModel;
 
   /** Field name of {@link UniqueEntity} uuid */
-  private final String uuidString = "uuid";
+  private static final String uuidString = "uuid";
 
   /**
    * Create a new EntityProcessor
@@ -152,66 +152,23 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       Quantity<?> quantity, String fieldName, boolean resultModel) {
 
     Optional<String> normalizedQuantityValue = Optional.empty();
-    // result models
-    if (resultModel) {
-      normalizedQuantityValue = handleResultEntityQuantity(quantity, fieldName);
-      // input models, not complete yet!
-      // might make sense to move this to another place as well in the future
-    } else {
-      switch (fieldName) {
-        case "p":
-          normalizedQuantityValue =
-              quantityValToOptionalString(
-                  quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
-          break;
-        case "q":
-          normalizedQuantityValue =
-              quantityValToOptionalString(
-                  quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
-          break;
-        case "soc":
-        case "vAng":
-        case "vMag":
-        case "iAAng":
-        case "iBAng":
-        case "iCAng":
-          normalizedQuantityValue = quantityValToOptionalString(quantity);
-          break;
-        case "iAMag":
-        case "iBMag":
-        case "iCMag":
-          normalizedQuantityValue =
-              quantityValToOptionalString(
-                  quantity.asType(ElectricCurrent.class).to(StandardUnits.CURRENT));
-          break;
-        case "qDemand":
-          normalizedQuantityValue =
-              quantityValToOptionalString(
-                  quantity.asType(HeatCapacity.class).to(StandardUnits.HEAT_CAPACITY));
-          break;
-        default:
-          log.error(
-              "Cannot process quantity {} for field with name {} in input model processing!",
-              quantity,
-              fieldName);
-          break;
-      }
-    }
-    return normalizedQuantityValue;
-  }
 
-  private Optional<String> handleResultEntityQuantity(Quantity<?> quantity, String fieldName) {
-    Optional<String> normalizedQuantityValue = Optional.empty();
     switch (fieldName) {
       case "p":
         normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_OUT));
+            resultModel
+                ? quantityValToOptionalString(
+                    quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_OUT))
+                : quantityValToOptionalString(
+                    quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
         break;
       case "q":
         normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_OUT));
+            resultModel
+                ? quantityValToOptionalString(
+                    quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_OUT))
+                : quantityValToOptionalString(
+                    quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
         break;
       case "soc":
       case "vAng":
