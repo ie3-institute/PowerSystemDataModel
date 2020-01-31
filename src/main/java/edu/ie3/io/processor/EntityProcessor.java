@@ -40,7 +40,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   protected final boolean resultModel;
 
   /** Field name of {@link UniqueEntity} uuid */
-  private static final String uuidString = "uuid";
+  private final String uuidString = "uuid";
 
   /**
    * Create a new EntityProcessor
