@@ -218,7 +218,7 @@ class ResultEntityProcessorTest extends Specification {
     @Shared
     Quantity<Angle> iCAng = Quantities.getQuantity(70, StandardUnits.ELECTRIC_CURRENT_ANGLE)
     @Shared
-    int tapPos = 5;
+    int tapPos = 5
     @Shared
     boolean closed = true
 
