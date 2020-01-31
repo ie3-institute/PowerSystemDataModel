@@ -34,7 +34,15 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
 
   public abstract Optional<T> getEntity(D entityData);
 
-  //  public abstract Optional<Map<String, String>> getNormalizedEntityFieldValues(T entity);
+  /**
+   * De-Serialize an entities values to it's fieldName -> value representation. Can be used e.g. to
+   * write this entity into a .csv file afterwards. Note: the concrete implementation needs to
+   * ensure, that all values are normalized before by using {@link edu.ie3.models.StandardUnits}!
+   *
+   * @param entity the entity to be serialized
+   * @return a map containing fieldName -> value strings
+   */
+  public abstract Optional<Map<String, String>> getNormalizedEntityFieldValues(T entity);
 
   protected abstract List<Set<String>> getFields(D entityData);
 
@@ -52,14 +60,28 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
     return Stream.concat(Arrays.stream(more), set.stream()).collect(Collectors.toSet());
   }
 
-  protected int validateParameters(EntityData simpleEntityData, Set<String>... fieldSets) {
+  /**
+   * Validates the factory specific constructor parameters in two ways. 1) the biggest set of the
+   * provided field sets is compared against fields the class implements. If this test passes then
+   * we know for sure that the field names at least in the biggest constructor are equal to the
+   * provided factory strings 2) if 1) passes, the provided entity data (which is equal to the data
+   * e.g. read from the outside) is compared to all available constructor parameters provided by the
+   * fieldSets Array. If we find exactly one constructor, that matches the field names we can
+   * proceed. Otherwise a detailed exception message is thrown.
+   *
+   * @param entityData the entity containing at least the entity class as well a mapping of the
+   *     provided field name strings to its value (e.g. a headline of a csv -> column values)
+   * @param fieldSets a set containing all available constructor combinations as field names
+   * @return the number of the set in the fieldSets array that fits the provided entityData
+   */
+  protected int validateParameters(EntityData entityData, Set<String>... fieldSets) {
 
     // check if the biggest set (assumed: set with all parameters) contains all fields available in
     // the class
     try {
       Set<String> realFieldSet =
           Arrays.stream(
-                  Introspector.getBeanInfo(simpleEntityData.getEntityClass(), Object.class)
+                  Introspector.getBeanInfo(entityData.getEntityClass(), Object.class)
                       .getPropertyDescriptors())
               .filter(pd -> Objects.nonNull(pd.getReadMethod()))
               .map(FeatureDescriptor::getName)
@@ -85,10 +107,10 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
     } catch (IntrospectionException e) {
       throw new FactoryException(
           "Unable to extract field names from "
-              + simpleEntityData.getEntityClass().getSimpleName()
+              + entityData.getEntityClass().getSimpleName()
               + ".class! ");
     }
-    Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
+    Map<String, String> fieldsToValues = entityData.getFieldsToValues();
 
     // get all sets that match the fields to attributes
     List<Set<String>> validFieldSets =
@@ -119,9 +141,9 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
               + providedFieldMapString
               + "}"
               + " are invalid for instance of "
-              + simpleEntityData.getEntityClass().getSimpleName()
+              + entityData.getEntityClass().getSimpleName()
               + ". \nThe following fields to be passed to a constructor of "
-              + simpleEntityData.getEntityClass().getSimpleName()
+              + entityData.getEntityClass().getSimpleName()
               + " are possible:\n"
               + possibleOptions);
     }
