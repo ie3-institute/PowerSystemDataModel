@@ -10,12 +10,11 @@ import edu.ie3.io.factory.result.SystemParticipantResultFactory;
 import edu.ie3.io.processor.EntityProcessor;
 import edu.ie3.models.result.ResultEntity;
 import edu.ie3.models.result.system.SystemParticipantResult;
-
-import javax.measure.Quantity;
 import java.lang.reflect.Method;
 import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
 import java.util.Optional;
+import javax.measure.Quantity;
 
 /**
  * 'De-serializer' for {@link SystemParticipantResult}s into a fieldName -> value representation to

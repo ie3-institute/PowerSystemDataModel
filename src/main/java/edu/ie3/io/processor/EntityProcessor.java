@@ -12,18 +12,17 @@ import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.result.ResultEntity;
 import edu.ie3.util.TimeTools;
 import edu.ie3.util.quantities.interfaces.HeatCapacity;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.measure.Quantity;
-import javax.measure.quantity.ElectricCurrent;
-import javax.measure.quantity.Power;
 import java.beans.Introspector;
 import java.lang.reflect.Method;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
+import javax.measure.Quantity;
+import javax.measure.quantity.ElectricCurrent;
+import javax.measure.quantity.Power;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Internal API Interface for EntityProcessors. Main purpose is to 'de-serialize' models into a
