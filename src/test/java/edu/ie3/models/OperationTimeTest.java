@@ -120,33 +120,4 @@ class OperationTimeTest {
         assertTrue(NOT_LIMITED_OPERATION.includes(DATE_AFTER_INTERVAL));
     }
 
-
-
-    @Test
-    void builder() {
-        //Test empty build
-        OperationTime.OperationTimeBuilder builder = OperationTime.builder();
-        assertEquals(NOT_LIMITED_OPERATION, builder.build());
-
-        //Test adding parameters
-        builder = builder.withStart(START_DATE);
-        assertEquals(LIMITED_OPERATION_TIME_START_ONLY, builder.build());
-
-        builder = builder.withEnd(END_DATE);
-        assertEquals(LIMITED_OPERATION_TIME, builder.build());
-
-        //Test overriding
-        builder = builder.withStart(null);
-        assertEquals(LIMITED_OPERATION_TIME_END_ONLY, builder.build());
-
-        builder = builder.withEnd(null);
-        assertEquals(NOT_LIMITED_OPERATION, builder.build());
-
-        //Test build from Interval
-        builder = OperationTime.builder();
-        ClosedInterval<ZonedDateTime> timeInterval = new ClosedInterval<>(START_DATE, END_DATE);
-        builder = builder.withOperationTime(timeInterval);
-        assertEquals(LIMITED_OPERATION_TIME, builder.build());
-    }
-
 }
