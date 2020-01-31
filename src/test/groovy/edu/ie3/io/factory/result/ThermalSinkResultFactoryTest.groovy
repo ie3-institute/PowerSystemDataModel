@@ -22,9 +22,9 @@ class ThermalSinkResultFactoryTest extends Specification {
         given: "a system participant factory and model data"
         def resultFactory = new ThermalSinkResultFactory()
         HashMap<String, String> parameterMap = [:]
-        parameterMap.put("timestamp", "2020-01-30 17:26:44");
-        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7");
-        parameterMap.put("qdemand", "2");
+        parameterMap.put("timestamp", "2020-01-30 17:26:44")
+        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7")
+        parameterMap.put("qdemand", "2")
         when:
         Optional<? extends ThermalSinkResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, ThermalSinkResult))
 

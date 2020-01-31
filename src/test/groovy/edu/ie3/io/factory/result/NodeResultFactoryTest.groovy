@@ -23,10 +23,10 @@ class NodeResultFactoryTest extends Specification {
         given: "a system participant factory and model data"
         def resultFactory = new NodeResultFactory()
         HashMap<String, String> parameterMap = [:]
-        parameterMap.put("timestamp", "2020-01-30 17:26:44");
-        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7");
-        parameterMap.put("vmag", "2");
-        parameterMap.put("vang", "2");
+        parameterMap.put("timestamp", "2020-01-30 17:26:44")
+        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7")
+        parameterMap.put("vmag", "2")
+        parameterMap.put("vang", "2")
 
         when:
         Optional<? extends NodeResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, NodeResult))
@@ -45,9 +45,9 @@ class NodeResultFactoryTest extends Specification {
         given: "a system participant factory and model data"
         def resultFactory = new NodeResultFactory()
         HashMap<String, String> parameterMap = [:]
-        parameterMap.put("timestamp", "2020-01-30 17:26:44");
-        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7");
-        parameterMap.put("vmag", "2");
+        parameterMap.put("timestamp", "2020-01-30 17:26:44")
+        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7")
+        parameterMap.put("vmag", "2")
 
         when:
         resultFactory.getEntity(new SimpleEntityData(parameterMap, NodeResult.class))
