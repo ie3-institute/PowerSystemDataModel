@@ -28,21 +28,11 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
 
   protected final List<Class<? extends T>> classes;
 
-  public EntityFactory(Class<? extends T>... classes) {
-    this.classes = Arrays.asList(classes);
+  public EntityFactory(Class<? extends T>... allowedClasses) {
+    this.classes = Arrays.asList(allowedClasses);
   }
 
   public abstract Optional<T> getEntity(D entityData);
-
-  /**
-   * De-Serialize an entities values to it's fieldName -> value representation. Can be used e.g. to
-   * write this entity into a .csv file afterwards. Note: the concrete implementation needs to
-   * ensure, that all values are normalized before by using {@link edu.ie3.models.StandardUnits}!
-   *
-   * @param entity the entity to be serialized
-   * @return a map containing fieldName -> value strings
-   */
-  public abstract Optional<Map<String, String>> getNormalizedEntityFieldValues(T entity);
 
   protected abstract List<Set<String>> getFields(D entityData);
 

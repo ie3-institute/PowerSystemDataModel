@@ -12,13 +12,14 @@ import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.result.system.*;
 import edu.ie3.util.TimeTools;
-import java.time.ZonedDateTime;
-import java.util.*;
+import tec.uom.se.quantity.Quantities;
+import tec.uom.se.unit.Units;
+
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
-import tec.uom.se.quantity.Quantities;
-import tec.uom.se.unit.Units;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemParticipantResult> {
   private static final String entityUuid = "uuid";
@@ -29,6 +30,7 @@ public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemPa
   private static final String soc = "soc";
 
   public SystemParticipantResultFactory() {
+
     super(
         LoadResult.class,
         FixedFeedInResult.class,

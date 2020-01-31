@@ -7,6 +7,7 @@ package edu.ie3.io.factory;
 
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.models.UniqueEntity;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -24,17 +25,13 @@ import java.util.stream.Collectors;
 public abstract class SimpleEntityFactory<T extends UniqueEntity>
     extends EntityFactory<T, SimpleEntityData> {
 
-  public SimpleEntityFactory(Class<? extends T>... classes) {
-    super(classes);
+  public SimpleEntityFactory(Class<? extends T>... allowedClasses) {
+    super(allowedClasses);
   }
 
   @Override
   public Optional<T> getEntity(SimpleEntityData simpleEntityData) {
-    if (!classes.contains(simpleEntityData.getEntityClass()))
-      throw new FactoryException(
-          "Cannot process "
-              + simpleEntityData.getEntityClass().getSimpleName()
-              + ".class with this factory!");
+    isValidClass(simpleEntityData.getEntityClass());
 
     // magic: case-insensitive get/set calls on set strings
     final List<Set<String>> allFields =
@@ -64,5 +61,11 @@ public abstract class SimpleEntityFactory<T extends UniqueEntity>
           e);
     }
     return result;
+  }
+
+  private void isValidClass(Class<? extends UniqueEntity> clazz) {
+    if (!classes.contains(clazz))
+      throw new FactoryException(
+          "Cannot process " + clazz.getSimpleName() + ".class with this factory!");
   }
 }
