@@ -5,6 +5,7 @@ import edu.ie3.dataconnection.dataconnectors.InfluxDbConnector;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.influxdb.InfluxDbEntity;
 import edu.ie3.models.influxdb.InfluxDbMapper;
+import edu.ie3.models.result.ResultEntity;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
@@ -25,7 +26,7 @@ public class InfluxDbDataSink implements DataSink {
     }
 
     @Override
-    public void write(UniqueEntity entity) {
+    public void persist(ResultEntity entity) {
             write(InfluxDbMapper.transformToInfluxDbEntity(entity));
         }
 
@@ -37,7 +38,7 @@ public class InfluxDbDataSink implements DataSink {
     }
 
     @Override
-    public void writeAll(Collection<? extends  UniqueEntity> entities) {
+    public void persistAll(Collection<? extends ResultEntity> entities) {
         BatchPoints batchPoints = BatchPoints.builder()
                 .build();
         for(UniqueEntity entity : entities){

@@ -8,6 +8,7 @@ package edu.ie3.models.timeseries;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.Value;
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.HashMap;
 
 /** Describes a TimeSeries with individual values per timestep */
@@ -32,6 +33,14 @@ public class IndividualTimeSeries<T extends Value> implements TimeSeries<T> {
    */
   public void add(TimeBasedValue<T> timeBasedValue) {
     timeToTimeBasedValue.put(timeBasedValue.getTime(), timeBasedValue);
+  }
+
+  /**
+   * Adds values of a collection to the internal map
+   *
+   */
+  public void addAll(Collection<TimeBasedValue<T>> timeBasedValues) {
+    timeBasedValues.forEach(this::add);
   }
 
   @Override

@@ -11,6 +11,7 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
+import java.util.Objects;
 
 /** Describes weather as a combination of irradiation, temperature and wind values */
 public class WeatherValues implements Value {
@@ -70,11 +71,11 @@ public class WeatherValues implements Value {
     this.coordinate = coordinate;
   }
 
-  public IrradiationValue getirradiation() {
+  public IrradiationValue getIrradiation() {
     return irradiation;
   }
 
-  public void setirradiation(IrradiationValue irradiation) {
+  public void setIrradiation(IrradiationValue irradiation) {
     this.irradiation = irradiation;
   }
 
@@ -92,5 +93,21 @@ public class WeatherValues implements Value {
 
   public void setWind(WindValue wind) {
     this.wind = wind;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof WeatherValues)) return false;
+    WeatherValues that = (WeatherValues) o;
+    return Objects.equals(coordinate, that.coordinate) &&
+            irradiation.equals(that.irradiation) &&
+            temperature.equals(that.temperature) &&
+            wind.equals(that.wind);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(coordinate, irradiation, temperature, wind);
   }
 }

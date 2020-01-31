@@ -8,12 +8,13 @@ package edu.ie3.dataconnection.source.influxdb;
 import com.vividsolutions.jts.geom.Point;
 import edu.ie3.dataconnection.dataconnectors.DataConnector;
 import edu.ie3.dataconnection.dataconnectors.InfluxDbConnector;
+import edu.ie3.dataconnection.source.CsvCoordinateSource;
 import edu.ie3.dataconnection.source.WeatherSource;
 import edu.ie3.models.influxdb.input.weather.InfluxDbWeatherInput;
 import edu.ie3.models.timeseries.IndividualTimeSeries;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.WeatherValues;
-import edu.ie3.util.Interval;
+import edu.ie3.util.interval.ClosedInterval;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
@@ -32,13 +33,13 @@ public class InfluxDbWeatherSource implements WeatherSource {
     this.connector = connector;
   }
 
-  @Override
-  public HashMap<Point, IndividualTimeSeries<WeatherValues>> fetchWeather(Interval<ZonedDateTime> timeInterval) {
+  public Map<Point, IndividualTimeSeries<WeatherValues>> getWeather(ClosedInterval<ZonedDateTime> timeInterval) {
     //init HashMap
     HashMap<Point, IndividualTimeSeries<WeatherValues>> coordinateToTimeSeries = new HashMap<>();
     List<InfluxDbWeatherInput> influxWeatherInputs;
     try(InfluxDB session = connector.getSession()) {
-      QueryResult queryResult = session.query(new Query(createQueryStringForInterval(timeInterval)));
+      String query = createQueryStringForInterval(timeInterval);
+      QueryResult queryResult = session.query(new Query(query));
 
       InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
       influxWeatherInputs = resultMapper
@@ -63,8 +64,8 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   @Override
-  public HashMap<Point, IndividualTimeSeries<WeatherValues>> fetchWeather(Interval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
-    if(coordinates==null) return fetchWeather(timeInterval);
+  public Map<Point, IndividualTimeSeries<WeatherValues>> getWeather(ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
+    if(coordinates==null) return getWeather(timeInterval);
 
     HashMap<Point, IndividualTimeSeries<WeatherValues>> coordinateToTimeSeries = new HashMap<>();
 
@@ -72,16 +73,19 @@ public class InfluxDbWeatherSource implements WeatherSource {
       List<TimeBasedValue<WeatherValues>> weatherInputs = getWeatherForCoordinate(timeInterval, coordinate);
       IndividualTimeSeries<WeatherValues> timeSeries = new IndividualTimeSeries<WeatherValues>();
       timeSeries.addAll(weatherInputs);
+      coordinateToTimeSeries.put(coordinate, timeSeries);
     }
 
     return coordinateToTimeSeries;
   }
 
 
-  public List<TimeBasedValue<WeatherValues>> getWeatherForCoordinate(Interval<ZonedDateTime> timeInterval, Point coordinate){
+  public List<TimeBasedValue<WeatherValues>> getWeatherForCoordinate(ClosedInterval<ZonedDateTime> timeInterval, Point coordinate){
     List<InfluxDbWeatherInput> influxWeatherInputs;
     try(InfluxDB session = connector.getSession()) {
-      QueryResult queryResult = session.query(new Query(createQueryStringForIntervalAndCoordinate(timeInterval, coordinate)));
+      String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinate);
+      System.out.println(query);
+      QueryResult queryResult = session.query(new Query(query));
 
       InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
       influxWeatherInputs = resultMapper
@@ -96,12 +100,14 @@ public class InfluxDbWeatherSource implements WeatherSource {
   public Optional<TimeBasedValue<WeatherValues>> getWeather(ZonedDateTime date, Point coordinate) {
     List<InfluxDbWeatherInput> influxWeatherInputs;
     try(InfluxDB session = connector.getSession()) {
-      QueryResult queryResult = session.query(new Query(createQueryStringForDateAndCoordinate(date, coordinate)));
+      String query = createQueryStringForDateAndCoordinate(date, coordinate);
+      System.out.println(query);
+      QueryResult queryResult = session.query(new Query(query));
       InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
       influxWeatherInputs = resultMapper
               .toPOJO(queryResult, InfluxDbWeatherInput.class);
     }
-    if(influxWeatherInputs == null) return Optional.empty();
+    if(influxWeatherInputs == null || influxWeatherInputs.isEmpty()) return Optional.empty();
     return Optional.ofNullable(influxWeatherInputs.get(0).toTimeBasedWeatherValues());
   }
 
@@ -110,7 +116,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
     return connector;
   }
 
-  public String createQueryStringForIntervalAndCoordinate(Interval<ZonedDateTime> timeInterval, Point coordinate){
+  public String createQueryStringForIntervalAndCoordinate(ClosedInterval<ZonedDateTime> timeInterval, Point coordinate){
     return  createQueryStringForInterval(timeInterval) + " and " + createCoordinateConstraintString(coordinate);
   }
 
@@ -118,16 +124,16 @@ public class InfluxDbWeatherSource implements WeatherSource {
     return  createQueryStringForDate(date) + " and " + createCoordinateConstraintString(coordinate);
   }
 
-  public String createQueryStringForInterval(Interval<ZonedDateTime> timeInterval){
+  public String createQueryStringForInterval(ClosedInterval<ZonedDateTime> timeInterval){
     String basicQuery = createBasicQueryString();
-    String timeConstraint = "time >= " + timeInterval.getLower().toString()
-            + "and time <= " + timeInterval.getUpper().toString();
+    String timeConstraint = "time >= " + timeInterval.getLower().toInstant().toEpochMilli() + "000000"
+            + " and time <= " + timeInterval.getUpper().toInstant().toEpochMilli() + "000000";
     return basicQuery + " where " + timeConstraint;
   }
 
   public String createQueryStringForDate(ZonedDateTime date){
     String basicQuery = createBasicQueryString();
-    String timeConstraint = "time=" + date.toInstant().toEpochMilli();
+    String timeConstraint = "time=" + date.toInstant().toEpochMilli() + "000000";
     return basicQuery + " where " + timeConstraint;
   }
 
@@ -136,6 +142,6 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   public String createCoordinateConstraintString(Point coordinate){
-    return "\"lat\"='" + coordinate.getY() + "' and \"lon\"='" + coordinate.getX() + "'";
+    return "\"koordinatenid\"='" + CsvCoordinateSource.getId(coordinate) + "'";
   }
 }

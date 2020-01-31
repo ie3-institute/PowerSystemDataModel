@@ -49,6 +49,19 @@ dependencies {
 
 	compile 'com.vividsolutions:jts:1.13' //JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
 
+	compile 'org.influxdb:influxdb-java:2.17' //for influxdb connector
+	compile 'com.couchbase.client:java-client:3.0.0'
+	 compile 'com.opencsv:opencsv:5.0' //for csv connector
+	implementation 'com.google.code.gson:gson:2.8.6' //json parse
+
+	//test
+	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
+	testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
+}
+
+test {
+	useJUnitPlatform()
+
 	// testing
 	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
 	testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
@@ -60,8 +73,4 @@ wrapper {
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
-}
-
-test {
-	useJUnitPlatform()
 }

@@ -6,12 +6,12 @@
 package edu.ie3.models.influxdb.input.weather;
 
 import com.vividsolutions.jts.geom.Point;
+import edu.ie3.dataconnection.source.CsvCoordinateSource;
+import edu.ie3.models.StandardUnits;
 import edu.ie3.models.influxdb.InfluxDbEntity;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.WeatherValues;
-import edu.ie3.util.quantities.PowerSystemUnits;
-import edu.ie3.util.quantities.interfaces.PowerDensity;
-import edu.ie3.utils.CoordinateTools;
+import edu.ie3.util.quantities.interfaces.Irradiation;
 import org.influxdb.annotation.Column;
 import org.influxdb.annotation.Measurement;
 import tec.uom.se.quantity.Quantities;
@@ -27,11 +27,8 @@ import java.time.ZonedDateTime;
 @Measurement(name = "weather")
 public class InfluxDbWeatherInput extends InfluxDbEntity<TimeBasedValue<WeatherValues>> {
 
-  @Column(name = "lat", tag=true)
-  String lat; // MIA gewählt, da kein querverweis auf koordinaten möglich ist + String wegen tag
-
-  @Column(name = "lon", tag=true)
-  String lon;
+  @Column(name = "koordinatenid", tag=true)
+  String koordinatenId; // MIA gewählt, da kein querverweis auf koordinaten möglich ist + String wegen tag
 
   @Column(name = "diffusstrahlung")
   Double diffusstrahlung;
@@ -52,16 +49,14 @@ public class InfluxDbWeatherInput extends InfluxDbEntity<TimeBasedValue<WeatherV
 
   public InfluxDbWeatherInput(
       Instant time,
-      Double lat,
-      Double lon,
+      String koordinatenId,
       Double diffusstrahlung,
       Double direkstrahlung,
       Double temperatur,
       Double windrichtung,
       Double windgeschwindigkeit) {
     super(time);
-    this.lat = lat.toString();
-    this.lon = lon.toString();
+    this.koordinatenId = koordinatenId;
     this.diffusstrahlung = diffusstrahlung;
     this.direktstrahlung = direkstrahlung;
     this.temperatur = temperatur;
@@ -72,14 +67,13 @@ public class InfluxDbWeatherInput extends InfluxDbEntity<TimeBasedValue<WeatherV
   public InfluxDbWeatherInput(TimeBasedValue<WeatherValues> weather) {
     this.time = weather.getTime().toInstant();
     WeatherValues values = weather.getValue();
-    this.lat = String.valueOf(values.getCoordinate().getX());
-    this.lon = String.valueOf(values.getCoordinate().getY());
-    Quantity<PowerDensity> diffuseRadiation =
-        weather.getValue().getRadiation().getDiffuseRadiation();
-    this.diffusstrahlung = diffuseRadiation.getValue().doubleValue();
-    Quantity<PowerDensity> directRadiation = weather.getValue().getRadiation().getDirectRadiation();
-    this.direktstrahlung = directRadiation.getValue().doubleValue();
-    Quantity<Temperature> temperature = values.getTemperature().get();
+    this.koordinatenId = CsvCoordinateSource.getId(values.getCoordinate()).toString();
+    Quantity<Irradiation> diffuseIrradiation =
+        weather.getValue().getIrradiation().getDiffuseIrradiation();
+    this.diffusstrahlung = diffuseIrradiation.getValue().doubleValue();
+    Quantity<Irradiation> directIrradiation = weather.getValue().getIrradiation().getDirectIrradiation();
+    this.direktstrahlung = directIrradiation.getValue().doubleValue();
+    Quantity<Temperature> temperature = values.getTemperature().getTemperature();
     this.temperatur = temperature.getValue().doubleValue();
     Quantity<Angle> direction = values.getWind().getDirection();
     this.windrichtung = direction.getValue().doubleValue();
@@ -89,18 +83,18 @@ public class InfluxDbWeatherInput extends InfluxDbEntity<TimeBasedValue<WeatherV
 
   public TimeBasedValue<WeatherValues> toTimeBasedWeatherValues() {
     ZonedDateTime dateTime = time.atZone(ZoneId.of("UTC"));
-    Point geometry = CoordinateTools.xyCoordToPoint(Double.parseDouble(lat), Double.parseDouble(lon));
-    Quantity<PowerDensity> diffuseRadiation =
-        Quantities.getQuantity(diffusstrahlung, PowerSystemUnits.WATT_PER_SQUAREMETRE);
-    Quantity<PowerDensity> directRadiation =
-        Quantities.getQuantity(direktstrahlung, PowerSystemUnits.WATT_PER_SQUAREMETRE);
-    Quantity<Temperature> temperature = Quantities.getQuantity(temperatur, PowerSystemUnits.KELVIN);
-    Quantity<Angle> direction = Quantities.getQuantity(windrichtung, PowerSystemUnits.RADIAN);
+    Point geometry = CsvCoordinateSource.getCoordinate(Integer.parseInt(koordinatenId));
+    Quantity<Irradiation> diffuseIrradiation =
+        Quantities.getQuantity(diffusstrahlung, StandardUnits.IRRADIATION);
+    Quantity<Irradiation> directIrradiation =
+        Quantities.getQuantity(direktstrahlung, StandardUnits.IRRADIATION);
+    Quantity<Temperature> temperature = Quantities.getQuantity(temperatur, StandardUnits.TEMPERATURE);
+    Quantity<Angle> direction = Quantities.getQuantity(windrichtung, StandardUnits.WIND_DIRECTION);
     Quantity<Speed> velocity =
-        Quantities.getQuantity(windgeschwindigkeit, PowerSystemUnits.METRE_PER_SECOND);
+        Quantities.getQuantity(windgeschwindigkeit, StandardUnits.WIND_VELOCITY);
     return new TimeBasedValue<>(
         dateTime,
         new WeatherValues(
-            geometry, diffuseRadiation, directRadiation, temperature, direction, velocity));
+            geometry, diffuseIrradiation, directIrradiation, temperature, direction, velocity));
   }
 }

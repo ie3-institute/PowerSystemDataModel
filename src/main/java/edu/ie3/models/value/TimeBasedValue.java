@@ -8,6 +8,7 @@ package edu.ie3.models.value;
 import edu.ie3.models.UniqueEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Describes an entity of a time series by mapping a value to a timestamp
@@ -24,6 +25,14 @@ public class TimeBasedValue<T extends Value> extends UniqueEntity {
     this.value = value;
     this.time = time;
   }
+
+  public TimeBasedValue(UUID uuid, ZonedDateTime time, T value) {
+    super(uuid);
+    this.value = value;
+    this.time = time;
+  }
+
+  ZonedDateTime time;
 
   public T getValue() {
     return value;
