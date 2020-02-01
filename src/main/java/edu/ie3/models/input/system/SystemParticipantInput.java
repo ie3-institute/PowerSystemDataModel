@@ -9,7 +9,6 @@ import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.AssetInput;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
-
 import java.util.Objects;
 import java.util.UUID;
 

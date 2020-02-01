@@ -11,7 +11,6 @@ import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.HpTypeInput;
 import edu.ie3.models.input.thermal.ThermalBusInput;
 import edu.ie3.models.input.thermal.ThermalUnitInput;
-
 import java.util.Objects;
 import java.util.UUID;
 

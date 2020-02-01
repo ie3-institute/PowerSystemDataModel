@@ -6,7 +6,6 @@
 package edu.ie3.models;
 
 import edu.ie3.models.input.OperatorInput;
-
 import java.time.ZonedDateTime;
 
 /** Describes an operable Entity, with operation period interval */

@@ -10,11 +10,10 @@ import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.BmTypeInput;
-
-import javax.measure.Quantity;
-import javax.measure.quantity.Power;
 import java.util.Objects;
 import java.util.UUID;
+import javax.measure.Quantity;
+import javax.measure.quantity.Power;
 
 /** Describes a biomass plant */
 public class BmInput extends SystemParticipantInput {

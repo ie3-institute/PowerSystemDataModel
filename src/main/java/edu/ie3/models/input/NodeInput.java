@@ -9,12 +9,11 @@ import com.vividsolutions.jts.geom.Point;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.VoltageLevel;
-
+import java.util.Objects;
+import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricPotential;
-import java.util.Objects;
-import java.util.UUID;
 
 /** Describes an electrical grid node, that other assets can connect to */
 public class NodeInput extends AssetInput {

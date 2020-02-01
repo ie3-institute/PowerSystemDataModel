@@ -6,7 +6,6 @@
 package edu.ie3.models;
 
 import edu.ie3.util.interval.ClosedInterval;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

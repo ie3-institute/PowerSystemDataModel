@@ -7,7 +7,6 @@ package edu.ie3.models.input;
 
 import edu.ie3.models.Operable;
 import edu.ie3.models.OperationTime;
-
 import java.util.Objects;
 import java.util.UUID;
 
