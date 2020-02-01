@@ -5,13 +5,11 @@
 */
 package edu.ie3.models.input.system;
 
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
@@ -22,34 +20,10 @@ public class FixedFeedInInput extends SystemParticipantInput {
   private Quantity<Power> sRated;
 
   /**
-   * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
-   * @param operator of the asset
-   * @param id of the asset
-   * @param node the asset is connected to
-   * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphi Power factor
-   * @param sRated Rated apparent power
-   */
-  public FixedFeedInInput(
-      UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
-      OperatorInput operator,
-      String id,
-      NodeInput node,
-      String qCharacteristics,
-      double cosphi,
-      Quantity<Power> sRated) {
-    super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphi);
-    this.sRated = sRated.to(StandardUnits.S_RATED);
-  }
-
-  /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
+   * Constructor for an operated feed in
    *
    * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param node the asset is connected to
@@ -59,20 +33,19 @@ public class FixedFeedInInput extends SystemParticipantInput {
    */
   public FixedFeedInInput(
       UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
+      OperationTime operationTime,
       OperatorInput operator,
       String id,
       NodeInput node,
       String qCharacteristics,
       double cosphi,
       Quantity<Power> sRated) {
-    super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphi);
+    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
     this.sRated = sRated.to(StandardUnits.S_RATED);
   }
 
   /**
-   * Constructor for a non-operated asset
+   * Constructor for a non-operated feed in
    *
    * @param uuid of the input entity
    * @param id of the asset

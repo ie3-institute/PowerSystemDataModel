@@ -50,6 +50,7 @@ dependencies {
 	compile 'com.vividsolutions:jts:1.13' //JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
 
 	// testing
+	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
 	testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
 }
 
@@ -59,4 +60,8 @@ wrapper {
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
+}
+
+test {
+	useJUnitPlatform()
 }

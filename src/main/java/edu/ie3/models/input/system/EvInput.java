@@ -5,13 +5,11 @@
 */
 package edu.ie3.models.input.system;
 
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.EvTypeInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Describes an electric vehicle */
@@ -19,34 +17,10 @@ public class EvInput extends SystemParticipantInput {
   /** Type of this EV, containing default values for EVs of this kind */
   private EvTypeInput type;
   /**
-   * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
-   * @param operator of the asset
-   * @param id of the asset
-   * @param node the asset is connected to
-   * @param qCharacteristics
-   * @param cosphi Power factor
-   * @param type of EV
-   */
-  public EvInput(
-      UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
-      OperatorInput operator,
-      String id,
-      NodeInput node,
-      String qCharacteristics,
-      double cosphi,
-      EvTypeInput type) {
-    super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphi);
-    this.type = type;
-  }
-
-  /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
+   * Constructor for an operated electric vehicle
    *
    * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param node the asset is connected to
@@ -56,20 +30,19 @@ public class EvInput extends SystemParticipantInput {
    */
   public EvInput(
       UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
+      OperationTime operationTime,
       OperatorInput operator,
       String id,
       NodeInput node,
       String qCharacteristics,
       double cosphi,
       EvTypeInput type) {
-    super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphi);
+    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
     this.type = type;
   }
 
   /**
-   * Constructor for a non-operated asset
+   * Constructor for a non-operated electric vehicle
    *
    * @param uuid of the input entity
    * @param id of the asset

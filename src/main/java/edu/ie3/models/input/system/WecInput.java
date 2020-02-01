@@ -5,13 +5,11 @@
 */
 package edu.ie3.models.input.system;
 
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.WecTypeInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Describes a Wind Energy Converter */
@@ -22,8 +20,10 @@ public class WecInput extends SystemParticipantInput {
   /** Is this asset market oriented? */
   private boolean marketReaction;
   /**
+   * Constructor for an operated wind energy converter
+   *
    * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param node the asset is connected to
@@ -34,7 +34,7 @@ public class WecInput extends SystemParticipantInput {
    */
   public WecInput(
       UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
+      OperationTime operationTime,
       OperatorInput operator,
       String id,
       NodeInput node,
@@ -42,42 +42,13 @@ public class WecInput extends SystemParticipantInput {
       double cosphi,
       WecTypeInput type,
       boolean marketReaction) {
-    super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphi);
+    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
     this.type = type;
     this.marketReaction = marketReaction;
   }
 
   /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
-   *
-   * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
-   * @param operator of the asset
-   * @param id of the asset
-   * @param node the asset is connected to
-   * @param qCharacteristics
-   * @param cosphi Power factor
-   * @param type of this WEC
-   * @param marketReaction Is this asset market oriented?
-   */
-  public WecInput(
-      UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
-      OperatorInput operator,
-      String id,
-      NodeInput node,
-      String qCharacteristics,
-      double cosphi,
-      WecTypeInput type,
-      boolean marketReaction) {
-    super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphi);
-    this.type = type;
-    this.marketReaction = marketReaction;
-  }
-  /**
-   * Constructor for a non-operated asset
+   * Constructor for a non-operated wind energy converter
    *
    * @param uuid of the input entity
    * @param id of the asset
