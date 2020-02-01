@@ -5,13 +5,12 @@
 */
 package edu.ie3.models;
 
-import edu.ie3.util.interval.ClosedInterval;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 class OperationTimeBuilderTest {
 
