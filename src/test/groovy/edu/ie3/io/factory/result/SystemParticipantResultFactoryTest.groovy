@@ -24,7 +24,7 @@ class SystemParticipantResultFactoryTest extends Specification {
     def "A SystemParticipantResultFactory should parse a valid result model correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
-        HashMap<String, String> parameterMap = new HashMap<>()
+        HashMap<String, String> parameterMap = [:]
         parameterMap.put("timestamp", "2020-01-30 17:26:44")
         parameterMap.put("inputModel", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7")
         parameterMap.put("p", "2")
