@@ -18,11 +18,11 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 
 
-public class CsvOutputModelWriter extends ModelWriter {
+public class CsvResultEntityWriter extends ModelWriter {
 
     private final LinkedHashMap<String, Method> attributeToMethod = new LinkedHashMap<>();
 
-    public CsvOutputModelWriter(String outFileName, ResultEntityProcessor resultEntityProcessor) {
+    public CsvResultEntityWriter(String outFileName, ResultEntityProcessor resultEntityProcessor) {
         super(outFileName, resultEntityProcessor);
         writeHeaders();
 
