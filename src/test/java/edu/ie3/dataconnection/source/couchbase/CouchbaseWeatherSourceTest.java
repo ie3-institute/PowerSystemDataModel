@@ -1,7 +1,9 @@
+package edu.ie3.dataconnection.source.couchbase;
+
 import com.vividsolutions.jts.geom.Point;
-import edu.ie3.dataconnection.dataconnectors.InfluxDbConnector;
+import edu.ie3.dataconnection.dataconnectors.CouchbaseConnector;
 import edu.ie3.dataconnection.source.CsvCoordinateSource;
-import edu.ie3.dataconnection.source.influxdb.InfluxDbWeatherSource;
+import edu.ie3.dataconnection.source.WeatherTestEntityBuilder;
 import edu.ie3.models.timeseries.IndividualTimeSeries;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.WeatherValues;
@@ -14,9 +16,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InfluxDbWeatherSourceTest {
+class CouchbaseWeatherSourceTest {
 
-    private InfluxDbWeatherSource src;
+    private CouchbaseWeatherSource src;
 
     @BeforeAll
     static void setUpOnce(){
@@ -26,18 +28,8 @@ class InfluxDbWeatherSourceTest {
 
     @BeforeEach
     void setUp() {
-        InfluxDbConnector connector_in = new InfluxDbConnector("ie3_in");
-        src = new InfluxDbWeatherSource(connector_in);
-    }
-
-//    @Test //Not enough ram :(
-    void getOneMonthOfAllCoordinates() { //TODO One week...
-        Map<Point, IndividualTimeSeries<WeatherValues>> oneMonthOfAllCoordinates = src.getWeather(WeatherTestEntityBuilder.MONTH_INTERVAL);
-        assertEquals((int) CsvCoordinateSource.getCoordinateCount(), oneMonthOfAllCoordinates.size());
-        for(TimeBasedValue<WeatherValues> tbv : WeatherTestEntityBuilder.weatherValues) {
-            WeatherValues values = tbv.getValue();
-            assertEquals(tbv, oneMonthOfAllCoordinates.get(values.getCoordinate()).getTimeBasedValue(tbv.getTime()));
-        }
+        CouchbaseConnector connector_in = new CouchbaseConnector();
+        src = new CouchbaseWeatherSource(connector_in);
     }
 
     @Test
@@ -78,6 +70,5 @@ class InfluxDbWeatherSourceTest {
         Optional<TimeBasedValue<WeatherValues>> weatherInvalid = src.getWeather(WeatherTestEntityBuilder.INVALID_DATE, WeatherTestEntityBuilder.TEST_COORDINATE_A);
         assertEquals(Optional.empty(), weatherInvalid);
     }
-
 
 }

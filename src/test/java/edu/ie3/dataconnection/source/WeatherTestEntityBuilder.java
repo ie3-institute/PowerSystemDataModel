@@ -1,6 +1,7 @@
+package edu.ie3.dataconnection.source;
+
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.vividsolutions.jts.geom.Point;
-import edu.ie3.dataconnection.source.CsvCoordinateSource;
 import edu.ie3.models.csv.CsvWeatherInput;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.WeatherValues;

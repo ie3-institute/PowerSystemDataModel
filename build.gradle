@@ -52,19 +52,19 @@ dependencies {
 	compile 'org.influxdb:influxdb-java:2.17' //for influxdb connector
 	compile 'com.couchbase.client:java-client:3.0.0'
 	 compile 'com.opencsv:opencsv:5.0' //for csv connector
-	implementation 'com.google.code.gson:gson:2.8.6' //json parse
 
-	//test
+
+
+//	compile 'com.fasterxml.jackson.core:jackson-databind:2.10.2' //unneeded?
+	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2'
+
+	//testing
 	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
 	testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
 }
 
 test {
 	useJUnitPlatform()
-
-	// testing
-	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
-	testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
 }
 
 wrapper {

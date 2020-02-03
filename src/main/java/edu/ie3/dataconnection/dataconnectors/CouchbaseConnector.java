@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 
 public class CouchbaseConnector implements DataConnector {
 
-    private static final String COUCHBASE_URL = "http://localhost:8091/";
+    private static final String COUCHBASE_URL = "127.0.0.1";
+//    private static final String COUCHBASE_URL = "http://localhost:8091/";
     private String username = "Administrator";
     private String password = "administrator";
     private String bucketName ="ie3_in";

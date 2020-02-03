@@ -32,8 +32,6 @@ public class TimeBasedValue<T extends Value> extends UniqueEntity {
     this.time = time;
   }
 
-  ZonedDateTime time;
-
   public T getValue() {
     return value;
   }
