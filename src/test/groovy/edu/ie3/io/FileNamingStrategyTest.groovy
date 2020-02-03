@@ -1,6 +1,5 @@
 package edu.ie3.io
 
-import com.google.protobuf.Option
 import edu.ie3.models.input.EvcsInput
 import edu.ie3.models.input.MeasurementUnitInput
 import edu.ie3.models.input.NodeInput
@@ -56,7 +55,7 @@ class FileNamingStrategyTest extends Specification {
         FileNamingStrategy strategy = new FileNamingStrategy()
 
         when:
-        Optional<String> res = strategy.getFileName(String.class)
+        Optional<String> res = strategy.getFileName(String)
 
         then:
         !res.present
