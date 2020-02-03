@@ -49,8 +49,8 @@ public class FileNamingStrategy {
    * @param suffix Suffixes of the files
    */
   public FileNamingStrategy(String prefix, String suffix) {
-    this.prefix = prefix.endsWith("_") ? prefix : prefix.concat("_");
-    this.suffix = suffix.startsWith("_") ? suffix : "_".concat(suffix);
+    this.prefix = prefix.endsWith("_") || prefix.isBlank() ? prefix : prefix.concat("_");
+    this.suffix = suffix.startsWith("_") || prefix.isBlank() ? suffix : "_".concat(suffix);
   }
 
   /**

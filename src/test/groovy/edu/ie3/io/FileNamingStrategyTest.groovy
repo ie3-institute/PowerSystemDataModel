@@ -61,6 +61,15 @@ class FileNamingStrategyTest extends Specification {
         !res.present
     }
 
+    def "A FileNamingStrategy should recognize if empty strings are passed in the prefix/suffix constructor and don't add underlines then"() {
+        given: "a file naming strategy"
+        FileNamingStrategy strategy = new FileNamingStrategy("", "")
+
+        expect:
+        strategy.prefix == ""
+        strategy.suffix == ""
+    }
+
     def "A FileNamingStrategy without pre- or suffixes should return valid strings for all result models"() {
         given: "a file naming strategy without pre- or suffixes"
         FileNamingStrategy strategy = new FileNamingStrategy()
