@@ -5,6 +5,7 @@
 */
 package edu.ie3.io.factory.input;
 
+import edu.ie3.exceptions.FactoryException;
 import edu.ie3.io.factory.SimpleEntityData;
 import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
@@ -62,6 +63,16 @@ public class SystemParticipantTypeInputFactory
   private static final String dod = "dod";
   private static final String lifeTime = "lifetime";
   private static final String lifeCycle = "lifecycle";
+
+  public SystemParticipantTypeInputFactory() {
+    super(
+        EvTypeInput.class,
+        HpTypeInput.class,
+        BmTypeInput.class,
+        WecTypeInput.class,
+        ChpTypeInput.class,
+        StorageTypeInput.class);
+  }
 
   @Override
   protected List<Set<String>> getFields(SimpleEntityData data) {
@@ -125,11 +136,9 @@ public class SystemParticipantTypeInputFactory
       return new EvTypeInput(
           uuid, id, capExVal, opExVal, cosPhiVal, eStorageVal, eConsVal, sRatedVal);
     } else if (data.getEntityClass().equals(HpTypeInput.class)) {
-      Quantity<Power> pRatedVal =
-          data.get(pRated, StandardUnits.ACTIVE_POWER_IN); // TODO StandardUnit
-      Quantity<Power> pThermalVal =
-          data.get(pThermal, StandardUnits.ACTIVE_POWER_IN); // TODO StandardUnit
-      Quantity<Power> pElVal = data.get(pEl, StandardUnits.ACTIVE_POWER_IN); // TODO StandardUnit
+      Quantity<Power> pRatedVal = data.get(pRated, StandardUnits.ACTIVE_POWER_IN);
+      Quantity<Power> pThermalVal = data.get(pThermal, StandardUnits.ACTIVE_POWER_IN);
+      Quantity<Power> pElVal = data.get(pEl, StandardUnits.ACTIVE_POWER_IN);
 
       return new HpTypeInput(
           uuid, id, capExVal, opExVal, cosPhiVal, pRatedVal, pThermalVal, pElVal);
@@ -185,7 +194,33 @@ public class SystemParticipantTypeInputFactory
           inletTempVal,
           returnTempVal,
           cVal);
-    } // TODO else if(......
-    return null;
+    } else if (data.getEntityClass().equals(StorageTypeInput.class)) {
+      Quantity<Energy> eStorageVal = data.get(eStorage, StandardUnits.ENERGY); // TODO StandardUnit
+      Quantity<Power> pRatedVal = data.get(pRated, StandardUnits.ACTIVE_POWER_IN);
+      Quantity<Power> pMinVal = data.get(pMin, StandardUnits.ACTIVE_POWER_IN);
+      Quantity<Power> pMaxVal = data.get(pMax, StandardUnits.ACTIVE_POWER_IN);
+      Quantity<Dimensionless> etaVal = data.get(eta, StandardUnits.EFFICIENCY);
+      Quantity<Dimensionless> dodVal = data.get(dod, StandardUnits.DOD);
+      Quantity<Time> lifeTimeVal = data.get(lifeTime, StandardUnits.LIFE_TIME);
+      int lifeCycleVal = Integer.parseInt(data.get(lifeCycle));
+
+      return new StorageTypeInput(
+          uuid,
+          id,
+          capExVal,
+          opExVal,
+          cosPhiVal,
+          eStorageVal,
+          pRatedVal,
+          pMinVal,
+          pMaxVal,
+          etaVal,
+          dodVal,
+          lifeTimeVal,
+          lifeCycleVal);
+    } else
+      throw new FactoryException(
+          "SystemParticipantTypeInputFactory does not know how to build a "
+              + data.getEntityClass().getName());
   }
 }

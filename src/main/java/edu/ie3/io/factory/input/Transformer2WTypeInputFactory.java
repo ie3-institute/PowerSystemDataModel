@@ -9,6 +9,8 @@ import edu.ie3.io.factory.SimpleEntityData;
 import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.connector.type.Transformer2WTypeInput;
+import edu.ie3.models.result.connector.Transformer2WResult;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +34,10 @@ public class Transformer2WTypeInputFactory extends SimpleEntityFactory<Transform
   private static final String tapNeutr = "tapneutr";
   private static final String tapMin = "tapmin";
   private static final String tapMax = "tapmax";
+
+  public Transformer2WTypeInputFactory() {
+    super(Transformer2WTypeInput.class);
+  }
 
   @Override
   protected List<Set<String>> getFields(SimpleEntityData data) {
@@ -69,7 +75,7 @@ public class Transformer2WTypeInputFactory extends SimpleEntityFactory<Transform
     Quantity<ElectricConductance> bMVal = data.get(bM, StandardUnits.ADMITTANCE);
     Quantity<Dimensionless> dVVal = data.get(dV, StandardUnits.DV_TAP);
     Quantity<Angle> dPhiVal = data.get(dPhi, StandardUnits.DPHI_TAP);
-    boolean tapSideVal = data.get(tapSide).trim().equals("1");
+    boolean tapSideVal = data.get(tapSide).trim().equals("1") || data.get(tapSide).trim().equals("true");
     int tapNeutrVal = Integer.parseInt(data.get(tapNeutr));
     int tapMinVal = Integer.parseInt(data.get(tapMin));
     int tapMaxVal = Integer.parseInt(data.get(tapMax));

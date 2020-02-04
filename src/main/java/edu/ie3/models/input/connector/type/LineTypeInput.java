@@ -98,11 +98,11 @@ public class LineTypeInput extends AssetTypeInput {
     this.iMax = iMax.to(StandardUnits.CURRENT);
   }
 
-  public Quantity<ElectricPotential> getvRated() {
+  public Quantity<ElectricPotential> getVRated() {
     return vRated;
   }
 
-  public void setvRated(Quantity<ElectricPotential> vRated) {
+  public void setVRated(Quantity<ElectricPotential> vRated) {
     this.vRated = vRated.to(StandardUnits.V_RATED);
   }
 

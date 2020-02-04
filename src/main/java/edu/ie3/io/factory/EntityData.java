@@ -43,18 +43,16 @@ abstract class EntityData {
     return fieldsToAttributes.containsKey(key);
   }
 
-  public UUID getUUID(String field) {
-    final String value = fieldsToAttributes.get(field);
-    return UUID.fromString(value);
-  }
-
   public String get(String field) {
     return fieldsToAttributes.get(field);
   }
 
+  public UUID getUUID(String field) {
+    return UUID.fromString(get(field));
+  }
+
   public <Q extends Quantity<Q>> ComparableQuantity<Q> get(String field, Unit<Q> unit) {
-    final String value = fieldsToAttributes.get(field);
-    return Quantities.getQuantity(Double.parseDouble(value), unit);
+    return Quantities.getQuantity(Double.parseDouble(get(field)), unit);
   }
 
   public Class<? extends UniqueEntity> getEntityClass() {

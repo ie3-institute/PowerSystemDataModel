@@ -8,6 +8,7 @@ package edu.ie3.io.factory.input;
 import edu.ie3.io.factory.SimpleEntityData;
 import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
+import edu.ie3.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.models.input.connector.type.Transformer3WTypeInput;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +39,10 @@ public class Transformer3WTypeInputFactory extends SimpleEntityFactory<Transform
   private static final String tapNeutr = "tapneutr";
   private static final String tapMin = "tapmin";
   private static final String tapMax = "tapmax";
+
+  public Transformer3WTypeInputFactory() {
+    super(Transformer3WTypeInput.class);
+  }
 
   @Override
   protected List<Set<String>> getFields(SimpleEntityData data) {

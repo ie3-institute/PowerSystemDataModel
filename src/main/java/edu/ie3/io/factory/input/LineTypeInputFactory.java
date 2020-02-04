@@ -26,6 +26,10 @@ public class LineTypeInputFactory extends SimpleEntityFactory<LineTypeInput> {
   private static final String iMax = "imax";
   private static final String vRated = "vrated";
 
+  public LineTypeInputFactory() {
+    super(LineTypeInput.class);
+  }
+
   @Override
   protected List<Set<String>> getFields(SimpleEntityData entityData) {
     Set<String> constructorParams = newSet(entityUuid, entityId, b, g, r, x, iMax, vRated);
