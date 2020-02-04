@@ -8,7 +8,6 @@ package edu.ie3.io.factory.input;
 import edu.ie3.io.factory.SimpleEntityData;
 import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
-import edu.ie3.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.models.input.connector.type.Transformer3WTypeInput;
 import java.util.Collections;
 import java.util.List;
