@@ -30,7 +30,7 @@ public class AggregatedGridInput implements AggregatedEntities {
   private AggregatedGraphicInput graphics;
 
   /** Measurement units in this grid */
-  private LinkedList<MeasurementUnitInput> measurementUnits = new LinkedList<>();
+  private List<MeasurementUnitInput> measurementUnits = new LinkedList<>();
 
   @Override
   public void add(UniqueEntity entity) {
@@ -126,11 +126,11 @@ public class AggregatedGridInput implements AggregatedEntities {
     this.graphics = graphics;
   }
 
-  public LinkedList<MeasurementUnitInput> getMeasurementUnits() {
+  public List<MeasurementUnitInput> getMeasurementUnits() {
     return measurementUnits;
   }
 
-  public void setMeasurementUnits(LinkedList<MeasurementUnitInput> measurementUnits) {
+  public void setMeasurementUnits(List<MeasurementUnitInput> measurementUnits) {
     this.measurementUnits = measurementUnits;
   }
 }

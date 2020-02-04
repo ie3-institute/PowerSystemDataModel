@@ -38,13 +38,13 @@ public class ThermalSinkResultFactory extends SimpleEntityFactory<ThermalSinkRes
 
     ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(timestamp));
     UUID inputModelUuid = data.getUUID(inputModel);
-    Quantity<HeatCapacity> qDemandVal =
+    Quantity<HeatCapacity> qDemandQuantity =
         data.get(qDemand, StandardUnits.HEAT_CAPACITY); // todo CK ensure that the unit is correct
     Optional<UUID> uuidOpt =
         data.containsKey(entityUuid) ? Optional.of(data.getUUID(entityUuid)) : Optional.empty();
 
     return uuidOpt
-        .map(uuid -> new ThermalSinkResult(uuid, zdtTimestamp, inputModelUuid, qDemandVal))
-        .orElseGet(() -> new ThermalSinkResult(zdtTimestamp, inputModelUuid, qDemandVal));
+        .map(uuid -> new ThermalSinkResult(uuid, zdtTimestamp, inputModelUuid, qDemandQuantity))
+        .orElseGet(() -> new ThermalSinkResult(zdtTimestamp, inputModelUuid, qDemandQuantity));
   }
 }

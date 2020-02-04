@@ -14,8 +14,8 @@ class SystemParticipantResultFactoryTest extends Specification {
     def "A SystemParticipantResultFactory should contain all expected classes for parsing"() {
         given:
         def resultFactory = new SystemParticipantResultFactory()
-        def expectedClasses = [LoadResult.class, FixedFeedInResult.class, BmResult.class, PvResult.class,
-                               ChpResult.class, WecResult.class, StorageResult.class, EvcsResult.class, EvResult.class]
+        def expectedClasses = [LoadResult, FixedFeedInResult, BmResult, PvResult,
+                               ChpResult, WecResult, StorageResult, EvcsResult, EvResult]
 
         expect:
         resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
@@ -29,21 +29,21 @@ class SystemParticipantResultFactoryTest extends Specification {
         parameterMap.put("inputModel", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7");
         parameterMap.put("p", "2");
         parameterMap.put("q", "2");
-        if(modelClass == EvResult)
-            parameterMap.put("soc", "10")
+        if (modelClass == EvResult)
+          {  parameterMap.put("soc", "10")}
 
         when:
         Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, modelClass))
 
         then:
-        result.isPresent()
+        result.present
         result.get().getClass() == resultingModelClass
         result.get().p == Quantities.getQuantity(Double.parseDouble(parameterMap.get("p")), StandardUnits.ACTIVE_POWER_OUT)
         result.get().q == Quantities.getQuantity(Double.parseDouble(parameterMap.get("q")), StandardUnits.REACTIVE_POWER_OUT)
         result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
         result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
 
-        if(modelClass == EvResult)
+        if (modelClass == EvResult)
             assert(((EvResult)result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameterMap.get("soc")), Units.PERCENT))
 
         where:
@@ -70,11 +70,11 @@ class SystemParticipantResultFactoryTest extends Specification {
         parameterMap.put("q", "2");
 
         when:
-        Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, StorageResult.class))
+        Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, StorageResult))
 
         then:
-        result.isPresent()
-        result.get().getClass() == StorageResult.class
+        result.present
+        result.get().getClass() == StorageResult
         result.get().p == Quantities.getQuantity(Double.parseDouble(parameterMap.get("p")), StandardUnits.ACTIVE_POWER_OUT)
         result.get().q == Quantities.getQuantity(Double.parseDouble(parameterMap.get("q")), StandardUnits.REACTIVE_POWER_OUT)
         ((StorageResult) result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameterMap.get("soc")), Units.PERCENT)
@@ -92,7 +92,7 @@ class SystemParticipantResultFactoryTest extends Specification {
         parameterMap.put("q", "2");
 
         when:
-        resultFactory.getEntity(new SimpleEntityData(parameterMap, WecResult.class))
+        resultFactory.getEntity(new SimpleEntityData(parameterMap, WecResult))
 
         then:
         FactoryException ex = thrown()
