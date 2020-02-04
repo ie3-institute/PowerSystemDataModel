@@ -21,49 +21,49 @@ class ConnectorResultFactoryTest extends Specification {
     def "A ConnectorResultFactory should parse a valid result model correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new ConnectorResultFactory()
-        HashMap<String, String> parameterMap = [:]
-        parameterMap.put("timestamp", "16/01/2010 17:27:46")
-        parameterMap.put("inputModel", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7")
-        parameterMap.put("iamag", "1.0")
-        parameterMap.put("iaang", "90")
-        parameterMap.put("ibmag", "0.98123")
-        parameterMap.put("ibang", "90")
+        Map<String, String> parameter = [:]
+        parameter["timestamp"] = "16/01/2010 17:27:46"
+        parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
+        parameter["iamag"] = "1.0"
+        parameter["iaang"] = "90"
+        parameter["ibmag"] = "0.98123"
+        parameter["ibang"] = "90"
 
         if (modelClass == Transformer2WResult)
-           { parameterMap.put("tappos", "3")}
+           { parameter["tappos"] = "3"}
         if (modelClass == Transformer3WResult) {
-            parameterMap.put("tappos", "3")
-            parameterMap.put("icmag", "1.0")
-            parameterMap.put("icang", "90")
+            parameter["tappos"] = "3"
+            parameter["icmag"] = "1.0"
+            parameter["icang"] = "90"
         }
         if (modelClass == SwitchResult)
-            {parameterMap.put("closed", "true")}
+            {parameter["closed"] = "true"}
 
         when:
-        Optional<? extends ConnectorResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, modelClass))
+        Optional<? extends ConnectorResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, modelClass))
 
         then:
         result.present
         result.get().getClass() == resultingModelClass
-        result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
-        result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
-        result.get().iAAng == Quantities.getQuantity(Double.parseDouble(parameterMap.get("iaang")), StandardUnits.ELECTRIC_CURRENT_ANGLE)
-        result.get().iAMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("iamag")), StandardUnits.CURRENT)
-        result.get().iBAng == Quantities.getQuantity(Double.parseDouble(parameterMap.get("ibang")), StandardUnits.ELECTRIC_CURRENT_ANGLE)
-        result.get().iBMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("ibmag")), StandardUnits.CURRENT)
+        result.get().timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+        result.get().inputModel == UUID.fromString(parameter["inputModel"])
+        result.get().iAAng == Quantities.getQuantity(Double.parseDouble(parameter["iaang"]), StandardUnits.ELECTRIC_CURRENT_ANGLE)
+        result.get().iAMag == Quantities.getQuantity(Double.parseDouble(parameter["iamag"]), StandardUnits.CURRENT)
+        result.get().iBAng == Quantities.getQuantity(Double.parseDouble(parameter["ibang"]), StandardUnits.ELECTRIC_CURRENT_ANGLE)
+        result.get().iBMag == Quantities.getQuantity(Double.parseDouble(parameter["ibmag"]), StandardUnits.CURRENT)
 
         if (result.get().getClass() == Transformer2WResult)
-           { assert(((Transformer2WResult) result.get()).tapPos == Integer.parseInt(parameterMap.get("tappos")))}
+           { assert(((Transformer2WResult) result.get()).tapPos == Integer.parseInt(parameter["tappos"]))}
 
         if (result.get().getClass() == Transformer3WResult) {
             Transformer3WResult transformer3WResult = ((Transformer3WResult) result.get())
-            assert( transformer3WResult.tapPos == Integer.parseInt(parameterMap.get("tappos")))
-            assert( transformer3WResult.iCAng == Quantities.getQuantity(Double.parseDouble(parameterMap.get("icang")), StandardUnits.ELECTRIC_CURRENT_ANGLE))
-            assert( transformer3WResult.iCMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("icmag")), StandardUnits.CURRENT))
+            assert( transformer3WResult.tapPos == Integer.parseInt(parameter["tappos"]))
+            assert( transformer3WResult.iCAng == Quantities.getQuantity(Double.parseDouble(parameter["icang"]), StandardUnits.ELECTRIC_CURRENT_ANGLE))
+            assert( transformer3WResult.iCMag == Quantities.getQuantity(Double.parseDouble(parameter["icmag"]), StandardUnits.CURRENT))
 
         }
         if (result.get().getClass() == SwitchResult)
-          {  assert(((SwitchResult) result.get()).closed == Boolean.parseBoolean(parameterMap.get("closed")))}
+          {  assert(((SwitchResult) result.get()).closed == Boolean.parseBoolean(parameter["closed"]))}
 
 
         where:

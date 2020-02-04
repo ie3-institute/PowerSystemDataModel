@@ -24,27 +24,28 @@ class SystemParticipantResultFactoryTest extends Specification {
     def "A SystemParticipantResultFactory should parse a valid result model correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
-        HashMap<String, String> parameterMap = new HashMap<>();
-        parameterMap.put("timestamp", "16/01/2010 17:27:46");
-        parameterMap.put("inputModel", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7");
-        parameterMap.put("p", "2");
-        parameterMap.put("q", "2");
+        Map<String, String> parameter = [:]
+        parameter["timestamp"] = "16/01/2010 17:27:46"
+        parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
+        parameter["p"] = "2"
+        parameter["q"] = "2"
         if (modelClass == EvResult)
-          {  parameterMap.put("soc", "10")}
+          {  parameter["soc"] = "10"}
 
         when:
-        Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, modelClass))
+        Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, modelClass))
 
         then:
         result.present
         result.get().getClass() == resultingModelClass
-        result.get().p == Quantities.getQuantity(Double.parseDouble(parameterMap.get("p")), StandardUnits.ACTIVE_POWER_OUT)
-        result.get().q == Quantities.getQuantity(Double.parseDouble(parameterMap.get("q")), StandardUnits.REACTIVE_POWER_OUT)
-        result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
-        result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
+        result.get().p == Quantities.getQuantity(Double.parseDouble(parameter["p"]), StandardUnits.ACTIVE_POWER_OUT)
+        result.get().q == Quantities.getQuantity(Double.parseDouble(parameter["q"]), StandardUnits.REACTIVE_POWER_OUT)
+        result.get().timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+        result.get().inputModel == UUID.fromString(parameter["inputModel"])
 
-        if (modelClass == EvResult)
-            assert(((EvResult)result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameterMap.get("soc")), Units.PERCENT))
+        if (modelClass == EvResult) {
+            assert (((EvResult) result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameter["soc"]), Units.PERCENT))
+        }
 
         where:
         modelClass        || resultingModelClass
@@ -62,37 +63,37 @@ class SystemParticipantResultFactoryTest extends Specification {
     def "A SystemParticipantResultFactory should parse a StorageResult correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
-        HashMap<String, String> parameterMap = new HashMap<>();
-        parameterMap.put("timestamp", "16/01/2010 17:27:46");
-        parameterMap.put("inputModel", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7");
-        parameterMap.put("soc", "20")
-        parameterMap.put("p", "2");
-        parameterMap.put("q", "2");
+        Map<String, String> parameter = [:]
+        parameter["timestamp"] = "16/01/2010 17:27:46"
+        parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
+        parameter["soc"] = "20"
+        parameter["p"] = "2"
+        parameter["q"] = "2"
 
         when:
-        Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, StorageResult))
+        Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, StorageResult))
 
         then:
         result.present
         result.get().getClass() == StorageResult
-        result.get().p == Quantities.getQuantity(Double.parseDouble(parameterMap.get("p")), StandardUnits.ACTIVE_POWER_OUT)
-        result.get().q == Quantities.getQuantity(Double.parseDouble(parameterMap.get("q")), StandardUnits.REACTIVE_POWER_OUT)
-        ((StorageResult) result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameterMap.get("soc")), Units.PERCENT)
-        result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
-        result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
+        result.get().p == Quantities.getQuantity(Double.parseDouble(parameter["p"]), StandardUnits.ACTIVE_POWER_OUT)
+        result.get().q == Quantities.getQuantity(Double.parseDouble(parameter["q"]), StandardUnits.REACTIVE_POWER_OUT)
+        ((StorageResult) result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameter["soc"]), Units.PERCENT)
+        result.get().timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+        result.get().inputModel == UUID.fromString(parameter["inputModel"])
 
     }
 
     def "A SystemParticipantResultFactory should throw an exception on invalid or incomplete data"() {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
-        HashMap<String, String> parameterMap = new HashMap<>();
-        parameterMap.put("timestamp", "16/01/2010 17:27:46");
-        parameterMap.put("inputModel", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7");
-        parameterMap.put("q", "2");
+        Map<String, String> parameter = [:]
+        parameter["timestamp"] = "16/01/2010 17:27:46"
+        parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
+        parameter["q"] = "2"
 
         when:
-        resultFactory.getEntity(new SimpleEntityData(parameterMap, WecResult))
+        resultFactory.getEntity(new SimpleEntityData(parameter, WecResult))
 
         then:
         FactoryException ex = thrown()

@@ -21,19 +21,20 @@ class ThermalSinkResultFactoryTest extends Specification {
     def "A ThermalSinkResultFactory should parse a WecResult correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new ThermalSinkResultFactory()
-        HashMap<String, String> parameterMap = [:]
-        parameterMap.put("timestamp", "16/01/2010 17:27:46");
-        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7");
-        parameterMap.put("qdemand", "2");
+        Map<String, String> parameter = [:]
+        parameter["timestamp"] = "16/01/2010 17:27:46"
+        parameter["inputModel"] = "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7"
+        parameter["qdemand"] = "2"
+
         when:
-        Optional<? extends ThermalSinkResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, ThermalSinkResult))
+        Optional<? extends ThermalSinkResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, ThermalSinkResult))
 
         then:
         result.present
         result.get().getClass() == ThermalSinkResult
-        result.get().qDemand == Quantities.getQuantity(Double.parseDouble(parameterMap.get("qdemand")),  StandardUnits.HEAT_CAPACITY)
-        result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
-        result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
+        result.get().qDemand == Quantities.getQuantity(Double.parseDouble(parameter["qdemand"]),  StandardUnits.HEAT_CAPACITY)
+        result.get().timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+        result.get().inputModel == UUID.fromString(parameter["inputModel"])
 
     }
 }

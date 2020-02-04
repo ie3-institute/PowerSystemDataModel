@@ -22,35 +22,35 @@ class NodeResultFactoryTest extends Specification {
     def "A NodeResultFactory should parse a WecResult correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new NodeResultFactory()
-        HashMap<String, String> parameterMap = [:]
-        parameterMap.put("timestamp", "16/01/2010 17:27:46");
-        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7");
-        parameterMap.put("vmag", "2");
-        parameterMap.put("vang", "2");
+        HashMap<String, String> parameter = [:]
+        parameter["timestamp"] = "16/01/2010 17:27:46"
+        parameter["inputModel"] = "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7"
+        parameter["vmag"] = "2"
+        parameter["vang"] = "2"
 
         when:
-        Optional<? extends NodeResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, NodeResult))
+        Optional<? extends NodeResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, NodeResult))
 
         then:
         result.present
         result.get().getClass() == NodeResult
-        result.get().vMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("vmag")), StandardUnits.TARGET_VOLTAGE)
-        result.get().vAng == Quantities.getQuantity(Double.parseDouble(parameterMap.get("vang")), StandardUnits.DPHI_TAP) //TODO
-        result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
-        result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
+        result.get().vMag == Quantities.getQuantity(Double.parseDouble(parameter["vmag"]), StandardUnits.TARGET_VOLTAGE)
+        result.get().vAng == Quantities.getQuantity(Double.parseDouble(parameter["vang"]), StandardUnits.DPHI_TAP) //TODO
+        result.get().timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+        result.get().inputModel == UUID.fromString(parameter["inputModel"])
 
     }
 
     def "A NodeResultFactory should throw an exception on invalid or incomplete data"() {
         given: "a system participant factory and model data"
         def resultFactory = new NodeResultFactory()
-        HashMap<String, String> parameterMap = [:]
-        parameterMap.put("timestamp", "16/01/2010 17:27:46");
-        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7");
-        parameterMap.put("vmag", "2");
+        Map<String, String> parameter = [:]
+        parameter["timestamp"] = "16/01/2010 17:27:46"
+        parameter["inputModel"] = "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7"
+        parameter["vmag"] = "2"
 
         when:
-        resultFactory.getEntity(new SimpleEntityData(parameterMap, NodeResult.class))
+        resultFactory.getEntity(new SimpleEntityData(parameter, NodeResult.class))
 
         then:
         FactoryException ex = thrown()

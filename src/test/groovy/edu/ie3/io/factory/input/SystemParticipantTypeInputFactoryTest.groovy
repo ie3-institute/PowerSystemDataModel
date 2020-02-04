@@ -22,230 +22,230 @@ class SystemParticipantTypeInputFactoryTest extends Specification {
     def "A SystemParticipantTypeInputFactory should parse a valid EvTypeInput correctly"() {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
-        Map<String, String> parameterMap = new HashMap<>()
-        parameterMap.put("uuid", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7")
-        parameterMap.put("id", "blablub")
-        parameterMap.put("capex", "3")
-        parameterMap.put("opex", "4")
-        parameterMap.put("cosphi", "5")
-        parameterMap.put("estorage", "6")
-        parameterMap.put("econs", "7")
-        parameterMap.put("srated", "8")
+        Map<String, String> parameter = [:]
+        parameter["uuid"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
+        parameter["id"] = "blablub"
+        parameter["capex"] = "3"
+        parameter["opex"] = "4"
+        parameter["cosphi"] = "5"
+        parameter["estorage"] = "6"
+        parameter["econs"] = "7"
+        parameter["srated"] = "8"
         def typeInputClass = EvTypeInput
 
         when:
-        Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameterMap, typeInputClass))
+        Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
 
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameterMap.get("uuid"))
-        typeInput.get().id == parameterMap.get("id")
-        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameterMap.get("capex")), PowerSystemUnits.EURO) // TODO StandardUnit
-        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameterMap.get("opex")), StandardUnits.ENERGY_PRICE)
-        typeInput.get().cosphi == Double.parseDouble(parameterMap.get("cosphi"))
+        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
+        typeInput.get().id == parameter["id"]
+        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameter["capex"]), PowerSystemUnits.EURO) // TODO StandardUnit
+        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameter["opex"]), StandardUnits.ENERGY_PRICE)
+        typeInput.get().cosphi == Double.parseDouble(parameter["cosphi"])
 
-        ((EvTypeInput) typeInput.get()).getEStorage() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("estorage")), StandardUnits.ENERGY)
-        ((EvTypeInput) typeInput.get()).getECons() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("econs")), PowerSystemUnits.WATTHOUR_PER_METRE) // TODO
-        ((EvTypeInput) typeInput.get()).getSRated() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("srated")), StandardUnits.S_RATED)
+        ((EvTypeInput) typeInput.get()).getEStorage() == Quantities.getQuantity(Double.parseDouble(parameter["estorage"]), StandardUnits.ENERGY)
+        ((EvTypeInput) typeInput.get()).getECons() == Quantities.getQuantity(Double.parseDouble(parameter["econs"]), PowerSystemUnits.WATTHOUR_PER_METRE) // TODO
+        ((EvTypeInput) typeInput.get()).getSRated() == Quantities.getQuantity(Double.parseDouble(parameter["srated"]), StandardUnits.S_RATED)
     }
 
     def "A SystemParticipantTypeInputFactory should parse a valid HpTypeInput correctly"() {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
-        Map<String, String> parameterMap = new HashMap<>()
-        parameterMap.put("uuid", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8")
-        parameterMap.put("id", "blablub1")
-        parameterMap.put("capex", "3")
-        parameterMap.put("opex", "4")
-        parameterMap.put("cosphi", "5")
-        parameterMap.put("prated", "6")
-        parameterMap.put("pthermal", "7")
-        parameterMap.put("pel", "8")
+        Map<String, String> parameter = [:]
+        parameter["uuid"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8"
+        parameter["id"] = "blablub1"
+        parameter["capex"] = "3"
+        parameter["opex"] = "4"
+        parameter["cosphi"] = "5"
+        parameter["prated"] = "6"
+        parameter["pthermal"] = "7"
+        parameter["pel"] = "8"
         def typeInputClass = HpTypeInput
 
         when:
-        Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameterMap, typeInputClass))
+        Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
 
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameterMap.get("uuid"))
-        typeInput.get().id == parameterMap.get("id")
-        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameterMap.get("capex")), PowerSystemUnits.EURO) // TODO StandardUnit
-        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameterMap.get("opex")), StandardUnits.ENERGY_PRICE)
-        typeInput.get().cosphi == Double.parseDouble(parameterMap.get("cosphi"))
+        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
+        typeInput.get().id == parameter["id"]
+        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameter["capex"]), PowerSystemUnits.EURO) // TODO StandardUnit
+        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameter["opex"]), StandardUnits.ENERGY_PRICE)
+        typeInput.get().cosphi == Double.parseDouble(parameter["cosphi"])
 
-        ((HpTypeInput) typeInput.get()).getPRated() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("prated")), StandardUnits.ACTIVE_POWER_IN)
-        ((HpTypeInput) typeInput.get()).getPThermal() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("pthermal")), StandardUnits.ACTIVE_POWER_IN)
-        ((HpTypeInput) typeInput.get()).getPEl() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("pel")), StandardUnits.ACTIVE_POWER_IN)
+        ((HpTypeInput) typeInput.get()).getPRated() == Quantities.getQuantity(Double.parseDouble(parameter["prated"]), StandardUnits.ACTIVE_POWER_IN)
+        ((HpTypeInput) typeInput.get()).getPThermal() == Quantities.getQuantity(Double.parseDouble(parameter["pthermal"]), StandardUnits.ACTIVE_POWER_IN)
+        ((HpTypeInput) typeInput.get()).getPEl() == Quantities.getQuantity(Double.parseDouble(parameter["pel"]), StandardUnits.ACTIVE_POWER_IN)
     }
 
     def "A SystemParticipantTypeInputFactory should parse a valid BmTypeInput correctly"() {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
-        Map<String, String> parameterMap = new HashMap<>()
-        parameterMap.put("uuid", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8")
-        parameterMap.put("id", "blablub1")
-        parameterMap.put("capex", "3")
-        parameterMap.put("opex", "4")
-        parameterMap.put("cosphi", "5")
-        parameterMap.put("loadgradient", "6")
-        parameterMap.put("srated", "7")
-        parameterMap.put("etaconv", "8")
+        Map<String, String> parameter = [:]
+        parameter["uuid"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8"
+        parameter["id"] = "blablub1"
+        parameter["capex"] = "3"
+        parameter["opex"] = "4"
+        parameter["cosphi"] = "5"
+        parameter["loadgradient"] = "6"
+        parameter["srated"] = "7"
+        parameter["etaconv"] = "8"
         def typeInputClass = BmTypeInput
 
         when:
-        Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameterMap, typeInputClass))
+        Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
 
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameterMap.get("uuid"))
-        typeInput.get().id == parameterMap.get("id")
-        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameterMap.get("capex")), PowerSystemUnits.EURO) // TODO StandardUnit
-        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameterMap.get("opex")), StandardUnits.ENERGY_PRICE)
-        typeInput.get().cosphi == Double.parseDouble(parameterMap.get("cosphi"))
+        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
+        typeInput.get().id == parameter["id"]
+        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameter["capex"]), PowerSystemUnits.EURO) // TODO StandardUnit
+        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameter["opex"]), StandardUnits.ENERGY_PRICE)
+        typeInput.get().cosphi == Double.parseDouble(parameter["cosphi"])
 
-        ((BmTypeInput) typeInput.get()).getLoadGradient() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("loadgradient")), StandardUnits.LOAD_GRADIENT)
-        ((BmTypeInput) typeInput.get()).getSRated() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("srated")), StandardUnits.S_RATED)
-        ((BmTypeInput) typeInput.get()).getEtaConv() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("etaconv")), StandardUnits.EFFICIENCY)
+        ((BmTypeInput) typeInput.get()).getLoadGradient() == Quantities.getQuantity(Double.parseDouble(parameter["loadgradient"]), StandardUnits.LOAD_GRADIENT)
+        ((BmTypeInput) typeInput.get()).getSRated() == Quantities.getQuantity(Double.parseDouble(parameter["srated"]), StandardUnits.S_RATED)
+        ((BmTypeInput) typeInput.get()).getEtaConv() == Quantities.getQuantity(Double.parseDouble(parameter["etaconv"]), StandardUnits.EFFICIENCY)
     }
 
     def "A SystemParticipantTypeInputFactory should parse a valid WecTypeInput correctly"() {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
-        Map<String, String> parameterMap = new HashMap<>()
-        parameterMap.put("uuid", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8")
-        parameterMap.put("id", "blablub1")
-        parameterMap.put("capex", "3")
-        parameterMap.put("opex", "4")
-        parameterMap.put("cosphi", "5")
-        parameterMap.put("etaconv", "6")
-        parameterMap.put("srated", "7")
-        parameterMap.put("rotorarea", "8")
-        parameterMap.put("hubheight", "9")
+        Map<String, String> parameter = [:]
+        parameter["uuid"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8"
+        parameter["id"] = "blablub1"
+        parameter["capex"] = "3"
+        parameter["opex"] = "4"
+        parameter["cosphi"] = "5"
+        parameter["etaconv"] = "6"
+        parameter["srated"] = "7"
+        parameter["rotorarea"] = "8"
+        parameter["hubheight"] = "9"
         def typeInputClass = WecTypeInput
 
         when:
-        Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameterMap, typeInputClass))
+        Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
 
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameterMap.get("uuid"))
-        typeInput.get().id == parameterMap.get("id")
-        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameterMap.get("capex")), PowerSystemUnits.EURO) // TODO StandardUnit
-        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameterMap.get("opex")), StandardUnits.ENERGY_PRICE)
-        typeInput.get().cosphi == Double.parseDouble(parameterMap.get("cosphi"))
+        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
+        typeInput.get().id == parameter["id"]
+        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameter["capex"]), PowerSystemUnits.EURO) // TODO StandardUnit
+        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameter["opex"]), StandardUnits.ENERGY_PRICE)
+        typeInput.get().cosphi == Double.parseDouble(parameter["cosphi"])
 
-        ((WecTypeInput) typeInput.get()).getEtaConv() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("etaconv")), StandardUnits.EFFICIENCY)
-        ((WecTypeInput) typeInput.get()).getSRated() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("srated")), StandardUnits.S_RATED)
-        ((WecTypeInput) typeInput.get()).getRotorArea() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("rotorarea")), StandardUnits.ROTOR_AREA)
-        ((WecTypeInput) typeInput.get()).getHubHeight() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("hubheight")), StandardUnits.HUB_HEIGHT)
+        ((WecTypeInput) typeInput.get()).getEtaConv() == Quantities.getQuantity(Double.parseDouble(parameter["etaconv"]), StandardUnits.EFFICIENCY)
+        ((WecTypeInput) typeInput.get()).getSRated() == Quantities.getQuantity(Double.parseDouble(parameter["srated"]), StandardUnits.S_RATED)
+        ((WecTypeInput) typeInput.get()).getRotorArea() == Quantities.getQuantity(Double.parseDouble(parameter["rotorarea"]), StandardUnits.ROTOR_AREA)
+        ((WecTypeInput) typeInput.get()).getHubHeight() == Quantities.getQuantity(Double.parseDouble(parameter["hubheight"]), StandardUnits.HUB_HEIGHT)
     }
 
     def "A SystemParticipantTypeInputFactory should parse a valid ChpTypeInput correctly"() {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
-        Map<String, String> parameterMap = new HashMap<>()
-        parameterMap.put("uuid", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8")
-        parameterMap.put("id", "blablub1")
-        parameterMap.put("capex", "3")
-        parameterMap.put("opex", "4")
-        parameterMap.put("cosphi", "5")
-        parameterMap.put("etael", "6")
-        parameterMap.put("etathermal", "7")
-        parameterMap.put("pel", "8")
-        parameterMap.put("pthermal", "9")
-        parameterMap.put("pown", "10")
-        parameterMap.put("storagevolumelvl", "11")
-        parameterMap.put("storagevolumelvlmin", "12")
-        parameterMap.put("inlettemp", "13")
-        parameterMap.put("returntemp", "14")
-        parameterMap.put("c", "15")
+        Map<String, String> parameter = [:]
+        parameter["uuid"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8"
+        parameter["id"] = "blablub1"
+        parameter["capex"] = "3"
+        parameter["opex"] = "4"
+        parameter["cosphi"] = "5"
+        parameter["etael"] = "6"
+        parameter["etathermal"] = "7"
+        parameter["pel"] = "8"
+        parameter["pthermal"] = "9"
+        parameter["pown"] = "10"
+        parameter["storagevolumelvl"] = "11"
+        parameter["storagevolumelvlmin"] = "12"
+        parameter["inlettemp"] = "13"
+        parameter["returntemp"] = "14"
+        parameter["c"] = "15"
         def typeInputClass = ChpTypeInput
 
         when:
-        Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameterMap, typeInputClass))
+        Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
 
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameterMap.get("uuid"))
-        typeInput.get().id == parameterMap.get("id")
-        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameterMap.get("capex")), PowerSystemUnits.EURO) // TODO StandardUnit
-        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameterMap.get("opex")), StandardUnits.ENERGY_PRICE)
-        typeInput.get().cosphi == Double.parseDouble(parameterMap.get("cosphi"))
+        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
+        typeInput.get().id == parameter["id"]
+        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameter["capex"]), PowerSystemUnits.EURO) // TODO StandardUnit
+        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameter["opex"]), StandardUnits.ENERGY_PRICE)
+        typeInput.get().cosphi == Double.parseDouble(parameter["cosphi"])
 
-        ((ChpTypeInput) typeInput.get()).getEtaEl() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("etael")), StandardUnits.EFFICIENCY)
-        ((ChpTypeInput) typeInput.get()).getEtaThermal() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("etathermal")), StandardUnits.EFFICIENCY)
-        ((ChpTypeInput) typeInput.get()).getPEl() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("pel")), StandardUnits.ACTIVE_POWER_IN)
-        ((ChpTypeInput) typeInput.get()).getPThermal() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("pthermal")), StandardUnits.ACTIVE_POWER_IN)
-        ((ChpTypeInput) typeInput.get()).getPOwn() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("pown")), StandardUnits.ACTIVE_POWER_IN)
+        ((ChpTypeInput) typeInput.get()).getEtaEl() == Quantities.getQuantity(Double.parseDouble(parameter["etael"]), StandardUnits.EFFICIENCY)
+        ((ChpTypeInput) typeInput.get()).getEtaThermal() == Quantities.getQuantity(Double.parseDouble(parameter["etathermal"]), StandardUnits.EFFICIENCY)
+        ((ChpTypeInput) typeInput.get()).getPEl() == Quantities.getQuantity(Double.parseDouble(parameter["pel"]), StandardUnits.ACTIVE_POWER_IN)
+        ((ChpTypeInput) typeInput.get()).getPThermal() == Quantities.getQuantity(Double.parseDouble(parameter["pthermal"]), StandardUnits.ACTIVE_POWER_IN)
+        ((ChpTypeInput) typeInput.get()).getPOwn() == Quantities.getQuantity(Double.parseDouble(parameter["pown"]), StandardUnits.ACTIVE_POWER_IN)
         // the rest of parameters is not saved in class attributes
     }
 
     def "A SystemParticipantTypeInputFactory should parse a valid StorageTypeInput correctly"() {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
-        Map<String, String> parameterMap = new HashMap<>()
-        parameterMap.put("uuid", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8")
-        parameterMap.put("id", "blablub1")
-        parameterMap.put("capex", "3")
-        parameterMap.put("opex", "4")
-        parameterMap.put("cosphi", "5")
-        parameterMap.put("estorage", "6")
-        parameterMap.put("prated", "7")
-        parameterMap.put("pmin", "8")
-        parameterMap.put("pmax", "9")
-        parameterMap.put("eta", "10")
-        parameterMap.put("dod", "11")
-        parameterMap.put("lifetime", "12")
-        parameterMap.put("lifecycle", "13")
+        Map<String, String> parameter = [:]
+        parameter["uuid"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8"
+        parameter["id"] = "blablub1"
+        parameter["capex"] = "3"
+        parameter["opex"] = "4"
+        parameter["cosphi"] = "5"
+        parameter["estorage"] = "6"
+        parameter["prated"] = "7"
+        parameter["pmin"] = "8"
+        parameter["pmax"] = "9"
+        parameter["eta"] = "10"
+        parameter["dod"] = "11"
+        parameter["lifetime"] = "12"
+        parameter["lifecycle"] = "13"
         def typeInputClass = StorageTypeInput
 
         when:
-        Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameterMap, typeInputClass))
+        Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
 
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameterMap.get("uuid"))
-        typeInput.get().id == parameterMap.get("id")
-        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameterMap.get("capex")), PowerSystemUnits.EURO) // TODO StandardUnit
-        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameterMap.get("opex")), StandardUnits.ENERGY_PRICE)
-        typeInput.get().cosphi == Double.parseDouble(parameterMap.get("cosphi"))
+        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
+        typeInput.get().id == parameter["id"]
+        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameter["capex"]), PowerSystemUnits.EURO) // TODO StandardUnit
+        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameter["opex"]), StandardUnits.ENERGY_PRICE)
+        typeInput.get().cosphi == Double.parseDouble(parameter["cosphi"])
 
-        ((StorageTypeInput) typeInput.get()).getEStorage() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("estorage")), StandardUnits.ENERGY)
-        ((StorageTypeInput) typeInput.get()).getPRated() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("prated")), StandardUnits.ACTIVE_POWER_IN)
-        ((StorageTypeInput) typeInput.get()).getPMin() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("pmin")), StandardUnits.ACTIVE_POWER_IN)
-        ((StorageTypeInput) typeInput.get()).getPMax() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("pmax")), StandardUnits.ACTIVE_POWER_IN)
-        ((StorageTypeInput) typeInput.get()).getEta() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("eta")), StandardUnits.EFFICIENCY)
-        ((StorageTypeInput) typeInput.get()).getDod() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("dod")), StandardUnits.DOD)
-        ((StorageTypeInput) typeInput.get()).getLifeTime() == Quantities.getQuantity(Double.parseDouble(parameterMap.get("lifetime")), StandardUnits.LIFE_TIME)
-        ((StorageTypeInput) typeInput.get()).getLifeCycle() == Integer.parseInt(parameterMap.get("lifecycle"))
+        ((StorageTypeInput) typeInput.get()).getEStorage() == Quantities.getQuantity(Double.parseDouble(parameter["estorage"]), StandardUnits.ENERGY)
+        ((StorageTypeInput) typeInput.get()).getPRated() == Quantities.getQuantity(Double.parseDouble(parameter["prated"]), StandardUnits.ACTIVE_POWER_IN)
+        ((StorageTypeInput) typeInput.get()).getPMin() == Quantities.getQuantity(Double.parseDouble(parameter["pmin"]), StandardUnits.ACTIVE_POWER_IN)
+        ((StorageTypeInput) typeInput.get()).getPMax() == Quantities.getQuantity(Double.parseDouble(parameter["pmax"]), StandardUnits.ACTIVE_POWER_IN)
+        ((StorageTypeInput) typeInput.get()).getEta() == Quantities.getQuantity(Double.parseDouble(parameter["eta"]), StandardUnits.EFFICIENCY)
+        ((StorageTypeInput) typeInput.get()).getDod() == Quantities.getQuantity(Double.parseDouble(parameter["dod"]), StandardUnits.DOD)
+        ((StorageTypeInput) typeInput.get()).getLifeTime() == Quantities.getQuantity(Double.parseDouble(parameter["lifetime"]), StandardUnits.LIFE_TIME)
+        ((StorageTypeInput) typeInput.get()).getLifeCycle() == Integer.parseInt(parameter["lifecycle"])
     }
 
     def "A SystemParticipantTypeInputFactory should throw an exception on invalid or incomplete data"() {
         given: "a system participant factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
-        Map<String, String> parameterMap = new HashMap<>();
-        parameterMap.put("uuid", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8")
-        parameterMap.put("id", "blablub1")
-        parameterMap.put("capex", "3")
-        parameterMap.put("opex", "4")
-        parameterMap.put("cosphi", "5")
-        parameterMap.put("estorage", "6")
-        parameterMap.put("prated", "7")
-        parameterMap.put("pmax", "9")
-        parameterMap.put("eta", "10")
-        parameterMap.put("dod", "11")
-        parameterMap.put("lifetime", "12")
-        parameterMap.put("lifecycle", "13")
+        Map<String, String> parameter = [:]
+        parameter["uuid"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8"
+        parameter["id"] = "blablub1"
+        parameter["capex"] = "3"
+        parameter["opex"] = "4"
+        parameter["cosphi"] = "5"
+        parameter["estorage"] = "6"
+        parameter["prated"] = "7"
+        parameter["pmax"] = "9"
+        parameter["eta"] = "10"
+        parameter["dod"] = "11"
+        parameter["lifetime"] = "12"
+        parameter["lifecycle"] = "13"
 
         when:
-        typeInputFactory.getEntity(new SimpleEntityData(parameterMap, StorageTypeInput))
+        typeInputFactory.getEntity(new SimpleEntityData(parameter, StorageTypeInput))
 
         then:
         FactoryException ex = thrown()
