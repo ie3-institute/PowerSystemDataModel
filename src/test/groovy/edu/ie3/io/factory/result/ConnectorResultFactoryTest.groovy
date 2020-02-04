@@ -29,15 +29,17 @@ class ConnectorResultFactoryTest extends Specification {
         parameter["ibmag"] = "0.98123"
         parameter["ibang"] = "90"
 
-        if (modelClass == Transformer2WResult)
-           { parameter["tappos"] = "3"}
+        if (modelClass == Transformer2WResult) {
+            parameter["tappos"] = "3"
+        }
         if (modelClass == Transformer3WResult) {
             parameter["tappos"] = "3"
             parameter["icmag"] = "1.0"
             parameter["icang"] = "90"
         }
-        if (modelClass == SwitchResult)
-            {parameter["closed"] = "true"}
+        if (modelClass == SwitchResult) {
+            parameter["closed"] = "true"
+        }
 
         when:
         Optional<? extends ConnectorResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, modelClass))
@@ -52,8 +54,9 @@ class ConnectorResultFactoryTest extends Specification {
         result.get().iBAng == Quantities.getQuantity(Double.parseDouble(parameter["ibang"]), StandardUnits.ELECTRIC_CURRENT_ANGLE)
         result.get().iBMag == Quantities.getQuantity(Double.parseDouble(parameter["ibmag"]), StandardUnits.CURRENT)
 
-        if (result.get().getClass() == Transformer2WResult)
-           { assert(((Transformer2WResult) result.get()).tapPos == Integer.parseInt(parameter["tappos"]))}
+        if (result.get().getClass() == Transformer2WResult) {
+            assert(((Transformer2WResult) result.get()).tapPos == Integer.parseInt(parameter["tappos"]))
+        }
 
         if (result.get().getClass() == Transformer3WResult) {
             Transformer3WResult transformer3WResult = ((Transformer3WResult) result.get())
@@ -62,8 +65,9 @@ class ConnectorResultFactoryTest extends Specification {
             assert( transformer3WResult.iCMag == Quantities.getQuantity(Double.parseDouble(parameter["icmag"]), StandardUnits.CURRENT))
 
         }
-        if (result.get().getClass() == SwitchResult)
-          {  assert(((SwitchResult) result.get()).closed == Boolean.parseBoolean(parameter["closed"]))}
+        if (result.get().getClass() == SwitchResult) {
+            assert(((SwitchResult) result.get()).closed == Boolean.parseBoolean(parameter["closed"]))
+        }
 
 
         where:

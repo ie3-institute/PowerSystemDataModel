@@ -29,8 +29,7 @@ class SystemParticipantResultFactoryTest extends Specification {
         parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
         parameter["p"] = "2"
         parameter["q"] = "2"
-        if (modelClass == EvResult)
-          {  parameter["soc"] = "10"}
+        if (modelClass == EvResult) { parameter["soc"] = "10" }
 
         when:
         Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, modelClass))

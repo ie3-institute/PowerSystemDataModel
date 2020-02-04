@@ -20,7 +20,7 @@ class Transformer3WTypeInputFactoryTest extends Specification {
     def "A Transformer3WTypeInputFactory should parse a valid Transformer2WTypeInput correctly"() {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new Transformer3WTypeInputFactory()
-        Map<String, String> parameter = new HashMap<>()
+        Map<String, String> parameter = [:]
         parameter["uuid"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
         parameter["id"] = "blablub"
         parameter["srateda"] = "3"

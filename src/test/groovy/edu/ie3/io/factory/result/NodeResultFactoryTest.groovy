@@ -50,7 +50,7 @@ class NodeResultFactoryTest extends Specification {
         parameter["vmag"] = "2"
 
         when:
-        resultFactory.getEntity(new SimpleEntityData(parameter, NodeResult.class))
+        resultFactory.getEntity(new SimpleEntityData(parameter, NodeResult))
 
         then:
         FactoryException ex = thrown()
