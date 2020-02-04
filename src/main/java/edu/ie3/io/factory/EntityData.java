@@ -44,7 +44,8 @@ abstract class EntityData {
   }
 
   public UUID getUUID(String field) {
-    return UUID.fromString(field);
+    final String value = fieldsToAttributes.get(field);
+    return UUID.fromString(value);
   }
 
   public String get(String field) {
