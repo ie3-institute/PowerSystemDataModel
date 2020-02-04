@@ -44,8 +44,9 @@ class SystemParticipantResultFactoryTest extends Specification {
         result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
         result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
 
-        if (modelClass == EvResult)
+        if (modelClass == EvResult) {
             assert (((EvResult) result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameterMap.get("soc")), Units.PERCENT))
+        }
 
         where:
         modelClass        || resultingModelClass
@@ -63,7 +64,7 @@ class SystemParticipantResultFactoryTest extends Specification {
     def "A SystemParticipantResultFactory should parse a StorageResult correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
-        HashMap<String, String> parameterMap = new HashMap<>()
+        HashMap<String, String> parameterMap = [:]
         parameterMap.put("timestamp", "2020-01-30 17:26:44")
         parameterMap.put("inputModel", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7")
         parameterMap.put("soc", "20")
@@ -87,7 +88,7 @@ class SystemParticipantResultFactoryTest extends Specification {
     def "A SystemParticipantResultFactory should throw an exception on invalid or incomplete data"() {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
-        HashMap<String, String> parameterMap = new HashMap<>()
+        HashMap<String, String> parameterMap = [:]
         parameterMap.put("timestamp", "2020-01-30 17:26:44")
         parameterMap.put("inputModel", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7")
         parameterMap.put("q", "2")
@@ -107,7 +108,7 @@ class SystemParticipantResultFactoryTest extends Specification {
     def "A SystempParticipantResultFactor should be performant"() {
         given: "a factory and dummy model data"
         def resultFactory = new SystemParticipantResultFactory()
-        HashMap<String, String> parameterMap = new HashMap<>()
+        HashMap<String, String> parameterMap = [:]
         parameterMap.put("timestamp", "2020-01-30 17:26:44")
         parameterMap.put("inputModel", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7")
         parameterMap.put("soc", "20")
