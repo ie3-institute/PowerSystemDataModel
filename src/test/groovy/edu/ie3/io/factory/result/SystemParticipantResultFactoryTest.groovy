@@ -117,7 +117,7 @@ class SystemParticipantResultFactoryTest extends Specification {
         expect: "that the factory should not need more than 2 seconds for processing 100.000 entities"
         Long startTime = System.currentTimeMillis()
         10000.times {
-            Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, StorageResult))
+            resultFactory.getEntity(new SimpleEntityData(parameterMap, StorageResult))
         }
         BigDecimal elapsedTime = (System
                 .currentTimeMillis() - startTime) / 1000.0
