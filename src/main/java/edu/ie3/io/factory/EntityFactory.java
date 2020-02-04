@@ -9,7 +9,6 @@ import edu.ie3.exceptions.FactoryException;
 import edu.ie3.models.UniqueEntity;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,12 +37,17 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
     return classes;
   }
 
-  protected <E> Set<E> newSet(E... items) {
-    return new HashSet<>(Arrays.asList(items));
+  protected TreeSet<String> newSet(String... items) {
+    TreeSet<String> set = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    set.addAll(Arrays.asList(items));
+    return set;
   }
 
-  protected <E> Set<E> expandSet(Set<E> set, E... more) {
-    return Stream.concat(Arrays.stream(more), set.stream()).collect(Collectors.toSet());
+  protected TreeSet<String> expandSet(Set<String> set, String... more) {
+    TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    newSet.addAll(set);
+    newSet.addAll(Arrays.asList(more));
+    return newSet;
   }
 
   protected int validateParameters(EntityData simpleEntityData, Set<String>... fieldSets) {
@@ -60,6 +64,7 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
       // if we can identify a unique parameter set for a constructor, we take it and return the
       // index
       Set<String> validFieldSet = validFieldSets.get(0);
+      // FIXME indexOf ist langsam
       return Arrays.asList(fieldSets).indexOf(validFieldSet);
     } else {
       // build the exception string with extensive debug information
