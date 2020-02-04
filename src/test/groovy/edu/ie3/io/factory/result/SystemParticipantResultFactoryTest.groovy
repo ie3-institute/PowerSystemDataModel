@@ -29,8 +29,9 @@ class SystemParticipantResultFactoryTest extends Specification {
         parameterMap.put("inputModel", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7")
         parameterMap.put("p", "2")
         parameterMap.put("q", "2")
-        if (modelClass == EvResult)
-          {  parameterMap.put("soc", "10")}
+        if (modelClass == EvResult) {
+            parameterMap.put("soc", "10")
+        }
 
         when:
         Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, modelClass))
@@ -44,7 +45,7 @@ class SystemParticipantResultFactoryTest extends Specification {
         result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
 
         if (modelClass == EvResult)
-            assert(((EvResult)result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameterMap.get("soc")), Units.PERCENT))
+            assert (((EvResult) result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameterMap.get("soc")), Units.PERCENT))
 
         where:
         modelClass        || resultingModelClass
@@ -100,6 +101,27 @@ class SystemParticipantResultFactoryTest extends Specification {
                 "The following fields to be passed to a constructor of WecResult are possible:\n" +
                 "0: [inputModel, p, q, timestamp]\n" +
                 "1: [inputModel, p, q, timestamp, uuid]\n"
+
+    }
+
+    def "A SystempParticipantResultFactor should be performant"() {
+        given: "a factory and dummy model data"
+        def resultFactory = new SystemParticipantResultFactory()
+        HashMap<String, String> parameterMap = new HashMap<>()
+        parameterMap.put("timestamp", "2020-01-30 17:26:44")
+        parameterMap.put("inputModel", "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7")
+        parameterMap.put("soc", "20")
+        parameterMap.put("p", "2")
+        parameterMap.put("q", "2")
+
+        expect: "that the factory should not need more than 2 seconds for processing 100.000 entities"
+        Long startTime = System.currentTimeMillis()
+        100000.times {
+            Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, StorageResult))
+        }
+        BigDecimal elapsedTime = (System
+                .currentTimeMillis() - startTime) / 1000.0
+        elapsedTime < 2
 
     }
 
