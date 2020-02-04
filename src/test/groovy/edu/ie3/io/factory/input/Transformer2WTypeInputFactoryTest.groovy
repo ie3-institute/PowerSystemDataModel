@@ -44,20 +44,20 @@ class Transformer2WTypeInputFactoryTest extends Specification {
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().getUuid() == UUID.fromString(parameter["uuid"])
-        typeInput.get().getId() == parameter["id"]
-        typeInput.get().getRSc() == Quantities.getQuantity(Double.parseDouble(parameter["rsc"]), StandardUnits.IMPEDANCE)
-        typeInput.get().getXSc() == Quantities.getQuantity(Double.parseDouble(parameter["xsc"]), StandardUnits.IMPEDANCE)
-        typeInput.get().getSRated() == Quantities.getQuantity(Double.parseDouble(parameter["srated"]), StandardUnits.S_RATED)
-        typeInput.get().getVRatedA() == Quantities.getQuantity(Double.parseDouble(parameter["vrateda"]), StandardUnits.V_RATED)
-        typeInput.get().getVRatedB() == Quantities.getQuantity(Double.parseDouble(parameter["vratedb"]), StandardUnits.V_RATED)
-        typeInput.get().getGM() == Quantities.getQuantity(Double.parseDouble(parameter["gm"]), StandardUnits.ADMITTANCE)
-        typeInput.get().getBM() == Quantities.getQuantity(Double.parseDouble(parameter["bm"]), StandardUnits.ADMITTANCE)
-        typeInput.get().getDV() == Quantities.getQuantity(Double.parseDouble(parameter["dv"]), StandardUnits.DV_TAP)
-        typeInput.get().getDPhi() == Quantities.getQuantity(Double.parseDouble(parameter["dphi"]), StandardUnits.DPHI_TAP)
-        typeInput.get().getTapSide() == (parameter["tapside"].trim() == "1") || parameter["tapside"].trim() == "true"
-        typeInput.get().getTapNeutr() == Integer.parseInt(parameter["tapneutr"])
-        typeInput.get().getTapMin() == Integer.parseInt(parameter["tapmin"])
-        typeInput.get().getTapMax() == Integer.parseInt(parameter["tapmax"])
+        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
+        typeInput.get().id == parameter["id"]
+        typeInput.get().RSc == Quantities.getQuantity(Double.parseDouble(parameter["rsc"]), StandardUnits.IMPEDANCE)
+        typeInput.get().XSc == Quantities.getQuantity(Double.parseDouble(parameter["xsc"]), StandardUnits.IMPEDANCE)
+        typeInput.get().SRated == Quantities.getQuantity(Double.parseDouble(parameter["srated"]), StandardUnits.S_RATED)
+        typeInput.get().VRatedA == Quantities.getQuantity(Double.parseDouble(parameter["vrateda"]), StandardUnits.V_RATED)
+        typeInput.get().VRatedB == Quantities.getQuantity(Double.parseDouble(parameter["vratedb"]), StandardUnits.V_RATED)
+        typeInput.get().GM == Quantities.getQuantity(Double.parseDouble(parameter["gm"]), StandardUnits.ADMITTANCE)
+        typeInput.get().BM == Quantities.getQuantity(Double.parseDouble(parameter["bm"]), StandardUnits.ADMITTANCE)
+        typeInput.get().DV == Quantities.getQuantity(Double.parseDouble(parameter["dv"]), StandardUnits.DV_TAP)
+        typeInput.get().DPhi == Quantities.getQuantity(Double.parseDouble(parameter["dphi"]), StandardUnits.DPHI_TAP)
+        typeInput.get().tapSide == (parameter["tapside"].trim() == "1") || parameter["tapside"].trim() == "true"
+        typeInput.get().tapNeutr == Integer.parseInt(parameter["tapneutr"])
+        typeInput.get().tapMin == Integer.parseInt(parameter["tapmin"])
+        typeInput.get().tapMax == Integer.parseInt(parameter["tapmax"])
     }
 }

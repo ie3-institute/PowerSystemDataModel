@@ -37,13 +37,13 @@ class LineTypeInputFactoryTest extends Specification {
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().getUuid() == UUID.fromString(parameter["uuid"])
-        typeInput.get().getId() == parameter["id"]
-        typeInput.get().getB() == Quantities.getQuantity(Double.parseDouble(parameter["b"]), StandardUnits.SPECIFIC_ADMITTANCE)
-        typeInput.get().getG() == Quantities.getQuantity(Double.parseDouble(parameter["g"]), StandardUnits.SPECIFIC_ADMITTANCE)
-        typeInput.get().getR() == Quantities.getQuantity(Double.parseDouble(parameter["r"]), StandardUnits.SPECIFIC_IMPEDANCE)
-        typeInput.get().getX() == Quantities.getQuantity(Double.parseDouble(parameter["x"]), StandardUnits.SPECIFIC_IMPEDANCE)
-        typeInput.get().getIMax() == Quantities.getQuantity(Double.parseDouble(parameter["imax"]), StandardUnits.CURRENT)
-        typeInput.get().getVRated() == Quantities.getQuantity(Double.parseDouble(parameter["vrated"]), StandardUnits.V_RATED)
+        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
+        typeInput.get().id == parameter["id"]
+        typeInput.get().b == Quantities.getQuantity(Double.parseDouble(parameter["b"]), StandardUnits.SPECIFIC_ADMITTANCE)
+        typeInput.get().g == Quantities.getQuantity(Double.parseDouble(parameter["g"]), StandardUnits.SPECIFIC_ADMITTANCE)
+        typeInput.get().r == Quantities.getQuantity(Double.parseDouble(parameter["r"]), StandardUnits.SPECIFIC_IMPEDANCE)
+        typeInput.get().x == Quantities.getQuantity(Double.parseDouble(parameter["x"]), StandardUnits.SPECIFIC_IMPEDANCE)
+        typeInput.get().IMax == Quantities.getQuantity(Double.parseDouble(parameter["imax"]), StandardUnits.CURRENT)
+        typeInput.get().VRated == Quantities.getQuantity(Double.parseDouble(parameter["vrated"]), StandardUnits.V_RATED)
     }
 }
