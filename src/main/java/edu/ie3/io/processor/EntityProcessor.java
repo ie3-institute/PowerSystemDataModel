@@ -9,7 +9,6 @@ import edu.ie3.exceptions.EntityProcessorException;
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
-import edu.ie3.models.result.ResultEntity;
 import edu.ie3.util.TimeTools;
 import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import java.beans.Introspector;
@@ -19,7 +18,6 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.ElectricCurrent;
-import javax.measure.quantity.Power;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +36,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   private final Class<? extends T> registeredClass;
   protected final String[] headerElements;
   protected final LinkedHashMap<String, Method> fieldNameToMethod = new LinkedHashMap<>();
-  protected final boolean resultModel;
+  //  protected final boolean resultModel;
 
   /** Field name of {@link UniqueEntity} uuid */
   private static final String uuidString = "uuid";
@@ -50,7 +48,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    */
   public EntityProcessor(Class<? extends T> registeredClass) {
     this.registeredClass = registeredClass;
-    this.resultModel = isResultModel(registeredClass);
+    //    this.resultModel = isResultModel(registeredClass);
     this.headerElements = registerClass(registeredClass);
     TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss");
   }
@@ -61,9 +59,9 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    * @param cls the provided class
    * @return true if it is a subclass of ResultEntity, false otherwise
    */
-  private boolean isResultModel(Class<?> cls) {
-    return ResultEntity.class.isAssignableFrom(cls);
-  }
+  //  private boolean isResultModel(Class<?> cls) {
+  //    return ResultEntity.class.isAssignableFrom(cls);
+  //  }
 
   /**
    * Register the class provided in the constructor
@@ -144,31 +142,17 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    *
    * @param quantity the quantity that should be processed
    * @param fieldName the field name the quantity is set to
-   * @param resultModel true if the processed model is of type ResultEntity, false otherwise
    * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
    *     or empty if an error occurred during processing
    */
-  protected Optional<String> handleQuantity(
-      Quantity<?> quantity, String fieldName, boolean resultModel) {
+  protected Optional<String> handleQuantity(Quantity<?> quantity, String fieldName) {
 
     Optional<String> normalizedQuantityValue = Optional.empty();
 
     switch (fieldName) {
       case "p":
-        normalizedQuantityValue =
-            resultModel
-                ? quantityValToOptionalString(
-                    quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_OUT))
-                : quantityValToOptionalString(
-                    quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
-        break;
       case "q":
-        normalizedQuantityValue =
-            resultModel
-                ? quantityValToOptionalString(
-                    quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_OUT))
-                : quantityValToOptionalString(
-                    quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
+        normalizedQuantityValue = handleModelProcessorSpecificQuantity(quantity, fieldName);
         break;
       case "soc":
       case "vAng":
@@ -200,7 +184,22 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
     return normalizedQuantityValue;
   }
 
-  private Optional<String> quantityValToOptionalString(Quantity<?> quantity) {
+  /**
+   * This method should handle all quantities that are model processor specific e.g. we need to
+   * handle active power p different for {@link edu.ie3.models.result.ResultEntity}s and {@link
+   * edu.ie3.models.input.system.SystemParticipantInput}s Hence from the generalized method {@link
+   * this.handleQuantity()}, this allows for the specific handling of child implementations. See the
+   * implementation @ {@link edu.ie3.io.processor.result.ResultEntityProcessor} for details.
+   *
+   * @param quantity the quantity that should be processed
+   * @param fieldName the field name the quantity is set to
+   * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
+   *     or empty if an error occurred during processing
+   */
+  protected abstract Optional<String> handleModelProcessorSpecificQuantity(
+      Quantity<?> quantity, String fieldName);
+
+  protected Optional<String> quantityValToOptionalString(Quantity<?> quantity) {
     return Optional.of(Double.toString(quantity.getValue().doubleValue()));
   }
 

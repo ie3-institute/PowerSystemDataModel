@@ -8,6 +8,7 @@ package edu.ie3.io.processor.result;
 import edu.ie3.exceptions.EntityProcessorException;
 import edu.ie3.io.factory.result.SystemParticipantResultFactory;
 import edu.ie3.io.processor.EntityProcessor;
+import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.ResultEntity;
 import edu.ie3.models.result.system.SystemParticipantResult;
 import java.lang.reflect.Method;
@@ -15,6 +16,7 @@ import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 import javax.measure.Quantity;
+import javax.measure.quantity.Power;
 
 /**
  * 'De-serializer' for {@link SystemParticipantResult}s into a fieldName -> value representation to
@@ -57,6 +59,29 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
     return resultMapOpt;
   }
 
+  @Override
+  protected Optional<String> handleModelProcessorSpecificQuantity(
+      Quantity<?> quantity, String fieldName) {
+    Optional<String> normalizedQuantityValue = Optional.empty();
+    switch (fieldName) {
+      case "p":
+        quantityValToOptionalString(
+            quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_OUT));
+        break;
+      case "q":
+        quantityValToOptionalString(
+            quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_OUT));
+        break;
+      default:
+        log.error(
+            "Cannot process quantity {} for field with name {} in result model processing!",
+            quantity,
+            fieldName);
+        break;
+    }
+    return normalizedQuantityValue;
+  }
+
   private String processMethodResult(Object methodReturnObject, Method method, String fieldName) {
 
     StringBuilder resultStringBuilder = new StringBuilder();
@@ -70,7 +95,7 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
         break;
       case "Quantity":
         resultStringBuilder.append(
-            handleQuantity((Quantity<?>) methodReturnObject, fieldName, resultModel)
+            handleQuantity((Quantity<?>) methodReturnObject, fieldName)
                 .orElseThrow(
                     () ->
                         new EntityProcessorException(
