@@ -5,31 +5,33 @@
 */
 package edu.ie3.io.factory;
 
-import edu.ie3.models.OperationTime;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.OperatorInput;
 import java.util.Map;
+import java.util.Optional;
 
 public class OperationEntityData extends EntityData {
 
-  private final OperationTime operationTime;
   private final OperatorInput operatorInput;
 
   public OperationEntityData(
+      Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
+    this(fieldsToAttributes, entityClass, null);
+  }
+
+  public OperationEntityData(
       Map<String, String> fieldsToAttributes,
-      Class<? extends UniqueEntity> clazz,
-      OperationTime operationTime,
+      Class<? extends UniqueEntity> entityClass,
       OperatorInput operatorInput) {
-    super(fieldsToAttributes, clazz);
-    this.operationTime = operationTime;
+    super(fieldsToAttributes, entityClass);
     this.operatorInput = operatorInput;
   }
 
-  public OperationTime getOperationTime() {
-    return operationTime;
+  public boolean hasOperatorInput() {
+    return operatorInput != null;
   }
 
-  public OperatorInput getOperatorInput() {
-    return operatorInput;
+  public Optional<OperatorInput> getOperatorInput() {
+    return Optional.ofNullable(operatorInput);
   }
 }

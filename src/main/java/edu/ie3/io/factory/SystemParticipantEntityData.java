@@ -5,32 +5,40 @@
 */
 package edu.ie3.io.factory;
 
-import edu.ie3.models.OperationTime;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import java.util.Map;
 
-public class SystemParticipantEntityData extends AssetEntityData {
-  private final OperationTime operationTime;
-  private final OperatorInput operatorInput;
+/**
+ * Data used by {@link AssetEntityFactory} to create an instance of an entity that needs additional
+ * information about the {@link OperatorInput} and cannot be created based only on a mapping of
+ * fieldName -> value
+ *
+ * @version 0.1
+ * @since 28.01.20
+ */
+public class SystemParticipantEntityData extends OperationEntityData {
+
+  private final NodeInput node;
+  // TODO field for TypeInput (-> WecTypeInput) needed?
+
+  public SystemParticipantEntityData(
+      Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> clazz, NodeInput node) {
+    super(fieldsToAttributes, clazz);
+    this.node = node;
+  }
 
   public SystemParticipantEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> clazz,
-      NodeInput node,
-      OperationTime operationTime,
-      OperatorInput operatorInput) {
-    super(fieldsToAttributes, clazz, node);
-    this.operationTime = operationTime;
-    this.operatorInput = operatorInput;
+      OperatorInput operatorInput,
+      NodeInput node) {
+    super(fieldsToAttributes, clazz, operatorInput);
+    this.node = node;
   }
 
-  public OperationTime getOperationTime() {
-    return operationTime;
-  }
-
-  public OperatorInput getOperatorInput() {
-    return operatorInput;
+  public NodeInput getNode() {
+    return node;
   }
 }

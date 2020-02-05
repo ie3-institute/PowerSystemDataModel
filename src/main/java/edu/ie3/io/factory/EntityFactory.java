@@ -60,14 +60,14 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
    * fieldSets Array. If we find exactly one constructor, that matches the field names we can
    * proceed. Otherwise a detailed exception message is thrown.
    *
-   * @param entityData the entity containing at least the entity class as well a mapping of the
-   *     provided field name strings to its value (e.g. a headline of a csv -> column values)
+   * @param data the entity containing at least the entity class as well a mapping of the provided
+   *     field name strings to its value (e.g. a headline of a csv -> column values)
    * @param fieldSets a set containing all available constructor combinations as field names
-   * @return the number of the set in the fieldSets array that fits the provided entityData
+   * @return the number of the set in the fieldSets array that fits the provided entity data
    */
-  protected int validateParameters(EntityData entityData, Set<String>... fieldSets) {
+  protected int validateParameters(D data, Set<String>... fieldSets) {
 
-    Map<String, String> fieldsToValues = entityData.getFieldsToValues();
+    Map<String, String> fieldsToValues = data.getFieldsToValues();
 
     // get all sets that match the fields to attributes
     List<Set<String>> validFieldSets =
@@ -98,15 +98,15 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
               + providedFieldMapString
               + "}"
               + " are invalid for instance of "
-              + entityData.getEntityClass().getSimpleName()
+              + data.getEntityClass().getSimpleName()
               + ". \nThe following fields to be passed to a constructor of "
-              + entityData.getEntityClass().getSimpleName()
+              + data.getEntityClass().getSimpleName()
               + " are possible:\n"
               + possibleOptions);
     }
   }
 
-  private StringBuilder getFieldsString(Set<String>... fieldSets) {
+  private static StringBuilder getFieldsString(Set<String>... fieldSets) {
     StringBuilder possibleOptions = new StringBuilder();
     for (int i = 0; i < fieldSets.length; i++) {
       Set<String> fieldSet = fieldSets[i];
