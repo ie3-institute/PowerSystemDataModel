@@ -72,100 +72,149 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
     Optional<UUID> uuidOpt =
         data.containsKey(entityUuid) ? Optional.of(data.getUUID(entityUuid)) : Optional.empty();
 
-    if (entityClass.equals(LineResult.class)) {
-      return uuidOpt
-          .map(
-              uuid ->
-                  new LineResult(
-                      uuid, zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal))
-          .orElseGet(
-              () ->
-                  new LineResult(
-                      zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal));
-    } else if (entityClass.equals(SwitchResult.class)) {
-      final boolean closedVal =
-          data.get(closed).trim().equals("1") || data.get(closed).trim().equals("true");
+    if (entityClass.equals(LineResult.class))
+      return buildLineResult(
+          zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal, uuidOpt);
+    else if (entityClass.equals(SwitchResult.class))
+      return buildSwitchResult(
+          data, zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal, uuidOpt);
+    else if (entityClass.equals(Transformer2WResult.class))
+      return buildTransformer2WResult(
+          data, zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal, uuidOpt);
+    else if (entityClass.equals(Transformer3WResult.class))
+      return buildTransformer3WResult(
+          data, zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal, uuidOpt);
+    else throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
+  }
 
-      return uuidOpt
-          .map(
-              uuid ->
-                  new SwitchResult(
-                      uuid,
-                      zdtTimestamp,
-                      inputModelUuid,
-                      iAMagVal,
-                      iAAngVal,
-                      iBMagVal,
-                      iBAngVal,
-                      closedVal))
-          .orElseGet(
-              () ->
-                  new SwitchResult(
-                      zdtTimestamp,
-                      inputModelUuid,
-                      iAMagVal,
-                      iAAngVal,
-                      iBMagVal,
-                      iBAngVal,
-                      closedVal));
-    } else if (entityClass.equals(Transformer2WResult.class)) {
-      final int tapPosValue = Integer.parseInt(data.get(tapPos).trim());
+  private ConnectorResult buildLineResult(
+      ZonedDateTime zdtTimestamp,
+      UUID inputModelUuid,
+      Quantity<ElectricCurrent> iAMagVal,
+      Quantity<Angle> iAAngVal,
+      Quantity<ElectricCurrent> iBMagVal,
+      Quantity<Angle> iBAngVal,
+      Optional<UUID> uuidOpt) {
+    return uuidOpt
+        .map(
+            uuid ->
+                new LineResult(
+                    uuid, zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal))
+        .orElseGet(
+            () ->
+                new LineResult(
+                    zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal));
+  }
 
-      return uuidOpt
-          .map(
-              uuid ->
-                  new Transformer2WResult(
-                      uuid,
-                      zdtTimestamp,
-                      inputModelUuid,
-                      iAMagVal,
-                      iAAngVal,
-                      iBMagVal,
-                      iBAngVal,
-                      tapPosValue))
-          .orElseGet(
-              () ->
-                  new Transformer2WResult(
-                      zdtTimestamp,
-                      inputModelUuid,
-                      iAMagVal,
-                      iAAngVal,
-                      iBMagVal,
-                      iBAngVal,
-                      tapPosValue));
-    } else if (entityClass.equals(Transformer3WResult.class)) {
-      Quantity<ElectricCurrent> iCMagVal = data.get(iCMag, StandardUnits.CURRENT);
-      Quantity<Angle> iCAngVal = data.get(iCAng, StandardUnits.DPHI_TAP); // TODO
-      final int tapPosValue = Integer.parseInt(data.get(tapPos).trim());
+  private ConnectorResult buildSwitchResult(
+      SimpleEntityData data,
+      ZonedDateTime zdtTimestamp,
+      UUID inputModelUuid,
+      Quantity<ElectricCurrent> iAMagVal,
+      Quantity<Angle> iAAngVal,
+      Quantity<ElectricCurrent> iBMagVal,
+      Quantity<Angle> iBAngVal,
+      Optional<UUID> uuidOpt) {
+    final boolean closedVal =
+        data.get(closed).trim().equals("1") || data.get(closed).trim().equals("true");
 
-      return uuidOpt
-          .map(
-              uuid ->
-                  new Transformer3WResult(
-                      uuid,
-                      zdtTimestamp,
-                      inputModelUuid,
-                      iAMagVal,
-                      iAAngVal,
-                      iBMagVal,
-                      iBAngVal,
-                      iCMagVal,
-                      iCAngVal,
-                      tapPosValue))
-          .orElseGet(
-              () ->
-                  new Transformer3WResult(
-                      zdtTimestamp,
-                      inputModelUuid,
-                      iAMagVal,
-                      iAAngVal,
-                      iBMagVal,
-                      iBAngVal,
-                      iCMagVal,
-                      iCAngVal,
-                      tapPosValue));
-    } else {
-      throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
-    }
+    return uuidOpt
+        .map(
+            uuid ->
+                new SwitchResult(
+                    uuid,
+                    zdtTimestamp,
+                    inputModelUuid,
+                    iAMagVal,
+                    iAAngVal,
+                    iBMagVal,
+                    iBAngVal,
+                    closedVal))
+        .orElseGet(
+            () ->
+                new SwitchResult(
+                    zdtTimestamp,
+                    inputModelUuid,
+                    iAMagVal,
+                    iAAngVal,
+                    iBMagVal,
+                    iBAngVal,
+                    closedVal));
+  }
+
+  private ConnectorResult buildTransformer2WResult(
+      SimpleEntityData data,
+      ZonedDateTime zdtTimestamp,
+      UUID inputModelUuid,
+      Quantity<ElectricCurrent> iAMagVal,
+      Quantity<Angle> iAAngVal,
+      Quantity<ElectricCurrent> iBMagVal,
+      Quantity<Angle> iBAngVal,
+      Optional<UUID> uuidOpt) {
+    final int tapPosValue = Integer.parseInt(data.get(tapPos).trim());
+
+    return uuidOpt
+        .map(
+            uuid ->
+                new Transformer2WResult(
+                    uuid,
+                    zdtTimestamp,
+                    inputModelUuid,
+                    iAMagVal,
+                    iAAngVal,
+                    iBMagVal,
+                    iBAngVal,
+                    tapPosValue))
+        .orElseGet(
+            () ->
+                new Transformer2WResult(
+                    zdtTimestamp,
+                    inputModelUuid,
+                    iAMagVal,
+                    iAAngVal,
+                    iBMagVal,
+                    iBAngVal,
+                    tapPosValue));
+  }
+
+  private ConnectorResult buildTransformer3WResult(
+      SimpleEntityData data,
+      ZonedDateTime zdtTimestamp,
+      UUID inputModelUuid,
+      Quantity<ElectricCurrent> iAMagVal,
+      Quantity<Angle> iAAngVal,
+      Quantity<ElectricCurrent> iBMagVal,
+      Quantity<Angle> iBAngVal,
+      Optional<UUID> uuidOpt) {
+    Quantity<ElectricCurrent> iCMagVal = data.get(iCMag, StandardUnits.CURRENT);
+    Quantity<Angle> iCAngVal = data.get(iCAng, StandardUnits.DPHI_TAP); // TODO
+    final int tapPosValue = Integer.parseInt(data.get(tapPos).trim());
+
+    return uuidOpt
+        .map(
+            uuid ->
+                new Transformer3WResult(
+                    uuid,
+                    zdtTimestamp,
+                    inputModelUuid,
+                    iAMagVal,
+                    iAAngVal,
+                    iBMagVal,
+                    iBAngVal,
+                    iCMagVal,
+                    iCAngVal,
+                    tapPosValue))
+        .orElseGet(
+            () ->
+                new Transformer3WResult(
+                    zdtTimestamp,
+                    inputModelUuid,
+                    iAMagVal,
+                    iAAngVal,
+                    iBMagVal,
+                    iBAngVal,
+                    iCMagVal,
+                    iCAngVal,
+                    tapPosValue));
   }
 }
