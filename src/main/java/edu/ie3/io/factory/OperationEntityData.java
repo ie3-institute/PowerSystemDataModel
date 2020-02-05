@@ -5,28 +5,28 @@
 */
 package edu.ie3.io.factory;
 
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.OperatorInput;
 import java.util.Map;
 
-/**
- * Data used by {@link OperatorEntityFactory} to create an instance of an entity that needs
- * additional information about the {@link OperatorInput} and cannot be created based only on a
- * mapping of fieldName -> value
- *
- * @version 0.1
- * @since 28.01.20
- */
-public class OperatorEntityData extends EntityData {
+public class OperationEntityData extends EntityData {
 
+  private final OperationTime operationTime;
   private final OperatorInput operatorInput;
 
-  public OperatorEntityData(
+  public OperationEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> clazz,
+      OperationTime operationTime,
       OperatorInput operatorInput) {
     super(fieldsToAttributes, clazz);
+    this.operationTime = operationTime;
     this.operatorInput = operatorInput;
+  }
+
+  public OperationTime getOperationTime() {
+    return operationTime;
   }
 
   public OperatorInput getOperatorInput() {
