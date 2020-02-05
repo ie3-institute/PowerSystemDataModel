@@ -28,6 +28,7 @@ public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemPa
   private static final String soc = "soc";
 
   public SystemParticipantResultFactory() {
+
     super(
         LoadResult.class,
         FixedFeedInResult.class,

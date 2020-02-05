@@ -25,7 +25,7 @@ class SystemParticipantResultFactoryTest extends Specification {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
         Map<String, String> parameter = [:]
-        parameter["timestamp"] = "16/01/2010 17:27:46"
+        parameter["timestamp"] = "2020-01-30 17:26:44"
         parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
         parameter["p"] = "2"
         parameter["q"] = "2"
@@ -63,7 +63,7 @@ class SystemParticipantResultFactoryTest extends Specification {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
         Map<String, String> parameter = [:]
-        parameter["timestamp"] = "16/01/2010 17:27:46"
+        parameter["timestamp"] = "2020-01-30 17:26:44"
         parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
         parameter["soc"] = "20"
         parameter["p"] = "2"
@@ -87,7 +87,7 @@ class SystemParticipantResultFactoryTest extends Specification {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
         Map<String, String> parameter = [:]
-        parameter["timestamp"] = "16/01/2010 17:27:46"
+        parameter["timestamp"] = "2020-01-30 17:26:44"
         parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
         parameter["q"] = "2"
 
@@ -96,10 +96,31 @@ class SystemParticipantResultFactoryTest extends Specification {
 
         then:
         FactoryException ex = thrown()
-        ex.message == "The provided fields [inputModel, q, timestamp] with data {inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,q -> 2,timestamp -> 16/01/2010 17:27:46} are invalid for instance of WecResult. \n" +
+        ex.message == "The provided fields [inputModel, q, timestamp] with data {inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,q -> 2,timestamp -> 2020-01-30 17:26:44} are invalid for instance of WecResult. \n" +
                 "The following fields to be passed to a constructor of WecResult are possible:\n" +
                 "0: [inputModel, p, q, timestamp]\n" +
                 "1: [inputModel, p, q, timestamp, uuid]\n"
+
+    }
+
+    def "A SystempParticipantResultFactor should be performant"() {
+        given: "a factory and dummy model data"
+        def resultFactory = new SystemParticipantResultFactory()
+        Map<String, String> parameter = [:]
+        parameter["timestamp"] = "2020-01-30 17:26:44"
+        parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
+        parameter["soc"] = "20"
+        parameter["p"] = "2"
+        parameter["q"] = "2"
+
+        expect: "that the factory should not need more than 2 seconds for processing 100.000 entities"
+        Long startTime = System.currentTimeMillis()
+        10000.times {
+            resultFactory.getEntity(new SimpleEntityData(parameter, StorageResult))
+        }
+        BigDecimal elapsedTime = (System
+                .currentTimeMillis() - startTime) / 1000.0
+        elapsedTime < 2
 
     }
 

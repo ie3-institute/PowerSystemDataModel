@@ -22,7 +22,7 @@ class ConnectorResultFactoryTest extends Specification {
         given: "a system participant factory and model data"
         def resultFactory = new ConnectorResultFactory()
         Map<String, String> parameter = [:]
-        parameter["timestamp"] = "16/01/2010 17:27:46"
+        parameter["timestamp"] = "2020-01-30 17:26:44"
         parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
         parameter["iamag"] = "1.0"
         parameter["iaang"] = "90"
