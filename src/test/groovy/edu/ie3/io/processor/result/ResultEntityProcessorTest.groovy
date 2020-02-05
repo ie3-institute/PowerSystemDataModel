@@ -2,7 +2,6 @@ package edu.ie3.io.processor.result
 
 import edu.ie3.exceptions.FactoryException
 import edu.ie3.models.StandardUnits
-import edu.ie3.models.input.system.PvInput
 import edu.ie3.models.result.NodeResult
 import edu.ie3.models.result.ThermalSinkResult
 import edu.ie3.models.result.connector.LineResult

@@ -36,7 +36,6 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   private final Class<? extends T> registeredClass;
   protected final String[] headerElements;
   protected final LinkedHashMap<String, Method> fieldNameToMethod = new LinkedHashMap<>();
-  //  protected final boolean resultModel;
 
   /** Field name of {@link UniqueEntity} uuid */
   private static final String uuidString = "uuid";
@@ -48,21 +47,9 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    */
   public EntityProcessor(Class<? extends T> registeredClass) {
     this.registeredClass = registeredClass;
-    //    this.resultModel = isResultModel(registeredClass);
     this.headerElements = registerClass(registeredClass);
     TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss");
   }
-
-  /**
-   * Determines if the provided class is a subclass of ResultEntity
-   *
-   * @param cls the provided class
-   * @return true if it is a subclass of ResultEntity, false otherwise
-   */
-  //  private boolean isResultModel(Class<?> cls) {
-  //    return ResultEntity.class.isAssignableFrom(cls);
-  //  }
-
   /**
    * Register the class provided in the constructor
    *
