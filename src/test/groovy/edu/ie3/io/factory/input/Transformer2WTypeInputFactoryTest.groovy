@@ -1,12 +1,11 @@
 package edu.ie3.io.factory.input
 
+import edu.ie3.io.factory.FactorySpecification
 import edu.ie3.io.factory.SimpleEntityData
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.input.connector.type.Transformer2WTypeInput
-import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
 
-class Transformer2WTypeInputFactoryTest extends Specification {
+class Transformer2WTypeInputFactoryTest extends FactorySpecification {
 
     def "A Transformer2WTypeInputFactory should contain exactly the expected class for parsing"() {
         given:
@@ -44,20 +43,22 @@ class Transformer2WTypeInputFactoryTest extends Specification {
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
-        typeInput.get().id == parameter["id"]
-        typeInput.get().RSc == Quantities.getQuantity(Double.parseDouble(parameter["rsc"]), StandardUnits.IMPEDANCE)
-        typeInput.get().XSc == Quantities.getQuantity(Double.parseDouble(parameter["xsc"]), StandardUnits.IMPEDANCE)
-        typeInput.get().SRated == Quantities.getQuantity(Double.parseDouble(parameter["srated"]), StandardUnits.S_RATED)
-        typeInput.get().VRatedA == Quantities.getQuantity(Double.parseDouble(parameter["vrateda"]), StandardUnits.V_RATED)
-        typeInput.get().VRatedB == Quantities.getQuantity(Double.parseDouble(parameter["vratedb"]), StandardUnits.V_RATED)
-        typeInput.get().GM == Quantities.getQuantity(Double.parseDouble(parameter["gm"]), StandardUnits.ADMITTANCE)
-        typeInput.get().BM == Quantities.getQuantity(Double.parseDouble(parameter["bm"]), StandardUnits.ADMITTANCE)
-        typeInput.get().DV == Quantities.getQuantity(Double.parseDouble(parameter["dv"]), StandardUnits.DV_TAP)
-        typeInput.get().DPhi == Quantities.getQuantity(Double.parseDouble(parameter["dphi"]), StandardUnits.DPHI_TAP)
-        typeInput.get().tapSide == (parameter["tapside"].trim() == "1") || parameter["tapside"].trim() == "true"
-        typeInput.get().tapNeutr == Integer.parseInt(parameter["tapneutr"])
-        typeInput.get().tapMin == Integer.parseInt(parameter["tapmin"])
-        typeInput.get().tapMax == Integer.parseInt(parameter["tapmax"])
+
+        def typeInputVal = typeInput.get()
+        typeInputVal.uuid == UUID.fromString(parameter["uuid"])
+        typeInputVal.id == parameter["id"]
+        typeInputVal.RSc == getQuant(parameter["rsc"], StandardUnits.IMPEDANCE)
+        typeInputVal.XSc == getQuant(parameter["xsc"], StandardUnits.IMPEDANCE)
+        typeInputVal.SRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+        typeInputVal.VRatedA == getQuant(parameter["vrateda"], StandardUnits.V_RATED)
+        typeInputVal.VRatedB == getQuant(parameter["vratedb"], StandardUnits.V_RATED)
+        typeInputVal.GM == getQuant(parameter["gm"], StandardUnits.ADMITTANCE)
+        typeInputVal.BM == getQuant(parameter["bm"], StandardUnits.ADMITTANCE)
+        typeInputVal.DV == getQuant(parameter["dv"], StandardUnits.DV_TAP)
+        typeInputVal.DPhi == getQuant(parameter["dphi"], StandardUnits.DPHI_TAP)
+        typeInputVal.tapSide == (parameter["tapside"].trim() == "1") || parameter["tapside"].trim() == "true"
+        typeInputVal.tapNeutr == Integer.parseInt(parameter["tapneutr"])
+        typeInputVal.tapMin == Integer.parseInt(parameter["tapmin"])
+        typeInputVal.tapMax == Integer.parseInt(parameter["tapmax"])
     }
 }

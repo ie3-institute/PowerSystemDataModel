@@ -1,14 +1,13 @@
 package edu.ie3.io.factory.input
 
 import edu.ie3.exceptions.FactoryException
+import edu.ie3.io.factory.FactorySpecification
 import edu.ie3.io.factory.SimpleEntityData
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.input.system.type.*
 import edu.ie3.util.quantities.PowerSystemUnits
-import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
 
-class SystemParticipantTypeInputFactoryTest extends Specification {
+class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
 
     def "A SystemParticipantTypeInputFactory should contain all expected classes for parsing"() {
         given:
@@ -39,15 +38,17 @@ class SystemParticipantTypeInputFactoryTest extends Specification {
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
-        typeInput.get().id == parameter["id"]
-        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameter["capex"]), PowerSystemUnits.EURO) // TODO StandardUnit
-        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameter["opex"]), StandardUnits.ENERGY_PRICE)
-        typeInput.get().cosphi == Double.parseDouble(parameter["cosphi"])
 
-        ((EvTypeInput) typeInput.get()).EStorage == Quantities.getQuantity(Double.parseDouble(parameter["estorage"]), StandardUnits.ENERGY)
-        ((EvTypeInput) typeInput.get()).ECons == Quantities.getQuantity(Double.parseDouble(parameter["econs"]), PowerSystemUnits.WATTHOUR_PER_METRE) // TODO
-        ((EvTypeInput) typeInput.get()).SRated == Quantities.getQuantity(Double.parseDouble(parameter["srated"]), StandardUnits.S_RATED)
+        def evTI = (EvTypeInput) typeInput.get()
+        evTI.uuid == UUID.fromString(parameter["uuid"])
+        evTI.id == parameter["id"]
+        evTI.capex == getQuant(parameter["capex"], PowerSystemUnits.EURO) // TODO StandardUnit
+        evTI.opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
+        evTI.cosphi == Double.parseDouble(parameter["cosphi"])
+
+        evTI.EStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY)
+        evTI.ECons == getQuant(parameter["econs"], PowerSystemUnits.WATTHOUR_PER_METRE) // TODO
+        evTI.SRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
     }
 
     def "A SystemParticipantTypeInputFactory should parse a valid HpTypeInput correctly"() {
@@ -70,15 +71,17 @@ class SystemParticipantTypeInputFactoryTest extends Specification {
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
-        typeInput.get().id == parameter["id"]
-        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameter["capex"]), PowerSystemUnits.EURO) // TODO StandardUnit
-        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameter["opex"]), StandardUnits.ENERGY_PRICE)
-        typeInput.get().cosphi == Double.parseDouble(parameter["cosphi"])
 
-        ((HpTypeInput) typeInput.get()).PRated == Quantities.getQuantity(Double.parseDouble(parameter["prated"]), StandardUnits.ACTIVE_POWER_IN)
-        ((HpTypeInput) typeInput.get()).PThermal == Quantities.getQuantity(Double.parseDouble(parameter["pthermal"]), StandardUnits.ACTIVE_POWER_IN)
-        ((HpTypeInput) typeInput.get()).PEl == Quantities.getQuantity(Double.parseDouble(parameter["pel"]), StandardUnits.ACTIVE_POWER_IN)
+        def hpTI = (HpTypeInput) typeInput.get()
+        hpTI.uuid == UUID.fromString(parameter["uuid"])
+        hpTI.id == parameter["id"]
+        hpTI.capex == getQuant(parameter["capex"], PowerSystemUnits.EURO) // TODO StandardUnit
+        hpTI.opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
+        hpTI.cosphi == Double.parseDouble(parameter["cosphi"])
+
+        hpTI.PRated == getQuant(parameter["prated"], StandardUnits.ACTIVE_POWER_IN)
+        hpTI.PThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
+        hpTI.PEl == getQuant(parameter["pel"], StandardUnits.ACTIVE_POWER_IN)
     }
 
     def "A SystemParticipantTypeInputFactory should parse a valid BmTypeInput correctly"() {
@@ -101,15 +104,17 @@ class SystemParticipantTypeInputFactoryTest extends Specification {
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
-        typeInput.get().id == parameter["id"]
-        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameter["capex"]), PowerSystemUnits.EURO) // TODO StandardUnit
-        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameter["opex"]), StandardUnits.ENERGY_PRICE)
-        typeInput.get().cosphi == Double.parseDouble(parameter["cosphi"])
 
-        ((BmTypeInput) typeInput.get()).loadGradient == Quantities.getQuantity(Double.parseDouble(parameter["loadgradient"]), StandardUnits.LOAD_GRADIENT)
-        ((BmTypeInput) typeInput.get()).SRated == Quantities.getQuantity(Double.parseDouble(parameter["srated"]), StandardUnits.S_RATED)
-        ((BmTypeInput) typeInput.get()).etaConv == Quantities.getQuantity(Double.parseDouble(parameter["etaconv"]), StandardUnits.EFFICIENCY)
+        def bmTI = (BmTypeInput) typeInput.get()
+        bmTI.uuid == UUID.fromString(parameter["uuid"])
+        bmTI.id == parameter["id"]
+        bmTI.capex == getQuant(parameter["capex"], PowerSystemUnits.EURO) // TODO StandardUnit
+        bmTI.opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
+        bmTI.cosphi == Double.parseDouble(parameter["cosphi"])
+
+        bmTI.loadGradient == getQuant(parameter["loadgradient"], StandardUnits.LOAD_GRADIENT)
+        bmTI.SRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+        bmTI.etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
     }
 
     def "A SystemParticipantTypeInputFactory should parse a valid WecTypeInput correctly"() {
@@ -133,16 +138,18 @@ class SystemParticipantTypeInputFactoryTest extends Specification {
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
-        typeInput.get().id == parameter["id"]
-        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameter["capex"]), PowerSystemUnits.EURO) // TODO StandardUnit
-        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameter["opex"]), StandardUnits.ENERGY_PRICE)
-        typeInput.get().cosphi == Double.parseDouble(parameter["cosphi"])
 
-        ((WecTypeInput) typeInput.get()).etaConv == Quantities.getQuantity(Double.parseDouble(parameter["etaconv"]), StandardUnits.EFFICIENCY)
-        ((WecTypeInput) typeInput.get()).SRated == Quantities.getQuantity(Double.parseDouble(parameter["srated"]), StandardUnits.S_RATED)
-        ((WecTypeInput) typeInput.get()).rotorArea == Quantities.getQuantity(Double.parseDouble(parameter["rotorarea"]), StandardUnits.ROTOR_AREA)
-        ((WecTypeInput) typeInput.get()).hubHeight == Quantities.getQuantity(Double.parseDouble(parameter["hubheight"]), StandardUnits.HUB_HEIGHT)
+        def wecTI = (WecTypeInput) typeInput.get()
+        wecTI.uuid == UUID.fromString(parameter["uuid"])
+        wecTI.id == parameter["id"]
+        wecTI.capex == getQuant(parameter["capex"], PowerSystemUnits.EURO) // TODO StandardUnit
+        wecTI.opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
+        wecTI.cosphi == Double.parseDouble(parameter["cosphi"])
+
+        wecTI.etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
+        wecTI.SRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+        wecTI.rotorArea == getQuant(parameter["rotorarea"], StandardUnits.ROTOR_AREA)
+        wecTI.hubHeight == getQuant(parameter["hubheight"], StandardUnits.HUB_HEIGHT)
     }
 
     def "A SystemParticipantTypeInputFactory should parse a valid ChpTypeInput correctly"() {
@@ -172,17 +179,19 @@ class SystemParticipantTypeInputFactoryTest extends Specification {
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
-        typeInput.get().id == parameter["id"]
-        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameter["capex"]), PowerSystemUnits.EURO) // TODO StandardUnit
-        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameter["opex"]), StandardUnits.ENERGY_PRICE)
-        typeInput.get().cosphi == Double.parseDouble(parameter["cosphi"])
 
-        ((ChpTypeInput) typeInput.get()).etaEl == Quantities.getQuantity(Double.parseDouble(parameter["etael"]), StandardUnits.EFFICIENCY)
-        ((ChpTypeInput) typeInput.get()).etaThermal == Quantities.getQuantity(Double.parseDouble(parameter["etathermal"]), StandardUnits.EFFICIENCY)
-        ((ChpTypeInput) typeInput.get()).PEl == Quantities.getQuantity(Double.parseDouble(parameter["pel"]), StandardUnits.ACTIVE_POWER_IN)
-        ((ChpTypeInput) typeInput.get()).PThermal == Quantities.getQuantity(Double.parseDouble(parameter["pthermal"]), StandardUnits.ACTIVE_POWER_IN)
-        ((ChpTypeInput) typeInput.get()).POwn == Quantities.getQuantity(Double.parseDouble(parameter["pown"]), StandardUnits.ACTIVE_POWER_IN)
+        def chpTI = (ChpTypeInput) typeInput.get()
+        chpTI.uuid == UUID.fromString(parameter["uuid"])
+        chpTI.id == parameter["id"]
+        chpTI.capex == getQuant(parameter["capex"], PowerSystemUnits.EURO) // TODO StandardUnit
+        chpTI.opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
+        chpTI.cosphi == Double.parseDouble(parameter["cosphi"])
+
+        chpTI.etaEl == getQuant(parameter["etael"], StandardUnits.EFFICIENCY)
+        chpTI.etaThermal == getQuant(parameter["etathermal"], StandardUnits.EFFICIENCY)
+        chpTI.PEl == getQuant(parameter["pel"], StandardUnits.ACTIVE_POWER_IN)
+        chpTI.PThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
+        chpTI.POwn == getQuant(parameter["pown"], StandardUnits.ACTIVE_POWER_IN)
         // the rest of parameters is not saved in class attributes
     }
 
@@ -207,24 +216,26 @@ class SystemParticipantTypeInputFactoryTest extends Specification {
 
         when:
         Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
-
+        
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
-        typeInput.get().id == parameter["id"]
-        typeInput.get().capex == Quantities.getQuantity(Double.parseDouble(parameter["capex"]), PowerSystemUnits.EURO) // TODO StandardUnit
-        typeInput.get().opex == Quantities.getQuantity(Double.parseDouble(parameter["opex"]), StandardUnits.ENERGY_PRICE)
-        typeInput.get().cosphi == Double.parseDouble(parameter["cosphi"])
+        
+        def storageTI = (StorageTypeInput) typeInput.get()
+        storageTI.uuid == UUID.fromString(parameter["uuid"])
+        storageTI.id == parameter["id"]
+        storageTI.capex == getQuant(parameter["capex"], PowerSystemUnits.EURO) // TODO StandardUnit
+        storageTI.opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
+        storageTI.cosphi == Double.parseDouble(parameter["cosphi"])
 
-        ((StorageTypeInput) typeInput.get()).EStorage == Quantities.getQuantity(Double.parseDouble(parameter["estorage"]), StandardUnits.ENERGY)
-        ((StorageTypeInput) typeInput.get()).PRated == Quantities.getQuantity(Double.parseDouble(parameter["prated"]), StandardUnits.ACTIVE_POWER_IN)
-        ((StorageTypeInput) typeInput.get()).PMin == Quantities.getQuantity(Double.parseDouble(parameter["pmin"]), StandardUnits.ACTIVE_POWER_IN)
-        ((StorageTypeInput) typeInput.get()).PMax == Quantities.getQuantity(Double.parseDouble(parameter["pmax"]), StandardUnits.ACTIVE_POWER_IN)
-        ((StorageTypeInput) typeInput.get()).eta == Quantities.getQuantity(Double.parseDouble(parameter["eta"]), StandardUnits.EFFICIENCY)
-        ((StorageTypeInput) typeInput.get()).dod == Quantities.getQuantity(Double.parseDouble(parameter["dod"]), StandardUnits.DOD)
-        ((StorageTypeInput) typeInput.get()).lifeTime == Quantities.getQuantity(Double.parseDouble(parameter["lifetime"]), StandardUnits.LIFE_TIME)
-        ((StorageTypeInput) typeInput.get()).lifeCycle == Integer.parseInt(parameter["lifecycle"])
+        storageTI.EStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY)
+        storageTI.PRated == getQuant(parameter["prated"], StandardUnits.ACTIVE_POWER_IN)
+        storageTI.PMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_IN)
+        storageTI.PMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
+        storageTI.eta == getQuant(parameter["eta"], StandardUnits.EFFICIENCY)
+        storageTI.dod == getQuant(parameter["dod"], StandardUnits.DOD)
+        storageTI.lifeTime == getQuant(parameter["lifetime"], StandardUnits.LIFE_TIME)
+        storageTI.lifeCycle == Integer.parseInt(parameter["lifecycle"])
     }
 
     def "A SystemParticipantTypeInputFactory should throw an exception on invalid or incomplete data"() {
