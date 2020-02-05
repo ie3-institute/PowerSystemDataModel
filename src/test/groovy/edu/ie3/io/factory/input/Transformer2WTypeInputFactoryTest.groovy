@@ -19,22 +19,23 @@ class Transformer2WTypeInputFactoryTest extends FactorySpecification {
     def "A Transformer2WTypeInputFactory should parse a valid Transformer2WTypeInput correctly"() {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new Transformer2WTypeInputFactory()
-        Map<String, String> parameter = [:]
-        parameter["uuid"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
-        parameter["id"] = "blablub"
-        parameter["rsc"] = "3"
-        parameter["xsc"] = "4"
-        parameter["srated"] = "5"
-        parameter["vrateda"] = "6"
-        parameter["vratedb"] = "7"
-        parameter["gm"] = "8"
-        parameter["bm"] = "9"
-        parameter["dv"] = "10"
-        parameter["dphi"] = "11"
-        parameter["tapside"] = "1"
-        parameter["tapneutr"] = "12"
-        parameter["tapmin"] = "13"
-        parameter["tapmax"] = "14"
+        Map<String, String> parameter = [
+            "uuid":     "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":       "blablub",
+            "rsc":      "3",
+            "xsc":      "4",
+            "srated":   "5",
+            "vrateda":  "6",
+            "vratedb":  "7",
+            "gm":       "8",
+            "bm":       "9",
+            "dv":       "10",
+            "dphi":     "11",
+            "tapside":  "1",
+            "tapneutr": "12",
+            "tapmin":   "13",
+            "tapmax":   "14"
+        ]
         def typeInputClass = Transformer2WTypeInput
 
         when:
@@ -44,21 +45,22 @@ class Transformer2WTypeInputFactoryTest extends FactorySpecification {
         typeInput.present
         typeInput.get().getClass() == typeInputClass
 
-        def typeInputVal = typeInput.get()
-        typeInputVal.uuid == UUID.fromString(parameter["uuid"])
-        typeInputVal.id == parameter["id"]
-        typeInputVal.RSc == getQuant(parameter["rsc"], StandardUnits.IMPEDANCE)
-        typeInputVal.XSc == getQuant(parameter["xsc"], StandardUnits.IMPEDANCE)
-        typeInputVal.SRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-        typeInputVal.VRatedA == getQuant(parameter["vrateda"], StandardUnits.V_RATED)
-        typeInputVal.VRatedB == getQuant(parameter["vratedb"], StandardUnits.V_RATED)
-        typeInputVal.GM == getQuant(parameter["gm"], StandardUnits.ADMITTANCE)
-        typeInputVal.BM == getQuant(parameter["bm"], StandardUnits.ADMITTANCE)
-        typeInputVal.DV == getQuant(parameter["dv"], StandardUnits.DV_TAP)
-        typeInputVal.DPhi == getQuant(parameter["dphi"], StandardUnits.DPHI_TAP)
-        typeInputVal.tapSide == (parameter["tapside"].trim() == "1") || parameter["tapside"].trim() == "true"
-        typeInputVal.tapNeutr == Integer.parseInt(parameter["tapneutr"])
-        typeInputVal.tapMin == Integer.parseInt(parameter["tapmin"])
-        typeInputVal.tapMax == Integer.parseInt(parameter["tapmax"])
+        typeInput.get().with {
+            assert uuid == UUID.fromString(parameter["uuid"])
+            assert id == parameter["id"]
+            assert RSc == getQuant(parameter["rsc"], StandardUnits.IMPEDANCE)
+            assert XSc == getQuant(parameter["xsc"], StandardUnits.IMPEDANCE)
+            assert SRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+            assert VRatedA == getQuant(parameter["vrateda"], StandardUnits.V_RATED)
+            assert VRatedB == getQuant(parameter["vratedb"], StandardUnits.V_RATED)
+            assert GM == getQuant(parameter["gm"], StandardUnits.ADMITTANCE)
+            assert BM == getQuant(parameter["bm"], StandardUnits.ADMITTANCE)
+            assert DV == getQuant(parameter["dv"], StandardUnits.DV_TAP)
+            assert DPhi == getQuant(parameter["dphi"], StandardUnits.DPHI_TAP)
+            assert tapSide == (parameter["tapside"].trim() == "1") || parameter["tapside"].trim() == "true"
+            assert tapNeutr == Integer.parseInt(parameter["tapneutr"])
+            assert tapMin == Integer.parseInt(parameter["tapmin"])
+            assert tapMax == Integer.parseInt(parameter["tapmax"])
+        }
     }
 }

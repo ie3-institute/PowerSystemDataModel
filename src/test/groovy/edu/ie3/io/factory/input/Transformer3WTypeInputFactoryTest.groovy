@@ -19,28 +19,29 @@ class Transformer3WTypeInputFactoryTest extends FactorySpecification {
     def "A Transformer3WTypeInputFactory should parse a valid Transformer2WTypeInput correctly"() {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new Transformer3WTypeInputFactory()
-        Map<String, String> parameter = [:]
-        parameter["uuid"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
-        parameter["id"] = "blablub"
-        parameter["srateda"] = "3"
-        parameter["sratedb"] = "4"
-        parameter["sratedc"] = "5"
-        parameter["vrateda"] = "6"
-        parameter["vratedb"] = "7"
-        parameter["vratedc"] = "8"
-        parameter["rsca"] = "9"
-        parameter["rscb"] = "10"
-        parameter["rscc"] = "11"
-        parameter["xsca"] = "12"
-        parameter["xscb"] = "13"
-        parameter["xscc"] = "14"
-        parameter["gm"] = "15"
-        parameter["bm"] = "16"
-        parameter["dv"] = "17"
-        parameter["dphi"] = "18"
-        parameter["tapneutr"] = "19"
-        parameter["tapmin"] = "20"
-        parameter["tapmax"] = "21"
+        Map<String, String> parameter = [
+            "uuid":	    "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":   	"blablub",
+            "srateda":	"3",
+            "sratedb":	"4",
+            "sratedc":	"5",
+            "vrateda":	"6",
+            "vratedb":	"7",
+            "vratedc":	"8",
+            "rsca":	    "9",
+            "rscb":	    "10",
+            "rscc":	    "11",
+            "xsca":	    "12",
+            "xscb":	    "13",
+            "xscc":	    "14",
+            "gm":	    "15",
+            "bm":	    "16",
+            "dv":   	"17",
+            "dphi":	    "18",
+            "tapneutr":	"19",
+            "tapmin":	"20",
+            "tapmax":	"21"
+        ]
         def typeInputClass = Transformer3WTypeInput
 
         when:
@@ -50,27 +51,28 @@ class Transformer3WTypeInputFactoryTest extends FactorySpecification {
         typeInput.present
         typeInput.get().getClass() == typeInputClass
 
-        def typeInputVal = typeInput.get()
-        typeInputVal.uuid == UUID.fromString(parameter["uuid"])
-        typeInputVal.id == parameter["id"]
-        typeInputVal.SRatedA == getQuant(parameter["srateda"], StandardUnits.S_RATED)
-        typeInputVal.SRatedB == getQuant(parameter["sratedb"], StandardUnits.S_RATED)
-        typeInputVal.SRatedC == getQuant(parameter["sratedc"], StandardUnits.S_RATED)
-        typeInputVal.VRatedA == getQuant(parameter["vrateda"], StandardUnits.V_RATED)
-        typeInputVal.VRatedB == getQuant(parameter["vratedb"], StandardUnits.V_RATED)
-        typeInputVal.VRatedC == getQuant(parameter["vratedc"], StandardUnits.V_RATED)
-        typeInputVal.RScA == getQuant(parameter["rsca"], StandardUnits.IMPEDANCE)
-        typeInputVal.RScB == getQuant(parameter["rscb"], StandardUnits.IMPEDANCE)
-        typeInputVal.RScC == getQuant(parameter["rscc"], StandardUnits.IMPEDANCE)
-        typeInputVal.XScA == getQuant(parameter["xsca"], StandardUnits.IMPEDANCE)
-        typeInputVal.XScB == getQuant(parameter["xscb"], StandardUnits.IMPEDANCE)
-        typeInputVal.XScC == getQuant(parameter["xscc"], StandardUnits.IMPEDANCE)
-        typeInputVal.GM == getQuant(parameter["gm"], StandardUnits.ADMITTANCE)
-        typeInputVal.BM == getQuant(parameter["bm"], StandardUnits.ADMITTANCE)
-        typeInputVal.DV == getQuant(parameter["dv"], StandardUnits.DV_TAP)
-        typeInputVal.DPhi == getQuant(parameter["dphi"], StandardUnits.DPHI_TAP)
-        typeInputVal.tapNeutr == Integer.parseInt(parameter["tapneutr"])
-        typeInputVal.tapMin == Integer.parseInt(parameter["tapmin"])
-        typeInputVal.tapMax == Integer.parseInt(parameter["tapmax"])
+        typeInput.get().with {
+            assert uuid == UUID.fromString(parameter["uuid"])
+            assert id == parameter["id"]
+            assert SRatedA == getQuant(parameter["srateda"], StandardUnits.S_RATED)
+            assert SRatedB == getQuant(parameter["sratedb"], StandardUnits.S_RATED)
+            assert SRatedC == getQuant(parameter["sratedc"], StandardUnits.S_RATED)
+            assert VRatedA == getQuant(parameter["vrateda"], StandardUnits.V_RATED)
+            assert VRatedB == getQuant(parameter["vratedb"], StandardUnits.V_RATED)
+            assert VRatedC == getQuant(parameter["vratedc"], StandardUnits.V_RATED)
+            assert RScA == getQuant(parameter["rsca"], StandardUnits.IMPEDANCE)
+            assert RScB == getQuant(parameter["rscb"], StandardUnits.IMPEDANCE)
+            assert RScC == getQuant(parameter["rscc"], StandardUnits.IMPEDANCE)
+            assert XScA == getQuant(parameter["xsca"], StandardUnits.IMPEDANCE)
+            assert XScB == getQuant(parameter["xscb"], StandardUnits.IMPEDANCE)
+            assert XScC == getQuant(parameter["xscc"], StandardUnits.IMPEDANCE)
+            assert GM == getQuant(parameter["gm"], StandardUnits.ADMITTANCE)
+            assert BM == getQuant(parameter["bm"], StandardUnits.ADMITTANCE)
+            assert DV == getQuant(parameter["dv"], StandardUnits.DV_TAP)
+            assert DPhi == getQuant(parameter["dphi"], StandardUnits.DPHI_TAP)
+            assert tapNeutr == Integer.parseInt(parameter["tapneutr"])
+            assert tapMin == Integer.parseInt(parameter["tapmin"])
+            assert tapMax == Integer.parseInt(parameter["tapmax"])
+        }
     }
 }
