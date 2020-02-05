@@ -121,22 +121,6 @@ class ResultEntityProcessorTest extends Specification {
         ex.message == "Cannot process StorageResult.class with this EntityProcessor. Please either provide an element of LoadResult.class or create a new factory for StorageResult.class!"
     }
 
-
-    def "A ResultEntityProcessor should determine a ResultEntity correctly"() {
-        given:
-        TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def sysPartResProcessor = new ResultEntityProcessor(modelClass)
-
-        expect:
-        sysPartResProcessor.resultModel == isResultModel
-
-        where:
-        modelClass || isResultModel
-        LoadResult || true
-        PvInput    || false
-    }
-
-
     def "A ResultEntityProcessor should de-serialize a NodeResult correctly"() {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")

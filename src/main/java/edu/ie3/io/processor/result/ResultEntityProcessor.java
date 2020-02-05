@@ -65,12 +65,14 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
     Optional<String> normalizedQuantityValue = Optional.empty();
     switch (fieldName) {
       case "p":
-        quantityValToOptionalString(
-            quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_OUT));
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_OUT));
         break;
       case "q":
-        quantityValToOptionalString(
-            quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_OUT));
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_OUT));
         break;
       default:
         log.error(
@@ -99,9 +101,9 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
                 .orElseThrow(
                     () ->
                         new EntityProcessorException(
-                            "Unable to process quantity value for attribute "
+                            "Unable to process quantity value for attribute '"
                                 + fieldName
-                                + " in system participant result model"
+                                + "' in system participant result model "
                                 + getRegisteredClass().getSimpleName()
                                 + ".class.")));
         break;
