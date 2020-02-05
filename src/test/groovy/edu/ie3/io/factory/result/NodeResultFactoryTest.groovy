@@ -23,10 +23,10 @@ class NodeResultFactoryTest extends Specification {
         given: "a system participant factory and model data"
         def resultFactory = new NodeResultFactory()
         HashMap<String, String> parameterMap = [:]
-        parameterMap.put("timestamp", "16/01/2010 17:27:46");
-        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7");
-        parameterMap.put("vmag", "2");
-        parameterMap.put("vang", "2");
+        parameterMap.put("timestamp", "2020-01-30 17:26:44")
+        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7")
+        parameterMap.put("vmag", "2")
+        parameterMap.put("vang", "2")
 
         when:
         Optional<? extends NodeResult> result = resultFactory.getEntity(new SimpleEntityData(parameterMap, NodeResult))
@@ -45,16 +45,16 @@ class NodeResultFactoryTest extends Specification {
         given: "a system participant factory and model data"
         def resultFactory = new NodeResultFactory()
         HashMap<String, String> parameterMap = [:]
-        parameterMap.put("timestamp", "16/01/2010 17:27:46");
-        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7");
-        parameterMap.put("vmag", "2");
+        parameterMap.put("timestamp", "2020-01-30 17:26:44")
+        parameterMap.put("inputModel", "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7")
+        parameterMap.put("vmag", "2")
 
         when:
         resultFactory.getEntity(new SimpleEntityData(parameterMap, NodeResult.class))
 
         then:
         FactoryException ex = thrown()
-        ex.message == "The provided fields [inputModel, timestamp, vmag] with data {inputModel -> 91ec3bcf-1897-4d38-af67-0bf7c9fa73c7,timestamp -> 16/01/2010 17:27:46,vmag -> 2} are invalid for instance of NodeResult. \n" +
+        ex.message == "The provided fields [inputModel, timestamp, vmag] with data {inputModel -> 91ec3bcf-1897-4d38-af67-0bf7c9fa73c7,timestamp -> 2020-01-30 17:26:44,vmag -> 2} are invalid for instance of NodeResult. \n" +
                 "The following fields to be passed to a constructor of NodeResult are possible:\n" +
                 "0: [inputModel, timestamp, vang, vmag]\n" +
                 "1: [inputModel, timestamp, uuid, vang, vmag]\n"
