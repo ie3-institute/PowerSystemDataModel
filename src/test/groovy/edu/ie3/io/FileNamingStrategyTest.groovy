@@ -98,7 +98,6 @@ class FileNamingStrategyTest extends Specification {
         SwitchResult        || "switch_res"
         NodeResult          || "node_res"
         ThermalSinkResult   || "thermalsink_res"
-
     }
 
     def "A FileNamingStrategy with pre- and suffixes should return valid strings for all result models"() {
@@ -129,7 +128,6 @@ class FileNamingStrategyTest extends Specification {
         SwitchResult        || "prefix_switch_res_suffix"
         NodeResult          || "prefix_node_res_suffix"
         ThermalSinkResult   || "prefix_thermalsink_res_suffix"
-
     }
 
     def "A FileNamingStrategy without pre- or suffixes should return valid strings for all input assets models"() {
@@ -161,7 +159,6 @@ class FileNamingStrategyTest extends Specification {
         EvcsInput            || "evcs_input"
         Transformer2WInput   || "transformer2w_input"
         Transformer3WInput   || "transformer3w_input"
-
     }
 
     def "A FileNamingStrategy without pre- or suffixes should return valid strings for all asset characteristics models"() {
@@ -173,13 +170,12 @@ class FileNamingStrategyTest extends Specification {
 
         then:
         res.present
-        print(res.get())
+        res.get() == expectedString
 
         where:
         modelClass             || expectedString
         WecCharacteristicInput || "weccharacteristic_input"
         EvCharacteristicInput  || "evcharacteristic_input"
-
     }
 
     def "A FileNamingStrategy without pre- or suffixes should return valid strings for all input types models"() {
@@ -205,7 +201,6 @@ class FileNamingStrategyTest extends Specification {
         Transformer3WTypeInput || "transformer3w_type_input"
         WecTypeInput           || "wec_type_input"
         WecTypeInput           || "wec_type_input"
-
     }
 
     def "A FileNamingStrategy without pre- or suffixes should return valid strings for a Load Parameter Model"() {
@@ -222,7 +217,6 @@ class FileNamingStrategyTest extends Specification {
         where:
         modelClass           || expectedString
         RandomLoadParameters || "randomloadparameters_input"
-
     }
 
     def "A FileNamingStrategy without pre- or suffixes should return valid strings for a graphic input Model"() {
@@ -240,8 +234,6 @@ class FileNamingStrategyTest extends Specification {
         modelClass       || expectedString
         NodeGraphicInput || "node_graphic_input"
         LineGraphicInput || "line_graphic_input"
-
     }
-
 
 }
