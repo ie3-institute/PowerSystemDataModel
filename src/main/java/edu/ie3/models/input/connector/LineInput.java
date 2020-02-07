@@ -10,11 +10,12 @@ import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.connector.type.LineTypeInput;
+
+import javax.measure.Quantity;
+import javax.measure.quantity.Length;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import javax.measure.Quantity;
-import javax.measure.quantity.Length;
 
 /** Describes an electrical grid line that connects two {@link edu.ie3.models.input.NodeInput}s */
 public class LineInput extends ConnectorInput {
@@ -130,10 +131,10 @@ public class LineInput extends ConnectorInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     LineInput lineInput = (LineInput) o;
-    return type.equals(lineInput.type)
-        && length.equals(lineInput.length)
-        && geoPosition.equals(lineInput.geoPosition)
-        && olmCharacteristic.equals(lineInput.olmCharacteristic);
+    return Objects.equals(type, lineInput.type)
+        && Objects.equals(length, lineInput.length)
+        && Objects.equals(geoPosition, lineInput.geoPosition)
+        && Objects.equals(olmCharacteristic, lineInput.olmCharacteristic);
   }
 
   @Override

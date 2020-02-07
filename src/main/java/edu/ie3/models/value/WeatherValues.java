@@ -7,11 +7,11 @@ package edu.ie3.models.value;
 
 import com.vividsolutions.jts.geom.Point;
 import edu.ie3.util.quantities.interfaces.Irradiation;
+import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
-import java.util.Objects;
 
 /** Describes weather as a combination of irradiation, temperature and wind values */
 public class WeatherValues implements Value {
@@ -100,10 +100,10 @@ public class WeatherValues implements Value {
     if (this == o) return true;
     if (!(o instanceof WeatherValues)) return false;
     WeatherValues that = (WeatherValues) o;
-    return Objects.equals(coordinate, that.coordinate) &&
-            irradiation.equals(that.irradiation) &&
-            temperature.equals(that.temperature) &&
-            wind.equals(that.wind);
+    return Objects.equals(coordinate, that.coordinate)
+        && irradiation.equals(that.irradiation)
+        && temperature.equals(that.temperature)
+        && wind.equals(that.wind);
   }
 
   @Override

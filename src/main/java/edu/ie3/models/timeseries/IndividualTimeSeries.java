@@ -35,10 +35,7 @@ public class IndividualTimeSeries<T extends Value> implements TimeSeries<T> {
     timeToTimeBasedValue.put(timeBasedValue.getTime(), timeBasedValue);
   }
 
-  /**
-   * Adds values of a collection to the internal map
-   *
-   */
+  /** Adds values of a collection to the internal map */
   public void addAll(Collection<TimeBasedValue<T>> timeBasedValues) {
     timeBasedValues.forEach(this::add);
   }

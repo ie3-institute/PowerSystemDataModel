@@ -6,29 +6,30 @@
 package edu.ie3.models.influxdb.input.weather;
 
 import com.vividsolutions.jts.geom.Point;
-import edu.ie3.dataconnection.source.CsvCoordinateSource;
+import edu.ie3.dataconnection.source.csv.CsvCoordinateSource;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.influxdb.InfluxDbEntity;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.WeatherValues;
 import edu.ie3.util.quantities.interfaces.Irradiation;
-import org.influxdb.annotation.Column;
-import org.influxdb.annotation.Measurement;
-import tec.uom.se.quantity.Quantities;
-
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import org.influxdb.annotation.Column;
+import org.influxdb.annotation.Measurement;
+import tec.uom.se.quantity.Quantities;
 
 @Measurement(name = "weather")
 public class InfluxDbWeatherInput extends InfluxDbEntity<TimeBasedValue<WeatherValues>> {
 
-  @Column(name = "koordinatenid", tag=true)
-  String koordinatenId; // MIA gewählt, da kein querverweis auf koordinaten möglich ist + String wegen tag
+  @Column(name = "koordinatenid", tag = true)
+  String
+      koordinatenId; // MIA gewählt, da kein querverweis auf koordinaten möglich ist + String wegen
+  // tag
 
   @Column(name = "diffusstrahlung")
   Double diffusstrahlung;
@@ -71,7 +72,8 @@ public class InfluxDbWeatherInput extends InfluxDbEntity<TimeBasedValue<WeatherV
     Quantity<Irradiation> diffuseIrradiation =
         weather.getValue().getIrradiation().getDiffuseIrradiation();
     this.diffusstrahlung = diffuseIrradiation.getValue().doubleValue();
-    Quantity<Irradiation> directIrradiation = weather.getValue().getIrradiation().getDirectIrradiation();
+    Quantity<Irradiation> directIrradiation =
+        weather.getValue().getIrradiation().getDirectIrradiation();
     this.direktstrahlung = directIrradiation.getValue().doubleValue();
     Quantity<Temperature> temperature = values.getTemperature().getTemperature();
     this.temperatur = temperature.getValue().doubleValue();
@@ -88,7 +90,8 @@ public class InfluxDbWeatherInput extends InfluxDbEntity<TimeBasedValue<WeatherV
         Quantities.getQuantity(diffusstrahlung, StandardUnits.IRRADIATION);
     Quantity<Irradiation> directIrradiation =
         Quantities.getQuantity(direktstrahlung, StandardUnits.IRRADIATION);
-    Quantity<Temperature> temperature = Quantities.getQuantity(temperatur, StandardUnits.TEMPERATURE);
+    Quantity<Temperature> temperature =
+        Quantities.getQuantity(temperatur, StandardUnits.TEMPERATURE);
     Quantity<Angle> direction = Quantities.getQuantity(windrichtung, StandardUnits.WIND_DIRECTION);
     Quantity<Speed> velocity =
         Quantities.getQuantity(windgeschwindigkeit, StandardUnits.WIND_VELOCITY);

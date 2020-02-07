@@ -7,7 +7,6 @@ package edu.ie3.dataconnection.sink;
 
 import edu.ie3.dataconnection.dataconnectors.DataConnector;
 import edu.ie3.models.result.ResultEntity;
-
 import java.util.Collection;
 
 /** Describes a class that manages data persistence */

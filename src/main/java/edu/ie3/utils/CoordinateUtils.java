@@ -5,10 +5,9 @@
 */
 package edu.ie3.utils;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 public class CoordinateUtils {
 
@@ -33,8 +32,23 @@ public class CoordinateUtils {
    * @param y longitude value
    * @return JTS geometry Point
    */
-  public static Point xyCoordToPoint(double x, double y) {
+  public static Point xyCoordToPoint(Double x, Double y) {
+    if(x==null || y==null) return null;
     Coordinate coordinate = new Coordinate(x, y, 0);
     return geometryFactory.createPoint(coordinate);
+  }
+
+  public static LineString stringToLineString(String str) {
+    if(str == null || str.isEmpty()) return null;
+    WKTReader reader = new WKTReader();
+    Geometry geometry;
+    try {
+      geometry = reader.read(str);
+    } catch (ParseException e) {
+      e.printStackTrace();
+      return null;
+    }
+    CoordinateSequence coordinateSequence = geometryFactory.getCoordinateSequenceFactory().create(geometry.getCoordinates());
+    return new LineString(coordinateSequence, geometryFactory);
   }
 }

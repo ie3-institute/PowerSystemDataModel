@@ -13,16 +13,15 @@ import org.influxdb.dto.Query;
 
 public class InfluxDbConnector implements DataConnector {
   private static final String INFLUXDB_URL = "http://localhost:8086/";
-//  private static final String USERNAME = "";
-//  private static final String PASSWORD = "";
+  //  private static final String USERNAME = "";
+  //  private static final String PASSWORD = "";
   private String databaseName = "ie3_in";
 
   public InfluxDbConnector(String databaseName) {
     this.databaseName = databaseName;
   }
 
-  public InfluxDbConnector() {
-  }
+  public InfluxDbConnector() {}
 
   @Override
   public Boolean isConnectionValid() {
@@ -47,7 +46,7 @@ public class InfluxDbConnector implements DataConnector {
     this.databaseName = databaseName;
   }
 
-  public InfluxDB getSession(){
+  public InfluxDB getSession() {
     InfluxDB session;
     session = InfluxDBFactory.connect(INFLUXDB_URL);
     session.setDatabase(databaseName);
@@ -56,5 +55,4 @@ public class InfluxDbConnector implements DataConnector {
     session.enableBatch(BatchOptions.DEFAULTS);
     return session;
   }
-
 }
