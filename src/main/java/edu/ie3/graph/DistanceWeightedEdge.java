@@ -30,13 +30,11 @@ public class DistanceWeightedEdge extends DefaultWeightedEdge {
 
   public static final Unit<Length> DEFAULT_UNIT = METRE;
 
-  private Quantity<Length> weightQuantity = Quantities.getQuantity(1d, DEFAULT_UNIT);
   private double weight = SimpleWeightedGraph.DEFAULT_EDGE_WEIGHT;
 
   public DistanceWeightedEdge() {}
 
   public DistanceWeightedEdge(Quantity<Length> weightQuantity) {
-    this.weightQuantity = weightQuantity;
     this.weight = weightQuantity.to(DEFAULT_UNIT).getValue().doubleValue();
   }
 
