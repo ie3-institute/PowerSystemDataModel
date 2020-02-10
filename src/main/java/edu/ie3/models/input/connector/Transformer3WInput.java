@@ -35,7 +35,7 @@ public class Transformer3WInput extends TransformerInput {
    * @param parallelDevices Amount of singular transformers
    * @param type of 3W transformer
    * @param tapPos Tap Position of this transformer
-   * @param autoTap
+   * @param autoTap true, if there is an automated regulation activated for this transformer
    */
   public Transformer3WInput(
       UUID uuid,
@@ -65,7 +65,7 @@ public class Transformer3WInput extends TransformerInput {
    * @param parallelDevices Amount of singular transformers
    * @param type of 3W transformer
    * @param tapPos Tap Position of this transformer
-   * @param autoTap
+   * @param autoTap true, if there is an automated regulation activated for this transformer
    */
   public Transformer3WInput(
       UUID uuid,
@@ -90,12 +90,36 @@ public class Transformer3WInput extends TransformerInput {
     this.type = type;
   }
 
-  /** @return the lower voltage node */
+  /** @return the node with the highest voltage level */
+  @Override
+  public NodeInput getNodeA() {
+    return super.getNodeA();
+  }
+
+  /** @param nodeA the node with the highest voltage level */
+  @Override
+  public void setNodeA(NodeInput nodeA) {
+    super.setNodeA(nodeA);
+  }
+
+  /** @return the node with the "medium" voltage level */
+  @Override
+  public NodeInput getNodeB() {
+    return super.getNodeB();
+  }
+
+  /** @param nodeB the node with the "medium" voltage level */
+  @Override
+  public void setNodeB(NodeInput nodeB) {
+    super.setNodeB(nodeB);
+  }
+
+  /** @return the node with the lowest voltage level */
   public NodeInput getNodeC() {
     return nodeC;
   }
 
-  /** @param nodeC The lower voltage node */
+  /** @param nodeC the node with the lowest voltage level */
   public void setNodeC(NodeInput nodeC) {
     this.nodeC = nodeC;
   }
