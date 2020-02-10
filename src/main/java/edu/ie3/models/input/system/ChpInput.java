@@ -68,7 +68,6 @@ public class ChpInput extends SystemParticipantInput {
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      double cosphi,
       ChpTypeInput type,
       boolean marketReaction) {
     super(uuid, id, node, qCharacteristics);

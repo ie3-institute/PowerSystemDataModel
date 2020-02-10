@@ -10,7 +10,6 @@ import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.HpTypeInput;
 import edu.ie3.models.input.thermal.ThermalBusInput;
-import edu.ie3.models.input.thermal.ThermalUnitInput;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -41,9 +40,7 @@ public class HpInput extends SystemParticipantInput {
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      double cosphi,
-      HpTypeInput type,
-      ThermalUnitInput heatSink) {
+      HpTypeInput type) {
     super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.thermalBus = thermalBus;
     this.type = type;
@@ -65,8 +62,7 @@ public class HpInput extends SystemParticipantInput {
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      HpTypeInput type,
-      ThermalUnitInput heatSink) {
+      HpTypeInput type) {
     super(uuid, id, node, qCharacteristics);
     this.thermalBus = thermalBus;
     this.type = type;

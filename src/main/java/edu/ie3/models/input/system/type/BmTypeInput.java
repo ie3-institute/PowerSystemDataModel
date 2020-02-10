@@ -38,9 +38,9 @@ public class BmTypeInput extends SystemParticipantTypeInput {
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      double cosphiRated,
       Quantity<DimensionlessRate> loadGradient,
       Quantity<Power> sRated,
+      double cosphiRated,
       Quantity<Dimensionless> etaConv) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.loadGradient = loadGradient.to(StandardUnits.LOAD_GRADIENT);

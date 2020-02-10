@@ -99,6 +99,7 @@ public class PvInput extends SystemParticipantInput {
    * @param kT Generator correction factor merging different technical influences
    * @param marketReaction Is this asset market oriented?
    * @param sRated Rated apparent power (typically in kVA)
+   * @param cosphiRated Power factor
    */
   public PvInput(
       UUID uuid,
@@ -112,7 +113,8 @@ public class PvInput extends SystemParticipantInput {
       double kG,
       double kT,
       boolean marketReaction,
-      Quantity<Power> sRated) {
+      Quantity<Power> sRated,
+      double cosphiRated) {
     super(uuid, id, node, qCharacteristics);
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
@@ -122,6 +124,7 @@ public class PvInput extends SystemParticipantInput {
     this.kT = kT;
     this.marketReaction = marketReaction;
     this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.cosphiRated = cosphiRated;
   }
 
   public double getAlbedo() {
@@ -188,6 +191,14 @@ public class PvInput extends SystemParticipantInput {
     this.sRated = sRated.to(StandardUnits.S_RATED);
   }
 
+  public double getCosphiRated() {
+    return cosphiRated;
+  }
+
+  public void setCosphiRated(double cosphiRated) {
+    this.cosphiRated = cosphiRated;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -198,6 +209,7 @@ public class PvInput extends SystemParticipantInput {
         && Double.compare(pvInput.kG, kG) == 0
         && Double.compare(pvInput.kT, kT) == 0
         && marketReaction == pvInput.marketReaction
+        && Double.compare(pvInput.cosphiRated, cosphiRated) == 0
         && azimuth.equals(pvInput.azimuth)
         && etaConv.equals(pvInput.etaConv)
         && height.equals(pvInput.height)
@@ -207,6 +219,15 @@ public class PvInput extends SystemParticipantInput {
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(), albedo, azimuth, etaConv, height, kG, kT, marketReaction, sRated);
+        super.hashCode(),
+        albedo,
+        azimuth,
+        etaConv,
+        height,
+        kG,
+        kT,
+        marketReaction,
+        sRated,
+        cosphiRated);
   }
 }

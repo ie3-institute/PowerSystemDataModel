@@ -38,9 +38,9 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
    * @param id of this type of Storage
    * @param capex Captial expense for this type of Storage (typically in €)
    * @param opex Operating expense for this type of Storage (typically in €)
-   * @param cosphiRated Power factor for this type of Storage
    * @param eStorage Energy capacity
    * @param sRated Rated apparent power
+   * @param cosphiRated Power factor for this type of Storage
    * @param pMin Minimum permissible active power
    * @param pMax Maximum permissible active power
    * @param eta Efficiency of the charging and discharging process
@@ -53,9 +53,9 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      double cosphiRated,
       Quantity<Energy> eStorage,
       Quantity<Power> sRated,
+      double cosphiRated,
       Quantity<Power> pMin,
       Quantity<Power> pMax,
       Quantity<Dimensionless> eta,

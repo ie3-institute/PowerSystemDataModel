@@ -21,8 +21,6 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
   private Quantity<Dimensionless> etaEl;
   /** Thermal efficiency (typically in %) */
   private Quantity<Dimensionless> etaThermal;
-  /** Rated electrical active power (typically in kW) */
-  private Quantity<Power> pEl;
   /** Rated thermal power (typically in kW) */
   private Quantity<Power> pThermal;
   /** Internal consumption (typically in kW) */
@@ -35,10 +33,10 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
    * @param id of this type of CHP
    * @param capex Capital expense for this type of CHP (typically in €)
    * @param opex Operating expense for this type of CHP (typically in €)
-   * @param cosphi Power factor for this type of CHP
    * @param etaEl Electrical efficiency
    * @param etaThermal Thermal efficiency
    * @param sRated Rated electrical apparent power
+   * @param cosphiRated Power factor for this type of CHP
    * @param pThermal Rated thermal power
    * @param pOwn Internal consumption
    * @param thermalStorage Thermal storage model
@@ -48,17 +46,16 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      double cosphi,
       Quantity<Dimensionless> etaEl,
       Quantity<Dimensionless> etaThermal,
       Quantity<Power> sRated,
+      double cosphiRated,
       Quantity<Power> pThermal,
       Quantity<Power> pOwn,
       ThermalStorageInput thermalStorage) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphi);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.etaEl = etaEl.to(StandardUnits.EFFICIENCY);
     this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
-    this.pEl = pEl.to(StandardUnits.ACTIVE_POWER_IN);
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
     this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
     this.thermalStorage = thermalStorage;
@@ -78,14 +75,6 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
 
   public void setEtaThermal(Quantity<Dimensionless> etaThermal) {
     this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
-  }
-
-  public Quantity<Power> getPEl() {
-    return pEl;
-  }
-
-  public void setPEl(Quantity<Power> pEl) {
-    this.pEl = pEl.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
   public Quantity<Power> getPThermal() {
@@ -120,13 +109,12 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     ChpTypeInput that = (ChpTypeInput) o;
     return etaEl.equals(that.etaEl)
         && etaThermal.equals(that.etaThermal)
-        && pEl.equals(that.pEl)
         && pThermal.equals(that.pThermal)
         && pOwn.equals(that.pOwn);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), etaEl, etaThermal, pEl, pThermal, pOwn);
+    return Objects.hash(super.hashCode(), etaEl, etaThermal, pThermal, pOwn);
   }
 }

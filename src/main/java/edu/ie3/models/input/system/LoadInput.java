@@ -37,6 +37,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
+   * @param cosphiRated Rated power factor
    */
   public LoadInput(
       UUID uuid,
@@ -47,11 +48,13 @@ public class LoadInput extends SystemParticipantInput {
       String qCharacteristics,
       boolean dsm,
       Quantity<Energy> eConsAnnual,
-      Quantity<Power> sRated) {
+      Quantity<Power> sRated,
+      double cosphiRated) {
     super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY);
     this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.cosphiRated = cosphiRated;
   }
 
   /**
@@ -72,11 +75,13 @@ public class LoadInput extends SystemParticipantInput {
       String qCharacteristics,
       boolean dsm,
       Quantity<Energy> eConsAnnual,
-      Quantity<Power> sRated) {
+      Quantity<Power> sRated,
+      double cosphiRated) {
     super(uuid, id, node, qCharacteristics);
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY);
     this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.cosphiRated = cosphiRated;
   }
 
   public boolean getDsm() {

@@ -27,21 +27,21 @@ public class EvTypeInput extends SystemParticipantTypeInput {
    * @param id of this type of EV
    * @param capex Captial expense for this type of EV (typically in €)
    * @param opex Operating expense for this type of EV (typically in €)
-   * @param cosphi Power factor for this type of EV
    * @param eStorage Energy capacity of the storage
    * @param eCons Consumed electric energy per driven distance
    * @param sRated Rated apparent power for this type of EV (typically in kW)
+   * @param cosphiRated Power factor for this type of EV
    */
   public EvTypeInput(
       UUID uuid,
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      double cosphi,
       Quantity<Energy> eStorage,
       Quantity<SpecificEnergy> eCons,
-      Quantity<Power> sRated) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphi);
+      Quantity<Power> sRated,
+      double cosphiRated) {
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage;
     this.eCons = eCons;
   }

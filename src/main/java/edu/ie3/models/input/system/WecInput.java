@@ -60,7 +60,6 @@ public class WecInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphi,
       WecTypeInput type,
       boolean marketReaction) {
     super(uuid, id, node, qCharacteristics);

@@ -55,16 +55,18 @@ public class FixedFeedInInput extends SystemParticipantInput {
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param sRated Rated apparent power
+   * @param cosphiRated Power factor
    */
   public FixedFeedInInput(
       UUID uuid,
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphi,
-      Quantity<Power> sRated) {
+      Quantity<Power> sRated,
+      double cosphiRated) {
     super(uuid, id, node, qCharacteristics);
     this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.cosphiRated = cosphiRated;
   }
 
   public Quantity<Power> getSRated() {
@@ -73,6 +75,14 @@ public class FixedFeedInInput extends SystemParticipantInput {
 
   public void setSRated(Quantity<Power> sRated) {
     this.sRated = sRated.to(StandardUnits.S_RATED);
+  }
+
+  public double getCosphiRated() {
+    return cosphiRated;
+  }
+
+  public void setCosphiRated(double cosphiRated) {
+    this.cosphiRated = cosphiRated;
   }
 
   @Override

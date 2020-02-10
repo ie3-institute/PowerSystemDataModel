@@ -14,7 +14,6 @@ import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
-import javax.measure.quantity.Power;
 
 /** Describes a biomass plant */
 public class BmInput extends SystemParticipantInput {
@@ -28,8 +27,6 @@ public class BmInput extends SystemParticipantInput {
   private boolean costControlled;
   /** Granted feed in tariff (typically in €/kWh) */
   private Quantity<EnergyPrice> feedInTariff;
-  /** Rated apparent power (typically in kW) */
-  private Quantity<Power> sRated;
 
   /**
    * Constructor for an operated biomass plant
@@ -45,7 +42,6 @@ public class BmInput extends SystemParticipantInput {
    * @param costControlled Does this plant increase the output power if the revenues exceed the
    *     energy generation costs?
    * @param feedInTariff Granted feed in tariff (typically in €/kWh)
-   * @param sRated Rated apparent power (typically in kVA)
    */
   public BmInput(
       UUID uuid,
@@ -57,14 +53,12 @@ public class BmInput extends SystemParticipantInput {
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
-      Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff,
-      Quantity<Power> sRated) {
+      Quantity<EnergyPrice> feedInTariff) {
     super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
     this.costControlled = costControlled;
     this.feedInTariff = feedInTariff.to(StandardUnits.ENERGY_PRICE);
-    this.sRated = sRated.to(StandardUnits.S_RATED);
   }
 
   /**
@@ -79,7 +73,6 @@ public class BmInput extends SystemParticipantInput {
    * @param costControlled Does this plant increase the output power if the revenues exceed the
    *     energy generation costs?
    * @param feedInTariff Granted feed in tariff (typically in €/kWh)
-   * @param sRated Rated apparent power (typically in kVA)
    */
   public BmInput(
       UUID uuid,
@@ -89,14 +82,12 @@ public class BmInput extends SystemParticipantInput {
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
-      Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff,
-      Quantity<Power> sRated) {
+      Quantity<EnergyPrice> feedInTariff) {
     super(uuid, id, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
     this.costControlled = costControlled;
     this.feedInTariff = feedInTariff.to(StandardUnits.ENERGY_PRICE);
-    this.sRated = sRated.to(StandardUnits.S_RATED);
   }
 
   public BmTypeInput getType() {
@@ -132,14 +123,6 @@ public class BmInput extends SystemParticipantInput {
     this.feedInTariff = feedInTariff.to(StandardUnits.ENERGY_PRICE);
   }
 
-  public Quantity<Power> getsRated() {
-    return sRated;
-  }
-
-  public void setsRated(Quantity<Power> sRated) {
-    this.sRated = sRated.to(StandardUnits.S_RATED);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -149,13 +132,11 @@ public class BmInput extends SystemParticipantInput {
     return marketReaction == bmInput.marketReaction
         && costControlled == bmInput.costControlled
         && type.equals(bmInput.type)
-        && feedInTariff.equals(bmInput.feedInTariff)
-        && sRated.equals(bmInput.sRated);
+        && feedInTariff.equals(bmInput.feedInTariff);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), type, marketReaction, costControlled, feedInTariff, sRated);
+    return Objects.hash(super.hashCode(), type, marketReaction, costControlled, feedInTariff);
   }
 }
