@@ -35,6 +35,8 @@ public class PvInput extends SystemParticipantInput {
   private boolean marketReaction;
   /** Rated apparent power (typically in kVA) */
   private Quantity<Power> sRated;
+  /** Rated power factor */
+  private double cosphiRated;
   /**
    * Constructor for an operated photovoltaic plant
    *
@@ -44,7 +46,6 @@ public class PvInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphiRated Power factor
    * @param albedo Albedo value (typically a value between 0 and 1)
    * @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)
    * @param etaConv Efficiency of converter (typically in %)
@@ -53,6 +54,7 @@ public class PvInput extends SystemParticipantInput {
    * @param kT Generator correction factor merging different technical influences
    * @param marketReaction Is this asset market oriented?
    * @param sRated Rated apparent power (typically in kVA)
+   * @param cosphiRated Power factor
    */
   public PvInput(
       UUID uuid,
@@ -61,7 +63,6 @@ public class PvInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphiRated,
       double albedo,
       Quantity<Angle> azimuth,
       Quantity<Dimensionless> etaConv,
@@ -69,8 +70,9 @@ public class PvInput extends SystemParticipantInput {
       double kG,
       double kT,
       boolean marketReaction,
-      Quantity<Power> sRated) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphiRated);
+      Quantity<Power> sRated,
+      double cosphiRated) {
+    super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
@@ -79,6 +81,7 @@ public class PvInput extends SystemParticipantInput {
     this.kT = kT;
     this.marketReaction = marketReaction;
     this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.cosphiRated = cosphiRated;
   }
 
   /**
@@ -88,7 +91,6 @@ public class PvInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphiRated Power factor
    * @param albedo Albedo value (typically a value between 0 and 1)
    * @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)
    * @param etaConv Efficiency of converter (typically in %)
@@ -103,7 +105,6 @@ public class PvInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphiRated,
       double albedo,
       Quantity<Angle> azimuth,
       Quantity<Dimensionless> etaConv,
@@ -112,7 +113,7 @@ public class PvInput extends SystemParticipantInput {
       double kT,
       boolean marketReaction,
       Quantity<Power> sRated) {
-    super(uuid, id, node, qCharacteristics, cosphiRated);
+    super(uuid, id, node, qCharacteristics);
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);

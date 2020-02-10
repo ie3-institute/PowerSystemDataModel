@@ -20,8 +20,6 @@ public class BmTypeInput extends SystemParticipantTypeInput {
 
   /** Permissible load gradient (typically in %/h) */
   private Quantity<DimensionlessRate> loadGradient;
-  /** Rated apparent power for this type of BM (typically in kVA) */
-  private Quantity<Power> sRated;
   /** Efficiency of converter for this type of BM (typically in %) */
   private Quantity<Dimensionless> etaConv;
 
@@ -44,9 +42,8 @@ public class BmTypeInput extends SystemParticipantTypeInput {
       Quantity<DimensionlessRate> loadGradient,
       Quantity<Power> sRated,
       Quantity<Dimensionless> etaConv) {
-    super(uuid, id, capex, opex, cosphiRated);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.loadGradient = loadGradient.to(StandardUnits.LOAD_GRADIENT);
-    this.sRated = sRated.to(StandardUnits.S_RATED);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
   }
 
@@ -56,14 +53,6 @@ public class BmTypeInput extends SystemParticipantTypeInput {
 
   public void setLoadGradient(Quantity<DimensionlessRate> loadGradient) {
     this.loadGradient = loadGradient.to(StandardUnits.LOAD_GRADIENT);
-  }
-
-  public Quantity<Power> getSRated() {
-    return sRated;
-  }
-
-  public void setSRated(Quantity<Power> sRated) {
-    this.sRated = sRated.to(StandardUnits.S_RATED);
   }
 
   public Quantity<Dimensionless> getEtaConv() {
@@ -80,13 +69,11 @@ public class BmTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     BmTypeInput that = (BmTypeInput) o;
-    return loadGradient.equals(that.loadGradient)
-        && sRated.equals(that.sRated)
-        && etaConv.equals(that.etaConv);
+    return loadGradient.equals(that.loadGradient) && etaConv.equals(that.etaConv);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), loadGradient, sRated, etaConv);
+    return Objects.hash(super.hashCode(), loadGradient, etaConv);
   }
 }

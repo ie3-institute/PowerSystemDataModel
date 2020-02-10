@@ -6,16 +6,14 @@
 package edu.ie3.models.input.system.type;
 
 import edu.ie3.models.StandardUnits;
+import edu.ie3.models.input.thermal.ThermalStorageInput;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
-import javax.measure.quantity.Temperature;
-import javax.measure.quantity.Volume;
 
 /** Describes the type of a {@link edu.ie3.models.input.system.ChpInput} */
 public class ChpTypeInput extends SystemParticipantTypeInput {
@@ -29,23 +27,21 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
   private Quantity<Power> pThermal;
   /** Internal consumption (typically in kW) */
   private Quantity<Power> pOwn;
+  /* Thermal storage model */
+  private ThermalStorageInput thermalStorage;
 
   /**
    * @param uuid of the input entity
    * @param id of this type of CHP
-   * @param capex Captial expense for this type of CHP (typically in €)
+   * @param capex Capital expense for this type of CHP (typically in €)
    * @param opex Operating expense for this type of CHP (typically in €)
    * @param cosphi Power factor for this type of CHP
    * @param etaEl Electrical efficiency
    * @param etaThermal Thermal efficiency
-   * @param pEl Rated electrical active power
+   * @param sRated Rated electrical apparent power
    * @param pThermal Rated thermal power
    * @param pOwn Internal consumption
-   * @param storageVolumeLvl Available storage volume
-   * @param storageVolumeLvlMin Minimum permissible storage volume
-   * @param inletTemp Temperature of the inlet
-   * @param returnTemp Temperature of the outlet
-   * @param c Specific heat capacity of the storage medium
+   * @param thermalStorage Thermal storage model
    */
   public ChpTypeInput(
       UUID uuid,
@@ -55,20 +51,17 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       double cosphi,
       Quantity<Dimensionless> etaEl,
       Quantity<Dimensionless> etaThermal,
-      Quantity<Power> pEl,
+      Quantity<Power> sRated,
       Quantity<Power> pThermal,
       Quantity<Power> pOwn,
-      Quantity<Volume> storageVolumeLvl,
-      Quantity<Volume> storageVolumeLvlMin,
-      Quantity<Temperature> inletTemp,
-      Quantity<Temperature> returnTemp,
-      Quantity<SpecificHeatCapacity> c) {
-    super(uuid, id, capex, opex, cosphi);
+      ThermalStorageInput thermalStorage) {
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphi);
     this.etaEl = etaEl.to(StandardUnits.EFFICIENCY);
     this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
     this.pEl = pEl.to(StandardUnits.ACTIVE_POWER_IN);
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
     this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
+    this.thermalStorage = thermalStorage;
   }
 
   public Quantity<Dimensionless> getEtaEl() {
@@ -109,6 +102,14 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
 
   public void setPOwn(Quantity<Power> pOwn) {
     this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
+  }
+
+  public ThermalStorageInput getThermalStorage() {
+    return thermalStorage;
+  }
+
+  public void setThermalStorage(ThermalStorageInput thermalStorage) {
+    this.thermalStorage = thermalStorage;
   }
 
   @Override

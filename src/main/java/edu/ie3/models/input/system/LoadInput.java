@@ -21,8 +21,10 @@ public class LoadInput extends SystemParticipantInput {
   private boolean dsm;
   /** Annually consumed energy (typically in kWh) */
   private Quantity<Energy> eConsAnnual;
-  /** Active Power (typically in kW) */
-  private Quantity<Power> p;
+  /** Active Power (typically in kVA) */
+  private Quantity<Power> sRated;
+  /** Rated power factor */
+  private double cosphiRated;
   /**
    * Constructor for an operated load
    *
@@ -32,10 +34,9 @@ public class LoadInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphiRated Power factor
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
-   * @param p Active Power (typically in KW)
+   * @param sRated Rated apparent power (in kVA)
    */
   public LoadInput(
       UUID uuid,
@@ -44,14 +45,13 @@ public class LoadInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphiRated,
       boolean dsm,
       Quantity<Energy> eConsAnnual,
-      Quantity<Power> p) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphiRated);
+      Quantity<Power> sRated) {
+    super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY);
-    this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
+    this.sRated = sRated.to(StandardUnits.S_RATED);
   }
 
   /**
@@ -61,24 +61,22 @@ public class LoadInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphiRated Power factor
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
-   * @param p Active Power (typically in KW)
+   * @param sRated Rated apparent power (in kVA)
    */
   public LoadInput(
       UUID uuid,
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphiRated,
       boolean dsm,
       Quantity<Energy> eConsAnnual,
-      Quantity<Power> p) {
-    super(uuid, id, node, qCharacteristics, cosphiRated);
+      Quantity<Power> sRated) {
+    super(uuid, id, node, qCharacteristics);
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY);
-    this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
+    this.sRated = sRated.to(StandardUnits.S_RATED);
   }
 
   public boolean getDsm() {
@@ -97,12 +95,20 @@ public class LoadInput extends SystemParticipantInput {
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY);
   }
 
-  public Quantity<Power> getP() {
-    return p;
+  public Quantity<Power> getsRated() {
+    return sRated;
   }
 
-  public void setP(Quantity<Power> p) {
-    this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
+  public void setsRated(Quantity<Power> sRated) {
+    this.sRated = sRated.to(StandardUnits.S_RATED);
+  }
+
+  public double getCosphiRated() {
+    return cosphiRated;
+  }
+
+  public void setCosphiRated(double cosphiRated) {
+    this.cosphiRated = cosphiRated;
   }
 
   @Override
@@ -112,12 +118,13 @@ public class LoadInput extends SystemParticipantInput {
     if (!super.equals(o)) return false;
     LoadInput loadInput = (LoadInput) o;
     return dsm == loadInput.dsm
+        && Double.compare(loadInput.cosphiRated, cosphiRated) == 0
         && eConsAnnual.equals(loadInput.eConsAnnual)
-        && p.equals(loadInput.p);
+        && sRated.equals(loadInput.sRated);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), dsm, eConsAnnual, p);
+    return Objects.hash(super.hashCode(), dsm, eConsAnnual, sRated, cosphiRated);
   }
 }

@@ -15,8 +15,6 @@ import javax.measure.quantity.Power;
 
 /** Describes the type of a {@link edu.ie3.models.input.system.HpInput} */
 public class HpTypeInput extends SystemParticipantTypeInput {
-  /** Rated active power consumption (typically in kW) */
-  private Quantity<Power> pRated; // TODO: Replace with sRated
   /** Thermal output of the heat pump (typically in kW) */
   private Quantity<Power> pThermal;
   /** Electric active power consumed to deliver {@code pThermal} (typically in kW) */
@@ -28,7 +26,7 @@ public class HpTypeInput extends SystemParticipantTypeInput {
    * @param capex Captial expense for this type of HP (typically in €)
    * @param opex Operating expense for this type of HP (typically in €)
    * @param cosphi Power factor for this type of HP
-   * @param pRated Rated active power consumption
+   * @param sRated Rated apparent power
    * @param pThermal Thermal output of the heat pump
    * @param pEl Electric active power consumed to deliver {@code pThermal}
    */
@@ -38,21 +36,12 @@ public class HpTypeInput extends SystemParticipantTypeInput {
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
       double cosphi,
-      Quantity<Power> pRated,
+      Quantity<Power> sRated,
       Quantity<Power> pThermal,
       Quantity<Power> pEl) {
-    super(uuid, id, capex, opex, cosphi);
-    this.pRated = pRated.to(StandardUnits.ACTIVE_POWER_IN);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphi);
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
     this.pEl = pEl.to(StandardUnits.ACTIVE_POWER_IN);
-  }
-
-  public Quantity<Power> getPRated() {
-    return pRated;
-  }
-
-  public void setPRated(Quantity<Power> pRated) {
-    this.pRated = pRated.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
   public Quantity<Power> getPThermal() {
@@ -77,11 +66,11 @@ public class HpTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HpTypeInput that = (HpTypeInput) o;
-    return pRated.equals(that.pRated) && pThermal.equals(that.pThermal) && pEl.equals(that.pEl);
+    return pThermal.equals(that.pThermal) && pEl.equals(that.pEl);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), pRated, pThermal, pEl);
+    return Objects.hash(super.hashCode(), pThermal, pEl);
   }
 }

@@ -18,6 +18,8 @@ import javax.measure.quantity.Power;
 public class FixedFeedInInput extends SystemParticipantInput {
   /** Rated apparent power (typically in kVA) */
   private Quantity<Power> sRated;
+  /** Rated power factor */
+  private double cosphiRated;
 
   /**
    * Constructor for an operated feed in
@@ -28,8 +30,8 @@ public class FixedFeedInInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphi Power factor
    * @param sRated Rated apparent power
+   * @param cosphiRated Power factor
    */
   public FixedFeedInInput(
       UUID uuid,
@@ -38,10 +40,11 @@ public class FixedFeedInInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphi,
-      Quantity<Power> sRated) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
+      Quantity<Power> sRated,
+      double cosphiRated) {
+    super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.cosphiRated = cosphiRated;
   }
 
   /**
@@ -51,7 +54,6 @@ public class FixedFeedInInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphi Power factor
    * @param sRated Rated apparent power
    */
   public FixedFeedInInput(
@@ -61,7 +63,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
       String qCharacteristics,
       double cosphi,
       Quantity<Power> sRated) {
-    super(uuid, id, node, qCharacteristics, cosphi);
+    super(uuid, id, node, qCharacteristics);
     this.sRated = sRated.to(StandardUnits.S_RATED);
   }
 

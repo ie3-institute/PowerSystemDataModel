@@ -10,6 +10,7 @@ import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.BmTypeInput;
+import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
@@ -26,7 +27,7 @@ public class BmInput extends SystemParticipantInput {
    */
   private boolean costControlled;
   /** Granted feed in tariff (typically in €/kWh) */
-  private Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff;
+  private Quantity<EnergyPrice> feedInTariff;
   /** Rated apparent power (typically in kW) */
   private Quantity<Power> sRated;
 
@@ -39,7 +40,6 @@ public class BmInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics
-   * @param cosphi Power factor
    * @param type of BM
    * @param marketReaction Is this asset market oriented?
    * @param costControlled Does this plant increase the output power if the revenues exceed the
@@ -54,13 +54,12 @@ public class BmInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphi,
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
       Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff,
       Quantity<Power> sRated) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
+    super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
     this.costControlled = costControlled;
@@ -75,7 +74,6 @@ public class BmInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics
-   * @param cosphi Power factor
    * @param type of BM
    * @param marketReaction Is this asset market oriented?
    * @param costControlled Does this plant increase the output power if the revenues exceed the
@@ -88,13 +86,12 @@ public class BmInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphi,
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
       Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff,
       Quantity<Power> sRated) {
-    super(uuid, id, node, qCharacteristics, cosphi);
+    super(uuid, id, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
     this.costControlled = costControlled;

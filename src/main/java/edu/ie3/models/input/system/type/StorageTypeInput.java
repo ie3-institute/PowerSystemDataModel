@@ -20,8 +20,6 @@ import javax.measure.quantity.Time;
 public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity (typically in kWh) */
   private Quantity<Energy> eStorage;
-  /** Rated active power (typically in kW) */
-  private Quantity<Power> pRated; // TODO: Change to sRated and copshiRated
   /** Minimum permissible active power (typically in kW) */
   private Quantity<Power> pMin;
   /** Maximum permissible active power (typically in kW) */
@@ -42,7 +40,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
    * @param opex Operating expense for this type of Storage (typically in €)
    * @param cosphiRated Power factor for this type of Storage
    * @param eStorage Energy capacity
-   * @param pRated Rated active power
+   * @param sRated Rated apparent power
    * @param pMin Minimum permissible active power
    * @param pMax Maximum permissible active power
    * @param eta Efficiency of the charging and discharging process
@@ -57,16 +55,15 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       Quantity<EnergyPrice> opex,
       double cosphiRated,
       Quantity<Energy> eStorage,
-      Quantity<Power> pRated,
+      Quantity<Power> sRated,
       Quantity<Power> pMin,
       Quantity<Power> pMax,
       Quantity<Dimensionless> eta,
       Quantity<Dimensionless> dod,
       Quantity<Time> lifeTime,
       int lifeCycle) {
-    super(uuid, id, capex, opex, cosphiRated);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY);
-    this.pRated = pRated.to(StandardUnits.ACTIVE_POWER_IN);
     this.pMin = pMin.to(StandardUnits.ACTIVE_POWER_IN);
     this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
     this.eta = eta.to(StandardUnits.EFFICIENCY);
@@ -81,14 +78,6 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
   public void setEStorage(Quantity<Energy> eStorage) {
     this.eStorage = eStorage.to(StandardUnits.ENERGY);
-  }
-
-  public Quantity<Power> getPRated() {
-    return pRated;
-  }
-
-  public void setPRated(Quantity<Power> pRated) {
-    this.pRated = pRated.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
   public Quantity<Power> getPMin() {
@@ -147,7 +136,6 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     StorageTypeInput that = (StorageTypeInput) o;
     return lifeCycle == that.lifeCycle
         && eStorage.equals(that.eStorage)
-        && pRated.equals(that.pRated)
         && pMin.equals(that.pMin)
         && pMax.equals(that.pMax)
         && eta.equals(that.eta)
@@ -157,7 +145,6 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), eStorage, pRated, pMin, pMax, eta, dod, lifeTime, lifeCycle);
+    return Objects.hash(super.hashCode(), eStorage, pMin, pMax, eta, dod, lifeTime, lifeCycle);
   }
 }

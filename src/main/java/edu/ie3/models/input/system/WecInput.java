@@ -28,7 +28,6 @@ public class WecInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics
-   * @param cosphi Power factor
    * @param type of this WEC
    * @param marketReaction Is this asset market oriented?
    */
@@ -39,10 +38,9 @@ public class WecInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphi,
       WecTypeInput type,
       boolean marketReaction) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
+    super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
   }
@@ -54,7 +52,6 @@ public class WecInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics
-   * @param cosphi Power factor
    * @param type of this WEC
    * @param marketReaction Is this asset market oriented?
    */
@@ -66,7 +63,7 @@ public class WecInput extends SystemParticipantInput {
       double cosphi,
       WecTypeInput type,
       boolean marketReaction) {
-    super(uuid, id, node, qCharacteristics, cosphi);
+    super(uuid, id, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
   }
