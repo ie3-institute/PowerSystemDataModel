@@ -6,7 +6,6 @@
 package edu.ie3.models.result;
 
 import edu.ie3.models.StandardUnits;
-import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -26,8 +25,7 @@ public class ThermalSinkResult extends ResultEntity {
    * @param inputModel uuid of the input model that produces the result
    * @param qDemand thermal heat demand of the sink
    */
-  public ThermalSinkResult(
-      ZonedDateTime timestamp, UUID inputModel, Quantity<Energy> qDemand) {
+  public ThermalSinkResult(ZonedDateTime timestamp, UUID inputModel, Quantity<Energy> qDemand) {
     super(timestamp, inputModel);
     this.qDemand = qDemand;
   }

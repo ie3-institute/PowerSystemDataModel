@@ -41,7 +41,8 @@ public class StandardUnits {
   /** Admittance */
   public static final Unit<ElectricConductance> ADMITTANCE = MetricPrefix.NANO(SIEMENS);
   /** Admittance per length (mainly for lines) */
-  public static final Unit<SpecificConductance> ADMITTANCE_PER_LENGTH = MetricPrefix.NANO(SIEMENS_PER_KILOMETRE);
+  public static final Unit<SpecificConductance> ADMITTANCE_PER_LENGTH =
+      MetricPrefix.NANO(SIEMENS_PER_KILOMETRE);
   /** Target voltage magnitude */
   public static final Unit<Dimensionless> TARGET_VOLTAGE_MAGNITUDE = PU;
   /** Voltage magnitude (mainly for result purposes) */
@@ -54,7 +55,10 @@ public class StandardUnits {
   public static final Unit<Dimensionless> DV_TAP = PERCENT;
   /** Voltage angle variation per tap (for transformers) */
   public static final Unit<Angle> DPHI_TAP = DEGREE_GEOM;
-  /** Gradient, with which a system participant can change it's set point (with regard to rated power) */
+  /**
+   * Gradient, with which a system participant can change it's set point (with regard to rated
+   * power)
+   */
   public static final Unit<DimensionlessRate> LOAD_GRADIENT = PERCENT_PER_HOUR;
   /** Efficiency of a process */
   public static final Unit<Dimensionless> EFFICIENCY = PERCENT;
@@ -67,7 +71,8 @@ public class StandardUnits {
   /** Thermal capacity of a given mass */
   public static final Unit<HeatCapacity> HEAT_CAPACITY = KILOWATTHOUR_PER_KELVIN;
   /** Thermal capacity per mass */
-  public static final Unit<SpecificHeatCapacity> SPECIFIC_HEAT_CAPACITY = KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE;
+  public static final Unit<SpecificHeatCapacity> SPECIFIC_HEAT_CAPACITY =
+      KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE;
   /** Thermal transmission through an insulation */
   public static final Unit<ThermalConductance> THERMAL_TRANSMISSION = KILOWATT_PER_KELVIN;
   /** Depth of discharge */

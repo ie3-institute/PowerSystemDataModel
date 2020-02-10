@@ -68,13 +68,15 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
     UUID inputModelUuid = UUID.fromString(fieldsToValues.get(INPUT_MODEL));
     Quantity<ElectricCurrent> iAMagVal =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(IAMAG)), StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+            Double.parseDouble(fieldsToValues.get(IAMAG)),
+            StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
     Quantity<Angle> iAAngVal =
         Quantities.getQuantity(
             Double.parseDouble(fieldsToValues.get(IAANG)), StandardUnits.ELECTRIC_CURRENT_ANGLE);
     Quantity<ElectricCurrent> iBMagVal =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(IBMAG)), StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+            Double.parseDouble(fieldsToValues.get(IBMAG)),
+            StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
     Quantity<Angle> iBAngVal =
         Quantities.getQuantity(
             Double.parseDouble(fieldsToValues.get(IBANG)), StandardUnits.ELECTRIC_CURRENT_ANGLE);
@@ -148,7 +150,8 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
     } else if (clazz.equals(Transformer3WResult.class)) {
       Quantity<ElectricCurrent> iCMagVal =
           Quantities.getQuantity(
-              Double.parseDouble(fieldsToValues.get(ICMAG)), StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+              Double.parseDouble(fieldsToValues.get(ICMAG)),
+              StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
       Quantity<Angle> iCAngVal =
           Quantities.getQuantity(
               Double.parseDouble(fieldsToValues.get(ICANG)), StandardUnits.ELECTRIC_CURRENT_ANGLE);

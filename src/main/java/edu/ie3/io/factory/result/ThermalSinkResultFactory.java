@@ -10,12 +10,10 @@ import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.ThermalSinkResult;
 import edu.ie3.util.TimeTools;
-import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
-
 import tec.uom.se.quantity.Quantities;
 
 public class ThermalSinkResultFactory extends SimpleEntityFactory<ThermalSinkResult> {
