@@ -126,7 +126,7 @@ class ResultEntityProcessorTest extends Specification {
         def sysPartResProcessor = new ResultEntityProcessor(NodeResult)
 
         Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PowerSystemUnits.PU)
-        Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.ELECTRIC_VOLTAGE_ANGLE)
+        Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.VOLTAGE_ANGLE)
 
         def validResult = new NodeResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, vMag, vAng)
 

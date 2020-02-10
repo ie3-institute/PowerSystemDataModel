@@ -18,11 +18,11 @@ import javax.measure.quantity.Dimensionless;
 import tec.uom.se.quantity.Quantities;
 
 public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
-  private static final String entityUuid = "uuid";
-  private static final String timestamp = "timestamp";
-  private static final String inputModel = "inputModel";
-  private static final String vMag = "vmag";
-  private static final String vAng = "vang";
+  private static final String ENTITY_UUID = "uuid";
+  private static final String TIMESTAMP = "timestamp";
+  private static final String INPUT_MODEL = "inputModel";
+  private static final String VMAG = "vmag";
+  private static final String VANG = "vang";
 
   public NodeResultFactory() {
     super(NodeResult.class);
@@ -30,8 +30,8 @@ public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
 
   @Override
   protected List<Set<String>> getFields(SimpleEntityData entityData) {
-    Set<String> minConstructorParams = newSet(timestamp, inputModel, vMag, vAng);
-    Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
+    Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, VMAG, VANG);
+    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     return Arrays.asList(minConstructorParams, optionalFields);
   }
@@ -40,17 +40,17 @@ public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
   protected NodeResult buildModel(SimpleEntityData simpleEntityData) {
     Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
 
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(timestamp));
-    UUID inputModelUuid = UUID.fromString(fieldsToValues.get(inputModel));
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(TIMESTAMP));
+    UUID inputModelUuid = UUID.fromString(fieldsToValues.get(INPUT_MODEL));
     Quantity<Dimensionless> vMagValue =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(vMag)), StandardUnits.ELECTRIC_VOLTAGE_MAGNITUDE);
+            Double.parseDouble(fieldsToValues.get(VMAG)), StandardUnits.VOLTAGE_MAGNITUDE);
     Quantity<Angle> vAngValue =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(vAng)), StandardUnits.ELECTRIC_VOLTAGE_ANGLE);
+            Double.parseDouble(fieldsToValues.get(VANG)), StandardUnits.VOLTAGE_ANGLE);
     Optional<UUID> uuidOpt =
-        fieldsToValues.containsKey(entityUuid)
-            ? Optional.of(UUID.fromString(fieldsToValues.get(entityUuid)))
+        fieldsToValues.containsKey(ENTITY_UUID)
+            ? Optional.of(UUID.fromString(fieldsToValues.get(ENTITY_UUID)))
             : Optional.empty();
 
     return uuidOpt
