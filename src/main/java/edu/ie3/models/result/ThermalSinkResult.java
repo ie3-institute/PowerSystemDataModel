@@ -5,17 +5,19 @@
 */
 package edu.ie3.models.result;
 
+import edu.ie3.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
+import javax.measure.quantity.Energy;
 
 /** Represents calculation results of a {@link edu.ie3.models.input.thermal.ThermalSinkInput} */
 public class ThermalSinkResult extends ResultEntity {
 
   /** The thermal heat demand of the sink */
-  private Quantity<HeatCapacity> qDemand;
+  private Quantity<Energy> qDemand;
 
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
@@ -25,7 +27,7 @@ public class ThermalSinkResult extends ResultEntity {
    * @param qDemand thermal heat demand of the sink
    */
   public ThermalSinkResult(
-      ZonedDateTime timestamp, UUID inputModel, Quantity<HeatCapacity> qDemand) {
+      ZonedDateTime timestamp, UUID inputModel, Quantity<Energy> qDemand) {
     super(timestamp, inputModel);
     this.qDemand = qDemand;
   }
@@ -40,17 +42,17 @@ public class ThermalSinkResult extends ResultEntity {
    * @param qDemand thermal heat demand of the sink
    */
   public ThermalSinkResult(
-      UUID uuid, ZonedDateTime timestamp, UUID inputModel, Quantity<HeatCapacity> qDemand) {
+      UUID uuid, ZonedDateTime timestamp, UUID inputModel, Quantity<Energy> qDemand) {
     super(uuid, timestamp, inputModel);
     this.qDemand = qDemand;
   }
 
-  public Quantity<HeatCapacity> getqDemand() {
+  public Quantity<Energy> getqDemand() {
     return qDemand;
   }
 
-  public void setqDemand(Quantity<HeatCapacity> qDemand) {
-    this.qDemand = qDemand;
+  public void setqDemand(Quantity<Energy> qDemand) {
+    this.qDemand = qDemand.to(StandardUnits.HEAT_DEMAND);
   }
 
   @Override

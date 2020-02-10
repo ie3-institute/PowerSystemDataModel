@@ -189,15 +189,15 @@ class ResultEntityProcessorTest extends Specification {
 
 
     @Shared
-    Quantity<ElectricCurrent> iAMag = Quantities.getQuantity(100, StandardUnits.CURRENT)
+    Quantity<ElectricCurrent> iAMag = Quantities.getQuantity(100, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     @Shared
     Quantity<Angle> iAAng = Quantities.getQuantity(45, StandardUnits.ELECTRIC_CURRENT_ANGLE)
     @Shared
-    Quantity<ElectricCurrent> iBMag = Quantities.getQuantity(150, StandardUnits.CURRENT)
+    Quantity<ElectricCurrent> iBMag = Quantities.getQuantity(150, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     @Shared
     Quantity<Angle> iBAng = Quantities.getQuantity(30, StandardUnits.ELECTRIC_CURRENT_ANGLE)
     @Shared
-    Quantity<ElectricCurrent> iCMag = Quantities.getQuantity(300, StandardUnits.CURRENT)
+    Quantity<ElectricCurrent> iCMag = Quantities.getQuantity(300, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     @Shared
     Quantity<Angle> iCAng = Quantities.getQuantity(70, StandardUnits.ELECTRIC_CURRENT_ANGLE)
     @Shared

@@ -14,6 +14,8 @@ import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.Quantity;
+import javax.measure.quantity.Energy;
+
 import tec.uom.se.quantity.Quantities;
 
 public class ThermalSinkResultFactory extends SimpleEntityFactory<ThermalSinkResult> {
@@ -40,10 +42,9 @@ public class ThermalSinkResultFactory extends SimpleEntityFactory<ThermalSinkRes
 
     ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(timestamp));
     UUID inputModelUuid = UUID.fromString(fieldsToValues.get(inputModel));
-    Quantity<HeatCapacity> qDemandQuantity =
+    Quantity<Energy> qDemandQuantity =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(qDemand)),
-            StandardUnits.HEAT_CAPACITY); // todo CK ensure that the unit is correct
+            Double.parseDouble(fieldsToValues.get(qDemand)), StandardUnits.HEAT_DEMAND);
     Optional<UUID> uuidOpt =
         fieldsToValues.containsKey(entityUuid)
             ? Optional.of(UUID.fromString(fieldsToValues.get(entityUuid)))

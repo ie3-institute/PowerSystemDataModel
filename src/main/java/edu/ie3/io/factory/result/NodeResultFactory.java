@@ -44,10 +44,10 @@ public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
     UUID inputModelUuid = UUID.fromString(fieldsToValues.get(inputModel));
     Quantity<Dimensionless> vMagValue =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(vMag)), StandardUnits.TARGET_VOLTAGE); // TODO
+            Double.parseDouble(fieldsToValues.get(vMag)), StandardUnits.ELECTRIC_VOLTAGE_MAGNITUDE);
     Quantity<Angle> vAngValue =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(vAng)), StandardUnits.DPHI_TAP); // TODO
+            Double.parseDouble(fieldsToValues.get(vAng)), StandardUnits.ELECTRIC_VOLTAGE_ANGLE);
     Optional<UUID> uuidOpt =
         fieldsToValues.containsKey(entityUuid)
             ? Optional.of(UUID.fromString(fieldsToValues.get(entityUuid)))

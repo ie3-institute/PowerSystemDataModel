@@ -19,29 +19,29 @@ public class StandardUnits {
   public static final Unit<Power> S_RATED = KILOVOLTAMPERE;
   public static final Unit<Power> ACTIVE_POWER_IN = KILOWATT;
   public static final Unit<Power> REACTIVE_POWER_IN = KILOVAR;
-  public static final Unit<Power> ACTIVE_POWER_OUT = MEGAWATT;
-  public static final Unit<Power> REACTIVE_POWER_OUT = MEGAVAR;
+  public static final Unit<Power> ACTIVE_POWER_RESULT = MEGAWATT;
+  public static final Unit<Power> REACTIVE_POWER_RESULT = MEGAVAR;
   public static final Unit<Energy> ENERGY = KILOWATTHOUR;
   public static final Unit<ElectricPotential> V_RATED = KILOVOLT;
-  public static final Unit<ElectricCurrent> CURRENT = AMPERE;
+  public static final Unit<ElectricCurrent> ELECTRIC_CURRENT_MAGNITUDE = AMPERE;
+  public static final Unit<Angle> ELECTRIC_CURRENT_ANGLE = DEGREE_GEOM;
   public static final Unit<ElectricResistance> IMPEDANCE = OHM;
   public static final Unit<SpecificResistance> SPECIFIC_IMPEDANCE = OHM_PER_KILOMETRE;
   public static final Unit<ElectricConductance> ADMITTANCE = MetricPrefix.NANO(SIEMENS);
   public static final Unit<SpecificConductance> SPECIFIC_ADMITTANCE =
       MetricPrefix.NANO(SIEMENS_PER_KILOMETRE);
+  public static final Unit<Dimensionless> TARGET_VOLTAGE = PU;
+  public static final Unit<Dimensionless> ELECTRIC_VOLTAGE_MAGNITUDE = PU;
+  public static final Unit<Angle> ELECTRIC_VOLTAGE_ANGLE = DEGREE_GEOM;
 
   /* Other Units */
-  public static final Unit<Dimensionless> TARGET_VOLTAGE = PU;
   public static final Unit<Dimensionless> DV_TAP = PERCENT;
-  public static final Unit<Angle> ELECTRIC_CURRENT_ANGLE =
-      DEGREE_GEOM; // todo ck review and check if we need this
-  public static final Unit<Angle> ELECTRIC_VOLTAGE_ANGLE =
-      DEGREE_GEOM; // todo ck review and check if we need this
   public static final Unit<Angle> DPHI_TAP = DEGREE_GEOM;
   public static final Unit<DimensionlessRate> LOAD_GRADIENT = PERCENT_PER_HOUR;
   public static final Unit<Dimensionless> EFFICIENCY = PERCENT;
   public static final Unit<Volume> VOLUME = CUBIC_METRE;
   public static final Unit<Temperature> TEMPERATURE = CELSIUS;
+  public static final Unit<Energy> HEAT_DEMAND = MetricPrefix.MEGA(WATTHOUR);
   public static final Unit<HeatCapacity> HEAT_CAPACITY = KILOWATTHOUR_PER_KELVIN;
   public static final Unit<SpecificHeatCapacity> SPECIFIC_HEAT_CAPACITY =
       KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE;
