@@ -50,7 +50,7 @@ public class LoadInput extends SystemParticipantInput {
       Quantity<Power> p) {
     super(uuid, operationTime, operator, id, node, qCharacteristics, cosphiRated);
     this.dsm = dsm;
-    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY);
+    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
@@ -77,7 +77,7 @@ public class LoadInput extends SystemParticipantInput {
       Quantity<Power> p) {
     super(uuid, id, node, qCharacteristics, cosphiRated);
     this.dsm = dsm;
-    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY);
+    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
@@ -94,7 +94,7 @@ public class LoadInput extends SystemParticipantInput {
   }
 
   public void seteConsAnnual(Quantity<Energy> eConsAnnual) {
-    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY);
+    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
   }
 
   public Quantity<Power> getP() {

@@ -48,9 +48,9 @@ class ConnectorResultFactoryTest extends Specification {
         result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
         result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
         result.get().iAAng == Quantities.getQuantity(Double.parseDouble(parameterMap.get("iaang")), StandardUnits.ELECTRIC_CURRENT_ANGLE)
-        result.get().iAMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("iamag")), StandardUnits.CURRENT)
+        result.get().iAMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("iamag")), StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
         result.get().iBAng == Quantities.getQuantity(Double.parseDouble(parameterMap.get("ibang")), StandardUnits.ELECTRIC_CURRENT_ANGLE)
-        result.get().iBMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("ibmag")), StandardUnits.CURRENT)
+        result.get().iBMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("ibmag")), StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
 
         if (result.get().getClass() == Transformer2WResult)
            { assert(((Transformer2WResult) result.get()).tapPos == Integer.parseInt(parameterMap.get("tappos")))}
@@ -59,7 +59,7 @@ class ConnectorResultFactoryTest extends Specification {
             Transformer3WResult transformer3WResult = ((Transformer3WResult) result.get())
             assert( transformer3WResult.tapPos == Integer.parseInt(parameterMap.get("tappos")))
             assert( transformer3WResult.iCAng == Quantities.getQuantity(Double.parseDouble(parameterMap.get("icang")), StandardUnits.ELECTRIC_CURRENT_ANGLE))
-            assert( transformer3WResult.iCMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("icmag")), StandardUnits.CURRENT))
+            assert( transformer3WResult.iCMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("icmag")), StandardUnits.ELECTRIC_CURRENT_MAGNITUDE))
 
         }
         if (result.get().getClass() == SwitchResult)
