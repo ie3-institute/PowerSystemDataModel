@@ -3,7 +3,8 @@ package edu.ie3.io.processor.result
 import edu.ie3.exceptions.FactoryException
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.result.NodeResult
-import edu.ie3.models.result.ThermalSinkResult
+import edu.ie3.models.result.thermal.CylindricalStorageResult
+import edu.ie3.models.result.thermal.ThermalSinkResult
 import edu.ie3.models.result.connector.LineResult
 import edu.ie3.models.result.connector.SwitchResult
 import edu.ie3.models.result.connector.Transformer2WResult
@@ -21,6 +22,7 @@ import javax.measure.Quantity
 import javax.measure.quantity.Angle
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.ElectricCurrent
+import javax.measure.quantity.Energy
 import javax.measure.quantity.Power
 import java.time.ZoneId
 
@@ -228,18 +230,22 @@ class ResultEntityProcessorTest extends Specification {
         Transformer3WResult | new Transformer3WResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos) || expectedTrafo3WResults
     }
 
-    def "A ResultEntityProcessor should de-serialize a ThermalSinkResult correctly"() {
+    def "A ResultEntityProcessor should de-serialize a CylindricalStorageResult correctly"() {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def sysPartResProcessor = new ResultEntityProcessor(ThermalSinkResult)
+        def sysPartResProcessor = new ResultEntityProcessor(CylindricalStorageResult)
 
-        Quantity<HeatCapacity> qDemand = Quantities.getQuantity(10, StandardUnits.HEAT_CAPACITY)
+        Quantity<Power> qDot = Quantities.getQuantity(2, StandardUnits.Q_DOT_RESULT)
+        Quantity<Energy> energy = Quantities.getQuantity(3, StandardUnits.ENERGY_RESULT)
+        Quantity<Dimensionless> fillLevel = Quantities.getQuantity(20, Units.PERCENT)
 
-        def validResult = new ThermalSinkResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, qDemand)
+        def validResult = new CylindricalStorageResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, energy, qDot, fillLevel)
 
         def expectedResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+                               energy    : '3.0',
+                               fillLevel : '20.0',
                                inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-                               qDemand      : '10.0',
+                               qDot      : '2.0',
                                timestamp : '2020-01-30 17:26:44']
 
         when:
