@@ -11,13 +11,8 @@ import javax.measure.quantity.Length;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import tec.uom.se.quantity.Quantities;
 
-/**
- * @author Mahr
- * @since 10.08.2018
- */
+/** A distance weighted graph that uses {@link DistanceWeightedEdge}s as edge type. */
 public class DistanceWeightedGraph<V> extends SimpleWeightedGraph<V, DistanceWeightedEdge> {
-
-  // TODO: Quantities-package replaceable with internal package?
 
   private static final long serialVersionUID = -2797654003980753341L;
 
@@ -30,14 +25,14 @@ public class DistanceWeightedGraph<V> extends SimpleWeightedGraph<V, DistanceWei
     super(vertexSupplier, edgeSupplier);
   }
 
+  /** Assigns a {@link Quantity} of type {@link Length} to an edge. */
   public void setWeightQuantity(DistanceWeightedEdge edge, Quantity<Length> weight) {
     double weightDouble = weight.to(DistanceWeightedEdge.DEFAULT_UNIT).getValue().doubleValue();
     super.setEdgeWeight(edge, weightDouble);
   }
 
   @Override
-  public void setEdgeWeight(DistanceWeightedEdge distanceWeightedEdge, double weight) {
-    this.setWeightQuantity(
-        distanceWeightedEdge, Quantities.getQuantity(weight, DistanceWeightedEdge.DEFAULT_UNIT));
+  public void setEdgeWeight(DistanceWeightedEdge edge, double weight) {
+    this.setWeightQuantity(edge, Quantities.getQuantity(weight, DistanceWeightedEdge.DEFAULT_UNIT));
   }
 }
