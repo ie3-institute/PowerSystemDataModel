@@ -63,7 +63,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       Quantity<Time> lifeTime,
       int lifeCycle) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
-    this.eStorage = eStorage.to(StandardUnits.ENERGY);
+    this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.pMin = pMin.to(StandardUnits.ACTIVE_POWER_IN);
     this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
     this.eta = eta.to(StandardUnits.EFFICIENCY);
@@ -77,7 +77,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   }
 
   public void setEStorage(Quantity<Energy> eStorage) {
-    this.eStorage = eStorage.to(StandardUnits.ENERGY);
+    this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
   }
 
   public Quantity<Power> getPMin() {

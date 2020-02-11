@@ -39,8 +39,8 @@ class SystemParticipantResultFactoryTest extends Specification {
         then:
         result.present
         result.get().getClass() == resultingModelClass
-        result.get().p == Quantities.getQuantity(Double.parseDouble(parameterMap.get("p")), StandardUnits.ACTIVE_POWER_OUT)
-        result.get().q == Quantities.getQuantity(Double.parseDouble(parameterMap.get("q")), StandardUnits.REACTIVE_POWER_OUT)
+        result.get().p == Quantities.getQuantity(Double.parseDouble(parameterMap.get("p")), StandardUnits.ACTIVE_POWER_RESULT)
+        result.get().q == Quantities.getQuantity(Double.parseDouble(parameterMap.get("q")), StandardUnits.REACTIVE_POWER_RESULT)
         result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
         result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
 
@@ -77,8 +77,8 @@ class SystemParticipantResultFactoryTest extends Specification {
         then:
         result.present
         result.get().getClass() == StorageResult
-        result.get().p == Quantities.getQuantity(Double.parseDouble(parameterMap.get("p")), StandardUnits.ACTIVE_POWER_OUT)
-        result.get().q == Quantities.getQuantity(Double.parseDouble(parameterMap.get("q")), StandardUnits.REACTIVE_POWER_OUT)
+        result.get().p == Quantities.getQuantity(Double.parseDouble(parameterMap.get("p")), StandardUnits.ACTIVE_POWER_RESULT)
+        result.get().q == Quantities.getQuantity(Double.parseDouble(parameterMap.get("q")), StandardUnits.REACTIVE_POWER_RESULT)
         ((StorageResult) result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameterMap.get("soc")), Units.PERCENT)
         result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
         result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))

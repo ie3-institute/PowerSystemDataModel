@@ -78,8 +78,8 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     this.rSc = rSc.to(StandardUnits.IMPEDANCE);
     this.xSc = xSc.to(StandardUnits.IMPEDANCE);
     this.sRated = sRated.to(StandardUnits.S_RATED);
-    this.vRatedA = vRatedA.to(StandardUnits.V_RATED);
-    this.vRatedB = vRatedB.to(StandardUnits.V_RATED);
+    this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.gM = gM.to(StandardUnits.ADMITTANCE);
     this.bM = bM.to(StandardUnits.ADMITTANCE);
     this.dV = dV.to(StandardUnits.DV_TAP);
@@ -119,7 +119,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   }
 
   public void setVRatedA(Quantity<ElectricPotential> vRatedA) {
-    this.vRatedA = vRatedA.to(StandardUnits.V_RATED);
+    this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
   }
 
   public Quantity<ElectricPotential> getVRatedB() {
@@ -127,7 +127,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   }
 
   public void setVRatedB(Quantity<ElectricPotential> vRatedB) {
-    this.vRatedB = vRatedB.to(StandardUnits.V_RATED);
+    this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
   }
 
   public Quantity<ElectricConductance> getGM() {

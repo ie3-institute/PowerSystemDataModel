@@ -52,7 +52,7 @@ public class LoadInput extends SystemParticipantInput {
       double cosphiRated) {
     super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.dsm = dsm;
-    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY);
+    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosphiRated = cosphiRated;
   }
@@ -79,7 +79,7 @@ public class LoadInput extends SystemParticipantInput {
       double cosphiRated) {
     super(uuid, id, node, qCharacteristics);
     this.dsm = dsm;
-    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY);
+    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosphiRated = cosphiRated;
   }
@@ -97,7 +97,7 @@ public class LoadInput extends SystemParticipantInput {
   }
 
   public void seteConsAnnual(Quantity<Energy> eConsAnnual) {
-    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY);
+    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
   }
 
   public Quantity<Power> getsRated() {
