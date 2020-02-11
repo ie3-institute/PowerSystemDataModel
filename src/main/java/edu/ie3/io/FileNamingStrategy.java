@@ -27,10 +27,10 @@ public class FileNamingStrategy {
 
   private static final Logger logger = LogManager.getLogger(FileNamingStrategy.class);
 
-  private static final String resEntitySuffix = "_res";
-  private static final String inputEntitySuffix = "_input";
-  private static final String typeEntitySuffix = "_type_input";
-  private static final String graphicInputSuffix = "_graphic";
+  private static final String RES_ENTITY_SUFFIX = "_res";
+  private static final String INPUT_ENTITY_SUFFIX = "_input";
+  private static final String TYPE_INPUT = "_type_input";
+  private static final String GRAPHIC_INPUT_SUFFIX = "_graphic";
 
   private static final String INPUT_CLASS_STRING = "Input";
 
@@ -75,7 +75,7 @@ public class FileNamingStrategy {
       return getAssetCharacteristicsFileName(cls.asSubclass(AssetCharacteristicInput.class));
     if (cls.equals(RandomLoadParameters.class)) {
       String loadParamString = cls.getSimpleName().toLowerCase();
-      return Optional.of(prefix.concat(loadParamString).concat(inputEntitySuffix).concat(suffix));
+      return Optional.of(prefix.concat(loadParamString).concat(INPUT_ENTITY_SUFFIX).concat(suffix));
     }
     if (GraphicInput.class.isAssignableFrom(cls))
       return getGraphicsInputFileName(cls.asSubclass(GraphicInput.class));
@@ -99,8 +99,8 @@ public class FileNamingStrategy {
     return Optional.of(
         prefix
             .concat(assetInputString)
-            .concat(graphicInputSuffix)
-            .concat(inputEntitySuffix)
+            .concat(GRAPHIC_INPUT_SUFFIX)
+            .concat(INPUT_ENTITY_SUFFIX)
             .concat(suffix));
   }
 
@@ -115,7 +115,7 @@ public class FileNamingStrategy {
       Class<? extends AssetCharacteristicInput> assetCharClass) {
     String assetCharString =
         assetCharClass.getSimpleName().replace(INPUT_CLASS_STRING, "").toLowerCase();
-    return Optional.of(prefix.concat(assetCharString).concat(inputEntitySuffix).concat(suffix));
+    return Optional.of(prefix.concat(assetCharString).concat(INPUT_ENTITY_SUFFIX).concat(suffix));
   }
 
   /**
@@ -127,7 +127,7 @@ public class FileNamingStrategy {
   public Optional<String> getTypeFileName(Class<? extends AssetTypeInput> typeClass) {
     String assetTypeString =
         typeClass.getSimpleName().replace(INPUT_CLASS_STRING, "").replace("Type", "").toLowerCase();
-    return Optional.of(prefix.concat(assetTypeString).concat(typeEntitySuffix).concat(suffix));
+    return Optional.of(prefix.concat(assetTypeString).concat(TYPE_INPUT).concat(suffix));
   }
 
   /**
@@ -139,7 +139,7 @@ public class FileNamingStrategy {
   public Optional<String> getAssetInputFileName(Class<? extends AssetInput> assetInputClass) {
     String assetInputString =
         assetInputClass.getSimpleName().replace(INPUT_CLASS_STRING, "").toLowerCase();
-    return Optional.of(prefix.concat(assetInputString).concat(inputEntitySuffix).concat(suffix));
+    return Optional.of(prefix.concat(assetInputString).concat(INPUT_ENTITY_SUFFIX).concat(suffix));
   }
 
   /**
@@ -155,6 +155,6 @@ public class FileNamingStrategy {
   private String buildResultEntityString(Class<? extends ResultEntity> resultEntityClass) {
     String resultEntityString =
         resultEntityClass.getSimpleName().replace("Result", "").toLowerCase();
-    return prefix.concat(resultEntityString).concat(resEntitySuffix).concat(suffix);
+    return prefix.concat(resultEntityString).concat(RES_ENTITY_SUFFIX).concat(suffix);
   }
 }

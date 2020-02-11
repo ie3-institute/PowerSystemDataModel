@@ -30,8 +30,11 @@ import edu.ie3.models.input.system.type.EvTypeInput
 import edu.ie3.models.input.system.type.HpTypeInput
 import edu.ie3.models.input.system.type.StorageTypeInput
 import edu.ie3.models.input.system.type.WecTypeInput
+import edu.ie3.models.input.thermal.CylindricalStorageInput
+import edu.ie3.models.input.thermal.ThermalHouseInput
 import edu.ie3.models.result.NodeResult
-import edu.ie3.models.result.ThermalSinkResult
+import edu.ie3.models.result.thermal.CylindricalStorageResult
+import edu.ie3.models.result.thermal.ThermalHouseResult
 import edu.ie3.models.result.connector.LineResult
 import edu.ie3.models.result.connector.SwitchResult
 import edu.ie3.models.result.connector.Transformer2WResult
@@ -82,22 +85,23 @@ class FileNamingStrategyTest extends Specification {
         res.get() == expectedString
 
         where:
-        modelClass          || expectedString
-        LoadResult          || "load_res"
-        FixedFeedInResult   || "fixedfeedin_res"
-        BmResult            || "bm_res"
-        PvResult            || "pv_res"
-        ChpResult           || "chp_res"
-        WecResult           || "wec_res"
-        StorageResult       || "storage_res"
-        EvcsResult          || "evcs_res"
-        EvResult            || "ev_res"
-        Transformer2WResult || "transformer2w_res"
-        Transformer3WResult || "transformer3w_res"
-        LineResult          || "line_res"
-        SwitchResult        || "switch_res"
-        NodeResult          || "node_res"
-        ThermalSinkResult   || "thermalsink_res"
+        modelClass               || expectedString
+        LoadResult               || "load_res"
+        FixedFeedInResult        || "fixedfeedin_res"
+        BmResult                 || "bm_res"
+        PvResult                 || "pv_res"
+        ChpResult                || "chp_res"
+        WecResult                || "wec_res"
+        StorageResult            || "storage_res"
+        EvcsResult               || "evcs_res"
+        EvResult                 || "ev_res"
+        Transformer2WResult      || "transformer2w_res"
+        Transformer3WResult      || "transformer3w_res"
+        LineResult               || "line_res"
+        SwitchResult             || "switch_res"
+        NodeResult               || "node_res"
+        CylindricalStorageResult || "cylindricalstorage_res"
+        ThermalHouseResult       || "thermalhouse_res"
     }
 
     def "A FileNamingStrategy with pre- and suffixes should return valid strings for all result models"() {
@@ -112,22 +116,23 @@ class FileNamingStrategyTest extends Specification {
         res.get() == expectedString
 
         where:
-        modelClass          || expectedString
-        LoadResult          || "prefix_load_res_suffix"
-        FixedFeedInResult   || "prefix_fixedfeedin_res_suffix"
-        BmResult            || "prefix_bm_res_suffix"
-        PvResult            || "prefix_pv_res_suffix"
-        ChpResult           || "prefix_chp_res_suffix"
-        WecResult           || "prefix_wec_res_suffix"
-        StorageResult       || "prefix_storage_res_suffix"
-        EvcsResult          || "prefix_evcs_res_suffix"
-        EvResult            || "prefix_ev_res_suffix"
-        Transformer2WResult || "prefix_transformer2w_res_suffix"
-        Transformer3WResult || "prefix_transformer3w_res_suffix"
-        LineResult          || "prefix_line_res_suffix"
-        SwitchResult        || "prefix_switch_res_suffix"
-        NodeResult          || "prefix_node_res_suffix"
-        ThermalSinkResult   || "prefix_thermalsink_res_suffix"
+        modelClass               || expectedString
+        LoadResult               || "prefix_load_res_suffix"
+        FixedFeedInResult        || "prefix_fixedfeedin_res_suffix"
+        BmResult                 || "prefix_bm_res_suffix"
+        PvResult                 || "prefix_pv_res_suffix"
+        ChpResult                || "prefix_chp_res_suffix"
+        WecResult                || "prefix_wec_res_suffix"
+        StorageResult            || "prefix_storage_res_suffix"
+        EvcsResult               || "prefix_evcs_res_suffix"
+        EvResult                 || "prefix_ev_res_suffix"
+        Transformer2WResult      || "prefix_transformer2w_res_suffix"
+        Transformer3WResult      || "prefix_transformer3w_res_suffix"
+        LineResult               || "prefix_line_res_suffix"
+        SwitchResult             || "prefix_switch_res_suffix"
+        NodeResult               || "prefix_node_res_suffix"
+        CylindricalStorageResult || "prefix_cylindricalstorage_res_suffix"
+        ThermalHouseResult       || "prefix_thermalhouse_res_suffix"
     }
 
     def "A FileNamingStrategy without pre- or suffixes should return valid strings for all input assets models"() {
@@ -142,23 +147,25 @@ class FileNamingStrategyTest extends Specification {
         res.get() == expectedString
 
         where:
-        modelClass           || expectedString
-        FixedFeedInInput     || "fixedfeedin_input"
-        PvInput              || "pv_input"
-        WecInput             || "wec_input"
-        ChpInput             || "chp_input"
-        BmInput              || "bm_input"
-        EvInput              || "ev_input"
-        LoadInput            || "load_input"
-        StorageInput         || "storage_input"
-        HpInput              || "hp_input"
-        LineInput            || "line_input"
-        SwitchInput          || "switch_input"
-        NodeInput            || "node_input"
-        MeasurementUnitInput || "measurementunit_input"
-        EvcsInput            || "evcs_input"
-        Transformer2WInput   || "transformer2w_input"
-        Transformer3WInput   || "transformer3w_input"
+        modelClass              || expectedString
+        FixedFeedInInput        || "fixedfeedin_input"
+        PvInput                 || "pv_input"
+        WecInput                || "wec_input"
+        ChpInput                || "chp_input"
+        BmInput                 || "bm_input"
+        EvInput                 || "ev_input"
+        LoadInput               || "load_input"
+        StorageInput            || "storage_input"
+        HpInput                 || "hp_input"
+        LineInput               || "line_input"
+        SwitchInput             || "switch_input"
+        NodeInput               || "node_input"
+        MeasurementUnitInput    || "measurementunit_input"
+        EvcsInput               || "evcs_input"
+        Transformer2WInput      || "transformer2w_input"
+        Transformer3WInput      || "transformer3w_input"
+        CylindricalStorageInput || "cylindricalstorage_input"
+        ThermalHouseInput       || "thermalhouse_input"
     }
 
     def "A FileNamingStrategy without pre- or suffixes should return valid strings for all asset characteristics models"() {
