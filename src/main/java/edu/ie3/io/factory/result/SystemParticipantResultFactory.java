@@ -7,7 +7,6 @@ package edu.ie3.io.factory.result;
 
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.io.factory.SimpleEntityData;
-import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.result.system.*;
@@ -20,13 +19,11 @@ import javax.measure.quantity.Power;
 import tec.uom.se.quantity.Quantities;
 import tec.uom.se.unit.Units;
 
-public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemParticipantResult> {
-  private static final String entityUuid = "uuid";
-  private static final String timestamp = "timestamp";
-  private static final String inputModel = "inputModel";
-  private static final String power = "p";
-  private static final String reactivePower = "q";
-  private static final String soc = "soc";
+public class SystemParticipantResultFactory extends ResultEntityFactory<SystemParticipantResult> {
+
+  private static final String POWER = "p";
+  private static final String REACTIVE_POWER = "q";
+  private static final String SOC = "soc";
 
   public SystemParticipantResultFactory() {
 
@@ -45,13 +42,13 @@ public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemPa
   @Override
   protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
     /// all result models have the same constructor except StorageResult
-    Set<String> minConstructorParams = newSet(timestamp, inputModel, power, reactivePower);
-    Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
+    Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, POWER, REACTIVE_POWER);
+    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     if (simpleEntityData.getEntityClass().equals(StorageResult.class)
         || simpleEntityData.getEntityClass().equals(EvResult.class)) {
-      minConstructorParams = newSet(timestamp, inputModel, power, reactivePower, soc);
-      optionalFields = expandSet(minConstructorParams, entityUuid);
+      minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, POWER, REACTIVE_POWER, SOC);
+      optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
     return Arrays.asList(minConstructorParams, optionalFields);
@@ -62,18 +59,18 @@ public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemPa
     Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
     Class<? extends UniqueEntity> clazz = simpleEntityData.getEntityClass();
 
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(timestamp));
-    UUID inputModelUuid = UUID.fromString(fieldsToValues.get(inputModel));
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(TIMESTAMP));
+    UUID inputModelUuid = UUID.fromString(fieldsToValues.get(INPUT_MODEL));
     Quantity<Power> p =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(power)), StandardUnits.ACTIVE_POWER_RESULT);
+            Double.parseDouble(fieldsToValues.get(POWER)), StandardUnits.ACTIVE_POWER_RESULT);
     Quantity<Power> q =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(reactivePower)),
+            Double.parseDouble(fieldsToValues.get(REACTIVE_POWER)),
             StandardUnits.REACTIVE_POWER_RESULT);
     Optional<UUID> uuidOpt =
-        fieldsToValues.containsKey(entityUuid)
-            ? Optional.of(UUID.fromString(fieldsToValues.get(entityUuid)))
+        fieldsToValues.containsKey(ENTITY_UUID)
+            ? Optional.of(UUID.fromString(fieldsToValues.get(ENTITY_UUID)))
             : Optional.empty();
 
     if (clazz.equals(LoadResult.class)) {
@@ -106,14 +103,14 @@ public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemPa
           .orElseGet(() -> new WecResult(zdtTimestamp, inputModelUuid, p, q));
     } else if (clazz.equals(EvResult.class)) {
       Quantity<Dimensionless> quantSoc =
-          Quantities.getQuantity(Double.parseDouble(fieldsToValues.get(soc)), Units.PERCENT);
+          Quantities.getQuantity(Double.parseDouble(fieldsToValues.get(SOC)), Units.PERCENT);
 
       return uuidOpt
           .map(uuid -> new EvResult(uuid, zdtTimestamp, inputModelUuid, p, q, quantSoc))
           .orElseGet(() -> new EvResult(zdtTimestamp, inputModelUuid, p, q, quantSoc));
     } else if (clazz.equals(StorageResult.class)) {
       Quantity<Dimensionless> socQuantity =
-          Quantities.getQuantity(Double.parseDouble(fieldsToValues.get(soc)), Units.PERCENT);
+          Quantities.getQuantity(Double.parseDouble(fieldsToValues.get(SOC)), Units.PERCENT);
 
       return uuidOpt
           .map(uuid -> new StorageResult(uuid, zdtTimestamp, inputModelUuid, p, q, socQuantity))
