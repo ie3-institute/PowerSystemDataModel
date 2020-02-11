@@ -50,12 +50,12 @@ public class LineTypeInput extends AssetTypeInput {
       Quantity<ElectricCurrent> iMax,
       Quantity<ElectricPotential> vRated) {
     super(uuid, id);
-    this.r = r.to(StandardUnits.SPECIFIC_IMPEDANCE);
-    this.x = x.to(StandardUnits.SPECIFIC_IMPEDANCE);
-    this.b = b.to(StandardUnits.SPECIFIC_ADMITTANCE);
-    this.g = g.to(StandardUnits.SPECIFIC_ADMITTANCE);
-    this.iMax = iMax.to(StandardUnits.CURRENT);
-    this.vRated = vRated.to(StandardUnits.V_RATED);
+    this.r = r.to(StandardUnits.IMPEDANCE_PER_LENGTH);
+    this.x = x.to(StandardUnits.IMPEDANCE_PER_LENGTH);
+    this.b = b.to(StandardUnits.ADMITTANCE_PER_LENGTH);
+    this.g = g.to(StandardUnits.ADMITTANCE_PER_LENGTH);
+    this.iMax = iMax.to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
   }
 
   public Quantity<SpecificConductance> getB() {
@@ -63,7 +63,7 @@ public class LineTypeInput extends AssetTypeInput {
   }
 
   public void setB(Quantity<SpecificConductance> b) {
-    this.b = b.to(StandardUnits.SPECIFIC_ADMITTANCE);
+    this.b = b.to(StandardUnits.ADMITTANCE_PER_LENGTH);
   }
 
   public Quantity<SpecificConductance> getG() {
@@ -71,7 +71,7 @@ public class LineTypeInput extends AssetTypeInput {
   }
 
   public void setG(Quantity<SpecificConductance> g) {
-    this.g = g.to(StandardUnits.SPECIFIC_ADMITTANCE);
+    this.g = g.to(StandardUnits.ADMITTANCE_PER_LENGTH);
   }
 
   public Quantity<SpecificResistance> getR() {
@@ -79,7 +79,7 @@ public class LineTypeInput extends AssetTypeInput {
   }
 
   public void setR(Quantity<SpecificResistance> r) {
-    this.r = r.to(StandardUnits.SPECIFIC_IMPEDANCE);
+    this.r = r.to(StandardUnits.IMPEDANCE_PER_LENGTH);
   }
 
   public Quantity<SpecificResistance> getX() {
@@ -87,7 +87,7 @@ public class LineTypeInput extends AssetTypeInput {
   }
 
   public void setX(Quantity<SpecificResistance> x) {
-    this.x = x.to(StandardUnits.SPECIFIC_IMPEDANCE);
+    this.x = x.to(StandardUnits.IMPEDANCE_PER_LENGTH);
   }
 
   public Quantity<ElectricCurrent> getIMax() {
@@ -95,7 +95,7 @@ public class LineTypeInput extends AssetTypeInput {
   }
 
   public void setIMax(Quantity<ElectricCurrent> iMax) {
-    this.iMax = iMax.to(StandardUnits.CURRENT);
+    this.iMax = iMax.to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
   }
 
   public Quantity<ElectricPotential> getvRated() {
@@ -103,7 +103,7 @@ public class LineTypeInput extends AssetTypeInput {
   }
 
   public void setvRated(Quantity<ElectricPotential> vRated) {
-    this.vRated = vRated.to(StandardUnits.V_RATED);
+    this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
   }
 
   @Override
