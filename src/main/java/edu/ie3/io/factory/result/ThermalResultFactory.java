@@ -7,7 +7,6 @@ package edu.ie3.io.factory.result;
 
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.io.factory.SimpleEntityData;
-import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.result.thermal.CylindricalStorageResult;
@@ -23,10 +22,7 @@ import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import tec.uom.se.quantity.Quantities;
 
-public class ThermalResultFactory extends SimpleEntityFactory<ThermalUnitResult> {
-  private static final String ENTITY_UUID = "uuid";
-  private static final String TIMESTAMP = "timestamp";
-  private static final String INPUT_MODEL = "inputModel";
+public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult> {
   private static final String Q_DOT = "qDot";
   private static final String INDOOR_TEMPERATURE = "indoorTemperature";
   private static final String ENERGY = "energy";
@@ -106,8 +102,7 @@ public class ThermalResultFactory extends SimpleEntityFactory<ThermalUnitResult>
                       energyQuantity,
                       qDotQuantity,
                       fillLevelQuantity));
-    }
-    {
+    } else {
       throw new FactoryException("Cannot process " + clazz.getSimpleName() + ".class.");
     }
   }
