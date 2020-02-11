@@ -34,8 +34,8 @@ class NodeResultFactoryTest extends Specification {
         then:
         result.present
         result.get().getClass() == NodeResult
-        result.get().vMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("vmag")), StandardUnits.TARGET_VOLTAGE)
-        result.get().vAng == Quantities.getQuantity(Double.parseDouble(parameterMap.get("vang")), StandardUnits.DPHI_TAP) //TODO
+        result.get().vMag == Quantities.getQuantity(Double.parseDouble(parameterMap.get("vmag")), StandardUnits.VOLTAGE_MAGNITUDE)
+        result.get().vAng == Quantities.getQuantity(Double.parseDouble(parameterMap.get("vang")), StandardUnits.VOLTAGE_ANGLE)
         result.get().timestamp == TimeTools.toZonedDateTime(parameterMap.get("timestamp"))
         result.get().inputModel == UUID.fromString(parameterMap.get("inputModel"))
 

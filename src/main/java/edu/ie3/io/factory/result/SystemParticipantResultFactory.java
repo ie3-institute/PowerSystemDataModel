@@ -66,11 +66,11 @@ public class SystemParticipantResultFactory extends SimpleEntityFactory<SystemPa
     UUID inputModelUuid = UUID.fromString(fieldsToValues.get(inputModel));
     Quantity<Power> p =
         Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(power)), StandardUnits.ACTIVE_POWER_OUT);
+            Double.parseDouble(fieldsToValues.get(power)), StandardUnits.ACTIVE_POWER_RESULT);
     Quantity<Power> q =
         Quantities.getQuantity(
             Double.parseDouble(fieldsToValues.get(reactivePower)),
-            StandardUnits.REACTIVE_POWER_OUT);
+            StandardUnits.REACTIVE_POWER_RESULT);
     Optional<UUID> uuidOpt =
         fieldsToValues.containsKey(entityUuid)
             ? Optional.of(UUID.fromString(fieldsToValues.get(entityUuid)))
