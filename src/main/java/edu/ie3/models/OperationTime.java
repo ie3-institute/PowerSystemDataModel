@@ -80,7 +80,7 @@ public class OperationTime {
    */
   public boolean includes(ZonedDateTime date) {
     Optional<ClosedInterval<ZonedDateTime>> optOperationTime = getOperationLimit();
-    return optOperationTime.isEmpty() || optOperationTime.get().includes(date);
+    return !optOperationTime.isPresent() || optOperationTime.get().includes(date);
   }
 
   @Override

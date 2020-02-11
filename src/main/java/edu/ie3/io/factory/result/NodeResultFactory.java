@@ -6,7 +6,6 @@
 package edu.ie3.io.factory.result;
 
 import edu.ie3.io.factory.SimpleEntityData;
-import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.NodeResult;
 import edu.ie3.util.TimeTools;
@@ -17,10 +16,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import tec.uom.se.quantity.Quantities;
 
-public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
-  private static final String ENTITY_UUID = "uuid";
-  private static final String TIMESTAMP = "timestamp";
-  private static final String INPUT_MODEL = "inputModel";
+public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
   private static final String VMAG = "vmag";
   private static final String VANG = "vang";
 
