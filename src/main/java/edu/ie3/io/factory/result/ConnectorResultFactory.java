@@ -7,7 +7,6 @@ package edu.ie3.io.factory.result;
 
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.io.factory.SimpleEntityData;
-import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.result.connector.*;
@@ -19,10 +18,8 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 import tec.uom.se.quantity.Quantities;
 
-public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult> {
-  private static final String ENTITY_UUID = "uuid";
-  private static final String TIMESTAMP = "timestamp";
-  private static final String INPUT_MODEL = "inputModel";
+public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult> {
+
   private static final String IAMAG = "iamag";
   private static final String IAANG = "iaang";
   private static final String IBMAG = "ibmag";

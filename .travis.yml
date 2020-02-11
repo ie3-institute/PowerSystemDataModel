@@ -1,7 +1,7 @@
 dist: trusty
 language: java
 jdk:
-  - oraclejdk11
+  - oraclejdk8
 script:
   - chmod -R ug+x .travis
   - .travis/build.sh

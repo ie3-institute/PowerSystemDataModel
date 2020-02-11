@@ -14,7 +14,7 @@ plugins {
 
 ext {
 	//version (changing these should be considered thoroughly!)
-	javaVersion = JavaVersion.VERSION_11
+	javaVersion = JavaVersion.VERSION_1_8
 	unitsOfMeasurementVersion = '1.0.10'
 	tscfgVersion = '0.9.9'
 

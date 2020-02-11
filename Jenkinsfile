@@ -40,7 +40,7 @@ def mavenCentralSignKeyId = "a1357827-1516-4fa2-ab8e-72cdea07a692"
 //// define and setjava version ////
 //// requires the java version to be set in the internal jenkins java version management
 //// use identifier accordingly
-def javaVersionId = 'jdk-11'
+def javaVersionId = 'jdk-8'
 
 //// set java version method (needs node{} for execution)
 def setJavaVersion(javaVersionId) {
