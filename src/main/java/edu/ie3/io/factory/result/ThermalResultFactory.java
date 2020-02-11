@@ -82,31 +82,32 @@ public class ThermalResultFactory extends SimpleEntityFactory<ThermalUnitResult>
                       zdtTimestamp, inputModelUuid, qDotQuantity, indoorTemperature));
     } else if (clazz.equals(CylindricalStorageResult.class)) {
       Quantity<Energy> energyQuantity =
-              Quantities.getQuantity(
-                      Double.parseDouble(fieldsToValues.get(ENERGY)), StandardUnits.ENERGY_RESULT);
+          Quantities.getQuantity(
+              Double.parseDouble(fieldsToValues.get(ENERGY)), StandardUnits.ENERGY_RESULT);
       Quantity<Dimensionless> fillLevelQuantity =
-              Quantities.getQuantity(
-                      Double.parseDouble(fieldsToValues.get(FILL_LEVEL)), StandardUnits.FILL_LEVEL);
+          Quantities.getQuantity(
+              Double.parseDouble(fieldsToValues.get(FILL_LEVEL)), StandardUnits.FILL_LEVEL);
 
       return uuidOpt
-              .map(
-                      uuid ->
-                              new CylindricalStorageResult(
-                                      uuid,
-                                      zdtTimestamp,
-                                      inputModelUuid,
-                                      energyQuantity,
-                                      qDotQuantity,
-                                      fillLevelQuantity))
-              .orElseGet(
-                      () ->
-                              new CylindricalStorageResult(
-                                      zdtTimestamp,
-                                      inputModelUuid,
-                                      energyQuantity,
-                                      qDotQuantity,
-                                      fillLevelQuantity));
-    } {
+          .map(
+              uuid ->
+                  new CylindricalStorageResult(
+                      uuid,
+                      zdtTimestamp,
+                      inputModelUuid,
+                      energyQuantity,
+                      qDotQuantity,
+                      fillLevelQuantity))
+          .orElseGet(
+              () ->
+                  new CylindricalStorageResult(
+                      zdtTimestamp,
+                      inputModelUuid,
+                      energyQuantity,
+                      qDotQuantity,
+                      fillLevelQuantity));
+    }
+    {
       throw new FactoryException("Cannot process " + clazz.getSimpleName() + ".class.");
     }
   }

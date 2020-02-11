@@ -7,17 +7,19 @@ package edu.ie3.models.result.thermal;
 
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.ResultEntity;
-
-import javax.measure.Quantity;
-import javax.measure.quantity.Power;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
+import javax.measure.Quantity;
+import javax.measure.quantity.Power;
 
 /** Representation of a result with regard to a thermal unit */
 public abstract class ThermalUnitResult extends ResultEntity {
 
-  /** Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power flowing from unit)  */
+  /**
+   * Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power
+   * flowing from unit)
+   */
   private Quantity<Power> qDot;
 
   /**
@@ -40,7 +42,8 @@ public abstract class ThermalUnitResult extends ResultEntity {
    * @param inputModel The input model's UUID, the result is related to
    * @param qDot Average thermal power exchanged with the unit
    */
-  public ThermalUnitResult(UUID uuid, ZonedDateTime timestamp, UUID inputModel, Quantity<Power> qDot) {
+  public ThermalUnitResult(
+      UUID uuid, ZonedDateTime timestamp, UUID inputModel, Quantity<Power> qDot) {
     super(uuid, timestamp, inputModel);
     this.qDot = qDot;
   }

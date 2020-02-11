@@ -5,9 +5,7 @@
 */
 package edu.ie3.models.result.thermal;
 
-import edu.ie3.models.StandardUnits;
 import java.time.ZonedDateTime;
-import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
