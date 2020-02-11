@@ -20,8 +20,6 @@ import javax.measure.quantity.Power;
 public class WecTypeInput extends SystemParticipantTypeInput {
   /** Efficiency of converter for this type of WEC (typically in %) */
   private Quantity<Dimensionless> etaConv;
-  /** Rated apparent power for this type of WEC (typically in kVA) */
-  private Quantity<Power> sRated;
   /** Swept Area of blades for this type of WEC (typically in m²) */
   private Quantity<Area> rotorArea;
   /** Height from ground to center of rotor for this type of WEC (typically in m) */
@@ -48,9 +46,8 @@ public class WecTypeInput extends SystemParticipantTypeInput {
       Quantity<Power> sRated,
       Quantity<Area> rotorArea,
       Quantity<Length> hubHeight) {
-    super(uuid, id, capex, opex, cosphi);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphi);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
-    this.sRated = sRated.to(StandardUnits.S_RATED);
     this.rotorArea = rotorArea.to(StandardUnits.ROTOR_AREA);
     this.hubHeight = hubHeight.to(StandardUnits.HUB_HEIGHT);
   }
@@ -61,14 +58,6 @@ public class WecTypeInput extends SystemParticipantTypeInput {
 
   public void setEtaConv(Quantity<Dimensionless> etaConv) {
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
-  }
-
-  public Quantity<Power> getSRated() {
-    return sRated;
-  }
-
-  public void setSRated(Quantity<Power> sRated) {
-    this.sRated = sRated.to(StandardUnits.S_RATED);
   }
 
   public Quantity<Area> getRotorArea() {
@@ -94,13 +83,12 @@ public class WecTypeInput extends SystemParticipantTypeInput {
     if (!super.equals(o)) return false;
     WecTypeInput that = (WecTypeInput) o;
     return etaConv.equals(that.etaConv)
-        && sRated.equals(that.sRated)
         && rotorArea.equals(that.rotorArea)
         && hubHeight.equals(that.hubHeight);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), etaConv, sRated, rotorArea, hubHeight);
+    return Objects.hash(super.hashCode(), etaConv, rotorArea, hubHeight);
   }
 }

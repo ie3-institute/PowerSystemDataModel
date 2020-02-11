@@ -5,6 +5,7 @@
 */
 package edu.ie3.models.input.system.type;
 
+import edu.ie3.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import edu.ie3.util.quantities.interfaces.SpecificEnergy;
@@ -20,32 +21,29 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   private Quantity<Energy> eStorage;
   /** Consumed electric energy per driven distance (typically in kWh/km) */
   private Quantity<SpecificEnergy> eCons;
-  /** Rated apparent power for this type of EV (typically in kW) */
-  private Quantity<Power> sRated;
 
   /**
    * @param uuid of the input entity
    * @param id of this type of EV
    * @param capex Captial expense for this type of EV (typically in €)
    * @param opex Operating expense for this type of EV (typically in €)
-   * @param cosphi Power factor for this type of EV
    * @param eStorage Energy capacity of the storage
    * @param eCons Consumed electric energy per driven distance
    * @param sRated Rated apparent power for this type of EV (typically in kW)
+   * @param cosphiRated Power factor for this type of EV
    */
   public EvTypeInput(
       UUID uuid,
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      double cosphi,
       Quantity<Energy> eStorage,
       Quantity<SpecificEnergy> eCons,
-      Quantity<Power> sRated) {
-    super(uuid, id, capex, opex, cosphi);
+      Quantity<Power> sRated,
+      double cosphiRated) {
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage;
     this.eCons = eCons;
-    this.sRated = sRated;
   }
 
   public Quantity<Energy> getEStorage() {
@@ -64,25 +62,17 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     this.eCons = eCons;
   }
 
-  public Quantity<Power> getSRated() {
-    return sRated;
-  }
-
-  public void setSRated(Quantity<Power> sRated) {
-    this.sRated = sRated;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     EvTypeInput that = (EvTypeInput) o;
-    return eStorage.equals(that.eStorage) && eCons.equals(that.eCons) && sRated.equals(that.sRated);
+    return eStorage.equals(that.eStorage) && eCons.equals(that.eCons);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), eStorage, eCons, sRated);
+    return Objects.hash(super.hashCode(), eStorage, eCons);
   }
 }

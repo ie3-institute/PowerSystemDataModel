@@ -25,7 +25,6 @@ public class EvInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics
-   * @param cosphi Power factor
    * @param type of EV
    */
   public EvInput(
@@ -35,9 +34,8 @@ public class EvInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphi,
       EvTypeInput type) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
+    super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.type = type;
   }
 
@@ -48,17 +46,10 @@ public class EvInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics
-   * @param cosphi Power factor
    * @param type of EV
    */
-  public EvInput(
-      UUID uuid,
-      String id,
-      NodeInput node,
-      String qCharacteristics,
-      double cosphi,
-      EvTypeInput type) {
-    super(uuid, id, node, qCharacteristics, cosphi);
+  public EvInput(UUID uuid, String id, NodeInput node, String qCharacteristics, EvTypeInput type) {
+    super(uuid, id, node, qCharacteristics);
     this.type = type;
   }
 
