@@ -34,7 +34,7 @@ public abstract class SimpleEntityFactory<T extends UniqueEntity>
     final List<Set<String>> allFields = getFields(simpleEntityData);
 
     validateParameters(
-        simpleEntityData, allFields.toArray((IntFunction<Set<String>[]>) Set[]::new));
+        simpleEntityData, allFields.stream().toArray((IntFunction<Set<String>[]>) Set[]::new));
 
     try {
       // build the model
