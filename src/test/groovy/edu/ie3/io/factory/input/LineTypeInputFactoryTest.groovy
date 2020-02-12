@@ -39,11 +39,11 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
         typeInput.get().getClass() == typeInputClass
         typeInput.get().uuid == UUID.fromString(parameter["uuid"])
         typeInput.get().id == parameter["id"]
-        typeInput.get().b == getQuant(parameter["b"], StandardUnits.SPECIFIC_ADMITTANCE)
-        typeInput.get().g == getQuant(parameter["g"], StandardUnits.SPECIFIC_ADMITTANCE)
-        typeInput.get().r == getQuant(parameter["r"], StandardUnits.SPECIFIC_IMPEDANCE)
-        typeInput.get().x == getQuant(parameter["x"], StandardUnits.SPECIFIC_IMPEDANCE)
-        typeInput.get().IMax == getQuant(parameter["imax"], StandardUnits.CURRENT)
-        typeInput.get().vRated == getQuant(parameter["vrated"], StandardUnits.V_RATED)
+        typeInput.get().b == getQuant(parameter["b"], StandardUnits.ADMITTANCE_PER_LENGTH)
+        typeInput.get().g == getQuant(parameter["g"], StandardUnits.ADMITTANCE_PER_LENGTH)
+        typeInput.get().r == getQuant(parameter["r"], StandardUnits.IMPEDANCE_PER_LENGTH)
+        typeInput.get().x == getQuant(parameter["x"], StandardUnits.IMPEDANCE_PER_LENGTH)
+        typeInput.get().IMax == getQuant(parameter["imax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
+        typeInput.get().vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
     }
 }

@@ -79,9 +79,12 @@ public class Transformer3WTypeInputFactory extends SimpleEntityFactory<Transform
     Quantity<Power> sRatedAVal = data.get(sRatedA, StandardUnits.S_RATED);
     Quantity<Power> sRatedBVal = data.get(sRatedB, StandardUnits.S_RATED);
     Quantity<Power> sRatedCVal = data.get(sRatedC, StandardUnits.S_RATED);
-    Quantity<ElectricPotential> vRatedAVal = data.get(vRatedA, StandardUnits.V_RATED);
-    Quantity<ElectricPotential> vRatedBVal = data.get(vRatedB, StandardUnits.V_RATED);
-    Quantity<ElectricPotential> vRatedCVal = data.get(vRatedC, StandardUnits.V_RATED);
+    Quantity<ElectricPotential> vRatedAVal =
+        data.get(vRatedA, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    Quantity<ElectricPotential> vRatedBVal =
+        data.get(vRatedB, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    Quantity<ElectricPotential> vRatedCVal =
+        data.get(vRatedC, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     Quantity<ElectricResistance> rScAVal = data.get(rScA, StandardUnits.IMPEDANCE);
     Quantity<ElectricResistance> rScBVal = data.get(rScB, StandardUnits.IMPEDANCE);
     Quantity<ElectricResistance> rScCVal = data.get(rScC, StandardUnits.IMPEDANCE);

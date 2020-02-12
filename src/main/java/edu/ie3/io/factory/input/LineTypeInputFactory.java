@@ -41,12 +41,12 @@ public class LineTypeInputFactory extends SimpleEntityFactory<LineTypeInput> {
   protected LineTypeInput buildModel(SimpleEntityData data) {
     UUID uuid = data.getUUID(entityUuid);
     String id = data.get(entityId);
-    Quantity<SpecificConductance> bVal = data.get(b, StandardUnits.SPECIFIC_ADMITTANCE);
-    Quantity<SpecificConductance> gVal = data.get(g, StandardUnits.SPECIFIC_ADMITTANCE);
-    Quantity<SpecificResistance> rVal = data.get(r, StandardUnits.SPECIFIC_IMPEDANCE);
-    Quantity<SpecificResistance> xVal = data.get(x, StandardUnits.SPECIFIC_IMPEDANCE);
-    Quantity<ElectricCurrent> iMaxVal = data.get(iMax, StandardUnits.CURRENT);
-    Quantity<ElectricPotential> vRatedVal = data.get(vRated, StandardUnits.V_RATED);
+    Quantity<SpecificConductance> bVal = data.get(b, StandardUnits.ADMITTANCE_PER_LENGTH);
+    Quantity<SpecificConductance> gVal = data.get(g, StandardUnits.ADMITTANCE_PER_LENGTH);
+    Quantity<SpecificResistance> rVal = data.get(r, StandardUnits.IMPEDANCE_PER_LENGTH);
+    Quantity<SpecificResistance> xVal = data.get(x, StandardUnits.IMPEDANCE_PER_LENGTH);
+    Quantity<ElectricCurrent> iMaxVal = data.get(iMax, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    Quantity<ElectricPotential> vRatedVal = data.get(vRated, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
 
     return new LineTypeInput(uuid, id, bVal, gVal, rVal, xVal, iMaxVal, vRatedVal);
   }

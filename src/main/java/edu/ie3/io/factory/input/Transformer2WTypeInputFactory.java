@@ -67,8 +67,10 @@ public class Transformer2WTypeInputFactory extends SimpleEntityFactory<Transform
     Quantity<ElectricResistance> rScVal = data.get(rSc, StandardUnits.IMPEDANCE);
     Quantity<ElectricResistance> xScVal = data.get(xSc, StandardUnits.IMPEDANCE);
     Quantity<Power> sRatedVal = data.get(sRated, StandardUnits.S_RATED);
-    Quantity<ElectricPotential> vRatedAVal = data.get(vRatedA, StandardUnits.V_RATED);
-    Quantity<ElectricPotential> vRatedBVal = data.get(vRatedB, StandardUnits.V_RATED);
+    Quantity<ElectricPotential> vRatedAVal =
+        data.get(vRatedA, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    Quantity<ElectricPotential> vRatedBVal =
+        data.get(vRatedB, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     Quantity<ElectricConductance> gMVal = data.get(gM, StandardUnits.ADMITTANCE);
     Quantity<ElectricConductance> bMVal = data.get(bM, StandardUnits.ADMITTANCE);
     Quantity<Dimensionless> dVVal = data.get(dV, StandardUnits.DV_TAP);

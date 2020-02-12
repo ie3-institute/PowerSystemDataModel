@@ -26,10 +26,11 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
             "id":	    "blablub",
             "capex":    "3",
             "opex":	    "4",
-            "cosphi":	"5",
-            "estorage":	"6",
-            "econs":	"7",
-            "srated":   "8"
+            "srated":   "5",
+            "cosphi":	"6",
+
+            "estorage":	"7",
+            "econs":	"8",
         ]
         def typeInputClass = EvTypeInput
 
@@ -57,14 +58,14 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
         Map<String, String> parameter = [
-            "uuid":	    "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8",
-            "id":	    "blablub1",
-            "capex":	"3",
+            "uuid":	    "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":	    "blablub",
+            "capex":    "3",
             "opex":	    "4",
-            "cosphi":	"5",
-            "prated":	"6",
+            "srated":   "5",
+            "cosphi":	"6",
+
             "pthermal":	"7",
-            "pel":      "8"
         ]
         def typeInputClass = HpTypeInput
 
@@ -91,13 +92,14 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
         Map<String, String> parameter = [
-            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8",
-            "id":	        "blablub1",
-            "capex":	    "3",
+            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":	        "blablub",
+            "capex":        "3",
             "opex":	        "4",
-            "cosphi":	    "5",
-            "loadgradient":	"6",
-            "srated":	    "7",
+            "srated":       "5",
+            "cosphi":	    "6",
+
+            "loadgradient":	"7",
             "etaconv":      "8"
         ]
         def typeInputClass = BmTypeInput
@@ -126,13 +128,14 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
         Map<String, String> parameter = [
-            "uuid":         "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8",
-            "id":           "blablub1",
-            "capex":    	"3",
-            "opex":     	"4",
-            "cosphi":   	"5",
-            "etaconv":  	"6",
-            "srated":	    "7",
+            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":	        "blablub",
+            "capex":        "3",
+            "opex":	        "4",
+            "srated":       "5",
+            "cosphi":	    "6",
+
+            "etaconv":  	"7",
             "rotorarea":    "8",
             "hubheight":    "9"
         ]
@@ -163,21 +166,17 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
         Map<String, String> parameter = [
-            "uuid":	                "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8",
-            "id":	                "blablub1",
-            "capex":	            "3",
+            "uuid":	                "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":	                "blablub",
+            "capex":                "3",
             "opex":	                "4",
-            "cosphi":	            "5",
-            "etael":	            "6",
-            "etathermal":           "7",
-            "pel":	                "8",
+            "srated":               "5",
+            "cosphi":	            "6",
+
+            "etael":	            "7",
+            "etathermal":           "8",
             "pthermal":	            "9",
-            "pown":	                "10",
-            "storagevolumelvl":	    "11",
-            "storagevolumelvlmin":	"12",
-            "inlettemp":	        "13",
-            "returntemp":	        "14",
-            "c":                    "15"
+            "pown":	                "10"
         ]
         def typeInputClass = ChpTypeInput
 
@@ -208,19 +207,20 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
         Map<String, String> parameter = [
-            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8",
-            "id":	        "blablub1",
-            "capex":	    "3",
+            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":	        "blablub",
+            "capex":        "3",
             "opex":	        "4",
-            "cosphi":	    "5",
+            "srated":       "5",
+            "cosphi":	    "6",
+
             "estorage":	    "6",
-            "prated":	    "7",
-            "pmin":	        "8",
-            "pmax":	        "9",
-            "eta":	        "10",
-            "dod":	        "11",
-            "lifetime":	    "12",
-            "lifecycle":    "13"
+            "pmin":	        "7",
+            "pmax":	        "8",
+            "eta":	        "9",
+            "dod":	        "10",
+            "lifetime":	    "11",
+            "lifecycle":    "12"
         ]
         def typeInputClass = StorageTypeInput
 
@@ -253,18 +253,19 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
         given: "a system participant factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
         Map<String, String> parameter = [
-            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8",
-            "id":	        "blablub1",
-            "capex":	    "3",
+            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":	        "blablub",
+            "capex":        "3",
             "opex":	        "4",
-            "cosphi":	    "5",
+            "srated":       "5",
+            "cosphi":	    "6",
+
             "estorage":	    "6",
-            "prated":	    "7",
-            "pmax":	        "9",
-            "eta":	        "10",
-            "dod":	        "11",
-            "lifetime":	    "12",
-            "lifecycle":    "13"
+            "pmin":	        "7",
+            "pmax":	        "8",
+            "eta":	        "9",
+            "dod":	        "10",
+            "lifetime":	    "11"
         ]
 
         when:
@@ -272,8 +273,8 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
         then:
         FactoryException ex = thrown()
-        ex.message == "The provided fields [capex, cosphi, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, prated, uuid] with data {capex -> 3,cosphi -> 5,dod -> 11,estorage -> 6,eta -> 10,id -> blablub1,lifecycle -> 13,lifetime -> 12,opex -> 4,pmax -> 9,prated -> 7,uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c8} are invalid for instance of StorageTypeInput. \n" +
+        ex.message == "The provided fields [capex, cosphi, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data {capex -> 3,cosphi -> 6,dod -> 10,estorage -> 6,eta -> 9,id -> blablub,lifetime -> 11,opex -> 4,pmax -> 8,pmin -> 7,srated -> 5,uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
                 "The following fields to be passed to a constructor of StorageTypeInput are possible:\n" +
-                "0: [capex, cosphi, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, pmin, prated, uuid]\n"
+                "0: [capex, cosphi, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, pmin, srated, uuid]\n"
     }
 }
