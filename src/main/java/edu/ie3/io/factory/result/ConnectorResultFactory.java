@@ -59,111 +59,68 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   protected ConnectorResult buildModel(SimpleEntityData data) {
     final Class<? extends UniqueEntity> entityClass = data.getEntityClass();
 
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
-    UUID inputModelUuid = data.getUUID(INPUT_MODEL);
-    Quantity<ElectricCurrent> iAMagVal =
+    ZonedDateTime timestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
+    UUID inputModel = data.getUUID(INPUT_MODEL);
+    Quantity<ElectricCurrent> iAMag =
         data.getQuantity(IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    Quantity<Angle> iAAngVal = data.getQuantity(IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
-    Quantity<ElectricCurrent> iBMagVal =
+    Quantity<Angle> iAAng = data.getQuantity(IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+    Quantity<ElectricCurrent> iBMag =
         data.getQuantity(IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    Quantity<Angle> iBAngVal = data.getQuantity(IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+    Quantity<Angle> iBAng = data.getQuantity(IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
 
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
     if (entityClass.equals(LineResult.class))
       return uuidOpt
-          .map(
-              uuid ->
-                  new LineResult(
-                      uuid, zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal))
-          .orElseGet(
-              () ->
-                  new LineResult(
-                      zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal));
+          .map(uuid -> new LineResult(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng))
+          .orElseGet(() -> new LineResult(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng));
     else if (entityClass.equals(SwitchResult.class)) {
-      final boolean closedVal =
+      final boolean closed =
           data.getField(CLOSED).trim().equals("1") || data.getField(CLOSED).trim().equals("true");
 
       return uuidOpt
           .map(
               uuid ->
-                  new SwitchResult(
-                      uuid,
-                      zdtTimestamp,
-                      inputModelUuid,
-                      iAMagVal,
-                      iAAngVal,
-                      iBMagVal,
-                      iBAngVal,
-                      closedVal))
+                  new SwitchResult(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, closed))
           .orElseGet(
-              () ->
-                  new SwitchResult(
-                      zdtTimestamp,
-                      inputModelUuid,
-                      iAMagVal,
-                      iAAngVal,
-                      iBMagVal,
-                      iBAngVal,
-                      closedVal));
+              () -> new SwitchResult(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, closed));
     } else if (entityClass.equals(Transformer2WResult.class)) {
-      final int tapPosValue = Integer.parseInt(data.getField(TAPPOS).trim());
+      final int tapPos = Integer.parseInt(data.getField(TAPPOS).trim());
 
       return uuidOpt
           .map(
               uuid ->
                   new Transformer2WResult(
-                      uuid,
-                      zdtTimestamp,
-                      inputModelUuid,
-                      iAMagVal,
-                      iAAngVal,
-                      iBMagVal,
-                      iBAngVal,
-                      tapPosValue))
+                      uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos))
           .orElseGet(
               () ->
                   new Transformer2WResult(
-                      zdtTimestamp,
-                      inputModelUuid,
-                      iAMagVal,
-                      iAAngVal,
-                      iBMagVal,
-                      iBAngVal,
-                      tapPosValue));
+                      timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos));
     } else if (entityClass.equals(Transformer3WResult.class)) {
-      Quantity<ElectricCurrent> iCMagVal =
+      Quantity<ElectricCurrent> iCMag =
           data.getQuantity(ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-      Quantity<Angle> iCAngVal = data.getQuantity(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
-      final int tapPosValue = Integer.parseInt(data.getField(TAPPOS).trim());
+      Quantity<Angle> iCAng = data.getQuantity(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+      final int tapPos = Integer.parseInt(data.getField(TAPPOS).trim());
 
       return uuidOpt
           .map(
               uuid ->
                   new Transformer3WResult(
                       uuid,
-                      zdtTimestamp,
-                      inputModelUuid,
-                      iAMagVal,
-                      iAAngVal,
-                      iBMagVal,
-                      iBAngVal,
-                      iCMagVal,
-                      iCAngVal,
-                      tapPosValue))
+                      timestamp,
+                      inputModel,
+                      iAMag,
+                      iAAng,
+                      iBMag,
+                      iBAng,
+                      iCMag,
+                      iCAng,
+                      tapPos))
           .orElseGet(
               () ->
                   new Transformer3WResult(
-                      zdtTimestamp,
-                      inputModelUuid,
-                      iAMagVal,
-                      iAAngVal,
-                      iBMagVal,
-                      iBAngVal,
-                      iCMagVal,
-                      iCAngVal,
-                      tapPosValue));
+                      timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos));
     } else throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
   }
 }
