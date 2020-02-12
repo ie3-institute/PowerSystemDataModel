@@ -29,10 +29,10 @@ abstract class EntityData {
   public EntityData(
       Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
     // this does the magic: case-insensitive get/set calls on keys
-    TreeMap<String, String> insensitiveFieldsToAttribtues =
+    TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    insensitiveFieldsToAttribtues.putAll(fieldsToAttributes);
-    this.fieldsToAttributes = insensitiveFieldsToAttribtues;
+    insensitiveFieldsToAttributes.putAll(fieldsToAttributes);
+    this.fieldsToAttributes = insensitiveFieldsToAttributes;
     this.entityClass = entityClass;
   }
 
