@@ -4,7 +4,6 @@ import edu.ie3.exceptions.FactoryException
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.result.NodeResult
 import edu.ie3.models.result.thermal.CylindricalStorageResult
-import edu.ie3.models.result.thermal.ThermalSinkResult
 import edu.ie3.models.result.connector.LineResult
 import edu.ie3.models.result.connector.SwitchResult
 import edu.ie3.models.result.connector.Transformer2WResult
@@ -12,7 +11,6 @@ import edu.ie3.models.result.connector.Transformer3WResult
 import edu.ie3.models.result.system.*
 import edu.ie3.util.TimeTools
 import edu.ie3.util.quantities.PowerSystemUnits
-import edu.ie3.util.quantities.interfaces.HeatCapacity
 import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
