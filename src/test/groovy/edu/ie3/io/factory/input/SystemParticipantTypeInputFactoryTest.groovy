@@ -1,12 +1,13 @@
 package edu.ie3.io.factory.input
 
 import edu.ie3.exceptions.FactoryException
-import edu.ie3.io.factory.FactorySpecification
+import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.io.factory.SimpleEntityData
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.input.system.type.*
+import spock.lang.Specification
 
-class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
+class SystemParticipantTypeInputFactoryTest extends Specification implements FactoryTestHelper {
 
     def "A SystemParticipantTypeInputFactory should contain all expected classes for parsing"() {
         given:

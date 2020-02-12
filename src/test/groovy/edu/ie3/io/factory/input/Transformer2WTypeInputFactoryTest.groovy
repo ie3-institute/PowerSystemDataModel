@@ -1,11 +1,12 @@
 package edu.ie3.io.factory.input
 
-import edu.ie3.io.factory.FactorySpecification
+import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.io.factory.SimpleEntityData
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.input.connector.type.Transformer2WTypeInput
+import spock.lang.Specification
 
-class Transformer2WTypeInputFactoryTest extends FactorySpecification {
+class Transformer2WTypeInputFactoryTest extends Specification implements FactoryTestHelper {
 
     def "A Transformer2WTypeInputFactory should contain exactly the expected class for parsing"() {
         given:

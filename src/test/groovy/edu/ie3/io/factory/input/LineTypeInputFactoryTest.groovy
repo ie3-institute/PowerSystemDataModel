@@ -1,12 +1,12 @@
 package edu.ie3.io.factory.input
 
+import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.io.factory.SimpleEntityData
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.input.connector.type.LineTypeInput
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
 
-class LineTypeInputFactoryTest extends Specification {
+class LineTypeInputFactoryTest extends Specification implements FactoryTestHelper {
 
     def "A LineTypeInputFactory should contain exactly the expected class for parsing"() {
         given:
@@ -39,11 +39,11 @@ class LineTypeInputFactoryTest extends Specification {
         typeInput.get().getClass() == typeInputClass
         typeInput.get().uuid == UUID.fromString(parameter["uuid"])
         typeInput.get().id == parameter["id"]
-        typeInput.get().b == Quantities.getQuantity(Double.parseDouble(parameter["b"]), StandardUnits.SPECIFIC_ADMITTANCE)
-        typeInput.get().g == Quantities.getQuantity(Double.parseDouble(parameter["g"]), StandardUnits.SPECIFIC_ADMITTANCE)
-        typeInput.get().r == Quantities.getQuantity(Double.parseDouble(parameter["r"]), StandardUnits.SPECIFIC_IMPEDANCE)
-        typeInput.get().x == Quantities.getQuantity(Double.parseDouble(parameter["x"]), StandardUnits.SPECIFIC_IMPEDANCE)
-        typeInput.get().IMax == Quantities.getQuantity(Double.parseDouble(parameter["imax"]), StandardUnits.CURRENT)
-        typeInput.get().vRated == Quantities.getQuantity(Double.parseDouble(parameter["vrated"]), StandardUnits.V_RATED)
+        typeInput.get().b == getQuant(parameter["b"], StandardUnits.SPECIFIC_ADMITTANCE)
+        typeInput.get().g == getQuant(parameter["g"], StandardUnits.SPECIFIC_ADMITTANCE)
+        typeInput.get().r == getQuant(parameter["r"], StandardUnits.SPECIFIC_IMPEDANCE)
+        typeInput.get().x == getQuant(parameter["x"], StandardUnits.SPECIFIC_IMPEDANCE)
+        typeInput.get().IMax == getQuant(parameter["imax"], StandardUnits.CURRENT)
+        typeInput.get().vRated == getQuant(parameter["vrated"], StandardUnits.V_RATED)
     }
 }
