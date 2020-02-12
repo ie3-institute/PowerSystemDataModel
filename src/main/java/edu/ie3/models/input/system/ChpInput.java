@@ -32,7 +32,6 @@ public class ChpInput extends SystemParticipantInput {
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphi Power factor
    * @param type of CHP
    * @param marketReaction Is this asset market oriented?
    */
@@ -44,10 +43,9 @@ public class ChpInput extends SystemParticipantInput {
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      double cosphi,
       ChpTypeInput type,
       boolean marketReaction) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
+    super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.thermalBus = thermalBus;
     this.type = type;
     this.marketReaction = marketReaction;
@@ -61,7 +59,6 @@ public class ChpInput extends SystemParticipantInput {
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphi Power factor
    * @param type of CHP
    * @param marketReaction Is this asset market oriented?
    */
@@ -71,10 +68,9 @@ public class ChpInput extends SystemParticipantInput {
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      double cosphi,
       ChpTypeInput type,
       boolean marketReaction) {
-    super(uuid, id, node, qCharacteristics, cosphi);
+    super(uuid, id, node, qCharacteristics);
     this.thermalBus = thermalBus;
     this.type = type;
     this.marketReaction = marketReaction;

@@ -6,7 +6,6 @@
 package edu.ie3.io.factory.result;
 
 import edu.ie3.io.factory.SimpleEntityData;
-import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.NodeResult;
 import edu.ie3.util.TimeTools;
@@ -16,12 +15,9 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 
-public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
-  private static final String entityUuid = "uuid";
-  private static final String timestamp = "timestamp";
-  private static final String inputModel = "inputModel";
-  private static final String vMag = "vmag";
-  private static final String vAng = "vang";
+public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
+  private static final String VMAG = "vmag";
+  private static final String VANG = "vang";
 
   public NodeResultFactory() {
     super(NodeResult.class);
@@ -29,20 +25,20 @@ public class NodeResultFactory extends SimpleEntityFactory<NodeResult> {
 
   @Override
   protected List<Set<String>> getFields(SimpleEntityData entityData) {
-    Set<String> minConstructorParams = newSet(timestamp, inputModel, vMag, vAng);
-    Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
+    Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, VMAG, VANG);
+    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     return Arrays.asList(minConstructorParams, optionalFields);
   }
 
   @Override
   protected NodeResult buildModel(SimpleEntityData data) {
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(timestamp));
-    UUID inputModelUuid = data.getUUID(inputModel);
-    Quantity<Dimensionless> vMagValue = data.get(vMag, StandardUnits.TARGET_VOLTAGE); // TODO
-    Quantity<Angle> vAngValue = data.get(vAng, StandardUnits.DPHI_TAP); // TODO
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(TIMESTAMP));
+    UUID inputModelUuid = data.getUUID(INPUT_MODEL);
+    Quantity<Dimensionless> vMagValue = data.get(VMAG, StandardUnits.VOLTAGE_MAGNITUDE);
+    Quantity<Angle> vAngValue = data.get(VANG, StandardUnits.VOLTAGE_ANGLE);
     Optional<UUID> uuidOpt =
-        data.containsKey(entityUuid) ? Optional.of(data.getUUID(entityUuid)) : Optional.empty();
+        data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
     return uuidOpt
         .map(uuid -> new NodeResult(uuid, zdtTimestamp, inputModelUuid, vMagValue, vAngValue))

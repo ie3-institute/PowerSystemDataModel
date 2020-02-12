@@ -126,7 +126,7 @@ class ResultEntityProcessorTest extends Specification {
         def sysPartResProcessor = new ResultEntityProcessor(NodeResult)
 
         Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PowerSystemUnits.PU)
-        Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.ELECTRIC_VOLTAGE_ANGLE)
+        Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.VOLTAGE_ANGLE)
 
         def validResult = new NodeResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, vMag, vAng)
 
@@ -189,15 +189,15 @@ class ResultEntityProcessorTest extends Specification {
 
 
     @Shared
-    Quantity<ElectricCurrent> iAMag = Quantities.getQuantity(100, StandardUnits.CURRENT)
+    Quantity<ElectricCurrent> iAMag = Quantities.getQuantity(100, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     @Shared
     Quantity<Angle> iAAng = Quantities.getQuantity(45, StandardUnits.ELECTRIC_CURRENT_ANGLE)
     @Shared
-    Quantity<ElectricCurrent> iBMag = Quantities.getQuantity(150, StandardUnits.CURRENT)
+    Quantity<ElectricCurrent> iBMag = Quantities.getQuantity(150, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     @Shared
     Quantity<Angle> iBAng = Quantities.getQuantity(30, StandardUnits.ELECTRIC_CURRENT_ANGLE)
     @Shared
-    Quantity<ElectricCurrent> iCMag = Quantities.getQuantity(300, StandardUnits.CURRENT)
+    Quantity<ElectricCurrent> iCMag = Quantities.getQuantity(300, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     @Shared
     Quantity<Angle> iCAng = Quantities.getQuantity(70, StandardUnits.ELECTRIC_CURRENT_ANGLE)
     @Shared

@@ -28,7 +28,6 @@ public class StorageInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphiRated Power factor
    * @param type of storage
    * @param behaviour Selection of predefined behaviour of the storage
    */
@@ -39,10 +38,9 @@ public class StorageInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphiRated,
       StorageTypeInput type,
       String behaviour) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphiRated);
+    super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.type = type;
     this.behaviour = StorageStrategy.get(behaviour);
   }
@@ -54,7 +52,6 @@ public class StorageInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphiRated Power factor
    * @param type of storage
    * @param behaviour Selection of predefined behaviour of the storage
    */
@@ -63,10 +60,9 @@ public class StorageInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      double cosphiRated,
       StorageTypeInput type,
       String behaviour) {
-    super(uuid, id, node, qCharacteristics, cosphiRated);
+    super(uuid, id, node, qCharacteristics);
     this.type = type;
     this.behaviour = StorageStrategy.get(behaviour);
   }

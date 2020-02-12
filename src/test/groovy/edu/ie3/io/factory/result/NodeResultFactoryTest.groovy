@@ -35,11 +35,10 @@ class NodeResultFactoryTest extends Specification {
         then:
         result.present
         result.get().getClass() == NodeResult
-        result.get().vMag == Quantities.getQuantity(Double.parseDouble(parameter["vmag"]), StandardUnits.TARGET_VOLTAGE)
-        result.get().vAng == Quantities.getQuantity(Double.parseDouble(parameter["vang"]), StandardUnits.DPHI_TAP) //TODO
+        result.get().vMag == Quantities.getQuantity(Double.parseDouble(parameter["vmag"]), StandardUnits.VOLTAGE_MAGNITUDE)
+        result.get().vAng == Quantities.getQuantity(Double.parseDouble(parameter["vang"]), StandardUnits.VOLTAGE_ANGLE)
         result.get().timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
         result.get().inputModel == UUID.fromString(parameter["inputModel"])
-
     }
 
     def "A NodeResultFactory should throw an exception on invalid or incomplete data"() {

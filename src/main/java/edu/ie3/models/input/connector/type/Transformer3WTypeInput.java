@@ -102,9 +102,9 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     this.sRatedA = sRatedA.to(StandardUnits.S_RATED);
     this.sRatedB = sRatedB.to(StandardUnits.S_RATED);
     this.sRatedC = sRatedC.to(StandardUnits.S_RATED);
-    this.vRatedA = vRatedA.to(StandardUnits.V_RATED);
-    this.vRatedB = vRatedB.to(StandardUnits.V_RATED);
-    this.vRatedC = vRatedC.to(StandardUnits.V_RATED);
+    this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    this.vRatedC = vRatedC.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.rScA = rScA.to(StandardUnits.IMPEDANCE);
     this.rScB = rScB.to(StandardUnits.IMPEDANCE);
     this.rScC = rScC.to(StandardUnits.IMPEDANCE);
@@ -149,7 +149,7 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   }
 
   public void setVRatedA(Quantity<ElectricPotential> vRatedA) {
-    this.vRatedA = vRatedA.to(StandardUnits.V_RATED);
+    this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
   }
 
   public Quantity<ElectricPotential> getVRatedB() {
@@ -157,7 +157,7 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   }
 
   public void setVRatedB(Quantity<ElectricPotential> vRatedB) {
-    this.vRatedB = vRatedB.to(StandardUnits.V_RATED);
+    this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
   }
 
   public Quantity<ElectricPotential> getVRatedC() {
@@ -165,7 +165,7 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   }
 
   public void setVRatedC(Quantity<ElectricPotential> vRatedC) {
-    this.vRatedC = vRatedC.to(StandardUnits.V_RATED);
+    this.vRatedC = vRatedC.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
   }
 
   public Quantity<ElectricResistance> getRScA() {

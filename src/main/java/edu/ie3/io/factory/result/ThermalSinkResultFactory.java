@@ -6,20 +6,17 @@
 package edu.ie3.io.factory.result;
 
 import edu.ie3.io.factory.SimpleEntityData;
-import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.ThermalSinkResult;
 import edu.ie3.util.TimeTools;
-import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.Quantity;
+import javax.measure.quantity.Energy;
 
-public class ThermalSinkResultFactory extends SimpleEntityFactory<ThermalSinkResult> {
-  private static final String entityUuid = "uuid";
-  private static final String timestamp = "timestamp";
-  private static final String inputModel = "inputModel";
-  private static final String qDemand = "qDemand";
+public class ThermalSinkResultFactory extends ResultEntityFactory<ThermalSinkResult> {
+
+  private static final String Q_DEMAND = "qDemand";
 
   public ThermalSinkResultFactory() {
     super(ThermalSinkResult.class);
@@ -27,21 +24,19 @@ public class ThermalSinkResultFactory extends SimpleEntityFactory<ThermalSinkRes
 
   @Override
   protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
-    Set<String> minConstructorParams = newSet(timestamp, inputModel, qDemand);
-    Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
+    Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, Q_DEMAND);
+    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     return Arrays.asList(minConstructorParams, optionalFields);
   }
 
   @Override
   protected ThermalSinkResult buildModel(SimpleEntityData data) {
-
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(timestamp));
-    UUID inputModelUuid = data.getUUID(inputModel);
-    Quantity<HeatCapacity> qDemandQuantity =
-        data.get(qDemand, StandardUnits.HEAT_CAPACITY); // todo CK ensure that the unit is correct
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(TIMESTAMP));
+    UUID inputModelUuid = data.getUUID(INPUT_MODEL);
+    Quantity<Energy> qDemandQuantity = data.get(Q_DEMAND, StandardUnits.HEAT_DEMAND);
     Optional<UUID> uuidOpt =
-        data.containsKey(entityUuid) ? Optional.of(data.getUUID(entityUuid)) : Optional.empty();
+        data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
     return uuidOpt
         .map(uuid -> new ThermalSinkResult(uuid, zdtTimestamp, inputModelUuid, qDemandQuantity))

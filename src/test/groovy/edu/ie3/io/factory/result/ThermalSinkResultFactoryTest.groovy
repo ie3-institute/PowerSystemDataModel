@@ -33,9 +33,8 @@ class ThermalSinkResultFactoryTest extends Specification {
         then:
         result.present
         result.get().getClass() == ThermalSinkResult
-        result.get().qDemand == Quantities.getQuantity(Double.parseDouble(parameter["qdemand"]),  StandardUnits.HEAT_CAPACITY)
+        result.get().qDemand == Quantities.getQuantity(Double.parseDouble(parameter["qdemand"]),  StandardUnits.HEAT_DEMAND)
         result.get().timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
         result.get().inputModel == UUID.fromString(parameter["inputModel"])
-
     }
 }

@@ -154,7 +154,9 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "iCMag":
         normalizedQuantityValue =
             quantityValToOptionalString(
-                quantity.asType(ElectricCurrent.class).to(StandardUnits.CURRENT));
+                quantity
+                    .asType(ElectricCurrent.class)
+                    .to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE));
         break;
       case "qDemand":
         normalizedQuantityValue =
