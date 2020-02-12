@@ -20,15 +20,16 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
     def "A LineTypeInputFactory should parse a valid LineTypeInput correctly"() {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new LineTypeInputFactory()
-        Map<String, String> parameter = [:]
-        parameter["uuid"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
-        parameter["id"] = "blablub"
-        parameter["b"] = "3"
-        parameter["g"] = "4"
-        parameter["r"] = "5"
-        parameter["x"] = "6"
-        parameter["imax"] = "7"
-        parameter["vrated"] = "8"
+        Map<String, String> parameter = [
+            "uuid":     "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":       "blablub",
+            "b":        "3",
+            "g":        "4",
+            "r":        "5",
+            "x":        "6",
+            "imax":     "7",
+            "vrated":   "8"
+        ]
         def typeInputClass = LineTypeInput
 
         when:
@@ -37,13 +38,15 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
         then:
         typeInput.present
         typeInput.get().getClass() == typeInputClass
-        typeInput.get().uuid == UUID.fromString(parameter["uuid"])
-        typeInput.get().id == parameter["id"]
-        typeInput.get().b == getQuant(parameter["b"], StandardUnits.ADMITTANCE_PER_LENGTH)
-        typeInput.get().g == getQuant(parameter["g"], StandardUnits.ADMITTANCE_PER_LENGTH)
-        typeInput.get().r == getQuant(parameter["r"], StandardUnits.IMPEDANCE_PER_LENGTH)
-        typeInput.get().x == getQuant(parameter["x"], StandardUnits.IMPEDANCE_PER_LENGTH)
-        typeInput.get().IMax == getQuant(parameter["imax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
-        typeInput.get().vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+        ((LineTypeInput) typeInput.get()).with {
+            assert uuid == UUID.fromString(parameter["uuid"])
+            assert id == parameter["id"]
+            assert b == getQuant(parameter["b"], StandardUnits.ADMITTANCE_PER_LENGTH)
+            assert g == getQuant(parameter["g"], StandardUnits.ADMITTANCE_PER_LENGTH)
+            assert r == getQuant(parameter["r"], StandardUnits.IMPEDANCE_PER_LENGTH)
+            assert x == getQuant(parameter["x"], StandardUnits.IMPEDANCE_PER_LENGTH)
+            assert IMax == getQuant(parameter["imax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
+            assert vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+        }
     }
 }
