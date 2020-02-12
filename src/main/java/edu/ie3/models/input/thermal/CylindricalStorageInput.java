@@ -14,7 +14,7 @@ import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 
 /** Thermal storage with cylindrical shape */
-public class CylindricalStorage extends ThermalStorageInput {
+public class CylindricalStorageInput extends ThermalStorageInput {
   /** Available storage volume (typically in m³) */
   private Quantity<Volume> storageVolumeLvl;
   /** Minimum permissible storage volume (typically in m³) */
@@ -36,7 +36,7 @@ public class CylindricalStorage extends ThermalStorageInput {
    * @param returnTemp Temperature of the outlet
    * @param c Specific heat capacity of the storage medium
    */
-  CylindricalStorage(
+  CylindricalStorageInput(
       UUID uuid,
       String id,
       ThermalBusInput bus,
@@ -98,7 +98,7 @@ public class CylindricalStorage extends ThermalStorageInput {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    CylindricalStorage that = (CylindricalStorage) o;
+    CylindricalStorageInput that = (CylindricalStorageInput) o;
     return storageVolumeLvl.equals(that.storageVolumeLvl)
         && storageVolumeLvlMin.equals(that.storageVolumeLvlMin)
         && inletTemp.equals(that.inletTemp)
