@@ -25,7 +25,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   /**
    * @param uuid of the input entity
    * @param id of this type of EV
-   * @param capex Captial expense for this type of EV (typically in €)
+   * @param capex Capital expense for this type of EV (typically in €)
    * @param opex Operating expense for this type of EV (typically in €)
    * @param eStorage Energy capacity of the storage
    * @param eCons Consumed electric energy per driven distance

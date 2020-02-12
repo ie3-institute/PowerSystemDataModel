@@ -44,6 +44,6 @@ class LineTypeInputFactoryTest extends Specification {
         typeInput.get().r == Quantities.getQuantity(Double.parseDouble(parameter["r"]), StandardUnits.SPECIFIC_IMPEDANCE)
         typeInput.get().x == Quantities.getQuantity(Double.parseDouble(parameter["x"]), StandardUnits.SPECIFIC_IMPEDANCE)
         typeInput.get().IMax == Quantities.getQuantity(Double.parseDouble(parameter["imax"]), StandardUnits.CURRENT)
-        typeInput.get().VRated == Quantities.getQuantity(Double.parseDouble(parameter["vrated"]), StandardUnits.V_RATED)
+        typeInput.get().vRated == Quantities.getQuantity(Double.parseDouble(parameter["vrated"]), StandardUnits.V_RATED)
     }
 }

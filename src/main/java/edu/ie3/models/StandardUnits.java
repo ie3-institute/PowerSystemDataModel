@@ -49,6 +49,9 @@ public class StandardUnits {
   public static final Unit<Dimensionless> VOLTAGE_MAGNITUDE = PU;
   /** Voltage angle (mainly for result purposes) */
   public static final Unit<Angle> VOLTAGE_ANGLE = DEGREE_GEOM;
+  /** Electric energy per driven distance * */
+  // TODO ckittl check this
+  public static final Unit<SpecificEnergy> ENERGY_PER_DISTANCE = KILOWATTHOUR_PER_KILOMETRE;
 
   /* Other Units */
   /** Voltage magnitude variation per tap (for transformers) */
@@ -95,6 +98,9 @@ public class StandardUnits {
   public static final Unit<Speed> WIND_VELOCITY = METRE_PER_SECOND;
   /** Solar irradiation on a flat surface */
   public static final Unit<Irradiation> IRRADIATION = KILOWATTHOUR_PER_SQUAREMETRE;
+  /** Capex (capital expenditure) * */
+  // TODO ckittl check this
+  public static final Unit<Currency> CAPEX = EURO;
 
   private StandardUnits() {
     throw new IllegalStateException("This is an Utility Class and not meant to be instantiated");

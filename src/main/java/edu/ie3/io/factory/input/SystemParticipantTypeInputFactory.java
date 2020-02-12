@@ -10,7 +10,7 @@ import edu.ie3.io.factory.SimpleEntityData;
 import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.system.type.*;
-import edu.ie3.util.quantities.PowerSystemUnits;
+import edu.ie3.models.input.thermal.ThermalStorageInput;
 import edu.ie3.util.quantities.interfaces.*;
 import java.util.Collections;
 import java.util.List;
@@ -27,14 +27,12 @@ public class SystemParticipantTypeInputFactory
   private static final String capEx = "capex";
   private static final String opEx = "opex";
   private static final String cosPhi = "cosphi";
+  private static final String sRated = "srated";
 
   // required in multiple types
-  private static final String sRated = "srated";
   private static final String etaConv = "etaconv";
   private static final String pThermal = "pthermal";
-  private static final String pEl = "pel";
   private static final String eStorage = "estorage";
-  private static final String pRated = "prated";
 
   // EvTypeInput
   private static final String eCons = "econs";
@@ -76,44 +74,24 @@ public class SystemParticipantTypeInputFactory
 
   @Override
   protected List<Set<String>> getFields(SimpleEntityData data) {
-    Set<String> standardConstructorParams = newSet(entityUuid, entityId, capEx, opEx, cosPhi);
+    Set<String> standardConstructorParams =
+        newSet(entityUuid, entityId, capEx, opEx, sRated, cosPhi);
 
-    Set<String> constructorParameters = null;
+    Set<String> constructorParameters = null; // TODO adapt all below
     if (data.getEntityClass().equals(EvTypeInput.class)) {
-      constructorParameters = expandSet(standardConstructorParams, eStorage, eCons, sRated);
+      constructorParameters = expandSet(standardConstructorParams, eStorage, eCons);
     } else if (data.getEntityClass().equals(HpTypeInput.class)) {
-      constructorParameters = expandSet(standardConstructorParams, pRated, pThermal, pEl);
+      constructorParameters = expandSet(standardConstructorParams, pThermal);
     } else if (data.getEntityClass().equals(BmTypeInput.class)) {
-      constructorParameters = expandSet(standardConstructorParams, loadGradient, sRated, etaConv);
+      constructorParameters = expandSet(standardConstructorParams, loadGradient, etaConv);
     } else if (data.getEntityClass().equals(WecTypeInput.class)) {
+      constructorParameters = expandSet(standardConstructorParams, etaConv, rotorArea, hubHeight);
+    } else if (data.getEntityClass().equals(ChpTypeInput.class)) { // into new file
       constructorParameters =
-          expandSet(standardConstructorParams, etaConv, sRated, rotorArea, hubHeight);
-    } else if (data.getEntityClass().equals(ChpTypeInput.class)) {
-      constructorParameters =
-          expandSet(
-              standardConstructorParams,
-              etaEl,
-              etaThermal,
-              pEl,
-              pThermal,
-              pOwn,
-              storageVolumeLvl,
-              storageVolumeLvlMin,
-              inletTemp,
-              returnTemp,
-              c);
+          expandSet(standardConstructorParams, etaEl, etaThermal, pThermal, pOwn);
     } else if (data.getEntityClass().equals(StorageTypeInput.class)) {
       constructorParameters =
-          expandSet(
-              standardConstructorParams,
-              eStorage,
-              pRated,
-              pMin,
-              pMax,
-              eta,
-              dod,
-              lifeTime,
-              lifeCycle);
+          expandSet(standardConstructorParams, eStorage, pMin, pMax, eta, dod, lifeTime, lifeCycle);
     }
 
     return Collections.singletonList(constructorParameters);
@@ -123,22 +101,23 @@ public class SystemParticipantTypeInputFactory
   protected SystemParticipantTypeInput buildModel(SimpleEntityData data) {
     UUID uuid = data.getUUID(entityUuid);
     String id = data.get(entityId);
-    Quantity<Currency> capExVal = data.get(capEx, PowerSystemUnits.EURO); // TODO StandardUnit
+    Quantity<Currency> capExVal = data.get(capEx, StandardUnits.CAPEX);
     Quantity<EnergyPrice> opExVal = data.get(opEx, StandardUnits.ENERGY_PRICE);
+    Quantity<Power> sRatedVal = data.get(sRated, StandardUnits.S_RATED);
     double cosPhiVal = Double.parseDouble(data.get(cosPhi));
 
     if (data.getEntityClass().equals(EvTypeInput.class))
-      return buildEvTypeInput(data, uuid, id, capExVal, opExVal, cosPhiVal);
+      return buildEvTypeInput(data, uuid, id, capExVal, opExVal, sRatedVal, cosPhiVal);
     else if (data.getEntityClass().equals(HpTypeInput.class))
-      return buildHpTypeInput(data, uuid, id, capExVal, opExVal, cosPhiVal);
+      return buildHpTypeInput(data, uuid, id, capExVal, opExVal, sRatedVal, cosPhiVal);
     else if (data.getEntityClass().equals(BmTypeInput.class))
-      return buildBmTypeInput(data, uuid, id, capExVal, opExVal, cosPhiVal);
+      return buildBmTypeInput(data, uuid, id, capExVal, opExVal, sRatedVal, cosPhiVal);
     else if (data.getEntityClass().equals(WecTypeInput.class))
-      return buildWecTypeInput(data, uuid, id, capExVal, opExVal, cosPhiVal);
+      return buildWecTypeInput(data, uuid, id, capExVal, opExVal, sRatedVal, cosPhiVal);
     else if (data.getEntityClass().equals(ChpTypeInput.class))
-      return buildChpTypeInput(data, uuid, id, capExVal, opExVal, cosPhiVal);
+      return buildChpTypeInput(data, uuid, id, capExVal, opExVal, sRatedVal, cosPhiVal);
     else if (data.getEntityClass().equals(StorageTypeInput.class))
-      return buildStorageTypeInput(data, uuid, id, capExVal, opExVal, cosPhiVal);
+      return buildStorageTypeInput(data, uuid, id, capExVal, opExVal, sRatedVal, cosPhiVal);
     else
       throw new FactoryException(
           "SystemParticipantTypeInputFactory does not know how to build a "
@@ -151,14 +130,13 @@ public class SystemParticipantTypeInputFactory
       String id,
       Quantity<Currency> capExVal,
       Quantity<EnergyPrice> opExVal,
+      Quantity<Power> sRatedVal,
       double cosPhiVal) {
-    Quantity<Energy> eStorageVal = data.get(eStorage, StandardUnits.ENERGY); // TODO StandardUnit
-    Quantity<SpecificEnergy> eConsVal =
-        data.get(eCons, PowerSystemUnits.WATTHOUR_PER_METRE); // TODO StandardUnit
-    Quantity<Power> sRatedVal = data.get(sRated, StandardUnits.S_RATED);
+    Quantity<Energy> eStorageVal = data.get(eStorage, StandardUnits.ENERGY_IN);
+    Quantity<SpecificEnergy> eConsVal = data.get(eCons, StandardUnits.ENERGY_PER_DISTANCE);
 
     return new EvTypeInput(
-        uuid, id, capExVal, opExVal, cosPhiVal, eStorageVal, eConsVal, sRatedVal);
+        uuid, id, capExVal, opExVal, eStorageVal, eConsVal, sRatedVal, cosPhiVal);
   }
 
   private SystemParticipantTypeInput buildHpTypeInput(
@@ -167,12 +145,11 @@ public class SystemParticipantTypeInputFactory
       String id,
       Quantity<Currency> capExVal,
       Quantity<EnergyPrice> opExVal,
+      Quantity<Power> sRatedVal,
       double cosPhiVal) {
-    Quantity<Power> pRatedVal = data.get(pRated, StandardUnits.ACTIVE_POWER_IN);
     Quantity<Power> pThermalVal = data.get(pThermal, StandardUnits.ACTIVE_POWER_IN);
-    Quantity<Power> pElVal = data.get(pEl, StandardUnits.ACTIVE_POWER_IN);
 
-    return new HpTypeInput(uuid, id, capExVal, opExVal, cosPhiVal, pRatedVal, pThermalVal, pElVal);
+    return new HpTypeInput(uuid, id, capExVal, opExVal, sRatedVal, cosPhiVal, pThermalVal);
   }
 
   private SystemParticipantTypeInput buildBmTypeInput(
@@ -181,14 +158,14 @@ public class SystemParticipantTypeInputFactory
       String id,
       Quantity<Currency> capExVal,
       Quantity<EnergyPrice> opExVal,
+      Quantity<Power> sRatedVal,
       double cosPhiVal) {
     Quantity<DimensionlessRate> loadGradientVal =
         data.get(loadGradient, StandardUnits.LOAD_GRADIENT);
-    Quantity<Power> sRatedVal = data.get(sRated, StandardUnits.S_RATED);
     Quantity<Dimensionless> etaConvVal = data.get(etaConv, StandardUnits.EFFICIENCY);
 
     return new BmTypeInput(
-        uuid, id, capExVal, opExVal, cosPhiVal, loadGradientVal, sRatedVal, etaConvVal);
+        uuid, id, capExVal, opExVal, loadGradientVal, sRatedVal, cosPhiVal, etaConvVal);
   }
 
   private SystemParticipantTypeInput buildWecTypeInput(
@@ -197,9 +174,9 @@ public class SystemParticipantTypeInputFactory
       String id,
       Quantity<Currency> capExVal,
       Quantity<EnergyPrice> opExVal,
+      Quantity<Power> sRatedVal,
       double cosPhiVal) {
     Quantity<Dimensionless> etaConvVal = data.get(etaConv, StandardUnits.EFFICIENCY);
-    Quantity<Power> sRatedVal = data.get(sRated, StandardUnits.S_RATED);
     Quantity<Area> rotorAreaVal = data.get(rotorArea, StandardUnits.ROTOR_AREA);
     Quantity<Length> hubHeightVal = data.get(hubHeight, StandardUnits.HUB_HEIGHT);
 
@@ -213,34 +190,26 @@ public class SystemParticipantTypeInputFactory
       String id,
       Quantity<Currency> capExVal,
       Quantity<EnergyPrice> opExVal,
+      Quantity<Power> sRatedVal,
       double cosPhiVal) {
     Quantity<Dimensionless> etaElVal = data.get(etaEl, StandardUnits.EFFICIENCY);
     Quantity<Dimensionless> etaThermalVal = data.get(etaThermal, StandardUnits.EFFICIENCY);
-    Quantity<Power> pElVal = data.get(pEl, StandardUnits.ACTIVE_POWER_IN);
     Quantity<Power> pThermalVal = data.get(pThermal, StandardUnits.ACTIVE_POWER_IN);
     Quantity<Power> pOwnVal = data.get(pOwn, StandardUnits.ACTIVE_POWER_IN);
-    Quantity<Volume> storageVolumeLvlVal = data.get(storageVolumeLvl, StandardUnits.VOLUME);
-    Quantity<Volume> storageVolumeLvlMinVal = data.get(storageVolumeLvlMin, StandardUnits.VOLUME);
-    Quantity<Temperature> inletTempVal = data.get(inletTemp, StandardUnits.TEMPERATURE);
-    Quantity<Temperature> returnTempVal = data.get(returnTemp, StandardUnits.TEMPERATURE);
-    Quantity<SpecificHeatCapacity> cVal = data.get(c, StandardUnits.SPECIFIC_HEAT_CAPACITY);
+    ThermalStorageInput thermalStorageInput = null; // TODO
 
     return new ChpTypeInput(
         uuid,
         id,
         capExVal,
         opExVal,
-        cosPhiVal,
         etaElVal,
         etaThermalVal,
-        pElVal,
+        sRatedVal,
+        cosPhiVal,
         pThermalVal,
         pOwnVal,
-        storageVolumeLvlVal,
-        storageVolumeLvlMinVal,
-        inletTempVal,
-        returnTempVal,
-        cVal);
+        thermalStorageInput);
   }
 
   private SystemParticipantTypeInput buildStorageTypeInput(
@@ -249,9 +218,9 @@ public class SystemParticipantTypeInputFactory
       String id,
       Quantity<Currency> capExVal,
       Quantity<EnergyPrice> opExVal,
+      Quantity<Power> sRatedVal,
       double cosPhiVal) {
-    Quantity<Energy> eStorageVal = data.get(eStorage, StandardUnits.ENERGY); // TODO StandardUnit
-    Quantity<Power> pRatedVal = data.get(pRated, StandardUnits.ACTIVE_POWER_IN);
+    Quantity<Energy> eStorageVal = data.get(eStorage, StandardUnits.ENERGY_IN);
     Quantity<Power> pMinVal = data.get(pMin, StandardUnits.ACTIVE_POWER_IN);
     Quantity<Power> pMaxVal = data.get(pMax, StandardUnits.ACTIVE_POWER_IN);
     Quantity<Dimensionless> etaVal = data.get(eta, StandardUnits.EFFICIENCY);
@@ -264,9 +233,9 @@ public class SystemParticipantTypeInputFactory
         id,
         capExVal,
         opExVal,
-        cosPhiVal,
         eStorageVal,
-        pRatedVal,
+        sRatedVal,
+        cosPhiVal,
         pMinVal,
         pMaxVal,
         etaVal,
