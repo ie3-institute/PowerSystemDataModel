@@ -97,11 +97,11 @@ public class SystemParticipantTypeInputFactory
   @Override
   protected SystemParticipantTypeInput buildModel(SimpleEntityData data) {
     UUID uuid = data.getUUID(ENTITY_UUID);
-    String id = data.get(ENTITY_ID);
-    Quantity<Currency> capEx = data.get(CAP_EX, StandardUnits.CAPEX);
-    Quantity<EnergyPrice> opEx = data.get(OP_EX, StandardUnits.ENERGY_PRICE);
-    Quantity<Power> sRated = data.get(S_RATED, StandardUnits.S_RATED);
-    double cosPhi = Double.parseDouble(data.get(COS_PHI));
+    String id = data.getField(ENTITY_ID);
+    Quantity<Currency> capEx = data.getQuantity(CAP_EX, StandardUnits.CAPEX);
+    Quantity<EnergyPrice> opEx = data.getQuantity(OP_EX, StandardUnits.ENERGY_PRICE);
+    Quantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
+    double cosPhi = Double.parseDouble(data.getField(COS_PHI));
 
     if (data.getEntityClass().equals(EvTypeInput.class))
       return buildEvTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
@@ -129,8 +129,8 @@ public class SystemParticipantTypeInputFactory
       Quantity<EnergyPrice> opEx,
       Quantity<Power> sRated,
       double cosPhi) {
-    Quantity<Energy> eStorage = data.get(E_STORAGE, StandardUnits.ENERGY_IN);
-    Quantity<SpecificEnergy> eCons = data.get(E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
+    Quantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
+    Quantity<SpecificEnergy> eCons = data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
 
     return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi);
   }
@@ -143,7 +143,7 @@ public class SystemParticipantTypeInputFactory
       Quantity<EnergyPrice> opEx,
       Quantity<Power> sRated,
       double cosPhi) {
-    Quantity<Power> pThermal = data.get(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
+    Quantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
 
     return new HpTypeInput(uuid, id, capEx, opEx, sRated, cosPhi, pThermal);
   }
@@ -156,8 +156,9 @@ public class SystemParticipantTypeInputFactory
       Quantity<EnergyPrice> opEx,
       Quantity<Power> sRated,
       double cosPhi) {
-    Quantity<DimensionlessRate> loadGradient = data.get(LOAD_GRADIENT, StandardUnits.LOAD_GRADIENT);
-    Quantity<Dimensionless> etaConv = data.get(ETA_CONV, StandardUnits.EFFICIENCY);
+    Quantity<DimensionlessRate> loadGradient =
+        data.getQuantity(LOAD_GRADIENT, StandardUnits.LOAD_GRADIENT);
+    Quantity<Dimensionless> etaConv = data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
 
     return new BmTypeInput(uuid, id, capEx, opEx, loadGradient, sRated, cosPhi, etaConv);
   }
@@ -170,9 +171,9 @@ public class SystemParticipantTypeInputFactory
       Quantity<EnergyPrice> opEx,
       Quantity<Power> sRated,
       double cosPhi) {
-    Quantity<Dimensionless> etaConv = data.get(ETA_CONV, StandardUnits.EFFICIENCY);
-    Quantity<Area> rotorArea = data.get(ROTOR_AREA, StandardUnits.ROTOR_AREA);
-    Quantity<Length> hubHeight = data.get(HUB_HEIGHT, StandardUnits.HUB_HEIGHT);
+    Quantity<Dimensionless> etaConv = data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
+    Quantity<Area> rotorArea = data.getQuantity(ROTOR_AREA, StandardUnits.ROTOR_AREA);
+    Quantity<Length> hubHeight = data.getQuantity(HUB_HEIGHT, StandardUnits.HUB_HEIGHT);
 
     return new WecTypeInput(uuid, id, capEx, opEx, cosPhi, etaConv, sRated, rotorArea, hubHeight);
   }
@@ -185,10 +186,10 @@ public class SystemParticipantTypeInputFactory
       Quantity<EnergyPrice> opEx,
       Quantity<Power> sRated,
       double cosPhi) {
-    Quantity<Dimensionless> etaEl = data.get(ETA_EL, StandardUnits.EFFICIENCY);
-    Quantity<Dimensionless> etaThermal = data.get(ETA_THERMAL, StandardUnits.EFFICIENCY);
-    Quantity<Power> pThermal = data.get(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
-    Quantity<Power> pOwn = data.get(P_OWN, StandardUnits.ACTIVE_POWER_IN);
+    Quantity<Dimensionless> etaEl = data.getQuantity(ETA_EL, StandardUnits.EFFICIENCY);
+    Quantity<Dimensionless> etaThermal = data.getQuantity(ETA_THERMAL, StandardUnits.EFFICIENCY);
+    Quantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
+    Quantity<Power> pOwn = data.getQuantity(P_OWN, StandardUnits.ACTIVE_POWER_IN);
     ThermalStorageInput tiInput = null; // TODO
 
     return new ChpTypeInput(
@@ -203,13 +204,13 @@ public class SystemParticipantTypeInputFactory
       Quantity<EnergyPrice> opEx,
       Quantity<Power> sRated,
       double cosPhi) {
-    Quantity<Energy> eStorage = data.get(E_STORAGE, StandardUnits.ENERGY_IN);
-    Quantity<Power> pMin = data.get(P_MIN, StandardUnits.ACTIVE_POWER_IN);
-    Quantity<Power> pMax = data.get(P_MAX, StandardUnits.ACTIVE_POWER_IN);
-    Quantity<Dimensionless> eta = data.get(ETA, StandardUnits.EFFICIENCY);
-    Quantity<Dimensionless> dod = data.get(DOD, StandardUnits.DOD);
-    Quantity<Time> lifeTime = data.get(LIFETIME, StandardUnits.LIFE_TIME);
-    int lifeCycle = Integer.parseInt(data.get(LIFECYCLE));
+    Quantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
+    Quantity<Power> pMin = data.getQuantity(P_MIN, StandardUnits.ACTIVE_POWER_IN);
+    Quantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN);
+    Quantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
+    Quantity<Dimensionless> dod = data.getQuantity(DOD, StandardUnits.DOD);
+    Quantity<Time> lifeTime = data.getQuantity(LIFETIME, StandardUnits.LIFE_TIME);
+    int lifeCycle = Integer.parseInt(data.getField(LIFECYCLE));
 
     return new StorageTypeInput(
         uuid, id, capEx, opEx, eStorage, sRated, cosPhi, pMin, pMax, eta, dod, lifeTime, lifeCycle);

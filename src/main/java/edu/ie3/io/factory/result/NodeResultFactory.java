@@ -33,10 +33,10 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
 
   @Override
   protected NodeResult buildModel(SimpleEntityData data) {
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(TIMESTAMP));
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
-    Quantity<Dimensionless> vMagValue = data.get(VMAG, StandardUnits.VOLTAGE_MAGNITUDE);
-    Quantity<Angle> vAngValue = data.get(VANG, StandardUnits.VOLTAGE_ANGLE);
+    Quantity<Dimensionless> vMagValue = data.getQuantity(VMAG, StandardUnits.VOLTAGE_MAGNITUDE);
+    Quantity<Angle> vAngValue = data.getQuantity(VANG, StandardUnits.VOLTAGE_ANGLE);
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 

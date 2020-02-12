@@ -32,9 +32,9 @@ public class ThermalSinkResultFactory extends ResultEntityFactory<ThermalSinkRes
 
   @Override
   protected ThermalSinkResult buildModel(SimpleEntityData data) {
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(TIMESTAMP));
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
-    Quantity<Energy> qDemandQuantity = data.get(Q_DEMAND, StandardUnits.HEAT_DEMAND);
+    Quantity<Energy> qDemandQuantity = data.getQuantity(Q_DEMAND, StandardUnits.HEAT_DEMAND);
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 

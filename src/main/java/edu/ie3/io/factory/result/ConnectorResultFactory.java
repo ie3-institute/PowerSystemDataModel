@@ -59,12 +59,14 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   protected ConnectorResult buildModel(SimpleEntityData data) {
     final Class<? extends UniqueEntity> entityClass = data.getEntityClass();
 
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(TIMESTAMP));
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
-    Quantity<ElectricCurrent> iAMagVal = data.get(IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    Quantity<Angle> iAAngVal = data.get(IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
-    Quantity<ElectricCurrent> iBMagVal = data.get(IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    Quantity<Angle> iBAngVal = data.get(IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+    Quantity<ElectricCurrent> iAMagVal =
+        data.getQuantity(IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    Quantity<Angle> iAAngVal = data.getQuantity(IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+    Quantity<ElectricCurrent> iBMagVal =
+        data.getQuantity(IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    Quantity<Angle> iBAngVal = data.getQuantity(IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
 
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
@@ -81,7 +83,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
                       zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal));
     else if (entityClass.equals(SwitchResult.class)) {
       final boolean closedVal =
-          data.get(CLOSED).trim().equals("1") || data.get(CLOSED).trim().equals("true");
+          data.getField(CLOSED).trim().equals("1") || data.getField(CLOSED).trim().equals("true");
 
       return uuidOpt
           .map(
@@ -106,7 +108,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
                       iBAngVal,
                       closedVal));
     } else if (entityClass.equals(Transformer2WResult.class)) {
-      final int tapPosValue = Integer.parseInt(data.get(TAPPOS).trim());
+      final int tapPosValue = Integer.parseInt(data.getField(TAPPOS).trim());
 
       return uuidOpt
           .map(
@@ -132,9 +134,9 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
                       tapPosValue));
     } else if (entityClass.equals(Transformer3WResult.class)) {
       Quantity<ElectricCurrent> iCMagVal =
-          data.get(ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-      Quantity<Angle> iCAngVal = data.get(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
-      final int tapPosValue = Integer.parseInt(data.get(TAPPOS).trim());
+          data.getQuantity(ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+      Quantity<Angle> iCAngVal = data.getQuantity(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+      final int tapPosValue = Integer.parseInt(data.getField(TAPPOS).trim());
 
       return uuidOpt
           .map(

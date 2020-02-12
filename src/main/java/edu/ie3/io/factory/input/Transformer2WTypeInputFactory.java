@@ -61,23 +61,23 @@ public class Transformer2WTypeInputFactory
   @Override
   protected Transformer2WTypeInput buildModel(SimpleEntityData data) {
     UUID uuid = data.getUUID(ENTITY_UUID);
-    String id = data.get(ENTITY_ID);
-    Quantity<ElectricResistance> rSc = data.get(R_SC, StandardUnits.IMPEDANCE);
-    Quantity<ElectricResistance> xSc = data.get(X_SC, StandardUnits.IMPEDANCE);
-    Quantity<Power> sRated = data.get(S_RATED, StandardUnits.S_RATED);
+    String id = data.getField(ENTITY_ID);
+    Quantity<ElectricResistance> rSc = data.getQuantity(R_SC, StandardUnits.IMPEDANCE);
+    Quantity<ElectricResistance> xSc = data.getQuantity(X_SC, StandardUnits.IMPEDANCE);
+    Quantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     Quantity<ElectricPotential> vRatedA =
-        data.get(V_RATED_A, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+        data.getQuantity(V_RATED_A, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     Quantity<ElectricPotential> vRatedB =
-        data.get(V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    Quantity<ElectricConductance> gM = data.get(G_M, StandardUnits.ADMITTANCE);
-    Quantity<ElectricConductance> bM = data.get(B_M, StandardUnits.ADMITTANCE);
-    Quantity<Dimensionless> dV = data.get(D_V, StandardUnits.DV_TAP);
-    Quantity<Angle> dPhi = data.get(D_PHI, StandardUnits.DPHI_TAP);
+        data.getQuantity(V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    Quantity<ElectricConductance> gM = data.getQuantity(G_M, StandardUnits.ADMITTANCE);
+    Quantity<ElectricConductance> bM = data.getQuantity(B_M, StandardUnits.ADMITTANCE);
+    Quantity<Dimensionless> dV = data.getQuantity(D_V, StandardUnits.DV_TAP);
+    Quantity<Angle> dPhi = data.getQuantity(D_PHI, StandardUnits.DPHI_TAP);
     boolean tapSide =
-        data.get(TAP_SIDE).trim().equals("1") || data.get(TAP_SIDE).trim().equals("true");
-    int tapNeutr = Integer.parseInt(data.get(TAP_NEUTR));
-    int tapMin = Integer.parseInt(data.get(TAP_MIN));
-    int tapMax = Integer.parseInt(data.get(TAP_MAX));
+        data.getField(TAP_SIDE).trim().equals("1") || data.getField(TAP_SIDE).trim().equals("true");
+    int tapNeutr = Integer.parseInt(data.getField(TAP_NEUTR));
+    int tapMin = Integer.parseInt(data.getField(TAP_MIN));
+    int tapMax = Integer.parseInt(data.getField(TAP_MAX));
 
     return new Transformer2WTypeInput(
         uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, tapMin,

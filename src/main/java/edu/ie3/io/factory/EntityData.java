@@ -5,6 +5,7 @@
 */
 package edu.ie3.io.factory;
 
+import edu.ie3.exceptions.FactoryException;
 import edu.ie3.models.UniqueEntity;
 import java.util.Map;
 import java.util.TreeMap;
@@ -43,16 +44,58 @@ abstract class EntityData {
     return fieldsToAttributes.containsKey(key);
   }
 
-  public String get(String field) {
+  /**
+   * Returns field value for given field name. Throws {@link FactoryException} if field does not
+   * exist.
+   *
+   * @param field field name
+   * @return field value
+   */
+  public String getField(String field) {
+    if (!fieldsToAttributes.containsKey(field))
+      throw new FactoryException(String.format("Field \"%s\" not found in EntityData", field));
+
     return fieldsToAttributes.get(field);
   }
 
+  /**
+   * Parses and returns a UUID from field value of given field name. Throws {@link FactoryException}
+   * if field does not exist or parsing fails.
+   *
+   * @param field field name
+   * @return UUID
+   */
   public UUID getUUID(String field) {
-    return UUID.fromString(get(field));
+    try {
+      return UUID.fromString(getField(field));
+    } catch (IllegalArgumentException iae) {
+      throw new FactoryException(
+          String.format(
+              "Exception while trying to parse UUID of field \"%s\" with value \"%s\"",
+              field, getField(field)),
+          iae);
+    }
   }
 
-  public <Q extends Quantity<Q>> ComparableQuantity<Q> get(String field, Unit<Q> unit) {
-    return Quantities.getQuantity(Double.parseDouble(get(field)), unit);
+  /**
+   * Parses and returns a Quantity from field value of given field name. Throws {@link
+   * FactoryException} if field does not exist or parsing fails.
+   *
+   * @param field field name
+   * @param unit unit of Quantity
+   * @param <Q> unit type parameter
+   * @return Quantity of given field with given unit
+   */
+  public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit) {
+    try {
+      return Quantities.getQuantity(Double.parseDouble(getField(field)), unit);
+    } catch (NumberFormatException nfe) {
+      throw new FactoryException(
+          String.format(
+              "Exception while trying to parse field \"%s\" with supposed double value \"%s\"",
+              field, getField(field)),
+          nfe);
+    }
   }
 
   public Class<? extends UniqueEntity> getEntityClass() {

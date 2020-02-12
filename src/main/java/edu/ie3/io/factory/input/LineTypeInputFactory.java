@@ -40,13 +40,15 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
   @Override
   protected LineTypeInput buildModel(SimpleEntityData data) {
     UUID uuid = data.getUUID(ENTITY_UUID);
-    String id = data.get(ENTITY_ID);
-    Quantity<SpecificConductance> b = data.get(B, StandardUnits.ADMITTANCE_PER_LENGTH);
-    Quantity<SpecificConductance> g = data.get(G, StandardUnits.ADMITTANCE_PER_LENGTH);
-    Quantity<SpecificResistance> r = data.get(R, StandardUnits.IMPEDANCE_PER_LENGTH);
-    Quantity<SpecificResistance> x = data.get(X, StandardUnits.IMPEDANCE_PER_LENGTH);
-    Quantity<ElectricCurrent> iMax = data.get(I_MAX, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    Quantity<ElectricPotential> vRated = data.get(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    String id = data.getField(ENTITY_ID);
+    Quantity<SpecificConductance> b = data.getQuantity(B, StandardUnits.ADMITTANCE_PER_LENGTH);
+    Quantity<SpecificConductance> g = data.getQuantity(G, StandardUnits.ADMITTANCE_PER_LENGTH);
+    Quantity<SpecificResistance> r = data.getQuantity(R, StandardUnits.IMPEDANCE_PER_LENGTH);
+    Quantity<SpecificResistance> x = data.getQuantity(X, StandardUnits.IMPEDANCE_PER_LENGTH);
+    Quantity<ElectricCurrent> iMax =
+        data.getQuantity(I_MAX, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    Quantity<ElectricPotential> vRated =
+        data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
 
     return new LineTypeInput(uuid, id, b, g, r, x, iMax, vRated);
   }

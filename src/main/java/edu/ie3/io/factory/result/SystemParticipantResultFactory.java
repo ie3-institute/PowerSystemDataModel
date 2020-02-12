@@ -57,10 +57,10 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   protected SystemParticipantResult buildModel(SimpleEntityData data) {
     Class<? extends UniqueEntity> entityClass = data.getEntityClass();
 
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(TIMESTAMP));
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
-    Quantity<Power> p = data.get(POWER, StandardUnits.ACTIVE_POWER_RESULT);
-    Quantity<Power> q = data.get(REACTIVE_POWER, StandardUnits.REACTIVE_POWER_RESULT);
+    Quantity<Power> p = data.getQuantity(POWER, StandardUnits.ACTIVE_POWER_RESULT);
+    Quantity<Power> q = data.getQuantity(REACTIVE_POWER, StandardUnits.REACTIVE_POWER_RESULT);
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
@@ -93,13 +93,13 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
           .map(uuid -> new WecResult(uuid, zdtTimestamp, inputModelUuid, p, q))
           .orElseGet(() -> new WecResult(zdtTimestamp, inputModelUuid, p, q));
     } else if (entityClass.equals(EvResult.class)) {
-      Quantity<Dimensionless> socQuantity = data.get(SOC, Units.PERCENT);
+      Quantity<Dimensionless> socQuantity = data.getQuantity(SOC, Units.PERCENT);
 
       return uuidOpt
           .map(uuid -> new EvResult(uuid, zdtTimestamp, inputModelUuid, p, q, socQuantity))
           .orElseGet(() -> new EvResult(zdtTimestamp, inputModelUuid, p, q, socQuantity));
     } else if (entityClass.equals(StorageResult.class)) {
-      Quantity<Dimensionless> socQuantity = data.get(SOC, Units.PERCENT);
+      Quantity<Dimensionless> socQuantity = data.getQuantity(SOC, Units.PERCENT);
 
       return uuidOpt
           .map(uuid -> new StorageResult(uuid, zdtTimestamp, inputModelUuid, p, q, socQuantity))
