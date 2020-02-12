@@ -26,8 +26,12 @@ public class StandardUnits {
   public static final Unit<Power> ACTIVE_POWER_RESULT = MEGAWATT;
   /** Reactive power for result purposes */
   public static final Unit<Power> REACTIVE_POWER_RESULT = MEGAVAR;
+  /** Heat demand (power) for result purposes */
+  public static final Unit<Power> Q_DOT_RESULT = MEGAWATT;
   /** Energy for input purposes */
   public static final Unit<Energy> ENERGY_IN = KILOWATTHOUR;
+  /** Energy for result purposes */
+  public static final Unit<Energy> ENERGY_RESULT = MetricPrefix.MEGA(WATTHOUR);
   /** Rated voltage magnitude (mainly for input purposes) */
   public static final Unit<ElectricPotential> RATED_VOLTAGE_MAGNITUDE = KILOVOLT;
   /** Magnitude of an electric current */
@@ -64,10 +68,12 @@ public class StandardUnits {
   public static final Unit<Dimensionless> EFFICIENCY = PERCENT;
   /** Volume */
   public static final Unit<Volume> VOLUME = CUBIC_METRE;
+  /** Fill level of a storage */
+  public static final Unit<Dimensionless> FILL_LEVEL = PERCENT;
   /** Temperature */
   public static final Unit<Temperature> TEMPERATURE = CELSIUS;
   /** Heat demand of a thermal sink */
-  public static final Unit<Energy> HEAT_DEMAND = MetricPrefix.MEGA(WATTHOUR);
+  public static final Unit<Power> HEAT_DEMAND = MEGAWATT;
   /** Thermal capacity of a given mass */
   public static final Unit<HeatCapacity> HEAT_CAPACITY = KILOWATTHOUR_PER_KELVIN;
   /** Thermal capacity per mass */

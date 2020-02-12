@@ -58,8 +58,22 @@ Class ChpResult
 
 Class WecResult
 
-Class ThermalSinkResult{
-    + qDemand: Quantity<HeatCapacity>
+Abstract Class ThermalUnitResult {
+    - qDot: Quantity<Power> [MW]
+}
+
+Abstract Class ThermalSinkResult
+
+Class ThermalHouseResult {
+    - indoorTemperature: Quantity<Temperature> [°C]
+}
+
+Abstract Class ThermalStorageResult {
+    - energy: Quantity<Energy> [MWh]
+}
+
+Class CylindricalStorageResult {
+  - fillLevel: Quantity<Dimensionless> [%]
 }
 
 Class EvcsResult
@@ -84,7 +98,7 @@ ResultEntity <|-- ConnectorResult
 ResultEntity <|-- SystemParticipantResult
 ResultEntity <|-- NodeResult
 ResultEntity <|-- EvResult
-ResultEntity <|-- ThermalSinkResult
+ResultEntity <|-- ThermalUnitResult
 SystemParticipantResult <|-- FixedFeedInResult
 SystemParticipantResult <|-- BmResult
 SystemParticipantResult <|-- PvResult
@@ -93,6 +107,10 @@ SystemParticipantResult <|-- WecResult
 SystemParticipantResult <|-- EvcsResult
 SystemParticipantResult <|-- StorageResult
 SystemParticipantResult <|-- LoadResult
+ThermalUnitResult <|-- ThermalSinkResult
+ThermalUnitResult <|-- ThermalStorageResult
+ThermalSinkResult <|-- ThermalHouseResult
+ThermalStorageResult <|-- CylindricalStorageResult
 ConnectorResult <|-- SwitchResult
 EvResult --> "uuid" EvcsResult
 
