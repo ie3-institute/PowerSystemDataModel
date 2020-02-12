@@ -177,7 +177,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
         break;
       default:
         log.error(
-            "Cannot process quantity {} for field with name {} in result model processing!",
+            "Cannot process quantity {} for field with name {} in model processing!",
             quantity,
             fieldName);
         break;
