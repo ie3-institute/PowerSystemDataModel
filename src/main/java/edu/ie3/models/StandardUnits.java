@@ -16,46 +16,97 @@ import tec.uom.se.unit.MetricPrefix;
 public class StandardUnits {
 
   /* Electrical units */
+  /** Rated apparent power (mainly for input purposes) */
   public static final Unit<Power> S_RATED = KILOVOLTAMPERE;
+  /** Active power for input purposes */
   public static final Unit<Power> ACTIVE_POWER_IN = KILOWATT;
+  /** Reactive power for input purposes */
   public static final Unit<Power> REACTIVE_POWER_IN = KILOVAR;
-  public static final Unit<Power> ACTIVE_POWER_OUT = MEGAWATT;
-  public static final Unit<Power> REACTIVE_POWER_OUT = MEGAVAR;
-  public static final Unit<Energy> ENERGY = KILOWATTHOUR;
-  public static final Unit<ElectricPotential> V_RATED = KILOVOLT;
-  public static final Unit<ElectricCurrent> CURRENT = AMPERE;
+  /** Active power for result purposes */
+  public static final Unit<Power> ACTIVE_POWER_RESULT = MEGAWATT;
+  /** Reactive power for result purposes */
+  public static final Unit<Power> REACTIVE_POWER_RESULT = MEGAVAR;
+  /** Heat demand (power) for result purposes */
+  public static final Unit<Power> Q_DOT_RESULT = MEGAWATT;
+  /** Energy for input purposes */
+  public static final Unit<Energy> ENERGY_IN = KILOWATTHOUR;
+  /** Energy for result purposes */
+  public static final Unit<Energy> ENERGY_RESULT = MetricPrefix.MEGA(WATTHOUR);
+  /** Rated voltage magnitude (mainly for input purposes) */
+  public static final Unit<ElectricPotential> RATED_VOLTAGE_MAGNITUDE = KILOVOLT;
+  /** Magnitude of an electric current */
+  public static final Unit<ElectricCurrent> ELECTRIC_CURRENT_MAGNITUDE = AMPERE;
+  /** Angle of an electric current */
+  public static final Unit<Angle> ELECTRIC_CURRENT_ANGLE = DEGREE_GEOM;
+  /** Impedance */
   public static final Unit<ElectricResistance> IMPEDANCE = OHM;
-  public static final Unit<SpecificResistance> SPECIFIC_IMPEDANCE = OHM_PER_KILOMETRE;
+  /** Impedance per length (mainly for lines) */
+  public static final Unit<SpecificResistance> IMPEDANCE_PER_LENGTH = OHM_PER_KILOMETRE;
+  /** Admittance */
   public static final Unit<ElectricConductance> ADMITTANCE = MetricPrefix.NANO(SIEMENS);
-  public static final Unit<SpecificConductance> SPECIFIC_ADMITTANCE =
+  /** Admittance per length (mainly for lines) */
+  public static final Unit<SpecificConductance> ADMITTANCE_PER_LENGTH =
       MetricPrefix.NANO(SIEMENS_PER_KILOMETRE);
+  /** Target voltage magnitude */
+  public static final Unit<Dimensionless> TARGET_VOLTAGE_MAGNITUDE = PU;
+  /** Voltage magnitude (mainly for result purposes) */
+  public static final Unit<Dimensionless> VOLTAGE_MAGNITUDE = PU;
+  /** Voltage angle (mainly for result purposes) */
+  public static final Unit<Angle> VOLTAGE_ANGLE = DEGREE_GEOM;
+  /** Electric energy per driven distance * */
+  // TODO ckittl check this
+  public static final Unit<SpecificEnergy> ENERGY_PER_DISTANCE = KILOWATTHOUR_PER_KILOMETRE;
 
   /* Other Units */
-  public static final Unit<Dimensionless> TARGET_VOLTAGE = PU;
+  /** Voltage magnitude variation per tap (for transformers) */
   public static final Unit<Dimensionless> DV_TAP = PERCENT;
-  public static final Unit<Angle> ELECTRIC_CURRENT_ANGLE =
-      DEGREE_GEOM; // todo ck review and check if we need this
-  public static final Unit<Angle> ELECTRIC_VOLTAGE_ANGLE =
-      DEGREE_GEOM; // todo ck review and check if we need this
+  /** Voltage angle variation per tap (for transformers) */
   public static final Unit<Angle> DPHI_TAP = DEGREE_GEOM;
+  /**
+   * Gradient, with which a system participant can change it's set point (with regard to rated
+   * power)
+   */
   public static final Unit<DimensionlessRate> LOAD_GRADIENT = PERCENT_PER_HOUR;
+  /** Efficiency of a process */
   public static final Unit<Dimensionless> EFFICIENCY = PERCENT;
+  /** Volume */
   public static final Unit<Volume> VOLUME = CUBIC_METRE;
+  /** Fill level of a storage */
+  public static final Unit<Dimensionless> FILL_LEVEL = PERCENT;
+  /** Temperature */
   public static final Unit<Temperature> TEMPERATURE = CELSIUS;
+  /** Heat demand of a thermal sink */
+  public static final Unit<Power> HEAT_DEMAND = MEGAWATT;
+  /** Thermal capacity of a given mass */
   public static final Unit<HeatCapacity> HEAT_CAPACITY = KILOWATTHOUR_PER_KELVIN;
+  /** Thermal capacity per mass */
   public static final Unit<SpecificHeatCapacity> SPECIFIC_HEAT_CAPACITY =
       KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE;
+  /** Thermal transmission through an insulation */
   public static final Unit<ThermalConductance> THERMAL_TRANSMISSION = KILOWATT_PER_KELVIN;
+  /** Depth of discharge */
   public static final Unit<Dimensionless> DOD = PERCENT;
+  /** Life time of a system */
   public static final Unit<Time> LIFE_TIME = MILLISECOND;
+  /** Area covered by the rotor of a wind energy converter */
   public static final Unit<Area> ROTOR_AREA = SQUARE_METRE;
+  /** Height of the hub of an wind energy converter */
   public static final Unit<Length> HUB_HEIGHT = METRE;
+  /** Price per energy */
   public static final Unit<EnergyPrice> ENERGY_PRICE = EURO_PER_MEGAWATTHOUR;
+  /** Orientation of a pv panel with regard to the north-south line */
   public static final Unit<Angle> AZIMUTH = DEGREE_GEOM;
+  /** Elevation of a pv panel with regard to the plane */
   public static final Unit<Angle> SOLAR_HEIGHT = DEGREE_GEOM;
+  /** Direction of the wind */
   public static final Unit<Angle> WIND_DIRECTION = DEGREE_GEOM;
+  /** Velocity of the wind */
   public static final Unit<Speed> WIND_VELOCITY = METRE_PER_SECOND;
+  /** Solar irradiation on a flat surface */
   public static final Unit<Irradiation> IRRADIATION = KILOWATTHOUR_PER_SQUAREMETRE;
+  /** Capex (capital expenditure) * */
+  // TODO ckittl check this
+  public static final Unit<Currency> CAPEX = EURO;
 
   private StandardUnits() {
     throw new IllegalStateException("This is an Utility Class and not meant to be instantiated");

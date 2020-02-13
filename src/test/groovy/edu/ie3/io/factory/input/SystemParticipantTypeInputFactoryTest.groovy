@@ -1,13 +1,13 @@
 package edu.ie3.io.factory.input
 
 import edu.ie3.exceptions.FactoryException
-import edu.ie3.io.factory.FactorySpecification
+import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.io.factory.SimpleEntityData
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.input.system.type.*
-import edu.ie3.util.quantities.PowerSystemUnits
+import spock.lang.Specification
 
-class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
+class SystemParticipantTypeInputFactoryTest extends Specification implements FactoryTestHelper {
 
     def "A SystemParticipantTypeInputFactory should contain all expected classes for parsing"() {
         given:
@@ -26,10 +26,11 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
             "id":	    "blablub",
             "capex":    "3",
             "opex":	    "4",
-            "cosphi":	"5",
-            "estorage":	"6",
-            "econs":	"7",
-            "srated":   "8"
+            "srated":   "5",
+            "cosphi":	"6",
+
+            "estorage":	"7",
+            "econs":	"8",
         ]
         def typeInputClass = EvTypeInput
 
@@ -43,13 +44,13 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
         ((EvTypeInput) typeInput.get()).with {
             assert uuid == UUID.fromString(parameter["uuid"])
             assert id == parameter["id"]
-            assert capex == getQuant(parameter["capex"], PowerSystemUnits.EURO) // TODO StandardUnit
+            assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
             assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-            assert cosphi == Double.parseDouble(parameter["cosphi"])
+            assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+            assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
-            assert EStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY)
-            assert ECons == getQuant(parameter["econs"], PowerSystemUnits.WATTHOUR_PER_METRE) // TODO
-            assert SRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+            assert EStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
+            assert ECons == getQuant(parameter["econs"], StandardUnits.ENERGY_PER_DISTANCE)
         }
     }
 
@@ -57,14 +58,14 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
         Map<String, String> parameter = [
-            "uuid":	    "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8",
-            "id":	    "blablub1",
-            "capex":	"3",
+            "uuid":	    "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":	    "blablub",
+            "capex":    "3",
             "opex":	    "4",
-            "cosphi":	"5",
-            "prated":	"6",
+            "srated":   "5",
+            "cosphi":	"6",
+
             "pthermal":	"7",
-            "pel":      "8"
         ]
         def typeInputClass = HpTypeInput
 
@@ -78,13 +79,12 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
         ((HpTypeInput) typeInput.get()).with {
             assert uuid == UUID.fromString(parameter["uuid"])
             assert id == parameter["id"]
-            assert capex == getQuant(parameter["capex"], PowerSystemUnits.EURO) // TODO StandardUnit
+            assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
             assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-            assert cosphi == Double.parseDouble(parameter["cosphi"])
+            assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+            assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
-            assert PRated == getQuant(parameter["prated"], StandardUnits.ACTIVE_POWER_IN)
             assert PThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
-            assert PEl == getQuant(parameter["pel"], StandardUnits.ACTIVE_POWER_IN)
         }
     }
 
@@ -92,13 +92,14 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
         Map<String, String> parameter = [
-            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8",
-            "id":	        "blablub1",
-            "capex":	    "3",
+            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":	        "blablub",
+            "capex":        "3",
             "opex":	        "4",
-            "cosphi":	    "5",
-            "loadgradient":	"6",
-            "srated":	    "7",
+            "srated":       "5",
+            "cosphi":	    "6",
+
+            "loadgradient":	"7",
             "etaconv":      "8"
         ]
         def typeInputClass = BmTypeInput
@@ -113,12 +114,12 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
         ((BmTypeInput) typeInput.get()).with {
             assert uuid == UUID.fromString(parameter["uuid"])
             assert id == parameter["id"]
-            assert capex == getQuant(parameter["capex"], PowerSystemUnits.EURO) // TODO StandardUnit
+            assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
             assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-            assert cosphi == Double.parseDouble(parameter["cosphi"])
+            assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+            assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
             assert loadGradient == getQuant(parameter["loadgradient"], StandardUnits.LOAD_GRADIENT)
-            assert SRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
             assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
         }
     }
@@ -127,13 +128,14 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
         Map<String, String> parameter = [
-            "uuid":         "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8",
-            "id":           "blablub1",
-            "capex":    	"3",
-            "opex":     	"4",
-            "cosphi":   	"5",
-            "etaconv":  	"6",
-            "srated":	    "7",
+            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":	        "blablub",
+            "capex":        "3",
+            "opex":	        "4",
+            "srated":       "5",
+            "cosphi":	    "6",
+
+            "etaconv":  	"7",
             "rotorarea":    "8",
             "hubheight":    "9"
         ]
@@ -149,12 +151,12 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
         ((WecTypeInput) typeInput.get()).with {
             assert uuid == UUID.fromString(parameter["uuid"])
             assert id == parameter["id"]
-            assert capex == getQuant(parameter["capex"], PowerSystemUnits.EURO) // TODO StandardUnit
+            assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
             assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-            assert cosphi == Double.parseDouble(parameter["cosphi"])
+            assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+            assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
             assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
-            assert SRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
             assert rotorArea == getQuant(parameter["rotorarea"], StandardUnits.ROTOR_AREA)
             assert hubHeight == getQuant(parameter["hubheight"], StandardUnits.HUB_HEIGHT)
         }
@@ -164,21 +166,17 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
         Map<String, String> parameter = [
-            "uuid":	                "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8",
-            "id":	                "blablub1",
-            "capex":	            "3",
+            "uuid":	                "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":	                "blablub",
+            "capex":                "3",
             "opex":	                "4",
-            "cosphi":	            "5",
-            "etael":	            "6",
-            "etathermal":           "7",
-            "pel":	                "8",
+            "srated":               "5",
+            "cosphi":	            "6",
+
+            "etael":	            "7",
+            "etathermal":           "8",
             "pthermal":	            "9",
-            "pown":	                "10",
-            "storagevolumelvl":	    "11",
-            "storagevolumelvlmin":	"12",
-            "inlettemp":	        "13",
-            "returntemp":	        "14",
-            "c":                    "15"
+            "pown":	                "10"
         ]
         def typeInputClass = ChpTypeInput
 
@@ -192,16 +190,16 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
         ((ChpTypeInput) typeInput.get()).with {
             assert uuid == UUID.fromString(parameter["uuid"])
             assert id == parameter["id"]
-            assert capex == getQuant(parameter["capex"], PowerSystemUnits.EURO) // TODO StandardUnit
+            assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
             assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-            assert cosphi == Double.parseDouble(parameter["cosphi"])
+            assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+            assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
             assert etaEl == getQuant(parameter["etael"], StandardUnits.EFFICIENCY)
             assert etaThermal == getQuant(parameter["etathermal"], StandardUnits.EFFICIENCY)
-            assert PEl == getQuant(parameter["pel"], StandardUnits.ACTIVE_POWER_IN)
             assert PThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
             assert POwn == getQuant(parameter["pown"], StandardUnits.ACTIVE_POWER_IN)
-            // the rest of parameters is not saved in class attributes
+            // TODO test ThermalStorageInput?
         }
     }
 
@@ -209,19 +207,20 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
         given: "a system participant input type factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
         Map<String, String> parameter = [
-            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8",
-            "id":	        "blablub1",
-            "capex":	    "3",
+            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":	        "blablub",
+            "capex":        "3",
             "opex":	        "4",
-            "cosphi":	    "5",
+            "srated":       "5",
+            "cosphi":	    "6",
+
             "estorage":	    "6",
-            "prated":	    "7",
-            "pmin":	        "8",
-            "pmax":	        "9",
-            "eta":	        "10",
-            "dod":	        "11",
-            "lifetime":	    "12",
-            "lifecycle":    "13"
+            "pmin":	        "7",
+            "pmax":	        "8",
+            "eta":	        "9",
+            "dod":	        "10",
+            "lifetime":	    "11",
+            "lifecycle":    "12"
         ]
         def typeInputClass = StorageTypeInput
 
@@ -235,12 +234,12 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
         ((StorageTypeInput) typeInput.get()).with {
             assert uuid == UUID.fromString(parameter["uuid"])
             assert id == parameter["id"]
-            assert capex == getQuant(parameter["capex"], PowerSystemUnits.EURO) // TODO StandardUnit
+            assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
             assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-            assert cosphi == Double.parseDouble(parameter["cosphi"])
+            assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+            assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
-            assert EStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY)
-            assert PRated == getQuant(parameter["prated"], StandardUnits.ACTIVE_POWER_IN)
+            assert EStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
             assert PMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_IN)
             assert PMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
             assert eta == getQuant(parameter["eta"], StandardUnits.EFFICIENCY)
@@ -254,18 +253,19 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
         given: "a system participant factory and model data"
         def typeInputFactory = new SystemParticipantTypeInputFactory()
         Map<String, String> parameter = [
-            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c8",
-            "id":	        "blablub1",
-            "capex":	    "3",
+            "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "id":	        "blablub",
+            "capex":        "3",
             "opex":	        "4",
-            "cosphi":	    "5",
+            "srated":       "5",
+            "cosphi":	    "6",
+
             "estorage":	    "6",
-            "prated":	    "7",
-            "pmax":	        "9",
-            "eta":	        "10",
-            "dod":	        "11",
-            "lifetime":	    "12",
-            "lifecycle":    "13"
+            "pmin":	        "7",
+            "pmax":	        "8",
+            "eta":	        "9",
+            "dod":	        "10",
+            "lifetime":	    "11"
         ]
 
         when:
@@ -273,8 +273,8 @@ class SystemParticipantTypeInputFactoryTest extends FactorySpecification {
 
         then:
         FactoryException ex = thrown()
-        ex.message == "The provided fields [capex, cosphi, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, prated, uuid] with data {capex -> 3,cosphi -> 5,dod -> 11,estorage -> 6,eta -> 10,id -> blablub1,lifecycle -> 13,lifetime -> 12,opex -> 4,pmax -> 9,prated -> 7,uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c8} are invalid for instance of StorageTypeInput. \n" +
+        ex.message == "The provided fields [capex, cosphi, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data {capex -> 3,cosphi -> 6,dod -> 10,estorage -> 6,eta -> 9,id -> blablub,lifetime -> 11,opex -> 4,pmax -> 8,pmin -> 7,srated -> 5,uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
                 "The following fields to be passed to a constructor of StorageTypeInput are possible:\n" +
-                "0: [capex, cosphi, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, pmin, prated, uuid]\n"
+                "0: [capex, cosphi, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, pmin, srated, uuid]\n"
     }
 }

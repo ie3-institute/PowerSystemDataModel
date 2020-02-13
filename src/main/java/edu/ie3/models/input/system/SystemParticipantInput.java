@@ -21,9 +21,6 @@ public abstract class SystemParticipantInput extends AssetInput {
   /** Description of a reactive power characteristic. For details see further documentation */
   private String qCharacteristics;
 
-  /** Rated power factor */
-  private double cosphiRated;
-
   /**
    * Constructor for an operated system participant
    *
@@ -33,7 +30,6 @@ public abstract class SystemParticipantInput extends AssetInput {
    * @param id of the asset
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphiRated Power factor
    */
   public SystemParticipantInput(
       UUID uuid,
@@ -41,12 +37,10 @@ public abstract class SystemParticipantInput extends AssetInput {
       OperatorInput operator,
       String id,
       NodeInput node,
-      String qCharacteristics,
-      double cosphiRated) {
+      String qCharacteristics) {
     super(uuid, operationTime, operator, id);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
-    this.cosphiRated = cosphiRated;
   }
 
   /**
@@ -56,14 +50,11 @@ public abstract class SystemParticipantInput extends AssetInput {
    * @param id of the asset
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphiRated Power factor
    */
-  public SystemParticipantInput(
-      UUID uuid, String id, NodeInput node, String qCharacteristics, double cosphiRated) {
+  public SystemParticipantInput(UUID uuid, String id, NodeInput node, String qCharacteristics) {
     super(uuid, id);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
-    this.cosphiRated = cosphiRated;
   }
 
   public NodeInput getNode() {
@@ -82,14 +73,6 @@ public abstract class SystemParticipantInput extends AssetInput {
     this.qCharacteristics = qCharacteristics;
   }
 
-  public double getCosphiRated() {
-    return cosphiRated;
-  }
-
-  public void setCosphiRated(double cosphiRated) {
-    this.cosphiRated = cosphiRated;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -97,12 +80,11 @@ public abstract class SystemParticipantInput extends AssetInput {
     if (!super.equals(o)) return false;
     SystemParticipantInput that = (SystemParticipantInput) o;
     return Objects.equals(node, that.node)
-        && Objects.equals(qCharacteristics, that.qCharacteristics)
-        && Objects.equals(cosphiRated, that.cosphiRated);
+        && Objects.equals(qCharacteristics, that.qCharacteristics);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), node, qCharacteristics, cosphiRated);
+    return Objects.hash(super.hashCode(), node, qCharacteristics);
   }
 }

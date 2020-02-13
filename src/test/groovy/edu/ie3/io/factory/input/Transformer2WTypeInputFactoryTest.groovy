@@ -1,11 +1,12 @@
 package edu.ie3.io.factory.input
 
-import edu.ie3.io.factory.FactorySpecification
+import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.io.factory.SimpleEntityData
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.input.connector.type.Transformer2WTypeInput
+import spock.lang.Specification
 
-class Transformer2WTypeInputFactoryTest extends FactorySpecification {
+class Transformer2WTypeInputFactoryTest extends Specification implements FactoryTestHelper {
 
     def "A Transformer2WTypeInputFactory should contain exactly the expected class for parsing"() {
         given:
@@ -51,8 +52,8 @@ class Transformer2WTypeInputFactoryTest extends FactorySpecification {
             assert RSc == getQuant(parameter["rsc"], StandardUnits.IMPEDANCE)
             assert XSc == getQuant(parameter["xsc"], StandardUnits.IMPEDANCE)
             assert SRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-            assert VRatedA == getQuant(parameter["vrateda"], StandardUnits.V_RATED)
-            assert VRatedB == getQuant(parameter["vratedb"], StandardUnits.V_RATED)
+            assert VRatedA == getQuant(parameter["vrateda"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+            assert VRatedB == getQuant(parameter["vratedb"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
             assert GM == getQuant(parameter["gm"], StandardUnits.ADMITTANCE)
             assert BM == getQuant(parameter["bm"], StandardUnits.ADMITTANCE)
             assert DV == getQuant(parameter["dv"], StandardUnits.DV_TAP)

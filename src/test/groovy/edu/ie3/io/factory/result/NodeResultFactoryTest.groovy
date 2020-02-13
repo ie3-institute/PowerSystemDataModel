@@ -4,11 +4,11 @@ import edu.ie3.exceptions.FactoryException
 import edu.ie3.io.factory.SimpleEntityData
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.result.NodeResult
+import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
 
-class NodeResultFactoryTest extends Specification {
+class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
 
     def "A NodeResultFactory should contain all expected classes for parsing"() {
         given:
@@ -22,11 +22,11 @@ class NodeResultFactoryTest extends Specification {
     def "A NodeResultFactory should parse a WecResult correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new NodeResultFactory()
-        HashMap<String, String> parameter = [
-                "timestamp" : "2020-01-30 17:26:44",
-                "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
-                "vmag"      : "2",
-                "vang"      : "2"
+        Map<String, String> parameter = [
+            "timestamp" : "2020-01-30 17:26:44",
+            "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
+            "vmag"      : "2",
+            "vang"      : "2"
         ]
 
         when:
@@ -35,20 +35,22 @@ class NodeResultFactoryTest extends Specification {
         then:
         result.present
         result.get().getClass() == NodeResult
-        result.get().vMag == Quantities.getQuantity(Double.parseDouble(parameter["vmag"]), StandardUnits.TARGET_VOLTAGE)
-        result.get().vAng == Quantities.getQuantity(Double.parseDouble(parameter["vang"]), StandardUnits.DPHI_TAP) //TODO
-        result.get().timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
-        result.get().inputModel == UUID.fromString(parameter["inputModel"])
-
+        ((NodeResult) result.get()).with {
+            assert vMag == getQuant(parameter["vmag"], StandardUnits.VOLTAGE_MAGNITUDE)
+            assert vAng == getQuant(parameter["vang"], StandardUnits.VOLTAGE_ANGLE)
+            assert timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+            assert inputModel == UUID.fromString(parameter["inputModel"])
+        }
     }
 
     def "A NodeResultFactory should throw an exception on invalid or incomplete data"() {
         given: "a system participant factory and model data"
         def resultFactory = new NodeResultFactory()
-        Map<String, String> parameter = [:]
-        parameter["timestamp"] = "2020-01-30 17:26:44"
-        parameter["inputModel"] = "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7"
-        parameter["vmag"] = "2"
+        Map<String, String> parameter = [
+            "timestamp" : "2020-01-30 17:26:44",
+            "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
+            "vmag"      : "2"
+        ]
 
         when:
         resultFactory.getEntity(new SimpleEntityData(parameter, NodeResult))
@@ -59,6 +61,5 @@ class NodeResultFactoryTest extends Specification {
                 "The following fields to be passed to a constructor of NodeResult are possible:\n" +
                 "0: [inputModel, timestamp, vang, vmag]\n" +
                 "1: [inputModel, timestamp, uuid, vang, vmag]\n"
-
     }
 }

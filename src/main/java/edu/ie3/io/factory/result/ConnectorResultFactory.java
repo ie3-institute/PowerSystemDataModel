@@ -7,7 +7,6 @@ package edu.ie3.io.factory.result;
 
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.io.factory.SimpleEntityData;
-import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.result.connector.*;
@@ -18,18 +17,16 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 
-public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult> {
-  private static final String entityUuid = "uuid";
-  private static final String timestamp = "timestamp";
-  private static final String inputModel = "inputModel";
-  private static final String iAMag = "iamag";
-  private static final String iAAng = "iaang";
-  private static final String iBMag = "ibmag";
-  private static final String iBAng = "ibang";
-  private static final String iCMag = "icmag";
-  private static final String iCAng = "icang";
-  private static final String closed = "closed";
-  private static final String tapPos = "tappos";
+public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult> {
+
+  private static final String IAMAG = "iamag";
+  private static final String IAANG = "iaang";
+  private static final String IBMAG = "ibmag";
+  private static final String IBANG = "ibang";
+  private static final String ICMAG = "icmag";
+  private static final String ICANG = "icang";
+  private static final String CLOSED = "closed";
+  private static final String TAPPOS = "tappos";
 
   public ConnectorResultFactory() {
     super(
@@ -39,20 +36,20 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
   @Override
   protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
     /// all result models have the same constructor except StorageResult
-    Set<String> minConstructorParams = newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
-    Set<String> optionalFields = expandSet(minConstructorParams, entityUuid);
+    Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG);
+    Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     final Class<? extends UniqueEntity> entityClass = simpleEntityData.getEntityClass();
     if (entityClass.equals(SwitchResult.class)) {
-      minConstructorParams = newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, closed);
-      optionalFields = expandSet(minConstructorParams, entityUuid);
+      minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, CLOSED);
+      optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     } else if (entityClass.equals(Transformer2WResult.class)) {
-      minConstructorParams = newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
-      optionalFields = expandSet(minConstructorParams, entityUuid);
+      minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, TAPPOS);
+      optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     } else if (entityClass.equals(Transformer3WResult.class)) {
       minConstructorParams =
-          newSet(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos);
-      optionalFields = expandSet(minConstructorParams, entityUuid);
+          newSet(TIMESTAMP, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, ICMAG, ICANG, TAPPOS);
+      optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
     return Arrays.asList(minConstructorParams, optionalFields);
@@ -62,159 +59,68 @@ public class ConnectorResultFactory extends SimpleEntityFactory<ConnectorResult>
   protected ConnectorResult buildModel(SimpleEntityData data) {
     final Class<? extends UniqueEntity> entityClass = data.getEntityClass();
 
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.get(timestamp));
-    UUID inputModelUuid = data.getUUID(inputModel);
-    Quantity<ElectricCurrent> iAMagVal = data.get(iAMag, StandardUnits.CURRENT);
-    Quantity<Angle> iAAngVal = data.get(iAAng, StandardUnits.DPHI_TAP); // TODO
-    Quantity<ElectricCurrent> iBMagVal = data.get(iBMag, StandardUnits.CURRENT);
-    Quantity<Angle> iBAngVal = data.get(iBAng, StandardUnits.DPHI_TAP); // TODO
+    ZonedDateTime timestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
+    UUID inputModel = data.getUUID(INPUT_MODEL);
+    Quantity<ElectricCurrent> iAMag =
+        data.getQuantity(IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    Quantity<Angle> iAAng = data.getQuantity(IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+    Quantity<ElectricCurrent> iBMag =
+        data.getQuantity(IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    Quantity<Angle> iBAng = data.getQuantity(IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
 
     Optional<UUID> uuidOpt =
-        data.containsKey(entityUuid) ? Optional.of(data.getUUID(entityUuid)) : Optional.empty();
+        data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
     if (entityClass.equals(LineResult.class))
-      return buildLineResult(
-          zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal, uuidOpt);
-    else if (entityClass.equals(SwitchResult.class))
-      return buildSwitchResult(
-          data, zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal, uuidOpt);
-    else if (entityClass.equals(Transformer2WResult.class))
-      return buildTransformer2WResult(
-          data, zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal, uuidOpt);
-    else if (entityClass.equals(Transformer3WResult.class))
-      return buildTransformer3WResult(
-          data, zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal, uuidOpt);
-    else throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
-  }
+      return uuidOpt
+          .map(uuid -> new LineResult(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng))
+          .orElseGet(() -> new LineResult(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng));
+    else if (entityClass.equals(SwitchResult.class)) {
+      final boolean closed =
+          data.getField(CLOSED).trim().equals("1") || data.getField(CLOSED).trim().equals("true");
 
-  private ConnectorResult buildLineResult(
-      ZonedDateTime zdtTimestamp,
-      UUID inputModelUuid,
-      Quantity<ElectricCurrent> iAMagVal,
-      Quantity<Angle> iAAngVal,
-      Quantity<ElectricCurrent> iBMagVal,
-      Quantity<Angle> iBAngVal,
-      Optional<UUID> uuidOpt) {
-    return uuidOpt
-        .map(
-            uuid ->
-                new LineResult(
-                    uuid, zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal))
-        .orElseGet(
-            () ->
-                new LineResult(
-                    zdtTimestamp, inputModelUuid, iAMagVal, iAAngVal, iBMagVal, iBAngVal));
-  }
+      return uuidOpt
+          .map(
+              uuid ->
+                  new SwitchResult(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, closed))
+          .orElseGet(
+              () -> new SwitchResult(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, closed));
+    } else if (entityClass.equals(Transformer2WResult.class)) {
+      final int tapPos = Integer.parseInt(data.getField(TAPPOS).trim());
 
-  private ConnectorResult buildSwitchResult(
-      SimpleEntityData data,
-      ZonedDateTime zdtTimestamp,
-      UUID inputModelUuid,
-      Quantity<ElectricCurrent> iAMagVal,
-      Quantity<Angle> iAAngVal,
-      Quantity<ElectricCurrent> iBMagVal,
-      Quantity<Angle> iBAngVal,
-      Optional<UUID> uuidOpt) {
-    final boolean closedVal =
-        data.get(closed).trim().equals("1") || data.get(closed).trim().equals("true");
+      return uuidOpt
+          .map(
+              uuid ->
+                  new Transformer2WResult(
+                      uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos))
+          .orElseGet(
+              () ->
+                  new Transformer2WResult(
+                      timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos));
+    } else if (entityClass.equals(Transformer3WResult.class)) {
+      Quantity<ElectricCurrent> iCMag =
+          data.getQuantity(ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+      Quantity<Angle> iCAng = data.getQuantity(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+      final int tapPos = Integer.parseInt(data.getField(TAPPOS).trim());
 
-    return uuidOpt
-        .map(
-            uuid ->
-                new SwitchResult(
-                    uuid,
-                    zdtTimestamp,
-                    inputModelUuid,
-                    iAMagVal,
-                    iAAngVal,
-                    iBMagVal,
-                    iBAngVal,
-                    closedVal))
-        .orElseGet(
-            () ->
-                new SwitchResult(
-                    zdtTimestamp,
-                    inputModelUuid,
-                    iAMagVal,
-                    iAAngVal,
-                    iBMagVal,
-                    iBAngVal,
-                    closedVal));
-  }
-
-  private ConnectorResult buildTransformer2WResult(
-      SimpleEntityData data,
-      ZonedDateTime zdtTimestamp,
-      UUID inputModelUuid,
-      Quantity<ElectricCurrent> iAMagVal,
-      Quantity<Angle> iAAngVal,
-      Quantity<ElectricCurrent> iBMagVal,
-      Quantity<Angle> iBAngVal,
-      Optional<UUID> uuidOpt) {
-    final int tapPosValue = Integer.parseInt(data.get(tapPos).trim());
-
-    return uuidOpt
-        .map(
-            uuid ->
-                new Transformer2WResult(
-                    uuid,
-                    zdtTimestamp,
-                    inputModelUuid,
-                    iAMagVal,
-                    iAAngVal,
-                    iBMagVal,
-                    iBAngVal,
-                    tapPosValue))
-        .orElseGet(
-            () ->
-                new Transformer2WResult(
-                    zdtTimestamp,
-                    inputModelUuid,
-                    iAMagVal,
-                    iAAngVal,
-                    iBMagVal,
-                    iBAngVal,
-                    tapPosValue));
-  }
-
-  private ConnectorResult buildTransformer3WResult(
-      SimpleEntityData data,
-      ZonedDateTime zdtTimestamp,
-      UUID inputModelUuid,
-      Quantity<ElectricCurrent> iAMagVal,
-      Quantity<Angle> iAAngVal,
-      Quantity<ElectricCurrent> iBMagVal,
-      Quantity<Angle> iBAngVal,
-      Optional<UUID> uuidOpt) {
-    Quantity<ElectricCurrent> iCMagVal = data.get(iCMag, StandardUnits.CURRENT);
-    Quantity<Angle> iCAngVal = data.get(iCAng, StandardUnits.DPHI_TAP); // TODO
-    final int tapPosValue = Integer.parseInt(data.get(tapPos).trim());
-
-    return uuidOpt
-        .map(
-            uuid ->
-                new Transformer3WResult(
-                    uuid,
-                    zdtTimestamp,
-                    inputModelUuid,
-                    iAMagVal,
-                    iAAngVal,
-                    iBMagVal,
-                    iBAngVal,
-                    iCMagVal,
-                    iCAngVal,
-                    tapPosValue))
-        .orElseGet(
-            () ->
-                new Transformer3WResult(
-                    zdtTimestamp,
-                    inputModelUuid,
-                    iAMagVal,
-                    iAAngVal,
-                    iBMagVal,
-                    iBAngVal,
-                    iCMagVal,
-                    iCAngVal,
-                    tapPosValue));
+      return uuidOpt
+          .map(
+              uuid ->
+                  new Transformer3WResult(
+                      uuid,
+                      timestamp,
+                      inputModel,
+                      iAMag,
+                      iAAng,
+                      iBMag,
+                      iBAng,
+                      iCMag,
+                      iCAng,
+                      tapPos))
+          .orElseGet(
+              () ->
+                  new Transformer3WResult(
+                      timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos));
+    } else throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
   }
 }

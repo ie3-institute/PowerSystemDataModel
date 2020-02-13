@@ -1,11 +1,13 @@
 package edu.ie3.io.factory.input
 
-import edu.ie3.io.factory.FactorySpecification
+
+import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.io.factory.SimpleEntityData
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.input.connector.type.Transformer3WTypeInput
+import spock.lang.Specification
 
-class Transformer3WTypeInputFactoryTest extends FactorySpecification {
+class Transformer3WTypeInputFactoryTest extends Specification implements FactoryTestHelper {
 
     def "A Transformer3WTypeInputFactory should contain exactly the expected class for parsing"() {
         given:
@@ -57,9 +59,9 @@ class Transformer3WTypeInputFactoryTest extends FactorySpecification {
             assert SRatedA == getQuant(parameter["srateda"], StandardUnits.S_RATED)
             assert SRatedB == getQuant(parameter["sratedb"], StandardUnits.S_RATED)
             assert SRatedC == getQuant(parameter["sratedc"], StandardUnits.S_RATED)
-            assert VRatedA == getQuant(parameter["vrateda"], StandardUnits.V_RATED)
-            assert VRatedB == getQuant(parameter["vratedb"], StandardUnits.V_RATED)
-            assert VRatedC == getQuant(parameter["vratedc"], StandardUnits.V_RATED)
+            assert VRatedA == getQuant(parameter["vrateda"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+            assert VRatedB == getQuant(parameter["vratedb"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+            assert VRatedC == getQuant(parameter["vratedc"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
             assert RScA == getQuant(parameter["rsca"], StandardUnits.IMPEDANCE)
             assert RScB == getQuant(parameter["rscb"], StandardUnits.IMPEDANCE)
             assert RScC == getQuant(parameter["rscc"], StandardUnits.IMPEDANCE)

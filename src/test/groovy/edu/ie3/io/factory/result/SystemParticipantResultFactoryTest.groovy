@@ -4,12 +4,12 @@ import edu.ie3.exceptions.FactoryException
 import edu.ie3.io.factory.SimpleEntityData
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.result.system.*
+import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
 import tec.uom.se.unit.Units
 
-class SystemParticipantResultFactoryTest extends Specification {
+class SystemParticipantResultFactoryTest extends Specification implements FactoryTestHelper {
 
     def "A SystemParticipantResultFactory should contain all expected classes for parsing"() {
         given:
@@ -24,11 +24,13 @@ class SystemParticipantResultFactoryTest extends Specification {
     def "A SystemParticipantResultFactory should parse a valid result model correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
-        Map<String, String> parameter = [:]
-        parameter["timestamp"] = "2020-01-30 17:26:44"
-        parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
-        parameter["p"] = "2"
-        parameter["q"] = "2"
+        Map<String, String> parameter = [
+            "timestamp":    "2020-01-30 17:26:44",
+            "inputModel":   "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "p":            "2",
+            "q":            "2"
+        ]
+
         if (modelClass == EvResult) { parameter["soc"] = "10" }
 
         when:
@@ -37,13 +39,15 @@ class SystemParticipantResultFactoryTest extends Specification {
         then:
         result.present
         result.get().getClass() == resultingModelClass
-        result.get().p == Quantities.getQuantity(Double.parseDouble(parameter["p"]), StandardUnits.ACTIVE_POWER_OUT)
-        result.get().q == Quantities.getQuantity(Double.parseDouble(parameter["q"]), StandardUnits.REACTIVE_POWER_OUT)
-        result.get().timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
-        result.get().inputModel == UUID.fromString(parameter["inputModel"])
+        ((SystemParticipantResult) result.get()).with {
+            assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
+            assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
+            assert timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+            assert inputModel == UUID.fromString(parameter["inputModel"])
+        }
 
         if (modelClass == EvResult) {
-            assert (((EvResult) result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameter["soc"]), Units.PERCENT))
+            assert (((EvResult) result.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
         }
 
         where:
@@ -62,35 +66,36 @@ class SystemParticipantResultFactoryTest extends Specification {
     def "A SystemParticipantResultFactory should parse a StorageResult correctly"() {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
-        Map<String, String> parameter = [:]
-        parameter["timestamp"] = "2020-01-30 17:26:44"
-        parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
-        parameter["soc"] = "20"
-        parameter["p"] = "2"
-        parameter["q"] = "2"
-
+        Map<String, String> parameter = [
+            "timestamp":    "2020-01-30 17:26:44",
+            "inputModel":   "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "soc":          "20",
+            "p":            "2",
+            "q":            "2"
+        ]
         when:
         Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, StorageResult))
 
         then:
         result.present
         result.get().getClass() == StorageResult
-        result.get().p == Quantities.getQuantity(Double.parseDouble(parameter["p"]), StandardUnits.ACTIVE_POWER_OUT)
-        result.get().q == Quantities.getQuantity(Double.parseDouble(parameter["q"]), StandardUnits.REACTIVE_POWER_OUT)
-        ((StorageResult) result.get()).soc == Quantities.getQuantity(Double.parseDouble(parameter["soc"]), Units.PERCENT)
-        result.get().timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
-        result.get().inputModel == UUID.fromString(parameter["inputModel"])
-
+        ((StorageResult) result.get()).with {
+            assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
+            assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
+            assert soc == getQuant(parameter["soc"], Units.PERCENT)
+            assert timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+            assert inputModel == UUID.fromString(parameter["inputModel"])
+        }
     }
 
     def "A SystemParticipantResultFactory should throw an exception on invalid or incomplete data"() {
         given: "a system participant factory and model data"
         def resultFactory = new SystemParticipantResultFactory()
-        Map<String, String> parameter = [:]
-        parameter["timestamp"] = "2020-01-30 17:26:44"
-        parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
-        parameter["q"] = "2"
-
+        Map<String, String> parameter = [
+            "timestamp":    "2020-01-30 17:26:44",
+            "inputModel":   "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "q":            "2"
+        ]
         when:
         resultFactory.getEntity(new SimpleEntityData(parameter, WecResult))
 
@@ -106,13 +111,13 @@ class SystemParticipantResultFactoryTest extends Specification {
     def "A SystempParticipantResultFactor should be performant"() {
         given: "a factory and dummy model data"
         def resultFactory = new SystemParticipantResultFactory()
-        Map<String, String> parameter = [:]
-        parameter["timestamp"] = "2020-01-30 17:26:44"
-        parameter["inputModel"] = "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
-        parameter["soc"] = "20"
-        parameter["p"] = "2"
-        parameter["q"] = "2"
-
+        Map<String, String> parameter = [
+            "timestamp":    "2020-01-30 17:26:44",
+            "inputModel":   "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+            "soc":          "20",
+            "p":            "2",
+            "q":            "2",
+        ]
         expect: "that the factory should not need more than 2 seconds for processing 100.000 entities"
         Long startTime = System.currentTimeMillis()
         10000.times {

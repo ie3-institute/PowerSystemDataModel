@@ -67,12 +67,12 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
       case "p":
         normalizedQuantityValue =
             quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_OUT));
+                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT));
         break;
       case "q":
         normalizedQuantityValue =
             quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_OUT));
+                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT));
         break;
       default:
         log.error(

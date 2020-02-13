@@ -45,8 +45,8 @@ class OperationTimeTest {
     OperationTime notLimited = OperationTime.notLimited();
     assertEquals(NOT_LIMITED_OPERATION, notLimited);
     assertFalse(notLimited.isLimited());
-    assertTrue(notLimited.getStartDate().isEmpty());
-    assertTrue(notLimited.getEndDate().isEmpty());
+    assertTrue(!notLimited.getStartDate().isPresent());
+    assertTrue(!notLimited.getEndDate().isPresent());
     assertEquals(Optional.empty(), notLimited.getOperationLimit());
   }
 
@@ -63,10 +63,10 @@ class OperationTimeTest {
     assertEquals(START_DATE, startDate);
 
     optStartDate = LIMITED_OPERATION_TIME_END_ONLY.getStartDate();
-    assertTrue(optStartDate.isEmpty());
+    assertTrue(!optStartDate.isPresent());
 
     optStartDate = NOT_LIMITED_OPERATION.getStartDate();
-    assertTrue(optStartDate.isEmpty());
+    assertTrue(!optStartDate.isPresent());
   }
 
   @Test
@@ -77,7 +77,7 @@ class OperationTimeTest {
     assertEquals(END_DATE, endDate);
 
     optEndDate = LIMITED_OPERATION_TIME_START_ONLY.getEndDate();
-    assertTrue(optEndDate.isEmpty());
+    assertTrue(!optEndDate.isPresent());
 
     optEndDate = LIMITED_OPERATION_TIME_END_ONLY.getEndDate();
     assertTrue(optEndDate.isPresent());
@@ -85,7 +85,7 @@ class OperationTimeTest {
     assertEquals(END_DATE, endDate);
 
     optEndDate = NOT_LIMITED_OPERATION.getEndDate();
-    assertTrue(optEndDate.isEmpty());
+    assertTrue(!optEndDate.isPresent());
   }
 
   @Test
@@ -107,7 +107,7 @@ class OperationTimeTest {
     assertEquals(new ClosedInterval<>(MIN_DATE, END_DATE), operationLimit);
 
     optOperationLimit = NOT_LIMITED_OPERATION.getOperationLimit();
-    assertTrue(optOperationLimit.isEmpty());
+    assertTrue(!optOperationLimit.isPresent());
   }
 
   @Test

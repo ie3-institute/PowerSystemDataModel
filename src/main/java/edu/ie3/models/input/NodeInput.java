@@ -59,8 +59,8 @@ public class NodeInput extends AssetInput {
       VoltageLevel voltLvl,
       int subnet) {
     super(uuid, operationTime, operator, id);
-    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE);
-    this.vRated = vRated.to(StandardUnits.V_RATED);
+    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
+    this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.slack = slack;
     this.geoPosition = geoPosition;
     this.voltLvl = voltLvl;
@@ -90,8 +90,8 @@ public class NodeInput extends AssetInput {
       VoltageLevel voltLvl,
       int subnet) {
     super(uuid, id);
-    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE);
-    this.vRated = vRated.to(StandardUnits.V_RATED);
+    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
+    this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.slack = slack;
     this.geoPosition = geoPosition;
     this.voltLvl = voltLvl;
@@ -103,7 +103,7 @@ public class NodeInput extends AssetInput {
   }
 
   public void setVTarget(Quantity<Dimensionless> vTarget) {
-    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE);
+    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
   }
 
   public Quantity<ElectricPotential> getVRated() {
@@ -111,7 +111,7 @@ public class NodeInput extends AssetInput {
   }
 
   public void setVRated(Quantity<ElectricPotential> vRated) {
-    this.vRated = vRated.to(StandardUnits.V_RATED);
+    this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
   }
 
   public boolean getSlack() {

@@ -3,7 +3,7 @@ package edu.ie3.io.processor.result
 import edu.ie3.exceptions.FactoryException
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.result.NodeResult
-import edu.ie3.models.result.ThermalSinkResult
+import edu.ie3.models.result.thermal.CylindricalStorageResult
 import edu.ie3.models.result.connector.LineResult
 import edu.ie3.models.result.connector.SwitchResult
 import edu.ie3.models.result.connector.Transformer2WResult
@@ -11,7 +11,6 @@ import edu.ie3.models.result.connector.Transformer3WResult
 import edu.ie3.models.result.system.*
 import edu.ie3.util.TimeTools
 import edu.ie3.util.quantities.PowerSystemUnits
-import edu.ie3.util.quantities.interfaces.HeatCapacity
 import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
@@ -21,6 +20,7 @@ import javax.measure.Quantity
 import javax.measure.quantity.Angle
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.ElectricCurrent
+import javax.measure.quantity.Energy
 import javax.measure.quantity.Power
 import java.time.ZoneId
 
@@ -126,7 +126,7 @@ class ResultEntityProcessorTest extends Specification {
         def sysPartResProcessor = new ResultEntityProcessor(NodeResult)
 
         Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PowerSystemUnits.PU)
-        Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.ELECTRIC_VOLTAGE_ANGLE)
+        Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.VOLTAGE_ANGLE)
 
         def validResult = new NodeResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, vMag, vAng)
 
@@ -189,15 +189,15 @@ class ResultEntityProcessorTest extends Specification {
 
 
     @Shared
-    Quantity<ElectricCurrent> iAMag = Quantities.getQuantity(100, StandardUnits.CURRENT)
+    Quantity<ElectricCurrent> iAMag = Quantities.getQuantity(100, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     @Shared
     Quantity<Angle> iAAng = Quantities.getQuantity(45, StandardUnits.ELECTRIC_CURRENT_ANGLE)
     @Shared
-    Quantity<ElectricCurrent> iBMag = Quantities.getQuantity(150, StandardUnits.CURRENT)
+    Quantity<ElectricCurrent> iBMag = Quantities.getQuantity(150, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     @Shared
     Quantity<Angle> iBAng = Quantities.getQuantity(30, StandardUnits.ELECTRIC_CURRENT_ANGLE)
     @Shared
-    Quantity<ElectricCurrent> iCMag = Quantities.getQuantity(300, StandardUnits.CURRENT)
+    Quantity<ElectricCurrent> iCMag = Quantities.getQuantity(300, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     @Shared
     Quantity<Angle> iCAng = Quantities.getQuantity(70, StandardUnits.ELECTRIC_CURRENT_ANGLE)
     @Shared
@@ -228,18 +228,22 @@ class ResultEntityProcessorTest extends Specification {
         Transformer3WResult | new Transformer3WResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos) || expectedTrafo3WResults
     }
 
-    def "A ResultEntityProcessor should de-serialize a ThermalSinkResult correctly"() {
+    def "A ResultEntityProcessor should de-serialize a CylindricalStorageResult correctly"() {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def sysPartResProcessor = new ResultEntityProcessor(ThermalSinkResult)
+        def sysPartResProcessor = new ResultEntityProcessor(CylindricalStorageResult)
 
-        Quantity<HeatCapacity> qDemand = Quantities.getQuantity(10, StandardUnits.HEAT_CAPACITY)
+        Quantity<Power> qDot = Quantities.getQuantity(2, StandardUnits.Q_DOT_RESULT)
+        Quantity<Energy> energy = Quantities.getQuantity(3, StandardUnits.ENERGY_RESULT)
+        Quantity<Dimensionless> fillLevel = Quantities.getQuantity(20, Units.PERCENT)
 
-        def validResult = new ThermalSinkResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, qDemand)
+        def validResult = new CylindricalStorageResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, energy, qDot, fillLevel)
 
         def expectedResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+                               energy    : '3.0',
+                               fillLevel : '20.0',
                                inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-                               qDemand      : '10.0',
+                               qDot      : '2.0',
                                timestamp : '2020-01-30 17:26:44']
 
         when:

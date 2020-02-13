@@ -6,7 +6,6 @@
 package edu.ie3.io.factory.input;
 
 import edu.ie3.io.factory.SimpleEntityData;
-import edu.ie3.io.factory.SimpleEntityFactory;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.connector.type.Transformer3WTypeInput;
 import java.util.Collections;
@@ -16,28 +15,27 @@ import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.*;
 
-public class Transformer3WTypeInputFactory extends SimpleEntityFactory<Transformer3WTypeInput> {
-  private static final String entityUuid = "uuid";
-  private static final String entityId = "id";
-  private static final String sRatedA = "srateda";
-  private static final String sRatedB = "sratedb";
-  private static final String sRatedC = "sratedc";
-  private static final String vRatedA = "vrateda";
-  private static final String vRatedB = "vratedb";
-  private static final String vRatedC = "vratedc";
-  private static final String rScA = "rsca";
-  private static final String rScB = "rscb";
-  private static final String rScC = "rscc";
-  private static final String xScA = "xsca";
-  private static final String xScB = "xscb";
-  private static final String xScC = "xscc";
-  private static final String gM = "gm";
-  private static final String bM = "bm";
-  private static final String dV = "dv";
-  private static final String dPhi = "dphi";
-  private static final String tapNeutr = "tapneutr";
-  private static final String tapMin = "tapmin";
-  private static final String tapMax = "tapmax";
+public class Transformer3WTypeInputFactory
+    extends AssetTypeInputEntityFactory<Transformer3WTypeInput> {
+  private static final String S_RATED_A = "srateda";
+  private static final String S_RATED_B = "sratedb";
+  private static final String S_RATED_C = "sratedc";
+  private static final String V_RATED_A = "vrateda";
+  private static final String V_RATED_B = "vratedb";
+  private static final String V_RATED_C = "vratedc";
+  private static final String R_SC_A = "rsca";
+  private static final String R_SC_B = "rscb";
+  private static final String R_SC_C = "rscc";
+  private static final String X_SC_A = "xsca";
+  private static final String X_SC_B = "xscb";
+  private static final String X_SC_C = "xscc";
+  private static final String G_M = "gm";
+  private static final String B_M = "bm";
+  private static final String D_V = "dv";
+  private static final String D_PHI = "dphi";
+  private static final String TAP_NEUTR = "tapneutr";
+  private static final String TAP_MIN = "tapmin";
+  private static final String TAP_MAX = "tapmax";
 
   public Transformer3WTypeInputFactory() {
     super(Transformer3WTypeInput.class);
@@ -47,76 +45,60 @@ public class Transformer3WTypeInputFactory extends SimpleEntityFactory<Transform
   protected List<Set<String>> getFields(SimpleEntityData data) {
     Set<String> constructorParams =
         newSet(
-            entityUuid,
-            entityId,
-            sRatedA,
-            sRatedB,
-            sRatedC,
-            vRatedA,
-            vRatedB,
-            vRatedC,
-            rScA,
-            rScB,
-            rScC,
-            xScA,
-            xScB,
-            xScC,
-            gM,
-            bM,
-            dV,
-            dPhi,
-            tapNeutr,
-            tapMin,
-            tapMax);
+            ENTITY_UUID,
+            ENTITY_ID,
+            S_RATED_A,
+            S_RATED_B,
+            S_RATED_C,
+            V_RATED_A,
+            V_RATED_B,
+            V_RATED_C,
+            R_SC_A,
+            R_SC_B,
+            R_SC_C,
+            X_SC_A,
+            X_SC_B,
+            X_SC_C,
+            G_M,
+            B_M,
+            D_V,
+            D_PHI,
+            TAP_NEUTR,
+            TAP_MIN,
+            TAP_MAX);
 
     return Collections.singletonList(constructorParams);
   }
 
   @Override
   protected Transformer3WTypeInput buildModel(SimpleEntityData data) {
-    UUID uuid = data.getUUID(entityUuid);
-    String id = data.get(entityId);
-    Quantity<Power> sRatedAVal = data.get(sRatedA, StandardUnits.S_RATED);
-    Quantity<Power> sRatedBVal = data.get(sRatedB, StandardUnits.S_RATED);
-    Quantity<Power> sRatedCVal = data.get(sRatedC, StandardUnits.S_RATED);
-    Quantity<ElectricPotential> vRatedAVal = data.get(vRatedA, StandardUnits.V_RATED);
-    Quantity<ElectricPotential> vRatedBVal = data.get(vRatedB, StandardUnits.V_RATED);
-    Quantity<ElectricPotential> vRatedCVal = data.get(vRatedC, StandardUnits.V_RATED);
-    Quantity<ElectricResistance> rScAVal = data.get(rScA, StandardUnits.IMPEDANCE);
-    Quantity<ElectricResistance> rScBVal = data.get(rScB, StandardUnits.IMPEDANCE);
-    Quantity<ElectricResistance> rScCVal = data.get(rScC, StandardUnits.IMPEDANCE);
-    Quantity<ElectricResistance> xScAVal = data.get(xScA, StandardUnits.IMPEDANCE);
-    Quantity<ElectricResistance> xScBVal = data.get(xScB, StandardUnits.IMPEDANCE);
-    Quantity<ElectricResistance> xScCVal = data.get(xScC, StandardUnits.IMPEDANCE);
-    Quantity<ElectricConductance> gMVal = data.get(gM, StandardUnits.ADMITTANCE);
-    Quantity<ElectricConductance> bMVal = data.get(bM, StandardUnits.ADMITTANCE);
-    Quantity<Dimensionless> dVVal = data.get(dV, StandardUnits.DV_TAP);
-    Quantity<Angle> dPhiVal = data.get(dPhi, StandardUnits.DPHI_TAP);
-    int tapNeutrVal = Integer.parseInt(data.get(tapNeutr));
-    int tapMinVal = Integer.parseInt(data.get(tapMin));
-    int tapMaxVal = Integer.parseInt(data.get(tapMax));
+    UUID uuid = data.getUUID(ENTITY_UUID);
+    String id = data.getField(ENTITY_ID);
+    Quantity<Power> sRatedA = data.getQuantity(S_RATED_A, StandardUnits.S_RATED);
+    Quantity<Power> sRatedB = data.getQuantity(S_RATED_B, StandardUnits.S_RATED);
+    Quantity<Power> sRatedC = data.getQuantity(S_RATED_C, StandardUnits.S_RATED);
+    Quantity<ElectricPotential> vRatedA =
+        data.getQuantity(V_RATED_A, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    Quantity<ElectricPotential> vRatedB =
+        data.getQuantity(V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    Quantity<ElectricPotential> vRatedC =
+        data.getQuantity(V_RATED_C, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    Quantity<ElectricResistance> rScA = data.getQuantity(R_SC_A, StandardUnits.IMPEDANCE);
+    Quantity<ElectricResistance> rScB = data.getQuantity(R_SC_B, StandardUnits.IMPEDANCE);
+    Quantity<ElectricResistance> rScC = data.getQuantity(R_SC_C, StandardUnits.IMPEDANCE);
+    Quantity<ElectricResistance> xScA = data.getQuantity(X_SC_A, StandardUnits.IMPEDANCE);
+    Quantity<ElectricResistance> xScB = data.getQuantity(X_SC_B, StandardUnits.IMPEDANCE);
+    Quantity<ElectricResistance> xScC = data.getQuantity(X_SC_C, StandardUnits.IMPEDANCE);
+    Quantity<ElectricConductance> gM = data.getQuantity(G_M, StandardUnits.ADMITTANCE);
+    Quantity<ElectricConductance> bM = data.getQuantity(B_M, StandardUnits.ADMITTANCE);
+    Quantity<Dimensionless> dV = data.getQuantity(D_V, StandardUnits.DV_TAP);
+    Quantity<Angle> dPhi = data.getQuantity(D_PHI, StandardUnits.DPHI_TAP);
+    int tapNeutr = Integer.parseInt(data.getField(TAP_NEUTR));
+    int tapMin = Integer.parseInt(data.getField(TAP_MIN));
+    int tapMax = Integer.parseInt(data.getField(TAP_MAX));
 
     return new Transformer3WTypeInput(
-        uuid,
-        id,
-        sRatedAVal,
-        sRatedBVal,
-        sRatedCVal,
-        vRatedAVal,
-        vRatedBVal,
-        vRatedCVal,
-        rScAVal,
-        rScBVal,
-        rScCVal,
-        xScAVal,
-        xScBVal,
-        xScCVal,
-        gMVal,
-        bMVal,
-        dVVal,
-        dPhiVal,
-        tapNeutrVal,
-        tapMinVal,
-        tapMaxVal);
+        uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA,
+        xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax);
   }
 }

@@ -10,14 +10,16 @@ import edu.ie3.exceptions.FactoryException;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.util.TimeTools;
-import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import java.beans.Introspector;
 import java.lang.reflect.Method;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.Quantity;
+import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricCurrent;
+import javax.measure.quantity.Energy;
+import javax.measure.quantity.Power;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -154,16 +156,28 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "iCMag":
         normalizedQuantityValue =
             quantityValToOptionalString(
-                quantity.asType(ElectricCurrent.class).to(StandardUnits.CURRENT));
+                quantity
+                    .asType(ElectricCurrent.class)
+                    .to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE));
         break;
-      case "qDemand":
+      case "qDot":
         normalizedQuantityValue =
             quantityValToOptionalString(
-                quantity.asType(HeatCapacity.class).to(StandardUnits.HEAT_CAPACITY));
+                quantity.asType(Power.class).to(StandardUnits.Q_DOT_RESULT));
+        break;
+      case "energy":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
+        break;
+      case "fillLevel":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Dimensionless.class).to(StandardUnits.FILL_LEVEL));
         break;
       default:
         log.error(
-            "Cannot process quantity {} for field with name {} in result model processing!",
+            "Cannot process quantity {} for field with name {} in model processing!",
             quantity,
             fieldName);
         break;

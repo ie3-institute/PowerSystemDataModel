@@ -11,6 +11,7 @@ import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
+import javax.measure.quantity.Power;
 
 /** Describes the type of a {@link edu.ie3.models.input.system.SystemParticipantInput} */
 public abstract class SystemParticipantTypeInput extends AssetTypeInput {
@@ -18,22 +19,30 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   private Quantity<Currency> capex;
   /** Operating expense for this type of system participant (typically in €) */
   private Quantity<EnergyPrice> opex;
+  /** Rated apparent power of the type (in kVA) */
+  private Quantity<Power> sRated;
   /** Power factor for this type of system participant */
-  private double cosphi;
+  private double cosphiRated;
 
   /**
    * @param uuid of the input entity
    * @param id of this type of system participant
    * @param capex Captial expense for this type of system participant (typically in €)
    * @param opex Operating expense for this type of system participant (typically in €)
-   * @param cosphi Power factor for this type of system participant
+   * @param cosphiRated Power factor for this type of system participant
    */
   public SystemParticipantTypeInput(
-      UUID uuid, String id, Quantity<Currency> capex, Quantity<EnergyPrice> opex, double cosphi) {
+      UUID uuid,
+      String id,
+      Quantity<Currency> capex,
+      Quantity<EnergyPrice> opex,
+      Quantity<Power> sRated,
+      double cosphiRated) {
     super(uuid, id);
     this.capex = capex;
     this.opex = opex;
-    this.cosphi = cosphi;
+    this.sRated = sRated;
+    this.cosphiRated = cosphiRated;
   }
 
   public Quantity<Currency> getCapex() {
@@ -52,12 +61,20 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     this.opex = opex;
   }
 
-  public double getCosphi() {
-    return cosphi;
+  public Quantity<Power> getsRated() {
+    return sRated;
   }
 
-  public void setCosphi(double cosphi) {
-    this.cosphi = cosphi;
+  public void setsRated(Quantity<Power> sRated) {
+    this.sRated = sRated;
+  }
+
+  public double getCosphiRated() {
+    return cosphiRated;
+  }
+
+  public void setCosphiRated(double cosphiRated) {
+    this.cosphiRated = cosphiRated;
   }
 
   @Override
@@ -66,13 +83,14 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     SystemParticipantTypeInput that = (SystemParticipantTypeInput) o;
-    return Double.compare(that.cosphi, cosphi) == 0
+    return Double.compare(that.cosphiRated, cosphiRated) == 0
         && capex.equals(that.capex)
-        && opex.equals(that.opex);
+        && opex.equals(that.opex)
+        && sRated.equals(that.sRated);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), capex, opex, cosphi);
+    return Objects.hash(super.hashCode(), capex, opex, sRated, cosphiRated);
   }
 }
