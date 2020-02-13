@@ -11,6 +11,9 @@ import java.util.UUID;
 /** Describes an operator, that operates assets */
 public class OperatorInput extends InputEntity {
 
+  public static final OperatorInput NO_OPERATOR =
+      new OperatorInput(UUID.randomUUID(), "NO_OPERATOR");
+
   /** The name of this operator */
   private String name;
 
