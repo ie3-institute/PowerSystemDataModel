@@ -107,7 +107,6 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
    * @return the number of the set in the fieldSets array that fits the provided entity data
    */
   protected int validateParameters(D data, Set<String>... fieldSets) {
-
     Map<String, String> fieldsToValues = data.getFieldsToValues();
 
     // get all sets that match the fields to attributes

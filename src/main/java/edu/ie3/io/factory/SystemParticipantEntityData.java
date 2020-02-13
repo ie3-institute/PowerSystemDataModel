@@ -11,30 +11,30 @@ import edu.ie3.models.input.OperatorInput;
 import java.util.Map;
 
 /**
- * Data used by {@link AssetEntityFactory} to create an instance of an entity that needs additional
- * information about the {@link OperatorInput} and cannot be created based only on a mapping of
- * fieldName -> value
+ * TODO Data used by {@link AssetEntityFactory} to create an instance of an entity that needs
+ * additional information about the {@link OperatorInput} and cannot be created based only on a
+ * mapping of fieldName -> value
  *
  * @version 0.1
  * @since 28.01.20
  */
 public class SystemParticipantEntityData extends OperationEntityData {
-
   private final NodeInput node;
-  // TODO field for TypeInput (-> WecTypeInput) needed?
 
   public SystemParticipantEntityData(
-      Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> clazz, NodeInput node) {
-    super(fieldsToAttributes, clazz);
+      Map<String, String> fieldsToAttributes,
+      Class<? extends UniqueEntity> entityClass,
+      NodeInput node) {
+    super(fieldsToAttributes, entityClass);
     this.node = node;
   }
 
   public SystemParticipantEntityData(
       Map<String, String> fieldsToAttributes,
-      Class<? extends UniqueEntity> clazz,
+      Class<? extends UniqueEntity> entityClass,
       OperatorInput operatorInput,
       NodeInput node) {
-    super(fieldsToAttributes, clazz, operatorInput);
+    super(fieldsToAttributes, entityClass, operatorInput);
     this.node = node;
   }
 
