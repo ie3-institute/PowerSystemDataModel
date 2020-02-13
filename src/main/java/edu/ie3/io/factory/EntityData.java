@@ -59,6 +59,22 @@ abstract class EntityData {
   }
 
   /**
+   * Returns boolean value for given field name. Throws {@link FactoryException} if field does not
+   * exist, or field value is null or empty.
+   *
+   * @param field field name
+   * @return true if value is "1" or "true", false otherwise
+   */
+  public boolean getBoolean(String field) {
+    final String value = getField(field);
+
+    if (value == null || value.trim().isEmpty())
+      throw new FactoryException(String.format("Field \"%s\" is null or empty", field));
+
+    return value.trim().equals("1") || value.trim().equals("true");
+  }
+
+  /**
    * Parses and returns a UUID from field value of given field name. Throws {@link FactoryException}
    * if field does not exist or parsing fails.
    *

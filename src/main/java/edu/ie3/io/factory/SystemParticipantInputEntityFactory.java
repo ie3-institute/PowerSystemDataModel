@@ -16,7 +16,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.IntFunction;
 
-public abstract class SystemParticipantInputFactory<
+public abstract class SystemParticipantInputEntityFactory<
         T extends SystemParticipantInput, D extends SystemParticipantEntityData>
     extends EntityFactory<T, D> {
   private static final String UUID = "uuid";
@@ -25,9 +25,7 @@ public abstract class SystemParticipantInputFactory<
   private static final String ID = "id";
   private static final String Q_CHARACTERISTICS = "qcharacteristics";
 
-  // used by multiple types
-
-  public SystemParticipantInputFactory(Class<? extends T>... allowedClasses) {
+  public SystemParticipantInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
 

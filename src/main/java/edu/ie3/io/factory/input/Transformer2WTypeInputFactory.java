@@ -73,8 +73,7 @@ public class Transformer2WTypeInputFactory
     Quantity<ElectricConductance> bM = data.getQuantity(B_M, StandardUnits.ADMITTANCE);
     Quantity<Dimensionless> dV = data.getQuantity(D_V, StandardUnits.DV_TAP);
     Quantity<Angle> dPhi = data.getQuantity(D_PHI, StandardUnits.DPHI_TAP);
-    boolean tapSide =
-        data.getField(TAP_SIDE).trim().equals("1") || data.getField(TAP_SIDE).trim().equals("true");
+    boolean tapSide = data.getBoolean(TAP_SIDE);
     int tapNeutr = Integer.parseInt(data.getField(TAP_NEUTR));
     int tapMin = Integer.parseInt(data.getField(TAP_MIN));
     int tapMax = Integer.parseInt(data.getField(TAP_MAX));

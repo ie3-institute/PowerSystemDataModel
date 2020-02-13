@@ -76,8 +76,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
           .map(uuid -> new LineResult(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng))
           .orElseGet(() -> new LineResult(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng));
     else if (entityClass.equals(SwitchResult.class)) {
-      final boolean closed =
-          data.getField(CLOSED).trim().equals("1") || data.getField(CLOSED).trim().equals("true");
+      final boolean closed = data.getBoolean(CLOSED);
 
       return uuidOpt
           .map(

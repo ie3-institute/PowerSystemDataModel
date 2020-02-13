@@ -6,7 +6,7 @@
 package edu.ie3.io.factory.input;
 
 import edu.ie3.io.factory.SystemParticipantEntityData;
-import edu.ie3.io.factory.SystemParticipantInputFactory;
+import edu.ie3.io.factory.SystemParticipantInputEntityFactory;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.NodeInput;
@@ -15,13 +15,13 @@ import edu.ie3.models.input.system.FixedFeedInInput;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 
-public class FixedFeedInInputEntityFactory
-    extends SystemParticipantInputFactory<FixedFeedInInput, SystemParticipantEntityData> {
+public class FixedFeedInInputFactory
+    extends SystemParticipantInputEntityFactory<FixedFeedInInput, SystemParticipantEntityData> {
 
   private static final String S_RATED = "srated";
   private static final String COSPHI_RATED = "cosphirated";
 
-  public FixedFeedInInputEntityFactory() {
+  public FixedFeedInInputFactory() {
     super(FixedFeedInInput.class);
   }
 
