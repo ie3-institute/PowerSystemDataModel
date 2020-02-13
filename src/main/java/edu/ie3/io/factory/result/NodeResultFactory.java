@@ -14,7 +14,6 @@ import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
-import tec.uom.se.quantity.Quantities;
 
 public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
   private static final String VMAG = "vmag";
@@ -33,21 +32,13 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
   }
 
   @Override
-  protected NodeResult buildModel(SimpleEntityData simpleEntityData) {
-    Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
-
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(TIMESTAMP));
-    UUID inputModelUuid = UUID.fromString(fieldsToValues.get(INPUT_MODEL));
-    Quantity<Dimensionless> vMagValue =
-        Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(VMAG)), StandardUnits.VOLTAGE_MAGNITUDE);
-    Quantity<Angle> vAngValue =
-        Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(VANG)), StandardUnits.VOLTAGE_ANGLE);
+  protected NodeResult buildModel(SimpleEntityData data) {
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
+    UUID inputModelUuid = data.getUUID(INPUT_MODEL);
+    Quantity<Dimensionless> vMagValue = data.getQuantity(VMAG, StandardUnits.VOLTAGE_MAGNITUDE);
+    Quantity<Angle> vAngValue = data.getQuantity(VANG, StandardUnits.VOLTAGE_ANGLE);
     Optional<UUID> uuidOpt =
-        fieldsToValues.containsKey(ENTITY_UUID)
-            ? Optional.of(UUID.fromString(fieldsToValues.get(ENTITY_UUID)))
-            : Optional.empty();
+        data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
     return uuidOpt
         .map(uuid -> new NodeResult(uuid, zdtTimestamp, inputModelUuid, vMagValue, vAngValue))

@@ -40,7 +40,8 @@ public abstract class SimpleEntityFactory<T extends UniqueEntity>
       // build the model
       return Optional.of(buildModel(simpleEntityData));
 
-    } catch (Exception e) {
+    } catch (FactoryException e) {
+      // only catch FactoryExceptions, as more serious exceptions should be handled elsewhere
       log.error(
           "An error occurred when creating instance of "
               + simpleEntityData.getEntityClass().getSimpleName()

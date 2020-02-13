@@ -23,30 +23,71 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
 
   protected final List<Class<? extends T>> classes;
 
+  /**
+   * Constructor for an EntityFactory for given classes
+   *
+   * @param allowedClasses exactly the classes that this factory should be able to build
+   */
   public EntityFactory(Class<? extends T>... allowedClasses) {
     this.classes = Arrays.asList(allowedClasses);
     TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss");
   }
 
-  public abstract Optional<T> getEntity(D entityData);
+  /**
+   * Builds entity with data from given EntityData object after doing all kinds of checks on the
+   * data
+   *
+   * @param data EntityData (or subclass) containing the data
+   * @return An entity wrapped in Option if successful, an empty option otherwise
+   */
+  public abstract Optional<T> getEntity(D data);
 
-  protected abstract List<Set<String>> getFields(D entityData);
+  /**
+   * Returns list of sets of attribute names that the entity requires to be built. At least one of
+   * these sets needs to be delivered for entity creation to be successful.
+   *
+   * @param data EntityData (or subclass) containing the data
+   * @return list of possible attribute sets
+   */
+  protected abstract List<Set<String>> getFields(D data);
 
-  protected abstract T buildModel(D simpleEntityData);
+  /**
+   * Builds entity with data from given EntityData object. Throws {@link FactoryException} if
+   * something goes wrong.
+   *
+   * @param data EntityData (or subclass) containing the data
+   * @return entity created from data
+   */
+  protected abstract T buildModel(D data);
 
   public List<Class<? extends T>> classes() {
     return classes;
   }
 
-  protected TreeSet<String> newSet(String... items) {
+  /**
+   * Creates a new set of attribute names from given list of attributes. This method should always
+   * be used when returning attribute sets, i.e. through {@link #getFields(EntityData)}.
+   *
+   * @param attributes attribute names
+   * @return new set exactly containing attribute names
+   */
+  protected TreeSet<String> newSet(String... attributes) {
     TreeSet<String> set = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-    set.addAll(Arrays.asList(items));
+    set.addAll(Arrays.asList(attributes));
     return set;
   }
 
-  protected TreeSet<String> expandSet(Set<String> set, String... more) {
+  /**
+   * Expands a set of attributes with further attributes. This method should always be used when
+   * returning attribute sets, i.e. through {@link #getFields(EntityData)}.
+   *
+   * @param attributeSet set of attributes to expand
+   * @param more attribute names to expand given set with
+   * @return new set exactly containing given attribute set plus additional attributes
+   */
+  protected TreeSet<String> expandSet(Set<String> attributeSet, String... more) {
     TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-    newSet.addAll(set);
+    newSet.addAll(attributeSet);
     newSet.addAll(Arrays.asList(more));
     return newSet;
   }

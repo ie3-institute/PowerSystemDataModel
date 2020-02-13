@@ -20,7 +20,6 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
-import tec.uom.se.quantity.Quantities;
 
 public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult> {
   private static final String Q_DOT = "qDot";
@@ -47,25 +46,18 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
   }
 
   @Override
-  protected ThermalUnitResult buildModel(SimpleEntityData simpleEntityData) {
-    Map<String, String> fieldsToValues = simpleEntityData.getFieldsToValues();
-    Class<? extends UniqueEntity> clazz = simpleEntityData.getEntityClass();
+  protected ThermalUnitResult buildModel(SimpleEntityData data) {
+    Class<? extends UniqueEntity> clazz = data.getEntityClass();
 
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(fieldsToValues.get(TIMESTAMP));
-    UUID inputModelUuid = UUID.fromString(fieldsToValues.get(INPUT_MODEL));
-    Quantity<Power> qDotQuantity =
-        Quantities.getQuantity(
-            Double.parseDouble(fieldsToValues.get(Q_DOT)), StandardUnits.HEAT_DEMAND);
+    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
+    UUID inputModelUuid = data.getUUID(INPUT_MODEL);
+    Quantity<Power> qDotQuantity = data.getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND);
     Optional<UUID> uuidOpt =
-        fieldsToValues.containsKey(ENTITY_UUID)
-            ? Optional.of(UUID.fromString(fieldsToValues.get(ENTITY_UUID)))
-            : Optional.empty();
+        data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
     if (clazz.equals(ThermalHouseResult.class)) {
       Quantity<Temperature> indoorTemperature =
-          Quantities.getQuantity(
-              Double.parseDouble(fieldsToValues.get(INDOOR_TEMPERATURE)),
-              StandardUnits.TEMPERATURE);
+          data.getQuantity(INDOOR_TEMPERATURE, StandardUnits.TEMPERATURE);
 
       return uuidOpt
           .map(
@@ -77,12 +69,9 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
                   new ThermalHouseResult(
                       zdtTimestamp, inputModelUuid, qDotQuantity, indoorTemperature));
     } else if (clazz.equals(CylindricalStorageResult.class)) {
-      Quantity<Energy> energyQuantity =
-          Quantities.getQuantity(
-              Double.parseDouble(fieldsToValues.get(ENERGY)), StandardUnits.ENERGY_RESULT);
+      Quantity<Energy> energyQuantity = data.getQuantity(ENERGY, StandardUnits.ENERGY_RESULT);
       Quantity<Dimensionless> fillLevelQuantity =
-          Quantities.getQuantity(
-              Double.parseDouble(fieldsToValues.get(FILL_LEVEL)), StandardUnits.FILL_LEVEL);
+          data.getQuantity(FILL_LEVEL, StandardUnits.FILL_LEVEL);
 
       return uuidOpt
           .map(
