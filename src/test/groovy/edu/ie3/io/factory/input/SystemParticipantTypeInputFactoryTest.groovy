@@ -199,7 +199,6 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
             assert etaThermal == getQuant(parameter["etathermal"], StandardUnits.EFFICIENCY)
             assert PThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
             assert POwn == getQuant(parameter["pown"], StandardUnits.ACTIVE_POWER_IN)
-            // TODO test ThermalStorageInput?
         }
     }
 
