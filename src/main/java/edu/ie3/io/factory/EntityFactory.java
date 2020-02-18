@@ -16,6 +16,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * Universal factory class for creating entities with {@link EntityData} data objects.
+ *
+ * @param <T> Type of entity that this factory can create. Can be a superclass of the entities that
+ *     this factory creates.
+ * @param <D> Type of data class that is required for entity creation
  * @version 0.1
  * @since 28.01.20
  */
@@ -132,7 +137,7 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
    * @param data the entity containing at least the entity class as well a mapping of the provided
    *     field name strings to its value (e.g. a headline of a csv -> column values)
    * @param fieldSets a set containing all available constructor combinations as field names
-   * @return the number of the set in the fieldSets array that fits the provided entity data
+   * @return the index of the set in the fieldSets array that fits the provided entity data
    */
   protected int validateParameters(D data, Set<String>... fieldSets) {
     Map<String, String> fieldsToValues = data.getFieldsToValues();

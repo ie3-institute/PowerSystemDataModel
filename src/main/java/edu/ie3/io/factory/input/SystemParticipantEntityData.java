@@ -11,16 +11,21 @@ import edu.ie3.models.input.OperatorInput;
 import java.util.Map;
 
 /**
- * TODO Data used by {@link AssetEntityFactory} to create an instance of an entity that needs
- * additional information about the {@link OperatorInput} and cannot be created based only on a
- * mapping of fieldName -> value
- *
- * @version 0.1
- * @since 28.01.20
+ * Data used by {@link edu.ie3.io.factory.input.SystemParticipantInputEntityFactory} to create an
+ * instance of {@link edu.ie3.models.input.system.SystemParticipantInput}, thus needing additional
+ * information about the {@link edu.ie3.models.input.NodeInput} which cannot be created through the
+ * attribute map
  */
 class SystemParticipantEntityData extends AssetInputEntityData {
   private final NodeInput node;
 
+  /**
+   * Creates a new SystemParticipantEntityData object for a non-operable system participant input
+   *
+   * @param fieldsToAttributes attribute map: field name -> value
+   * @param entityClass class of the entity to be created with this data
+   * @param node input node
+   */
   public SystemParticipantEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
@@ -29,6 +34,14 @@ class SystemParticipantEntityData extends AssetInputEntityData {
     this.node = node;
   }
 
+  /**
+   * Creates a new SystemParticipantEntityData object for an operable system participant input
+   *
+   * @param fieldsToAttributes attribute map: field name -> value
+   * @param entityClass class of the entity to be created with this data
+   * @param node input node
+   * @param operatorInput operator input
+   */
   public SystemParticipantEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,

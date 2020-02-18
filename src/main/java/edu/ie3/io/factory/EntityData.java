@@ -26,6 +26,12 @@ public abstract class EntityData {
   private final Map<String, String> fieldsToAttributes;
   private final Class<? extends UniqueEntity> entityClass;
 
+  /**
+   * Creates a new EntityData object
+   *
+   * @param fieldsToAttributes attribute map: field name -> value
+   * @param entityClass class of the entity to be created with this data
+   */
   public EntityData(
       Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
     // this does the magic: case-insensitive get/set calls on keys
@@ -40,6 +46,12 @@ public abstract class EntityData {
     return fieldsToAttributes;
   }
 
+  /**
+   * Checks whether attribute map contains a value for given key
+   *
+   * @param key key to check for
+   * @return whether attribute map contains given field or not
+   */
   public boolean containsKey(String key) {
     return fieldsToAttributes.containsKey(key);
   }

@@ -6,6 +6,7 @@
 package edu.ie3.io.factory.input;
 
 import edu.ie3.exceptions.FactoryException;
+import edu.ie3.io.factory.EntityData;
 import edu.ie3.io.factory.EntityFactory;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.OperationTime.OperationTimeBuilder;
@@ -15,6 +16,16 @@ import edu.ie3.models.input.system.SystemParticipantInput;
 import java.time.ZonedDateTime;
 import java.util.*;
 
+/**
+ * Factory class for creating {@link SystemParticipantInput} entities with {@link
+ * SystemParticipantEntityData} data objects.
+ *
+ * @param <T> Type of entity that this factory can create. Can be a superclass of the entities that
+ *     this factory creates.
+ * @param <D> Type of data class that is required for entity creation
+ * @version 0.1
+ * @since 28.01.20
+ */
 abstract class SystemParticipantInputEntityFactory<
         T extends SystemParticipantInput, D extends SystemParticipantEntityData>
     extends EntityFactory<T, D> {
@@ -28,6 +39,15 @@ abstract class SystemParticipantInputEntityFactory<
     super(allowedClasses);
   }
 
+  /**
+   * In addition to the checks performed by {@link EntityFactory#validateParameters(EntityData,
+   * Set[])}, integrity of operational data is checked here.
+   *
+   * @param data the entity containing at least the entity class as well a mapping of the provided
+   *     field name strings to its value (e.g. a headline of a csv -> column values)
+   * @param fieldSets a set containing all available constructor combinations as field names
+   * @return the index of the set in the fieldSets array that fits the provided entity data
+   */
   @Override
   protected int validateParameters(D data, Set<String>... fieldSets) {
     if ((data.containsKey(OPERATES_FROM)
@@ -69,6 +89,11 @@ abstract class SystemParticipantInputEntityFactory<
     return Arrays.asList(minConstructorParams, optConstructorParams);
   }
 
+  /**
+   * Fields other than the standard {@link SystemParticipantInput} fields that have to be present
+   *
+   * @return array of field names, can be empty but not null
+   */
   protected abstract String[] getAdditionalFields();
 
   @Override
@@ -88,6 +113,18 @@ abstract class SystemParticipantInputEntityFactory<
         : buildModel(data, uuid, id, node, qCharacteristics);
   }
 
+  /**
+   * Creates operated asset entity with given parameters
+   *
+   * @param data entity data
+   * @param uuid UUID of the input entity
+   * @param id ID
+   * @param node Node that the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param operatorInput Operator of the asset
+   * @param operationTime time in which the entity is operated
+   * @return newly created asset object
+   */
   protected abstract T buildModel(
       D data,
       UUID uuid,
@@ -97,6 +134,16 @@ abstract class SystemParticipantInputEntityFactory<
       OperatorInput operatorInput,
       OperationTime operationTime);
 
+  /**
+   * Creates non-operated asset entity with given parameters
+   *
+   * @param data entity data
+   * @param uuid UUID of the input entity
+   * @param id ID
+   * @param node Node that the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @return newly created asset object
+   */
   protected abstract T buildModel(
       D data, UUID uuid, String id, NodeInput node, String qCharacteristics);
 
