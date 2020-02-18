@@ -53,8 +53,7 @@ public class StandardUnits {
   public static final Unit<Dimensionless> VOLTAGE_MAGNITUDE = PU;
   /** Voltage angle (mainly for result purposes) */
   public static final Unit<Angle> VOLTAGE_ANGLE = DEGREE_GEOM;
-  /** Electric energy per driven distance * */
-  // TODO ckittl check this
+  /** Electric energy per driven distance */
   public static final Unit<SpecificEnergy> ENERGY_PER_DISTANCE = KILOWATTHOUR_PER_KILOMETRE;
 
   /* Other Units */
@@ -104,8 +103,7 @@ public class StandardUnits {
   public static final Unit<Speed> WIND_VELOCITY = METRE_PER_SECOND;
   /** Solar irradiation on a flat surface */
   public static final Unit<Irradiation> IRRADIATION = KILOWATTHOUR_PER_SQUAREMETRE;
-  /** Capex (capital expenditure) * */
-  // TODO ckittl check this
+  /** Capex (capital expenditure) */
   public static final Unit<Currency> CAPEX = EURO;
 
   private StandardUnits() {
