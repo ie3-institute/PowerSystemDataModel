@@ -19,6 +19,10 @@ public class WecInputFactory
         WecInput, SystemParticipantTypedEntityData<WecTypeInput>> {
   private static final String MARKET_REACTION = "marketreaction";
 
+  public WecInputFactory() {
+    super(WecInput.class);
+  }
+
   @Override
   protected String[] getAdditionalFields() {
     return new String[] {MARKET_REACTION};

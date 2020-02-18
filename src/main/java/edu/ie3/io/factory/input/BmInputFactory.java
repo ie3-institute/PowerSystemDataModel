@@ -24,6 +24,10 @@ public class BmInputFactory
   private static final String COST_CONTROLLED = "costcontrolled";
   private static final String FEED_IN_TARIFF = "feedintariff";
 
+  public BmInputFactory() {
+    super(BmInput.class);
+  }
+
   @Override
   protected String[] getAdditionalFields() {
     return new String[] {MARKET_REACTION, COST_CONTROLLED, FEED_IN_TARIFF};

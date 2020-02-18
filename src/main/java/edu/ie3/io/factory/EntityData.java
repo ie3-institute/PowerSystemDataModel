@@ -75,6 +75,44 @@ abstract class EntityData {
   }
 
   /**
+   * Returns int value for given field name. Throws {@link FactoryException} if field does not exist
+   * or parsing fails.
+   *
+   * @param field field name
+   * @return int value
+   */
+  public int getInt(String field) {
+    try {
+      return Integer.parseInt(getField(field));
+    } catch (NumberFormatException nfe) {
+      throw new FactoryException(
+          String.format(
+              "Exception while trying to parse field \"%s\" with supposed double value \"%s\"",
+              field, getField(field)),
+          nfe);
+    }
+  }
+
+  /**
+   * Returns double value for given field name. Throws {@link FactoryException} if field does not
+   * exist or parsing fails.
+   *
+   * @param field field name
+   * @return double value
+   */
+  public double getDouble(String field) {
+    try {
+      return Double.parseDouble(getField(field));
+    } catch (NumberFormatException nfe) {
+      throw new FactoryException(
+          String.format(
+              "Exception while trying to parse field \"%s\" with supposed double value \"%s\"",
+              field, getField(field)),
+          nfe);
+    }
+  }
+
+  /**
    * Parses and returns a UUID from field value of given field name. Throws {@link FactoryException}
    * if field does not exist or parsing fails.
    *
@@ -103,15 +141,7 @@ abstract class EntityData {
    * @return Quantity of given field with given unit
    */
   public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit) {
-    try {
-      return Quantities.getQuantity(Double.parseDouble(getField(field)), unit);
-    } catch (NumberFormatException nfe) {
-      throw new FactoryException(
-          String.format(
-              "Exception while trying to parse field \"%s\" with supposed double value \"%s\"",
-              field, getField(field)),
-          nfe);
-    }
+    return Quantities.getQuantity(getDouble(field), unit);
   }
 
   public Class<? extends UniqueEntity> getEntityClass() {

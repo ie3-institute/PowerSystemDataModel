@@ -19,6 +19,10 @@ public class StorageInputFactory
         StorageInput, SystemParticipantTypedEntityData<StorageTypeInput>> {
   private static final String BEHAVIOR = "behavior";
 
+  public StorageInputFactory() {
+    super(StorageInput.class);
+  }
+
   @Override
   protected String[] getAdditionalFields() {
     return new String[] {BEHAVIOR};

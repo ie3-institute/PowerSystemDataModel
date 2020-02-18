@@ -85,7 +85,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
           .orElseGet(
               () -> new SwitchResult(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, closed));
     } else if (entityClass.equals(Transformer2WResult.class)) {
-      final int tapPos = Integer.parseInt(data.getField(TAPPOS).trim());
+      final int tapPos = data.getInt(TAPPOS);
 
       return uuidOpt
           .map(
@@ -100,7 +100,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
       Quantity<ElectricCurrent> iCMag =
           data.getQuantity(ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
       Quantity<Angle> iCAng = data.getQuantity(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
-      final int tapPos = Integer.parseInt(data.getField(TAPPOS).trim());
+      final int tapPos = data.getInt(TAPPOS);
 
       return uuidOpt
           .map(
