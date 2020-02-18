@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.io.factory;
+package edu.ie3.io.factory.input;
 
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.NodeInput;
@@ -18,7 +18,7 @@ import java.util.Map;
  * @version 0.1
  * @since 28.01.20
  */
-public class SystemParticipantEntityData extends OperationEntityData {
+class SystemParticipantEntityData extends AssetInputEntityData {
   private final NodeInput node;
 
   public SystemParticipantEntityData(

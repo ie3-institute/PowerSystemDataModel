@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.io.factory;
+package edu.ie3.io.factory.input;
 
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.NodeInput;
@@ -11,7 +11,7 @@ import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.SystemParticipantTypeInput;
 import java.util.Map;
 
-public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
+class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
     extends SystemParticipantEntityData {
 
   private final T typeInput;

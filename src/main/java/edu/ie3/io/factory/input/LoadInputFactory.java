@@ -5,8 +5,6 @@
 */
 package edu.ie3.io.factory.input;
 
-import edu.ie3.io.factory.SystemParticipantEntityData;
-import edu.ie3.io.factory.SystemParticipantInputEntityFactory;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.NodeInput;

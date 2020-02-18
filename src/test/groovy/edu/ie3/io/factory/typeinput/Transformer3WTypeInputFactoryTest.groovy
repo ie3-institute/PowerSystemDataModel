@@ -1,5 +1,4 @@
-package edu.ie3.io.factory.input
-
+package edu.ie3.io.factory.typeinput
 
 import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.io.factory.SimpleEntityData

@@ -1,9 +1,9 @@
-package edu.ie3.io.factory.input
+package edu.ie3.io.factory.typeinput
 
-import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.io.factory.SimpleEntityData
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.input.connector.type.Transformer2WTypeInput
+import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
 class Transformer2WTypeInputFactoryTest extends Specification implements FactoryTestHelper {

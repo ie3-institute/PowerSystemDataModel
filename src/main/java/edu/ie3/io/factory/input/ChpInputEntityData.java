@@ -5,7 +5,6 @@
 */
 package edu.ie3.io.factory.input;
 
-import edu.ie3.io.factory.SystemParticipantTypedEntityData;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.ChpInput;

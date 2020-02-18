@@ -3,9 +3,10 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.io.factory;
+package edu.ie3.io.factory.input;
 
 import edu.ie3.exceptions.FactoryException;
+import edu.ie3.io.factory.EntityFactory;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.OperationTime.OperationTimeBuilder;
 import edu.ie3.models.UniqueEntity;
@@ -16,7 +17,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.IntFunction;
 
-public abstract class SystemParticipantInputEntityFactory<
+abstract class SystemParticipantInputEntityFactory<
         T extends SystemParticipantInput, D extends SystemParticipantEntityData>
     extends EntityFactory<T, D> {
   private static final String UUID = "uuid";
