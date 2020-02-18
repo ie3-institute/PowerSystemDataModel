@@ -5,12 +5,7 @@
 */
 package edu.ie3.io.factory;
 
-import edu.ie3.exceptions.FactoryException;
 import edu.ie3.models.UniqueEntity;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.IntFunction;
 
 /**
  * Internal API Interface for Entities that can be build without any dependencies on other complex
@@ -24,36 +19,5 @@ public abstract class SimpleEntityFactory<T extends UniqueEntity>
 
   public SimpleEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
-  }
-
-  @Override
-  public Optional<T> getEntity(SimpleEntityData simpleEntityData) {
-    isValidClass(simpleEntityData.getEntityClass());
-
-    // magic: case-insensitive get/set calls on set strings
-    final List<Set<String>> allFields = getFields(simpleEntityData);
-
-    validateParameters(
-        simpleEntityData, allFields.stream().toArray((IntFunction<Set<String>[]>) Set[]::new));
-
-    try {
-      // build the model
-      return Optional.of(buildModel(simpleEntityData));
-
-    } catch (FactoryException e) {
-      // only catch FactoryExceptions, as more serious exceptions should be handled elsewhere
-      log.error(
-          "An error occurred when creating instance of "
-              + simpleEntityData.getEntityClass().getSimpleName()
-              + ".class.",
-          e);
-    }
-    return Optional.empty();
-  }
-
-  private void isValidClass(Class<? extends UniqueEntity> clazz) {
-    if (!classes.contains(clazz))
-      throw new FactoryException(
-          "Cannot process " + clazz.getSimpleName() + ".class with this factory!");
   }
 }

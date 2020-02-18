@@ -10,6 +10,7 @@ import edu.ie3.models.UniqueEntity;
 import edu.ie3.util.TimeTools;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +41,34 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
    * @param data EntityData (or subclass) containing the data
    * @return An entity wrapped in Option if successful, an empty option otherwise
    */
-  public abstract Optional<T> getEntity(D data);
+  public Optional<T> getEntity(D data) {
+    isValidClass(data.getEntityClass());
+
+    // magic: case-insensitive get/set calls on set strings
+    final List<Set<String>> allFields = getFields(data);
+
+    validateParameters(data, allFields.stream().toArray((IntFunction<Set<String>[]>) Set[]::new));
+
+    try {
+      // build the model
+      return Optional.of(buildModel(data));
+
+    } catch (FactoryException e) {
+      // only catch FactoryExceptions, as more serious exceptions should be handled elsewhere
+      log.error(
+          "An error occurred when creating instance of "
+              + data.getEntityClass().getSimpleName()
+              + ".class.",
+          e);
+    }
+    return Optional.empty();
+  }
+
+  private void isValidClass(Class<? extends UniqueEntity> entityClass) {
+    if (!classes.contains(entityClass))
+      throw new FactoryException(
+          "Cannot process " + entityClass.getSimpleName() + ".class with this factory!");
+  }
 
   /**
    * Returns list of sets of attribute names that the entity requires to be built. At least one of

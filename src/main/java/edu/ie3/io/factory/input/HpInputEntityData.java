@@ -7,7 +7,6 @@ package edu.ie3.io.factory.input;
 
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
-import edu.ie3.models.input.system.ChpInput;
 import edu.ie3.models.input.system.HpInput;
 import edu.ie3.models.input.system.type.HpTypeInput;
 import edu.ie3.models.input.thermal.ThermalBusInput;
@@ -31,7 +30,7 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
       NodeInput node,
       HpTypeInput typeInput,
       ThermalBusInput thermalBusInput) {
-    super(fieldsToAttributes, ChpInput.class, operatorInput, node, typeInput);
+    super(fieldsToAttributes, HpInput.class, operatorInput, node, typeInput);
     this.thermalBusInput = thermalBusInput;
   }
 

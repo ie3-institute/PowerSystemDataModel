@@ -9,20 +9,18 @@ import edu.ie3.exceptions.FactoryException;
 import edu.ie3.io.factory.EntityFactory;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.OperationTime.OperationTimeBuilder;
-import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
-import edu.ie3.models.input.system.*;
+import edu.ie3.models.input.system.SystemParticipantInput;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.function.IntFunction;
 
 abstract class SystemParticipantInputEntityFactory<
         T extends SystemParticipantInput, D extends SystemParticipantEntityData>
     extends EntityFactory<T, D> {
   private static final String UUID = "uuid";
   private static final String OPERATES_FROM = "operatesfrom";
-  private static final String OPERATES_UNTIL = "operatesUntil";
+  private static final String OPERATES_UNTIL = "operatesuntil";
   private static final String ID = "id";
   private static final String Q_CHARACTERISTICS = "qcharacteristics";
 
@@ -30,47 +28,29 @@ abstract class SystemParticipantInputEntityFactory<
     super(allowedClasses);
   }
 
-  // FIXME same as SimpleEntityFactory method?
-  @Override
-  public Optional<T> getEntity(D data) {
-    isValidClass(data.getEntityClass());
-
-    // magic: case-insensitive get/set calls on set strings
-    final List<Set<String>> allFields = getFields(data);
-
-    validateParameters(data, allFields.stream().toArray((IntFunction<Set<String>[]>) Set[]::new));
-
-    try {
-      // build the model
-      return Optional.of(buildModel(data));
-
-    } catch (FactoryException e) {
-      // only catch FactoryExceptions, as more serious exceptions should be handled elsewhere
-      log.error(
-          "An error occurred when creating instance of "
-              + data.getEntityClass().getSimpleName()
-              + ".class.",
-          e);
-    }
-    return Optional.empty();
-  }
-
-  // FIXME same as SimpleEntityFactory method?
-  private void isValidClass(Class<? extends UniqueEntity> clazz) {
-    if (!classes.contains(clazz))
-      throw new FactoryException(
-          "Cannot process " + clazz.getSimpleName() + ".class with this factory!");
-  }
-
   @Override
   protected int validateParameters(D data, Set<String>... fieldSets) {
     if ((data.containsKey(OPERATES_FROM)
-            || data.containsKey(OPERATES_UNTIL)
-            || data.hasOperatorInput())
-        && !(data.containsKey(OPERATES_FROM)
-            && data.containsKey(OPERATES_UNTIL)
-            && data.hasOperatorInput())) {
-      // TODO handle this by throwing error
+        || data.containsKey(OPERATES_UNTIL)
+        || data.hasOperatorInput())) {
+
+      if ((data.containsKey(OPERATES_FROM) || data.containsKey(OPERATES_UNTIL))
+          && !data.hasOperatorInput())
+        throw new FactoryException(
+            "Operation time (fields '"
+                + OPERATES_FROM
+                + "' and '"
+                + OPERATES_UNTIL
+                + "') are passed, but operator input is not.");
+
+      if (data.hasOperatorInput()
+          && (!data.containsKey(OPERATES_FROM) || !data.containsKey(OPERATES_UNTIL)))
+        throw new FactoryException(
+            "Operator input is passed, but operation time (fields '"
+                + OPERATES_FROM
+                + "' and '"
+                + OPERATES_UNTIL
+                + "') is not.");
     }
 
     return super.validateParameters(data, fieldSets);
@@ -84,8 +64,8 @@ abstract class SystemParticipantInputEntityFactory<
 
     final String[] additionalFields = getAdditionalFields();
 
-    expandSet(minConstructorParams, additionalFields);
-    expandSet(optConstructorParams, additionalFields);
+    minConstructorParams = expandSet(minConstructorParams, additionalFields);
+    optConstructorParams = expandSet(optConstructorParams, additionalFields);
     return Arrays.asList(minConstructorParams, optConstructorParams);
   }
 

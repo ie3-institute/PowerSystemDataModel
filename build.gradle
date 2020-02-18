@@ -55,6 +55,7 @@ dependencies {
 	// testing
 	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
 	testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
+	testCompile group: 'org.objenesis', name: 'objenesis', version: '3.1' // Mock creation with constructor parameters
 }
 
 wrapper {
