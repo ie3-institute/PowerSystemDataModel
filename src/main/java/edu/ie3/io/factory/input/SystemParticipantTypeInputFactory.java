@@ -9,7 +9,6 @@ import edu.ie3.exceptions.FactoryException;
 import edu.ie3.io.factory.SimpleEntityData;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.system.type.*;
-import edu.ie3.models.input.thermal.ThermalStorageInput;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -190,10 +189,9 @@ public class SystemParticipantTypeInputFactory
     Quantity<Dimensionless> etaThermal = data.getQuantity(ETA_THERMAL, StandardUnits.EFFICIENCY);
     Quantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
     Quantity<Power> pOwn = data.getQuantity(P_OWN, StandardUnits.ACTIVE_POWER_IN);
-    ThermalStorageInput tiInput = null; // TODO
 
     return new ChpTypeInput(
-        uuid, id, capEx, opEx, etaEl, etaThermal, sRated, cosPhi, pThermal, pOwn, tiInput);
+        uuid, id, capEx, opEx, etaEl, etaThermal, sRated, cosPhi, pThermal, pOwn);
   }
 
   private SystemParticipantTypeInput buildStorageTypeInput(

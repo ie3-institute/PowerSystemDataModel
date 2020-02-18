@@ -6,7 +6,6 @@
 package edu.ie3.models.input.system.type;
 
 import edu.ie3.models.StandardUnits;
-import edu.ie3.models.input.thermal.ThermalStorageInput;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
@@ -25,8 +24,6 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
   private Quantity<Power> pThermal;
   /** Internal consumption (typically in kW) */
   private Quantity<Power> pOwn;
-  /* Thermal storage model */
-  private ThermalStorageInput thermalStorage;
 
   /**
    * @param uuid of the input entity
@@ -39,7 +36,6 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
    * @param cosphiRated Power factor for this type of CHP
    * @param pThermal Rated thermal power
    * @param pOwn Internal consumption
-   * @param thermalStorage Thermal storage model
    */
   public ChpTypeInput(
       UUID uuid,
@@ -51,14 +47,12 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       Quantity<Power> sRated,
       double cosphiRated,
       Quantity<Power> pThermal,
-      Quantity<Power> pOwn,
-      ThermalStorageInput thermalStorage) {
+      Quantity<Power> pOwn) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.etaEl = etaEl.to(StandardUnits.EFFICIENCY);
     this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
     this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
-    this.thermalStorage = thermalStorage;
   }
 
   public Quantity<Dimensionless> getEtaEl() {
@@ -91,14 +85,6 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
 
   public void setPOwn(Quantity<Power> pOwn) {
     this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
-  }
-
-  public ThermalStorageInput getThermalStorage() {
-    return thermalStorage;
-  }
-
-  public void setThermalStorage(ThermalStorageInput thermalStorage) {
-    this.thermalStorage = thermalStorage;
   }
 
   @Override

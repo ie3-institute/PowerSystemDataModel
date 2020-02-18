@@ -10,6 +10,7 @@ import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.ChpTypeInput;
 import edu.ie3.models.input.thermal.ThermalBusInput;
+import edu.ie3.models.input.thermal.ThermalStorageInput;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -19,6 +20,8 @@ public class ChpInput extends SystemParticipantInput {
   private ThermalBusInput thermalBus;
   /** Type of this CHP plant, containing default values for CHP plants of this kind */
   private ChpTypeInput type;
+  /** Thermal storage model */
+  private ThermalStorageInput thermalStorage;
   /** Is this asset market oriented? */
   private boolean marketReaction;
 
@@ -33,6 +36,7 @@ public class ChpInput extends SystemParticipantInput {
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param type of CHP
+   * @param thermalStorage Thermal storage model
    * @param marketReaction Is this asset market oriented?
    */
   public ChpInput(
@@ -44,10 +48,12 @@ public class ChpInput extends SystemParticipantInput {
       ThermalBusInput thermalBus,
       String qCharacteristics,
       ChpTypeInput type,
+      ThermalStorageInput thermalStorage,
       boolean marketReaction) {
     super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.thermalBus = thermalBus;
     this.type = type;
+    this.thermalStorage = thermalStorage;
     this.marketReaction = marketReaction;
   }
 
@@ -98,6 +104,14 @@ public class ChpInput extends SystemParticipantInput {
 
   public void setMarketReaction(boolean marketReaction) {
     this.marketReaction = marketReaction;
+  }
+
+  public ThermalStorageInput getThermalStorage() {
+    return thermalStorage;
+  }
+
+  public void setThermalStorage(ThermalStorageInput thermalStorage) {
+    this.thermalStorage = thermalStorage;
   }
 
   @Override
