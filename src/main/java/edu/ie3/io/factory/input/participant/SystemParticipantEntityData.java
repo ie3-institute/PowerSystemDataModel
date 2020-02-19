@@ -3,18 +3,18 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.io.factory.input;
+package edu.ie3.io.factory.input.participant;
 
+import edu.ie3.io.factory.input.AssetInputEntityData;
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import java.util.Map;
 
 /**
- * Data used by {@link edu.ie3.io.factory.input.SystemParticipantInputEntityFactory} to create an
- * instance of {@link edu.ie3.models.input.system.SystemParticipantInput}, thus needing additional
- * information about the {@link edu.ie3.models.input.NodeInput} which cannot be created through the
- * attribute map
+ * Data used by {@link SystemParticipantInputEntityFactory} to create an instance of {@link
+ * edu.ie3.models.input.system.SystemParticipantInput}, thus needing additional information about
+ * the {@link edu.ie3.models.input.NodeInput} which cannot be created through the attribute map
  */
 class SystemParticipantEntityData extends AssetInputEntityData {
   private final NodeInput node;
