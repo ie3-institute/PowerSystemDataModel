@@ -52,9 +52,9 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
         input.get().getClass() == inputClass
         ((PvInput) input.get()).with {
             assert uuid == UUID.fromString(parameter["uuid"])
-            assert operationTime.startDate.isPresent()
+            assert operationTime.startDate.present
             assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-            assert operationTime.endDate.isPresent()
+            assert operationTime.endDate.present
             assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
             assert operator == operatorInput
             assert id == parameter["id"]

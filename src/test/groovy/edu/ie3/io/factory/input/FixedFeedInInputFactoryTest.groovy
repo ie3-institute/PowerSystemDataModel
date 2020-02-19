@@ -45,9 +45,9 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
         typeInput.get().getClass() == inputClass
         ((FixedFeedInInput) typeInput.get()).with {
             assert uuid == UUID.fromString(parameter["uuid"])
-            assert operationTime.startDate.isPresent()
+            assert operationTime.startDate.present
             assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-            assert !operationTime.endDate.isPresent()
+            assert !operationTime.endDate.present
             assert operator == operatorInput
             assert id == parameter["id"]
             assert node == nodeInput
