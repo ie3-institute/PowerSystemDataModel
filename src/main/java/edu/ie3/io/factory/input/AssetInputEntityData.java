@@ -16,7 +16,7 @@ import java.util.Optional;
  * object includes additional information about the {@link OperatorInput}, which cannot be created
  * through the attribute map
  */
-class AssetInputEntityData extends EntityData {
+public class AssetInputEntityData extends EntityData {
 
   private final OperatorInput operatorInput;
 
