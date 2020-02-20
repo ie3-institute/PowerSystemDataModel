@@ -49,12 +49,12 @@ public class GraphicElements implements AggregatedEntities {
   }
 
   /** @return unmodifiable List of all node graphic data for this grid */
-  public List<NodeGraphicInput> getNodeGraphicList() {
-    return nodeGraphics;
+  public List<NodeGraphicInput> getNodeGraphics() {
+    return Collections.unmodifiableList(nodeGraphics);
   }
 
   /** @return unmodifiable List of all line graphic data for this grid */
-  public List<LineGraphicInput> getLineGraphicList() {
-    return lineGraphics;
+  public List<LineGraphicInput> getLineGraphics() {
+    return Collections.unmodifiableList(lineGraphics);
   }
 }
