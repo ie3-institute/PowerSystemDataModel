@@ -98,16 +98,20 @@ public class NodeInput extends AssetInput {
     this.subnet = subnet;
   }
 
-  public Quantity<Dimensionless> getVTarget() {
+  public Quantity<Dimensionless> getvTarget() {
     return vTarget;
   }
 
-  public Quantity<ElectricPotential> getVRated() {
+  public Quantity<ElectricPotential> getvRated() {
     return vRated;
   }
 
-  public boolean getSlack() {
+  public boolean isSlack() {
     return slack;
+  }
+
+  public Point getGeoPosition() {
+    return geoPosition;
   }
 
   public VoltageLevel getVoltLvl() {
