@@ -19,9 +19,9 @@ import java.util.List;
 public class SystemParticipantElements implements AggregatedEntities {
   private final List<BmInput> bmPlants = new LinkedList<>();
   private final List<ChpInput> chpPlants = new LinkedList<>();
-  private final List<EvcsInput> evcs = new LinkedList<>();
+  private final List<EvcsInput> evCS = new LinkedList<>();
   private final List<FixedFeedInInput> fixedFeedIns = new LinkedList<>();
-  private final List<HpInput> heatpumps = new LinkedList<>();
+  private final List<HpInput> heatPumps = new LinkedList<>();
   private final List<LoadInput> loads = new LinkedList<>();
   private final List<PvInput> pvPlants = new LinkedList<>();
   private final List<StorageInput> storages = new LinkedList<>();
@@ -48,9 +48,9 @@ public class SystemParticipantElements implements AggregatedEntities {
     List<UniqueEntity> allEntities = new LinkedList<>();
     allEntities.addAll(bmPlants);
     allEntities.addAll(chpPlants);
-    allEntities.addAll(evcs);
+    allEntities.addAll(evCS);
     allEntities.addAll(fixedFeedIns);
-    allEntities.addAll(heatpumps);
+    allEntities.addAll(heatPumps);
     allEntities.addAll(loads);
     allEntities.addAll(pvPlants);
     allEntities.addAll(storages);
@@ -72,7 +72,7 @@ public class SystemParticipantElements implements AggregatedEntities {
   }
 
   public void add(EvcsInput evcsInput) {
-    evcs.add(evcsInput);
+    evCS.add(evcsInput);
   }
 
   public void add(FixedFeedInInput fixedFeedIn) {
@@ -80,7 +80,7 @@ public class SystemParticipantElements implements AggregatedEntities {
   }
 
   public void add(HpInput hp) {
-    heatpumps.add(hp);
+    heatPumps.add(hp);
   }
 
   public void add(LoadInput load) {
@@ -92,7 +92,7 @@ public class SystemParticipantElements implements AggregatedEntities {
   }
 
   public void add(StorageInput storage) {
-    storages.add(storage);
+    this.storages.add(storage);
   }
 
   public void add(WecInput wec) {
@@ -100,47 +100,39 @@ public class SystemParticipantElements implements AggregatedEntities {
   }
 
   /** @return unmodifiable List of all biomass plants in this grid */
-  public List<BmInput> getBmInputList() {
+  public List<BmInput> getBmPlants() {
     return Collections.unmodifiableList(bmPlants);
   }
-
   /** @return unmodifiable List of all CHP plants in this grid */
-  public List<ChpInput> getChpInputList() {
+  public List<ChpInput> getChpPlants() {
     return Collections.unmodifiableList(chpPlants);
   }
-
-  /** @return unmodifiable List of all EVCS in this grid */
-  public List<EvcsInput> getEvcsInputList() {
-    return Collections.unmodifiableList(evcs);
+  /** @return unmodifiable List of all ev charging stations in this grid */
+  public List<EvcsInput> getEvCS() {
+    return Collections.unmodifiableList(evCS);
   }
-
   /** @return unmodifiable List of all fixed feed in in this grid */
-  public List<FixedFeedInInput> getFixedFeedInputList() {
+  public List<FixedFeedInInput> getFixedFeedIns() {
     return Collections.unmodifiableList(fixedFeedIns);
   }
-
   /** @return unmodifiable List of all heat pumps in this grid */
-  public List<HpInput> getHpInputList() {
-    return Collections.unmodifiableList(heatpumps);
+  public List<HpInput> getHeatPumps() {
+    return Collections.unmodifiableList(heatPumps);
   }
-
   /** @return unmodifiable List of all loads in this grid */
-  public List<LoadInput> getLoadInputList() {
+  public List<LoadInput> getLoads() {
     return Collections.unmodifiableList(loads);
   }
-
   /** @return unmodifiable List of all PV plants in this grid */
-  public List<PvInput> getPvInputList() {
+  public List<PvInput> getPvPlants() {
     return Collections.unmodifiableList(pvPlants);
   }
-
   /** @return unmodifiable List of all storages in this grid */
-  public List<StorageInput> getStorageInputList() {
+  public List<StorageInput> getStorages() {
     return Collections.unmodifiableList(storages);
   }
-
   /** @return unmodifiable List of all WECs in this grid */
-  public List<WecInput> getWecInputList() {
+  public List<WecInput> getWecPlants() {
     return Collections.unmodifiableList(wecPlants);
   }
 }

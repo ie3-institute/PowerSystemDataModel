@@ -102,5 +102,4 @@ public class AggregatedGridInput implements AggregatedEntities {
   public GraphicElements getGraphics() {
     return graphics;
   }
-
 }
