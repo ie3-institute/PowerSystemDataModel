@@ -35,17 +35,31 @@ public class RawGridElements implements AggregatedEntities {
   @Override
   public void add(UniqueEntity entity) {
     if (entity instanceof MeasurementUnitInput) {
-      measurementUnits.add((MeasurementUnitInput) entity);
+      add((MeasurementUnitInput) entity);
       return;
     }
-    if (entity instanceof NodeInput) add((NodeInput) entity);
-    else if (entity instanceof LineInput) add((LineInput) entity);
-    else if (entity instanceof Transformer2WInput) add((Transformer2WInput) entity);
-    else if (entity instanceof Transformer3WInput) add((Transformer3WInput) entity);
-    else if (entity instanceof SwitchInput) add((SwitchInput) entity);
-    else
-      throw new IllegalArgumentException(
-          "Entity type is unknown, cannot add entity [" + entity + "]");
+    if (entity instanceof NodeInput) {
+      add((NodeInput) entity);
+      return;
+    }
+    if (entity instanceof LineInput) {
+      add((LineInput) entity);
+      return;
+    }
+    if (entity instanceof Transformer2WInput) {
+      add((Transformer2WInput) entity);
+      return;
+    }
+    if (entity instanceof Transformer3WInput) {
+      add((Transformer3WInput) entity);
+      return;
+    }
+    if (entity instanceof SwitchInput) {
+      add((SwitchInput) entity);
+      return;
+    }
+    throw new IllegalArgumentException(
+        "Entity type is unknown, cannot add entity [" + entity + "]");
   }
 
   @Override
@@ -103,6 +117,10 @@ public class RawGridElements implements AggregatedEntities {
     switches.add(entity);
   }
 
+  public void add(MeasurementUnitInput entity) {
+    measurementUnits.add(entity);
+  }
+
   /** @return unmodifiable List of all three winding transformers in this grid */
   public List<NodeInput> getNodes() {
     return Collections.unmodifiableList(nodes);
@@ -129,6 +147,6 @@ public class RawGridElements implements AggregatedEntities {
   }
 
   public List<MeasurementUnitInput> getMeasurementUnits() {
-    return measurementUnits;
+    return Collections.unmodifiableList(measurementUnits);
   }
 }
