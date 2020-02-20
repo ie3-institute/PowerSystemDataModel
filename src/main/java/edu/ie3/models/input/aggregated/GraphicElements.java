@@ -13,10 +13,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 /** Represents the aggregation of graphic data elements (node graphics, line graphics) */
-public class AggregatedGraphicInput implements AggregatedEntities {
+public class GraphicElements implements AggregatedEntities {
 
-  private LinkedList<NodeGraphicInput> nodeGraphics = new LinkedList<>();
-  private LinkedList<LineGraphicInput> lineGraphics = new LinkedList<>();
+  private final LinkedList<NodeGraphicInput> nodeGraphics = new LinkedList<>();
+  private final LinkedList<LineGraphicInput> lineGraphics = new LinkedList<>();
 
   @Override
   public void add(UniqueEntity entity) {

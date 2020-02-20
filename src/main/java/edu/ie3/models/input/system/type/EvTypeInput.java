@@ -18,9 +18,9 @@ import javax.measure.quantity.Power;
 /** Describes the type of a {@link edu.ie3.models.input.system.EvInput} */
 public class EvTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity of the storage (typically in kWh) */
-  private Quantity<Energy> eStorage;
+  private final Quantity<Energy> eStorage;
   /** Consumed electric energy per driven distance (typically in kWh/km) */
-  private Quantity<SpecificEnergy> eCons;
+  private final Quantity<SpecificEnergy> eCons;
 
   /**
    * @param uuid of the input entity
@@ -50,16 +50,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     return eStorage;
   }
 
-  public void setEStorage(Quantity<Energy> eStorage) {
-    this.eStorage = eStorage;
-  }
-
   public Quantity<SpecificEnergy> getECons() {
     return eCons;
-  }
-
-  public void setECons(Quantity<SpecificEnergy> eCons) {
-    this.eCons = eCons;
   }
 
   @Override

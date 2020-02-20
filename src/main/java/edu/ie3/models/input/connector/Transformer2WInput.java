@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 public class Transformer2WInput extends TransformerInput {
   /** Type of this 2W transformer, containing default values for transformers of this kind */
-  private Transformer2WTypeInput type;
+  private final Transformer2WTypeInput type;
 
   /**
    * Constructor for an operated two winding transformer
@@ -76,10 +76,6 @@ public class Transformer2WInput extends TransformerInput {
 
   public Transformer2WTypeInput getType() {
     return type;
-  }
-
-  public void setType(Transformer2WTypeInput type) {
-    this.type = type;
   }
 
   @Override

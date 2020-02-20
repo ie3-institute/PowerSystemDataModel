@@ -18,9 +18,9 @@ import java.util.UUID;
  */
 public class Transformer3WInput extends TransformerInput {
   /** Type of this 3W transformer, containing default values for transformers of this kind */
-  private Transformer3WTypeInput type;
+  private final Transformer3WTypeInput type;
   /** The lower voltage node */
-  private NodeInput nodeC;
+  private final NodeInput nodeC;
 
   /**
    * Constructor for an operated three winding transformer
@@ -86,20 +86,10 @@ public class Transformer3WInput extends TransformerInput {
     return type;
   }
 
-  public void setType(Transformer3WTypeInput type) {
-    this.type = type;
-  }
-
   /** @return the node with the highest voltage level */
   @Override
   public NodeInput getNodeA() {
     return super.getNodeA();
-  }
-
-  /** @param nodeA the node with the highest voltage level */
-  @Override
-  public void setNodeA(NodeInput nodeA) {
-    super.setNodeA(nodeA);
   }
 
   /** @return the node with the "medium" voltage level */
@@ -108,20 +98,9 @@ public class Transformer3WInput extends TransformerInput {
     return super.getNodeB();
   }
 
-  /** @param nodeB the node with the "medium" voltage level */
-  @Override
-  public void setNodeB(NodeInput nodeB) {
-    super.setNodeB(nodeB);
-  }
-
   /** @return the node with the lowest voltage level */
   public NodeInput getNodeC() {
     return nodeC;
-  }
-
-  /** @param nodeC the node with the lowest voltage level */
-  public void setNodeC(NodeInput nodeC) {
-    this.nodeC = nodeC;
   }
 
   @Override

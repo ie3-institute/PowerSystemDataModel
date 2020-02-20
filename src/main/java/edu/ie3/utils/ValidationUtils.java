@@ -96,7 +96,7 @@ public class ValidationUtils {
    */
   public static boolean checkLineType(LineTypeInput lineType) {
     if (lineType == null) return false;
-    if (lineType.getvRated() == null
+    if (lineType.getVRated() == null
         || lineType.getIMax() == null
         || lineType.getB() == null
         || lineType.getX() == null
@@ -104,7 +104,7 @@ public class ValidationUtils {
         || lineType.getG() == null)
       throw new InvalidEntityException("at least one value of line type is null", lineType);
 
-    if (lineType.getvRated().getValue().doubleValue() == 0d
+    if (lineType.getVRated().getValue().doubleValue() == 0d
         || lineType.getIMax().getValue().doubleValue() == 0d
         || lineType.getB().getValue().doubleValue() == 0d
         || lineType.getX().getValue().doubleValue() == 0d

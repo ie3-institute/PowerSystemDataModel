@@ -20,23 +20,23 @@ import javax.measure.quantity.Power;
 public class PvInput extends SystemParticipantInput {
 
   /** Albedo value (typically a value between 0 and 1) */
-  private double albedo;
+  private final double albedo;
   /** Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦) */
-  private Quantity<Angle> azimuth;
+  private final Quantity<Angle> azimuth;
   /** Efficiency of converter (typically in %) */
-  private Quantity<Dimensionless> etaConv;
+  private final Quantity<Dimensionless> etaConv;
   /** Tilted inclination from horizontal (typically in °) */
-  private Quantity<Angle> height;
+  private final Quantity<Angle> height;
   /** Generator correction factor merging different technical influences */
-  private double kG;
+  private final double kG;
   /** Temperature correction factor */
-  private double kT;
+  private final double kT;
   /** Is this asset market oriented? */
-  private boolean marketReaction;
+  private final boolean marketReaction;
   /** Rated apparent power (typically in kVA) */
-  private Quantity<Power> sRated;
+  private final Quantity<Power> sRated;
   /** Rated power factor */
-  private double cosphiRated;
+  private final double cosphiRated;
   /**
    * Constructor for an operated photovoltaic plant
    *
@@ -131,72 +131,36 @@ public class PvInput extends SystemParticipantInput {
     return albedo;
   }
 
-  public void setAlbedo(double albedo) {
-    this.albedo = albedo;
-  }
-
   public Quantity<Angle> getAzimuth() {
     return azimuth;
-  }
-
-  public void setAzimuth(Quantity<Angle> azimuth) {
-    this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
   }
 
   public Quantity<Dimensionless> getEtaConv() {
     return etaConv;
   }
 
-  public void setEtaConv(Quantity<Dimensionless> etaConv) {
-    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
-  }
-
   public Quantity<Angle> getHeight() {
     return height;
   }
 
-  public void setHeight(Quantity<Angle> height) {
-    this.height = height.to(StandardUnits.SOLAR_HEIGHT);
-  }
-
-  public double getkG() {
+  public double getKG() {
     return kG;
   }
 
-  public void setkG(double kG) {
-    this.kG = kG;
-  }
-
-  public double getkT() {
+  public double getKT() {
     return kT;
   }
 
-  public void setkT(double kT) {
-    this.kT = kT;
-  }
-
-  public boolean getMarketReaction() {
+  public boolean isMarketReaction() {
     return marketReaction;
   }
 
-  public void setMarketReaction(boolean marketReaction) {
-    this.marketReaction = marketReaction;
-  }
-
-  public Quantity<Power> getsRated() {
+  public Quantity<Power> getSRated() {
     return sRated;
-  }
-
-  public void setsRated(Quantity<Power> sRated) {
-    this.sRated = sRated.to(StandardUnits.S_RATED);
   }
 
   public double getCosphiRated() {
     return cosphiRated;
-  }
-
-  public void setCosphiRated(double cosphiRated) {
-    this.cosphiRated = cosphiRated;
   }
 
   @Override

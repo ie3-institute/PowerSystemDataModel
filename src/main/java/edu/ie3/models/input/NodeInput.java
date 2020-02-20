@@ -18,20 +18,20 @@ import javax.measure.quantity.ElectricPotential;
 /** Describes an electrical grid node, that other assets can connect to */
 public class NodeInput extends AssetInput {
   /** Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.) */
-  private Quantity<Dimensionless> vTarget;
+  private final Quantity<Dimensionless> vTarget;
   /** Rated voltage magnitude of the node (typically in kV) */
-  private Quantity<ElectricPotential> vRated;
+  private final Quantity<ElectricPotential> vRated;
   /** Is this node a slack node? */
-  private boolean slack;
+  private final boolean slack;
   /**
    * The coordinates of this node, especially relevant for geo-dependant systems, that are connected
    * to this node
    */
-  private Point geoPosition;
+  private final Point geoPosition;
   /** Voltage level of this node */
-  private VoltageLevel voltLvl;
+  private final VoltageLevel voltLvl;
   /** Subnet of this node */
-  private int subnet;
+  private final int subnet;
   /**
    * Constructor for an operated node
    *
@@ -102,48 +102,20 @@ public class NodeInput extends AssetInput {
     return vTarget;
   }
 
-  public void setVTarget(Quantity<Dimensionless> vTarget) {
-    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
-  }
-
   public Quantity<ElectricPotential> getVRated() {
     return vRated;
-  }
-
-  public void setVRated(Quantity<ElectricPotential> vRated) {
-    this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
   }
 
   public boolean getSlack() {
     return slack;
   }
 
-  public void setSlack(boolean slack) {
-    this.slack = slack;
-  }
-
-  public Point getGeoPosition() {
-    return geoPosition;
-  }
-
-  public void setGeoPosition(Point geoPosition) {
-    this.geoPosition = geoPosition;
-  }
-
   public VoltageLevel getVoltLvl() {
     return voltLvl;
   }
 
-  public void setVoltLvl(VoltageLevel voltLvl) {
-    this.voltLvl = voltLvl;
-  }
-
   public int getSubnet() {
     return subnet;
-  }
-
-  public void setSubnet(int subnet) {
-    this.subnet = subnet;
   }
 
   @Override

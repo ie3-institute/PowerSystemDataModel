@@ -13,11 +13,11 @@ import java.util.UUID;
 /** Describes a grid asset under the assumption that every asset could be operable */
 public abstract class AssetInput extends InputEntity implements Operable {
   /** Time for which the entity is operated */
-  private OperationTime operationTime;
+  private final OperationTime operationTime;
   /** The operator of this asset */
-  private OperatorInput operator;
+  private final OperatorInput operator;
   /** Name or ID of the asset */
-  private String id;
+  private final String id;
 
   /** Constructor for an operated asset */
   public AssetInput(UUID uuid, OperationTime operationTime, OperatorInput operator, String id) {
@@ -37,15 +37,6 @@ public abstract class AssetInput extends InputEntity implements Operable {
     return operationTime;
   }
 
-  public void setOperationTime(OperationTime operationTime) {
-    this.operationTime = operationTime;
-  }
-
-  @Override
-  public void setOperator(OperatorInput operator) {
-    this.operator = operator;
-  }
-
   @Override
   public OperatorInput getOperator() {
     return operator;
@@ -53,10 +44,6 @@ public abstract class AssetInput extends InputEntity implements Operable {
 
   public String getId() {
     return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
   }
 
   @Override

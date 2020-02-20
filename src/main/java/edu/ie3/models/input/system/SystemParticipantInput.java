@@ -16,10 +16,10 @@ import java.util.UUID;
 public abstract class SystemParticipantInput extends AssetInput {
 
   /** The node that the asset is connected to */
-  private NodeInput node;
+  private final NodeInput node;
 
   /** Description of a reactive power characteristic. For details see further documentation */
-  private String qCharacteristics;
+  private final String qCharacteristics;
 
   /**
    * Constructor for an operated system participant
@@ -61,16 +61,8 @@ public abstract class SystemParticipantInput extends AssetInput {
     return node;
   }
 
-  public void setNode(NodeInput node) {
-    this.node = node;
-  }
-
   public String getQCharacteristics() {
     return qCharacteristics;
-  }
-
-  public void setQCharacteristics(String qCharacteristics) {
-    this.qCharacteristics = qCharacteristics;
   }
 
   @Override

@@ -18,15 +18,15 @@ import javax.measure.Quantity;
 /** Describes a biomass plant */
 public class BmInput extends SystemParticipantInput {
   /** Type of this BM plant, containing default values for BM plants of this kind */
-  private BmTypeInput type;
+  private final BmTypeInput type;
   /** Is this asset market oriented? */
-  private boolean marketReaction;
+  private final boolean marketReaction;
   /**
    * Does this plant increase the output power if the revenues exceed the energy generation costs?
    */
-  private boolean costControlled;
+  private final boolean costControlled;
   /** Granted feed in tariff (typically in €/kWh) */
-  private Quantity<EnergyPrice> feedInTariff;
+  private final Quantity<EnergyPrice> feedInTariff;
 
   /**
    * Constructor for an operated biomass plant
@@ -94,33 +94,16 @@ public class BmInput extends SystemParticipantInput {
     return type;
   }
 
-  public void setType(BmTypeInput type) {
-    this.type = type;
-  }
-
-  public boolean getMarketReaction() {
+  public boolean isMarketReaction() {
     return marketReaction;
   }
 
-  public void setMarketReaction(boolean marketReaction) {
-    this.marketReaction = marketReaction;
-  }
-
-  public boolean getCostControlled() {
+  public boolean isCostControlled() {
     return costControlled;
   }
 
-  public void setCostControlled(boolean costControlled) {
-    this.costControlled = costControlled;
-  }
-
-  public Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> getFeedInTariff() {
+  public Quantity<EnergyPrice> getFeedInTariff() {
     return feedInTariff;
-  }
-
-  public void setFeedInTariff(
-      Quantity<edu.ie3.util.quantities.interfaces.EnergyPrice> feedInTariff) {
-    this.feedInTariff = feedInTariff.to(StandardUnits.ENERGY_PRICE);
   }
 
   @Override

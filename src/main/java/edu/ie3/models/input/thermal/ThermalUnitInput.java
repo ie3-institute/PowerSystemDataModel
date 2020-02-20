@@ -12,7 +12,7 @@ import java.util.UUID;
 /** Abstract class for grouping all common properties to thermal models. */
 public abstract class ThermalUnitInput extends AssetInput {
   /** The thermal bus, a thermal unit is connected to. */
-  private ThermalBusInput bus;
+  private final ThermalBusInput bus;
 
   /**
    * @param uuid Unique identifier of a certain thermal input
@@ -26,10 +26,6 @@ public abstract class ThermalUnitInput extends AssetInput {
 
   public ThermalBusInput getBus() {
     return bus;
-  }
-
-  public void setBus(ThermalBusInput bus) {
-    this.bus = bus;
   }
 
   @Override

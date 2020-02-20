@@ -5,11 +5,11 @@
 */
 package edu.ie3.dataconnection.source;
 
-import edu.ie3.models.input.aggregated.AggregatedSystemInput;
+import edu.ie3.models.input.aggregated.SystemParticipantElements;
 
 /** Describes a data source for system participants */
 public interface SystemParticipantSource extends DataSource {
 
   /** @return system participant data as an aggregation of all elements in this grid */
-  AggregatedSystemInput fetchSystemParticipants();
+  SystemParticipantElements fetchSystemParticipants();
 }

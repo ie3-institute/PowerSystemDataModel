@@ -16,9 +16,9 @@ import java.util.UUID;
 /** Describes a heat pump */
 public class HpInput extends SystemParticipantInput {
   /** Type of this heat pump, containing default values for heat pump of this kind */
-  private HpTypeInput type;
+  private final HpTypeInput type;
   /** The thermal bus, this model is connected to */
-  private ThermalBusInput thermalBus;
+  private final ThermalBusInput thermalBus;
 
   /**
    * Constructor for an operated heat pump
@@ -72,16 +72,8 @@ public class HpInput extends SystemParticipantInput {
     return type;
   }
 
-  public void setType(HpTypeInput type) {
-    this.type = type;
-  }
-
   public ThermalBusInput getThermalBus() {
     return thermalBus;
-  }
-
-  public void setThermalBus(ThermalBusInput thermalBus) {
-    this.thermalBus = thermalBus;
   }
 
   @Override

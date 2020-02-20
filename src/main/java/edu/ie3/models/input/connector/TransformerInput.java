@@ -14,9 +14,9 @@ import java.util.UUID;
 /** Describes an electrical grid transformer, is "located" in the inferior subnet */
 public abstract class TransformerInput extends ConnectorInput {
   /** Tap position of this transformer */
-  private int tapPos;
+  private final int tapPos;
   /** True, if the tap position of the transformer is adapted automatically */
-  private boolean autoTap;
+  private final boolean autoTap;
 
   /**
    * Constructor for an operated transformer
@@ -74,16 +74,8 @@ public abstract class TransformerInput extends ConnectorInput {
     return tapPos;
   }
 
-  public void setTapPos(int tapPos) {
-    this.tapPos = tapPos;
-  }
-
   public boolean getAutoTap() {
     return autoTap;
-  }
-
-  public void setAutoTap(boolean autoTap) {
-    this.autoTap = autoTap;
   }
 
   @Override

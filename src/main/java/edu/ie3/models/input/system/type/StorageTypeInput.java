@@ -19,19 +19,19 @@ import javax.measure.quantity.Time;
 /** Describes the type of a {@link edu.ie3.models.input.system.StorageInput} */
 public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity (typically in kWh) */
-  private Quantity<Energy> eStorage;
+  private final Quantity<Energy> eStorage;
   /** Minimum permissible active power (typically in kW) */
-  private Quantity<Power> pMin;
+  private final Quantity<Power> pMin;
   /** Maximum permissible active power (typically in kW) */
-  private Quantity<Power> pMax;
+  private final Quantity<Power> pMax;
   /** Efficiency of the charging and discharging process (typically in %) */
-  private Quantity<Dimensionless> eta;
+  private final Quantity<Dimensionless> eta;
   /** Minimum permissible depth of discharge (typically in %) */
-  private Quantity<Dimensionless> dod;
+  private final Quantity<Dimensionless> dod;
   /** Maximum life time of the storage (typically in ms) */
-  private Quantity<Time> lifeTime;
+  private final Quantity<Time> lifeTime;
   /** Maximum amount of full charging cycles */
-  private int lifeCycle;
+  private final int lifeCycle;
 
   /**
    * @param uuid of the input entity
@@ -76,56 +76,28 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     return eStorage;
   }
 
-  public void setEStorage(Quantity<Energy> eStorage) {
-    this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
-  }
-
   public Quantity<Power> getPMin() {
     return pMin;
-  }
-
-  public void setPMin(Quantity<Power> pMin) {
-    this.pMin = pMin.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
   public Quantity<Power> getPMax() {
     return pMax;
   }
 
-  public void setPMax(Quantity<Power> pMax) {
-    this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
-  }
-
   public Quantity<Dimensionless> getEta() {
     return eta;
-  }
-
-  public void setEta(Quantity<Dimensionless> eta) {
-    this.eta = eta.to(StandardUnits.EFFICIENCY);
   }
 
   public Quantity<Dimensionless> getDod() {
     return dod;
   }
 
-  public void setDod(Quantity<Dimensionless> dod) {
-    this.dod = dod.to(StandardUnits.DOD);
-  }
-
   public Quantity<Time> getLifeTime() {
     return lifeTime;
   }
 
-  public void setLifeTime(Quantity<Time> lifeTime) {
-    this.lifeTime = lifeTime.to(StandardUnits.LIFE_TIME);
-  }
-
   public int getLifeCycle() {
     return lifeCycle;
-  }
-
-  public void setLifeCycle(int lifeCycle) {
-    this.lifeCycle = lifeCycle;
   }
 
   @Override

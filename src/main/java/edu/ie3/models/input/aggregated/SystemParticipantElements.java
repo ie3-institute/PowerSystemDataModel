@@ -16,16 +16,16 @@ import java.util.List;
  * Represents the aggregation of system participant elements (BM plants, CHP plants, EVCS, fixed
  * feed ins, heat pumps, loads, PV plants, storages, WECs)
  */
-public class AggregatedSystemInput implements AggregatedEntities {
-  private List<BmInput> bmPlants = new LinkedList<>();
-  private List<ChpInput> chpPlants = new LinkedList<>();
-  private List<EvcsInput> evcs = new LinkedList<>();
-  private List<FixedFeedInInput> fixedFeedIns = new LinkedList<>();
-  private List<HpInput> heatpumps = new LinkedList<>();
-  private List<LoadInput> loads = new LinkedList<>();
-  private List<PvInput> pvPlants = new LinkedList<>();
-  private List<StorageInput> storages = new LinkedList<>();
-  private List<WecInput> wecPlants = new LinkedList<>();
+public class SystemParticipantElements implements AggregatedEntities {
+  private final List<BmInput> bmPlants = new LinkedList<>();
+  private final List<ChpInput> chpPlants = new LinkedList<>();
+  private final List<EvcsInput> evcs = new LinkedList<>();
+  private final List<FixedFeedInInput> fixedFeedIns = new LinkedList<>();
+  private final List<HpInput> heatpumps = new LinkedList<>();
+  private final List<LoadInput> loads = new LinkedList<>();
+  private final List<PvInput> pvPlants = new LinkedList<>();
+  private final List<StorageInput> storages = new LinkedList<>();
+  private final List<WecInput> wecPlants = new LinkedList<>();
 
   @Override
   public void add(UniqueEntity entity) {

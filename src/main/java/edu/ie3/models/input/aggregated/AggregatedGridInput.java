@@ -6,8 +6,6 @@
 package edu.ie3.models.input.aggregated;
 
 import edu.ie3.models.UniqueEntity;
-import edu.ie3.models.input.MeasurementUnitInput;
-import edu.ie3.utils.ValidationUtils;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,28 +14,36 @@ import java.util.List;
 public class AggregatedGridInput implements AggregatedEntities {
 
   /** Name of this grid */
-  private String gridName;
+  private final String gridName;
   /** subnet number of this grid */
-  private int subnet;
+  private final int subnet;
   /** Voltlevel of this grid */
-  private String voltLvl;
+  private final String voltLvl;
 
   /** Aggregated raw grid elements (lines, nodes, transformers, switches) */
-  private AggregatedRawGridInput rawGrid;
+  private final RawGridElements rawGrid;
   /** Aggregated system participant elements */
-  private AggregatedSystemInput systemParticipants;
+  private final SystemParticipantElements systemParticipants;
   /** Aggregated graphic data entities (node graphics, line graphics) */
-  private AggregatedGraphicInput graphics;
+  private final GraphicElements graphics;
 
-  /** Measurement units in this grid */
-  private List<MeasurementUnitInput> measurementUnits = new LinkedList<>();
+  public AggregatedGridInput(
+      String gridName,
+      int subnet,
+      String voltLvl,
+      RawGridElements rawGrid,
+      SystemParticipantElements systemParticipants,
+      GraphicElements graphics) {
+    this.gridName = gridName;
+    this.subnet = subnet;
+    this.voltLvl = voltLvl;
+    this.rawGrid = rawGrid;
+    this.systemParticipants = systemParticipants;
+    this.graphics = graphics;
+  }
 
   @Override
   public void add(UniqueEntity entity) {
-    if (entity instanceof MeasurementUnitInput) {
-      measurementUnits.add((MeasurementUnitInput) entity);
-      return;
-    }
     try {
       rawGrid.add(entity);
       return;
@@ -63,7 +69,6 @@ public class AggregatedGridInput implements AggregatedEntities {
     allEntities.addAll(rawGrid.allEntitiesAsList());
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(graphics.allEntitiesAsList());
-    allEntities.addAll(measurementUnits);
     return Collections.unmodifiableList(allEntities);
   }
 
@@ -71,66 +76,30 @@ public class AggregatedGridInput implements AggregatedEntities {
   public boolean areValuesValid() {
     if (!rawGrid.areValuesValid()) return false;
     if (!systemParticipants.areValuesValid()) return false;
-    if (!graphics.areValuesValid()) return false;
-    for (MeasurementUnitInput measurementUnit : measurementUnits) {
-      if (!ValidationUtils.checkMeasurementUnit(measurementUnit)) return false;
-    }
-    return true;
+    return graphics.areValuesValid();
   }
 
   public String getGridName() {
     return gridName;
   }
 
-  public void setGridName(String gridName) {
-    this.gridName = gridName;
-  }
-
   public int getSubnet() {
     return subnet;
-  }
-
-  public void setSubnet(int subnet) {
-    this.subnet = subnet;
   }
 
   public String getVoltLvl() {
     return voltLvl;
   }
 
-  public void setVoltLvl(String voltLvl) {
-    this.voltLvl = voltLvl;
-  }
-
-  public AggregatedRawGridInput getRawGrid() {
+  public RawGridElements getRawGrid() {
     return rawGrid;
   }
 
-  public void setRawGrid(AggregatedRawGridInput rawGrid) {
-    this.rawGrid = rawGrid;
-  }
-
-  public AggregatedSystemInput getSystemParticipants() {
+  public SystemParticipantElements getSystemParticipants() {
     return systemParticipants;
   }
 
-  public void setSystemParticipants(AggregatedSystemInput systemParticipants) {
-    this.systemParticipants = systemParticipants;
-  }
-
-  public AggregatedGraphicInput getGraphics() {
+  public GraphicElements getGraphics() {
     return graphics;
-  }
-
-  public void setGraphics(AggregatedGraphicInput graphics) {
-    this.graphics = graphics;
-  }
-
-  public List<MeasurementUnitInput> getMeasurementUnits() {
-    return measurementUnits;
-  }
-
-  public void setMeasurementUnits(List<MeasurementUnitInput> measurementUnits) {
-    this.measurementUnits = measurementUnits;
   }
 }

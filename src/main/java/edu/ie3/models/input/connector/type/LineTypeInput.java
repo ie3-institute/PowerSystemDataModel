@@ -18,17 +18,17 @@ import javax.measure.quantity.ElectricPotential;
 /** Describes the type of a {@link edu.ie3.models.input.connector.LineInput} */
 public class LineTypeInput extends AssetTypeInput {
   /** Specific phase-to-ground susceptance for this type of line (typically in µS/km) */
-  private Quantity<SpecificConductance> b;
+  private final Quantity<SpecificConductance> b;
   /** Specific phase-to-ground conductance for this type of line (typically in µS/km) */
-  private Quantity<SpecificConductance> g;
+  private final Quantity<SpecificConductance> g;
   /** Specific resistance for this type of line (typically in Ohm/km) */
-  private Quantity<SpecificResistance> r;
+  private final Quantity<SpecificResistance> r;
   /** Specific reactance for this type of line (typically in Ohm/km) */
-  private Quantity<SpecificResistance> x;
+  private final Quantity<SpecificResistance> x;
   /** Maximum thermal current for this type of line (typically in A) */
-  private Quantity<ElectricCurrent> iMax;
+  private final Quantity<ElectricCurrent> iMax;
   /** Rated voltage for this type of line (typically in V) */
-  private Quantity<ElectricPotential> vRated;
+  private final Quantity<ElectricPotential> vRated;
 
   /**
    * @param uuid of the input entity
@@ -62,48 +62,24 @@ public class LineTypeInput extends AssetTypeInput {
     return b;
   }
 
-  public void setB(Quantity<SpecificConductance> b) {
-    this.b = b.to(StandardUnits.ADMITTANCE_PER_LENGTH);
-  }
-
   public Quantity<SpecificConductance> getG() {
     return g;
-  }
-
-  public void setG(Quantity<SpecificConductance> g) {
-    this.g = g.to(StandardUnits.ADMITTANCE_PER_LENGTH);
   }
 
   public Quantity<SpecificResistance> getR() {
     return r;
   }
 
-  public void setR(Quantity<SpecificResistance> r) {
-    this.r = r.to(StandardUnits.IMPEDANCE_PER_LENGTH);
-  }
-
   public Quantity<SpecificResistance> getX() {
     return x;
-  }
-
-  public void setX(Quantity<SpecificResistance> x) {
-    this.x = x.to(StandardUnits.IMPEDANCE_PER_LENGTH);
   }
 
   public Quantity<ElectricCurrent> getIMax() {
     return iMax;
   }
 
-  public void setIMax(Quantity<ElectricCurrent> iMax) {
-    this.iMax = iMax.to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-  }
-
-  public Quantity<ElectricPotential> getvRated() {
+  public Quantity<ElectricPotential> getVRated() {
     return vRated;
-  }
-
-  public void setvRated(Quantity<ElectricPotential> vRated) {
-    this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
   }
 
   @Override

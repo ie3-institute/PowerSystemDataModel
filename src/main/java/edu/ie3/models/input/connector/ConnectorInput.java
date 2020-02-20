@@ -15,11 +15,11 @@ import java.util.UUID;
 /** Describes an asset that connects two {@link NodeInput}s */
 public abstract class ConnectorInput extends AssetInput {
   /** Grid node at one side of the connector */
-  private NodeInput nodeA;
+  private final NodeInput nodeA;
   /** Grid node at the other side of the connector */
-  private NodeInput nodeB;
+  private final NodeInput nodeB;
   /** Amount of parallelDevices */
-  private int parallelDevices;
+  private final int parallelDevices;
 
   /**
    * Constructor for an operated connector
@@ -67,24 +67,12 @@ public abstract class ConnectorInput extends AssetInput {
     return nodeA;
   }
 
-  public void setNodeA(NodeInput nodeA) {
-    this.nodeA = nodeA;
-  }
-
   public NodeInput getNodeB() {
     return nodeB;
   }
 
-  public void setNodeB(NodeInput nodeB) {
-    this.nodeB = nodeB;
-  }
-
   public int getParallelDevices() {
     return parallelDevices;
-  }
-
-  public void setParallelDevices(int parallelDevices) {
-    this.parallelDevices = parallelDevices;
   }
 
   @Override

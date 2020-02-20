@@ -15,7 +15,7 @@ public class OperatorInput extends InputEntity {
       new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED");
 
   /** The name of this operator */
-  private String name;
+  private final String name;
 
   /** @param name of this operator */
   public OperatorInput(UUID uuid, String name) {
@@ -25,10 +25,6 @@ public class OperatorInput extends InputEntity {
 
   public String getName() {
     return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   @Override
