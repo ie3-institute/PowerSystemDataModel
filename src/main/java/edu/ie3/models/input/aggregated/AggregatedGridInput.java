@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-/** Represents the aggregation of all data needed to create a complete grid */
+/** Represents the aggregation of all data needed to create a complete single grid */
 public class AggregatedGridInput implements AggregatedEntities {
 
   /** Name of this grid */
@@ -102,4 +102,5 @@ public class AggregatedGridInput implements AggregatedEntities {
   public GraphicElements getGraphics() {
     return graphics;
   }
+
 }
