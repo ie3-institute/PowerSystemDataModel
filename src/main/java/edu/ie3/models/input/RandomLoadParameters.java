@@ -88,18 +88,6 @@ public class RandomLoadParameters extends InputEntity {
     return quarterHour;
   }
 
-  public double getKWd() {
-    return kWd;
-  }
-
-  public double getKSa() {
-    return kSa;
-  }
-
-  public double getKSu() {
-    return kSu;
-  }
-
   public double getMyWd() {
     return myWd;
   }
@@ -122,6 +110,18 @@ public class RandomLoadParameters extends InputEntity {
 
   public double getSigmaSu() {
     return sigmaSu;
+  }
+
+  public double getkWd() {
+    return kWd;
+  }
+
+  public double getkSa() {
+    return kSa;
+  }
+
+  public double getkSu() {
+    return kSu;
   }
 
   @Override
