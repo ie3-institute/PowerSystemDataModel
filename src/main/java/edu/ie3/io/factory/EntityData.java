@@ -8,10 +8,16 @@ package edu.ie3.io.factory;
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.models.UniqueEntity;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.geojson.GeoJsonReader;
 import tec.uom.se.ComparableQuantity;
 import tec.uom.se.quantity.Quantities;
 
@@ -22,6 +28,8 @@ import tec.uom.se.quantity.Quantities;
  * @since 28.01.20
  */
 public abstract class EntityData {
+
+  private static final GeoJsonReader geoJsonReader = new GeoJsonReader();
 
   private final Map<String, String> fieldsToAttributes;
   private final Class<? extends UniqueEntity> entityClass;
@@ -141,6 +149,65 @@ public abstract class EntityData {
               field, getField(field)),
           iae);
     }
+  }
+
+  /**
+   * Parses and returns a geometry from field value of given field name. Throws {@link
+   * FactoryException} if field does not exist or parsing fails.
+   *
+   * @param field field name
+   * @return Geometry if field value is not empty, empty Optional otherwise
+   */
+  private Optional<Geometry> getGeometry(String field) {
+    String value = getField(field);
+    try {
+      if (value.trim().isEmpty()) return Optional.empty();
+      else return Optional.of(geoJsonReader.read(value));
+    } catch (ParseException pe) {
+      throw new FactoryException(
+          String.format(
+              "Exception while trying to parse geometry of field \"%s\" with value \"%s\"",
+              field, value),
+          pe);
+    }
+  }
+
+  /**
+   * Parses and returns a geometrical LineString from field value of given field name. Throws {@link
+   * FactoryException} if field does not exist or parsing fails.
+   *
+   * @param field field name
+   * @return LineString if field value is not empty, empty Optional otherwise
+   */
+  public Optional<LineString> getLineString(String field) {
+    Optional<Geometry> geom = getGeometry(field);
+    if (geom.isPresent()) {
+      if (geom.get() instanceof LineString) return Optional.of((LineString) geom.get());
+      else
+        throw new FactoryException(
+            "Geometry is of type "
+                + geom.getClass().getSimpleName()
+                + ", but type LineString is required");
+    } else return Optional.empty();
+  }
+
+  /**
+   * Parses and returns a geometrical Point from field value of given field name. Throws {@link
+   * FactoryException} if field does not exist or parsing fails.
+   *
+   * @param field field name
+   * @return Point if field value is not empty, empty Optional otherwise
+   */
+  public Optional<Point> getPoint(String field) {
+    Optional<Geometry> geom = getGeometry(field);
+    if (geom.isPresent()) {
+      if (geom.get() instanceof LineString) return Optional.of((Point) geom.get());
+      else
+        throw new FactoryException(
+            "Geometry is of type "
+                + geom.getClass().getSimpleName()
+                + ", but type Point is required");
+    } else return Optional.empty();
   }
 
   /**

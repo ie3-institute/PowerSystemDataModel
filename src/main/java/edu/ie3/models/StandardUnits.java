@@ -105,6 +105,8 @@ public class StandardUnits {
   public static final Unit<Irradiation> IRRADIATION = KILOWATTHOUR_PER_SQUAREMETRE;
   /** Capex (capital expenditure) */
   public static final Unit<Currency> CAPEX = EURO;
+  /** Length of a line */
+  public static final Unit<Length> LINE_LENGTH = KILOMETRE;
 
   private StandardUnits() {
     throw new IllegalStateException("This is an Utility Class and not meant to be instantiated");

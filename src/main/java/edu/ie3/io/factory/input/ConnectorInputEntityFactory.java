@@ -9,22 +9,15 @@ import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.connector.ConnectorInput;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 abstract class ConnectorInputEntityFactory<
         T extends ConnectorInput, D extends ConnectorInputEntityData>
     extends AssetInputEntityFactory<T, D> {
+  protected static final String PARALLEL_DEVICES = "paralleldevices";
 
-  private static final String PARALLEL_DEVICES = "paralleldevices";
-
-  @Override
-  protected List<Set<String>> getFields(D data) {
-    List<Set<String>> fields = super.getFields(data);
-    for (Set<String> set : fields) set.add(PARALLEL_DEVICES);
-
-    return fields;
+  public ConnectorInputEntityFactory(Class<? extends T>... allowedClasses) {
+    super(allowedClasses);
   }
 
   @Override
@@ -32,18 +25,16 @@ abstract class ConnectorInputEntityFactory<
       D data, UUID uuid, String id, OperatorInput operatorInput, OperationTime operationTime) {
     final NodeInput nodeA = data.getNodeA();
     final NodeInput nodeB = data.getNodeB();
-    final int parallelDevices = data.getInt(PARALLEL_DEVICES);
 
-    return buildModel(data, uuid, id, nodeA, nodeB, parallelDevices, operatorInput, operationTime);
+    return buildModel(data, uuid, id, nodeA, nodeB, operatorInput, operationTime);
   }
 
   @Override
   protected T buildModel(D data, UUID uuid, String id) {
     final NodeInput nodeA = data.getNodeA();
     final NodeInput nodeB = data.getNodeB();
-    final int parallelDevices = data.getInt(PARALLEL_DEVICES);
 
-    return buildModel(data, uuid, id, nodeA, nodeB, parallelDevices);
+    return buildModel(data, uuid, id, nodeA, nodeB);
   }
 
   protected abstract T buildModel(
@@ -52,15 +43,8 @@ abstract class ConnectorInputEntityFactory<
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      int parallelDevices,
       OperatorInput operatorInput,
       OperationTime operationTime);
 
-  protected abstract T buildModel(
-      D data,
-      java.util.UUID uuid,
-      String id,
-      NodeInput nodeA,
-      NodeInput nodeB,
-      int parallelDevices);
+  protected abstract T buildModel(D data, UUID uuid, String id, NodeInput nodeA, NodeInput nodeB);
 }

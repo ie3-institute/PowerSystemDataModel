@@ -5,7 +5,7 @@
 */
 package edu.ie3.io.factory.input;
 
-import com.vividsolutions.jts.geom.Point;
+import edu.ie3.io.factory.VoltageLevelFactory;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.VoltageLevel;
@@ -15,8 +15,9 @@ import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricPotential;
+import org.locationtech.jts.geom.Point;
 
-public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, NodeInputEntityData> {
+public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetInputEntityData> {
   private static final String V_TARGET = "vtarget";
   private static final String V_RATED = "vrated";
   private static final String SLACK = "slack";
@@ -35,7 +36,7 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, NodeInp
 
   @Override
   protected NodeInput buildModel(
-      NodeInputEntityData data,
+      AssetInputEntityData data,
       UUID uuid,
       String id,
       OperatorInput operatorInput,
@@ -45,8 +46,8 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, NodeInp
     final Quantity<ElectricPotential> vRated =
         data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     final boolean slack = data.getBoolean(SLACK);
-    final Point geoPosition = data.getGeoPosition();
-    final VoltageLevel voltLvl = data.getVoltageLvl();
+    final Point geoPosition = data.getPoint(GEO_POSITION).orElse(null);
+    final VoltageLevel voltLvl = VoltageLevelFactory.parseVoltageLvl(data.getField(VOLT_LVL));
     final int subnet = data.getInt(SUBNET);
     return new NodeInput(
         uuid,
@@ -62,14 +63,14 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, NodeInp
   }
 
   @Override
-  protected NodeInput buildModel(NodeInputEntityData data, UUID uuid, String id) {
+  protected NodeInput buildModel(AssetInputEntityData data, UUID uuid, String id) {
     final Quantity<Dimensionless> vTarget =
         data.getQuantity(V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     final Quantity<ElectricPotential> vRated =
         data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     final boolean slack = data.getBoolean(SLACK);
-    final Point geoPosition = data.getGeoPosition();
-    final VoltageLevel voltLvl = data.getVoltageLvl();
+    final Point geoPosition = data.getPoint(GEO_POSITION).orElse(null);
+    final VoltageLevel voltLvl = VoltageLevelFactory.parseVoltageLvl(data.getField(VOLT_LVL));
     final int subnet = data.getInt(SUBNET);
     return new NodeInput(uuid, id, vTarget, vRated, slack, geoPosition, voltLvl, subnet);
   }
