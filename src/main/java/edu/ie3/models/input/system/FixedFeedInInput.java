@@ -69,7 +69,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
     this.cosphiRated = cosphiRated;
   }
 
-  public Quantity<Power> getSRated() {
+  public Quantity<Power> getsRated() {
     return sRated;
   }
 
