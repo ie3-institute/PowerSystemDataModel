@@ -40,7 +40,7 @@ public class HpTypeInput extends SystemParticipantTypeInput {
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
-  public Quantity<Power> getPThermal() {
+  public Quantity<Power> getpThermal() {
     return pThermal;
   }
 
