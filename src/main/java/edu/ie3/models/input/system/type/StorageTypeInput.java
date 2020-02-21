@@ -72,17 +72,6 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     this.lifeCycle = lifeCycle;
   }
 
-  public Quantity<Energy> getEStorage() {
-    return eStorage;
-  }
-
-  public Quantity<Power> getPMin() {
-    return pMin;
-  }
-
-  public Quantity<Power> getPMax() {
-    return pMax;
-  }
 
   public Quantity<Dimensionless> getEta() {
     return eta;
@@ -98,6 +87,18 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
   public int getLifeCycle() {
     return lifeCycle;
+  }
+
+  public Quantity<Energy> geteStorage() {
+    return eStorage;
+  }
+
+  public Quantity<Power> getpMin() {
+    return pMin;
+  }
+
+  public Quantity<Power> getpMax() {
+    return pMax;
   }
 
   @Override
