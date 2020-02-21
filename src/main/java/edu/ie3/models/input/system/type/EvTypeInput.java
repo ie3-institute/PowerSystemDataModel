@@ -46,11 +46,11 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     this.eCons = eCons;
   }
 
-  public Quantity<Energy> getEStorage() {
+  public Quantity<Energy> geteStorage() {
     return eStorage;
   }
 
-  public Quantity<SpecificEnergy> getECons() {
+  public Quantity<SpecificEnergy> geteCons() {
     return eCons;
   }
 
