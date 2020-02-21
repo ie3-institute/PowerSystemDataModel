@@ -67,12 +67,12 @@ public class WecInput extends SystemParticipantInput {
     this.marketReaction = marketReaction;
   }
 
-  public WecTypeInput getType() {
-    return type;
+  public boolean isMarketReaction() {
+    return marketReaction;
   }
 
-  public boolean getMarketReaction() {
-    return marketReaction;
+  public WecTypeInput getType() {
+    return type;
   }
 
   @Override
