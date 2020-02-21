@@ -32,6 +32,8 @@ public class NodeGraphicInput extends GraphicInput {
     this.point = point;
   }
 
+
+
   public NodeInput getNode() {
     return node;
   }

@@ -30,6 +30,8 @@ public class LineGraphicInput extends GraphicInput {
     return line;
   }
 
+
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

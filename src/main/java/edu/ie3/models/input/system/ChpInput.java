@@ -90,16 +90,16 @@ public class ChpInput extends SystemParticipantInput {
     return type;
   }
 
-  public boolean getMarketReaction() {
-    return marketReaction;
-  }
-
   public ThermalStorageInput getThermalStorage() {
     return thermalStorage;
   }
 
   public void setThermalStorage(ThermalStorageInput thermalStorage) {
     this.thermalStorage = thermalStorage;
+  }
+
+  public boolean isMarketReaction() {
+    return marketReaction;
   }
 
   @Override
