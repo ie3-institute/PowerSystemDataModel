@@ -19,7 +19,7 @@ public abstract class ConnectorInput extends AssetInput {
   /** Grid node at the other side of the connector */
   private final NodeInput nodeB;
   /** Amount of parallelDevices */
-  private final int       noOfParallelDevices;
+  private final int noOfParallelDevices;
 
   /**
    * Constructor for an operated connector
@@ -82,8 +82,8 @@ public abstract class ConnectorInput extends AssetInput {
     if (!super.equals(o)) return false;
     ConnectorInput that = (ConnectorInput) o;
     return noOfParallelDevices == that.noOfParallelDevices
-           && nodeA.equals(that.nodeA)
-           && nodeB.equals(that.nodeB);
+        && nodeA.equals(that.nodeA)
+        && nodeB.equals(that.nodeB);
   }
 
   @Override

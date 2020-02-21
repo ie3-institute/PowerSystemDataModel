@@ -72,7 +72,6 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     this.lifeCycle = lifeCycle;
   }
 
-
   public Quantity<Dimensionless> getEta() {
     return eta;
   }

@@ -36,8 +36,6 @@ public class GraphicInput extends InputEntity {
     return path;
   }
 
-
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

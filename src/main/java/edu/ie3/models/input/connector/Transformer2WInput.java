@@ -78,8 +78,6 @@ public class Transformer2WInput extends TransformerInput {
     return type;
   }
 
-
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

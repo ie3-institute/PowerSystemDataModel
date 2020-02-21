@@ -68,8 +68,6 @@ public class HpInput extends SystemParticipantInput {
     this.type = type;
   }
 
-
-
   public HpTypeInput getType() {
     return type;
   }

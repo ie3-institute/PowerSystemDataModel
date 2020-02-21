@@ -57,5 +57,4 @@ public class GraphicElements implements AggregatedEntities {
   public List<LineGraphicInput> getLineGraphics() {
     return Collections.unmodifiableList(lineGraphics);
   }
-
 }

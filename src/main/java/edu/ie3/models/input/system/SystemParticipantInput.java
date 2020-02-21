@@ -65,7 +65,6 @@ public abstract class SystemParticipantInput extends AssetInput {
     return node;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
