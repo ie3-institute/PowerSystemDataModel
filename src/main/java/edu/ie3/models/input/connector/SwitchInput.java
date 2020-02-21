@@ -53,7 +53,7 @@ public class SwitchInput extends ConnectorInput {
     this.closed = closed;
   }
 
-  public boolean getClosed() {
+  public boolean isClosed() {
     return closed;
   }
 
