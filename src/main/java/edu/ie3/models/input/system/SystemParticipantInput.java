@@ -57,13 +57,14 @@ public abstract class SystemParticipantInput extends AssetInput {
     this.qCharacteristics = qCharacteristics;
   }
 
+  public String getqCharacteristics() {
+    return qCharacteristics;
+  }
+
   public NodeInput getNode() {
     return node;
   }
 
-  public String getQCharacteristics() {
-    return qCharacteristics;
-  }
 
   @Override
   public boolean equals(Object o) {
