@@ -70,12 +70,12 @@ public abstract class TransformerInput extends ConnectorInput {
     this.autoTap = autoTap;
   }
 
-  public int getTapPos() {
-    return tapPos;
+  public boolean isAutoTap() {
+    return autoTap;
   }
 
-  public boolean getAutoTap() {
-    return autoTap;
+  public int getTapPos() {
+    return tapPos;
   }
 
   @Override
