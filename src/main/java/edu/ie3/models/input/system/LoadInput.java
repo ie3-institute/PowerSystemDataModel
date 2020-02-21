@@ -84,7 +84,7 @@ public class LoadInput extends SystemParticipantInput {
     this.cosphiRated = cosphiRated;
   }
 
-  public boolean getDsm() {
+  public boolean isDsm() {
     return dsm;
   }
 
