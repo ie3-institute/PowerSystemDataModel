@@ -90,39 +90,39 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     this.tapMax = tapMax;
   }
 
-  public Quantity<ElectricResistance> getRSc() {
+  public Quantity<ElectricResistance> getrSc() {
     return rSc;
   }
 
-  public Quantity<ElectricResistance> getXSc() {
+  public Quantity<ElectricResistance> getxSc() {
     return xSc;
   }
 
-  public Quantity<Power> getSRated() {
+  public Quantity<Power> getsRated() {
     return sRated;
   }
 
-  public Quantity<ElectricPotential> getVRatedA() {
+  public Quantity<ElectricPotential> getvRatedA() {
     return vRatedA;
   }
 
-  public Quantity<ElectricPotential> getVRatedB() {
+  public Quantity<ElectricPotential> getvRatedB() {
     return vRatedB;
   }
 
-  public Quantity<ElectricConductance> getGM() {
+  public Quantity<ElectricConductance> getgM() {
     return gM;
   }
 
-  public Quantity<ElectricConductance> getBM() {
+  public Quantity<ElectricConductance> getbM() {
     return bM;
   }
 
-  public Quantity<Dimensionless> getDV() {
+  public Quantity<Dimensionless> getdV() {
     return dV;
   }
 
-  public Quantity<Angle> getDPhi() {
+  public Quantity<Angle> getdPhi() {
     return dPhi;
   }
 
