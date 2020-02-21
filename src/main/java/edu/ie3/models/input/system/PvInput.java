@@ -143,24 +143,24 @@ public class PvInput extends SystemParticipantInput {
     return height;
   }
 
-  public double getKG() {
-    return kG;
-  }
-
-  public double getKT() {
-    return kT;
-  }
-
   public boolean isMarketReaction() {
     return marketReaction;
   }
 
-  public Quantity<Power> getSRated() {
-    return sRated;
-  }
-
   public double getCosphiRated() {
     return cosphiRated;
+  }
+
+  public double getkG() {
+    return kG;
+  }
+
+  public double getkT() {
+    return kT;
+  }
+
+  public Quantity<Power> getsRated() {
+    return sRated;
   }
 
   @Override
