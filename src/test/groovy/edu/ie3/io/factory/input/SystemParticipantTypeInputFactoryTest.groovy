@@ -49,8 +49,8 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
             assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
             assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
-            assert EStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
-            assert ECons == getQuant(parameter["econs"], StandardUnits.ENERGY_PER_DISTANCE)
+            assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
+            assert eCons == getQuant(parameter["econs"], StandardUnits.ENERGY_PER_DISTANCE)
         }
     }
 
@@ -84,7 +84,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
             assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
             assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
-            assert PThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
+            assert pThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
         }
     }
 
@@ -197,8 +197,8 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
             assert etaEl == getQuant(parameter["etael"], StandardUnits.EFFICIENCY)
             assert etaThermal == getQuant(parameter["etathermal"], StandardUnits.EFFICIENCY)
-            assert PThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
-            assert POwn == getQuant(parameter["pown"], StandardUnits.ACTIVE_POWER_IN)
+            assert pThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
+            assert pOwn == getQuant(parameter["pown"], StandardUnits.ACTIVE_POWER_IN)
         }
     }
 
@@ -238,9 +238,9 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
             assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
             assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
-            assert EStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
-            assert PMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_IN)
-            assert PMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
+            assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
+            assert pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_IN)
+            assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
             assert eta == getQuant(parameter["eta"], StandardUnits.EFFICIENCY)
             assert dod == getQuant(parameter["dod"], StandardUnits.DOD)
             assert lifeTime == getQuant(parameter["lifetime"], StandardUnits.LIFE_TIME)
