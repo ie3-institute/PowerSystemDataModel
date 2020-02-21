@@ -55,10 +55,10 @@ public class ValidationUtils {
    */
   public static boolean checkNode(NodeInput node) {
     if (node == null) return false;
-    if (node.getVRated() == null || node.getVTarget() == null)
+    if (node.getvRated() == null || node.getvTarget() == null)
       throw new InvalidEntityException("vRated or vTarget is null", node);
-    if (node.getVRated().getValue().doubleValue() == 0d
-        || node.getVTarget().getValue().doubleValue() == 0d)
+    if (node.getvRated().getValue().doubleValue() == 0d
+        || node.getvTarget().getValue().doubleValue() == 0d)
       throw new UnsafeEntityException("vRated or vTarget is 0", node);
     return true;
   }
@@ -97,7 +97,7 @@ public class ValidationUtils {
   public static boolean checkLineType(LineTypeInput lineType) {
     if (lineType == null) return false;
     if (lineType.getvRated() == null
-        || lineType.getIMax() == null
+        || lineType.getiMax() == null
         || lineType.getB() == null
         || lineType.getX() == null
         || lineType.getR() == null
@@ -105,7 +105,7 @@ public class ValidationUtils {
       throw new InvalidEntityException("at least one value of line type is null", lineType);
 
     if (lineType.getvRated().getValue().doubleValue() == 0d
-        || lineType.getIMax().getValue().doubleValue() == 0d
+        || lineType.getiMax().getValue().doubleValue() == 0d
         || lineType.getB().getValue().doubleValue() == 0d
         || lineType.getX().getValue().doubleValue() == 0d
         || lineType.getR().getValue().doubleValue() == 0d
@@ -135,26 +135,26 @@ public class ValidationUtils {
    */
   public static boolean checkTransformer2WType(Transformer2WTypeInput trafoType) {
     if (trafoType == null) return false;
-    if ((trafoType.getSRated() == null)
-        || (trafoType.getVRatedA() == null)
-        || (trafoType.getVRatedB() == null)
-        || (trafoType.getRSc() == null)
-        || (trafoType.getXSc() == null)
-        || (trafoType.getGM() == null)
-        || (trafoType.getBM() == null)
-        || (trafoType.getDV() == null)
-        || (trafoType.getDPhi() == null))
+    if ((trafoType.getsRated() == null)
+        || (trafoType.getvRatedA() == null)
+        || (trafoType.getvRatedB() == null)
+        || (trafoType.getrSc() == null)
+        || (trafoType.getxSc() == null)
+        || (trafoType.getgM() == null)
+        || (trafoType.getbM() == null)
+        || (trafoType.getdV() == null)
+        || (trafoType.getdPhi() == null))
       throw new InvalidEntityException("at least one value of trafo2w type is null", trafoType);
 
-    if ((trafoType.getSRated().getValue().doubleValue() == 0d)
-        || (trafoType.getVRatedA().getValue().doubleValue() == 0d)
-        || (trafoType.getVRatedB().getValue().doubleValue() == 0d)
-        || (trafoType.getRSc().getValue().doubleValue() == 0d)
-        || (trafoType.getXSc().getValue().doubleValue() == 0d)
-        || (trafoType.getGM().getValue().doubleValue() == 0d)
-        || (trafoType.getBM().getValue().doubleValue() == 0d)
-        || (trafoType.getDV().getValue().doubleValue() == 0d)
-        || (trafoType.getDPhi().getValue().doubleValue() == 0d))
+    if ((trafoType.getsRated().getValue().doubleValue() == 0d)
+        || (trafoType.getvRatedA().getValue().doubleValue() == 0d)
+        || (trafoType.getvRatedB().getValue().doubleValue() == 0d)
+        || (trafoType.getrSc().getValue().doubleValue() == 0d)
+        || (trafoType.getxSc().getValue().doubleValue() == 0d)
+        || (trafoType.getgM().getValue().doubleValue() == 0d)
+        || (trafoType.getbM().getValue().doubleValue() == 0d)
+        || (trafoType.getdV().getValue().doubleValue() == 0d)
+        || (trafoType.getdPhi().getValue().doubleValue() == 0d))
       throw new UnsafeEntityException("at least one value of trafo2w type is 0", trafoType);
     return true;
   }

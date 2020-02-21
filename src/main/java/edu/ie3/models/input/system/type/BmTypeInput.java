@@ -19,9 +19,9 @@ import javax.measure.quantity.Power;
 public class BmTypeInput extends SystemParticipantTypeInput {
 
   /** Permissible load gradient (typically in %/h) */
-  private Quantity<DimensionlessRate> loadGradient;
+  private final Quantity<DimensionlessRate> loadGradient;
   /** Efficiency of converter for this type of BM (typically in %) */
-  private Quantity<Dimensionless> etaConv;
+  private final Quantity<Dimensionless> etaConv;
 
   /**
    * @param uuid of the input entity
@@ -51,16 +51,8 @@ public class BmTypeInput extends SystemParticipantTypeInput {
     return loadGradient;
   }
 
-  public void setLoadGradient(Quantity<DimensionlessRate> loadGradient) {
-    this.loadGradient = loadGradient.to(StandardUnits.LOAD_GRADIENT);
-  }
-
   public Quantity<Dimensionless> getEtaConv() {
     return etaConv;
-  }
-
-  public void setEtaConv(Quantity<Dimensionless> etaConv) {
-    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
   }
 
   @Override

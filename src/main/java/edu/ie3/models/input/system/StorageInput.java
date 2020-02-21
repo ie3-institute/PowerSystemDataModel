@@ -15,10 +15,10 @@ import java.util.UUID;
 /** Describes a battery storage */
 public class StorageInput extends SystemParticipantInput {
   /** Type of this storage, containing default values for storages of this kind */
-  private StorageTypeInput type;
+  private final StorageTypeInput type;
 
   /** Selection of predefined behaviour of the storage */
-  private StorageStrategy behaviour;
+  private final StorageStrategy behaviour;
   /**
    * Constructor for an operated storage
    *
@@ -71,16 +71,8 @@ public class StorageInput extends SystemParticipantInput {
     return type;
   }
 
-  public void setType(StorageTypeInput type) {
-    this.type = type;
-  }
-
   public StorageStrategy getBehaviour() {
     return behaviour;
-  }
-
-  public void setBehaviour(String behaviour) {
-    this.behaviour = StorageStrategy.get(behaviour);
   }
 
   @Override

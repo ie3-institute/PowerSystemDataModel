@@ -17,13 +17,13 @@ import java.util.UUID;
 /** Describes a combined heat and power plant */
 public class ChpInput extends SystemParticipantInput {
   /** The thermal bus, this model is connected to */
-  private ThermalBusInput thermalBus;
+  private final ThermalBusInput thermalBus;
   /** Type of this CHP plant, containing default values for CHP plants of this kind */
-  private ChpTypeInput type;
+  private final ChpTypeInput type;
   /** Thermal storage model */
   private ThermalStorageInput thermalStorage;
   /** Is this asset market oriented? */
-  private boolean marketReaction;
+  private final boolean marketReaction;
 
   /**
    * Constructor for an operated combined heat and power plant
@@ -86,24 +86,8 @@ public class ChpInput extends SystemParticipantInput {
     return thermalBus;
   }
 
-  public void setThermalBus(ThermalBusInput thermalBus) {
-    this.thermalBus = thermalBus;
-  }
-
   public ChpTypeInput getType() {
     return type;
-  }
-
-  public void setType(ChpTypeInput type) {
-    this.type = type;
-  }
-
-  public boolean getMarketReaction() {
-    return marketReaction;
-  }
-
-  public void setMarketReaction(boolean marketReaction) {
-    this.marketReaction = marketReaction;
   }
 
   public ThermalStorageInput getThermalStorage() {
@@ -112,6 +96,10 @@ public class ChpInput extends SystemParticipantInput {
 
   public void setThermalStorage(ThermalStorageInput thermalStorage) {
     this.thermalStorage = thermalStorage;
+  }
+
+  public boolean isMarketReaction() {
+    return marketReaction;
   }
 
   @Override

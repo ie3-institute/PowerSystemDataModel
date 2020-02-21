@@ -17,34 +17,34 @@ import java.util.UUID;
 public class RandomLoadParameters extends InputEntity {
 
   /** The respective quarter hour of the day */
-  private int quarterHour;
+  private final int quarterHour;
 
   /** Shape parameter for a working day */
-  private double kWd;
+  private final double kWd;
 
   /** Shape parameter for a Saturday */
-  private double kSa;
+  private final double kSa;
 
   /** Shape parameter for a Sunday */
-  private double kSu;
+  private final double kSu;
 
   /** Location parameter for a working day */
-  private double myWd;
+  private final double myWd;
 
   /** Location parameter for a Saturday */
-  private double mySa;
+  private final double mySa;
 
   /** Location parameter for a Sunday */
-  private double mySu;
+  private final double mySu;
 
   /** Scale parameter for a working day */
-  private double sigmaWd;
+  private final double sigmaWd;
 
   /** Scale parameter for a Saturday */
-  private double sigmaSa;
+  private final double sigmaSa;
 
   /** Scale parameter for a Sunday */
-  private double sigmaSu;
+  private final double sigmaSu;
 
   /**
    * @param uuid of the input entity
@@ -88,80 +88,40 @@ public class RandomLoadParameters extends InputEntity {
     return quarterHour;
   }
 
-  public void setQuarterHour(int quarterHour) {
-    this.quarterHour = quarterHour;
-  }
-
-  public double getKWd() {
-    return kWd;
-  }
-
-  public void setKWd(double kWd) {
-    this.kWd = kWd;
-  }
-
-  public double getKSa() {
-    return kSa;
-  }
-
-  public void setKSa(double kSa) {
-    this.kSa = kSa;
-  }
-
-  public double getKSu() {
-    return kSu;
-  }
-
-  public void setKSu(double kSu) {
-    this.kSu = kSu;
-  }
-
   public double getMyWd() {
     return myWd;
-  }
-
-  public void setMyWd(double myWd) {
-    this.myWd = myWd;
   }
 
   public double getMySa() {
     return mySa;
   }
 
-  public void setMySa(double mySa) {
-    this.mySa = mySa;
-  }
-
   public double getMySu() {
     return mySu;
-  }
-
-  public void setMySu(double mySu) {
-    this.mySu = mySu;
   }
 
   public double getSigmaWd() {
     return sigmaWd;
   }
 
-  public void setSigmaWd(double sigmaWd) {
-    this.sigmaWd = sigmaWd;
-  }
-
   public double getSigmaSa() {
     return sigmaSa;
-  }
-
-  public void setSigmaSa(double sigmaSa) {
-    this.sigmaSa = sigmaSa;
   }
 
   public double getSigmaSu() {
     return sigmaSu;
   }
 
-  public void setSigmaSu(double sigmaSu) {
-    this.sigmaSu = sigmaSu;
+  public double getkWd() {
+    return kWd;
+  }
+
+  public double getkSa() {
+    return kSa;
+  }
+
+  public double getkSu() {
+    return kSu;
   }
 
   @Override

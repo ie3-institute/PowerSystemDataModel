@@ -17,13 +17,13 @@ import javax.measure.quantity.Power;
 /** Describes the type of a {@link edu.ie3.models.input.system.ChpInput} */
 public class ChpTypeInput extends SystemParticipantTypeInput {
   /** Electrical efficiency (typically in %) */
-  private Quantity<Dimensionless> etaEl;
+  private final Quantity<Dimensionless> etaEl;
   /** Thermal efficiency (typically in %) */
-  private Quantity<Dimensionless> etaThermal;
+  private final Quantity<Dimensionless> etaThermal;
   /** Rated thermal power (typically in kW) */
-  private Quantity<Power> pThermal;
+  private final Quantity<Power> pThermal;
   /** Internal consumption (typically in kW) */
-  private Quantity<Power> pOwn;
+  private final Quantity<Power> pOwn;
 
   /**
    * @param uuid of the input entity
@@ -59,32 +59,16 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     return etaEl;
   }
 
-  public void setEtaEl(Quantity<Dimensionless> etaEl) {
-    this.etaEl = etaEl.to(StandardUnits.EFFICIENCY);
-  }
-
   public Quantity<Dimensionless> getEtaThermal() {
     return etaThermal;
   }
 
-  public void setEtaThermal(Quantity<Dimensionless> etaThermal) {
-    this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
-  }
-
-  public Quantity<Power> getPThermal() {
+  public Quantity<Power> getpThermal() {
     return pThermal;
   }
 
-  public void setPThermal(Quantity<Power> pThermal) {
-    this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
-  }
-
-  public Quantity<Power> getPOwn() {
+  public Quantity<Power> getpOwn() {
     return pOwn;
-  }
-
-  public void setPOwn(Quantity<Power> pOwn) {
-    this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
   @Override

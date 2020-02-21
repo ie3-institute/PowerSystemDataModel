@@ -11,7 +11,7 @@ import java.util.UUID;
 /** Describes the type of an {@link edu.ie3.models.input.AssetInput} */
 public abstract class AssetTypeInput extends InputEntity {
   /** Name or ID of the asset */
-  private String id;
+  private final String id;
 
   /**
    * @param uuid of the input entity
@@ -24,10 +24,6 @@ public abstract class AssetTypeInput extends InputEntity {
 
   public String getId() {
     return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
   }
 
   @Override

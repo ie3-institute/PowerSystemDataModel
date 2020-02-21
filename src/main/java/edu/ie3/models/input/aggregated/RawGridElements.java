@@ -6,6 +6,7 @@
 package edu.ie3.models.input.aggregated;
 
 import edu.ie3.models.UniqueEntity;
+import edu.ie3.models.input.MeasurementUnitInput;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.connector.LineInput;
 import edu.ie3.models.input.connector.SwitchInput;
@@ -17,28 +18,48 @@ import java.util.LinkedList;
 import java.util.List;
 
 /** Represents the aggregation of raw grid elements (nodes, lines, transformers, switches) */
-public class AggregatedRawGridInput implements AggregatedEntities {
+public class RawGridElements implements AggregatedEntities {
   /** List of nodes in this grid */
-  private LinkedList<NodeInput> nodes = new LinkedList<>();
+  private final LinkedList<NodeInput> nodes = new LinkedList<>();
   /** List of lines in this grid */
-  private LinkedList<LineInput> lines = new LinkedList<>();
+  private final LinkedList<LineInput> lines = new LinkedList<>();
   /** List of two winding transformers in this grid */
-  private LinkedList<Transformer2WInput> transformer2Ws = new LinkedList<>();
+  private final LinkedList<Transformer2WInput> transformer2Ws = new LinkedList<>();
   /** List of three winding in this grid */
-  private LinkedList<Transformer3WInput> transformer3Ws = new LinkedList<>();
+  private final LinkedList<Transformer3WInput> transformer3Ws = new LinkedList<>();
   /** List of switches in this grid */
-  private LinkedList<SwitchInput> switches = new LinkedList<>();
+  private final LinkedList<SwitchInput> switches = new LinkedList<>();
+  /** Measurement units in this grid */
+  private final List<MeasurementUnitInput> measurementUnits = new LinkedList<>();
 
   @Override
   public void add(UniqueEntity entity) {
-    if (entity instanceof NodeInput) add((NodeInput) entity);
-    else if (entity instanceof LineInput) add((LineInput) entity);
-    else if (entity instanceof Transformer2WInput) add((Transformer2WInput) entity);
-    else if (entity instanceof Transformer3WInput) add((Transformer3WInput) entity);
-    else if (entity instanceof SwitchInput) add((SwitchInput) entity);
-    else
-      throw new IllegalArgumentException(
-          "Entity type is unknown, cannot add entity [" + entity + "]");
+    if (entity instanceof MeasurementUnitInput) {
+      add((MeasurementUnitInput) entity);
+      return;
+    }
+    if (entity instanceof NodeInput) {
+      add((NodeInput) entity);
+      return;
+    }
+    if (entity instanceof LineInput) {
+      add((LineInput) entity);
+      return;
+    }
+    if (entity instanceof Transformer2WInput) {
+      add((Transformer2WInput) entity);
+      return;
+    }
+    if (entity instanceof Transformer3WInput) {
+      add((Transformer3WInput) entity);
+      return;
+    }
+    if (entity instanceof SwitchInput) {
+      add((SwitchInput) entity);
+      return;
+    }
+    throw new IllegalArgumentException(
+        "Entity type is unknown, cannot add entity [" + entity + "]");
   }
 
   @Override
@@ -49,11 +70,15 @@ public class AggregatedRawGridInput implements AggregatedEntities {
     allEntities.addAll(transformer2Ws);
     allEntities.addAll(transformer3Ws);
     allEntities.addAll(switches);
+    allEntities.addAll(measurementUnits);
     return Collections.unmodifiableList(allEntities);
   }
 
   @Override
   public boolean areValuesValid() {
+    for (MeasurementUnitInput measurementUnit : measurementUnits) {
+      if (!ValidationUtils.checkMeasurementUnit(measurementUnit)) return false;
+    }
     for (NodeInput node : nodes) {
       if (!ValidationUtils.checkNode(node)) return false;
     }
@@ -92,6 +117,10 @@ public class AggregatedRawGridInput implements AggregatedEntities {
     switches.add(entity);
   }
 
+  public void add(MeasurementUnitInput entity) {
+    measurementUnits.add(entity);
+  }
+
   /** @return unmodifiable List of all three winding transformers in this grid */
   public List<NodeInput> getNodes() {
     return Collections.unmodifiableList(nodes);
@@ -115,5 +144,9 @@ public class AggregatedRawGridInput implements AggregatedEntities {
   /** @return unmodifiable List of all switches in this grid */
   public List<SwitchInput> getSwitches() {
     return Collections.unmodifiableList(switches);
+  }
+
+  public List<MeasurementUnitInput> getMeasurementUnits() {
+    return Collections.unmodifiableList(measurementUnits);
   }
 }

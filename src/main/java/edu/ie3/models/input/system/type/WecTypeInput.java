@@ -19,11 +19,11 @@ import javax.measure.quantity.Power;
 /** Describes the type of a {@link edu.ie3.models.input.system.WecInput} */
 public class WecTypeInput extends SystemParticipantTypeInput {
   /** Efficiency of converter for this type of WEC (typically in %) */
-  private Quantity<Dimensionless> etaConv;
+  private final Quantity<Dimensionless> etaConv;
   /** Swept Area of blades for this type of WEC (typically in m²) */
-  private Quantity<Area> rotorArea;
+  private final Quantity<Area> rotorArea;
   /** Height from ground to center of rotor for this type of WEC (typically in m) */
-  private Quantity<Length> hubHeight;
+  private final Quantity<Length> hubHeight;
 
   /**
    * @param uuid of the input entity
@@ -56,24 +56,12 @@ public class WecTypeInput extends SystemParticipantTypeInput {
     return etaConv;
   }
 
-  public void setEtaConv(Quantity<Dimensionless> etaConv) {
-    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
-  }
-
   public Quantity<Area> getRotorArea() {
     return rotorArea;
   }
 
-  public void setRotorArea(Quantity<Area> rotorArea) {
-    this.rotorArea = rotorArea.to(StandardUnits.ROTOR_AREA);
-  }
-
   public Quantity<Length> getHubHeight() {
     return hubHeight;
-  }
-
-  public void setHubHeight(Quantity<Length> hubHeight) {
-    this.hubHeight = hubHeight.to(StandardUnits.HUB_HEIGHT);
   }
 
   @Override

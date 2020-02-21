@@ -45,7 +45,7 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
             assert g == getQuant(parameter["g"], StandardUnits.ADMITTANCE_PER_LENGTH)
             assert r == getQuant(parameter["r"], StandardUnits.IMPEDANCE_PER_LENGTH)
             assert x == getQuant(parameter["x"], StandardUnits.IMPEDANCE_PER_LENGTH)
-            assert IMax == getQuant(parameter["imax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
+            assert iMax == getQuant(parameter["imax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
             assert vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
         }
     }

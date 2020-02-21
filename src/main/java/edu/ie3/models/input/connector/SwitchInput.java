@@ -14,7 +14,7 @@ import java.util.UUID;
 /** Describes an electrical grid switch between two {@link NodeInput}s */
 public class SwitchInput extends ConnectorInput {
   /** Is the switching state 'closed'? */
-  private boolean closed;
+  private final boolean closed;
 
   /**
    * Constructor for an operated switch
@@ -53,12 +53,8 @@ public class SwitchInput extends ConnectorInput {
     this.closed = closed;
   }
 
-  public boolean getClosed() {
+  public boolean isClosed() {
     return closed;
-  }
-
-  public void setClosed(boolean closed) {
-    this.closed = closed;
   }
 
   @Override
