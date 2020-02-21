@@ -74,11 +74,11 @@ public class LineTypeInput extends AssetTypeInput {
     return x;
   }
 
-  public Quantity<ElectricCurrent> getIMax() {
+  public Quantity<ElectricCurrent> getiMax() {
     return iMax;
   }
 
-  public Quantity<ElectricPotential> getVRated() {
+  public Quantity<ElectricPotential> getvRated() {
     return vRated;
   }
 
