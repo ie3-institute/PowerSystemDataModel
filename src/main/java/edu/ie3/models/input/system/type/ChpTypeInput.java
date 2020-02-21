@@ -63,11 +63,11 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     return etaThermal;
   }
 
-  public Quantity<Power> getPThermal() {
+  public Quantity<Power> getpThermal() {
     return pThermal;
   }
 
-  public Quantity<Power> getPOwn() {
+  public Quantity<Power> getpOwn() {
     return pOwn;
   }
 
