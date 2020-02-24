@@ -110,6 +110,7 @@ public class CouchbaseRawGridSource implements RawGridSource {
   }
 
   private void fetchLines(JsonArray linesArr) {
+    if(!fetchedNodes) fetchNodes();
     if (linesArr != null) {
       for (int i = 0;
           i < linesArr.size();
@@ -123,6 +124,7 @@ public class CouchbaseRawGridSource implements RawGridSource {
   }
 
   private void fetchSwitches(JsonArray switchesArr) {
+    if(!fetchedNodes) fetchNodes();
     if (switchesArr != null) {
       for (int i = 0;
           i < switchesArr.size();
@@ -136,6 +138,7 @@ public class CouchbaseRawGridSource implements RawGridSource {
   }
 
   private void fetch2WTrafos(JsonArray trafo2WArr) {
+    if(!fetchedNodes) fetchNodes();
     if (trafo2WArr != null) {
       for (int i = 0;
           i < trafo2WArr.size();
@@ -144,6 +147,21 @@ public class CouchbaseRawGridSource implements RawGridSource {
         NodeInput nodeA = idToNode.get(JsonMapper.identifyNodeA(object));
         NodeInput nodeB = idToNode.get(JsonMapper.identifyNodeB(object));
         aggregatedRawGridInput.add(JsonMapper.toTransformer2W(object, nodeA, nodeB));
+      }
+    }
+  }
+
+  private void fetch3WTrafos(JsonArray trafo3WArr) {
+    if(!fetchedNodes) fetchNodes();
+    if (trafo3WArr != null) {
+      for (int i = 0;
+           i < trafo3WArr.size();
+           i++) { // for is used to avoid the cast in forEach(..) or iterator
+        JsonObject object = trafo3WArr.getObject(i);
+        NodeInput nodeA = idToNode.get(JsonMapper.identifyNodeA(object));
+        NodeInput nodeB = idToNode.get(JsonMapper.identifyNodeB(object));
+        NodeInput nodeC = idToNode.get(JsonMapper.identifyNodeC(object));
+        aggregatedRawGridInput.add(JsonMapper.toTransformer3W(object, nodeA, nodeB, nodeC));
       }
     }
   }
@@ -163,20 +181,6 @@ public class CouchbaseRawGridSource implements RawGridSource {
 
   public String generateSubnetKey(Integer subnetId, String scenarioName) {
     return "subnet::" + scenarioName + "::" + subnetId;
-  }
-
-  private void fetch3WTrafos(JsonArray trafo3WArr) {
-    if (trafo3WArr != null) {
-      for (int i = 0;
-           i < trafo3WArr.size();
-           i++) { // for is used to avoid the cast in forEach(..) or iterator
-        JsonObject object = trafo3WArr.getObject(i);
-        NodeInput nodeA = idToNode.get(JsonMapper.identifyNodeA(object));
-        NodeInput nodeB = idToNode.get(JsonMapper.identifyNodeB(object));
-        NodeInput nodeC = idToNode.get(JsonMapper.identifyNodeC(object));
-        aggregatedRawGridInput.add(JsonMapper.toTransformer3W(object, nodeA, nodeB, nodeC));
-      }
-    }
   }
 
 }

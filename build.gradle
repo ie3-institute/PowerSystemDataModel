@@ -1,15 +1,8 @@
 plugins {
-	id "com.jfrog.artifactory" version "4.9.7"
 	id 'java' //java support
-	id 'groovy' // groovy support
-	id 'maven-publish'
-	id 'signing'
 	id 'pmd' // code check, working on source code
 	id 'com.github.spotbugs' version '2.0.0' // code check, working on byte code
 	id 'com.diffplug.gradle.spotless' version '3.27.1'//code format
-	id 'com.github.onslip.gradle-one-jar' version '1.0.5' // pack a self contained jar
-	id 'jacoco' // java code coverage plugin
-	id "org.sonarqube" version "2.7.1" // sonarqube
 }
 
 ext {
@@ -32,9 +25,6 @@ apply from: scriptsLocation + 'pmd.gradle'
 apply from: scriptsLocation + 'spotbugs.gradle'
 apply from: scriptsLocation + 'spotless.gradle'
 apply from: scriptsLocation + 'checkJavaVersion.gradle'
-apply from: scriptsLocation + 'selfContainedJar.gradle'
-apply from: scriptsLocation + 'jacoco.gradle' // jacoco java code coverage
-apply from: scriptsLocation + 'mavenCentralPublish.gradle'
 
 repositories {
 	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
@@ -53,14 +43,17 @@ dependencies {
 	compile 'com.couchbase.client:java-client:3.0.0'
 	compile 'com.opencsv:opencsv:5.0' //for csv connector
 
+//	neo4j
+	compile 'org.neo4j.driver:neo4j-java-driver:4.0.0'
+//	compile 'org.neo4j:neo4j:4.0.0'
+	compile "org.neo4j:neo4j-ogm-core:3.+"
+	runtime "org.neo4j:neo4j-ogm-bolt-driver:3.+"
 
 
-//	compile 'com.fasterxml.jackson.core:jackson-databind:2.10.2' //unneeded?
 	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2'
 
 	//testing
 	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
-	testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
 }
 
 test {

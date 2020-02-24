@@ -61,13 +61,13 @@ public class GridTestEntityBuilder {
             })
         .forEach(aggregatedRawGridInput::add);
 
-    List<CsvTrafo2WInput> csvTrafo2WInputs = new LinkedList<>();
+    List<CsvTransformer2WInput> csvTrafo2WInputs = new LinkedList<>();
     try {
       String file =
           GridTestEntityBuilder.class.getClassLoader().getResource("transformers.csv").getFile();
       csvTrafo2WInputs =
           new CsvToBeanBuilder(new FileReader(file))
-              .withType(CsvTrafo2WInput.class)
+              .withType(CsvTransformer2WInput.class)
               .withSeparator(';')
               .build()
               .parse();
@@ -84,7 +84,7 @@ public class GridTestEntityBuilder {
             })
         .forEach(aggregatedRawGridInput::add);
 
-    List<CsvTrafo3WInput> csvTrafo3WInputs = new LinkedList<>();
+    List<CsvTransformer3WInput> csvTrafo3WInputs = new LinkedList<>();
     try {
       String file =
           GridTestEntityBuilder.class
@@ -93,7 +93,7 @@ public class GridTestEntityBuilder {
               .getFile();
       csvTrafo3WInputs =
           new CsvToBeanBuilder(new FileReader(file))
-              .withType(CsvTrafo3WInput.class)
+              .withType(CsvTransformer3WInput.class)
               .withSeparator(';')
               .build()
               .parse();

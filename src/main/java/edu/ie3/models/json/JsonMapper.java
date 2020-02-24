@@ -77,8 +77,8 @@ public class JsonMapper {
         return GermanVoltageLevel.HV;
       case "HöS":
         return GermanVoltageLevel.EHV;
+      default: return null;
     }
-    return null;
   }
 
   public static LineInput toLineInput(JsonObject object, NodeInput nodeA, NodeInput nodeB) {
