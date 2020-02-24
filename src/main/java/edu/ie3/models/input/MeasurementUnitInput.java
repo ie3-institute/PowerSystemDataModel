@@ -5,64 +5,32 @@
 */
 package edu.ie3.models.input;
 
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
+import edu.ie3.models.OperationTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Model of a measuring unit attached to a certain {@link NodeInput}. */
 public class MeasurementUnitInput extends AssetInput {
   /** Grid node, the asset is attached to */
-  NodeInput node;
+  private NodeInput node;
 
   /** True, if the voltage magnitude is measured */
-  boolean vMag;
+  private boolean vMag;
 
   /** True, if the voltage angle is measured */
-  boolean vAng;
+  private boolean vAng;
 
   /** True, if the nodal residual active power is measured */
-  boolean p;
+  private boolean p;
 
   /** True, if the reactive power is measured */
-  boolean q;
+  private boolean q;
 
   /**
-   * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
-   * @param operator of the asset
-   * @param id of the asset
-   * @param node Grid node, the asset is attached to
-   * @param vMag True, if the voltage magnitude is measured
-   * @param vAng True, if the voltage angle is measured
-   * @param p True, if the nodal residual active power is measured
-   * @param q True, if the reactive power is measured
-   */
-  public MeasurementUnitInput(
-      UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
-      OperatorInput operator,
-      String id,
-      NodeInput node,
-      boolean vMag,
-      boolean vAng,
-      boolean p,
-      boolean q) {
-    super(uuid, operationInterval, operator, id);
-    this.node = node;
-    this.vMag = vMag;
-    this.vAng = vAng;
-    this.p = p;
-    this.q = q;
-  }
-
-  /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
+   * Constructor for an operated measurement unit
    *
    * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param node Grid node, the asset is attached to
@@ -73,8 +41,7 @@ public class MeasurementUnitInput extends AssetInput {
    */
   public MeasurementUnitInput(
       UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
+      OperationTime operationTime,
       OperatorInput operator,
       String id,
       NodeInput node,
@@ -82,7 +49,7 @@ public class MeasurementUnitInput extends AssetInput {
       boolean vAng,
       boolean p,
       boolean q) {
-    super(uuid, operatesFrom, operatesUntil, operator, id);
+    super(uuid, operationTime, operator, id);
     this.node = node;
     this.vMag = vMag;
     this.vAng = vAng;
@@ -91,7 +58,7 @@ public class MeasurementUnitInput extends AssetInput {
   }
 
   /**
-   * Constructor for a non-operated asset
+   * Constructor for a non-operated measurement unit
    *
    * @param uuid of the input entity
    * @param id of the asset

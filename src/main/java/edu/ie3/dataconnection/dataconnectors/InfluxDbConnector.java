@@ -20,9 +20,8 @@ public class InfluxDbConnector implements DataConnector {
   public InfluxDbConnector(String databaseName) {
     this.databaseName = databaseName;
   }
-
-  public InfluxDbConnector() {
-  }
+  
+  public InfluxDbConnector() {}
 
   @Override
   public Boolean isConnectionValid() {
@@ -33,8 +32,11 @@ public class InfluxDbConnector implements DataConnector {
     if (response.getVersion().equalsIgnoreCase("unknown")) {
       return false;
     }
-    return true;
+    return true
+      ;
   }
+  @Override
+  public void shutdown() {}
 
   public String getDatabaseName() {
     return databaseName;
@@ -44,7 +46,7 @@ public class InfluxDbConnector implements DataConnector {
     this.databaseName = databaseName;
   }
 
-  public InfluxDB getSession(){
+  public InfluxDB getSession() {
     InfluxDB session;
     session = InfluxDBFactory.connect(INFLUXDB_URL);
     session.setDatabase(databaseName);
@@ -53,5 +55,4 @@ public class InfluxDbConnector implements DataConnector {
     session.enableBatch(BatchOptions.DEFAULTS);
     return session;
   }
-
 }

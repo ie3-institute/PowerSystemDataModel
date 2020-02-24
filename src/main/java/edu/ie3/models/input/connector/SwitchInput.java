@@ -5,71 +5,42 @@
 */
 package edu.ie3.models.input.connector;
 
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Describes an electrical grid switch between two {@link NodeInput}s */
 public class SwitchInput extends ConnectorInput {
   /** Is the switching state 'closed'? */
-  Boolean closed;
+  private boolean closed;
 
   /**
-   * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
-   * @param operator of the asset
-   * @param id of the asset
-   * @param nodeA
-   * @param nodeB
-   * @param parallelDevices Amount of parallel switches
-   * @param closed Is the switching state 'closed'?
-   */
-  public SwitchInput(
-      UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
-      OperatorInput operator,
-      String id,
-      NodeInput nodeA,
-      NodeInput nodeB,
-      Integer parallelDevices,
-      Boolean closed) {
-    super(uuid, operationInterval, operator, id, nodeA, nodeB, 1);
-    this.closed = closed;
-  }
-
-  /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
+   * Constructor for an operated switch
    *
    * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param nodeA
    * @param nodeB
-   * @param parallelDevices Amount of parallel switches
    * @param closed Is the switching state 'closed'?
    */
   public SwitchInput(
       UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
+      OperationTime operationTime,
       OperatorInput operator,
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      Integer parallelDevices,
-      Boolean closed) {
-    super(uuid, operatesFrom, operatesUntil, operator, id, nodeA, nodeB, 1);
+      boolean closed) {
+    super(uuid, operationTime, operator, id, nodeA, nodeB, 1);
     this.closed = closed;
   }
 
   /**
-   * Constructor for a non-operated asset
+   * Constructor for a non-operated switch
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -77,16 +48,16 @@ public class SwitchInput extends ConnectorInput {
    * @param nodeB
    * @param closed Is the switching state 'closed'?
    */
-  public SwitchInput(UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, Boolean closed) {
+  public SwitchInput(UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, boolean closed) {
     super(uuid, id, nodeA, nodeB, 1);
     this.closed = closed;
   }
 
-  public Boolean getClosed() {
+  public boolean getClosed() {
     return closed;
   }
 
-  public void setClosed(Boolean closed) {
+  public void setClosed(boolean closed) {
     this.closed = closed;
   }
 

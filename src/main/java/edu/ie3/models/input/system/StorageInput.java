@@ -5,54 +5,25 @@
 */
 package edu.ie3.models.input.system;
 
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.StorageTypeInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Describes a battery storage */
 public class StorageInput extends SystemParticipantInput {
   /** Type of this storage, containing default values for storages of this kind */
-  StorageTypeInput type;
+  private StorageTypeInput type;
 
   /** Selection of predefined behaviour of the storage */
-  StorageStrategy behaviour;
+  private StorageStrategy behaviour;
   /**
-   * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
-   * @param operator of the asset
-   * @param id of the asset
-   * @param node the asset is connected to
-   * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphiRated Power factor
-   * @param type of storage
-   * @param behaviour Selection of predefined behaviour of the storage
-   */
-  public StorageInput(
-      UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
-      OperatorInput operator,
-      String id,
-      NodeInput node,
-      String qCharacteristics,
-      Double cosphiRated,
-      StorageTypeInput type,
-      String behaviour) {
-    super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphiRated);
-    this.type = type;
-    this.behaviour = StorageStrategy.get(behaviour);
-  }
-
-  /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
+   * Constructor for an operated storage
    *
    * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param node the asset is connected to
@@ -63,22 +34,21 @@ public class StorageInput extends SystemParticipantInput {
    */
   public StorageInput(
       UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
+      OperationTime operationTime,
       OperatorInput operator,
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated,
+      double cosphiRated,
       StorageTypeInput type,
       String behaviour) {
-    super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphiRated);
+    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphiRated);
     this.type = type;
     this.behaviour = StorageStrategy.get(behaviour);
   }
 
   /**
-   * Constructor for a non-operated asset
+   * Constructor for a non-operated storage
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -93,7 +63,7 @@ public class StorageInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Double cosphiRated,
+      double cosphiRated,
       StorageTypeInput type,
       String behaviour) {
     super(uuid, id, node, qCharacteristics, cosphiRated);

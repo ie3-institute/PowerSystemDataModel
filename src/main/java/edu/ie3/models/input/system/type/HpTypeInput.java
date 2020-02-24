@@ -37,7 +37,7 @@ public class HpTypeInput extends SystemParticipantTypeInput {
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      Double cosphi,
+      double cosphi,
       Quantity<Power> pRated,
       Quantity<Power> pThermal,
       Quantity<Power> pEl) {

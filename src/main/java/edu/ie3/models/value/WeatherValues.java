@@ -7,6 +7,7 @@ package edu.ie3.models.value;
 
 import com.vividsolutions.jts.geom.Point;
 import edu.ie3.util.quantities.interfaces.Irradiation;
+import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
@@ -15,13 +16,13 @@ import javax.measure.quantity.Temperature;
 /** Describes weather as a combination of irradiation, temperature and wind values */
 public class WeatherValues implements Value {
   /** The coordinate of this weather value set */
-  Point coordinate;
+  private Point coordinate;
   /** irradiation values for this coordinate */
-  IrradiationValue irradiation;
+  private IrradiationValue irradiation;
   /** Temperature value for this coordinate */
-  TemperatureValue temperature;
+  private TemperatureValue temperature;
   /** Wind values for this coordinate */
-  WindValue wind;
+  private WindValue wind;
 
   /**
    * @param coordinate of this weather value set
@@ -70,11 +71,11 @@ public class WeatherValues implements Value {
     this.coordinate = coordinate;
   }
 
-  public IrradiationValue getirradiation() {
+  public IrradiationValue getIrradiation() {
     return irradiation;
   }
 
-  public void setirradiation(IrradiationValue irradiation) {
+  public void setIrradiation(IrradiationValue irradiation) {
     this.irradiation = irradiation;
   }
 
@@ -92,5 +93,21 @@ public class WeatherValues implements Value {
 
   public void setWind(WindValue wind) {
     this.wind = wind;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof WeatherValues)) return false;
+    WeatherValues that = (WeatherValues) o;
+    return Objects.equals(coordinate, that.coordinate)
+        && irradiation.equals(that.irradiation)
+        && temperature.equals(that.temperature)
+        && wind.equals(that.wind);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(coordinate, irradiation, temperature, wind);
   }
 }

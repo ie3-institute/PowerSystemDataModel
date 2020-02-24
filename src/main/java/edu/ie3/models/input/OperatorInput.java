@@ -12,7 +12,7 @@ import java.util.UUID;
 public class OperatorInput extends InputEntity {
 
   /** The name of this operator */
-  String name;
+  private String name;
 
   /** @param name of this operator */
   public OperatorInput(UUID uuid, String name) {

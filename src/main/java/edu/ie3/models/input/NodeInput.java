@@ -6,12 +6,10 @@
 package edu.ie3.models.input;
 
 import com.vividsolutions.jts.geom.Point;
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.VoltageLevel;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
@@ -20,59 +18,25 @@ import javax.measure.quantity.ElectricPotential;
 /** Describes an electrical grid node, that other assets can connect to */
 public class NodeInput extends AssetInput {
   /** Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.) */
-  Quantity<Dimensionless> vTarget;
+  private Quantity<Dimensionless> vTarget;
   /** Rated voltage magnitude of the node (typically in kV) */
-  Quantity<ElectricPotential> vRated;
+  private Quantity<ElectricPotential> vRated;
   /** Is this node a slack node? */
-  Boolean slack;
+  private boolean slack;
   /**
    * The coordinates of this node, especially relevant for geo-dependant systems, that are connected
    * to this node
    */
-  Point geoPosition;
+  private Point geoPosition;
   /** Voltage level of this node */
-  VoltageLevel voltLvl;
+  private VoltageLevel voltLvl;
   /** Subnet of this node */
-  Integer subnet;
+  private int subnet;
   /**
-   * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
-   * @param operator of the asset
-   * @param id of the asset
-   * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
-   * @param vRated Rated voltage magnitude of the node
-   * @param slack Is this node a slack node?
-   * @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
-   *     that are connected to this node
-   * @param voltLvl Voltage level of this node
-   * @param subnet of this node
-   */
-  public NodeInput(
-      UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
-      OperatorInput operator,
-      String id,
-      Quantity<Dimensionless> vTarget,
-      Quantity<ElectricPotential> vRated,
-      Boolean slack,
-      Point geoPosition,
-      VoltageLevel voltLvl,
-      Integer subnet) {
-    super(uuid, operationInterval, operator, id);
-    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE);
-    this.vRated = vRated.to(StandardUnits.V_RATED);
-    this.slack = slack;
-    this.geoPosition = geoPosition;
-    this.voltLvl = voltLvl;
-    this.subnet = subnet;
-  }
-
-  /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
+   * Constructor for an operated node
    *
    * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
@@ -85,17 +49,16 @@ public class NodeInput extends AssetInput {
    */
   public NodeInput(
       UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
+      OperationTime operationTime,
       OperatorInput operator,
       String id,
       Quantity<Dimensionless> vTarget,
       Quantity<ElectricPotential> vRated,
-      Boolean slack,
+      boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
-      Integer subnet) {
-    super(uuid, operatesFrom, operatesUntil, operator, id);
+      int subnet) {
+    super(uuid, operationTime, operator, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE);
     this.vRated = vRated.to(StandardUnits.V_RATED);
     this.slack = slack;
@@ -122,10 +85,10 @@ public class NodeInput extends AssetInput {
       String id,
       Quantity<Dimensionless> vTarget,
       Quantity<ElectricPotential> vRated,
-      Boolean slack,
+      boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
-      Integer subnet) {
+      int subnet) {
     super(uuid, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE);
     this.vRated = vRated.to(StandardUnits.V_RATED);
@@ -151,11 +114,11 @@ public class NodeInput extends AssetInput {
     this.vRated = vRated.to(StandardUnits.V_RATED);
   }
 
-  public Boolean getSlack() {
+  public boolean getSlack() {
     return slack;
   }
 
-  public void setSlack(Boolean slack) {
+  public void setSlack(boolean slack) {
     this.slack = slack;
   }
 
@@ -175,11 +138,11 @@ public class NodeInput extends AssetInput {
     this.voltLvl = voltLvl;
   }
 
-  public Integer getSubnet() {
+  public int getSubnet() {
     return subnet;
   }
 
-  public void setSubnet(Integer subnet) {
+  public void setSubnet(int subnet) {
     this.subnet = subnet;
   }
 
@@ -189,12 +152,12 @@ public class NodeInput extends AssetInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     NodeInput nodeInput = (NodeInput) o;
-    return vTarget.equals(nodeInput.vTarget)
-        && vRated.equals(nodeInput.vRated)
-        && slack.equals(nodeInput.slack)
-        && geoPosition.equals(nodeInput.geoPosition)
-        && voltLvl.equals(nodeInput.voltLvl)
-        && subnet.equals(nodeInput.subnet);
+    return slack == nodeInput.slack
+        && subnet == nodeInput.subnet
+        && Objects.equals(vTarget, nodeInput.vTarget)
+        && Objects.equals(vRated, nodeInput.vRated)
+        && Objects.equals(geoPosition, nodeInput.geoPosition)
+        && Objects.equals(voltLvl, nodeInput.voltLvl);
   }
 
   @Override

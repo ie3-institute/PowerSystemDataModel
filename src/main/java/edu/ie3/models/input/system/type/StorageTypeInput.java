@@ -19,21 +19,21 @@ import javax.measure.quantity.Time;
 /** Describes the type of a {@link edu.ie3.models.input.system.StorageInput} */
 public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity (typically in kWh) */
-  Quantity<Energy> eStorage;
+  private Quantity<Energy> eStorage;
   /** Rated active power (typically in kW) */
-  Quantity<Power> pRated; // TODO: Change to sRated and copshiRated
+  private Quantity<Power> pRated; // TODO: Change to sRated and copshiRated
   /** Minimum permissible active power (typically in kW) */
-  Quantity<Power> pMin;
+  private Quantity<Power> pMin;
   /** Maximum permissible active power (typically in kW) */
-  Quantity<Power> pMax;
+  private Quantity<Power> pMax;
   /** Efficiency of the charging and discharging process (typically in %) */
-  Quantity<Dimensionless> eta;
+  private Quantity<Dimensionless> eta;
   /** Minimum permissible depth of discharge (typically in %) */
-  Quantity<Dimensionless> dod;
+  private Quantity<Dimensionless> dod;
   /** Maximum life time of the storage (typically in ms) */
-  Quantity<Time> lifeTime;
+  private Quantity<Time> lifeTime;
   /** Maximum amount of full charging cycles */
-  Integer lifeCycle;
+  private int lifeCycle;
 
   /**
    * @param uuid of the input entity
@@ -55,7 +55,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      Double cosphiRated,
+      double cosphiRated,
       Quantity<Energy> eStorage,
       Quantity<Power> pRated,
       Quantity<Power> pMin,
@@ -63,7 +63,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       Quantity<Dimensionless> eta,
       Quantity<Dimensionless> dod,
       Quantity<Time> lifeTime,
-      Integer lifeCycle) {
+      int lifeCycle) {
     super(uuid, id, capex, opex, cosphiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY);
     this.pRated = pRated.to(StandardUnits.ACTIVE_POWER_IN);
@@ -131,11 +131,11 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     this.lifeTime = lifeTime.to(StandardUnits.LIFE_TIME);
   }
 
-  public Integer getLifeCycle() {
+  public int getLifeCycle() {
     return lifeCycle;
   }
 
-  public void setLifeCycle(Integer lifeCycle) {
+  public void setLifeCycle(int lifeCycle) {
     this.lifeCycle = lifeCycle;
   }
 
@@ -145,14 +145,14 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     StorageTypeInput that = (StorageTypeInput) o;
-    return eStorage.equals(that.eStorage)
+    return lifeCycle == that.lifeCycle
+        && eStorage.equals(that.eStorage)
         && pRated.equals(that.pRated)
         && pMin.equals(that.pMin)
         && pMax.equals(that.pMax)
         && eta.equals(that.eta)
         && dod.equals(that.dod)
-        && lifeTime.equals(that.lifeTime)
-        && lifeCycle.equals(that.lifeCycle);
+        && lifeTime.equals(that.lifeTime);
   }
 
   @Override

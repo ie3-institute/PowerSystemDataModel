@@ -13,7 +13,7 @@ import java.util.UUID;
 /** Describes the graphic data belonging to a {@link edu.ie3.models.input.connector.LineInput} */
 public class LineGraphicInput extends GraphicInput {
   /** The LineInput to this graphic data */
-  LineInput line;
+  private LineInput line;
 
   /**
    * @param uuid of the input entity

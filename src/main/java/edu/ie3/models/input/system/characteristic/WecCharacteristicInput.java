@@ -11,7 +11,7 @@ import java.util.UUID;
 /** Characteristic mapping the wind velocity to its corresponding Betz coefficient */
 public class WecCharacteristicInput extends AssetCharacteristicInput {
   /** Curve of the Betz coefficient as semicolon-separated String */
-  String cpCharacteristic;
+  private String cpCharacteristic;
 
   /**
    * @param uuid of the input entity

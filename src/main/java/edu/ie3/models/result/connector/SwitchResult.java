@@ -16,7 +16,7 @@ import javax.measure.quantity.ElectricCurrent;
 public class SwitchResult extends ConnectorResult {
 
   /** is the switching state 'closed'? */
-  Boolean closed;
+  private boolean closed;
 
   /**
    * Standard constructor with automatic uuid generation.
@@ -36,7 +36,7 @@ public class SwitchResult extends ConnectorResult {
       Quantity<Angle> iAAng,
       Quantity<ElectricCurrent> iBMag,
       Quantity<Angle> iBAng,
-      Boolean closed) {
+      boolean closed) {
     super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
     this.closed = closed;
   }
@@ -62,16 +62,16 @@ public class SwitchResult extends ConnectorResult {
       Quantity<Angle> iAAng,
       Quantity<ElectricCurrent> iBMag,
       Quantity<Angle> iBAng,
-      Boolean closed) {
+      boolean closed) {
     super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
     this.closed = closed;
   }
 
-  public Boolean getClosed() {
+  public boolean getClosed() {
     return closed;
   }
 
-  public void setClosed(Boolean closed) {
+  public void setClosed(boolean closed) {
     this.closed = closed;
   }
 
@@ -81,7 +81,7 @@ public class SwitchResult extends ConnectorResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     SwitchResult that = (SwitchResult) o;
-    return closed.equals(that.closed);
+    return closed == that.closed;
   }
 
   @Override

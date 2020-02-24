@@ -85,9 +85,20 @@ def log(String level, String message) {
     println(p(level) + message)
 }
 
-// disable scan
-if (isBranchIndexingCause())
-    return
+// disable scanning but load config parameters before
+//if (isBranchIndexingCause()) {
+//    println(env.BUILD_NUMBER)
+//    println(currentBuild)
+//    if (env.BUILD_NUMBER == 1) {
+//        if (env.BRANCH_NAME == "master") {
+//            getMasterBranchProps()
+//        } else {
+//            getFeatureBranchProps(resolveBranchNo(env.BRANCH_NAME))
+//        }
+//        currentBuild.result = 'FAILURE'
+//    }
+//    return
+//}
 
 /////////////////////////
 // master branch script
@@ -110,14 +121,10 @@ if (env.BRANCH_NAME == "master") {
                 try {
                     // set java version
                     setJavaVersion(javaVersionId)
-                    println("test1")
                     // get the artifactory credentials stored in the jenkins secure keychain
                     withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
                                      file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
                                      usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
-                        println("test2")
-                        println("${env.mavencentral_username}")
-                        println("${env.mavencentral_password}")
                         deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
 
                         stage('checkout from scm') {
@@ -203,10 +210,10 @@ if (env.BRANCH_NAME == "master") {
     } else {
         // merge mode
         // disable scan
-        if (params.pull_request_title == "") {
-            currentBuild.result = 'SUCCESS'
-            return
-        }
+//        if (params.pull_request_title == "") {
+//            currentBuild.result = 'SUCCESS'
+//            return
+//        }
 
         // merge into master
         // notify rocket chat about the started master branch deployment
@@ -248,7 +255,7 @@ if (env.BRANCH_NAME == "master") {
                     }
 
                     // the first stage should always be the mainProject -> if it fails we can skip the rest!
-                    stage("gradle allTests ${projects.get(0)} with included builds") {
+                    stage("gradle allTests ${projects.get(0)}") {
 
                         // display java version
                         sh "java -version"
@@ -283,9 +290,6 @@ if (env.BRANCH_NAME == "master") {
                         withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
                                          file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
                                          usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
-                            println("test2")
-                            println("${env.mavencentral_username}")
-                            println("${env.mavencentral_password}")
                             deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
 
 
@@ -369,13 +373,13 @@ if (env.BRANCH_NAME == "master") {
         getFeatureBranchProps(resolveBranchNo(env.BRANCH_NAME))
 
         // disable scan
-        if (params.triggered != "true" && params.comment_body != "!test") {
-
-            log(i, "Scan mode. Doing nothing!")
-            currentBuild.result = 'FAILURE'
-            // signals github that this branch hasn't build yet -> fail before first build
-            return
-        }
+//        if (params.triggered != "true" && params.comment_body != "!test") {
+//
+//            log(i, "Scan mode. Doing nothing!")
+//            currentBuild.result = 'FAILURE'
+//            // signals github that this branch hasn't build yet -> fail before first build
+//            return
+//        }
 
         // This displays colors using the 'xterm' ansi color map.
         ansiColor('xterm') {
@@ -436,7 +440,7 @@ if (env.BRANCH_NAME == "master") {
 
                 }
                 // the first stage should always be the mainProject -> if it fails we can skip the rest!
-                stage("gradle allTests ${projects.get(0)} with included builds") {
+                stage("gradle allTests ${projects.get(0)}") {
 
                     // display java version
                     sh "java -version"

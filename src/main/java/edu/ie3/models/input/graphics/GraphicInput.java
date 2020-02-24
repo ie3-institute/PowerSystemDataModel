@@ -13,9 +13,9 @@ import java.util.UUID;
 /** Describes the graphic data belonging to grid assets */
 public class GraphicInput extends InputEntity {
   /** Description of the graphic layer, this graphic is located on */
-  String graphicLayer;
+  private String graphicLayer;
   /** A graphic representation as path */
-  LineString path;
+  private LineString path;
 
   /**
    * @param uuid of the input entity

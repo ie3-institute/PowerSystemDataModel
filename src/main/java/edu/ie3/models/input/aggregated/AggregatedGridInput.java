@@ -7,7 +7,7 @@ package edu.ie3.models.input.aggregated;
 
 import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.input.MeasurementUnitInput;
-import edu.ie3.models.validation.ValidationTools;
+import edu.ie3.utils.ValidationUtils;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class AggregatedGridInput implements AggregatedEntities {
   private AggregatedGraphicInput graphics;
 
   /** Measurement units in this grid */
-  private LinkedList<MeasurementUnitInput> measurementUnits = new LinkedList<>();
+  private List<MeasurementUnitInput> measurementUnits = new LinkedList<>();
 
   @Override
   public void add(UniqueEntity entity) {
@@ -73,8 +73,64 @@ public class AggregatedGridInput implements AggregatedEntities {
     if (!systemParticipants.areValuesValid()) return false;
     if (!graphics.areValuesValid()) return false;
     for (MeasurementUnitInput measurementUnit : measurementUnits) {
-      if (!ValidationTools.checkMeasurementUnit(measurementUnit)) return false;
+      if (!ValidationUtils.checkMeasurementUnit(measurementUnit)) return false;
     }
     return true;
+  }
+
+  public String getGridName() {
+    return gridName;
+  }
+
+  public void setGridName(String gridName) {
+    this.gridName = gridName;
+  }
+
+  public int getSubnet() {
+    return subnet;
+  }
+
+  public void setSubnet(int subnet) {
+    this.subnet = subnet;
+  }
+
+  public String getVoltLvl() {
+    return voltLvl;
+  }
+
+  public void setVoltLvl(String voltLvl) {
+    this.voltLvl = voltLvl;
+  }
+
+  public AggregatedRawGridInput getRawGrid() {
+    return rawGrid;
+  }
+
+  public void setRawGrid(AggregatedRawGridInput rawGrid) {
+    this.rawGrid = rawGrid;
+  }
+
+  public AggregatedSystemInput getSystemParticipants() {
+    return systemParticipants;
+  }
+
+  public void setSystemParticipants(AggregatedSystemInput systemParticipants) {
+    this.systemParticipants = systemParticipants;
+  }
+
+  public AggregatedGraphicInput getGraphics() {
+    return graphics;
+  }
+
+  public void setGraphics(AggregatedGraphicInput graphics) {
+    this.graphics = graphics;
+  }
+
+  public List<MeasurementUnitInput> getMeasurementUnits() {
+    return measurementUnits;
+  }
+
+  public void setMeasurementUnits(List<MeasurementUnitInput> measurementUnits) {
+    this.measurementUnits = measurementUnits;
   }
 }

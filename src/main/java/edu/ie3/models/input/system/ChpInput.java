@@ -5,14 +5,12 @@
 */
 package edu.ie3.models.input.system;
 
+import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.system.type.ChpTypeInput;
 import edu.ie3.models.input.thermal.ThermalBusInput;
-import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 /** Describes a combined heat and power plant */
@@ -22,43 +20,13 @@ public class ChpInput extends SystemParticipantInput {
   /** Type of this CHP plant, containing default values for CHP plants of this kind */
   private ChpTypeInput type;
   /** Is this asset market oriented? */
-  private Boolean marketReaction;
+  private boolean marketReaction;
 
   /**
-   * @param uuid of the input entity
-   * @param operationInterval Empty for a non-operated asset, Interval of operation period else
-   * @param operator of the asset
-   * @param id of the asset
-   * @param node the asset is connected to
-   * @param thermalBus The thermal bus, this model is connected to
-   * @param qCharacteristics Description of a reactive power characteristic
-   * @param cosphi Power factor
-   * @param type of CHP
-   * @param marketReaction Is this asset market oriented?
-   */
-  public ChpInput(
-      UUID uuid,
-      Optional<ClosedInterval<ZonedDateTime>> operationInterval,
-      OperatorInput operator,
-      String id,
-      NodeInput node,
-      ThermalBusInput thermalBus,
-      String qCharacteristics,
-      Double cosphi,
-      ChpTypeInput type,
-      Boolean marketReaction) {
-    super(uuid, operationInterval, operator, id, node, qCharacteristics, cosphi);
-    this.thermalBus = thermalBus;
-    this.type = type;
-    this.marketReaction = marketReaction;
-  }
-
-  /**
-   * If both operatesFrom and operatesUntil are Empty, it is assumed that the asset is non-operated.
+   * Constructor for an operated combined heat and power plant
    *
    * @param uuid of the input entity
-   * @param operatesFrom start of operation period, will be replaced by LocalDateTime.MIN if Empty
-   * @param operatesUntil end of operation period, will be replaced by LocalDateTime.MAX if Empty
+   * @param operationTime Time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param node the asset is connected to
@@ -70,24 +38,23 @@ public class ChpInput extends SystemParticipantInput {
    */
   public ChpInput(
       UUID uuid,
-      Optional<ZonedDateTime> operatesFrom,
-      Optional<ZonedDateTime> operatesUntil,
+      OperationTime operationTime,
       OperatorInput operator,
       String id,
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       ChpTypeInput type,
-      Boolean marketReaction) {
-    super(uuid, operatesFrom, operatesUntil, operator, id, node, qCharacteristics, cosphi);
+      boolean marketReaction) {
+    super(uuid, operationTime, operator, id, node, qCharacteristics, cosphi);
     this.thermalBus = thermalBus;
     this.type = type;
     this.marketReaction = marketReaction;
   }
 
   /**
-   * Constructor for a non-operated asset
+   * Constructor for a non-operated combined heat and power plant
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -104,9 +71,9 @@ public class ChpInput extends SystemParticipantInput {
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
-      Double cosphi,
+      double cosphi,
       ChpTypeInput type,
-      Boolean marketReaction) {
+      boolean marketReaction) {
     super(uuid, id, node, qCharacteristics, cosphi);
     this.thermalBus = thermalBus;
     this.type = type;
@@ -129,11 +96,11 @@ public class ChpInput extends SystemParticipantInput {
     this.type = type;
   }
 
-  public Boolean getMarketReaction() {
+  public boolean getMarketReaction() {
     return marketReaction;
   }
 
-  public void setMarketReaction(Boolean marketReaction) {
+  public void setMarketReaction(boolean marketReaction) {
     this.marketReaction = marketReaction;
   }
 
@@ -143,9 +110,9 @@ public class ChpInput extends SystemParticipantInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ChpInput chpInput = (ChpInput) o;
-    return thermalBus.equals(chpInput.thermalBus)
-        && type.equals(chpInput.type)
-        && marketReaction.equals(chpInput.marketReaction);
+    return marketReaction == chpInput.marketReaction
+        && thermalBus.equals(chpInput.thermalBus)
+        && type.equals(chpInput.type);
   }
 
   @Override

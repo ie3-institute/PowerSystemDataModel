@@ -19,11 +19,11 @@ import javax.measure.quantity.Power;
 public class BmTypeInput extends SystemParticipantTypeInput {
 
   /** Permissible load gradient (typically in %/h) */
-  Quantity<DimensionlessRate> loadGradient;
+  private Quantity<DimensionlessRate> loadGradient;
   /** Rated apparent power for this type of BM (typically in kVA) */
-  Quantity<Power> sRated;
+  private Quantity<Power> sRated;
   /** Efficiency of converter for this type of BM (typically in %) */
-  Quantity<Dimensionless> etaConv;
+  private Quantity<Dimensionless> etaConv;
 
   /**
    * @param uuid of the input entity
@@ -40,7 +40,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      Double cosphiRated,
+      double cosphiRated,
       Quantity<DimensionlessRate> loadGradient,
       Quantity<Power> sRated,
       Quantity<Dimensionless> etaConv) {
