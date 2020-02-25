@@ -53,7 +53,7 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
             assert operator == operatorInput
             assert id == parameter["id"]
             assert node == nodeInput
-            assert QCharacteristics == parameter["qcharacteristics"]
+            assert qCharacteristics == parameter["qcharacteristics"]
             assert type == typeInput
             assert thermalBus == thermalBusInput
         }
@@ -85,7 +85,7 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
             assert operator == null
             assert id == parameter["id"]
             assert node == nodeInput
-            assert QCharacteristics == parameter["qcharacteristics"]
+            assert qCharacteristics == parameter["qcharacteristics"]
             assert type == typeInput
             assert thermalBus == thermalBusInput
         }

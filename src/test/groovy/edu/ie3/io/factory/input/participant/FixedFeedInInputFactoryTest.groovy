@@ -51,8 +51,8 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
             assert operator == operatorInput
             assert id == parameter["id"]
             assert node == nodeInput
-            assert QCharacteristics == parameter["qcharacteristics"]
-            assert SRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+            assert qCharacteristics == parameter["qcharacteristics"]
+            assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
             assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
         }
     }
@@ -82,8 +82,8 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
             assert operator == null
             assert id == parameter["id"]
             assert node == nodeInput
-            assert QCharacteristics == parameter["qcharacteristics"]
-            assert SRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+            assert qCharacteristics == parameter["qcharacteristics"]
+            assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
             assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
         }
     }

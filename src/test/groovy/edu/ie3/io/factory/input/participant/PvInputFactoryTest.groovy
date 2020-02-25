@@ -59,7 +59,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
             assert operator == operatorInput
             assert id == parameter["id"]
             assert node == nodeInput
-            assert QCharacteristics == parameter["qcharacteristics"]
+            assert qCharacteristics == parameter["qcharacteristics"]
             assert albedo == Double.parseDouble(parameter["albedo"])
             assert azimuth == getQuant(parameter["azimuth"], StandardUnits.AZIMUTH)
             assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
@@ -105,7 +105,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
             assert operator == null
             assert id == parameter["id"]
             assert node == nodeInput
-            assert QCharacteristics == parameter["qcharacteristics"]
+            assert qCharacteristics == parameter["qcharacteristics"]
             assert albedo == Double.parseDouble(parameter["albedo"])
             assert azimuth == getQuant(parameter["azimuth"], StandardUnits.AZIMUTH)
             assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)

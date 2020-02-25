@@ -54,7 +54,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
             assert operator == operatorInput
             assert id == parameter["id"]
             assert node == nodeInput
-            assert QCharacteristics == parameter["qcharacteristics"]
+            assert qCharacteristics == parameter["qcharacteristics"]
             assert dsm
             assert eConsAnnual == getQuant(parameter["econsannual"], StandardUnits.ENERGY_IN)
             assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
@@ -90,7 +90,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
             assert operator == null
             assert id == parameter["id"]
             assert node == nodeInput
-            assert QCharacteristics == parameter["qcharacteristics"]
+            assert qCharacteristics == parameter["qcharacteristics"]
             assert dsm
             assert eConsAnnual == getQuant(parameter["econsannual"], StandardUnits.ENERGY_IN)
             assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)

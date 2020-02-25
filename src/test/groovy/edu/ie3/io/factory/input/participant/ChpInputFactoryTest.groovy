@@ -56,7 +56,7 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
             assert operator == operatorInput
             assert id == parameter["id"]
             assert node == nodeInput
-            assert QCharacteristics == parameter["qcharacteristics"]
+            assert qCharacteristics == parameter["qcharacteristics"]
             assert type == typeInput
             assert marketReaction
         }
@@ -90,7 +90,7 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
             assert operator == null
             assert id == parameter["id"]
             assert node == nodeInput
-            assert QCharacteristics == parameter["qcharacteristics"]
+            assert qCharacteristics == parameter["qcharacteristics"]
             assert type == typeInput
             assert marketReaction
         }
