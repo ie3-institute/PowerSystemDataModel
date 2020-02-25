@@ -15,9 +15,9 @@ import javax.measure.Quantity;
 /** Quite simple thermal model of a house to serve as a heat sink */
 public class ThermalHouseInput extends ThermalSinkInput {
   /** Thermal, transitional losses of the included thermal house model (typically in kW/K) */
-  private Quantity<ThermalConductance> ethLosses;
+  private final Quantity<ThermalConductance> ethLosses;
   /** Thermal capacity of the included thermal house model (typically in kWh) */
-  private Quantity<HeatCapacity> ethCapa;
+  private final Quantity<HeatCapacity> ethCapa;
 
   /**
    * @param uuid Unique identifier of a thermal house model
@@ -41,16 +41,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
     return ethLosses;
   }
 
-  public void setEthLosses(Quantity<ThermalConductance> ethLosses) {
-    this.ethLosses = ethLosses.to(StandardUnits.THERMAL_TRANSMISSION);
-  }
-
   public Quantity<HeatCapacity> getEthCapa() {
     return ethCapa;
-  }
-
-  public void setEthCapa(Quantity<HeatCapacity> ethCapa) {
-    this.ethCapa = ethCapa.to(StandardUnits.HEAT_CAPACITY);
   }
 
   @Override

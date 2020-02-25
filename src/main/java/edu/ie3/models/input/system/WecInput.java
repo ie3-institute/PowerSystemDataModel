@@ -16,9 +16,9 @@ import java.util.UUID;
 public class WecInput extends SystemParticipantInput {
 
   /** Type of this WEC, containing default values for WEC assets of this kind */
-  private WecTypeInput type;
+  private final WecTypeInput type;
   /** Is this asset market oriented? */
-  private boolean marketReaction;
+  private final boolean marketReaction;
   /**
    * Constructor for an operated wind energy converter
    *
@@ -67,20 +67,12 @@ public class WecInput extends SystemParticipantInput {
     this.marketReaction = marketReaction;
   }
 
-  public WecTypeInput getType() {
-    return type;
-  }
-
-  public void setType(WecTypeInput type) {
-    this.type = type;
-  }
-
-  public boolean getMarketReaction() {
+  public boolean isMarketReaction() {
     return marketReaction;
   }
 
-  public void setMarketReaction(boolean marketReaction) {
-    this.marketReaction = marketReaction;
+  public WecTypeInput getType() {
+    return type;
   }
 
   @Override

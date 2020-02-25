@@ -20,13 +20,13 @@ import org.locationtech.jts.geom.LineString;
 public class LineInput extends ConnectorInput {
 
   /** Type of this line, containing default values for lines of this kind */
-  private LineTypeInput type;
+  private final LineTypeInput type;
   /** Length of this line */
-  private Quantity<Length> length;
+  private final Quantity<Length> length;
   /** Coordinates of this line */
-  private LineString geoPosition;
+  private final LineString geoPosition;
   /** Description of an optional weather dependent operation curve */
-  private Optional<String> olmCharacteristic;
+  private final Optional<String> olmCharacteristic;
 
   /**
    * Constructor for an operated line
@@ -96,32 +96,16 @@ public class LineInput extends ConnectorInput {
     return type;
   }
 
-  public void setType(LineTypeInput type) {
-    this.type = type;
-  }
-
   public Quantity<Length> getLength() {
     return length;
-  }
-
-  public void setLength(Quantity<Length> length) {
-    this.length = length;
   }
 
   public LineString getGeoPosition() {
     return geoPosition;
   }
 
-  public void setGeoPosition(LineString geoPosition) {
-    this.geoPosition = geoPosition;
-  }
-
-  public Optional<String> getOlm() {
+  public Optional<String> getOlmCharacteristic() {
     return olmCharacteristic;
-  }
-
-  public void setOlm(Optional<String> olmCharacteristic) {
-    this.olmCharacteristic = olmCharacteristic;
   }
 
   @Override

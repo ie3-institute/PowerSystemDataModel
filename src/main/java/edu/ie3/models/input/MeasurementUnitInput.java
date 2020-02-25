@@ -12,19 +12,19 @@ import java.util.UUID;
 /** Model of a measuring unit attached to a certain {@link NodeInput}. */
 public class MeasurementUnitInput extends AssetInput {
   /** Grid node, the asset is attached to */
-  private NodeInput node;
+  private final NodeInput node;
 
   /** True, if the voltage magnitude is measured */
-  private boolean vMag;
+  private final boolean vMag;
 
   /** True, if the voltage angle is measured */
-  private boolean vAng;
+  private final boolean vAng;
 
   /** True, if the nodal residual active power is measured */
-  private boolean p;
+  private final boolean p;
 
   /** True, if the reactive power is measured */
-  private boolean q;
+  private final boolean q;
 
   /**
    * Constructor for an operated measurement unit
@@ -82,40 +82,20 @@ public class MeasurementUnitInput extends AssetInput {
     return node;
   }
 
-  public void setNode(NodeInput node) {
-    this.node = node;
-  }
-
   public boolean getVMag() {
     return vMag;
-  }
-
-  public void setVMag(boolean vMag) {
-    this.vMag = vMag;
   }
 
   public boolean getVAng() {
     return vAng;
   }
 
-  public void setVAng(boolean vAng) {
-    this.vAng = vAng;
-  }
-
   public boolean getP() {
     return p;
   }
 
-  public void setP(boolean p) {
-    this.p = p;
-  }
-
   public boolean getQ() {
     return q;
-  }
-
-  public void setQ(boolean q) {
-    this.q = q;
   }
 
   @Override

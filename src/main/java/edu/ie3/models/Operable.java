@@ -13,13 +13,9 @@ public interface Operable {
 
   OperationTime getOperationTime();
 
-  void setOperationTime(OperationTime operationTime);
-
   default boolean inOperationOn(ZonedDateTime date) {
     return getOperationTime().includes(date);
   }
-
-  void setOperator(OperatorInput operator);
 
   OperatorInput getOperator();
 }

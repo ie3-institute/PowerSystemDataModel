@@ -15,7 +15,7 @@ import java.util.UUID;
 /** Describes an electric vehicle */
 public class EvInput extends SystemParticipantInput {
   /** Type of this EV, containing default values for EVs of this kind */
-  private EvTypeInput type;
+  private final EvTypeInput type;
   /**
    * Constructor for an operated electric vehicle
    *
@@ -55,10 +55,6 @@ public class EvInput extends SystemParticipantInput {
 
   public EvTypeInput getType() {
     return type;
-  }
-
-  public void setType(EvTypeInput type) {
-    this.type = type;
   }
 
   @Override

@@ -5,10 +5,10 @@
 */
 package edu.ie3.dataconnection.source;
 
-import edu.ie3.models.input.aggregated.AggregatedRawGridInput;
+import edu.ie3.models.input.aggregated.RawGridElements;
 
 /** Describes a data source for raw grid data */
 public interface RawGridSource extends DataSource {
   /** @return grid data as an aggregation of its elements */
-  AggregatedRawGridInput getGridData();
+  RawGridElements getGridData();
 }

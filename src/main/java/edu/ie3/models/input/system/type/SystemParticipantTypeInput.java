@@ -16,13 +16,13 @@ import javax.measure.quantity.Power;
 /** Describes the type of a {@link edu.ie3.models.input.system.SystemParticipantInput} */
 public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   /** Capital expense for this type of system participant (typically in €) */
-  private Quantity<Currency> capex;
+  private final Quantity<Currency> capex;
   /** Operating expense for this type of system participant (typically in €) */
-  private Quantity<EnergyPrice> opex;
+  private final Quantity<EnergyPrice> opex;
   /** Rated apparent power of the type (in kVA) */
-  private Quantity<Power> sRated;
+  private final Quantity<Power> sRated;
   /** Power factor for this type of system participant */
-  private double cosphiRated;
+  private final double cosphiRated;
 
   /**
    * @param uuid of the input entity
@@ -49,32 +49,16 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     return capex;
   }
 
-  public void setCapex(Quantity<Currency> capex) {
-    this.capex = capex;
-  }
-
   public Quantity<EnergyPrice> getOpex() {
     return opex;
-  }
-
-  public void setOpex(Quantity<EnergyPrice> opex) {
-    this.opex = opex;
   }
 
   public Quantity<Power> getsRated() {
     return sRated;
   }
 
-  public void setsRated(Quantity<Power> sRated) {
-    this.sRated = sRated;
-  }
-
   public double getCosphiRated() {
     return cosphiRated;
-  }
-
-  public void setCosphiRated(double cosphiRated) {
-    this.cosphiRated = cosphiRated;
   }
 
   @Override

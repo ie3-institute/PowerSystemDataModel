@@ -17,9 +17,9 @@ import javax.measure.quantity.Power;
 /** Dummy class to represent a constant feed in regardless of its type */
 public class FixedFeedInInput extends SystemParticipantInput {
   /** Rated apparent power (typically in kVA) */
-  private Quantity<Power> sRated;
+  private final Quantity<Power> sRated;
   /** Rated power factor */
-  private double cosphiRated;
+  private final double cosphiRated;
 
   /**
    * Constructor for an operated feed in
@@ -69,20 +69,12 @@ public class FixedFeedInInput extends SystemParticipantInput {
     this.cosphiRated = cosphiRated;
   }
 
-  public Quantity<Power> getSRated() {
+  public Quantity<Power> getsRated() {
     return sRated;
-  }
-
-  public void setSRated(Quantity<Power> sRated) {
-    this.sRated = sRated.to(StandardUnits.S_RATED);
   }
 
   public double getCosphiRated() {
     return cosphiRated;
-  }
-
-  public void setCosphiRated(double cosphiRated) {
-    this.cosphiRated = cosphiRated;
   }
 
   @Override

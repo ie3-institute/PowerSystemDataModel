@@ -16,15 +16,15 @@ import javax.measure.quantity.Volume;
 /** Thermal storage with cylindrical shape */
 public class CylindricalStorageInput extends ThermalStorageInput {
   /** Available storage volume (typically in m³) */
-  private Quantity<Volume> storageVolumeLvl;
+  private final Quantity<Volume> storageVolumeLvl;
   /** Minimum permissible storage volume (typically in m³) */
-  private Quantity<Volume> storageVolumeLvlMin;
+  private final Quantity<Volume> storageVolumeLvlMin;
   /** Temperature of the inlet (typically in C) */
-  private Quantity<Temperature> inletTemp;
+  private final Quantity<Temperature> inletTemp;
   /** Temperature of the outlet (typically in C) */
-  private Quantity<Temperature> returnTemp;
+  private final Quantity<Temperature> returnTemp;
   /** Specific heat capacity of the storage medium (typically in kWh/K*m³) */
-  private Quantity<SpecificHeatCapacity> c;
+  private final Quantity<SpecificHeatCapacity> c;
 
   /**
    * @param uuid Unique identifier of a cylindrical storage
@@ -57,40 +57,20 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     return storageVolumeLvl;
   }
 
-  public void setStorageVolumeLvl(Quantity<Volume> storageVolumeLvl) {
-    this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
-  }
-
   public Quantity<Volume> getStorageVolumeLvlMin() {
     return storageVolumeLvlMin;
-  }
-
-  public void setStorageVolumeLvlMin(Quantity<Volume> storageVolumeLvlMin) {
-    this.storageVolumeLvlMin = storageVolumeLvlMin.to(StandardUnits.VOLUME);
   }
 
   public Quantity<Temperature> getInletTemp() {
     return inletTemp;
   }
 
-  public void setInletTemp(Quantity<Temperature> inletTemp) {
-    this.inletTemp = inletTemp.to(StandardUnits.TEMPERATURE);
-  }
-
   public Quantity<Temperature> getReturnTemp() {
     return returnTemp;
   }
 
-  public void setReturnTemp(Quantity<Temperature> returnTemp) {
-    this.returnTemp = returnTemp.to(StandardUnits.TEMPERATURE);
-  }
-
   public Quantity<SpecificHeatCapacity> getC() {
     return c;
-  }
-
-  public void setC(Quantity<SpecificHeatCapacity> c) {
-    this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
   }
 
   @Override

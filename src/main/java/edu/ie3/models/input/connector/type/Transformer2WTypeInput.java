@@ -15,31 +15,31 @@ import javax.measure.quantity.*;
 /** Describes the type of a {@link edu.ie3.models.input.connector.Transformer2WInput} */
 public class Transformer2WTypeInput extends AssetTypeInput {
   /** Short circuit resistance (typically in Ohm) */
-  private Quantity<ElectricResistance> rSc;
+  private final Quantity<ElectricResistance> rSc;
   /** Short circuit reactance (typically in Ohm) */
-  private Quantity<ElectricResistance> xSc;
+  private final Quantity<ElectricResistance> xSc;
   /** Rated apparent power (typically in MVA) */
-  private Quantity<Power> sRated;
+  private final Quantity<Power> sRated;
   /** Rated voltage of the high voltage winding (typically in kV) */
-  private Quantity<ElectricPotential> vRatedA;
+  private final Quantity<ElectricPotential> vRatedA;
   /** Rated voltage of the low voltage winding (typically in kV) */
-  private Quantity<ElectricPotential> vRatedB;
+  private final Quantity<ElectricPotential> vRatedB;
   /** Phase-to-ground conductance (typically in nS) */
-  private Quantity<ElectricConductance> gM;
+  private final Quantity<ElectricConductance> gM;
   /** Phase-to-ground susceptance (typically in nS) */
-  private Quantity<ElectricConductance> bM;
+  private final Quantity<ElectricConductance> bM;
   /** Voltage magnitude deviation per tap position (typically in %) */
-  private Quantity<Dimensionless> dV;
+  private final Quantity<Dimensionless> dV;
   /** Voltage angle deviation per tap position (typically in °) */
-  private Quantity<Angle> dPhi;
+  private final Quantity<Angle> dPhi;
   /** Selection of winding, where the tap changer is installed. Low voltage, if true */
-  private boolean tapSide;
+  private final boolean tapSide;
   /** Neutral tap position */
-  private int tapNeutr;
+  private final int tapNeutr;
   /** Minimum available tap position */
-  private int tapMin;
+  private final int tapMin;
   /** Maximum available tap position */
-  private int tapMax;
+  private final int tapMax;
 
   /**
    * @param uuid of the input entity
@@ -90,108 +90,56 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     this.tapMax = tapMax;
   }
 
-  public Quantity<ElectricResistance> getRSc() {
+  public Quantity<ElectricResistance> getrSc() {
     return rSc;
   }
 
-  public void setRSc(Quantity<ElectricResistance> rSc) {
-    this.rSc = rSc.to(StandardUnits.IMPEDANCE);
-  }
-
-  public Quantity<ElectricResistance> getXSc() {
+  public Quantity<ElectricResistance> getxSc() {
     return xSc;
   }
 
-  public void setXSc(Quantity<ElectricResistance> xSc) {
-    this.xSc = xSc.to(StandardUnits.IMPEDANCE);
-  }
-
-  public Quantity<Power> getSRated() {
+  public Quantity<Power> getsRated() {
     return sRated;
   }
 
-  public void setSRated(Quantity<Power> sRated) {
-    this.sRated = sRated.to(StandardUnits.S_RATED);
-  }
-
-  public Quantity<ElectricPotential> getVRatedA() {
+  public Quantity<ElectricPotential> getvRatedA() {
     return vRatedA;
   }
 
-  public void setVRatedA(Quantity<ElectricPotential> vRatedA) {
-    this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-  }
-
-  public Quantity<ElectricPotential> getVRatedB() {
+  public Quantity<ElectricPotential> getvRatedB() {
     return vRatedB;
   }
 
-  public void setVRatedB(Quantity<ElectricPotential> vRatedB) {
-    this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-  }
-
-  public Quantity<ElectricConductance> getGM() {
+  public Quantity<ElectricConductance> getgM() {
     return gM;
   }
 
-  public void setGM(Quantity<ElectricConductance> gM) {
-    this.gM = gM.to(StandardUnits.ADMITTANCE);
-  }
-
-  public Quantity<ElectricConductance> getBM() {
+  public Quantity<ElectricConductance> getbM() {
     return bM;
   }
 
-  public void setBM(Quantity<ElectricConductance> bM) {
-    this.bM = bM.to(StandardUnits.ADMITTANCE);
-  }
-
-  public Quantity<Dimensionless> getDV() {
+  public Quantity<Dimensionless> getdV() {
     return dV;
   }
 
-  public void setDV(Quantity<Dimensionless> dV) {
-    this.dV = dV.to(StandardUnits.DV_TAP);
-  }
-
-  public Quantity<Angle> getDPhi() {
+  public Quantity<Angle> getdPhi() {
     return dPhi;
   }
 
-  public void setDPhi(Quantity<Angle> dPhi) {
-    this.dPhi = dPhi.to(StandardUnits.DPHI_TAP);
-  }
-
-  public boolean getTapSide() {
+  public boolean isTapSide() {
     return tapSide;
-  }
-
-  public void setTapSide(boolean tapSide) {
-    this.tapSide = tapSide;
   }
 
   public int getTapNeutr() {
     return tapNeutr;
   }
 
-  public void setTapNeutr(int tapNeutr) {
-    this.tapNeutr = tapNeutr;
-  }
-
   public int getTapMin() {
     return tapMin;
   }
 
-  public void setTapMin(int tapMin) {
-    this.tapMin = tapMin;
-  }
-
   public int getTapMax() {
     return tapMax;
-  }
-
-  public void setTapMax(int tapMax) {
-    this.tapMax = tapMax;
   }
 
   @Override

@@ -16,7 +16,7 @@ import javax.measure.quantity.Power;
 /** Describes the type of a {@link edu.ie3.models.input.system.HpInput} */
 public class HpTypeInput extends SystemParticipantTypeInput {
   /** Thermal output of the heat pump (typically in kW), when sRated * cosphi_rated is consumed */
-  private Quantity<Power> pThermal;
+  private final Quantity<Power> pThermal;
 
   /**
    * @param uuid of the input entity
@@ -40,12 +40,8 @@ public class HpTypeInput extends SystemParticipantTypeInput {
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
-  public Quantity<Power> getPThermal() {
+  public Quantity<Power> getpThermal() {
     return pThermal;
-  }
-
-  public void setPThermal(Quantity<Power> pThermal) {
-    this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
   @Override

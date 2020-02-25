@@ -18,13 +18,13 @@ import javax.measure.quantity.Power;
 /** Describes a load */
 public class LoadInput extends SystemParticipantInput {
   /** True, if demand side management is activated for this load */
-  private boolean dsm;
+  private final boolean dsm;
   /** Annually consumed energy (typically in kWh) */
-  private Quantity<Energy> eConsAnnual;
+  private final Quantity<Energy> eConsAnnual;
   /** Active Power (typically in kVA) */
-  private Quantity<Power> sRated;
+  private final Quantity<Power> sRated;
   /** Rated power factor */
-  private double cosphiRated;
+  private final double cosphiRated;
   /**
    * Constructor for an operated load
    *
@@ -84,36 +84,20 @@ public class LoadInput extends SystemParticipantInput {
     this.cosphiRated = cosphiRated;
   }
 
-  public boolean getDsm() {
+  public boolean isDsm() {
     return dsm;
-  }
-
-  public void setDsm(boolean dsm) {
-    this.dsm = dsm;
   }
 
   public Quantity<Energy> geteConsAnnual() {
     return eConsAnnual;
   }
 
-  public void seteConsAnnual(Quantity<Energy> eConsAnnual) {
-    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
-  }
-
   public Quantity<Power> getsRated() {
     return sRated;
   }
 
-  public void setsRated(Quantity<Power> sRated) {
-    this.sRated = sRated.to(StandardUnits.S_RATED);
-  }
-
   public double getCosphiRated() {
     return cosphiRated;
-  }
-
-  public void setCosphiRated(double cosphiRated) {
-    this.cosphiRated = cosphiRated;
   }
 
   @Override
