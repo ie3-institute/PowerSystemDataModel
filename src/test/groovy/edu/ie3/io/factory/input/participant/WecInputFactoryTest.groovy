@@ -46,7 +46,7 @@ class WecInputFactoryTest extends Specification implements FactoryTestHelper {
         ((WecInput) input.get()).with {
             assert uuid == UUID.fromString(parameter["uuid"])
             assert !operationTime.startDate.present
-            assert operationTime.endDate.present
+            assert operationTime.endDate.presentinput
             assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
             assert operator == operatorInput
             assert id == parameter["id"]

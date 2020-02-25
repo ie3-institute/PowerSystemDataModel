@@ -38,12 +38,12 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
         def operatorInput = Mock(OperatorInput)
 
         when:
-        Optional<FixedFeedInInput> typeInput = inputFactory.getEntity(new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput))
+        Optional<FixedFeedInInput> input = inputFactory.getEntity(new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput))
 
         then:
-        typeInput.present
-        typeInput.get().getClass() == inputClass
-        ((FixedFeedInInput) typeInput.get()).with {
+        input.present
+        input.get().getClass() == inputClass
+        ((FixedFeedInInput) input.get()).with {
             assert uuid == UUID.fromString(parameter["uuid"])
             assert operationTime.startDate.present
             assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
@@ -71,12 +71,12 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
         def nodeInput = Mock(NodeInput)
 
         when:
-        Optional<FixedFeedInInput> typeInput = inputFactory.getEntity(new SystemParticipantEntityData(parameter, inputClass, nodeInput))
+        Optional<FixedFeedInInput> input = inputFactory.getEntity(new SystemParticipantEntityData(parameter, inputClass, nodeInput))
 
         then:
-        typeInput.present
-        typeInput.get().getClass() == inputClass
-        ((FixedFeedInInput) typeInput.get()).with {
+        input.present
+        input.get().getClass() == inputClass
+        ((FixedFeedInInput) input.get()).with {
             assert uuid == UUID.fromString(parameter["uuid"])
             assert operationTime == OperationTime.notLimited()
             assert operator == null

@@ -30,7 +30,7 @@ public class Transformer3WInputFactory
   @Override
   protected Transformer3WInput buildModel(
       Transformer3WInputEntityData data,
-      java.util.UUID uuid,
+      UUID uuid,
       String id,
       NodeInput nodeA,
       NodeInput nodeB,

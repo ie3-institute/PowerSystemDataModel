@@ -5,7 +5,6 @@
 */
 package edu.ie3.io.factory.input;
 
-import edu.ie3.io.factory.VoltageLevelFactory;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.VoltageLevel;
@@ -47,7 +46,7 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
         data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     final boolean slack = data.getBoolean(SLACK);
     final Point geoPosition = data.getPoint(GEO_POSITION).orElse(null);
-    final VoltageLevel voltLvl = VoltageLevelFactory.parseVoltageLvl(data.getField(VOLT_LVL));
+    final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL);
     final int subnet = data.getInt(SUBNET);
     return new NodeInput(
         uuid,
@@ -70,7 +69,7 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
         data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     final boolean slack = data.getBoolean(SLACK);
     final Point geoPosition = data.getPoint(GEO_POSITION).orElse(null);
-    final VoltageLevel voltLvl = VoltageLevelFactory.parseVoltageLvl(data.getField(VOLT_LVL));
+    final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL);
     final int subnet = data.getInt(SUBNET);
     return new NodeInput(uuid, id, vTarget, vRated, slack, geoPosition, voltLvl, subnet);
   }

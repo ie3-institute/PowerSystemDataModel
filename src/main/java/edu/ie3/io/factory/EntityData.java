@@ -6,7 +6,9 @@
 package edu.ie3.io.factory;
 
 import edu.ie3.exceptions.FactoryException;
+import edu.ie3.models.GermanVoltageLevel;
 import edu.ie3.models.UniqueEntity;
+import edu.ie3.models.VoltageLevel;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -201,13 +203,29 @@ public abstract class EntityData {
   public Optional<Point> getPoint(String field) {
     Optional<Geometry> geom = getGeometry(field);
     if (geom.isPresent()) {
-      if (geom.get() instanceof LineString) return Optional.of((Point) geom.get());
+      if (geom.get() instanceof Point) return Optional.of((Point) geom.get());
       else
         throw new FactoryException(
             "Geometry is of type "
                 + geom.getClass().getSimpleName()
                 + ", but type Point is required");
     } else return Optional.empty();
+  }
+
+  /**
+   * Parses and returns a voltage level from field value of given field name. Throws {@link
+   * FactoryException} if field does not exist or parsing fails.
+   *
+   * @param field field name
+   * @return Voltage level
+   */
+  public VoltageLevel getVoltageLvl(String field) {
+    try {
+      final String value = getField(field);
+      return GermanVoltageLevel.parseVoltageLvl(value);
+    } catch (IllegalArgumentException iae) {
+      throw new FactoryException("VoltageLevel could not be parsed", iae);
+    }
   }
 
   /**
