@@ -22,6 +22,10 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
   private static final String GEO_POSITION = "geoposition";
   private static final String OLM_CHARACTERISTIC = "olmcharacteristic";
 
+  public LineInputFactory() {
+    super(LineInput.class);
+  }
+
   @Override
   protected String[] getAdditionalFields() {
     return new String[] {PARALLEL_DEVICES, LENGTH, GEO_POSITION, OLM_CHARACTERISTIC};

@@ -31,7 +31,7 @@ public class CylindricalStorageInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[0];
+    return new String[] {STORAGE_VOLUME_LVL, STORAGE_VOLUME_LVL_MIN, INLET_TEMP, RETURN_TEMP, C};
   }
 
   @Override
@@ -41,6 +41,12 @@ public class CylindricalStorageInputFactory
       String id,
       OperatorInput operatorInput,
       OperationTime operationTime) {
+    throw new FactoryException("Operated constructor for CylindricalStorageInput does not exist.");
+  }
+
+  @Override
+  protected CylindricalStorageInput buildModel(
+      ThermalUnitInputEntityData data, UUID uuid, String id) {
     final ThermalBusInput bus = data.getBusInput();
     final Quantity<Volume> storageVolumeLvl =
         data.getQuantity(STORAGE_VOLUME_LVL, StandardUnits.VOLUME);
@@ -53,12 +59,5 @@ public class CylindricalStorageInputFactory
         data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
     return new CylindricalStorageInput(
         uuid, id, bus, storageVolumeLvl, storageVolumeLvlMin, inletTemp, returnTemp, c);
-  }
-
-  @Override
-  protected CylindricalStorageInput buildModel(
-      ThermalUnitInputEntityData data, UUID uuid, String id) {
-    throw new FactoryException(
-        "Non-operated constructor for CylindricalStorageInput does not exist.");
   }
 }
