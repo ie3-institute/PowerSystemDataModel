@@ -382,6 +382,11 @@ Class HeatAndPowerValue {
 }
 HeatAndPowerValue --|> PowerValue
 
+Class HeatDemandValue {
+    - heatDemand: Quantity<Power> [kW]
+}
+HeatDemandValue --|> Value
+
 Class EnergyPriceValue {
     - price: Quantity<SpecificCurrency> [€/MWh]
 }
@@ -455,6 +460,10 @@ IndividualTimeSeries --|> TimeSeries
 Class PowerTimeSeries {
 }
 PowerTimeSeries --|> IndividualTimeSeries
+
+Class HeatDemandTimeSeries {
+}
+HeatDemandTimeSeries --|> IndividualTimeSeries
 
 Class HeatAndPowerTimeSeries {
 }

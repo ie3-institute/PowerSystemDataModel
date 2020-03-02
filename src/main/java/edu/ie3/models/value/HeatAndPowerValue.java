@@ -29,7 +29,7 @@ public class HeatAndPowerValue extends PowerValue {
   }
 
   public void setHeatDemand(Quantity<Power> heatDemand) {
-    this.heatDemand = heatDemand;
+    this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
   @Override
