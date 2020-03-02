@@ -9,11 +9,21 @@ import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.Value;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
+import java.util.Map;
 
 /** Describes a TimeSeries with individual values per time step */
-public class IndividualTimeSeries<T extends Value>  extends TimeSeries<T> {
+public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
   /** Maps a TimeBasedValue to its time to retrieve faster */
   private HashMap<ZonedDateTime, TimeBasedValue<T>> timeToTimeBasedValue = new HashMap<>();
+
+  /**
+   * Adding a map from {@link ZonedDateTime} to the value apparent a this point in time
+   *
+   * @param map The map that should be added
+   */
+  public void addAll(Map<ZonedDateTime, T> map) {
+    map.forEach(this::add);
+  }
 
   /**
    * Creates a {@link TimeBasedValue} from this data and adds it to the internal map

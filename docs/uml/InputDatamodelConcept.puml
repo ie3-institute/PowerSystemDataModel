@@ -445,11 +445,20 @@ TimeSeries --|> UniqueEntity
 TimeSeries "1" --* "n" TimeBasedValue
 
 Class IndividualTimeSeries<T extends Value> {
-    + timeToTimeBasedValue:HashMap<ZonedDateTime, TimeBasedValue<T>>
+    - timeToTimeBasedValue:HashMap<ZonedDateTime, TimeBasedValue<T>>
     + add(ZonedDateTime, T): void
     + add(TimeBasedValue<T>): void
+    + addAll(Map<ZonedDateTime, T>): void
 }
 IndividualTimeSeries --|> TimeSeries
+
+Class PowerTimeSeries {
+}
+PowerTimeSeries --|> IndividualTimeSeries
+
+Class HeatAndPowerTimeSeries {
+}
+HeatAndPowerTimeSeries --|> IndividualTimeSeries
 
 Abstract Class RepetitiveTimeSeries<T extends Value> {
     + calc(ZonedDateTime): T
