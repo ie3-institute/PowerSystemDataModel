@@ -372,15 +372,48 @@ TimeBasedValue --|> UniqueEntity
 TimeBasedValue --* Value
 
 Class PowerValue {
-+ p: Quantity<Power> (kW)
-+ q: Quantity<Power> (kVA)
+    - p: Quantity<Power> [kW]
+    - q: Quantity<Power> [kVA]
 }
 PowerValue --|> Value
 
-Class WholesalePriceValue {
-+ price: SpecificCurrency
+Class HeatAndPowerValue {
+    - heatDemand: Quantity<Power> [kW]
 }
-WholesalePriceValue --|> Value
+HeatAndPowerValue --|> PowerValue
+
+Class EnergyPriceValue {
+    - price: Quantity<SpecificCurrency> [€/MWh]
+}
+EnergyPriceValue --|> Value
+
+Class IrradiationValue {
+    - directIrradiation: Quantity<Irradiation>
+    - diffuseIrradiation: Quantity<Irradiation>
+}
+IrradiationValue --|> Value
+
+Class TemperatureValue {
+    - temperature: Quantity<Temperature>
+}
+TemperatureValue --|> Value
+
+Class WindValue {
+    - direction: Quantity<Angle>
+    - velocity: Quantity<Speed>
+}
+WindValue --|> Value
+
+Class WeatherValue {
+  - coordinate: Point
+  - irradiation: IrradiationValue
+  - temperature: TemperatureValue
+  - wind: WindValue
+}
+WeatherValue --|> Value
+WeatherValue --* IrradiationValue
+WeatherValue --* TemperatureValue
+WeatherValue --* WindValue
 
 Interface LoadProfileType {
 }

@@ -13,7 +13,7 @@ import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 
 /** Describes weather as a combination of irradiation, temperature and wind values */
-public class WeatherValues implements Value {
+public class WeatherValue implements Value {
   /** The coordinate of this weather value set */
   private Point coordinate;
   /** irradiation values for this coordinate */
@@ -29,7 +29,7 @@ public class WeatherValues implements Value {
    * @param temperature values for this coordinate
    * @param wind values for this coordinate
    */
-  public WeatherValues(
+  public WeatherValue(
       Point coordinate,
       IrradiationValue irradiation,
       TemperatureValue temperature,
@@ -48,7 +48,7 @@ public class WeatherValues implements Value {
    * @param direction Wind direction as an angle from north for this coordinate (typically in rad)
    * @param velocity Wind velocity for this coordinate (typically in m/s)
    */
-  public WeatherValues(
+  public WeatherValue(
       Point coordinate,
       Quantity<Irradiation> directirradiation,
       Quantity<Irradiation> diffuseirradiation,
