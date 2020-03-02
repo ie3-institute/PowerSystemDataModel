@@ -10,6 +10,7 @@ import edu.ie3.models.value.Value;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /** Describes a TimeSeries with individual values per time step */
 public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
@@ -52,5 +53,19 @@ public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
   @Override
   public T getValue(ZonedDateTime time) {
     return getTimeBasedValue(time).getValue();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    IndividualTimeSeries<?> that = (IndividualTimeSeries<?>) o;
+    return timeToTimeBasedValue.equals(that.timeToTimeBasedValue);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), timeToTimeBasedValue);
   }
 }
