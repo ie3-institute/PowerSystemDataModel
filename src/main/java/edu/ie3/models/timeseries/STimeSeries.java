@@ -5,7 +5,7 @@
 */
 package edu.ie3.models.timeseries;
 
-import edu.ie3.models.value.PowerValue;
+import edu.ie3.models.value.SValue;
 
-/** Time series, that holds power values for each time step */
-public class PowerTimeSeries extends IndividualTimeSeries<PowerValue> {}
+/** Time series, that holds apparent power values for each time step */
+public class STimeSeries extends IndividualTimeSeries<SValue> {}

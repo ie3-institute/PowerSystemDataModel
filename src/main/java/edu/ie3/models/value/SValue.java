@@ -11,28 +11,15 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 
 /** Describes a power value as a pair of active and reactive power */
-public class PowerValue implements Value {
+public class SValue extends PValue {
 
-  /** Active power */
-  private Quantity<Power> p;
   /** Reactive power */
   private Quantity<Power> q;
 
-  /**
-   * @param p Active power
-   * @param q Reactive power
-   */
-  public PowerValue(Quantity<Power> p, Quantity<Power> q) {
-    this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
+  /** @param q Reactive power */
+  public SValue(Quantity<Power> p, Quantity<Power> q) {
+    super(p);
     this.q = q.to(StandardUnits.REACTIVE_POWER_IN);
-  }
-
-  public Quantity<Power> getP() {
-    return p;
-  }
-
-  public void setP(Quantity<Power> p) {
-    this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
   public Quantity<Power> getQ() {
@@ -47,12 +34,12 @@ public class PowerValue implements Value {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    PowerValue that = (PowerValue) o;
-    return p.equals(that.p) && q.equals(that.q);
+    SValue that = (SValue) o;
+    return q.equals(that.q);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(p, q);
+    return Objects.hash(q);
   }
 }

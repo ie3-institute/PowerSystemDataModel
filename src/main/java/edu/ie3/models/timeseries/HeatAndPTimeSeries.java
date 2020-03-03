@@ -5,7 +5,7 @@
 */
 package edu.ie3.models.timeseries;
 
-import edu.ie3.models.value.HeatAndPowerValue;
+import edu.ie3.models.value.HeatAndPValue;
 
 /** Time series, that holds power and heat demand values for each time step */
-public class HeatAndPowerTimeSeries extends IndividualTimeSeries<HeatAndPowerValue> {}
+public class HeatAndPTimeSeries extends IndividualTimeSeries<HeatAndPValue> {}

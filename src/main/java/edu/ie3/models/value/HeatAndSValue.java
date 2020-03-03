@@ -11,15 +11,16 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 
 /** Describes a triple based on active and reactive electrical power, as well as heat power */
-public class HeatAndPowerValue extends PowerValue {
+public class HeatAndSValue extends SValue {
   /** Heat demand as power */
   private Quantity<Power> heatDemand;
 
   /**
    * @param p Active power
    * @param q Reactive power
+   * @param heatDemand Heat demand
    */
-  public HeatAndPowerValue(Quantity<Power> p, Quantity<Power> q, Quantity<Power> heatDemand) {
+  public HeatAndSValue(Quantity<Power> p, Quantity<Power> q, Quantity<Power> heatDemand) {
     super(p, q);
     this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
@@ -37,7 +38,7 @@ public class HeatAndPowerValue extends PowerValue {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    HeatAndPowerValue that = (HeatAndPowerValue) o;
+    HeatAndSValue that = (HeatAndSValue) o;
     return heatDemand.equals(that.heatDemand);
   }
 
