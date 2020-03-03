@@ -11,6 +11,7 @@ import edu.ie3.util.quantities.interfaces.*;
 import javax.measure.Unit;
 import javax.measure.quantity.*;
 import tec.uom.se.unit.MetricPrefix;
+import tec.uom.se.unit.ProductUnit;
 
 /** A collection of Units that fit to the different input and output models by convention */
 public class StandardUnits {
@@ -45,8 +46,9 @@ public class StandardUnits {
   /** Admittance */
   public static final Unit<ElectricConductance> ADMITTANCE = MetricPrefix.NANO(SIEMENS);
   /** Admittance per length (mainly for lines) */
+  // TODO: Replace with PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE, when the version is deployed
   public static final Unit<SpecificConductance> ADMITTANCE_PER_LENGTH =
-      MetricPrefix.NANO(SIEMENS_PER_KILOMETRE);
+      new ProductUnit<>(MetricPrefix.MICRO(SIEMENS).divide(KILOMETRE));
   /** Target voltage magnitude */
   public static final Unit<Dimensionless> TARGET_VOLTAGE_MAGNITUDE = PU;
   /** Voltage magnitude (mainly for result purposes) */
