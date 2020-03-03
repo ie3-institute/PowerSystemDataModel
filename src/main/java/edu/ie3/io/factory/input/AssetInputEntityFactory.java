@@ -15,6 +15,14 @@ import edu.ie3.models.input.system.SystemParticipantInput;
 import java.time.ZonedDateTime;
 import java.util.*;
 
+/**
+ * Abstract factory class that can be extended in order for creating {@link AssetInput} entities
+ * with {@link AssetInputEntityData} data objects.
+ *
+ * @param <T> Type of entity that this factory can create. Must be a subclass of {@link AssetInput}
+ * @param <D> Type of data class that is required for entity creation
+ * @since 19.02.20
+ */
 public abstract class AssetInputEntityFactory<T extends AssetInput, D extends AssetInputEntityData>
     extends EntityFactory<T, D> {
 
@@ -78,9 +86,10 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
   }
 
   /**
-   * Fields other than the standard {@link SystemParticipantInput} fields that have to be present
+   * Returns fields other than the required fields of {@link SystemParticipantInput} that have to be
+   * present.
    *
-   * @return array of field names, can be empty but not null
+   * @return Array of field names, can be empty but not null
    */
   protected abstract String[] getAdditionalFields();
 
@@ -121,6 +130,15 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
    */
   protected abstract T buildModel(D data, UUID uuid, String id);
 
+  /**
+   * Creates an {@link OperationTime} from the entity data iff the required attributes OPERATES_FROM
+   * and OPERATES_UNTIL are present. Both or one of these can be empty, which results in an
+   * unlimited operation interval. If at least one of the attributes is missing, an empty Optional
+   * is returned.
+   *
+   * @param data entity data to take the dates from
+   * @return Operation time object if attributes are present, empty Optional otherwise.
+   */
   private static Optional<OperationTime> buildOperationTime(AssetInputEntityData data) {
     if (!data.containsKey(OPERATES_FROM) || !data.containsKey(OPERATES_UNTIL))
       return Optional.empty();

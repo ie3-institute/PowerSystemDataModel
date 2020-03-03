@@ -11,9 +11,24 @@ import edu.ie3.models.input.OperatorInput;
 import edu.ie3.models.input.connector.ConnectorInput;
 import java.util.UUID;
 
+/**
+ * Abstract factory class that can be extended in order for creating {@link ConnectorInput} entities
+ * with {@link ConnectorInputEntityData} data objects.
+ *
+ * @param <T> Type of entity that this factory can create. Must be a subclass of {@link
+ *     ConnectorInput}
+ * @param <D> Type of data class that is required for entity creation
+ * @since 19.02.20
+ */
 abstract class ConnectorInputEntityFactory<
         T extends ConnectorInput, D extends ConnectorInputEntityData>
     extends AssetInputEntityFactory<T, D> {
+
+  /**
+   * Attribute that _can_, but does not _have to_ be present for the creation of {@link
+   * ConnectorInput}s. Thus, this attribute name declaration can be used in subclasses of {@link
+   * ConnectorInputEntityFactory}
+   */
   protected static final String PARALLEL_DEVICES = "paralleldevices";
 
   public ConnectorInputEntityFactory(Class<? extends T>... allowedClasses) {

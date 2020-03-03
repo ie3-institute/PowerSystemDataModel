@@ -13,11 +13,10 @@ import java.util.Optional;
 
 /**
  * Data used for the construction of {@link edu.ie3.models.input.AssetInput} entities. This data
- * object includes additional information about the {@link OperatorInput}, which cannot be created
- * through the attribute map
+ * object includes additional information about the {@link OperatorInput}, which cannot be provided
+ * through the attribute map.
  */
 public class AssetInputEntityData extends EntityData {
-
   private final OperatorInput operatorInput;
 
   /**
@@ -47,16 +46,16 @@ public class AssetInputEntityData extends EntityData {
     this.operatorInput = operatorInput;
   }
 
-  public boolean hasOperatorInput() {
-    return operatorInput != null;
-  }
-
   /**
    * Checks whether asset has an operator input or not. Equivalent to checking whether asset is
    * operable or not.
    *
    * @return true if operator input is present
    */
+  public boolean hasOperatorInput() {
+    return operatorInput != null;
+  }
+
   public Optional<OperatorInput> getOperatorInput() {
     return Optional.ofNullable(operatorInput);
   }

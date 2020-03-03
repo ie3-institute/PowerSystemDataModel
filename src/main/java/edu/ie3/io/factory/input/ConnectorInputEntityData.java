@@ -10,7 +10,12 @@ import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import java.util.Map;
 
-class ConnectorInputEntityData extends AssetInputEntityData {
+/**
+ * Data used by {@link ConnectorInputEntityFactory} to create an instance of {@link
+ * edu.ie3.models.input.connector.ConnectorInput}, thus needing additional information about the
+ * {@link edu.ie3.models.input.NodeInput}, which cannot be provided through the attribute map.
+ */
+public class ConnectorInputEntityData extends AssetInputEntityData {
   private final NodeInput nodeA;
   private final NodeInput nodeB;
 

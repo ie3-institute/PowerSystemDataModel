@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Universal factory class for creating entities with {@link EntityData} data objects.
  *
- * @param <T> Type of entity that this factory can create. Can be a superclass of the entities that
+ * @param <T> Type of entity that this factory can create. Can be a subclass of the entities that
  *     this factory creates.
  * @param <D> Type of data class that is required for entity creation
  * @version 0.1
@@ -32,7 +32,7 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
   /**
    * Constructor for an EntityFactory for given classes
    *
-   * @param allowedClasses exactly the classes that this factory should be able to build
+   * @param allowedClasses exactly the classes that this factory is allowed and able to build
    */
   public EntityFactory(Class<? extends T>... allowedClasses) {
     this.classes = Arrays.asList(allowedClasses);

@@ -14,9 +14,9 @@ import java.util.Map;
 /**
  * Data used by {@link SystemParticipantInputEntityFactory} to create an instance of {@link
  * edu.ie3.models.input.system.SystemParticipantInput}, thus needing additional information about
- * the {@link edu.ie3.models.input.NodeInput} which cannot be created through the attribute map
+ * the {@link edu.ie3.models.input.NodeInput}, which cannot be provided through the attribute map.
  */
-class SystemParticipantEntityData extends AssetInputEntityData {
+public class SystemParticipantEntityData extends AssetInputEntityData {
   private final NodeInput node;
 
   /**

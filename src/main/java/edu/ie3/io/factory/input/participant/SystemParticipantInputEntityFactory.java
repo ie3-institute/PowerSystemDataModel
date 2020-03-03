@@ -13,11 +13,11 @@ import edu.ie3.models.input.system.SystemParticipantInput;
 import java.util.*;
 
 /**
- * Factory class for creating {@link SystemParticipantInput} entities with {@link
+ * Abstract factory class for creating {@link SystemParticipantInput} entities with {@link
  * SystemParticipantEntityData} data objects.
  *
- * @param <T> Type of entity that this factory can create. Can be a superclass of the entities that
- *     this factory creates.
+ * @param <T> Type of entity that this factory can create. Must be a subclass of {@link
+ *     SystemParticipantInput}
  * @param <D> Type of data class that is required for entity creation
  * @version 0.1
  * @since 28.01.20
