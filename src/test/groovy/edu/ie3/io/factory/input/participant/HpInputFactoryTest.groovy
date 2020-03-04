@@ -1,6 +1,5 @@
 package edu.ie3.io.factory.input.participant
 
-import edu.ie3.models.OperationTime
 import edu.ie3.models.input.NodeInput
 import edu.ie3.models.input.OperatorInput
 import edu.ie3.models.input.system.HpInput

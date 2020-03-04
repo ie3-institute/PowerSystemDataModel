@@ -13,8 +13,8 @@ import java.util.Optional;
 
 /**
  * Data used for the construction of {@link edu.ie3.models.input.AssetInput} entities. This data
- * object can include additional information about the {@link OperatorInput}, which cannot be provided
- * through the attribute map.
+ * object can include additional information about the {@link OperatorInput}, which cannot be
+ * provided through the attribute map.
  */
 public class AssetInputEntityData extends EntityData {
   private final OperatorInput operatorInput;

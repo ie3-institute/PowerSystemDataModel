@@ -87,8 +87,7 @@ public abstract class EntityData {
    * @return field value
    */
   public Optional<String> getFieldOptional(String field) {
-    if (!fieldsToAttributes.containsKey(field))
-      return Optional.empty();
+    if (!fieldsToAttributes.containsKey(field)) return Optional.empty();
 
     return Optional.of(fieldsToAttributes.get(field));
   }

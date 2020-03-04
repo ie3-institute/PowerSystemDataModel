@@ -45,12 +45,9 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
   @Override
   protected List<Set<String>> getFields(D data) {
     Set<String> constructorParamsMin = newSet(UUID, ID);
-    Set<String> constructorParamsFrom =
-        expandSet(constructorParamsMin, OPERATES_FROM);
-    Set<String> constructorParamsUntil =
-            expandSet(constructorParamsMin, OPERATES_UNTIL);
-    Set<String> constructorParamsBoth =
-            expandSet(constructorParamsFrom, OPERATES_UNTIL);
+    Set<String> constructorParamsFrom = expandSet(constructorParamsMin, OPERATES_FROM);
+    Set<String> constructorParamsUntil = expandSet(constructorParamsMin, OPERATES_UNTIL);
+    Set<String> constructorParamsBoth = expandSet(constructorParamsFrom, OPERATES_UNTIL);
 
     final String[] additionalFields = getAdditionalFields();
 
@@ -58,7 +55,8 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
     constructorParamsFrom = expandSet(constructorParamsFrom, additionalFields);
     constructorParamsUntil = expandSet(constructorParamsUntil, additionalFields);
     constructorParamsBoth = expandSet(constructorParamsBoth, additionalFields);
-    return Arrays.asList(constructorParamsMin, constructorParamsFrom, constructorParamsUntil, constructorParamsBoth);
+    return Arrays.asList(
+        constructorParamsMin, constructorParamsFrom, constructorParamsUntil, constructorParamsBoth);
   }
 
   /**
@@ -77,11 +75,11 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
     Optional<OperationTime> operationTime = buildOperationTime(data);
 
     return buildModel(
-            data,
-            uuid,
-            id,
-            operatorInput.orElse(null),
-            operationTime.orElse(OperationTime.notLimited()));
+        data,
+        uuid,
+        id,
+        operatorInput.orElse(null),
+        operationTime.orElse(OperationTime.notLimited()));
   }
 
   /**
@@ -98,8 +96,8 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
       D data, UUID uuid, String id, OperatorInput operatorInput, OperationTime operationTime);
 
   /**
-   * Creates an {@link OperationTime} from the entity data from attributes OPERATES_FROM
-   * and OPERATES_UNTIL. Both or one of these can be empty or non-existing.
+   * Creates an {@link OperationTime} from the entity data from attributes OPERATES_FROM and
+   * OPERATES_UNTIL. Both or one of these can be empty or non-existing.
    *
    * @param data entity data to take the dates from
    * @return Operation time object if attributes are present, empty Optional otherwise.

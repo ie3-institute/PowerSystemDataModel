@@ -42,15 +42,15 @@ public class CylindricalStorageInputFactory
       OperationTime operationTime) {
     final ThermalBusInput bus = data.getBusInput();
     final Quantity<Volume> storageVolumeLvl =
-            data.getQuantity(STORAGE_VOLUME_LVL, StandardUnits.VOLUME);
+        data.getQuantity(STORAGE_VOLUME_LVL, StandardUnits.VOLUME);
     final Quantity<Volume> storageVolumeLvlMin =
-            data.getQuantity(STORAGE_VOLUME_LVL_MIN, StandardUnits.VOLUME);
+        data.getQuantity(STORAGE_VOLUME_LVL_MIN, StandardUnits.VOLUME);
     final Quantity<Temperature> inletTemp = data.getQuantity(INLET_TEMP, StandardUnits.TEMPERATURE);
     final Quantity<Temperature> returnTemp =
-            data.getQuantity(RETURN_TEMP, StandardUnits.TEMPERATURE);
+        data.getQuantity(RETURN_TEMP, StandardUnits.TEMPERATURE);
     final Quantity<SpecificHeatCapacity> c =
-            data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
+        data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
     return new CylindricalStorageInput(
-            uuid, id, bus, storageVolumeLvl, storageVolumeLvlMin, inletTemp, returnTemp, c);
+        uuid, id, bus, storageVolumeLvl, storageVolumeLvlMin, inletTemp, returnTemp, c);
   }
 }
