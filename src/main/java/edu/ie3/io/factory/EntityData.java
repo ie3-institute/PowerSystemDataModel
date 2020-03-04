@@ -81,6 +81,19 @@ public abstract class EntityData {
   }
 
   /**
+   * Returns field value for given field name, or empty Optional if field does not exist.
+   *
+   * @param field field name
+   * @return field value
+   */
+  public Optional<String> getFieldOptional(String field) {
+    if (!fieldsToAttributes.containsKey(field))
+      return Optional.empty();
+
+    return Optional.of(fieldsToAttributes.get(field));
+  }
+
+  /**
    * Returns boolean value for given field name. Throws {@link FactoryException} if field does not
    * exist, or field value is null or empty.
    *
@@ -93,7 +106,7 @@ public abstract class EntityData {
     if (value == null || value.trim().isEmpty())
       throw new FactoryException(String.format("Field \"%s\" is null or empty", field));
 
-    return value.trim().equals("1") || value.trim().equals("true");
+    return value.trim().equals("1") || value.trim().equalsIgnoreCase("true");
   }
 
   /**
@@ -109,7 +122,7 @@ public abstract class EntityData {
     } catch (NumberFormatException nfe) {
       throw new FactoryException(
           String.format(
-              "Exception while trying to parse field \"%s\" with supposed double value \"%s\"",
+              "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
               field, getField(field)),
           nfe);
     }

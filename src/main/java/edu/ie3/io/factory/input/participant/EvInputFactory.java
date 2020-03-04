@@ -37,14 +37,4 @@ public class EvInputFactory
     return new EvInput(
         uuid, operationTime, operatorInput, id, node, qCharacteristics, data.getTypeInput());
   }
-
-  @Override
-  protected EvInput buildModel(
-      SystemParticipantTypedEntityData<EvTypeInput> data,
-      UUID uuid,
-      String id,
-      NodeInput node,
-      String qCharacteristics) {
-    return new EvInput(uuid, id, node, qCharacteristics, data.getTypeInput());
-  }
 }

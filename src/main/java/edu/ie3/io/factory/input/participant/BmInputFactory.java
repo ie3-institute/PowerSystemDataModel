@@ -58,21 +58,4 @@ public class BmInputFactory
         costControlled,
         feedInTariff);
   }
-
-  @Override
-  protected BmInput buildModel(
-      SystemParticipantTypedEntityData<BmTypeInput> data,
-      UUID uuid,
-      String id,
-      NodeInput node,
-      String qCharacteristics) {
-    final BmTypeInput typeInput = data.getTypeInput();
-    final boolean marketReaction = data.getBoolean(MARKET_REACTION);
-    final boolean costControlled = data.getBoolean(COST_CONTROLLED);
-    final Quantity<EnergyPrice> feedInTariff =
-        data.getQuantity(FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE);
-
-    return new BmInput(
-        uuid, id, node, qCharacteristics, typeInput, marketReaction, costControlled, feedInTariff);
-  }
 }

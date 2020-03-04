@@ -36,11 +36,4 @@ public class SwitchInputFactory
     final boolean closed = data.getBoolean(CLOSED);
     return new SwitchInput(uuid, operationTime, operatorInput, id, nodeA, nodeB, closed);
   }
-
-  @Override
-  protected SwitchInput buildModel(
-      ConnectorInputEntityData data, UUID uuid, String id, NodeInput nodeA, NodeInput nodeB) {
-    final boolean closed = data.getBoolean(CLOSED);
-    return new SwitchInput(uuid, id, nodeA, nodeB, closed);
-  }
 }

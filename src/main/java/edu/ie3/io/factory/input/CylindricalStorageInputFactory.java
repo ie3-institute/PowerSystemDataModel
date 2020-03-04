@@ -5,7 +5,6 @@
 */
 package edu.ie3.io.factory.input;
 
-import edu.ie3.exceptions.FactoryException;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.OperatorInput;
@@ -41,23 +40,17 @@ public class CylindricalStorageInputFactory
       String id,
       OperatorInput operatorInput,
       OperationTime operationTime) {
-    throw new FactoryException("Operated constructor for CylindricalStorageInput does not exist.");
-  }
-
-  @Override
-  protected CylindricalStorageInput buildModel(
-      ThermalUnitInputEntityData data, UUID uuid, String id) {
     final ThermalBusInput bus = data.getBusInput();
     final Quantity<Volume> storageVolumeLvl =
-        data.getQuantity(STORAGE_VOLUME_LVL, StandardUnits.VOLUME);
+            data.getQuantity(STORAGE_VOLUME_LVL, StandardUnits.VOLUME);
     final Quantity<Volume> storageVolumeLvlMin =
-        data.getQuantity(STORAGE_VOLUME_LVL_MIN, StandardUnits.VOLUME);
+            data.getQuantity(STORAGE_VOLUME_LVL_MIN, StandardUnits.VOLUME);
     final Quantity<Temperature> inletTemp = data.getQuantity(INLET_TEMP, StandardUnits.TEMPERATURE);
     final Quantity<Temperature> returnTemp =
-        data.getQuantity(RETURN_TEMP, StandardUnits.TEMPERATURE);
+            data.getQuantity(RETURN_TEMP, StandardUnits.TEMPERATURE);
     final Quantity<SpecificHeatCapacity> c =
-        data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
+            data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
     return new CylindricalStorageInput(
-        uuid, id, bus, storageVolumeLvl, storageVolumeLvlMin, inletTemp, returnTemp, c);
+            uuid, id, bus, storageVolumeLvl, storageVolumeLvlMin, inletTemp, returnTemp, c);
   }
 }

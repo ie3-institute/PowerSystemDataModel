@@ -41,15 +41,4 @@ public class MeasurementUnitInputFactory
     final boolean q = data.getBoolean(Q);
     return new MeasurementUnitInput(uuid, operationTime, operatorInput, id, node, vMag, vAng, p, q);
   }
-
-  @Override
-  protected MeasurementUnitInput buildModel(
-      MeasurementUnitInputEntityData data, UUID uuid, String id) {
-    final NodeInput node = data.getNode();
-    final boolean vMag = data.getBoolean(V_MAG);
-    final boolean vAng = data.getBoolean(V_ANG);
-    final boolean p = data.getBoolean(P);
-    final boolean q = data.getBoolean(Q);
-    return new MeasurementUnitInput(uuid, id, node, vMag, vAng, p, q);
-  }
 }

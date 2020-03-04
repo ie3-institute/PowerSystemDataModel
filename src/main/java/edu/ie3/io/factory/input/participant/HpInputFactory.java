@@ -42,11 +42,4 @@ public class HpInputFactory
         qCharacteristics,
         data.getTypeInput());
   }
-
-  @Override
-  protected HpInput buildModel(
-      HpInputEntityData data, UUID uuid, String id, NodeInput node, String qCharacteristics) {
-    return new HpInput(
-        uuid, id, node, data.getThermalBusInput(), qCharacteristics, data.getTypeInput());
-  }
 }

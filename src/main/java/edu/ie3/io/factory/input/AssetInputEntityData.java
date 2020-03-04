@@ -13,7 +13,7 @@ import java.util.Optional;
 
 /**
  * Data used for the construction of {@link edu.ie3.models.input.AssetInput} entities. This data
- * object includes additional information about the {@link OperatorInput}, which cannot be provided
+ * object can include additional information about the {@link OperatorInput}, which cannot be provided
  * through the attribute map.
  */
 public class AssetInputEntityData extends EntityData {
@@ -31,8 +31,7 @@ public class AssetInputEntityData extends EntityData {
   }
 
   /**
-   * Creates a new AssetInputEntityData object for an operable asset input. If operatorInput is not
-   * null, the attribute map has to contain values for 'operatesfrom' and operatesuntil' as well
+   * Creates a new AssetInputEntityData object for an operable asset input.
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data
@@ -47,8 +46,7 @@ public class AssetInputEntityData extends EntityData {
   }
 
   /**
-   * Checks whether asset has an operator input or not. Equivalent to checking whether asset is
-   * operable or not.
+   * Checks whether asset has an operator input or not.
    *
    * @return true if operator input is present
    */

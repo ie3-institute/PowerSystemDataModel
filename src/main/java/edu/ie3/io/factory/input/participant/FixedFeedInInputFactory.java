@@ -43,17 +43,4 @@ public class FixedFeedInInputFactory
     return new FixedFeedInInput(
         uuid, operationTime, operatorInput, id, node, qCharacteristics, sRated, cosPhiRated);
   }
-
-  @Override
-  protected FixedFeedInInput buildModel(
-      SystemParticipantEntityData data,
-      java.util.UUID uuid,
-      String id,
-      NodeInput node,
-      String qCharacteristics) {
-    final Quantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
-    final double cosPhiRated = data.getDouble(COSPHI_RATED);
-
-    return new FixedFeedInInput(uuid, id, node, qCharacteristics, sRated, cosPhiRated);
-  }
 }

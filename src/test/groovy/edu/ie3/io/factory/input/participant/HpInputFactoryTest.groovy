@@ -21,7 +21,7 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
         inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
     }
 
-    def "A HpInputFactory should parse a valid operated HpInput correctly"() {
+    def "A HpInputFactory should parse a valid HpInput correctly"() {
         given: "a system participant input type factory and model data"
         def inputFactory = new HpInputFactory()
         Map<String, String> parameter = [
@@ -51,38 +51,6 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
             assert operationTime.endDate.present
             assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
             assert operator == operatorInput
-            assert id == parameter["id"]
-            assert node == nodeInput
-            assert qCharacteristics == parameter["qcharacteristics"]
-            assert type == typeInput
-            assert thermalBus == thermalBusInput
-        }
-    }
-
-    def "A HpInputFactory should parse a valid non-operated HpInput correctly"() {
-        given: "a system participant input type factory and model data"
-        def inputFactory = new HpInputFactory()
-        Map<String, String> parameter = [
-                "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-                "id"              : "TestID",
-                "qcharacteristics": "cosphi_fixed:1"
-        ]
-        def inputClass = HpInput
-        def nodeInput = Mock(NodeInput)
-        def typeInput = Mock(HpTypeInput)
-        def thermalBusInput = Mock(ThermalBusInput)
-
-        when:
-        Optional<HpInput> input = inputFactory.getEntity(
-                new HpInputEntityData(parameter, nodeInput, typeInput, thermalBusInput))
-
-        then:
-        input.present
-        input.get().getClass() == inputClass
-        ((HpInput) input.get()).with {
-            assert uuid == UUID.fromString(parameter["uuid"])
-            assert operationTime == OperationTime.notLimited()
-            assert operator == null
             assert id == parameter["id"]
             assert node == nodeInput
             assert qCharacteristics == parameter["qcharacteristics"]

@@ -60,17 +60,4 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
         voltLvl,
         subnet);
   }
-
-  @Override
-  protected NodeInput buildModel(AssetInputEntityData data, UUID uuid, String id) {
-    final Quantity<Dimensionless> vTarget =
-        data.getQuantity(V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
-    final Quantity<ElectricPotential> vRated =
-        data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    final boolean slack = data.getBoolean(SLACK);
-    final Point geoPosition = data.getPoint(GEO_POSITION).orElse(null);
-    final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL);
-    final int subnet = data.getInt(SUBNET);
-    return new NodeInput(uuid, id, vTarget, vRated, slack, geoPosition, voltLvl, subnet);
-  }
 }

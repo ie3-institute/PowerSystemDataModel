@@ -40,6 +40,7 @@ abstract class SystemParticipantInputEntityFactory<
     return fields;
   }
 
+  @Override
   protected T buildModel(
       D data, UUID uuid, String id, OperatorInput operatorInput, OperationTime operationTime) {
     NodeInput node = data.getNode();
@@ -48,15 +49,8 @@ abstract class SystemParticipantInputEntityFactory<
     return buildModel(data, uuid, id, node, qCharacteristics, operatorInput, operationTime);
   }
 
-  protected T buildModel(D data, UUID uuid, String id) {
-    NodeInput node = data.getNode();
-    String qCharacteristics = data.getField(Q_CHARACTERISTICS);
-
-    return buildModel(data, uuid, id, node, qCharacteristics);
-  }
-
   /**
-   * Creates operated asset entity with given parameters
+   * Creates SystemParticipantInput entity with given parameters
    *
    * @param data entity data
    * @param uuid UUID of the input entity
@@ -75,17 +69,4 @@ abstract class SystemParticipantInputEntityFactory<
       String qCharacteristics,
       OperatorInput operatorInput,
       OperationTime operationTime);
-
-  /**
-   * Creates non-operated asset entity with given parameters
-   *
-   * @param data entity data
-   * @param uuid UUID of the input entity
-   * @param id ID
-   * @param node Node that the asset is connected to
-   * @param qCharacteristics Description of a reactive power characteristic
-   * @return newly created asset object
-   */
-  protected abstract T buildModel(
-      D data, UUID uuid, String id, NodeInput node, String qCharacteristics);
 }

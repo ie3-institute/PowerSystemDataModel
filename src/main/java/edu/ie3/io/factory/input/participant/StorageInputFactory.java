@@ -41,17 +41,4 @@ public class StorageInputFactory
     return new StorageInput(
         uuid, operationTime, operatorInput, id, node, qCharacteristics, typeInput, behaviour);
   }
-
-  @Override
-  protected StorageInput buildModel(
-      SystemParticipantTypedEntityData<StorageTypeInput> data,
-      UUID uuid,
-      String id,
-      NodeInput node,
-      String qCharacteristics) {
-    final StorageTypeInput typeInput = data.getTypeInput();
-    final String behaviour = data.getField(BEHAVIOUR);
-
-    return new StorageInput(uuid, id, node, qCharacteristics, typeInput, behaviour);
-  }
 }

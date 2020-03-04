@@ -48,7 +48,7 @@ public enum GermanVoltageLevel implements VoltageLevel {
   }
 
   public static VoltageLevel parseVoltageLvl(String value) {
-    switch (value) {
+    switch (value.toLowerCase()) {
       case "lv":
         return GermanVoltageLevel.LV;
       case "mv":

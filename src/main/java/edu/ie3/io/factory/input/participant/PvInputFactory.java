@@ -74,37 +74,4 @@ public class PvInputFactory
         sRated,
         cosPhi);
   }
-
-  @Override
-  protected PvInput buildModel(
-      SystemParticipantEntityData data,
-      java.util.UUID uuid,
-      String id,
-      NodeInput node,
-      String qCharacteristics) {
-    final double albedo = data.getDouble(ALBEDO);
-    final Quantity<Angle> azimuth = data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH);
-    final Quantity<Dimensionless> etaConv = data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
-    final Quantity<Angle> height = data.getQuantity(HEIGHT, StandardUnits.SOLAR_HEIGHT);
-    final double kG = data.getDouble(KG);
-    final double kT = data.getDouble(KT);
-    final boolean marketReaction = data.getBoolean(MARKET_REACTION);
-    final Quantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
-    final double cosPhi = data.getDouble(COS_PHI);
-
-    return new PvInput(
-        uuid,
-        id,
-        node,
-        qCharacteristics,
-        albedo,
-        azimuth,
-        etaConv,
-        height,
-        kG,
-        kT,
-        marketReaction,
-        sRated,
-        cosPhi);
-  }
 }

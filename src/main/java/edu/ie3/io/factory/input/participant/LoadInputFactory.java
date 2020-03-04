@@ -56,19 +56,4 @@ public class LoadInputFactory
         sRated,
         cosPhi);
   }
-
-  @Override
-  protected LoadInput buildModel(
-      SystemParticipantEntityData data,
-      java.util.UUID uuid,
-      String id,
-      NodeInput node,
-      String qCharacteristics) {
-    final boolean dsm = data.getBoolean(DSM);
-    final Quantity<Energy> eConsAnnual = data.getQuantity(E_CONS_ANNUAL, StandardUnits.ENERGY_IN);
-    final Quantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
-    final double cosPhi = data.getDouble(COS_PHI);
-
-    return new LoadInput(uuid, id, node, qCharacteristics, dsm, eConsAnnual, sRated, cosPhi);
-  }
 }

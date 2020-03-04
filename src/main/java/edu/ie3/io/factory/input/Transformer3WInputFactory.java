@@ -55,17 +55,4 @@ public class Transformer3WInputFactory
         tapPos,
         autoTap);
   }
-
-  @Override
-  protected Transformer3WInput buildModel(
-      Transformer3WInputEntityData data, UUID uuid, String id, NodeInput nodeA, NodeInput nodeB) {
-    final int parallelDevices = data.getInt(PARALLEL_DEVICES);
-    final NodeInput nodeC = data.getNodeC();
-    final Transformer3WTypeInput type = data.getType();
-    final int tapPos = data.getInt(TAP_POS);
-    final boolean autoTap = data.getBoolean(AUTO_TAP);
-
-    return new Transformer3WInput(
-        uuid, id, nodeA, nodeB, nodeC, parallelDevices, type, tapPos, autoTap);
-  }
 }

@@ -30,9 +30,4 @@ public class ThermalBusInputFactory
       OperationTime operationTime) {
     return new ThermalBusInput(uuid, operationTime, operatorInput, id);
   }
-
-  @Override
-  protected ThermalBusInput buildModel(AssetInputEntityData data, UUID uuid, String id) {
-    return new ThermalBusInput(uuid, id);
-  }
 }

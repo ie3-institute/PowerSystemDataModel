@@ -53,15 +53,4 @@ public class Transformer2WInputFactory
         tapPos,
         autoTap);
   }
-
-  @Override
-  protected Transformer2WInput buildModel(
-      Transformer2WInputEntityData data, UUID uuid, String id, NodeInput nodeA, NodeInput nodeB) {
-    final int parallelDevices = data.getInt(PARALLEL_DEVICES);
-    final Transformer2WTypeInput type = data.getType();
-    final int tapPos = data.getInt(TAP_POS);
-    final boolean autoTap = data.getBoolean(AUTO_TAP);
-
-    return new Transformer2WInput(uuid, id, nodeA, nodeB, parallelDevices, type, tapPos, autoTap);
-  }
 }

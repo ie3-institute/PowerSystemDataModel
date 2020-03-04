@@ -1,7 +1,6 @@
 package edu.ie3.io.factory.input.participant
 
 import edu.ie3.exceptions.FactoryException
-import edu.ie3.models.OperationTime
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.input.NodeInput
 import edu.ie3.models.input.OperatorInput
@@ -21,7 +20,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
         inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
     }
 
-    def "A FixedFeedInInputFactory should parse a valid operated FixedFeedInInput correctly"() {
+    def "A FixedFeedInInputFactory should parse a valid FixedFeedInInput correctly"() {
         given: "a system participant input type factory and model data"
         def inputFactory = new FixedFeedInInputFactory()
         Map<String, String> parameter = [
@@ -57,37 +56,6 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
         }
     }
 
-    def "A FixedFeedInInputFactory should parse a valid non-operated FixedFeedInInput correctly"() {
-        given: "a system participant input type factory and model data"
-        def inputFactory = new FixedFeedInInputFactory()
-        Map<String, String> parameter = [
-                "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-                "id"              : "TestID",
-                "qcharacteristics": "cosphi_fixed:1",
-                "srated"          : "3",
-                "cosphirated"     : "4"
-        ]
-        def inputClass = FixedFeedInInput
-        def nodeInput = Mock(NodeInput)
-
-        when:
-        Optional<FixedFeedInInput> input = inputFactory.getEntity(new SystemParticipantEntityData(parameter, inputClass, nodeInput))
-
-        then:
-        input.present
-        input.get().getClass() == inputClass
-        ((FixedFeedInInput) input.get()).with {
-            assert uuid == UUID.fromString(parameter["uuid"])
-            assert operationTime == OperationTime.notLimited()
-            assert operator == null
-            assert id == parameter["id"]
-            assert node == nodeInput
-            assert qCharacteristics == parameter["qcharacteristics"]
-            assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-            assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
-        }
-    }
-
     def "A FixedFeedInInputFactory should throw an exception on invalid or incomplete data (parameter missing)"() {
         given: "a system participant input type factory and model data"
         def inputFactory = new FixedFeedInInputFactory()
@@ -108,51 +76,8 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
         ex.message == "The provided fields [cosphirated, id, srated, uuid] with data {cosphirated -> 4,id -> TestID,srated -> 3,uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of FixedFeedInInput. \n" +
                 "The following fields to be passed to a constructor of FixedFeedInInput are possible:\n" +
                 "0: [cosphirated, id, qcharacteristics, srated, uuid]\n" +
-                "1: [cosphirated, id, operatesfrom, operatesuntil, qcharacteristics, srated, uuid]\n"
-    }
-
-    def "A FixedFeedInInputFactory should throw an exception on invalid or incomplete data (operator missing)"() {
-        given: "a system participant input type factory and model data"
-        def inputFactory = new FixedFeedInInputFactory()
-        Map<String, String> parameter = [
-                "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-                "operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-                "operatesuntil"   : "",
-                "id"              : "TestID",
-                "qcharacteristics": "cosphi_fixed:1",
-                "srated"          : "3",
-                "cosphirated"     : "4"
-        ]
-        def inputClass = FixedFeedInInput
-        def nodeInput = Mock(NodeInput)
-
-        when:
-        inputFactory.getEntity(new SystemParticipantEntityData(parameter, inputClass, nodeInput))
-
-        then:
-        FactoryException ex = thrown()
-        ex.message == "Operation time (fields 'operatesfrom' and 'operatesuntil') are passed, but operator input is not."
-    }
-
-    def "A FixedFeedInInputFactory should throw an exception on invalid or incomplete data (operation time missing)"() {
-        given: "a system participant input type factory and model data"
-        def inputFactory = new FixedFeedInInputFactory()
-        Map<String, String> parameter = [
-                "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-                "id"              : "TestID",
-                "qcharacteristics": "cosphi_fixed:1",
-                "srated"          : "3",
-                "cosphirated"     : "4"
-        ]
-        def inputClass = FixedFeedInInput
-        def nodeInput = Mock(NodeInput)
-        def operatorInput = Mock(OperatorInput)
-
-        when:
-        inputFactory.getEntity(new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput))
-
-        then:
-        FactoryException ex = thrown()
-        ex.message == "Operator input is passed, but operation time (fields 'operatesfrom' and 'operatesuntil') is not."
+                "1: [cosphirated, id, operatesfrom, qcharacteristics, srated, uuid]\n" +
+                "2: [cosphirated, id, operatesuntil, qcharacteristics, srated, uuid]\n" +
+                "3: [cosphirated, id, operatesfrom, operatesuntil, qcharacteristics, srated, uuid]\n"
     }
 }

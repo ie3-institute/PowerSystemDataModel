@@ -1,6 +1,5 @@
 package edu.ie3.io.factory.input.participant
 
-import edu.ie3.models.OperationTime
 import edu.ie3.models.input.NodeInput
 import edu.ie3.models.input.OperatorInput
 import edu.ie3.models.input.system.EvInput
@@ -20,7 +19,7 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
         inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
     }
 
-    def "A EvInputFactory should parse a valid operated EvInput correctly"() {
+    def "A EvInputFactory should parse a valid EvInput correctly"() {
         given: "a system participant input type factory and model data"
         def inputFactory = new EvInputFactory()
         Map<String, String> parameter = [
@@ -49,36 +48,6 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
             assert operationTime.endDate.present
             assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
             assert operator == operatorInput
-            assert id == parameter["id"]
-            assert node == nodeInput
-            assert qCharacteristics == parameter["qcharacteristics"]
-            assert type == typeInput
-        }
-    }
-
-    def "A EvInputFactory should parse a valid non-operated EvInput correctly"() {
-        given: "a system participant input type factory and model data"
-        def inputFactory = new EvInputFactory()
-        Map<String, String> parameter = [
-                "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-                "id"              : "TestID",
-                "qcharacteristics": "cosphi_fixed:1"
-        ]
-        def inputClass = EvInput
-        def nodeInput = Mock(NodeInput)
-        def typeInput = Mock(EvTypeInput)
-
-        when:
-        Optional<EvInput> input = inputFactory.getEntity(
-                new SystemParticipantTypedEntityData<EvTypeInput>(parameter, inputClass, nodeInput, typeInput))
-
-        then:
-        input.present
-        input.get().getClass() == inputClass
-        ((EvInput) input.get()).with {
-            assert uuid == UUID.fromString(parameter["uuid"])
-            assert operationTime == OperationTime.notLimited()
-            assert operator == null
             assert id == parameter["id"]
             assert node == nodeInput
             assert qCharacteristics == parameter["qcharacteristics"]

@@ -47,20 +47,4 @@ public class ChpInputFactory
         data.getThermalStorageInput(),
         marketReaction);
   }
-
-  @Override
-  protected ChpInput buildModel(
-      ChpInputEntityData data, UUID uuid, String id, NodeInput node, String qCharacteristics) {
-    final boolean marketReaction = data.getBoolean(MARKET_REACTION);
-
-    return new ChpInput(
-        uuid,
-        id,
-        node,
-        data.getThermalBusInput(),
-        qCharacteristics,
-        data.getTypeInput(),
-        data.getThermalStorageInput(),
-        marketReaction);
-  }
 }

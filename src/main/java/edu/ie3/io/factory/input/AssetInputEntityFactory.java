@@ -5,8 +5,6 @@
 */
 package edu.ie3.io.factory.input;
 
-import edu.ie3.exceptions.FactoryException;
-import edu.ie3.io.factory.EntityData;
 import edu.ie3.io.factory.EntityFactory;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.AssetInput;
@@ -36,53 +34,31 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
   }
 
   /**
-   * In addition to the checks performed by {@link EntityFactory#validateParameters(EntityData,
-   * Set[])}, integrity of operational data is checked here.
+   * Returns list of sets of attribute names that the entity requires to be built.
    *
-   * @param data the entity containing at least the entity class as well a mapping of the provided
-   *     field name strings to its value (e.g. a headline of a csv -> column values)
-   * @param fieldSets a set containing all available constructor combinations as field names
-   * @return the index of the set in the fieldSets array that fits the provided entity data
+   * <p>The mandatory attributes required to create an {@link AssetInput} are enhanced with custom
+   * attribute names that each subclass factory determines in {@link #getAdditionalFields()}.
+   *
+   * @param data EntityData (or subclass) containing the data
+   * @return list of possible attribute sets
    */
   @Override
-  protected int validateParameters(D data, Set<String>... fieldSets) {
-    if ((data.containsKey(OPERATES_FROM)
-        || data.containsKey(OPERATES_UNTIL)
-        || data.hasOperatorInput())) {
-
-      if ((data.containsKey(OPERATES_FROM) || data.containsKey(OPERATES_UNTIL))
-          && !data.hasOperatorInput())
-        throw new FactoryException(
-            "Operation time (fields '"
-                + OPERATES_FROM
-                + "' and '"
-                + OPERATES_UNTIL
-                + "') are passed, but operator input is not.");
-
-      if (data.hasOperatorInput()
-          && (!data.containsKey(OPERATES_FROM) || !data.containsKey(OPERATES_UNTIL)))
-        throw new FactoryException(
-            "Operator input is passed, but operation time (fields '"
-                + OPERATES_FROM
-                + "' and '"
-                + OPERATES_UNTIL
-                + "') is not.");
-    }
-
-    return super.validateParameters(data, fieldSets);
-  }
-
-  @Override
   protected List<Set<String>> getFields(D data) {
-    Set<String> minConstructorParams = newSet(UUID, ID);
-    Set<String> optConstructorParams =
-        expandSet(minConstructorParams, OPERATES_FROM, OPERATES_UNTIL);
+    Set<String> constructorParamsMin = newSet(UUID, ID);
+    Set<String> constructorParamsFrom =
+        expandSet(constructorParamsMin, OPERATES_FROM);
+    Set<String> constructorParamsUntil =
+            expandSet(constructorParamsMin, OPERATES_UNTIL);
+    Set<String> constructorParamsBoth =
+            expandSet(constructorParamsFrom, OPERATES_UNTIL);
 
     final String[] additionalFields = getAdditionalFields();
 
-    minConstructorParams = expandSet(minConstructorParams, additionalFields);
-    optConstructorParams = expandSet(optConstructorParams, additionalFields);
-    return Arrays.asList(minConstructorParams, optConstructorParams);
+    constructorParamsMin = expandSet(constructorParamsMin, additionalFields);
+    constructorParamsFrom = expandSet(constructorParamsFrom, additionalFields);
+    constructorParamsUntil = expandSet(constructorParamsUntil, additionalFields);
+    constructorParamsBoth = expandSet(constructorParamsBoth, additionalFields);
+    return Arrays.asList(constructorParamsMin, constructorParamsFrom, constructorParamsUntil, constructorParamsBoth);
   }
 
   /**
@@ -100,15 +76,16 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
     Optional<OperatorInput> operatorInput = data.getOperatorInput();
     Optional<OperationTime> operationTime = buildOperationTime(data);
 
-    final boolean isOperational = operatorInput.isPresent() && operationTime.isPresent();
-
-    return isOperational
-        ? buildModel(data, uuid, id, operatorInput.get(), operationTime.get())
-        : buildModel(data, uuid, id);
+    return buildModel(
+            data,
+            uuid,
+            id,
+            operatorInput.orElse(null),
+            operationTime.orElse(OperationTime.notLimited()));
   }
 
   /**
-   * Creates operated asset entity with given parameters
+   * Creates asset input entity with given parameters
    *
    * @param data entity data
    * @param uuid UUID of the input entity
@@ -121,34 +98,19 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
       D data, UUID uuid, String id, OperatorInput operatorInput, OperationTime operationTime);
 
   /**
-   * Creates non-operated asset entity with given parameters
-   *
-   * @param data entity data
-   * @param uuid UUID of the input entity
-   * @param id ID
-   * @return newly created asset object
-   */
-  protected abstract T buildModel(D data, UUID uuid, String id);
-
-  /**
-   * Creates an {@link OperationTime} from the entity data iff the required attributes OPERATES_FROM
-   * and OPERATES_UNTIL are present. Both or one of these can be empty, which results in an
-   * unlimited operation interval. If at least one of the attributes is missing, an empty Optional
-   * is returned.
+   * Creates an {@link OperationTime} from the entity data from attributes OPERATES_FROM
+   * and OPERATES_UNTIL. Both or one of these can be empty or non-existing.
    *
    * @param data entity data to take the dates from
    * @return Operation time object if attributes are present, empty Optional otherwise.
    */
   private static Optional<OperationTime> buildOperationTime(AssetInputEntityData data) {
-    if (!data.containsKey(OPERATES_FROM) || !data.containsKey(OPERATES_UNTIL))
-      return Optional.empty();
-
-    final String from = data.getField(OPERATES_FROM);
-    final String until = data.getField(OPERATES_UNTIL);
+    final String from = data.getFieldOptional(OPERATES_FROM).orElse(null);
+    final String until = data.getFieldOptional(OPERATES_UNTIL).orElse(null);
 
     OperationTime.OperationTimeBuilder builder = new OperationTime.OperationTimeBuilder();
-    if (!from.trim().isEmpty()) builder.withStart(ZonedDateTime.parse(from));
-    if (!until.trim().isEmpty()) builder.withEnd(ZonedDateTime.parse(until));
+    if (from != null && !from.trim().isEmpty()) builder.withStart(ZonedDateTime.parse(from));
+    if (until != null && !until.trim().isEmpty()) builder.withEnd(ZonedDateTime.parse(until));
 
     return Optional.of(builder.build());
   }

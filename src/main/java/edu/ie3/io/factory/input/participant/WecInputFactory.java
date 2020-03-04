@@ -41,17 +41,4 @@ public class WecInputFactory
     return new WecInput(
         uuid, operationTime, operatorInput, id, node, qCharacteristics, typeInput, marketReaction);
   }
-
-  @Override
-  protected WecInput buildModel(
-      SystemParticipantTypedEntityData<WecTypeInput> data,
-      UUID uuid,
-      String id,
-      NodeInput node,
-      String qCharacteristics) {
-    WecTypeInput typeInput = data.getTypeInput();
-    final boolean marketReaction = data.getBoolean(MARKET_REACTION);
-
-    return new WecInput(uuid, id, node, qCharacteristics, typeInput, marketReaction);
-  }
 }

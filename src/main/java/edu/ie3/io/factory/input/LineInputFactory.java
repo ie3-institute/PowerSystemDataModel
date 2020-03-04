@@ -61,19 +61,4 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
         geoPosition,
         olmCharacteristic);
   }
-
-  @Override
-  protected LineInput buildModel(
-      LineInputEntityData data, UUID uuid, String id, NodeInput nodeA, NodeInput nodeB) {
-    final int parallelDevices = data.getInt(PARALLEL_DEVICES);
-    final LineTypeInput type = data.getType();
-    final Quantity<Length> length = data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH);
-    final LineString geoPosition = data.getLineString(GEO_POSITION).orElse(null);
-    final Optional<String> olmCharacteristic =
-        data.containsKey(OLM_CHARACTERISTIC)
-            ? Optional.of(data.getField(OLM_CHARACTERISTIC))
-            : Optional.empty();
-    return new LineInput(
-        uuid, id, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic);
-  }
 }
