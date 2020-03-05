@@ -10,7 +10,7 @@ import edu.ie3.models.value.Value;
 import java.time.ZonedDateTime;
 
 /** Describes a TimeSeries with repetitive values that can be calculated from a pattern */
-public abstract class RepetitiveTimeSeries<T extends Value> implements TimeSeries<T> {
+public abstract class RepetitiveTimeSeries<T extends Value> extends TimeSeries<T> {
 
   /** Calculate the value at the given timestep based on a pattern */
   public abstract T calc(ZonedDateTime time);

@@ -78,6 +78,8 @@ public class StandardUnits {
   public static final Unit<Temperature> TEMPERATURE = CELSIUS;
   /** Heat demand of a thermal sink */
   public static final Unit<Power> HEAT_DEMAND = MEGAWATT;
+  /** Heat demand, that is delivered via a profile */
+  public static final Unit<Power> HEAT_DEMAND_PROFILE = KILOWATT;
   /** Thermal capacity of a given mass */
   public static final Unit<HeatCapacity> HEAT_CAPACITY = KILOWATTHOUR_PER_KELVIN;
   /** Thermal capacity per mass */

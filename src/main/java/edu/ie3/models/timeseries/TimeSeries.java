@@ -5,15 +5,16 @@
 */
 package edu.ie3.models.timeseries;
 
+import edu.ie3.models.UniqueEntity;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.Value;
 import java.time.ZonedDateTime;
 
 /** Describes a Series of {@link edu.ie3.models.value.TimeBasedValue TimeBasedValues} */
-public interface TimeSeries<T extends Value> {
+abstract class TimeSeries<T extends Value> extends UniqueEntity {
 
   /** @return the value at the given timestep as a TimeBasedValue */
-  TimeBasedValue<T> getTimeBasedValue(ZonedDateTime time);
+  abstract TimeBasedValue<T> getTimeBasedValue(ZonedDateTime time);
 
   /**
    * If you prefer to keep the time with the value, please use {@link TimeSeries#getTimeBasedValue}
@@ -21,5 +22,5 @@ public interface TimeSeries<T extends Value> {
    *
    * @return the raw value at the given timestep
    */
-  T getValue(ZonedDateTime time);
+  abstract T getValue(ZonedDateTime time);
 }
