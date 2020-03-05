@@ -14,7 +14,7 @@ import java.util.Objects;
 
 /** Describes a TimeSeries with individual values per time step */
 public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
-  /** Maps a TimeBasedValue to its time to retrieve faster */
+  /** Maps a time to its respective value to retrieve faster */
   private HashMap<ZonedDateTime, T> timeToTimeBasedValue = new HashMap<>();
 
   /**
@@ -27,7 +27,7 @@ public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
   }
 
   /**
-   * Creates a {@link TimeBasedValue} from this data and adds it to the internal map
+   * Adds an entry time -> value to the internal map
    *
    * @param time of this value
    * @param value The actual value
