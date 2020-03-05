@@ -72,14 +72,9 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
     UUID uuid = data.getUUID(UUID);
     String id = data.getField(ID);
     Optional<OperatorInput> operatorInput = data.getOperatorInput();
-    Optional<OperationTime> operationTime = buildOperationTime(data);
+    OperationTime operationTime = buildOperationTime(data);
 
-    return buildModel(
-        data,
-        uuid,
-        id,
-        operatorInput.orElse(null),
-        operationTime.orElse(OperationTime.notLimited()));
+    return buildModel(data, uuid, id, operatorInput.orElse(null), operationTime);
   }
 
   /**
@@ -100,9 +95,9 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
    * OPERATES_UNTIL. Both or one of these can be empty or non-existing.
    *
    * @param data entity data to take the dates from
-   * @return Operation time object if attributes are present, empty Optional otherwise.
+   * @return Operation time object
    */
-  private static Optional<OperationTime> buildOperationTime(AssetInputEntityData data) {
+  private static OperationTime buildOperationTime(AssetInputEntityData data) {
     final String from = data.getFieldOptional(OPERATES_FROM).orElse(null);
     final String until = data.getFieldOptional(OPERATES_UNTIL).orElse(null);
 
@@ -110,6 +105,6 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
     if (from != null && !from.trim().isEmpty()) builder.withStart(ZonedDateTime.parse(from));
     if (until != null && !until.trim().isEmpty()) builder.withEnd(ZonedDateTime.parse(until));
 
-    return Optional.of(builder.build());
+    return builder.build();
   }
 }

@@ -45,15 +45,6 @@ public class AssetInputEntityData extends EntityData {
     this.operatorInput = operatorInput;
   }
 
-  /**
-   * Checks whether asset has an operator input or not.
-   *
-   * @return true if operator input is present
-   */
-  public boolean hasOperatorInput() {
-    return operatorInput != null;
-  }
-
   public Optional<OperatorInput> getOperatorInput() {
     return Optional.ofNullable(operatorInput);
   }
