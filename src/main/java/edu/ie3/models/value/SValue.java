@@ -10,7 +10,7 @@ import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 
-/** Describes a power value as a pair of active and reactive power */
+/** Describes a apparent power value as a pair of active and reactive power */
 public class SValue extends PValue {
 
   /** Reactive power */

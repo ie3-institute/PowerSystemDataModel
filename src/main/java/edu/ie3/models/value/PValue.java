@@ -10,7 +10,7 @@ import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 
-/** Describes a power value as active power */
+/** Describes a actove power value as active power */
 public class PValue implements Value {
 
   /** Active power */
