@@ -239,10 +239,10 @@ public abstract class EntityData {
    */
   public VoltageLevel getVoltageLvl(String voltLvlField, String ratedVoltField) {
     try {
-      final String votlLvlId = getField(voltLvlField);
+      final String voltLvlId = getField(voltLvlField);
       final ComparableQuantity<ElectricPotential> vRated = getQuantity(ratedVoltField, KILOVOLT);
 
-      return parseToGermanVoltLvlOrIndidviual(votlLvlId, vRated);
+      return parseToGermanVoltLvlOrIndidviual(voltLvlId, vRated);
     } catch (IllegalArgumentException iae) {
       throw new FactoryException("VoltageLevel could not be parsed", iae);
     }
