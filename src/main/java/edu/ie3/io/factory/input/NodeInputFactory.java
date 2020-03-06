@@ -5,9 +5,9 @@
 */
 package edu.ie3.io.factory.input;
 
+import edu.ie3.models.CommonVoltageLevel;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
-import edu.ie3.models.VoltageLevel;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
 import java.util.UUID;
@@ -46,7 +46,7 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
         data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     final boolean slack = data.getBoolean(SLACK);
     final Point geoPosition = data.getPoint(GEO_POSITION).orElse(null);
-    final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL);
+    final CommonVoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL);
     final int subnet = data.getInt(SUBNET);
     return new NodeInput(
         uuid,

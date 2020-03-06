@@ -1,6 +1,6 @@
 package edu.ie3.io.factory.input
 
-import edu.ie3.models.GermanVoltageLevel
+import edu.ie3.models.CommonGermanVoltageLevel
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.input.NodeInput
 import edu.ie3.models.input.OperatorInput
@@ -54,7 +54,7 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
       assert vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
       assert slack
       assert geoPosition == getGeometry(parameter["geoposition"])
-      assert voltLvl == GermanVoltageLevel.parseVoltageLvl(parameter["voltlvl"])
+      assert voltLvl == CommonGermanVoltageLevel.parse(parameter["voltlvl"])
       assert subnet == Integer.parseInt(parameter["subnet"])
     }
   }

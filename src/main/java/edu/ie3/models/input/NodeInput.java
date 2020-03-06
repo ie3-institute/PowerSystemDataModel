@@ -5,9 +5,9 @@
 */
 package edu.ie3.models.input;
 
+import edu.ie3.models.CommonVoltageLevel;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
-import edu.ie3.models.VoltageLevel;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
@@ -29,7 +29,7 @@ public class NodeInput extends AssetInput {
    */
   private final Point geoPosition;
   /** Voltage level of this node */
-  private final VoltageLevel voltLvl;
+  private final CommonVoltageLevel voltLvl;
   /** Subnet of this node */
   private final int subnet;
   /**
@@ -56,7 +56,7 @@ public class NodeInput extends AssetInput {
       Quantity<ElectricPotential> vRated,
       boolean slack,
       Point geoPosition,
-      VoltageLevel voltLvl,
+      CommonVoltageLevel voltLvl,
       int subnet) {
     super(uuid, operationTime, operator, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
@@ -87,7 +87,7 @@ public class NodeInput extends AssetInput {
       Quantity<ElectricPotential> vRated,
       boolean slack,
       Point geoPosition,
-      VoltageLevel voltLvl,
+      CommonVoltageLevel voltLvl,
       int subnet) {
     super(uuid, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
@@ -114,7 +114,7 @@ public class NodeInput extends AssetInput {
     return geoPosition;
   }
 
-  public VoltageLevel getVoltLvl() {
+  public CommonVoltageLevel getVoltLvl() {
     return voltLvl;
   }
 
