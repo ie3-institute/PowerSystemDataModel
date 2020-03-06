@@ -242,7 +242,7 @@ public abstract class EntityData {
       final String voltLvlId = getField(voltLvlField);
       final ComparableQuantity<ElectricPotential> vRated = getQuantity(ratedVoltField, KILOVOLT);
 
-      return parseToGermanVoltLvlOrIndidviual(voltLvlId, vRated);
+      return parseToGermanVoltLvlOrIndividual(voltLvlId, vRated);
     } catch (IllegalArgumentException iae) {
       throw new FactoryException("VoltageLevel could not be parsed", iae);
     }
@@ -257,7 +257,7 @@ public abstract class EntityData {
    * @return A suitable German {@link edu.ie3.models.voltagelevels.CommonVoltageLevel} or an
    *     individual one
    */
-  private VoltageLevel parseToGermanVoltLvlOrIndidviual(
+  private VoltageLevel parseToGermanVoltLvlOrIndividual(
       String voltLvlId, ComparableQuantity<ElectricPotential> vRated) {
     try {
       return GermanVoltageLevelUtils.parse(voltLvlId, vRated);
