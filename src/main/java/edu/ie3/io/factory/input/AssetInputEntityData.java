@@ -31,7 +31,7 @@ public class AssetInputEntityData extends EntityData {
   }
 
   /**
-   * Creates a new AssetInputEntityData object for an operable asset input.
+   * Creates a new AssetInputEntityData object without timely operation boundaries.
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data
