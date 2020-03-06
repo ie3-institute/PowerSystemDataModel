@@ -9,9 +9,9 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
 
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.exceptions.VoltageLevelException;
-import edu.ie3.models.CommonGermanVoltageLevel;
-import edu.ie3.models.CommonVoltageLevel;
 import edu.ie3.models.UniqueEntity;
+import edu.ie3.models.voltagelevels.CommonVoltageLevel;
+import edu.ie3.models.voltagelevels.GermanVoltageLevelFactory;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -237,7 +237,7 @@ public abstract class EntityData {
   public CommonVoltageLevel getVoltageLvl(String field) {
     try {
       final String value = getField(field);
-      return CommonGermanVoltageLevel.parse(
+      return GermanVoltageLevelFactory.parse(
           value, Quantities.getQuantity(0d, KILOVOLT)); // TODO: Fix
     } catch (IllegalArgumentException iae) {
       throw new FactoryException("VoltageLevel could not be parsed", iae);

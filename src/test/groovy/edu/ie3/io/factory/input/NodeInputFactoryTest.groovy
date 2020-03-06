@@ -1,12 +1,15 @@
 package edu.ie3.io.factory.input
 
-import edu.ie3.models.CommonGermanVoltageLevel
 import edu.ie3.models.StandardUnits
 import edu.ie3.models.input.NodeInput
 import edu.ie3.models.input.OperatorInput
+import edu.ie3.models.voltagelevels.GermanVoltageLevelFactory
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
+import tec.uom.se.ComparableQuantity
+import tec.uom.se.quantity.Quantities
 
+import javax.measure.quantity.ElectricPotential
 import java.time.ZonedDateTime
 
 class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
@@ -54,7 +57,7 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
       assert vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
       assert slack
       assert geoPosition == getGeometry(parameter["geoposition"])
-      assert voltLvl == CommonGermanVoltageLevel.parse(parameter["voltlvl"])
+      assert voltLvl == GermanVoltageLevelFactory.parse(parameter["voltlvl"], vRated as ComparableQuantity<ElectricPotential>)
       assert subnet == Integer.parseInt(parameter["subnet"])
     }
   }

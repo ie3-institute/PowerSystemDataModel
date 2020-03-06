@@ -5,11 +5,11 @@
 */
 package edu.ie3.io.factory.input;
 
-import edu.ie3.models.CommonVoltageLevel;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
+import edu.ie3.models.voltagelevels.CommonVoltageLevel;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
