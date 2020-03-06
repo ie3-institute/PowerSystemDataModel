@@ -252,21 +252,21 @@ public abstract class EntityData {
    * Parses the given voltage level information to German voltage level or builds an individual one,
    * if no suitable one can be found.
    *
-   * @param votlLvlId Identifier of the voltage level
+   * @param voltLvlId Identifier of the voltage level
    * @param vRated Foreseen rated voltage
    * @return A suitable German {@link edu.ie3.models.voltagelevels.CommonVoltageLevel} or an
    *     individual one
    */
   private VoltageLevel parseToGermanVoltLvlOrIndidviual(
-      String votlLvlId, ComparableQuantity<ElectricPotential> vRated) {
+      String voltLvlId, ComparableQuantity<ElectricPotential> vRated) {
     try {
-      return GermanVoltageLevelUtils.parse(votlLvlId, vRated);
+      return GermanVoltageLevelUtils.parse(voltLvlId, vRated);
     } catch (VoltageLevelException e) {
       logger.warn(
           "Cannot parse ({}, {}) to common German voltage level. Build an individual one.",
-          votlLvlId,
+          voltLvlId,
           vRated);
-      return new VoltageLevel(votlLvlId, vRated);
+      return new VoltageLevel(voltLvlId, vRated);
     }
   }
 
