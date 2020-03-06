@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 import tec.uom.se.ComparableQuantity;
 import tec.uom.se.quantity.Quantities;
 
-public class GermanVoltageLevelFactory {
-  protected static final Logger logger = LoggerFactory.getLogger(GermanVoltageLevelFactory.class);
+public class GermanVoltageLevelUtils {
+  protected static final Logger logger = LoggerFactory.getLogger(GermanVoltageLevelUtils.class);
 
   public static final CommonVoltageLevel LV =
       new CommonVoltageLevel(
@@ -74,7 +74,7 @@ public class GermanVoltageLevelFactory {
   private static Set<CommonVoltageLevel> germanVoltageLevels =
       new HashSet<>(Arrays.asList(LV, MV_10KV, MV_20KV, MV_30KV, HV, EHV_220KV, EHV_380KV));
 
-  private GermanVoltageLevelFactory() {
+  private GermanVoltageLevelUtils() {
     throw new IllegalStateException("This is a factory class. Don't try and instantiate it.");
   }
 

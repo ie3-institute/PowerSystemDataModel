@@ -1,14 +1,14 @@
 package edu.ie3.models
 
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
+import static tec.uom.se.unit.Units.VOLT
+
 import edu.ie3.exceptions.VoltageLevelException
 import edu.ie3.models.voltagelevels.CommonVoltageLevel
 import edu.ie3.util.interval.RightOpenInterval
 import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
-
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
-import static tec.uom.se.unit.Units.VOLT
 
 class CommonVoltageLevelTest extends Specification {
     @Shared
@@ -50,6 +50,6 @@ class CommonVoltageLevelTest extends Specification {
 
         then:
         VoltageLevelException ex = thrown()
-        ex.getMessage() == "The provided id \"HS\" and rated voltage \"500.0 V\" could possibly meet the voltage level \"Niederspannung\" (Interval [0.0 kV, 10.0 kV)), but are inconsistent."
+        ex.message == "The provided id \"HS\" and rated voltage \"500.0 V\" could possibly meet the voltage level \"Niederspannung\" (Interval [0.0 kV, 10.0 kV)), but are inconsistent."
     }
 }

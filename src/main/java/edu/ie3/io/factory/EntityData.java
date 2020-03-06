@@ -10,7 +10,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.exceptions.VoltageLevelException;
 import edu.ie3.models.UniqueEntity;
-import edu.ie3.models.voltagelevels.GermanVoltageLevelFactory;
+import edu.ie3.models.voltagelevels.GermanVoltageLevelUtils;
 import edu.ie3.models.voltagelevels.VoltageLevel;
 import java.util.Map;
 import java.util.Optional;
@@ -260,7 +260,7 @@ public abstract class EntityData {
   private VoltageLevel parseToGermanVoltLvlOrIndidviual(
       String votlLvlId, ComparableQuantity<ElectricPotential> vRated) {
     try {
-      return GermanVoltageLevelFactory.parse(votlLvlId, vRated);
+      return GermanVoltageLevelUtils.parse(votlLvlId, vRated);
     } catch (VoltageLevelException e) {
       logger.warn(
           "Cannot parse ({}, {}) to common German voltage level. Build an individual one.",

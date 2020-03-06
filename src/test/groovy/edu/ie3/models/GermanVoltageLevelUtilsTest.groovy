@@ -1,13 +1,13 @@
 package edu.ie3.models
 
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
+import static edu.ie3.models.voltagelevels.GermanVoltageLevelUtils.*
+
 import edu.ie3.models.voltagelevels.CommonVoltageLevel
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
-import static edu.ie3.models.voltagelevels.GermanVoltageLevelFactory.*
-
-class GermanVoltageLevelFactoryTest extends Specification {
+class GermanVoltageLevelUtilsTest extends Specification {
 
     def "The common german voltage level enum should be able to correctly parse different valid inputs"() {
         given:
