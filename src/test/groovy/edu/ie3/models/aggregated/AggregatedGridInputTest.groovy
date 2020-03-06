@@ -1,11 +1,11 @@
 package edu.ie3.models.aggregated
 
+import static  edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.exceptions.AggregationException
 import edu.ie3.models.input.aggregated.AggregatedGridInput
 import edu.ie3.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.models.voltagelevels.VoltageLevel
-
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.models.OperationTime
 import edu.ie3.models.input.NodeInput
