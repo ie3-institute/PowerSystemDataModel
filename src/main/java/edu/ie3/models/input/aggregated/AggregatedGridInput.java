@@ -5,10 +5,12 @@
 */
 package edu.ie3.models.input.aggregated;
 
+import edu.ie3.exceptions.AggregationException;
 import edu.ie3.models.UniqueEntity;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import edu.ie3.models.input.NodeInput;
+import edu.ie3.models.voltagelevels.VoltageLevel;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /** Represents the aggregation of all data needed to create a complete single grid */
 public class AggregatedGridInput implements AggregatedEntities {
@@ -17,8 +19,8 @@ public class AggregatedGridInput implements AggregatedEntities {
   private final String gridName;
   /** subnet number of this grid */
   private final int subnet;
-  /** Voltlevel of this grid */
-  private final String voltLvl;
+
+  private final VoltageLevel predominantVoltageLevel;
 
   /** Aggregated raw grid elements (lines, nodes, transformers, switches) */
   private final RawGridElements rawGrid;
@@ -30,16 +32,27 @@ public class AggregatedGridInput implements AggregatedEntities {
   public AggregatedGridInput(
       String gridName,
       int subnet,
-      String voltLvl,
       RawGridElements rawGrid,
       SystemParticipantElements systemParticipants,
-      GraphicElements graphics) {
+      GraphicElements graphics)
+      throws AggregationException {
     this.gridName = gridName;
     this.subnet = subnet;
-    this.voltLvl = voltLvl;
     this.rawGrid = rawGrid;
     this.systemParticipants = systemParticipants;
     this.graphics = graphics;
+
+    try {
+      this.predominantVoltageLevel = determinePredominantVoltLvl(rawGrid);
+    } catch (AggregationException e) {
+      throw new AggregationException(
+          "Cannot build aggregated input model for ("
+              + gridName
+              + ", "
+              + subnet
+              + "), as the predominant voltage level cannot be determined.",
+          e);
+    }
   }
 
   @Override
@@ -87,8 +100,8 @@ public class AggregatedGridInput implements AggregatedEntities {
     return subnet;
   }
 
-  public String getVoltLvl() {
-    return voltLvl;
+  public VoltageLevel getPredominantVoltageLevel() {
+    return predominantVoltageLevel;
   }
 
   public RawGridElements getRawGrid() {
@@ -101,5 +114,26 @@ public class AggregatedGridInput implements AggregatedEntities {
 
   public GraphicElements getGraphics() {
     return graphics;
+  }
+
+  /**
+   * Determining the predominant voltage level in this grid by counting the occurrences of the
+   * different voltage levels
+   *
+   * @param rawGrid Raw grid elements
+   * @return The predominant voltage level in this grid
+   * @throws AggregationException If not a single, predominant voltage level can be determined
+   */
+  private static VoltageLevel determinePredominantVoltLvl(RawGridElements rawGrid)
+      throws AggregationException {
+    return rawGrid.getNodes().stream()
+        .map(NodeInput::getVoltLvl)
+        .collect(Collectors.groupingBy(voltLvl -> voltLvl, Collectors.counting()))
+        .entrySet()
+        .stream()
+        .max(Map.Entry.comparingByValue())
+        .map(Map.Entry::getKey)
+        .orElseThrow(
+            () -> new AggregationException("Cannot determine the predominant voltage level."));
   }
 }

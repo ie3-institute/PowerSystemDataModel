@@ -55,9 +55,9 @@ public class ValidationUtils {
    */
   public static boolean checkNode(NodeInput node) {
     if (node == null) return false;
-    if (node.getvRated() == null || node.getvTarget() == null)
+    if (node.getVoltLvl().getNominalVoltage() == null || node.getvTarget() == null)
       throw new InvalidEntityException("vRated or vTarget is null", node);
-    if (node.getvRated().getValue().doubleValue() == 0d
+    if (node.getVoltLvl().getNominalVoltage().getValue().doubleValue() == 0d
         || node.getvTarget().getValue().doubleValue() == 0d)
       throw new UnsafeEntityException("vRated or vTarget is 0", node);
     return true;

@@ -7,13 +7,12 @@ package edu.ie3.io.factory.input;
 
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
-import edu.ie3.models.VoltageLevel;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
+import edu.ie3.models.voltagelevels.VoltageLevel;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
-import javax.measure.quantity.ElectricPotential;
 import org.locationtech.jts.geom.Point;
 
 public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetInputEntityData> {
@@ -42,22 +41,11 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
       OperationTime operationTime) {
     final Quantity<Dimensionless> vTarget =
         data.getQuantity(V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
-    final Quantity<ElectricPotential> vRated =
-        data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     final boolean slack = data.getBoolean(SLACK);
     final Point geoPosition = data.getPoint(GEO_POSITION).orElse(null);
-    final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL);
+    final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL, V_RATED);
     final int subnet = data.getInt(SUBNET);
     return new NodeInput(
-        uuid,
-        operationTime,
-        operatorInput,
-        id,
-        vTarget,
-        vRated,
-        slack,
-        geoPosition,
-        voltLvl,
-        subnet);
+        uuid, operationTime, operatorInput, id, vTarget, slack, geoPosition, voltLvl, subnet);
   }
 }
