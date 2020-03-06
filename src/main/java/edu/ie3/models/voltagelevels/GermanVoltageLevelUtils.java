@@ -75,7 +75,7 @@ public class GermanVoltageLevelUtils {
       new HashSet<>(Arrays.asList(LV, MV_10KV, MV_20KV, MV_30KV, HV, EHV_220KV, EHV_380KV));
 
   private GermanVoltageLevelUtils() {
-    throw new IllegalStateException("This is a factory class. Don't try and instantiate it.");
+    throw new IllegalStateException("This is a factory class. Don't try to instantiate it.");
   }
 
   /**

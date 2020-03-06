@@ -80,7 +80,7 @@ public class NodeInput extends AssetInput {
       Quantity<Dimensionless> vTarget,
       boolean slack,
       Point geoPosition,
-      CommonVoltageLevel voltLvl,
+      VoltageLevel voltLvl,
       int subnet) {
     super(uuid, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
