@@ -18,6 +18,10 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tec.uom.se.unit.Units;
 
+/**
+ * Factory class for creating {@link SystemParticipantResult} entities from provided {@link
+ * SimpleEntityData} data objects.
+ */
 public class SystemParticipantResultFactory extends ResultEntityFactory<SystemParticipantResult> {
 
   private static final String POWER = "p";
@@ -25,7 +29,6 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   private static final String SOC = "soc";
 
   public SystemParticipantResultFactory() {
-
     super(
         LoadResult.class,
         FixedFeedInResult.class,

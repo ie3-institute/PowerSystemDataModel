@@ -66,6 +66,7 @@ public class ChpInput extends SystemParticipantInput {
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param type of CHP
+   * @param thermalStorage Thermal storage model
    * @param marketReaction Is this asset market oriented?
    */
   public ChpInput(
@@ -75,10 +76,12 @@ public class ChpInput extends SystemParticipantInput {
       ThermalBusInput thermalBus,
       String qCharacteristics,
       ChpTypeInput type,
+      ThermalStorageInput thermalStorage,
       boolean marketReaction) {
     super(uuid, id, node, qCharacteristics);
     this.thermalBus = thermalBus;
     this.type = type;
+    this.thermalStorage = thermalStorage;
     this.marketReaction = marketReaction;
   }
 

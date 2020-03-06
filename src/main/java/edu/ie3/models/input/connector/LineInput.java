@@ -5,7 +5,6 @@
 */
 package edu.ie3.models.input.connector;
 
-import com.vividsolutions.jts.geom.LineString;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.OperatorInput;
@@ -15,6 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
+import org.locationtech.jts.geom.LineString;
 
 /** Describes an electrical grid line that connects two {@link edu.ie3.models.input.NodeInput}s */
 public class LineInput extends ConnectorInput {

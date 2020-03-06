@@ -10,15 +10,21 @@ import edu.ie3.models.UniqueEntity;
 import edu.ie3.util.TimeTools;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * Universal factory class for creating entities with {@link EntityData} data objects.
+ *
+ * @param <T> Type of entity that this factory can create. Can be a subclass of the entities that
+ *     this factory creates.
+ * @param <D> Type of data class that is required for entity creation
  * @version 0.1
  * @since 28.01.20
  */
-abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
+public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
   public final Logger log = LogManager.getLogger(this.getClass());
 
   protected final List<Class<? extends T>> classes;
@@ -26,7 +32,7 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
   /**
    * Constructor for an EntityFactory for given classes
    *
-   * @param allowedClasses exactly the classes that this factory should be able to build
+   * @param allowedClasses exactly the classes that this factory is allowed and able to build
    */
   public EntityFactory(Class<? extends T>... allowedClasses) {
     this.classes = Arrays.asList(allowedClasses);
@@ -40,7 +46,34 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
    * @param data EntityData (or subclass) containing the data
    * @return An entity wrapped in Option if successful, an empty option otherwise
    */
-  public abstract Optional<T> getEntity(D data);
+  public Optional<T> getEntity(D data) {
+    isValidClass(data.getEntityClass());
+
+    // magic: case-insensitive get/set calls on set strings
+    final List<Set<String>> allFields = getFields(data);
+
+    validateParameters(data, allFields.stream().toArray((IntFunction<Set<String>[]>) Set[]::new));
+
+    try {
+      // build the model
+      return Optional.of(buildModel(data));
+
+    } catch (FactoryException e) {
+      // only catch FactoryExceptions, as more serious exceptions should be handled elsewhere
+      log.error(
+          "An error occurred when creating instance of "
+              + data.getEntityClass().getSimpleName()
+              + ".class.",
+          e);
+    }
+    return Optional.empty();
+  }
+
+  private void isValidClass(Class<? extends UniqueEntity> entityClass) {
+    if (!classes.contains(entityClass))
+      throw new FactoryException(
+          "Cannot process " + entityClass.getSimpleName() + ".class with this factory!");
+  }
 
   /**
    * Returns list of sets of attribute names that the entity requires to be built. At least one of
@@ -101,14 +134,13 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
    * fieldSets Array. If we find exactly one constructor, that matches the field names we can
    * proceed. Otherwise a detailed exception message is thrown.
    *
-   * @param entityData the entity containing at least the entity class as well a mapping of the
-   *     provided field name strings to its value (e.g. a headline of a csv -> column values)
+   * @param data the entity containing at least the entity class as well a mapping of the provided
+   *     field name strings to its value (e.g. a headline of a csv -> column values)
    * @param fieldSets a set containing all available constructor combinations as field names
-   * @return the number of the set in the fieldSets array that fits the provided entityData
+   * @return the index of the set in the fieldSets array that fits the provided entity data
    */
-  protected int validateParameters(EntityData entityData, Set<String>... fieldSets) {
-
-    Map<String, String> fieldsToValues = entityData.getFieldsToValues();
+  protected int validateParameters(D data, Set<String>... fieldSets) {
+    Map<String, String> fieldsToValues = data.getFieldsToValues();
 
     // get all sets that match the fields to attributes
     List<Set<String>> validFieldSets =
@@ -139,15 +171,15 @@ abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
               + providedFieldMapString
               + "}"
               + " are invalid for instance of "
-              + entityData.getEntityClass().getSimpleName()
+              + data.getEntityClass().getSimpleName()
               + ". \nThe following fields to be passed to a constructor of "
-              + entityData.getEntityClass().getSimpleName()
+              + data.getEntityClass().getSimpleName()
               + " are possible:\n"
               + possibleOptions);
     }
   }
 
-  private StringBuilder getFieldsString(Set<String>... fieldSets) {
+  private static StringBuilder getFieldsString(Set<String>... fieldSets) {
     StringBuilder possibleOptions = new StringBuilder();
     for (int i = 0; i < fieldSets.length; i++) {
       Set<String> fieldSet = fieldSets[i];

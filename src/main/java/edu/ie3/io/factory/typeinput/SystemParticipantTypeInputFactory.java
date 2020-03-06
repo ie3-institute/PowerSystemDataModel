@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.io.factory.input;
+package edu.ie3.io.factory.typeinput;
 
 import edu.ie3.exceptions.FactoryException;
 import edu.ie3.io.factory.SimpleEntityData;
@@ -100,7 +100,7 @@ public class SystemParticipantTypeInputFactory
     Quantity<Currency> capEx = data.getQuantity(CAP_EX, StandardUnits.CAPEX);
     Quantity<EnergyPrice> opEx = data.getQuantity(OP_EX, StandardUnits.ENERGY_PRICE);
     Quantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
-    double cosPhi = Double.parseDouble(data.getField(COS_PHI));
+    double cosPhi = data.getDouble(COS_PHI);
 
     if (data.getEntityClass().equals(EvTypeInput.class))
       return buildEvTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
@@ -208,7 +208,7 @@ public class SystemParticipantTypeInputFactory
     Quantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
     Quantity<Dimensionless> dod = data.getQuantity(DOD, StandardUnits.DOD);
     Quantity<Time> lifeTime = data.getQuantity(LIFETIME, StandardUnits.LIFE_TIME);
-    int lifeCycle = Integer.parseInt(data.getField(LIFECYCLE));
+    int lifeCycle = data.getInt(LIFECYCLE);
 
     return new StorageTypeInput(
         uuid, id, capEx, opEx, eStorage, sRated, cosPhi, pMin, pMax, eta, dod, lifeTime, lifeCycle);

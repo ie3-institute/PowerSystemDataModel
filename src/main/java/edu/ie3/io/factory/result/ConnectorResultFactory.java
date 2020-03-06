@@ -76,8 +76,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
           .map(uuid -> new LineResult(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng))
           .orElseGet(() -> new LineResult(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng));
     else if (entityClass.equals(SwitchResult.class)) {
-      final boolean closed =
-          data.getField(CLOSED).trim().equals("1") || data.getField(CLOSED).trim().equals("true");
+      final boolean closed = data.getBoolean(CLOSED);
 
       return uuidOpt
           .map(
@@ -86,7 +85,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
           .orElseGet(
               () -> new SwitchResult(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, closed));
     } else if (entityClass.equals(Transformer2WResult.class)) {
-      final int tapPos = Integer.parseInt(data.getField(TAPPOS).trim());
+      final int tapPos = data.getInt(TAPPOS);
 
       return uuidOpt
           .map(
@@ -101,7 +100,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
       Quantity<ElectricCurrent> iCMag =
           data.getQuantity(ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
       Quantity<Angle> iCAng = data.getQuantity(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
-      final int tapPos = Integer.parseInt(data.getField(TAPPOS).trim());
+      final int tapPos = data.getInt(TAPPOS);
 
       return uuidOpt
           .map(

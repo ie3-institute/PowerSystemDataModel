@@ -46,4 +46,19 @@ public enum GermanVoltageLevel implements VoltageLevel {
   public String getName() {
     return name;
   }
+
+  public static VoltageLevel parseVoltageLvl(String value) {
+    switch (value.toLowerCase()) {
+      case "lv":
+        return GermanVoltageLevel.LV;
+      case "mv":
+        return GermanVoltageLevel.MV;
+      case "hv":
+        return GermanVoltageLevel.HV;
+      case "ehv":
+        return GermanVoltageLevel.EHV;
+      default:
+        throw new IllegalArgumentException("Unrecognized voltage level: " + value);
+    }
+  }
 }

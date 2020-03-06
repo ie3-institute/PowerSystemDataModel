@@ -36,7 +36,7 @@ public class CylindricalStorageInput extends ThermalStorageInput {
    * @param returnTemp Temperature of the outlet
    * @param c Specific heat capacity of the storage medium
    */
-  CylindricalStorageInput(
+  public CylindricalStorageInput(
       UUID uuid,
       String id,
       ThermalBusInput bus,

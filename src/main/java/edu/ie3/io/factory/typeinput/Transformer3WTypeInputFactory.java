@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.io.factory.input;
+package edu.ie3.io.factory.typeinput;
 
 import edu.ie3.io.factory.SimpleEntityData;
 import edu.ie3.models.StandardUnits;
@@ -93,9 +93,9 @@ public class Transformer3WTypeInputFactory
     Quantity<ElectricConductance> bM = data.getQuantity(B_M, StandardUnits.ADMITTANCE);
     Quantity<Dimensionless> dV = data.getQuantity(D_V, StandardUnits.DV_TAP);
     Quantity<Angle> dPhi = data.getQuantity(D_PHI, StandardUnits.DPHI_TAP);
-    int tapNeutr = Integer.parseInt(data.getField(TAP_NEUTR));
-    int tapMin = Integer.parseInt(data.getField(TAP_MIN));
-    int tapMax = Integer.parseInt(data.getField(TAP_MAX));
+    int tapNeutr = data.getInt(TAP_NEUTR);
+    int tapMin = data.getInt(TAP_MIN);
+    int tapMax = data.getInt(TAP_MAX);
 
     return new Transformer3WTypeInput(
         uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA,
