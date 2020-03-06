@@ -8,19 +8,17 @@ package edu.ie3.models.input;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.voltagelevels.CommonVoltageLevel;
+import edu.ie3.models.voltagelevels.VoltageLevel;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
-import javax.measure.quantity.ElectricPotential;
 import org.locationtech.jts.geom.Point;
 
 /** Describes an electrical grid node, that other assets can connect to */
 public class NodeInput extends AssetInput {
   /** Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.) */
   private final Quantity<Dimensionless> vTarget;
-  /** Rated voltage magnitude of the node (typically in kV) */
-  private final Quantity<ElectricPotential> vRated;
   /** Is this node a slack node? */
   private final boolean slack;
   /**
@@ -29,7 +27,7 @@ public class NodeInput extends AssetInput {
    */
   private final Point geoPosition;
   /** Voltage level of this node */
-  private final CommonVoltageLevel voltLvl;
+  private final VoltageLevel voltLvl;
   /** Subnet of this node */
   private final int subnet;
   /**
@@ -40,7 +38,6 @@ public class NodeInput extends AssetInput {
    * @param operator of the asset
    * @param id of the asset
    * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
-   * @param vRated Rated voltage magnitude of the node
    * @param slack Is this node a slack node?
    * @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
    *     that are connected to this node
@@ -53,14 +50,12 @@ public class NodeInput extends AssetInput {
       OperatorInput operator,
       String id,
       Quantity<Dimensionless> vTarget,
-      Quantity<ElectricPotential> vRated,
       boolean slack,
       Point geoPosition,
-      CommonVoltageLevel voltLvl,
+      VoltageLevel voltLvl,
       int subnet) {
     super(uuid, operationTime, operator, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
-    this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.slack = slack;
     this.geoPosition = geoPosition;
     this.voltLvl = voltLvl;
@@ -73,7 +68,6 @@ public class NodeInput extends AssetInput {
    * @param uuid of the input entity
    * @param id of the asset
    * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
-   * @param vRated Rated voltage magnitude of the node
    * @param slack Is this node a slack node?
    * @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
    *     that are connected to this node
@@ -84,14 +78,12 @@ public class NodeInput extends AssetInput {
       UUID uuid,
       String id,
       Quantity<Dimensionless> vTarget,
-      Quantity<ElectricPotential> vRated,
       boolean slack,
       Point geoPosition,
       CommonVoltageLevel voltLvl,
       int subnet) {
     super(uuid, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
-    this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.slack = slack;
     this.geoPosition = geoPosition;
     this.voltLvl = voltLvl;
@@ -102,10 +94,6 @@ public class NodeInput extends AssetInput {
     return vTarget;
   }
 
-  public Quantity<ElectricPotential> getvRated() {
-    return vRated;
-  }
-
   public boolean isSlack() {
     return slack;
   }
@@ -114,7 +102,7 @@ public class NodeInput extends AssetInput {
     return geoPosition;
   }
 
-  public CommonVoltageLevel getVoltLvl() {
+  public VoltageLevel getVoltLvl() {
     return voltLvl;
   }
 
@@ -131,13 +119,12 @@ public class NodeInput extends AssetInput {
     return slack == nodeInput.slack
         && subnet == nodeInput.subnet
         && Objects.equals(vTarget, nodeInput.vTarget)
-        && Objects.equals(vRated, nodeInput.vRated)
         && Objects.equals(geoPosition, nodeInput.geoPosition)
         && Objects.equals(voltLvl, nodeInput.voltLvl);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), vTarget, vRated, slack, geoPosition, voltLvl, subnet);
+    return Objects.hash(super.hashCode(), vTarget, slack, geoPosition, voltLvl, subnet);
   }
 }

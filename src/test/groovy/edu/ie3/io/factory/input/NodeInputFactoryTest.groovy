@@ -54,10 +54,9 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
       assert operator == operatorInput
       assert id == parameter["id"]
       assert vTarget == getQuant(parameter["vtarget"], StandardUnits.TARGET_VOLTAGE_MAGNITUDE)
-      assert vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
       assert slack
       assert geoPosition == getGeometry(parameter["geoposition"])
-      assert voltLvl == GermanVoltageLevelFactory.parse(parameter["voltlvl"], vRated as ComparableQuantity<ElectricPotential>)
+      assert voltLvl == GermanVoltageLevelFactory.parse(parameter["voltlvl"], getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE) as ComparableQuantity<ElectricPotential>)
       assert subnet == Integer.parseInt(parameter["subnet"])
     }
   }
