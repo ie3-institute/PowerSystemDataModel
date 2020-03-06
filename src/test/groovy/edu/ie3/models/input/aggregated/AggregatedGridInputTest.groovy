@@ -1,4 +1,4 @@
-package edu.ie3.models.aggregated
+package edu.ie3.models.input.aggregated
 
 import static  edu.ie3.util.quantities.PowerSystemUnits.PU
 
