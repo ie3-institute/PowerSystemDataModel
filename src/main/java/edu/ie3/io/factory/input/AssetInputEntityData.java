@@ -20,7 +20,7 @@ public class AssetInputEntityData extends EntityData {
   private final OperatorInput operatorInput;
 
   /**
-   * Creates a new AssetInputEntityData object for a non-operable asset input
+   * Creates a new AssetInputEntityData object without operator.
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data
@@ -31,7 +31,7 @@ public class AssetInputEntityData extends EntityData {
   }
 
   /**
-   * Creates a new AssetInputEntityData object without timely operation boundaries.
+   * Creates a new AssetInputEntityData object with operator.
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data
