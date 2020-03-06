@@ -7,7 +7,7 @@ package edu.ie3.dataconnection.source;
 
 import com.vividsolutions.jts.geom.Point;
 import edu.ie3.models.timeseries.IndividualTimeSeries;
-import edu.ie3.models.value.WeatherValues;
+import edu.ie3.models.value.WeatherValue;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -17,13 +17,13 @@ import java.util.Map;
 public interface WeatherSource extends DataSource {
 
   /** @return weather data for the specified time range, sorted by coordinate */
-  Map<Point, IndividualTimeSeries<WeatherValues>> getWeather(
+  Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval);
 
   /** @return weather data for the specified time range and coordinates, sorted by coordinate */
-  Map<Point, IndividualTimeSeries<WeatherValues>> getWeather(
+  Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates);
 
   /** @return weather data for the specified time and coordinate */
-  WeatherValues getWeather(ZonedDateTime date, Point coordinate);
+  WeatherValue getWeather(ZonedDateTime date, Point coordinate);
 }
