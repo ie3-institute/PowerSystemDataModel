@@ -7,7 +7,6 @@ package edu.ie3.models.input;
 
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
-import edu.ie3.models.voltagelevels.CommonVoltageLevel;
 import edu.ie3.models.voltagelevels.VoltageLevel;
 import java.util.Objects;
 import java.util.UUID;
