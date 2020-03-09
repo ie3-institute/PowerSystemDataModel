@@ -1,10 +1,10 @@
 package edu.ie3.models.timeseries
 
 import edu.ie3.models.value.TimeBasedValue
-import edu.ie3.util.TimeTools
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class IndividualTimeSeriesSpec extends Specification {
@@ -12,14 +12,14 @@ class IndividualTimeSeriesSpec extends Specification {
     IndividualTimeSeries<IntValue> timeSeries = new IndividualTimeSeries<>(
             UUID.randomUUID(),
             new HashMap<ZonedDateTime, IntValue>() {{
-                    put(TimeTools.toZonedDateTime("01/01/1990 00:00:00"), new IntValue(3))
-                    put(TimeTools.toZonedDateTime("01/01/1990 00:15:00"), new IntValue(4))
-                    put(TimeTools.toZonedDateTime("01/01/1990 00:30:00"), new IntValue(1))
+                    put(ZonedDateTime.of(1990, 1, 1,0 , 0, 0, 0, ZoneId.of("UTC")), new IntValue(3))
+                    put(ZonedDateTime.of(1990, 1, 1,0 , 15, 0, 0, ZoneId.of("UTC")), new IntValue(4))
+                    put(ZonedDateTime.of(1990, 1, 1,0 , 30, 0, 0, ZoneId.of("UTC")), new IntValue(1))
             }})
 
     def "Return empty optional value when queried for non existent time" () {
         expect:
-        timeSeries.getValue(TimeTools.toZonedDateTime("01/01/1990 00:10:00")) == Optional.empty()
+        timeSeries.getValue(ZonedDateTime.of(1990, 1, 1,0 , 10, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
     }
 
     def "Return correct optional value when queried for existent time" () {
@@ -27,7 +27,7 @@ class IndividualTimeSeriesSpec extends Specification {
         IntValue expected = new IntValue(4)
 
         when:
-        Optional<IntValue> actual = timeSeries.getValue(TimeTools.toZonedDateTime("01/01/1990 00:15:00"))
+        Optional<IntValue> actual = timeSeries.getValue(ZonedDateTime.of(1990, 1, 1,0 , 15, 0, 0, ZoneId.of("UTC")))
 
         then:
         actual.isPresent()
@@ -36,10 +36,10 @@ class IndividualTimeSeriesSpec extends Specification {
 
     def "Return correct optional time based value when queried for existent time" () {
         given:
-        TimeBasedValue<IntValue> expected = new TimeBasedValue<>(TimeTools.toZonedDateTime("01/01/1990 00:15:00"), new IntValue(4))
+        TimeBasedValue<IntValue> expected = new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1,0 , 15, 0, 0, ZoneId.of("UTC")), new IntValue(4))
 
         when:
-        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getTimeBasedValue(TimeTools.toZonedDateTime("01/01/1990 00:15:00"))
+        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getTimeBasedValue(ZonedDateTime.of(1990, 1, 1,0 , 15, 0, 0, ZoneId.of("UTC")))
 
         then:
         actual.isPresent()
@@ -49,20 +49,20 @@ class IndividualTimeSeriesSpec extends Specification {
 
     def "Return empty optional time based value when queried for non existent time" () {
         expect:
-        timeSeries.getTimeBasedValue(TimeTools.toZonedDateTime("01/01/1990 00:10:00")) == Optional.empty()
+        timeSeries.getTimeBasedValue(ZonedDateTime.of(1990, 1, 1,0 , 10, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
     }
 
     def "The individual time series returns empty Optional, when queried time is before provided time frame" () {
         expect:
-        timeSeries.getLastTimeBasedValue(TimeTools.toZonedDateTime("31/12/1989 00:00:00")) == Optional.empty()
+        timeSeries.getLastTimeBasedValue(ZonedDateTime.of(1989, 12, 31,0 , 0, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
     }
 
     def "The individual time series returns correct Optional, when queried for the last known information" () {
         given:
-        Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(TimeTools.toZonedDateTime("01/01/1990 00:00:00"), new IntValue(3)))
+        Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1,0 , 0, 0, 0, ZoneId.of("UTC")), new IntValue(3)))
 
         when:
-        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getLastTimeBasedValue(TimeTools.toZonedDateTime("01/01/1990 00:10:00"))
+        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getLastTimeBasedValue(ZonedDateTime.of(1990, 1, 1,0 , 10, 0, 0, ZoneId.of("UTC")))
 
         then:
         expected.isPresent()
@@ -72,10 +72,10 @@ class IndividualTimeSeriesSpec extends Specification {
 
     def "The individual time series returns correct Optional, when queried for the last known information on an existing value" () {
         given:
-        Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(TimeTools.toZonedDateTime("01/01/1990 00:00:00"), new IntValue(3)))
+        Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1,0 , 0, 0, 0, ZoneId.of("UTC")), new IntValue(3)))
 
         when:
-        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getLastTimeBasedValue(TimeTools.toZonedDateTime("01/01/1990 00:00:00"))
+        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getLastTimeBasedValue(ZonedDateTime.of(1990, 1, 1,0 , 0, 0, 0, ZoneId.of("UTC")))
 
         then:
         expected.isPresent()
@@ -85,15 +85,15 @@ class IndividualTimeSeriesSpec extends Specification {
 
     def "The individual time series returns empty Optional, when queried time is after provided time frame" () {
         expect:
-        timeSeries.getNextTimeBasedValue(TimeTools.toZonedDateTime("01/01/1990 00:45:00")) == Optional.empty()
+        timeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1,0 , 45, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
     }
 
     def "The individual time series returns correct Optional, when queried for the next known information" () {
         given:
-        Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(TimeTools.toZonedDateTime("01/01/1990 00:15:00"), new IntValue(4)))
+        Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1,0 , 15, 0, 0, ZoneId.of("UTC")), new IntValue(4)))
 
         when:
-        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getNextTimeBasedValue(TimeTools.toZonedDateTime("01/01/1990 00:10:00"))
+        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1,0 , 10, 0, 0, ZoneId.of("UTC")))
 
         then:
         expected.isPresent()
@@ -103,10 +103,10 @@ class IndividualTimeSeriesSpec extends Specification {
 
     def "The individual time series returns correct Optional, when queried for the next known information on an existing value" () {
         given:
-        Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(TimeTools.toZonedDateTime("01/01/1990 00:15:00"), new IntValue(4)))
+        Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1,0 , 15, 0, 0, ZoneId.of("UTC")), new IntValue(4)))
 
         when:
-        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getNextTimeBasedValue(TimeTools.toZonedDateTime("01/01/1990 00:15:00"))
+        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1,0 , 15, 0, 0, ZoneId.of("UTC")))
 
         then:
         expected.isPresent()
