@@ -13,7 +13,9 @@ import java.util.UUID;
 
 /** Describes a TimeSeries with repetitive values that can be calculated from a pattern */
 public abstract class RepetitiveTimeSeries<T extends Value> extends TimeSeries<T> {
-  public RepetitiveTimeSeries() {}
+  public RepetitiveTimeSeries() {
+    super();
+  }
 
   public RepetitiveTimeSeries(UUID uuid) {
     super(uuid);
