@@ -44,7 +44,7 @@ public class LoadProfileInput extends RepetitiveTimeSeries<PValue> {
   }
 
   @Override
-  protected Optional<ZonedDateTime> getLastZonedDateTime(ZonedDateTime time) {
+  protected Optional<ZonedDateTime> getPreviousZonedDateTime(ZonedDateTime time) {
     return Optional.of(time.minus(1, HOURS));
   }
 

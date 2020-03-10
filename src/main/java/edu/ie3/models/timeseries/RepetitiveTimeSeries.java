@@ -30,17 +30,17 @@ public abstract class RepetitiveTimeSeries<T extends Value> extends TimeSeries<T
   }
 
   /**
-   * Get the lastly known zoned date time with available values. If it is the queried time, that one
-   * is returned.
+   * Get the lastly known zoned date time previous to the provided time with available values.
+   * If the queried time is equals to the lastly known time, that one is returned.
    *
    * @param time Queried time
    * @return lastly known zoned date time with available values
    */
-  protected abstract Optional<ZonedDateTime> getLastZonedDateTime(ZonedDateTime time);
+  protected abstract Optional<ZonedDateTime> getPreviousZonedDateTime(ZonedDateTime time);
 
   @Override
   public Optional<TimeBasedValue<T>> getPreviousTimeBasedValue(ZonedDateTime time) {
-    return getTimeBasedValue(getLastZonedDateTime(time));
+    return getTimeBasedValue(getPreviousZonedDateTime(time));
   }
 
   /**
