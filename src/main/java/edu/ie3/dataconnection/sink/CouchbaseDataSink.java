@@ -5,15 +5,21 @@
 */
 package edu.ie3.dataconnection.sink;
 
-import com.couchbase.client.core.deps.com.fasterxml.jackson.databind.util.JSONPObject;
+import com.couchbase.client.java.AsyncCollection;
+import com.couchbase.client.java.json.JsonObject;
 import edu.ie3.dataconnection.dataconnectors.CouchbaseConnector;
 import edu.ie3.dataconnection.dataconnectors.DataConnector;
+import edu.ie3.models.json.JsonMapper;
 import edu.ie3.models.result.ResultEntity;
 import java.util.Collection;
 
 public class CouchbaseDataSink implements DataSink {
 
   CouchbaseConnector connector;
+
+  public CouchbaseDataSink(CouchbaseConnector connector) {
+    this.connector = connector;
+  }
 
   @Override
   public DataConnector getDataConnector() {
@@ -22,12 +28,18 @@ public class CouchbaseDataSink implements DataSink {
 
   @Override
   public void persist(ResultEntity entity) {
-    JSONPObject json = null; // TODO json magic
-    connector.getSession().upsert(generateKey(entity), json);
+    JsonObject json = JsonMapper.toJsonResult(entity);
+    connector.getAsyncSession().upsert(generateKey(entity), json);
   }
 
   @Override
-  public void persistAll(Collection<? extends ResultEntity> entity) {}
+  public void persistAll(Collection<? extends ResultEntity> entities) {
+    final AsyncCollection session = connector.getAsyncSession();
+    for (ResultEntity entity : entities) {
+      JsonObject json = JsonMapper.toJsonResult(entity);
+      session.upsert(generateKey(entity), json);
+    }
+  }
 
   public String generateKey(ResultEntity entity) {
     String scenarioName = "vn_simona";

@@ -3,6 +3,7 @@ plugins {
 	id 'pmd' // code check, working on source code
 	id 'com.github.spotbugs' version '2.0.0' // code check, working on byte code
 	id 'com.diffplug.gradle.spotless' version '3.27.1'//code format
+	id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 ext {
@@ -45,12 +46,26 @@ dependencies {
 
 //	neo4j
 	compile 'org.neo4j.driver:neo4j-java-driver:4.0.0'
-//	compile 'org.neo4j:neo4j:4.0.0'
 	compile "org.neo4j:neo4j-ogm-core:3.+"
 	runtime "org.neo4j:neo4j-ogm-bolt-driver:3.+"
 
+	//csv logging
+	runtime 'org.apache.logging.log4j:log4j-api:+'
+	runtime 'org.apache.logging.log4j:log4j-core:+'
+	runtime 'org.apache.commons:commons-csv:+'
+
 
 	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.2'
+
+	//hibernate
+	compile 'org.hibernate:hibernate-core:' + '5.3.3.Final'
+	compile 'org.hibernate:hibernate-ehcache:' + '5.3.3.Final'
+//	compile 'org.hibernate:hibernate-core:5.4.11.Final'
+
+
+	// JAX-B dependencies for JDK 9+
+	implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.2"
+	implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
 
 	//testing
 	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
@@ -66,4 +81,10 @@ wrapper {
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
+}
+
+jar {
+	manifest {
+		attributes 'Main-class': 'edu.ie3.dataconnection.metrics.Main'
+	}
 }

@@ -33,13 +33,13 @@ public class CoordinateUtils {
    * @return JTS geometry Point
    */
   public static Point xyCoordToPoint(Double x, Double y) {
-    if(x==null || y==null) return null;
+    if (x == null || y == null) return null;
     Coordinate coordinate = new Coordinate(x, y, 0);
     return geometryFactory.createPoint(coordinate);
   }
 
   public static LineString stringToLineString(String str) {
-    if(str == null || str.isEmpty()) return null;
+    if (str == null || str.isEmpty()) return null;
     WKTReader reader = new WKTReader();
     Geometry geometry;
     try {
@@ -48,7 +48,8 @@ public class CoordinateUtils {
       e.printStackTrace();
       return null;
     }
-    CoordinateSequence coordinateSequence = geometryFactory.getCoordinateSequenceFactory().create(geometry.getCoordinates());
+    CoordinateSequence coordinateSequence =
+        geometryFactory.getCoordinateSequenceFactory().create(geometry.getCoordinates());
     return new LineString(coordinateSequence, geometryFactory);
   }
 }

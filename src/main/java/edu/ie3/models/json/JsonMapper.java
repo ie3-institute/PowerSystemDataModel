@@ -21,6 +21,8 @@ import edu.ie3.models.input.connector.Transformer3WInput;
 import edu.ie3.models.input.connector.type.LineTypeInput;
 import edu.ie3.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.models.result.ResultEntity;
+import edu.ie3.models.result.connector.LineResult;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.utils.CoordinateUtils;
 import org.apache.logging.log4j.LogManager;
@@ -77,7 +79,8 @@ public class JsonMapper {
         return GermanVoltageLevel.HV;
       case "HöS":
         return GermanVoltageLevel.EHV;
-      default: return null;
+      default:
+        return null;
     }
   }
 
@@ -204,5 +207,27 @@ public class JsonMapper {
 
   public static Integer identifyNodeC(JsonObject object) {
     return object.getInt("node_c");
+  }
+
+  public static JsonObject toJsonLineResult(LineResult lineResult) {
+    JsonObject jsonObject = JsonObject.jo();
+    //    HashMap<String, Object> valueMap = new HashMap<>();
+    jsonObject.put("uuid", lineResult.getUuid().toString());
+    jsonObject.put("input_line", lineResult.getInputModel().toString());
+    jsonObject.put("datum", lineResult.getTimestamp().toString());
+    jsonObject.put("iAMag", lineResult.getiAMag().getValue().doubleValue());
+    jsonObject.put("iAAng", lineResult.getiAAng().getValue().doubleValue());
+    jsonObject.put("iBMag", lineResult.getiBMag().getValue().doubleValue());
+    jsonObject.put("iBAng", lineResult.getiBAng().getValue().doubleValue());
+
+    return jsonObject;
+
+    //    JsonObject jsonLineResult = JsonObject.from(valueMap);
+    //    return jsonLineResult;
+  }
+
+  public static JsonObject toJsonResult(ResultEntity resultEntity) {
+    if (resultEntity instanceof LineResult) return toJsonLineResult((LineResult) resultEntity);
+    throw new IllegalArgumentException("Unkown entity");
   }
 }

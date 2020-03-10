@@ -16,8 +16,9 @@ import edu.ie3.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import javax.measure.Quantity;
 import javax.measure.quantity.*;
@@ -42,9 +43,10 @@ public class CsvTypeSource {
     CSVReader reader = null;
     try {
       CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
-      String file =
-          CsvCoordinateSource.class.getClassLoader().getResource("line_types.csv").getFile();
-      reader = new CSVReaderBuilder(new FileReader(file)).withCSVParser(parser).build();
+      InputStream inputStream =
+          CsvCoordinateSource.class.getClassLoader().getResourceAsStream("line_types.csv");
+      InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+      reader = new CSVReaderBuilder(inputStreamReader).withCSVParser(parser).build();
       String[] nextLine = reader.readNext();
 
       int tidIndex = -1,
@@ -101,9 +103,10 @@ public class CsvTypeSource {
     CSVReader reader = null;
     try {
       CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
-      String file =
-          CsvCoordinateSource.class.getClassLoader().getResource("trafo2w_types.csv").getFile();
-      reader = new CSVReaderBuilder(new FileReader(file)).withCSVParser(parser).build();
+      InputStream inputStream =
+          CsvCoordinateSource.class.getClassLoader().getResourceAsStream("trafo2w_types.csv");
+      InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+      reader = new CSVReaderBuilder(inputStreamReader).withCSVParser(parser).build();
       String[] nextLine = reader.readNext();
 
       int tidIndex = -1,
@@ -184,9 +187,10 @@ public class CsvTypeSource {
     CSVReader reader = null;
     try {
       CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
-      String file =
-          CsvCoordinateSource.class.getClassLoader().getResource("trafo3w_types.csv").getFile();
-      reader = new CSVReaderBuilder(new FileReader(file)).withCSVParser(parser).build();
+      InputStream inputStream =
+          CsvCoordinateSource.class.getClassLoader().getResourceAsStream("trafo3w_types.csv");
+      InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+      reader = new CSVReaderBuilder(inputStreamReader).withCSVParser(parser).build();
       String[] nextLine = reader.readNext();
 
       int tidIndex = -1,

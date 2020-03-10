@@ -12,9 +12,14 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import com.vividsolutions.jts.geom.Point;
 import edu.ie3.utils.CoordinateUtils;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class CsvCoordinateSource { // TODO replace with real Csv Reader
   public static HashMap<Integer, Point> idToCoordinate = new HashMap<>();
@@ -24,9 +29,10 @@ public class CsvCoordinateSource { // TODO replace with real Csv Reader
     CSVReader reader = null;
     try {
       CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
-      String file =
-          CsvCoordinateSource.class.getClassLoader().getResource("eu_coords.csv").getFile();
-      reader = new CSVReaderBuilder(new FileReader(file)).withCSVParser(parser).build();
+      InputStream inputStream =
+          CsvCoordinateSource.class.getClassLoader().getResourceAsStream("eu_coords.csv");
+      InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+      reader = new CSVReaderBuilder(inputStreamReader).withCSVParser(parser).build();
       String[] nextLine = reader.readNext();
       int latIndex = -1, lonIndex = -1, idIndex = -1;
       if (nextLine == null) return;
@@ -49,6 +55,16 @@ public class CsvCoordinateSource { // TODO replace with real Csv Reader
 
   public static Point getCoordinate(Integer id) {
     return idToCoordinate.get(id);
+  }
+
+  public static Collection<Point> getCoordinates(int... ids) {
+    return Arrays.stream(ids)
+        .mapToObj(CsvCoordinateSource::getCoordinate)
+        .collect(Collectors.toSet());
+  }
+
+  public static Collection<Point> getCoordinatesBetween(Integer fromId, Integer toId) {
+    return getCoordinates(IntStream.rangeClosed(fromId, toId).toArray());
   }
 
   public static Integer getId(Point coordinate) {

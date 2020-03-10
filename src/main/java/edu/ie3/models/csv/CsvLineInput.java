@@ -15,14 +15,13 @@ import edu.ie3.models.input.connector.LineInput;
 import edu.ie3.models.input.connector.type.LineTypeInput;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.utils.CoordinateUtils;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.quantity.Quantities;
-
-import javax.measure.quantity.Length;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
+import javax.measure.quantity.Length;
+import tec.uom.se.ComparableQuantity;
+import tec.uom.se.quantity.Quantities;
 
 public class CsvLineInput {
   //
@@ -80,13 +79,12 @@ public class CsvLineInput {
     ComparableQuantity<Length> lengthQuantity =
         Quantities.getQuantity(length, PowerSystemUnits.KILOMETRE);
     Optional olmCharacterisitcs = Optional.empty();
-    ZonedDateTime startDate = operates_from != null ? ZonedDateTime.of(operates_from, ZoneId.of("UTC")) : null;
-    ZonedDateTime endDate = operates_until != null ? ZonedDateTime.of(operates_until, ZoneId.of("UTC")) : null;
+    ZonedDateTime startDate =
+        operates_from != null ? ZonedDateTime.of(operates_from, ZoneId.of("UTC")) : null;
+    ZonedDateTime endDate =
+        operates_until != null ? ZonedDateTime.of(operates_until, ZoneId.of("UTC")) : null;
     OperationTime operationTime =
-            OperationTime.builder()
-                    .withStart(startDate)
-                    .withEnd(endDate)
-                    .build();
+        OperationTime.builder().withStart(startDate).withEnd(endDate).build();
     LineTypeInput lineType = CsvTypeSource.getLineType(type);
 
     LineInput line =

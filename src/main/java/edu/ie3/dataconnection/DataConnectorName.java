@@ -8,7 +8,10 @@ package edu.ie3.dataconnection;
 import java.util.Optional;
 
 public enum DataConnectorName {
-  INFLUXDB("InfluxDb");
+  INFLUXDB("InfluxDb"),
+  NEO4J("Neo4j"),
+  HIBERNATE("Hibernate"),
+  COUCHBASE("Couchbase");
 
   private String name;
 

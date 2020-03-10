@@ -14,15 +14,14 @@ import edu.ie3.models.VoltageLevel;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.json.JsonMapper;
 import edu.ie3.utils.CoordinateUtils;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.quantity.Quantities;
-
-import javax.measure.quantity.Dimensionless;
-import javax.measure.quantity.ElectricPotential;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
+import javax.measure.quantity.Dimensionless;
+import javax.measure.quantity.ElectricPotential;
+import tec.uom.se.ComparableQuantity;
+import tec.uom.se.quantity.Quantities;
 
 public class CsvNodeInput {
   // id;in_operation;is_slack;operates_from;operates_until;scenario;subnet;v_rated;v_target;volt_lvl
@@ -82,17 +81,16 @@ public class CsvNodeInput {
         Quantities.getQuantity(v_rated, StandardUnits.V_RATED);
     ComparableQuantity<Dimensionless> vTargetQuantity =
         Quantities.getQuantity(v_target, StandardUnits.TARGET_VOLTAGE);
-    ZonedDateTime startDate = operates_from != null ? ZonedDateTime.of(operates_from, ZoneId.of("UTC")) : null;
-    ZonedDateTime endDate = operates_until != null ? ZonedDateTime.of(operates_until, ZoneId.of("UTC")) : null;
+    ZonedDateTime startDate =
+        operates_from != null ? ZonedDateTime.of(operates_from, ZoneId.of("UTC")) : null;
+    ZonedDateTime endDate =
+        operates_until != null ? ZonedDateTime.of(operates_until, ZoneId.of("UTC")) : null;
     OperationTime operationTime =
-        OperationTime.builder()
-            .withStart(startDate)
-            .withEnd(endDate)
-            .build();
+        OperationTime.builder().withStart(startDate).withEnd(endDate).build();
     VoltageLevel voltageLevel = JsonMapper.toVoltageLevel(volt_lvl);
     Boolean isSlackBool = null;
-    if(is_slack.equals("t")) isSlackBool = true;
-    if(is_slack.equals("f")) isSlackBool = false;
+    if (is_slack.equals("t")) isSlackBool = true;
+    if (is_slack.equals("f")) isSlackBool = false;
 
     NodeInput node =
         new NodeInput(

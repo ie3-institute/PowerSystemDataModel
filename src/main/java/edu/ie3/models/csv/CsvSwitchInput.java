@@ -58,21 +58,25 @@ public class CsvSwitchInput {
 
   public SwitchInput toSwitchInput(Map<Integer, NodeInput> tidToNode) {
     UUID uuid = UUID.fromString(getUuid());
-    ZonedDateTime startDate = operates_from != null ? ZonedDateTime.of(operates_from, ZoneId.of("UTC")) : null;
-    ZonedDateTime endDate = operates_until != null ? ZonedDateTime.of(operates_until, ZoneId.of("UTC")) : null;
+    ZonedDateTime startDate =
+        operates_from != null ? ZonedDateTime.of(operates_from, ZoneId.of("UTC")) : null;
+    ZonedDateTime endDate =
+        operates_until != null ? ZonedDateTime.of(operates_until, ZoneId.of("UTC")) : null;
     OperationTime operationTime =
-            OperationTime.builder()
-                    .withStart(startDate)
-                    .withEnd(endDate)
-                    .build();
+        OperationTime.builder().withStart(startDate).withEnd(endDate).build();
     Boolean closedBool = null;
-    if(closed.equals("t")) closedBool = true;
-    if(closed.equals("f")) closedBool = false;
-
+    if (closed.equals("t")) closedBool = true;
+    if (closed.equals("f")) closedBool = false;
 
     SwitchInput switchInput =
         new SwitchInput(
-            uuid, operationTime, null, id, tidToNode.get(node_a), tidToNode.get(node_b), closedBool);
+            uuid,
+            operationTime,
+            null,
+            id,
+            tidToNode.get(node_a),
+            tidToNode.get(node_b),
+            closedBool);
     return switchInput;
   }
 

@@ -1,3 +1,8 @@
+/*
+ * © 2020. TU Dortmund University,
+ * Institute of Energy Systems, Energy Efficiency and Energy Economics,
+ * Research group Distribution grid planning and operation
+*/
 package edu.ie3.dataconnection.dataconnectors;
 
 import org.neo4j.ogm.config.Configuration;
@@ -5,36 +10,35 @@ import org.neo4j.ogm.session.SessionFactory;
 
 public class Neo4JConnector implements DataConnector {
 
-    private static final int DEPTH_LIST = 0;
-    private static final int DEPTH_ENTITY = 1;
+  private static final int DEPTH_LIST = 0;
+  private static final int DEPTH_ENTITY = 1;
 
-    String uri = "bolt://localhost";
-    String user = "neo4j";
-    String password = "root";
-    private final Configuration configuration;
-    private final SessionFactory sessionFactory;
+  String uri = "bolt://localhost";
+  String user = "neo4j";
+  String password = "root";
+  private final Configuration configuration;
+  private final SessionFactory sessionFactory;
 
-    public Neo4JConnector() {
-        configuration = new Configuration.Builder().uri(uri).credentials(user, password).build();
-        sessionFactory = new SessionFactory(configuration, "edu.ie3.models.neo4j");
-    }
+  public Neo4JConnector() {
+    configuration = new Configuration.Builder().uri(uri).credentials(user, password).build();
+    sessionFactory = new SessionFactory(configuration, "edu.ie3.models.neo4j");
+  }
 
-    public org.neo4j.ogm.session.Session getSession() {
-        return sessionFactory.openSession();
-    }
+  public org.neo4j.ogm.session.Session getSession() {
+    return sessionFactory.openSession();
+  }
 
+  @Override
+  public Boolean isConnectionValid() {
+    return true;
+  }
 
-    @Override
-    public Boolean isConnectionValid() {
-        return true;
-    }
+  @Override
+  public void shutdown() {
+    sessionFactory.close();
+  }
 
-    @Override
-    public void shutdown() {
-        sessionFactory.close();
-    }
-
-    public <E> Iterable<E> findAll(Class<E> entityClass) {
-        return getSession().loadAll(entityClass, 1);
-    }
+  public <E> Iterable<E> findAll(Class<E> entityClass) {
+    return getSession().loadAll(entityClass, 1);
+  }
 }

@@ -90,7 +90,6 @@ public class InfluxDbWeatherSource implements WeatherSource {
     List<InfluxDbWeatherInput> influxWeatherInputs;
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinate);
-      System.out.println(query);
       QueryResult queryResult = session.query(new Query(query));
 
       InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
@@ -108,7 +107,6 @@ public class InfluxDbWeatherSource implements WeatherSource {
     List<InfluxDbWeatherInput> influxWeatherInputs;
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForDateAndCoordinate(date, coordinate);
-      System.out.println(query);
       QueryResult queryResult = session.query(new Query(query));
       InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
       influxWeatherInputs = resultMapper.toPOJO(queryResult, InfluxDbWeatherInput.class);

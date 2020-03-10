@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" name="PowerSystemDataModel" packages="">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%highlight{%d{HH:mm:ss.SSS} %-5level %-15c - %msg%n}{FATAL=red blink, ERROR=red, WARN=yellow bright, INFO=black, DEBUG=cyan, TRACE=blue}"/>
+        </Console>
+
+        <File name="HibernateWeatherAppender" fileName="logs/HibernateWeatherMetrics.csv">
+            <CsvParameterLayout delimiter=";"/>
+        </File>
+        <File name="HibernateGridAppender" fileName="logs/HibernateGridMetrics.csv">
+            <CsvParameterLayout delimiter=";"/>
+        </File>
+        <File name="HibernateOutputAppender" fileName="logs/HibernateOutputMetrics.csv">
+            <CsvParameterLayout delimiter=";"/>
+        </File>
+
+
+        <File name="InfluxDbWeatherAppender" fileName="logs/influxDbWeatherMetrics.csv">
+            <CsvParameterLayout delimiter=";"/>
+        </File>
+        <File name="InfluxDbOutputAppender" fileName="logs/influxDbOutputMetrics.csv">
+            <CsvParameterLayout delimiter=";"/>
+        </File>
+
+
+        <File name="CouchbaseWeatherAppender" fileName="logs/CouchbaseWeatherMetrics.csv">
+            <CsvParameterLayout delimiter=";"/>
+        </File>
+        <File name="CouchbaseGridAppender" fileName="logs/CouchbaseGridMetrics.csv">
+            <CsvParameterLayout delimiter=";"/>
+        </File>
+        <File name="CouchbaseOutputAppender" fileName="logs/CouchbaseOutputMetrics.csv">
+            <CsvParameterLayout delimiter=";"/>
+        </File>
+
+
+        <File name="Neo4jGridAppender" fileName="logs/neo4jGridMetrics.csv">
+            <CsvParameterLayout delimiter=";"/>
+        </File>
+
+
+        <File name="MainLog" fileName="logs/main.log">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %-15c - %msg%n"/>
+        </File>
+        <File name="VerboseFileLog" fileName="logs/all.log">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %-15c - %msg%n"/>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Root level="Debug">
+            <AppenderRef ref="Console" level="WARN"/>
+            <AppenderRef ref="VerboseFileLog" />
+        </Root>
+
+        <Logger name="Main" level="Debug">
+            <appender-ref ref="Console"  level="DEBUG"/>
+            <AppenderRef ref="MainLog" />
+        </Logger>
+        
+        
+        <Logger name="HibernateWeatherLogger" level="Info">
+            <appender-ref ref="HibernateWeatherAppender"  level="INFO"/>
+        </Logger>
+        <Logger name="HibernateGridLogger" level="Info">
+            <appender-ref ref="HibernateGridAppender"  level="INFO"/>
+        </Logger>
+        <Logger name = "HibernateOutputLogger" level="Info">
+            <appender-ref ref="HibernateOutputAppender" level="INFO"/>
+        </Logger>
+        
+        
+        <Logger name="InfluxDbWeatherLogger" level="Info">
+            <appender-ref ref="InfluxDbWeatherAppender"  level="INFO"/>
+        </Logger>
+        <Logger name = "InfluxDbOutputLogger" level="Info">
+            <appender-ref ref="InfluxDbOutputAppender" level="INFO"/>
+        </Logger>
+        
+        
+        <Logger name="CouchbaseWeatherLogger" level="Info">
+            <appender-ref ref="CouchbaseWeatherAppender"  level="INFO"/>
+        </Logger>
+        <Logger name="CouchbaseGridLogger" level="Info">
+            <appender-ref ref="CouchbaseGridAppender"  level="INFO"/>
+        </Logger>
+        <Logger name = "CouchbaseOutputLogger" level="Info">
+            <appender-ref ref="CouchbaseOutputAppender" level="INFO"/>
+        </Logger>
+        
+        
+        <Logger name="Neo4jGridLogger" level="Info">
+            <appender-ref ref="Neo4jGridAppender"  level="INFO"/>
+        </Logger>
+    </Loggers>
+</Configuration>

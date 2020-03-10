@@ -49,4 +49,8 @@ public class IndividualTimeSeries<T extends Value> implements TimeSeries<T> {
   public T getValue(ZonedDateTime time) {
     return getTimeBasedValue(time).getValue();
   }
+
+  public int size() {
+    return timeToTimeBasedValue.size();
+  }
 }

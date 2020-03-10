@@ -5,6 +5,7 @@
 */
 package edu.ie3.dataconnection.source.couchbase;
 
+import com.couchbase.client.core.error.DecodingFailureException;
 import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
@@ -18,6 +19,9 @@ import edu.ie3.models.timeseries.IndividualTimeSeries;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.WeatherValues;
 import edu.ie3.util.interval.ClosedInterval;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -26,6 +30,8 @@ import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 
 public class CouchbaseWeatherSource implements WeatherSource {
+
+  private static Logger logger = LogManager.getLogger("Main");
 
   CouchbaseConnector connector;
 
@@ -39,9 +45,14 @@ public class CouchbaseWeatherSource implements WeatherSource {
     HashMap<Point, IndividualTimeSeries<WeatherValues>> coordinateToTimeSeries = new HashMap<>();
     for (Point coordinate : coordinates) {
       String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinate);
-      CompletableFuture<QueryResult> futureResult = connector.query(query);
-      QueryResult queryResult = futureResult.join();
-      List<JsonWeatherInput> jsonWeatherInputs = queryResult.rowsAs(JsonWeatherInput.class);
+        CompletableFuture<QueryResult> futureResult = connector.query(query);
+        QueryResult queryResult = futureResult.join();
+      List<JsonWeatherInput> jsonWeatherInputs = Collections.emptyList();
+      try {
+          jsonWeatherInputs = queryResult.rowsAs(JsonWeatherInput.class);
+        }  catch (DecodingFailureException ex) {
+          logger.error(ex);
+        }
       List<TimeBasedValue<WeatherValues>> weatherInputs =
           jsonWeatherInputs.stream()
               .map(JsonWeatherInput::toTimeBasedWeatherValues)
@@ -63,6 +74,9 @@ public class CouchbaseWeatherSource implements WeatherSource {
       TimeBasedValue<WeatherValues> timeBasedWeatherValues =
           jsonWeatherInput.toTimeBasedWeatherValues();
       return Optional.ofNullable(timeBasedWeatherValues);
+    } catch (DecodingFailureException ex) {
+      logger.error(ex);
+      return Optional.empty();
     } catch (DocumentNotFoundException ex) {
       return Optional.empty();
     } catch (CompletionException ex) {

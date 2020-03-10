@@ -3,14 +3,15 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.dataconnection.source;
+package edu.ie3.dataconnection.source.influxdb;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.vividsolutions.jts.geom.Point;
 import edu.ie3.dataconnection.dataconnectors.InfluxDbConnector;
+import edu.ie3.dataconnection.source.WeatherTestEntityBuilder;
 import edu.ie3.dataconnection.source.csv.CsvCoordinateSource;
-import edu.ie3.dataconnection.source.influxdb.InfluxDbWeatherSource;
 import edu.ie3.models.timeseries.IndividualTimeSeries;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.WeatherValues;

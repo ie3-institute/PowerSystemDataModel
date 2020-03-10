@@ -5,6 +5,8 @@
 */
 package edu.ie3.dataconnection.source.couchbase;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.vividsolutions.jts.geom.Point;
 import edu.ie3.dataconnection.dataconnectors.CouchbaseConnector;
 import edu.ie3.dataconnection.source.WeatherTestEntityBuilder;
@@ -12,14 +14,11 @@ import edu.ie3.dataconnection.source.csv.CsvCoordinateSource;
 import edu.ie3.models.timeseries.IndividualTimeSeries;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.WeatherValues;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CouchbaseWeatherSourceTest {
 

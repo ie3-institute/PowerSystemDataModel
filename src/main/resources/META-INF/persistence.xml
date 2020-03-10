@@ -1,0 +1,61 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+    <!-- Define persistence unit -->
+    <persistence-unit name="dataconnector">
+        <class>edu.ie3.models.hibernate.input.HibernateWeatherInput</class>
+        <class>edu.ie3.models.hibernate.input.HibernateNodeInput</class>
+        <class>edu.ie3.models.hibernate.input.HibernateTransformer3WInput</class>
+        <class>edu.ie3.models.hibernate.input.HibernateTransformer2WInput</class>
+        <class>edu.ie3.models.hibernate.input.HibernateSwitchInput</class>
+        <class>edu.ie3.models.hibernate.input.HibernateLineInput</class>
+        <class>edu.ie3.models.hibernate.output.HibernateLineResult</class>
+        <properties>
+        <!-- database connection -->
+        <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+        <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/projektarbeit" />
+        <property name="javax.persistence.jdbc.user" value="postgres" />
+        <property name="javax.persistence.jdbc.password" value="root" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
+            <property name="hibernate.globally_quoted_identifiers" value="true"/>
+
+        </properties>
+    </persistence-unit>
+</persistence>
+
+
+<!--<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--             xmlns="http://java.sun.com/xml/ns/persistence"-->
+<!--             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"-->
+<!--             version="2.0">-->
+<!--    <persistence-unit name="dataconnector" transaction-type="RESOURCE_LOCAL">-->
+<!--        <class>edu.ie3.models.hibernate.input.HibernateWeatherInput</class>-->
+<!--        <class>edu.ie3.models.hibernate.input.HibernateNodeInput</class>-->
+<!--        <class>edu.ie3.models.hibernate.input.HibernateLineInput</class>-->
+<!--        <class>edu.ie3.models.hibernate.input.HibernateSwitchInput</class>-->
+<!--        <class>edu.ie3.models.hibernate.input.HibernateTransformer2WInput</class>-->
+<!--        <class>edu.ie3.models.hibernate.input.HibernateTransformer3WInput</class>-->
+<!--        <class>edu.ie3.models.hibernate.output.HibernateLineResult</class>-->
+<!--        <properties>-->
+<!--            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/projektarbeit"/>-->
+<!--            <property name="hibernate.default_schema" value="public"/>-->
+<!--            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>-->
+<!--            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>-->
+<!--            <property name="hibernate.globally_quoted_identifiers" value="true"/>-->
+<!--            <property name="hibernate.current_session_context_class" value="thread"/>-->
+<!--            <property name="hibernate.order_updates" value="true"/>-->
+<!--            <property name="hibernate.order_inserts" value="true"/>-->
+<!--            <property name="hibernate.connection.handling_mode" value="IMMEDIATE_ACQUISITION_AND_HOLD"/>-->
+<!--            <property name="hibernate.connection.FlushMode" value="manual"/>-->
+
+<!--            <property name="hibernate.show_sql" value="true"/>-->
+<!--            <property name="hibernate.hbm2ddl.auto" value="none"/>-->
+
+<!--            &lt;!&ndash; The database username &ndash;&gt;-->
+<!--            <property name="javax.persistence.jdbc.user" value="postgres"/>-->
+
+<!--            &lt;!&ndash; The database password &ndash;&gt;-->
+<!--            <property name="javax.persistence.jdbc.password" value="root"/>-->
+<!--        </properties>-->
+<!--    </persistence-unit>-->
+<!--</persistence>-->

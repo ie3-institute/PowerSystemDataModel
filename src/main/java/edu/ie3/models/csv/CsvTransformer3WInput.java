@@ -75,17 +75,16 @@ public class CsvTransformer3WInput {
 
   public Transformer3WInput toTransformer3WInput(Map<Integer, NodeInput> tidToNode) {
     UUID uuid = UUID.fromString(getUuid());
-    ZonedDateTime startDate = operates_from != null ? ZonedDateTime.of(operates_from, ZoneId.of("UTC")) : null;
-    ZonedDateTime endDate = operates_until != null ? ZonedDateTime.of(operates_until, ZoneId.of("UTC")) : null;
+    ZonedDateTime startDate =
+        operates_from != null ? ZonedDateTime.of(operates_from, ZoneId.of("UTC")) : null;
+    ZonedDateTime endDate =
+        operates_until != null ? ZonedDateTime.of(operates_until, ZoneId.of("UTC")) : null;
     OperationTime operationTime =
-            OperationTime.builder()
-                    .withStart(startDate)
-                    .withEnd(endDate)
-                    .build();
+        OperationTime.builder().withStart(startDate).withEnd(endDate).build();
     Transformer3WTypeInput transformer3WType = CsvTypeSource.getTrafo3WType(type);
     Boolean autoTapBool = null;
-    if(auto_tap.equals("t")) autoTapBool = true;
-    if(auto_tap.equals("f")) autoTapBool = false;
+    if (auto_tap.equals("t")) autoTapBool = true;
+    if (auto_tap.equals("f")) autoTapBool = false;
 
     Transformer3WInput transformer3WInput =
         new Transformer3WInput(
@@ -99,7 +98,7 @@ public class CsvTransformer3WInput {
             amount,
             transformer3WType,
             tap_pos,
-                autoTapBool);
+            autoTapBool);
     return transformer3WInput;
   }
 

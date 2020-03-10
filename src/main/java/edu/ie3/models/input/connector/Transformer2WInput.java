@@ -16,7 +16,7 @@ import java.util.UUID;
  * Describes a two winding transformer, that is connected to two {@link
  * edu.ie3.models.input.NodeInput}s
  */
-public class  Transformer2WInput extends TransformerInput {
+public class Transformer2WInput extends TransformerInput {
   /** Type of this 2W transformer, containing default values for transformers of this kind */
   private Transformer2WTypeInput type;
 

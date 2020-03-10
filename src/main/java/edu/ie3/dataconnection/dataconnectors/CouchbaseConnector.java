@@ -6,6 +6,7 @@
 package edu.ie3.dataconnection.dataconnectors;
 
 import com.couchbase.client.core.diagnostics.PingResult;
+import com.couchbase.client.java.AsyncCollection;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.Collection;
 import com.couchbase.client.java.kv.GetResult;
@@ -36,6 +37,11 @@ public class CouchbaseConnector implements DataConnector {
     cluster = Cluster.connect(COUCHBASE_URL, username, password);
   }
 
+  public CouchbaseConnector(String bucketName) {
+    this.bucketName = bucketName;
+    cluster = Cluster.connect(COUCHBASE_URL, username, password);
+  }
+
   public CouchbaseConnector() {
     cluster = Cluster.connect(COUCHBASE_URL, username, password);
   }
@@ -44,8 +50,16 @@ public class CouchbaseConnector implements DataConnector {
     return getSession(bucketName);
   }
 
+  public AsyncCollection getAsyncSession() {
+    return getAsyncSession(bucketName);
+  }
+
   private Collection getSession(String bucketName) {
     return cluster.bucket(bucketName).defaultCollection();
+  }
+
+  private AsyncCollection getAsyncSession(String bucketName) {
+    return cluster.bucket(bucketName).defaultCollection().async();
   }
 
   @Override

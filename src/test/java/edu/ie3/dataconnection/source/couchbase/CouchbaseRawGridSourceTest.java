@@ -5,6 +5,8 @@
 */
 package edu.ie3.dataconnection.source.couchbase;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import edu.ie3.dataconnection.dataconnectors.CouchbaseConnector;
 import edu.ie3.dataconnection.source.GridTestEntityBuilder;
 import edu.ie3.dataconnection.source.csv.CsvTypeSource;
@@ -14,13 +16,10 @@ import edu.ie3.models.input.connector.LineInput;
 import edu.ie3.models.input.connector.SwitchInput;
 import edu.ie3.models.input.connector.Transformer2WInput;
 import edu.ie3.models.input.connector.Transformer3WInput;
+import java.util.Collection;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CouchbaseRawGridSourceTest {
 
