@@ -5,12 +5,16 @@
 */
 package edu.ie3.models.input;
 
+import static java.time.temporal.ChronoUnit.HOURS;
+
 import edu.ie3.models.LoadProfileType;
 import edu.ie3.models.timeseries.RepetitiveTimeSeries;
 import edu.ie3.models.value.PValue;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 // TODO This is a sample implementation, please implement a real scenario
 public class LoadProfileInput extends RepetitiveTimeSeries<PValue> {
@@ -19,7 +23,17 @@ public class LoadProfileInput extends RepetitiveTimeSeries<PValue> {
   private final Map<DayOfWeek, Map<Integer, PValue>> dayOfWeekToHourlyValues;
 
   public LoadProfileInput(
+      UUID uuid,
+      LoadProfileType type,
+      Map<DayOfWeek, Map<Integer, PValue>> dayOfWeekToHourlyValues) {
+    super(uuid);
+    this.type = type;
+    this.dayOfWeekToHourlyValues = dayOfWeekToHourlyValues;
+  }
+
+  public LoadProfileInput(
       LoadProfileType type, Map<DayOfWeek, Map<Integer, PValue>> dayOfWeekToHourlyValues) {
+    super();
     this.type = type;
     this.dayOfWeekToHourlyValues = dayOfWeekToHourlyValues;
   }
@@ -27,6 +41,16 @@ public class LoadProfileInput extends RepetitiveTimeSeries<PValue> {
   @Override
   public PValue calc(ZonedDateTime time) {
     return dayOfWeekToHourlyValues.get(time.getDayOfWeek()).get(time.getHour());
+  }
+
+  @Override
+  protected Optional<ZonedDateTime> getPreviousZonedDateTime(ZonedDateTime time) {
+    return Optional.of(time.minus(1, HOURS));
+  }
+
+  @Override
+  protected Optional<ZonedDateTime> getNextZonedDateTime(ZonedDateTime time) {
+    return Optional.of(time.plus(1, HOURS));
   }
 
   public LoadProfileType getType() {

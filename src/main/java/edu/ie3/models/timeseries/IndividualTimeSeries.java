@@ -8,14 +8,30 @@ package edu.ie3.models.timeseries;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.Value;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /** Describes a TimeSeries with individual values per time step */
 public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
   /** Maps a time to its respective value to retrieve faster */
-  private HashMap<ZonedDateTime, T> timeToTimeBasedValue = new HashMap<>();
+  private HashMap<ZonedDateTime, T> timeToValue = new HashMap<>();
+
+  public IndividualTimeSeries() {
+    super();
+  }
+
+  public IndividualTimeSeries(UUID uuid) {
+    super(uuid);
+  }
+
+  public IndividualTimeSeries(UUID uuid, Map<ZonedDateTime, T> timeToValue) {
+    super(uuid);
+    addAll(timeToValue);
+  }
+
+  public IndividualTimeSeries(Map<ZonedDateTime, T> timeToValue) {
+    super();
+    addAll(timeToValue);
+  }
 
   /**
    * Adding a map from {@link ZonedDateTime} to the value apparent a this point in time
@@ -33,7 +49,7 @@ public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
    * @param value The actual value
    */
   public void add(ZonedDateTime time, T value) {
-    timeToTimeBasedValue.put(time, value);
+    timeToValue.put(time, value);
   }
 
   /**
@@ -46,13 +62,26 @@ public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
   }
 
   @Override
-  public TimeBasedValue<T> getTimeBasedValue(ZonedDateTime time) {
-    return new TimeBasedValue<>(time, timeToTimeBasedValue.get(time));
+  public Optional<T> getValue(ZonedDateTime time) {
+    return Optional.ofNullable(timeToValue.get(time));
   }
 
   @Override
-  public T getValue(ZonedDateTime time) {
-    return getTimeBasedValue(time).getValue();
+  public Optional<TimeBasedValue<T>> getPreviousTimeBasedValue(ZonedDateTime time) {
+    Optional<ZonedDateTime> lastZdt =
+        timeToValue.keySet().stream()
+            .filter(valueTime -> valueTime.compareTo(time) <= 0)
+            .max(Comparator.naturalOrder());
+    return getTimeBasedValue(lastZdt);
+  }
+
+  @Override
+  public Optional<TimeBasedValue<T>> getNextTimeBasedValue(ZonedDateTime time) {
+    Optional<ZonedDateTime> nextZdt =
+        timeToValue.keySet().stream()
+            .filter(valueTime -> valueTime.compareTo(time) >= 0)
+            .min(Comparator.naturalOrder());
+    return getTimeBasedValue(nextZdt);
   }
 
   @Override
@@ -61,11 +90,11 @@ public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     IndividualTimeSeries<?> that = (IndividualTimeSeries<?>) o;
-    return Objects.equals(timeToTimeBasedValue, that.timeToTimeBasedValue);
+    return Objects.equals(timeToValue, that.timeToValue);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), timeToTimeBasedValue);
+    return Objects.hash(super.hashCode(), timeToValue);
   }
 }
