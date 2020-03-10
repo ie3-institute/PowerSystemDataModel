@@ -67,7 +67,7 @@ public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
   }
 
   @Override
-  public Optional<TimeBasedValue<T>> getLastTimeBasedValue(ZonedDateTime time) {
+  public Optional<TimeBasedValue<T>> getPreviousTimeBasedValue(ZonedDateTime time) {
     Optional<ZonedDateTime> lastZdt =
         timeToValue.keySet().stream()
             .filter(valueTime -> valueTime.compareTo(time) <= 0)

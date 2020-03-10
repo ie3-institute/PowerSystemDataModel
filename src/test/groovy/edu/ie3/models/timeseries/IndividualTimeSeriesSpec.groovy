@@ -54,7 +54,7 @@ class IndividualTimeSeriesSpec extends Specification {
 
     def "The individual time series returns empty Optional, when queried time is before provided time frame" () {
         expect:
-        timeSeries.getLastTimeBasedValue(ZonedDateTime.of(1989, 12, 31, 0, 0, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
+        timeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1989, 12, 31, 0, 0, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
     }
 
     def "The individual time series returns correct Optional, when queried for the last known information" () {
@@ -62,7 +62,7 @@ class IndividualTimeSeriesSpec extends Specification {
         Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")), new IntValue(3)))
 
         when:
-        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getLastTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC")))
+        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC")))
 
         then:
         expected.isPresent()
@@ -75,7 +75,7 @@ class IndividualTimeSeriesSpec extends Specification {
         Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")), new IntValue(3)))
 
         when:
-        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getLastTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
+        Optional<TimeBasedValue<IntValue>> actual = timeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
 
         then:
         expected.isPresent()

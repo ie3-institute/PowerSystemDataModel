@@ -39,7 +39,7 @@ public abstract class RepetitiveTimeSeries<T extends Value> extends TimeSeries<T
   protected abstract Optional<ZonedDateTime> getLastZonedDateTime(ZonedDateTime time);
 
   @Override
-  public Optional<TimeBasedValue<T>> getLastTimeBasedValue(ZonedDateTime time) {
+  public Optional<TimeBasedValue<T>> getPreviousTimeBasedValue(ZonedDateTime time) {
     return getTimeBasedValue(getLastZonedDateTime(time));
   }
 

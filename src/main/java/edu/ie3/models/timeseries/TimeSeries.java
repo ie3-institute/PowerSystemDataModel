@@ -55,7 +55,7 @@ abstract class TimeSeries<T extends Value> extends UniqueEntity {
     /**
      * @return the most recent available value before or at the given time step as a TimeBasedValue
      */
-    public abstract Optional<TimeBasedValue<T>> getLastTimeBasedValue(ZonedDateTime time);
+    public abstract Optional<TimeBasedValue<T>> getPreviousTimeBasedValue(ZonedDateTime time);
 
     /**
      * @return the next available value after or at the given time step as a TimeBasedValue
