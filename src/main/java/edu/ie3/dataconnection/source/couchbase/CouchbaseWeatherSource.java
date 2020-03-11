@@ -19,15 +19,14 @@ import edu.ie3.models.timeseries.IndividualTimeSeries;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.WeatherValues;
 import edu.ie3.util.interval.ClosedInterval;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CouchbaseWeatherSource implements WeatherSource {
 
@@ -45,21 +44,23 @@ public class CouchbaseWeatherSource implements WeatherSource {
     HashMap<Point, IndividualTimeSeries<WeatherValues>> coordinateToTimeSeries = new HashMap<>();
     for (Point coordinate : coordinates) {
       String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinate);
-        CompletableFuture<QueryResult> futureResult = connector.query(query);
-        QueryResult queryResult = futureResult.join();
+      CompletableFuture<QueryResult> futureResult = connector.query(query);
+      QueryResult queryResult = futureResult.join();
       List<JsonWeatherInput> jsonWeatherInputs = Collections.emptyList();
       try {
-          jsonWeatherInputs = queryResult.rowsAs(JsonWeatherInput.class);
-        }  catch (DecodingFailureException ex) {
-          logger.error(ex);
-        }
-      List<TimeBasedValue<WeatherValues>> weatherInputs =
-          jsonWeatherInputs.stream()
-              .map(JsonWeatherInput::toTimeBasedWeatherValues)
-              .collect(Collectors.toList());
-      IndividualTimeSeries<WeatherValues> weatherTimeSeries = new IndividualTimeSeries<>();
-      weatherTimeSeries.addAll(weatherInputs);
-      coordinateToTimeSeries.put(coordinate, weatherTimeSeries);
+        jsonWeatherInputs = queryResult.rowsAs(JsonWeatherInput.class);
+      } catch (DecodingFailureException ex) {
+        logger.error(ex);
+      }
+      if(jsonWeatherInputs!= null && !jsonWeatherInputs.isEmpty()) {
+        List<TimeBasedValue<WeatherValues>> weatherInputs =
+                jsonWeatherInputs.stream()
+                        .map(JsonWeatherInput::toTimeBasedWeatherValues)
+                        .collect(Collectors.toList());
+        IndividualTimeSeries<WeatherValues> weatherTimeSeries = new IndividualTimeSeries<>();
+        weatherTimeSeries.addAll(weatherInputs);
+        coordinateToTimeSeries.put(coordinate, weatherTimeSeries);
+      }
     }
     return coordinateToTimeSeries;
   }

@@ -14,8 +14,12 @@ import com.couchbase.client.java.query.QueryResult;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CouchbaseConnector implements DataConnector {
+
+  private static Logger mainLogger = LogManager.getLogger("Main");
 
   private static final String COUCHBASE_URL = "127.0.0.1";
   //    private static final String COUCHBASE_URL = "http://localhost:8091/";
@@ -70,6 +74,7 @@ public class CouchbaseConnector implements DataConnector {
 
   @Override
   public void shutdown() {
+    mainLogger.debug("CouchbaseConnector is shutting down");
     cluster.disconnect();
   }
 

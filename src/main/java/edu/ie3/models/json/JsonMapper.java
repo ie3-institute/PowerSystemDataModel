@@ -25,18 +25,17 @@ import edu.ie3.models.result.ResultEntity;
 import edu.ie3.models.result.connector.LineResult;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.utils.CoordinateUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.quantity.Quantities;
-
+import java.time.ZonedDateTime;
+import java.util.Optional;
+import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricPotential;
 import javax.measure.quantity.Length;
-import java.time.ZonedDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import tec.uom.se.ComparableQuantity;
+import tec.uom.se.quantity.Quantities;
 
 public class JsonMapper {
   private static Logger logger = LogManager.getLogger(JsonMapper.class);

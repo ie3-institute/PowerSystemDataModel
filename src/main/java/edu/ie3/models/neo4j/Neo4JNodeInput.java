@@ -24,7 +24,6 @@ public class Neo4JNodeInput {
   private Boolean is_slack;
   private Double x_coord;
   private Double y_coord;
-  private String scenario;
   @DateString private Date operates_from;
   @DateString private Date operates_until;
 
@@ -125,14 +124,6 @@ public class Neo4JNodeInput {
 
   public void setY_coord(Double y_coord) {
     this.y_coord = y_coord;
-  }
-
-  public String getScenario() {
-    return scenario;
-  }
-
-  public void setScenario(String scenario) {
-    this.scenario = scenario;
   }
 
   public Date getOperates_from() {

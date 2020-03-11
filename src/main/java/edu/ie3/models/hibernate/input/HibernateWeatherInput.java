@@ -11,15 +11,14 @@ import edu.ie3.models.StandardUnits;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.WeatherValues;
 import edu.ie3.util.quantities.interfaces.Irradiation;
-import tec.uom.se.quantity.Quantities;
-
+import java.io.Serializable;
+import java.time.ZonedDateTime;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.ZonedDateTime;
+import tec.uom.se.quantity.Quantities;
 
 @NamedQueries({
   @NamedQuery(

@@ -16,16 +16,15 @@ import edu.ie3.dataconnection.sink.InfluxDbDataSink;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.ResultEntity;
 import edu.ie3.models.result.connector.LineResult;
+import java.time.ZonedDateTime;
+import java.util.*;
+import javax.measure.Quantity;
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.ElectricCurrent;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tec.uom.se.quantity.Quantities;
-
-import javax.measure.Quantity;
-import javax.measure.quantity.Angle;
-import javax.measure.quantity.ElectricCurrent;
-import java.time.ZonedDateTime;
-import java.util.*;
 
 public class OutputPerformanceLogGenerator implements PerformanceLogGenerator {
 

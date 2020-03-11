@@ -36,7 +36,8 @@ public class InfluxDbConnector implements DataConnector {
   }
 
   @Override
-  public void shutdown() {}
+  public void shutdown() {
+  }
 
   public String getDatabaseName() {
     return databaseName;

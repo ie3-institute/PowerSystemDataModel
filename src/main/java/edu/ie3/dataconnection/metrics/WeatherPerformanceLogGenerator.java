@@ -18,25 +18,24 @@ import edu.ie3.dataconnection.source.influxdb.InfluxDbWeatherSource;
 import edu.ie3.models.timeseries.IndividualTimeSeries;
 import edu.ie3.models.value.WeatherValues;
 import edu.ie3.util.interval.ClosedInterval;
-import org.apache.commons.lang3.time.StopWatch;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Map;
+import org.apache.commons.lang3.time.StopWatch;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class WeatherPerformanceLogGenerator implements PerformanceLogGenerator {
 
   // MIA check values
-  private static final ZonedDateTime START_DATE =
+  public static final ZonedDateTime START_DATE =
       ZonedDateTime.of(2013, 4, 8, 0, 0, 0, 0, ZoneId.of("UTC"));
-  private static final ZonedDateTime END_DATE =
-      ZonedDateTime.of(2013, 4, 24, 23, 59, 0, 0, ZoneId.of("UTC"));
-  private static final ClosedInterval<ZonedDateTime> TIME_INTERVAL =
+  public static final ZonedDateTime END_DATE =
+      ZonedDateTime.of(2013, 4, 14, 23, 59, 0, 0, ZoneId.of("UTC"));
+  public static final ClosedInterval<ZonedDateTime> TIME_INTERVAL =
       new ClosedInterval<>(START_DATE, END_DATE);
-  private static final Collection<Point> COORDINATES =
+  public static final Collection<Point> COORDINATES =
       CsvCoordinateSource.getCoordinatesBetween(184465, 194465);
 
   private static int index = 0;
@@ -107,12 +106,18 @@ public class WeatherPerformanceLogGenerator implements PerformanceLogGenerator {
     switch (database) {
       case INFLUXDB:
         InfluxDbConnector influxdbConnector = new InfluxDbConnector("ie3_in");
+        if (!influxdbConnector.isConnectionValid())
+          throw new IllegalStateException(database + "Connector for weather is invalid");
         return new InfluxDbWeatherSource(influxdbConnector);
       case HIBERNATE:
         HibernateConnector hibernateConnector = new HibernateConnector("dataconnector");
+        if (!hibernateConnector.isConnectionValid())
+          throw new IllegalStateException(database + "Connector for weather is invalid");
         return new HibernateWeatherSource(hibernateConnector);
       case COUCHBASE:
         CouchbaseConnector couchbaseConnector = new CouchbaseConnector("ie3_in");
+        if (!couchbaseConnector.isConnectionValid())
+          throw new IllegalStateException(database + "Connector for weather is invalid");
         return new CouchbaseWeatherSource(couchbaseConnector);
       default:
         throw new IllegalArgumentException("Unknown connector name");

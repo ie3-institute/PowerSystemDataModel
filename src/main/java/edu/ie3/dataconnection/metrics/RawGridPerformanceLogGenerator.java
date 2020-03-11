@@ -17,13 +17,12 @@ import edu.ie3.dataconnection.source.hibernate.HibernateRawGridSource;
 import edu.ie3.dataconnection.source.neo4j.Neo4JRawGridSource;
 import edu.ie3.models.input.aggregated.AggregatedRawGridInput;
 import edu.ie3.util.interval.ClosedInterval;
-import org.apache.commons.lang3.time.StopWatch;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collection;
+import org.apache.commons.lang3.time.StopWatch;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RawGridPerformanceLogGenerator implements PerformanceLogGenerator {
 

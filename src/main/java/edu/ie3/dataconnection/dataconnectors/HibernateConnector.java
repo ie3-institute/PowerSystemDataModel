@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 public class HibernateConnector implements DataConnector {
 
-  private static Logger logger = LogManager.getLogger("Main");
+  private static Logger mainLogger = LogManager.getLogger("Main");
 
   private final CriteriaBuilder builder;
   private final EntityManager manager;
@@ -50,7 +50,7 @@ public class HibernateConnector implements DataConnector {
       try {
         factory = Persistence.createEntityManagerFactory(persistenceUnitName);
       } catch (Exception e) {
-        logger.error("Error at Entity Manager Factory creation: ", e);
+        mainLogger.error("Error at Entity Manager Factory creation: ", e);
       }
     }
     return factory;
@@ -70,7 +70,7 @@ public class HibernateConnector implements DataConnector {
       if (transaction != null) {
         transaction.rollback();
       }
-      logger.error(ex);
+      mainLogger.error(ex);
     }
     manager.joinTransaction();
   }
@@ -89,7 +89,7 @@ public class HibernateConnector implements DataConnector {
       if (transaction != null) {
         transaction.rollback();
       }
-      logger.error(ex);
+      mainLogger.error(ex);
     }
   }
 
@@ -102,7 +102,7 @@ public class HibernateConnector implements DataConnector {
       entities = manager.createQuery(criteria).getResultList();
     } catch (Exception ex) {
       ex.printStackTrace();
-      logger.error(ex.getMessage());
+      mainLogger.error(ex.getMessage());
     }
     return entities;
   }
@@ -112,15 +112,15 @@ public class HibernateConnector implements DataConnector {
     try {
       entity = manager.find(clazz, id);
     } catch (Exception ex) {
-      logger.error(ex);
+      mainLogger.error(ex);
       manager.flush();
     }
     return entity;
   }
 
   public List execNamedQuery(String queryName, List params) {
+    mainLogger.trace("Execute query '" + queryName + "'" + "with params {" + params.toString() + "}");
     List objs = null;
-    logger.trace("Execute query '" + queryName + "'" + "with params {" + params.toString() + "}");
     try {
       Query query = manager.createNamedQuery(queryName);
       int i = 1;
@@ -129,21 +129,24 @@ public class HibernateConnector implements DataConnector {
       }
       objs = query.getResultList();
     } catch (Exception ex) {
-      logger.error(ex);
+      mainLogger.error(ex);
     }
     return objs;
   }
 
   public List execNamedQuery(String queryName, Map<String, Object> namedParams) {
+    mainLogger.trace("Execute query '" + queryName + "'" + "with params {" + namedParams.values().toString() + "}");
     List objs = null;
     try {
       Query query = manager.createNamedQuery(queryName);
       for (Map.Entry<String, Object> entry : namedParams.entrySet()) {
         query.setParameter(entry.getKey(), entry.getValue());
       }
+      mainLogger.debug("GetResultList");
       objs = query.getResultList();
-    } catch (Exception ex) {
-      logger.error(ex);
+      mainLogger.debug(" ReceivedResultList");
+    } catch (Throwable ex) {
+      mainLogger.error("Error at Query Execution: " + ex);
     }
     return objs;
   }
@@ -158,7 +161,7 @@ public class HibernateConnector implements DataConnector {
       }
       res = query.getSingleResult();
     } catch (Exception ex) {
-      logger.error(ex);
+      mainLogger.error(ex);
     }
     return res;
   }

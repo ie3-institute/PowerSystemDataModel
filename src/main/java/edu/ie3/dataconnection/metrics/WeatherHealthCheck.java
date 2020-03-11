@@ -10,32 +10,55 @@ import edu.ie3.dataconnection.source.csv.CsvCoordinateSource;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.timeseries.IndividualTimeSeries;
 import edu.ie3.models.value.WeatherValues;
-import tec.uom.se.quantity.Quantities;
-
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.Optional;
+
+import tec.uom.se.quantity.Quantities;
 
 public class WeatherHealthCheck {
 
-  private static final int coordinateCount = 10001; // MIA
-  private static final int timeseriesLength = 720; // MIA
+  private static final int coordinateCount = 1683; // MIA
+  private static final int timeseriesLength = 168; // MIA
   private static final ZonedDateTime exampleDate =
-      ZonedDateTime.of(2013, 4, 15, 9, 0, 0, 0, ZoneId.of("UTC"));
-  private static final Point exampleCoordinate = CsvCoordinateSource.getCoordinate(184465); // MIA
+      ZonedDateTime.of(2013, 4, 12, 9, 0, 0, 0, ZoneId.of("UTC"));
+  private static final Point exampleCoordinate = CsvCoordinateSource.getCoordinate(193176); // MIA
 
   public static boolean check(
       Map<Point, IndividualTimeSeries<WeatherValues>> coordinateToTimeSeries) {
     if (coordinateToTimeSeries == null) return false;
     System.out.println("coordinateCount: " + coordinateToTimeSeries.keySet().size());
     System.out.println("timeseriesLength: " + coordinateToTimeSeries.get(exampleCoordinate).size());
-    System.out.println("DiffuseIrradiation: " + coordinateToTimeSeries.get(exampleCoordinate).getValue(exampleDate)
-            .getIrradiation()
-            .getDiffuseIrradiation());
-        System.out.println("Temperature: " + coordinateToTimeSeries.get(exampleCoordinate).getValue(exampleDate)
-                        .getTemperature()
-                        .getTemperature());
-        System.out.println("Velocity: " + coordinateToTimeSeries.get(exampleCoordinate).getValue(exampleDate)
+
+    Optional<Integer> numberOfEntries = coordinateToTimeSeries.values().stream().map(IndividualTimeSeries::size).reduce(Integer::sum);
+    System.out.println("Number Of Entries: " + numberOfEntries.orElse(-1));
+    System.out.println("exampleCoordinate: " + exampleCoordinate);
+    String dates = "";
+    for(int i = 0; i < timeseriesLength; i++) {
+      ZonedDateTime exDate = WeatherPerformanceLogGenerator.START_DATE.plusHours(i);
+      if(coordinateToTimeSeries.get(exampleCoordinate).getTimeBasedValue(exDate) != null) dates += exDate + "     ";
+    }
+    System.out.println("exampleDates: " + dates);
+    System.out.println(
+        "DiffuseIrradiation: "
+            + coordinateToTimeSeries
+                .get(exampleCoordinate)
+                .getValue(exampleDate)
+                .getIrradiation()
+                .getDiffuseIrradiation());
+    System.out.println(
+        "Temperature: "
+            + coordinateToTimeSeries
+                .get(exampleCoordinate)
+                .getValue(exampleDate)
+                .getTemperature()
+                .getTemperature());
+    System.out.println(
+        "Velocity: "
+            + coordinateToTimeSeries
+                .get(exampleCoordinate)
+                .getValue(exampleDate)
                 .getWind()
                 .getVelocity());
 
