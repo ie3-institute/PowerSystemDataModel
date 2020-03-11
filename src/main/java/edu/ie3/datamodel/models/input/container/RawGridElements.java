@@ -58,7 +58,7 @@ public class RawGridElements implements InputContainer {
   }
 
   @Override
-  public boolean isValid() {
+  public boolean validate() {
     return ValidationUtils.checkRawGridElements(this);
   }
 

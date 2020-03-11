@@ -14,7 +14,7 @@ import java.util.*;
  * Represents the accumulation of system participant elements (BM plants, CHP plants, EVCS, fixed
  * feed ins, heat pumps, loads, PV plants, storages, WECs)
  */
-public class SystemParticipantElements implements InputContainer {
+public class SystemParticipants implements InputContainer {
   private final Set<BmInput> bmPlants;
   private final Set<ChpInput> chpPlants;
   private final Set<EvcsInput> evCS;
@@ -25,7 +25,7 @@ public class SystemParticipantElements implements InputContainer {
   private final Set<StorageInput> storages;
   private final Set<WecInput> wecPlants;
 
-  public SystemParticipantElements(
+  public SystemParticipants(
       Set<BmInput> bmPlants,
       Set<ChpInput> chpPlants,
       Set<EvcsInput> evCS,
@@ -62,7 +62,7 @@ public class SystemParticipantElements implements InputContainer {
   }
 
   @Override
-  public boolean isValid() {
+  public boolean validate() {
     return true; // no check defined in ValidationTools, so noe need for unnecessary instanceofs
   }
 

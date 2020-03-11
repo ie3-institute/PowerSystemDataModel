@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
+import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import java.util.Set;
 
 /** Basic Sanity validation tools for entities */
@@ -256,6 +257,8 @@ public class ValidationUtils {
    * @throws InvalidGridException If something is wrong
    */
   public static boolean checkRawGridElements(RawGridElements rawGridElements) {
+    if (rawGridElements == null) return false;
+
     /* Checking nodes */
     Set<NodeInput> nodes = rawGridElements.getNodes();
     boolean anyNullNode = nodes.stream().map(ValidationUtils::checkNode).anyMatch(cond -> !cond);
@@ -332,6 +335,79 @@ public class ValidationUtils {
     if (anyNullMeasurement)
       throw new InvalidGridException(
           "The list of measurement units contains at least one NULL element.");
+
+    return true;
+  }
+
+  /**
+   * Checks the validity of each and every system participant. Moreover, it checks, if the systems
+   * are connected to an node that is not in the provided set
+   *
+   * @param systemParticipants The system participants
+   * @param nodes Set of already known nodes
+   * @return true
+   */
+  public static boolean checkSystemParticipants(
+      SystemParticipants systemParticipants, Set<NodeInput> nodes) {
+    if (systemParticipants == null) return false;
+
+    systemParticipants
+        .getBmPlants()
+        .forEach(
+            entity -> {
+              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
+            });
+
+    systemParticipants
+        .getChpPlants()
+        .forEach(
+            entity -> {
+              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
+            });
+
+    /* TODO: Electric vehicle charging systems are currently only dummy implementation */
+
+    systemParticipants
+        .getFixedFeedIns()
+        .forEach(
+            entity -> {
+              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
+            });
+
+    systemParticipants
+        .getHeatPumps()
+        .forEach(
+            entity -> {
+              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
+            });
+
+    systemParticipants
+        .getLoads()
+        .forEach(
+            entity -> {
+              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
+            });
+
+    systemParticipants
+        .getPvPlants()
+        .forEach(
+            entity -> {
+              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
+            });
+
+    systemParticipants
+        .getStorages()
+        .forEach(
+            entity -> {
+              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
+            });
+
+    systemParticipants
+        .getWecPlants()
+        .forEach(
+            entity -> {
+              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
+            });
 
     return true;
   }

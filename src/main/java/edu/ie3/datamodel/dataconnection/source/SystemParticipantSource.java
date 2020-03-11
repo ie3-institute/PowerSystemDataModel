@@ -5,11 +5,11 @@
 */
 package edu.ie3.datamodel.dataconnection.source;
 
-import edu.ie3.datamodel.models.input.container.SystemParticipantElements;
+import edu.ie3.datamodel.models.input.container.SystemParticipants;
 
 /** Describes a data source for system participants */
 public interface SystemParticipantSource extends DataSource {
 
   /** @return system participant data as an aggregation of all elements in this grid */
-  SystemParticipantElements fetchSystemParticipants();
+  SystemParticipants fetchSystemParticipants();
 }

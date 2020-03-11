@@ -11,25 +11,33 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GridContainer implements InputContainer {
+  private static Logger logger = LoggerFactory.getLogger(GridContainer.class);
+
   /** Name of this grid */
   protected final String gridName;
   /** Accumulated raw grid elements (lines, nodes, transformers, switches) */
   protected final RawGridElements rawGrid;
   /** Accumulated system participant elements */
-  protected final SystemParticipantElements systemParticipants;
+  protected final SystemParticipants systemParticipants;
   /** Accumulated graphic data entities (node graphics, line graphics) */
   protected final GraphicElements graphics;
 
   public GridContainer(
       String gridName,
       RawGridElements rawGrid,
-      SystemParticipantElements systemParticipants,
+      SystemParticipants systemParticipants,
       GraphicElements graphics) {
     this.gridName = gridName;
     this.rawGrid = rawGrid;
+    if (!this.rawGrid.validate())
+      logger.warn("You provided NULL as raw grid data, which doesn't make much sense...");
     this.systemParticipants = systemParticipants;
+    if (!this.systemParticipants.validate())
+      logger.warn("You provided NULL as system participants, which doesn't make much sense...");
     this.graphics = graphics;
   }
 
@@ -43,10 +51,10 @@ public class GridContainer implements InputContainer {
   }
 
   @Override
-  public boolean isValid() {
-    if (!rawGrid.isValid()) return false;
-    if (!systemParticipants.isValid()) return false;
-    return graphics.isValid();
+  public boolean validate() {
+    if (!rawGrid.validate()) return false;
+    if (!systemParticipants.validate()) return false;
+    return graphics.validate();
   }
 
   public String getGridName() {
@@ -57,7 +65,7 @@ public class GridContainer implements InputContainer {
     return rawGrid;
   }
 
-  public SystemParticipantElements getSystemParticipants() {
+  public SystemParticipants getSystemParticipants() {
     return systemParticipants;
   }
 
@@ -73,8 +81,7 @@ public class GridContainer implements InputContainer {
    * @return The predominant voltage level in this grid
    * @throws InvalidGridException If not a single, predominant voltage level can be determined
    */
-  protected static VoltageLevel determinePredominantVoltLvl(RawGridElements rawGrid)
-      throws InvalidGridException {
+  protected static VoltageLevel determinePredominantVoltLvl(RawGridElements rawGrid) {
     return rawGrid.getNodes().stream()
         .map(NodeInput::getVoltLvl)
         .collect(Collectors.groupingBy(voltLvl -> voltLvl, Collectors.counting()))

@@ -30,7 +30,7 @@ public class GraphicElements implements InputContainer {
   }
 
   @Override
-  public boolean isValid() {
+  public boolean validate() {
     return true; // no check defined in ValidationTools, so no need for unnecessary instanceofs
   }
 

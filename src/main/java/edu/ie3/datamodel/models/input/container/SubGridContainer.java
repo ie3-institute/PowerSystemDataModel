@@ -20,9 +20,8 @@ public class SubGridContainer extends GridContainer {
       String gridName,
       int subnet,
       RawGridElements rawGrid,
-      SystemParticipantElements systemParticipants,
-      GraphicElements graphics)
-      throws InvalidGridException {
+      SystemParticipants systemParticipants,
+      GraphicElements graphics) {
     super(gridName, rawGrid, systemParticipants, graphics);
     this.subnet = subnet;
 
