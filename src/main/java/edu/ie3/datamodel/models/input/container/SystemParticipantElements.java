@@ -8,44 +8,47 @@ package edu.ie3.datamodel.models.input.container;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.EvcsInput;
 import edu.ie3.datamodel.models.input.system.*;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
- * Represents the aggregation of system participant elements (BM plants, CHP plants, EVCS, fixed
+ * Represents the accumulation of system participant elements (BM plants, CHP plants, EVCS, fixed
  * feed ins, heat pumps, loads, PV plants, storages, WECs)
  */
 public class SystemParticipantElements implements InputContainer {
-  private final List<BmInput> bmPlants = new LinkedList<>();
-  private final List<ChpInput> chpPlants = new LinkedList<>();
-  private final List<EvcsInput> evCS = new LinkedList<>();
-  private final List<FixedFeedInInput> fixedFeedIns = new LinkedList<>();
-  private final List<HpInput> heatPumps = new LinkedList<>();
-  private final List<LoadInput> loads = new LinkedList<>();
-  private final List<PvInput> pvPlants = new LinkedList<>();
-  private final List<StorageInput> storages = new LinkedList<>();
-  private final List<WecInput> wecPlants = new LinkedList<>();
+  private final Set<BmInput> bmPlants;
+  private final Set<ChpInput> chpPlants;
+  private final Set<EvcsInput> evCS;
+  private final Set<FixedFeedInInput> fixedFeedIns;
+  private final Set<HpInput> heatPumps;
+  private final Set<LoadInput> loads;
+  private final Set<PvInput> pvPlants;
+  private final Set<StorageInput> storages;
+  private final Set<WecInput> wecPlants;
 
-  @Override
-  public void add(UniqueEntity entity) {
-    if (entity instanceof BmInput) add((BmInput) entity);
-    else if (entity instanceof ChpInput) add((ChpInput) entity);
-    else if (entity instanceof EvcsInput) add((EvcsInput) entity);
-    else if (entity instanceof FixedFeedInInput) add((FixedFeedInInput) entity);
-    else if (entity instanceof HpInput) add((HpInput) entity);
-    else if (entity instanceof LoadInput) add((LoadInput) entity);
-    else if (entity instanceof PvInput) add((PvInput) entity);
-    else if (entity instanceof StorageInput) add((StorageInput) entity);
-    else if (entity instanceof WecInput) add((WecInput) entity);
-    else
-      throw new IllegalArgumentException(
-          "Entity type is unknown, cannot add entity [" + entity + "]");
+  public SystemParticipantElements(
+      Set<BmInput> bmPlants,
+      Set<ChpInput> chpPlants,
+      Set<EvcsInput> evCS,
+      Set<FixedFeedInInput> fixedFeedIns,
+      Set<HpInput> heatPumps,
+      Set<LoadInput> loads,
+      Set<PvInput> pvPlants,
+      Set<StorageInput> storages,
+      Set<WecInput> wecPlants) {
+    this.bmPlants = bmPlants;
+    this.chpPlants = chpPlants;
+    this.evCS = evCS;
+    this.fixedFeedIns = fixedFeedIns;
+    this.heatPumps = heatPumps;
+    this.loads = loads;
+    this.pvPlants = pvPlants;
+    this.storages = storages;
+    this.wecPlants = wecPlants;
   }
 
   @Override
   public List<UniqueEntity> allEntitiesAsList() {
-    List<UniqueEntity> allEntities = new LinkedList<>();
+    List<UniqueEntity> allEntities = new ArrayList<>();
     allEntities.addAll(bmPlants);
     allEntities.addAll(chpPlants);
     allEntities.addAll(evCS);
@@ -99,40 +102,40 @@ public class SystemParticipantElements implements InputContainer {
     wecPlants.add(wec);
   }
 
-  /** @return unmodifiable List of all biomass plants in this grid */
-  public List<BmInput> getBmPlants() {
-    return Collections.unmodifiableList(bmPlants);
+  /** @return unmodifiable Set of all biomass plants in this grid */
+  public Set<BmInput> getBmPlants() {
+    return Collections.unmodifiableSet(bmPlants);
   }
-  /** @return unmodifiable List of all CHP plants in this grid */
-  public List<ChpInput> getChpPlants() {
-    return Collections.unmodifiableList(chpPlants);
+  /** @return unmodifiable Set of all CHP plants in this grid */
+  public Set<ChpInput> getChpPlants() {
+    return Collections.unmodifiableSet(chpPlants);
   }
-  /** @return unmodifiable List of all ev charging stations in this grid */
-  public List<EvcsInput> getEvCS() {
-    return Collections.unmodifiableList(evCS);
+  /** @return unmodifiable Set of all ev charging stations in this grid */
+  public Set<EvcsInput> getEvCS() {
+    return Collections.unmodifiableSet(evCS);
   }
-  /** @return unmodifiable List of all fixed feed in in this grid */
-  public List<FixedFeedInInput> getFixedFeedIns() {
-    return Collections.unmodifiableList(fixedFeedIns);
+  /** @return unmodifiable Set of all fixed feed in in this grid */
+  public Set<FixedFeedInInput> getFixedFeedIns() {
+    return Collections.unmodifiableSet(fixedFeedIns);
   }
-  /** @return unmodifiable List of all heat pumps in this grid */
-  public List<HpInput> getHeatPumps() {
-    return Collections.unmodifiableList(heatPumps);
+  /** @return unmodifiable Set of all heat pumps in this grid */
+  public Set<HpInput> getHeatPumps() {
+    return Collections.unmodifiableSet(heatPumps);
   }
-  /** @return unmodifiable List of all loads in this grid */
-  public List<LoadInput> getLoads() {
-    return Collections.unmodifiableList(loads);
+  /** @return unmodifiable Set of all loads in this grid */
+  public Set<LoadInput> getLoads() {
+    return Collections.unmodifiableSet(loads);
   }
-  /** @return unmodifiable List of all PV plants in this grid */
-  public List<PvInput> getPvPlants() {
-    return Collections.unmodifiableList(pvPlants);
+  /** @return unmodifiable Set of all PV plants in this grid */
+  public Set<PvInput> getPvPlants() {
+    return Collections.unmodifiableSet(pvPlants);
   }
-  /** @return unmodifiable List of all storages in this grid */
-  public List<StorageInput> getStorages() {
-    return Collections.unmodifiableList(storages);
+  /** @return unmodifiable Set of all storages in this grid */
+  public Set<StorageInput> getStorages() {
+    return Collections.unmodifiableSet(storages);
   }
-  /** @return unmodifiable List of all WECs in this grid */
-  public List<WecInput> getWecPlants() {
-    return Collections.unmodifiableList(wecPlants);
+  /** @return unmodifiable Set of all WECs in this grid */
+  public Set<WecInput> getWecPlants() {
+    return Collections.unmodifiableSet(wecPlants);
   }
 }

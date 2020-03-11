@@ -1,5 +1,11 @@
 package edu.ie3.datamodel.models.input.container
 
+import edu.ie3.datamodel.models.input.MeasurementUnitInput
+import edu.ie3.datamodel.models.input.connector.LineInput
+import edu.ie3.datamodel.models.input.connector.SwitchInput
+import edu.ie3.datamodel.models.input.connector.Transformer2WInput
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+
 import static  edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.AggregationException
@@ -15,13 +21,20 @@ import tec.uom.se.quantity.Quantities
 
 class SubGridContainerTest extends Specification {
     @Shared
-    RawGridElements rawGridElements = new RawGridElements()
+    RawGridElements rawGridElements
 
     @Shared
-    RawGridElements emptyRawGridElements = new RawGridElements()
+    RawGridElements emptyRawGridElements = new RawGridElements(
+            new HashSet<NodeInput>(),
+            new HashSet<LineInput>(),
+            new HashSet<Transformer2WInput>(),
+            new HashSet<Transformer3WInput>(),
+            new HashSet<SwitchInput>(),
+            new HashSet<MeasurementUnitInput>())
 
     def setupSpec() {
-        rawGridElements.add(new NodeInput(
+        Set<NodeInput> nodes = new HashSet<>()
+        nodes.add(new NodeInput(
                 UUID.randomUUID(),
                 OperationTime.notLimited(),
                 OperatorInput.NO_OPERATOR_ASSIGNED,
@@ -31,7 +44,7 @@ class SubGridContainerTest extends Specification {
                 null,
                 GermanVoltageLevelUtils.LV,
                 1))
-        rawGridElements.add(new NodeInput(
+        nodes.add(new NodeInput(
                 UUID.randomUUID(),
                 OperationTime.notLimited(),
                 OperatorInput.NO_OPERATOR_ASSIGNED,
@@ -41,7 +54,7 @@ class SubGridContainerTest extends Specification {
                 null,
                 GermanVoltageLevelUtils.LV,
                 1))
-        rawGridElements.add(new NodeInput(
+        nodes.add(new NodeInput(
                 UUID.randomUUID(),
                 OperationTime.notLimited(),
                 OperatorInput.NO_OPERATOR_ASSIGNED,
@@ -51,6 +64,14 @@ class SubGridContainerTest extends Specification {
                 null,
                 GermanVoltageLevelUtils.MV_10KV,
                 0))
+
+        rawGridElements = new RawGridElements(
+                nodes,
+                new HashSet<LineInput>(),
+                new HashSet<Transformer2WInput>(),
+                new HashSet<Transformer3WInput>(),
+                new HashSet<SwitchInput>(),
+                new HashSet<MeasurementUnitInput>())
     }
 
     def "The SingleGridContainer should determine the predominant voltage level correctly"() {

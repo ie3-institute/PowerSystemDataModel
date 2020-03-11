@@ -34,27 +34,6 @@ public class GridContainer implements InputContainer {
   }
 
   @Override
-  public void add(UniqueEntity entity) {
-    try {
-      rawGrid.add(entity);
-      return;
-    } catch (IllegalArgumentException ignored) { // No further exception handling needed
-    }
-    try {
-      systemParticipants.add(entity);
-      return;
-    } catch (IllegalArgumentException ignored) { // No further exception handling needed
-    }
-    try {
-      graphics.add(entity);
-      return;
-    } catch (IllegalArgumentException ignored) { // No further exception handling needed
-    }
-    throw new IllegalArgumentException(
-        "Entity type is unknown, cannot add entity [" + entity + "]");
-  }
-
-  @Override
   public List<UniqueEntity> allEntitiesAsList() {
     List<UniqueEntity> allEntities = new LinkedList<>();
     allEntities.addAll(rawGrid.allEntitiesAsList());

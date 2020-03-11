@@ -8,23 +8,17 @@ package edu.ie3.datamodel.models.input.container;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-/** Represents the aggregation of graphic data elements (node graphics, line graphics) */
+/** Represents the accumulation of graphic data elements (node graphics, line graphics) */
 public class GraphicElements implements InputContainer {
 
-  private final LinkedList<NodeGraphicInput> nodeGraphics = new LinkedList<>();
-  private final LinkedList<LineGraphicInput> lineGraphics = new LinkedList<>();
+  private final Set<NodeGraphicInput> nodeGraphics;
+  private final Set<LineGraphicInput> lineGraphics;
 
-  @Override
-  public void add(UniqueEntity entity) {
-    if (entity instanceof NodeGraphicInput) add((NodeGraphicInput) entity);
-    else if (entity instanceof LineGraphicInput) add((LineGraphicInput) entity);
-    else
-      throw new IllegalArgumentException(
-          "Entity type is unknown, cannot add entity [" + entity + "]");
+  public GraphicElements(Set<NodeGraphicInput> nodeGraphics, Set<LineGraphicInput> lineGraphics) {
+    this.nodeGraphics = nodeGraphics;
+    this.lineGraphics = lineGraphics;
   }
 
   @Override
@@ -40,21 +34,13 @@ public class GraphicElements implements InputContainer {
     return true; // no check defined in ValidationTools, so no need for unnecessary instanceofs
   }
 
-  public void add(NodeGraphicInput entity) {
-    nodeGraphics.add(entity);
+  /** @return unmodifiable Set of all node graphic data for this grid */
+  public Set<NodeGraphicInput> getNodeGraphics() {
+    return Collections.unmodifiableSet(nodeGraphics);
   }
 
-  public void add(LineGraphicInput entity) {
-    lineGraphics.add(entity);
-  }
-
-  /** @return unmodifiable List of all node graphic data for this grid */
-  public List<NodeGraphicInput> getNodeGraphics() {
-    return Collections.unmodifiableList(nodeGraphics);
-  }
-
-  /** @return unmodifiable List of all line graphic data for this grid */
-  public List<LineGraphicInput> getLineGraphics() {
-    return Collections.unmodifiableList(lineGraphics);
+  /** @return unmodifiable Set of all line graphic data for this grid */
+  public Set<LineGraphicInput> getLineGraphics() {
+    return Collections.unmodifiableSet(lineGraphics);
   }
 }

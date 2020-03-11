@@ -13,58 +13,41 @@ import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.utils.ValidationUtils;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /** Represents the aggregation of raw grid elements (nodes, lines, transformers, switches) */
 public class RawGridElements implements InputContainer {
-  /** List of nodes in this grid */
-  private final LinkedList<NodeInput> nodes = new LinkedList<>();
-  /** List of lines in this grid */
-  private final LinkedList<LineInput> lines = new LinkedList<>();
-  /** List of two winding transformers in this grid */
-  private final LinkedList<Transformer2WInput> transformer2Ws = new LinkedList<>();
-  /** List of three winding in this grid */
-  private final LinkedList<Transformer3WInput> transformer3Ws = new LinkedList<>();
-  /** List of switches in this grid */
-  private final LinkedList<SwitchInput> switches = new LinkedList<>();
+  /** Set of nodes in this grid */
+  private final Set<NodeInput> nodes;
+  /** Set of lines in this grid */
+  private final Set<LineInput> lines;
+  /** Set of two winding transformers in this grid */
+  private final Set<Transformer2WInput> transformer2Ws;
+  /** Set of three winding in this grid */
+  private final Set<Transformer3WInput> transformer3Ws;
+  /** Set of switches in this grid */
+  private final Set<SwitchInput> switches;
   /** Measurement units in this grid */
-  private final List<MeasurementUnitInput> measurementUnits = new LinkedList<>();
+  private final Set<MeasurementUnitInput> measurementUnits;
 
-  @Override
-  public void add(UniqueEntity entity) {
-    if (entity instanceof MeasurementUnitInput) {
-      add((MeasurementUnitInput) entity);
-      return;
-    }
-    if (entity instanceof NodeInput) {
-      add((NodeInput) entity);
-      return;
-    }
-    if (entity instanceof LineInput) {
-      add((LineInput) entity);
-      return;
-    }
-    if (entity instanceof Transformer2WInput) {
-      add((Transformer2WInput) entity);
-      return;
-    }
-    if (entity instanceof Transformer3WInput) {
-      add((Transformer3WInput) entity);
-      return;
-    }
-    if (entity instanceof SwitchInput) {
-      add((SwitchInput) entity);
-      return;
-    }
-    throw new IllegalArgumentException(
-        "Entity type is unknown, cannot add entity [" + entity + "]");
+  public RawGridElements(
+      Set<NodeInput> nodes,
+      Set<LineInput> lines,
+      Set<Transformer2WInput> transformer2Ws,
+      Set<Transformer3WInput> transformer3Ws,
+      Set<SwitchInput> switches,
+      Set<MeasurementUnitInput> measurementUnits) {
+    this.nodes = nodes;
+    this.lines = lines;
+    this.transformer2Ws = transformer2Ws;
+    this.transformer3Ws = transformer3Ws;
+    this.switches = switches;
+    this.measurementUnits = measurementUnits;
   }
 
   @Override
   public List<UniqueEntity> allEntitiesAsList() {
-    List<UniqueEntity> allEntities = new LinkedList<>();
+    List<UniqueEntity> allEntities = new ArrayList<>();
     allEntities.addAll(nodes);
     allEntities.addAll(lines);
     allEntities.addAll(transformer2Ws);
@@ -97,56 +80,33 @@ public class RawGridElements implements InputContainer {
     return true;
   }
 
-  public void add(NodeInput entity) {
-    nodes.add(entity);
+  /** @return unmodifiable ; of all three winding transformers in this grid */
+  public Set<NodeInput> getNodes() {
+    return Collections.unmodifiableSet(nodes);
   }
 
-  public void add(LineInput entity) {
-    lines.add(entity);
+  /** @return unmodifiable Set of all lines in this grid */
+  public Set<LineInput> getLines() {
+    return Collections.unmodifiableSet(lines);
   }
 
-  public void add(Transformer2WInput entity) {
-    transformer2Ws.add(entity);
+  /** @return unmodifiable Set of all two winding transformers in this grid */
+  public Set<Transformer2WInput> getTransformer2Ws() {
+    return Collections.unmodifiableSet(transformer2Ws);
   }
 
-  public void add(Transformer3WInput entity) {
-    transformer3Ws.add(entity);
+  /** @return unmodifiable Set of all three winding transformers in this grid */
+  public Set<Transformer3WInput> getTransformer3Ws() {
+    return Collections.unmodifiableSet(transformer3Ws);
   }
 
-  public void add(SwitchInput entity) {
-    switches.add(entity);
+  /** @return unmodifiable Set of all switches in this grid */
+  public Set<SwitchInput> getSwitches() {
+    return Collections.unmodifiableSet(switches);
   }
 
-  public void add(MeasurementUnitInput entity) {
-    measurementUnits.add(entity);
-  }
-
-  /** @return unmodifiable List of all three winding transformers in this grid */
-  public List<NodeInput> getNodes() {
-    return Collections.unmodifiableList(nodes);
-  }
-
-  /** @return unmodifiable List of all lines in this grid */
-  public List<LineInput> getLines() {
-    return Collections.unmodifiableList(lines);
-  }
-
-  /** @return unmodifiable List of all two winding transformers in this grid */
-  public List<Transformer2WInput> getTransformer2Ws() {
-    return Collections.unmodifiableList(transformer2Ws);
-  }
-
-  /** @return unmodifiable List of all three winding transformers in this grid */
-  public List<Transformer3WInput> getTransformer3Ws() {
-    return Collections.unmodifiableList(transformer3Ws);
-  }
-
-  /** @return unmodifiable List of all switches in this grid */
-  public List<SwitchInput> getSwitches() {
-    return Collections.unmodifiableList(switches);
-  }
-
-  public List<MeasurementUnitInput> getMeasurementUnits() {
-    return Collections.unmodifiableList(measurementUnits);
+  /** @return unmodifiable Set of all measurement units in this grid */
+  public Set<MeasurementUnitInput> getMeasurementUnits() {
+    return Collections.unmodifiableSet(measurementUnits);
   }
 }
