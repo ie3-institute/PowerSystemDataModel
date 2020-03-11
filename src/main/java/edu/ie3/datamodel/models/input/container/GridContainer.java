@@ -32,15 +32,18 @@ public class GridContainer implements InputContainer {
       SystemParticipants systemParticipants,
       GraphicElements graphics) {
     this.gridName = gridName;
+
     this.rawGrid = rawGrid;
     if (!this.rawGrid.validate())
-      logger.warn(
-          "You provided NULL as raw grid data for {}, which doesn't make much sense...", gridName);
+      throw new InvalidGridException(
+          "You provided NULL as raw grid data for "+gridName+". It has at least have to have nodes.");
+
     this.systemParticipants = systemParticipants;
     if (!this.systemParticipants.validate())
       logger.warn(
           "You provided NULL as system participants for {}, which doesn't make much sense...",
           gridName);
+
     this.graphics = graphics;
     if (!this.graphics.validate())
       logger.debug("No graphic information provided for {}.", gridName);
