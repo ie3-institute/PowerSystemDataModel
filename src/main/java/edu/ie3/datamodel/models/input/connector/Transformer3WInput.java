@@ -5,12 +5,15 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import static edu.ie3.util.quantities.PowerSystemUnits.PU;
+
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import java.util.Objects;
 import java.util.UUID;
+import tec.uom.se.quantity.Quantities;
 
 /**
  * Describes a three winding transformer, that is connected to three {@link
@@ -21,6 +24,8 @@ public class Transformer3WInput extends TransformerInput {
   private final Transformer3WTypeInput type;
   /** The lower voltage node */
   private final NodeInput nodeC;
+  /** Internal node of the transformers T equivalent circuit */
+  private final NodeInput nodeInternal;
 
   /**
    * Constructor for an operated three winding transformer
@@ -52,6 +57,52 @@ public class Transformer3WInput extends TransformerInput {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
     this.nodeC = nodeC;
+    this.nodeInternal =
+        new NodeInput(
+            UUID.randomUUID(),
+            operationTime,
+            operator,
+            "internal_node_" + id,
+            Quantities.getQuantity(1d, PU),
+            false,
+            null,
+            nodeA.getVoltLvl(),
+            nodeA.getSubnet());
+  }
+
+  /**
+   * Constructor for an operated three winding transformer
+   *
+   * @param uuid of the input entity
+   * @param operationTime Time for which the entity is operated
+   * @param operator of the asset
+   * @param id of the asset
+   * @param nodeA The higher voltage node
+   * @param nodeB The middle voltage node
+   * @param nodeC The lower voltage node
+   * @param nodeInternal The internal node of transformers T equivalent circuit
+   * @param parallelDevices Amount of singular transformers
+   * @param type of 3W transformer
+   * @param tapPos Tap Position of this transformer
+   * @param autoTap true, if there is an automated regulation activated for this transformer
+   */
+  public Transformer3WInput(
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      NodeInput nodeC,
+      NodeInput nodeInternal,
+      int parallelDevices,
+      Transformer3WTypeInput type,
+      int tapPos,
+      boolean autoTap) {
+    super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
+    this.type = type;
+    this.nodeC = nodeC;
+    this.nodeInternal = nodeInternal;
   }
 
   /**
@@ -80,6 +131,47 @@ public class Transformer3WInput extends TransformerInput {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
     this.nodeC = nodeC;
+    this.nodeInternal =
+        new NodeInput(
+            UUID.randomUUID(),
+            getOperationTime(),
+            getOperator(),
+            "internal_node_" + id,
+            Quantities.getQuantity(1d, PU),
+            false,
+            null,
+            nodeA.getVoltLvl(),
+            nodeA.getSubnet());
+  }
+
+  /**
+   * Constructor for a non-operated three winding transformer
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param nodeA The higher voltage node
+   * @param nodeB The middle voltage node
+   * @param nodeC The lower voltage node
+   * @param parallelDevices Amount of singular transformers
+   * @param type of 3W transformer
+   * @param tapPos Tap Position of this transformer
+   * @param autoTap true, if there is an automated regulation activated for this transformer
+   */
+  public Transformer3WInput(
+      UUID uuid,
+      String id,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      NodeInput nodeC,
+      NodeInput nodeInternal,
+      int parallelDevices,
+      Transformer3WTypeInput type,
+      int tapPos,
+      boolean autoTap) {
+    super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
+    this.type = type;
+    this.nodeC = nodeC;
+    this.nodeInternal = nodeInternal;
   }
 
   public Transformer3WTypeInput getType() {
@@ -101,6 +193,11 @@ public class Transformer3WInput extends TransformerInput {
   /** @return the node with the lowest voltage level */
   public NodeInput getNodeC() {
     return nodeC;
+  }
+
+  /** @return The internal node of the T equivalent circuit */
+  public NodeInput getNodeInternal() {
+    return nodeInternal;
   }
 
   @Override
