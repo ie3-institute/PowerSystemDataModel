@@ -79,4 +79,15 @@ public abstract class SystemParticipantInput extends AssetInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), node, qCharacteristics);
   }
+
+  @Override
+  public String toString() {
+    return "SystemParticipantInput{"
+        + "node="
+        + node
+        + ", qCharacteristics='"
+        + qCharacteristics
+        + '\''
+        + '}';
+  }
 }

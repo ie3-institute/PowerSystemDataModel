@@ -116,4 +116,18 @@ public class LoadInput extends SystemParticipantInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), dsm, eConsAnnual, sRated, cosphiRated);
   }
+
+  @Override
+  public String toString() {
+    return "LoadInput{"
+        + "dsm="
+        + dsm
+        + ", eConsAnnual="
+        + eConsAnnual
+        + ", sRated="
+        + sRated
+        + ", cosphiRated="
+        + cosphiRated
+        + '}';
+  }
 }

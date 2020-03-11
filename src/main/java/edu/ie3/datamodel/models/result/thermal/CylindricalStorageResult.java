@@ -82,4 +82,9 @@ public class CylindricalStorageResult extends ThermalStorageResult {
   public int hashCode() {
     return Objects.hash(super.hashCode(), fillLevel);
   }
+
+  @Override
+  public String toString() {
+    return "CylindricalStorageResult{" + "fillLevel=" + fillLevel + '}';
+  }
 }

@@ -40,4 +40,9 @@ public class OperatorInput extends InputEntity {
   public int hashCode() {
     return Objects.hash(super.hashCode(), name);
   }
+
+  @Override
+  public String toString() {
+    return "OperatorInput{" + "name='" + name + '\'' + '}';
+  }
 }

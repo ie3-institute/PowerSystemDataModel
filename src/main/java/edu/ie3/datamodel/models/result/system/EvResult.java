@@ -77,4 +77,9 @@ public class EvResult extends SystemParticipantResult {
   public int hashCode() {
     return Objects.hash(super.hashCode(), soc);
   }
+
+  @Override
+  public String toString() {
+    return "EvResult{" + "soc=" + soc + '}';
+  }
 }

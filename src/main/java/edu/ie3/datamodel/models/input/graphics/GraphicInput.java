@@ -49,4 +49,9 @@ public class GraphicInput extends InputEntity {
   public int hashCode() {
     return Objects.hash(super.hashCode(), graphicLayer, path);
   }
+
+  @Override
+  public String toString() {
+    return "GraphicInput{" + "graphicLayer='" + graphicLayer + '\'' + ", path=" + path + '}';
+  }
 }

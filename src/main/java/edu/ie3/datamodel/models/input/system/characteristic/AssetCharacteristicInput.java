@@ -41,4 +41,9 @@ public abstract class AssetCharacteristicInput extends InputEntity {
   public int hashCode() {
     return Objects.hash(super.hashCode(), type);
   }
+
+  @Override
+  public String toString() {
+    return "AssetCharacteristicInput{" + "type='" + type + '\'' + '}';
+  }
 }

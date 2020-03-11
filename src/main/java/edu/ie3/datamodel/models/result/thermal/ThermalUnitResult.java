@@ -69,4 +69,9 @@ public abstract class ThermalUnitResult extends ResultEntity {
   public int hashCode() {
     return Objects.hash(super.hashCode(), qDot);
   }
+
+  @Override
+  public String toString() {
+    return "ThermalUnitResult{" + "qDot=" + qDot + '}';
+  }
 }

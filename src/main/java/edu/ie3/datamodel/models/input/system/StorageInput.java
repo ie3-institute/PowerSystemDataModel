@@ -88,4 +88,9 @@ public class StorageInput extends SystemParticipantInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), type, behaviour);
   }
+
+  @Override
+  public String toString() {
+    return "StorageInput{" + "type=" + type + ", behaviour=" + behaviour + '}';
+  }
 }

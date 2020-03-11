@@ -39,4 +39,9 @@ public enum StorageStrategy {
                 new IllegalArgumentException(
                     "No predefined storage strategy " + token + " found."));
   }
+
+  @Override
+  public String toString() {
+    return "StorageStrategy{" + "token='" + token + '\'' + '}';
+  }
 }

@@ -126,4 +126,18 @@ public abstract class ConnectorResult extends ResultEntity {
   public int hashCode() {
     return Objects.hash(iAMag, iAAng, iBMag, iBAng);
   }
+
+  @Override
+  public String toString() {
+    return "ConnectorResult{"
+        + "iAMag="
+        + iAMag
+        + ", iAAng="
+        + iAAng
+        + ", iBMag="
+        + iBMag
+        + ", iBAng="
+        + iBAng
+        + '}';
+  }
 }

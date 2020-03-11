@@ -97,4 +97,9 @@ public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
   public int hashCode() {
     return Objects.hash(super.hashCode(), timeToValue);
   }
+
+  @Override
+  public String toString() {
+    return "IndividualTimeSeries{" + "timeToValue=" + timeToValue + '}';
+  }
 }

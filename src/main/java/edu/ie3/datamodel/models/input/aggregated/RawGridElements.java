@@ -149,4 +149,22 @@ public class RawGridElements implements AggregatedEntities {
   public List<MeasurementUnitInput> getMeasurementUnits() {
     return Collections.unmodifiableList(measurementUnits);
   }
+
+  @Override
+  public String toString() {
+    return "RawGridElements{"
+        + "nodes="
+        + nodes
+        + ", lines="
+        + lines
+        + ", transformer2Ws="
+        + transformer2Ws
+        + ", transformer3Ws="
+        + transformer3Ws
+        + ", switches="
+        + switches
+        + ", measurementUnits="
+        + measurementUnits
+        + '}';
+  }
 }

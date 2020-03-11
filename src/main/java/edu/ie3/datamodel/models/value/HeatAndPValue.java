@@ -45,4 +45,9 @@ public class HeatAndPValue extends PValue {
   public int hashCode() {
     return Objects.hash(super.hashCode(), heatDemand);
   }
+
+  @Override
+  public String toString() {
+    return "HeatAndPValue{" + "heatDemand=" + heatDemand + '}';
+  }
 }

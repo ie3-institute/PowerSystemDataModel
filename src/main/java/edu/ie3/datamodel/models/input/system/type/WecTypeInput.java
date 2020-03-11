@@ -79,4 +79,16 @@ public class WecTypeInput extends SystemParticipantTypeInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), etaConv, rotorArea, hubHeight);
   }
+
+  @Override
+  public String toString() {
+    return "WecTypeInput{"
+        + "etaConv="
+        + etaConv
+        + ", rotorArea="
+        + rotorArea
+        + ", hubHeight="
+        + hubHeight
+        + '}';
+  }
 }
