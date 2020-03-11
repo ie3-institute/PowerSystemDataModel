@@ -38,7 +38,6 @@ public class SubGridContainer extends GridContainer {
     }
   }
 
-
   public int getSubnet() {
     return subnet;
   }
@@ -49,10 +48,14 @@ public class SubGridContainer extends GridContainer {
 
   @Override
   public String toString() {
-    return "SubGridContainer{" +
-            "gridName='" + gridName + '\'' +
-            ", subnet=" + subnet +
-            ", predominantVoltageLevel=" + predominantVoltageLevel +
-            '}';
+    return "SubGridContainer{"
+        + "gridName='"
+        + gridName
+        + '\''
+        + ", subnet="
+        + subnet
+        + ", predominantVoltageLevel="
+        + predominantVoltageLevel
+        + '}';
   }
 }
