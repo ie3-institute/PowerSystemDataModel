@@ -45,4 +45,9 @@ public class VoltageLevel {
   public ComparableQuantity<ElectricPotential> getNominalVoltage() {
     return nominalVoltage;
   }
+
+  @Override
+  public String toString() {
+    return "VoltageLevel{" + "id='" + id + '\'' + ", nominalVoltage=" + nominalVoltage + '}';
+  }
 }

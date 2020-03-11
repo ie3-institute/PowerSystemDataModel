@@ -42,4 +42,9 @@ public class SValue extends PValue {
   public int hashCode() {
     return Objects.hash(q);
   }
+
+  @Override
+  public String toString() {
+    return "SValue{" + "q=" + q + '}';
+  }
 }

@@ -41,4 +41,9 @@ public class PValue implements Value {
   public int hashCode() {
     return Objects.hash(p);
   }
+
+  @Override
+  public String toString() {
+    return "PValue{" + "p=" + p + '}';
+  }
 }

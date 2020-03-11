@@ -38,4 +38,9 @@ public class HeatDemandValue implements Value {
   public int hashCode() {
     return Objects.hash(heatDemand);
   }
+
+  @Override
+  public String toString() {
+    return "HeatDemandValue{" + "heatDemand=" + heatDemand + '}';
+  }
 }

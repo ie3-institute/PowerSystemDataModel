@@ -56,4 +56,9 @@ public class WindValue implements Value {
   public int hashCode() {
     return Objects.hash(direction, velocity);
   }
+
+  @Override
+  public String toString() {
+    return "WindValue{" + "direction=" + direction + ", velocity=" + velocity + '}';
+  }
 }

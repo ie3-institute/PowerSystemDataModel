@@ -40,4 +40,9 @@ public class EnergyPriceValue implements Value {
   public int hashCode() {
     return Objects.hash(price);
   }
+
+  @Override
+  public String toString() {
+    return "EnergyPriceValue{" + "price=" + price + '}';
+  }
 }
