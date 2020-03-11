@@ -89,7 +89,12 @@ public class ValidationUtils {
   public static boolean checkLine(LineInput line) {
     if (line == null) return false;
     if (line.getType() == null) throw new InvalidEntityException("line type is null", line);
-    return checkLineType(line.getType()) && checkConnector(line);
+    checkConnector(line);
+    if(line.getNodeA().getSubnet() != line.getNodeB().getSubnet())
+      throw new InvalidEntityException("the line {} connects to different subnets", line);
+    if(line.getNodeA().getVoltLvl() != line.getNodeB().getVoltLvl())
+      throw new InvalidEntityException("the line {} connects to different voltage levels", line);
+    return checkLineType(line.getType());
   }
 
   /**
