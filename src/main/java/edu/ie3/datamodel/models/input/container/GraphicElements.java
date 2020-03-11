@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.models.input.aggregated;
+package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /** Represents the aggregation of graphic data elements (node graphics, line graphics) */
-public class GraphicElements implements AggregatedEntities {
+public class GraphicElements implements InputContainer {
 
   private final LinkedList<NodeGraphicInput> nodeGraphics = new LinkedList<>();
   private final LinkedList<LineGraphicInput> lineGraphics = new LinkedList<>();

@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.models.input.aggregated;
+package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /** Represents the aggregation of raw grid elements (nodes, lines, transformers, switches) */
-public class RawGridElements implements AggregatedEntities {
+public class RawGridElements implements InputContainer {
   /** List of nodes in this grid */
   private final LinkedList<NodeInput> nodes = new LinkedList<>();
   /** List of lines in this grid */

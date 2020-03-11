@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.models.input.aggregated;
+package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.EvcsInput;
@@ -16,7 +16,7 @@ import java.util.List;
  * Represents the aggregation of system participant elements (BM plants, CHP plants, EVCS, fixed
  * feed ins, heat pumps, loads, PV plants, storages, WECs)
  */
-public class SystemParticipantElements implements AggregatedEntities {
+public class SystemParticipantElements implements InputContainer {
   private final List<BmInput> bmPlants = new LinkedList<>();
   private final List<ChpInput> chpPlants = new LinkedList<>();
   private final List<EvcsInput> evCS = new LinkedList<>();

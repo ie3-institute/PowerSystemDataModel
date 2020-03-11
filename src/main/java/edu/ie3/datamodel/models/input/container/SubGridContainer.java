@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.models.input.aggregated;
+package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.AggregationException;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -12,24 +12,23 @@ import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/** Represents the aggregation of all data needed to create a complete single grid */
-public class AggregatedGridInput implements AggregatedEntities {
+/** Represents the accumulation of all data needed to create a complete single grid */
+public class SubGridContainer implements InputContainer {
 
   /** Name of this grid */
   private final String gridName;
   /** subnet number of this grid */
   private final int subnet;
-
+  /** Predominantly apparent voltage level in this single grid */
   private final VoltageLevel predominantVoltageLevel;
-
-  /** Aggregated raw grid elements (lines, nodes, transformers, switches) */
+  /** Accumulated raw grid elements (lines, nodes, transformers, switches) */
   private final RawGridElements rawGrid;
-  /** Aggregated system participant elements */
+  /** Accumulated system participant elements */
   private final SystemParticipantElements systemParticipants;
-  /** Aggregated graphic data entities (node graphics, line graphics) */
+  /** Accumulated graphic data entities (node graphics, line graphics) */
   private final GraphicElements graphics;
 
-  public AggregatedGridInput(
+  public SubGridContainer(
       String gridName,
       int subnet,
       RawGridElements rawGrid,

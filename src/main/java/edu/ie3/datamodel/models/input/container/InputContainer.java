@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.models.input.aggregated;
+package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.utils.ValidationUtils;
@@ -11,13 +11,13 @@ import java.util.Collection;
 import java.util.List;
 
 /** Represents an aggregation of different entities */
-public interface AggregatedEntities {
+public interface InputContainer {
 
-  /** Adds an entity to the aggregated entities if its type is compatible */
+  /** Adds an entity to the accumulated entities if its type is compatible */
   void add(UniqueEntity entity);
 
   /**
-   * Adds all elements of a collection of entities to the aggregated entities if their type is
+   * Adds all elements of a collection of entities to the accumulated entities if their type is
    * compatible
    */
   default void addAll(Collection<? extends UniqueEntity> entities) {

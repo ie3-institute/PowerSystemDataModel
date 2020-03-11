@@ -1,4 +1,4 @@
-package edu.ie3.datamodel.models.input.aggregated
+package edu.ie3.datamodel.models.input.container
 
 import static  edu.ie3.util.quantities.PowerSystemUnits.PU
 
@@ -13,7 +13,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
-class AggregatedGridInputTest extends Specification {
+class SubGridContainerTest extends Specification {
     @Shared
     RawGridElements rawGridElements = new RawGridElements()
 
@@ -53,17 +53,17 @@ class AggregatedGridInputTest extends Specification {
                 0))
     }
 
-    def "The AggregatedGridInput should determine the predominant voltage level correctly"() {
+    def "The SingleGridContainer should determine the predominant voltage level correctly"() {
         when:
-        VoltageLevel actual = AggregatedGridInput.determinePredominantVoltLvl(rawGridElements)
+        VoltageLevel actual = SubGridContainer.determinePredominantVoltLvl(rawGridElements)
 
         then:
         actual == GermanVoltageLevelUtils.LV
     }
 
-    def "The AggregatedGridInput should throw an exception, when the there is no voltage level information at all"() {
+    def "The SingleGridContainer should throw an exception, when the there is no voltage level information at all"() {
         when:
-        AggregatedGridInput.determinePredominantVoltLvl(emptyRawGridElements)
+        SubGridContainer.determinePredominantVoltLvl(emptyRawGridElements)
 
         then:
         AggregationException ex = thrown()

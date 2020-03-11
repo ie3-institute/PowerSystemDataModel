@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.dataconnection.source;
 
-import edu.ie3.datamodel.models.input.aggregated.SystemParticipantElements;
+import edu.ie3.datamodel.models.input.container.SystemParticipantElements;
 
 /** Describes a data source for system participants */
 public interface SystemParticipantSource extends DataSource {
