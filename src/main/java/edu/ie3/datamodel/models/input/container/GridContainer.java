@@ -36,7 +36,9 @@ public class GridContainer implements InputContainer {
     this.rawGrid = rawGrid;
     if (!this.rawGrid.validate())
       throw new InvalidGridException(
-          "You provided NULL as raw grid data for "+gridName+". It has at least have to have nodes.");
+          "You provided NULL as raw grid data for "
+              + gridName
+              + ". It has at least have to have nodes.");
 
     this.systemParticipants = systemParticipants;
     if (!this.systemParticipants.validate())
