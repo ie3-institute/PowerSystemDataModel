@@ -42,8 +42,6 @@ public abstract class AssetTypeInput extends InputEntity {
 
   @Override
   public String toString() {
-    return "AssetTypeInput{" +
-            "id='" + id + '\'' +
-            '}';
+    return "AssetTypeInput{" + "id='" + id + '\'' + '}';
   }
 }

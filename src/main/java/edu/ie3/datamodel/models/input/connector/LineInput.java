@@ -130,11 +130,15 @@ public class LineInput extends ConnectorInput {
 
   @Override
   public String toString() {
-    return "LineInput{" +
-            "type=" + type +
-            ", length=" + length +
-            ", geoPosition=" + geoPosition +
-            ", olmCharacteristic=" + olmCharacteristic +
-            '}';
+    return "LineInput{"
+        + "type="
+        + type
+        + ", length="
+        + length
+        + ", geoPosition="
+        + geoPosition
+        + ", olmCharacteristic="
+        + olmCharacteristic
+        + '}';
   }
 }

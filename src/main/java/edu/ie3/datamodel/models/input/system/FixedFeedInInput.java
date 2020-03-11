@@ -93,9 +93,6 @@ public class FixedFeedInInput extends SystemParticipantInput {
 
   @Override
   public String toString() {
-    return "FixedFeedInInput{" +
-            "sRated=" + sRated +
-            ", cosphiRated=" + cosphiRated +
-            '}';
+    return "FixedFeedInInput{" + "sRated=" + sRated + ", cosphiRated=" + cosphiRated + '}';
   }
 }

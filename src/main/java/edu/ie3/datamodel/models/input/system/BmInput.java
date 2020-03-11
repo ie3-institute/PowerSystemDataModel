@@ -125,11 +125,15 @@ public class BmInput extends SystemParticipantInput {
 
   @Override
   public String toString() {
-    return "BmInput{" +
-            "type=" + type +
-            ", marketReaction=" + marketReaction +
-            ", costControlled=" + costControlled +
-            ", feedInTariff=" + feedInTariff +
-            '}';
+    return "BmInput{"
+        + "type="
+        + type
+        + ", marketReaction="
+        + marketReaction
+        + ", costControlled="
+        + costControlled
+        + ", feedInTariff="
+        + feedInTariff
+        + '}';
   }
 }

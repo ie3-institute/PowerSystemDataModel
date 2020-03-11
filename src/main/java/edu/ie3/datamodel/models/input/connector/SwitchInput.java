@@ -73,8 +73,6 @@ public class SwitchInput extends ConnectorInput {
 
   @Override
   public String toString() {
-    return "SwitchInput{" +
-            "closed=" + closed +
-            '}';
+    return "SwitchInput{" + "closed=" + closed + '}';
   }
 }

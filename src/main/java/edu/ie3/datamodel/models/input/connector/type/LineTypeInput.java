@@ -103,13 +103,19 @@ public class LineTypeInput extends AssetTypeInput {
 
   @Override
   public String toString() {
-    return "LineTypeInput{" +
-            "b=" + b +
-            ", g=" + g +
-            ", r=" + r +
-            ", x=" + x +
-            ", iMax=" + iMax +
-            ", vRated=" + vRated +
-            '}';
+    return "LineTypeInput{"
+        + "b="
+        + b
+        + ", g="
+        + g
+        + ", r="
+        + r
+        + ", x="
+        + x
+        + ", iMax="
+        + iMax
+        + ", vRated="
+        + vRated
+        + '}';
   }
 }

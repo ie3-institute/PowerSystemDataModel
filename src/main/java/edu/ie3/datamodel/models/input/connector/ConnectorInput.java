@@ -93,10 +93,13 @@ public abstract class ConnectorInput extends AssetInput {
 
   @Override
   public String toString() {
-    return "ConnectorInput{" +
-            "nodeA=" + nodeA +
-            ", nodeB=" + nodeB +
-            ", noOfParallelDevices=" + noOfParallelDevices +
-            '}';
+    return "ConnectorInput{"
+        + "nodeA="
+        + nodeA
+        + ", nodeB="
+        + nodeB
+        + ", noOfParallelDevices="
+        + noOfParallelDevices
+        + '}';
   }
 }

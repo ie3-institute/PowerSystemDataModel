@@ -61,9 +61,6 @@ public class ThermalHouseInput extends ThermalSinkInput {
 
   @Override
   public String toString() {
-    return "ThermalHouseInput{" +
-            "ethLosses=" + ethLosses +
-            ", ethCapa=" + ethCapa +
-            '}';
+    return "ThermalHouseInput{" + "ethLosses=" + ethLosses + ", ethCapa=" + ethCapa + '}';
   }
 }

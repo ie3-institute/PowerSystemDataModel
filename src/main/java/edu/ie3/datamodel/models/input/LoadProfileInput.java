@@ -59,9 +59,11 @@ public class LoadProfileInput extends RepetitiveTimeSeries<PValue> {
 
   @Override
   public String toString() {
-    return "LoadProfileInput{" +
-            "type=" + type +
-            ", dayOfWeekToHourlyValues=" + dayOfWeekToHourlyValues +
-            '}';
+    return "LoadProfileInput{"
+        + "type="
+        + type
+        + ", dayOfWeekToHourlyValues="
+        + dayOfWeekToHourlyValues
+        + '}';
   }
 }

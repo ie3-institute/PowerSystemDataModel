@@ -82,10 +82,13 @@ public class WecTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public String toString() {
-    return "WecTypeInput{" +
-            "etaConv=" + etaConv +
-            ", rotorArea=" + rotorArea +
-            ", hubHeight=" + hubHeight +
-            '}';
+    return "WecTypeInput{"
+        + "etaConv="
+        + etaConv
+        + ", rotorArea="
+        + rotorArea
+        + ", hubHeight="
+        + hubHeight
+        + '}';
   }
 }

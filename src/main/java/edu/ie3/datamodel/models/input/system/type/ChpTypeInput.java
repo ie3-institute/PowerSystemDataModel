@@ -90,11 +90,15 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public String toString() {
-    return "ChpTypeInput{" +
-            "etaEl=" + etaEl +
-            ", etaThermal=" + etaThermal +
-            ", pThermal=" + pThermal +
-            ", pOwn=" + pOwn +
-            '}';
+    return "ChpTypeInput{"
+        + "etaEl="
+        + etaEl
+        + ", etaThermal="
+        + etaThermal
+        + ", pThermal="
+        + pThermal
+        + ", pOwn="
+        + pOwn
+        + '}';
   }
 }

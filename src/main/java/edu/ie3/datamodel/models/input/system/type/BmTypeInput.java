@@ -71,9 +71,6 @@ public class BmTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public String toString() {
-    return "BmTypeInput{" +
-            "loadGradient=" + loadGradient +
-            ", etaConv=" + etaConv +
-            '}';
+    return "BmTypeInput{" + "loadGradient=" + loadGradient + ", etaConv=" + etaConv + '}';
   }
 }

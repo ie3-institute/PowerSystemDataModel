@@ -82,9 +82,12 @@ public abstract class SystemParticipantInput extends AssetInput {
 
   @Override
   public String toString() {
-    return "SystemParticipantInput{" +
-            "node=" + node +
-            ", qCharacteristics='" + qCharacteristics + '\'' +
-            '}';
+    return "SystemParticipantInput{"
+        + "node="
+        + node
+        + ", qCharacteristics='"
+        + qCharacteristics
+        + '\''
+        + '}';
   }
 }

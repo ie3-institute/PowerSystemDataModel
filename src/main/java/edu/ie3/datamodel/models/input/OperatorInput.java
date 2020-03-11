@@ -43,8 +43,6 @@ public class OperatorInput extends InputEntity {
 
   @Override
   public String toString() {
-    return "OperatorInput{" +
-            "name='" + name + '\'' +
-            '}';
+    return "OperatorInput{" + "name='" + name + '\'' + '}';
   }
 }

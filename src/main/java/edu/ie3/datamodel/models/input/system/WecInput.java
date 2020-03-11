@@ -92,9 +92,6 @@ public class WecInput extends SystemParticipantInput {
 
   @Override
   public String toString() {
-    return "WecInput{" +
-            "type=" + type +
-            ", marketReaction=" + marketReaction +
-            '}';
+    return "WecInput{" + "type=" + type + ", marketReaction=" + marketReaction + '}';
   }
 }

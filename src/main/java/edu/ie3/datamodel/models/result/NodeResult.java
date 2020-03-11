@@ -87,4 +87,9 @@ public class NodeResult extends ResultEntity {
   public int hashCode() {
     return Objects.hash(super.hashCode(), vMag, vAng);
   }
+
+  @Override
+  public String toString() {
+    return "NodeResult{" + "vMag=" + vMag + ", vAng=" + vAng + '}';
+  }
 }

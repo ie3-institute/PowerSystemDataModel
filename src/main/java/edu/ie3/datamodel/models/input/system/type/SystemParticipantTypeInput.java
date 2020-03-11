@@ -80,11 +80,15 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
 
   @Override
   public String toString() {
-    return "SystemParticipantTypeInput{" +
-            "capex=" + capex +
-            ", opex=" + opex +
-            ", sRated=" + sRated +
-            ", cosphiRated=" + cosphiRated +
-            '}';
+    return "SystemParticipantTypeInput{"
+        + "capex="
+        + capex
+        + ", opex="
+        + opex
+        + ", sRated="
+        + sRated
+        + ", cosphiRated="
+        + cosphiRated
+        + '}';
   }
 }

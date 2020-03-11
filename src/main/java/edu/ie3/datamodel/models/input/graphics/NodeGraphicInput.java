@@ -56,9 +56,6 @@ public class NodeGraphicInput extends GraphicInput {
 
   @Override
   public String toString() {
-    return "NodeGraphicInput{" +
-            "node=" + node +
-            ", point=" + point +
-            '}';
+    return "NodeGraphicInput{" + "node=" + node + ", point=" + point + '}';
   }
 }

@@ -139,13 +139,20 @@ public class AggregatedGridInput implements AggregatedEntities {
 
   @Override
   public String toString() {
-    return "AggregatedGridInput{" +
-            "gridName='" + gridName + '\'' +
-            ", subnet=" + subnet +
-            ", predominantVoltageLevel=" + predominantVoltageLevel +
-            ", rawGrid=" + rawGrid +
-            ", systemParticipants=" + systemParticipants +
-            ", graphics=" + graphics +
-            '}';
+    return "AggregatedGridInput{"
+        + "gridName='"
+        + gridName
+        + '\''
+        + ", subnet="
+        + subnet
+        + ", predominantVoltageLevel="
+        + predominantVoltageLevel
+        + ", rawGrid="
+        + rawGrid
+        + ", systemParticipants="
+        + systemParticipants
+        + ", graphics="
+        + graphics
+        + '}';
   }
 }

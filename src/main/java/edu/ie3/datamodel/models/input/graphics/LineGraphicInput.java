@@ -49,8 +49,6 @@ public class LineGraphicInput extends GraphicInput {
 
   @Override
   public String toString() {
-    return "LineGraphicInput{" +
-            "line=" + line +
-            '}';
+    return "LineGraphicInput{" + "line=" + line + '}';
   }
 }

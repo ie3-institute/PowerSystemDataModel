@@ -250,26 +250,45 @@ public class Transformer3WTypeInput extends AssetTypeInput {
 
   @Override
   public String toString() {
-    return "Transformer3WTypeInput{" +
-            "sRatedA=" + sRatedA +
-            ", sRatedB=" + sRatedB +
-            ", sRatedC=" + sRatedC +
-            ", vRatedA=" + vRatedA +
-            ", vRatedB=" + vRatedB +
-            ", vRatedC=" + vRatedC +
-            ", rScA=" + rScA +
-            ", rScB=" + rScB +
-            ", rScC=" + rScC +
-            ", xScA=" + xScA +
-            ", xScB=" + xScB +
-            ", xScC=" + xScC +
-            ", gM=" + gM +
-            ", bM=" + bM +
-            ", dV=" + dV +
-            ", dPhi=" + dPhi +
-            ", tapNeutr=" + tapNeutr +
-            ", tapMin=" + tapMin +
-            ", tapMax=" + tapMax +
-            '}';
+    return "Transformer3WTypeInput{"
+        + "sRatedA="
+        + sRatedA
+        + ", sRatedB="
+        + sRatedB
+        + ", sRatedC="
+        + sRatedC
+        + ", vRatedA="
+        + vRatedA
+        + ", vRatedB="
+        + vRatedB
+        + ", vRatedC="
+        + vRatedC
+        + ", rScA="
+        + rScA
+        + ", rScB="
+        + rScB
+        + ", rScC="
+        + rScC
+        + ", xScA="
+        + xScA
+        + ", xScB="
+        + xScB
+        + ", xScC="
+        + xScC
+        + ", gM="
+        + gM
+        + ", bM="
+        + bM
+        + ", dV="
+        + dV
+        + ", dPhi="
+        + dPhi
+        + ", tapNeutr="
+        + tapNeutr
+        + ", tapMin="
+        + tapMin
+        + ", tapMax="
+        + tapMax
+        + '}';
   }
 }

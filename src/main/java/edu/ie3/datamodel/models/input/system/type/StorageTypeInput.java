@@ -122,14 +122,21 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public String toString() {
-    return "StorageTypeInput{" +
-            "eStorage=" + eStorage +
-            ", pMin=" + pMin +
-            ", pMax=" + pMax +
-            ", eta=" + eta +
-            ", dod=" + dod +
-            ", lifeTime=" + lifeTime +
-            ", lifeCycle=" + lifeCycle +
-            '}';
+    return "StorageTypeInput{"
+        + "eStorage="
+        + eStorage
+        + ", pMin="
+        + pMin
+        + ", pMax="
+        + pMax
+        + ", eta="
+        + eta
+        + ", dod="
+        + dod
+        + ", lifeTime="
+        + lifeTime
+        + ", lifeCycle="
+        + lifeCycle
+        + '}';
   }
 }

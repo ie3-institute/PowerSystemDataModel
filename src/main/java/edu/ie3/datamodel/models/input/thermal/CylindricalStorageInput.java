@@ -94,12 +94,17 @@ public class CylindricalStorageInput extends ThermalStorageInput {
 
   @Override
   public String toString() {
-    return "CylindricalStorageInput{" +
-            "storageVolumeLvl=" + storageVolumeLvl +
-            ", storageVolumeLvlMin=" + storageVolumeLvlMin +
-            ", inletTemp=" + inletTemp +
-            ", returnTemp=" + returnTemp +
-            ", c=" + c +
-            '}';
+    return "CylindricalStorageInput{"
+        + "storageVolumeLvl="
+        + storageVolumeLvl
+        + ", storageVolumeLvlMin="
+        + storageVolumeLvlMin
+        + ", inletTemp="
+        + inletTemp
+        + ", returnTemp="
+        + returnTemp
+        + ", c="
+        + c
+        + '}';
   }
 }

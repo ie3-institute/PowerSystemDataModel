@@ -89,4 +89,9 @@ public abstract class TransformerResult extends ConnectorResult {
   public int hashCode() {
     return Objects.hash(super.hashCode(), tapPos);
   }
+
+  @Override
+  public String toString() {
+    return "TransformerResult{" + "tapPos=" + tapPos + '}';
+  }
 }

@@ -138,16 +138,25 @@ public class SystemParticipantElements implements AggregatedEntities {
 
   @Override
   public String toString() {
-    return "SystemParticipantElements{" +
-            "bmPlants=" + bmPlants +
-            ", chpPlants=" + chpPlants +
-            ", evCS=" + evCS +
-            ", fixedFeedIns=" + fixedFeedIns +
-            ", heatPumps=" + heatPumps +
-            ", loads=" + loads +
-            ", pvPlants=" + pvPlants +
-            ", storages=" + storages +
-            ", wecPlants=" + wecPlants +
-            '}';
+    return "SystemParticipantElements{"
+        + "bmPlants="
+        + bmPlants
+        + ", chpPlants="
+        + chpPlants
+        + ", evCS="
+        + evCS
+        + ", fixedFeedIns="
+        + fixedFeedIns
+        + ", heatPumps="
+        + heatPumps
+        + ", loads="
+        + loads
+        + ", pvPlants="
+        + pvPlants
+        + ", storages="
+        + storages
+        + ", wecPlants="
+        + wecPlants
+        + '}';
   }
 }

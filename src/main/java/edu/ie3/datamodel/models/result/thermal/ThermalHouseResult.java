@@ -76,4 +76,9 @@ public class ThermalHouseResult extends ThermalSinkResult {
   public int hashCode() {
     return Objects.hash(super.hashCode(), indoorTemperature);
   }
+
+  @Override
+  public String toString() {
+    return "ThermalHouseResult{" + "indoorTemperature=" + indoorTemperature + '}';
+  }
 }

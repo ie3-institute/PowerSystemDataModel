@@ -92,9 +92,6 @@ public class HpInput extends SystemParticipantInput {
 
   @Override
   public String toString() {
-    return "HpInput{" +
-            "type=" + type +
-            ", thermalBus=" + thermalBus +
-            '}';
+    return "HpInput{" + "type=" + type + ", thermalBus=" + thermalBus + '}';
   }
 }

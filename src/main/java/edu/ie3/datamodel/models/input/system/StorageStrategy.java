@@ -42,8 +42,6 @@ public enum StorageStrategy {
 
   @Override
   public String toString() {
-    return "StorageStrategy{" +
-            "token='" + token + '\'' +
-            '}';
+    return "StorageStrategy{" + "token='" + token + '\'' + '}';
   }
 }

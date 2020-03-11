@@ -91,9 +91,6 @@ public class StorageInput extends SystemParticipantInput {
 
   @Override
   public String toString() {
-    return "StorageInput{" +
-            "type=" + type +
-            ", behaviour=" + behaviour +
-            '}';
+    return "StorageInput{" + "type=" + type + ", behaviour=" + behaviour + '}';
   }
 }

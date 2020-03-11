@@ -152,13 +152,19 @@ public class RawGridElements implements AggregatedEntities {
 
   @Override
   public String toString() {
-    return "RawGridElements{" +
-            "nodes=" + nodes +
-            ", lines=" + lines +
-            ", transformer2Ws=" + transformer2Ws +
-            ", transformer3Ws=" + transformer3Ws +
-            ", switches=" + switches +
-            ", measurementUnits=" + measurementUnits +
-            '}';
+    return "RawGridElements{"
+        + "nodes="
+        + nodes
+        + ", lines="
+        + lines
+        + ", transformer2Ws="
+        + transformer2Ws
+        + ", transformer3Ws="
+        + transformer3Ws
+        + ", switches="
+        + switches
+        + ", measurementUnits="
+        + measurementUnits
+        + '}';
   }
 }

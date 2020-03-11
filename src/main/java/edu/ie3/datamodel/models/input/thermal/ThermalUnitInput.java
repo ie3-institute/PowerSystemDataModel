@@ -44,8 +44,6 @@ public abstract class ThermalUnitInput extends AssetInput {
 
   @Override
   public String toString() {
-    return "ThermalUnitInput{" +
-            "bus=" + bus +
-            '}';
+    return "ThermalUnitInput{" + "bus=" + bus + '}';
   }
 }

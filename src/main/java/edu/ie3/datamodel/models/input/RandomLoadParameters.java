@@ -150,17 +150,27 @@ public class RandomLoadParameters extends InputEntity {
 
   @Override
   public String toString() {
-    return "RandomLoadParameters{" +
-            "quarterHour=" + quarterHour +
-            ", kWd=" + kWd +
-            ", kSa=" + kSa +
-            ", kSu=" + kSu +
-            ", myWd=" + myWd +
-            ", mySa=" + mySa +
-            ", mySu=" + mySu +
-            ", sigmaWd=" + sigmaWd +
-            ", sigmaSa=" + sigmaSa +
-            ", sigmaSu=" + sigmaSu +
-            '}';
+    return "RandomLoadParameters{"
+        + "quarterHour="
+        + quarterHour
+        + ", kWd="
+        + kWd
+        + ", kSa="
+        + kSa
+        + ", kSu="
+        + kSu
+        + ", myWd="
+        + myWd
+        + ", mySa="
+        + mySa
+        + ", mySu="
+        + mySu
+        + ", sigmaWd="
+        + sigmaWd
+        + ", sigmaSa="
+        + sigmaSa
+        + ", sigmaSu="
+        + sigmaSu
+        + '}';
   }
 }

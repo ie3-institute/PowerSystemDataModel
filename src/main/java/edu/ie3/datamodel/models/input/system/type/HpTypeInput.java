@@ -60,8 +60,6 @@ public class HpTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public String toString() {
-    return "HpTypeInput{" +
-            "pThermal=" + pThermal +
-            '}';
+    return "HpTypeInput{" + "pThermal=" + pThermal + '}';
   }
 }

@@ -123,11 +123,15 @@ public class ChpInput extends SystemParticipantInput {
 
   @Override
   public String toString() {
-    return "ChpInput{" +
-            "thermalBus=" + thermalBus +
-            ", type=" + type +
-            ", thermalStorage=" + thermalStorage +
-            ", marketReaction=" + marketReaction +
-            '}';
+    return "ChpInput{"
+        + "thermalBus="
+        + thermalBus
+        + ", type="
+        + type
+        + ", thermalStorage="
+        + thermalStorage
+        + ", marketReaction="
+        + marketReaction
+        + '}';
   }
 }

@@ -43,8 +43,6 @@ public class WecCharacteristicInput extends AssetCharacteristicInput {
 
   @Override
   public String toString() {
-    return "WecCharacteristicInput{" +
-            "cpCharacteristic='" + cpCharacteristic + '\'' +
-            '}';
+    return "WecCharacteristicInput{" + "cpCharacteristic='" + cpCharacteristic + '\'' + '}';
   }
 }

@@ -119,9 +119,6 @@ public class Transformer3WInput extends TransformerInput {
 
   @Override
   public String toString() {
-    return "Transformer3WInput{" +
-            "type=" + type +
-            ", nodeC=" + nodeC +
-            '}';
+    return "Transformer3WInput{" + "type=" + type + ", nodeC=" + nodeC + '}';
   }
 }

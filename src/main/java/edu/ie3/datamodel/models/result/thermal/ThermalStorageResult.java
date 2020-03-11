@@ -76,4 +76,9 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
   public int hashCode() {
     return Objects.hash(super.hashCode(), energy);
   }
+
+  @Override
+  public String toString() {
+    return "ThermalStorageResult{" + "energy=" + energy + '}';
+  }
 }

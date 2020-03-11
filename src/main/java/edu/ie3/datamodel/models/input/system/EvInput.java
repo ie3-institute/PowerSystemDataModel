@@ -73,8 +73,6 @@ public class EvInput extends SystemParticipantInput {
 
   @Override
   public String toString() {
-    return "EvInput{" +
-            "type=" + type +
-            '}';
+    return "EvInput{" + "type=" + type + '}';
   }
 }

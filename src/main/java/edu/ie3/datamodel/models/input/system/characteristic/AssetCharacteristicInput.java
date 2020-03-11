@@ -44,8 +44,6 @@ public abstract class AssetCharacteristicInput extends InputEntity {
 
   @Override
   public String toString() {
-    return "AssetCharacteristicInput{" +
-            "type='" + type + '\'' +
-            '}';
+    return "AssetCharacteristicInput{" + "type='" + type + '\'' + '}';
   }
 }

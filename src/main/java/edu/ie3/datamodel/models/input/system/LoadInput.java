@@ -119,11 +119,15 @@ public class LoadInput extends SystemParticipantInput {
 
   @Override
   public String toString() {
-    return "LoadInput{" +
-            "dsm=" + dsm +
-            ", eConsAnnual=" + eConsAnnual +
-            ", sRated=" + sRated +
-            ", cosphiRated=" + cosphiRated +
-            '}';
+    return "LoadInput{"
+        + "dsm="
+        + dsm
+        + ", eConsAnnual="
+        + eConsAnnual
+        + ", sRated="
+        + sRated
+        + ", cosphiRated="
+        + cosphiRated
+        + '}';
   }
 }

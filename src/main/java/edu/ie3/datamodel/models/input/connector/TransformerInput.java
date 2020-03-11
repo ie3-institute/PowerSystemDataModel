@@ -94,9 +94,6 @@ public abstract class TransformerInput extends ConnectorInput {
 
   @Override
   public String toString() {
-    return "TransformerInput{" +
-            "tapPos=" + tapPos +
-            ", autoTap=" + autoTap +
-            '}';
+    return "TransformerInput{" + "tapPos=" + tapPos + ", autoTap=" + autoTap + '}';
   }
 }

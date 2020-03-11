@@ -60,9 +60,11 @@ public class GraphicElements implements AggregatedEntities {
 
   @Override
   public String toString() {
-    return "GraphicElements{" +
-            "nodeGraphics=" + nodeGraphics +
-            ", lineGraphics=" + lineGraphics +
-            '}';
+    return "GraphicElements{"
+        + "nodeGraphics="
+        + nodeGraphics
+        + ", lineGraphics="
+        + lineGraphics
+        + '}';
   }
 }
