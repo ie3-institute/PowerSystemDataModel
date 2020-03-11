@@ -8,7 +8,7 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 
 import static  edu.ie3.util.quantities.PowerSystemUnits.PU
 
-import edu.ie3.datamodel.exceptions.AggregationException
+import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
 
@@ -87,7 +87,7 @@ class SubGridContainerTest extends Specification {
         SubGridContainer.determinePredominantVoltLvl(emptyRawGridElements)
 
         then:
-        AggregationException ex = thrown()
+        InvalidGridException ex = thrown()
         ex.message == "Cannot determine the predominant voltage level."
     }
 }

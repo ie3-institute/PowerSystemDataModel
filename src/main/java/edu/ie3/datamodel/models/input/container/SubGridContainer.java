@@ -5,8 +5,9 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.AggregationException;
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import java.util.Objects;
 
 /** Represents the accumulation of all data needed to create a complete single grid */
 public class SubGridContainer extends GridContainer {
@@ -21,20 +22,19 @@ public class SubGridContainer extends GridContainer {
       RawGridElements rawGrid,
       SystemParticipantElements systemParticipants,
       GraphicElements graphics)
-      throws AggregationException {
+      throws InvalidGridException {
     super(gridName, rawGrid, systemParticipants, graphics);
     this.subnet = subnet;
 
     try {
       this.predominantVoltageLevel = determinePredominantVoltLvl(rawGrid);
-    } catch (AggregationException e) {
-      throw new AggregationException(
-          "Cannot build aggregated input model for ("
+    } catch (InvalidGridException e) {
+      throw new InvalidGridException(
+          "Cannot build sub grid model for ("
               + gridName
               + ", "
               + subnet
-              + "), as the predominant voltage level cannot be determined.",
-          e);
+              + "), as the predominant voltage level cannot be determined.");
     }
   }
 
@@ -44,6 +44,20 @@ public class SubGridContainer extends GridContainer {
 
   public VoltageLevel getPredominantVoltageLevel() {
     return predominantVoltageLevel;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    SubGridContainer that = (SubGridContainer) o;
+    return subnet == that.subnet && predominantVoltageLevel.equals(that.predominantVoltageLevel);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), subnet, predominantVoltageLevel);
   }
 
   @Override

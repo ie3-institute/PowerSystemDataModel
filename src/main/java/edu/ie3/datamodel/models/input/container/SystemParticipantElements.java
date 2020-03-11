@@ -62,7 +62,7 @@ public class SystemParticipantElements implements InputContainer {
   }
 
   @Override
-  public boolean areValuesValid() {
+  public boolean isValid() {
     return true; // no check defined in ValidationTools, so noe need for unnecessary instanceofs
   }
 

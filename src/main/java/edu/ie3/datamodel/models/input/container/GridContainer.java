@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.AggregationException;
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
@@ -43,10 +43,10 @@ public class GridContainer implements InputContainer {
   }
 
   @Override
-  public boolean areValuesValid() {
-    if (!rawGrid.areValuesValid()) return false;
-    if (!systemParticipants.areValuesValid()) return false;
-    return graphics.areValuesValid();
+  public boolean isValid() {
+    if (!rawGrid.isValid()) return false;
+    if (!systemParticipants.isValid()) return false;
+    return graphics.isValid();
   }
 
   public String getGridName() {
@@ -71,10 +71,10 @@ public class GridContainer implements InputContainer {
    *
    * @param rawGrid Raw grid elements
    * @return The predominant voltage level in this grid
-   * @throws AggregationException If not a single, predominant voltage level can be determined
+   * @throws InvalidGridException If not a single, predominant voltage level can be determined
    */
   protected static VoltageLevel determinePredominantVoltLvl(RawGridElements rawGrid)
-      throws AggregationException {
+      throws InvalidGridException {
     return rawGrid.getNodes().stream()
         .map(NodeInput::getVoltLvl)
         .collect(Collectors.groupingBy(voltLvl -> voltLvl, Collectors.counting()))
@@ -83,7 +83,7 @@ public class GridContainer implements InputContainer {
         .max(Map.Entry.comparingByValue())
         .map(Map.Entry::getKey)
         .orElseThrow(
-            () -> new AggregationException("Cannot determine the predominant voltage level."));
+            () -> new InvalidGridException("Cannot determine the predominant voltage level."));
   }
 
   @Override

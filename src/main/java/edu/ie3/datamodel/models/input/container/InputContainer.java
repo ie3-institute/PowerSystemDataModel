@@ -16,5 +16,5 @@ public interface InputContainer {
   List<UniqueEntity> allEntitiesAsList();
 
   /** checks all values using {@link ValidationUtils} */
-  boolean areValuesValid();
+  boolean isValid();
 }

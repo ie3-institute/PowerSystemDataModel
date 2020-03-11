@@ -58,26 +58,8 @@ public class RawGridElements implements InputContainer {
   }
 
   @Override
-  public boolean areValuesValid() {
-    for (MeasurementUnitInput measurementUnit : measurementUnits) {
-      if (!ValidationUtils.checkMeasurementUnit(measurementUnit)) return false;
-    }
-    for (NodeInput node : nodes) {
-      if (!ValidationUtils.checkNode(node)) return false;
-    }
-    for (LineInput line : lines) {
-      if (!ValidationUtils.checkLine(line)) return false;
-    }
-    for (Transformer2WInput transformer2W : transformer2Ws) {
-      if (!ValidationUtils.checkTransformer2W(transformer2W)) return false;
-    }
-    for (Transformer3WInput transformer3W : transformer3Ws) {
-      if (!ValidationUtils.checkTransformer3W(transformer3W)) return false;
-    }
-    for (SwitchInput switchInput : switches) {
-      if (!ValidationUtils.checkConnector(switchInput)) return false;
-    }
-    return true;
+  public boolean isValid() {
+    return ValidationUtils.checkRawGridElements(this);
   }
 
   /** @return unmodifiable ; of all three winding transformers in this grid */

@@ -6,17 +6,18 @@
 package edu.ie3.datamodel.utils;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.UnsafeEntityException;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.connector.ConnectorInput;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.input.container.RawGridElements;
+import java.util.Set;
 
 /** Basic Sanity validation tools for entities */
 public class ValidationUtils {
@@ -230,5 +231,123 @@ public class ValidationUtils {
     if (measurementUnit.getNode() == null)
       throw new InvalidEntityException("node is null", measurementUnit);
     return true;
+  }
+
+  /**
+   * Validates a measurement unit if: <br>
+   * - it is not null <br>
+   * - its node is not nul
+   */
+  public static boolean checkSwitch(SwitchInput switchInput) {
+    if (switchInput == null) return false;
+    if (switchInput.getNodeA() == null)
+      throw new InvalidEntityException("node A is null", switchInput);
+    if (switchInput.getNodeB() == null)
+      throw new InvalidEntityException("node B is null", switchInput);
+    return true;
+  }
+
+  /**
+   * Checks the validity of given {@link RawGridElements}. The single elements are checked as well
+   * as the fact, that none of the assets is connected to a node, that is not in the set of nodes.
+   *
+   * @param rawGridElements Raw grid elements
+   * @return true, if no failure has been found
+   * @throws InvalidGridException If something is wrong
+   */
+  public static boolean checkRawGridElements(RawGridElements rawGridElements) {
+    /* Checking nodes */
+    Set<NodeInput> nodes = rawGridElements.getNodes();
+    boolean anyNullNode = nodes.stream().map(ValidationUtils::checkNode).anyMatch(cond -> !cond);
+    if (anyNullNode)
+      throw new InvalidGridException("The list of nodes contains at least one NULL element.");
+
+    /* Checking lines */
+    boolean anyNullLine =
+        rawGridElements.getLines().stream()
+            .map(
+                line -> {
+                  if (!nodes.contains(line.getNodeA()) || !nodes.contains(line.getNodeB()))
+                    throw getMissingNodeException(line);
+                  return checkLine(line);
+                })
+            .anyMatch(cond -> !cond);
+    if (anyNullLine)
+      throw new InvalidGridException("The list of lines contains at least one NULL element.");
+
+    /* Checking two winding transformers */
+    boolean anyNullTransformer2w =
+        rawGridElements.getTransformer2Ws().stream()
+            .map(
+                transformer -> {
+                  if (!nodes.contains(transformer.getNodeA())
+                      || !nodes.contains(transformer.getNodeB()))
+                    throw getMissingNodeException(transformer);
+                  return checkTransformer2W(transformer);
+                })
+            .anyMatch(cond -> !cond);
+    if (anyNullTransformer2w)
+      throw new InvalidGridException(
+          "The list of two winding transformers contains at least one NULL element.");
+
+    /* Checking three winding transformers */
+    boolean anyNullTransformer3w =
+        rawGridElements.getTransformer3Ws().stream()
+            .map(
+                transformer -> {
+                  if (!nodes.contains(transformer.getNodeA())
+                      || !nodes.contains(transformer.getNodeB())
+                      || !nodes.contains(transformer.getNodeC()))
+                    throw getMissingNodeException(transformer);
+                  return checkTransformer3W(transformer);
+                })
+            .anyMatch(cond -> !cond);
+    if (anyNullTransformer3w)
+      throw new InvalidGridException(
+          "The list of three winding transformers contains at least one NULL element.");
+
+    /* Checking switches */
+    boolean anyNullSwitch =
+        rawGridElements.getSwitches().stream()
+            .map(
+                switcher -> {
+                  if (!nodes.contains(switcher.getNodeA()) || !nodes.contains(switcher.getNodeB()))
+                    throw getMissingNodeException(switcher);
+                  return checkSwitch(switcher);
+                })
+            .anyMatch(cond -> !cond);
+    if (anyNullSwitch)
+      throw new InvalidGridException("The list of switches contains at least one NULL element.");
+
+    /* Checking measurement units */
+    boolean anyNullMeasurement =
+        rawGridElements.getMeasurementUnits().stream()
+            .map(
+                measurement -> {
+                  if (!nodes.contains(measurement.getNode()))
+                    throw getMissingNodeException(measurement);
+                  return checkMeasurementUnit(measurement);
+                })
+            .anyMatch(cond -> !cond);
+    if (anyNullMeasurement)
+      throw new InvalidGridException(
+          "The list of measurement units contains at least one NULL element.");
+
+    return true;
+  }
+
+  /**
+   * Builds an exception, that announces, that the given input is connected to a node, that is not
+   * in the set of nodes provided.
+   *
+   * @param input Input model
+   * @return Exception for a missing node
+   */
+  private static InvalidGridException getMissingNodeException(AssetInput input) {
+    return new InvalidGridException(
+        input.getClass().getSimpleName()
+            + " "
+            + input
+            + " is connected to a node, that is not in the set of nodes.");
   }
 }
