@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import java.util.Set;
@@ -425,5 +426,34 @@ public class ValidationUtils {
             + " "
             + input
             + " is connected to a node, that is not in the set of nodes.");
+  }
+
+  public static boolean checkGraphicElements(
+      GraphicElements graphicElements, Set<NodeInput> nodes, Set<LineInput> lines) {
+    if (graphicElements == null) return false;
+
+    graphicElements
+        .getNodeGraphics()
+        .forEach(
+            graphic -> {
+              if (!nodes.contains(graphic.getNode()))
+                throw new InvalidGridException(
+                    "The node graphic "
+                        + graphic
+                        + " refers to a node, that is not among the provided ones.");
+            });
+
+    graphicElements
+        .getLineGraphics()
+        .forEach(
+            graphic -> {
+              if (!lines.contains(graphic.getLine()))
+                throw new InvalidGridException(
+                    "The line graphic "
+                        + graphic
+                        + " refers to a line, that is not among the provided ones.");
+            });
+
+    return true;
   }
 }

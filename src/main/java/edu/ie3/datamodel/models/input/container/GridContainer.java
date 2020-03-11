@@ -34,11 +34,16 @@ public class GridContainer implements InputContainer {
     this.gridName = gridName;
     this.rawGrid = rawGrid;
     if (!this.rawGrid.validate())
-      logger.warn("You provided NULL as raw grid data, which doesn't make much sense...");
+      logger.warn(
+          "You provided NULL as raw grid data for {}, which doesn't make much sense...", gridName);
     this.systemParticipants = systemParticipants;
     if (!this.systemParticipants.validate())
-      logger.warn("You provided NULL as system participants, which doesn't make much sense...");
+      logger.warn(
+          "You provided NULL as system participants for {}, which doesn't make much sense...",
+          gridName);
     this.graphics = graphics;
+    if (!this.graphics.validate())
+      logger.debug("No graphic information provided for {}.", gridName);
   }
 
   @Override
@@ -50,11 +55,13 @@ public class GridContainer implements InputContainer {
     return Collections.unmodifiableList(allEntities);
   }
 
+  /**
+   * @return true, as we are positive people and believe in what we do. Just kidding. Checks are
+   *     made during initialisation.
+   */
   @Override
   public boolean validate() {
-    if (!rawGrid.validate()) return false;
-    if (!systemParticipants.validate()) return false;
-    return graphics.validate();
+    return true;
   }
 
   public String getGridName() {
