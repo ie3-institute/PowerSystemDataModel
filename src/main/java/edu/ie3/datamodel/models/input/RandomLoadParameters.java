@@ -147,4 +147,30 @@ public class RandomLoadParameters extends InputEntity {
     return Objects.hash(
         super.hashCode(), quarterHour, kWd, kSa, kSu, myWd, mySa, mySu, sigmaWd, sigmaSa, sigmaSu);
   }
+
+  @Override
+  public String toString() {
+    return "RandomLoadParameters{"
+        + "quarterHour="
+        + quarterHour
+        + ", kWd="
+        + kWd
+        + ", kSa="
+        + kSa
+        + ", kSu="
+        + kSu
+        + ", myWd="
+        + myWd
+        + ", mySa="
+        + mySa
+        + ", mySu="
+        + mySu
+        + ", sigmaWd="
+        + sigmaWd
+        + ", sigmaSa="
+        + sigmaSa
+        + ", sigmaSu="
+        + sigmaSu
+        + '}';
+  }
 }

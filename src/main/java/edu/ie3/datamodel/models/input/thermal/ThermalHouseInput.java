@@ -58,4 +58,9 @@ public class ThermalHouseInput extends ThermalSinkInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), ethLosses, ethCapa);
   }
+
+  @Override
+  public String toString() {
+    return "ThermalHouseInput{" + "ethLosses=" + ethLosses + ", ethCapa=" + ethCapa + '}';
+  }
 }

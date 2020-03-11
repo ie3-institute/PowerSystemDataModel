@@ -116,4 +116,9 @@ public class Transformer3WInput extends TransformerInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), type, nodeC);
   }
+
+  @Override
+  public String toString() {
+    return "Transformer3WInput{" + "type=" + type + ", nodeC=" + nodeC + '}';
+  }
 }

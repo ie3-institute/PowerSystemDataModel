@@ -57,4 +57,9 @@ public class HpTypeInput extends SystemParticipantTypeInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), pThermal);
   }
+
+  @Override
+  public String toString() {
+    return "HpTypeInput{" + "pThermal=" + pThermal + '}';
+  }
 }

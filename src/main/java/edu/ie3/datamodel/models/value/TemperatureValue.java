@@ -40,4 +40,9 @@ public class TemperatureValue implements Value {
   public int hashCode() {
     return Objects.hash(temperature);
   }
+
+  @Override
+  public String toString() {
+    return "TemperatureValue{" + "temperature=" + temperature + '}';
+  }
 }

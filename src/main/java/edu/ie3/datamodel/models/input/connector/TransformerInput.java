@@ -91,4 +91,9 @@ public abstract class TransformerInput extends ConnectorInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), tapPos, autoTap);
   }
+
+  @Override
+  public String toString() {
+    return "TransformerInput{" + "tapPos=" + tapPos + ", autoTap=" + autoTap + '}';
+  }
 }

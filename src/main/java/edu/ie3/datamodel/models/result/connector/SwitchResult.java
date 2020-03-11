@@ -90,4 +90,9 @@ public class SwitchResult extends ConnectorResult {
   public int hashCode() {
     return Objects.hash(super.hashCode(), closed);
   }
+
+  @Override
+  public String toString() {
+    return "SwitchResult{" + "closed=" + closed + '}';
+  }
 }

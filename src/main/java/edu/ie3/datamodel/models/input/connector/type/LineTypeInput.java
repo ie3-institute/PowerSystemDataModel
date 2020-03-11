@@ -100,4 +100,22 @@ public class LineTypeInput extends AssetTypeInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), b, g, r, x, iMax, vRated);
   }
+
+  @Override
+  public String toString() {
+    return "LineTypeInput{"
+        + "b="
+        + b
+        + ", g="
+        + g
+        + ", r="
+        + r
+        + ", x="
+        + x
+        + ", iMax="
+        + iMax
+        + ", vRated="
+        + vRated
+        + '}';
+  }
 }

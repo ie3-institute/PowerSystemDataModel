@@ -93,4 +93,18 @@ public class WeatherValue implements Value {
   public void setWind(WindValue wind) {
     this.wind = wind;
   }
+
+  @Override
+  public String toString() {
+    return "WeatherValue{"
+        + "coordinate="
+        + coordinate
+        + ", irradiation="
+        + irradiation
+        + ", temperature="
+        + temperature
+        + ", wind="
+        + wind
+        + '}';
+  }
 }

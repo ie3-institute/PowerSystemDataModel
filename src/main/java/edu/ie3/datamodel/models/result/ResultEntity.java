@@ -73,4 +73,9 @@ public abstract class ResultEntity extends UniqueEntity {
   public int hashCode() {
     return Objects.hash(super.hashCode(), timestamp, inputModel);
   }
+
+  @Override
+  public String toString() {
+    return "ResultEntity{" + "timestamp=" + timestamp + ", inputModel=" + inputModel + '}';
+  }
 }

@@ -70,4 +70,9 @@ public class EvInput extends SystemParticipantInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), type);
   }
+
+  @Override
+  public String toString() {
+    return "EvInput{" + "type=" + type + '}';
+  }
 }

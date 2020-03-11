@@ -99,6 +99,18 @@ public class OperationTime {
     return Objects.hash(startDate, endDate, isLimited);
   }
 
+  @Override
+  public String toString() {
+    return "OperationTime{"
+        + "startDate="
+        + startDate
+        + ", endDate="
+        + endDate
+        + ", isLimited="
+        + isLimited
+        + '}';
+  }
+
   /** @return OperationTimeBuilder instance */
   public static OperationTimeBuilder builder() {
     return new OperationTimeBuilder();

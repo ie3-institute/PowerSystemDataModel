@@ -92,4 +92,9 @@ public abstract class SystemParticipantResult extends ResultEntity {
   public int hashCode() {
     return Objects.hash(super.hashCode(), p, q);
   }
+
+  @Override
+  public String toString() {
+    return "SystemParticipantResult{" + "p=" + p + ", q=" + q + '}';
+  }
 }

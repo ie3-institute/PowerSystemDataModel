@@ -120,4 +120,18 @@ public class ChpInput extends SystemParticipantInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), thermalBus, type, marketReaction);
   }
+
+  @Override
+  public String toString() {
+    return "ChpInput{"
+        + "thermalBus="
+        + thermalBus
+        + ", type="
+        + type
+        + ", thermalStorage="
+        + thermalStorage
+        + ", marketReaction="
+        + marketReaction
+        + '}';
+  }
 }

@@ -104,4 +104,9 @@ public class Transformer3WResult extends TransformerResult {
   public int hashCode() {
     return Objects.hash(super.hashCode(), iCMag, iCAng);
   }
+
+  @Override
+  public String toString() {
+    return "Transformer3WResult{" + "iCMag=" + iCMag + ", iCAng=" + iCAng + '}';
+  }
 }

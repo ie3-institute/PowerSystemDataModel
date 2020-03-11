@@ -67,4 +67,14 @@ public class CommonVoltageLevel extends VoltageLevel {
               + "), but are inconsistent.");
     return idCovered; /* voltage covered is always true, otherwise the exception would have been thrown. */
   }
+
+  @Override
+  public String toString() {
+    return "CommonVoltageLevel{"
+        + "synonymousIds="
+        + synonymousIds
+        + ", voltageRange="
+        + voltageRange
+        + '}';
+  }
 }

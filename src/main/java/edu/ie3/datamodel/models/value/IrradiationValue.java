@@ -56,4 +56,14 @@ public class IrradiationValue implements Value {
   public int hashCode() {
     return Objects.hash(directIrradiation, diffuseIrradiation);
   }
+
+  @Override
+  public String toString() {
+    return "IrradiationValue{"
+        + "directIrradiation="
+        + directIrradiation
+        + ", diffuseIrradiation="
+        + diffuseIrradiation
+        + '}';
+  }
 }
