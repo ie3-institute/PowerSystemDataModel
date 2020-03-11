@@ -61,4 +61,13 @@ public abstract class AssetInput extends InputEntity implements Operable {
   public int hashCode() {
     return Objects.hash(super.hashCode(), operationTime, operator, id);
   }
+
+  @Override
+  public String toString() {
+    return "AssetInput{" +
+            "operationTime=" + operationTime +
+            ", operator=" + operator +
+            ", id='" + id + '\'' +
+            '}';
+  }
 }

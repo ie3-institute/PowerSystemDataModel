@@ -181,4 +181,23 @@ public class Transformer2WTypeInput extends AssetTypeInput {
         tapMin,
         tapMax);
   }
+
+  @Override
+  public String toString() {
+    return "Transformer2WTypeInput{" +
+            "rSc=" + rSc +
+            ", xSc=" + xSc +
+            ", sRated=" + sRated +
+            ", vRatedA=" + vRatedA +
+            ", vRatedB=" + vRatedB +
+            ", gM=" + gM +
+            ", bM=" + bM +
+            ", dV=" + dV +
+            ", dPhi=" + dPhi +
+            ", tapSide=" + tapSide +
+            ", tapNeutr=" + tapNeutr +
+            ", tapMin=" + tapMin +
+            ", tapMax=" + tapMax +
+            '}';
+  }
 }

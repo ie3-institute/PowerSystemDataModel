@@ -194,4 +194,19 @@ public class PvInput extends SystemParticipantInput {
         sRated,
         cosphiRated);
   }
+
+  @Override
+  public String toString() {
+    return "PvInput{" +
+            "albedo=" + albedo +
+            ", azimuth=" + azimuth +
+            ", etaConv=" + etaConv +
+            ", height=" + height +
+            ", kG=" + kG +
+            ", kT=" + kT +
+            ", marketReaction=" + marketReaction +
+            ", sRated=" + sRated +
+            ", cosphiRated=" + cosphiRated +
+            '}';
+  }
 }

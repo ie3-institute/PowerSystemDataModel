@@ -89,4 +89,12 @@ public class WecInput extends SystemParticipantInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), type, marketReaction);
   }
+
+  @Override
+  public String toString() {
+    return "WecInput{" +
+            "type=" + type +
+            ", marketReaction=" + marketReaction +
+            '}';
+  }
 }

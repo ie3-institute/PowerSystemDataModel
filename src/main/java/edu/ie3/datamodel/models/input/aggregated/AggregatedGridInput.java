@@ -136,4 +136,16 @@ public class AggregatedGridInput implements AggregatedEntities {
         .orElseThrow(
             () -> new AggregationException("Cannot determine the predominant voltage level."));
   }
+
+  @Override
+  public String toString() {
+    return "AggregatedGridInput{" +
+            "gridName='" + gridName + '\'' +
+            ", subnet=" + subnet +
+            ", predominantVoltageLevel=" + predominantVoltageLevel +
+            ", rawGrid=" + rawGrid +
+            ", systemParticipants=" + systemParticipants +
+            ", graphics=" + graphics +
+            '}';
+  }
 }

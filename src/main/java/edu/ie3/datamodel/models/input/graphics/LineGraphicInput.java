@@ -46,4 +46,11 @@ public class LineGraphicInput extends GraphicInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), line);
   }
+
+  @Override
+  public String toString() {
+    return "LineGraphicInput{" +
+            "line=" + line +
+            '}';
+  }
 }

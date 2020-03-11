@@ -53,4 +53,12 @@ public class NodeGraphicInput extends GraphicInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), node, point);
   }
+
+  @Override
+  public String toString() {
+    return "NodeGraphicInput{" +
+            "node=" + node +
+            ", point=" + point +
+            '}';
+  }
 }

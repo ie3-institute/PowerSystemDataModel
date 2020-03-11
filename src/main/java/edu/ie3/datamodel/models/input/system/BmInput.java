@@ -122,4 +122,14 @@ public class BmInput extends SystemParticipantInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), type, marketReaction, costControlled, feedInTariff);
   }
+
+  @Override
+  public String toString() {
+    return "BmInput{" +
+            "type=" + type +
+            ", marketReaction=" + marketReaction +
+            ", costControlled=" + costControlled +
+            ", feedInTariff=" + feedInTariff +
+            '}';
+  }
 }

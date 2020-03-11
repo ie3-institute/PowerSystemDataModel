@@ -127,4 +127,14 @@ public class LineInput extends ConnectorInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), type, length, geoPosition, olmCharacteristic);
   }
+
+  @Override
+  public String toString() {
+    return "LineInput{" +
+            "type=" + type +
+            ", length=" + length +
+            ", geoPosition=" + geoPosition +
+            ", olmCharacteristic=" + olmCharacteristic +
+            '}';
+  }
 }

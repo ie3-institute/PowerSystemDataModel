@@ -41,4 +41,11 @@ public abstract class ThermalUnitInput extends AssetInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), bus);
   }
+
+  @Override
+  public String toString() {
+    return "ThermalUnitInput{" +
+            "bus=" + bus +
+            '}';
+  }
 }

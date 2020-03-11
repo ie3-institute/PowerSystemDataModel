@@ -91,4 +91,15 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     return Objects.hash(
         super.hashCode(), storageVolumeLvl, storageVolumeLvlMin, inletTemp, returnTemp, c);
   }
+
+  @Override
+  public String toString() {
+    return "CylindricalStorageInput{" +
+            "storageVolumeLvl=" + storageVolumeLvl +
+            ", storageVolumeLvlMin=" + storageVolumeLvlMin +
+            ", inletTemp=" + inletTemp +
+            ", returnTemp=" + returnTemp +
+            ", c=" + c +
+            '}';
+  }
 }

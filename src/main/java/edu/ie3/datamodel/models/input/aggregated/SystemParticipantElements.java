@@ -135,4 +135,19 @@ public class SystemParticipantElements implements AggregatedEntities {
   public List<WecInput> getWecPlants() {
     return Collections.unmodifiableList(wecPlants);
   }
+
+  @Override
+  public String toString() {
+    return "SystemParticipantElements{" +
+            "bmPlants=" + bmPlants +
+            ", chpPlants=" + chpPlants +
+            ", evCS=" + evCS +
+            ", fixedFeedIns=" + fixedFeedIns +
+            ", heatPumps=" + heatPumps +
+            ", loads=" + loads +
+            ", pvPlants=" + pvPlants +
+            ", storages=" + storages +
+            ", wecPlants=" + wecPlants +
+            '}';
+  }
 }

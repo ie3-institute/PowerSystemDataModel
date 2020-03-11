@@ -90,4 +90,13 @@ public abstract class ConnectorInput extends AssetInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), nodeA, nodeB, noOfParallelDevices);
   }
+
+  @Override
+  public String toString() {
+    return "ConnectorInput{" +
+            "nodeA=" + nodeA +
+            ", nodeB=" + nodeB +
+            ", noOfParallelDevices=" + noOfParallelDevices +
+            '}';
+  }
 }

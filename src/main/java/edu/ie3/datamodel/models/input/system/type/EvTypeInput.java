@@ -67,4 +67,12 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), eStorage, eCons);
   }
+
+  @Override
+  public String toString() {
+    return "EvTypeInput{" +
+            "eStorage=" + eStorage +
+            ", eCons=" + eCons +
+            '}';
+  }
 }

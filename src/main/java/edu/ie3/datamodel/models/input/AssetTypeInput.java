@@ -39,4 +39,11 @@ public abstract class AssetTypeInput extends InputEntity {
   public int hashCode() {
     return Objects.hash(super.hashCode(), id);
   }
+
+  @Override
+  public String toString() {
+    return "AssetTypeInput{" +
+            "id='" + id + '\'' +
+            '}';
+  }
 }

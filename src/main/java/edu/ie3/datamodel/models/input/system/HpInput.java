@@ -89,4 +89,12 @@ public class HpInput extends SystemParticipantInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), type, thermalBus);
   }
+
+  @Override
+  public String toString() {
+    return "HpInput{" +
+            "type=" + type +
+            ", thermalBus=" + thermalBus +
+            '}';
+  }
 }

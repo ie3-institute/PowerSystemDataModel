@@ -70,4 +70,11 @@ public class SwitchInput extends ConnectorInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), closed);
   }
+
+  @Override
+  public String toString() {
+    return "SwitchInput{" +
+            "closed=" + closed +
+            '}';
+  }
 }

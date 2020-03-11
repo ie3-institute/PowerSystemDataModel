@@ -77,4 +77,14 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), capex, opex, sRated, cosphiRated);
   }
+
+  @Override
+  public String toString() {
+    return "SystemParticipantTypeInput{" +
+            "capex=" + capex +
+            ", opex=" + opex +
+            ", sRated=" + sRated +
+            ", cosphiRated=" + cosphiRated +
+            '}';
+  }
 }

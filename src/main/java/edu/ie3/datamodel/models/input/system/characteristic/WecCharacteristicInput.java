@@ -40,4 +40,11 @@ public class WecCharacteristicInput extends AssetCharacteristicInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), cpCharacteristic);
   }
+
+  @Override
+  public String toString() {
+    return "WecCharacteristicInput{" +
+            "cpCharacteristic='" + cpCharacteristic + '\'' +
+            '}';
+  }
 }

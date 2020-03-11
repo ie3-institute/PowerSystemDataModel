@@ -119,4 +119,17 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), eStorage, pMin, pMax, eta, dod, lifeTime, lifeCycle);
   }
+
+  @Override
+  public String toString() {
+    return "StorageTypeInput{" +
+            "eStorage=" + eStorage +
+            ", pMin=" + pMin +
+            ", pMax=" + pMax +
+            ", eta=" + eta +
+            ", dod=" + dod +
+            ", lifeTime=" + lifeTime +
+            ", lifeCycle=" + lifeCycle +
+            '}';
+  }
 }

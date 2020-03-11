@@ -90,4 +90,12 @@ public class FixedFeedInInput extends SystemParticipantInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), sRated);
   }
+
+  @Override
+  public String toString() {
+    return "FixedFeedInInput{" +
+            "sRated=" + sRated +
+            ", cosphiRated=" + cosphiRated +
+            '}';
+  }
 }

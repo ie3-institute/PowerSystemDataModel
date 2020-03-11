@@ -126,4 +126,15 @@ public class NodeInput extends AssetInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), vTarget, slack, geoPosition, voltLvl, subnet);
   }
+
+  @Override
+  public String toString() {
+    return "NodeInput{" +
+            "vTarget=" + vTarget +
+            ", slack=" + slack +
+            ", geoPosition=" + geoPosition +
+            ", voltLvl=" + voltLvl +
+            ", subnet=" + subnet +
+            '}';
+  }
 }

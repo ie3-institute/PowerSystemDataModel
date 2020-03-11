@@ -68,4 +68,12 @@ public class BmTypeInput extends SystemParticipantTypeInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), loadGradient, etaConv);
   }
+
+  @Override
+  public String toString() {
+    return "BmTypeInput{" +
+            "loadGradient=" + loadGradient +
+            ", etaConv=" + etaConv +
+            '}';
+  }
 }

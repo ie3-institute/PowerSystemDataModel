@@ -115,4 +115,15 @@ public class MeasurementUnitInput extends AssetInput {
   public int hashCode() {
     return Objects.hash(super.hashCode(), node, vMag, vAng, p, q);
   }
+
+  @Override
+  public String toString() {
+    return "MeasurementUnitInput{" +
+            "node=" + node +
+            ", vMag=" + vMag +
+            ", vAng=" + vAng +
+            ", p=" + p +
+            ", q=" + q +
+            '}';
+  }
 }
