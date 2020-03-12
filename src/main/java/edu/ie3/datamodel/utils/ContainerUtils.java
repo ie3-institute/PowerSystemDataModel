@@ -22,6 +22,7 @@ import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** Offers functionality useful for grouping different models together */
 public class ContainerUtils {
@@ -69,10 +70,13 @@ public class ContainerUtils {
                         || transformer.getNodeB().getSubnet() == subnet
                         || transformer.getNodeC().getSubnet() == subnet)
             .collect(Collectors.toSet());
-    /* Add the higher voltage node to the set of nodes */
+    /* Add all nodes of a three winding transformer node to the set of nodes */
     nodes.addAll(
         transformer3w.stream()
-            .map(Transformer3WInput::getNodeInternal)
+            .flatMap(
+                transformer ->
+                    Stream.of(
+                        transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()))
             .collect(Collectors.toSet()));
 
     Set<SwitchInput> switches =
@@ -173,15 +177,51 @@ public class ContainerUtils {
    * different voltage levels
    *
    * @param rawGrid Raw grid elements
+   * @param subnet Subnet number of the subnet
    * @return The predominant voltage level in this grid
    * @throws InvalidGridException If not a single, predominant voltage level can be determined
    */
-  public static VoltageLevel determinePredominantVoltLvl(RawGridElements rawGrid) {
-    return rawGrid.getNodes().stream()
-        .map(NodeInput::getVoltLvl)
-        .collect(Collectors.groupingBy(voltLvl -> voltLvl, Collectors.counting()))
-        .entrySet()
-        .stream()
+  public static VoltageLevel determinePredominantVoltLvl(RawGridElements rawGrid, int subnet) {
+    /* Exclude all nodes, that are at the high voltage side of the transformer */
+    Set<NodeInput> gridNodes = new HashSet<>(rawGrid.getNodes());
+    gridNodes.removeAll(
+        rawGrid.getTransformer2Ws().stream()
+            .map(ConnectorInput::getNodeA)
+            .collect(Collectors.toSet()));
+    gridNodes.removeAll(
+        rawGrid.getTransformer3Ws().stream()
+            .flatMap(
+                transformer -> {
+                  if (transformer.getNodeA().getSubnet() == subnet)
+                    return Stream.of(transformer.getNodeB(), transformer.getNodeC());
+                  else if (transformer.getNodeB().getSubnet() == subnet)
+                    return Stream.of(
+                        transformer.getNodeA(),
+                        transformer.getNodeC(),
+                        transformer.getNodeInternal());
+                  else
+                    return Stream.of(
+                        transformer.getNodeA(),
+                        transformer.getNodeB(),
+                        transformer.getNodeInternal());
+                })
+            .collect(Collectors.toSet()));
+
+    /* Build a mapping, which voltage level appears how often */
+    Map<VoltageLevel, Long> voltageLevelCount =
+        gridNodes.stream()
+            .map(NodeInput::getVoltLvl)
+            .collect(Collectors.groupingBy(voltLvl -> voltLvl, Collectors.counting()));
+
+    /* At this point only one voltage level should be apparent */
+    int amountOfVoltLvl = voltageLevelCount.size();
+    if (amountOfVoltLvl > 1)
+      throw new InvalidGridException(
+          "There are "
+              + amountOfVoltLvl
+              + " voltage levels apparent, although only one is expected.");
+
+    return voltageLevelCount.entrySet().stream()
         .max(Map.Entry.comparingByValue())
         .map(Map.Entry::getKey)
         .orElseThrow(
@@ -300,8 +340,7 @@ public class ContainerUtils {
     return graphBuilder.build();
   }
 
-  private static InvalidGridException throwSubGridModelMissingException(
-      ConnectorInput connector, int subnet) {
+  private static void throwSubGridModelMissingException(ConnectorInput connector, int subnet) {
     throw new InvalidGridException(
         "Transformer "
             + connector

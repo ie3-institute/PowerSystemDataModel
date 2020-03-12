@@ -188,12 +188,8 @@ public class ValidationUtils {
     if ((trafoType.getsRated().getValue().doubleValue() == 0d)
         || (trafoType.getvRatedA().getValue().doubleValue() == 0d)
         || (trafoType.getvRatedB().getValue().doubleValue() == 0d)
-        || (trafoType.getrSc().getValue().doubleValue() == 0d)
         || (trafoType.getxSc().getValue().doubleValue() == 0d)
-        || (trafoType.getgM().getValue().doubleValue() == 0d)
-        || (trafoType.getbM().getValue().doubleValue() == 0d)
-        || (trafoType.getdV().getValue().doubleValue() == 0d)
-        || (trafoType.getdPhi().getValue().doubleValue() == 0d))
+        || (trafoType.getdV().getValue().doubleValue() == 0d))
       throw new UnsafeEntityException("at least one value of trafo2w type is 0", trafoType);
     return true;
   }
@@ -245,16 +241,10 @@ public class ValidationUtils {
         || (trafoType.getVRatedA().getValue().doubleValue() == 0d)
         || (trafoType.getVRatedB().getValue().doubleValue() == 0d)
         || (trafoType.getVRatedC().getValue().doubleValue() == 0d)
-        || (trafoType.getRScA().getValue().doubleValue() == 0d)
-        || (trafoType.getRScB().getValue().doubleValue() == 0d)
-        || (trafoType.getRScC().getValue().doubleValue() == 0d)
         || (trafoType.getXScA().getValue().doubleValue() == 0d)
         || (trafoType.getXScB().getValue().doubleValue() == 0d)
         || (trafoType.getXScC().getValue().doubleValue() == 0d)
-        || (trafoType.getGM().getValue().doubleValue() == 0d)
-        || (trafoType.getBM().getValue().doubleValue() == 0d)
-        || (trafoType.getDV().getValue().doubleValue() == 0d)
-        || (trafoType.getDPhi().getValue().doubleValue() == 0d))
+        || (trafoType.getDV().getValue().doubleValue() == 0d))
       throw new UnsafeEntityException("at least one value of trafo3w type is 0", trafoType);
     return true;
   }

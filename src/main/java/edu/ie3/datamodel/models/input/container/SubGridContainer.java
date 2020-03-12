@@ -27,7 +27,7 @@ public class SubGridContainer extends GridContainer {
     this.subnet = subnet;
 
     try {
-      this.predominantVoltageLevel = ContainerUtils.determinePredominantVoltLvl(rawGrid);
+      this.predominantVoltageLevel = ContainerUtils.determinePredominantVoltLvl(rawGrid, subnet);
     } catch (InvalidGridException e) {
       throw new InvalidGridException(
           "Cannot build sub grid model for ("
