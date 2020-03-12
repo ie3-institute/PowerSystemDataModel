@@ -1,11 +1,5 @@
 package edu.ie3.datamodel.models.input.container
 
-import edu.ie3.datamodel.models.input.MeasurementUnitInput
-import edu.ie3.datamodel.models.input.connector.LineInput
-import edu.ie3.datamodel.models.input.connector.SwitchInput
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput
-
 import static  edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.InvalidGridException
@@ -33,7 +27,7 @@ class SubGridContainerTest extends Specification {
             [] as Set)
 
     def setupSpec() {
-        Set<NodeInput> nodes = new HashSet<>()
+        Set<NodeInput> nodes = [] as Set
         nodes.add(new NodeInput(
                 UUID.randomUUID(),
                 OperationTime.notLimited(),
@@ -67,11 +61,11 @@ class SubGridContainerTest extends Specification {
 
         rawGridElements = new RawGridElements(
                 nodes,
-                new HashSet<LineInput>(),
-                new HashSet<Transformer2WInput>(),
-                new HashSet<Transformer3WInput>(),
-                new HashSet<SwitchInput>(),
-                new HashSet<MeasurementUnitInput>())
+                [] as Set,
+                [] as Set,
+                [] as Set,
+                [] as Set,
+                [] as Set)
     }
 
     def "The SingleGridContainer should determine the predominant voltage level correctly"() {

@@ -11,6 +11,7 @@ import com.google.common.graph.ImmutableGraph;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
@@ -130,84 +131,110 @@ public class GridContainer implements InputContainer {
   private ImmutableGraph<SubGridContainer> disassemble() {
     /* Collect the different sub nets. Through the validation of lines, it is ensured, no calvanically connected grid
      * has more than one subnet number assigned */
-    SortedSet<Integer> subnetNumbers =
-        rawGrid.getNodes().stream()
-            .map(NodeInput::getSubnet)
-            .collect(Collectors.toCollection(TreeSet::new));
+    SortedSet<Integer> subnetNumbers = determineSubnetNumbers(this.rawGrid.getNodes());
 
     /* Build the single sub grid models */
-    HashMap<Integer, SubGridContainer> subgrids = new HashMap<>(subnetNumbers.size());
-    for (int subnetNumber : subnetNumbers) {
-      RawGridElements rawGridElements = ContainerUtils.filterForSubnet(this.rawGrid, subnetNumber);
-      SystemParticipants systemParticipantElements =
-          ContainerUtils.filterForSubnet(this.systemParticipants, subnetNumber);
-      GraphicElements graphicElements = ContainerUtils.filterForSubnet(this.graphics, subnetNumber);
-
-      subgrids.put(
-          subnetNumber,
-          new SubGridContainer(
-              this.gridName,
-              subnetNumber,
-              rawGridElements,
-              systemParticipantElements,
-              graphicElements));
-    }
+    HashMap<Integer, SubGridContainer> subgrids =
+        buildSubGridContainers(
+            this.gridName, subnetNumbers, this.rawGrid, this.systemParticipants, this.graphics);
 
     /* Build the graph structure denoting the topology of the grid */
+    return buildSubGridTopologyGraph(
+        subgrids, this.rawGrid.getTransformer2Ws(), this.rawGrid.getTransformer3Ws());
+  }
+
+  /**
+   * Determine a distinct set of apparent subnet numbers
+   *
+   * @param nodes Set of nodes
+   * @return A sorted set of subnet numbers
+   */
+  private SortedSet<Integer> determineSubnetNumbers(Set<NodeInput> nodes) {
+    return nodes.stream().map(NodeInput::getSubnet).collect(Collectors.toCollection(TreeSet::new));
+  }
+
+  /**
+   * Build a mapping from sub net number to actual {@link SubGridContainer}
+   *
+   * @param gridName Name of the grid
+   * @param subnetNumbers Set of available subne numbers
+   * @param rawGrid Container model with all raw grid elements
+   * @param systemParticipants Container model with all system participant inputs
+   * @param graphics Container model with all graphic elements
+   * @return A mapping from subnet number to container model with sub grid elements
+   */
+  private HashMap<Integer, SubGridContainer> buildSubGridContainers(
+      String gridName,
+      SortedSet<Integer> subnetNumbers,
+      RawGridElements rawGrid,
+      SystemParticipants systemParticipants,
+      GraphicElements graphics) {
+    HashMap<Integer, SubGridContainer> subGrids = new HashMap<>(subnetNumbers.size());
+    for (int subnetNumber : subnetNumbers) {
+      RawGridElements rawGridElements = ContainerUtils.filterForSubnet(rawGrid, subnetNumber);
+      SystemParticipants systemParticipantElements =
+          ContainerUtils.filterForSubnet(systemParticipants, subnetNumber);
+      GraphicElements graphicElements = ContainerUtils.filterForSubnet(graphics, subnetNumber);
+
+      subGrids.put(
+          subnetNumber,
+          new SubGridContainer(
+              gridName, subnetNumber, rawGridElements, systemParticipantElements, graphicElements));
+    }
+    return subGrids;
+  }
+
+  /**
+   * Build an immutable graph of the galvanically separated sub grid topology
+   *
+   * @param subgrids Mapping from sub net number to container model
+   * @param transformer2ws Set of two winding transformers
+   * @param transformer3ws Set of three winding transformers
+   * @return An immutable graph of the sub grid topology
+   */
+  private ImmutableGraph<SubGridContainer> buildSubGridTopologyGraph(
+      Map<Integer, SubGridContainer> subgrids,
+      Set<Transformer2WInput> transformer2ws,
+      Set<Transformer3WInput> transformer3ws) {
     ImmutableGraph.Builder<SubGridContainer> graphBuilder =
         GraphBuilder.directed().nodeOrder(ElementOrder.insertion()).immutable();
     /* Add connections of two winding transformers */
-    for (Transformer2WInput transformer : this.rawGrid.getTransformer2Ws()) {
+    for (Transformer2WInput transformer : transformer2ws) {
       SubGridContainer from = subgrids.get(transformer.getNodeA().getSubnet());
       SubGridContainer to = subgrids.get(transformer.getNodeB().getSubnet());
       if (from == null)
-        throw new InvalidGridException(
-            "Transformer "
-                + transformer
-                + " connects two sub grids, but the sub grid model "
-                + transformer.getNodeA().getSubnet()
-                + " cannot be found");
+        throwSubGridModelMissingException(transformer, transformer.getNodeA().getSubnet());
       if (to == null)
-        throw new InvalidGridException(
-            "Transformer "
-                + transformer
-                + " connects two sub grids, but the sub grid model "
-                + transformer.getNodeB().getSubnet()
-                + " cannot be found");
+        throwSubGridModelMissingException(transformer, transformer.getNodeB().getSubnet());
       graphBuilder.putEdge(from, to);
     }
 
     /* Add connections of three winding transformers */
-    for (Transformer3WInput transformer : this.rawGrid.getTransformer3Ws()) {
+    for (Transformer3WInput transformer : transformer3ws) {
       SubGridContainer from = subgrids.get(transformer.getNodeA().getSubnet());
       SubGridContainer to0 = subgrids.get(transformer.getNodeB().getSubnet());
       SubGridContainer to1 = subgrids.get(transformer.getNodeC().getSubnet());
       if (from == null)
-        throw new InvalidGridException(
-            "Transformer "
-                + transformer
-                + " connects two sub grids, but the sub grid model "
-                + transformer.getNodeA().getSubnet()
-                + " cannot be found");
+        throwSubGridModelMissingException(transformer, transformer.getNodeA().getSubnet());
       if (to0 == null)
-        throw new InvalidGridException(
-            "Transformer "
-                + transformer
-                + " connects two sub grids, but the sub grid model "
-                + transformer.getNodeB().getSubnet()
-                + " cannot be found");
+        throwSubGridModelMissingException(transformer, transformer.getNodeB().getSubnet());
       if (to1 == null)
-        throw new InvalidGridException(
-            "Transformer "
-                + transformer
-                + " connects two sub grids, but the sub grid model "
-                + transformer.getNodeC().getSubnet()
-                + " cannot be found");
+        throwSubGridModelMissingException(transformer, transformer.getNodeC().getSubnet());
       graphBuilder.putEdge(from, to0);
       graphBuilder.putEdge(from, to1);
     }
 
     return graphBuilder.build();
+  }
+
+  private InvalidGridException throwSubGridModelMissingException(
+      ConnectorInput connector, int subnet) {
+    throw new InvalidGridException(
+        "Transformer "
+            + connector
+            + " connects two sub grids, but the sub grid model "
+            + subnet
+            + " cannot be found");
   }
 
   @Override
