@@ -25,12 +25,12 @@ class SubGridContainerTest extends Specification {
 
     @Shared
     RawGridElements emptyRawGridElements = new RawGridElements(
-            new HashSet<NodeInput>(),
-            new HashSet<LineInput>(),
-            new HashSet<Transformer2WInput>(),
-            new HashSet<Transformer3WInput>(),
-            new HashSet<SwitchInput>(),
-            new HashSet<MeasurementUnitInput>())
+            [] as Set,
+            [] as Set,
+            [] as Set,
+            [] as Set,
+            [] as Set,
+            [] as Set)
 
     def setupSpec() {
         Set<NodeInput> nodes = new HashSet<>()

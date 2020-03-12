@@ -19,6 +19,8 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
+import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
+import java.util.Collection;
 import java.util.Set;
 
 /** Basic Sanity validation tools for entities */
@@ -75,6 +77,35 @@ public class ValidationUtils {
     if (connector == null) return false;
     if (connector.getNodeA() == null || connector.getNodeB() == null)
       throw new InvalidEntityException("at least one node of this connector is null ", connector);
+    return true;
+  }
+
+  /**
+   * Checks, if the nodes of the {@link ConnectorInput} are in the collection of provided, already
+   * determined nodes
+   *
+   * @param connector Connector to examine
+   * @param nodes Permissible, already known nodes
+   * @return true, if everything is fine
+   */
+  private static boolean checkNodeAvailability(
+      ConnectorInput connector, Collection<NodeInput> nodes) {
+    if (!nodes.contains(connector.getNodeA()) || !nodes.contains(connector.getNodeB()))
+      throw getMissingNodeException(connector);
+    return true;
+  }
+
+  /**
+   * Checks, if the node of the {@link SystemParticipantInput} are in the collection of provided,
+   * already determined nodes
+   *
+   * @param participant Connector to examine
+   * @param nodes Permissible, already known nodes
+   * @return true, if everything is fine
+   */
+  private static boolean checkNodeAvailability(
+      SystemParticipantInput participant, Collection<NodeInput> nodes) {
+    if (!nodes.contains(participant.getNode())) throw getMissingNodeException(participant);
     return true;
   }
 
@@ -274,12 +305,7 @@ public class ValidationUtils {
     /* Checking lines */
     boolean anyNullLine =
         rawGridElements.getLines().stream()
-            .map(
-                line -> {
-                  if (!nodes.contains(line.getNodeA()) || !nodes.contains(line.getNodeB()))
-                    throw getMissingNodeException(line);
-                  return checkLine(line);
-                })
+            .map(line -> checkLine(line) && checkNodeAvailability(line, nodes))
             .anyMatch(cond -> !cond);
     if (anyNullLine)
       throw new InvalidGridException("The list of lines contains at least one NULL element.");
@@ -288,12 +314,8 @@ public class ValidationUtils {
     boolean anyNullTransformer2w =
         rawGridElements.getTransformer2Ws().stream()
             .map(
-                transformer -> {
-                  if (!nodes.contains(transformer.getNodeA())
-                      || !nodes.contains(transformer.getNodeB()))
-                    throw getMissingNodeException(transformer);
-                  return checkTransformer2W(transformer);
-                })
+                transformer ->
+                    checkTransformer2W(transformer) && checkNodeAvailability(transformer, nodes))
             .anyMatch(cond -> !cond);
     if (anyNullTransformer2w)
       throw new InvalidGridException(
@@ -318,12 +340,7 @@ public class ValidationUtils {
     /* Checking switches */
     boolean anyNullSwitch =
         rawGridElements.getSwitches().stream()
-            .map(
-                switcher -> {
-                  if (!nodes.contains(switcher.getNodeA()) || !nodes.contains(switcher.getNodeB()))
-                    throw getMissingNodeException(switcher);
-                  return checkSwitch(switcher);
-                })
+            .map(switcher -> checkSwitch(switcher) && checkNodeAvailability(switcher, nodes))
             .anyMatch(cond -> !cond);
     if (anyNullSwitch)
       throw new InvalidGridException("The list of switches contains at least one NULL element.");
@@ -357,63 +374,23 @@ public class ValidationUtils {
       SystemParticipants systemParticipants, Set<NodeInput> nodes) {
     if (systemParticipants == null) return false;
 
-    systemParticipants
-        .getBmPlants()
-        .forEach(
-            entity -> {
-              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
-            });
+    systemParticipants.getBmPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
 
-    systemParticipants
-        .getChpPlants()
-        .forEach(
-            entity -> {
-              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
-            });
+    systemParticipants.getChpPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
 
     /* TODO: Electric vehicle charging systems are currently only dummy implementation */
 
-    systemParticipants
-        .getFixedFeedIns()
-        .forEach(
-            entity -> {
-              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
-            });
+    systemParticipants.getFixedFeedIns().forEach(entity -> checkNodeAvailability(entity, nodes));
 
-    systemParticipants
-        .getHeatPumps()
-        .forEach(
-            entity -> {
-              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
-            });
+    systemParticipants.getHeatPumps().forEach(entity -> checkNodeAvailability(entity, nodes));
 
-    systemParticipants
-        .getLoads()
-        .forEach(
-            entity -> {
-              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
-            });
+    systemParticipants.getLoads().forEach(entity -> checkNodeAvailability(entity, nodes));
 
-    systemParticipants
-        .getPvPlants()
-        .forEach(
-            entity -> {
-              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
-            });
+    systemParticipants.getPvPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
 
-    systemParticipants
-        .getStorages()
-        .forEach(
-            entity -> {
-              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
-            });
+    systemParticipants.getStorages().forEach(entity -> checkNodeAvailability(entity, nodes));
 
-    systemParticipants
-        .getWecPlants()
-        .forEach(
-            entity -> {
-              if (!nodes.contains(entity.getNode())) throw getMissingNodeException(entity);
-            });
+    systemParticipants.getWecPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
 
     return true;
   }

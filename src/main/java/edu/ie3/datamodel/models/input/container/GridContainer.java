@@ -15,6 +15,7 @@ import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.ContainerUtils;
+import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class GridContainer implements InputContainer {
               + ". It has at least have to have nodes.");
 
     this.systemParticipants = systemParticipants;
-    if (!this.systemParticipants.validate())
+    if (!ValidationUtils.checkSystemParticipants(this.systemParticipants, this.rawGrid.getNodes()))
       logger.warn(
           "You provided NULL as system participants for {}, which doesn't make much sense...",
           gridName);
