@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /** Represents the aggregation of raw grid elements (nodes, lines, transformers, switches) */
 public class RawGridElements implements InputContainer {
@@ -43,6 +44,38 @@ public class RawGridElements implements InputContainer {
     this.transformer3Ws = transformer3Ws;
     this.switches = switches;
     this.measurementUnits = measurementUnits;
+  }
+
+  /**
+   * Combine different already existing containers
+   *
+   * @param rawGridElements Already existing containers
+   */
+  public RawGridElements(Collection<RawGridElements> rawGridElements) {
+    this.nodes =
+        rawGridElements.stream()
+            .flatMap(rawElements -> rawElements.getNodes().stream())
+            .collect(Collectors.toSet());
+    this.lines =
+        rawGridElements.stream()
+            .flatMap(rawElements -> rawElements.getLines().stream())
+            .collect(Collectors.toSet());
+    this.transformer2Ws =
+        rawGridElements.stream()
+            .flatMap(rawElements -> rawElements.getTransformer2Ws().stream())
+            .collect(Collectors.toSet());
+    this.transformer3Ws =
+        rawGridElements.stream()
+            .flatMap(rawElements -> rawElements.getTransformer3Ws().stream())
+            .collect(Collectors.toSet());
+    this.switches =
+        rawGridElements.stream()
+            .flatMap(rawElements -> rawElements.getSwitches().stream())
+            .collect(Collectors.toSet());
+    this.measurementUnits =
+        rawGridElements.stream()
+            .flatMap(rawElements -> rawElements.getMeasurementUnits().stream())
+            .collect(Collectors.toSet());
   }
 
   @Override

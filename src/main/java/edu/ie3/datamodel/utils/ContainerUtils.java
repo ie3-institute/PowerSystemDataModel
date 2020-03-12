@@ -12,15 +12,13 @@ import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
-import edu.ie3.datamodel.models.input.container.GraphicElements;
-import edu.ie3.datamodel.models.input.container.RawGridElements;
-import edu.ie3.datamodel.models.input.container.SubGridContainer;
-import edu.ie3.datamodel.models.input.container.SystemParticipants;
+import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -347,5 +345,51 @@ public class ContainerUtils {
             + " connects two sub grids, but the sub grid model "
             + subnet
             + " cannot be found");
+  }
+
+  /**
+   * Combines a given collection of sub grid containers to a joint model. If the single models do
+   * not fit together, exceptions are thrown.
+   *
+   * @param subGridContainers Collections of already existing sub grid models
+   * @return A joint model
+   */
+  public static JointGridContainer combineSubGridModels(
+      Collection<SubGridContainer> subGridContainers) {
+    if (subGridContainers.stream().map(SubGridContainer::getGridName).distinct().count() > 1)
+      throw new InvalidGridException(
+          "You are trying to combine sub grids of different grid models");
+
+    String gridName =
+        subGridContainers.stream()
+            .map(SubGridContainer::getGridName)
+            .findFirst()
+            .orElseThrow(
+                () ->
+                    new InvalidGridException(
+                        "Cannot determine a joint name of the provided sub grid models."));
+
+    RawGridElements rawGrid =
+        new RawGridElements(
+            subGridContainers.stream().map(GridContainer::getRawGrid).collect(Collectors.toSet()));
+    SystemParticipants systemParticipants =
+        new SystemParticipants(
+            subGridContainers.stream()
+                .map(GridContainer::getSystemParticipants)
+                .collect(Collectors.toSet()));
+    GraphicElements graphicElements =
+        new GraphicElements(
+            subGridContainers.stream().map(GridContainer::getGraphics).collect(Collectors.toSet()));
+
+    Map<Integer, SubGridContainer> subGridMapping =
+        subGridContainers.stream()
+            .collect(Collectors.toMap(SubGridContainer::getSubnet, Function.identity()));
+
+    ImmutableGraph<SubGridContainer> subGridDependencyGraph =
+        buildSubGridTopologyGraph(
+            subGridMapping, rawGrid.getTransformer2Ws(), rawGrid.getTransformer3Ws());
+
+    return new JointGridContainer(
+        gridName, rawGrid, systemParticipants, graphicElements, subGridDependencyGraph);
   }
 }

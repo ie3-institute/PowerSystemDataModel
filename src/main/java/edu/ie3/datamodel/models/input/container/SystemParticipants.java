@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.EvcsInput;
 import edu.ie3.datamodel.models.input.system.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Represents the accumulation of system participant elements (BM plants, CHP plants, EVCS, fixed
@@ -44,6 +45,50 @@ public class SystemParticipants implements InputContainer {
     this.pvPlants = pvPlants;
     this.storages = storages;
     this.wecPlants = wecPlants;
+  }
+
+  /**
+   * Combine different already existing containers
+   *
+   * @param systemParticipants Already existing containers
+   */
+  public SystemParticipants(Collection<SystemParticipants> systemParticipants) {
+    this.bmPlants =
+        systemParticipants.stream()
+            .flatMap(participants -> participants.bmPlants.stream())
+            .collect(Collectors.toSet());
+    this.chpPlants =
+        systemParticipants.stream()
+            .flatMap(participants -> participants.chpPlants.stream())
+            .collect(Collectors.toSet());
+    this.evCS =
+        systemParticipants.stream()
+            .flatMap(participants -> participants.evCS.stream())
+            .collect(Collectors.toSet());
+    this.fixedFeedIns =
+        systemParticipants.stream()
+            .flatMap(participants -> participants.fixedFeedIns.stream())
+            .collect(Collectors.toSet());
+    this.heatPumps =
+        systemParticipants.stream()
+            .flatMap(participants -> participants.heatPumps.stream())
+            .collect(Collectors.toSet());
+    this.loads =
+        systemParticipants.stream()
+            .flatMap(participants -> participants.loads.stream())
+            .collect(Collectors.toSet());
+    this.pvPlants =
+        systemParticipants.stream()
+            .flatMap(participants -> participants.pvPlants.stream())
+            .collect(Collectors.toSet());
+    this.storages =
+        systemParticipants.stream()
+            .flatMap(participants -> participants.storages.stream())
+            .collect(Collectors.toSet());
+    this.wecPlants =
+        systemParticipants.stream()
+            .flatMap(participants -> participants.wecPlants.stream())
+            .collect(Collectors.toSet());
   }
 
   @Override

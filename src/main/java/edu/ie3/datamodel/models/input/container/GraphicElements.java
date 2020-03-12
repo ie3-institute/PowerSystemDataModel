@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /** Represents the accumulation of graphic data elements (node graphics, line graphics) */
 public class GraphicElements implements InputContainer {
@@ -19,6 +20,22 @@ public class GraphicElements implements InputContainer {
   public GraphicElements(Set<NodeGraphicInput> nodeGraphics, Set<LineGraphicInput> lineGraphics) {
     this.nodeGraphics = nodeGraphics;
     this.lineGraphics = lineGraphics;
+  }
+
+  /**
+   * Combine different already existing containers
+   *
+   * @param graphicElements Already existing containers
+   */
+  public GraphicElements(Collection<GraphicElements> graphicElements) {
+    this.nodeGraphics =
+        graphicElements.stream()
+            .flatMap(graphics -> graphics.nodeGraphics.stream())
+            .collect(Collectors.toSet());
+    this.lineGraphics =
+        graphicElements.stream()
+            .flatMap(graphics -> graphics.lineGraphics.stream())
+            .collect(Collectors.toSet());
   }
 
   @Override

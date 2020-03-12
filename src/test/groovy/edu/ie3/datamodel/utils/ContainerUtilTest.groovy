@@ -9,10 +9,13 @@ import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.container.GraphicElements
 import edu.ie3.datamodel.models.input.container.GridContainer
+import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SubGridContainer
 import edu.ie3.datamodel.models.input.container.SystemParticipants
 import tec.uom.se.quantity.Quantities
+
+import java.util.stream.Collectors
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
@@ -172,6 +175,18 @@ class ContainerUtilTest extends Specification {
 
         then:
         actual == expectedSubGridTopology
+    }
+
+    def "The container utils build a joint model correctly from sub grids" () {
+        given:
+        Collection<SubGridContainer> subGridContainers = ComplexTopology.expectedSubGrids.values()
+        JointGridContainer expected = ComplexTopology.grid
+
+        when:
+        JointGridContainer actual = ContainerUtils.combineSubGridModels(subGridContainers)
+
+        then:
+        actual == expected
     }
 
     /* TODO: Extend testing data so that,
