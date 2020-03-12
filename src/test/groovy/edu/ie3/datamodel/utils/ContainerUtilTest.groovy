@@ -89,6 +89,11 @@ class ContainerUtilTest extends Specification {
         ex.message == "There are 2 voltage levels apparent, although only one is expected."
     }
 
+    def "The container util determines the set of subnet number correctly" () {
+        expect:
+        ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.getRawGrid().getNodes()) == [1, 2, 3, 4, 5, 6] as Set
+    }
+
     /* TODO: Extend testing data so that,
      *   - filtering of system participants can be tested
      *   - filtering of graphic elements can be tested */
