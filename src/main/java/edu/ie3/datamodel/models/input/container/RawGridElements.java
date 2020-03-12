@@ -91,4 +91,22 @@ public class RawGridElements implements InputContainer {
   public Set<MeasurementUnitInput> getMeasurementUnits() {
     return Collections.unmodifiableSet(measurementUnits);
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    RawGridElements that = (RawGridElements) o;
+    return nodes.equals(that.nodes)
+        && lines.equals(that.lines)
+        && transformer2Ws.equals(that.transformer2Ws)
+        && transformer3Ws.equals(that.transformer3Ws)
+        && switches.equals(that.switches)
+        && measurementUnits.equals(that.measurementUnits);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(nodes, lines, transformer2Ws, transformer3Ws, switches, measurementUnits);
+  }
 }

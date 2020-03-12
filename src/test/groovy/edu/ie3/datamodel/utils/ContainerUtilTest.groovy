@@ -4,9 +4,15 @@ import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.container.GraphicElements
 import edu.ie3.datamodel.models.input.container.GridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
+import edu.ie3.datamodel.models.input.container.SubGridContainer
+import edu.ie3.datamodel.models.input.container.SystemParticipants
+import org.jgrapht.Graph
 import tec.uom.se.quantity.Quantities
+
+import javax.persistence.Subgraph
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
@@ -92,6 +98,34 @@ class ContainerUtilTest extends Specification {
     def "The container util determines the set of subnet number correctly" () {
         expect:
         ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.getRawGrid().getNodes()) == [1, 2, 3, 4, 5, 6] as Set
+    }
+
+    def "The container util builds the sub grid containers correctly" () {
+        given:
+        String gridName = ComplexTopology.grid.getGridName()
+        Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.getRawGrid().getNodes())
+        RawGridElements rawGrid = ComplexTopology.grid.rawGrid
+        SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
+        GraphicElements graphics = ComplexTopology.grid.graphics
+        HashMap<Integer, SubGridContainer> expectedSubGrids = ComplexTopology.expectedSubGrids
+
+        when:
+        HashMap<Integer, SubGridContainer> actual = ContainerUtils.buildSubGridContainers(
+                gridName,
+                subNetNumbers,
+                rawGrid,
+                systemParticipants,
+                graphics)
+
+        then:
+        actual.size() == 6
+        for(Map.Entry<Integer, SubGridContainer> entry: actual){
+            int subnetNo = entry.getKey()
+            SubGridContainer actualSubGrid = entry.getValue()
+            SubGridContainer expectedSubGrid = expectedSubGrids.get(subnetNo)
+
+            assert actualSubGrid == expectedSubGrid
+        }
     }
 
     /* TODO: Extend testing data so that,

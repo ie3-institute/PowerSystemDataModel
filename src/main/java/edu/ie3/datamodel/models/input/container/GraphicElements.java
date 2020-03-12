@@ -43,4 +43,17 @@ public class GraphicElements implements InputContainer {
   public Set<LineGraphicInput> getLineGraphics() {
     return Collections.unmodifiableSet(lineGraphics);
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    GraphicElements that = (GraphicElements) o;
+    return nodeGraphics.equals(that.nodeGraphics) && lineGraphics.equals(that.lineGraphics);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(nodeGraphics, lineGraphics);
+  }
 }

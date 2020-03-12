@@ -138,4 +138,26 @@ public class SystemParticipants implements InputContainer {
   public Set<WecInput> getWecPlants() {
     return Collections.unmodifiableSet(wecPlants);
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    SystemParticipants that = (SystemParticipants) o;
+    return bmPlants.equals(that.bmPlants)
+        && chpPlants.equals(that.chpPlants)
+        && evCS.equals(that.evCS)
+        && fixedFeedIns.equals(that.fixedFeedIns)
+        && heatPumps.equals(that.heatPumps)
+        && loads.equals(that.loads)
+        && pvPlants.equals(that.pvPlants)
+        && storages.equals(that.storages)
+        && wecPlants.equals(that.wecPlants);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        bmPlants, chpPlants, evCS, fixedFeedIns, heatPumps, loads, pvPlants, storages, wecPlants);
+  }
 }
