@@ -1,18 +1,18 @@
 package edu.ie3.datamodel.utils
 
+import com.google.common.graph.ImmutableGraph
 import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.connector.Transformer2WInput
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.container.GraphicElements
 import edu.ie3.datamodel.models.input.container.GridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SubGridContainer
 import edu.ie3.datamodel.models.input.container.SystemParticipants
-import org.jgrapht.Graph
 import tec.uom.se.quantity.Quantities
-
-import javax.persistence.Subgraph
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
@@ -126,6 +126,52 @@ class ContainerUtilTest extends Specification {
 
             assert actualSubGrid == expectedSubGrid
         }
+    }
+
+    def "The container util builds the correct sub grid dependency graph" () {
+        given:
+        String gridName = ComplexTopology.grid.getGridName()
+        Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.getRawGrid().getNodes())
+        RawGridElements rawGrid = ComplexTopology.grid.rawGrid
+        SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
+        GraphicElements graphics = ComplexTopology.grid.graphics
+        Map<Integer, SubGridContainer> subgrids = ContainerUtils.buildSubGridContainers(
+                gridName,
+                subNetNumbers,
+                rawGrid,
+                systemParticipants,
+                graphics)
+        Set<Transformer2WInput> transformer2ws = ComplexTopology.grid.rawGrid.getTransformer2Ws()
+        Set<Transformer3WInput> transformer3ws = ComplexTopology.grid.rawGrid.getTransformer3Ws()
+        ImmutableGraph<SubGridContainer> expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
+
+        when:
+        ImmutableGraph<SubGridContainer> actual = ContainerUtils.buildSubGridTopologyGraph(
+                subgrids,
+                transformer2ws,
+                transformer3ws)
+
+        then:
+        actual == expectedSubGridTopology
+    }
+
+    def "The container util builds the correct assembly of sub grids from basic information" () {
+        given:
+        String gridName = ComplexTopology.gridName
+        RawGridElements rawGrid = ComplexTopology.grid.rawGrid
+        SystemParticipants systemParticpants = ComplexTopology.grid.systemParticipants
+        GraphicElements graphics = ComplexTopology.grid.graphics
+        ImmutableGraph<SubGridContainer> expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
+
+        when:
+        ImmutableGraph<SubGridContainer> actual = ContainerUtils.buildSubGridTopology(
+                gridName,
+                rawGrid,
+                systemParticpants,
+                graphics)
+
+        then:
+        actual == expectedSubGridTopology
     }
 
     /* TODO: Extend testing data so that,

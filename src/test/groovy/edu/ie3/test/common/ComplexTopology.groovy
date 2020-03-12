@@ -1,8 +1,7 @@
 package edu.ie3.test.common
 
-import edu.ie3.datamodel.models.OperationTime
-import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.connector.SwitchInput
+import com.google.common.graph.GraphBuilder
+import com.google.common.graph.ImmutableGraph
 import edu.ie3.datamodel.models.input.container.GraphicElements
 import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
@@ -42,6 +41,8 @@ class ComplexTopology extends GridTestData {
                     [] as Set))
 
     public static HashMap<Integer, SubGridContainer> expectedSubGrids = new HashMap<>()
+
+    public static ImmutableGraph<SubGridContainer> expectedSubGridTopology
 
     static {
         expectedSubGrids.put(1, new SubGridContainer(
@@ -194,5 +195,14 @@ class ComplexTopology extends GridTestData {
                         [] as Set)
         )
         )
+
+        ImmutableGraph.Builder graphBuilder = GraphBuilder.directed().<SubGridContainer>immutable()
+        graphBuilder.putEdge(expectedSubGrids.get(1), expectedSubGrids.get(2))
+        graphBuilder.putEdge(expectedSubGrids.get(1), expectedSubGrids.get(3))
+        graphBuilder.putEdge(expectedSubGrids.get(2), expectedSubGrids.get(4))
+        graphBuilder.putEdge(expectedSubGrids.get(2), expectedSubGrids.get(5))
+        graphBuilder.putEdge(expectedSubGrids.get(3), expectedSubGrids.get(5))
+        graphBuilder.putEdge(expectedSubGrids.get(3), expectedSubGrids.get(6))
+        expectedSubGridTopology = graphBuilder.build()
     }
 }
