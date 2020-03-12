@@ -176,7 +176,7 @@ public class ContainerUtils {
    * @return The predominant voltage level in this grid
    * @throws InvalidGridException If not a single, predominant voltage level can be determined
    */
-  protected static VoltageLevel determinePredominantVoltLvl(RawGridElements rawGrid) {
+  public static VoltageLevel determinePredominantVoltLvl(RawGridElements rawGrid) {
     return rawGrid.getNodes().stream()
         .map(NodeInput::getVoltLvl)
         .collect(Collectors.groupingBy(voltLvl -> voltLvl, Collectors.counting()))

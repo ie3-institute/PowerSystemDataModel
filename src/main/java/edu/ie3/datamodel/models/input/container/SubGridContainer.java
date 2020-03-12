@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
 
 /** Represents the accumulation of all data needed to create a complete single grid */
@@ -26,7 +27,7 @@ public class SubGridContainer extends GridContainer {
     this.subnet = subnet;
 
     try {
-      this.predominantVoltageLevel = determinePredominantVoltLvl(rawGrid);
+      this.predominantVoltageLevel = ContainerUtils.determinePredominantVoltLvl(rawGrid);
     } catch (InvalidGridException e) {
       throw new InvalidGridException(
           "Cannot build sub grid model for ("
