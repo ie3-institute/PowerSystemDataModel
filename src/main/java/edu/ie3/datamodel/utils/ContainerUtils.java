@@ -176,7 +176,7 @@ public class ContainerUtils {
    * Determining the predominant voltage level in this grid by counting the occurrences of the
    * different voltage levels
    *
-   * @param rawGrid Raw grid elements
+   * @param rawGrid Raw grid elements of the specified sub grid
    * @param subnet Subnet number of the subnet
    * @return The predominant voltage level in this grid
    * @throws InvalidGridException If not a single, predominant voltage level can be determined
