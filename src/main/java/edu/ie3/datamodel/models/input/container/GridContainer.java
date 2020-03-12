@@ -5,16 +5,14 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import com.google.common.graph.ImmutableGraph;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.utils.ContainerUtils;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GridContainer implements InputContainer {
+public abstract class GridContainer implements InputContainer {
   private static Logger logger = LoggerFactory.getLogger(GridContainer.class);
 
   /** Name of this grid */
@@ -25,10 +23,8 @@ public class GridContainer implements InputContainer {
   protected final SystemParticipants systemParticipants;
   /** Accumulated graphic data entities (node graphics, line graphics) */
   protected final GraphicElements graphics;
-  /** A graph describing the subnet dependencies */
-  private final ImmutableGraph<SubGridContainer> subnetDependencyGraph;
 
-  public GridContainer(
+  protected GridContainer(
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
@@ -51,11 +47,6 @@ public class GridContainer implements InputContainer {
     this.graphics = graphics;
     if (!this.graphics.validate())
       logger.debug("No graphic information provided for {}.", gridName);
-
-    /* Build sub grid dependency */
-    this.subnetDependencyGraph =
-        ContainerUtils.buildSubGridTopology(
-            this.gridName, this.rawGrid, this.systemParticipants, this.graphics);
   }
 
   @Override
@@ -71,11 +62,6 @@ public class GridContainer implements InputContainer {
    * @return true, as we are positive people and believe in what we do. Just kidding. Checks are
    *     made during initialisation.
    */
-  @Override
-  public boolean validate() {
-    return true;
-  }
-
   public String getGridName() {
     return gridName;
   }
@@ -90,10 +76,6 @@ public class GridContainer implements InputContainer {
 
   public GraphicElements getGraphics() {
     return graphics;
-  }
-
-  public ImmutableGraph<SubGridContainer> getSubnetDependencyGraph() {
-    return subnetDependencyGraph;
   }
 
   @Override
