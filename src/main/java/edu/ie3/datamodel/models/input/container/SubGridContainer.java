@@ -48,7 +48,7 @@ public class SubGridContainer extends GridContainer {
 
   @Override
   public boolean validate() {
-    return false;
+    return true; // Always return true, as all necessary checks have been made during instantiation
   }
 
   @Override

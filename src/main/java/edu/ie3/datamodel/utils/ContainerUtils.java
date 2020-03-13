@@ -24,14 +24,14 @@ import org.jgrapht.graph.SimpleDirectedGraph;
 /** Offers functionality useful for grouping different models together */
 public class ContainerUtils {
   private ContainerUtils() {
-    throw new IllegalStateException("Don't try and instantiate a utility class");
+    throw new IllegalStateException("Don't instantiate a utility class");
   }
 
   /**
-   * Filters all raw grid elements for the provided subnet. The equivalent nodes of transformers are
-   * added as well. Two winding transformers are counted, if the low voltage node is in the queried
-   * subnet. Three winding transformers are counted, as long as any of the three nodes is in the
-   * queried subnet.
+   * Filters all raw grid elements for the provided subnet. For each transformer all nodes (and not
+   * only the the node of the grid the transformer is located in) are added as well. Two winding
+   * transformers are counted, if the low voltage node is in the queried subnet. Three winding
+   * transformers are counted, as long as any of the three nodes is in the queried subnet.
    *
    * @param input The model to filter
    * @param subnet The filter criterion
@@ -94,39 +94,15 @@ public class ContainerUtils {
    * @return A {@link SystemParticipants} filtered for the subnet
    */
   public static SystemParticipants filterForSubnet(SystemParticipants input, int subnet) {
-    Set<BmInput> bmPlants =
-        input.getBmPlants().stream()
-            .filter(entity -> entity.getNode().getSubnet() == subnet)
-            .collect(Collectors.toSet());
-    Set<ChpInput> chpPlants =
-        input.getChpPlants().stream()
-            .filter(entity -> entity.getNode().getSubnet() == subnet)
-            .collect(Collectors.toSet());
+    Set<BmInput> bmPlants = filterParticipants(input.getBmPlants(), subnet);
+    Set<ChpInput> chpPlants = filterParticipants(input.getChpPlants(), subnet);
     /* Electric vehicle charging systems are currently dummy implementations without nodal reverence */
-    Set<FixedFeedInInput> fixedFeedIns =
-        input.getFixedFeedIns().stream()
-            .filter(entity -> entity.getNode().getSubnet() == subnet)
-            .collect(Collectors.toSet());
-    Set<HpInput> heatpumps =
-        input.getHeatPumps().stream()
-            .filter(entity -> entity.getNode().getSubnet() == subnet)
-            .collect(Collectors.toSet());
-    Set<LoadInput> loads =
-        input.getLoads().stream()
-            .filter(entity -> entity.getNode().getSubnet() == subnet)
-            .collect(Collectors.toSet());
-    Set<PvInput> pvs =
-        input.getPvPlants().stream()
-            .filter(entity -> entity.getNode().getSubnet() == subnet)
-            .collect(Collectors.toSet());
-    Set<StorageInput> storages =
-        input.getStorages().stream()
-            .filter(entity -> entity.getNode().getSubnet() == subnet)
-            .collect(Collectors.toSet());
-    Set<WecInput> wecPlants =
-        input.getWecPlants().stream()
-            .filter(entity -> entity.getNode().getSubnet() == subnet)
-            .collect(Collectors.toSet());
+    Set<FixedFeedInInput> fixedFeedIns = filterParticipants(input.getFixedFeedIns(), subnet);
+    Set<HpInput> heatpumps = filterParticipants(input.getHeatPumps(), subnet);
+    Set<LoadInput> loads = filterParticipants(input.getLoads(), subnet);
+    Set<PvInput> pvs = filterParticipants(input.getPvPlants(), subnet);
+    Set<StorageInput> storages = filterParticipants(input.getStorages(), subnet);
+    Set<WecInput> wecPlants = filterParticipants(input.getWecPlants(), subnet);
 
     return new SystemParticipants(
         bmPlants,
@@ -139,6 +115,22 @@ public class ContainerUtils {
         storages,
         wecPlants);
   }
+
+  /**
+   * Filter sets of system participants for their subnet,
+   *
+   * @param systemParticipantInputs Set of SystemParticipantInputs
+   * @param subnet Filter criterion
+   * @param <T> Type parameter of the system participant
+   * @return A filtered set
+   */
+  private static <T extends SystemParticipantInput> Set<T> filterParticipants(
+      Set<T> systemParticipantInputs, int subnet) {
+    return systemParticipantInputs.stream()
+        .filter(entity -> entity.getNode().getSubnet() == subnet)
+        .collect(Collectors.toSet());
+  }
+
   /**
    * Filters all graphic elements for the provided subnet.
    *
@@ -212,7 +204,12 @@ public class ContainerUtils {
         .max(Map.Entry.comparingByValue())
         .map(Map.Entry::getKey)
         .orElseThrow(
-            () -> new InvalidGridException("Cannot determine the predominant voltage level."));
+            () ->
+                new InvalidGridException(
+                    "Cannot determine the predominant voltage level. Following voltage levels are present: "
+                        + voltageLevelCount.keySet().stream()
+                            .map(VoltageLevel::toString)
+                            .collect(Collectors.joining(", "))));
   }
 
   /**
@@ -225,13 +222,13 @@ public class ContainerUtils {
    * @param graphics Container element of graphic elements
    * @return An immutable, directed graph of sub grid topologies.
    */
-  public static SubGridTopologyGraph buildSubGridTopology(
+  public static SubGridTopologyGraph buildSubGridTopologyGraph(
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
       GraphicElements graphics) {
-    /* Collect the different sub nets. Through the validation of lines, it is ensured, no calvanically connected grid
-     * has more than one subnet number assigned */
+    /* Collect the different sub nets. Through the validation of lines, it is ensured, that no galvanically connected
+     * grid has more than one subnet number assigned */
     SortedSet<Integer> subnetNumbers = determineSubnetNumbers(rawGrid.getNodes());
 
     /* Build the single sub grid models */
@@ -355,7 +352,7 @@ public class ContainerUtils {
    * @param subGridContainers Collections of already existing sub grid models
    * @return A joint model
    */
-  public static JointGridContainer combineSubGridModels(
+  public static JointGridContainer combineToJointGrid(
       Collection<SubGridContainer> subGridContainers) {
     if (subGridContainers.stream().map(SubGridContainer::getGridName).distinct().count() > 1)
       throw new InvalidGridException(

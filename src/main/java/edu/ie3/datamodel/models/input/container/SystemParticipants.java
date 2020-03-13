@@ -108,7 +108,7 @@ public class SystemParticipants implements InputContainer {
 
   @Override
   public boolean validate() {
-    return true; // no check defined in ValidationTools, so noe need for unnecessary instanceofs
+    return true; // no check defined in ValidationTools, so no need for unnecessary instanceofs
   }
 
   public void add(BmInput bm) {

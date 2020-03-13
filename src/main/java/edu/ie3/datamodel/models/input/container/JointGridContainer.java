@@ -24,7 +24,7 @@ public class JointGridContainer extends GridContainer {
 
     /* Build sub grid dependency */
     this.subGridTopologyGraph =
-        ContainerUtils.buildSubGridTopology(
+        ContainerUtils.buildSubGridTopologyGraph(
             this.gridName, this.rawGrid, this.systemParticipants, this.graphics);
     checkSubGridDependencyGraph(subGridTopologyGraph);
   }

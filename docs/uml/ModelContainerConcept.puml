@@ -53,8 +53,8 @@ GraphicElements *-- GridContainer
 
 Class JointGridContainer {
   - ImmutableGraph<SubGridContainer> subGridTopologyGraph
-  + JointGridContainer(String gridName, RawGridElements rawGrid, SystemParticipants systemParticipants, GraphicElements graphics)
-  + JointGridContainer(String gridName, RawGridElements rawGrid, SystemParticipants systemParticipants, GraphicElements graphics, ImmutableGraph<SubGridContainer> subGridTopologyGraph)
+  + JointGridContainer(attributes w\o graph)
+  + JointGridContainer(attributes w\o graph, ImmutableGraph<SubGridContainer> subGridTopologyGraph)
   - boolean checkSubGridDependencyGraph(ImmutableGraph<SubGridContainer> subnetDependencyGraph)
 }
 GridContainer <|-- JointGridContainer
@@ -62,8 +62,8 @@ GridContainer <|-- JointGridContainer
 Class SubGridContainer{
   - int subnet
   - VoltageLevel predominantVoltageLevel
-  + JointGridContainer(String gridName, RawGridElements rawGrid, SystemParticipants systemParticipants, GraphicElements graphics)
-  + JointGridContainer(String gridName, Integer subnet, RawGridElements rawGrid, SystemParticipants systemParticipants, GraphicElements graphics, ImmutableGraph<SubGridContainer> subGridTopologyGraph)
+  + JointGridContainer(attributes w\o graph)
+  + JointGridContainer(attributes w\o graph, ImmutableGraph<SubGridContainer> subGridTopologyGraph)
 }
 GridContainer <|-- SubGridContainer
 @enduml

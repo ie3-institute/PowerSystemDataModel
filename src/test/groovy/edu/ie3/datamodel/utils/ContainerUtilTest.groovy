@@ -165,7 +165,7 @@ class ContainerUtilTest extends Specification {
         SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
         when:
-        SubGridTopologyGraph actual = ContainerUtils.buildSubGridTopology(
+        SubGridTopologyGraph actual = ContainerUtils.buildSubGridTopologyGraph(
                 gridName,
                 rawGrid,
                 systemParticpants,
@@ -181,7 +181,7 @@ class ContainerUtilTest extends Specification {
         JointGridContainer expected = ComplexTopology.grid
 
         when:
-        JointGridContainer actual = ContainerUtils.combineSubGridModels(subGridContainers)
+        JointGridContainer actual = ContainerUtils.combineToJointGrid(subGridContainers)
 
         then:
         actual == expected

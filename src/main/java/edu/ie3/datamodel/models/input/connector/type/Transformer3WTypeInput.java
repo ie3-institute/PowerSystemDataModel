@@ -120,67 +120,67 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     this.tapMax = tapMax;
   }
 
-  public Quantity<Power> getSRatedA() {
+  public Quantity<Power> getsRatedA() {
     return sRatedA;
   }
 
-  public Quantity<Power> getSRatedB() {
+  public Quantity<Power> getsRatedB() {
     return sRatedB;
   }
 
-  public Quantity<Power> getSRatedC() {
+  public Quantity<Power> getsRatedC() {
     return sRatedC;
   }
 
-  public Quantity<ElectricPotential> getVRatedA() {
+  public Quantity<ElectricPotential> getvRatedA() {
     return vRatedA;
   }
 
-  public Quantity<ElectricPotential> getVRatedB() {
+  public Quantity<ElectricPotential> getvRatedB() {
     return vRatedB;
   }
 
-  public Quantity<ElectricPotential> getVRatedC() {
+  public Quantity<ElectricPotential> getvRatedC() {
     return vRatedC;
   }
 
-  public Quantity<ElectricResistance> getRScA() {
+  public Quantity<ElectricResistance> getrScA() {
     return rScA;
   }
 
-  public Quantity<ElectricResistance> getRScB() {
+  public Quantity<ElectricResistance> getrScB() {
     return rScB;
   }
 
-  public Quantity<ElectricResistance> getRScC() {
+  public Quantity<ElectricResistance> getrScC() {
     return rScC;
   }
 
-  public Quantity<ElectricResistance> getXScA() {
+  public Quantity<ElectricResistance> getxScA() {
     return xScA;
   }
 
-  public Quantity<ElectricResistance> getXScB() {
+  public Quantity<ElectricResistance> getxScB() {
     return xScB;
   }
 
-  public Quantity<ElectricResistance> getXScC() {
+  public Quantity<ElectricResistance> getxScC() {
     return xScC;
   }
 
-  public Quantity<ElectricConductance> getGM() {
+  public Quantity<ElectricConductance> getgM() {
     return gM;
   }
 
-  public Quantity<ElectricConductance> getBM() {
+  public Quantity<ElectricConductance> getbM() {
     return bM;
   }
 
-  public Quantity<Dimensionless> getDV() {
+  public Quantity<Dimensionless> getdV() {
     return dV;
   }
 
-  public Quantity<Angle> getDPhi() {
+  public Quantity<Angle> getdPhi() {
     return dPhi;
   }
 
