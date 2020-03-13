@@ -33,9 +33,6 @@ public class ContainerUtils {
    * subnet. Three winding transformers are counted, as long as any of the three nodes is in the
    * queried subnet.
    *
-   * <p>TODO: As objects now are immutable, no copies of the transformer nodes seem to be necessary.
-   * If there is any cruel behaviour ongoing, check for this.
-   *
    * @param input The model to filter
    * @param subnet The filter criterion
    * @return A {@link RawGridElements} filtered for the subnet
@@ -92,10 +89,6 @@ public class ContainerUtils {
   /**
    * Filters all system participants for the provided subnet.
    *
-   * <p>TODO: Currently electric vehicle charging systems have no nodal reference and therefore
-   * cannot be filtered TODO: As objects now are immutable, no copies of the transformer nodes seem
-   * to be necessary. If there is any cruel behaviour ongoing, check for this.
-   *
    * @param input The model to filter
    * @param subnet The filter criterion
    * @return A {@link SystemParticipants} filtered for the subnet
@@ -148,9 +141,6 @@ public class ContainerUtils {
   }
   /**
    * Filters all graphic elements for the provided subnet.
-   *
-   * <p>TODO: As objects now are immutable, no copies of the transformer nodes seem to be necessary.
-   * If there is any cruel behaviour ongoing, check for this.
    *
    * @param input The model to filter
    * @param subnet The filter criterion
