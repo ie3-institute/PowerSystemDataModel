@@ -5,10 +5,8 @@
 */
 package edu.ie3.datamodel.utils;
 
-import com.google.common.graph.ElementOrder;
-import com.google.common.graph.GraphBuilder;
-import com.google.common.graph.ImmutableGraph;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
+import edu.ie3.datamodel.graph.SubGridTopologyGraph;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
@@ -21,6 +19,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jgrapht.graph.SimpleDirectedGraph;
 
 /** Offers functionality useful for grouping different models together */
 public class ContainerUtils {
@@ -236,7 +235,7 @@ public class ContainerUtils {
    * @param graphics Container element of graphic elements
    * @return An immutable, directed graph of sub grid topologies.
    */
-  public static ImmutableGraph<SubGridContainer> buildSubGridTopology(
+  public static SubGridTopologyGraph buildSubGridTopology(
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
@@ -303,12 +302,17 @@ public class ContainerUtils {
    * @param transformer3ws Set of three winding transformers
    * @return An immutable graph of the sub grid topology
    */
-  private static ImmutableGraph<SubGridContainer> buildSubGridTopologyGraph(
+  private static SubGridTopologyGraph buildSubGridTopologyGraph(
       Map<Integer, SubGridContainer> subgrids,
       Set<Transformer2WInput> transformer2ws,
       Set<Transformer3WInput> transformer3ws) {
-    ImmutableGraph.Builder<SubGridContainer> graphBuilder =
-        GraphBuilder.directed().nodeOrder(ElementOrder.insertion()).immutable();
+    /* Building a mutable graph, that is boxed as immutable later */
+    SimpleDirectedGraph<SubGridContainer, SubGridTopologyGraph.SubGridTopolgyEdge> mutableGraph =
+        new SimpleDirectedGraph<>(SubGridTopologyGraph.SubGridTopolgyEdge.class);
+
+    /* Add all edges */
+    subgrids.values().forEach(mutableGraph::addVertex);
+
     /* Add connections of two winding transformers */
     for (Transformer2WInput transformer : transformer2ws) {
       SubGridContainer from = subgrids.get(transformer.getNodeA().getSubnet());
@@ -317,7 +321,8 @@ public class ContainerUtils {
         throwSubGridModelMissingException(transformer, transformer.getNodeA().getSubnet());
       if (to == null)
         throwSubGridModelMissingException(transformer, transformer.getNodeB().getSubnet());
-      graphBuilder.putEdge(from, to);
+      mutableGraph.addEdge(
+          from, to, new SubGridTopologyGraph.SubGridTopolgyEdge(from.getSubnet(), to.getSubnet()));
     }
 
     /* Add connections of three winding transformers */
@@ -331,11 +336,17 @@ public class ContainerUtils {
         throwSubGridModelMissingException(transformer, transformer.getNodeB().getSubnet());
       if (to1 == null)
         throwSubGridModelMissingException(transformer, transformer.getNodeC().getSubnet());
-      graphBuilder.putEdge(from, to0);
-      graphBuilder.putEdge(from, to1);
+      mutableGraph.addEdge(
+          from,
+          to0,
+          new SubGridTopologyGraph.SubGridTopolgyEdge(from.getSubnet(), to0.getSubnet()));
+      mutableGraph.addEdge(
+          from,
+          to1,
+          new SubGridTopologyGraph.SubGridTopolgyEdge(from.getSubnet(), to1.getSubnet()));
     }
 
-    return graphBuilder.build();
+    return new SubGridTopologyGraph(mutableGraph);
   }
 
   private static void throwSubGridModelMissingException(ConnectorInput connector, int subnet) {
@@ -385,11 +396,11 @@ public class ContainerUtils {
         subGridContainers.stream()
             .collect(Collectors.toMap(SubGridContainer::getSubnet, Function.identity()));
 
-    ImmutableGraph<SubGridContainer> subGridDependencyGraph =
+    SubGridTopologyGraph subGridTopologyGraph =
         buildSubGridTopologyGraph(
             subGridMapping, rawGrid.getTransformer2Ws(), rawGrid.getTransformer3Ws());
 
     return new JointGridContainer(
-        gridName, rawGrid, systemParticipants, graphicElements, subGridDependencyGraph);
+        gridName, rawGrid, systemParticipants, graphicElements, subGridTopologyGraph);
   }
 }

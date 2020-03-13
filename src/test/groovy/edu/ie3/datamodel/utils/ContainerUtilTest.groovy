@@ -1,7 +1,7 @@
 package edu.ie3.datamodel.utils
 
-import com.google.common.graph.ImmutableGraph
 import edu.ie3.datamodel.exceptions.InvalidGridException
+import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -14,8 +14,6 @@ import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SubGridContainer
 import edu.ie3.datamodel.models.input.container.SystemParticipants
 import tec.uom.se.quantity.Quantities
-
-import java.util.stream.Collectors
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
@@ -146,10 +144,10 @@ class ContainerUtilTest extends Specification {
                 graphics)
         Set<Transformer2WInput> transformer2ws = ComplexTopology.grid.rawGrid.getTransformer2Ws()
         Set<Transformer3WInput> transformer3ws = ComplexTopology.grid.rawGrid.getTransformer3Ws()
-        ImmutableGraph<SubGridContainer> expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
+        SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
         when:
-        ImmutableGraph<SubGridContainer> actual = ContainerUtils.buildSubGridTopologyGraph(
+        SubGridTopologyGraph actual = ContainerUtils.buildSubGridTopologyGraph(
                 subgrids,
                 transformer2ws,
                 transformer3ws)
@@ -164,10 +162,10 @@ class ContainerUtilTest extends Specification {
         RawGridElements rawGrid = ComplexTopology.grid.rawGrid
         SystemParticipants systemParticpants = ComplexTopology.grid.systemParticipants
         GraphicElements graphics = ComplexTopology.grid.graphics
-        ImmutableGraph<SubGridContainer> expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
+        SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
         when:
-        ImmutableGraph<SubGridContainer> actual = ContainerUtils.buildSubGridTopology(
+        SubGridTopologyGraph actual = ContainerUtils.buildSubGridTopology(
                 gridName,
                 rawGrid,
                 systemParticpants,

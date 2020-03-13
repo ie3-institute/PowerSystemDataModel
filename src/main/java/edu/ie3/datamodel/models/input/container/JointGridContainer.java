@@ -5,15 +5,15 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import com.google.common.graph.ImmutableGraph;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
+import edu.ie3.datamodel.graph.SubGridTopologyGraph;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
 
 /** Model class to hold input models for more than one galvanically separated subnet */
 public class JointGridContainer extends GridContainer {
   /** A graph describing the subnet dependencies */
-  private final ImmutableGraph<SubGridContainer> subGridTopologyGraph;
+  private final SubGridTopologyGraph subGridTopologyGraph;
 
   public JointGridContainer(
       String gridName,
@@ -34,7 +34,7 @@ public class JointGridContainer extends GridContainer {
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
       GraphicElements graphics,
-      ImmutableGraph<SubGridContainer> subGridTopologyGraph) {
+      SubGridTopologyGraph subGridTopologyGraph) {
     super(gridName, rawGrid, systemParticipants, graphics);
     this.subGridTopologyGraph = subGridTopologyGraph;
     checkSubGridDependencyGraph(this.subGridTopologyGraph);
@@ -43,12 +43,11 @@ public class JointGridContainer extends GridContainer {
   /**
    * Checks, if the sub grid dependency graph has only one node.
    *
-   * @param subnetDependencyGraph The graph to check
+   * @param subGridTopologyGraph The graph to check
    * @return true
    */
-  private boolean checkSubGridDependencyGraph(
-      ImmutableGraph<SubGridContainer> subnetDependencyGraph) {
-    if (subnetDependencyGraph.nodes().size() == 1)
+  private boolean checkSubGridDependencyGraph(SubGridTopologyGraph subGridTopologyGraph) {
+    if (subGridTopologyGraph.vertexSet().size() == 1)
       throw new InvalidGridException(
           "This joint grid model only contains one single grid. Consider using SubGridContainer.");
     return true;
@@ -63,7 +62,7 @@ public class JointGridContainer extends GridContainer {
     return true;
   }
 
-  public ImmutableGraph<SubGridContainer> getSubGridTopologyGraph() {
+  public SubGridTopologyGraph getSubGridTopologyGraph() {
     return subGridTopologyGraph;
   }
 

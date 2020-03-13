@@ -1,12 +1,12 @@
 package edu.ie3.test.common
 
-import com.google.common.graph.GraphBuilder
-import com.google.common.graph.ImmutableGraph
+import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.datamodel.models.input.container.GraphicElements
 import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SubGridContainer
 import edu.ie3.datamodel.models.input.container.SystemParticipants
+import org.jgrapht.graph.SimpleDirectedGraph
 
 class ComplexTopology extends GridTestData {
     public static gridName = "complex_topology"
@@ -42,7 +42,7 @@ class ComplexTopology extends GridTestData {
 
     public static HashMap<Integer, SubGridContainer> expectedSubGrids = new HashMap<>()
 
-    public static ImmutableGraph<SubGridContainer> expectedSubGridTopology
+    public static SubGridTopologyGraph expectedSubGridTopology
 
     static {
         expectedSubGrids.put(1, new SubGridContainer(
@@ -196,13 +196,17 @@ class ComplexTopology extends GridTestData {
         )
         )
 
-        ImmutableGraph.Builder graphBuilder = GraphBuilder.directed().<SubGridContainer>immutable()
-        graphBuilder.putEdge(expectedSubGrids.get(1), expectedSubGrids.get(2))
-        graphBuilder.putEdge(expectedSubGrids.get(1), expectedSubGrids.get(3))
-        graphBuilder.putEdge(expectedSubGrids.get(2), expectedSubGrids.get(4))
-        graphBuilder.putEdge(expectedSubGrids.get(2), expectedSubGrids.get(5))
-        graphBuilder.putEdge(expectedSubGrids.get(3), expectedSubGrids.get(5))
-        graphBuilder.putEdge(expectedSubGrids.get(3), expectedSubGrids.get(6))
-        expectedSubGridTopology = graphBuilder.build()
+        SimpleDirectedGraph<SubGridContainer, SubGridTopologyGraph.SubGridTopolgyEdge> mutableGraph =
+                new SimpleDirectedGraph<>(SubGridTopologyGraph.SubGridTopolgyEdge.class)
+        /* Add all edges */
+        expectedSubGrids.values().forEach({subGrid -> mutableGraph.addVertex(subGrid)})
+
+        mutableGraph.addEdge(expectedSubGrids.get(1), expectedSubGrids.get(2), new SubGridTopologyGraph.SubGridTopolgyEdge(1, 2))
+        mutableGraph.addEdge(expectedSubGrids.get(1), expectedSubGrids.get(3), new SubGridTopologyGraph.SubGridTopolgyEdge(1, 3))
+        mutableGraph.addEdge(expectedSubGrids.get(2), expectedSubGrids.get(4), new SubGridTopologyGraph.SubGridTopolgyEdge(2, 4))
+        mutableGraph.addEdge(expectedSubGrids.get(2), expectedSubGrids.get(5), new SubGridTopologyGraph.SubGridTopolgyEdge(2, 5))
+        mutableGraph.addEdge(expectedSubGrids.get(3), expectedSubGrids.get(5), new SubGridTopologyGraph.SubGridTopolgyEdge(3, 5))
+        mutableGraph.addEdge(expectedSubGrids.get(3), expectedSubGrids.get(6), new SubGridTopologyGraph.SubGridTopolgyEdge(3, 6))
+        expectedSubGridTopology = new SubGridTopologyGraph(mutableGraph)
     }
 }
