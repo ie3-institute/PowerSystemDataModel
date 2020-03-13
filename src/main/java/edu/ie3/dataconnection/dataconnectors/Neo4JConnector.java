@@ -8,6 +8,8 @@ package edu.ie3.dataconnection.dataconnectors;
 import org.neo4j.ogm.config.Configuration;
 import org.neo4j.ogm.session.SessionFactory;
 
+import java.util.Collection;
+
 public class Neo4JConnector implements DataConnector {
 
   private static final int DEPTH_LIST = 0;
@@ -38,7 +40,7 @@ public class Neo4JConnector implements DataConnector {
     sessionFactory.close();
   }
 
-  public <E> Iterable<E> findAll(Class<E> entityClass) {
+  public <E> Collection<E> findAll(Class<E> entityClass) {
     return getSession().loadAll(entityClass, 1);
   }
 }

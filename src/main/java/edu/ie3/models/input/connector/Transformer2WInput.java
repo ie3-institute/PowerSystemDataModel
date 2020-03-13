@@ -88,11 +88,18 @@ public class Transformer2WInput extends TransformerInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     Transformer2WInput that = (Transformer2WInput) o;
-    return type.equals(that.type);
+    return Objects.equals(type, that.type);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), type);
+  }
+
+  @Override
+  public String toString() {
+    return "Transformer2WInput{" +
+            "type=" + type +
+            "} " + super.toString();
   }
 }

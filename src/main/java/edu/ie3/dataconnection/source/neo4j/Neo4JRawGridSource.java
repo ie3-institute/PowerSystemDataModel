@@ -15,53 +15,61 @@ import edu.ie3.models.input.connector.SwitchInput;
 import edu.ie3.models.input.connector.Transformer2WInput;
 import edu.ie3.models.input.connector.Transformer3WInput;
 import edu.ie3.models.neo4j.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Neo4JRawGridSource implements RawGridSource {
+
+  private static Logger mainLogger = LogManager.getLogger("Main");
 
   private Neo4JConnector connector;
   private AggregatedRawGridInput aggregatedRawGridInput = new AggregatedRawGridInput();
   private boolean fetchedNodes;
   private Map<Integer, NodeInput> tidToNode = new HashMap<>();
+  private boolean fetched;
 
   public Neo4JRawGridSource(Neo4JConnector connector) {
     this.connector = connector;
-    fetch();
   }
 
   @Override
   public AggregatedRawGridInput getGridData() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput;
   }
 
   @Override
   public Collection<NodeInput> getNodes() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getNodes();
   }
 
   @Override
   public Collection<LineInput> getLines() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getLines();
   }
 
   @Override
   public Collection<Transformer2WInput> get2WTransformers() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getTransformer2Ws();
   }
 
   @Override
   public Collection<Transformer3WInput> get3WTransformers() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getTransformer3Ws();
   }
 
   @Override
   public Collection<SwitchInput> getSwitches() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getSwitches();
   }
 
@@ -71,10 +79,16 @@ public class Neo4JRawGridSource implements RawGridSource {
   }
 
   public void fetch() {
-    fetchNodes();
-    fetchLines();
-    fetchSwitches();
-    fetchTrafos();
+    try {
+      fetchNodes();
+      fetchLines();
+      fetchSwitches();
+      fetchTrafos2W();
+      fetchTrafos3W();
+      fetched = true;
+    } catch (Exception e) {
+      mainLogger.error("Error at neo4j fetch: ", e);
+    }
   }
 
   public void fetchNodes() {
@@ -85,6 +99,12 @@ public class Neo4JRawGridSource implements RawGridSource {
         neo4JNode -> tidToNode.put(neo4JNode.getTid(), Neo4JMapper.toNodeInput(neo4JNode)));
     tidToNode.values().forEach(aggregatedRawGridInput::add);
     fetchedNodes = true;
+    mainLogger.info(
+        "neo4j found "
+            + tidToNode.size()
+            + " nodes ( "
+            + StreamSupport.stream(neo4JNodes.spliterator(), false).count()
+            + " before) ");
   }
 
   private void fetchLines() {
@@ -97,61 +117,59 @@ public class Neo4JRawGridSource implements RawGridSource {
           LineInput line = Neo4JMapper.toLineInput(neo4JLine, nodeA, nodeB);
           aggregatedRawGridInput.add(line);
         });
+    mainLogger.info(
+        "neo4j found " + StreamSupport.stream(neo4JLines.spliterator(), false).count() + " lines");
   }
 
   private void fetchSwitches() {
     if (!fetchedNodes) fetchNodes();
     Iterable<Neo4JSwitchInput> neo4JSwitches = connector.findAll(Neo4JSwitchInput.class);
     neo4JSwitches.forEach(
-        neo4JSwitch -> {
-          NodeInput nodeA = tidToNode.get(neo4JSwitch.getNodeA().getTid());
-          NodeInput nodeB = tidToNode.get(neo4JSwitch.getNodeB().getTid());
-          SwitchInput switchInput = Neo4JMapper.toSwitchInput(neo4JSwitch, nodeA, nodeB);
-          aggregatedRawGridInput.add(switchInput);
-        });
+            neo4JSwitch -> {
+              NodeInput nodeA = tidToNode.get(neo4JSwitch.getNodeA().getTid());
+              NodeInput nodeB = tidToNode.get(neo4JSwitch.getNodeB().getTid());
+              SwitchInput switchInput = Neo4JMapper.toSwitchInput(neo4JSwitch, nodeA, nodeB);
+              aggregatedRawGridInput.add(switchInput);
+            });
   }
 
-  private void fetchTrafos() {
+  private void fetchTrafos2W() {
     if (!fetchedNodes) fetchNodes();
-    Iterable<Neo4JTransformerInput> neo4JTransformers =
-        connector.findAll(Neo4JTransformerInput.class);
-    Stream<Neo4JTransformerInput> neo4JTransformerInputStream =
-        StreamSupport.stream(neo4JTransformers.spliterator(), false);
-
-    Map<Boolean, List<Neo4JTransformerInput>> groups =
-        StreamSupport.stream(neo4JTransformers.spliterator(), false)
-            .collect(Collectors.partitioningBy(Neo4JTransformerInput::getThreewindings));
-
-    // 2wTrafos
-    groups
-        .get(Boolean.FALSE)
-        .forEach(
-            neo4JTransformer -> {
-              NodeInput nodeA = tidToNode.get(neo4JTransformer.getNodeA().getTid());
-              NodeInput nodeB = tidToNode.get(neo4JTransformer.getNodeB().getTid());
-              Transformer2WInput Transformer =
-                  Neo4JMapper.toTransformer2W(neo4JTransformer, nodeA, nodeB);
-              aggregatedRawGridInput.add(Transformer);
+    Collection<Neo4JTransformer2WInput> neo4JTrafos = connector.findAll(Neo4JTransformer2WInput.class);
+      neo4JTrafos.forEach(
+            neo4JTrafo -> {
+              NodeInput nodeA = tidToNode.get(neo4JTrafo.getNodeA().getTid());
+              NodeInput nodeB = tidToNode.get(neo4JTrafo.getNodeB().getTid());
+                Transformer2WInput trafoInput = Neo4JMapper.toTransformer2W(neo4JTrafo, nodeA, nodeB);
+              aggregatedRawGridInput.add(trafoInput);
             });
 
-    // 3wTrafos
-    Map<String, List<Neo4JTransformerInput>> transformerCollections =
-        groups.get(Boolean.TRUE).stream()
-            .collect(Collectors.groupingBy(Neo4JTransformerInput::getUuid));
-    transformerCollections
-        .values()
-        .forEach(
-            transformerCollection -> {
-              Integer[] nodeTids =
-                  Neo4JMapper.getNodeTids(
-                      transformerCollection.get(0), transformerCollection.get(1));
-              Transformer3WInput Transformer =
-                  Neo4JMapper.toTransformer3W(
-                      transformerCollection.get(0),
-                      tidToNode.get(nodeTids[0]),
-                      tidToNode.get(nodeTids[1]),
-                      tidToNode.get(nodeTids[2]));
-              aggregatedRawGridInput.add(Transformer);
-            });
+        //Add data entry that does not fit neo4j format
+      aggregatedRawGridInput.add(Neo4JMapper.getBoundaryInjectionTransformer());
+  }
+
+  private void fetchTrafos3W() {
+      if (!fetchedNodes) fetchNodes();
+      Collection<Neo4JTransformer3WInput> neo4JTrafos = connector.findAll(Neo4JTransformer3WInput.class);
+      Map<String, List<Neo4JTransformer3WInput>> transformerCollections =
+              neo4JTrafos.stream()
+                      .collect(Collectors.groupingBy(Neo4JTransformer3WInput::getUuid));
+      transformerCollections
+              .values()
+              .forEach(
+                      transformerCollection -> {
+                          Integer[] nodeTids =
+                                  Neo4JMapper.getNodeTids(
+                                          transformerCollection.get(0), transformerCollection.get(1));
+                          Transformer3WInput Transformer =
+                                  Neo4JMapper.toTransformer3W(
+                                          transformerCollection.get(0),
+                                          tidToNode.get(nodeTids[0]),
+                                          tidToNode.get(nodeTids[1]),
+                                          tidToNode.get(nodeTids[2]));
+                          aggregatedRawGridInput.add(Transformer);
+                      });
+
+
   }
 }

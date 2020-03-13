@@ -36,4 +36,11 @@ public abstract class UniqueEntity {
   public int hashCode() {
     return Objects.hash(uuid);
   }
+
+  @Override
+  public String toString() {
+    return "UniqueEntity{" +
+            "uuid=" + uuid +
+            '}';
+  }
 }

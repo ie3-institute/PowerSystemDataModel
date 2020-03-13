@@ -5,84 +5,114 @@
 */
 package edu.ie3.dataconnection.metrics;
 
-import edu.ie3.dataconnection.source.csv.CsvCoordinateSource;
 import edu.ie3.dataconnection.source.csv.CsvTypeSource;
 import edu.ie3.models.GermanVoltageLevel;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
+import edu.ie3.models.UniqueEntity;
+import edu.ie3.models.input.AssetInput;
+import edu.ie3.models.input.InputEntity;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.aggregated.AggregatedRawGridInput;
 import edu.ie3.models.input.connector.Transformer3WInput;
+import edu.ie3.utils.CoordinateUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tec.uom.se.quantity.Quantities;
 
 public class RawGridHealthCheck {
 
-  private static final int nodeCount = 1; // MIA
-  private static final int lineCount = 1; // MIA
-  private static final int switchCount = 1; // MIA
-  private static final int trafo2wCount = 1; // MIA
-  private static final int trafo3wCount = 1; // MIA
+  private static Logger mainLogger = LogManager.getLogger("Main");
+
+  private static final int nodeCount = 47813;
+  private static final int lineCount = 47256;
+  private static final int switchCount = 145;
+  private static final int trafo2wCount = 564;
+  private static final int trafo3wCount = 3;
+
   private static final NodeInput exampleNodeA =
       new NodeInput(
-          UUID.fromString("uuid"),
+          UUID.fromString("3f8d2ce7-b0aa-3f43-bc00-4cd66269cd66"),
           OperationTime.builder().build(),
           null,
-          "id",
-          Quantities.getQuantity(0, StandardUnits.TARGET_VOLTAGE),
-          Quantities.getQuantity(0, StandardUnits.V_RATED),
+          "SO-·Metelen/SA-380.0·sa_es/SAA-1/SF-1/KS-2",
+          Quantities.getQuantity(1, StandardUnits.TARGET_VOLTAGE),
+          Quantities.getQuantity(380.0, StandardUnits.V_RATED),
           false,
-          CsvCoordinateSource.getCoordinate(11111),
-          GermanVoltageLevel.LV,
-          116);
+          CoordinateUtils.xyCoordToPoint(7.23862445937951, 52.1535088229935),
+          GermanVoltageLevel.EHV,
+          1);
   private static final NodeInput exampleNodeB =
       new NodeInput(
-          UUID.fromString("uuid"),
+          UUID.fromString("cd329a6f-0df6-3506-9011-072a7f50b97f"),
           OperationTime.builder().build(),
           null,
-          "id",
-          Quantities.getQuantity(0, StandardUnits.TARGET_VOLTAGE),
-          Quantities.getQuantity(0, StandardUnits.V_RATED),
+          "SO-·Metelen/SA-110.0·1/SAA-1/AB-SSB",
+          Quantities.getQuantity(1, StandardUnits.TARGET_VOLTAGE),
+          Quantities.getQuantity(110.0, StandardUnits.V_RATED),
           false,
-          CsvCoordinateSource.getCoordinate(11111),
-          GermanVoltageLevel.LV,
-          116);
+          CoordinateUtils.xyCoordToPoint(7.23862445937951, 52.1535088229935),
+          GermanVoltageLevel.HV,
+          1001);
   private static final NodeInput exampleNodeC =
       new NodeInput(
-          UUID.fromString("uuid"),
+          UUID.fromString("4acfcb2f-ce24-36d8-877e-9fc85df8efac"),
           OperationTime.builder().build(),
           null,
-          "id",
-          Quantities.getQuantity(0, StandardUnits.TARGET_VOLTAGE),
-          Quantities.getQuantity(0, StandardUnits.V_RATED),
+          "SO-·Metelen/SA-10.0·sa_es/SAA-1/SF-1/KS-2",
+          Quantities.getQuantity(1, StandardUnits.TARGET_VOLTAGE),
+          Quantities.getQuantity(10, StandardUnits.V_RATED),
           false,
-          CsvCoordinateSource.getCoordinate(11111),
-          GermanVoltageLevel.LV,
-          116);
+          CoordinateUtils.xyCoordToPoint(7.23862445937951, 52.1535088229935),
+          GermanVoltageLevel.MV,
+          1013);
   private static final Transformer3WInput exampleTransformer3W =
       new Transformer3WInput(
-          UUID.fromString("uuid"),
+          UUID.fromString("fbcba2f9-f8be-3cc9-bec4-1513affd9129"),
           OperationTime.builder().build(),
           null,
-          "id",
+          "SO-·Metelen/T3-411",
           exampleNodeA,
           exampleNodeB,
           exampleNodeC,
           1,
-          CsvTypeSource.getTrafo3WType(111111),
-          1,
-          true);
+          CsvTypeSource.getTrafo3WType(12217),
+          0,
+          false);
 
   public static boolean check(AggregatedRawGridInput gridData) {
+    mainLogger.info("GridData is nuLL?");
     if (gridData == null) return false;
+    mainLogger.info("NodeCount");
     if (gridData.getNodes().size() != nodeCount) return false;
+    mainLogger.info("lineCount " + gridData.getLines().size());
     if (gridData.getLines().size() != lineCount) return false;
+    mainLogger.info("switchCount " + gridData.getSwitches().size());
     if (gridData.getSwitches().size() != switchCount) return false;
+    mainLogger.info("Looking up trafo2wCount (is " + gridData.getTransformer2Ws().size() + ")");
     if (gridData.getTransformer2Ws().size() != trafo2wCount) return false;
+    mainLogger.info("Looking up trafo3wCount (is " + gridData.getTransformer3Ws().size() + ")");
     if (gridData.getTransformer3Ws().size() != trafo3wCount) return false;
+    mainLogger.info("Looking up NodeA");
     if (!gridData.getNodes().contains(exampleNodeA)) return false;
+    mainLogger.info("Looking up NodeB");
     if (!gridData.getNodes().contains(exampleNodeB)) return false;
+    mainLogger.info("Looking up NodeC");
+    NodeInput nodeC = gridData.getNodes().stream()
+            .filter(exampleNodeC::equals).collect(Collectors.toUnmodifiableList()).get(0);
+    mainLogger.info("Nodes equal? " + Objects.equals(exampleNodeC,nodeC)); //true
+    mainLogger.info("Does gridData contain exampleNodeC? " + gridData.getNodes().contains(exampleNodeC)); //false
+    mainLogger.info("Does gridData contain nodeC? " + gridData.getNodes().contains(nodeC)); //true
+    mainLogger.info(exampleNodeC);
     if (!gridData.getNodes().contains(exampleNodeC)) return false;
+    mainLogger.info("Looking up Trafo3w");
     return gridData.getTransformer3Ws().contains(exampleTransformer3W);
   }
 }

@@ -16,6 +16,7 @@ public class Neo4JLineInput {
   private String uuid;
   @DateString private Date operates_from;
   @DateString private Date operates_until;
+  private boolean in_operation;
   private String id;
   @StartNode private Neo4JNodeInput nodeA;
   @EndNode private Neo4JNodeInput nodeB;
@@ -50,6 +51,14 @@ public class Neo4JLineInput {
 
   public void setOperates_until(Date operates_until) {
     this.operates_until = operates_until;
+  }
+
+  public boolean isIn_operation() {
+    return in_operation;
+  }
+
+  public void setIn_operation(boolean in_operation) {
+    this.in_operation = in_operation;
   }
 
   public String getId() {

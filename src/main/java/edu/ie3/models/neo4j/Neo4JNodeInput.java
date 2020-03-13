@@ -26,12 +26,16 @@ public class Neo4JNodeInput {
   private Double y_coord;
   @DateString private Date operates_from;
   @DateString private Date operates_until;
+  private boolean in_operation;
 
   @Relationship(type = "LINE")
   Set<Neo4JLineInput> outgoingLines;
 
   @Relationship(type = "TRANSFORMER")
-  Set<Neo4JTransformerInput> outgoingTransformers;
+  Set<Neo4JTransformer2WInput> outgoingTransformers2W;
+
+  @Relationship(type = "TRANSFORMER3W")
+  Set<Neo4JTransformer3WInput> outgoingTransformers3W;
 
   @Relationship(type = "SWITCH")
   Set<Neo4JSwitchInput> outgoingSwitches;
@@ -142,12 +146,24 @@ public class Neo4JNodeInput {
     this.operates_until = operates_until;
   }
 
-  public Set<Neo4JTransformerInput> getOutgoingTransformers() {
-    return outgoingTransformers;
+  public boolean isIn_operation() {
+    return in_operation;
   }
 
-  public void setOutgoingTransformers(Set<Neo4JTransformerInput> outgoingTransformers) {
-    this.outgoingTransformers = outgoingTransformers;
+  public void setIn_operation(boolean in_operation) {
+    this.in_operation = in_operation;
+  }
+
+  public void setOutgoingTransformers2W(Set<Neo4JTransformer2WInput> outgoingTransformers2W) {
+    this.outgoingTransformers2W = outgoingTransformers2W;
+  }
+
+  public Set<Neo4JTransformer3WInput> getOutgoingTransformers3W() {
+    return outgoingTransformers3W;
+  }
+
+  public void setOutgoingTransformers3W(Set<Neo4JTransformer3WInput> outgoingTransformers3W) {
+    this.outgoingTransformers3W = outgoingTransformers3W;
   }
 
   public Set<Neo4JSwitchInput> getOutgoingSwitches() {

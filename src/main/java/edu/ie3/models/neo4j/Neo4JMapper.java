@@ -57,26 +57,11 @@ public class Neo4JMapper {
             : null;
     Boolean isSlack = neo4JNode.getIs_slack();
     String id = neo4JNode.getId();
-    VoltageLevel voltLvl = toVoltageLevel(neo4JNode.getVolt_lvl());
+    VoltageLevel voltLvl = GermanVoltageLevel.of(neo4JNode.getVolt_lvl());
     OperationTime operationTime =
         OperationTime.builder().withStart(operatesFrom).withEnd(operatesUntil).build();
     return new NodeInput(
         uuid, operationTime, null, id, vTarget, vRated, isSlack, coordinate, voltLvl, subnet);
-  }
-
-  public static VoltageLevel toVoltageLevel(String voltLevel) {
-    switch (voltLevel) {
-      case "NS":
-        return GermanVoltageLevel.LV;
-      case "MS":
-        return GermanVoltageLevel.MV;
-      case "HS":
-        return GermanVoltageLevel.HV;
-      case "HöS":
-        return GermanVoltageLevel.EHV;
-      default:
-        return null;
-    }
   }
 
   public static LineInput toLineInput(Neo4JLineInput neo4JLine, NodeInput nodeA, NodeInput nodeB) {
@@ -143,7 +128,7 @@ public class Neo4JMapper {
   }
 
   public static Transformer2WInput toTransformer2W(
-      Neo4JTransformerInput neo4JTransformer, NodeInput nodeA, NodeInput nodeB) {
+      Neo4JTransformer2WInput neo4JTransformer, NodeInput nodeA, NodeInput nodeB) {
     String uuidString = neo4JTransformer.getUuid();
     String id = neo4JTransformer.getId();
     ZonedDateTime operatesFrom =
@@ -182,7 +167,7 @@ public class Neo4JMapper {
   }
 
   public static Transformer3WInput toTransformer3W(
-      Neo4JTransformerInput neo4JTransformer, NodeInput nodeA, NodeInput nodeB, NodeInput nodeC) {
+      Neo4JTransformer3WInput neo4JTransformer, NodeInput nodeA, NodeInput nodeB, NodeInput nodeC) {
     String uuidString = neo4JTransformer.getUuid();
     String id = neo4JTransformer.getId();
     ZonedDateTime operatesFrom =
@@ -221,7 +206,7 @@ public class Neo4JMapper {
     return transformer3WInput;
   }
 
-  public static Integer[] getNodeTids(Neo4JTransformerInput trafo1, Neo4JTransformerInput trafo2) {
+  public static Integer[] getNodeTids(Neo4JTransformer3WInput trafo1, Neo4JTransformer3WInput trafo2) {
     Integer node1A = trafo1.getNodeA().getTid();
     Integer node1B = trafo1.getNodeB().getTid();
     Integer node2A = trafo2.getNodeA().getTid();
@@ -230,5 +215,21 @@ public class Neo4JMapper {
     if (node1A.equals(node2B)) return new Integer[] {node2A, node2B, node1B};
     if (node1B.equals(node2A)) return new Integer[] {node1A, node1B, node2B};
     return null;
+  }
+
+  public static Transformer2WInput getBoundaryInjectionTransformer(){
+    Transformer2WInput transformer2WInput =
+            new Transformer2WInput(
+                    UUID.fromString("01fc415b-8909-3d9e-a4c6-505155d95c32"),
+                    OperationTime.notLimited(),
+                    null,
+                    "1000_Boundary_Injection",
+                    null,
+                    null,
+                    1,
+                    null,
+                    0,
+                    false);
+    return transformer2WInput;
   }
 }

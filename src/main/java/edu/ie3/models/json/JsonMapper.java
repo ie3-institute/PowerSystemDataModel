@@ -25,6 +25,8 @@ import edu.ie3.models.result.ResultEntity;
 import edu.ie3.models.result.connector.LineResult;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.utils.CoordinateUtils;
+
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,17 +40,17 @@ import tec.uom.se.ComparableQuantity;
 import tec.uom.se.quantity.Quantities;
 
 public class JsonMapper {
-  private static Logger logger = LogManager.getLogger(JsonMapper.class);
+  private static Logger mainLogger = LogManager.getLogger("Main");
 
   public static NodeInput toNodeInput(JsonObject object) {
     String uuidString = object.getString("uuid");
     Integer subnet = object.getInt("subnet");
-    Double xCoord = object.getDouble("x_coord");
-    Double yCoord = object.getDouble("y_coord");
+    BigDecimal xCoord = object.getBigDecimal("x_coord");
+    BigDecimal yCoord = object.getBigDecimal("y_coord");
 
     UUID uuid = UUID.fromString(uuidString);
     Point coordinate =
-        (xCoord != null && yCoord != null) ? CoordinateUtils.xyCoordToPoint(xCoord, yCoord) : null;
+        (xCoord != null && yCoord != null) ? CoordinateUtils.xyCoordToPoint(xCoord.doubleValue(), yCoord.doubleValue()) : null;
     Quantity<Dimensionless> vTarget =
         Quantities.getQuantity(object.getInt("v_target"), StandardUnits.TARGET_VOLTAGE);
     ComparableQuantity<ElectricPotential> vRated =
@@ -57,7 +59,7 @@ public class JsonMapper {
     ZonedDateTime operatesUntil = null; // how?
     Boolean isSlack = object.getBoolean("is_slack");
     String id = object.getString("id");
-    VoltageLevel voltLvl = toVoltageLevel(object.getString("volt_lvl"));
+    VoltageLevel voltLvl = GermanVoltageLevel.of(object.getString("volt_lvl"));
     OperationTime operationTime =
         OperationTime.builder().withStart(operatesFrom).withEnd(operatesUntil).build();
     return new NodeInput(
@@ -65,22 +67,8 @@ public class JsonMapper {
   }
 
   public static Integer getTid(JsonObject jsonObject) {
+    if(jsonObject == null) return null;
     return jsonObject.getInt("tid");
-  }
-
-  public static VoltageLevel toVoltageLevel(String voltLevel) {
-    switch (voltLevel) {
-      case "NS":
-        return GermanVoltageLevel.LV;
-      case "MS":
-        return GermanVoltageLevel.MV;
-      case "HS":
-        return GermanVoltageLevel.HV;
-      case "HöS":
-        return GermanVoltageLevel.EHV;
-      default:
-        return null;
-    }
   }
 
   public static LineInput toLineInput(JsonObject object, NodeInput nodeA, NodeInput nodeB) {
@@ -130,7 +118,7 @@ public class JsonMapper {
         OperationTime.builder().withStart(operatesFrom).withEnd(operatesUntil).build();
 
     SwitchInput switchInput = new SwitchInput(uuid, operationTime, null, id, nodeA, nodeB, closed);
-    return null;
+    return switchInput;
   }
 
   public static Transformer2WInput toTransformer2W(
@@ -229,4 +217,27 @@ public class JsonMapper {
     if (resultEntity instanceof LineResult) return toJsonLineResult((LineResult) resultEntity);
     throw new IllegalArgumentException("Unkown entity");
   }
+
+
+  public static Transformer2WInput getBoundaryInjectionTransformer(){
+    try {
+      Transformer2WInput transformer2WInput =
+              new Transformer2WInput(
+                      UUID.fromString("01fc415b-8909-3d9e-a4c6-505155d95c32"),
+                      OperationTime.notLimited(),
+                      null,
+                      "1000_Boundary_Injection",
+                      null,
+                      null,
+                      1,
+                      null,
+                      0,
+                      false);
+      return transformer2WInput;
+    } catch(NullPointerException npe) {
+      mainLogger.error(npe);
+    }
+    return null;
+  }
+
 }

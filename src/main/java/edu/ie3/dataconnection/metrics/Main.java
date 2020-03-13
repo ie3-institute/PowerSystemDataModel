@@ -29,7 +29,7 @@ public class Main {
   private static boolean useCouchbase = false;
   private static boolean useNeo4j = false;
 
-  private static ExecutorService taskExecutor = Executors.newFixedThreadPool(numberOfThreads);
+  private static ExecutorService taskExecutor;
 
   public static void main(String[] args) {
     if (args.length > 0) numberOfThreads = Integer.parseInt(args[0]);
@@ -46,7 +46,8 @@ public class Main {
       useNeo4j = args[3].contains("n");
     }
     numberOfAttempts /= 5;
-    logger.info("Version: " + 1.1);
+    taskExecutor = Executors.newFixedThreadPool(numberOfThreads);
+    logger.info("Version: " + 1.2);
     logger.info(
         "\n"
             + "numberOfThreads: "

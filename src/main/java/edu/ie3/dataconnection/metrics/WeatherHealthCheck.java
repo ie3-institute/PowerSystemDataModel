@@ -13,8 +13,6 @@ import edu.ie3.models.value.WeatherValues;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Map;
-import java.util.Optional;
-
 import tec.uom.se.quantity.Quantities;
 
 public class WeatherHealthCheck {
@@ -28,18 +26,6 @@ public class WeatherHealthCheck {
   public static boolean check(
       Map<Point, IndividualTimeSeries<WeatherValues>> coordinateToTimeSeries) {
     if (coordinateToTimeSeries == null) return false;
-    System.out.println("coordinateCount: " + coordinateToTimeSeries.keySet().size());
-    System.out.println("timeseriesLength: " + coordinateToTimeSeries.get(exampleCoordinate).size());
-
-    Optional<Integer> numberOfEntries = coordinateToTimeSeries.values().stream().map(IndividualTimeSeries::size).reduce(Integer::sum);
-    System.out.println("Number Of Entries: " + numberOfEntries.orElse(-1));
-    System.out.println("exampleCoordinate: " + exampleCoordinate);
-    String dates = "";
-    for(int i = 0; i < timeseriesLength; i++) {
-      ZonedDateTime exDate = WeatherPerformanceLogGenerator.START_DATE.plusHours(i);
-      if(coordinateToTimeSeries.get(exampleCoordinate).getTimeBasedValue(exDate) != null) dates += exDate + "     ";
-    }
-    System.out.println("exampleDates: " + dates);
     System.out.println(
         "DiffuseIrradiation: "
             + coordinateToTimeSeries
@@ -69,16 +55,15 @@ public class WeatherHealthCheck {
     if (!value
         .getIrradiation()
         .getDiffuseIrradiation()
-        .equals(Quantities.getQuantity(153.503005981445, StandardUnits.IRRADIATION)))
-      return false; // MIA
+        .equals(Quantities.getQuantity(69.6875, StandardUnits.IRRADIATION))) return false; // MIA
     if (!value
         .getTemperature()
         .getTemperature()
-        .equals(Quantities.getQuantity(291.019012451172, StandardUnits.TEMPERATURE)))
+        .equals(Quantities.getQuantity(284.660003662109, StandardUnits.TEMPERATURE)))
       return false; // MIA
     return value
         .getWind()
         .getVelocity()
-        .equals(Quantities.getQuantity(4.08193159103394, StandardUnits.WIND_VELOCITY)); // MIA
+        .equals(Quantities.getQuantity(9.81319808959961, StandardUnits.WIND_VELOCITY)); // MIA
   }
 }

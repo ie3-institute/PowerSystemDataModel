@@ -15,13 +15,11 @@ import edu.ie3.models.timeseries.IndividualTimeSeries;
 import edu.ie3.models.value.TimeBasedValue;
 import edu.ie3.models.value.WeatherValues;
 import edu.ie3.util.interval.ClosedInterval;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.swing.text.ParagraphView;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HibernateWeatherSource implements WeatherSource {
 
@@ -49,18 +47,21 @@ public class HibernateWeatherSource implements WeatherSource {
         coordinates.stream().map(CsvCoordinateSource::getId).collect(Collectors.toList());
 
     Set<HibernateWeatherInput> queryResults = new HashSet<>();
-    for(int i = 0; i<coordinateIds.size(); i+=100) {
+    for (int i = 0; i < coordinateIds.size(); i += 100) {
       List<Object> queryParameter =
-            Arrays.asList(coordinateIds.subList(i, Math.min(i + 100, coordinateIds.size())), timeInterval.getLower(), timeInterval.getUpper());
+          Arrays.asList(
+              coordinateIds.subList(i, Math.min(i + 100, coordinateIds.size())),
+              timeInterval.getLower(),
+              timeInterval.getUpper());
       try {
-        queryResults.addAll(connector.execNamedQuery(
+        queryResults.addAll(
+            connector.execNamedQuery(
                 "HibernateWeatherInput.WeatherWithMultipleCoordinatesInInterval", queryParameter));
 
       } catch (Exception e) {
         mainLogger.error("Exception at query execution: " + e);
       }
     }
-    mainLogger.debug("Hibernate end query");
     return mapQueryResults(queryResults);
   }
 
@@ -98,7 +99,6 @@ public class HibernateWeatherSource implements WeatherSource {
       Collection<HibernateWeatherInput> queryResults) {
     HashMap<Point, IndividualTimeSeries<WeatherValues>> coordinateToTimeSeries = new HashMap<>();
     if (queryResults != null) {
-      mainLogger.debug("Hibernate result not null");
       List<TimeBasedValue<WeatherValues>> weatherInputs =
           queryResults.stream()
               .map(HibernateWeatherInput::toTimeBasedWeatherValues)

@@ -46,4 +46,12 @@ public enum GermanVoltageLevel implements VoltageLevel {
   public String getName() {
     return name;
   }
+
+  public static GermanVoltageLevel of(String name) {
+    if (name.startsWith("HöS")) return GermanVoltageLevel.EHV;
+    if (name.startsWith("HS")) return GermanVoltageLevel.HV;
+    if (name.startsWith("MS")) return GermanVoltageLevel.MV;
+    if (name.startsWith("NS")) return GermanVoltageLevel.LV;
+    return null;
+  }
 }

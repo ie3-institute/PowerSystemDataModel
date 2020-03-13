@@ -313,7 +313,8 @@ public class CsvTypeSource {
     return tidToLineType.get(tid);
   }
 
-  public static Transformer2WTypeInput getTrafo2WType(int tid) {
+  public static Transformer2WTypeInput getTrafo2WType(Integer tid) {
+    if (tid == null) return null;
     return tidToTrafo2WType.get(tid);
   }
 

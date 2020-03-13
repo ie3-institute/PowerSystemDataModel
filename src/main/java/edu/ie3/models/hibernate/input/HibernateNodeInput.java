@@ -53,9 +53,6 @@ public class HibernateNodeInput implements Serializable {
   @Column(name = "operates_until")
   private ZonedDateTime operatesUntil;
 
-  @Column(name = "scenario")
-  private Integer scenario;
-
   public Integer getTid() {
     return tid;
   }
@@ -150,13 +147,5 @@ public class HibernateNodeInput implements Serializable {
 
   public void setOperatesUntil(ZonedDateTime operatesUntil) {
     this.operatesUntil = operatesUntil;
-  }
-
-  public Integer getScenario() {
-    return scenario;
-  }
-
-  public void setScenario(Integer scenario) {
-    this.scenario = scenario;
   }
 }

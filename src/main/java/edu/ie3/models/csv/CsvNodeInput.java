@@ -8,11 +8,11 @@ package edu.ie3.models.csv;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
 import com.vividsolutions.jts.geom.Point;
+import edu.ie3.models.GermanVoltageLevel;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.VoltageLevel;
 import edu.ie3.models.input.NodeInput;
-import edu.ie3.models.json.JsonMapper;
 import edu.ie3.utils.CoordinateUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -87,7 +87,7 @@ public class CsvNodeInput {
         operates_until != null ? ZonedDateTime.of(operates_until, ZoneId.of("UTC")) : null;
     OperationTime operationTime =
         OperationTime.builder().withStart(startDate).withEnd(endDate).build();
-    VoltageLevel voltageLevel = JsonMapper.toVoltageLevel(volt_lvl);
+    VoltageLevel voltageLevel = GermanVoltageLevel.of(volt_lvl);
     Boolean isSlackBool = null;
     if (is_slack.equals("t")) isSlackBool = true;
     if (is_slack.equals("f")) isSlackBool = false;

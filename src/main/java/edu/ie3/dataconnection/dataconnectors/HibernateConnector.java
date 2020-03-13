@@ -6,9 +6,11 @@
 package edu.ie3.dataconnection.dataconnectors;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,15 +21,16 @@ public class HibernateConnector implements DataConnector {
 
   private static Logger mainLogger = LogManager.getLogger("Main");
 
-  private final CriteriaBuilder builder;
-  private final EntityManager manager;
+  private CriteriaBuilder builder;
+  private EntityManager manager;
   private EntityManagerFactory factory;
   private String persistenceUnitName;
 
   public HibernateConnector(String persistenceUnitName) {
+    TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")));
     this.persistenceUnitName = persistenceUnitName;
-    manager = getEntityManagerFactory().createEntityManager();
-    builder = getEntityManagerFactory().getCriteriaBuilder();
+      manager = getEntityManagerFactory().createEntityManager();
+      builder = getEntityManagerFactory().getCriteriaBuilder();
   }
 
   @Override
@@ -95,12 +98,11 @@ public class HibernateConnector implements DataConnector {
 
   public <C extends Serializable> List<C> readAll(Class<C> entityClass) {
     List<C> entities = null;
-    //        EntityManager manager = factory.createEntityManager();
     try {
       CriteriaQuery<C> criteria = builder.createQuery(entityClass);
       criteria.select(criteria.from(entityClass));
       entities = manager.createQuery(criteria).getResultList();
-    } catch (Exception ex) {
+    } catch (Throwable ex) {
       ex.printStackTrace();
       mainLogger.error(ex.getMessage());
     }
@@ -119,7 +121,8 @@ public class HibernateConnector implements DataConnector {
   }
 
   public List execNamedQuery(String queryName, List params) {
-    mainLogger.trace("Execute query '" + queryName + "'" + "with params {" + params.toString() + "}");
+    mainLogger.trace(
+        "Execute query '" + queryName + "'" + "with params {" + params.toString() + "}");
     List objs = null;
     try {
       Query query = manager.createNamedQuery(queryName);
@@ -135,7 +138,13 @@ public class HibernateConnector implements DataConnector {
   }
 
   public List execNamedQuery(String queryName, Map<String, Object> namedParams) {
-    mainLogger.trace("Execute query '" + queryName + "'" + "with params {" + namedParams.values().toString() + "}");
+    mainLogger.trace(
+        "Execute query '"
+            + queryName
+            + "'"
+            + "with params {"
+            + namedParams.values().toString()
+            + "}");
     List objs = null;
     try {
       Query query = manager.createNamedQuery(queryName);

@@ -20,20 +20,24 @@ import edu.ie3.models.input.connector.type.LineTypeInput;
 import edu.ie3.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.util.quantities.PowerSystemUnits;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricPotential;
 import javax.measure.quantity.Length;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tec.uom.se.ComparableQuantity;
 import tec.uom.se.quantity.Quantities;
 
 public class HibernateMapper {
 
+  private static Logger mainLogger = LogManager.getLogger("Main");
+
   public static final HashMap<Integer, NodeInput> tidToNode = new HashMap<>();
 
   public static NodeInput toNodeInput(HibernateNodeInput hibernateNode) {
+    if (hibernateNode == null) return null;
     if (tidToNode.containsKey(hibernateNode.getTid())) return tidToNode.get(hibernateNode.getTid());
     int subnet = hibernateNode.getSubnet();
     Quantity<Dimensionless> vTarget =
@@ -42,7 +46,7 @@ public class HibernateMapper {
         Quantities.getQuantity(hibernateNode.getvRated(), StandardUnits.V_RATED);
 
     String id = hibernateNode.getId();
-    VoltageLevel voltLvl = toVoltageLevel(hibernateNode.getVoltLvl());
+    VoltageLevel voltLvl = GermanVoltageLevel.of(hibernateNode.getVoltLvl());
     OperationTime operationTime =
         OperationTime.builder()
             .withStart(hibernateNode.getOperatesFrom())
@@ -62,21 +66,6 @@ public class HibernateMapper {
             subnet);
     tidToNode.put(hibernateNode.getTid(), nodeInput);
     return nodeInput;
-  }
-
-  public static VoltageLevel toVoltageLevel(String voltLevel) {
-    switch (voltLevel) {
-      case "NS":
-        return GermanVoltageLevel.LV;
-      case "MS":
-        return GermanVoltageLevel.MV;
-      case "HS":
-        return GermanVoltageLevel.HV;
-      case "HöS":
-        return GermanVoltageLevel.EHV;
-      default:
-        return null;
-    }
   }
 
   public static LineInput toLineInput(HibernateLineInput hibernateLine) {
@@ -134,6 +123,7 @@ public class HibernateMapper {
 
   public static Transformer2WInput toTransformer2W(
       HibernateTransformer2WInput hibernateTransformer) {
+    if (hibernateTransformer == null) return null;
     String id = hibernateTransformer.getId();
     int amount = hibernateTransformer.getAmount();
     boolean autoTap = hibernateTransformer.isAutoTap();

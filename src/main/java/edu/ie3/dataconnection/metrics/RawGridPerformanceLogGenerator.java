@@ -72,8 +72,12 @@ public class RawGridPerformanceLogGenerator implements PerformanceLogGenerator {
       watch.stop();
       mainLogger.debug("{}", String.format("%3o | %16s | Stopping watch", index, name));
     }
-    if (!RawGridHealthCheck.check(gridData))
-      throw new AssertionError("Result did not succeed health check");
+    try {
+      if (!RawGridHealthCheck.check(gridData))
+        throw new AssertionError("Result did not succeed health check");
+    } catch (Exception e) {
+      logger.error(e);
+    }
     return watch.getTime();
   }
 

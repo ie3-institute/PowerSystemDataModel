@@ -52,11 +52,11 @@ public class CouchbaseWeatherSource implements WeatherSource {
       } catch (DecodingFailureException ex) {
         logger.error(ex);
       }
-      if(jsonWeatherInputs!= null && !jsonWeatherInputs.isEmpty()) {
+      if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
         List<TimeBasedValue<WeatherValues>> weatherInputs =
-                jsonWeatherInputs.stream()
-                        .map(JsonWeatherInput::toTimeBasedWeatherValues)
-                        .collect(Collectors.toList());
+            jsonWeatherInputs.stream()
+                .map(JsonWeatherInput::toTimeBasedWeatherValues)
+                .collect(Collectors.toList());
         IndividualTimeSeries<WeatherValues> weatherTimeSeries = new IndividualTimeSeries<>();
         weatherTimeSeries.addAll(weatherInputs);
         coordinateToTimeSeries.put(coordinate, weatherTimeSeries);

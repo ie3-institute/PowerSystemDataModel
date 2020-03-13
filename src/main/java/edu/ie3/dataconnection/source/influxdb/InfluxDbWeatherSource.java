@@ -18,7 +18,6 @@ import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.influxdb.InfluxDB;
@@ -46,7 +45,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
       InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
       influxWeatherInputs = resultMapper.toPOJO(queryResult, InfluxDbWeatherInput.class);
       session.close();
-    }catch (Exception e ){
+    } catch (Exception e) {
       mainLogger.error(e);
     }
 
@@ -83,9 +82,11 @@ public class InfluxDbWeatherSource implements WeatherSource {
       for (Point coordinate : coordinates) {
         String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinate);
         QueryResult queryResult = session.query(new Query(query));
-        List<InfluxDbWeatherInput> influxWeatherInputs = resultMapper.toPOJO(queryResult, InfluxDbWeatherInput.class);
-        if(influxWeatherInputs != null && !influxWeatherInputs.isEmpty()){
-          List<TimeBasedValue<WeatherValues>> timeBasedValues = influxWeatherInputs.stream()
+        List<InfluxDbWeatherInput> influxWeatherInputs =
+            resultMapper.toPOJO(queryResult, InfluxDbWeatherInput.class);
+        if (influxWeatherInputs != null && !influxWeatherInputs.isEmpty()) {
+          List<TimeBasedValue<WeatherValues>> timeBasedValues =
+              influxWeatherInputs.stream()
                   .map(InfluxDbWeatherInput::toTimeBasedWeatherValues)
                   .collect(Collectors.toList());
           IndividualTimeSeries<WeatherValues> timeSeries = new IndividualTimeSeries<>();
@@ -93,7 +94,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
           coordinateToTimeSeries.put(coordinate, timeSeries);
         }
       }
-    }catch (Exception e ){
+    } catch (Exception e) {
       mainLogger.error(e);
     }
     return coordinateToTimeSeries;
@@ -109,7 +110,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
       InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
       influxWeatherInputs = resultMapper.toPOJO(queryResult, InfluxDbWeatherInput.class);
       session.close();
-    }catch (Exception e ){
+    } catch (Exception e) {
       mainLogger.error(e);
     }
     return influxWeatherInputs != null
@@ -128,7 +129,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
       InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
       influxWeatherInputs = resultMapper.toPOJO(queryResult, InfluxDbWeatherInput.class);
       session.close();
-    } catch (Exception e ){
+    } catch (Exception e) {
       mainLogger.error(e);
     }
     if (influxWeatherInputs == null || influxWeatherInputs.isEmpty()) return Optional.empty();
@@ -155,15 +156,15 @@ public class InfluxDbWeatherSource implements WeatherSource {
     String basicQuery = createBasicQueryString();
     String timeConstraint =
         "time >= "
-            + timeInterval.getLower().toInstant().toEpochMilli()/1000
+            + timeInterval.getLower().toInstant().toEpochMilli() * 1000000
             + " and time <= "
-            + timeInterval.getUpper().toInstant().toEpochMilli()/1000;
+            + timeInterval.getUpper().toInstant().toEpochMilli() * 1000000;
     return basicQuery + " where " + timeConstraint;
   }
 
   public String createQueryStringForDate(ZonedDateTime date) {
     String basicQuery = createBasicQueryString();
-    String timeConstraint = "time=" + date.toInstant().toEpochMilli()/1000;
+    String timeConstraint = "time=" + date.toInstant().toEpochMilli() * 1000000;
     return basicQuery + " where " + timeConstraint;
   }
 
@@ -172,6 +173,6 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   public String createCoordinateConstraintString(Point coordinate) {
-    return "\"koordinatenid\"='" + CsvCoordinateSource.getId(coordinate) + "'";
+    return "koordinatenid='" + CsvCoordinateSource.getId(coordinate) + "'";
   }
 }

@@ -60,6 +60,8 @@ dependencies {
 	//hibernate
 	compile 'org.hibernate:hibernate-core:' + '5.3.3.Final'
 	compile 'org.hibernate:hibernate-ehcache:' + '5.3.3.Final'
+//	compile 'org.hibernate:hibernate-spatial:' + '5.3.3.Final'
+//	compile 'org.hibernate:hibernate-java8:' + '5.3.3.Final'
 //	compile 'org.hibernate:hibernate-core:5.4.11.Final'
 
 

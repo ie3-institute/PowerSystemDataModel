@@ -180,4 +180,41 @@ public class HibernateTransformer2WInput implements Serializable {
   public void setType(Integer type) {
     this.type = type;
   }
+
+  @Override
+  public String toString() {
+    return "HibernateTransformer2WInput{"
+        + "tid="
+        + tid
+        + ", id='"
+        + id
+        + '\''
+        + ", uuid="
+        + uuid
+        + ", nodeAId="
+        + nodeAId
+        + ", nodeA="
+        + nodeA
+        + ", nodeBId="
+        + nodeBId
+        + ", nodeB="
+        + nodeB
+        + ", inOperation="
+        + inOperation
+        + ", operatesFrom="
+        + operatesFrom
+        + ", operatesUntil="
+        + operatesUntil
+        + ", amount="
+        + amount
+        + ", tapPos="
+        + tapPos
+        + ", autoTap="
+        + autoTap
+        + ", scenario="
+        + scenario
+        + ", type="
+        + type
+        + '}';
+  }
 }

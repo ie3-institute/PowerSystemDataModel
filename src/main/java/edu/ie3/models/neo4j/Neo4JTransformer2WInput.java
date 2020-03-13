@@ -12,7 +12,7 @@ import org.neo4j.ogm.annotation.StartNode;
 import org.neo4j.ogm.annotation.typeconversion.DateString;
 
 @RelationshipEntity(type = "TRANSFORMER")
-public class Neo4JTransformerInput {
+public class Neo4JTransformer2WInput {
 
   private Integer amount;
   private Integer tap_pos;
@@ -28,7 +28,7 @@ public class Neo4JTransformerInput {
   @StartNode private Neo4JNodeInput nodeA;
   @EndNode private Neo4JNodeInput nodeB;
 
-  public Neo4JTransformerInput() {}
+  public Neo4JTransformer2WInput() {}
 
   public Integer getAmount() {
     return amount;

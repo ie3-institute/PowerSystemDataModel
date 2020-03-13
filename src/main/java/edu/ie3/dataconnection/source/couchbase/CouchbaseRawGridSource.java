@@ -8,6 +8,7 @@ package edu.ie3.dataconnection.source.couchbase;
 import com.couchbase.client.java.json.JsonArray;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.query.QueryResult;
+import com.squareup.moshi.Json;
 import edu.ie3.dataconnection.dataconnectors.CouchbaseConnector;
 import edu.ie3.dataconnection.dataconnectors.DataConnector;
 import edu.ie3.dataconnection.source.RawGridSource;
@@ -19,55 +20,67 @@ import edu.ie3.models.input.connector.SwitchInput;
 import edu.ie3.models.input.connector.Transformer2WInput;
 import edu.ie3.models.input.connector.Transformer3WInput;
 import edu.ie3.models.json.JsonMapper;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class CouchbaseRawGridSource implements RawGridSource {
+
+  private static Logger mainLogger = LogManager.getLogger("Main");
 
   private CouchbaseConnector connector;
   private String scenarioName;
 
   private AggregatedRawGridInput aggregatedRawGridInput = new AggregatedRawGridInput();
   private boolean fetchedNodes;
+  private boolean fetched;
   private Map<Integer, NodeInput> idToNode = new HashMap<>();
 
   public CouchbaseRawGridSource(CouchbaseConnector connector, String scenarioName) {
     this.connector = connector;
     this.scenarioName = scenarioName;
     CsvTypeSource.fillMaps();
-    fetch();
   }
 
   @Override
   public AggregatedRawGridInput getGridData() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput;
   }
 
   @Override
   public Collection<NodeInput> getNodes() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getNodes();
   }
 
   @Override
   public Collection<LineInput> getLines() {
+
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getLines();
   }
 
   @Override
   public Collection<Transformer2WInput> get2WTransformers() {
+
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getTransformer2Ws();
   }
 
   @Override
   public Collection<Transformer3WInput> get3WTransformers() {
+
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getTransformer3Ws();
   }
 
   @Override
   public Collection<SwitchInput> getSwitches() {
+
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getSwitches();
   }
 
@@ -88,6 +101,8 @@ public class CouchbaseRawGridSource implements RawGridSource {
         i++) { // for is used to avoid the cast in forEach(..) or iterator
       JsonObject object = nodesArr.getObject(i);
       NodeInput node = JsonMapper.toNodeInput(object);
+      if(Arrays.asList(60910, 60912, 60911).contains(JsonMapper.getTid(object))) //MIA
+      mainLogger.info("Node with TID " + JsonMapper.getTid(object) + ": " + node);
       idToNode.put(JsonMapper.getTid(object), node);
       aggregatedRawGridInput.add(node);
     }
@@ -99,14 +114,14 @@ public class CouchbaseRawGridSource implements RawGridSource {
     String query = createQueryStringForScenarioSubnets();
     CompletableFuture<QueryResult> futureResult = connector.query(query);
     QueryResult queryResult = futureResult.join();
-    final Iterator<JsonObject> jsonIterator = queryResult.rowsAsObject().iterator();
-    while (jsonIterator.hasNext()) {
-      JsonObject subnetJson = jsonIterator.next();
+
+    for (JsonObject subnetJson : queryResult.rowsAsObject()) {
       fetchLines(subnetJson.getArray("lines"));
       fetchSwitches(subnetJson.getArray("switches"));
       fetch2WTrafos(subnetJson.getArray("trafo2ws"));
       fetch3WTrafos(subnetJson.getArray("trafo3ws"));
     }
+    fetched = true;
   }
 
   private void fetchLines(JsonArray linesArr) {
@@ -148,12 +163,14 @@ public class CouchbaseRawGridSource implements RawGridSource {
         NodeInput nodeB = idToNode.get(JsonMapper.identifyNodeB(object));
         aggregatedRawGridInput.add(JsonMapper.toTransformer2W(object, nodeA, nodeB));
       }
+      aggregatedRawGridInput.add(JsonMapper.getBoundaryInjectionTransformer());
     }
   }
 
   private void fetch3WTrafos(JsonArray trafo3WArr) {
     if (!fetchedNodes) fetchNodes();
     if (trafo3WArr != null) {
+      mainLogger.info("Trafo3WArrSize: " + trafo3WArr.size());
       for (int i = 0;
           i < trafo3WArr.size();
           i++) { // for is used to avoid the cast in forEach(..) or iterator

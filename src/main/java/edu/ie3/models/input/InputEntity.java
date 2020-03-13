@@ -14,4 +14,12 @@ public abstract class InputEntity extends UniqueEntity {
   public InputEntity(UUID uuid) {
     super(uuid);
   }
+
+  @Override
+  public String toString() {
+    return "InputEntity{} " + super.toString();
+  }
+
+
+
 }

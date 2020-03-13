@@ -17,44 +17,57 @@ import edu.ie3.models.input.connector.SwitchInput;
 import edu.ie3.models.input.connector.Transformer2WInput;
 import edu.ie3.models.input.connector.Transformer3WInput;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HibernateRawGridSource implements RawGridSource {
 
+  private static Logger mainLogger = LogManager.getLogger("Main");
+
   private HibernateConnector connector;
   private AggregatedRawGridInput aggregatedRawGridInput = new AggregatedRawGridInput();
+  private boolean fetched;
 
   public HibernateRawGridSource(HibernateConnector connector) {
     this.connector = connector;
-    fetch();
   }
 
   @Override
   public AggregatedRawGridInput getGridData() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput;
   }
 
   @Override
   public Collection<NodeInput> getNodes() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getNodes();
   }
 
   @Override
   public Collection<LineInput> getLines() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getLines();
   }
 
   @Override
   public Collection<Transformer2WInput> get2WTransformers() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getTransformer2Ws();
   }
 
   @Override
   public Collection<Transformer3WInput> get3WTransformers() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getTransformer3Ws();
   }
 
   @Override
   public Collection<SwitchInput> getSwitches() {
+    if (!fetched) fetch();
     return aggregatedRawGridInput.getSwitches();
   }
 
@@ -69,38 +82,64 @@ public class HibernateRawGridSource implements RawGridSource {
     fetchSwitches();
     fetchTrafos2W();
     fetchTrafos3W();
+    fetched = true;
   }
 
   public void fetchNodes() {
-    Iterable<HibernateNodeInput> hibernateNodes = connector.readAll(HibernateNodeInput.class);
-    hibernateNodes.forEach(hNode -> aggregatedRawGridInput.add(HibernateMapper.toNodeInput(hNode)));
+    try {
+      List<HibernateNodeInput> hibernateNodes = connector.readAll(HibernateNodeInput.class);
+
+      hibernateNodes.stream().filter(n -> n.getTid().equals(60912)).forEach(n -> mainLogger.info((HibernateMapper.toNodeInput(n))));
+
+      hibernateNodes.forEach(
+          hNode -> aggregatedRawGridInput.add(HibernateMapper.toNodeInput(hNode)));
+    } catch (Exception e) {
+      mainLogger.error(e);
+    }
   }
 
   private void fetchLines() {
-    Iterable<HibernateLineInput> hibernateLines = connector.readAll(HibernateLineInput.class);
-    hibernateLines.forEach(hLine -> aggregatedRawGridInput.add(HibernateMapper.toLineInput(hLine)));
+    try {
+      List<HibernateLineInput> hibernateLines = connector.readAll(HibernateLineInput.class);
+      hibernateLines.forEach(
+          hLine -> aggregatedRawGridInput.add(HibernateMapper.toLineInput(hLine)));
+    } catch (Exception e) {
+      mainLogger.error(e);
+    }
   }
 
   private void fetchSwitches() {
-    Iterable<HibernateSwitchInput> hibernateSwitches =
-        connector.readAll(HibernateSwitchInput.class);
-    hibernateSwitches.forEach(
-        hSwitch -> aggregatedRawGridInput.add(HibernateMapper.toSwitchInput(hSwitch)));
+    try {
+      List<HibernateSwitchInput> hibernateSwitches =
+          connector.readAll(HibernateSwitchInput.class);
+      hibernateSwitches.forEach(
+          hSwitch -> aggregatedRawGridInput.add(HibernateMapper.toSwitchInput(hSwitch)));
+    } catch (Exception e) {
+      mainLogger.error(e);
+    }
   }
 
   private void fetchTrafos2W() {
-    Iterable<HibernateTransformer2WInput> hibernateTransformer2Ws =
-        connector.readAll(HibernateTransformer2WInput.class);
-    hibernateTransformer2Ws.forEach(
-        hTransformer2W ->
-            aggregatedRawGridInput.add(HibernateMapper.toTransformer2W(hTransformer2W)));
+    try {
+      Iterable<HibernateTransformer2WInput> hibernateTransformer2Ws =
+          connector.readAll(HibernateTransformer2WInput.class);
+      hibernateTransformer2Ws.forEach(
+          hTransformer2W ->
+              aggregatedRawGridInput.add(HibernateMapper.toTransformer2W(hTransformer2W)));
+    } catch (Exception e) {
+      mainLogger.error(e);
+    }
   }
 
   private void fetchTrafos3W() {
-    Iterable<HibernateTransformer3WInput> hibernateTransformer3Ws =
-        connector.readAll(HibernateTransformer3WInput.class);
-    hibernateTransformer3Ws.forEach(
-        hTransformer3W ->
-            aggregatedRawGridInput.add(HibernateMapper.toTransformer3W(hTransformer3W)));
+    try {
+      Iterable<HibernateTransformer3WInput> hibernateTransformer3Ws =
+          connector.readAll(HibernateTransformer3WInput.class);
+      hibernateTransformer3Ws.forEach(
+          hTransformer3W ->
+              aggregatedRawGridInput.add(HibernateMapper.toTransformer3W(hTransformer3W)));
+    } catch (Exception e) {
+      mainLogger.error(e);
+    }
   }
 }
