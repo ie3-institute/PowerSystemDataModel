@@ -71,41 +71,6 @@ public class Transformer3WInput extends TransformerInput {
   }
 
   /**
-   * Constructor for an operated three winding transformer
-   *
-   * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
-   * @param id of the asset
-   * @param nodeA The higher voltage node
-   * @param nodeB The middle voltage node
-   * @param nodeC The lower voltage node
-   * @param nodeInternal The internal node of transformers T equivalent circuit
-   * @param parallelDevices Amount of singular transformers
-   * @param type of 3W transformer
-   * @param tapPos Tap Position of this transformer
-   * @param autoTap true, if there is an automated regulation activated for this transformer
-   */
-  public Transformer3WInput(
-      UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
-      String id,
-      NodeInput nodeA,
-      NodeInput nodeB,
-      NodeInput nodeC,
-      NodeInput nodeInternal,
-      int parallelDevices,
-      Transformer3WTypeInput type,
-      int tapPos,
-      boolean autoTap) {
-    super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    this.type = type;
-    this.nodeC = nodeC;
-    this.nodeInternal = nodeInternal;
-  }
-
-  /**
    * Constructor for a non-operated three winding transformer
    *
    * @param uuid of the input entity
@@ -142,36 +107,6 @@ public class Transformer3WInput extends TransformerInput {
             null,
             nodeA.getVoltLvl(),
             nodeA.getSubnet());
-  }
-
-  /**
-   * Constructor for a non-operated three winding transformer
-   *
-   * @param uuid of the input entity
-   * @param id of the asset
-   * @param nodeA The higher voltage node
-   * @param nodeB The middle voltage node
-   * @param nodeC The lower voltage node
-   * @param parallelDevices Amount of singular transformers
-   * @param type of 3W transformer
-   * @param tapPos Tap Position of this transformer
-   * @param autoTap true, if there is an automated regulation activated for this transformer
-   */
-  public Transformer3WInput(
-      UUID uuid,
-      String id,
-      NodeInput nodeA,
-      NodeInput nodeB,
-      NodeInput nodeC,
-      NodeInput nodeInternal,
-      int parallelDevices,
-      Transformer3WTypeInput type,
-      int tapPos,
-      boolean autoTap) {
-    super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    this.type = type;
-    this.nodeC = nodeC;
-    this.nodeInternal = nodeInternal;
   }
 
   public Transformer3WTypeInput getType() {
