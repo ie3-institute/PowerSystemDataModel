@@ -7,7 +7,7 @@ package edu.ie3.datamodel.models.input;
 
 import static java.time.temporal.ChronoUnit.HOURS;
 
-import edu.ie3.datamodel.models.LoadProfileType;
+import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.timeseries.RepetitiveTimeSeries;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
@@ -19,12 +19,12 @@ import java.util.UUID;
 // TODO This is a sample implementation, please implement a real scenario
 public class LoadProfileInput extends RepetitiveTimeSeries<PValue> {
 
-  private final LoadProfileType type;
+  private final StandardLoadProfile type;
   private final Map<DayOfWeek, Map<Integer, PValue>> dayOfWeekToHourlyValues;
 
   public LoadProfileInput(
       UUID uuid,
-      LoadProfileType type,
+      StandardLoadProfile type,
       Map<DayOfWeek, Map<Integer, PValue>> dayOfWeekToHourlyValues) {
     super(uuid);
     this.type = type;
@@ -32,7 +32,7 @@ public class LoadProfileInput extends RepetitiveTimeSeries<PValue> {
   }
 
   public LoadProfileInput(
-      LoadProfileType type, Map<DayOfWeek, Map<Integer, PValue>> dayOfWeekToHourlyValues) {
+      StandardLoadProfile type, Map<DayOfWeek, Map<Integer, PValue>> dayOfWeekToHourlyValues) {
     super();
     this.type = type;
     this.dayOfWeekToHourlyValues = dayOfWeekToHourlyValues;
@@ -53,7 +53,7 @@ public class LoadProfileInput extends RepetitiveTimeSeries<PValue> {
     return Optional.of(time.plus(1, HOURS));
   }
 
-  public LoadProfileType getType() {
+  public StandardLoadProfile getType() {
     return type;
   }
 
