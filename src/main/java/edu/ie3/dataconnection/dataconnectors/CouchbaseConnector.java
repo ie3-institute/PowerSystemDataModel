@@ -11,6 +11,8 @@ import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.Collection;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
+import edu.ie3.dataconnection.sink.CouchbaseDataSink;
+import edu.ie3.models.result.connector.LineResult;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -74,7 +76,7 @@ public class CouchbaseConnector implements DataConnector {
 
   @Override
   public void shutdown() {
-    mainLogger.debug("CouchbaseConnector is shutting down");
+    if (bucketName.endsWith("out")) deleteOutputKeysLike(LineResult.class);
     cluster.disconnect();
   }
 
@@ -97,5 +99,11 @@ public class CouchbaseConnector implements DataConnector {
 
   public void persist(String key, Object content) {
     getSession().async().insert(key, content);
+  }
+
+  public void deleteOutputKeysLike(Class clazz) {
+    String pattern = CouchbaseDataSink.generateResultKeyPrefix(clazz);
+    String query = "DELETE FROM ie3_out WHERE Meta().id LIKE '" + pattern + "%';";
+    query(query).join();
   }
 }

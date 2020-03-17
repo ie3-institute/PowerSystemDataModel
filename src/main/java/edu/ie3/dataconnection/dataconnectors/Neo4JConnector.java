@@ -5,10 +5,9 @@
 */
 package edu.ie3.dataconnection.dataconnectors;
 
+import java.util.Collection;
 import org.neo4j.ogm.config.Configuration;
 import org.neo4j.ogm.session.SessionFactory;
-
-import java.util.Collection;
 
 public class Neo4JConnector implements DataConnector {
 

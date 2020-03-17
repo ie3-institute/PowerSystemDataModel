@@ -206,7 +206,8 @@ public class Neo4JMapper {
     return transformer3WInput;
   }
 
-  public static Integer[] getNodeTids(Neo4JTransformer3WInput trafo1, Neo4JTransformer3WInput trafo2) {
+  public static Integer[] getNodeTids(
+      Neo4JTransformer3WInput trafo1, Neo4JTransformer3WInput trafo2) {
     Integer node1A = trafo1.getNodeA().getTid();
     Integer node1B = trafo1.getNodeB().getTid();
     Integer node2A = trafo2.getNodeA().getTid();
@@ -217,19 +218,19 @@ public class Neo4JMapper {
     return null;
   }
 
-  public static Transformer2WInput getBoundaryInjectionTransformer(){
+  public static Transformer2WInput getBoundaryInjectionTransformer() {
     Transformer2WInput transformer2WInput =
-            new Transformer2WInput(
-                    UUID.fromString("01fc415b-8909-3d9e-a4c6-505155d95c32"),
-                    OperationTime.notLimited(),
-                    null,
-                    "1000_Boundary_Injection",
-                    null,
-                    null,
-                    1,
-                    null,
-                    0,
-                    false);
+        new Transformer2WInput(
+            UUID.fromString("01fc415b-8909-3d9e-a4c6-505155d95c32"),
+            OperationTime.notLimited(),
+            null,
+            "1000_Boundary_Injection",
+            null,
+            null,
+            1,
+            null,
+            0,
+            false);
     return transformer2WInput;
   }
 }

@@ -39,6 +39,7 @@ public class RawGridPerformanceLogGenerator implements PerformanceLogGenerator {
   private static int index = 0;
 
   private final String name;
+  private final int idx = index++;
   private final Logger logger;
   private final DataConnectorName connectorName;
   private RawGridSource source;
@@ -47,7 +48,6 @@ public class RawGridPerformanceLogGenerator implements PerformanceLogGenerator {
     this.connectorName = connectorName;
     this.name = connectorName.getName() + "Grid";
     this.logger = LogManager.getLogger(name + "Logger");
-    index++;
   }
 
   @Override
@@ -56,12 +56,17 @@ public class RawGridPerformanceLogGenerator implements PerformanceLogGenerator {
     Object[] csvLogParams = getLogData(index);
     logger.info(name, csvLogParams);
     source.getDataConnector().shutdown();
+    try {
+      this.wait(1000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
     return csvLogParams;
   }
 
   private long measureTime() throws AssertionError {
     StopWatch watch = new StopWatch();
-    mainLogger.debug("{}", String.format("%3o | %16s | Starting watch", index, name));
+    mainLogger.debug("{}", String.format("%3o | %16s | Starting watch", idx, name));
     watch.start();
     AggregatedRawGridInput gridData = null;
     try {
@@ -70,33 +75,34 @@ public class RawGridPerformanceLogGenerator implements PerformanceLogGenerator {
       mainLogger.error(e);
     } finally {
       watch.stop();
-      mainLogger.debug("{}", String.format("%3o | %16s | Stopping watch", index, name));
+      mainLogger.debug("{}", String.format("%3o | %16s | Stopping watch", idx, name));
     }
     try {
       if (!RawGridHealthCheck.check(gridData))
-        throw new AssertionError("Result did not succeed health check");
+        throw new HealthCheckError("Result did not succeed health check", watch.getTime());
     } catch (Exception e) {
       logger.error(e);
     }
     return watch.getTime();
   }
 
-  private Object[] getLogData(int index) {
+  private Object[] getLogData(int idx) {
     long time = -1L;
     boolean succeededHealthCheck;
     ZonedDateTime start = ZonedDateTime.now();
     try {
       time = measureTime();
       succeededHealthCheck = true;
-    } catch (AssertionError e) {
+    } catch (HealthCheckError e) {
+      time = e.getMeasuredTime();
       succeededHealthCheck = false;
     }
-    return getCsvLogParams(index, start, succeededHealthCheck, time);
+    return getCsvLogParams(idx, start, succeededHealthCheck, time);
   }
 
   static Object[] getCsvLogParams(
-      int index, ZonedDateTime timestamp, boolean succeededHealthCheck, long time) {
-    return new Object[] {index, timestamp.toLocalDateTime(), succeededHealthCheck, time};
+      int idx, ZonedDateTime timestamp, boolean succeededHealthCheck, long time) {
+    return new Object[] {idx, timestamp.toLocalDateTime(), succeededHealthCheck, time};
   }
 
   public static RawGridSource getDefaultSource(DataConnectorName database) {

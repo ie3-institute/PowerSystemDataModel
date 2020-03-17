@@ -18,8 +18,6 @@ import edu.ie3.models.input.connector.Transformer2WInput;
 import edu.ie3.models.input.connector.Transformer3WInput;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -88,9 +86,6 @@ public class HibernateRawGridSource implements RawGridSource {
   public void fetchNodes() {
     try {
       List<HibernateNodeInput> hibernateNodes = connector.readAll(HibernateNodeInput.class);
-
-      hibernateNodes.stream().filter(n -> n.getTid().equals(60912)).forEach(n -> mainLogger.info((HibernateMapper.toNodeInput(n))));
-
       hibernateNodes.forEach(
           hNode -> aggregatedRawGridInput.add(HibernateMapper.toNodeInput(hNode)));
     } catch (Exception e) {
@@ -110,8 +105,7 @@ public class HibernateRawGridSource implements RawGridSource {
 
   private void fetchSwitches() {
     try {
-      List<HibernateSwitchInput> hibernateSwitches =
-          connector.readAll(HibernateSwitchInput.class);
+      List<HibernateSwitchInput> hibernateSwitches = connector.readAll(HibernateSwitchInput.class);
       hibernateSwitches.forEach(
           hSwitch -> aggregatedRawGridInput.add(HibernateMapper.toSwitchInput(hSwitch)));
     } catch (Exception e) {

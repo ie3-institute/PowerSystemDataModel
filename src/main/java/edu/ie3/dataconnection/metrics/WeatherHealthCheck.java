@@ -26,28 +26,6 @@ public class WeatherHealthCheck {
   public static boolean check(
       Map<Point, IndividualTimeSeries<WeatherValues>> coordinateToTimeSeries) {
     if (coordinateToTimeSeries == null) return false;
-    System.out.println(
-        "DiffuseIrradiation: "
-            + coordinateToTimeSeries
-                .get(exampleCoordinate)
-                .getValue(exampleDate)
-                .getIrradiation()
-                .getDiffuseIrradiation());
-    System.out.println(
-        "Temperature: "
-            + coordinateToTimeSeries
-                .get(exampleCoordinate)
-                .getValue(exampleDate)
-                .getTemperature()
-                .getTemperature());
-    System.out.println(
-        "Velocity: "
-            + coordinateToTimeSeries
-                .get(exampleCoordinate)
-                .getValue(exampleDate)
-                .getWind()
-                .getVelocity());
-
     if (coordinateToTimeSeries.keySet().size() != coordinateCount) return false;
     if (coordinateToTimeSeries.values().stream()
         .anyMatch(timeseries -> timeseries.size() != timeseriesLength)) return false;

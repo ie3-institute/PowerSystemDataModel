@@ -12,7 +12,6 @@ import edu.ie3.models.input.connector.SwitchInput;
 import edu.ie3.models.input.connector.Transformer2WInput;
 import edu.ie3.models.input.connector.Transformer3WInput;
 import edu.ie3.utils.ValidationUtils;
-
 import java.util.*;
 
 /** Represents the aggregation of raw grid elements (nodes, lines, transformers, switches) */

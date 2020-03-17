@@ -13,7 +13,11 @@ import java.util.Map;
 import java.util.TimeZone;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import edu.ie3.models.hibernate.output.HibernateLineResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,8 +33,8 @@ public class HibernateConnector implements DataConnector {
   public HibernateConnector(String persistenceUnitName) {
     TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")));
     this.persistenceUnitName = persistenceUnitName;
-      manager = getEntityManagerFactory().createEntityManager();
-      builder = getEntityManagerFactory().getCriteriaBuilder();
+    manager = getEntityManagerFactory().createEntityManager();
+    builder = getEntityManagerFactory().getCriteriaBuilder();
   }
 
   @Override
@@ -40,12 +44,34 @@ public class HibernateConnector implements DataConnector {
 
   @Override
   public void shutdown() {
+    deleteAll(HibernateLineResult.class);
     if (manager != null) {
       manager.close();
     }
     if (factory != null) {
       factory.close();
     }
+  }
+
+  private void deleteAll(Class clazz) {
+    EntityTransaction transaction = null;
+    try {
+      transaction = manager.getTransaction();
+      if (!transaction.isActive()) transaction.begin();
+      CriteriaDelete<HibernateLineResult> delete = builder.createCriteriaDelete(clazz);
+      Root r = delete.from(HibernateLineResult.class);
+      Query query = manager.createQuery(delete);
+      query.executeUpdate();
+      transaction.commit();
+    } catch (Exception ex) {
+      // If there are any exceptions, roll back the changes
+      if (transaction != null) {
+        transaction.rollback();
+      }
+      mainLogger.error(ex);
+      ex.printStackTrace();
+    }
+    manager.joinTransaction();
   }
 
   public final EntityManagerFactory getEntityManagerFactory() {

@@ -45,7 +45,7 @@ public class Main {
       useCouchbase = args[3].contains("c");
       useNeo4j = args[3].contains("n");
     }
-    numberOfAttempts /= 5;
+    numberOfAttempts /= 8;
     taskExecutor = Executors.newFixedThreadPool(numberOfThreads);
     logger.info("Version: " + 1.2);
     logger.info(
@@ -80,7 +80,7 @@ public class Main {
     CsvCoordinateSource.fillCoordinateMaps();
     CsvTypeSource.fillMaps();
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < numberOfAttempts; i++) {
       if (measureWeather) getWeatherPerformance();
       if (measureRawGrid) getRawGridPerformance();
       if (measureOutput) getOutputPerformance();
@@ -96,7 +96,7 @@ public class Main {
 
   private static void getWeatherPerformance(DataConnectorName connectorName) {
     ArrayList<Callable<Object[]>> tasks = new ArrayList<>();
-    for (int i = 0; i < numberOfAttempts; i++) {
+    for (int i = 0; i < 8; i++) {
       tasks.add(new WeatherPerformanceLogGenerator(connectorName));
     }
     try {
@@ -116,7 +116,7 @@ public class Main {
 
   private static void getRawGridPerformance(DataConnectorName connectorName) {
     ArrayList<Callable<Object[]>> tasks = new ArrayList<>();
-    for (int i = 0; i < numberOfAttempts; i++) {
+    for (int i = 0; i < 8; i++) {
       tasks.add(new RawGridPerformanceLogGenerator(connectorName));
     }
     try {
@@ -136,7 +136,7 @@ public class Main {
 
   private static void getOutputPerformance(DataConnectorName connectorName) {
     ArrayList<Callable<Object[]>> tasks = new ArrayList<>();
-    for (int i = 0; i < numberOfAttempts; i++) {
+    for (int i = 0; i < 8; i++) {
       tasks.add(new OutputPerformanceLogGenerator(connectorName));
     }
     try {

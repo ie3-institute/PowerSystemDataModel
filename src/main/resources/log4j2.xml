@@ -46,12 +46,16 @@
         <File name="VerboseFileLog" fileName="logs/all.log">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %-15C{1}:%L - %msg%n"/>
         </File>
+        <File name="ErrorFileLog" fileName="logs/error.log">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %-15C{1}:%L - %msg%n"/>
+        </File>
     </Appenders>
 
     <Loggers>
         <Root level="Debug">
             <AppenderRef ref="Console" level="WARN"/>
             <AppenderRef ref="VerboseFileLog" />
+            <AppenderRef ref="ErrorFileLog" level="WARN"/>
         </Root>
 
         <Logger name="Main" level="Debug">

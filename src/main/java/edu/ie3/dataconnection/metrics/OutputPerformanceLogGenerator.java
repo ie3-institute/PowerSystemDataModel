@@ -16,8 +16,13 @@ import edu.ie3.dataconnection.sink.InfluxDbDataSink;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.ResultEntity;
 import edu.ie3.models.result.connector.LineResult;
+
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
@@ -29,64 +34,61 @@ import tec.uom.se.quantity.Quantities;
 public class OutputPerformanceLogGenerator implements PerformanceLogGenerator {
 
   private static final Random random = new Random();
-  private static final int numberOfEntities = 10000;
-  private static final List<UUID> lineUUIDs =
-      Arrays.asList(
-          UUID.randomUUID(),
-          UUID.randomUUID(),
-          UUID.randomUUID(),
-          UUID.randomUUID(),
-          UUID.randomUUID(),
-          UUID.randomUUID(),
-          UUID.randomUUID(),
-          UUID.randomUUID(),
-          UUID.randomUUID(),
-          UUID.randomUUID(),
-          UUID.randomUUID());
+  private static final int numberOfEntities = 100000; //MIA
   private static final UUID comparisonUUID =
       UUID.fromString("11111111-2222-3333-4444-555555555555");
-
   private static int index = 0;
+  private static UUID[] uuids = new UUID[numberOfEntities];
+  static {
+    for (int i = 0; i < numberOfEntities; i++) {
+      uuids[i] = UUID.randomUUID();
+    }
+  }
 
   private final String name;
+  private final int idx = index ++;
   private final Logger logger;
   private final DataConnectorName connectorName;
   private DataSink sink;
-  private Collection<LineResult> resultEntities;
 
   public OutputPerformanceLogGenerator(DataConnectorName connectorName) {
     this.connectorName = connectorName;
     this.name = connectorName.getName() + "Output";
     this.logger = LogManager.getLogger(name + "Logger");
-    index++;
   }
 
   @Override
   public Object[] call() {
     sink = getDefaultSink(connectorName);
-    Object[] csvLogParams = getLogData(index, generateResultEntities());
+    Object[] csvLogParams = getLogData(idx, generateResultEntities());
     logger.info(name, csvLogParams);
     sink.getDataConnector().shutdown();
+    try {
+      this.wait(1000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
     return csvLogParams;
   }
 
   private long measureTime(Collection<? extends ResultEntity> resultEntities) {
     StopWatch watch = new StopWatch();
 
-    mainLogger.debug("{}", String.format("%3o | %16s | Starting watch", index, name));
+    mainLogger.debug("{}", String.format("%3o | %16s | Starting watch", idx, name));
     watch.start();
     try {
       sink.persistAll(resultEntities);
     } catch (Exception e) {
       mainLogger.error(e);
+      e.printStackTrace();
     } finally {
       watch.stop();
-      mainLogger.debug("{}", String.format("%3o | %16s | Stopping watch", index, name));
+      mainLogger.debug("{}", String.format("%3o | %16s | Stopping watch", idx, name));
     }
     return watch.getTime();
   }
 
-  private Object[] getLogData(int index, Collection<? extends ResultEntity> resultEntities) {
+  private Object[] getLogData(int idx, Collection<? extends ResultEntity> resultEntities) {
     long time = -1L;
     boolean succeededHealthCheck;
     ZonedDateTime start = ZonedDateTime.now();
@@ -96,12 +98,12 @@ public class OutputPerformanceLogGenerator implements PerformanceLogGenerator {
     } catch (AssertionError e) {
       succeededHealthCheck = false;
     }
-    return getCsvLogParams(index, start, succeededHealthCheck, time);
+    return getCsvLogParams(idx, start, succeededHealthCheck, time);
   }
 
   private static Object[] getCsvLogParams(
-      int index, ZonedDateTime timestamp, boolean succeededHealthCheck, long time) {
-    return new Object[] {index, timestamp.toLocalDateTime(), succeededHealthCheck, time};
+      int idx, ZonedDateTime timestamp, boolean succeededHealthCheck, long time) {
+    return new Object[] {idx, timestamp.toLocalDateTime(), succeededHealthCheck, time};
   }
 
   public static Collection<LineResult> generateResultEntities() {
@@ -117,18 +119,18 @@ public class OutputPerformanceLogGenerator implements PerformanceLogGenerator {
           Quantities.getQuantity(generateDoubleValue(), StandardUnits.ELECTRIC_CURRENT_ANGLE);
       LineResult lineResult =
           new LineResult(
-              ZonedDateTime.now(), lineUUIDs.get(random.nextInt(10)), iAMa, iAAng, iBMag, iBAng);
+              Instant.now().atZone(ZoneId.of("UTC")), uuids[i], iAMa, iAAng, iBMag, iBAng);
       resultEntities.add(lineResult);
     }
 
     // Add a comparison object
-    Quantity<ElectricCurrent> iAMa = null;
+    Quantity<ElectricCurrent> iAMag = null;
     Quantity<Angle> iAAng = Quantities.getQuantity(1, StandardUnits.ELECTRIC_CURRENT_ANGLE);
     Quantity<ElectricCurrent> iBMag = Quantities.getQuantity(-2d, StandardUnits.CURRENT);
     Quantity<Angle> iBAng =
         Quantities.getQuantity(3.3333333333333333, StandardUnits.ELECTRIC_CURRENT_ANGLE);
     LineResult lineResult =
-        new LineResult(ZonedDateTime.now(), comparisonUUID, iAMa, iAAng, iBMag, iBAng);
+        new LineResult(ZonedDateTime.now(), comparisonUUID, iAMag, iAAng, iBMag, iBAng);
     resultEntities.add(lineResult);
 
     return resultEntities;

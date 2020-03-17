@@ -5,16 +5,19 @@
 */
 package edu.ie3.dataconnection.dataconnectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Pong;
 import org.influxdb.dto.Query;
 
+import java.util.concurrent.TimeUnit;
+
 public class InfluxDbConnector implements DataConnector {
+  private static Logger mainLogger = LogManager.getLogger("Main");
   private static final String INFLUXDB_URL = "http://localhost:8086/";
-  //    private static final String USERNAME = "";
-  //    private static final String PASSWORD = "";
   private String databaseName = "ie3_in";
 
   public InfluxDbConnector(String databaseName) {
@@ -36,7 +39,10 @@ public class InfluxDbConnector implements DataConnector {
   }
 
   @Override
-  public void shutdown() {}
+  public void shutdown()
+  {
+    if (databaseName.endsWith("out")) deleteOutput();
+  }
 
   public String getDatabaseName() {
     return databaseName;
@@ -52,7 +58,13 @@ public class InfluxDbConnector implements DataConnector {
     session.setDatabase(databaseName);
     session.query(new Query("CREATE DATABASE " + databaseName, databaseName));
     session.setLogLevel(InfluxDB.LogLevel.NONE);
-    session.enableBatch(BatchOptions.DEFAULTS);
+    session.enableBatch(100000, 5, TimeUnit.SECONDS);
     return session;
+  }
+
+  private void deleteOutput() {
+    try (InfluxDB session = getSession()) {
+      session.query(new Query("DELETE FROM line_result", databaseName));
+    }
   }
 }

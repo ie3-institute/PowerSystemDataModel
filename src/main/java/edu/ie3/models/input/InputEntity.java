@@ -19,7 +19,4 @@ public abstract class InputEntity extends UniqueEntity {
   public String toString() {
     return "InputEntity{} " + super.toString();
   }
-
-
-
 }

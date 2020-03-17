@@ -5,12 +5,11 @@
 */
 package edu.ie3.models.neo4j;
 
+import java.util.Date;
 import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.RelationshipEntity;
 import org.neo4j.ogm.annotation.StartNode;
 import org.neo4j.ogm.annotation.typeconversion.DateString;
-
-import java.util.Date;
 
 @RelationshipEntity(type = "TRANSFORMER3W")
 public class Neo4JTransformer3WInput {

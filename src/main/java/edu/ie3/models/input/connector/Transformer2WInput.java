@@ -98,8 +98,6 @@ public class Transformer2WInput extends TransformerInput {
 
   @Override
   public String toString() {
-    return "Transformer2WInput{" +
-            "type=" + type +
-            "} " + super.toString();
+    return "Transformer2WInput{" + "type=" + type + "} " + super.toString();
   }
 }

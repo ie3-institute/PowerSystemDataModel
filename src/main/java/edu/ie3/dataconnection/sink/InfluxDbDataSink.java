@@ -12,12 +12,16 @@ import edu.ie3.models.influxdb.InfluxDbEntity;
 import edu.ie3.models.influxdb.InfluxDbMapper;
 import edu.ie3.models.result.ResultEntity;
 import java.util.Collection;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 
 public class InfluxDbDataSink implements DataSink {
 
+  private static Logger mainLogger = LogManager.getLogger("Main");
   InfluxDbConnector connector;
 
   public InfluxDbDataSink(InfluxDbConnector connector) {
@@ -55,6 +59,7 @@ public class InfluxDbDataSink implements DataSink {
 
     try (InfluxDB session = connector.getSession()) {
       session.write(batchPoints);
+      session.flush();
     }
   }
 }

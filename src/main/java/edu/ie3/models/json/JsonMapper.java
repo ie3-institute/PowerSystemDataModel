@@ -25,7 +25,6 @@ import edu.ie3.models.result.ResultEntity;
 import edu.ie3.models.result.connector.LineResult;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.utils.CoordinateUtils;
-
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -50,7 +49,9 @@ public class JsonMapper {
 
     UUID uuid = UUID.fromString(uuidString);
     Point coordinate =
-        (xCoord != null && yCoord != null) ? CoordinateUtils.xyCoordToPoint(xCoord.doubleValue(), yCoord.doubleValue()) : null;
+        (xCoord != null && yCoord != null)
+            ? CoordinateUtils.xyCoordToPoint(xCoord.doubleValue(), yCoord.doubleValue())
+            : null;
     Quantity<Dimensionless> vTarget =
         Quantities.getQuantity(object.getInt("v_target"), StandardUnits.TARGET_VOLTAGE);
     ComparableQuantity<ElectricPotential> vRated =
@@ -67,7 +68,7 @@ public class JsonMapper {
   }
 
   public static Integer getTid(JsonObject jsonObject) {
-    if(jsonObject == null) return null;
+    if (jsonObject == null) return null;
     return jsonObject.getInt("tid");
   }
 
@@ -202,15 +203,12 @@ public class JsonMapper {
     jsonObject.put("uuid", lineResult.getUuid().toString());
     jsonObject.put("input_line", lineResult.getInputModel().toString());
     jsonObject.put("datum", lineResult.getTimestamp().toString());
-    jsonObject.put("iAMag", lineResult.getiAMag().getValue().doubleValue());
-    jsonObject.put("iAAng", lineResult.getiAAng().getValue().doubleValue());
-    jsonObject.put("iBMag", lineResult.getiBMag().getValue().doubleValue());
-    jsonObject.put("iBAng", lineResult.getiBAng().getValue().doubleValue());
+    jsonObject.put("iAMag", lineResult.getiAMag()!= null?  lineResult.getiAMag().getValue().doubleValue() : null);
+    jsonObject.put("iAAng", lineResult.getiAAng()!= null?  lineResult.getiAAng().getValue().doubleValue() : null);
+    jsonObject.put("iBMag", lineResult.getiBMag()!= null?  lineResult.getiBMag().getValue().doubleValue() : null);
+    jsonObject.put("iBAng", lineResult.getiBAng()!= null?  lineResult.getiBAng().getValue().doubleValue() : null);
 
     return jsonObject;
-
-    //    JsonObject jsonLineResult = JsonObject.from(valueMap);
-    //    return jsonLineResult;
   }
 
   public static JsonObject toJsonResult(ResultEntity resultEntity) {
@@ -218,26 +216,24 @@ public class JsonMapper {
     throw new IllegalArgumentException("Unkown entity");
   }
 
-
-  public static Transformer2WInput getBoundaryInjectionTransformer(){
+  public static Transformer2WInput getBoundaryInjectionTransformer() {
     try {
       Transformer2WInput transformer2WInput =
-              new Transformer2WInput(
-                      UUID.fromString("01fc415b-8909-3d9e-a4c6-505155d95c32"),
-                      OperationTime.notLimited(),
-                      null,
-                      "1000_Boundary_Injection",
-                      null,
-                      null,
-                      1,
-                      null,
-                      0,
-                      false);
+          new Transformer2WInput(
+              UUID.fromString("01fc415b-8909-3d9e-a4c6-505155d95c32"),
+              OperationTime.notLimited(),
+              null,
+              "1000_Boundary_Injection",
+              null,
+              null,
+              1,
+              null,
+              0,
+              false);
       return transformer2WInput;
-    } catch(NullPointerException npe) {
+    } catch (NullPointerException npe) {
       mainLogger.error(npe);
     }
     return null;
   }
-
 }

@@ -9,7 +9,10 @@ import edu.ie3.models.result.connector.LineResult;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
+@Entity(name = "res_lines")
 public class HibernateLineResult implements HibernateResult {
 
   @Column(name = "datum")
@@ -18,6 +21,7 @@ public class HibernateLineResult implements HibernateResult {
   @Column(name = "input_line", columnDefinition = "uuid")
   UUID input_uuid;
 
+  @Id
   @Column(name = "uuid", columnDefinition = "uuid")
   UUID uuid;
 
@@ -39,10 +43,10 @@ public class HibernateLineResult implements HibernateResult {
     date = lineResult.getTimestamp();
     input_uuid = lineResult.getInputModel();
     uuid = lineResult.getUuid();
-    iAMag = lineResult.getiAMag().getValue().doubleValue();
-    iAAng = lineResult.getiAAng().getValue().doubleValue();
-    iBMag = lineResult.getiBMag().getValue().doubleValue();
-    iBAng = lineResult.getiBAng().getValue().doubleValue();
+    iAMag = lineResult.getiAMag()!= null?  lineResult.getiAMag().getValue().doubleValue() : null;
+    iAAng = lineResult.getiAAng()!= null?  lineResult.getiAAng().getValue().doubleValue() : null;
+    iBMag = lineResult.getiBMag()!= null?  lineResult.getiBMag().getValue().doubleValue() : null;
+    iBAng = lineResult.getiBAng()!= null?  lineResult.getiBAng().getValue().doubleValue() : null;
   }
 
   public ZonedDateTime getDate() {

@@ -34,19 +34,24 @@ public class CouchbaseDataSink implements DataSink {
 
   @Override
   public void persistAll(Collection<? extends ResultEntity> entities) {
-    final AsyncCollection session = connector.getAsyncSession();
+    com.couchbase.client.java.Collection session = connector.getSession();
     for (ResultEntity entity : entities) {
       JsonObject json = JsonMapper.toJsonResult(entity);
       session.upsert(generateKey(entity), json);
     }
   }
 
-  public String generateKey(ResultEntity entity) {
-    String scenarioName = "vn_simona";
-    String key = scenarioName + "::";
-    key += entity.getClass().getSimpleName() + "::";
+  public static String generateKey(ResultEntity entity) {
+    String key = generateResultKeyPrefix(entity.getClass());
     key += entity.getInputModel() + "::";
     key += entity.getTimestamp();
     return key;
+  }
+
+  public static String generateResultKeyPrefix(Class clazz) {
+    String scenarioName = "vn_simona";
+    String keyPrefix = scenarioName + "::";
+    keyPrefix += clazz.getSimpleName() + "::";
+    return keyPrefix;
   }
 }

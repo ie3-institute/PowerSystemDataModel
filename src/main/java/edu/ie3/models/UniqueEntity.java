@@ -39,8 +39,6 @@ public abstract class UniqueEntity {
 
   @Override
   public String toString() {
-    return "UniqueEntity{" +
-            "uuid=" + uuid +
-            '}';
+    return "UniqueEntity{" + "uuid=" + uuid + '}';
   }
 }

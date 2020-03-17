@@ -9,20 +9,13 @@ import edu.ie3.dataconnection.source.csv.CsvTypeSource;
 import edu.ie3.models.GermanVoltageLevel;
 import edu.ie3.models.OperationTime;
 import edu.ie3.models.StandardUnits;
-import edu.ie3.models.UniqueEntity;
-import edu.ie3.models.input.AssetInput;
-import edu.ie3.models.input.InputEntity;
 import edu.ie3.models.input.NodeInput;
 import edu.ie3.models.input.aggregated.AggregatedRawGridInput;
 import edu.ie3.models.input.connector.Transformer3WInput;
 import edu.ie3.utils.CoordinateUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tec.uom.se.quantity.Quantities;
@@ -88,31 +81,15 @@ public class RawGridHealthCheck {
           false);
 
   public static boolean check(AggregatedRawGridInput gridData) {
-    mainLogger.info("GridData is nuLL?");
     if (gridData == null) return false;
-    mainLogger.info("NodeCount");
     if (gridData.getNodes().size() != nodeCount) return false;
-    mainLogger.info("lineCount " + gridData.getLines().size());
     if (gridData.getLines().size() != lineCount) return false;
-    mainLogger.info("switchCount " + gridData.getSwitches().size());
     if (gridData.getSwitches().size() != switchCount) return false;
-    mainLogger.info("Looking up trafo2wCount (is " + gridData.getTransformer2Ws().size() + ")");
     if (gridData.getTransformer2Ws().size() != trafo2wCount) return false;
-    mainLogger.info("Looking up trafo3wCount (is " + gridData.getTransformer3Ws().size() + ")");
     if (gridData.getTransformer3Ws().size() != trafo3wCount) return false;
-    mainLogger.info("Looking up NodeA");
     if (!gridData.getNodes().contains(exampleNodeA)) return false;
-    mainLogger.info("Looking up NodeB");
     if (!gridData.getNodes().contains(exampleNodeB)) return false;
-    mainLogger.info("Looking up NodeC");
-    NodeInput nodeC = gridData.getNodes().stream()
-            .filter(exampleNodeC::equals).collect(Collectors.toUnmodifiableList()).get(0);
-    mainLogger.info("Nodes equal? " + Objects.equals(exampleNodeC,nodeC)); //true
-    mainLogger.info("Does gridData contain exampleNodeC? " + gridData.getNodes().contains(exampleNodeC)); //false
-    mainLogger.info("Does gridData contain nodeC? " + gridData.getNodes().contains(nodeC)); //true
-    mainLogger.info(exampleNodeC);
     if (!gridData.getNodes().contains(exampleNodeC)) return false;
-    mainLogger.info("Looking up Trafo3w");
     return gridData.getTransformer3Ws().contains(exampleTransformer3W);
   }
 }

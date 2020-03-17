@@ -8,7 +8,6 @@ package edu.ie3.dataconnection.source.couchbase;
 import com.couchbase.client.java.json.JsonArray;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.query.QueryResult;
-import com.squareup.moshi.Json;
 import edu.ie3.dataconnection.dataconnectors.CouchbaseConnector;
 import edu.ie3.dataconnection.dataconnectors.DataConnector;
 import edu.ie3.dataconnection.source.RawGridSource;
@@ -20,11 +19,10 @@ import edu.ie3.models.input.connector.SwitchInput;
 import edu.ie3.models.input.connector.Transformer2WInput;
 import edu.ie3.models.input.connector.Transformer3WInput;
 import edu.ie3.models.json.JsonMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CouchbaseRawGridSource implements RawGridSource {
 
@@ -72,7 +70,6 @@ public class CouchbaseRawGridSource implements RawGridSource {
 
   @Override
   public Collection<Transformer3WInput> get3WTransformers() {
-
     if (!fetched) fetch();
     return aggregatedRawGridInput.getTransformer3Ws();
   }
@@ -101,8 +98,6 @@ public class CouchbaseRawGridSource implements RawGridSource {
         i++) { // for is used to avoid the cast in forEach(..) or iterator
       JsonObject object = nodesArr.getObject(i);
       NodeInput node = JsonMapper.toNodeInput(object);
-      if(Arrays.asList(60910, 60912, 60911).contains(JsonMapper.getTid(object))) //MIA
-      mainLogger.info("Node with TID " + JsonMapper.getTid(object) + ": " + node);
       idToNode.put(JsonMapper.getTid(object), node);
       aggregatedRawGridInput.add(node);
     }
@@ -170,7 +165,6 @@ public class CouchbaseRawGridSource implements RawGridSource {
   private void fetch3WTrafos(JsonArray trafo3WArr) {
     if (!fetchedNodes) fetchNodes();
     if (trafo3WArr != null) {
-      mainLogger.info("Trafo3WArrSize: " + trafo3WArr.size());
       for (int i = 0;
           i < trafo3WArr.size();
           i++) { // for is used to avoid the cast in forEach(..) or iterator

@@ -41,6 +41,7 @@ public class WeatherPerformanceLogGenerator implements PerformanceLogGenerator {
   private static int index = 0;
 
   private final String name;
+  private final int idx = index++;
   private final Logger logger;
   private final DataConnectorName connectorName;
   private WeatherSource source;
@@ -49,7 +50,6 @@ public class WeatherPerformanceLogGenerator implements PerformanceLogGenerator {
     this.connectorName = connectorName;
     this.name = connectorName.getName() + "Weather";
     this.logger = LogManager.getLogger(name + "Logger");
-    index++;
   }
 
   @Override
@@ -63,12 +63,17 @@ public class WeatherPerformanceLogGenerator implements PerformanceLogGenerator {
     Object[] csvLogParams = getLogData(index);
     logger.info(name, csvLogParams);
     source.getDataConnector().shutdown();
+    try {
+      this.wait(1000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
     return csvLogParams;
   }
 
   private long measureTime() throws AssertionError {
     StopWatch watch = new StopWatch();
-    mainLogger.debug("{}", String.format("%3o | %16s | Starting watch", index, name));
+    mainLogger.debug("{}", String.format("%3o | %16s | Starting watch", idx, name));
     watch.start();
     Map<Point, IndividualTimeSeries<WeatherValues>> coordinateToTimeSeries = null;
     try {
@@ -77,10 +82,10 @@ public class WeatherPerformanceLogGenerator implements PerformanceLogGenerator {
       mainLogger.error(e);
     } finally {
       watch.stop();
-      mainLogger.debug("{}", String.format("%3o | %16s | Stopping watch", index, name));
+      mainLogger.debug("{}", String.format("%3o | %16s | Stopping watch", idx, name));
     }
     if (!WeatherHealthCheck.check(coordinateToTimeSeries))
-      throw new AssertionError("Result did not succeed health check");
+      throw new HealthCheckError("Result did not succeed health check", watch.getTime());
     return watch.getTime();
   }
 
@@ -91,10 +96,11 @@ public class WeatherPerformanceLogGenerator implements PerformanceLogGenerator {
     try {
       time = measureTime();
       succeededHealthCheck = true;
-    } catch (AssertionError e) {
+    } catch (HealthCheckError e) {
+      time = e.getMeasuredTime();
       succeededHealthCheck = false;
     }
-    return getCsvLogParams(index, start, succeededHealthCheck, time);
+    return getCsvLogParams(idx, start, succeededHealthCheck, time);
   }
 
   static Object[] getCsvLogParams(

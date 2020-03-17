@@ -152,9 +152,9 @@ public class NodeInput extends AssetInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     NodeInput nodeInput = (NodeInput) o;
-    if(geoPosition == null ){
-      if(nodeInput.geoPosition != null) return false;
-    } else if(!geoPosition.equalsExact(nodeInput.geoPosition, 100)) return false;
+    if (geoPosition == null) {
+      if (nodeInput.geoPosition != null) return false;
+    } else if (!geoPosition.equalsExact(nodeInput.geoPosition, 100)) return false;
     return slack == nodeInput.slack
         && subnet == nodeInput.subnet
         && Objects.equals(vTarget, nodeInput.vTarget)
@@ -169,13 +169,20 @@ public class NodeInput extends AssetInput {
 
   @Override
   public String toString() {
-    return "NodeInput{" +
-            "vTarget=" + vTarget +
-            ", vRated=" + vRated +
-            ", slack=" + slack +
-            ", geoPosition=" + geoPosition +
-            ", voltLvl=" + voltLvl +
-            ", subnet=" + subnet +
-            "} " + super.toString();
+    return "NodeInput{"
+        + "vTarget="
+        + vTarget
+        + ", vRated="
+        + vRated
+        + ", slack="
+        + slack
+        + ", geoPosition="
+        + geoPosition
+        + ", voltLvl="
+        + voltLvl
+        + ", subnet="
+        + subnet
+        + "} "
+        + super.toString();
   }
 }
