@@ -39,11 +39,20 @@ apply from: scriptsLocation + 'mavenCentralPublish.gradle'
 repositories {
 	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
 	maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
+
+	// sonatype snapshots repo // todo remove
+	maven { url 'https://oss.sonatype.org/service/local/repositories/snapshots/content' }
+
 }
 
 dependencies {
 	// ie³ internal repository for units
-	compile 'com.github.ie3-institute:PowerSystemUtils:1.3'
+//	compile 'com.github.ie3-institute:PowerSystemUtils:1.3' // todo enable again
+
+	// todo remove snapshot again
+	compile('com.github.ie3-institute:PowerSystemUtils:1.3-SNAPSHOT') {
+		exclude group: 'org.slf4j', module: 'slf4j-api'
+	}
 
 	compile "tec.uom:uom-se:$unitsOfMeasurementVersion"
 
