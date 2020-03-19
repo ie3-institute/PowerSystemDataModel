@@ -6,17 +6,22 @@
 package edu.ie3.datamodel.utils;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.UnsafeEntityException;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.connector.ConnectorInput;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.input.container.GraphicElements;
+import edu.ie3.datamodel.models.input.container.RawGridElements;
+import edu.ie3.datamodel.models.input.container.SystemParticipants;
+import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
+import java.util.Collection;
+import java.util.Set;
 
 /** Basic Sanity validation tools for entities */
 public class ValidationUtils {
@@ -76,6 +81,35 @@ public class ValidationUtils {
   }
 
   /**
+   * Checks, if the nodes of the {@link ConnectorInput} are in the collection of provided, already
+   * determined nodes
+   *
+   * @param connector Connector to examine
+   * @param nodes Permissible, already known nodes
+   * @return true, if everything is fine
+   */
+  private static boolean checkNodeAvailability(
+      ConnectorInput connector, Collection<NodeInput> nodes) {
+    if (!nodes.contains(connector.getNodeA()) || !nodes.contains(connector.getNodeB()))
+      throw getMissingNodeException(connector);
+    return true;
+  }
+
+  /**
+   * Checks, if the node of the {@link SystemParticipantInput} are in the collection of provided,
+   * already determined nodes
+   *
+   * @param participant Connector to examine
+   * @param nodes Permissible, already known nodes
+   * @return true, if everything is fine
+   */
+  private static boolean checkNodeAvailability(
+      SystemParticipantInput participant, Collection<NodeInput> nodes) {
+    if (!nodes.contains(participant.getNode())) throw getMissingNodeException(participant);
+    return true;
+  }
+
+  /**
    * Validates a line if: <br>
    * - it is not null <br>
    * - line type is not null <br>
@@ -86,7 +120,12 @@ public class ValidationUtils {
   public static boolean checkLine(LineInput line) {
     if (line == null) return false;
     if (line.getType() == null) throw new InvalidEntityException("line type is null", line);
-    return checkLineType(line.getType()) && checkConnector(line);
+    checkConnector(line);
+    if (line.getNodeA().getSubnet() != line.getNodeB().getSubnet())
+      throw new InvalidEntityException("the line {} connects to different subnets", line);
+    if (line.getNodeA().getVoltLvl() != line.getNodeB().getVoltLvl())
+      throw new InvalidEntityException("the line {} connects to different voltage levels", line);
+    return checkLineType(line.getType());
   }
 
   /**
@@ -149,12 +188,8 @@ public class ValidationUtils {
     if ((trafoType.getsRated().getValue().doubleValue() == 0d)
         || (trafoType.getvRatedA().getValue().doubleValue() == 0d)
         || (trafoType.getvRatedB().getValue().doubleValue() == 0d)
-        || (trafoType.getrSc().getValue().doubleValue() == 0d)
         || (trafoType.getxSc().getValue().doubleValue() == 0d)
-        || (trafoType.getgM().getValue().doubleValue() == 0d)
-        || (trafoType.getbM().getValue().doubleValue() == 0d)
-        || (trafoType.getdV().getValue().doubleValue() == 0d)
-        || (trafoType.getdPhi().getValue().doubleValue() == 0d))
+        || (trafoType.getdV().getValue().doubleValue() == 0d))
       throw new UnsafeEntityException("at least one value of trafo2w type is 0", trafoType);
     return true;
   }
@@ -182,40 +217,34 @@ public class ValidationUtils {
    */
   public static boolean checkTransformer3WType(Transformer3WTypeInput trafoType) {
     if (trafoType == null) return false;
-    if ((trafoType.getSRatedA() == null)
-        || (trafoType.getSRatedB() == null)
-        || (trafoType.getSRatedC() == null)
-        || (trafoType.getVRatedA() == null)
-        || (trafoType.getVRatedB() == null)
-        || (trafoType.getVRatedC() == null)
-        || (trafoType.getRScA() == null)
-        || (trafoType.getRScB() == null)
-        || (trafoType.getRScC() == null)
-        || (trafoType.getXScA() == null)
-        || (trafoType.getXScB() == null)
-        || (trafoType.getXScC() == null)
-        || (trafoType.getGM() == null)
-        || (trafoType.getBM() == null)
-        || (trafoType.getDV() == null)
-        || (trafoType.getDPhi() == null))
+    if ((trafoType.getsRatedA() == null)
+        || (trafoType.getsRatedB() == null)
+        || (trafoType.getsRatedC() == null)
+        || (trafoType.getvRatedA() == null)
+        || (trafoType.getvRatedB() == null)
+        || (trafoType.getvRatedC() == null)
+        || (trafoType.getrScA() == null)
+        || (trafoType.getrScB() == null)
+        || (trafoType.getrScC() == null)
+        || (trafoType.getxScA() == null)
+        || (trafoType.getxScB() == null)
+        || (trafoType.getxScC() == null)
+        || (trafoType.getgM() == null)
+        || (trafoType.getbM() == null)
+        || (trafoType.getdV() == null)
+        || (trafoType.getdPhi() == null))
       throw new InvalidEntityException("at least one value of trafo3w type is null", trafoType);
 
-    if ((trafoType.getSRatedA().getValue().doubleValue() == 0d)
-        || (trafoType.getSRatedB().getValue().doubleValue() == 0d)
-        || (trafoType.getSRatedC().getValue().doubleValue() == 0d)
-        || (trafoType.getVRatedA().getValue().doubleValue() == 0d)
-        || (trafoType.getVRatedB().getValue().doubleValue() == 0d)
-        || (trafoType.getVRatedC().getValue().doubleValue() == 0d)
-        || (trafoType.getRScA().getValue().doubleValue() == 0d)
-        || (trafoType.getRScB().getValue().doubleValue() == 0d)
-        || (trafoType.getRScC().getValue().doubleValue() == 0d)
-        || (trafoType.getXScA().getValue().doubleValue() == 0d)
-        || (trafoType.getXScB().getValue().doubleValue() == 0d)
-        || (trafoType.getXScC().getValue().doubleValue() == 0d)
-        || (trafoType.getGM().getValue().doubleValue() == 0d)
-        || (trafoType.getBM().getValue().doubleValue() == 0d)
-        || (trafoType.getDV().getValue().doubleValue() == 0d)
-        || (trafoType.getDPhi().getValue().doubleValue() == 0d))
+    if ((trafoType.getsRatedA().getValue().doubleValue() == 0d)
+        || (trafoType.getsRatedB().getValue().doubleValue() == 0d)
+        || (trafoType.getsRatedC().getValue().doubleValue() == 0d)
+        || (trafoType.getvRatedA().getValue().doubleValue() == 0d)
+        || (trafoType.getvRatedB().getValue().doubleValue() == 0d)
+        || (trafoType.getvRatedC().getValue().doubleValue() == 0d)
+        || (trafoType.getxScA().getValue().doubleValue() == 0d)
+        || (trafoType.getxScB().getValue().doubleValue() == 0d)
+        || (trafoType.getxScC().getValue().doubleValue() == 0d)
+        || (trafoType.getdV().getValue().doubleValue() == 0d))
       throw new UnsafeEntityException("at least one value of trafo3w type is 0", trafoType);
     return true;
   }
@@ -229,6 +258,175 @@ public class ValidationUtils {
     if (measurementUnit == null) return false;
     if (measurementUnit.getNode() == null)
       throw new InvalidEntityException("node is null", measurementUnit);
+    return true;
+  }
+
+  /**
+   * Validates a measurement unit if: <br>
+   * - it is not null <br>
+   * - its node is not nul
+   */
+  public static boolean checkSwitch(SwitchInput switchInput) {
+    if (switchInput == null) return false;
+    if (switchInput.getNodeA() == null)
+      throw new InvalidEntityException("node A is null", switchInput);
+    if (switchInput.getNodeB() == null)
+      throw new InvalidEntityException("node B is null", switchInput);
+    return true;
+  }
+
+  /**
+   * Checks the validity of given {@link RawGridElements}. The single elements are checked as well
+   * as the fact, that none of the assets is connected to a node, that is not in the set of nodes.
+   *
+   * @param rawGridElements Raw grid elements
+   * @return true, if no failure has been found
+   * @throws InvalidGridException If something is wrong
+   */
+  public static boolean checkRawGridElements(RawGridElements rawGridElements) {
+    if (rawGridElements == null) return false;
+
+    /* Checking nodes */
+    Set<NodeInput> nodes = rawGridElements.getNodes();
+    boolean anyNullNode = nodes.stream().map(ValidationUtils::checkNode).anyMatch(cond -> !cond);
+    if (anyNullNode)
+      throw new InvalidGridException("The list of nodes contains at least one NULL element.");
+
+    /* Checking lines */
+    boolean anyNullLine =
+        rawGridElements.getLines().stream()
+            .map(line -> checkLine(line) && checkNodeAvailability(line, nodes))
+            .anyMatch(cond -> !cond);
+    if (anyNullLine)
+      throw new InvalidGridException("The list of lines contains at least one NULL element.");
+
+    /* Checking two winding transformers */
+    boolean anyNullTransformer2w =
+        rawGridElements.getTransformer2Ws().stream()
+            .map(
+                transformer ->
+                    checkTransformer2W(transformer) && checkNodeAvailability(transformer, nodes))
+            .anyMatch(cond -> !cond);
+    if (anyNullTransformer2w)
+      throw new InvalidGridException(
+          "The list of two winding transformers contains at least one NULL element.");
+
+    /* Checking three winding transformers */
+    boolean anyNullTransformer3w =
+        rawGridElements.getTransformer3Ws().stream()
+            .map(
+                transformer -> {
+                  if (!nodes.contains(transformer.getNodeA())
+                      || !nodes.contains(transformer.getNodeB())
+                      || !nodes.contains(transformer.getNodeC()))
+                    throw getMissingNodeException(transformer);
+                  return checkTransformer3W(transformer);
+                })
+            .anyMatch(cond -> !cond);
+    if (anyNullTransformer3w)
+      throw new InvalidGridException(
+          "The list of three winding transformers contains at least one NULL element.");
+
+    /* Checking switches */
+    boolean anyNullSwitch =
+        rawGridElements.getSwitches().stream()
+            .map(switcher -> checkSwitch(switcher) && checkNodeAvailability(switcher, nodes))
+            .anyMatch(cond -> !cond);
+    if (anyNullSwitch)
+      throw new InvalidGridException("The list of switches contains at least one NULL element.");
+
+    /* Checking measurement units */
+    boolean anyNullMeasurement =
+        rawGridElements.getMeasurementUnits().stream()
+            .map(
+                measurement -> {
+                  if (!nodes.contains(measurement.getNode()))
+                    throw getMissingNodeException(measurement);
+                  return checkMeasurementUnit(measurement);
+                })
+            .anyMatch(cond -> !cond);
+    if (anyNullMeasurement)
+      throw new InvalidGridException(
+          "The list of measurement units contains at least one NULL element.");
+
+    return true;
+  }
+
+  /**
+   * Checks the validity of each and every system participant. Moreover, it checks, if the systems
+   * are connected to an node that is not in the provided set
+   *
+   * @param systemParticipants The system participants
+   * @param nodes Set of already known nodes
+   * @return true
+   */
+  public static boolean checkSystemParticipants(
+      SystemParticipants systemParticipants, Set<NodeInput> nodes) {
+    if (systemParticipants == null) return false;
+
+    systemParticipants.getBmPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
+
+    systemParticipants.getChpPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
+
+    /* TODO: Electric vehicle charging systems are currently only dummy implementation. if this has changed, the whole
+     *   method can be aggregated */
+
+    systemParticipants.getFixedFeedIns().forEach(entity -> checkNodeAvailability(entity, nodes));
+
+    systemParticipants.getHeatPumps().forEach(entity -> checkNodeAvailability(entity, nodes));
+
+    systemParticipants.getLoads().forEach(entity -> checkNodeAvailability(entity, nodes));
+
+    systemParticipants.getPvPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
+
+    systemParticipants.getStorages().forEach(entity -> checkNodeAvailability(entity, nodes));
+
+    systemParticipants.getWecPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
+
+    return true;
+  }
+
+  /**
+   * Builds an exception, that announces, that the given input is connected to a node, that is not
+   * in the set of nodes provided.
+   *
+   * @param input Input model
+   * @return Exception for a missing node
+   */
+  private static InvalidGridException getMissingNodeException(AssetInput input) {
+    return new InvalidGridException(
+        input.getClass().getSimpleName()
+            + " "
+            + input
+            + " is connected to a node, that is not in the set of nodes.");
+  }
+
+  public static boolean checkGraphicElements(
+      GraphicElements graphicElements, Set<NodeInput> nodes, Set<LineInput> lines) {
+    if (graphicElements == null) return false;
+
+    graphicElements
+        .getNodeGraphics()
+        .forEach(
+            graphic -> {
+              if (!nodes.contains(graphic.getNode()))
+                throw new InvalidGridException(
+                    "The node graphic "
+                        + graphic
+                        + " refers to a node, that is not among the provided ones.");
+            });
+
+    graphicElements
+        .getLineGraphics()
+        .forEach(
+            graphic -> {
+              if (!lines.contains(graphic.getLine()))
+                throw new InvalidGridException(
+                    "The line graphic "
+                        + graphic
+                        + " refers to a line, that is not among the provided ones.");
+            });
+
     return true;
   }
 }

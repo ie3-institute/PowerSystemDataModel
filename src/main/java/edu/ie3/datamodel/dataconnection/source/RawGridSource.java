@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.dataconnection.source;
 
-import edu.ie3.datamodel.models.input.aggregated.RawGridElements;
+import edu.ie3.datamodel.models.input.container.RawGridElements;
 
 /** Describes a data source for raw grid data */
 public interface RawGridSource extends DataSource {

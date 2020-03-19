@@ -21,7 +21,7 @@ public class ChpInput extends SystemParticipantInput {
   /** Type of this CHP plant, containing default values for CHP plants of this kind */
   private final ChpTypeInput type;
   /** Thermal storage model */
-  private ThermalStorageInput thermalStorage;
+  private final ThermalStorageInput thermalStorage;
   /** Is this asset market oriented? */
   private final boolean marketReaction;
 
@@ -95,10 +95,6 @@ public class ChpInput extends SystemParticipantInput {
 
   public ThermalStorageInput getThermalStorage() {
     return thermalStorage;
-  }
-
-  public void setThermalStorage(ThermalStorageInput thermalStorage) {
-    this.thermalStorage = thermalStorage;
   }
 
   public boolean isMarketReaction() {
