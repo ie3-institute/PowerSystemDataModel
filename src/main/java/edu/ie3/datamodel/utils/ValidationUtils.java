@@ -368,7 +368,8 @@ public class ValidationUtils {
 
     systemParticipants.getChpPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
 
-    /* TODO: Electric vehicle charging systems are currently only dummy implementation */
+    /* TODO: Electric vehicle charging systems are currently only dummy implementation. if this has changed, the whole
+     *   method can be aggregated */
 
     systemParticipants.getFixedFeedIns().forEach(entity -> checkNodeAvailability(entity, nodes));
 
