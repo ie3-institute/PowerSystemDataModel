@@ -86,6 +86,7 @@ public class CsvFileSink implements FileSink {
                     writer.append("\n");
                   }
                 }
+                writer.flush();
               } catch (IOException e) {
                 log.error("{}", e); // todo JH
               }
