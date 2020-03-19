@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models;
 
 /**
- * German standard load profiles, defined by the bdew (Bundesverband der Energie- und
+ * German standard electricity load profiles, defined by the bdew (Bundesverband der Energie- und
  * Wasserwirtschaft; engl.Federal Association of the Energy and Water Industry). For more details
  * see https://www.bdew.de/energie/standardlastprofile-strom/
  */
