@@ -96,7 +96,7 @@ public class CsvFileSink implements FileSink {
   @Override
   public void persistAll(Collection<? extends UniqueEntity> entities) {
     for (UniqueEntity entity : entities) {
-      write(entity);
+      write(entity); // todo this could be made more efficient by buffering and then writing
     }
   }
 }
