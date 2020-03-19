@@ -35,7 +35,11 @@ public class OperationTime {
   /** Constructor for OperationTime without limitations */
   private OperationTime() {}
 
-  /** @return an OperationTime without time limitations */
+  /**
+   * @return an OperationTime without time limitations. When used inside an asset this is equal to
+   *     'not operated' as a not limited operation time is equal to no start and end date which
+   *     means the asset has no start of operation and hence it is out of operation.
+   */
   public static OperationTime notLimited() {
     return new OperationTime();
   }
