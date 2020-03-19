@@ -198,7 +198,11 @@ public class ContainerUtils {
       throw new InvalidGridException(
           "There are "
               + amountOfVoltLvl
-              + " voltage levels apparent, although only one is expected.");
+              + " voltage levels apparent, although only one is expected. Following voltage levels are present: "
+              + voltageLevelCount.keySet().stream()
+                  .sorted(Comparator.comparing(VoltageLevel::getNominalVoltage))
+                  .map(VoltageLevel::toString)
+                  .collect(Collectors.joining(", ")));
 
     return voltageLevelCount.entrySet().stream()
         .max(Map.Entry.comparingByValue())
@@ -208,6 +212,7 @@ public class ContainerUtils {
                 new InvalidGridException(
                     "Cannot determine the predominant voltage level. Following voltage levels are present: "
                         + voltageLevelCount.keySet().stream()
+                            .sorted(Comparator.comparing(VoltageLevel::getNominalVoltage))
                             .map(VoltageLevel::toString)
                             .collect(Collectors.joining(", "))));
   }

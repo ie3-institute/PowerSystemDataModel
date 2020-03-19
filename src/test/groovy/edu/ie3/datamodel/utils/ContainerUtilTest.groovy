@@ -93,7 +93,10 @@ class ContainerUtilTest extends Specification {
 
         then:
         InvalidGridException ex = thrown()
-        ex.message == "There are 2 voltage levels apparent, although only one is expected."
+        ex.message == "There are 2 voltage levels apparent, although only one is expected. Following voltage levels " +
+                "are present: CommonVoltageLevel{synonymousIds=[mv_10kV, ms_10kv, ms, mv], voltageRange=Interval " +
+                "[10.0 kV, 20.0 kV)}, CommonVoltageLevel{synonymousIds=[ms_20kv, ms, mv, mv_20kV], " +
+                "voltageRange=Interval [20.0 kV, 30.0 kV)}"
     }
 
     def "The container util determines the set of subnet number correctly" () {
