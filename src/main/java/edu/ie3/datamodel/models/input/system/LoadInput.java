@@ -21,7 +21,8 @@ public class LoadInput extends SystemParticipantInput {
   /**
    * Reference to a standard load profile to use for the model. If you intend to assign specific
    * values, create an {@link edu.ie3.datamodel.models.timeseries.IndividualTimeSeries} or {@link
-   * edu.ie3.datamodel.models.timeseries.RepetitiveTimeSeries} and assign it via an external mapping (e.g. by providing a global time series for a specific load profile) to this model
+   * edu.ie3.datamodel.models.timeseries.RepetitiveTimeSeries} and assign it via an external mapping
+   * (e.g. by providing a global time series for a specific load profile) to this model
    */
   private final StandardLoadProfile standardLoadProfile;
   /** True, if demand side management is activated for this load */
