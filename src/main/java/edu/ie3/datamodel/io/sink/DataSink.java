@@ -15,7 +15,7 @@ public interface DataSink {
   /** @return the connector of this sink */
   DataConnector getDataConnector();
 
-  void persist(UniqueEntity entity);
+  <C extends UniqueEntity> void persist(C entity);
 
-  void persistAll(Collection<? extends UniqueEntity> entities);
+  <C extends UniqueEntity> void persistAll(Collection<C> entities);
 }

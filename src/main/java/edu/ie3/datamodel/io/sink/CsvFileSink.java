@@ -62,6 +62,13 @@ public class CsvFileSink implements FileSink {
   }
 
   @Override
+  public <C extends UniqueEntity> void persistAll(Collection<C> entities) {
+    for (UniqueEntity entity : entities) {
+      write(entity); // todo this could be made more efficient by buffering and then writing
+    }
+  }
+
+  @Override
   public void persist(UniqueEntity entity) {
     if (processor.getRegisteredClass() == entity.getClass()) {
       write(entity);
@@ -91,12 +98,5 @@ public class CsvFileSink implements FileSink {
                 log.error("{}", e); // todo JH
               }
             });
-  }
-
-  @Override
-  public void persistAll(Collection<? extends UniqueEntity> entities) {
-    for (UniqueEntity entity : entities) {
-      write(entity); // todo this could be made more efficient by buffering and then writing
-    }
   }
 }
