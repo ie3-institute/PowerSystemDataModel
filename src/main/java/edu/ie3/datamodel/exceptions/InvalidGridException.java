@@ -5,12 +5,12 @@
 */
 package edu.ie3.datamodel.exceptions;
 
-public class AggregationException extends Exception {
-  public AggregationException(String message) {
+public class InvalidGridException extends RuntimeException {
+  public InvalidGridException(String message) {
     super(message);
   }
 
-  public AggregationException(String message, Throwable cause) {
+  public InvalidGridException(String message, Throwable cause) {
     super(message, cause);
   }
 }
