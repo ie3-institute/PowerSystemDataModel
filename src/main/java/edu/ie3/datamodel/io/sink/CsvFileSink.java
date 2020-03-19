@@ -18,6 +18,8 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * //ToDo: Class Description
+ * // todo this needs to be adapted to be able to process several different entity types -> passing over a collection
+ * of entity processors needs to be possible and select the fitting processor based on the provided entity -> this actually IS the old CsvWriter, no need for another wrapper class
  *
  * @version 0.1
  * @since 19.03.20
