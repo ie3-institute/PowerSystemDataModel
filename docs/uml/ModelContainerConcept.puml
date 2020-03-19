@@ -62,8 +62,7 @@ GridContainer <|-- JointGridContainer
 Class SubGridContainer{
   - int subnet
   - VoltageLevel predominantVoltageLevel
-  + JointGridContainer(attributes w\o graph)
-  + JointGridContainer(attributes w\o graph, ImmutableGraph<SubGridContainer> subGridTopologyGraph)
+  + SubGridContainer(super and own attributes ...)
 }
 GridContainer <|-- SubGridContainer
 @enduml
