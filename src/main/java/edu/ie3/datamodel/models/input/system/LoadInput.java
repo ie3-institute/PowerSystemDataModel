@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -17,6 +18,13 @@ import javax.measure.quantity.Power;
 
 /** Describes a load */
 public class LoadInput extends SystemParticipantInput {
+  /**
+   * Reference to a standard load profile to use for the model. If you intend to assign specific
+   * values, create an {@link edu.ie3.datamodel.models.timeseries.IndividualTimeSeries} or {@link
+   * edu.ie3.datamodel.models.timeseries.RepetitiveTimeSeries} and assign it via an external mapping
+   * (e.g. by providing a global time series for a specific load profile) to this model
+   */
+  private final StandardLoadProfile standardLoadProfile;
   /** True, if demand side management is activated for this load */
   private final boolean dsm;
   /** Annually consumed energy (typically in kWh) */
@@ -34,6 +42,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param standardLoadProfile Standard load profile to use for this model
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
@@ -46,11 +55,13 @@ public class LoadInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
+      StandardLoadProfile standardLoadProfile,
       boolean dsm,
       Quantity<Energy> eConsAnnual,
       Quantity<Power> sRated,
       double cosphiRated) {
     super(uuid, operationTime, operator, id, node, qCharacteristics);
+    this.standardLoadProfile = standardLoadProfile;
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
@@ -64,6 +75,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
+   * @param standardLoadProfile Standard load profile to use for this model
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
@@ -73,15 +85,21 @@ public class LoadInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
+      StandardLoadProfile standardLoadProfile,
       boolean dsm,
       Quantity<Energy> eConsAnnual,
       Quantity<Power> sRated,
       double cosphiRated) {
     super(uuid, id, node, qCharacteristics);
+    this.standardLoadProfile = standardLoadProfile;
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosphiRated = cosphiRated;
+  }
+
+  public StandardLoadProfile getStandardLoadProfile() {
+    return standardLoadProfile;
   }
 
   public boolean isDsm() {
