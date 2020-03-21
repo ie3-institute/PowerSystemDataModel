@@ -23,7 +23,7 @@ public class StorageInput extends SystemParticipantInput {
    * Constructor for an operated storage
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
+   * @param operationTime time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param node the asset is connected to
