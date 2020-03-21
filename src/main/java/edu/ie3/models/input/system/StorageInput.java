@@ -27,7 +27,7 @@ public class StorageInput extends SystemParticipantInput {
    * @param operator of the asset
    * @param id of the asset
    * @param node the asset is connected to
-   * @param qCharacteristics Description of a reactive power characteristic
+   * @param qCharacteristics Description of a reactive power characteristic for integrated inverter
    * @param type of storage
    * @param behaviour Selection of predefined behaviour of the storage
    */
