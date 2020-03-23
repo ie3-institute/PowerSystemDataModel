@@ -50,8 +50,8 @@ class ProcessorProviderTest extends Specification {
                                 CylindricalStorageResult]
 
         expect:
-        provider.getRegisteredClasses().size() == knownProcessors.size()
-        provider.getRegisteredClasses().sort() == knownProcessors.sort()
+        provider.registeredClasses.size() == knownProcessors.size()
+        provider.registeredClasses.sort() == knownProcessors.sort()
 
     }
 

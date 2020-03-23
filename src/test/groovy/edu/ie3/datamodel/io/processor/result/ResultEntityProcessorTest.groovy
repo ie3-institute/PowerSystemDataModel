@@ -269,8 +269,8 @@ class ResultEntityProcessorTest extends Specification {
         sysPartResProcessor.handleEntity(invalidClassResult)
 
         then:
-        final EntityProcessorException exception = thrown()
-        exception.getMessage() == "Cannot process InvalidTestResult.class with this EntityProcessor. " +
+        EntityProcessorException exception = thrown()
+        exception.message == "Cannot process InvalidTestResult.class with this EntityProcessor. " +
                 "Please either provide an element of LoadResult.class or create a new factory for InvalidTestResult.class!"
 
     }

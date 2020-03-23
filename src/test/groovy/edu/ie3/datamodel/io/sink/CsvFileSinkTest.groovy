@@ -27,9 +27,9 @@ class CsvFileSinkTest extends Specification {
     def cleanup() {
 
         // delete files after each test if they exist
-        if (new File(testBaseFolderPath).exists())
+        if (new File(testBaseFolderPath).exists()) {
             FileIOUtils.deleteRecursively(testBaseFolderPath)
-
+        }
     }
 
     def "A valid CsvFileSink called by simple constructor should not initialize files by default and consist of several default values"() {
@@ -44,7 +44,7 @@ class CsvFileSinkTest extends Specification {
 
     def "A valid CsvFileSink with 'initFiles' enabled should create files as expected"() {
         given:
-        new CsvFileSink(testBaseFolderPath, new ProcessorProvider([new ResultEntityProcessor(PvResult), new ResultEntityProcessor(EvResult)]), new FileNamingStrategy(), true, ",");
+        new CsvFileSink(testBaseFolderPath, new ProcessorProvider([new ResultEntityProcessor(PvResult), new ResultEntityProcessor(EvResult)]), new FileNamingStrategy(), true, ",")
 
         expect:
         new File(testBaseFolderPath).exists()
@@ -55,7 +55,7 @@ class CsvFileSinkTest extends Specification {
 
     def "A valid CsvFileSink without 'initFiles' should only persist provided elements correctly but not all files"() {
         given:
-        CsvFileSink sink = new CsvFileSink(testBaseFolderPath, new ProcessorProvider([new ResultEntityProcessor(PvResult), new ResultEntityProcessor(WecResult), new ResultEntityProcessor(EvResult)]), new FileNamingStrategy(), false, ",");
+        CsvFileSink sink = new CsvFileSink(testBaseFolderPath, new ProcessorProvider([new ResultEntityProcessor(PvResult), new ResultEntityProcessor(WecResult), new ResultEntityProcessor(EvResult)]), new FileNamingStrategy(), false, ",")
 
         UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
         UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
@@ -78,7 +78,7 @@ class CsvFileSinkTest extends Specification {
 
     def "A valid CsvFileSink should throw an exception if the provided entity cannot be handled"() {
         given:
-        CsvFileSink sink = new CsvFileSink(testBaseFolderPath, new ProcessorProvider([new ResultEntityProcessor(PvResult)]), new FileNamingStrategy(), false, ",");
+        CsvFileSink sink = new CsvFileSink(testBaseFolderPath, new ProcessorProvider([new ResultEntityProcessor(PvResult)]), new FileNamingStrategy(), false, ",")
 
         UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
         UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
