@@ -50,7 +50,8 @@ public class ProcessorProvider {
           "Cannot find processor for entity class '"
               + entity.getClass().getSimpleName()
               + "'."
-              + "Either your provider is not properly initialized or there is no implementation to process this entity class!)");
+              + "Either your provider is not properly initialized or "
+              + "there is no implementation to process this entity class!)");
     }
     return castProcessor(processor).handleEntity(entity);
   }
@@ -80,7 +81,10 @@ public class ProcessorProvider {
       throw new ProcessorProviderException(
           "Cannot find a suitable processor for provided class with name '"
               + clazz.getSimpleName()
-              + "'.");
+              + "'. This providers processors can process: "
+              + processors.keySet().stream()
+                  .map(Class::getSimpleName)
+                  .collect(Collectors.joining(", ")));
 
     return processor.getHeaderElements();
   }
