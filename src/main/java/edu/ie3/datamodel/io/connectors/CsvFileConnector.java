@@ -2,20 +2,23 @@
  * © 2020. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
-*/
+ */
 package edu.ie3.datamodel.io.connectors;
 
 import edu.ie3.datamodel.exceptions.ConnectorException;
+import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
+import edu.ie3.datamodel.io.sink.CsvFileSink;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.util.io.FileIOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
 
 /**
  * //ToDo: Class Description
@@ -25,68 +28,103 @@ import java.util.Optional;
  */
 public class CsvFileConnector implements DataConnector {
 
-  private final Map<Class<? extends UniqueEntity>, BufferedWriter> writers;
+    private static final Logger log = LogManager.getLogger(CsvFileConnector.class);
 
-  private final String fileEnding = ".csv";
+    private final Map<Class<? extends UniqueEntity>, BufferedWriter> writers = new HashMap<>();
+    private final FileNamingStrategy                                 fileNamingStrategy;
+    private final String                                             baseFolderName;
 
-  public CsvFileConnector(
-      String baseFolderName,
-      Collection<Class<? extends UniqueEntity>> classesToBeWritten,
-      FileNamingStrategy fileNamingStrategy)
-      throws ConnectorException, IOException {
-    this.writers = initWriters(baseFolderName, classesToBeWritten, fileNamingStrategy);
-  }
+    private static final String fileEnding = ".csv";
 
-  private Map<Class<? extends UniqueEntity>, BufferedWriter> initWriters(
-      String baseFolderName,
-      Collection<Class<? extends UniqueEntity>> classesToBeWritten,
-      FileNamingStrategy fileNamingStrategy)
-      throws ConnectorException, IOException {
-
-    // create the base path folder first
-    // todo check if dir exists and throw an exception then!
-    File basePathDir = new File(baseFolderName);
-    basePathDir.mkdirs();
-
-    Map<Class<? extends UniqueEntity>, BufferedWriter> writersMap = new HashMap<>();
-    for (Class<? extends UniqueEntity> clz : classesToBeWritten) {
-      String fileName =
-          fileNamingStrategy
-              .getFileName(clz)
-              .orElseThrow(
-                  () ->
-                      new ConnectorException(
-                          "Cannot determine the file name for provided class '"
-                              + clz.getSimpleName()
-                              + "'."));
-      String fullPath = baseFolderName + File.separator + fileName + fileEnding;
-
-      BufferedWriter writer = FileIOUtils.getBufferedWriterUTF8(fullPath);
-      writersMap.put(clz, writer);
+    public CsvFileConnector(String baseFolderName, FileNamingStrategy fileNamingStrategy) {
+        this.baseFolderName = baseFolderName;
+        this.fileNamingStrategy = fileNamingStrategy;
     }
 
-    return writersMap;
-  }
+    @Override
+    public void shutdown() {
 
-  // todo init nur dann, wenn erster schreibversuch auf file, ansonsten nicht initialisieren!
-
-  @Override
-  public void shutdown() {
-
-    writers
-        .values()
-        .forEach(
-            bufferedWriter -> {
-              try {
+        writers.values().forEach(bufferedWriter -> {
+            try {
                 bufferedWriter.close();
-              } catch (IOException e) {
+            } catch(IOException e) {
                 e.printStackTrace(); // todo JH
-              }
-            });
-  }
+            }
+        });
+    }
 
-  public Optional<BufferedWriter> getWriter(Class<? extends UniqueEntity> clz) {
-    return Optional.ofNullable(writers.get(clz));
-  }
+    public BufferedWriter initWriter(Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep) throws
+                    ConnectorException,
+                    IOException {
+        return initWriter(baseFolderName, clz, fileNamingStrategy, headerElements, csvSep);
+    }
+
+    public Optional<BufferedWriter> getWriter(Class<? extends UniqueEntity> clz) {
+        return Optional.ofNullable(writers.get(clz));
+    }
+
+    public BufferedWriter getOrInitWriter(Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep) {
+
+        return getWriter(clz).orElseGet(() -> {
+            BufferedWriter newWriter = null;
+            try {
+                newWriter = initWriter(clz, headerElements, csvSep);
+            } catch(ConnectorException e) {
+                e.printStackTrace(); // todo JH
+            } catch(IOException e) {
+                e.printStackTrace(); // todo JH
+            }
+
+            writers.put(clz, newWriter);
+            return newWriter;
+        });
+
+    }
+
+    private BufferedWriter initWriter(String baseFolderName,
+                                      Class<? extends UniqueEntity> clz,
+                                      FileNamingStrategy fileNamingStrategy,
+                                      String[] headerElements,
+                                      String csvSep) throws ConnectorException, IOException {
+        File basePathDir = new File(baseFolderName);
+        if(basePathDir.isFile())
+            throw new ConnectorException("Base path dir '" + baseFolderName + "' already exists and is a file!");
+        if(!basePathDir.exists())
+            basePathDir.mkdirs();
+
+        String fileName = fileNamingStrategy.getFileName(clz).orElseThrow(() -> new ConnectorException(
+                        "Cannot determine the file name for provided class '" + clz.getSimpleName() + "'."));
+        String fullPath = baseFolderName + File.separator + fileName + fileEnding;
+
+        BufferedWriter writer = FileIOUtils.getBufferedWriterUTF8(fullPath);
+
+        // write header
+        writeFileHeader(clz, writer, headerElements, csvSep);
+
+        return writer;
+
+    }
+
+    private void writeFileHeader(Class<? extends UniqueEntity> clz,
+                                 BufferedWriter writer,
+                                 String[] headerElements,
+                                 String csvSep) {
+        final String[] columns = headerElements;
+        try {
+            for(int i = 0; i < columns.length; i++) {
+                String attribute = columns[i];
+                writer.append("\"").append(attribute).append("\""); // adds " to headline
+                if(i + 1 < columns.length) {
+                    writer.append(csvSep);
+                } else {
+                    writer.append("\n");
+                }
+            }
+            writer.flush();
+        } catch(IOException e) {
+            log.error("Error during file header creation for class '" + clz.getSimpleName() + "'.", e);
+        }
+
+    }
 
 }
