@@ -270,10 +270,12 @@ class ResultEntityProcessorTest extends Specification {
 
         then:
         final EntityProcessorException exception = thrown()
+        exception.getMessage() == "Cannot process InvalidTestResult.class with this EntityProcessor. " +
+                "Please either provide an element of LoadResult.class or create a new factory for InvalidTestResult.class!"
 
     }
 
-    def "The list of eligible entity classes for a ResultEntityProcessor should be valid"(){
+    def "The list of eligible entity classes for a ResultEntityProcessor should be valid"() {
         given:
         int noOfElements = 16 // number of all currently implemented entity results
 

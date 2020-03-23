@@ -36,9 +36,7 @@ import javax.measure.quantity.Power;
  */
 public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
 
-  /**
-   * The entities that can be used within this processor
-   */
+  /** The entities that can be used within this processor */
   public static final List<Class<? extends ResultEntity>> eligibleEntityClasses =
       Arrays.asList(
           LoadResult.class,
