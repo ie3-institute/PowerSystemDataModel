@@ -80,20 +80,6 @@ public class ProcessorProvider {
     return castProcessor(processor).handleEntity(entity);
   }
 
-  //
-  //    public <T extends UniqueEntity> EntityProcessor<T> getProcessor(Class<T> entityClass) throws
-  //                    ProcessorProviderException {
-  //        EntityProcessor<? extends UniqueEntity> processor = processors.get(entityClass);
-  //        if(processor == null) {
-  //            throw new ProcessorProviderException(
-  //                            "Cannot find processor for entity class '" +
-  // entityClass.getSimpleName() + "'." +
-  //                            "Either your provider is not properly initialized or there is no
-  // implementation to process this entity class!)");
-  //        }
-  //        return castProcessor(processor).handleEntity(entityClass);
-  //    }
-
   @SuppressWarnings("unchecked cast")
   private <T extends UniqueEntity> EntityProcessor<T> castProcessor(
       EntityProcessor<? extends UniqueEntity> processor) throws ProcessorProviderException {
@@ -116,18 +102,5 @@ public class ProcessorProvider {
   public String[] getHeaderElements(Class<? extends UniqueEntity> clazz) {
     return processors.get(clazz).getHeaderElements();
   }
-
-  //    public <T extends UniqueEntity> Collection<EntityProcessor<T>> getProcessors() throws
-  // ProcessorProviderException {
-  //
-  //        List<EntityProcessor<T>> resProcessors = new ArrayList<>();
-  //
-  //        for(EntityProcessor<? extends UniqueEntity> processor : processors.values()) {
-  //            resProcessors.add(castProcessor(processor));
-  //        }
-  //
-  //        return resProcessors;
-  //
-  //    }
 
 }

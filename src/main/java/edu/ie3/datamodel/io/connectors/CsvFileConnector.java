@@ -89,11 +89,4 @@ public class CsvFileConnector implements DataConnector {
     return Optional.ofNullable(writers.get(clz));
   }
 
-  //  public String getFilePath() {
-  //    return filePath;
-  //  }
-
-  //  public BufferedWriter getWriters() {
-  //    return writers;
-  //  }
 }
