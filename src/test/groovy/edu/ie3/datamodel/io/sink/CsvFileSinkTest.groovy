@@ -17,8 +17,6 @@ import tec.uom.se.quantity.Quantities
 import javax.measure.Quantity
 import javax.measure.quantity.Power
 
-// todo JH
-
 class CsvFileSinkTest extends Specification {
 
     @Shared
