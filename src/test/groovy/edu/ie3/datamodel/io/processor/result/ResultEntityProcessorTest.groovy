@@ -1,6 +1,7 @@
 package edu.ie3.datamodel.io.processor.result
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException
+import edu.ie3.datamodel.exceptions.SinkException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.ResultEntity
@@ -281,6 +282,15 @@ class ResultEntityProcessorTest extends Specification {
 
         expect:
         ResultEntityProcessor.eligibleEntityClasses.size() == noOfElements
+    }
+
+    def "ResultEntityProcessor should throw an exception if an invalid class is passed into the constructor"() {
+
+        when:
+        new ResultEntityProcessor(InvalidTestResult)
+
+        then:
+        thrown(EntityProcessorException)
     }
 
     private class InvalidTestResult extends ResultEntity {

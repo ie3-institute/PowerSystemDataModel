@@ -69,7 +69,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
               + "'. Eligible classes: "
               + eligibleClasses.stream()
                   .map(Class::getSimpleName)
-                  .collect(Collectors.joining(",")));
+                  .collect(Collectors.joining(", ")));
     try {
       Arrays.stream(Introspector.getBeanInfo(cls, Object.class).getPropertyDescriptors())
           // filter out properties with setters only
