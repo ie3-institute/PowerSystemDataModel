@@ -46,7 +46,7 @@ public class CsvFileConnector implements DataConnector {
             try {
                 bufferedWriter.close();
             } catch(IOException e) {
-                e.printStackTrace(); // todo JH
+                log.error("Error during CsvFileConnector shutdown process.", e);
             }
         });
     }
@@ -67,10 +67,8 @@ public class CsvFileConnector implements DataConnector {
             BufferedWriter newWriter = null;
             try {
                 newWriter = initWriter(clz, headerElements, csvSep);
-            } catch(ConnectorException e) {
-                e.printStackTrace(); // todo JH
-            } catch(IOException e) {
-                e.printStackTrace(); // todo JH
+            } catch(ConnectorException | IOException e) {
+                log.error("Error while initiating writer in CsvFileConnector.", e);
             }
 
             writers.put(clz, newWriter);
