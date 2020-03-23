@@ -283,16 +283,16 @@ class ResultEntityProcessorTest extends Specification {
         ResultEntityProcessor.eligibleEntityClasses.size() == noOfElements
     }
 
+    private class InvalidTestResult extends ResultEntity {
+
+        InvalidTestResult(ZonedDateTime timestamp, UUID inputModel) {
+            super(timestamp, inputModel)
+        }
+
+        InvalidTestResult(UUID uuid, ZonedDateTime timestamp, UUID inputModel) {
+            super(uuid, timestamp, inputModel)
+        }
+    }
 
 }
 
-class InvalidTestResult extends ResultEntity {
-
-    InvalidTestResult(ZonedDateTime timestamp, UUID inputModel) {
-        super(timestamp, inputModel)
-    }
-
-    InvalidTestResult(UUID uuid, ZonedDateTime timestamp, UUID inputModel) {
-        super(uuid, timestamp, inputModel)
-    }
-}
