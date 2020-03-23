@@ -17,7 +17,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * //ToDo: Class Description test
+ * Provides the connector (here: buffered writer) for specific files to be used by a {@link
+ * edu.ie3.datamodel.io.sink.CsvFileSink}
  *
  * @version 0.1
  * @since 19.03.20
