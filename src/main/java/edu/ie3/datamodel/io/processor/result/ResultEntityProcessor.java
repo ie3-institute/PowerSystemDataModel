@@ -38,23 +38,24 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
 
   /** The entities that can be used within this processor */
   public static final List<Class<? extends ResultEntity>> eligibleEntityClasses =
-      Arrays.asList(
-          LoadResult.class,
-          FixedFeedInResult.class,
-          BmResult.class,
-          PvResult.class,
-          ChpResult.class,
-          WecResult.class,
-          StorageResult.class,
-          EvcsResult.class,
-          EvResult.class,
-          Transformer2WResult.class,
-          Transformer3WResult.class,
-          LineResult.class,
-          SwitchResult.class,
-          NodeResult.class,
-          ThermalHouseResult.class,
-          CylindricalStorageResult.class);
+      Collections.unmodifiableList(
+          Arrays.asList(
+              LoadResult.class,
+              FixedFeedInResult.class,
+              BmResult.class,
+              PvResult.class,
+              ChpResult.class,
+              WecResult.class,
+              StorageResult.class,
+              EvcsResult.class,
+              EvResult.class,
+              Transformer2WResult.class,
+              Transformer3WResult.class,
+              LineResult.class,
+              SwitchResult.class,
+              NodeResult.class,
+              ThermalHouseResult.class,
+              CylindricalStorageResult.class));
 
   public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass) {
     super(registeredClass);
