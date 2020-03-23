@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.graph;
 
 import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.connector.ConnectorPort;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.TransformerInput;
