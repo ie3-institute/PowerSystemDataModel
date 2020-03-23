@@ -6,46 +6,20 @@
 package edu.ie3.datamodel.graph;
 
 import edu.ie3.datamodel.models.input.container.SubGridContainer;
-import java.util.Objects;
 import org.jgrapht.graph.AsUnmodifiableGraph;
-import org.jgrapht.graph.SimpleDirectedGraph;
+import org.jgrapht.graph.DirectedMultigraph;
 
-public class SubGridTopologyGraph
-    extends AsUnmodifiableGraph<SubGridContainer, SubGridTopologyGraph.SubGridTopolgyEdge> {
+/**
+ * A wrapper class to define a graph for representing the structure of galvanically seperated sub
+ * grid models.
+ */
+public class SubGridTopologyGraph extends AsUnmodifiableGraph<SubGridContainer, SubGridGate> {
   /**
    * Creates a new unmodifiable graph based on the specified backing graph.
    *
    * @param g the backing graph on which an unmodifiable graph is to be created.
    */
-  public SubGridTopologyGraph(SimpleDirectedGraph<SubGridContainer, SubGridTopolgyEdge> g) {
+  public SubGridTopologyGraph(DirectedMultigraph<SubGridContainer, SubGridGate> g) {
     super(g);
-  }
-
-  public static class SubGridTopolgyEdge {
-    private final int from;
-    private final int to;
-
-    public SubGridTopolgyEdge(int from, int to) {
-      this.from = from;
-      this.to = to;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-      SubGridTopolgyEdge that = (SubGridTopolgyEdge) o;
-      return from == that.from && to == that.to;
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(from, to);
-    }
-
-    @Override
-    public String toString() {
-      return "TopologyEdge{" + "from=" + from + ", to=" + to + '}';
-    }
   }
 }
