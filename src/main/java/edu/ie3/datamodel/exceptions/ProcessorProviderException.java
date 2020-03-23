@@ -6,7 +6,8 @@
 package edu.ie3.datamodel.exceptions;
 
 /**
- * //ToDo: Class Description
+ * Exception that should be used whenever an error occurs in a instance of {@link
+ * edu.ie3.datamodel.io.processor.ProcessorProvider}
  *
  * @version 0.1
  * @since 20.03.20
