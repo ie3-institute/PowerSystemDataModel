@@ -1,6 +1,7 @@
 package edu.ie3.datamodel.utils
 
 import edu.ie3.datamodel.exceptions.InvalidGridException
+import edu.ie3.datamodel.graph.SubGridGate
 import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
