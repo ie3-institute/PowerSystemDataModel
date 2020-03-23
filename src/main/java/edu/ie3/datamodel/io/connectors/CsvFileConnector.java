@@ -6,9 +6,7 @@
 package edu.ie3.datamodel.io.connectors;
 
 import edu.ie3.datamodel.exceptions.ConnectorException;
-import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
-import edu.ie3.datamodel.io.sink.CsvFileSink;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.util.io.FileIOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +32,7 @@ public class CsvFileConnector implements DataConnector {
     private final FileNamingStrategy                                 fileNamingStrategy;
     private final String                                             baseFolderName;
 
-    private static final String fileEnding = ".csv";
+    private static final String FILE_ENDING = ".csv";
 
     public CsvFileConnector(String baseFolderName, FileNamingStrategy fileNamingStrategy) {
         this.baseFolderName = baseFolderName;
@@ -94,7 +92,7 @@ public class CsvFileConnector implements DataConnector {
 
         String fileName = fileNamingStrategy.getFileName(clz).orElseThrow(() -> new ConnectorException(
                         "Cannot determine the file name for provided class '" + clz.getSimpleName() + "'."));
-        String fullPath = baseFolderName + File.separator + fileName + fileEnding;
+        String fullPath = baseFolderName + File.separator + fileName + FILE_ENDING;
 
         BufferedWriter writer = FileIOUtils.getBufferedWriterUTF8(fullPath);
 
@@ -107,14 +105,13 @@ public class CsvFileConnector implements DataConnector {
 
     private void writeFileHeader(Class<? extends UniqueEntity> clz,
                                  BufferedWriter writer,
-                                 String[] headerElements,
+                                 final String[] headerElements,
                                  String csvSep) {
-        final String[] columns = headerElements;
         try {
-            for(int i = 0; i < columns.length; i++) {
-                String attribute = columns[i];
+            for(int i = 0; i < headerElements.length; i++) {
+                String attribute = headerElements[i];
                 writer.append("\"").append(attribute).append("\""); // adds " to headline
-                if(i + 1 < columns.length) {
+                if(i + 1 < headerElements.length) {
                     writer.append(csvSep);
                 } else {
                     writer.append("\n");
