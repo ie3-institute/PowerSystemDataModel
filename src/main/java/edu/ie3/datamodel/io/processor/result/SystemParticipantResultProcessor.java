@@ -9,12 +9,10 @@ import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.factory.result.SystemParticipantResultFactory;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.result.ResultEntity;
-import edu.ie3.datamodel.models.result.system.SystemParticipantResult;
+import edu.ie3.datamodel.models.result.system.*;
 import java.lang.reflect.Method;
 import java.time.ZonedDateTime;
-import java.util.LinkedHashMap;
-import java.util.Optional;
+import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 
@@ -27,14 +25,27 @@ import javax.measure.quantity.Power;
  * @version 0.1
  * @since 31.01.20
  */
-public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
+public class SystemParticipantResultProcessor extends EntityProcessor<SystemParticipantResult> {
 
-  public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass) {
+  public static final List<Class<? extends SystemParticipantResult>> processorEntities =
+      Arrays.asList(
+          LoadResult.class,
+          FixedFeedInResult.class,
+          BmResult.class,
+          PvResult.class,
+          ChpResult.class,
+          WecResult.class,
+          StorageResult.class,
+          EvcsResult.class,
+          EvResult.class);
+
+  public SystemParticipantResultProcessor(
+      Class<? extends SystemParticipantResult> registeredClass) {
     super(registeredClass);
   }
 
   @Override
-  protected Optional<LinkedHashMap<String, String>> processEntity(ResultEntity entity) {
+  protected Optional<LinkedHashMap<String, String>> processEntity(SystemParticipantResult entity) {
 
     Optional<LinkedHashMap<String, String>> resultMapOpt;
 
@@ -82,6 +93,11 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
         break;
     }
     return normalizedQuantityValue;
+  }
+
+  @Override
+  protected List<Class<? extends SystemParticipantResult>> getAllowedClasses() {
+    return processorEntities;
   }
 
   private String processMethodResult(Object methodReturnObject, Method method, String fieldName) {

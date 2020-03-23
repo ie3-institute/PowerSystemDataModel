@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.io.processor.result.SystemParticipantResultProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.util.TimeTools;
@@ -43,23 +44,23 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   private static final String uuidString = "uuid";
 
   /**
-   * Create a new EntityProcessor
+   * // todo refresh Create a new EntityProcessor
    *
    * @param registeredClass the class the entity processor should be able to handle
    */
   public EntityProcessor(Class<? extends T> registeredClass) {
     this.registeredClass = registeredClass;
-    this.headerElements = registerClass(registeredClass);
+    this.headerElements = registerClass(registeredClass, getAllowedClasses());
     TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss");
   }
+
   /**
    * Register the class provided in the constructor
    *
    * @param cls class to be registered
    * @return an array of strings of all field values of the registered class
    */
-  private String[] registerClass(Class<?> cls) {
-
+  private String[] registerClass(Class<? extends T> cls, List<Class<? extends T>> allowedClasses) {
     try {
       Arrays.stream(Introspector.getBeanInfo(cls, Object.class).getPropertyDescriptors())
           // filter out properties with setters only
@@ -190,8 +191,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    * handle active power p different for {@link edu.ie3.datamodel.models.result.ResultEntity}s and
    * {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}s Hence from the
    * generalized method {@link this.handleQuantity()}, this allows for the specific handling of
-   * child implementations. See the implementation @ {@link
-   * edu.ie3.datamodel.io.processor.result.ResultEntityProcessor} for details.
+   * child implementations. See the implementation @ {@link SystemParticipantResultProcessor} for
+   * details.
    *
    * @param quantity the quantity that should be processed
    * @param fieldName the field name the quantity is set to
@@ -212,4 +213,6 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   public String[] getHeaderElements() {
     return headerElements;
   }
+
+  protected abstract List<Class<? extends T>> getAllowedClasses();
 }
