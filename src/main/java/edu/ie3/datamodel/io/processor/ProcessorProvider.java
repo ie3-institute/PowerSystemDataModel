@@ -117,7 +117,7 @@ public class ProcessorProvider {
     // todo add missing processors here
 
     // SystemParticipantResults
-    for (Class<? extends ResultEntity> cls : ResultEntityProcessor.processorEntities) {
+    for (Class<? extends ResultEntity> cls : ResultEntityProcessor.eligibleEntityClasses) {
       resultingProcessors.add(new ResultEntityProcessor(cls));
     }
     return resultingProcessors;

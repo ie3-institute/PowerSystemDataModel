@@ -36,7 +36,10 @@ import javax.measure.quantity.Power;
  */
 public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
 
-  public static final List<Class<? extends ResultEntity>> processorEntities =
+  /**
+   * The entities that can be used within this processor
+   */
+  public static final List<Class<? extends ResultEntity>> eligibleEntityClasses =
       Arrays.asList(
           LoadResult.class,
           FixedFeedInResult.class,
@@ -79,7 +82,7 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
       }
       resultMapOpt = Optional.of(resultMap);
     } catch (Exception e) {
-      log.error("Error during entity processing in SystemParticipantResultProcessor:", e);
+      log.error("Error during entity processing in ResultEntityProcessor:", e);
       resultMapOpt = Optional.empty();
     }
     return resultMapOpt;
@@ -107,7 +110,7 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
         break;
       default:
         log.error(
-            "Cannot process quantity {} for field with name {} in result model processing!",
+            "Cannot process quantity {} for field with name {} in result entity processing!",
             quantity,
             fieldName);
         break;
@@ -116,8 +119,8 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
   }
 
   @Override
-  protected List<Class<? extends ResultEntity>> getAllowedClasses() {
-    return processorEntities;
+  protected List<Class<? extends ResultEntity>> getAllEligibleClasses() {
+    return eligibleEntityClasses;
   }
 
   private String processMethodResult(Object methodReturnObject, Method method, String fieldName) {
@@ -139,7 +142,7 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
                         new EntityProcessorException(
                             "Unable to process quantity value for attribute '"
                                 + fieldName
-                                + "' in system participant result model "
+                                + "' in result entity "
                                 + getRegisteredClass().getSimpleName()
                                 + ".class.")));
         break;

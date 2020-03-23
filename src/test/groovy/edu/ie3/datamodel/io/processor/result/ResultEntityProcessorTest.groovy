@@ -1,8 +1,11 @@
 package edu.ie3.datamodel.io.processor.result
 
+import edu.ie3.datamodel.exceptions.EntityProcessorException
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.processor.EntityProcessor
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.NodeResult
+import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
@@ -23,6 +26,7 @@ import javax.measure.quantity.ElectricCurrent
 import javax.measure.quantity.Energy
 import javax.measure.quantity.Power
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class ResultEntityProcessorTest extends Specification {
 
@@ -116,7 +120,7 @@ class ResultEntityProcessorTest extends Specification {
         sysPartResProcessor.handleEntity(storageResult)
 
         then:
-        FactoryException ex = thrown()
+        EntityProcessorException ex = thrown()
         ex.message == "Cannot process StorageResult.class with this EntityProcessor. Please either provide an element of LoadResult.class or create a new factory for StorageResult.class!"
     }
 
@@ -255,5 +259,40 @@ class ResultEntityProcessorTest extends Specification {
 
     }
 
+    def "A ResultEntityProcessor should throw an EntityProcessorException when it receives an entity result that is not eligible"() {
 
+        given:
+        TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
+        def sysPartResProcessor = new ResultEntityProcessor(ResultEntityProcessor.eligibleEntityClasses.get(0))
+
+        def invalidClassResult = new InvalidTestResult(TimeTools.toZonedDateTime("2020-01-30 17:26:44"), uuid)
+
+        when:
+        sysPartResProcessor.handleEntity(invalidClassResult)
+
+        then:
+        final EntityProcessorException exception = thrown()
+
+    }
+
+    def "The list of eligible entity classes for a ResultEntityProcessor should be valid"(){
+        given:
+        int noOfElements = 16
+
+        expect:
+        ResultEntityProcessor.eligibleEntityClasses.size() == noOfElements
+    }
+
+
+}
+
+class InvalidTestResult extends ResultEntity {
+
+    InvalidTestResult(ZonedDateTime timestamp, UUID inputModel) {
+        super(timestamp, inputModel)
+    }
+
+    InvalidTestResult(UUID uuid, ZonedDateTime timestamp, UUID inputModel) {
+        super(uuid, timestamp, inputModel)
+    }
 }
