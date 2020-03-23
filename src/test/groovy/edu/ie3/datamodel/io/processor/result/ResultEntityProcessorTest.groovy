@@ -1,8 +1,6 @@
 package edu.ie3.datamodel.io.processor.result
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException
-import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.processor.EntityProcessor
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.ResultEntity
@@ -277,7 +275,7 @@ class ResultEntityProcessorTest extends Specification {
 
     def "The list of eligible entity classes for a ResultEntityProcessor should be valid"(){
         given:
-        int noOfElements = 16
+        int noOfElements = 16 // number of all currently implemented entity results
 
         expect:
         ResultEntityProcessor.eligibleEntityClasses.size() == noOfElements
