@@ -18,10 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * //ToDo: Class Description // todo this needs to be adapted to be able to process several
- * different entity types -> passing over a collection of entity processors needs to be possible and
- * select the fitting processor based on the provided entity -> this actually IS the old CsvWriter,
- * no need for another wrapper class
+ * Sink that provides all capabilities to write {@link UniqueEntity}s to .csv-files
  *
  * @version 0.1
  * @since 19.03.20
@@ -39,6 +36,16 @@ public class CsvFileSink implements DataSink {
     this(baseFolderPath, new ProcessorProvider(), new FileNamingStrategy(), false, ",");
   }
 
+  /**
+   * Create an instance of a csv file sink
+   *
+   * @param baseFolderPath the base folder path where the files should be put into
+   * @param processorProvider the processor provided that should be used for entity de-serialization
+   * @param fileNamingStrategy the file naming strategy that should be used
+   * @param initFiles true if the files should be created during initialization (might create files,
+   *     that only consist of a headline, because no data will be writen into them), false otherwise
+   * @param csvSep the csv file separator that should be use
+   */
   public CsvFileSink(
       String baseFolderPath,
       ProcessorProvider processorProvider,
@@ -83,6 +90,14 @@ public class CsvFileSink implements DataSink {
     write(entityFieldData, headerElements, writer);
   }
 
+  /**
+   * Initialize files, hence create a file for each expected class that will be processed in the
+   * future.
+   *
+   * @param processorProvider the processor provider all files that will be processed is derived
+   *     from
+   * @param connector the connector to the files
+   */
   private void initFiles(
       final ProcessorProvider processorProvider, final CsvFileConnector connector) {
 
@@ -96,6 +111,14 @@ public class CsvFileSink implements DataSink {
                         headerElements -> connector.getOrInitWriter(clz, headerElements, csvSep)));
   }
 
+  /**
+   * Actually persisting the provided entity field data
+   *
+   * @param entityFieldData a mapping of an entity instance fields to their values
+   * @param headerElements the header elements of the entity, normally all attributes of the entity
+   *     class
+   * @param writer the corresponding writer for that should be used
+   */
   private void write(
       LinkedHashMap<String, String> entityFieldData,
       String[] headerElements,
