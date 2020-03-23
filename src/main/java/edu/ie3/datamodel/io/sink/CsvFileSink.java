@@ -79,7 +79,7 @@ public class CsvFileSink implements DataSink {
             });
 
         } catch(ProcessorProviderException e) {
-            e.printStackTrace(); // todo JH
+            log.error("Error while persisting entity of class '" + entity.getClass().getSimpleName() + "'.", e);
         }
     }
 
