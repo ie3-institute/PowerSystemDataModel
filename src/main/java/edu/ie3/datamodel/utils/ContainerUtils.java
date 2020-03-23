@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.utils;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
+import edu.ie3.datamodel.graph.SubGridGate;
 import edu.ie3.datamodel.graph.SubGridTopologyGraph;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -19,7 +20,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.jgrapht.graph.SimpleDirectedGraph;
+import org.jgrapht.graph.DirectedMultigraph;
 
 /** Offers functionality useful for grouping different models together */
 public class ContainerUtils {
@@ -299,55 +300,75 @@ public class ContainerUtils {
       Set<Transformer2WInput> transformer2ws,
       Set<Transformer3WInput> transformer3ws) {
     /* Building a mutable graph, that is boxed as immutable later */
-    SimpleDirectedGraph<SubGridContainer, SubGridTopologyGraph.SubGridTopolgyEdge> mutableGraph =
-        new SimpleDirectedGraph<>(SubGridTopologyGraph.SubGridTopolgyEdge.class);
+    DirectedMultigraph<SubGridContainer, SubGridGate> mutableGraph =
+        new DirectedMultigraph<>(SubGridGate.class);
 
     /* Add all edges */
     subgrids.values().forEach(mutableGraph::addVertex);
 
     /* Add connections of two winding transformers */
     for (Transformer2WInput transformer : transformer2ws) {
-      SubGridContainer from = subgrids.get(transformer.getNodeA().getSubnet());
-      SubGridContainer to = subgrids.get(transformer.getNodeB().getSubnet());
-      if (from == null)
-        throwSubGridModelMissingException(transformer, transformer.getNodeA().getSubnet());
-      if (to == null)
-        throwSubGridModelMissingException(transformer, transformer.getNodeB().getSubnet());
-      mutableGraph.addEdge(
-          from, to, new SubGridTopologyGraph.SubGridTopolgyEdge(from.getSubnet(), to.getSubnet()));
+      SubGridContainer from = getSubGridContainer(transformer, ConnectorPort.A, subgrids);
+      SubGridContainer to = getSubGridContainer(transformer, ConnectorPort.B, subgrids);
+      mutableGraph.addEdge(from, to, new SubGridGate(transformer));
     }
 
     /* Add connections of three winding transformers */
     for (Transformer3WInput transformer : transformer3ws) {
-      SubGridContainer from = subgrids.get(transformer.getNodeA().getSubnet());
-      SubGridContainer to0 = subgrids.get(transformer.getNodeB().getSubnet());
-      SubGridContainer to1 = subgrids.get(transformer.getNodeC().getSubnet());
-      if (from == null)
-        throwSubGridModelMissingException(transformer, transformer.getNodeA().getSubnet());
-      if (to0 == null)
-        throwSubGridModelMissingException(transformer, transformer.getNodeB().getSubnet());
-      if (to1 == null)
-        throwSubGridModelMissingException(transformer, transformer.getNodeC().getSubnet());
-      mutableGraph.addEdge(
-          from,
-          to0,
-          new SubGridTopologyGraph.SubGridTopolgyEdge(from.getSubnet(), to0.getSubnet()));
-      mutableGraph.addEdge(
-          from,
-          to1,
-          new SubGridTopologyGraph.SubGridTopolgyEdge(from.getSubnet(), to1.getSubnet()));
+      SubGridContainer from = getSubGridContainer(transformer, ConnectorPort.A, subgrids);
+      SubGridContainer toB = getSubGridContainer(transformer, ConnectorPort.B, subgrids);
+      SubGridContainer toC = getSubGridContainer(transformer, ConnectorPort.C, subgrids);
+      mutableGraph.addEdge(from, toB, new SubGridGate(transformer, ConnectorPort.B));
+      mutableGraph.addEdge(from, toC, new SubGridGate(transformer, ConnectorPort.C));
     }
 
     return new SubGridTopologyGraph(mutableGraph);
   }
 
-  private static void throwSubGridModelMissingException(ConnectorInput connector, int subnet) {
-    throw new InvalidGridException(
-        "Transformer "
-            + connector
-            + " connects two sub grids, but the sub grid model "
-            + subnet
-            + " cannot be found");
+  /**
+   * Extracts the {@link SubGridContainer} of the map from sub grid number to sub grid model and
+   * checks for its availability.
+   *
+   * @param connector The connector to use
+   * @param port The port of the connector, that is referred to
+   * @param subGrids A mapping from sub grid number to sub grid model
+   * @return The queried sub grid container
+   */
+  private static SubGridContainer getSubGridContainer(
+      ConnectorInput connector, ConnectorPort port, Map<Integer, SubGridContainer> subGrids) {
+    int subGrid;
+    switch (port) {
+      case A:
+        subGrid = connector.getNodeA().getSubnet();
+        break;
+      case B:
+        subGrid = connector.getNodeB().getSubnet();
+        break;
+      case C:
+        if (connector instanceof Transformer3WInput)
+          subGrid = ((Transformer3WInput) connector).getNodeC().getSubnet();
+        else
+          throw new IllegalArgumentException(
+              "The connector " + connector + " has no port " + port + ".");
+        break;
+      default:
+        throw new IllegalArgumentException(
+            "Cannot determine the sub grid number of connector "
+                + connector
+                + " at port "
+                + port
+                + ".");
+    }
+
+    SubGridContainer container = subGrids.get(subGrid);
+    if (container == null)
+      throw new InvalidGridException(
+          "Transformer "
+              + connector
+              + " connects two sub grids, but the sub grid model "
+              + subGrid
+              + " cannot be found");
+    else return container;
   }
 
   /**
