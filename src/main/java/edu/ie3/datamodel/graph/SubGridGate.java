@@ -6,12 +6,10 @@
 package edu.ie3.datamodel.graph;
 
 import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.connector.ConnectorPort;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.TransformerInput;
 import edu.ie3.datamodel.models.input.container.SubGridContainer;
-import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -19,19 +17,6 @@ import java.util.Objects;
  * SubGridTopologyGraph}
  */
 public class SubGridGate {
-  /**
-   * Comparator to sort sub grid gates ascending based on the superior sub grid and then based on
-   * the inferior sub grid
-   */
-  public static class SubGridGateComparator implements Comparator<SubGridGate> {
-    @Override
-    public int compare(SubGridGate a, SubGridGate b) {
-      int superiorComparison = Integer.compare(a.getSuperiorSubGrid(), b.getSuperiorSubGrid());
-      if (superiorComparison != 0) return superiorComparison;
-      else return Integer.compare(a.getInferiorSubGrid(), b.getInferiorSubGrid());
-    }
-  }
-
   private final TransformerInput link;
   private final NodeInput superiorNode;
   private final NodeInput inferiorNode;
