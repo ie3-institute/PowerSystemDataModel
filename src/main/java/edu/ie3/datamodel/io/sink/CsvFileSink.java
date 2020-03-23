@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.sink;
 
-import edu.ie3.datamodel.exceptions.ProcessorProviderException;
+import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.connectors.DataConnector;
@@ -67,30 +67,20 @@ public class CsvFileSink implements DataSink {
   @Override
   public <T extends UniqueEntity> void persist(T entity) {
 
-    try {
-      processorProvider
-          .processEntity(entity)
-          .ifPresent(
-              entityFieldData -> {
-                String[] headerElements = new String[0];
-                try {
-                  headerElements = processorProvider.getHeaderElements(entity.getClass());
-                } catch (ProcessorProviderException e) {
-                  log.error(
-                      "Error while persisting entity of class '"
-                          + entity.getClass().getSimpleName()
-                          + "'.",
-                      e);
-                }
-                BufferedWriter writer =
-                    connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
-                write(entityFieldData, headerElements, writer);
-              });
+    LinkedHashMap<String, String> entityFieldData =
+        processorProvider
+            .processEntity(entity)
+            .orElseThrow(
+                () ->
+                    new SinkException(
+                        "Cannot persist entity of type '"
+                            + entity.getClass().getSimpleName()
+                            + "'. Is this sink properly initialized?"));
 
-    } catch (ProcessorProviderException e) {
-      log.error(
-          "Error while persisting entity of class '" + entity.getClass().getSimpleName() + "'.", e);
-    }
+    String[] headerElements =
+        processorProvider.getHeaderElements(entity.getClass()).orElse(new String[0]);
+    BufferedWriter writer = connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
+    write(entityFieldData, headerElements, writer);
   }
 
   private void initFiles(
@@ -99,17 +89,11 @@ public class CsvFileSink implements DataSink {
     processorProvider
         .getRegisteredClasses()
         .forEach(
-            clz -> {
-              try {
-                connector.getOrInitWriter(clz, processorProvider.getHeaderElements(clz), csvSep);
-              } catch (ProcessorProviderException e) {
-                log.error(
-                    "Error during file initialization for entity of class '"
-                        + clz.getSimpleName()
-                        + "'.",
-                    e);
-              }
-            });
+            clz ->
+                processorProvider
+                    .getHeaderElements(clz)
+                    .ifPresent(
+                        headerElements -> connector.getOrInitWriter(clz, headerElements, csvSep)));
   }
 
   private void write(

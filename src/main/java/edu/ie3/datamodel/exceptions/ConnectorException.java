@@ -6,7 +6,8 @@
 package edu.ie3.datamodel.exceptions;
 
 /**
- * //ToDo: Class Description
+ * Exception that should be used whenevery something invalid happens in a implementation of a {@link
+ * edu.ie3.datamodel.io.connectors.DataConnector}
  *
  * @version 0.1
  * @since 20.03.20

@@ -11,6 +11,8 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Wrapper providing the class specific processor to convert an instance of a {@link UniqueEntity}
@@ -23,6 +25,8 @@ import java.util.stream.Collectors;
  * @since 20.03.20
  */
 public class ProcessorProvider {
+
+  private static final Logger log = LogManager.getLogger(ProcessorProvider.class);
 
   /** unmodifiable map of all processors that has been provided on construction */
   private final Map<Class<? extends UniqueEntity>, EntityProcessor<? extends UniqueEntity>>
@@ -42,18 +46,24 @@ public class ProcessorProvider {
     this.processors = init(processors);
   }
 
-  public <T extends UniqueEntity> Optional<LinkedHashMap<String, String>> processEntity(T entity)
-      throws ProcessorProviderException {
+  public <T extends UniqueEntity> Optional<LinkedHashMap<String, String>> processEntity(T entity) {
     EntityProcessor<? extends UniqueEntity> processor = processors.get(entity.getClass());
     if (processor == null) {
-      throw new ProcessorProviderException(
-          "Cannot find processor for entity class '"
-              + entity.getClass().getSimpleName()
-              + "'."
+      log.warn(
+          "Cannot find processor for entity class '{}'."
               + "Either your provider is not properly initialized or "
-              + "there is no implementation to process this entity class!)");
+              + "there is no implementation to process this entity class!)",
+          entity.getClass().getSimpleName());
+
+      return Optional.empty();
     }
-    return castProcessor(processor).handleEntity(entity);
+
+    try {
+      return castProcessor(processor).handleEntity(entity);
+    } catch (ProcessorProviderException e) {
+      log.error("Exception occurred during processor casting.", e);
+      return Optional.empty();
+    }
   }
 
   /**
@@ -74,19 +84,18 @@ public class ProcessorProvider {
    * @param clazz the class the header elements are requested for
    * @return the header elements of the requested class
    */
-  public String[] getHeaderElements(Class<? extends UniqueEntity> clazz)
-      throws ProcessorProviderException {
+  public Optional<String[]> getHeaderElements(Class<? extends UniqueEntity> clazz) {
     EntityProcessor<? extends UniqueEntity> processor = processors.get(clazz);
-    if (processor == null)
-      throw new ProcessorProviderException(
-          "Cannot find a suitable processor for provided class with name '"
-              + clazz.getSimpleName()
-              + "'. This providers processors can process: "
-              + processors.keySet().stream()
-                  .map(Class::getSimpleName)
-                  .collect(Collectors.joining(", ")));
+    if (processor == null) {
+      log.error(
+          "Cannot find a suitable processor for provided class with name '{}'. "
+              + "This provider's processors can process: {}",
+          clazz.getSimpleName(),
+          processors.keySet().stream().map(Class::getSimpleName).collect(Collectors.joining(",")));
+      return Optional.empty();
+    }
 
-    return processor.getHeaderElements();
+    return Optional.ofNullable(processor.getHeaderElements());
   }
 
   /**
