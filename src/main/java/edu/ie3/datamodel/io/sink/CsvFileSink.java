@@ -2,7 +2,7 @@
  * © 2020. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
- */
+*/
 package edu.ie3.datamodel.io.sink;
 
 import edu.ie3.datamodel.exceptions.ProcessorProviderException;
@@ -11,14 +11,11 @@ import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.connectors.DataConnector;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.models.UniqueEntity;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 /**
  * //ToDo: Class Description // todo this needs to be adapted to be able to process several
@@ -31,81 +28,111 @@ import org.apache.logging.log4j.Logger;
  */
 public class CsvFileSink implements DataSink {
 
-    private static final Logger log = LogManager.getLogger(CsvFileSink.class);
+  private static final Logger log = LogManager.getLogger(CsvFileSink.class);
 
-    private final CsvFileConnector  connector;
-    private final ProcessorProvider processorProvider;
+  private final CsvFileConnector connector;
+  private final ProcessorProvider processorProvider;
 
-    private final String csvSep;
+  private final String csvSep;
 
-    public CsvFileSink(String baseFolderPath) {
-        this(baseFolderPath, new ProcessorProvider(), new FileNamingStrategy(), false, ",");
+  public CsvFileSink(String baseFolderPath) {
+    this(baseFolderPath, new ProcessorProvider(), new FileNamingStrategy(), false, ",");
+  }
+
+  public CsvFileSink(
+      String baseFolderPath,
+      ProcessorProvider processorProvider,
+      FileNamingStrategy fileNamingStrategy,
+      boolean initFiles,
+      String csvSep) {
+    this.csvSep = csvSep;
+    this.processorProvider = processorProvider;
+    this.connector = new CsvFileConnector(baseFolderPath, fileNamingStrategy);
+
+    if (initFiles) initFiles(processorProvider, connector);
+  }
+
+  @Override
+  public DataConnector getDataConnector() {
+    return connector;
+  }
+
+  @Override
+  public <T extends UniqueEntity> void persistAll(Collection<T> entities) {
+    for (T entity : entities) {
+      persist(entity);
     }
+  }
 
-    public CsvFileSink(String baseFolderPath,
-                       ProcessorProvider processorProvider,
-                       FileNamingStrategy fileNamingStrategy,
-                       boolean initFiles,
-                       String csvSep) {
-        this.csvSep = csvSep;
-        this.processorProvider = processorProvider;
-        this.connector = new CsvFileConnector(baseFolderPath, fileNamingStrategy);
+  @Override
+  public <T extends UniqueEntity> void persist(T entity) {
 
-        if(initFiles)
-            initFiles(processorProvider, connector);
-    }
-
-    @Override
-    public DataConnector getDataConnector() {
-        return connector;
-    }
-
-    @Override
-    public <T extends UniqueEntity> void persistAll(Collection<T> entities) {
-        for(T entity : entities) {
-            persist(entity);
-        }
-    }
-
-    @Override
-    public <T extends UniqueEntity> void persist(T entity) {
-
-        try {
-            processorProvider.processEntity(entity).ifPresent(entityFieldData -> {
-                BufferedWriter writer = connector.getOrInitWriter(entity.getClass(),
-                                processorProvider.getHeaderElements(entity.getClass()), csvSep);
-                String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
-                write(entityFieldData, headerElements, writer);
-            });
-
-        } catch(ProcessorProviderException e) {
-            log.error("Error while persisting entity of class '" + entity.getClass().getSimpleName() + "'.", e);
-        }
-    }
-
-    private void initFiles(final ProcessorProvider processorProvider, final CsvFileConnector connector) {
-
-        processorProvider.getRegisteredClasses().forEach(clz -> connector
-                        .getOrInitWriter(clz, processorProvider.getHeaderElements(clz), csvSep));
-
-    }
-
-    private void write(LinkedHashMap<String, String> entityFieldData, String[] headerElements, BufferedWriter writer) {
-
-        try {
-            for(int i = 0; i < headerElements.length; i++) {
-                String attribute = headerElements[i];
-                writer.append(entityFieldData.get(attribute));
-                if(i + 1 < headerElements.length) {
-                    writer.append(csvSep);
-                } else {
-                    writer.append("\n");
+    try {
+      processorProvider
+          .processEntity(entity)
+          .ifPresent(
+              entityFieldData -> {
+                String[] headerElements = new String[0];
+                try {
+                  headerElements = processorProvider.getHeaderElements(entity.getClass());
+                } catch (ProcessorProviderException e) {
+                  log.error(
+                      "Error while persisting entity of class '"
+                          + entity.getClass().getSimpleName()
+                          + "'.",
+                      e);
                 }
-            }
-            writer.flush();
-        } catch(IOException e) {
-            log.error("Error while writing entity with field data: " +
-                      Arrays.toString(entityFieldData.entrySet().toArray()), e);
-        }
+                BufferedWriter writer =
+                    connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
+                write(entityFieldData, headerElements, writer);
+              });
+
+    } catch (ProcessorProviderException e) {
+      log.error(
+          "Error while persisting entity of class '" + entity.getClass().getSimpleName() + "'.", e);
     }
+  }
+
+  private void initFiles(
+      final ProcessorProvider processorProvider, final CsvFileConnector connector) {
+
+    processorProvider
+        .getRegisteredClasses()
+        .forEach(
+            clz -> {
+              try {
+                connector.getOrInitWriter(clz, processorProvider.getHeaderElements(clz), csvSep);
+              } catch (ProcessorProviderException e) {
+                log.error(
+                    "Error during file initialization for entity of class '"
+                        + clz.getSimpleName()
+                        + "'.",
+                    e);
+              }
+            });
+  }
+
+  private void write(
+      LinkedHashMap<String, String> entityFieldData,
+      String[] headerElements,
+      BufferedWriter writer) {
+
+    try {
+      for (int i = 0; i < headerElements.length; i++) {
+        String attribute = headerElements[i];
+        writer.append(entityFieldData.get(attribute));
+        if (i + 1 < headerElements.length) {
+          writer.append(csvSep);
+        } else {
+          writer.append("\n");
+        }
+      }
+      writer.flush();
+    } catch (IOException e) {
+      log.error(
+          "Error while writing entity with field data: "
+              + Arrays.toString(entityFieldData.entrySet().toArray()),
+          e);
+    }
+  }
 }

@@ -9,7 +9,15 @@ import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.factory.result.SystemParticipantResultFactory;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.result.NodeResult;
+import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.result.connector.LineResult;
+import edu.ie3.datamodel.models.result.connector.SwitchResult;
+import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
+import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
+import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
+import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import java.lang.reflect.Method;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -25,9 +33,9 @@ import javax.measure.quantity.Power;
  * @version 0.1
  * @since 31.01.20
  */
-public class SystemParticipantResultProcessor extends EntityProcessor<SystemParticipantResult> {
+public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
 
-  public static final List<Class<? extends SystemParticipantResult>> processorEntities =
+  public static final List<Class<? extends ResultEntity>> processorEntities =
       Arrays.asList(
           LoadResult.class,
           FixedFeedInResult.class,
@@ -37,15 +45,21 @@ public class SystemParticipantResultProcessor extends EntityProcessor<SystemPart
           WecResult.class,
           StorageResult.class,
           EvcsResult.class,
-          EvResult.class);
+          EvResult.class,
+          Transformer2WResult.class,
+          Transformer3WResult.class,
+          LineResult.class,
+          SwitchResult.class,
+          NodeResult.class,
+          ThermalHouseResult.class,
+          CylindricalStorageResult.class);
 
-  public SystemParticipantResultProcessor(
-      Class<? extends SystemParticipantResult> registeredClass) {
+  public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass) {
     super(registeredClass);
   }
 
   @Override
-  protected Optional<LinkedHashMap<String, String>> processEntity(SystemParticipantResult entity) {
+  protected Optional<LinkedHashMap<String, String>> processEntity(ResultEntity entity) {
 
     Optional<LinkedHashMap<String, String>> resultMapOpt;
 
@@ -96,7 +110,7 @@ public class SystemParticipantResultProcessor extends EntityProcessor<SystemPart
   }
 
   @Override
-  protected List<Class<? extends SystemParticipantResult>> getAllowedClasses() {
+  protected List<Class<? extends ResultEntity>> getAllowedClasses() {
     return processorEntities;
   }
 

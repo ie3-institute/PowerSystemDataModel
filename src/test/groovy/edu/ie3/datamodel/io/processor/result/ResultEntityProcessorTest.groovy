@@ -61,7 +61,7 @@ class ResultEntityProcessorTest extends Specification {
     def "A ResultEntityProcessor should de-serialize a provided SystemParticipantResult correctly"() {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def sysPartResProcessor = new SystemParticipantResultProcessor(modelClass)
+        def sysPartResProcessor = new ResultEntityProcessor(modelClass)
         def validResult = validSystemParticipantResult
 
         when:
@@ -88,7 +88,7 @@ class ResultEntityProcessorTest extends Specification {
     def "A ResultEntityProcessor should de-serialize a provided SystemParticipantResult with null values correctly"() {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def sysPartResProcessor = new SystemParticipantResultProcessor(StorageResult)
+        def sysPartResProcessor = new ResultEntityProcessor(StorageResult)
         def storageResult = new StorageResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q, null)
 
 
@@ -109,7 +109,7 @@ class ResultEntityProcessorTest extends Specification {
     def "A ResultEntityProcessor should throw an exception if the provided class is not registered"() {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def sysPartResProcessor = new SystemParticipantResultProcessor(LoadResult)
+        def sysPartResProcessor = new ResultEntityProcessor(LoadResult)
         def storageResult = new StorageResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q, null)
 
         when:
@@ -123,7 +123,7 @@ class ResultEntityProcessorTest extends Specification {
     def "A ResultEntityProcessor should de-serialize a NodeResult correctly"() {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def sysPartResProcessor = new SystemParticipantResultProcessor(NodeResult)
+        def sysPartResProcessor = new ResultEntityProcessor(NodeResult)
 
         Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PowerSystemUnits.PU)
         Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.VOLTAGE_ANGLE)
@@ -209,7 +209,7 @@ class ResultEntityProcessorTest extends Specification {
     def "A ResultEntityProcessor should de-serialize all ConnectorResults correctly"() {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def sysPartResProcessor = new SystemParticipantResultProcessor(modelClass)
+        def sysPartResProcessor = new ResultEntityProcessor(modelClass)
 
         def validResult = validConnectorResult
 
@@ -231,7 +231,7 @@ class ResultEntityProcessorTest extends Specification {
     def "A ResultEntityProcessor should de-serialize a CylindricalStorageResult correctly"() {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def sysPartResProcessor = new SystemParticipantResultProcessor(CylindricalStorageResult)
+        def sysPartResProcessor = new ResultEntityProcessor(CylindricalStorageResult)
 
         Quantity<Power> qDot = Quantities.getQuantity(2, StandardUnits.Q_DOT_RESULT)
         Quantity<Energy> energy = Quantities.getQuantity(3, StandardUnits.ENERGY_RESULT)

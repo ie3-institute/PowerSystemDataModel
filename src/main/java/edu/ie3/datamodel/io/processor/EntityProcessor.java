@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.processor.result.SystemParticipantResultProcessor;
+import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.util.TimeTools;
@@ -191,8 +191,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    * handle active power p different for {@link edu.ie3.datamodel.models.result.ResultEntity}s and
    * {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}s Hence from the
    * generalized method {@link this.handleQuantity()}, this allows for the specific handling of
-   * child implementations. See the implementation @ {@link SystemParticipantResultProcessor} for
-   * details.
+   * child implementations. See the implementation @ {@link ResultEntityProcessor} for details.
    *
    * @param quantity the quantity that should be processed
    * @param fieldName the field name the quantity is set to

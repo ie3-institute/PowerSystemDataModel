@@ -6,14 +6,18 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.ProcessorProviderException;
-import edu.ie3.datamodel.io.processor.result.SystemParticipantResultProcessor;
+import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.result.system.SystemParticipantResult;
+import edu.ie3.datamodel.models.result.ResultEntity;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * //ToDo: Class Description
+ * Wrapper providing the class specific processor to convert an instance of a {@link UniqueEntity}
+ * into a mapping of <attribute,value> which can be used to write data e.g. into .csv files. This
+ * wrapper can always be used if it's not clear which specific instance of a subclass of {@link
+ * UniqueEntity} is received in the implementation. It can either be used for specific entity
+ * processors only or as a general provider for all known entity processors.
  *
  * @version 0.1
  * @since 20.03.20
@@ -24,10 +28,16 @@ public class ProcessorProvider {
   private final Map<Class<? extends UniqueEntity>, EntityProcessor<? extends UniqueEntity>>
       processors;
 
+  /** Get an instance of this class with all existing entity processors */
   public ProcessorProvider() {
     this.processors = init(allProcessors());
   }
 
+  /**
+   * Get an instance of this class based on the provided collection of processors
+   *
+   * @param processors the processors that should be known by this provider
+   */
   public ProcessorProvider(Collection<EntityProcessor<? extends UniqueEntity>> processors) {
     this.processors = init(processors);
   }
@@ -45,28 +55,48 @@ public class ProcessorProvider {
     return castProcessor(processor).handleEntity(entity);
   }
 
+  /**
+   * Returns all classes that are registered within entity processors known by this provider
+   *
+   * @return all classes this provider hols a processor for
+   */
   public List<Class<? extends UniqueEntity>> getRegisteredClasses() {
     return processors.values().stream()
         .map(EntityProcessor::getRegisteredClass)
         .collect(Collectors.toList());
   }
 
-  public String[] getHeaderElements(Class<? extends UniqueEntity> clazz) {
-    return processors.get(clazz).getHeaderElements();
+  /**
+   * Returns the header of a given class or throws an exception if no processor for the given class
+   * is known by this provider.
+   *
+   * @param clazz the class the header elements are requested for
+   * @return the header elements of the requested class
+   */
+  public String[] getHeaderElements(Class<? extends UniqueEntity> clazz)
+      throws ProcessorProviderException {
+    EntityProcessor<? extends UniqueEntity> processor = processors.get(clazz);
+    if (processor == null)
+      throw new ProcessorProviderException(
+          "Cannot find a suitable processor for provided class with name '"
+              + clazz.getSimpleName()
+              + "'.");
+
+    return processor.getHeaderElements();
   }
 
   /**
    * Returns an unmodifiable mapping between entity processors and classes they are able to handle
-   * for fast access // todo
+   * for fast access
    *
-   * @param processors
-   * @return
+   * @param processors the processors that should be known by this provider
+   * @return a mapping of all classes and their corresponding processor
    */
   private Map<Class<? extends UniqueEntity>, EntityProcessor<? extends UniqueEntity>> init(
-                  Collection<EntityProcessor<? extends UniqueEntity>> processors) {
+      Collection<EntityProcessor<? extends UniqueEntity>> processors) {
 
     Map<Class<? extends UniqueEntity>, EntityProcessor<? extends UniqueEntity>> processorMap =
-                    new HashMap<>();
+        new HashMap<>();
 
     for (EntityProcessor<? extends UniqueEntity> processor : processors) {
       processorMap.put(processor.getRegisteredClass(), processor);
@@ -75,6 +105,11 @@ public class ProcessorProvider {
     return Collections.unmodifiableMap(processorMap);
   }
 
+  /**
+   * Build a collection of all existing processors
+   *
+   * @return a collection of all existing processors
+   */
   private Collection<EntityProcessor<? extends UniqueEntity>> allProcessors() {
 
     Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
@@ -82,9 +117,8 @@ public class ProcessorProvider {
     // todo add missing processors here
 
     // SystemParticipantResults
-    for (Class<? extends SystemParticipantResult> cls :
-                    SystemParticipantResultProcessor.processorEntities) {
-      resultingProcessors.add(new SystemParticipantResultProcessor(cls));
+    for (Class<? extends ResultEntity> cls : ResultEntityProcessor.processorEntities) {
+      resultingProcessors.add(new ResultEntityProcessor(cls));
     }
 
     return resultingProcessors;
@@ -92,15 +126,14 @@ public class ProcessorProvider {
 
   @SuppressWarnings("unchecked cast")
   private <T extends UniqueEntity> EntityProcessor<T> castProcessor(
-                  EntityProcessor<? extends UniqueEntity> processor) throws ProcessorProviderException {
+      EntityProcessor<? extends UniqueEntity> processor) throws ProcessorProviderException {
     try {
       return (EntityProcessor<T>) processor;
     } catch (ClassCastException ex) {
       throw new ProcessorProviderException(
-                      "Cannot cast processor with registered class '"
-                      + processor.getRegisteredClass().getSimpleName()
-                      + "'. This indicates a fatal problem with the processor mapping!");
+          "Cannot cast processor with registered class '"
+              + processor.getRegisteredClass().getSimpleName()
+              + "'. This indicates a fatal problem with the processor mapping!");
     }
   }
-
 }
