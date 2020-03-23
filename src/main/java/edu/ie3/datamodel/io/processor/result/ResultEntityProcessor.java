@@ -22,13 +22,14 @@ import java.lang.reflect.Method;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.Quantity;
+import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 
 /**
- * 'De-serializer' for {@link SystemParticipantResult}s into a fieldName -> value representation to
- * allow for an easy processing into a database or file sink e.g. .csv It is important that the
- * units used in this class are equal to the units used {@link SystemParticipantResultFactory} to
- * prevent invalid interpretation of unit prefixes!
+ * 'De-serializer' for {@link ResultEntity}s into a fieldName -> value representation to allow for
+ * an easy processing into a database or file sink e.g. .csv It is important that the units used in
+ * this class are equal to the units used {@link SystemParticipantResultFactory} to prevent invalid
+ * interpretation of unit prefixes!
  *
  * @version 0.1
  * @since 31.01.20
@@ -85,7 +86,7 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
   }
 
   @Override
-  protected Optional<String> handleModelProcessorSpecificQuantity(
+  protected Optional<String> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
     Optional<String> normalizedQuantityValue = Optional.empty();
     switch (fieldName) {
@@ -98,6 +99,11 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
         normalizedQuantityValue =
             quantityValToOptionalString(
                 quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT));
+        break;
+      case "energy":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
         break;
       default:
         log.error(

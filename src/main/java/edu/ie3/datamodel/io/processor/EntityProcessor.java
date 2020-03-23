@@ -19,7 +19,6 @@ import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricCurrent;
-import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
@@ -44,7 +43,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   private static final String uuidString = "uuid";
 
   /**
-   * // todo refresh Create a new EntityProcessor
+   * Create a new EntityProcessor
    *
    * @param registeredClass the class the entity processor should be able to handle
    */
@@ -142,7 +141,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
     switch (fieldName) {
       case "p":
       case "q":
-        normalizedQuantityValue = handleModelProcessorSpecificQuantity(quantity, fieldName);
+        normalizedQuantityValue = handleProcessorSpecificQuantity(quantity, fieldName);
         break;
       case "soc":
       case "vAng":
@@ -165,11 +164,6 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
         normalizedQuantityValue =
             quantityValToOptionalString(
                 quantity.asType(Power.class).to(StandardUnits.Q_DOT_RESULT));
-        break;
-      case "energy":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
         break;
       case "fillLevel":
         normalizedQuantityValue =
@@ -198,7 +192,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
    *     or empty if an error occurred during processing
    */
-  protected abstract Optional<String> handleModelProcessorSpecificQuantity(
+  protected abstract Optional<String> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName);
 
   protected Optional<String> quantityValToOptionalString(Quantity<?> quantity) {
