@@ -120,7 +120,6 @@ public class ProcessorProvider {
     for (Class<? extends ResultEntity> cls : ResultEntityProcessor.processorEntities) {
       resultingProcessors.add(new ResultEntityProcessor(cls));
     }
-
     return resultingProcessors;
   }
 
