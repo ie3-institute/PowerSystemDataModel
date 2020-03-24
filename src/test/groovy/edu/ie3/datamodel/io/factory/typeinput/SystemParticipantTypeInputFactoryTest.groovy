@@ -214,8 +214,9 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
             "cosphi":	    "6",
 
             "estorage":	    "6",
-            "pmin":	        "7",
             "pmax":	        "8",
+            "cprate":       "1",
+            "time":         "1",
             "eta":	        "9",
             "dod":	        "10",
             "lifetime":	    "11",
@@ -239,8 +240,9 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
             assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
             assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
-            assert pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_IN)
             assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
+            assert cpRate == getQuant(parameter["cprate"], StandardUnits.CP_RATE)
+            assert time == getQuant(parameter["time"], StandardUnits.TIME)
             assert eta == getQuant(parameter["eta"], StandardUnits.EFFICIENCY)
             assert dod == getQuant(parameter["dod"], StandardUnits.DOD)
             assert lifeTime == getQuant(parameter["lifetime"], StandardUnits.LIFE_TIME)
