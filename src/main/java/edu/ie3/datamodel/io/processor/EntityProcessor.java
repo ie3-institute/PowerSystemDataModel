@@ -6,9 +6,14 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
+import edu.ie3.datamodel.io.factory.input.AssetInputEntityFactory;
+import edu.ie3.datamodel.io.factory.input.NodeInputFactory;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
+import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.TimeTools;
 import java.beans.Introspector;
 import java.lang.reflect.Method;
@@ -23,6 +28,8 @@ import javax.measure.quantity.Power;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.geojson.GeoJsonWriter;
 
 /**
  * Internal API Interface for EntityProcessors. Main purpose is to 'de-serialize' models into a
@@ -39,8 +46,18 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   protected final String[] headerElements;
   protected final LinkedHashMap<String, Method> fieldNameToMethod = new LinkedHashMap<>();
 
+  private static final String OPERATION_TIME_FIELD_NAME = OperationTime.class.getSimpleName();
+  private static final String OPERATES_FROM = AssetInputEntityFactory.OPERATES_FROM;
+  private static final String OPERATES_UNTIL = AssetInputEntityFactory.OPERATES_UNTIL;
+
+  private static final String VOLT_LVL_FIELD_NAME = "voltLvl";
+  private static final String VOLT_LVL = NodeInputFactory.VOLT_LVL;
+  private static final String V_RATED = NodeInputFactory.V_RATED;
+
+  private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
+
   /** Field name of {@link UniqueEntity} uuid */
-  private static final String uuidString = "uuid";
+  private static final String UUID_FIELD_NAME = "uuid";
 
   /**
    * Create a new EntityProcessor
@@ -59,6 +76,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    * @param cls class to be registered
    * @return an array of strings of all field values of the registered class
    */
+  // todo JH this method has side effects that should be addressed
   private String[] registerClass(Class<? extends T> cls, List<Class<? extends T>> eligibleClasses) {
     if (!eligibleClasses.contains(cls))
       throw new EntityProcessorException(
@@ -77,7 +95,20 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
           .forEach(
               pd -> { // invoke method to get value
                 if (pd.getReadMethod() != null) {
-                  fieldNameToMethod.put(pd.getName(), pd.getReadMethod());
+
+                  // OperationTime needs to be replaced by operatesFrom and operatesUntil
+                  String fieldName = pd.getName();
+                  if (fieldName.equalsIgnoreCase(OPERATION_TIME_FIELD_NAME)) {
+                    fieldName = OPERATES_FROM;
+                    fieldNameToMethod.put(OPERATES_UNTIL, pd.getReadMethod());
+                  }
+
+                  // VoltageLevel needs to be replaced by id and nominalVoltage
+                  if (fieldName.equalsIgnoreCase(VOLT_LVL_FIELD_NAME)) {
+                    fieldName = V_RATED;
+                    fieldNameToMethod.put(VOLT_LVL, pd.getReadMethod());
+                  }
+                  fieldNameToMethod.put(fieldName, pd.getReadMethod());
                 }
               });
 
@@ -89,9 +120,10 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
     // uuid should always be the first element in the map
     String[] filteredArray =
         fieldNameToMethod.keySet().stream()
-            .filter(x -> !x.toLowerCase().contains(uuidString))
+            .filter(x -> !x.toLowerCase().contains(UUID_FIELD_NAME))
             .toArray(String[]::new);
-    return ArrayUtils.addAll(new String[] {uuidString}, filteredArray);
+
+    return ArrayUtils.addAll(new String[] {UUID_FIELD_NAME}, filteredArray);
   }
 
   /**
@@ -115,14 +147,97 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   }
 
   /**
-   * Actual implementation of the handling process. Depends on the entity that should be processed
-   * and hence needs to be implemented individually
+   * // todo JH refresh text Actual implementation of the handling process. Depends on the entity
+   * that should be processed and hence needs to be implemented individually
    *
    * @param entity the entity that should be 'de-serialized' into a map of fieldName -> fieldValue
    * @return an optional Map with fieldName -> fieldValue or an empty optional if an error occurred
    *     during processing
    */
-  protected abstract Optional<LinkedHashMap<String, String>> processEntity(T entity);
+  private Optional<LinkedHashMap<String, String>> processEntity(T entity) {
+
+    Optional<LinkedHashMap<String, String>> resultMapOpt;
+
+    try {
+      LinkedHashMap<String, String> resultMap = new LinkedHashMap<>();
+      for (String fieldName : headerElements) {
+        Method method = fieldNameToMethod.get(fieldName);
+        Optional<Object> methodReturnObjectOpt = Optional.ofNullable(method.invoke(entity));
+
+        if (methodReturnObjectOpt.isPresent()) {
+          resultMap.put(
+              fieldName, processMethodResult(methodReturnObjectOpt.get(), method, fieldName));
+        } else {
+          resultMap.put(fieldName, "");
+        }
+      }
+      resultMapOpt = Optional.of(resultMap);
+    } catch (Exception e) {
+      log.error("Error during entity processing:", e);
+      resultMapOpt = Optional.empty();
+    }
+    return resultMapOpt;
+  }
+
+  private String processMethodResult(Object methodReturnObject, Method method, String fieldName) {
+
+    StringBuilder resultStringBuilder = new StringBuilder();
+
+    switch (method.getReturnType().getSimpleName()) {
+        // primitives (Boolean, Character, Byte, Short, Integer, Long, Float, Double, String,
+      case "UUID":
+      case "boolean":
+      case "int":
+      case "String":
+        resultStringBuilder.append(methodReturnObject.toString());
+        break;
+      case "Quantity":
+        resultStringBuilder.append(
+            handleQuantity((Quantity<?>) methodReturnObject, fieldName)
+                .orElseThrow(
+                    () ->
+                        new EntityProcessorException(
+                            "Unable to process quantity value for attribute '"
+                                + fieldName
+                                + "' in result entity "
+                                + getRegisteredClass().getSimpleName()
+                                + ".class.")));
+        break;
+      case "ZonedDateTime":
+        resultStringBuilder.append(processZonedDateTime((ZonedDateTime) methodReturnObject));
+        break;
+      case "OperationTime":
+        resultStringBuilder.append(
+            processOperationTime((OperationTime) methodReturnObject, fieldName));
+        break;
+      case "OperatorInput":
+        resultStringBuilder.append(
+            ((OperatorInput) methodReturnObject)
+                .getUuid()); // todo can be moved to own method as this is needed also for types
+        break;
+      case "VoltageLevel":
+        resultStringBuilder.append(
+            processVoltageLevel((VoltageLevel) methodReturnObject, fieldName));
+        break;
+      case "Point":
+      case "LineString": // todo check
+        resultStringBuilder.append(geoJsonWriter.write((Geometry) methodReturnObject));
+        break;
+      default:
+        throw new EntityProcessorException(
+            "Unable to process value for attribute/field '"
+                + fieldName
+                + "' and method return type '"
+                + method.getReturnType().getSimpleName()
+                + "' for method with name '"
+                + method.getName()
+                + "' in system participant result model "
+                + getRegisteredClass().getSimpleName()
+                + ".class.");
+    }
+
+    return resultStringBuilder.toString();
+  }
 
   /**
    * Standard method to process a ZonedDateTime to a String based on a method return object NOTE:
@@ -134,6 +249,56 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    */
   protected String processZonedDateTime(ZonedDateTime zonedDateTime) {
     return TimeTools.toString(zonedDateTime);
+  }
+
+  /**
+   * TODO JH
+   *
+   * @param operationTime
+   * @param fieldName
+   * @return
+   */
+  protected String processOperationTime(OperationTime operationTime, String fieldName) {
+    StringBuilder resultStringBuilder = new StringBuilder();
+
+    if (fieldName.equalsIgnoreCase(OPERATES_FROM))
+      operationTime
+          .getStartDate()
+          .ifPresent(startDate -> resultStringBuilder.append(processZonedDateTime(startDate)));
+
+    if (fieldName.equalsIgnoreCase(OPERATES_UNTIL))
+      operationTime
+          .getEndDate()
+          .ifPresent(endDate -> resultStringBuilder.append(processZonedDateTime(endDate)));
+
+    return resultStringBuilder.toString();
+  }
+
+  /**
+   * todo JH
+   *
+   * @param voltageLevel
+   * @return
+   */
+  protected String processVoltageLevel(VoltageLevel voltageLevel, String fieldName) {
+
+    StringBuilder resultStringBuilder = new StringBuilder();
+    if (fieldName.equalsIgnoreCase(VOLT_LVL)) resultStringBuilder.append(voltageLevel.getId());
+
+    if (fieldName.equalsIgnoreCase(V_RATED))
+      resultStringBuilder.append(
+          handleQuantity(voltageLevel.getNominalVoltage(), fieldName)
+              .orElseThrow(
+                  () ->
+                      new EntityProcessorException(
+                          "Unable to process quantity value for attribute '"
+                              + fieldName
+                              + "' in result entity "
+                              + getRegisteredClass().getSimpleName()
+                              + ".class.")));
+    ;
+
+    return resultStringBuilder.toString();
   }
 
   /**
@@ -152,6 +317,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "p":
       case "q":
       case "energy":
+      case "vTarget":
+      case "vrated":
         normalizedQuantityValue = handleProcessorSpecificQuantity(quantity, fieldName);
         break;
       case "soc":
@@ -183,7 +350,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
         break;
       default:
         log.error(
-            "Cannot process quantity {} for field with name {} in model processing!",
+            "Cannot process quantity with value '{}' for field with name {} in model processing!",
             quantity,
             fieldName);
         break;

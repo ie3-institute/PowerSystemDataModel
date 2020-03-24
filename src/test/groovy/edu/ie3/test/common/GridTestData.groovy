@@ -8,8 +8,13 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
+import edu.ie3.util.TimeTools
+import org.locationtech.jts.geom.Point
+import org.locationtech.jts.io.geojson.GeoJsonReader
 import tec.uom.se.quantity.Quantities
 import tec.uom.se.unit.MetricPrefix
+
+import java.time.ZonedDateTime
 
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
@@ -20,6 +25,8 @@ import static tec.uom.se.unit.Units.PERCENT
 import static tec.uom.se.unit.Units.SIEMENS
 
 class GridTestData {
+
+    private static final GeoJsonReader geoJsonReader = new GeoJsonReader();
 
     private static final Transformer2WTypeInput transformerTypeBtoD = new Transformer2WTypeInput(
             UUID.randomUUID(),
@@ -115,13 +122,13 @@ class GridTestData {
     )
 
     public static final NodeInput nodeA = new NodeInput(
-            UUID.randomUUID(),
-            OperationTime.notLimited(),
-            OperatorInput.NO_OPERATOR_ASSIGNED,
+            UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"),
+            OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
+            new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
             "node_a",
             Quantities.getQuantity(1d, PU),
             true,
-            null,
+            (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }"),
             GermanVoltageLevelUtils.EHV_380KV,
             1)
     public static final NodeInput nodeB = new NodeInput(
@@ -234,9 +241,9 @@ class GridTestData {
             true
     )
     public static final Transformer2WInput transformerCtoG = new Transformer2WInput(
-            UUID.randomUUID(),
-            OperationTime.notLimited(),
-            OperatorInput.NO_OPERATOR_ASSIGNED,
+            UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"),
+            OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
+            new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
             "2w_parallel_2",
             nodeC,
             nodeF,
@@ -247,9 +254,9 @@ class GridTestData {
     )
 
     public static Transformer3WInput transformerAtoBtoC = new Transformer3WInput(
-            UUID.randomUUID(),
-            OperationTime.notLimited(),
-            OperatorInput.NO_OPERATOR_ASSIGNED,
+            UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"),
+            OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
+            new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
             "3w_test",
             nodeA,
             nodeB,
@@ -259,4 +266,6 @@ class GridTestData {
             0,
             true
     )
+
+
 }
