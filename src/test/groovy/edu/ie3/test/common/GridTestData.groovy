@@ -182,7 +182,7 @@ class GridTestData {
             GermanVoltageLevelUtils.LV,
             6)
     public static final NodeInput nodeG = new NodeInput(
-            UUID.randomUUID(),
+            UUID.fromString("aaa74c1a-d07e-4615-99a5-e991f1d81cc4"),
             OperationTime.notLimited(),
             OperatorInput.NO_OPERATOR_ASSIGNED,
             "node_g",
@@ -246,7 +246,7 @@ class GridTestData {
             new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
             "2w_parallel_2",
             nodeC,
-            nodeF,
+            nodeG,
             1,
             transformerTypeCtoX,
             0,
