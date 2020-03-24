@@ -3,7 +3,8 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.dataconnection.dataconnectors;
+package edu.ie3.datamodel.io.source;
 
-/** Describes a class that is used to establish a connection to a data location */
-public interface DataConnector {}
+public interface TypeSource extends DataSource {
+  // TODO
+}

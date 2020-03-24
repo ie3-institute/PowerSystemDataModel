@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
-import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.util.TimeTools;
@@ -15,10 +15,10 @@ import java.lang.reflect.Method;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricCurrent;
-import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
@@ -49,17 +49,27 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    */
   public EntityProcessor(Class<? extends T> registeredClass) {
     this.registeredClass = registeredClass;
-    this.headerElements = registerClass(registeredClass);
+    this.headerElements = registerClass(registeredClass, getAllEligibleClasses());
     TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss");
   }
+
   /**
    * Register the class provided in the constructor
    *
    * @param cls class to be registered
    * @return an array of strings of all field values of the registered class
    */
-  private String[] registerClass(Class<?> cls) {
-
+  private String[] registerClass(Class<? extends T> cls, List<Class<? extends T>> eligibleClasses) {
+    if (!eligibleClasses.contains(cls))
+      throw new EntityProcessorException(
+          "Cannot register class '"
+              + cls.getSimpleName()
+              + "' with entity processor '"
+              + this.getClass().getSimpleName()
+              + "'. Eligible classes: "
+              + eligibleClasses.stream()
+                  .map(Class::getSimpleName)
+                  .collect(Collectors.joining(", ")));
     try {
       Arrays.stream(Introspector.getBeanInfo(cls, Object.class).getPropertyDescriptors())
           // filter out properties with setters only
@@ -93,7 +103,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    */
   public Optional<LinkedHashMap<String, String>> handleEntity(T entity) {
     if (!registeredClass.equals(entity.getClass()))
-      throw new FactoryException(
+      throw new EntityProcessorException(
           "Cannot process "
               + entity.getClass().getSimpleName()
               + ".class with this EntityProcessor. Please either provide an element of "
@@ -141,7 +151,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
     switch (fieldName) {
       case "p":
       case "q":
-        normalizedQuantityValue = handleModelProcessorSpecificQuantity(quantity, fieldName);
+      case "energy":
+        normalizedQuantityValue = handleProcessorSpecificQuantity(quantity, fieldName);
         break;
       case "soc":
       case "vAng":
@@ -165,11 +176,6 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
             quantityValToOptionalString(
                 quantity.asType(Power.class).to(StandardUnits.Q_DOT_RESULT));
         break;
-      case "energy":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
-        break;
       case "fillLevel":
         normalizedQuantityValue =
             quantityValToOptionalString(
@@ -190,15 +196,14 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    * handle active power p different for {@link edu.ie3.datamodel.models.result.ResultEntity}s and
    * {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}s Hence from the
    * generalized method {@link this.handleQuantity()}, this allows for the specific handling of
-   * child implementations. See the implementation @ {@link
-   * edu.ie3.datamodel.io.processor.result.ResultEntityProcessor} for details.
+   * child implementations. See the implementation @ {@link ResultEntityProcessor} for details.
    *
    * @param quantity the quantity that should be processed
    * @param fieldName the field name the quantity is set to
    * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
    *     or empty if an error occurred during processing
    */
-  protected abstract Optional<String> handleModelProcessorSpecificQuantity(
+  protected abstract Optional<String> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName);
 
   protected Optional<String> quantityValToOptionalString(Quantity<?> quantity) {
@@ -212,4 +217,6 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   public String[] getHeaderElements() {
     return headerElements;
   }
+
+  protected abstract List<Class<? extends T>> getAllEligibleClasses();
 }

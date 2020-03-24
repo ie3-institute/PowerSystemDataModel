@@ -39,11 +39,20 @@ apply from: scriptsLocation + 'mavenCentralPublish.gradle'
 repositories {
 	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
 	maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
+
+	// sonatype snapshots repo // todo remove
+	maven { url 'https://oss.sonatype.org/service/local/repositories/snapshots/content' }
+
 }
 
 dependencies {
 	// ie³ internal repository for units
-	compile 'com.github.ie3-institute:PowerSystemUtils:1.3'
+//	compile 'com.github.ie3-institute:PowerSystemUtils:1.3' // todo enable again
+
+	// todo remove snapshot again
+	compile('com.github.ie3-institute:PowerSystemUtils:1.3-SNAPSHOT') {
+		exclude group: 'org.slf4j', module: 'slf4j-api'
+	}
 
 	compile "tec.uom:uom-se:$unitsOfMeasurementVersion"
 
@@ -58,6 +67,11 @@ dependencies {
 	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
 	testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
 	testCompile 'org.objenesis:objenesis:3.1' // Mock creation with constructor parameters
+
+	// logging
+	compile 'org.apache.logging.log4j:log4j-api:+' // log4j
+	compile 'org.apache.logging.log4j:log4j-core:+' // log4j
+	compile 'org.apache.logging.log4j:log4j-slf4j-impl:+' // log4j -> slf4j
 }
 
 wrapper {
