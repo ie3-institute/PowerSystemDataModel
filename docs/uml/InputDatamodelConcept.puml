@@ -365,21 +365,60 @@ LineGraphicInput --|> GraphicInput
 Interface Value
 
 abstract Class TimeBasedValue<T extends Value>{
-+ time: ZonedDateTime
-+ getValue(): T
+    + time: ZonedDateTime
+    + getValue(): T
 }
 TimeBasedValue --|> UniqueEntity
+TimeBasedValue --* Value
 
 Class PowerValue {
-+ p: Quantity<Power> (kW)
-+ q: Quantity<Power> (kVA)
+    - p: Quantity<Power> [kW]
+    - q: Quantity<Power> [kVA]
 }
 PowerValue --|> Value
 
-Class WholesalePriceValue {
-+ price: SpecificCurrency
+Class HeatAndPowerValue {
+    - heatDemand: Quantity<Power> [kW]
 }
-WholesalePriceValue --|> Value
+HeatAndPowerValue --|> PowerValue
+
+Class HeatDemandValue {
+    - heatDemand: Quantity<Power> [kW]
+}
+HeatDemandValue --|> Value
+
+Class EnergyPriceValue {
+    - price: Quantity<SpecificCurrency> [€/MWh]
+}
+EnergyPriceValue --|> Value
+
+Class IrradiationValue {
+    - directIrradiation: Quantity<Irradiation>
+    - diffuseIrradiation: Quantity<Irradiation>
+}
+IrradiationValue --|> Value
+
+Class TemperatureValue {
+    - temperature: Quantity<Temperature>
+}
+TemperatureValue --|> Value
+
+Class WindValue {
+    - direction: Quantity<Angle>
+    - velocity: Quantity<Speed>
+}
+WindValue --|> Value
+
+Class WeatherValue {
+  - coordinate: Point
+  - irradiation: IrradiationValue
+  - temperature: TemperatureValue
+  - wind: WindValue
+}
+WeatherValue --|> Value
+WeatherValue --* IrradiationValue
+WeatherValue --* TemperatureValue
+WeatherValue --* WindValue
 
 Interface LoadProfileType {
 }
@@ -403,25 +442,40 @@ NS
 }
 GermanVoltageLevel --|> VoltageLevel
 
-Interface TimeSeries<T extends Value> {
-+ TimeBasedValue<T> getTimeBasedValue(ZonedDateTime)
-+ T getValue(ZonedDateTime)
+Abstract Class TimeSeries<T extends Value> {
+    + TimeBasedValue<T> getTimeBasedValue(ZonedDateTime)
+    + T getValue(ZonedDateTime)
 }
+TimeSeries --|> UniqueEntity
+TimeSeries "1" --* "n" TimeBasedValue
 
-Interface IndividualTimeSeries<T extends Value> {
-+ timeToTimeBasedValue:HashMap<ZonedDateTime, TimeBasedValue<T>>
-+ add(ZonedDateTime, T): void
-+ add(TimeBasedValue<T>): void
+Class IndividualTimeSeries<T extends Value> {
+    - timeToTimeBasedValue:HashMap<ZonedDateTime, TimeBasedValue<T>>
+    + add(ZonedDateTime, T): void
+    + add(TimeBasedValue<T>): void
+    + addAll(Map<ZonedDateTime, T>): void
 }
 IndividualTimeSeries --|> TimeSeries
 
-Interface RepetitiveTimeSeries<T extends Value> {
-+ calc(ZonedDateTime): T
+Class PowerTimeSeries {
+}
+PowerTimeSeries --|> IndividualTimeSeries
+
+Class HeatDemandTimeSeries {
+}
+HeatDemandTimeSeries --|> IndividualTimeSeries
+
+Class HeatAndPowerTimeSeries {
+}
+HeatAndPowerTimeSeries --|> IndividualTimeSeries
+
+Abstract Class RepetitiveTimeSeries<T extends Value> {
+    + calc(ZonedDateTime): T
 }
 RepetitiveTimeSeries --|> TimeSeries
 
 Class LoadProfileInput {
-+ profile: LoadProfileType
+    + profile: LoadProfileType
 }
 LoadProfileInput --|> RepetitiveTimeSeries
 LoadProfileInput --> LoadProfileType
