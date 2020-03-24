@@ -27,8 +27,7 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
                 "operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
                 "operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
                 "id"              : "TestID",
-                "qcharacteristics": "cosphi_fixed:1",
-                "behaviour"       : "market"
+                "qcharacteristics": "cosphi_fixed:1"
         ]
         def inputClass = StorageInput
         def nodeInput = Mock(NodeInput)
@@ -53,7 +52,6 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
             assert node == nodeInput
             assert qCharacteristics == parameter["qcharacteristics"]
             assert type == typeInput
-            assert behaviour == StorageStrategy.get(parameter["behaviour"])
         }
     }
 }
