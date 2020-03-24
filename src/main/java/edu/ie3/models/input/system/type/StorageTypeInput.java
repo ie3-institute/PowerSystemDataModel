@@ -22,6 +22,10 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   private final Quantity<Energy> eStorage;
   /** Maximum permissible active power (typically in kW) */
   private final Quantity<Power> pMax;
+  /** Charging/Discharging rate at constant power (typically per unit) */
+  private final Quantity<Dimensionless> cpRate;
+  /** Charging/Discharging time at given cpRate (typically in ms) */
+  private final Quantity<Time> time;
   /** Efficiency of the charging and discharging process (typically in %) */
   private final Quantity<Dimensionless> eta;
   /** Minimum permissible depth of discharge (typically in %) */
@@ -40,6 +44,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
    * @param sRated Rated apparent power of integrated inverter
    * @param cosphiRated power factor for integrated inverter
    * @param pMax maximum permissible charge/discharge power
+   * @param cpRate charging/discharging rate (constant power)
+   * @param time charging/discharging time at given cpRate
    * @param eta efficiency of the charging and discharging process
    * @param dod maximum permissible depth of discharge
    * @param lifeTime maximum life time of the storage
@@ -54,6 +60,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       Quantity<Power> sRated,
       double cosphiRated,
       Quantity<Power> pMax,
+      Quantity<Dimensionless> cpRate,
+      Quantity<Time> time,
       Quantity<Dimensionless> eta,
       Quantity<Dimensionless> dod,
       Quantity<Time> lifeTime,
@@ -61,6 +69,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
+    this.cpRate = cpRate.to(StandardUnits.CP_RATE);
+    this.time = time.to(StandardUnits.TIME);
     this.eta = eta.to(StandardUnits.EFFICIENCY);
     this.dod = dod.to(StandardUnits.DOD);
     this.lifeTime = lifeTime.to(StandardUnits.LIFE_TIME);
@@ -91,6 +101,14 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     return pMax;
   }
 
+  public Quantity<Dimensionless> getcpRate() {
+    return cpRate;
+  }
+
+  public Quantity<Time> gettime() {
+    return time;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -100,6 +118,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     return lifeCycle == that.lifeCycle
         && eStorage.equals(that.eStorage)
         && pMax.equals(that.pMax)
+        && cpRate.equals(that.cpRate)
+        && time.equals(that.time)
         && eta.equals(that.eta)
         && dod.equals(that.dod)
         && lifeTime.equals(that.lifeTime);
@@ -107,6 +127,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), eStorage, pMax, eta, dod, lifeTime, lifeCycle);
+    return Objects.hash(
+        super.hashCode(), eStorage, pMax, cpRate, time, eta, dod, lifeTime, lifeCycle);
   }
 }
