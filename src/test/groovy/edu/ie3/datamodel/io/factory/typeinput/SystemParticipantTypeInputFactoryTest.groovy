@@ -274,7 +274,6 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
         then:
         FactoryException ex = thrown()
-        print(ex)
         ex.message == "The provided fields [capex, cosphi, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data {capex -> 3,cosphi -> 6,dod -> 10,estorage -> 6,eta -> 9,id -> blablub,lifetime -> 11,opex -> 4,pmax -> 8,pmin -> 7,srated -> 5,uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
                 "The following fields to be passed to a constructor of StorageTypeInput are possible:\n" +
                 "0: [capex, cosphi, cprate, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, srated, time, uuid]\n"
