@@ -80,7 +80,7 @@ class GridTestData {
             5
     )
     private static final Transformer2WTypeInput transformerTypeCtoX = new Transformer2WTypeInput(
-            UUID.randomUUID(),
+            UUID.fromString("08559390-d7c0-4427-a2dc-97ba312ae0ac"),
             "MS-NS_1",
             Quantities.getQuantity(10.078, OHM),
             Quantities.getQuantity(23.312, OHM),
@@ -98,7 +98,7 @@ class GridTestData {
     )
 
     private static final Transformer3WTypeInput transformerTypeAtoBtoC = new Transformer3WTypeInput(
-            UUID.randomUUID(),
+            UUID.fromString("5b0ee546-21fb-4a7f-a801-5dbd3d7bb356"),
             "HöS-HS-MS_1",
             Quantities.getQuantity(120000d, KILOVOLTAMPERE),
             Quantities.getQuantity(60000d, KILOVOLTAMPERE),
@@ -132,7 +132,7 @@ class GridTestData {
             GermanVoltageLevelUtils.EHV_380KV,
             1)
     public static final NodeInput nodeB = new NodeInput(
-            UUID.randomUUID(),
+            UUID.fromString("47d29df0-ba2d-4d23-8e75-c82229c5c758"),
             OperationTime.notLimited(),
             OperatorInput.NO_OPERATOR_ASSIGNED,
             "node_b",
@@ -142,7 +142,7 @@ class GridTestData {
             GermanVoltageLevelUtils.HV,
             2)
     public static final NodeInput nodeC = new NodeInput(
-            UUID.randomUUID(),
+            UUID.fromString("bd837a25-58f3-44ac-aa90-c6b6e3cd91b2"),
             OperationTime.notLimited(),
             OperatorInput.NO_OPERATOR_ASSIGNED,
             "node_c",
@@ -172,7 +172,7 @@ class GridTestData {
             GermanVoltageLevelUtils.MV_10KV,
             5)
     public static final NodeInput nodeF = new NodeInput(
-            UUID.randomUUID(),
+            UUID.fromString("aaa74c1a-d07e-4615-99a5-e991f1d81cc4"),
             OperationTime.notLimited(),
             OperatorInput.NO_OPERATOR_ASSIGNED,
             "node_f",

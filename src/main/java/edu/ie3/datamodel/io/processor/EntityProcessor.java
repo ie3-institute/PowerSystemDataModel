@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
-import edu.ie3.datamodel.io.factory.input.AssetInputEntityFactory;
 import edu.ie3.datamodel.io.factory.input.NodeInputFactory;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.OperationTime;
@@ -47,8 +46,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   protected final LinkedHashMap<String, Method> fieldNameToMethod = new LinkedHashMap<>();
 
   private static final String OPERATION_TIME_FIELD_NAME = OperationTime.class.getSimpleName();
-  private static final String OPERATES_FROM = AssetInputEntityFactory.OPERATES_FROM;
-  private static final String OPERATES_UNTIL = AssetInputEntityFactory.OPERATES_UNTIL;
+  private static final String OPERATES_FROM = "operatesFrom";
+  private static final String OPERATES_UNTIL = "operatesUntil";
 
   private static final String VOLT_LVL_FIELD_NAME = "voltLvl";
   private static final String VOLT_LVL = NodeInputFactory.VOLT_LVL;
@@ -222,6 +221,11 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "Point":
       case "LineString": // todo check
         resultStringBuilder.append(geoJsonWriter.write((Geometry) methodReturnObject));
+        break;
+      case "NodeInput":
+      case "Transformer3WTypeInput":
+      case "Transformer2WTypeInput":
+        resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
         break;
       default:
         throw new EntityProcessorException(
