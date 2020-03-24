@@ -36,7 +36,6 @@ public class StorageInputFactory
       OperatorInput operatorInput,
       OperationTime operationTime) {
     final StorageTypeInput typeInput = data.getTypeInput();
-    final String behaviour = data.getField(BEHAVIOUR);
 
     return new StorageInput(
         uuid, operationTime, operatorInput, id, node, qCharacteristics, typeInput);
