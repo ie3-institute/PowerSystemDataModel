@@ -138,11 +138,11 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
         + eStorage
         + ", pMax="
         + pMax
-            + ", cpRate="
-            + cpRate
-            + ", time="
-            + time
-            + ", eta="
+        + ", cpRate="
+        + cpRate
+        + ", time="
+        + time
+        + ", eta="
         + eta
         + ", dod="
         + dod
