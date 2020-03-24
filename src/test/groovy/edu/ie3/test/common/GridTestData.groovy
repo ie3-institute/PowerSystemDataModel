@@ -3,16 +3,22 @@ package edu.ie3.test.common
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.connector.LineInput
+import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.util.TimeTools
+import edu.ie3.util.quantities.PowerSystemUnits
+import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.io.geojson.GeoJsonReader
 import tec.uom.se.quantity.Quantities
 import tec.uom.se.unit.MetricPrefix
+import tec.uom.se.unit.Units
 
 import java.time.ZonedDateTime
 
@@ -24,6 +30,11 @@ import static tec.uom.se.unit.Units.OHM
 import static tec.uom.se.unit.Units.PERCENT
 import static tec.uom.se.unit.Units.SIEMENS
 
+/**
+ * This class contains a collection of different model instances that can be used for testing purposes.
+ * Please note that these entities do NOT necessarily form a valid grid. For valid topologies please refer
+ * to {@link ComplexTopology}
+ */
 class GridTestData {
 
     private static final GeoJsonReader geoJsonReader = new GeoJsonReader();
@@ -152,7 +163,7 @@ class GridTestData {
             GermanVoltageLevelUtils.MV_20KV,
             3)
     public static final NodeInput nodeD = new NodeInput(
-            UUID.randomUUID(),
+            UUID.fromString("bd865a25-58f3-44ac-aa90-c6b6e3cd91b2"),
             OperationTime.notLimited(),
             OperatorInput.NO_OPERATOR_ASSIGNED,
             "node_d",
@@ -267,5 +278,40 @@ class GridTestData {
             true
     )
 
+
+    public static final SwitchInput switchAtoB = new SwitchInput(
+            UUID.fromString("5dc88077-aeb6-4711-9142-db57287640b1"),
+            OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
+            new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+            "test_switch_AtoB",
+            nodeA,
+            nodeB,
+            true
+    )
+
+    private static final LineTypeInput lineTypeInputCtoD = new LineTypeInput(
+            UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
+            "lineType_AtoB",
+            Quantities.getQuantity(0.00000000322, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
+            Quantities.getQuantity(0, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
+            Quantities.getQuantity(0.437, PowerSystemUnits.OHM_PER_KILOMETRE),
+            Quantities.getQuantity(0.356, PowerSystemUnits.OHM_PER_KILOMETRE),
+            Quantities.getQuantity(300,  PowerSystemUnits.AMPERE),
+            Quantities.getQuantity(20, KILOVOLT)
+
+    )
+
+    public static final LineInput lineCtoD = new LineInput(
+            UUID.fromString("91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
+            OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
+            new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+            "test_line_AtoB",
+            nodeC, nodeD,
+            2,
+            lineTypeInputCtoD,
+            Quantities.getQuantity(3, Units.METRE),
+            (LineString) geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}"),
+            Optional.of("olm")
+    )
 
 }

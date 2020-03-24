@@ -1,6 +1,8 @@
 package edu.ie3.datamodel.io.processor.input
 
 import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.connector.LineInput
+import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.test.common.GridTestData
@@ -65,9 +67,13 @@ class AssetInputProcessorTest extends Specification {
         then: "make sure that the result is as expected "
         processingResult.present
 
+        println "["
+        processingResult.get().each { k, v -> println "\"${k}\":\"${v.replaceAll("\"", "\"")}\"," }
+        println "]"
+
         processingResult.get().forEach { k, v ->
             if (k != "nodeInternal")     // the internal 3w node is always randomly generated, hence we can skip to test on this
-                assert(v == expectedResult.get(k))
+                assert (v == expectedResult.get(k))
         }
 
 
@@ -101,9 +107,32 @@ class AssetInputProcessorTest extends Specification {
                 "type"               : "08559390-d7c0-4427-a2dc-97ba312ae0ac",
         ]
 
+        SwitchInput        | GridTestData.switchAtoB         || [
+                "uuid"               : "5dc88077-aeb6-4711-9142-db57287640b1",
+                "closed"             : "true",
+                "id"                 : "test_switch_AtoB",
+                "noOfParallelDevices": "1",
+                "nodeA"              : "5dc88077-aeb6-4711-9142-db57292640b1",
+                "nodeB"              : "47d29df0-ba2d-4d23-8e75-c82229c5c758",
+                "operatesUntil"      : "2020-03-25 15:11:31",
+                "operatesFrom"       : "2020-03-24 15:11:31",
+                "operator"           : "8f9682df-0744-4b58-a122-f0dc730f6510",
+        ]
 
-        // todo JH Line, Switch,
-
+        LineInput          | GridTestData.lineCtoD           || [
+                "uuid"               : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+                "geoPosition"        : "{\"type\":\"LineString\",\"coordinates\":[[7.411111,51.492528],[7.414116,51.484136]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+                "id"                 : "test_line_AtoB",
+                "length"             : "0.003",
+                "noOfParallelDevices": "2",
+                "nodeA"              : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
+                "nodeB"              : "bd865a25-58f3-44ac-aa90-c6b6e3cd91b2",
+                "olmCharacteristic"  : "olm",
+                "operatesUntil"      : "2020-03-25 15:11:31",
+                "operatesFrom"       : "2020-03-24 15:11:31",
+                "operator"           : "8f9682df-0744-4b58-a122-f0dc730f6510",
+                "type"               : "3bed3eb3-9790-4874-89b5-a5434d408088",
+        ]
 
     }
 

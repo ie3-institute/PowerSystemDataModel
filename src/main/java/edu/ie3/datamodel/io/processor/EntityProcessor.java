@@ -11,7 +11,6 @@ import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.TimeTools;
 import java.beans.Introspector;
@@ -23,6 +22,7 @@ import java.util.stream.Collectors;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricCurrent;
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Power;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
@@ -209,23 +209,24 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
         resultStringBuilder.append(
             processOperationTime((OperationTime) methodReturnObject, fieldName));
         break;
-      case "OperatorInput":
-        resultStringBuilder.append(
-            ((OperatorInput) methodReturnObject)
-                .getUuid()); // todo can be moved to own method as this is needed also for types
-        break;
       case "VoltageLevel":
         resultStringBuilder.append(
             processVoltageLevel((VoltageLevel) methodReturnObject, fieldName));
         break;
       case "Point":
-      case "LineString": // todo check
+      case "LineString":
         resultStringBuilder.append(geoJsonWriter.write((Geometry) methodReturnObject));
         break;
       case "NodeInput":
       case "Transformer3WTypeInput":
       case "Transformer2WTypeInput":
+      case "LineTypeInput":
+      case "OperatorInput":
         resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
+        break;
+      case "Optional": // todo needs to be removed asap as this is very dangerous, but necessary as
+        // long as #75 is not addressed
+        resultStringBuilder.append(((Optional<String>) methodReturnObject).orElse(""));
         break;
       default:
         throw new EntityProcessorException(
@@ -235,7 +236,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
                 + method.getReturnType().getSimpleName()
                 + "' for method with name '"
                 + method.getName()
-                + "' in system participant result model "
+                + "' in in entity model "
                 + getRegisteredClass().getSimpleName()
                 + ".class.");
     }
@@ -351,6 +352,11 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
         normalizedQuantityValue =
             quantityValToOptionalString(
                 quantity.asType(Dimensionless.class).to(StandardUnits.FILL_LEVEL));
+        break;
+      case "length":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Length.class).to(StandardUnits.LINE_LENGTH));
         break;
       default:
         log.error(
