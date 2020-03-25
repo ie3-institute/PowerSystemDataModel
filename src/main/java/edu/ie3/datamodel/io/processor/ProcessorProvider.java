@@ -131,7 +131,7 @@ public class ProcessorProvider {
 
     // todo add missing processors here
     // AssetInput
-    for(Class<? extends AssetInput> cls : AssetInputProcessor.eligibleEntityClasses){
+    for (Class<? extends AssetInput> cls : AssetInputProcessor.eligibleEntityClasses) {
       resultingProcessors.add(new AssetInputProcessor(cls));
     }
 
