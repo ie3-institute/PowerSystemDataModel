@@ -226,3 +226,6 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+
+# Self-created test files
+/test

@@ -5,16 +5,11 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class GridContainer implements InputContainer {
-  private static Logger logger = LoggerFactory.getLogger(GridContainer.class);
-
   /** Name of this grid */
   protected final String gridName;
   /** Accumulated raw grid elements (lines, nodes, transformers, switches) */
@@ -32,21 +27,9 @@ public abstract class GridContainer implements InputContainer {
     this.gridName = gridName;
 
     this.rawGrid = rawGrid;
-    if (!this.rawGrid.validate())
-      throw new InvalidGridException(
-          "You provided NULL as raw grid data for "
-              + gridName
-              + ". It has at least have to have nodes.");
-
     this.systemParticipants = systemParticipants;
-    if (!ValidationUtils.checkSystemParticipants(this.systemParticipants, this.rawGrid.getNodes()))
-      logger.warn(
-          "You provided NULL as system participants for {}, which doesn't make much sense...",
-          gridName);
-
     this.graphics = graphics;
-    if (!this.graphics.validate())
-      logger.debug("No graphic information provided for {}.", gridName);
+    validate();
   }
 
   @Override
@@ -56,6 +39,11 @@ public abstract class GridContainer implements InputContainer {
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(graphics.allEntitiesAsList());
     return Collections.unmodifiableList(allEntities);
+  }
+
+  @Override
+  public void validate() {
+    ValidationUtils.checkGrid(this);
   }
 
   /**
