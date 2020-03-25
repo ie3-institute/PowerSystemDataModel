@@ -67,11 +67,12 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
     this.registeredClass = registeredClass;
     this.fieldNameToMethod = registerClass(registeredClass, getAllEligibleClasses());
     this.headerElements =
-        ArrayUtils.addAll( // ensures that uuid is always the first entry in the header elements array
-            new String[] {UUID_FIELD_NAME},
-            fieldNameToMethod.keySet().stream()
-                .filter(x -> !x.toLowerCase().contains(UUID_FIELD_NAME))
-                .toArray(String[]::new));
+        ArrayUtils
+            .addAll( // ensures that uuid is always the first entry in the header elements array
+                new String[] {UUID_FIELD_NAME},
+                fieldNameToMethod.keySet().stream()
+                    .filter(x -> !x.toLowerCase().contains(UUID_FIELD_NAME))
+                    .toArray(String[]::new));
 
     TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss");
   }
@@ -274,11 +275,12 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   }
 
   /**
-   * TODO JH
+   * Handling of elements of type {@link OperationTime}
    *
-   * @param operationTime
-   * @param fieldName
-   * @return
+   * @param operationTime the operation time that should be processed
+   * @param fieldName the field name that should be generated (either operatesFrom or operatesUntil)
+   * @return the resulting string of a OperationTime attribute value for the provided field or an
+   *     empty string when an invalid field name is provided
    */
   protected String processOperationTime(OperationTime operationTime, String fieldName) {
     StringBuilder resultStringBuilder = new StringBuilder();
@@ -297,10 +299,12 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   }
 
   /**
-   * todo JH
+   * Handling of elements of type {@link VoltageLevel}
    *
-   * @param voltageLevel
-   * @return
+   * @param voltageLevel the voltage level that should be processed
+   * @param fieldName the field name that should be generated (either v_rated or volt_lvl)
+   * @return the resulting string of a VoltageLevel attribute value for the provided field or an
+   *     empty string when an invalid field name is provided
    */
   protected String processVoltageLevel(VoltageLevel voltageLevel, String fieldName) {
 

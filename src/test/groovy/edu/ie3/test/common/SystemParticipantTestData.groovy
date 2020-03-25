@@ -60,7 +60,7 @@ class SystemParticipantTestData {
     private static final NodeInput participantNode = GridTestData.nodeA
 
     // general type data
-    private static final String qCharacteristics = "" // todo JH valid characteristic
+    private static final String qCharacteristics = "cosphi_fixed:0.95"
     private static final Quantity<Power> sRated = Quantities.getQuantity(25, KILOVOLTAMPERE)
     private static final double cosPhiRated = 0.95
     private static final UUID typeUuid = UUID.fromString("5ebd8f7e-dedb-4017-bb86-6373c4b68eb8")
