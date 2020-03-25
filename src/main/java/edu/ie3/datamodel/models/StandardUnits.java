@@ -90,7 +90,7 @@ public class StandardUnits {
   /** Depth of discharge */
   public static final Unit<Dimensionless> DOD = PERCENT;
   /** Charge/Discharge Rate (constant power) */
-  public static final Unit<Dimensionless> CP_RATE = PU;
+  public static final Unit<DimensionlessRate> CP_RATE = PU_PER_HOUR;
   /** Life time of a system */
   public static final Unit<Time> LIFE_TIME = MILLISECOND;
   /** Area covered by the rotor of a wind energy converter */

@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
+import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
@@ -23,7 +24,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Maximum permissible active power (typically in kW) */
   private final Quantity<Power> pMax;
   /** Charging/Discharging rate at constant power (typically per unit) */
-  private final Quantity<Dimensionless> cpRate;
+  private final Quantity<DimensionlessRate> cpRate;
   /** Efficiency of the charging and discharging process (typically in %) */
   private final Quantity<Dimensionless> eta;
   /** Minimum permissible depth of discharge (typically in %) */
@@ -57,7 +58,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       Quantity<Power> sRated,
       double cosphiRated,
       Quantity<Power> pMax,
-      Quantity<Dimensionless> cpRate,
+      Quantity<DimensionlessRate> cpRate,
       Quantity<Dimensionless> eta,
       Quantity<Dimensionless> dod,
       Quantity<Time> lifeTime,
@@ -96,7 +97,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     return pMax;
   }
 
-  public Quantity<Dimensionless> getcpRate() {
+  public Quantity<DimensionlessRate> getcpRate() {
     return cpRate;
   }
 

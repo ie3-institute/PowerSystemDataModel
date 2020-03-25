@@ -204,7 +204,7 @@ public class SystemParticipantTypeInputFactory
       double cosPhi) {
     Quantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
     Quantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN);
-    Quantity<Dimensionless> cprate = data.getQuantity(CP_RATE, StandardUnits.CP_RATE);
+    Quantity<DimensionlessRate> cprate = data.getQuantity(CP_RATE, StandardUnits.CP_RATE);
     Quantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
     Quantity<Dimensionless> dod = data.getQuantity(DOD, StandardUnits.DOD);
     Quantity<Time> lifeTime = data.getQuantity(LIFETIME, StandardUnits.LIFE_TIME);
