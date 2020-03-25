@@ -26,7 +26,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
   /**
    * @param uuid of the input entity
    * @param id of this type of BM
-   * @param capex Captial expense for this type of BM (typically in €)
+   * @param capex Capital expense for this type of BM (typically in €)
    * @param opex Operating expense for this type of BM (typically in €)
    * @param cosphiRated Power factor for this type of BM
    * @param loadGradient Permissible load gradient

@@ -5,7 +5,17 @@ import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.system.BmInput
+import edu.ie3.datamodel.models.input.system.ChpInput
+import edu.ie3.datamodel.models.input.system.EvInput
+import edu.ie3.datamodel.models.input.system.FixedFeedInInput
+import edu.ie3.datamodel.models.input.system.HpInput
+import edu.ie3.datamodel.models.input.system.LoadInput
+import edu.ie3.datamodel.models.input.system.PvInput
+import edu.ie3.datamodel.models.input.system.StorageInput
+import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.test.common.GridTestData
+import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
 
@@ -17,11 +27,6 @@ import java.time.ZoneId
  * @version 0.1* @since 24.03.20
  */
 class AssetInputProcessorTest extends Specification {
-
-    def "A ResultEntityProcessor should de-serialize a provided SystemParticipantInput correctly"() {
-
-
-    }
 
     def "A ResultEntityProcessor should de-serialize a provided NodeInput correctly"() {
         given:
@@ -133,6 +138,45 @@ class AssetInputProcessorTest extends Specification {
                 "operator"           : "8f9682df-0744-4b58-a122-f0dc730f6510",
                 "type"               : "3bed3eb3-9790-4874-89b5-a5434d408088",
         ]
+
+    }
+
+    def "A ResultEntityProcessor should de-serialize a provided SystemParticipantInput correctly"() {
+
+        given:
+        TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
+        def sysPartResProcessor = new AssetInputProcessor(modelClass)
+        def validInput = modelInstance
+
+        when: "the entity is passed to the processor"
+        def processingResult = sysPartResProcessor.handleEntity(validInput)
+
+
+        then: "make sure that the result is as expected "
+        processingResult.present
+
+        println "["
+        processingResult.get().each { k, v -> println "\"${k}\":\"${v.replaceAll("\"", "\"")}\"," }
+        println "]"
+
+        processingResult.get().forEach { k, v ->
+            if (k != "nodeInternal")     // the internal 3w node is always randomly generated, hence we can skip to test on this
+                assert (v == expectedResult.get(k))
+        }
+
+
+        where:
+        modelClass       | modelInstance                              || expectedResult
+        FixedFeedInInput | SystemParticipantTestData.fixedFeedInInput || [:]
+        PvInput          | SystemParticipantTestData.pvInput          || [:]
+        WecInput         | SystemParticipantTestData.wecInput         || [:]
+//        ChpInput         |                                            ||
+//                BmInput | ||
+//                EvInput | ||
+//                LoadInput | ||
+//                StorageInput | ||
+//                HpInput | ||
+
 
     }
 
