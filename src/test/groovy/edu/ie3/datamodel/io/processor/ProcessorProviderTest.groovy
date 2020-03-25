@@ -2,6 +2,25 @@ package edu.ie3.datamodel.io.processor
 
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.input.EvcsInput
+import edu.ie3.datamodel.models.input.MeasurementUnitInput
+import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.connector.LineInput
+import edu.ie3.datamodel.models.input.connector.SwitchInput
+import edu.ie3.datamodel.models.input.connector.Transformer2WInput
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.system.BmInput
+import edu.ie3.datamodel.models.input.system.ChpInput
+import edu.ie3.datamodel.models.input.system.EvInput
+import edu.ie3.datamodel.models.input.system.FixedFeedInInput
+import edu.ie3.datamodel.models.input.system.HpInput
+import edu.ie3.datamodel.models.input.system.LoadInput
+import edu.ie3.datamodel.models.input.system.PvInput
+import edu.ie3.datamodel.models.input.system.StorageInput
+import edu.ie3.datamodel.models.input.system.WecInput
+import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
+import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
+import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
@@ -32,22 +51,43 @@ class ProcessorProviderTest extends Specification {
         ProcessorProvider provider = new ProcessorProvider()
 
         // currently known processors
-        List knownProcessors = [LoadResult,
-                                FixedFeedInResult,
-                                BmResult,
-                                PvResult,
-                                ChpResult,
-                                WecResult,
-                                StorageResult,
-                                EvcsResult,
-                                EvResult,
-                                Transformer2WResult,
-                                Transformer3WResult,
-                                LineResult,
-                                SwitchResult,
-                                NodeResult,
-                                ThermalHouseResult,
-                                CylindricalStorageResult]
+        List knownProcessors = [
+                FixedFeedInInput,
+                PvInput,
+                WecInput,
+                ChpInput,
+                BmInput,
+                EvInput,
+                LoadInput,
+                StorageInput,
+                HpInput,
+                LineInput,
+                SwitchInput,
+                Transformer2WInput,
+                Transformer3WInput,
+                ThermalHouseInput,
+                CylindricalStorageInput,
+                ThermalBusInput,
+                MeasurementUnitInput,
+                NodeInput,
+                EvcsInput,
+                LoadResult,
+                FixedFeedInResult,
+                BmResult,
+                PvResult,
+                ChpResult,
+                WecResult,
+                StorageResult,
+                EvcsResult,
+                EvResult,
+                Transformer2WResult,
+                Transformer3WResult,
+                LineResult,
+                SwitchResult,
+                NodeResult,
+                ThermalHouseResult,
+                CylindricalStorageResult
+        ]
 
         expect:
         provider.registeredClasses.size() == knownProcessors.size()
