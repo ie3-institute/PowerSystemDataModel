@@ -5,10 +5,10 @@
 */
 package edu.ie3.datamodel.models.input.graphics;
 
-import com.vividsolutions.jts.geom.LineString;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import java.util.Objects;
 import java.util.UUID;
+import org.locationtech.jts.geom.LineString;
 
 /**
  * Describes the graphic data belonging to a {@link

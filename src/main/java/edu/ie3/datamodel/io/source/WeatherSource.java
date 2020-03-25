@@ -5,13 +5,13 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import com.vividsolutions.jts.geom.Point;
 import edu.ie3.datamodel.models.timeseries.IndividualTimeSeries;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Map;
+import org.locationtech.jts.geom.Point;
 
 /** Describes a data source for weather data */
 public interface WeatherSource extends DataSource {

@@ -5,11 +5,11 @@
 */
 package edu.ie3.datamodel.models.input.graphics;
 
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Point;
 import edu.ie3.datamodel.models.input.NodeInput;
 import java.util.Objects;
 import java.util.UUID;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Point;
 
 /** Describes the graphic data belonging to a {@link NodeInput} */
 public class NodeGraphicInput extends GraphicInput {
