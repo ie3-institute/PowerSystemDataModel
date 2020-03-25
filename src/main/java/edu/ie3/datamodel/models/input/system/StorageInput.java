@@ -47,7 +47,7 @@ public class StorageInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param type of storage
+   * @param type of storage //TODO: storage behaviour will be passed through config
    */
   public StorageInput(
       UUID uuid, String id, NodeInput node, String qCharacteristics, StorageTypeInput type) {
