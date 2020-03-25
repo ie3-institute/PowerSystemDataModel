@@ -107,8 +107,9 @@ public class SystemParticipants implements InputContainer {
   }
 
   @Override
-  public boolean validate() {
-    return true; // no check defined in ValidationTools, so no need for unnecessary instanceofs
+  public void validate() {
+    throw new UnsupportedOperationException(
+        "Currently there are no tests for system participants in ValidationUtils.");
   }
 
   public void add(BmInput bm) {

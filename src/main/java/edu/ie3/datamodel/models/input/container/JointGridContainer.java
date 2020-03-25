@@ -44,22 +44,11 @@ public class JointGridContainer extends GridContainer {
    * Checks, if the sub grid dependency graph has only one node.
    *
    * @param subGridTopologyGraph The graph to check
-   * @return true
    */
-  private boolean checkSubGridDependencyGraph(SubGridTopologyGraph subGridTopologyGraph) {
+  private void checkSubGridDependencyGraph(SubGridTopologyGraph subGridTopologyGraph) {
     if (subGridTopologyGraph.vertexSet().size() == 1)
       throw new InvalidGridException(
           "This joint grid model only contains one single grid. Consider using SubGridContainer.");
-    return true;
-  }
-
-  /**
-   * @return true, as we are positive people and believe in what we do. Just kidding. Checks are
-   *     made during initialisation.
-   */
-  @Override
-  public boolean validate() {
-    return true;
   }
 
   public SubGridTopologyGraph getSubGridTopologyGraph() {
