@@ -43,7 +43,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   public final Logger log = LogManager.getLogger(this.getClass());
   private final Class<? extends T> registeredClass;
   protected final String[] headerElements;
-  protected final LinkedHashMap<String, Method> fieldNameToMethod = new LinkedHashMap<>();
+  private final Map<String, Method> fieldNameToMethod;
 
   private static final String OPERATION_TIME_FIELD_NAME = OperationTime.class.getSimpleName();
   private static final String OPERATES_FROM = "operatesFrom";
@@ -65,7 +65,14 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    */
   public EntityProcessor(Class<? extends T> registeredClass) {
     this.registeredClass = registeredClass;
-    this.headerElements = registerClass(registeredClass, getAllEligibleClasses());
+    this.fieldNameToMethod = registerClass(registeredClass, getAllEligibleClasses());
+    this.headerElements =
+        ArrayUtils.addAll( // ensures that uuid is always the first entry in the header elements array
+            new String[] {UUID_FIELD_NAME},
+            fieldNameToMethod.keySet().stream()
+                .filter(x -> !x.toLowerCase().contains(UUID_FIELD_NAME))
+                .toArray(String[]::new));
+
     TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss");
   }
 
@@ -75,8 +82,11 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    * @param cls class to be registered
    * @return an array of strings of all field values of the registered class
    */
-  // todo JH this method has side effects that should be addressed
-  private String[] registerClass(Class<? extends T> cls, List<Class<? extends T>> eligibleClasses) {
+  private Map<String, Method> registerClass(
+      Class<? extends T> cls, List<Class<? extends T>> eligibleClasses) {
+
+    final LinkedHashMap<String, Method> resFieldNameToMethod = new LinkedHashMap<>();
+
     if (!eligibleClasses.contains(cls))
       throw new EntityProcessorException(
           "Cannot register class '"
@@ -99,15 +109,15 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
                   String fieldName = pd.getName();
                   if (fieldName.equalsIgnoreCase(OPERATION_TIME_FIELD_NAME)) {
                     fieldName = OPERATES_FROM;
-                    fieldNameToMethod.put(OPERATES_UNTIL, pd.getReadMethod());
+                    resFieldNameToMethod.put(OPERATES_UNTIL, pd.getReadMethod());
                   }
 
                   // VoltageLevel needs to be replaced by id and nominalVoltage
                   if (fieldName.equalsIgnoreCase(VOLT_LVL_FIELD_NAME)) {
                     fieldName = V_RATED;
-                    fieldNameToMethod.put(VOLT_LVL, pd.getReadMethod());
+                    resFieldNameToMethod.put(VOLT_LVL, pd.getReadMethod());
                   }
-                  fieldNameToMethod.put(fieldName, pd.getReadMethod());
+                  resFieldNameToMethod.put(fieldName, pd.getReadMethod());
                 }
               });
 
@@ -115,14 +125,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       throw new EntityProcessorException(
           "Error during EntityProcessor class registration process. Exception was:" + e);
     }
-
-    // uuid should always be the first element in the map
-    String[] filteredArray =
-        fieldNameToMethod.keySet().stream()
-            .filter(x -> !x.toLowerCase().contains(UUID_FIELD_NAME))
-            .toArray(String[]::new);
-
-    return ArrayUtils.addAll(new String[] {UUID_FIELD_NAME}, filteredArray);
+    return Collections.unmodifiableMap(resFieldNameToMethod);
   }
 
   /**
@@ -146,8 +149,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   }
 
   /**
-   * // todo JH refresh text Actual implementation of the handling process. Depends on the entity
-   * that should be processed and hence needs to be implemented individually
+   * Actual implementation of the entity handling process
    *
    * @param entity the entity that should be 'de-serialized' into a map of fieldName -> fieldValue
    * @return an optional Map with fieldName -> fieldValue or an empty optional if an error occurred
