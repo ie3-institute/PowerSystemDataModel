@@ -91,8 +91,8 @@ public class RawGridElements implements InputContainer {
   }
 
   @Override
-  public boolean validate() {
-    return ValidationUtils.checkRawGridElements(this);
+  public void validate() {
+    ValidationUtils.checkRawGridElements(this);
   }
 
   /** @return unmodifiable ; of all three winding transformers in this grid */
