@@ -9,10 +9,13 @@ import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.factory.input.NodeInputFactory;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.system.StorageStrategy;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.TimeTools;
+import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.beans.Introspector;
 import java.lang.reflect.Method;
 import java.time.ZoneId;
@@ -20,10 +23,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
-import javax.measure.quantity.Dimensionless;
-import javax.measure.quantity.ElectricCurrent;
-import javax.measure.quantity.Length;
-import javax.measure.quantity.Power;
+import javax.measure.quantity.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -187,6 +187,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "UUID":
       case "boolean":
       case "int":
+      case "double":
       case "String":
         resultStringBuilder.append(methodReturnObject.toString());
         break;
@@ -217,11 +218,25 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "LineString":
         resultStringBuilder.append(geoJsonWriter.write((Geometry) methodReturnObject));
         break;
+      case "StandardLoadProfile":
+        resultStringBuilder.append(((StandardLoadProfile) methodReturnObject).getKey());
+        break;
+      case "StorageStrategy":
+        resultStringBuilder.append(((StorageStrategy) methodReturnObject).getToken());
+        break;
       case "NodeInput":
       case "Transformer3WTypeInput":
       case "Transformer2WTypeInput":
       case "LineTypeInput":
       case "OperatorInput":
+      case "WecTypeInput":
+      case "ThermalBusInput":
+      case "ThermalStorageInput":
+      case "ChpTypeInput":
+      case "BmTypeInput":
+      case "EvTypeInput":
+      case "StorageTypeInput":
+      case "HpTypeInput":
         resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
         break;
       case "Optional": // todo needs to be removed asap as this is very dangerous, but necessary as
@@ -324,6 +339,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "energy":
       case "vTarget":
       case "vrated":
+      case "sRated":
+      case "eConsAnnual":
         normalizedQuantityValue = handleProcessorSpecificQuantity(quantity, fieldName);
         break;
       case "soc":
@@ -332,6 +349,9 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "iAAng":
       case "iBAng":
       case "iCAng":
+      case "etaConv":
+      case "azimuth":
+      case "height":
         normalizedQuantityValue = quantityValToOptionalString(quantity);
         break;
       case "iAMag":
@@ -357,6 +377,12 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
         normalizedQuantityValue =
             quantityValToOptionalString(
                 quantity.asType(Length.class).to(StandardUnits.LINE_LENGTH));
+        break;
+
+      case "feedInTariff":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(EnergyPrice.class).to(StandardUnits.ENERGY_PRICE));
         break;
       default:
         log.error(

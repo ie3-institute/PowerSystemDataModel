@@ -18,6 +18,8 @@ import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricPotential;
+import javax.measure.quantity.Energy;
+import javax.measure.quantity.Power;
 
 /**
  * //ToDo: Class Description
@@ -55,32 +57,6 @@ public class AssetInputProcessor extends EntityProcessor<AssetInput> {
     super(registeredClass);
   }
 
-  //    @Override
-  //    protected Optional<LinkedHashMap<String, String>> processEntity(AssetInput entity) {
-  //        Optional<LinkedHashMap<String, String>> resultMapOpt;
-  //
-  //        try {
-  //            LinkedHashMap<String, String> resultMap = new LinkedHashMap<>();
-  //            for(String fieldName : headerElements) {
-  //                Method method = fieldNameToMethod.get(fieldName);
-  //                Optional<Object> methodReturnObjectOpt =
-  // Optional.ofNullable(method.invoke(entity));
-  //
-  //                if(methodReturnObjectOpt.isPresent()) {
-  //                    resultMap.put(fieldName, processMethodResult(methodReturnObjectOpt.get(),
-  // method, fieldName));
-  //                } else {
-  //                    resultMap.put(fieldName, "");
-  //                }
-  //            }
-  //            resultMapOpt = Optional.of(resultMap);
-  //        } catch(Exception e) {
-  //            log.error("Error during entity processing in ResultEntityProcessor:", e);
-  //            resultMapOpt = Optional.empty();
-  //        }
-  //        return resultMapOpt;
-  //    }
-
   @Override
   protected Optional<String> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
@@ -95,6 +71,14 @@ public class AssetInputProcessor extends EntityProcessor<AssetInput> {
         normalizedQuantityValue =
             quantityValToOptionalString(
                 quantity.asType(ElectricPotential.class).to(StandardUnits.RATED_VOLTAGE_MAGNITUDE));
+        break;
+      case "sRated":
+        normalizedQuantityValue =
+            quantityValToOptionalString(quantity.asType(Power.class).to(StandardUnits.S_RATED));
+        break;
+      case "eConsAnnual":
+        normalizedQuantityValue =
+            quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
         break;
       default:
         log.error(
