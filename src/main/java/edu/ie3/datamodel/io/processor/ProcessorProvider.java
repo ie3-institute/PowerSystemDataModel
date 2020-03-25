@@ -7,9 +7,11 @@ package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.io.processor.input.AssetInputProcessor;
+import edu.ie3.datamodel.io.processor.input.GraphicInputProcessor;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -131,14 +133,20 @@ public class ProcessorProvider {
 
     // todo add missing processors here
     // AssetInput
-    for(Class<? extends AssetInput> cls : AssetInputProcessor.eligibleEntityClasses){
+    for (Class<? extends AssetInput> cls : AssetInputProcessor.eligibleEntityClasses) {
       resultingProcessors.add(new AssetInputProcessor(cls));
+    }
+
+    // GraphicInput
+    for (Class<? extends GraphicInput> cls : GraphicInputProcessor.eligibleEntityClasses) {
+      resultingProcessors.add(new GraphicInputProcessor(cls));
     }
 
     // SystemParticipantResults
     for (Class<? extends ResultEntity> cls : ResultEntityProcessor.eligibleEntityClasses) {
       resultingProcessors.add(new ResultEntityProcessor(cls));
     }
+
     return resultingProcessors;
   }
 
