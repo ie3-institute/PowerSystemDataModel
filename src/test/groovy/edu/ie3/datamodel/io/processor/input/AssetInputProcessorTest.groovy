@@ -157,10 +157,6 @@ class AssetInputProcessorTest extends Specification {
         then: "make sure that the result is as expected "
         processingResult.present
 
-        println "["
-        processingResult.get().each { k, v -> println "\"${k}\":\"${v.replaceAll("\"", "\"")}\"," }
-        println "]"
-
         processingResult.get().forEach { k, v ->
             if (k != "nodeInternal")     // the internal 3w node is always randomly generated, hence we can skip to test on this
                 assert (v == expectedResult.get(k))
