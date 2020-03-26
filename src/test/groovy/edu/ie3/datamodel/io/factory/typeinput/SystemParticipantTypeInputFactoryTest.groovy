@@ -214,8 +214,8 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
             "cosphi":	    "6",
 
             "estorage":	    "6",
-            "pmin":	        "7",
             "pmax":	        "8",
+            "cprate":       "1",
             "eta":	        "9",
             "dod":	        "10",
             "lifetime":	    "11",
@@ -239,8 +239,8 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
             assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
             assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
-            assert pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_IN)
             assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
+            assert cpRate == getQuant(parameter["cprate"], StandardUnits.CP_RATE)
             assert eta == getQuant(parameter["eta"], StandardUnits.EFFICIENCY)
             assert dod == getQuant(parameter["dod"], StandardUnits.DOD)
             assert lifeTime == getQuant(parameter["lifetime"], StandardUnits.LIFE_TIME)
@@ -274,6 +274,6 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
         FactoryException ex = thrown()
         ex.message == "The provided fields [capex, cosphi, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data {capex -> 3,cosphi -> 6,dod -> 10,estorage -> 6,eta -> 9,id -> blablub,lifetime -> 11,opex -> 4,pmax -> 8,pmin -> 7,srated -> 5,uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
                 "The following fields to be passed to a constructor of StorageTypeInput are possible:\n" +
-                "0: [capex, cosphi, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, pmin, srated, uuid]\n"
+                "0: [capex, cosphi, cprate, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, srated, uuid]\n"
     }
 }
