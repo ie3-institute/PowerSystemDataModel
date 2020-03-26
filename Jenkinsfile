@@ -636,6 +636,8 @@ def gitCheckout(String relativeTargetDir, String baseUrl, String branch, String 
     ])
 }
 
+@NonCPS
+// https://stackoverflow.com/questions/47646409/jenkins-groovy-regex-match-string-error-java-io-notserializableexception-jav
 def resolveBranchNo(String featureBranchPRMinusNo) {
     // get pull request number
     def branchNoMatcher = featureBranchPRMinusNo =~ /PR-(.*)/
@@ -645,6 +647,7 @@ def resolveBranchNo(String featureBranchPRMinusNo) {
     return prNo
 }
 
+@NonCPS
 def resolveBranchName(String featureBranchPRMinusNo, String orgName, String repoName) {
 
     // get pull request number
