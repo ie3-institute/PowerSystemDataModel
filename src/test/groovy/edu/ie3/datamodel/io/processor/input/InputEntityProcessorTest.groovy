@@ -3,6 +3,7 @@ package edu.ie3.datamodel.io.processor.input
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.RandomLoadParameters
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
@@ -343,6 +344,44 @@ class InputEntityProcessorTest extends Specification {
 
         when:
         Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(operator)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided RandomLoadParameters correctly"() {
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(RandomLoadParameters.class)
+        RandomLoadParameters parameters = new RandomLoadParameters(
+                UUID.fromString("a5b0f432-27b5-4b3e-b87a-61867b9edd79"),
+                4,
+                1.2,
+                2.3,
+                3.4,
+                4.5,
+                5.6,
+                6.7,
+                7.8,
+                8.9,
+                9.10
+        )
+        Map expected = [
+                "uuid": "a5b0f432-27b5-4b3e-b87a-61867b9edd79",
+                "quarterHour": "4",
+                "kWd": "1.2",
+                "kSa": "2.3",
+                "kSu": "3.4",
+                "myWd": "4.5",
+                "mySa": "5.6",
+                "mySu": "6.7",
+                "sigmaWd": "7.8",
+                "sigmaSa": "8.9",
+                "sigmaSu": "9.1"
+        ]
+
+        when:
+        Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(parameters)
 
         then:
         actual.isPresent()

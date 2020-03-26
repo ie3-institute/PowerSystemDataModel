@@ -36,6 +36,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           Arrays.asList(
               /* InputEntity */
               OperatorInput.class,
+              RandomLoadParameters.class,
               /* - AssetInput */
               NodeInput.class,
               LineInput.class,
