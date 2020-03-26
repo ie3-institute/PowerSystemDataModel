@@ -656,7 +656,7 @@ def resolveBranchName(String featureBranchPRMinusNo, String orgName, String repo
     // curl the repo based on the feature branch no to get the branch information
     /// Note: only works for public repos! Otherwise credentials needs to be passed
     def curlUrl = "curl https://api.github.com/repos/" + orgName + "/" + repoName + "/pulls/" + prNo
-    def response = curlUrl.execute().text
+    def response = sh(script: curlUrl, returnStdout: true)
     def matcher = response =~ /\"label\":\s\"(.+)\"/
 
     assert matcher.find()
