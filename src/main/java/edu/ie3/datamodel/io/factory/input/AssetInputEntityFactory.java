@@ -25,8 +25,8 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
     extends EntityFactory<T, D> {
 
   private static final String UUID = "uuid";
-  public static final String OPERATES_FROM = "operatesfrom";
-  public static final String OPERATES_UNTIL = "operatesuntil";
+  private static final String OPERATES_FROM = "operatesfrom";
+  private static final String OPERATES_UNTIL = "operatesuntil";
   private static final String ID = "id";
 
   public AssetInputEntityFactory(Class<? extends T>... allowedClasses) {

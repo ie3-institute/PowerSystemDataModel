@@ -31,10 +31,10 @@ import java.time.ZonedDateTime
 class AssetInputProcessorTest extends Specification {
 
 
-    def "A ResultEntityProcessor should de-serialize a provided NodeInput correctly"() {
+    def "A AssetInputProcessor should de-serialize a provided NodeInput correctly"() {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def sysPartResProcessor = new AssetInputProcessor(NodeInput)
+        def assetInputProcessor = new AssetInputProcessor(NodeInput)
         def validResult = GridTestData.nodeA
 
         Map expectedResults = [
@@ -52,7 +52,7 @@ class AssetInputProcessorTest extends Specification {
         ]
 
         when: "the entity is passed to the processor"
-        def processingResult = sysPartResProcessor.handleEntity(validResult)
+        def processingResult = assetInputProcessor.handleEntity(validResult)
 
 
         then: "make sure that the result is as expected "
@@ -62,22 +62,18 @@ class AssetInputProcessorTest extends Specification {
     }
 
 
-    def "A ResultEntityProcessor should de-serialize a provided ConnectorInput correctly"() {
+    def "A AssetInputProcessor should de-serialize a provided ConnectorInput correctly"() {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def sysPartResProcessor = new AssetInputProcessor(modelClass)
+        def assetInputProcessor = new AssetInputProcessor(modelClass)
         def validInput = modelInstance
 
         when: "the entity is passed to the processor"
-        def processingResult = sysPartResProcessor.handleEntity(validInput)
+        def processingResult = assetInputProcessor.handleEntity(validInput)
 
 
         then: "make sure that the result is as expected "
         processingResult.present
-
-        println "["
-        processingResult.get().each { k, v -> println "\"${k}\":\"${v.replaceAll("\"", "\"")}\"," }
-        println "]"
 
         processingResult.get().forEach { k, v ->
             if (k != "nodeInternal")     // the internal 3w node is always randomly generated, hence we can skip to test on this
@@ -144,14 +140,14 @@ class AssetInputProcessorTest extends Specification {
 
     }
 
-    def "A ResultEntityProcessor should de-serialize a provided SystemParticipantInput correctly"() {
+    def "A AssetInputProcessor should de-serialize a provided SystemParticipantInput correctly"() {
 
         given:
-        def sysPartResProcessor = new AssetInputProcessor(modelClass)
+        def assetInputProcessor = new AssetInputProcessor(modelClass)
         def validInput = modelInstance
 
         when: "the entity is passed to the processor"
-        def processingResult = sysPartResProcessor.handleEntity(validInput)
+        def processingResult = assetInputProcessor.handleEntity(validInput)
 
 
         then: "make sure that the result is as expected "
