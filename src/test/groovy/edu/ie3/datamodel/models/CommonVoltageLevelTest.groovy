@@ -36,7 +36,7 @@ class CommonVoltageLevelTest extends Specification {
 
     def "A common voltage level should correctly check, if a valid id / rated voltage combination is covered"() {
         expect:
-        dut.covers("NS", Quantities.getQuantity(500d, VOLT))   // May be true
+        dut.covers("Niederspannung", Quantities.getQuantity(500d, VOLT))   // May be true
     }
 
     def "A common voltage level should correctly check, if an invalid id / rated voltage combination is covered"() {

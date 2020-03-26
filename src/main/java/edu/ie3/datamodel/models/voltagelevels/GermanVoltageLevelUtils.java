@@ -10,6 +10,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.util.interval.RightOpenInterval;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.measure.quantity.ElectricPotential;
@@ -30,21 +31,21 @@ public class GermanVoltageLevelUtils {
               Quantities.getQuantity(0d, KILOVOLT), Quantities.getQuantity(10d, KILOVOLT)));
   public static final CommonVoltageLevel MV_10KV =
       new CommonVoltageLevel(
-          "Mittelspannung (10 kV)",
+          "Mittelspannung",
           Quantities.getQuantity(10d, KILOVOLT),
           new HashSet<>(Arrays.asList("ms", "mv", "ms_10kv", "mv_10kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(10d, KILOVOLT), Quantities.getQuantity(20d, KILOVOLT)));
   public static final CommonVoltageLevel MV_20KV =
       new CommonVoltageLevel(
-          "Mittelspannung (20 kV)",
+          "Mittelspannung",
           Quantities.getQuantity(20d, KILOVOLT),
           new HashSet<>(Arrays.asList("ms", "mv", "ms_20kv", "mv_20kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(20d, KILOVOLT), Quantities.getQuantity(30d, KILOVOLT)));
   public static final CommonVoltageLevel MV_30KV =
       new CommonVoltageLevel(
-          "Mittelspannung (30 kV)",
+          "Mittelspannung",
           Quantities.getQuantity(30d, KILOVOLT),
           new HashSet<>(Arrays.asList("ms", "mv", "ms_30kv", "mv_30kV")),
           new RightOpenInterval<>(
@@ -58,24 +59,29 @@ public class GermanVoltageLevelUtils {
               Quantities.getQuantity(110d, KILOVOLT), Quantities.getQuantity(220d, KILOVOLT)));
   public static final CommonVoltageLevel EHV_220KV =
       new CommonVoltageLevel(
-          "Höchstspannung (220 kV)",
+          "Höchstspannung",
           Quantities.getQuantity(220d, KILOVOLT),
           new HashSet<>(Arrays.asList("hoes", "ehv", "hoes_220kv", "ehv_220kv")),
           new RightOpenInterval<>(
               Quantities.getQuantity(220d, KILOVOLT), Quantities.getQuantity(380d, KILOVOLT)));
   public static final CommonVoltageLevel EHV_380KV =
       new CommonVoltageLevel(
-          "Höchstspannung (380 kV)",
+          "Höchstspannung",
           Quantities.getQuantity(380d, KILOVOLT),
           new HashSet<>(Arrays.asList("hoes", "ehv", "hoes_380kv", "ehv_380kv")),
           new RightOpenInterval<>(
               Quantities.getQuantity(380d, KILOVOLT), Quantities.getQuantity(560d, KILOVOLT)));
 
   private static Set<CommonVoltageLevel> germanVoltageLevels =
-      new HashSet<>(Arrays.asList(LV, MV_10KV, MV_20KV, MV_30KV, HV, EHV_220KV, EHV_380KV));
+      Collections.unmodifiableSet(
+          new HashSet<>(Arrays.asList(LV, MV_10KV, MV_20KV, MV_30KV, HV, EHV_220KV, EHV_380KV)));
 
   private GermanVoltageLevelUtils() {
     throw new IllegalStateException("This is a factory class. Don't try to instantiate it.");
+  }
+
+  public static Set<CommonVoltageLevel> getGermanVoltageLevels() {
+    return germanVoltageLevels;
   }
 
   /**

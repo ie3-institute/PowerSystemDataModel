@@ -14,8 +14,8 @@ import tec.uom.se.ComparableQuantity;
  * levels.
  */
 public class VoltageLevel {
-  protected String id;
-  protected ComparableQuantity<ElectricPotential> nominalVoltage;
+  protected final String id;
+  protected final ComparableQuantity<ElectricPotential> nominalVoltage;
 
   /**
    * Constructs a concrete voltage level

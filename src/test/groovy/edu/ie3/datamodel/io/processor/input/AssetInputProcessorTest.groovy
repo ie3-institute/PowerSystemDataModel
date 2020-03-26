@@ -47,7 +47,7 @@ class AssetInputProcessorTest extends Specification {
                 "slack"        : "true",
                 "subnet"       : "1",
                 "vTarget"      : "1.0",
-                "voltlvl"      : "Höchstspannung (380 kV)",
+                "voltlvl"      : "Höchstspannung",
                 "vrated"       : "380.0"
         ]
 
