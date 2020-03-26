@@ -181,6 +181,14 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
     return resultMapOpt;
   }
 
+  /**
+   * Processes the returned object to String by taking care of different conventions.
+   *
+   * @param methodReturnObject Return object to process
+   * @param method The method, that is invoked
+   * @param fieldName Name of the foreseen field
+   * @return A String representation of the result
+   */
   private String processMethodResult(Object methodReturnObject, Method method, String fieldName) {
 
     StringBuilder resultStringBuilder = new StringBuilder();
@@ -323,8 +331,6 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
                               + "' in result entity "
                               + getRegisteredClass().getSimpleName()
                               + ".class.")));
-    ;
-
     return resultStringBuilder.toString();
   }
 

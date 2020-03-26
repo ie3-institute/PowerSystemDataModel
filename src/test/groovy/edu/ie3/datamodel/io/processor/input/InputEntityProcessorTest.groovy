@@ -6,6 +6,8 @@ import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
+import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.BmInput
 import edu.ie3.datamodel.models.input.system.ChpInput
 import edu.ie3.datamodel.models.input.system.EvInput
@@ -24,17 +26,19 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 /**
- * //ToDo: Class Description
+ * Testing the function of processors
  *
- * @version 0.1* @since 24.03.20
+ * @version 0.1
+ * @since 24.03.20
  */
-class AssetInputProcessorTest extends Specification {
-
-
-    def "A AssetInputProcessor should de-serialize a provided NodeInput correctly"() {
-        given:
+class InputEntityProcessorTest extends Specification {
+    static {
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def assetInputProcessor = new AssetInputProcessor(NodeInput)
+    }
+
+    def "A InputEntityProcessor should de-serialize a provided NodeInput correctly"() {
+        given:
+        def processor = new InputEntityProcessor(NodeInput)
         def validResult = GridTestData.nodeA
 
         Map expectedResults = [
@@ -52,25 +56,21 @@ class AssetInputProcessorTest extends Specification {
         ]
 
         when: "the entity is passed to the processor"
-        def processingResult = assetInputProcessor.handleEntity(validResult)
-
+        def processingResult = processor.handleEntity(validResult)
 
         then: "make sure that the result is as expected "
         processingResult.present
         processingResult.get() == expectedResults
-
     }
 
 
-    def "A AssetInputProcessor should de-serialize a provided ConnectorInput correctly"() {
+    def "A InputEntityProcessor should de-serialize a provided ConnectorInput correctly"() {
         given:
-        TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def assetInputProcessor = new AssetInputProcessor(modelClass)
+        def processor = new InputEntityProcessor(modelClass)
         def validInput = modelInstance
 
         when: "the entity is passed to the processor"
-        def processingResult = assetInputProcessor.handleEntity(validInput)
-
+        def processingResult = processor.handleEntity(validInput)
 
         then: "make sure that the result is as expected "
         processingResult.present
@@ -79,7 +79,6 @@ class AssetInputProcessorTest extends Specification {
             if (k != "nodeInternal")     // the internal 3w node is always randomly generated, hence we can skip to test on this
                 assert (v == expectedResult.get(k))
         }
-
 
         where:
         modelClass         | modelInstance                   || expectedResult
@@ -137,18 +136,15 @@ class AssetInputProcessorTest extends Specification {
                 "operator"           : "8f9682df-0744-4b58-a122-f0dc730f6510",
                 "type"               : "3bed3eb3-9790-4874-89b5-a5434d408088"
         ]
-
     }
 
-    def "A AssetInputProcessor should de-serialize a provided SystemParticipantInput correctly"() {
-
+    def "A InputEntityProcessor should de-serialize a provided SystemParticipantInput correctly"() {
         given:
-        def assetInputProcessor = new AssetInputProcessor(modelClass)
+        def processor = new InputEntityProcessor(modelClass)
         def validInput = modelInstance
 
         when: "the entity is passed to the processor"
-        def processingResult = assetInputProcessor.handleEntity(validInput)
-
+        def processingResult = processor.handleEntity(validInput)
 
         then: "make sure that the result is as expected "
         processingResult.present
@@ -157,7 +153,6 @@ class AssetInputProcessorTest extends Specification {
             if (k != "nodeInternal")     // the internal 3w node is always randomly generated, hence we can skip to test on this
                 assert (v == expectedResult.get(k))
         }
-
 
         where:
         modelClass       | modelInstance                              || expectedResult
@@ -275,8 +270,64 @@ class AssetInputProcessorTest extends Specification {
                 "type"            : SystemParticipantTestData.hpInput.type.getUuid().toString()
         ]
 
-
     }
 
+    def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with point correctly"(){
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput.class)
+        NodeGraphicInput validNode = GridTestData.nodeGraphicC
+        Map expected = [
+                "uuid"          : "09aec636-791b-45aa-b981-b14edf171c4c",
+                "graphicLayer"  : "main",
+                "path"          : "",
+                "point"         : "{\"type\":\"Point\",\"coordinates\":[0.0,10],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+                "node"          : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2"
+        ]
 
+        when:
+        Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(validNode)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with path correctly"(){
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput.class)
+        NodeGraphicInput validNode = GridTestData.nodeGraphicD
+        Map expected = [
+                "uuid"          : "9ecad435-bd16-4797-a732-762c09d4af25",
+                "graphicLayer"  : "main",
+                "path"          : "{\"type\":\"LineString\",\"coordinates\":[[-1,0.0],[1,0.0]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+                "point"         : "",
+                "node"          : "6e0980e0-10f2-4e18-862b-eb2b7c90509b"
+        ]
+
+        when:
+        Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(validNode)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided LineGraphicInput correctly"(){
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(LineGraphicInput.class)
+        LineGraphicInput validNode = GridTestData.lineGraphicCtoD
+        Map expected = [
+                "uuid"          : "ece86139-3238-4a35-9361-457ecb4258b0",
+                "graphicLayer"  : "main",
+                "path"          : "{\"type\":\"LineString\",\"coordinates\":[[0.0,0.0],[0.0,10]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+                "line"          : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
+        ]
+
+        when:
+        Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(validNode)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
 }

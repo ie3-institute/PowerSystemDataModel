@@ -9,11 +9,12 @@ import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
+import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
-import edu.ie3.datamodel.models.result.system.*;
 import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
@@ -22,15 +23,15 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 
 /**
- * //ToDo: Class Description
+ * Processes all {@link InputEntity}s and it's child classes
  *
  * @version 0.1
  * @since 23.03.20
  */
-public class AssetInputProcessor extends EntityProcessor<AssetInput> {
+public class InputEntityProcessor extends EntityProcessor<InputEntity> {
 
   /** The entities that can be used within this processor */
-  public static final List<Class<? extends AssetInput>> eligibleEntityClasses =
+  public static final List<Class<? extends InputEntity>> eligibleEntityClasses =
       Collections.unmodifiableList(
           Arrays.asList(
               FixedFeedInInput.class,
@@ -51,9 +52,11 @@ public class AssetInputProcessor extends EntityProcessor<AssetInput> {
               ThermalBusInput.class,
               MeasurementUnitInput.class,
               NodeInput.class,
-              EvcsInput.class));
+              EvcsInput.class,
+              NodeGraphicInput.class,
+              LineGraphicInput.class));
 
-  public AssetInputProcessor(Class<? extends AssetInput> registeredClass) {
+  public InputEntityProcessor(Class<? extends InputEntity> registeredClass) {
     super(registeredClass);
   }
 
@@ -91,7 +94,7 @@ public class AssetInputProcessor extends EntityProcessor<AssetInput> {
   }
 
   @Override
-  protected List<Class<? extends AssetInput>> getAllEligibleClasses() {
+  protected List<Class<? extends InputEntity>> getAllEligibleClasses() {
     return eligibleEntityClasses;
   }
 }
