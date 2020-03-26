@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
- * Enum listing different pre-defined storage operation strategies TODO: Will be removed in version
- * 1.x
+ * @deprecated TODO: Will be removed in version 1.x Enum listing different pre-defined storage
+ *     operation strategies
  */
 @Deprecated
 public enum StorageStrategy {
