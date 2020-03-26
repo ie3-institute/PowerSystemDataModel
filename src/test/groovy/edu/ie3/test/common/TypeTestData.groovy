@@ -20,7 +20,7 @@ class TypeTestData extends GridTestData {
             Quantities.getQuantity(101d, EURO_PER_MEGAWATTHOUR),
             0.95,
             Quantities.getQuantity(0.9, PU),
-            Quantities.getQuantity(2500d, MEGAVOLTAMPERE),
+            Quantities.getQuantity(2.5d, MEGAVOLTAMPERE),
             Quantities.getQuantity(2000d, SQUARE_METRE),
             Quantities.getQuantity(130d, METRE)
     )

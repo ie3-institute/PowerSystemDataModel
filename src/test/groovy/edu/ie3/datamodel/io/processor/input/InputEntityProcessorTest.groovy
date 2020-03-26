@@ -20,6 +20,7 @@ import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
+import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.TypeTestData
@@ -402,6 +403,30 @@ class InputEntityProcessorTest extends Specification {
 
         when:
         Optional<Map<String, String>> actual = processor.handleEntity(characteristic)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided WecTypeInput correctly"() {
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(WecTypeInput.class)
+        WecTypeInput type = TypeTestData.wecType
+        Map expected = [
+                "uuid"          : "a24fc5b9-a26f-44de-96b8-c9f50b665cb3",
+                "id"            : "Test wec type",
+                "capex"         : "100.0",
+                "opex"          : "101.0",
+                "cosphiRated"   : "0.95",
+                "etaConv"       : "90.0",
+                "sRated"        : "2500.0",
+                "rotorArea"     : "2000.0",
+                "hubHeight"     : "130.0"
+        ]
+
+        when:
+        Optional<Map<String, String>> actual = processor.handleEntity(type)
 
         then:
         actual.isPresent()

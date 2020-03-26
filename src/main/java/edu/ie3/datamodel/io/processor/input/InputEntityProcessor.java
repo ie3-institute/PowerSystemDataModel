@@ -14,15 +14,18 @@ import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
+import edu.ie3.datamodel.models.input.system.type.WecTypeInput;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
-import java.util.*;
+import edu.ie3.util.quantities.interfaces.Currency;
+import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import javax.measure.Quantity;
-import javax.measure.quantity.Dimensionless;
-import javax.measure.quantity.ElectricPotential;
-import javax.measure.quantity.Energy;
-import javax.measure.quantity.Power;
+import javax.measure.quantity.*;
 
 /**
  * Processes all {@link InputEntity}s and it's child classes
@@ -65,7 +68,9 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               CylindricalStorageInput.class,
               /* - GraphicInput */
               NodeGraphicInput.class,
-              LineGraphicInput.class));
+              LineGraphicInput.class,
+              /* - AssetTypeInput */
+              WecTypeInput.class));
 
   public InputEntityProcessor(Class<? extends InputEntity> registeredClass) {
     super(registeredClass);
@@ -94,9 +99,26 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
         normalizedQuantityValue =
             quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
         break;
+      case "capex":
+        normalizedQuantityValue =
+            quantityValToOptionalString(quantity.asType(Currency.class).to(StandardUnits.CAPEX));
+        break;
+      case "opex":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(EnergyPrice.class).to(StandardUnits.ENERGY_PRICE));
+        break;
+      case "hubHeight":
+        normalizedQuantityValue =
+            quantityValToOptionalString(quantity.asType(Length.class).to(StandardUnits.HUB_HEIGHT));
+        break;
+      case "rotorArea":
+        normalizedQuantityValue =
+            quantityValToOptionalString(quantity.asType(Area.class).to(StandardUnits.ROTOR_AREA));
+        break;
       default:
         log.error(
-            "Cannot process quantity with value '{}' for field with name {} in result entity processing!",
+            "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
             quantity,
             fieldName);
         break;
