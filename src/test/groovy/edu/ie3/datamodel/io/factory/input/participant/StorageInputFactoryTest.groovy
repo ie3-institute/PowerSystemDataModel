@@ -1,6 +1,5 @@
 package edu.ie3.datamodel.io.factory.input.participant
 
-import com.sun.org.apache.xml.internal.security.keys.storage.StorageResolverSpi
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.StorageInput
@@ -29,17 +28,17 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
                 "operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
                 "operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
                 "id"              : "TestID",
-                "qcharacteristics": "cosphi_fixed:1"
+                "qcharacteristics": "cosphi_fixed:1",
+                "behaviour"       : "market"
         ]
         def inputClass = StorageInput
         def nodeInput = Mock(NodeInput)
         def operatorInput = Mock(OperatorInput)
         def typeInput = Mock(StorageTypeInput)
-        def behaviourInput = Mock(StorageStrategy)
 
         when:
         Optional<StorageInput> input = inputFactory.getEntity(
-                new SystemParticipantTypedEntityData<StorageTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput, behaviourInput))
+                new SystemParticipantTypedEntityData<StorageTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
         then:
         input.present
@@ -55,7 +54,7 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
             assert node == nodeInput
             assert qCharacteristics == parameter["qcharacteristics"]
             assert type == typeInput
-            assert behaviour == behaviourInput
+            assert behaviour == StorageStrategy.get(parameter["behaviour"])
         }
     }
 }
