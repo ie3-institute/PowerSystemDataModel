@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
+import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
@@ -20,10 +21,10 @@ import javax.measure.quantity.Time;
 public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity (typically in kWh) */
   private final Quantity<Energy> eStorage;
-  /** Minimum permissible active power (typically in kW) */
-  private final Quantity<Power> pMin;
   /** Maximum permissible active power (typically in kW) */
   private final Quantity<Power> pMax;
+  /** Charging/Discharging rate at constant power (typically per unit) */
+  private final Quantity<DimensionlessRate> cpRate;
   /** Efficiency of the charging and discharging process (typically in %) */
   private final Quantity<Dimensionless> eta;
   /** Minimum permissible depth of discharge (typically in %) */
@@ -36,17 +37,17 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   /**
    * @param uuid of the input entity
    * @param id of this type of Storage
-   * @param capex Captial expense for this type of Storage (typically in €)
-   * @param opex Operating expense for this type of Storage (typically in €)
-   * @param eStorage Energy capacity
-   * @param sRated Rated apparent power
-   * @param cosphiRated Power factor for this type of Storage
-   * @param pMin Minimum permissible active power
-   * @param pMax Maximum permissible active power
-   * @param eta Efficiency of the charging and discharging process
-   * @param dod Minimum permissible depth of discharge
-   * @param lifeTime Maximum life time of the storage
-   * @param lifeCycle Maximum amount of full charging cycles
+   * @param capex capital expense for this type of Storage (typically in €)
+   * @param opex operating expense for this type of Storage (typically in €/MWh)
+   * @param eStorage stored energy capacity
+   * @param sRated Rated apparent power of integrated inverter
+   * @param cosphiRated power factor for integrated inverter
+   * @param pMax maximum permissible charge/discharge power
+   * @param cpRate charging/discharging rate (constant power)
+   * @param eta efficiency of the charging and discharging process
+   * @param dod maximum permissible depth of discharge
+   * @param lifeTime maximum life time of the storage
+   * @param lifeCycle maximum amount of full charging/discharging cycles
    */
   public StorageTypeInput(
       UUID uuid,
@@ -56,16 +57,16 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       Quantity<Energy> eStorage,
       Quantity<Power> sRated,
       double cosphiRated,
-      Quantity<Power> pMin,
       Quantity<Power> pMax,
+      Quantity<DimensionlessRate> cpRate,
       Quantity<Dimensionless> eta,
       Quantity<Dimensionless> dod,
       Quantity<Time> lifeTime,
       int lifeCycle) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
-    this.pMin = pMin.to(StandardUnits.ACTIVE_POWER_IN);
     this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
+    this.cpRate = cpRate.to(StandardUnits.CP_RATE);
     this.eta = eta.to(StandardUnits.EFFICIENCY);
     this.dod = dod.to(StandardUnits.DOD);
     this.lifeTime = lifeTime.to(StandardUnits.LIFE_TIME);
@@ -92,12 +93,12 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     return eStorage;
   }
 
-  public Quantity<Power> getpMin() {
-    return pMin;
-  }
-
   public Quantity<Power> getpMax() {
     return pMax;
+  }
+
+  public Quantity<DimensionlessRate> getcpRate() {
+    return cpRate;
   }
 
   @Override
@@ -108,8 +109,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     StorageTypeInput that = (StorageTypeInput) o;
     return lifeCycle == that.lifeCycle
         && eStorage.equals(that.eStorage)
-        && pMin.equals(that.pMin)
         && pMax.equals(that.pMax)
+        && cpRate.equals(that.cpRate)
         && eta.equals(that.eta)
         && dod.equals(that.dod)
         && lifeTime.equals(that.lifeTime);
@@ -117,7 +118,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), eStorage, pMin, pMax, eta, dod, lifeTime, lifeCycle);
+    return Objects.hash(super.hashCode(), eStorage, pMax, cpRate, eta, dod, lifeTime, lifeCycle);
   }
 
   @Override
@@ -125,10 +126,10 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     return "StorageTypeInput{"
         + "eStorage="
         + eStorage
-        + ", pMin="
-        + pMin
         + ", pMax="
         + pMax
+        + ", cpRate="
+        + cpRate
         + ", eta="
         + eta
         + ", dod="
