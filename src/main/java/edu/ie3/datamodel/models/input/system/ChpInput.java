@@ -33,7 +33,8 @@ public class ChpInput extends SystemParticipantInput {
    * @param operator of the asset
    * @param id of the asset
    * @param node the asset is connected to
-   * @param thermalBus The thermal bus, this model is connected to
+   * @param thermalBus The thermal bus, this model is connected to (normally equal to the thermal
+   *     bus of the provided thermal storage!)
    * @param qCharacteristics Description of a reactive power characteristic
    * @param type of CHP
    * @param thermalStorage Thermal storage model
@@ -63,7 +64,8 @@ public class ChpInput extends SystemParticipantInput {
    * @param uuid of the input entity
    * @param id of the asset
    * @param node the asset is connected to
-   * @param thermalBus The thermal bus, this model is connected to
+   * @param thermalBus The thermal bus, this model is connected to (normally equal to the thermal
+   *     bus of the provided thermal storage!)
    * @param qCharacteristics Description of a reactive power characteristic
    * @param type of CHP
    * @param thermalStorage Thermal storage model

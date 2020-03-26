@@ -41,7 +41,7 @@ public class BmInput extends SystemParticipantInput {
    * @param marketReaction Is this asset market oriented?
    * @param costControlled Does this plant increase the output power if the revenues exceed the
    *     energy generation costs?
-   * @param feedInTariff Granted feed in tariff (typically in €/kWh)
+   * @param feedInTariff Granted feed in tariff (typically in €/MWh)
    */
   public BmInput(
       UUID uuid,
@@ -72,7 +72,7 @@ public class BmInput extends SystemParticipantInput {
    * @param marketReaction Is this asset market oriented?
    * @param costControlled Does this plant increase the output power if the revenues exceed the
    *     energy generation costs?
-   * @param feedInTariff Granted feed in tariff (typically in €/kWh)
+   * @param feedInTariff Granted feed in tariff (typically in €/MWh)
    */
   public BmInput(
       UUID uuid,

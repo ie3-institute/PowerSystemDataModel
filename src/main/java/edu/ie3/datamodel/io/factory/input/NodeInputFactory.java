@@ -17,10 +17,10 @@ import org.locationtech.jts.geom.Point;
 
 public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetInputEntityData> {
   private static final String V_TARGET = "vtarget";
-  private static final String V_RATED = "vrated";
+  public static final String V_RATED = "vrated";
   private static final String SLACK = "slack";
   private static final String GEO_POSITION = "geoposition";
-  private static final String VOLT_LVL = "voltlvl";
+  public static final String VOLT_LVL = "voltlvl";
   private static final String SUBNET = "subnet";
 
   public NodeInputFactory() {

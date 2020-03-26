@@ -8,11 +8,7 @@ abstract Class InputEntity
 InputEntity --|> UniqueEntity
 
 Interface Operable {
-+ operationInterval: Interval<ZonedDateTime>
-+ operatesFrom: ZonedDateTime
-+ operatesUntil: ZonedDateTime
 + inOperation: Boolean
-+ operator: OperatorInput
 }
 
 abstract Class AssetInput {
