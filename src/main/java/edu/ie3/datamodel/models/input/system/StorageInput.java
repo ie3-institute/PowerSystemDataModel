@@ -17,6 +17,9 @@ public class StorageInput extends SystemParticipantInput {
   /** Type of this storage, containing default values for storages of this kind */
   private final StorageTypeInput type;
 
+  /** Selection of predefined behaviour of the storage */
+  private final StorageStrategy behaviour;
+
   /**
    * Constructor for an operated storage
    *
@@ -27,6 +30,7 @@ public class StorageInput extends SystemParticipantInput {
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic for integrated inverter
    * @param type of storage
+   * @param behaviour Selection of predefined behaviour of the storage
    */
   public StorageInput(
       UUID uuid,
@@ -35,9 +39,11 @@ public class StorageInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      StorageTypeInput type) {
+      StorageTypeInput type,
+      String behaviour) {
     super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.type = type;
+    this.behaviour = StorageStrategy.get(behaviour);
   }
 
   /**
@@ -47,16 +53,27 @@ public class StorageInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param type of storage //TODO: storage behaviour will be passed through config
+   * @param type of storage
+   * @param behaviour Selection of predefined behaviour of the storage
    */
   public StorageInput(
-      UUID uuid, String id, NodeInput node, String qCharacteristics, StorageTypeInput type) {
+      UUID uuid,
+      String id,
+      NodeInput node,
+      String qCharacteristics,
+      StorageTypeInput type,
+      String behaviour) {
     super(uuid, id, node, qCharacteristics);
     this.type = type;
+    this.behaviour = StorageStrategy.get(behaviour);
   }
 
   public StorageTypeInput getType() {
     return type;
+  }
+
+  public StorageStrategy getBehaviour() {
+    return behaviour;
   }
 
   @Override
@@ -65,16 +82,16 @@ public class StorageInput extends SystemParticipantInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     StorageInput that = (StorageInput) o;
-    return Objects.equals(type, that.type);
+    return Objects.equals(type, that.type) && Objects.equals(behaviour, that.behaviour);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), type);
+    return Objects.hash(super.hashCode(), type, behaviour);
   }
 
   @Override
   public String toString() {
-    return "StorageInput{" + "type=" + type + '}';
+    return "StorageInput{" + "type=" + type + ", behaviour=" + behaviour + '}';
   }
 }

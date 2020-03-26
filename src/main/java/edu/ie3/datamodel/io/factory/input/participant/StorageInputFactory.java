@@ -15,6 +15,7 @@ import java.util.UUID;
 public class StorageInputFactory
     extends SystemParticipantInputEntityFactory<
         StorageInput, SystemParticipantTypedEntityData<StorageTypeInput>> {
+  private static final String BEHAVIOUR = "behaviour";
 
   public StorageInputFactory() {
     super(StorageInput.class);
@@ -22,7 +23,7 @@ public class StorageInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {};
+    return new String[] {BEHAVIOUR};
   }
 
   @Override
@@ -35,8 +36,8 @@ public class StorageInputFactory
       OperatorInput operatorInput,
       OperationTime operationTime) {
     final StorageTypeInput typeInput = data.getTypeInput();
-
+    final String behaviour = data.getField(BEHAVIOUR);
     return new StorageInput(
-        uuid, operationTime, operatorInput, id, node, qCharacteristics, typeInput);
+        uuid, operationTime, operatorInput, id, node, qCharacteristics, typeInput, behaviour);
   }
 }

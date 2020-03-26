@@ -1,8 +1,10 @@
 package edu.ie3.datamodel.io.factory.input.participant
 
+import com.sun.org.apache.xml.internal.security.keys.storage.StorageResolverSpi
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.StorageInput
+import edu.ie3.datamodel.models.input.system.StorageStrategy
 import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
@@ -33,10 +35,11 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
         def nodeInput = Mock(NodeInput)
         def operatorInput = Mock(OperatorInput)
         def typeInput = Mock(StorageTypeInput)
+        def behaviourInput = Mock(StorageStrategy)
 
         when:
         Optional<StorageInput> input = inputFactory.getEntity(
-                new SystemParticipantTypedEntityData<StorageTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
+                new SystemParticipantTypedEntityData<StorageTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput, behaviourInput))
 
         then:
         input.present
@@ -52,6 +55,7 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
             assert node == nodeInput
             assert qCharacteristics == parameter["qcharacteristics"]
             assert type == typeInput
+            assert behaviour == behaviourInput
         }
     }
 }
