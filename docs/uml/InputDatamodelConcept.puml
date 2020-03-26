@@ -9,8 +9,6 @@ InputEntity --|> UniqueEntity
 
 Interface Operable {
 + inOperation: Boolean
-+ getOperator(): OperatorInput
-+ getOperationTime(): OperationTime
 }
 
 abstract Class AssetInput {
