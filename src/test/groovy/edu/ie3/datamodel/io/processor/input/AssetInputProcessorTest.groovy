@@ -34,7 +34,7 @@ class AssetInputProcessorTest extends Specification {
     def "A ResultEntityProcessor should de-serialize a provided NodeInput correctly"() {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-        def sysPartResProcessor = new AssetInputProcessor(NodeInput)
+        def assetInputProcessor = new AssetInputProcessor(NodeInput)
         def validEntity = GridTestData.nodeA
 
         Map expectedResults = [
