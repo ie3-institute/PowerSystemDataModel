@@ -35,7 +35,7 @@ class AssetInputProcessorTest extends Specification {
         given:
         TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
         def sysPartResProcessor = new AssetInputProcessor(NodeInput)
-        def validResult = GridTestData.nodeA
+        def validEntity = GridTestData.nodeA
 
         Map expectedResults = [
                 "uuid"         : "5dc88077-aeb6-4711-9142-db57292640b1",
