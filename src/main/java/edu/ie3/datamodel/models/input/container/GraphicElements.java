@@ -47,8 +47,9 @@ public class GraphicElements implements InputContainer {
   }
 
   @Override
-  public boolean validate() {
-    return true; // no check defined in ValidationTools, so no need for unnecessary instanceofs
+  public void validate() {
+    throw new UnsupportedOperationException(
+        "Graphic elements cannot be validated without raw grid elements.");
   }
 
   /** @return unmodifiable Set of all node graphic data for this grid */

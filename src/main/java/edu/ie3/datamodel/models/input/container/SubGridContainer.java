@@ -47,17 +47,13 @@ public class SubGridContainer extends GridContainer {
   }
 
   @Override
-  public boolean validate() {
-    return true; // Always return true, as all necessary checks have been made during instantiation
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    SubGridContainer that = (SubGridContainer) o;
-    return subnet == that.subnet && predominantVoltageLevel.equals(that.predominantVoltageLevel);
+    SubGridContainer container = (SubGridContainer) o;
+    return subnet == container.subnet
+        && predominantVoltageLevel.equals(container.predominantVoltageLevel);
   }
 
   @Override

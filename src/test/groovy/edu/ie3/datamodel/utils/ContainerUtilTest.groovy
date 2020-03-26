@@ -1,7 +1,6 @@
 package edu.ie3.datamodel.utils
 
 import edu.ie3.datamodel.exceptions.InvalidGridException
-import edu.ie3.datamodel.graph.SubGridGate
 import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
@@ -14,7 +13,10 @@ import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SubGridContainer
 import edu.ie3.datamodel.models.input.container.SystemParticipants
+import edu.ie3.util.TimeTools
 import tec.uom.se.quantity.Quantities
+
+import java.time.ZoneId
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
@@ -25,6 +27,10 @@ import spock.lang.Specification
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ContainerUtilTest extends Specification {
+    static {
+        TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
+    }
+
     @Shared
     GridContainer complexTopology = ComplexTopology.grid
 
