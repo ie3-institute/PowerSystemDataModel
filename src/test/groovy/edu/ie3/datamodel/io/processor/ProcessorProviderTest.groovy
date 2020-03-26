@@ -5,6 +5,8 @@ import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.EvcsInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.RandomLoadParameters
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
@@ -20,6 +22,8 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
+import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
+import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
@@ -54,28 +58,37 @@ class ProcessorProviderTest extends Specification {
 
         // currently known processors
         List knownProcessors = [
-                FixedFeedInInput,
-                PvInput,
-                WecInput,
+                /* InputEntity */
+                OperatorInput,
+                RandomLoadParameters,
+                WecCharacteristicInput,
+                EvCharacteristicInput,
+                /* - AssetInput */
+                NodeInput,
+                LineInput,
+                Transformer2WInput,
+                Transformer3WInput,
+                SwitchInput,
+                MeasurementUnitInput,
+                EvcsInput,
+                ThermalBusInput,
+                /* -- SystemParticipantInput */
                 ChpInput,
                 BmInput,
                 EvInput,
-                LoadInput,
-                StorageInput,
+                FixedFeedInInput,
                 HpInput,
-                LineInput,
-                SwitchInput,
-                Transformer2WInput,
-                Transformer3WInput,
+                LoadInput,
+                PvInput,
+                StorageInput,
+                WecInput,
+                /* -- ThermalUnitInput */
                 ThermalHouseInput,
                 CylindricalStorageInput,
-                ThermalBusInput,
-                MeasurementUnitInput,
-                NodeInput,
-                EvcsInput,
-                LoadResult,
+                /* - GraphicInput */
                 NodeGraphicInput,
                 LineGraphicInput,
+                /* ResultEntity */
                 FixedFeedInResult,
                 BmResult,
                 PvResult,
@@ -87,6 +100,7 @@ class ProcessorProviderTest extends Specification {
                 Transformer2WResult,
                 Transformer3WResult,
                 LineResult,
+                LoadResult,
                 SwitchResult,
                 NodeResult,
                 ThermalHouseResult,

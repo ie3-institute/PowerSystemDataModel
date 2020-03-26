@@ -5,44 +5,28 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
-import java.util.Objects;
+import edu.ie3.datamodel.models.input.system.type.WecTypeInput;
 import java.util.UUID;
 
 /** Characteristic mapping the wind velocity to its corresponding Betz coefficient */
-public class WecCharacteristicInput extends AssetCharacteristicInput {
-  /** Curve of the Betz coefficient as semicolon-separated String */
-  private final String cpCharacteristic;
-
+public class WecCharacteristicInput extends AssetCharacteristicInput<WecTypeInput> {
   /**
    * @param uuid of the input entity
    * @param type of this characteristic
-   * @param cpCharacteristic Power curve as semicolon-separated String
+   * @param characteristic Curve of the Betz coefficient in the form "{(v1,cp1),(v2,cp2), ...}"
    */
-  public WecCharacteristicInput(UUID uuid, String type, String cpCharacteristic) {
-    super(uuid, type);
-    this.cpCharacteristic = cpCharacteristic;
-  }
-
-  public String getCpCharacteristic() {
-    return cpCharacteristic;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
-    WecCharacteristicInput that = (WecCharacteristicInput) o;
-    return Objects.equals(cpCharacteristic, that.cpCharacteristic);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), cpCharacteristic);
+  public WecCharacteristicInput(UUID uuid, WecTypeInput type, String characteristic) {
+    super(uuid, type, characteristic);
   }
 
   @Override
   public String toString() {
-    return "WecCharacteristicInput{" + "cpCharacteristic='" + cpCharacteristic + '\'' + '}';
+    return "WecCharacteristicInput{"
+        + "type="
+        + type
+        + ", characteristic='"
+        + characteristic
+        + '\''
+        + '}';
   }
 }

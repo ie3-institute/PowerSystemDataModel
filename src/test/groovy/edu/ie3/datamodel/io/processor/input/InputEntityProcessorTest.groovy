@@ -19,8 +19,10 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
+import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
+import edu.ie3.test.common.TypeTestData
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
 
@@ -367,21 +369,39 @@ class InputEntityProcessorTest extends Specification {
                 9.10
         )
         Map expected = [
-                "uuid": "a5b0f432-27b5-4b3e-b87a-61867b9edd79",
-                "quarterHour": "4",
-                "kWd": "1.2",
-                "kSa": "2.3",
-                "kSu": "3.4",
-                "myWd": "4.5",
-                "mySa": "5.6",
-                "mySu": "6.7",
-                "sigmaWd": "7.8",
-                "sigmaSa": "8.9",
-                "sigmaSu": "9.1"
+                "uuid"          : "a5b0f432-27b5-4b3e-b87a-61867b9edd79",
+                "quarterHour"   : "4",
+                "kWd"           : "1.2",
+                "kSa"           : "2.3",
+                "kSu"           : "3.4",
+                "myWd"          : "4.5",
+                "mySa"          : "5.6",
+                "mySu"          : "6.7",
+                "sigmaWd"       : "7.8",
+                "sigmaSa"       : "8.9",
+                "sigmaSu"       : "9.1"
         ]
 
         when:
         Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(parameters)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided WecCharacteristicInput correctly"() {
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(WecCharacteristicInput.class)
+        WecCharacteristicInput characteristic = TypeTestData.wecCharacteristic
+        Map expected = [
+                "uuid"              : "ab5ed9e4-62b5-4f40-adf1-286bda97569c",
+                "type"              : "a24fc5b9-a26f-44de-96b8-c9f50b665cb3",
+                "characteristic"    : "{(0.0,0.0), (8.0,0.2), (12.0,0.5), (14.0,1.0), (22.0,0.0)}"
+        ]
+
+        when:
+        Optional<Map<String, String>> actual = processor.handleEntity(characteristic)
 
         then:
         actual.isPresent()
