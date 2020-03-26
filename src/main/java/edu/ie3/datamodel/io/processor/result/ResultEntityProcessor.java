@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.processor.result;
 
-import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.factory.result.SystemParticipantResultFactory;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -18,8 +17,6 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
-import java.lang.reflect.Method;
-import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
@@ -62,32 +59,6 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
   }
 
   @Override
-  protected Optional<LinkedHashMap<String, String>> processEntity(ResultEntity entity) {
-
-    Optional<LinkedHashMap<String, String>> resultMapOpt;
-
-    try {
-      LinkedHashMap<String, String> resultMap = new LinkedHashMap<>();
-      for (String fieldName : headerElements) {
-        Method method = fieldNameToMethod.get(fieldName);
-        Optional<Object> methodReturnObjectOpt = Optional.ofNullable(method.invoke(entity));
-
-        if (methodReturnObjectOpt.isPresent()) {
-          resultMap.put(
-              fieldName, processMethodResult(methodReturnObjectOpt.get(), method, fieldName));
-        } else {
-          resultMap.put(fieldName, "");
-        }
-      }
-      resultMapOpt = Optional.of(resultMap);
-    } catch (Exception e) {
-      log.error("Error during entity processing in ResultEntityProcessor:", e);
-      resultMapOpt = Optional.empty();
-    }
-    return resultMapOpt;
-  }
-
-  @Override
   protected Optional<String> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
     Optional<String> normalizedQuantityValue = Optional.empty();
@@ -109,7 +80,7 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
         break;
       default:
         log.error(
-            "Cannot process quantity {} for field with name {} in result entity processing!",
+            "Cannot process quantity with value '{}' for field with name {} in result entity processing!",
             quantity,
             fieldName);
         break;
@@ -120,47 +91,5 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
   @Override
   protected List<Class<? extends ResultEntity>> getAllEligibleClasses() {
     return eligibleEntityClasses;
-  }
-
-  private String processMethodResult(Object methodReturnObject, Method method, String fieldName) {
-
-    StringBuilder resultStringBuilder = new StringBuilder();
-
-    switch (method.getReturnType().getSimpleName()) {
-        // primitives (Boolean, Character, Byte, Short, Integer, Long, Float, Double, String,
-      case "UUID":
-      case "boolean":
-      case "int":
-        resultStringBuilder.append(methodReturnObject.toString());
-        break;
-      case "Quantity":
-        resultStringBuilder.append(
-            handleQuantity((Quantity<?>) methodReturnObject, fieldName)
-                .orElseThrow(
-                    () ->
-                        new EntityProcessorException(
-                            "Unable to process quantity value for attribute '"
-                                + fieldName
-                                + "' in result entity "
-                                + getRegisteredClass().getSimpleName()
-                                + ".class.")));
-        break;
-      case "ZonedDateTime":
-        resultStringBuilder.append(processZonedDateTime((ZonedDateTime) methodReturnObject));
-        break;
-      default:
-        throw new EntityProcessorException(
-            "Unable to process value for attribute/field '"
-                + fieldName
-                + "' and method return type '"
-                + method.getReturnType().getSimpleName()
-                + "' for method with name '"
-                + method.getName()
-                + "' in system participant result model "
-                + getRegisteredClass().getSimpleName()
-                + ".class.");
-    }
-
-    return resultStringBuilder.toString();
   }
 }

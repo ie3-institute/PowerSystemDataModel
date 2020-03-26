@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /** Enum listing different pre-defined storage operation strategies */
 public enum StorageStrategy {
@@ -37,7 +38,16 @@ public enum StorageStrategy {
         .orElseThrow(
             () ->
                 new IllegalArgumentException(
-                    "No predefined storage strategy " + token + " found."));
+                    "No predefined storage strategy with token '"
+                        + token
+                        + "' found. Please provide one of the followign tokens: "
+                        + Arrays.stream(StorageStrategy.values())
+                            .map(StorageStrategy::getToken)
+                            .collect(Collectors.joining(", "))));
+  }
+
+  public String getToken() {
+    return token;
   }
 
   @Override

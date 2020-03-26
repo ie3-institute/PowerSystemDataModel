@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.models.BdewLoadProfile;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -33,6 +34,7 @@ public class LoadInput extends SystemParticipantInput {
   private final Quantity<Power> sRated;
   /** Rated power factor */
   private final double cosphiRated;
+
   /**
    * Constructor for an operated load
    *
@@ -69,6 +71,48 @@ public class LoadInput extends SystemParticipantInput {
   }
 
   /**
+   * Constructor for an operated load
+   *
+   * @param uuid of the input entity
+   * @param operationTime Time for which the entity is operated
+   * @param operator of the asset
+   * @param id of the asset
+   * @param node the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param bdewStandardLoadProfile {@link edu.ie3.datamodel.models.BdewLoadProfile} load profile
+   *     key
+   * @param dsm True, if demand side management is activated for this load
+   * @param eConsAnnual Annually consumed energy (typically in kWh)
+   * @param sRated Rated apparent power (in kVA)
+   * @param cosphiRated Rated power factor
+   */
+  public LoadInput(
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput node,
+      String qCharacteristics,
+      String bdewStandardLoadProfile,
+      boolean dsm,
+      Quantity<Energy> eConsAnnual,
+      Quantity<Power> sRated,
+      double cosphiRated) {
+    this(
+        uuid,
+        operationTime,
+        operator,
+        id,
+        node,
+        qCharacteristics,
+        BdewLoadProfile.get(bdewStandardLoadProfile),
+        dsm,
+        eConsAnnual,
+        sRated,
+        cosphiRated);
+  }
+
+  /**
    * Constructor for a non-operated load
    *
    * @param uuid of the input entity
@@ -96,6 +140,41 @@ public class LoadInput extends SystemParticipantInput {
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosphiRated = cosphiRated;
+  }
+
+  /**
+   * Constructor for a non-operated load
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param node the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param bdewStandardLoadProfile {@link edu.ie3.datamodel.models.BdewLoadProfile} load profile
+   *     key
+   * @param dsm True, if demand side management is activated for this load
+   * @param eConsAnnual Annually consumed energy (typically in kWh)
+   * @param sRated Rated apparent power (in kVA)
+   */
+  public LoadInput(
+      UUID uuid,
+      String id,
+      NodeInput node,
+      String qCharacteristics,
+      String bdewStandardLoadProfile,
+      boolean dsm,
+      Quantity<Energy> eConsAnnual,
+      Quantity<Power> sRated,
+      double cosphiRated) {
+    this(
+        uuid,
+        id,
+        node,
+        qCharacteristics,
+        BdewLoadProfile.get(bdewStandardLoadProfile),
+        dsm,
+        eConsAnnual,
+        sRated,
+        cosphiRated);
   }
 
   public StandardLoadProfile getStandardLoadProfile() {
