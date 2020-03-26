@@ -34,25 +34,31 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
   public static final List<Class<? extends InputEntity>> eligibleEntityClasses =
       Collections.unmodifiableList(
           Arrays.asList(
-              FixedFeedInInput.class,
-              PvInput.class,
-              WecInput.class,
+              /* InputEntity */
+              OperatorInput.class,
+              /* - AssetInput */
+              NodeInput.class,
+              LineInput.class,
+              Transformer2WInput.class,
+              Transformer3WInput.class,
+              SwitchInput.class,
+              MeasurementUnitInput.class,
+              EvcsInput.class,
+              ThermalBusInput.class,
+              /* -- SystemParticipantInput */
               ChpInput.class,
               BmInput.class,
               EvInput.class,
-              LoadInput.class,
-              StorageInput.class,
+              FixedFeedInInput.class,
               HpInput.class,
-              LineInput.class,
-              SwitchInput.class,
-              Transformer2WInput.class,
-              Transformer3WInput.class,
+              LoadInput.class,
+              PvInput.class,
+              StorageInput.class,
+              WecInput.class,
+              /* -- ThermalUnitInput */
               ThermalHouseInput.class,
               CylindricalStorageInput.class,
-              ThermalBusInput.class,
-              MeasurementUnitInput.class,
-              NodeInput.class,
-              EvcsInput.class,
+              /* - GraphicInput */
               NodeGraphicInput.class,
               LineGraphicInput.class));
 

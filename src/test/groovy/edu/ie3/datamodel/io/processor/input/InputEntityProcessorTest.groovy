@@ -2,6 +2,7 @@ package edu.ie3.datamodel.io.processor.input
 
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
@@ -325,6 +326,23 @@ class InputEntityProcessorTest extends Specification {
 
         when:
         Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(validNode)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided OperatorInput correctly"() {
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(OperatorInput.class)
+        OperatorInput operator = new OperatorInput(UUID.fromString("420ee39c-dd5a-4d9c-9156-23dbdef13e5e"), "Prof. Brokkoli")
+        Map expected = [
+                "uuid"  : "420ee39c-dd5a-4d9c-9156-23dbdef13e5e",
+                "id"    : "Prof. Brokkoli"
+        ]
+
+        when:
+        Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(operator)
 
         then:
         actual.isPresent()
