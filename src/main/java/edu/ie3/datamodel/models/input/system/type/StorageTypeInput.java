@@ -38,7 +38,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
    * @param uuid of the input entity
    * @param id of this type of Storage
    * @param capex capital expense for this type of Storage (typically in €)
-   * @param opex operating expense for this type of Storage (typically in €)
+   * @param opex operating expense for this type of Storage (typically in €/MWh)
    * @param eStorage stored energy capacity
    * @param sRated Rated apparent power of integrated inverter
    * @param cosphiRated power factor for integrated inverter
