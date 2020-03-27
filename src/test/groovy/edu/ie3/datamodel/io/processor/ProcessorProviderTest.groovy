@@ -9,6 +9,8 @@ import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
+import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.BmInput
 import edu.ie3.datamodel.models.input.system.ChpInput
 import edu.ie3.datamodel.models.input.system.EvInput
@@ -72,6 +74,8 @@ class ProcessorProviderTest extends Specification {
                 NodeInput,
                 EvcsInput,
                 LoadResult,
+                NodeGraphicInput,
+                LineGraphicInput,
                 FixedFeedInResult,
                 BmResult,
                 PvResult,

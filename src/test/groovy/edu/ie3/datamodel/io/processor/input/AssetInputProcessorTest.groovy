@@ -130,7 +130,7 @@ class AssetInputProcessorTest extends Specification {
                 "length"             : "0.003",
                 "noOfParallelDevices": "2",
                 "nodeA"              : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
-                "nodeB"              : "bd865a25-58f3-44ac-aa90-c6b6e3cd91b2",
+                "nodeB"              : "6e0980e0-10f2-4e18-862b-eb2b7c90509b",
                 "olmCharacteristic"  : "olm",
                 "operatesUntil"      : "2020-03-25 15:11:31",
                 "operatesFrom"       : "2020-03-24 15:11:31",

@@ -231,6 +231,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "Transformer3WTypeInput":
       case "Transformer2WTypeInput":
       case "LineTypeInput":
+      case "LineInput":
       case "OperatorInput":
       case "WecTypeInput":
       case "ThermalBusInput":
