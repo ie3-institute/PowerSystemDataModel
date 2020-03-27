@@ -30,7 +30,7 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
   @Override
   protected String[] getAdditionalFields() {
     return new String[] {
-      V_TARGET, V_RATED.toLowerCase(), SLACK, GEO_POSITION, VOLT_LVL.toLowerCase() , SUBNET
+      V_TARGET, V_RATED.toLowerCase(), SLACK, GEO_POSITION, VOLT_LVL.toLowerCase(), SUBNET
     };
   }
 
@@ -45,7 +45,7 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
         data.getQuantity(V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     final boolean slack = data.getBoolean(SLACK);
     final Point geoPosition = data.getPoint(GEO_POSITION).orElse(null);
-    final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL.toLowerCase(), V_RATED.toLowerCase() );
+    final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL.toLowerCase(), V_RATED.toLowerCase());
     final int subnet = data.getInt(SUBNET);
     return new NodeInput(
         uuid, operationTime, operatorInput, id, vTarget, slack, geoPosition, voltLvl, subnet);

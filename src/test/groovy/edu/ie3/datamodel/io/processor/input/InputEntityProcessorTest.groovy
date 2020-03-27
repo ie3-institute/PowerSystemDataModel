@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
+import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.BmInput
@@ -454,6 +455,42 @@ class InputEntityProcessorTest extends Specification {
                 "tapNeutr"  : "0",
                 "tapMax"    : "10",
                 "tapMin"    : "-10"
+        ]
+
+        when:
+        Optional<Map<String, String>> actual = processor.handleEntity(type)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided Transformer3WTypeInput correctly"() {
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(Transformer3WTypeInput.class)
+        Transformer3WTypeInput type = GridTestData.transformerTypeAtoBtoC
+        Map expected = [
+                "uuid"      : "5b0ee546-21fb-4a7f-a801-5dbd3d7bb356",
+                "id"        : "HöS-HS-MS_1",
+                "sRatedA"   : "120000.0",
+                "sRatedB"   : "60000.0",
+                "sRatedC"   : "40000.0",
+                "vRatedA"   : "380.0",
+                "vRatedB"   : "110.0",
+                "vRatedC"   : "20.0",
+                "rScA"      : "0.3",
+                "rScB"      : "0.025",
+                "rScC"      : "8.0E-4",
+                "xScA"      : "1.0",
+                "xScB"      : "0.08",
+                "xScC"      : "0.003",
+                "gM"        : "40000.0",
+                "bM"        : "1000.0",
+                "dV"        : "1.5",
+                "dPhi"      : "0.0",
+                "tapNeutr"  : "0",
+                "tapMin"    : "-10",
+                "tapMax"    : "10"
         ]
 
         when:

@@ -108,7 +108,7 @@ class GridTestData {
             10
     )
 
-    private static final Transformer3WTypeInput transformerTypeAtoBtoC = new Transformer3WTypeInput(
+    public static final Transformer3WTypeInput transformerTypeAtoBtoC = new Transformer3WTypeInput(
             UUID.fromString("5b0ee546-21fb-4a7f-a801-5dbd3d7bb356"),
             "HöS-HS-MS_1",
             Quantities.getQuantity(120000d, KILOVOLTAMPERE),
