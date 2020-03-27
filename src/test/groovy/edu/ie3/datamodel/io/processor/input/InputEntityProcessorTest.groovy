@@ -23,6 +23,7 @@ import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
+import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.test.common.GridTestData
@@ -36,6 +37,7 @@ import edu.ie3.util.quantities.interfaces.SpecificEnergy
 import edu.ie3.util.quantities.interfaces.SpecificResistance
 import spock.lang.Specification
 
+import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.ElectricCurrent
 import javax.measure.quantity.ElectricPotential
 import javax.measure.quantity.Energy
@@ -548,6 +550,31 @@ class InputEntityProcessorTest extends Specification {
                 "eCons"         : "23.0",
                 "sRated"        : "22.0",
                 "cosphiRated"   : "0.9"
+        ]
+
+        when:
+        Optional<Map<String, String>> actual = processor.handleEntity(type)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided ChpTypeInput correctly"() {
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(ChpTypeInput.class)
+        ChpTypeInput type = TypeTestData.chpType
+        Map expected = [
+                "uuid"          : "1c027d3e-5409-4e52-a0e2-f8a23d5d0af0",
+                "id"            : "chp type",
+                "capex"         : "100.0",
+                "opex"          : "101.0",
+                "etaEl"         : "95.0",
+                "etaThermal"    : "90.0",
+                "sRated"        : "58.0",
+                "cosphiRated"   : "0.98",
+                "pThermal"      : "49.59",
+                "pOwn"          : "5.0"
         ]
 
         when:

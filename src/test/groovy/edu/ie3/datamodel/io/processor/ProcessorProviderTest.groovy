@@ -27,6 +27,7 @@ import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
+import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
@@ -95,6 +96,7 @@ class ProcessorProviderTest extends Specification {
                 LineGraphicInput,
                 /* - AssetTypeInput */
                 EvTypeInput,
+                ChpTypeInput,
                 LineTypeInput,
                 Transformer2WTypeInput,
                 Transformer3WTypeInput,

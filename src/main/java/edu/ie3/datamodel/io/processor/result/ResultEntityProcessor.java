@@ -76,6 +76,8 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
                 quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT));
         break;
       case "p":
+      case "pThermal":
+      case "pOwn":
         normalizedQuantityValue =
             quantityValToOptionalString(
                 quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT));
