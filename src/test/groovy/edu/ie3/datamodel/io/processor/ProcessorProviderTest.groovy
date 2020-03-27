@@ -1,3 +1,8 @@
+/*
+ * © 2020. TU Dortmund University,
+ * Institute of Energy Systems, Energy Efficiency and Energy Economics,
+ * Research group Distribution grid planning and operation
+ */
 package edu.ie3.datamodel.io.processor
 
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
@@ -46,107 +51,114 @@ import javax.measure.quantity.Power
 
 class ProcessorProviderTest extends Specification {
 
-    def "A ProcessorProvider should initialize all known EntityProcessors by default"() {
-        given:
-        ProcessorProvider provider = new ProcessorProvider()
+	def "A ProcessorProvider should initialize all known EntityProcessors by default"() {
+		given:
+		ProcessorProvider provider = new ProcessorProvider()
 
-        // currently known processors
-        List knownProcessors = [
-                FixedFeedInInput,
-                PvInput,
-                WecInput,
-                ChpInput,
-                BmInput,
-                EvInput,
-                LoadInput,
-                StorageInput,
-                HpInput,
-                LineInput,
-                SwitchInput,
-                Transformer2WInput,
-                Transformer3WInput,
-                ThermalHouseInput,
-                CylindricalStorageInput,
-                ThermalBusInput,
-                MeasurementUnitInput,
-                NodeInput,
-                EvcsInput,
-                LoadResult,
-                FixedFeedInResult,
-                BmResult,
-                PvResult,
-                ChpResult,
-                WecResult,
-                StorageResult,
-                EvcsResult,
-                EvResult,
-                Transformer2WResult,
-                Transformer3WResult,
-                LineResult,
-                SwitchResult,
-                NodeResult,
-                ThermalHouseResult,
-                CylindricalStorageResult
-        ]
+		// currently known processors
+		List knownProcessors = [
+			FixedFeedInInput,
+			PvInput,
+			WecInput,
+			ChpInput,
+			BmInput,
+			EvInput,
+			LoadInput,
+			StorageInput,
+			HpInput,
+			LineInput,
+			SwitchInput,
+			Transformer2WInput,
+			Transformer3WInput,
+			ThermalHouseInput,
+			CylindricalStorageInput,
+			ThermalBusInput,
+			MeasurementUnitInput,
+			NodeInput,
+			EvcsInput,
+			LoadResult,
+			FixedFeedInResult,
+			BmResult,
+			PvResult,
+			ChpResult,
+			WecResult,
+			StorageResult,
+			EvcsResult,
+			EvResult,
+			Transformer2WResult,
+			Transformer3WResult,
+			LineResult,
+			SwitchResult,
+			NodeResult,
+			ThermalHouseResult,
+			CylindricalStorageResult
+		]
 
-        expect:
-        provider.registeredClasses.size() == knownProcessors.size()
-        provider.registeredClasses.sort() == knownProcessors.sort()
+		expect:
+		provider.registeredClasses.size() == knownProcessors.size()
+		provider.registeredClasses.sort() == knownProcessors.sort()
 
-    }
+	}
 
-    def "A ProcessorProvider should return the header elements for a class known by one of its processors and do nothing otherwise"() {
-        given:
-        ProcessorProvider provider = new ProcessorProvider([new ResultEntityProcessor(PvResult), new ResultEntityProcessor(EvResult)])
+	def "A ProcessorProvider should return the header elements for a class known by one of its processors and do nothing otherwise"() {
+		given:
+		ProcessorProvider provider = new ProcessorProvider([
+			new ResultEntityProcessor(PvResult),
+			new ResultEntityProcessor(EvResult)
+		])
 
-        when:
-        Optional headerResults = provider.getHeaderElements(PvResult)
+		when:
+		Optional headerResults = provider.getHeaderElements(PvResult)
 
-        then:
-        headerResults.present
-        headerResults.get() == ["uuid", "inputModel", "p", "q", "timestamp"] as String[]
+		then:
+		headerResults.present
+		headerResults.get() == [
+			"uuid",
+			"inputModel",
+			"p",
+			"q",
+			"timestamp"] as String[]
 
-        when:
-        headerResults = provider.getHeaderElements(WecResult)
+		when:
+		headerResults = provider.getHeaderElements(WecResult)
 
-        then:
-        !headerResults.present
+		then:
+		!headerResults.present
+	}
 
-    }
+	def "A ProcessorProvider should process an entity known by its underlying processors correctly and do nothing otherwise"() {
+		given:
+		ProcessorProvider provider = new ProcessorProvider([
+			new ResultEntityProcessor(PvResult),
+			new ResultEntityProcessor(EvResult)
+		])
 
-    def "A ProcessorProvider should process an entity known by its underlying processors correctly and do nothing otherwise"() {
-        given:
-        ProcessorProvider provider = new ProcessorProvider([new ResultEntityProcessor(PvResult), new ResultEntityProcessor(EvResult)])
+		Map expectedMap = ["uuid"      : "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+			"inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+			"p"         : "0.01",
+			"q"         : "0.01",
+			"timestamp" : "2020-01-30 17:26:44"]
 
-        Map expectedMap = ["uuid"      : "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
-                           "inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
-                           "p"         : "0.01",
-                           "q"         : "0.01",
-                           "timestamp" : "2020-01-30 17:26:44"]
+		when:
+		UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
+		UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
+		Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
+		Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
+		PvResult pvResult = new PvResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
 
-        when:
-        UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-        UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-        Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
-        Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-        PvResult pvResult = new PvResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+		and:
+		Optional processorResult = provider.processEntity(pvResult)
 
-        and:
-        Optional processorResult = provider.processEntity(pvResult)
+		then:
+		processorResult.present
+		Map resultMap = processorResult.get()
+		resultMap.size() == 5
+		resultMap == expectedMap
 
-        then:
-        processorResult.present
-        Map resultMap = processorResult.get()
-        resultMap.size() == 5
-        resultMap == expectedMap
+		when:
+		Optional result = provider.processEntity(new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q))
 
-        when:
-        Optional result = provider.processEntity(new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q))
-
-        then:
-        !result.present
-
-    }
-
-
+		then:
+		!result.present
+	}
 }

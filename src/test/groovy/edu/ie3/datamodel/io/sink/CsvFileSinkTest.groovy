@@ -1,3 +1,8 @@
+/*
+ * © 2020. TU Dortmund University,
+ * Institute of Energy Systems, Energy Efficiency and Energy Economics,
+ * Research group Distribution grid planning and operation
+ */
 package edu.ie3.datamodel.io.sink
 
 import edu.ie3.datamodel.exceptions.SinkException
@@ -19,89 +24,96 @@ import javax.measure.quantity.Power
 
 class CsvFileSinkTest extends Specification {
 
-    @Shared
-    String testBaseFolderPath = "test"
+	@Shared
+	String testBaseFolderPath = "test"
 
-    def cleanup() {
-        // delete files after each test if they exist
-        if (new File(testBaseFolderPath).exists()) {
-            FileIOUtils.deleteRecursively(testBaseFolderPath)
-        }
-    }
+	def cleanup() {
+		// delete files after each test if they exist
+		if (new File(testBaseFolderPath).exists()) {
+			FileIOUtils.deleteRecursively(testBaseFolderPath)
+		}
+	}
 
-    def "A valid CsvFileSink called by simple constructor should not initialize files by default and consist of several default values"() {
-        given:
-        CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath)
-        csvFileSink.dataConnector.shutdown()
+	def "A valid CsvFileSink called by simple constructor should not initialize files by default and consist of several default values"() {
+		given:
+		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath)
+		csvFileSink.dataConnector.shutdown()
 
-        expect:
-        !new File(testBaseFolderPath).exists()
-        csvFileSink.csvSep == ","
-    }
+		expect:
+		!new File(testBaseFolderPath).exists()
+		csvFileSink.csvSep == ","
+	}
 
-    def "A valid CsvFileSink with 'initFiles' enabled should create files as expected"() {
-        given:
-        CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-                new ProcessorProvider([new ResultEntityProcessor(PvResult), new ResultEntityProcessor(EvResult)]),
-                new FileNamingStrategy(),
-                true,
-                ",")
-        csvFileSink.dataConnector.shutdown()
+	def "A valid CsvFileSink with 'initFiles' enabled should create files as expected"() {
+		given:
+		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
+				new ProcessorProvider([
+					new ResultEntityProcessor(PvResult),
+					new ResultEntityProcessor(EvResult)
+				]),
+				new FileNamingStrategy(),
+				true,
+				",")
+		csvFileSink.dataConnector.shutdown()
 
-        expect:
-        new File(testBaseFolderPath).exists()
-        new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
-        new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
-    }
+		expect:
+		new File(testBaseFolderPath).exists()
+		new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
+		new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
+	}
 
-    def "A valid CsvFileSink without 'initFiles' should only persist provided elements correctly but not all files"() {
-        given:
-        CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-                new ProcessorProvider([new ResultEntityProcessor(PvResult),
-                                       new ResultEntityProcessor(WecResult),
-                                       new ResultEntityProcessor(EvResult)]),
-                new FileNamingStrategy(),
-                false,
-                ",")
+	def "A valid CsvFileSink without 'initFiles' should only persist provided elements correctly but not all files"() {
+		given:
+		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
+				new ProcessorProvider([
+					new ResultEntityProcessor(PvResult),
+					new ResultEntityProcessor(WecResult),
+					new ResultEntityProcessor(EvResult)
+				]),
+				new FileNamingStrategy(),
+				false,
+				",")
 
-        UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-        UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-        Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
-        Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-        PvResult pvResult = new PvResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-        WecResult wecResult = new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+		UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
+		UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
+		Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
+		Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
+		PvResult pvResult = new PvResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+		WecResult wecResult = new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
 
-        when:
-        csvFileSink.persistAll([pvResult, wecResult])
-        csvFileSink.dataConnector.shutdown()
+		when:
+		csvFileSink.persistAll([pvResult, wecResult])
+		csvFileSink.dataConnector.shutdown()
 
-        then:
-        new File(testBaseFolderPath).exists()
-        new File(testBaseFolderPath + File.separator + "wec_res.csv").exists()
-        new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
+		then:
+		new File(testBaseFolderPath).exists()
+		new File(testBaseFolderPath + File.separator + "wec_res.csv").exists()
+		new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
 
-        !new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
-    }
+		!new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
+	}
 
-    def "A valid CsvFileSink should throw an exception if the provided entity cannot be handled"() {
-        given:
-        CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-                new ProcessorProvider([new ResultEntityProcessor(PvResult)]),
-                new FileNamingStrategy(),
-                false,
-                ",")
+	def "A valid CsvFileSink should throw an exception if the provided entity cannot be handled"() {
+		given:
+		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
+				new ProcessorProvider([
+					new ResultEntityProcessor(PvResult)
+				]),
+				new FileNamingStrategy(),
+				false,
+				",")
 
-        UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-        UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-        Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
-        Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-        WecResult wecResult = new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+		UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
+		UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
+		Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
+		Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
+		WecResult wecResult = new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
 
-        when:
-        csvFileSink.persist(wecResult)
-        csvFileSink.dataConnector.shutdown()
+		when:
+		csvFileSink.persist(wecResult)
+		csvFileSink.dataConnector.shutdown()
 
-        then:
-        thrown(SinkException)
-    }
+		then:
+		thrown(SinkException)
+	}
 }

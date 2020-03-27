@@ -1,3 +1,8 @@
+/*
+ * © 2020. TU Dortmund University,
+ * Institute of Energy Systems, Energy Efficiency and Energy Economics,
+ * Research group Distribution grid planning and operation
+ */
 package edu.ie3.datamodel.io.factory.input.participant
 
 import edu.ie3.datamodel.models.input.NodeInput
@@ -12,53 +17,53 @@ import spock.lang.Specification
 import java.time.ZonedDateTime
 
 class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
-    def "A ChpInputFactory should contain exactly the expected class for parsing"() {
-        given:
-        def inputFactory = new ChpInputFactory()
-        def expectedClasses = [ChpInput]
+	def "A ChpInputFactory should contain exactly the expected class for parsing"() {
+		given:
+		def inputFactory = new ChpInputFactory()
+		def expectedClasses = [ChpInput]
 
-        expect:
-        inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
-    }
+		expect:
+		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+	}
 
-    def "A ChpInputFactory should parse a valid ChpInput correctly"() {
-        given: "a system participant input type factory and model data"
-        def inputFactory = new ChpInputFactory()
-        Map<String, String> parameter = [
-                "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-                "operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-                "operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
-                "id"              : "TestID",
-                "qcharacteristics": "cosphi_fixed:1",
-                "marketreaction"  : "true"
-        ]
-        def inputClass = ChpInput
-        def nodeInput = Mock(NodeInput)
-        def operatorInput = Mock(OperatorInput)
-        def typeInput = Mock(ChpTypeInput)
-        def thermalBusInput = Mock(ThermalBusInput)
-        def thermalStorageInput = Mock(ThermalStorageInput)
+	def "A ChpInputFactory should parse a valid ChpInput correctly"() {
+		given: "a system participant input type factory and model data"
+		def inputFactory = new ChpInputFactory()
+		Map<String, String> parameter = [
+			"uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+			"operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
+			"id"              : "TestID",
+			"qcharacteristics": "cosphi_fixed:1",
+			"marketreaction"  : "true"
+		]
+		def inputClass = ChpInput
+		def nodeInput = Mock(NodeInput)
+		def operatorInput = Mock(OperatorInput)
+		def typeInput = Mock(ChpTypeInput)
+		def thermalBusInput = Mock(ThermalBusInput)
+		def thermalStorageInput = Mock(ThermalStorageInput)
 
-        when:
-        Optional<ChpInput> input = inputFactory.getEntity(
-                new ChpInputEntityData(parameter, operatorInput, nodeInput, typeInput, thermalBusInput, thermalStorageInput))
+		when:
+		Optional<ChpInput> input = inputFactory.getEntity(
+				new ChpInputEntityData(parameter, operatorInput, nodeInput, typeInput, thermalBusInput, thermalStorageInput))
 
-        then:
-        input.present
-        input.get().getClass() == inputClass
-        ((ChpInput) input.get()).with {
-            assert uuid == UUID.fromString(parameter["uuid"])
-            assert operationTime.startDate.present
-            assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-            assert operationTime.endDate.present
-            assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-            assert operator == operatorInput
-            assert id == parameter["id"]
-            assert node == nodeInput
-            assert qCharacteristics == parameter["qcharacteristics"]
-            assert type == typeInput
-            assert marketReaction
-        }
-    }
+		then:
+		input.present
+		input.get().getClass() == inputClass
+		((ChpInput) input.get()).with {
+			assert uuid == UUID.fromString(parameter["uuid"])
+			assert operationTime.startDate.present
+			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+			assert operationTime.endDate.present
+			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+			assert operator == operatorInput
+			assert id == parameter["id"]
+			assert node == nodeInput
+			assert qCharacteristics == parameter["qcharacteristics"]
+			assert type == typeInput
+			assert marketReaction
+		}
+	}
 }
 
