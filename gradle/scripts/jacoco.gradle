@@ -30,18 +30,21 @@ jacocoTestReport {
 	// what to exclude from coverage report (files that should not be analyzed!)
 	// UI, "noise", generated classes, platform classes, etc.
 	def excludes = [
-			'scala/**/*.*', // exclude scala source files
-			'groovy/**/*.*', // exclude groovy source files
-			'**/**Test**.**', // exclude unit tests files
-			'**/**IT**.**' // exclude integration tests files
+		'scala/**/*.*',
+		// exclude scala source files
+		'groovy/**/*.*',
+		// exclude groovy source files
+		'**/**Test**.**',
+		// exclude unit tests files
+		'**/**IT**.**' // exclude integration tests files
 	]
 
 	getClassDirectories().setFrom(fileTree(
 			dir: "$buildDir/classes/",
 			excludes: excludes
-	))
+			))
 
-//	sourceSets sourceSets.main
+	//	sourceSets sourceSets.main
 	executionData allTests // include integration tests in jacoco reports
 }
 
