@@ -143,14 +143,14 @@ class SystemParticipantTestData {
             participantNode, qCharacteristics, standardLoadProfile, false, eConsAnnual, sRated, cosPhiRated)
 
     // Storage
-    private static final Quantity<Power> pMin = Quantities.getQuantity(10, KILOWATT)
     private static final Quantity<Power> pMax = Quantities.getQuantity(15, KILOWATT)
     private static final Quantity<Dimensionless> eta = Quantities.getQuantity(95, PERCENT)
     private static final Quantity<Dimensionless> dod = Quantities.getQuantity(10, PERCENT)
+    private static final Quantity<DimensionlessRate> cpRate = Quantities.getQuantity(1, PU_PER_HOUR)
     private static final Quantity<Time> lifeTime = Quantities.getQuantity(20, YEAR)
     private static final int lifeCycle = 100
     public static final StorageTypeInput storageTypeInput = new StorageTypeInput(typeUuid, "test_storageTypeInput",
-            capex, opex, eStorage, sRated, cosPhiRated, pMin, pMax, eta, dod, lifeTime, lifeCycle)
+            capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, eta, dod, lifeTime, lifeCycle)
     public static final StorageInput storageInput = new StorageInput(participantUuid, operationTime, operator,
             "test_storageInput", participantNode, qCharacteristics, storageTypeInput, "market")
 

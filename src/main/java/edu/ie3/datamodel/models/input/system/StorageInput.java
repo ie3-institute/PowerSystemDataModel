@@ -19,15 +19,16 @@ public class StorageInput extends SystemParticipantInput {
 
   /** Selection of predefined behaviour of the storage */
   private final StorageStrategy behaviour;
+
   /**
    * Constructor for an operated storage
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
+   * @param operationTime time for which the entity is operated
    * @param operator of the asset
    * @param id of the asset
    * @param node the asset is connected to
-   * @param qCharacteristics Description of a reactive power characteristic
+   * @param qCharacteristics Description of a reactive power characteristic for integrated inverter
    * @param type of storage
    * @param behaviour Selection of predefined behaviour of the storage
    */
