@@ -10,6 +10,9 @@ import java.util.UUID;
 
 /** Supplies every subclass with a generated UUID, making it unique */
 public abstract class UniqueEntity {
+  /** Field name of {@link UniqueEntity} uuid */
+  public static final String UUID_FIELD_NAME = "uuid";
+
   private final UUID uuid;
 
   public UniqueEntity() {
