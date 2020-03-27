@@ -303,7 +303,7 @@ class GridTestData {
             true
     )
 
-    private static final LineTypeInput lineTypeInputCtoD = new LineTypeInput(
+    public static final LineTypeInput lineTypeInputCtoD = new LineTypeInput(
             UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
             "lineType_AtoB",
             Quantities.getQuantity(0.00000000322, PowerSystemUnits.SIEMENS_PER_KILOMETRE),

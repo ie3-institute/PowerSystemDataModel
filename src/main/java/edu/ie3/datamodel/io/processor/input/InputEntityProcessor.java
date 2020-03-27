@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
@@ -70,6 +71,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               NodeGraphicInput.class,
               LineGraphicInput.class,
               /* - AssetTypeInput */
+              LineTypeInput.class,
               Transformer2WTypeInput.class,
               Transformer3WTypeInput.class,
               WecTypeInput.class));

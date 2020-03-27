@@ -8,6 +8,7 @@ import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
@@ -27,8 +28,12 @@ import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.TypeTestData
 import edu.ie3.util.TimeTools
+import edu.ie3.util.quantities.interfaces.SpecificConductance
+import edu.ie3.util.quantities.interfaces.SpecificResistance
 import spock.lang.Specification
 
+import javax.measure.quantity.ElectricCurrent
+import javax.measure.quantity.ElectricPotential
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -491,6 +496,29 @@ class InputEntityProcessorTest extends Specification {
                 "tapNeutr"  : "0",
                 "tapMin"    : "-10",
                 "tapMax"    : "10"
+        ]
+
+        when:
+        Optional<Map<String, String>> actual = processor.handleEntity(type)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided LineTypeInput correctly"() {
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(LineTypeInput.class)
+        LineTypeInput type = GridTestData.lineTypeInputCtoD
+        Map expected = [
+                "uuid"  : "3bed3eb3-9790-4874-89b5-a5434d408088",
+                "id"    : "lineType_AtoB",
+                "b"     : "0.00322",
+                "g"     : "0.0",
+                "r"     : "0.437",
+                "x"     : "0.356",
+                "iMax"  : "300.0",
+                "vRated": "20.0"
         ]
 
         when:
