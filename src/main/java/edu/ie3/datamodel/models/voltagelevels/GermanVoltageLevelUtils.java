@@ -135,5 +135,4 @@ public class GermanVoltageLevelUtils {
                         + vRated
                         + " is not covered by none of the commonly known german voltage levels."));
   }
-
 }
