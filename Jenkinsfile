@@ -131,8 +131,6 @@ if (env.BRANCH_NAME == "master") {
                                          usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
                             deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
 
-
-                            log(i, "Deploying ${projects.get(0)} to maven central ...")
                             gradle("${deployGradleTasks}")
 
                             deployedArtifacts = "${projects.get(0)}, "
