@@ -49,8 +49,8 @@ public class SystemParticipantTypeInputFactory
   private static final String P_OWN = "pown";
 
   // StorageTypeInput
-  private static final String P_MIN = "pmin";
   private static final String P_MAX = "pmax";
+  private static final String CP_RATE = "cprate";
   private static final String ETA = "eta";
   private static final String DOD = "dod";
   private static final String LIFETIME = "lifetime";
@@ -87,7 +87,7 @@ public class SystemParticipantTypeInputFactory
     } else if (data.getEntityClass().equals(StorageTypeInput.class)) {
       constructorParameters =
           expandSet(
-              standardConstructorParams, E_STORAGE, P_MIN, P_MAX, ETA, DOD, LIFETIME, LIFECYCLE);
+              standardConstructorParams, E_STORAGE, P_MAX, CP_RATE, ETA, DOD, LIFETIME, LIFECYCLE);
     }
 
     return Collections.singletonList(constructorParameters);
@@ -203,14 +203,15 @@ public class SystemParticipantTypeInputFactory
       Quantity<Power> sRated,
       double cosPhi) {
     Quantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
-    Quantity<Power> pMin = data.getQuantity(P_MIN, StandardUnits.ACTIVE_POWER_IN);
     Quantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN);
+    Quantity<DimensionlessRate> cprate = data.getQuantity(CP_RATE, StandardUnits.CP_RATE);
     Quantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
     Quantity<Dimensionless> dod = data.getQuantity(DOD, StandardUnits.DOD);
     Quantity<Time> lifeTime = data.getQuantity(LIFETIME, StandardUnits.LIFE_TIME);
     int lifeCycle = data.getInt(LIFECYCLE);
 
     return new StorageTypeInput(
-        uuid, id, capEx, opEx, eStorage, sRated, cosPhi, pMin, pMax, eta, dod, lifeTime, lifeCycle);
+        uuid, id, capEx, opEx, eStorage, sRated, cosPhi, pMax, cprate, eta, dod, lifeTime,
+        lifeCycle);
   }
 }
