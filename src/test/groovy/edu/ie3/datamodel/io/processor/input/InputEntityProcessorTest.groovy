@@ -8,6 +8,7 @@ import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.BmInput
@@ -423,6 +424,36 @@ class InputEntityProcessorTest extends Specification {
                 "sRated"        : "2500.0",
                 "rotorArea"     : "2000.0",
                 "hubHeight"     : "130.0"
+        ]
+
+        when:
+        Optional<Map<String, String>> actual = processor.handleEntity(type)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided Transformer2WTypeInput correctly"() {
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(Transformer2WTypeInput.class)
+        Transformer2WTypeInput type = GridTestData.transformerTypeBtoD
+        Map expected = [
+                "uuid"      : "202069a7-bcf8-422c-837c-273575220c8a",
+                "id"        : "HS-MS_1",
+                "rSc"       : "45.375",
+                "xSc"       : "102.759",
+                "gM"        : "0.0",
+                "bM"        : "0.0",
+                "sRated"    : "20000.0",
+                "vRatedA"   : "110.0",
+                "vRatedB"   : "20.0",
+                "dV"        : "1.5",
+                "dPhi"      : "0.0",
+                "tapSide"   : "false",
+                "tapNeutr"  : "0",
+                "tapMax"    : "10",
+                "tapMin"    : "-10"
         ]
 
         when:

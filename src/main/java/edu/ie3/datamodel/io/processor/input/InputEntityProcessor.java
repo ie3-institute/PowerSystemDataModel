@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
@@ -18,8 +19,6 @@ import edu.ie3.datamodel.models.input.system.type.WecTypeInput;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
-import edu.ie3.util.quantities.interfaces.Currency;
-import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -70,6 +69,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               NodeGraphicInput.class,
               LineGraphicInput.class,
               /* - AssetTypeInput */
+              Transformer2WTypeInput.class,
               WecTypeInput.class));
 
   public InputEntityProcessor(Class<? extends InputEntity> registeredClass) {
@@ -98,23 +98,6 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
       case "eConsAnnual":
         normalizedQuantityValue =
             quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
-        break;
-      case "capex":
-        normalizedQuantityValue =
-            quantityValToOptionalString(quantity.asType(Currency.class).to(StandardUnits.CAPEX));
-        break;
-      case "opex":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(EnergyPrice.class).to(StandardUnits.ENERGY_PRICE));
-        break;
-      case "hubHeight":
-        normalizedQuantityValue =
-            quantityValToOptionalString(quantity.asType(Length.class).to(StandardUnits.HUB_HEIGHT));
-        break;
-      case "rotorArea":
-        normalizedQuantityValue =
-            quantityValToOptionalString(quantity.asType(Area.class).to(StandardUnits.ROTOR_AREA));
         break;
       default:
         log.error(

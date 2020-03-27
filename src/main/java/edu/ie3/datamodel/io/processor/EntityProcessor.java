@@ -355,10 +355,6 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "vrated":
       case "sRated":
       case "eConsAnnual":
-      case "hubHeight":
-      case "rotorArea":
-      case "capex":
-      case "opex":
         normalizedQuantityValue = handleProcessorSpecificQuantity(quantity, fieldName);
         break;
       case "soc":
@@ -370,6 +366,25 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "etaConv":
       case "azimuth":
       case "height":
+      case "hubHeight":
+      case "rotorArea":
+      case "capex":
+      case "opex":
+      case "bM":
+      case "gM":
+      case "dPhi":
+      case "dV":
+      case "rSc":
+      case "rScA":
+      case "rScB":
+      case "rScC":
+      case "xSc":
+      case "xScA":
+      case "xScB":
+      case "xScC":
+      case "vRatedA":
+      case "vRatedB":
+      case "vRatedC":
         normalizedQuantityValue = quantityValToOptionalString(quantity);
         break;
       case "iAMag":

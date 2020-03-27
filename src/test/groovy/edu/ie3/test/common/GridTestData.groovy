@@ -39,8 +39,8 @@ class GridTestData {
 
     private static final GeoJsonReader geoJsonReader = new GeoJsonReader()
 
-    private static final Transformer2WTypeInput transformerTypeBtoD = new Transformer2WTypeInput(
-            UUID.randomUUID(),
+    public static final Transformer2WTypeInput transformerTypeBtoD = new Transformer2WTypeInput(
+            UUID.fromString("202069a7-bcf8-422c-837c-273575220c8a"),
             "HS-MS_1",
             Quantities.getQuantity(45.375, OHM),
             Quantities.getQuantity(102.759, OHM),
