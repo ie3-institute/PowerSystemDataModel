@@ -44,7 +44,7 @@ def mavenCentralSignKeyId = "a1357827-1516-4fa2-ab8e-72cdea07a692"
 def javaVersionId = 'jdk-8'
 
 //// set java version method (needs node{} for execution)
-def setJavaVersion(javaVersionId) {
+void setJavaVersion(javaVersionId) {
     env.JAVA_HOME = "${tool javaVersionId}"
     env.PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
 }
