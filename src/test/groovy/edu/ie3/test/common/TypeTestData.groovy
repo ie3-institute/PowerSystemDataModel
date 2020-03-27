@@ -3,6 +3,7 @@ package edu.ie3.test.common
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
+import edu.ie3.datamodel.models.input.system.type.HpTypeInput
 
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
@@ -41,6 +42,16 @@ class TypeTestData extends GridTestData {
             0.98,
             Quantities.getQuantity(49.59, KILOWATT),
             Quantities.getQuantity(5d, KILOWATT)
+    )
+
+    public static HpTypeInput hpType = new HpTypeInput(
+            UUID.fromString("1059ef51-9e17-4c13-928c-7c1c716d4ee6"),
+            "hp type",
+            Quantities.getQuantity(100d, EURO),
+            Quantities.getQuantity(101d, EURO_PER_MEGAWATTHOUR),
+            Quantities.getQuantity(45d, KILOWATT),
+            0.975,
+            Quantities.getQuantity(26.3, KILOWATT)
     )
 
     public static WecTypeInput wecType = new WecTypeInput(

@@ -25,29 +25,19 @@ import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
+import edu.ie3.datamodel.models.input.system.type.HpTypeInput
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.TypeTestData
 import edu.ie3.util.TimeTools
-import edu.ie3.util.quantities.interfaces.Currency
-import edu.ie3.util.quantities.interfaces.EnergyPrice
-import edu.ie3.util.quantities.interfaces.SpecificConductance
-import edu.ie3.util.quantities.interfaces.SpecificEnergy
-import edu.ie3.util.quantities.interfaces.SpecificResistance
 import spock.lang.Specification
 
-import javax.measure.quantity.Dimensionless
-import javax.measure.quantity.ElectricCurrent
-import javax.measure.quantity.ElectricPotential
-import javax.measure.quantity.Energy
-import javax.measure.quantity.Power
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 /**
- * Testing the function of processors
- *
+ * "processors": "", *
  * @version 0.1
  * @since 24.03.20
  */
@@ -575,6 +565,28 @@ class InputEntityProcessorTest extends Specification {
                 "cosphiRated"   : "0.98",
                 "pThermal"      : "49.59",
                 "pOwn"          : "5.0"
+        ]
+
+        when:
+        Optional<Map<String, String>> actual = processor.handleEntity(type)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided HpTypeInput correctly"() {
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(HpTypeInput.class)
+        HpTypeInput type = TypeTestData.hpType
+        Map expected = [
+                "uuid"          : "1059ef51-9e17-4c13-928c-7c1c716d4ee6",
+                "id"            : "hp type",
+                "capex"         : "100.0",
+                "opex"          : "101.0",
+                "sRated"        : "45.0",
+                "cosphiRated"   : "0.975",
+                "pThermal"      : "26.3"
         ]
 
         when:

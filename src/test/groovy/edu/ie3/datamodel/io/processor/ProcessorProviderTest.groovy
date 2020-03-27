@@ -29,6 +29,7 @@ import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInpu
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
+import edu.ie3.datamodel.models.input.system.type.HpTypeInput
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
@@ -97,6 +98,7 @@ class ProcessorProviderTest extends Specification {
                 /* - AssetTypeInput */
                 EvTypeInput,
                 ChpTypeInput,
+                HpTypeInput,
                 LineTypeInput,
                 Transformer2WTypeInput,
                 Transformer3WTypeInput,
