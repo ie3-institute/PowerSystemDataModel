@@ -27,6 +27,7 @@ import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput
+import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
@@ -38,7 +39,9 @@ import edu.ie3.util.quantities.interfaces.EnergyPrice
 import spock.lang.Specification
 
 import javax.measure.quantity.Dimensionless
+import javax.measure.quantity.Energy
 import javax.measure.quantity.Power
+import javax.measure.quantity.Time
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -608,14 +611,42 @@ class InputEntityProcessorTest extends Specification {
         InputEntityProcessor processor = new InputEntityProcessor(BmTypeInput.class)
         BmTypeInput type = TypeTestData.bmType
         Map expected = [
-                "uuid": "c3bd30f5-1a62-4a37-86e3-074040d965a4",
-                "id": "bm type",
-                "capex": "100.0",
-                "opex": "101.0",
-                "loadGradient": "5.0",
-                "sRated": "800.0",
-                "cosphiRated": "0.965",
-                "etaConv": "89.0"
+                "uuid"          : "c3bd30f5-1a62-4a37-86e3-074040d965a4",
+                "id"            : "bm type",
+                "capex"         : "100.0",
+                "opex"          : "101.0",
+                "loadGradient"  : "5.0",
+                "sRated"        : "800.0",
+                "cosphiRated"   : "0.965",
+                "etaConv"       : "89.0"
+        ]
+
+        when:
+        Optional<Map<String, String>> actual = processor.handleEntity(type)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided StorageTypeInput correctly"() {
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(StorageTypeInput.class)
+        StorageTypeInput type = TypeTestData.storageType
+        Map expected = [
+                "uuid"       : "fbee4995-24dd-45e4-9c85-7d986fe99ff3",
+                "id"         : "storage type",
+                "capex"      : "100.0",
+                "opex"       : "101.0",
+                "eStorage"   : "200.0",
+                "sRated"     : "13.0",
+                "cosphiRated": "0.997",
+                "pMax"       : "12.961",
+                "cpRate"     : "0.03",
+                "eta"        : "92.0",
+                "dod"        : "20.0",
+                "lifeTime"   : "100.0",
+                "lifeCycle"  : "100000"
         ]
 
         when:

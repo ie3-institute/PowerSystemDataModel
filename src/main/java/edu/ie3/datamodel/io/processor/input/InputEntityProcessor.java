@@ -78,6 +78,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               LineTypeInput.class,
               Transformer2WTypeInput.class,
               Transformer3WTypeInput.class,
+              StorageTypeInput.class,
               WecTypeInput.class));
 
   public InputEntityProcessor(Class<? extends InputEntity> registeredClass) {
@@ -101,8 +102,9 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
                 quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
         break;
       case "p":
-      case "pThermal":
+      case "pMax":
       case "pOwn":
+      case "pThermal":
         normalizedQuantityValue =
             quantityValToOptionalString(
                 quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));

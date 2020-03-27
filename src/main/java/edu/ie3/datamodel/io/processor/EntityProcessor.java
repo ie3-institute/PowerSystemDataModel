@@ -61,9 +61,12 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
                   "b",
                   "bM",
                   "capex",
+                  "cpRate",
+                  "dod",
                   "dPhi",
                   "dV",
                   "eCons",
+                  "eta",
                   "etaConv",
                   "etaEl",
                   "etaThermal",
@@ -81,6 +84,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
                   "iCMag",
                   "iMax",
                   "length",
+                  "lifeTime",
                   "loadGradient",
                   "opex",
                   "qDot",
@@ -111,7 +115,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   private static final Set<String> specificQuantityFieldNames =
       Collections.unmodifiableSet(
           new HashSet<>(
-              Arrays.asList("eConsAnnual", "energy", "eStorage", "q", "p", "pThermal", "pOwn")));
+              Arrays.asList(
+                  "eConsAnnual", "energy", "eStorage", "q", "p", "pMax", "pOwn", "pThermal")));
 
   private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
 

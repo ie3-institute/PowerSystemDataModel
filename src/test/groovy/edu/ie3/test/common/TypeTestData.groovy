@@ -5,16 +5,19 @@ import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput
+import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
 
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR_PER_KILOMETRE
+import static edu.ie3.util.quantities.PowerSystemUnits.MILLISECOND
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 import static edu.ie3.util.quantities.PowerSystemUnits.MEGAVOLTAMPERE
 import static edu.ie3.util.quantities.PowerSystemUnits.PU_PER_HOUR
+import static tec.uom.se.unit.Units.PERCENT
 import static tec.uom.se.unit.Units.SQUARE_METRE
 import static tec.uom.se.unit.Units.METRE
 
@@ -65,6 +68,22 @@ class TypeTestData extends GridTestData {
             Quantities.getQuantity(45d, KILOWATT),
             0.975,
             Quantities.getQuantity(26.3, KILOWATT)
+    )
+
+    public static StorageTypeInput storageType = new StorageTypeInput(
+            UUID.fromString("fbee4995-24dd-45e4-9c85-7d986fe99ff3"),
+            "storage type",
+            Quantities.getQuantity(100d, EURO),
+            Quantities.getQuantity(101d, EURO_PER_MEGAWATTHOUR),
+            Quantities.getQuantity(200d, KILOWATTHOUR),
+            Quantities.getQuantity(13d, KILOVOLTAMPERE),
+            0.997,
+            Quantities.getQuantity(12.961, KILOWATT),
+            Quantities.getQuantity(0.03, PU_PER_HOUR),
+            Quantities.getQuantity(0.92, PU),
+            Quantities.getQuantity(20d, PERCENT),
+            Quantities.getQuantity(100d, MILLISECOND),
+            100000
     )
 
     public static WecTypeInput wecType = new WecTypeInput(
