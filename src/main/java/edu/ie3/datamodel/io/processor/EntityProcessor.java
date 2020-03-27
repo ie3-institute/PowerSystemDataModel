@@ -22,7 +22,6 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
-import javax.measure.quantity.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,65 +51,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   private static final String VOLT_LVL = NodeInputFactory.VOLT_LVL;
   private static final String V_RATED = NodeInputFactory.V_RATED;
 
-  /* Quantities associated to those fields can be treated equally for all processors / models (e.g. input and result) */
-  private static final Set<String> commonQuantityFieldNames =
-      Collections.unmodifiableSet(
-          new HashSet<>(
-              Arrays.asList(
-                  "activePowerGradient",
-                  "azimuth",
-                  "b",
-                  "bM",
-                  "capex",
-                  "dod",
-                  "dPhi",
-                  "dV",
-                  "eCons",
-                  "eta",
-                  "etaConv",
-                  "etaEl",
-                  "etaThermal",
-                  "feedInTariff",
-                  "fillLevel",
-                  "g",
-                  "gM",
-                  "height",
-                  "hubHeight",
-                  "iAAng",
-                  "iAMag",
-                  "iBAng",
-                  "iBMag",
-                  "iCAng",
-                  "iCMag",
-                  "iMax",
-                  "length",
-                  "lifeTime",
-                  "opex",
-                  "qDot",
-                  "rotorArea",
-                  "r",
-                  "rSc",
-                  "rScA",
-                  "rScB",
-                  "rScC",
-                  "soc",
-                  "sRated",
-                  "sRatedA",
-                  "sRatedB",
-                  "sRatedC",
-                  "vAng",
-                  "vMag",
-                  "vRated",
-                  "vRatedA",
-                  "vRatedB",
-                  "vRatedC",
-                  "vTarget",
-                  "x",
-                  "xSc",
-                  "xScA",
-                  "xScB",
-                  "xScC")));
-  /* Quantities associated to those fields must be treated differently (e.g. input and result) */
+  /* Quantities associated to those fields must be treated differently (e.g. input and result), all other quantity /
+   * field combinations can be treated on a common basis and therefore need no further distinction */
   private static final Set<String> specificQuantityFieldNames =
       Collections.unmodifiableSet(
           new HashSet<>(
@@ -408,16 +350,10 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    *     or empty if an error occurred during processing
    */
   protected Optional<String> handleQuantity(Quantity<?> quantity, String fieldName) {
-    if (commonQuantityFieldNames.contains(fieldName)) {
-      return quantityValToOptionalString(quantity);
-    } else if (specificQuantityFieldNames.contains(fieldName)) {
+    if (specificQuantityFieldNames.contains(fieldName)) {
       return handleProcessorSpecificQuantity(quantity, fieldName);
     } else {
-      log.error(
-          "Cannot process quantity with value '{}' for field with name {} in model processing!",
-          quantity,
-          fieldName);
-      return Optional.empty();
+      return quantityValToOptionalString(quantity);
     }
   }
 
