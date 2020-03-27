@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
+import edu.ie3.datamodel.models.input.system.type.EvTypeInput;
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
@@ -71,6 +72,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               NodeGraphicInput.class,
               LineGraphicInput.class,
               /* - AssetTypeInput */
+              EvTypeInput.class,
               LineTypeInput.class,
               Transformer2WTypeInput.class,
               Transformer3WTypeInput.class,
@@ -87,6 +89,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
     switch (fieldName) {
       case "energy":
       case "eConsAnnual":
+      case "eStorage":
         normalizedQuantityValue =
             quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
         break;

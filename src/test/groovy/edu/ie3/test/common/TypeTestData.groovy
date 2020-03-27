@@ -1,8 +1,12 @@
 package edu.ie3.test.common
 
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
+import edu.ie3.datamodel.models.input.system.type.EvTypeInput
 
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR_PER_KILOMETRE
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 import static edu.ie3.util.quantities.PowerSystemUnits.MEGAVOLTAMPERE
@@ -13,6 +17,17 @@ import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import tec.uom.se.quantity.Quantities
 
 class TypeTestData extends GridTestData {
+    public static EvTypeInput evType = new EvTypeInput(
+            UUID.fromString("66b0db5d-b2fb-41d0-a9bc-990d6b6a36db"),
+            "ev type",
+            Quantities.getQuantity(100d, EURO),
+            Quantities.getQuantity(101d, EURO_PER_MEGAWATTHOUR),
+            Quantities.getQuantity(100d, KILOWATTHOUR),
+            Quantities.getQuantity(23d, KILOWATTHOUR_PER_KILOMETRE),
+            Quantities.getQuantity(22d, KILOWATT),
+            0.9
+    )
+
     public static WecTypeInput wecType = new WecTypeInput(
             UUID.fromString("a24fc5b9-a26f-44de-96b8-c9f50b665cb3"),
             "Test wec type",

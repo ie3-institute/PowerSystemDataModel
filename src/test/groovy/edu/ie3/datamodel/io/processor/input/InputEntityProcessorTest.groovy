@@ -23,17 +23,23 @@ import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
+import edu.ie3.datamodel.models.input.system.type.EvTypeInput
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.TypeTestData
 import edu.ie3.util.TimeTools
+import edu.ie3.util.quantities.interfaces.Currency
+import edu.ie3.util.quantities.interfaces.EnergyPrice
 import edu.ie3.util.quantities.interfaces.SpecificConductance
+import edu.ie3.util.quantities.interfaces.SpecificEnergy
 import edu.ie3.util.quantities.interfaces.SpecificResistance
 import spock.lang.Specification
 
 import javax.measure.quantity.ElectricCurrent
 import javax.measure.quantity.ElectricPotential
+import javax.measure.quantity.Energy
+import javax.measure.quantity.Power
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -519,6 +525,29 @@ class InputEntityProcessorTest extends Specification {
                 "x"     : "0.356",
                 "iMax"  : "300.0",
                 "vRated": "20.0"
+        ]
+
+        when:
+        Optional<Map<String, String>> actual = processor.handleEntity(type)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided EvTypeInput correctly"() {
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(EvTypeInput.class)
+        EvTypeInput type = TypeTestData.evType
+        Map expected = [
+                "uuid"          : "66b0db5d-b2fb-41d0-a9bc-990d6b6a36db",
+                "id"            : "ev type",
+                "capex"         : "100.0",
+                "opex"          : "101.0",
+                "eStorage"      : "100.0",
+                "eCons"         : "23.0",
+                "sRated"        : "22.0",
+                "cosphiRated"   : "0.9"
         ]
 
         when:
