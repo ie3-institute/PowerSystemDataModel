@@ -101,7 +101,7 @@ if (env.BRANCH_NAME == "master") {
                     // test the project
                     stage("gradle allTests ${projects.get(0)}") {
                         // build and test the project
-                        gradle("-p ${projects.get(0)} ${gradleTasks} ${mainProjectGradleTasks}")
+                        gradle("${gradleTasks} ${mainProjectGradleTasks}")
                     }
 
                     // execute sonarqube code analysis
@@ -133,7 +133,7 @@ if (env.BRANCH_NAME == "master") {
 
 
                             log(i, "Deploying ${projects.get(0)} to maven central ...")
-                            gradle("-p ${projects.get(0)} --parallel ${deployGradleTasks}")
+                            gradle("${deployGradleTasks}")
 
                             deployedArtifacts = "${projects.get(0)}, "
 
