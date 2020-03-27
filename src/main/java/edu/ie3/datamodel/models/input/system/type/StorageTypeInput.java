@@ -23,8 +23,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   private final Quantity<Energy> eStorage;
   /** Maximum permissible active power (typically in kW) */
   private final Quantity<Power> pMax;
-  /** Charging/Discharging rate at constant power (typically per unit) */
-  private final Quantity<DimensionlessRate> cpRate;
+  /** Maximum permissible gradient of active power change (typically % / h) */
+  private final Quantity<DimensionlessRate> activePowerGradient;
   /** Efficiency of the charging and discharging process (typically in %) */
   private final Quantity<Dimensionless> eta;
   /** Minimum permissible depth of discharge (typically in %) */
@@ -42,8 +42,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
    * @param eStorage stored energy capacity
    * @param sRated Rated apparent power of integrated inverter
    * @param cosphiRated power factor for integrated inverter
-   * @param pMax maximum permissible charge/discharge power
-   * @param cpRate charging/discharging rate (constant power)
+   * @param pMax maximum permissible active power of the integrated inverter
+   * @param activePowerGradient maximum permissible gradient of active power change
    * @param eta efficiency of the charging and discharging process
    * @param dod maximum permissible depth of discharge
    * @param lifeTime maximum life time of the storage
@@ -58,7 +58,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       Quantity<Power> sRated,
       double cosphiRated,
       Quantity<Power> pMax,
-      Quantity<DimensionlessRate> cpRate,
+      Quantity<DimensionlessRate> activePowerGradient,
       Quantity<Dimensionless> eta,
       Quantity<Dimensionless> dod,
       Quantity<Time> lifeTime,
@@ -66,7 +66,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
-    this.cpRate = cpRate.to(StandardUnits.CP_RATE);
+    this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
     this.eta = eta.to(StandardUnits.EFFICIENCY);
     this.dod = dod.to(StandardUnits.DOD);
     this.lifeTime = lifeTime.to(StandardUnits.LIFE_TIME);
@@ -97,8 +97,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     return pMax;
   }
 
-  public Quantity<DimensionlessRate> getcpRate() {
-    return cpRate;
+  public Quantity<DimensionlessRate> getActivePowerGradient() {
+    return activePowerGradient;
   }
 
   @Override
@@ -110,7 +110,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     return lifeCycle == that.lifeCycle
         && eStorage.equals(that.eStorage)
         && pMax.equals(that.pMax)
-        && cpRate.equals(that.cpRate)
+        && activePowerGradient.equals(that.activePowerGradient)
         && eta.equals(that.eta)
         && dod.equals(that.dod)
         && lifeTime.equals(that.lifeTime);
@@ -118,7 +118,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), eStorage, pMax, cpRate, eta, dod, lifeTime, lifeCycle);
+    return Objects.hash(
+        super.hashCode(), eStorage, pMax, activePowerGradient, eta, dod, lifeTime, lifeCycle);
   }
 
   @Override
@@ -129,7 +130,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
         + ", pMax="
         + pMax
         + ", cpRate="
-        + cpRate
+        + activePowerGradient
         + ", eta="
         + eta
         + ", dod="

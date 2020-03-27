@@ -57,11 +57,11 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       Collections.unmodifiableSet(
           new HashSet<>(
               Arrays.asList(
+                  "activePowerGradient",
                   "azimuth",
                   "b",
                   "bM",
                   "capex",
-                  "cpRate",
                   "dod",
                   "dPhi",
                   "dV",
@@ -85,7 +85,6 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
                   "iMax",
                   "length",
                   "lifeTime",
-                  "loadGradient",
                   "opex",
                   "qDot",
                   "rotorArea",

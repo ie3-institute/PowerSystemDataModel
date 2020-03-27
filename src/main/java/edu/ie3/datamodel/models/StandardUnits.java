@@ -65,9 +65,9 @@ public class StandardUnits {
   public static final Unit<Angle> DPHI_TAP = DEGREE_GEOM;
   /**
    * Gradient, with which a system participant can change it's set point (with regard to rated
-   * power)
+   * active power = rated apparent power * rated power factor)
    */
-  public static final Unit<DimensionlessRate> LOAD_GRADIENT = PERCENT_PER_HOUR;
+  public static final Unit<DimensionlessRate> ACTIVE_POWER_GRADIENT = PERCENT_PER_HOUR;
   /** Efficiency of a process */
   public static final Unit<Dimensionless> EFFICIENCY = PERCENT;
   /** Volume */
@@ -89,10 +89,8 @@ public class StandardUnits {
   public static final Unit<ThermalConductance> THERMAL_TRANSMISSION = KILOWATT_PER_KELVIN;
   /** Depth of discharge */
   public static final Unit<Dimensionless> DOD = PERCENT;
-  /** Charge/Discharge Rate (constant power) */
-  public static final Unit<DimensionlessRate> CP_RATE = PU_PER_HOUR;
   /** Life time of a system */
-  public static final Unit<Time> LIFE_TIME = MILLISECOND;
+  public static final Unit<Time> LIFE_TIME = HOUR;
   /** Area covered by the rotor of a wind energy converter */
   public static final Unit<Area> ROTOR_AREA = SQUARE_METRE;
   /** Height of the hub of an wind energy converter */

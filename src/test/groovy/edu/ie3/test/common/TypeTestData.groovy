@@ -17,12 +17,15 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 import static edu.ie3.util.quantities.PowerSystemUnits.MEGAVOLTAMPERE
 import static edu.ie3.util.quantities.PowerSystemUnits.PU_PER_HOUR
+import static tec.uom.se.unit.Units.HOUR
 import static tec.uom.se.unit.Units.PERCENT
 import static tec.uom.se.unit.Units.SQUARE_METRE
 import static tec.uom.se.unit.Units.METRE
 
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import tec.uom.se.quantity.Quantities
+
+import static tec.uom.se.unit.Units.YEAR
 
 class TypeTestData extends GridTestData {
     public static BmTypeInput bmType = new BmTypeInput(
@@ -82,7 +85,7 @@ class TypeTestData extends GridTestData {
             Quantities.getQuantity(0.03, PU_PER_HOUR),
             Quantities.getQuantity(0.92, PU),
             Quantities.getQuantity(20d, PERCENT),
-            Quantities.getQuantity(100d, MILLISECOND),
+            Quantities.getQuantity(43800.0, HOUR),
             100000
     )
 

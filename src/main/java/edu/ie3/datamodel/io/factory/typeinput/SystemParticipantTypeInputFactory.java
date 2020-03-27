@@ -37,7 +37,7 @@ public class SystemParticipantTypeInputFactory
   private static final String E_CONS = "econs";
 
   // BmTypeInput
-  private static final String LOAD_GRADIENT = "loadgradient";
+  private static final String ACTIVE_POWER_GRADIENT = "activepowergradient";
 
   // WecTypeInput
   private static final String ROTOR_AREA = "rotorarea";
@@ -50,7 +50,6 @@ public class SystemParticipantTypeInputFactory
 
   // StorageTypeInput
   private static final String P_MAX = "pmax";
-  private static final String CP_RATE = "cprate";
   private static final String ETA = "eta";
   private static final String DOD = "dod";
   private static final String LIFETIME = "lifetime";
@@ -77,7 +76,7 @@ public class SystemParticipantTypeInputFactory
     } else if (data.getEntityClass().equals(HpTypeInput.class)) {
       constructorParameters = expandSet(standardConstructorParams, P_THERMAL);
     } else if (data.getEntityClass().equals(BmTypeInput.class)) {
-      constructorParameters = expandSet(standardConstructorParams, LOAD_GRADIENT, ETA_CONV);
+      constructorParameters = expandSet(standardConstructorParams, ACTIVE_POWER_GRADIENT, ETA_CONV);
     } else if (data.getEntityClass().equals(WecTypeInput.class)) {
       constructorParameters =
           expandSet(standardConstructorParams, ETA_CONV, ROTOR_AREA, HUB_HEIGHT);
@@ -87,7 +86,14 @@ public class SystemParticipantTypeInputFactory
     } else if (data.getEntityClass().equals(StorageTypeInput.class)) {
       constructorParameters =
           expandSet(
-              standardConstructorParams, E_STORAGE, P_MAX, CP_RATE, ETA, DOD, LIFETIME, LIFECYCLE);
+              standardConstructorParams,
+              E_STORAGE,
+              P_MAX,
+              ACTIVE_POWER_GRADIENT,
+              ETA,
+              DOD,
+              LIFETIME,
+              LIFECYCLE);
     }
 
     return Collections.singletonList(constructorParameters);
@@ -156,7 +162,7 @@ public class SystemParticipantTypeInputFactory
       Quantity<Power> sRated,
       double cosPhi) {
     Quantity<DimensionlessRate> loadGradient =
-        data.getQuantity(LOAD_GRADIENT, StandardUnits.LOAD_GRADIENT);
+        data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
     Quantity<Dimensionless> etaConv = data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
 
     return new BmTypeInput(uuid, id, capEx, opEx, loadGradient, sRated, cosPhi, etaConv);
@@ -204,7 +210,8 @@ public class SystemParticipantTypeInputFactory
       double cosPhi) {
     Quantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
     Quantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN);
-    Quantity<DimensionlessRate> cprate = data.getQuantity(CP_RATE, StandardUnits.CP_RATE);
+    Quantity<DimensionlessRate> cprate =
+        data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
     Quantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
     Quantity<Dimensionless> dod = data.getQuantity(DOD, StandardUnits.DOD);
     Quantity<Time> lifeTime = data.getQuantity(LIFETIME, StandardUnits.LIFE_TIME);

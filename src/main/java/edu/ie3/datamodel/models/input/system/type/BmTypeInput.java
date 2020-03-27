@@ -19,7 +19,7 @@ import javax.measure.quantity.Power;
 public class BmTypeInput extends SystemParticipantTypeInput {
 
   /** Permissible load gradient (typically in %/h) */
-  private final Quantity<DimensionlessRate> loadGradient;
+  private final Quantity<DimensionlessRate> activePowerGradient;
   /** Efficiency of converter for this type of BM (typically in %) */
   private final Quantity<Dimensionless> etaConv;
 
@@ -29,7 +29,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
    * @param capex Capital expense for this type of BM (typically in €)
    * @param opex Operating expense for this type of BM (typically in €)
    * @param cosphiRated Power factor for this type of BM
-   * @param loadGradient Permissible load gradient
+   * @param activePowerGradient Maximum permissible gradient of active power change
    * @param sRated Rated apparent power for this type of BM (typically in kVA)
    * @param etaConv Efficiency of converter for this type of BM (typically in %)
    */
@@ -38,17 +38,17 @@ public class BmTypeInput extends SystemParticipantTypeInput {
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      Quantity<DimensionlessRate> loadGradient,
+      Quantity<DimensionlessRate> activePowerGradient,
       Quantity<Power> sRated,
       double cosphiRated,
       Quantity<Dimensionless> etaConv) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
-    this.loadGradient = loadGradient.to(StandardUnits.LOAD_GRADIENT);
+    this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
   }
 
-  public Quantity<DimensionlessRate> getLoadGradient() {
-    return loadGradient;
+  public Quantity<DimensionlessRate> getActivePowerGradient() {
+    return activePowerGradient;
   }
 
   public Quantity<Dimensionless> getEtaConv() {
@@ -61,16 +61,16 @@ public class BmTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     BmTypeInput that = (BmTypeInput) o;
-    return loadGradient.equals(that.loadGradient) && etaConv.equals(that.etaConv);
+    return activePowerGradient.equals(that.activePowerGradient) && etaConv.equals(that.etaConv);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), loadGradient, etaConv);
+    return Objects.hash(super.hashCode(), activePowerGradient, etaConv);
   }
 
   @Override
   public String toString() {
-    return "BmTypeInput{" + "loadGradient=" + loadGradient + ", etaConv=" + etaConv + '}';
+    return "BmTypeInput{" + "loadGradient=" + activePowerGradient + ", etaConv=" + etaConv + '}';
   }
 }
