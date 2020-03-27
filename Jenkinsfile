@@ -188,15 +188,14 @@ if (env.BRANCH_NAME == "master") {
     getFeatureBranchProps()
 
     node {
+         // curl the api to get debugging details
+        def jsonObj = getGithubJsonObj(env.CHANGE_ID, orgNames.get(0), projects.get(0))
 
         // This displays colors using the 'xterm' ansi color map.
         ansiColor('xterm') {
             try {
                 // set java version
                 setJavaVersion(javaVersionId)
-
-                // curl the api to get debugging details
-                def jsonObj = getGithubJsonObj(env.CHANGE_ID, orgNames.get(0), projects.get(0))
 
                 /// set the build name
                 featureBranchName = jsonObj.head.ref
