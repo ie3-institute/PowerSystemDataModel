@@ -57,8 +57,8 @@ class InputEntityProcessorTest extends Specification {
                 "slack"        : "true",
                 "subnet"       : "1",
                 "vTarget"      : "1.0",
-                "voltlvl"      : "Höchstspannung (380 kV)",
-                "vrated"       : "380.0"
+                "voltLvl"      : "Höchstspannung (380 kV)",
+                "vRated"       : "380.0"
         ]
 
         when: "the entity is passed to the processor"

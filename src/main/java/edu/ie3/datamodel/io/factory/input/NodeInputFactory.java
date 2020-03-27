@@ -17,10 +17,10 @@ import org.locationtech.jts.geom.Point;
 
 public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetInputEntityData> {
   private static final String V_TARGET = "vtarget";
-  public static final String V_RATED = "vrated";
+  public static final String V_RATED = "vRated";
   private static final String SLACK = "slack";
   private static final String GEO_POSITION = "geoposition";
-  public static final String VOLT_LVL = "voltlvl";
+  public static final String VOLT_LVL = "voltLvl";
   private static final String SUBNET = "subnet";
 
   public NodeInputFactory() {
@@ -29,7 +29,9 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {V_TARGET, V_RATED, SLACK, GEO_POSITION, VOLT_LVL, SUBNET};
+    return new String[] {
+      V_TARGET, V_RATED.toLowerCase(), SLACK, GEO_POSITION, VOLT_LVL.toLowerCase() , SUBNET
+    };
   }
 
   @Override
@@ -43,7 +45,7 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
         data.getQuantity(V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     final boolean slack = data.getBoolean(SLACK);
     final Point geoPosition = data.getPoint(GEO_POSITION).orElse(null);
-    final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL, V_RATED);
+    final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL.toLowerCase(), V_RATED.toLowerCase() );
     final int subnet = data.getInt(SUBNET);
     return new NodeInput(
         uuid, operationTime, operatorInput, id, vTarget, slack, geoPosition, voltLvl, subnet);

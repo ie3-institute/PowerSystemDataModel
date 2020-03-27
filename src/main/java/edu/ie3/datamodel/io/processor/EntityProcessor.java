@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.system.StorageStrategy;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.TimeTools;
-import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.beans.Introspector;
 import java.lang.reflect.Method;
 import java.time.ZoneId;
@@ -52,6 +51,53 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   private static final String VOLT_LVL_FIELD_NAME = "voltLvl";
   private static final String VOLT_LVL = NodeInputFactory.VOLT_LVL;
   private static final String V_RATED = NodeInputFactory.V_RATED;
+
+  /* Quantities associated to those fields can be treated equally for all processors / models (e.g. input and result) */
+  private static final Set<String> commonQuantityFieldNames =
+      Collections.unmodifiableSet(
+          new HashSet<>(
+              Arrays.asList(
+                  "azimuth",
+                  "bM",
+                  "capex",
+                  "dPhi",
+                  "dV",
+                  "etaConv",
+                  "feedInTariff",
+                  "fillLevel",
+                  "gM",
+                  "height",
+                  "hubHeight",
+                  "iAAng",
+                  "iAMag",
+                  "iBAng",
+                  "iBMag",
+                  "iCAng",
+                  "iCMag",
+                  "length",
+                  "opex",
+                  "qDot",
+                  "rotorArea",
+                  "rSc",
+                  "rScA",
+                  "rScB",
+                  "rScC",
+                  "soc",
+                  "sRated",
+                  "vAng",
+                  "vMag",
+                  "vRated",
+                  "vRatedA",
+                  "vRatedB",
+                  "vRatedC",
+                  "vTarget",
+                  "xSc",
+                  "xScA",
+                  "xScB",
+                  "xScC")));
+  /* Quantities associated to those fields must be treated differently (e.g. input and result) */
+  private static final Set<String> specificQuantityFieldNames =
+      Collections.unmodifiableSet(new HashSet<>(Arrays.asList("eConsAnnual", "energy", "q", "p")));
 
   private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
 
@@ -344,87 +390,17 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    *     or empty if an error occurred during processing
    */
   protected Optional<String> handleQuantity(Quantity<?> quantity, String fieldName) {
-
-    Optional<String> normalizedQuantityValue = Optional.empty();
-
-    switch (fieldName) {
-      case "p":
-      case "q":
-      case "energy":
-      case "vTarget":
-      case "vrated":
-      case "sRated":
-      case "eConsAnnual":
-        normalizedQuantityValue = handleProcessorSpecificQuantity(quantity, fieldName);
-        break;
-      case "soc":
-      case "vAng":
-      case "vMag":
-      case "iAAng":
-      case "iBAng":
-      case "iCAng":
-      case "etaConv":
-      case "azimuth":
-      case "height":
-      case "hubHeight":
-      case "rotorArea":
-      case "capex":
-      case "opex":
-      case "bM":
-      case "gM":
-      case "dPhi":
-      case "dV":
-      case "rSc":
-      case "rScA":
-      case "rScB":
-      case "rScC":
-      case "xSc":
-      case "xScA":
-      case "xScB":
-      case "xScC":
-      case "vRatedA":
-      case "vRatedB":
-      case "vRatedC":
-        normalizedQuantityValue = quantityValToOptionalString(quantity);
-        break;
-      case "iAMag":
-      case "iBMag":
-      case "iCMag":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity
-                    .asType(ElectricCurrent.class)
-                    .to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE));
-        break;
-      case "qDot":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.Q_DOT_RESULT));
-        break;
-      case "fillLevel":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Dimensionless.class).to(StandardUnits.FILL_LEVEL));
-        break;
-      case "length":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Length.class).to(StandardUnits.LINE_LENGTH));
-        break;
-
-      case "feedInTariff":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(EnergyPrice.class).to(StandardUnits.ENERGY_PRICE));
-        break;
-      default:
-        log.error(
-            "Cannot process quantity with value '{}' for field with name {} in model processing!",
-            quantity,
-            fieldName);
-        break;
+    if (commonQuantityFieldNames.contains(fieldName)) {
+      return quantityValToOptionalString(quantity);
+    } else if (specificQuantityFieldNames.contains(fieldName)) {
+      return handleProcessorSpecificQuantity(quantity, fieldName);
+    } else {
+      log.error(
+          "Cannot process quantity with value '{}' for field with name {} in model processing!",
+          quantity,
+          fieldName);
+      return Optional.empty();
     }
-    return normalizedQuantityValue;
   }
 
   /**

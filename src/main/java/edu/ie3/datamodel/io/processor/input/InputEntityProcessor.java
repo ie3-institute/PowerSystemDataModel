@@ -81,23 +81,20 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
       Quantity<?> quantity, String fieldName) {
     Optional<String> normalizedQuantityValue = Optional.empty();
     switch (fieldName) {
-      case "vTarget":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Dimensionless.class).to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE));
-        break;
-      case "vrated":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(ElectricPotential.class).to(StandardUnits.RATED_VOLTAGE_MAGNITUDE));
-        break;
-      case "sRated":
-        normalizedQuantityValue =
-            quantityValToOptionalString(quantity.asType(Power.class).to(StandardUnits.S_RATED));
-        break;
+      case "energy":
       case "eConsAnnual":
         normalizedQuantityValue =
             quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
+        break;
+      case "q":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
+        break;
+      case "p":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
         break;
       default:
         log.error(
