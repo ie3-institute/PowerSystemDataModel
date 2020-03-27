@@ -27,6 +27,7 @@ import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
+import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput
@@ -63,7 +64,6 @@ class ProcessorProviderTest extends Specification {
         given:
         ProcessorProvider provider = new ProcessorProvider()
 
-        // currently known processors
         List knownProcessors = [
                 /* InputEntity */
                 OperatorInput,
@@ -96,8 +96,9 @@ class ProcessorProviderTest extends Specification {
                 NodeGraphicInput,
                 LineGraphicInput,
                 /* - AssetTypeInput */
-                EvTypeInput,
+                BmTypeInput,
                 ChpTypeInput,
+                EvTypeInput,
                 HpTypeInput,
                 LineTypeInput,
                 Transformer2WTypeInput,
@@ -121,6 +122,7 @@ class ProcessorProviderTest extends Specification {
                 ThermalHouseResult,
                 CylindricalStorageResult
         ]
+        // currently known processors
 
         expect:
         provider.registeredClasses.size() == knownProcessors.size()

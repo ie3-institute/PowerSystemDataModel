@@ -23,6 +23,7 @@ import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
+import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput
@@ -31,8 +32,13 @@ import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.TypeTestData
 import edu.ie3.util.TimeTools
+import edu.ie3.util.quantities.interfaces.Currency
+import edu.ie3.util.quantities.interfaces.DimensionlessRate
+import edu.ie3.util.quantities.interfaces.EnergyPrice
 import spock.lang.Specification
 
+import javax.measure.quantity.Dimensionless
+import javax.measure.quantity.Power
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -587,6 +593,29 @@ class InputEntityProcessorTest extends Specification {
                 "sRated"        : "45.0",
                 "cosphiRated"   : "0.975",
                 "pThermal"      : "26.3"
+        ]
+
+        when:
+        Optional<Map<String, String>> actual = processor.handleEntity(type)
+
+        then:
+        actual.isPresent()
+        actual.get() == expected
+    }
+
+    def "The InputEntityProcessor should de-serialize a provided BmTypeInput correctly"() {
+        given:
+        InputEntityProcessor processor = new InputEntityProcessor(BmTypeInput.class)
+        BmTypeInput type = TypeTestData.bmType
+        Map expected = [
+                "uuid": "c3bd30f5-1a62-4a37-86e3-074040d965a4",
+                "id": "bm type",
+                "capex": "100.0",
+                "opex": "101.0",
+                "loadGradient": "5.0",
+                "sRated": "800.0",
+                "cosphiRated": "0.965",
+                "etaConv": "89.0"
         ]
 
         when:

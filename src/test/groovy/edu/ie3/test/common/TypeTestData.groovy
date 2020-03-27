@@ -1,6 +1,7 @@
 package edu.ie3.test.common
 
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
+import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput
@@ -13,6 +14,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR_PER_KILOMETR
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 import static edu.ie3.util.quantities.PowerSystemUnits.MEGAVOLTAMPERE
+import static edu.ie3.util.quantities.PowerSystemUnits.PU_PER_HOUR
 import static tec.uom.se.unit.Units.SQUARE_METRE
 import static tec.uom.se.unit.Units.METRE
 
@@ -20,15 +22,15 @@ import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import tec.uom.se.quantity.Quantities
 
 class TypeTestData extends GridTestData {
-    public static EvTypeInput evType = new EvTypeInput(
-            UUID.fromString("66b0db5d-b2fb-41d0-a9bc-990d6b6a36db"),
-            "ev type",
+    public static BmTypeInput bmType = new BmTypeInput(
+            UUID.fromString("c3bd30f5-1a62-4a37-86e3-074040d965a4"),
+            "bm type",
             Quantities.getQuantity(100d, EURO),
             Quantities.getQuantity(101d, EURO_PER_MEGAWATTHOUR),
-            Quantities.getQuantity(100d, KILOWATTHOUR),
-            Quantities.getQuantity(23d, KILOWATTHOUR_PER_KILOMETRE),
-            Quantities.getQuantity(22d, KILOWATT),
-            0.9
+            Quantities.getQuantity(0.05, PU_PER_HOUR),
+            Quantities.getQuantity(800d, KILOVOLTAMPERE),
+            0.965,
+            Quantities.getQuantity(0.89, PU)
     )
 
     public static ChpTypeInput chpType = new ChpTypeInput(
@@ -42,6 +44,17 @@ class TypeTestData extends GridTestData {
             0.98,
             Quantities.getQuantity(49.59, KILOWATT),
             Quantities.getQuantity(5d, KILOWATT)
+    )
+
+    public static EvTypeInput evType = new EvTypeInput(
+            UUID.fromString("66b0db5d-b2fb-41d0-a9bc-990d6b6a36db"),
+            "ev type",
+            Quantities.getQuantity(100d, EURO),
+            Quantities.getQuantity(101d, EURO_PER_MEGAWATTHOUR),
+            Quantities.getQuantity(100d, KILOWATTHOUR),
+            Quantities.getQuantity(23d, KILOWATTHOUR_PER_KILOMETRE),
+            Quantities.getQuantity(22d, KILOWATT),
+            0.9
     )
 
     public static HpTypeInput hpType = new HpTypeInput(

@@ -81,6 +81,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
                   "iCMag",
                   "iMax",
                   "length",
+                  "loadGradient",
                   "opex",
                   "qDot",
                   "rotorArea",
