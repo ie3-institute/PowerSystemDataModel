@@ -12,7 +12,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 if (project.hasProperty('user') && project.hasProperty('password')) {
 	signing {
 		required { !version.endsWith('SNAPSHOT') }
-		if(required)
+		if (required)
 			sign(publishing.publications)
 	}
 
@@ -83,7 +83,12 @@ if (project.hasProperty('user') && project.hasProperty('password')) {
 			maven {
 				def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 				def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-				url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+				if (project.hasProperty('release') || !version.endsWith('SNAPSHOT')) {
+					url = releasesRepoUrl
+				} else {
+					url = snapshotsRepoUrl
+				}
 				credentials {
 					username project.getProperty('user')
 					password project.getProperty('password')
@@ -110,6 +115,5 @@ def removeTestDependenciesFromPom(pom) {
 		}
 	}
 }
-
 
 /* Maven publish - end */
