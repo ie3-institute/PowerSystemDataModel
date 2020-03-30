@@ -28,8 +28,8 @@ task allTests(type: Test) {
 	}
 
 	filter {
-//		includeTestsMatching '*Test*.*'
-//		includeTestsMatching '*IT'
+		//		includeTestsMatching '*Test*.*'
+		//		includeTestsMatching '*IT'
 	}
 	mustRunAfter test
 }

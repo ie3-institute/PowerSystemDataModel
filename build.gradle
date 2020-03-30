@@ -47,7 +47,7 @@ repositories {
 
 dependencies {
 	// ie³ internal repository for units
-//	compile 'com.github.ie3-institute:PowerSystemUtils:1.3' // todo enable again
+	//	compile 'com.github.ie3-institute:PowerSystemUtils:1.3' // todo enable again
 
 	// todo remove snapshot again
 	compile('com.github.ie3-institute:PowerSystemUtils:1.3-SNAPSHOT') {

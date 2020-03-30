@@ -20,7 +20,8 @@ if (project.hasProperty('user') && project.hasProperty('password')) {
 		publications {
 			mavenJava(MavenPublication) {
 
-				versionMapping { // resolves dynamic versioning to current version number
+				versionMapping {
+					// resolves dynamic versioning to current version number
 					usage('java-api') {
 						fromResolutionOf('runtimeClasspath')
 					}
@@ -50,17 +51,18 @@ if (project.hasProperty('user') && project.hasProperty('password')) {
 							developerConnection = 'scm:git:ssh:github.com:ie3-institute/PowerSystemDataModel.git'
 							url = 'https:github.com/ie3-institute/PowerSystemDataModel'
 						}
-						developers {[
-							developer {
-								id = 'johanneshiry'
-								name = 'Johannes Hiry'
-								email = 'johannes.hiry@tu-dortmund.de'
-							},
-							developer {
-								id = 'ckittl'
-								name = 'Chris Kittl'
-								email = 'chris.kittl@tu-dortmund.de'
-							}
+						developers {
+							[
+								developer {
+									id = 'johanneshiry'
+									name = 'Johannes Hiry'
+									email = 'johannes.hiry@tu-dortmund.de'
+								},
+								developer {
+									id = 'ckittl'
+									name = 'Chris Kittl'
+									email = 'chris.kittl@tu-dortmund.de'
+								}
 							]
 						}
 					}
