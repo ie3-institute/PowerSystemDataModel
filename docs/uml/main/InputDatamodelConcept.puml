@@ -368,39 +368,39 @@ Class PowerValue {
     - p: Quantity<Power> [kW]
     - q: Quantity<Power> [kVA]
 }
-PowerValue --|> Value
+Value <|-- PowerValue
 
 Class HeatAndPowerValue {
     - heatDemand: Quantity<Power> [kW]
 }
-HeatAndPowerValue --|> PowerValue
+PowerValue <|-- HeatAndPowerValue
 
 Class HeatDemandValue {
     - heatDemand: Quantity<Power> [kW]
 }
-HeatDemandValue --|> Value
+Value <|-- HeatDemandValue
 
 Class EnergyPriceValue {
     - price: Quantity<SpecificCurrency> [€/MWh]
 }
-EnergyPriceValue --|> Value
+Value <|-- EnergyPriceValue
 
 Class IrradiationValue {
     - directIrradiation: Quantity<Irradiation>
     - diffuseIrradiation: Quantity<Irradiation>
 }
-IrradiationValue --|> Value
+Value <|-- IrradiationValue
 
 Class TemperatureValue {
     - temperature: Quantity<Temperature>
 }
-TemperatureValue --|> Value
+Value <|-- TemperatureValue
 
 Class WindValue {
     - direction: Quantity<Angle>
     - velocity: Quantity<Speed>
 }
-WindValue --|> Value
+Value <|-- WindValue
 
 Class WeatherValue {
   - coordinate: Point
@@ -408,7 +408,7 @@ Class WeatherValue {
   - temperature: TemperatureValue
   - wind: WindValue
 }
-WeatherValue --|> Value
+Value <|-- WeatherValue
 WeatherValue --* IrradiationValue
 WeatherValue --* TemperatureValue
 WeatherValue --* WindValue
@@ -440,7 +440,6 @@ Abstract Class TimeSeries<T extends Value> {
     + T getValue(ZonedDateTime)
 }
 TimeSeries --|> UniqueEntity
-TimeSeries "1" --* "n" TimeBasedValue
 
 Class IndividualTimeSeries<T extends Value> {
     - timeToTimeBasedValue:HashMap<ZonedDateTime, TimeBasedValue<T>>
@@ -449,6 +448,7 @@ Class IndividualTimeSeries<T extends Value> {
     + addAll(Map<ZonedDateTime, T>): void
 }
 IndividualTimeSeries --|> TimeSeries
+IndividualTimeSeries "n" --* "1" TimeBasedValue
 
 Class PowerTimeSeries {
 }
@@ -466,6 +466,7 @@ Abstract Class RepetitiveTimeSeries<T extends Value> {
     + calc(ZonedDateTime): T
 }
 RepetitiveTimeSeries --|> TimeSeries
+RepetitiveTimeSeries "n" --* "1" Value
 
 Class LoadProfileInput {
     + profile: LoadProfileType
