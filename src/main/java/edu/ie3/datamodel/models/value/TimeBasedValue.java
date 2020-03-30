@@ -14,7 +14,8 @@ import java.util.Objects;
  *
  * @param <T> type of value
  */
-public class TimeBasedValue<T extends Value> extends UniqueEntity {
+public class TimeBasedValue<T extends Value> extends UniqueEntity
+    implements Comparable<TimeBasedValue<T>> {
 
   private T value;
 
@@ -58,5 +59,10 @@ public class TimeBasedValue<T extends Value> extends UniqueEntity {
   @Override
   public String toString() {
     return "TimeBasedValue{" + value + "}@" + time;
+  }
+
+  @Override
+  public int compareTo(TimeBasedValue<T> tTimeBasedValue) {
+    return this.time.compareTo(tTimeBasedValue.getTime());
   }
 }

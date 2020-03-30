@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,12 +45,12 @@ public class LoadProfileInput extends RepetitiveTimeSeries<PValue> {
   }
 
   @Override
-  protected Optional<ZonedDateTime> getPreviousZonedDateTime(ZonedDateTime time) {
+  protected Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
     return Optional.of(time.minus(1, HOURS));
   }
 
   @Override
-  protected Optional<ZonedDateTime> getNextZonedDateTime(ZonedDateTime time) {
+  protected Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time) {
     return Optional.of(time.plus(1, HOURS));
   }
 
@@ -60,10 +61,26 @@ public class LoadProfileInput extends RepetitiveTimeSeries<PValue> {
   @Override
   public String toString() {
     return "LoadProfileInput{"
-        + "type="
+        + "uuid="
+        + uuid
+        + ", type="
         + type
-        + ", dayOfWeekToHourlyValues="
-        + dayOfWeekToHourlyValues
+        + ", #entries="
+        + dayOfWeekToHourlyValues.size()
         + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    LoadProfileInput that = (LoadProfileInput) o;
+    return type.equals(that.type) && dayOfWeekToHourlyValues.equals(that.dayOfWeekToHourlyValues);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), type, dayOfWeekToHourlyValues);
   }
 }
