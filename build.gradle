@@ -9,7 +9,7 @@ plugins {
 	id 'com.diffplug.gradle.spotless' version '3.27.1'//code format
 	id 'com.github.onslip.gradle-one-jar' version '1.0.5' // pack a self contained jar
 	id 'jacoco' // java code coverage plugin
-	id "org.sonarqube" version "2.7.1" // sonarqube
+	id "org.sonarqube" version "2.8" // sonarqube
 }
 
 ext {
@@ -47,7 +47,7 @@ repositories {
 
 dependencies {
 	// ie³ internal repository for units
-//	compile 'com.github.ie3-institute:PowerSystemUtils:1.3' // todo enable again
+	//	compile 'com.github.ie3-institute:PowerSystemUtils:1.3' // todo enable again
 
 	// todo remove snapshot again
 	compile('com.github.ie3-institute:PowerSystemUtils:1.3-SNAPSHOT') {

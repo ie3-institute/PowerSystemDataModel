@@ -5,20 +5,27 @@ sonarqube {
 		property 'sonar.projectKey', 'edu.ie3:utils' // project key
 		property 'sonar.verbose', 'true' // verbose mode
 		property 'sonar.sourceEncoding', 'UTF-8' // encoding
-		property 'sonar.sources', ['src/main/resources', 'src/main/java'] // src dirs
-		property "sonar.tests", ['src/test/resources','src/test/java','src/test/groovy'] // test src dirs
-
+		property 'sonar.sources', [
+			'src/main/resources',
+			'src/main/java'] // src dirs
+		property "sonar.tests", [
+			'src/test/resources',
+			'src/test/java',
+			'src/test/groovy'] // test src dirs
 		// reports stuff (for all languages)
-		property 'sonar.junit.reportPaths', ['build/test-results/allTests'] // Comma-delimited list of paths to Surefire XML-format reports.
-
+		property 'sonar.junit.reportPaths', [
+			'build/test-results/allTests'] // Comma-delimited list of paths to Surefire XML-format reports.
 		// unit tests reports dirs
-		property "sonar.coverage.jacoco.xmlReportsPath", ["build/reports/jacoco/test/jacocoTestReport.xml"] // Comma-separated list of paths to JaCoCo (jacoco.xml) report files.
+		property "sonar.coverage.jacoco.xmlReportsPath", [
+			"build/reports/jacoco/test/jacocoTestReport.xml"] // Comma-separated list of paths to JaCoCo (jacoco.xml) report files.
 		// spotbugs report dir
-		property "sonar.java.spotbugs.reportPaths", ["build/reports/spotbugs/main.xml","build/reports/spotbugs/test.xml"] // Comma-delimited list of paths to reports from SpotBugs
-
+		property "sonar.java.spotbugs.reportPaths", [
+			"build/reports/spotbugs/main.xml",
+			"build/reports/spotbugs/test.xml"] // Comma-delimited list of paths to reports from SpotBugs
 		// java specific stuff
-		property "sonar.java.pmd.reportPaths", ["build/reports/pmd/test.xml","build/reports/pmd/main.xml"] // Comma-delimited list of paths to PMD Apex XML reports
-
+		property "sonar.java.pmd.reportPaths", [
+			"build/reports/pmd/test.xml",
+			"build/reports/pmd/main.xml"] // Comma-delimited list of paths to PMD Apex XML reports
 		// groovy specific stuff
 		property 'sonar.groovy.jacoco.reportPath', 'build/jacoco/test.exec' // unit tests reports dir
 		/// integration tests reports dir (if any)

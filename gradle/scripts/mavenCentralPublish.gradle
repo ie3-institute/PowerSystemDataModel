@@ -12,7 +12,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 if (project.hasProperty('user') && project.hasProperty('password')) {
 	signing {
 		required { !version.endsWith('SNAPSHOT') }
-		if(required)
+		if (required)
 			sign(publishing.publications)
 	}
 
@@ -20,7 +20,8 @@ if (project.hasProperty('user') && project.hasProperty('password')) {
 		publications {
 			mavenJava(MavenPublication) {
 
-				versionMapping { // resolves dynamic versioning to current version number
+				versionMapping {
+					// resolves dynamic versioning to current version number
 					usage('java-api') {
 						fromResolutionOf('runtimeClasspath')
 					}
@@ -50,17 +51,18 @@ if (project.hasProperty('user') && project.hasProperty('password')) {
 							developerConnection = 'scm:git:ssh:github.com:ie3-institute/PowerSystemDataModel.git'
 							url = 'https:github.com/ie3-institute/PowerSystemDataModel'
 						}
-						developers {[
-							developer {
-								id = 'johanneshiry'
-								name = 'Johannes Hiry'
-								email = 'johannes.hiry@tu-dortmund.de'
-							},
-							developer {
-								id = 'ckittl'
-								name = 'Chris Kittl'
-								email = 'chris.kittl@tu-dortmund.de'
-							}
+						developers {
+							[
+								developer {
+									id = 'johanneshiry'
+									name = 'Johannes Hiry'
+									email = 'johannes.hiry@tu-dortmund.de'
+								},
+								developer {
+									id = 'ckittl'
+									name = 'Chris Kittl'
+									email = 'chris.kittl@tu-dortmund.de'
+								}
 							]
 						}
 					}
@@ -81,7 +83,12 @@ if (project.hasProperty('user') && project.hasProperty('password')) {
 			maven {
 				def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 				def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-				url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+				if (project.hasProperty('release') || !version.endsWith('SNAPSHOT')) {
+					url = releasesRepoUrl
+				} else {
+					url = snapshotsRepoUrl
+				}
 				credentials {
 					username project.getProperty('user')
 					password project.getProperty('password')
@@ -108,6 +115,5 @@ def removeTestDependenciesFromPom(pom) {
 		}
 	}
 }
-
 
 /* Maven publish - end */
