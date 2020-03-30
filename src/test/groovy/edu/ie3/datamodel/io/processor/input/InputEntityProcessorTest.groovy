@@ -289,7 +289,7 @@ class InputEntityProcessorTest extends Specification {
 		]
 	}
 
-	def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with point correctly"(){
+	def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with point correctly"() {
 		given:
 		InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput.class)
 		NodeGraphicInput validNode = GridTestData.nodeGraphicC
@@ -305,13 +305,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(validNode)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
-	def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with path correctly"(){
+	def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with path correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput)
 		NodeGraphicInput validNode = GridTestData.nodeGraphicD
 		Map expected = [
 			"uuid"          : "9ecad435-bd16-4797-a732-762c09d4af25",
@@ -325,13 +325,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(validNode)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
-	def "The InputEntityProcessor should de-serialize a provided LineGraphicInput correctly"(){
+	def "The InputEntityProcessor should de-serialize a provided LineGraphicInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(LineGraphicInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(LineGraphicInput)
 		LineGraphicInput validNode = GridTestData.lineGraphicCtoD
 		Map expected = [
 			"uuid"          : "ece86139-3238-4a35-9361-457ecb4258b0",
@@ -344,13 +344,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(validNode)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided OperatorInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(OperatorInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(OperatorInput)
 		OperatorInput operator = new OperatorInput(UUID.fromString("420ee39c-dd5a-4d9c-9156-23dbdef13e5e"), "Prof. Brokkoli")
 		Map expected = [
 			"uuid"  : "420ee39c-dd5a-4d9c-9156-23dbdef13e5e",
@@ -361,13 +361,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(operator)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided RandomLoadParameters correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(RandomLoadParameters.class)
+		InputEntityProcessor processor = new InputEntityProcessor(RandomLoadParameters)
 		RandomLoadParameters parameters = new RandomLoadParameters(
 				UUID.fromString("a5b0f432-27b5-4b3e-b87a-61867b9edd79"),
 				4,
@@ -399,13 +399,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(parameters)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided WecCharacteristicInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(WecCharacteristicInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(WecCharacteristicInput)
 		WecCharacteristicInput characteristic = TypeTestData.wecCharacteristic
 		Map expected = [
 			"uuid"              : "ab5ed9e4-62b5-4f40-adf1-286bda97569c",
@@ -417,13 +417,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<Map<String, String>> actual = processor.handleEntity(characteristic)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided WecTypeInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(WecTypeInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(WecTypeInput)
 		WecTypeInput type = TypeTestData.wecType
 		Map expected = [
 			"uuid"          : "a24fc5b9-a26f-44de-96b8-c9f50b665cb3",
@@ -441,13 +441,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<Map<String, String>> actual = processor.handleEntity(type)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided Transformer2WTypeInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(Transformer2WTypeInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(Transformer2WTypeInput)
 		Transformer2WTypeInput type = GridTestData.transformerTypeBtoD
 		Map expected = [
 			"uuid"      : "202069a7-bcf8-422c-837c-273575220c8a",
@@ -471,13 +471,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<Map<String, String>> actual = processor.handleEntity(type)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided Transformer3WTypeInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(Transformer3WTypeInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(Transformer3WTypeInput)
 		Transformer3WTypeInput type = GridTestData.transformerTypeAtoBtoC
 		Map expected = [
 			"uuid"      : "5b0ee546-21fb-4a7f-a801-5dbd3d7bb356",
@@ -507,13 +507,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<Map<String, String>> actual = processor.handleEntity(type)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided LineTypeInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(LineTypeInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(LineTypeInput)
 		LineTypeInput type = GridTestData.lineTypeInputCtoD
 		Map expected = [
 			"uuid"  : "3bed3eb3-9790-4874-89b5-a5434d408088",
@@ -530,13 +530,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<Map<String, String>> actual = processor.handleEntity(type)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided EvTypeInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(EvTypeInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(EvTypeInput)
 		EvTypeInput type = TypeTestData.evType
 		Map expected = [
 			"uuid"          : "66b0db5d-b2fb-41d0-a9bc-990d6b6a36db",
@@ -553,13 +553,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<Map<String, String>> actual = processor.handleEntity(type)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided ChpTypeInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(ChpTypeInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(ChpTypeInput)
 		ChpTypeInput type = TypeTestData.chpType
 		Map expected = [
 			"uuid"          : "1c027d3e-5409-4e52-a0e2-f8a23d5d0af0",
@@ -578,13 +578,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<Map<String, String>> actual = processor.handleEntity(type)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided HpTypeInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(HpTypeInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(HpTypeInput)
 		HpTypeInput type = TypeTestData.hpType
 		Map expected = [
 			"uuid"          : "1059ef51-9e17-4c13-928c-7c1c716d4ee6",
@@ -600,13 +600,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<Map<String, String>> actual = processor.handleEntity(type)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided BmTypeInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(BmTypeInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(BmTypeInput)
 		BmTypeInput type = TypeTestData.bmType
 		Map expected = [
 			"uuid"                  : "c3bd30f5-1a62-4a37-86e3-074040d965a4",
@@ -623,13 +623,13 @@ class InputEntityProcessorTest extends Specification {
 		Optional<Map<String, String>> actual = processor.handleEntity(type)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided StorageTypeInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(StorageTypeInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(StorageTypeInput)
 		StorageTypeInput type = TypeTestData.storageType
 		Map expected = [
 			"uuid"                  : "fbee4995-24dd-45e4-9c85-7d986fe99ff3",
@@ -651,7 +651,7 @@ class InputEntityProcessorTest extends Specification {
 		Optional<Map<String, String>> actual = processor.handleEntity(type)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expected
 	}
 }

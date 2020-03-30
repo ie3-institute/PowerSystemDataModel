@@ -5,19 +5,11 @@
  */
 package edu.ie3.test.common
 
-import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
-import edu.ie3.datamodel.models.input.system.type.BmTypeInput
-import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
-import edu.ie3.datamodel.models.input.system.type.EvTypeInput
-import edu.ie3.datamodel.models.input.system.type.HpTypeInput
-import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
-
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR_PER_KILOMETRE
-import static edu.ie3.util.quantities.PowerSystemUnits.MILLISECOND
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 import static edu.ie3.util.quantities.PowerSystemUnits.MEGAVOLTAMPERE
@@ -27,13 +19,18 @@ import static tec.uom.se.unit.Units.PERCENT
 import static tec.uom.se.unit.Units.SQUARE_METRE
 import static tec.uom.se.unit.Units.METRE
 
+import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
+import edu.ie3.datamodel.models.input.system.type.BmTypeInput
+import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
+import edu.ie3.datamodel.models.input.system.type.EvTypeInput
+import edu.ie3.datamodel.models.input.system.type.HpTypeInput
+import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
+
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import tec.uom.se.quantity.Quantities
 
-import static tec.uom.se.unit.Units.YEAR
-
 class TypeTestData extends GridTestData {
-	public static BmTypeInput bmType = new BmTypeInput(
+	public static final BmTypeInput bmType = new BmTypeInput(
 	UUID.fromString("c3bd30f5-1a62-4a37-86e3-074040d965a4"),
 	"bm type",
 	Quantities.getQuantity(100d, EURO),
@@ -44,7 +41,7 @@ class TypeTestData extends GridTestData {
 	Quantities.getQuantity(0.89, PU)
 	)
 
-	public static ChpTypeInput chpType = new ChpTypeInput(
+	public static final ChpTypeInput chpType = new ChpTypeInput(
 	UUID.fromString("1c027d3e-5409-4e52-a0e2-f8a23d5d0af0"),
 	"chp type",
 	Quantities.getQuantity(100d, EURO),
@@ -57,7 +54,7 @@ class TypeTestData extends GridTestData {
 	Quantities.getQuantity(5d, KILOWATT)
 	)
 
-	public static EvTypeInput evType = new EvTypeInput(
+	public static final EvTypeInput evType = new EvTypeInput(
 	UUID.fromString("66b0db5d-b2fb-41d0-a9bc-990d6b6a36db"),
 	"ev type",
 	Quantities.getQuantity(100d, EURO),
@@ -68,7 +65,7 @@ class TypeTestData extends GridTestData {
 	0.9
 	)
 
-	public static HpTypeInput hpType = new HpTypeInput(
+	public static final HpTypeInput hpType = new HpTypeInput(
 	UUID.fromString("1059ef51-9e17-4c13-928c-7c1c716d4ee6"),
 	"hp type",
 	Quantities.getQuantity(100d, EURO),
@@ -78,7 +75,7 @@ class TypeTestData extends GridTestData {
 	Quantities.getQuantity(26.3, KILOWATT)
 	)
 
-	public static StorageTypeInput storageType = new StorageTypeInput(
+	public static final StorageTypeInput storageType = new StorageTypeInput(
 	UUID.fromString("fbee4995-24dd-45e4-9c85-7d986fe99ff3"),
 	"storage type",
 	Quantities.getQuantity(100d, EURO),
@@ -94,7 +91,7 @@ class TypeTestData extends GridTestData {
 	100000
 	)
 
-	public static WecTypeInput wecType = new WecTypeInput(
+	public static final WecTypeInput wecType = new WecTypeInput(
 	UUID.fromString("a24fc5b9-a26f-44de-96b8-c9f50b665cb3"),
 	"Test wec type",
 	Quantities.getQuantity(100d, EURO),
@@ -106,7 +103,7 @@ class TypeTestData extends GridTestData {
 	Quantities.getQuantity(130d, METRE)
 	)
 
-	public static WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput(
+	public static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput(
 	UUID.fromString("ab5ed9e4-62b5-4f40-adf1-286bda97569c"),
 	wecType,
 	"{(0.0,0.0), (8.0,0.2), (12.0,0.5), (14.0,1.0), (22.0,0.0)}"
