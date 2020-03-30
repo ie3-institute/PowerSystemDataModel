@@ -20,7 +20,8 @@ if (project.hasProperty('user') && project.hasProperty('password')) {
 		publications {
 			mavenJava(MavenPublication) {
 
-				versionMapping { // resolves dynamic versioning to current version number
+				versionMapping {
+					// resolves dynamic versioning to current version number
 					usage('java-api') {
 						fromResolutionOf('runtimeClasspath')
 					}
