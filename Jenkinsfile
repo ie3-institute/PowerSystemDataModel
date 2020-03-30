@@ -1,5 +1,6 @@
 #!groovy​
 
+
 ////////////////////////////////
 // general config values
 ////////////////////////////////
@@ -24,11 +25,14 @@ def sonarqubeProjectKey = "edu.ie3:PowerSystemDataModel"
 
 //// git webhook trigger token
 //// http://JENKINS_URL/generic-webhook-trigger/invoke?token=<webhookTriggerToken>
-webhookTriggerToken = "b0ba1564ca8c4d12ffun639b160d2ek6h9bauhk86"
+webhookTriggerToken = "pdsm-webhook-trigger-token"
+
+/// code coverage token id
+codeCovTokenId = "psdm-codecov-token"
 
 //// internal jenkins credentials link for git ssh keys
 //// requires the ssh key to be stored in the internal jenkins credentials keystore
-def sshCredentialsId = "5470eb14-b7a1-4247-baba-1e0f9a907666"
+def sshCredentialsId = "19f16959-8a0d-4a60-bd1f-5adb4572b702"
 
 //// internal maven central credentials
 def mavenCentralCredentialsId = "87bfb2d4-7613-4816-9fe1-70dfd7e6dec2"
@@ -43,7 +47,7 @@ def mavenCentralSignKeyId = "a1357827-1516-4fa2-ab8e-72cdea07a692"
 def javaVersionId = 'jdk-8'
 
 //// set java version method (needs node{} for execution)
-def setJavaVersion(javaVersionId) {
+void setJavaVersion(javaVersionId) {
     env.JAVA_HOME = "${tool javaVersionId}"
     env.PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
 }
@@ -59,218 +63,60 @@ def mainProjectGradleTasks = "jacocoTestReport jacocoTestCoverageVerification" /
 // NOTE: artifactory task with credentials will be added below
 def deployGradleTasks = ""
 
-//// error message catch variable
-String stageErrorMessage = "Caught error without setting the errorMessage -> new error!"
-
 /// prepare debugging info about deployed artifacts
 String deployedArtifacts = "none"
 
-//////////////////
-// logger values
-//////////////////
+/// commit hash
+def commitHash = ""
 
-def w = "[WARN]"
-def e = "[ERROR]"
-def i = "[INFO]"
-
-Date date = new Date()
-datePart = date.format("dd/MM/yyyy")
-timePart = date.format("HH:mm:ss")
-
-def p(String logLevel) {
-    "${logLevel} [${datePart} - ${timePart}] "
-}
-
-def log(String level, String message) {
-    println(p(level) + message)
-}
-
-// disable scanning but load config parameters before
-//if (isBranchIndexingCause()) {
-//    println(env.BUILD_NUMBER)
-//    println(currentBuild)
-//    if (env.BUILD_NUMBER == 1) {
-//        if (env.BRANCH_NAME == "master") {
-//            getMasterBranchProps()
-//        } else {
-//            getFeatureBranchProps(resolveBranchNo(env.BRANCH_NAME))
-//        }
-//        currentBuild.result = 'FAILURE'
-//    }
-//    return
-//}
-
-/////////////////////////
-// master branch script
-/////////////////////////
 if (env.BRANCH_NAME == "master") {
-    getMasterBranchProps()
 
-    // deployment only
-    if (params.triggered == "true") {
-        // notify rocket chat about the started master branch deployment
-        rocketSend attachments: [],
-                channel: rocketChatChannel,
-                message: ":jenkins_triggered:\n" +
-                        "*deploy* manually triggered on master branch of ${projects.get(0)}."
+    // setup
+    withCredentials([string(credentialsId: webhookTriggerToken, variable: 'webhookToken')]) {
+        getMasterBranchProps(env.webhookToken)
+    }
+
+    // release deployment
+    if (params.release == "true") {
+
+        // notify rocket chat about the release deployment
+        rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
+                message: "deploying release to oss sonatype. pls remember to stag and release afterwards!\n"
         rawMessage: true
 
         node {
-            // This displays colors using the 'xterm' ansi color map.
-            ansiColor('xterm') {
-                try {
-                    // set java version
-                    setJavaVersion(javaVersionId)
-                    // get the artifactory credentials stored in the jenkins secure keychain
-                    withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
-                                     file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
-                                     usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
-                        deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
-
-                        stage('checkout from scm') {
-                            // first we try to get branches from each repo
-                            // the checkout is done in parallel to speed up things a bit
-
-                            log(i, "getting ${projects.get(0)} ...")
-                            try {
-                                log(i, "Deploy mode. Trying to get ${projects.get(0)} master branch ...")
-                                gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId)
-                            } catch (exc) {
-                                // our target repo failed during checkout
-                                stageErrorMessage = "checkout of master branch of ${projects.get(0)} repo failed!"
-                                sh 'exit 1' // failure due to not found master branch
-                            }
-
-                        }
-
-                        stage('deploy') {
-                            log(i, "Deploying ${projects.get(0)} to maven central ...")
-                            gradle("-p ${projects.get(0)} ${deployGradleTasks}")
-
-                            deployedArtifacts = "${projects.get(0)}, "
-                        }
-
-                        /**
-                         * Post processing
-                         * Publish reports and notify rocket chat
-                         * Future clean workspace processes should be declared here
-                         */
-                        stage('post processing') {
-                            // publish reports
-                            // publishReports()
-
-                            // notify rocket chat about success
-                            String buildMode = "deploy"
-                            String branchName = params.pull_request_head_label
-
-                            rocketSend attachments: [
-                                    [$class: 'MessageAttachment', color: 'green', title: 'go to logs', titleLink: env.BUILD_URL],],
-                                    channel: rocketChatChannel,
-                                    message: ":jenkins_party: \n" +
-                                            "${buildMode} successful!\n" +
-                                            "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                            "*branch:* ${branchName} \n" +
-                                            "*deployedArtifacts:* ${deployedArtifacts}\n"
-                            rawMessage: true
-
-                            // set build to successfull
-                            currentBuild.result = 'SUCCESS'
-                        }
-
-
-                    }
-
-                } catch (Exception exc) {
-                    currentBuild.result = 'FAILURE'
-
-                    String buildMode = "deploy"
-                    String branchName = params.pull_request_head_label
-
-                    // notify rocketchat about failure
-                    rocketSend attachments: [
-                            [$class: 'MessageAttachment', color: 'red', title: 'go to logs', titleLink: env.BUILD_URL],],
-                            channel: rocketChatChannel,
-                            message: ":jenkins_explode: \n" +
-                                    "${buildMode}  failed!\n" +
-                                    "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                    "*branch:* ${branchName} \n" +
-                                    "*errorMessage:* ${stageErrorMessage}\n" +
-                                    "See logs for details.",
-                            rawMessage: true
-
-                    // publish reports even on failure
-                    publishReports()
-
-                    // print the error message that might be thrown during one of the build stages
-                    error(stageErrorMessage)
-
-                }
-            }
-        }
-    } else {
-        // merge mode
-        // disable scan
-//        if (params.pull_request_title == "") {
-//            currentBuild.result = 'SUCCESS'
-//            return
-//        }
-
-        // merge into master
-        // notify rocket chat about the started master branch deployment
-        rocketSend attachments: [],
-                channel: rocketChatChannel,
-                message: ":jenkins_triggered:\n" +
-                        "*deploy* triggered by merge ${params.pull_request_title} into master of ${projects.get(0)}."
-        rawMessage: true
-
-        node {
-            // This displays colors using the 'xterm' ansi color map.
             ansiColor('xterm') {
                 try {
                     // set java version
                     setJavaVersion(javaVersionId)
 
-                    /// set build name
-                    currentBuild.displayName = "merge pr ${params.pull_request_title}"
+                    // set build display name
+                    currentBuild.displayName = "release deployment" + " (" + currentBuild.displayName + ")"
 
-                    /// set the the branch name
-                    /// this is necessary even in merged mode as we might depend on other unmerged branches in other dependency repos with the to-develop feature(s)
-                    featureBranchName = params.pull_request_title
-
+                    // checkout from scm
                     stage('checkout from scm') {
-                        // first we try to get branches from each repo
-                        // the checkout is done in parallel to speed up things a bit
-
-                        log(i, "getting ${projects.get(0)} ...")
                         try {
                             // merged mode
-                            log(i, "Merged mode. Trying to get ${projects.get(0)} master branch ...")
-                            gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId)
-
+                            commitHash = gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId).GIT_COMMIT
                         } catch (exc) {
-                            // our target repo failed during checkout
-                            stageErrorMessage = "checkout of master branch of ${projects.get(0)} repo failed!"
                             sh 'exit 1' // failure due to not found master branch
                         }
                     }
 
-                    // the first stage should always be the mainProject -> if it fails we can skip the rest!
+                    // test the project
                     stage("gradle allTests ${projects.get(0)}") {
-
-                        // display java version
-                        sh "java -version"
-
-                        // build and test the first project
-                        log(i, "building and testing ${projects.get(0)}")
-                        gradle("-p ${projects.get(0)} ${gradleTasks} ${mainProjectGradleTasks}")
+                        // build and test the project
+                        gradle("${gradleTasks} ${mainProjectGradleTasks}")
                     }
 
+                    // execute sonarqube code analysis
                     stage('SonarQube analysis') {
                         withSonarQubeEnv() { // Will pick the global server connection from jenkins for sonarqube
-                            gradle("-p ${projects.get(0)} sonarqube -Dsonar.branch.name=master -Dsonar.projectKey=$sonarqubeProjectKey ")
+                            gradle("sonarqube -Dsonar.branch.name=master -Dsonar.projectKey=$sonarqubeProjectKey ")
                         }
                     }
 
+                    // wait for the sonarqube quality gate
                     stage("Quality Gate") {
                         timeout(time: 1, unit: 'HOURS') {
                             // Just in case something goes wrong, pipeline will be killed after a timeout
@@ -281,105 +127,201 @@ if (env.BRANCH_NAME == "master") {
                         }
                     }
 
+                    // post processing
+                    stage('publish reports + coverage') {
+                        // publish reports
+                        publishReports()
 
-                    /**
-                     * Deploy to ie3 artifactory making use of the artifactory credentials stored in jenkins secure keychain.
-                     */
-                    stage('deploy') {
-                        // get the artifactory credentials stored in the jenkins secure keychain
+                        // inform codecov.io
+                        withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
+                            // call codecov
+                            sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
+                        }
+
+                    }
+
+                    // deploy snapshot version to oss sonatype
+                    stage('deploy release') {
+                        // get the sonatype credentials stored in the jenkins secure keychain
                         withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
                                          file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
                                          usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
                             deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
 
-
-                            log(i, "Deploying ${projects.get(0)} to maven central ...")
-                            gradle("-p ${projects.get(0)} --parallel ${deployGradleTasks}")
+                            gradle("${deployGradleTasks} -Prelease")
 
                             deployedArtifacts = "${projects.get(0)}, "
 
                         }
-                    }
 
-                    /**
-                     * Post processing
-                     * Publish reports and notify rocket chat
-                     * Future clean workspace processes should be declared here
-                     */
-                    stage('post processing') {
-                        // publish reports
-                        publishReports()
-
-                        // notify rocket chat about success
-                        String buildMode = "merge"
-                        String branchName = params.pull_request_head_label
-
-                        rocketSend attachments: [
-                                [$class: 'MessageAttachment', color: 'green', title: 'go to logs', titleLink: env.BUILD_URL],],
-                                channel: rocketChatChannel,
-                                message: ":jenkins_party: \n" +
-                                        "${buildMode} successful!\n" +
+                        // notify rocket chat
+                        rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
+                                message: "release deployment successful. pls remember visiting https://oss.sonatype.org" +
+                                        "too stag and release the artifact!" +
                                         "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                        "*branch:* ${branchName} \n" +
-                                        "*deployedArtifacts:* ${deployedArtifacts}\n"
+                                        "*branch:* master \n"
                         rawMessage: true
-
                     }
 
-                } catch (exc) {
+                } catch (Exception e) {
+                    // set build result to failure
                     currentBuild.result = 'FAILURE'
-
-                    String buildMode = "merge"
-                    String branchName = params.pull_request_head_label
-
-                    if (stageErrorMessage == 'Not a merge. Abort!') {
-                        buildMode = ""
-                    }
-
-                    // notify rocketchat about failure
-                    rocketSend attachments: [
-                            [$class: 'MessageAttachment', color: 'red', title: 'go to logs', titleLink: env.BUILD_URL],],
-                            channel: rocketChatChannel,
-                            message: ":jenkins_explode: \n" +
-                                    "${buildMode}  failed!\n" +
-                                    "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                    "*branch:* ${branchName} \n" +
-                                    "*errorMessage:* ${stageErrorMessage}\n" +
-                                    "See logs for details.",
-                            rawMessage: true
 
                     // publish reports even on failure
                     publishReports()
 
-                    // print the error message that might be thrown during one of the build stages
-                    error(stageErrorMessage)
+                    // print exception
+                    Date date = new Date()
+                    println("[ERROR] [${date.format("dd/MM/yyyy")} - ${date.format("HH:mm:ss")}]" + e)
 
-                    // print the error message that might be thrown during one of the build stages
-                    error(exc)
+                    // notify rocket chat
+                    rocketSend channel: rocketChatChannel, emoji: ':jenkins_explode:',
+                            message: "release deployment failed!\n" +
+                                    "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
+                                    "*branch:* master\n"
+                    rawMessage: true
                 }
 
             }
+
         }
+
+
+    } else {
+        // merge of features
+
+        node {
+            ansiColor('xterm') {
+                try {
+                    // set java version
+                    setJavaVersion(javaVersionId)
+
+                    // checkout from scm
+                    stage('checkout from scm') {
+                        try {
+                            // merged mode
+                            commitHash = gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId).GIT_COMMIT
+                        } catch (exc) {
+                            sh 'exit 1' // failure due to not found master branch
+                        }
+                    }
+
+                    // get information based on commit hash
+                    def jsonObject = getGithubCommitJsonObj(commitHash, orgNames.get(0), projects.get(0))
+                    featureBranchName = splitStringToBranchName(jsonObject.commit.message)
+
+                    def message = (featureBranchName?.trim()) ?
+                            "master branch build triggered (incl. snapshot deploy) by merging pr from feature branch ${featureBranchName}"
+                            : "master branch build triggered (incl. snapshot deploy) for commit with message '${jsonObject.commit.message}'"
+
+                    // notify rocket chat about the started feature branch run
+                    rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
+                            message: message + "\n"
+                    rawMessage: true
+
+                    // set build display name
+                    currentBuild.displayName = ((featureBranchName?.trim()) ? "merge pr branch '${featureBranchName}'" : "commit '" +
+                            "${jsonObject.commit.message.length() <= 20 ? jsonObject.commit.message : jsonObject.commit.message.substring(0, 20)}...'") + " (" + currentBuild.displayName + ")"
+
+
+                    // test the project
+                    stage("gradle allTests ${projects.get(0)}") {
+                        // build and test the project
+                        gradle("${gradleTasks} ${mainProjectGradleTasks}")
+                    }
+
+                    // execute sonarqube code analysis
+                    stage('SonarQube analysis') {
+                        withSonarQubeEnv() { // Will pick the global server connection from jenkins for sonarqube
+                            gradle("sonarqube -Dsonar.branch.name=master -Dsonar.projectKey=$sonarqubeProjectKey ")
+                        }
+                    }
+
+
+                    // wait for the sonarqube quality gate
+                    stage("Quality Gate") {
+                        timeout(time: 1, unit: 'HOURS') {
+                            // Just in case something goes wrong, pipeline will be killed after a timeout
+                            def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+                            if (qg.status != 'OK') {
+                                error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                            }
+                        }
+                    }
+
+                    // post processing
+                    stage('publish reports + coverage') {
+                        // publish reports
+                        publishReports()
+
+                        // inform codecov.io
+                        withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
+                            // call codecov
+                            sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
+                        }
+
+                    }
+
+
+                    // deploy snapshot version to oss sonatype
+                    stage('deploy') {
+                        // get the sonatype credentials stored in the jenkins secure keychain
+                        withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
+                                         file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
+                                         usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
+                            deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
+
+                            gradle("${deployGradleTasks}")
+
+                            deployedArtifacts = "${projects.get(0)}, "
+
+                        }
+
+                        // notify rocket chat
+                        message = (featureBranchName?.trim()) ?
+                                "master branch build successful! Merged pr from feature branch ${featureBranchName}"
+                                : "master branch build successful! Build commit with message is '${jsonObject.commit.message}'"
+                        rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
+                                message: message + "\n" +
+                                        "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
+                                        "*branch:* master \n"
+                        rawMessage: true
+
+                    }
+
+
+                } catch (Exception e) {
+                    // set build result to failure
+                    currentBuild.result = 'FAILURE'
+
+                    // publish reports even on failure
+                    publishReports()
+
+                    // print exception
+                    Date date = new Date()
+                    println("[ERROR] [${date.format("dd/MM/yyyy")} - ${date.format("HH:mm:ss")}]" + e)
+
+                    // notify rocket chat
+                    rocketSend channel: rocketChatChannel, emoji: ':jenkins_explode:',
+                            message: "merge feature into master failed!\n" +
+                                    "*repo:* ${urls.get(0)}/${projects.get(0)}\n"
+                    rawMessage: true
+                }
+
+            }
+
+        }
+
     }
 
-
 } else {
-/////////////////////////
-// feature branch script
-/////////////////////////
-    node {
-        // resolve branch name and configure the project
-        // which requires a node
-        getFeatureBranchProps(resolveBranchNo(env.BRANCH_NAME))
 
-        // disable scan
-//        if (params.triggered != "true" && params.comment_body != "!test") {
-//
-//            log(i, "Scan mode. Doing nothing!")
-//            currentBuild.result = 'FAILURE'
-//            // signals github that this branch hasn't build yet -> fail before first build
-//            return
-//        }
+    // setup
+    getFeatureBranchProps()
+
+    node {
+        // curl the api to get debugging details
+        def jsonObj = getGithubPRJsonObj(env.CHANGE_ID, orgNames.get(0), projects.get(0))
 
         // This displays colors using the 'xterm' ansi color map.
         ansiColor('xterm') {
@@ -387,76 +329,43 @@ if (env.BRANCH_NAME == "master") {
                 // set java version
                 setJavaVersion(javaVersionId)
 
-                /// set the the branch name
-                featureBranchName = resolveBranchName(env.BRANCH_NAME, orgNames.get(0), projects.get(0))
+                /// set the build name
+                featureBranchName = jsonObj.head.ref
+                currentBuild.displayName = featureBranchName + " (" + currentBuild.displayName + ")"
 
-                /// set build name
-                currentBuild.displayName = featureBranchName + "_${params.sender_login}"
-
-                /// if the pipeline is scanned we don't want to execute anything
-                if (params.triggered == "true") {
-                    // notify rocket chat about the started master branch deployment
-                    rocketSend attachments: [],
-                            channel: rocketChatChannel,
-                            message: ":jenkins_triggered:\n" +
-                                    "*PR test* manually triggered on master branch of ${projects.get(0)}."
-                    rawMessage: true
-
-                    log(i, "PR test manually triggered by user.")
-
-                } else {
-                    // notify rocket chat about the started PR run
-                    rocketSend attachments: [],
-                            channel: rocketChatChannel,
-                            message: ":jenkins_triggered:\n" +
-                                    "*forcedPR* triggered with parameters:\n" +
-                                    "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                    "*branch:* ${params.issue_title}\n" +
-                                    "*triggeredBy:* ${params.sender_login}",
-                            rawMessage: true
-
-                    log(i, "forced PR triggered by webhook. Parameters are:")
-                    log(i, "issue_title: ${params.issue_title}")
-                    log(i, "comment_body: ${params.comment_body}")
-                    log(i, "action: ${params.action}")
-                }
-
+                // notify rocket chat about the started feature branch run
+                rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
+                        message: "feature branch build triggered:\n" +
+                                "*repo:* ${jsonObj.head.repo.full_name}\n" +
+                                "*branch:* ${featureBranchName}\n"
+                rawMessage: true
 
                 stage('checkout from scm') {
 
-                    // first we try to get branches from each repo
-                    // we try to get the PR branch name from our target repo if this fails we abort, for all other repos we try to get either the forcedPR branch OR the master branch
-                    // the checkout is done in parallel to speed up things a bit
-
-                    log(i, "getting ${projects.get(0)} ...")
                     try {
-                        log(i, "ForcedPR mode. Try to get ${featureBranchName} branch ...")
-                        gitCheckout(projects.get(0), urls.get(0), featureBranchName, sshCredentialsId)
+                        commitHash = gitCheckout(projects.get(0), urls.get(0), featureBranchName, sshCredentialsId).GIT_COMMIT
                     } catch (exc) {
                         // our target repo failed during checkout
-                        stageErrorMessage = "branch ${featureBranchName} not found in ${projects.get(0)} repo!"
                         sh 'exit 1' // failure due to not found forcedPR branch
                     }
 
                 }
-                // the first stage should always be the mainProject -> if it fails we can skip the rest!
+
+                // test the project
                 stage("gradle allTests ${projects.get(0)}") {
 
-                    // display java version
-                    sh "java -version"
-
-                    // build and test the first project
-                    log(i, "building and testing ${projects.get(0)}")
-                    gradle("-p ${projects.get(0)} ${gradleTasks} ${mainProjectGradleTasks}")
+                    // build and test the project
+                    gradle("${gradleTasks} ${mainProjectGradleTasks}")
                 }
 
-
+                // execute sonarqube code analysis
                 stage('SonarQube analysis') {
                     withSonarQubeEnv() { // Will pick the global server connection from jenkins for sonarqube
-                        gradle("-p ${projects.get(0)} sonarqube -Dsonar.projectKey=$sonarqubeProjectKey -Dsonar.pullrequest.branch=${featureBranchName} -Dsonar.pullrequest.key=${resolveBranchNo(env.BRANCH_NAME)} -Dsonar.pullrequest.base=master -Dsonar.pullrequest.github.repository=${orgNames.get(0)}/${projects.get(0)} -Dsonar.pullrequest.provider=Github")
+                        gradle("sonarqube -Dsonar.projectKey=$sonarqubeProjectKey -Dsonar.pullrequest.branch=${featureBranchName} -Dsonar.pullrequest.key=${env.CHANGE_ID} -Dsonar.pullrequest.base=master -Dsonar.pullrequest.github.repository=${orgNames.get(0)}/${projects.get(0)} -Dsonar.pullrequest.provider=Github")
                     }
                 }
 
+                // wait for the sonarqube quality gate
                 stage("Quality Gate") {
                     timeout(time: 1, unit: 'HOURS') {
                         // Just in case something goes wrong, pipeline will be killed after a timeout
@@ -467,139 +376,80 @@ if (env.BRANCH_NAME == "master") {
                     }
                 }
 
-                /**
-                 * Post processing
-                 * Publish reports and notify rocket chat
-                 * Future clean workspace processes should be declared here
-                 */
+                // post processing
                 stage('post processing') {
                     // publish reports
                     publishReports()
 
-                    // notify rocket chat about success
-                    String buildMode = "forcedPR"
+                    withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
+                        // call codecov
+                        sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
+                    }
 
-                    rocketSend attachments: [
-                            [$class: 'MessageAttachment', color: 'green', title: 'go to logs', titleLink: env.BUILD_URL],],
-                            channel: rocketChatChannel,
-                            message: ":jenkins_party: \n" +
-                                    "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                    "${buildMode} successful!\n" +
-                                    "*branch:* ${featureBranchName}"
+                    // notify rocket chat
+                    rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
+                            message: "feature branch test successful!\n" +
+                                    "*repo:* ${jsonObj.head.repo.full_name}\n" +
+                                    "*branch:* ${featureBranchName}\n"
                     rawMessage: true
                 }
-
-            } catch (Exception exc) {
+            } catch (Exception e) {
+                // set build result to failure
                 currentBuild.result = 'FAILURE'
-
-                String buildMode = "forcedPR"
-                String branchName = resolveBranchName(env.BRANCH_NAME, orgNames.get(0), projects.get(0))
-
-                if (stageErrorMessage == 'Not a forcedPR. Abort!') {
-                    buildMode = ""
-                }
-
-                println("[ERROR] [${date.format("dd/MM/yyyy")} - ${date.format("HH:mm:ss")}]" + exc)
-
-                // notify rocketchat about failure
-                rocketSend attachments: [
-                        [$class: 'MessageAttachment', color: 'red', title: 'go to logs', titleLink: env.BUILD_URL],],
-                        channel: rocketChatChannel,
-                        message: ":jenkins_explode: \n" +
-                                "${buildMode}  failed!\n" +
-                                "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                "*branch:* ${branchName} \n" +
-                                "*errorMessage:* ${stageErrorMessage}\n" +
-                                "See logs for details.",
-                        rawMessage: true
 
                 // publish reports even on failure
                 publishReports()
 
-                // print the error message that might be thrown during one of the build stages
-                error(stageErrorMessage)
+                // print exception
+                Date date = new Date()
+                println("[ERROR] [${date.format("dd/MM/yyyy")} - ${date.format("HH:mm:ss")}]" + e)
+
+                // notify rocket chat
+                rocketSend channel: rocketChatChannel, emoji: ':jenkins_explode:',
+                        message: "feature branch test failed!\n" +
+                                "*repo:* ${jsonObj.head.repo.full_name}\n" +
+                                "*branch:* ${featureBranchName}\n"
+                rawMessage: true
             }
 
         }
     }
-
 }
 
-//////////////////////
-// jenkins properties
-/////////////////////
-def getFeatureBranchProps(String prNo) {
+
+def getFeatureBranchProps() {
+
     properties(
-            [parameters(
-                    [string(defaultValue: '', description: '', name: 'triggered', trim: true),
-                     string(defaultValue: '', description: '', name: 'issue_title', trim: true),
-                     string(defaultValue: '', description: '', name: 'comment_body', trim: true),
-                     string(defaultValue: '', description: '', name: 'action', trim: true),
-                     string(defaultValue: '', description: '', name: 'issue_url', trim: true),
-                     string(defaultValue: '', description: '', name: 'sender_login', trim: true),
-                     string(defaultValue: '', description: '', name: 'repository_name', trim: true)
-                    ]),
-             [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
-             [$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0, maxConcurrentTotal: 0, paramsToUseForLimit: '', throttleEnabled: true, throttleOption: 'project'],
-             [$class: 'JiraProjectProperty'],
-             pipelineTriggers(
-                     [GenericTrigger(causeString: '$issue_title',
-                             genericVariables:
-                                     [[defaultValue: '', key: 'comment_body', regexpFilter: '', value: '$.comment.body'],
-                                      [defaultValue: '', key: 'action', regexpFilter: '', value: '$.action'],
-                                      [defaultValue: '', key: 'issue_title', regexpFilter: '(WIP:\\s?)', value: '$.issue.title'],
-                                      [defaultValue: '', key: 'issue_url', regexpFilter: '', value: '$.issue.url'],
-                                      [defaultValue: '', key: 'sender_login', regexpFilter: '', value: '$.sender.login'],
-                                      [defaultValue: '', key: 'repository_name', regexpFilter: '', value: '$.repository.name']
-                                     ],
-                             printContributedVariables: false,
-                             printPostContent: false,
-                             regexpFilterExpression: '^(!test created https:\\/\\/api\\.github\\.com\\/repos\\/.*\\/issues\\/' + prNo + ')$',
-                             regexpFilterText: '$comment_body $action $issue_url',
-                             silentResponse: true,
-                             token: webhookTriggerToken)])])
+            [pipelineTriggers([
+                    issueCommentTrigger('.*!test.*')])
+            ])
+
 }
 
-def getMasterBranchProps() {
+
+def getMasterBranchProps(localWebHookTriggerToken) {
     properties(
-            [parameters(
-                    [string(defaultValue: '', description: '', name: 'triggered', trim: true),
-                     string(defaultValue: '', description: '', name: 'action', trim: true),
-                     string(defaultValue: '', description: '', name: 'pull_request_title', trim: true),
-                     string(defaultValue: '', description: '', name: 'pull_request_merged', trim: true),
-                     string(defaultValue: '', description: '', name: 'pull_request_state', trim: true),
-                     string(defaultValue: '', description: '', name: 'pull_request_base_ref', trim: true),
-                     string(defaultValue: '', description: '', name: 'pull_request_head_label', trim: true),
-                     string(defaultValue: '', description: '', name: 'repository_name', trim: true)
-                    ]),
-             [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
-             [$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0, maxConcurrentTotal: 0, paramsToUseForLimit: '', throttleEnabled: true, throttleOption: 'project'],
-             [$class: 'JiraProjectProperty'],
-             pipelineTriggers(
-                     [GenericTrigger(causeString: '$issue_title',
-                             genericVariables:
-                                     [[defaultValue: '', key: 'action', regexpFilter: '', value: '$.action'],
-                                      [defaultValue: '', key: 'pull_request_merged', regexpFilter: '', value: '$.pull_request.merged'],
-                                      [defaultValue: '', key: 'pull_request_state', regexpFilter: '', value: '$.pull_request.state'],
-                                      [defaultValue: '', key: 'pull_request_base_ref', regexpFilter: '', value: '$.pull_request.base.ref'],
-                                      [defaultValue: '', key: 'pull_request_title', regexpFilter: '', value: '$.pull_request.title'],
-                                      [defaultValue: '', key: 'pull_request_head_label', regexpFilter: '', value: ' $.pull_request.head.label'],
-                                      [defaultValue: '', key: 'repository_name', regexpFilter: '', value: '$.repository.name']],
-
-                             printContributedVariables: true,
-                             printPostContent: true,
-                             regexpFilterExpression: '^(closed true closed master)$',
-                             regexpFilterText: '$action $pull_request_merged $pull_request_state $pull_request_base_ref',
-                             silentResponse: true,
-                             token: webhookTriggerToken)])])
+            [[$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
+             [$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0, maxConcurrentTotal: 0, paramsToUseForLimit: '', throttleEnabled: true, throttleOption: 'project']
+            ])
 }
 
-// gradle wrapper for easy execution
-// requires the gradle version to be configured with the same name under tools in jenkins configuration
-def gradle(command) {
-    env.JENKINS_NODE_COOKIE = 'dontKillMe' // this is necessary for the Gradle daemon to be kept alive
-    sh "${tool name: 'gradle6.0.1', type: 'hudson.plugins.gradle.GradleInstallation'}/bin/gradle ${command}"
+
+////////////////////////////////////
+// git checkout
+// NOTE: requires node {}
+////////////////////////////////////
+def gitCheckout(String relativeTargetDir, String baseUrl, String branch, String sshCredentialsId) {
+    checkout([
+            $class                           : 'GitSCM',
+            branches                         : [[name: branch]],
+            doGenerateSubmoduleConfigurations: false,
+            extensions                       : [[$class: 'RelativeTargetDirectory', relativeTargetDir: relativeTargetDir]],
+            submoduleCfg                     : [],
+            userRemoteConfigs                : [[credentialsId: sshCredentialsId, url: baseUrl + "/" + relativeTargetDir + ".git"]]
+    ])
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // publish reports
@@ -621,71 +471,46 @@ def publishReports() {
 }
 
 
-////////////////////////////////////
-// git checkout
-// NOTE: requires node {}
-////////////////////////////////////
-def gitCheckout(String relativeTargetDir, String baseUrl, String branch, String sshCredentialsId) {
-    checkout([
-            $class                           : 'GitSCM',
-            branches                         : [[name: branch]],
-            doGenerateSubmoduleConfigurations: false,
-            extensions                       : [[$class: 'RelativeTargetDirectory', relativeTargetDir: relativeTargetDir]],
-            submoduleCfg                     : [],
-            userRemoteConfigs                : [[credentialsId: sshCredentialsId, url: baseUrl + "/" + relativeTargetDir + ".git"]]
-    ])
+// gradle wrapper method for easy execution
+// requires the gradle version to be configured with the same name under tools in jenkins configuration
+def gradle(String command) {
+    env.JENKINS_NODE_COOKIE = 'dontKillMe' // this is necessary for the Gradle daemon to be kept alive
+
+    // switch directory to bew able to use gradle wrapper
+    sh """cd ${projects.get(0)}""" + ''' set +x; ./gradlew ''' + """$command"""
 }
 
-@NonCPS
-// https://stackoverflow.com/questions/47646409/jenkins-groovy-regex-match-string-error-java-io-notserializableexception-jav
-def resolveBranchNo(String featureBranchPRMinusNo) {
-    // get pull request number
-    def branchNoMatcher = featureBranchPRMinusNo =~ /PR-(.*)/
-    assert branchNoMatcher.find()
-
-    def prNo = branchNoMatcher[0][1]
-    return prNo
+def getGithubPRJsonObj(String prId, String orgName, String repoName) {
+    def jsonObj = readJSON text: curlByPR(prId, orgName, repoName)
+    return jsonObj
 }
 
-@NonCPS
-def resolveBranchName(String featureBranchPRMinusNo, String orgName, String repoName) {
 
-    // get pull request number
-    def branchNoMatcher = featureBranchPRMinusNo =~ /PR-(.*)/
-    assert branchNoMatcher.find()
+def curlByPR(String prId, String orgName, String repoName) {
 
-    def prNo = branchNoMatcher[0][1]
+    def curlUrl = "curl https://api.github.com/repos/" + orgName + "/" + repoName + "/pulls/" + prId
+    String jsonResponseString = sh(script: curlUrl, returnStdout: true)
 
-    // curl the repo based on the feature branch no to get the branch information
-    /// Note: only works for public repos! Otherwise credentials needs to be passed
-    def curlUrl = "curl https://api.github.com/repos/" + orgName + "/" + repoName + "/pulls/" + prNo
-    def response = sh(script: curlUrl, returnStdout: true)
-    def matcher = response =~ /\"label\":\s\"(.+)\"/
-
-    assert matcher.find()
-
-    // get split the label to account for PRs from forks
-    def split = matcher[0][1] =~ /(.*):(.*)/
-
-    assert matcher.find()
-
-    def username = split[0][1]
-    def branch = split[0][2]
-
-    return branch
-
+    return jsonResponseString
 }
 
-def isBranchIndexingCause() {
-    def isBranchIndexing = false
-    if (!currentBuild.rawBuild) {
-        return true
-    }
+def getGithubCommitJsonObj(String commit_sha, String orgName, String repoName) {
+    def jsonObj = readJSON text: curlByCSHA(commit_sha, orgName, repoName)
+    return jsonObj
+}
 
-    currentBuild.rawBuild.getCauses().each { cause ->
-        if (cause instanceof jenkins.branch.BranchIndexingCause) {
-            isBranchIndexing = true
-        }
-    }
-    return isBranchIndexing
+def curlByCSHA(String commit_sha, String orgName, String repoName) {
+
+    def curlUrl = "curl https://api.github.com/repos/" + orgName + "/" + repoName + "/commits/" + commit_sha
+    String jsonResponseString = sh(script: curlUrl, returnStdout: true)
+
+    return jsonResponseString
+}
+
+def splitStringToBranchName(String string) {
+    def obj = string.split().find { it.startsWith("ie3-institute") }
+    if (obj)
+        return (obj as String).substring(14)
+    else
+        return ""
 }

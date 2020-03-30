@@ -7,14 +7,17 @@ package edu.ie3.datamodel.models.voltagelevels;
 
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.util.interval.RightOpenInterval;
+import java.util.Collections;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import javax.measure.quantity.ElectricPotential;
 import tec.uom.se.ComparableQuantity;
 
 /** Class with extended information to describe common voltage levels in energy systems. */
 public class CommonVoltageLevel extends VoltageLevel {
-  protected Set<String> synonymousIds;
-  protected RightOpenInterval<ComparableQuantity<ElectricPotential>> voltageRange;
+  protected final Set<String> synonymousIds;
+  protected final RightOpenInterval<ComparableQuantity<ElectricPotential>> voltageRange;
 
   /**
    * Constructs a concrete voltage level
@@ -28,7 +31,11 @@ public class CommonVoltageLevel extends VoltageLevel {
       Set<String> synonymousIds,
       RightOpenInterval<ComparableQuantity<ElectricPotential>> voltageRange) {
     super(id, nominalVoltage);
-    this.synonymousIds = synonymousIds;
+    /* Adding the id to synonyms if not already apparent. This local variable is not useless, as it prevents the
+     * provided set to be altered. */
+    SortedSet<String> eligibleIds = new TreeSet<>(synonymousIds);
+    eligibleIds.add(id);
+    this.synonymousIds = Collections.unmodifiableSet(eligibleIds);
     this.voltageRange = voltageRange;
   }
 
@@ -51,7 +58,8 @@ public class CommonVoltageLevel extends VoltageLevel {
    */
   public boolean covers(String id, ComparableQuantity<ElectricPotential> vRated)
       throws VoltageLevelException {
-    boolean idCovered = synonymousIds.contains(id.toLowerCase());
+    boolean idCovered =
+        synonymousIds.stream().anyMatch(string -> string.equalsIgnoreCase(id.toLowerCase()));
     boolean voltageCovered = covers(vRated);
 
     if (idCovered ^ voltageCovered)
@@ -71,7 +79,12 @@ public class CommonVoltageLevel extends VoltageLevel {
   @Override
   public String toString() {
     return "CommonVoltageLevel{"
-        + "synonymousIds="
+        + "id='"
+        + id
+        + '\''
+        + ", nominalVoltage="
+        + nominalVoltage
+        + ", synonymousIds="
         + synonymousIds
         + ", voltageRange="
         + voltageRange
