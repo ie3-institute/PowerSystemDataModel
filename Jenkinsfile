@@ -27,7 +27,7 @@ codeCovTokenId = "psdm-codecov-token"
 
 //// git webhook trigger token
 //// http://JENKINS_URL/generic-webhook-trigger/invoke?token=<webhookTriggerToken>
-//webhookTriggerToken = "b0ba1564ca8c4d12ffun639b160d2ek6h9bauhk86"
+webhookTriggerToken = "b0ba1564ca8c4d12ffun639b160d2ek6h9bauhk86"
 
 //// internal jenkins credentials link for git ssh keys
 //// requires the ssh key to be stored in the internal jenkins credentials keystore
@@ -65,6 +65,9 @@ def deployGradleTasks = ""
 /// prepare debugging info about deployed artifacts
 String deployedArtifacts = "none"
 
+/// commit hash
+def commitHash = ""
+
 if (env.BRANCH_NAME == "master") {
 
     // setup
@@ -72,7 +75,6 @@ if (env.BRANCH_NAME == "master") {
 
     // release deployment
     if (params.release == "true") {
-        // todo JH -> get release no from gradle build file by specific gradle method that prints release version
 
         // notify rocket chat about the release deployment
         rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
@@ -92,7 +94,7 @@ if (env.BRANCH_NAME == "master") {
                     stage('checkout from scm') {
                         try {
                             // merged mode
-                            gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId)
+                            commitHash = gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId).GIT_COMMIT
                         } catch (exc) {
                             sh 'exit 1' // failure due to not found master branch
                         }
@@ -142,10 +144,16 @@ if (env.BRANCH_NAME == "master") {
                         // publish reports
                         publishReports()
 
+                        // inform codecov.io
+                        withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
+                            // call codecov
+                            sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
+                        }
+
                         // notify rocket chat about success
                         rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
                                 message: "release deployment successfully! Please visit https://oss.sonatype.org/ " +
-                                        "stag and release the artifact!" +
+                                        "to stag and release the artifact!" +
                                         "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
                                         "*branch:* master \n"
                         rawMessage: true
@@ -197,7 +205,7 @@ if (env.BRANCH_NAME == "master") {
                     stage('checkout from scm') {
                         try {
                             // merged mode
-                            gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId)
+                            commitHash = gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId).GIT_COMMIT
                         } catch (exc) {
                             sh 'exit 1' // failure due to not found master branch
                         }
@@ -247,6 +255,12 @@ if (env.BRANCH_NAME == "master") {
                     stage('post processing') {
                         // publish reports
                         publishReports()
+
+                        // inform codecov.io
+                        withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
+                            // call codecov
+                            sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
+                        }
 
                         // notify rocket chat about success
                         String buildMode = "merge"
@@ -316,7 +330,7 @@ if (env.BRANCH_NAME == "master") {
                 stage('checkout from scm') {
 
                     try {
-                        gitCheckout(projects.get(0), urls.get(0), featureBranchName, sshCredentialsId)
+                        commitHash = gitCheckout(projects.get(0), urls.get(0), featureBranchName, sshCredentialsId).GIT_COMMIT
                     } catch (exc) {
                         // our target repo failed during checkout
                         sh 'exit 1' // failure due to not found forcedPR branch
@@ -354,15 +368,10 @@ if (env.BRANCH_NAME == "master") {
                     // publish reports
                     publishReports()
 
-                    echo after
-                    echo $after
-                    echo env.GIT_COMMIT
-
                     withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
                         // call codecov
-                        sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${after}"
+                        sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
                     }
-
 
                     // notify rocket chat
                     rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
@@ -397,20 +406,10 @@ if (env.BRANCH_NAME == "master") {
 
 def getFeatureBranchProps() {
 
-    properties([parameters([string(defaultValue: '', description: '', name: 'after', trim: true)]),
-                pipelineTriggers([
-                        issueCommentTrigger('.*!test.*')
-                ], [GenericTrigger(causeString: '$issue_title',
-                        genericVariables:
-                                [[defaultValue: '', key: 'after', regexpFilter: '', value: '$.after']],
-                        printContributedVariables: true,
-                        printPostContent: true,
-                        regexpFilterExpression: '',
-                        regexpFilterText: '',
-                        silentResponse: true,
-                        token: webhookTriggerToken)])
-
-    ])
+    properties(
+            [pipelineTriggers([
+                    issueCommentTrigger('.*!test.*')])
+            ])
 
 }
 
