@@ -23,6 +23,8 @@ urls = ['git@github.com:' + orgNames.get(0)]
 
 def sonarqubeProjectKey = "edu.ie3:PowerSystemDataModel"
 
+codeCovTokenId = "psdm-codecov-token"
+
 //// git webhook trigger token
 //// http://JENKINS_URL/generic-webhook-trigger/invoke?token=<webhookTriggerToken>
 webhookTriggerToken = "b0ba1564ca8c4d12ffun639b160d2ek6h9bauhk86"
@@ -44,7 +46,7 @@ def mavenCentralSignKeyId = "a1357827-1516-4fa2-ab8e-72cdea07a692"
 def javaVersionId = 'jdk-8'
 
 //// set java version method (needs node{} for execution)
-def setJavaVersion(javaVersionId) {
+void setJavaVersion(javaVersionId) {
     env.JAVA_HOME = "${tool javaVersionId}"
     env.PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
 }
@@ -63,6 +65,9 @@ def deployGradleTasks = ""
 /// prepare debugging info about deployed artifacts
 String deployedArtifacts = "none"
 
+/// commit hash
+def commitHash = ""
+
 if (env.BRANCH_NAME == "master") {
 
     // setup
@@ -70,13 +75,10 @@ if (env.BRANCH_NAME == "master") {
 
     // release deployment
     if (params.release == "true") {
-        // todo JH -> get release no from gradle build file by specific gradle method that prints release version
-    } else {
-        // merge of features
 
-        // notify rocket chat about the started feature branch run
+        // notify rocket chat about the release deployment
         rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
-                message: "master branch build triggered (incl. snapshot deploy) by merging feature branch '${params.pull_request_title}'\n"
+                message: "deploying release to oss sonatype. pls remember to stag and release afterwards!\n"
         rawMessage: true
 
         node {
@@ -86,13 +88,124 @@ if (env.BRANCH_NAME == "master") {
                     setJavaVersion(javaVersionId)
 
                     // set build display name
-                    currentBuild.displayName = "merge pr ${params.pull_request_title}"
+                    currentBuild.displayName = "release deployment"
 
                     // checkout from scm
                     stage('checkout from scm') {
                         try {
                             // merged mode
-                            gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId)
+                            commitHash = gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId).GIT_COMMIT
+                        } catch (exc) {
+                            sh 'exit 1' // failure due to not found master branch
+                        }
+                    }
+
+                    // test the project
+                    stage("gradle allTests ${projects.get(0)}") {
+                        // build and test the project
+                        gradle("${gradleTasks} ${mainProjectGradleTasks}")
+                    }
+
+                    // execute sonarqube code analysis
+                    stage('SonarQube analysis') {
+                        withSonarQubeEnv() { // Will pick the global server connection from jenkins for sonarqube
+                            gradle("sonarqube -Dsonar.branch.name=master -Dsonar.projectKey=$sonarqubeProjectKey ")
+                        }
+                    }
+
+                    // wait for the sonarqube quality gate
+                    stage("Quality Gate") {
+                        timeout(time: 1, unit: 'HOURS') {
+                            // Just in case something goes wrong, pipeline will be killed after a timeout
+                            def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+                            if (qg.status != 'OK') {
+                                error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                            }
+                        }
+                    }
+
+                    // deploy snapshot version to oss sonatype
+                    stage('deploy release') {
+                        // get the sonatype credentials stored in the jenkins secure keychain
+                        withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
+                                         file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
+                                         usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
+                            deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
+
+                            gradle("${deployGradleTasks} -Prelease")
+
+                            deployedArtifacts = "${projects.get(0)}, "
+
+                        }
+                    }
+
+                    // post processing
+                    stage('post processing') {
+                        // publish reports
+                        publishReports()
+
+                        // inform codecov.io
+                        withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
+                            // call codecov
+                            sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
+                        }
+
+                        // notify rocket chat about success
+                        rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
+                                message: "release deployment successfully! Please visit https://oss.sonatype.org/ " +
+                                        "to stag and release the artifact!" +
+                                        "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
+                                        "*branch:* master \n"
+                        rawMessage: true
+                    }
+
+
+                } catch (Exception e) {
+                    // set build result to failure
+                    currentBuild.result = 'FAILURE'
+
+                    // publish reports even on failure
+                    publishReports()
+
+                    // print exception
+                    Date date = new Date()
+                    println("[ERROR] [${date.format("dd/MM/yyyy")} - ${date.format("HH:mm:ss")}]" + e)
+
+                    // notify rocket chat
+                    rocketSend channel: rocketChatChannel, emoji: ':jenkins_explode:',
+                            message: "release deployment failed!\n" +
+                                    "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
+                                    "*branch:* master\n"
+                    rawMessage: true
+                }
+
+            }
+
+        }
+
+
+    } else {
+        // merge of features
+
+        // notify rocket chat about the started feature branch run
+        rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
+                message: "master branch build triggered (incl. snapshot deploy) by merging feature branch '${params.pull_request_head_ref}'\n"
+        rawMessage: true
+
+        node {
+            ansiColor('xterm') {
+                try {
+                    // set java version
+                    setJavaVersion(javaVersionId)
+
+                    // set build display name
+                    currentBuild.displayName = "merge pr ${params.pull_request_head_ref}"
+
+                    // checkout from scm
+                    stage('checkout from scm') {
+                        try {
+                            // merged mode
+                            commitHash = gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId).GIT_COMMIT
                         } catch (exc) {
                             sh 'exit 1' // failure due to not found master branch
                         }
@@ -125,7 +238,7 @@ if (env.BRANCH_NAME == "master") {
 
                     // deploy snapshot version to oss sonatype
                     stage('deploy') {
-                        // get the artifactory credentials stored in the jenkins secure keychain
+                        // get the sonatype credentials stored in the jenkins secure keychain
                         withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
                                          file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
                                          usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
@@ -143,16 +256,22 @@ if (env.BRANCH_NAME == "master") {
                         // publish reports
                         publishReports()
 
+                        // inform codecov.io
+                        withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
+                            // call codecov
+                            sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
+                        }
+
                         // notify rocket chat about success
                         String buildMode = "merge"
                         String branchName = params.pull_request_head_label
 
                         // notify rocket chat
                         rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
-                                message: "merged feature branch '${params.pull_request_title}' successfully into " +
+                                message: "merged feature branch '${params.pull_request_head_ref}' successfully into " +
                                         "master and deployed to oss sonatype!\n" +
                                         "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                        "*branch:* ${branchName} \n"
+                                        "*branch:* master \n"
                         rawMessage: true
                     }
 
@@ -172,7 +291,7 @@ if (env.BRANCH_NAME == "master") {
                     rocketSend channel: rocketChatChannel, emoji: ':jenkins_explode:',
                             message: "merge feature into master failed!\n" +
                                     "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                    "*branch:* ${params.pull_request_head_label}\n"
+                                    "*branch:* master\n"
                     rawMessage: true
                 }
 
@@ -188,7 +307,7 @@ if (env.BRANCH_NAME == "master") {
     getFeatureBranchProps()
 
     node {
-         // curl the api to get debugging details
+        // curl the api to get debugging details
         def jsonObj = getGithubJsonObj(env.CHANGE_ID, orgNames.get(0), projects.get(0))
 
         // This displays colors using the 'xterm' ansi color map.
@@ -211,7 +330,7 @@ if (env.BRANCH_NAME == "master") {
                 stage('checkout from scm') {
 
                     try {
-                        gitCheckout(projects.get(0), urls.get(0), featureBranchName, sshCredentialsId)
+                        commitHash = gitCheckout(projects.get(0), urls.get(0), featureBranchName, sshCredentialsId).GIT_COMMIT
                     } catch (exc) {
                         // our target repo failed during checkout
                         sh 'exit 1' // failure due to not found forcedPR branch
@@ -249,6 +368,11 @@ if (env.BRANCH_NAME == "master") {
                     // publish reports
                     publishReports()
 
+                    withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
+                        // call codecov
+                        sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
+                    }
+
                     // notify rocket chat
                     rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
                             message: "feature branch test successful!\n" +
@@ -282,11 +406,10 @@ if (env.BRANCH_NAME == "master") {
 
 def getFeatureBranchProps() {
 
-    properties([
-            pipelineTriggers([
-                    issueCommentTrigger('.*!test.*')
+    properties(
+            [pipelineTriggers([
+                    issueCommentTrigger('.*!test.*')])
             ])
-    ])
 
 }
 
@@ -301,6 +424,7 @@ def getMasterBranchProps() {
                      string(defaultValue: '', description: '', name: 'pull_request_state', trim: true),
                      string(defaultValue: '', description: '', name: 'pull_request_base_ref', trim: true),
                      string(defaultValue: '', description: '', name: 'pull_request_head_label', trim: true),
+                     string(defaultValue: '', description: '', name: 'pull_request_head_ref', trim: true),
                      string(defaultValue: '', description: '', name: 'repository_name', trim: true)
                     ]),
              [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
@@ -315,6 +439,7 @@ def getMasterBranchProps() {
                                       [defaultValue: '', key: 'pull_request_base_ref', regexpFilter: '', value: '$.pull_request.base.ref'],
                                       [defaultValue: '', key: 'pull_request_title', regexpFilter: '', value: '$.pull_request.title'],
                                       [defaultValue: '', key: 'pull_request_head_label', regexpFilter: '', value: ' $.pull_request.head.label'],
+                                      [defaultValue: '', key: 'pull_request_head_label', regexpFilter: '', value: ' $.pull_request.head.ref'],
                                       [defaultValue: '', key: 'repository_name', regexpFilter: '', value: '$.repository.name']],
 
                              printContributedVariables: true,
