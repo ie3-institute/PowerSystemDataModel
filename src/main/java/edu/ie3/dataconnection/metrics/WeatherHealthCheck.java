@@ -17,11 +17,11 @@ import tec.uom.se.quantity.Quantities;
 
 public class WeatherHealthCheck {
 
-  private static final int coordinateCount = 1683; // MIA
-  private static final int timeseriesLength = 168; // MIA
+  private static final int coordinateCount = 1683;
+  private static final int timeseriesLength = 168;
   private static final ZonedDateTime exampleDate =
       ZonedDateTime.of(2013, 4, 12, 9, 0, 0, 0, ZoneId.of("UTC"));
-  private static final Point exampleCoordinate = CsvCoordinateSource.getCoordinate(193176); // MIA
+  private static final Point exampleCoordinate = CsvCoordinateSource.getCoordinate(193176);
 
   public static boolean check(
       Map<Point, IndividualTimeSeries<WeatherValues>> coordinateToTimeSeries) {
@@ -33,15 +33,15 @@ public class WeatherHealthCheck {
     if (!value
         .getIrradiation()
         .getDiffuseIrradiation()
-        .equals(Quantities.getQuantity(69.6875, StandardUnits.IRRADIATION))) return false; // MIA
+        .equals(Quantities.getQuantity(69.6875, StandardUnits.IRRADIATION))) return false;
     if (!value
         .getTemperature()
         .getTemperature()
         .equals(Quantities.getQuantity(284.660003662109, StandardUnits.TEMPERATURE)))
-      return false; // MIA
+      return false;
     return value
         .getWind()
         .getVelocity()
-        .equals(Quantities.getQuantity(9.81319808959961, StandardUnits.WIND_VELOCITY)); // MIA
+        .equals(Quantities.getQuantity(9.81319808959961, StandardUnits.WIND_VELOCITY));
   }
 }

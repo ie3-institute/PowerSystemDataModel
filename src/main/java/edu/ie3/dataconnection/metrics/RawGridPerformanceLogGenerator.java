@@ -26,7 +26,6 @@ import org.apache.logging.log4j.Logger;
 
 public class RawGridPerformanceLogGenerator implements PerformanceLogGenerator {
 
-  // MIA check values
   private static final ZonedDateTime START_DATE =
       ZonedDateTime.of(2013, 4, 1, 0, 0, 0, 0, ZoneId.of("UTC"));
   private static final ZonedDateTime END_DATE =

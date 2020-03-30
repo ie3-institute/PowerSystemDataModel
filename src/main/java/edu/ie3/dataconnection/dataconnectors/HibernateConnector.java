@@ -5,19 +5,15 @@
 */
 package edu.ie3.dataconnection.dataconnectors;
 
+import edu.ie3.models.hibernate.output.HibernateLineResult;
 import java.io.Serializable;
 import java.time.ZoneId;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
-import edu.ie3.models.hibernate.output.HibernateLineResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -127,7 +123,7 @@ public class HibernateConnector implements DataConnector {
     try {
       CriteriaQuery<C> criteria = builder.createQuery(entityClass);
       criteria.select(criteria.from(entityClass));
-      entities = manager.createQuery(criteria).getResultList();
+      entities = execCriteriaQuery(criteria).orElse(Collections.emptyList());
     } catch (Throwable ex) {
       ex.printStackTrace();
       mainLogger.error(ex.getMessage());
@@ -164,22 +160,13 @@ public class HibernateConnector implements DataConnector {
   }
 
   public List execNamedQuery(String queryName, Map<String, Object> namedParams) {
-    mainLogger.trace(
-        "Execute query '"
-            + queryName
-            + "'"
-            + "with params {"
-            + namedParams.values().toString()
-            + "}");
     List objs = null;
     try {
       Query query = manager.createNamedQuery(queryName);
       for (Map.Entry<String, Object> entry : namedParams.entrySet()) {
         query.setParameter(entry.getKey(), entry.getValue());
       }
-      mainLogger.debug("GetResultList");
       objs = query.getResultList();
-      mainLogger.debug(" ReceivedResultList");
     } catch (Throwable ex) {
       mainLogger.error("Error at Query Execution: " + ex);
     }
@@ -201,9 +188,34 @@ public class HibernateConnector implements DataConnector {
     return res;
   }
 
+  public <T> Optional<List<T>> execSqlQuery(String query, Class<T> resultClass) {
+    Query nativeQuery = manager.createNativeQuery(query, resultClass);
+    List<T> resultList = null;
+    try {
+      resultList = nativeQuery.getResultList();
+    } catch (Exception ex) {
+      mainLogger.error(ex);
+    }
+    return Optional.ofNullable(resultList);
+  }
+
+  public <T> Optional<List<T>> execCriteriaQuery(CriteriaQuery<T> query) {
+    List<T> resultList = null;
+    try {
+      resultList = manager.createQuery(query).getResultList();
+    } catch (Exception ex) {
+      mainLogger.error(ex);
+    }
+    return Optional.ofNullable(resultList);
+  }
+
   public void flush() {
     EntityTransaction t = manager.getTransaction();
     if (!t.isActive()) t.begin();
     t.commit();
+  }
+
+  public CriteriaBuilder getBuilder() {
+    return builder;
   }
 }

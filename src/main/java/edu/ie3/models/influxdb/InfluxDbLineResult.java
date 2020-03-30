@@ -53,9 +53,9 @@ public class InfluxDbLineResult extends InfluxDbEntity<LineResult> {
     this.time = lineResult.getTimestamp().toInstant();
     this.input_uuid = lineResult.getInputModel().toString();
     this.uuid = lineResult.getUuid().toString();
-    iAMag = lineResult.getiAMag()!= null?  lineResult.getiAMag().getValue().doubleValue() : null;
-    iAAng = lineResult.getiAAng()!= null?  lineResult.getiAAng().getValue().doubleValue() : null;
-    iBMag = lineResult.getiBMag()!= null?  lineResult.getiBMag().getValue().doubleValue() : null;
-    iBAng = lineResult.getiBAng()!= null?  lineResult.getiBAng().getValue().doubleValue() : null;
+    iAMag = lineResult.getiAMag() != null ? lineResult.getiAMag().getValue().doubleValue() : null;
+    iAAng = lineResult.getiAAng() != null ? lineResult.getiAAng().getValue().doubleValue() : null;
+    iBMag = lineResult.getiBMag() != null ? lineResult.getiBMag().getValue().doubleValue() : null;
+    iBAng = lineResult.getiBAng() != null ? lineResult.getiBAng().getValue().doubleValue() : null;
   }
 }

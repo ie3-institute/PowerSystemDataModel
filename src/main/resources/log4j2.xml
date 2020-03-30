@@ -11,15 +11,18 @@
         <File name="HibernateGridAppender" fileName="logs/HibernateGridMetrics.csv">
             <CsvParameterLayout delimiter=";"/>
         </File>
+        <File name="HibernateQueryAppender" fileName="logs/HibernateQueryMetrics.csv">
+            <CsvParameterLayout delimiter=";"/>
+        </File>
         <File name="HibernateOutputAppender" fileName="logs/HibernateOutputMetrics.csv">
             <CsvParameterLayout delimiter=";"/>
         </File>
 
 
-        <File name="InfluxDbWeatherAppender" fileName="logs/influxDbWeatherMetrics.csv">
+        <File name="InfluxDbWeatherAppender" fileName="logs/InfluxDbWeatherMetrics.csv">
             <CsvParameterLayout delimiter=";"/>
         </File>
-        <File name="InfluxDbOutputAppender" fileName="logs/influxDbOutputMetrics.csv">
+        <File name="InfluxDbOutputAppender" fileName="logs/InfluxDbOutputMetrics.csv">
             <CsvParameterLayout delimiter=";"/>
         </File>
 
@@ -30,25 +33,43 @@
         <File name="CouchbaseGridAppender" fileName="logs/CouchbaseGridMetrics.csv">
             <CsvParameterLayout delimiter=";"/>
         </File>
+        <File name="CouchbaseQueryAppender" fileName="logs/CouchbaseQueryMetrics.csv">
+            <CsvParameterLayout delimiter=";"/>
+        </File>
         <File name="CouchbaseOutputAppender" fileName="logs/CouchbaseOutputMetrics.csv">
             <CsvParameterLayout delimiter=";"/>
         </File>
 
 
-        <File name="Neo4jGridAppender" fileName="logs/neo4jGridMetrics.csv">
+        <File name="Neo4jGridAppender" fileName="logs/Neo4jGridMetrics.csv">
+            <CsvParameterLayout delimiter=";"/>
+        </File>
+        <File name="Neo4jQueryAppender" fileName="logs/Neo4jQueryMetrics.csv">
             <CsvParameterLayout delimiter=";"/>
         </File>
 
 
-        <File name="MainLog" fileName="logs/main.log">
+        <RollingFile name="MainLog" fileName="logs/main.log"  filePattern="logs/main.%i.log.gz">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %-15C{1}:%L - %msg%n"/>
-        </File>
-        <File name="VerboseFileLog" fileName="logs/all.log">
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="2" />
+        </RollingFile>
+        <RollingFile name="VerboseFileLog" fileName="logs/all.log" filePattern="logs/all.%i.log.gz">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %-15C{1}:%L - %msg%n"/>
-        </File>
-        <File name="ErrorFileLog" fileName="logs/error.log">
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="2" />
+        </RollingFile>
+        <RollingFile name="ErrorFileLog" fileName="logs/error.log" filePattern="logs/error.%i.log.gz">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %-15C{1}:%L - %msg%n"/>
-        </File>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="200MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="2" />
+        </RollingFile>
     </Appenders>
 
     <Loggers>
@@ -62,6 +83,11 @@
             <appender-ref ref="Console"  level="DEBUG"/>
             <AppenderRef ref="MainLog" />
         </Logger>
+
+        <Logger name="org.neo4j.ogm" level="WARN">
+            <appender-ref ref="Console"/>
+            <AppenderRef ref="MainLog" />
+        </Logger>
         
         
         <Logger name="HibernateWeatherLogger" level="Info">
@@ -69,6 +95,9 @@
         </Logger>
         <Logger name="HibernateGridLogger" level="Info">
             <appender-ref ref="HibernateGridAppender"  level="INFO"/>
+        </Logger>
+        <Logger name="HibernateQueryLogger" level="Info">
+            <appender-ref ref="HibernateQueryAppender"  level="INFO"/>
         </Logger>
         <Logger name = "HibernateOutputLogger" level="Info">
             <appender-ref ref="HibernateOutputAppender" level="INFO"/>
@@ -89,6 +118,9 @@
         <Logger name="CouchbaseGridLogger" level="Info">
             <appender-ref ref="CouchbaseGridAppender"  level="INFO"/>
         </Logger>
+        <Logger name="CouchbaseQueryLogger" level="Info">
+            <appender-ref ref="CouchbaseQueryAppender"  level="INFO"/>
+        </Logger>
         <Logger name = "CouchbaseOutputLogger" level="Info">
             <appender-ref ref="CouchbaseOutputAppender" level="INFO"/>
         </Logger>
@@ -96,6 +128,9 @@
         
         <Logger name="Neo4jGridLogger" level="Info">
             <appender-ref ref="Neo4jGridAppender"  level="INFO"/>
+        </Logger>
+        <Logger name="Neo4jQueryLogger" level="Info">
+            <appender-ref ref="Neo4jQueryAppender"  level="INFO"/>
         </Logger>
     </Loggers>
 </Configuration>

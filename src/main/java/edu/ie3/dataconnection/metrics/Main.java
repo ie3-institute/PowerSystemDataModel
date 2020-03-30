@@ -23,6 +23,7 @@ public class Main {
   private static int numberOfAttempts = 5;
   private static boolean measureWeather = true;
   private static boolean measureRawGrid = false;
+  private static boolean measureQuery = false;
   private static boolean measureOutput = false;
   private static boolean useHibernate = false;
   private static boolean useInfluxDb = false;
@@ -37,6 +38,7 @@ public class Main {
     if (args.length > 2) {
       measureWeather = args[2].contains("w");
       measureRawGrid = args[2].contains("g");
+      measureQuery = args[2].contains("q");
       measureOutput = args[2].contains("o");
     }
     if (args.length > 3) {
@@ -62,6 +64,9 @@ public class Main {
             + "measureRawGrid: "
             + measureRawGrid
             + "\n"
+            + "measureQuery: "
+            + measureQuery
+            + "\n"
             + "measureOutput: "
             + measureOutput
             + "\n"
@@ -83,6 +88,7 @@ public class Main {
     for (int i = 0; i < numberOfAttempts; i++) {
       if (measureWeather) getWeatherPerformance();
       if (measureRawGrid) getRawGridPerformance();
+      if (measureQuery) getQueryPerformance();
       if (measureOutput) getOutputPerformance();
     }
     taskExecutor.shutdownNow();
@@ -124,6 +130,26 @@ public class Main {
     } catch (InterruptedException e) {
       logger.error(
           "Error during task execution for " + connectorName.getName() + "RawGridPerfomance");
+      Thread.currentThread().interrupt();
+    }
+  }
+
+  public static void getQueryPerformance() {
+    if (useHibernate) getQueryPerformance(DataConnectorName.HIBERNATE);
+    if (useNeo4j) getQueryPerformance(DataConnectorName.NEO4J);
+    if (useCouchbase) getQueryPerformance(DataConnectorName.COUCHBASE);
+  }
+
+  private static void getQueryPerformance(DataConnectorName connectorName) {
+    ArrayList<Callable<Object[]>> tasks = new ArrayList<>();
+    for (int i = 0; i < 8; i++) {
+      tasks.add(new QueryPerformanceLogGenerator(connectorName));
+    }
+    try {
+      taskExecutor.invokeAll(tasks);
+    } catch (InterruptedException e) {
+      logger.error(
+          "Error during task execution for " + connectorName.getName() + "QueryPerfomance");
       Thread.currentThread().interrupt();
     }
   }

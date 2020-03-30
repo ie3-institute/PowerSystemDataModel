@@ -28,7 +28,6 @@ import org.apache.logging.log4j.Logger;
 
 public class WeatherPerformanceLogGenerator implements PerformanceLogGenerator {
 
-  // MIA check values
   public static final ZonedDateTime START_DATE =
       ZonedDateTime.of(2013, 4, 8, 0, 0, 0, 0, ZoneId.of("UTC"));
   public static final ZonedDateTime END_DATE =

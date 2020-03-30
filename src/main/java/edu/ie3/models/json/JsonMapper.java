@@ -203,10 +203,18 @@ public class JsonMapper {
     jsonObject.put("uuid", lineResult.getUuid().toString());
     jsonObject.put("input_line", lineResult.getInputModel().toString());
     jsonObject.put("datum", lineResult.getTimestamp().toString());
-    jsonObject.put("iAMag", lineResult.getiAMag()!= null?  lineResult.getiAMag().getValue().doubleValue() : null);
-    jsonObject.put("iAAng", lineResult.getiAAng()!= null?  lineResult.getiAAng().getValue().doubleValue() : null);
-    jsonObject.put("iBMag", lineResult.getiBMag()!= null?  lineResult.getiBMag().getValue().doubleValue() : null);
-    jsonObject.put("iBAng", lineResult.getiBAng()!= null?  lineResult.getiBAng().getValue().doubleValue() : null);
+    jsonObject.put(
+        "iAMag",
+        lineResult.getiAMag() != null ? lineResult.getiAMag().getValue().doubleValue() : null);
+    jsonObject.put(
+        "iAAng",
+        lineResult.getiAAng() != null ? lineResult.getiAAng().getValue().doubleValue() : null);
+    jsonObject.put(
+        "iBMag",
+        lineResult.getiBMag() != null ? lineResult.getiBMag().getValue().doubleValue() : null);
+    jsonObject.put(
+        "iBAng",
+        lineResult.getiBAng() != null ? lineResult.getiBAng().getValue().doubleValue() : null);
 
     return jsonObject;
   }

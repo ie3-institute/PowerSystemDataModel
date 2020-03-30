@@ -5,15 +5,13 @@
 */
 package edu.ie3.dataconnection.dataconnectors;
 
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Pong;
 import org.influxdb.dto.Query;
-
-import java.util.concurrent.TimeUnit;
 
 public class InfluxDbConnector implements DataConnector {
   private static Logger mainLogger = LogManager.getLogger("Main");
@@ -39,8 +37,7 @@ public class InfluxDbConnector implements DataConnector {
   }
 
   @Override
-  public void shutdown()
-  {
+  public void shutdown() {
     if (databaseName.endsWith("out")) deleteOutput();
   }
 

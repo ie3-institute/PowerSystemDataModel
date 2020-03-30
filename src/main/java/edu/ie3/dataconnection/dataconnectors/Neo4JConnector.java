@@ -6,7 +6,12 @@
 package edu.ie3.dataconnection.dataconnectors;
 
 import java.util.Collection;
+import java.util.Map;
 import org.neo4j.ogm.config.Configuration;
+import org.neo4j.ogm.cypher.Filter;
+import org.neo4j.ogm.cypher.Filters;
+import org.neo4j.ogm.model.Result;
+import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 
 public class Neo4JConnector implements DataConnector {
@@ -25,7 +30,7 @@ public class Neo4JConnector implements DataConnector {
     sessionFactory = new SessionFactory(configuration, "edu.ie3.models.neo4j");
   }
 
-  public org.neo4j.ogm.session.Session getSession() {
+  public Session getSession() {
     return sessionFactory.openSession();
   }
 
@@ -41,5 +46,22 @@ public class Neo4JConnector implements DataConnector {
 
   public <E> Collection<E> findAll(Class<E> entityClass) {
     return getSession().loadAll(entityClass, 1);
+  }
+
+  public <E> Collection<E> findAll(Class<E> entityClass, Filter filter) {
+    return getSession().loadAll(entityClass, filter, 1);
+  }
+
+  public <E> Collection<E> findAll(Class<E> entityClass, Filters filters) {
+    return getSession().loadAll(entityClass, filters, 1);
+  }
+
+  public <E> Iterable<E> execCypherQuery(
+      String cypherQuery, Map<String, ?> params, Class<E> entityClass) {
+    return getSession().query(entityClass, cypherQuery, params);
+  }
+
+  public Result execCypherQuery(String cypherQuery, Map<String, ?> params) {
+    return getSession().query(cypherQuery, params);
   }
 }

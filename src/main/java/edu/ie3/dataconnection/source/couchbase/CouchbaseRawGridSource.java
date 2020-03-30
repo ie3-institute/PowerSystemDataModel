@@ -7,6 +7,7 @@ package edu.ie3.dataconnection.source.couchbase;
 
 import com.couchbase.client.java.json.JsonArray;
 import com.couchbase.client.java.json.JsonObject;
+import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
 import edu.ie3.dataconnection.dataconnectors.CouchbaseConnector;
 import edu.ie3.dataconnection.dataconnectors.DataConnector;
@@ -23,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public class CouchbaseRawGridSource implements RawGridSource {
 
@@ -56,14 +58,12 @@ public class CouchbaseRawGridSource implements RawGridSource {
 
   @Override
   public Collection<LineInput> getLines() {
-
     if (!fetched) fetch();
     return aggregatedRawGridInput.getLines();
   }
 
   @Override
   public Collection<Transformer2WInput> get2WTransformers() {
-
     if (!fetched) fetch();
     return aggregatedRawGridInput.getTransformer2Ws();
   }
@@ -79,6 +79,39 @@ public class CouchbaseRawGridSource implements RawGridSource {
 
     if (!fetched) fetch();
     return aggregatedRawGridInput.getSwitches();
+  }
+
+  @Override
+  public Collection<NodeInput> getNeighborNodesOfSubnet(Integer subnet) {
+    // Abfrage nicht wirklich möglich
+    return null;
+  }
+
+  @Override
+  public Optional<AggregatedRawGridInput> getSubnet(Integer subnet) {
+    AggregatedRawGridInput subnetInput = new AggregatedRawGridInput();
+    String subnetKey = generateSubnetKey(subnet, "vn_simona");
+    CompletableFuture<GetResult> resultFuture = connector.get(subnetKey);
+    GetResult result = resultFuture.join();
+    JsonObject jsonObject = result.contentAsObject();
+    JsonArray nodesArr = jsonObject.getArray("nodes");
+    if (nodesArr == null) {
+      mainLogger.error("Could not find any nodes, can not build grid");
+      return Optional.empty();
+    }
+    for (int i = 0;
+         i < nodesArr.size();
+         i++) { // for is used to avoid the cast in forEach(..) or iterator
+      JsonObject object = nodesArr.getObject(i);
+      NodeInput node = JsonMapper.toNodeInput(object);
+      idToNode.put(JsonMapper.getTid(object), node);
+      subnetInput.add(node);
+    }
+    extractLines(jsonObject.getArray("lines")).forEach(subnetInput::add);
+    extractSwitches(jsonObject.getArray("switches")).forEach(subnetInput::add);
+    extractTransformer2Ws(jsonObject.getArray("trafo2ws")).forEach(subnetInput::add);
+    extractTransformer3Ws(jsonObject.getArray("trafo3ws")).forEach(subnetInput::add);
+    return Optional.of(subnetInput);
   }
 
   @Override
@@ -121,60 +154,92 @@ public class CouchbaseRawGridSource implements RawGridSource {
 
   private void fetchLines(JsonArray linesArr) {
     if (!fetchedNodes) fetchNodes();
-    if (linesArr != null) {
-      for (int i = 0;
-          i < linesArr.size();
-          i++) { // for is used to avoid the cast in forEach(..) or iterator
-        JsonObject object = linesArr.getObject(i);
-        NodeInput nodeA = idToNode.get(JsonMapper.identifyNodeA(object));
-        NodeInput nodeB = idToNode.get(JsonMapper.identifyNodeB(object));
-        aggregatedRawGridInput.add(JsonMapper.toLineInput(object, nodeA, nodeB));
-      }
-    }
+    HashSet<LineInput> lines = extractLines(linesArr);
+    lines.forEach(aggregatedRawGridInput::add);
   }
 
   private void fetchSwitches(JsonArray switchesArr) {
     if (!fetchedNodes) fetchNodes();
-    if (switchesArr != null) {
-      for (int i = 0;
-          i < switchesArr.size();
-          i++) { // for is used to avoid the cast in forEach(..) or iterator
-        JsonObject object = switchesArr.getObject(i);
-        NodeInput nodeA = idToNode.get(JsonMapper.identifyNodeA(object));
-        NodeInput nodeB = idToNode.get(JsonMapper.identifyNodeB(object));
-        aggregatedRawGridInput.add(JsonMapper.toSwitchInput(object, nodeA, nodeB));
-      }
-    }
+    HashSet<SwitchInput> switches = extractSwitches(switchesArr);
+    switches.forEach(aggregatedRawGridInput::add);
   }
 
   private void fetch2WTrafos(JsonArray trafo2WArr) {
     if (!fetchedNodes) fetchNodes();
-    if (trafo2WArr != null) {
-      for (int i = 0;
-          i < trafo2WArr.size();
-          i++) { // for is used to avoid the cast in forEach(..) or iterator
-        JsonObject object = trafo2WArr.getObject(i);
-        NodeInput nodeA = idToNode.get(JsonMapper.identifyNodeA(object));
-        NodeInput nodeB = idToNode.get(JsonMapper.identifyNodeB(object));
-        aggregatedRawGridInput.add(JsonMapper.toTransformer2W(object, nodeA, nodeB));
-      }
-      aggregatedRawGridInput.add(JsonMapper.getBoundaryInjectionTransformer());
-    }
+    HashSet<Transformer2WInput> trafos = extractTransformer2Ws(trafo2WArr);
+    trafos.forEach(aggregatedRawGridInput::add);
   }
 
   private void fetch3WTrafos(JsonArray trafo3WArr) {
     if (!fetchedNodes) fetchNodes();
-    if (trafo3WArr != null) {
+    HashSet<Transformer3WInput> trafos = extractTransformer3Ws(trafo3WArr);
+    trafos.forEach(aggregatedRawGridInput::add);
+  }
+  
+
+  @NotNull
+  private HashSet<LineInput> extractLines(JsonArray linesArr) {
+    HashSet<LineInput> lines = new HashSet<>();
+    if (linesArr != null) {
       for (int i = 0;
-          i < trafo3WArr.size();
-          i++) { // for is used to avoid the cast in forEach(..) or iterator
-        JsonObject object = trafo3WArr.getObject(i);
+           i < linesArr.size();
+           i++) { // for is used to avoid the cast in forEach(..) or iterator
+        JsonObject object = linesArr.getObject(i);
+        NodeInput nodeA = idToNode.get(JsonMapper.identifyNodeA(object));
+        NodeInput nodeB = idToNode.get(JsonMapper.identifyNodeB(object));
+        lines.add(JsonMapper.toLineInput(object, nodeA, nodeB));
+      }
+    }
+    return lines;
+  }
+  
+  @NotNull
+  private HashSet<SwitchInput> extractSwitches(JsonArray switchesArr) {
+    HashSet<SwitchInput> switches = new HashSet<>();
+    if (switchesArr != null) {
+      for (int i = 0;
+           i < switchesArr.size();
+           i++) { // for is used to avoid the cast in forEach(..) or iterator
+        JsonObject object = switchesArr.getObject(i);
+        NodeInput nodeA = idToNode.get(JsonMapper.identifyNodeA(object));
+        NodeInput nodeB = idToNode.get(JsonMapper.identifyNodeB(object));
+        switches.add(JsonMapper.toSwitchInput(object, nodeA, nodeB));
+      }
+    }
+    return switches;
+  }
+  
+  @NotNull
+  private HashSet<Transformer2WInput> extractTransformer2Ws(JsonArray transformer2WsArr) {
+    HashSet<Transformer2WInput> transformer2Ws = new HashSet<>();
+    if (transformer2WsArr != null) {
+      for (int i = 0;
+           i < transformer2WsArr.size();
+           i++) { // for is used to avoid the cast in forEach(..) or iterator
+        JsonObject object = transformer2WsArr.getObject(i);
+        NodeInput nodeA = idToNode.get(JsonMapper.identifyNodeA(object));
+        NodeInput nodeB = idToNode.get(JsonMapper.identifyNodeB(object));
+        transformer2Ws.add(JsonMapper.toTransformer2W(object, nodeA, nodeB));
+      }
+    }
+    return transformer2Ws;
+  }
+  
+  @NotNull
+  private HashSet<Transformer3WInput> extractTransformer3Ws(JsonArray transformer3WsArr) {
+    HashSet<Transformer3WInput> transformer3Ws = new HashSet<>();
+    if (transformer3WsArr != null) {
+      for (int i = 0;
+           i < transformer3WsArr.size();
+           i++) { // for is used to avoid the cast in forEach(..) or iterator
+        JsonObject object = transformer3WsArr.getObject(i);
         NodeInput nodeA = idToNode.get(JsonMapper.identifyNodeA(object));
         NodeInput nodeB = idToNode.get(JsonMapper.identifyNodeB(object));
         NodeInput nodeC = idToNode.get(JsonMapper.identifyNodeC(object));
-        aggregatedRawGridInput.add(JsonMapper.toTransformer3W(object, nodeA, nodeB, nodeC));
+        transformer3Ws.add(JsonMapper.toTransformer3W(object, nodeA, nodeB, nodeC));
       }
     }
+    return transformer3Ws;
   }
 
   public String createQueryStringForScenarioSubnets() {

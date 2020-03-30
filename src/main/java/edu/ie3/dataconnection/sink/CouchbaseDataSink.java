@@ -5,7 +5,6 @@
 */
 package edu.ie3.dataconnection.sink;
 
-import com.couchbase.client.java.AsyncCollection;
 import com.couchbase.client.java.json.JsonObject;
 import edu.ie3.dataconnection.dataconnectors.CouchbaseConnector;
 import edu.ie3.dataconnection.dataconnectors.DataConnector;

@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.neo4j.ogm.model.Result;
 
 public class Neo4JRawGridSource implements RawGridSource {
 
@@ -69,6 +70,88 @@ public class Neo4JRawGridSource implements RawGridSource {
   public Collection<SwitchInput> getSwitches() {
     if (!fetched) fetch();
     return aggregatedRawGridInput.getSwitches();
+  }
+
+  @Override
+  public Collection<NodeInput> getNeighborNodesOfSubnet(Integer subnet) {
+    final String cypherQuery =
+        "MATCH(n1) - [l:LINE] - (n2) - [t:TRANSFORMER] - (n3:Node {subnet : $subnet}) RETURN n1";
+    Map<String, Integer> params = Collections.singletonMap("subnet", subnet);
+    Iterable<Neo4JNodeInput> neo4JNodeInputs =
+        connector.execCypherQuery(cypherQuery, params, Neo4JNodeInput.class);
+    Collection<NodeInput> nodeInputs =
+        StreamSupport.stream(neo4JNodeInputs.spliterator(), false)
+            .map(Neo4JMapper::toNodeInput)
+            .collect(Collectors.toSet());
+    return nodeInputs;
+  }
+
+  //  MATCH(n:Node {subnet: 116}) - [c*0..1] - () RETURN n, c;
+  @Override
+  public Optional<AggregatedRawGridInput> getSubnet(Integer subnet) {
+    AggregatedRawGridInput subnetInput = new AggregatedRawGridInput();
+    final String cypherQuery = "MATCH(n:Node {subnet: $subnet}) - [c*0..1] - (m) RETURN n, c, m;";
+    Map<String, Integer> params = Collections.singletonMap("subnet", subnet);
+   try { Result queryResult = connector.execCypherQuery(cypherQuery, params);
+    Iterator<Map<String, Object>> resultIterator = queryResult.iterator();
+    HashSet<Object> relationships = new HashSet<>(); //relationships can only be interpreted after nodes are done
+    while (resultIterator.hasNext()) {
+      Map<String, Object> row = resultIterator.next();
+      Neo4JNodeInput neo4jNode = (Neo4JNodeInput) row.get("n");
+      NodeInput node = Neo4JMapper.toNodeInput(neo4jNode);
+      tidToNode.put(neo4jNode.getTid(), node);
+      subnetInput.add(node);
+      Object cObj = row.get("c");
+      if (cObj instanceof ArrayList) {
+        relationships.add(((ArrayList) cObj).get(0));
+      }
+    }
+    HashSet<Neo4JTransformer3WInput> transformer3Ws = new HashSet<>();
+    for (Object relationship : relationships) {
+      if (relationship instanceof Neo4JLineInput) {
+        Neo4JLineInput neo4JLine = (Neo4JLineInput) relationship;
+          LineInput lineInput = Neo4JMapper.toLineInput(neo4JLine, tidToNode.get(neo4JLine.getNodeA().getTid()), tidToNode.get(neo4JLine.getNodeB().getTid()));
+          subnetInput.add(lineInput);
+      }
+      if (relationship instanceof Neo4JSwitchInput) {
+        Neo4JSwitchInput neo4JSwitch = (Neo4JSwitchInput) relationship;
+          SwitchInput switchInput = Neo4JMapper.toSwitchInput(neo4JSwitch, tidToNode.get(neo4JSwitch.getNodeA().getTid()), tidToNode.get(neo4JSwitch.getNodeB().getTid()));
+        subnetInput.add(switchInput);
+      }
+      if (relationship instanceof Neo4JTransformer2WInput) {
+        Neo4JTransformer2WInput neo4JTransformer2W = (Neo4JTransformer2WInput) relationship;
+          Transformer2WInput transformer2WInput = Neo4JMapper.toTransformer2W(neo4JTransformer2W, tidToNode.get(neo4JTransformer2W.getNodeA().getTid()), tidToNode.get(neo4JTransformer2W.getNodeB().getTid()));
+            subnetInput.add(transformer2WInput);
+      }
+      if (relationship instanceof Neo4JTransformer3WInput) {
+        Neo4JTransformer3WInput neo4JTransformer3W = (Neo4JTransformer3WInput) relationship;
+        transformer3Ws.add(neo4JTransformer3W);
+      }
+    }
+    if(!transformer3Ws.isEmpty()) {
+      Map<String, List<Neo4JTransformer3WInput>> transformerCollections =
+              transformer3Ws.stream().collect(Collectors.groupingBy(Neo4JTransformer3WInput::getUuid));
+      transformerCollections
+              .values()
+              .forEach(
+                      transformerCollection -> {
+                        Integer[] nodeTids =
+                                Neo4JMapper.getNodeTids(
+                                        transformerCollection.get(0), transformerCollection.get(1));
+                        Transformer3WInput Transformer =
+                                Neo4JMapper.toTransformer3W(
+                                        transformerCollection.get(0),
+                                        tidToNode.get(nodeTids[0]),
+                                        tidToNode.get(nodeTids[1]),
+                                        tidToNode.get(nodeTids[2]));
+                        subnetInput.add(Transformer);
+                      });
+    }
+   }  catch (Exception ex) {
+     mainLogger.error("Error at query result interpretation: ", ex);
+     return Optional.empty();
+   }
+    return Optional.of(subnetInput);
   }
 
   @Override

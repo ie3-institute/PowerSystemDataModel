@@ -12,7 +12,6 @@ import edu.ie3.models.influxdb.InfluxDbEntity;
 import edu.ie3.models.influxdb.InfluxDbMapper;
 import edu.ie3.models.result.ResultEntity;
 import java.util.Collection;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.influxdb.InfluxDB;

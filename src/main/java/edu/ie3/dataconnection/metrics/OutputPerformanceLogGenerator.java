@@ -16,13 +16,10 @@ import edu.ie3.dataconnection.sink.InfluxDbDataSink;
 import edu.ie3.models.StandardUnits;
 import edu.ie3.models.result.ResultEntity;
 import edu.ie3.models.result.connector.LineResult;
-
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
@@ -34,19 +31,20 @@ import tec.uom.se.quantity.Quantities;
 public class OutputPerformanceLogGenerator implements PerformanceLogGenerator {
 
   private static final Random random = new Random();
-  private static final int numberOfEntities = 100000; //MIA
+  private static final int numberOfEntities = 100000;
   private static final UUID comparisonUUID =
       UUID.fromString("11111111-2222-3333-4444-555555555555");
   private static int index = 0;
   private static UUID[] uuids = new UUID[numberOfEntities];
+
   static {
-    for (int i = 0; i < numberOfEntities; i++) {
+    for (int i = 0; i < numberOfEntities - 1; i++) {
       uuids[i] = UUID.randomUUID();
     }
   }
 
   private final String name;
-  private final int idx = index ++;
+  private final int idx = index++;
   private final Logger logger;
   private final DataConnectorName connectorName;
   private DataSink sink;

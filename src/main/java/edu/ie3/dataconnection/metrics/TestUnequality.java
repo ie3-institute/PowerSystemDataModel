@@ -6,7 +6,6 @@
 package edu.ie3.dataconnection.metrics;
 
 import edu.ie3.models.StandardUnits;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
@@ -16,17 +15,17 @@ import javax.measure.quantity.ElectricPotential;
 import tec.uom.se.quantity.Quantities;
 
 public class TestUnequality {
-  private static final int numberOfEntities = 3; //MIA
+  private static final int numberOfEntities = 3;
   private static final UUID comparisonUUID =
-          UUID.fromString("11111111-2222-3333-4444-555555555555");
+      UUID.fromString("11111111-2222-3333-4444-555555555555");
   private static int index = 0;
   private static UUID[] uuids = new UUID[numberOfEntities];
+
   static {
     for (int i = 0; i < numberOfEntities; i++) {
       uuids[i] = UUID.randomUUID();
     }
   }
-
 
   public static void main(String[] args) {
     Quantity<ElectricPotential> quantityA = Quantities.getQuantity(10, StandardUnits.V_RATED);
@@ -50,6 +49,5 @@ public class TestUnequality {
     System.out.println("Set.contains(B) ? " + quantitySet.contains(quantityB)); // false
 
     System.out.println(Arrays.stream(uuids).distinct().count());
-
   }
 }

@@ -43,10 +43,10 @@ public class HibernateLineResult implements HibernateResult {
     date = lineResult.getTimestamp();
     input_uuid = lineResult.getInputModel();
     uuid = lineResult.getUuid();
-    iAMag = lineResult.getiAMag()!= null?  lineResult.getiAMag().getValue().doubleValue() : null;
-    iAAng = lineResult.getiAAng()!= null?  lineResult.getiAAng().getValue().doubleValue() : null;
-    iBMag = lineResult.getiBMag()!= null?  lineResult.getiBMag().getValue().doubleValue() : null;
-    iBAng = lineResult.getiBAng()!= null?  lineResult.getiBAng().getValue().doubleValue() : null;
+    iAMag = lineResult.getiAMag() != null ? lineResult.getiAMag().getValue().doubleValue() : null;
+    iAAng = lineResult.getiAAng() != null ? lineResult.getiAAng().getValue().doubleValue() : null;
+    iBMag = lineResult.getiBMag() != null ? lineResult.getiBMag().getValue().doubleValue() : null;
+    iBAng = lineResult.getiBAng() != null ? lineResult.getiBAng().getValue().doubleValue() : null;
   }
 
   public ZonedDateTime getDate() {
