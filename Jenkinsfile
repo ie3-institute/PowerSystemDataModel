@@ -23,11 +23,12 @@ urls = ['git@github.com:' + orgNames.get(0)]
 
 def sonarqubeProjectKey = "edu.ie3:PowerSystemDataModel"
 
-codeCovTokenId = "psdm-codecov-token"
-
 //// git webhook trigger token
 //// http://JENKINS_URL/generic-webhook-trigger/invoke?token=<webhookTriggerToken>
 webhookTriggerToken = "b0ba1564ca8c4d12ffun639b160d2ek6h9bauhk86"
+
+/// code coverage token id
+codeCovTokenId = "psdm-codecov-token"
 
 //// internal jenkins credentials link for git ssh keys
 //// requires the ssh key to be stored in the internal jenkins credentials keystore
@@ -124,6 +125,30 @@ if (env.BRANCH_NAME == "master") {
                         }
                     }
 
+                    // post processing
+                    stage('publish reports + coverage') {
+                        // publish reports
+                        publishReports()
+
+                        // inform codecov.io
+                        withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
+                            // call codecov
+                            sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
+                        }
+
+                        // notify rocket chat about success
+                        String buildMode = "merge"
+                        String branchName = params.pull_request_head_label
+
+                        // notify rocket chat
+                        rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
+                                message: "merged feature branch '${params.pull_request_head_ref}' successfully into " +
+                                        "master and deployed to oss sonatype!\n" +
+                                        "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
+                                        "*branch:* master \n"
+                        rawMessage: true
+                    }
+
                     // deploy snapshot version to oss sonatype
                     stage('deploy release') {
                         // get the sonatype credentials stored in the jenkins secure keychain
@@ -138,27 +163,6 @@ if (env.BRANCH_NAME == "master") {
 
                         }
                     }
-
-                    // post processing
-                    stage('post processing') {
-                        // publish reports
-                        publishReports()
-
-                        // inform codecov.io
-                        withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
-                            // call codecov
-                            sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
-                        }
-
-                        // notify rocket chat about success
-                        rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
-                                message: "release deployment successfully! Please visit https://oss.sonatype.org/ " +
-                                        "to stag and release the artifact!" +
-                                        "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                        "*branch:* master \n"
-                        rawMessage: true
-                    }
-
 
                 } catch (Exception e) {
                     // set build result to failure
@@ -224,6 +228,7 @@ if (env.BRANCH_NAME == "master") {
                         }
                     }
 
+
                     // wait for the sonarqube quality gate
                     stage("Quality Gate") {
                         timeout(time: 1, unit: 'HOURS') {
@@ -235,24 +240,8 @@ if (env.BRANCH_NAME == "master") {
                         }
                     }
 
-
-                    // deploy snapshot version to oss sonatype
-                    stage('deploy') {
-                        // get the sonatype credentials stored in the jenkins secure keychain
-                        withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
-                                         file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
-                                         usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
-                            deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
-
-                            gradle("${deployGradleTasks}")
-
-                            deployedArtifacts = "${projects.get(0)}, "
-
-                        }
-                    }
-
                     // post processing
-                    stage('post processing') {
+                    stage('publish reports + coverage') {
                         // publish reports
                         publishReports()
 
@@ -273,6 +262,22 @@ if (env.BRANCH_NAME == "master") {
                                         "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
                                         "*branch:* master \n"
                         rawMessage: true
+                    }
+
+
+                    // deploy snapshot version to oss sonatype
+                    stage('deploy') {
+                        // get the sonatype credentials stored in the jenkins secure keychain
+                        withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
+                                         file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
+                                         usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
+                            deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
+
+                            gradle("${deployGradleTasks}")
+
+                            deployedArtifacts = "${projects.get(0)}, "
+
+                        }
                     }
 
 
