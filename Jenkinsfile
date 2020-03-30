@@ -25,14 +25,14 @@ def sonarqubeProjectKey = "edu.ie3:PowerSystemDataModel"
 
 //// git webhook trigger token
 //// http://JENKINS_URL/generic-webhook-trigger/invoke?token=<webhookTriggerToken>
-webhookTriggerToken = "b0ba1564ca8c4d12ffun639b160d2ek6h9bauhk86"
+webhookTriggerToken = "pdsm-webhook-trigger-token"
 
 /// code coverage token id
 codeCovTokenId = "psdm-codecov-token"
 
 //// internal jenkins credentials link for git ssh keys
 //// requires the ssh key to be stored in the internal jenkins credentials keystore
-def sshCredentialsId = "19f16959-8a0d-4a60-bd1f-5adb4572b702"
+def sshCredentialsId = "pdsm-webhook-trigger-token"
 
 //// internal maven central credentials
 def mavenCentralCredentialsId = "87bfb2d4-7613-4816-9fe1-70dfd7e6dec2"
@@ -72,7 +72,9 @@ def commitHash = ""
 if (env.BRANCH_NAME == "master") {
 
     // setup
-    getMasterBranchProps()
+    withCredentials([string(credentialsId: webhookTriggerToken, variable: 'webhookToken')]) {
+        getMasterBranchProps(env.webhookToken)
+    }
 
     // release deployment
     if (params.release == "true") {
@@ -89,7 +91,7 @@ if (env.BRANCH_NAME == "master") {
                     setJavaVersion(javaVersionId)
 
                     // set build display name
-                    currentBuild.displayName = "release deployment"
+                    currentBuild.displayName = "release deployment" + " (" + currentBuild.displayName + ")"
 
                     // checkout from scm
                     stage('checkout from scm') {
@@ -203,7 +205,7 @@ if (env.BRANCH_NAME == "master") {
                     setJavaVersion(javaVersionId)
 
                     // set build display name
-                    currentBuild.displayName = "merge pr ${params.pull_request_head_ref}"
+                    currentBuild.displayName = "merge pr ${params.pull_request_head_ref}" + " (" + currentBuild.displayName + ")"
 
                     // checkout from scm
                     stage('checkout from scm') {
@@ -419,7 +421,7 @@ def getFeatureBranchProps() {
 }
 
 
-def getMasterBranchProps() {
+def getMasterBranchProps(localWebHookTriggerToken) {
     properties(
             [parameters(
                     [string(defaultValue: '', description: '', name: 'release', trim: true),
@@ -452,7 +454,7 @@ def getMasterBranchProps() {
                              regexpFilterExpression: '^(closed true closed master)$',
                              regexpFilterText: '$action $pull_request_merged $pull_request_state $pull_request_base_ref',
                              silentResponse: true,
-                             token: webhookTriggerToken)])])
+                             token: localWebHookTriggerToken)])])
 }
 
 
