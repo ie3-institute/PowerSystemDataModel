@@ -39,10 +39,10 @@ class CommonVoltageLevelTest extends Specification {
 		!dut.covers(Quantities.getQuantity(10d, KILOVOLT)) // May be false, because the interval is right open
 	}
 
-    def "A common voltage level should correctly check, if a valid id / rated voltage combination is covered"() {
-        expect:
-        dut.covers("Niederspannung", Quantities.getQuantity(500d, VOLT))   // May be true
-    }
+	def "A common voltage level should correctly check, if a valid id / rated voltage combination is covered"() {
+		expect:
+		dut.covers("Niederspannung", Quantities.getQuantity(500d, VOLT))   // May be true
+	}
 
 	def "A common voltage level should correctly check, if an invalid id / rated voltage combination is covered"() {
 		expect:

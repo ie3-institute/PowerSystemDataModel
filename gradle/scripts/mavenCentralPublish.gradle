@@ -53,16 +53,16 @@ if (project.hasProperty('user') && project.hasProperty('password')) {
 						}
 						developers {
 							[
-									developer {
-										id = 'johanneshiry'
-										name = 'Johannes Hiry'
-										email = 'johannes.hiry@tu-dortmund.de'
-									},
-									developer {
-										id = 'ckittl'
-										name = 'Chris Kittl'
-										email = 'chris.kittl@tu-dortmund.de'
-									}
+								developer {
+									id = 'johanneshiry'
+									name = 'Johannes Hiry'
+									email = 'johannes.hiry@tu-dortmund.de'
+								},
+								developer {
+									id = 'ckittl'
+									name = 'Chris Kittl'
+									email = 'chris.kittl@tu-dortmund.de'
+								}
 							]
 						}
 					}

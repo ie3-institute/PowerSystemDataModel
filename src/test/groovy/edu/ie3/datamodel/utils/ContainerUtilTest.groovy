@@ -128,14 +128,14 @@ class ContainerUtilTest extends Specification {
 		when:
 		ContainerUtils.determinePredominantVoltLvl(dut, 4)
 
-        then:
-        InvalidGridException ex = thrown()
-        ex.message == "There are 2 voltage levels apparent, although only one is expected. Following voltage levels" +
-                " are present: CommonVoltageLevel{id='Mittelspannung', nominalVoltage=10.0 kV, synonymousIds=" +
-                "[Mittelspannung, ms, ms_10kv, mv, mv_10kV], voltageRange=Interval [10.0 kV, 20.0 kV)}, " +
-                "CommonVoltageLevel{id='Mittelspannung', nominalVoltage=20.0 kV, synonymousIds=[Mittelspannung, ms, " +
-                "ms_20kv, mv, mv_20kV], voltageRange=Interval [20.0 kV, 30.0 kV)}"
-    }
+		then:
+		InvalidGridException ex = thrown()
+		ex.message == "There are 2 voltage levels apparent, although only one is expected. Following voltage levels" +
+				" are present: CommonVoltageLevel{id='Mittelspannung', nominalVoltage=10.0 kV, synonymousIds=" +
+				"[Mittelspannung, ms, ms_10kv, mv, mv_10kV], voltageRange=Interval [10.0 kV, 20.0 kV)}, " +
+				"CommonVoltageLevel{id='Mittelspannung', nominalVoltage=20.0 kV, synonymousIds=[Mittelspannung, ms, " +
+				"ms_20kv, mv, mv_20kV], voltageRange=Interval [20.0 kV, 30.0 kV)}"
+	}
 
 	def "The container util determines the set of subnet number correctly" () {
 		expect:

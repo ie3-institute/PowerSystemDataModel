@@ -42,19 +42,19 @@ class AssetInputProcessorTest extends Specification {
 		def assetInputProcessor = new AssetInputProcessor(NodeInput)
 		def validResult = GridTestData.nodeA
 
-        Map expectedResults = [
-                "uuid"         : "5dc88077-aeb6-4711-9142-db57292640b1",
-                "geoPosition"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-                "id"           : "node_a",
-                "operatesUntil": "2020-03-25 15:11:31",
-                "operatesFrom" : "2020-03-24 15:11:31",
-                "operator"     : "8f9682df-0744-4b58-a122-f0dc730f6510",
-                "slack"        : "true",
-                "subnet"       : "1",
-                "vTarget"      : "1.0",
-                "voltlvl"      : "Höchstspannung",
-                "vrated"       : "380.0"
-        ]
+		Map expectedResults = [
+			"uuid"         : "5dc88077-aeb6-4711-9142-db57292640b1",
+			"geoPosition"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"id"           : "node_a",
+			"operatesUntil": "2020-03-25 15:11:31",
+			"operatesFrom" : "2020-03-24 15:11:31",
+			"operator"     : "8f9682df-0744-4b58-a122-f0dc730f6510",
+			"slack"        : "true",
+			"subnet"       : "1",
+			"vTarget"      : "1.0",
+			"voltlvl"      : "Höchstspannung",
+			"vrated"       : "380.0"
+		]
 
 		when: "the entity is passed to the processor"
 		def processingResult = assetInputProcessor.handleEntity(validResult)
