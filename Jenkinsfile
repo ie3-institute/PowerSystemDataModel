@@ -354,11 +354,13 @@ if (env.BRANCH_NAME == "master") {
                     // publish reports
                     publishReports()
 
+                    echo after
+                    echo $after
                     echo env.GIT_COMMIT
 
                     withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
                         // call codecov
-                        sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${env.GIT_COMMIT}"
+                        sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${after}"
                     }
 
 
@@ -395,10 +397,19 @@ if (env.BRANCH_NAME == "master") {
 
 def getFeatureBranchProps() {
 
-    properties([
-            pipelineTriggers([
-                    issueCommentTrigger('.*!test.*')
-            ])
+    properties([parameters([string(defaultValue: '', description: '', name: 'after', trim: true)]),
+                pipelineTriggers([
+                        issueCommentTrigger('.*!test.*')
+                ], [GenericTrigger(causeString: '$issue_title',
+                        genericVariables:
+                                [[defaultValue: '', key: 'after', regexpFilter: '', value: '$.after']],
+                        printContributedVariables: true,
+                        printPostContent: true,
+                        regexpFilterExpression: '',
+                        regexpFilterText: '',
+                        silentResponse: true,
+                        token: webhookTriggerToken)])
+
     ])
 
 }
