@@ -1,0 +1,8 @@
+@startuml
+Interface GridTestData
+Interface ComplexTopology
+Interface SystemParticipantTestData
+
+GridTestData <|-- ComplexTopology
+GridTestData <|-- SystemParticipantTestData
+@enduml

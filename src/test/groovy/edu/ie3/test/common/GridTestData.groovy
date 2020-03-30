@@ -15,6 +15,8 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
+import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
+import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.util.TimeTools
 import edu.ie3.util.quantities.PowerSystemUnits
@@ -24,8 +26,6 @@ import org.locationtech.jts.io.geojson.GeoJsonReader
 import tec.uom.se.quantity.Quantities
 import tec.uom.se.unit.MetricPrefix
 import tec.uom.se.unit.Units
-
-import java.time.ZonedDateTime
 
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
@@ -42,7 +42,7 @@ import static tec.uom.se.unit.Units.SIEMENS
  */
 class GridTestData {
 
-	private static final GeoJsonReader geoJsonReader = new GeoJsonReader();
+	private static final GeoJsonReader geoJsonReader = new GeoJsonReader()
 
 	private static final Transformer2WTypeInput transformerTypeBtoD = new Transformer2WTypeInput(
 	UUID.randomUUID(),
@@ -144,7 +144,7 @@ class GridTestData {
 	"node_a",
 	Quantities.getQuantity(1d, PU),
 	true,
-	(Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }"),
+	geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }") as Point,
 	GermanVoltageLevelUtils.EHV_380KV,
 	1)
 	public static final NodeInput nodeB = new NodeInput(
@@ -167,8 +167,15 @@ class GridTestData {
 	null,
 	GermanVoltageLevelUtils.MV_20KV,
 	3)
+	public static final NodeGraphicInput nodeGraphicC = new NodeGraphicInput(
+	UUID.fromString("09aec636-791b-45aa-b981-b14edf171c4c"),
+	"main",
+	null,
+	nodeC,
+	geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [0, 10] }") as Point
+	)
 	public static final NodeInput nodeD = new NodeInput(
-	UUID.fromString("bd865a25-58f3-44ac-aa90-c6b6e3cd91b2"),
+	UUID.fromString("6e0980e0-10f2-4e18-862b-eb2b7c90509b"),
 	OperationTime.notLimited(),
 	OperatorInput.NO_OPERATOR_ASSIGNED,
 	"node_d",
@@ -177,6 +184,13 @@ class GridTestData {
 	null,
 	GermanVoltageLevelUtils.MV_20KV,
 	4)
+	public static final NodeGraphicInput nodeGraphicD = new NodeGraphicInput(
+	UUID.fromString("9ecad435-bd16-4797-a732-762c09d4af25"),
+	"main",
+	geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[-1, 0], [1, 0]]}") as LineString,
+	nodeD,
+	null
+	)
 	public static final NodeInput nodeE = new NodeInput(
 	UUID.randomUUID(),
 	OperationTime.notLimited(),
@@ -315,7 +329,13 @@ class GridTestData {
 	2,
 	lineTypeInputCtoD,
 	Quantities.getQuantity(3, Units.METRE),
-	(LineString) geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}"),
+	geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}") as LineString,
 	Optional.of("olm")
+	)
+	public static final LineGraphicInput lineGraphicCtoD = new LineGraphicInput(
+	UUID.fromString("ece86139-3238-4a35-9361-457ecb4258b0"),
+	"main",
+	geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[0, 0], [0, 10]]}") as LineString,
+	lineCtoD
 	)
 }
