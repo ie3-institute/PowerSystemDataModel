@@ -138,17 +138,6 @@ if (env.BRANCH_NAME == "master") {
                             sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
                         }
 
-                        // notify rocket chat about success
-                        String buildMode = "merge"
-                        String branchName = params.pull_request_head_label
-
-                        // notify rocket chat
-                        rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
-                                message: "merged feature branch '${params.pull_request_head_ref}' successfully into " +
-                                        "master and deployed to oss sonatype!\n" +
-                                        "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                        "*branch:* master \n"
-                        rawMessage: true
                     }
 
                     // deploy snapshot version to oss sonatype
@@ -164,6 +153,14 @@ if (env.BRANCH_NAME == "master") {
                             deployedArtifacts = "${projects.get(0)}, "
 
                         }
+
+                        // notify rocket chat
+                        rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
+                                message: "release deployment successful. pls remember visiting https://oss.sonatype.org" +
+                                        "too stag and release the artifact!" +
+                                        "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
+                                        "*branch:* master \n"
+                        rawMessage: true
                     }
 
                 } catch (Exception e) {
@@ -193,19 +190,11 @@ if (env.BRANCH_NAME == "master") {
     } else {
         // merge of features
 
-        // notify rocket chat about the started feature branch run
-        rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
-                message: "master branch build triggered (incl. snapshot deploy) by merging feature branch '${params.pull_request_head_ref}'\n"
-        rawMessage: true
-
         node {
             ansiColor('xterm') {
                 try {
                     // set java version
                     setJavaVersion(javaVersionId)
-
-                    // set build display name
-                    currentBuild.displayName = "merge pr ${params.pull_request_head_ref}" + " (" + currentBuild.displayName + ")"
 
                     // checkout from scm
                     stage('checkout from scm') {
@@ -216,6 +205,24 @@ if (env.BRANCH_NAME == "master") {
                             sh 'exit 1' // failure due to not found master branch
                         }
                     }
+
+                    // get information based on commit hash
+                    def jsonObject = getGithubCommitJsonObj(commitHash, orgNames.get(0), projects.get(0))
+                    featureBranchName = splitStringToBranchName(jsonObject.commit.message)
+
+                    def message = (featureBranchName?.trim()) ?
+                            "master branch build triggered (incl. snapshot deploy) by merging pr from feature branch ${featureBranchName}"
+                            : "master branch build triggered (incl. snapshot deploy) for commit with message '${jsonObject.commit.message}'"
+
+                    // notify rocket chat about the started feature branch run
+                    rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
+                            message: message + "\n"
+                    rawMessage: true
+
+                    // set build display name
+                    currentBuild.displayName = ((featureBranchName?.trim()) ? "merge pr ${featureBranchName}" : "commit " +
+                            "${jsonObject.commit.message.length() <= 20 ? jsonObject.commit.message : jsonObject.commit.message.substring(0, 20)}") + " (" + currentBuild.displayName + ")"
+
 
                     // test the project
                     stage("gradle allTests ${projects.get(0)}") {
@@ -253,17 +260,6 @@ if (env.BRANCH_NAME == "master") {
                             sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
                         }
 
-                        // notify rocket chat about success
-                        String buildMode = "merge"
-                        String branchName = params.pull_request_head_label
-
-                        // notify rocket chat
-                        rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
-                                message: "merged feature branch '${params.pull_request_head_ref}' successfully into " +
-                                        "master and deployed to oss sonatype!\n" +
-                                        "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                        "*branch:* master \n"
-                        rawMessage: true
                     }
 
 
@@ -280,6 +276,17 @@ if (env.BRANCH_NAME == "master") {
                             deployedArtifacts = "${projects.get(0)}, "
 
                         }
+
+                        // notify rocket chat
+                        message = (featureBranchName?.trim()) ?
+                                "master branch build successful! Merged pr from feature branch ${featureBranchName}"
+                                : "master branch build successful! Build commit with message is '${jsonObject.commit.message}'"
+                        rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
+                                message: message + "\n" +
+                                        "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
+                                        "*branch:* master \n"
+                        rawMessage: true
+
                     }
 
 
@@ -297,8 +304,7 @@ if (env.BRANCH_NAME == "master") {
                     // notify rocket chat
                     rocketSend channel: rocketChatChannel, emoji: ':jenkins_explode:',
                             message: "merge feature into master failed!\n" +
-                                    "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                    "*branch:* master\n"
+                                    "*repo:* ${urls.get(0)}/${projects.get(0)}\n"
                     rawMessage: true
                 }
 
@@ -315,7 +321,7 @@ if (env.BRANCH_NAME == "master") {
 
     node {
         // curl the api to get debugging details
-        def jsonObj = getGithubJsonObj(env.CHANGE_ID, orgNames.get(0), projects.get(0))
+        def jsonObj = getGithubPRJsonObj(env.CHANGE_ID, orgNames.get(0), projects.get(0))
 
         // This displays colors using the 'xterm' ansi color map.
         ansiColor('xterm') {
@@ -423,38 +429,9 @@ def getFeatureBranchProps() {
 
 def getMasterBranchProps(localWebHookTriggerToken) {
     properties(
-            [parameters(
-                    [string(defaultValue: '', description: '', name: 'release', trim: true),
-                     string(defaultValue: '', description: '', name: 'action', trim: true),
-                     string(defaultValue: '', description: '', name: 'pull_request_title', trim: true),
-                     string(defaultValue: '', description: '', name: 'pull_request_merged', trim: true),
-                     string(defaultValue: '', description: '', name: 'pull_request_state', trim: true),
-                     string(defaultValue: '', description: '', name: 'pull_request_base_ref', trim: true),
-                     string(defaultValue: '', description: '', name: 'pull_request_head_label', trim: true),
-                     string(defaultValue: '', description: '', name: 'pull_request_head_ref', trim: true),
-                     string(defaultValue: '', description: '', name: 'repository_name', trim: true)
-                    ]),
-             [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
-             [$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0, maxConcurrentTotal: 0, paramsToUseForLimit: '', throttleEnabled: true, throttleOption: 'project'],
-             [$class: 'JiraProjectProperty'],
-             pipelineTriggers(
-                     [GenericTrigger(causeString: '$issue_title',
-                             genericVariables:
-                                     [[defaultValue: '', key: 'action', regexpFilter: '', value: '$.action'],
-                                      [defaultValue: '', key: 'pull_request_merged', regexpFilter: '', value: '$.pull_request.merged'],
-                                      [defaultValue: '', key: 'pull_request_state', regexpFilter: '', value: '$.pull_request.state'],
-                                      [defaultValue: '', key: 'pull_request_base_ref', regexpFilter: '', value: '$.pull_request.base.ref'],
-                                      [defaultValue: '', key: 'pull_request_title', regexpFilter: '', value: '$.pull_request.title'],
-                                      [defaultValue: '', key: 'pull_request_head_label', regexpFilter: '', value: ' $.pull_request.head.label'],
-                                      [defaultValue: '', key: 'pull_request_head_label', regexpFilter: '', value: ' $.pull_request.head.ref'],
-                                      [defaultValue: '', key: 'repository_name', regexpFilter: '', value: '$.repository.name']],
-
-                             printContributedVariables: true,
-                             printPostContent: true,
-                             regexpFilterExpression: '^(closed true closed master)$',
-                             regexpFilterText: '$action $pull_request_merged $pull_request_state $pull_request_base_ref',
-                             silentResponse: true,
-                             token: localWebHookTriggerToken)])])
+            [[$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
+             [$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0, maxConcurrentTotal: 0, paramsToUseForLimit: '', throttleEnabled: true, throttleOption: 'project']
+            ])
 }
 
 
@@ -503,16 +480,37 @@ def gradle(String command) {
     sh """cd ${projects.get(0)}""" + ''' set +x; ./gradlew ''' + """$command"""
 }
 
-def getGithubJsonObj(String prId, String orgName, String repoName) {
-    def jsonObj = readJSON text: curl(prId, orgName, repoName)
+def getGithubPRJsonObj(String prId, String orgName, String repoName) {
+    def jsonObj = readJSON text: curlByPR(prId, orgName, repoName)
     return jsonObj
 }
 
 
-def curl(String prId, String orgName, String repoName) {
+def curlByPR(String prId, String orgName, String repoName) {
 
     def curlUrl = "curl https://api.github.com/repos/" + orgName + "/" + repoName + "/pulls/" + prId
     String jsonResponseString = sh(script: curlUrl, returnStdout: true)
 
     return jsonResponseString
+}
+
+def getGithubCommitJsonObj(String commit_sha, String orgName, String repoName) {
+    def jsonObj = readJSON text: curlByCSHA(commit_sha, orgName, repoName)
+    return jsonObj
+}
+
+def curlByCSHA(String commit_sha, String orgName, String repoName) {
+
+    def curlUrl = "curl https://api.github.com/repos/" + orgName + "/" + repoName + "/commits/" + commit_sha
+    String jsonResponseString = sh(script: curlUrl, returnStdout: true)
+
+    return jsonResponseString
+}
+
+def splitStringToBranchName(String string) {
+    def obj = string.split().find { it.startsWith("ie3-institute") }
+    if (obj)
+        return (obj as String).substring(14)
+    else
+        return ""
 }
