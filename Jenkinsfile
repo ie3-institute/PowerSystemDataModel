@@ -221,7 +221,7 @@ if (env.BRANCH_NAME == "master") {
 
                     // set build display name
                     currentBuild.displayName = ((featureBranchName?.trim()) ? "merge pr branch '${featureBranchName}'" : "commit '" +
-                            "${jsonObject.commit.message.length() <= 20 ? jsonObject.commit.message : jsonObject.commit.message.substring(0, 20)}'") + " (" + currentBuild.displayName + ")"
+                            "${jsonObject.commit.message.length() <= 20 ? jsonObject.commit.message : jsonObject.commit.message.substring(0, 20)}...'") + " (" + currentBuild.displayName + ")"
 
 
                     // test the project
