@@ -291,7 +291,7 @@ class InputEntityProcessorTest extends Specification {
 
 	def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with point correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput)
 		NodeGraphicInput validNode = GridTestData.nodeGraphicC
 		Map expected = [
 			"uuid"          : "09aec636-791b-45aa-b981-b14edf171c4c",
