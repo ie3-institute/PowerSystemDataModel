@@ -23,10 +23,6 @@ urls = ['git@github.com:' + orgNames.get(0)]
 
 def sonarqubeProjectKey = "edu.ie3:PowerSystemDataModel"
 
-//// git webhook trigger token
-//// http://JENKINS_URL/generic-webhook-trigger/invoke?token=<webhookTriggerToken>
-webhookTriggerToken = "pdsm-webhook-trigger-token"
-
 /// code coverage token id
 codeCovTokenId = "psdm-codecov-token"
 
@@ -72,9 +68,7 @@ def commitHash = ""
 if (env.BRANCH_NAME == "master") {
 
     // setup
-    withCredentials([string(credentialsId: webhookTriggerToken, variable: 'webhookToken')]) {
-        getMasterBranchProps(env.webhookToken)
-    }
+    getMasterBranchProps()
 
     // release deployment
     if (params.release == "true") {
@@ -427,7 +421,7 @@ def getFeatureBranchProps() {
 }
 
 
-def getMasterBranchProps(localWebHookTriggerToken) {
+def getMasterBranchProps() {
     properties(
             [[$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
              [$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0, maxConcurrentTotal: 0, paramsToUseForLimit: '', throttleEnabled: true, throttleOption: 'project']
