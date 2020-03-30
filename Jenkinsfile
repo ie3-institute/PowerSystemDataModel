@@ -181,7 +181,7 @@ if (env.BRANCH_NAME == "master") {
 
         // notify rocket chat about the started feature branch run
         rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
-                message: "master branch build triggered (incl. snapshot deploy) by merging feature branch '${params.pull_request_title}'\n"
+                message: "master branch build triggered (incl. snapshot deploy) by merging feature branch '${params.pull_request_head_ref}'\n"
         rawMessage: true
 
         node {
@@ -191,7 +191,7 @@ if (env.BRANCH_NAME == "master") {
                     setJavaVersion(javaVersionId)
 
                     // set build display name
-                    currentBuild.displayName = "merge pr ${params.pull_request_title}"
+                    currentBuild.displayName = "merge pr ${params.pull_request_head_ref}"
 
                     // checkout from scm
                     stage('checkout from scm') {
@@ -254,7 +254,7 @@ if (env.BRANCH_NAME == "master") {
 
                         // notify rocket chat
                         rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
-                                message: "merged feature branch '${params.pull_request_title}' successfully into " +
+                                message: "merged feature branch '${params.pull_request_head_ref}' successfully into " +
                                         "master and deployed to oss sonatype!\n" +
                                         "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
                                         "*branch:* master \n"
@@ -414,6 +414,7 @@ def getMasterBranchProps() {
                      string(defaultValue: '', description: '', name: 'pull_request_state', trim: true),
                      string(defaultValue: '', description: '', name: 'pull_request_base_ref', trim: true),
                      string(defaultValue: '', description: '', name: 'pull_request_head_label', trim: true),
+                     string(defaultValue: '', description: '', name: 'pull_request_head_ref', trim: true),
                      string(defaultValue: '', description: '', name: 'repository_name', trim: true)
                     ]),
              [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
@@ -428,6 +429,7 @@ def getMasterBranchProps() {
                                       [defaultValue: '', key: 'pull_request_base_ref', regexpFilter: '', value: '$.pull_request.base.ref'],
                                       [defaultValue: '', key: 'pull_request_title', regexpFilter: '', value: '$.pull_request.title'],
                                       [defaultValue: '', key: 'pull_request_head_label', regexpFilter: '', value: ' $.pull_request.head.label'],
+                                      [defaultValue: '', key: 'pull_request_head_label', regexpFilter: '', value: ' $.pull_request.head.ref'],
                                       [defaultValue: '', key: 'repository_name', regexpFilter: '', value: '$.repository.name']],
 
                              printContributedVariables: true,
