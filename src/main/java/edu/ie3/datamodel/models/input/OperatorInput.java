@@ -14,7 +14,7 @@ public class OperatorInput extends InputEntity {
   public static final OperatorInput NO_OPERATOR_ASSIGNED =
       new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED");
 
-  /** The name of this operator */
+  /** The id of this operator */
   private final String id;
 
   /** @param id of this operator */
