@@ -27,29 +27,22 @@ class TimeBasedValueProcessorTest extends Specification {
 		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 	}
 
-	def "The TimeBasedValueProcessor should de-serialize a provided time based EnergyPriceValue correctly"() {
+	def "The TimeBasedValueProcessor should de-serialize a provided TimeBasedValue correctly"() {
 		given:
-		TimeBasedValueProcessor processor = new TimeBasedValueProcessor<>(EnergyPriceValue.class)
+		TimeBasedValueProcessor processor = new TimeBasedValueProcessor()
 		EnergyPriceValue value = new EnergyPriceValue(Quantities.getQuantity(43.21, EURO_PER_MEGAWATTHOUR))
 		ZonedDateTime time = TimeTools.toZonedDateTime("2020-03-27 15:29:14")
-		TimeBasedValue<EnergyPriceValue> timeBasedValue = new TimeBasedValue<>(time, value)
+		TimeBasedValue<EnergyPriceValue> timeBasedValue = new TimeBasedValue<>(UUID.fromString("e6b3483c-936f-4168-9917-dc3b2e8bdf2c"), time, value)
 		Map expected = [
-			"uuid"  : "has random uuid",
+			"uuid"  : "e6b3483c-936f-4168-9917-dc3b2e8bdf2c",
 			"time"  : "2020-03-27 15:29:14",
-			"price" : "43.21"
 		]
 
 		when:
 		Optional<LinkedHashMap<String, String>> actual = processor.handleEntity(timeBasedValue)
 
 		then:
-		actual.isPresent()
-		LinkedHashMap<String, String> result = actual.get()
-		expected.forEach { k, v ->
-			if(k == "uuid")
-				assert result.containsKey(k)
-			else
-				assert (v == result.get(k))
-		}
+		actual.present
+		actual.get() == expected
 	}
 }

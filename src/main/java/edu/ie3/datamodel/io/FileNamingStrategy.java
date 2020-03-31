@@ -8,11 +8,13 @@ package edu.ie3.datamodel.io;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.models.input.LoadProfileInput;
 import edu.ie3.datamodel.models.input.RandomLoadParameters;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.AssetCharacteristicInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.util.Optional;
+import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,6 +33,7 @@ public class FileNamingStrategy {
   private static final String INPUT_ENTITY_SUFFIX = "_input";
   private static final String TYPE_INPUT = "_type_input";
   private static final String GRAPHIC_INPUT_SUFFIX = "_graphic";
+  private static final String TIME_SERIES_SUFFIX = "_timeseries";
 
   private static final String INPUT_CLASS_STRING = "Input";
 
@@ -81,6 +84,28 @@ public class FileNamingStrategy {
       return getGraphicsInputFileName(cls.asSubclass(GraphicInput.class));
     logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
     return Optional.empty();
+  }
+
+  public Optional<String> getIndividualTimeSeriesFileName(UUID uuid) {
+    return Optional.of(
+        prefix
+            .concat("individual")
+            .concat(TIME_SERIES_SUFFIX)
+            .concat("_")
+            .concat(uuid.toString())
+            .concat(suffix));
+  }
+
+  public Optional<String> getLoadProfileInputFileName(UUID uuid) {
+    String identifier =
+        LoadProfileInput.class.getSimpleName().replace(INPUT_CLASS_STRING, "").toLowerCase();
+    return Optional.of(
+        prefix
+            .concat(identifier)
+            .concat(TIME_SERIES_SUFFIX)
+            .concat("_")
+            .concat(uuid.toString())
+            .concat(suffix));
   }
 
   /**

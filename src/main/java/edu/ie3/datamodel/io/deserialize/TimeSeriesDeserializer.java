@@ -6,83 +6,50 @@
 package edu.ie3.datamodel.io.deserialize;
 
 import edu.ie3.datamodel.exceptions.DeserializationException;
-import edu.ie3.datamodel.io.processor.input.TimeBasedValueProcessor;
+import edu.ie3.datamodel.io.CsvFileDefinition;
 import edu.ie3.datamodel.io.processor.input.ValueProcessor;
-import edu.ie3.datamodel.models.input.LoadProfileInput;
-import edu.ie3.datamodel.models.timeseries.IndividualTimeSeries;
+import edu.ie3.datamodel.io.sink.CsvFileSink;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
-import edu.ie3.datamodel.models.value.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TimeSeriesDeserializer {
-  private static final Logger logger = LoggerFactory.getLogger(TimeSeriesDeserializer.class);
+public abstract class TimeSeriesDeserializer<T extends TimeSeries<V>, V extends Value> {
+  protected static final Logger logger = LoggerFactory.getLogger(TimeSeriesDeserializer.class);
 
-  public <T extends Value> void deserialize(TimeSeries<T> timeSeries)
-      throws DeserializationException {
-    /* Distinguish between individual and repetitive time series */
-    if (timeSeries instanceof IndividualTimeSeries) {
-      IndividualTimeSeries<T> individualTimeSeries = (IndividualTimeSeries<T>) timeSeries;
+  protected final ValueProcessor<V> valueProcessor;
 
-      /* Get all entries */
-      TimeBasedValueProcessor timeBasedValueProcessor = new TimeBasedValueProcessor();
-      SortedSet<TimeBasedValue<T>> entries = individualTimeSeries.getAllEntries();
-      Set<Map<String, String>> result =
-          Collections.unmodifiableSet(
-              entries.stream()
-                  .map(
-                      timeBasedValue -> {
-                        /* Build the mapping from field name to value for the containing class */
-                        Optional<LinkedHashMap<String, String>> outerResult =
-                            timeBasedValueProcessor.handleEntity(timeBasedValue);
-                        if (!outerResult.isPresent()) {
-                          logger.error(
-                              "Cannot deserialize a time based value \"{}\".", timeBasedValue);
-                          return new HashMap<String, String>();
-                        }
+  private static final String CSV_SEP = ",";
+  protected final CsvFileSink csvFileSink;
 
-                        ValueProcessor<T> valueProcessor =
-                            new ValueProcessor<T>(
-                                (Class<? extends T>) timeBasedValue.getValue().getClass());
-                        Optional<LinkedHashMap<String, String>> innerResult =
-                            valueProcessor.handleEntity(timeBasedValue.getValue());
-                        if (!innerResult.isPresent()) {
-                          logger.error(
-                              "Cannot deserialize a time value \"{}\".", timeBasedValue.getValue());
-                          return new HashMap<String, String>();
-                        }
-
-                        LinkedHashMap<String, String> interMediateResult = outerResult.get();
-                        interMediateResult.putAll(innerResult.get());
-                        return Collections.unmodifiableMap(interMediateResult);
-                      })
-                  .collect(Collectors.toSet()));
-
-      // TODO: Writing the result
-    } else {
-      /* As repetitive time series as only abstract, determine the concrete type */
-      if (timeSeries instanceof LoadProfileInput) {
-        LoadProfileInput loadProfile = (LoadProfileInput) timeSeries;
-        throw new DeserializationException(
-            "The deserialisation of LoadProleInput is not implemented, yet.", loadProfile);
-
-        /*
-         * Steps to implement
-         *   1) Determine the "unique" table entries as a combination of "credentials"
-         *      and edu.ie3.datamodel.models.value.Value
-         *   2) Build field name to value mapping for credentials and values independently
-         *   3) Combine the mapping
-         *   4) Write the result
-         */
-      } else {
-        throw new DeserializationException(
-            "There is no deserialization routine defined for a time series of type "
-                + timeSeries.getClass().getSimpleName(),
-            timeSeries);
-      }
-    }
+  public TimeSeriesDeserializer(Class<? extends V> valueClass, String baseFolderPath) {
+    this.valueProcessor = new ValueProcessor<>(valueClass);
+    /* We cannot determine the file definitions on instantiation, as every unique time series gets it's own unique file name */
+    this.csvFileSink =
+        new CsvFileSink(baseFolderPath, Collections.emptySet(), CSV_SEP, false, true);
   }
+
+  /**
+   * Builds a file definition for a unique time series.
+   *
+   * @return A file definition
+   */
+  protected abstract CsvFileDefinition determineFileDefinition(UUID uuid)
+      throws DeserializationException;
+
+  /**
+   * Determine the head line elements / the field names of the model to persist
+   *
+   * @return An array of Strings denoting the field names
+   */
+  protected abstract String[] determineHeadLineElements();
+
+  /**
+   * Deserializes the given time series
+   *
+   * @param timeSeries to deserialize
+   */
+  protected abstract void deserialize(T timeSeries) throws DeserializationException;
 }
