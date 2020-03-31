@@ -26,6 +26,8 @@ public class CsvFileConnector implements DataConnector {
 
   private static final Logger log = LogManager.getLogger(CsvFileConnector.class);
 
+  private final boolean allowLaterRegistration;
+
   private final Map<CsvFileDefinition, Optional<BufferedWriter>> fileToWriter;
   private final String csvSeparator;
   private final String baseFolderName;
@@ -41,17 +43,20 @@ public class CsvFileConnector implements DataConnector {
    * @param initFiles true, if the files should be created during initialization (might create
    *     files, that only consist of a headline, because no data will be written into them), false
    *     otherwise
+   * @param allowLaterRegistration Allow for registering destination later, when acquiring writers
    * @throws ConnectorException If the connector cannot be established
    */
   public CsvFileConnector(
       String baseFolderName,
       Collection<CsvFileDefinition> fileDefinitions,
       String csvSeparator,
-      boolean initFiles)
+      boolean initFiles,
+      boolean allowLaterRegistration)
       throws ConnectorException {
     this.baseFolderName = baseFolderName;
     this.csvSeparator = csvSeparator;
     this.fileToWriter = mapFileDefinitionsToWriter(fileDefinitions, initFiles);
+    this.allowLaterRegistration = allowLaterRegistration;
   }
 
   /**
@@ -105,8 +110,12 @@ public class CsvFileConnector implements DataConnector {
    */
   public BufferedWriter getWriter(CsvFileDefinition fileDefinition) throws ConnectorException {
     if (!fileToWriter.containsKey(fileDefinition))
-      throw new ConnectorException(
-          "There is no file writer associated with this definition: " + fileDefinition);
+      if (!allowLaterRegistration) {
+        throw new ConnectorException(
+            "There is no file writer associated with this definition: " + fileDefinition);
+      } else {
+        fileToWriter.put(fileDefinition, Optional.empty());
+      }
 
     Optional<BufferedWriter> writerOption = fileToWriter.get(fileDefinition);
     if (writerOption.isPresent()) return writerOption.get();

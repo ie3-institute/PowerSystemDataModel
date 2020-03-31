@@ -38,15 +38,20 @@ public class CsvFileSink implements DataSink<CsvFileDefinition, LinkedHashMap<St
    * @param initFiles true, if the files should be created during initialization (might create
    *     files, that only consist of a headline, because no data will be written into them), false
    *     otherwise
+   * @param allowLaterRegistration Allows for later registration of destinations upon acquiring
+   *     writer
    */
   public CsvFileSink(
       String baseFolderPath,
       Collection<CsvFileDefinition> fileDefinitions,
       String csvSep,
-      boolean initFiles) {
+      boolean initFiles,
+      boolean allowLaterRegistration) {
     this.csvSep = csvSep;
     try {
-      this.connector = new CsvFileConnector(baseFolderPath, fileDefinitions, csvSep, initFiles);
+      this.connector =
+          new CsvFileConnector(
+              baseFolderPath, fileDefinitions, csvSep, initFiles, allowLaterRegistration);
     } catch (ConnectorException e) {
       throw new SinkException("Error during initialization of the file sink.", e);
     }

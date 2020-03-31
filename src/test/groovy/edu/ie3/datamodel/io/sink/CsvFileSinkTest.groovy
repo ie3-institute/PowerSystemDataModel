@@ -53,7 +53,7 @@ class CsvFileSinkTest extends Specification {
 		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, [
 			pvResultFileDefinition,
 			evResultFileDefinition
-		], ",", true)
+		], ",", true, false)
 		csvFileSink.dataConnector.shutdown()
 
 		expect:
@@ -67,7 +67,7 @@ class CsvFileSinkTest extends Specification {
 		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, [
 			pvResultFileDefinition,
 			evResultFileDefinition
-		], ",", false)
+		], ",", false, false)
 		csvFileSink.dataConnector.shutdown()
 
 		expect:
@@ -82,7 +82,7 @@ class CsvFileSinkTest extends Specification {
 			pvResultFileDefinition,
 			evResultFileDefinition,
 			wecResultFileDefinition
-		], ",", false)
+		], ",", false, false)
 
 		LinkedHashMap<String, String> pvResult = [
 			"uuid": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
@@ -114,7 +114,7 @@ class CsvFileSinkTest extends Specification {
 
 	def "A valid CsvFileSink throws a SinkException, if the data does not fit the header definition"() {
 		given:
-		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, [pvResultFileDefinition], ",", false)
+		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, [pvResultFileDefinition], ",", false, false)
 
 		LinkedHashMap<String, String> pvResult = [
 			"uuid": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
@@ -134,9 +134,9 @@ class CsvFileSinkTest extends Specification {
 		exception.message == "The provided data does not match the head line definition!"
 	}
 
-	def "A valid CsvFileSink should throw an exception if the provided entity cannot be handled"() {
+	def "A valid CsvFileSink should throw an exception if the provided destination is not registered and later registration is prohibited"() {
 		given:
-		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, [pvResultFileDefinition], ",", false)
+		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, [pvResultFileDefinition], ",", false, false)
 		LinkedHashMap<String, String> wecResult = [
 			"uuid": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
 			"inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
@@ -152,5 +152,26 @@ class CsvFileSinkTest extends Specification {
 		then:
 		SinkException exception = thrown(SinkException)
 		exception.getMessage() == "Cannot find a matching writer for file definition: \"CsvFileDefinition{fileName='wec_res', fileExtension='csv', headLineElements=[uuid, inputModel, p, q, timestamp]}\"."
+	}
+
+	def "A valid CsvFileSink registers a new destination if the provided destination is not registered and later registration is allowed"() {
+		given:
+		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, [pvResultFileDefinition], ",", false, true)
+		LinkedHashMap<String, String> wecResult = [
+			"uuid": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+			"inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+			"timestamp": "2020-01-30 17:26:44",
+			"p": "0.01",
+			"q": "0.01"
+		]
+
+		when:
+		csvFileSink.persist(wecResultFileDefinition, wecResult)
+		csvFileSink.dataConnector.shutdown()
+
+		then:
+		new File(testBaseFolderPath).exists()
+		new File(testBaseFolderPath + File.separator + "wec_res.csv").exists()
+		!new File(testBaseFolderPath + File.separator + "pv_res.csv").exists() // as it is not initialized
 	}
 }
