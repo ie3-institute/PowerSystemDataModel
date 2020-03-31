@@ -24,7 +24,7 @@ task allTests(type: Test) {
 
 	useJUnitPlatform()
 	testLogging {
-		events "passed", "skipped", "failed"
+		events "skipped", "failed"
 	}
 
 	filter {
