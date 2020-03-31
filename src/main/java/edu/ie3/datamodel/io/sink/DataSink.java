@@ -18,4 +18,9 @@ public interface DataSink {
   <C extends UniqueEntity> void persist(C entity);
 
   <C extends UniqueEntity> void persistAll(Collection<C> entities);
+
+  <C extends UniqueEntity> void persistAllIgnoreNested(C entity);
+
+  <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities);
+
 }

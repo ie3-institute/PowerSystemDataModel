@@ -8,7 +8,9 @@ package edu.ie3.datamodel.io.extractor;
 /**
  * //ToDo: Class Description
  *
+ * THIS interface is not meant to be extended!
+ *
  * @version 0.1
  * @since 31.03.20
  */
-interface Nested {}
+public interface Nested {}
