@@ -121,7 +121,7 @@ if (env.BRANCH_NAME == "master") {
                         }
                     }
 
-                    // post processing
+                    // publish report und coverage 
                     stage('publish reports + coverage') {
                         // publish reports
                         publishReports()
@@ -205,7 +205,7 @@ if (env.BRANCH_NAME == "master") {
                     featureBranchName = splitStringToBranchName(jsonObject.commit.message)
 
                     def message = (featureBranchName?.trim()) ?
-                            "master branch build triggered (incl. snapshot deploy) by merging pr from feature branch ${featureBranchName}"
+                            "master branch build triggered (incl. snapshot deploy) by merging pr from feature branch '${featureBranchName}'"
                             : "master branch build triggered (incl. snapshot deploy) for commit with message '${jsonObject.commit.message}'"
 
                     // notify rocket chat about the started feature branch run
@@ -273,7 +273,7 @@ if (env.BRANCH_NAME == "master") {
 
                         // notify rocket chat
                         message = (featureBranchName?.trim()) ?
-                                "master branch build successful! Merged pr from feature branch ${featureBranchName}"
+                                "master branch build successful! Merged pr from feature branch '${featureBranchName}'"
                                 : "master branch build successful! Build commit with message is '${jsonObject.commit.message}'"
                         rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
                                 message: message + "\n" +
