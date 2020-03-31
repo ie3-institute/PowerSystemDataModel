@@ -41,7 +41,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
    * @param opex operating expense for this type of Storage (typically in €/MWh)
    * @param eStorage stored energy capacity
    * @param sRated Rated apparent power of integrated inverter
-   * @param cosphiRated power factor for integrated inverter
+   * @param cosPhiRated power factor for integrated inverter
    * @param pMax maximum permissible active power of the integrated inverter
    * @param activePowerGradient maximum permissible gradient of active power change
    * @param eta efficiency of the charging and discharging process
@@ -56,14 +56,14 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       Quantity<EnergyPrice> opex,
       Quantity<Energy> eStorage,
       Quantity<Power> sRated,
-      double cosphiRated,
+      double cosPhiRated,
       Quantity<Power> pMax,
       Quantity<DimensionlessRate> activePowerGradient,
       Quantity<Dimensionless> eta,
       Quantity<Dimensionless> dod,
       Quantity<Time> lifeTime,
       int lifeCycle) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
     this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);

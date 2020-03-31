@@ -5,14 +5,13 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
+import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.InputEntity;
-import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Describes characteristics of assets */
-public abstract class AssetCharacteristicInput<T extends SystemParticipantTypeInput>
-    extends InputEntity {
+public abstract class AssetCharacteristicInput<T extends AssetTypeInput> extends InputEntity {
 
   /** Type name of this characteristic */
   protected final T type;

@@ -210,7 +210,7 @@ public class SystemParticipantTypeInputFactory
       double cosPhi) {
     Quantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
     Quantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN);
-    Quantity<DimensionlessRate> cprate =
+    Quantity<DimensionlessRate> activePowerGradient =
         data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
     Quantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
     Quantity<Dimensionless> dod = data.getQuantity(DOD, StandardUnits.DOD);
@@ -218,7 +218,18 @@ public class SystemParticipantTypeInputFactory
     int lifeCycle = data.getInt(LIFECYCLE);
 
     return new StorageTypeInput(
-        uuid, id, capEx, opEx, eStorage, sRated, cosPhi, pMax, cprate, eta, dod, lifeTime,
+        uuid,
+        id,
+        capEx,
+        opEx,
+        eStorage,
+        sRated,
+        cosPhi,
+        pMax,
+        activePowerGradient,
+        eta,
+        dod,
+        lifeTime,
         lifeCycle);
   }
 }

@@ -38,7 +38,7 @@ ConnectorInput --|> AssetInput
 
 abstract Class AssetCharacteristicsInput<T extends AssetTypeInput> {
     - type: T
-    - Characteristic: String
+    - characteristic: String
 }
 AssetCharacteristicsInput --|> InputEntity
 
