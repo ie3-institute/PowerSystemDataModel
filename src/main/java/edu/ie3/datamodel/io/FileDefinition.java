@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * from
  */
 public class FileDefinition implements Destination {
-  private static final Pattern fileNamePattern = Pattern.compile("[\\w\\\\/]+");
+  private static final Pattern fileNamePattern = Pattern.compile("[\\w\\\\/-]+");
   private static final Pattern extensionPattern = Pattern.compile("\\.?([\\w\\.]+)$");
   private static final Pattern fullPathPattern =
       Pattern.compile("(" + fileNamePattern.pattern() + ")\\.+(\\w+)");
@@ -40,8 +40,8 @@ public class FileDefinition implements Destination {
     if (fileExtension.matches(fullPathPattern.pattern())) {
       Matcher matcher = extensionPattern.matcher(fileExtension);
       matcher.matches();
-      this.fileExtension = matcher.group(2).replaceAll("\\.", "");
-    } else if (fileName.matches(extensionPattern.pattern())) {
+      this.fileExtension = matcher.group(1).replaceAll("\\.", "");
+    } else if (fileExtension.matches(extensionPattern.pattern())) {
       Matcher matcher = extensionPattern.matcher(fileExtension);
       matcher.matches();
       this.fileExtension = matcher.group(0).replaceAll("\\.", "");
