@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.graphics;
 
-import edu.ie3.datamodel.models.Nodes;
+import edu.ie3.datamodel.io.extractor.Nodes;
 import edu.ie3.datamodel.models.input.NodeInput;
 import java.util.*;
 import org.locationtech.jts.geom.LineString;
