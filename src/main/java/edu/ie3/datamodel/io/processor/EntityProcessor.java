@@ -242,7 +242,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
         resultStringBuilder.append(((StorageStrategy) methodReturnObject).getToken());
         break;
       case "NodeInput":
-      case "SystemParticipantTypeInput":
+      case "AssetTypeInput":
       case "Transformer3WTypeInput":
       case "Transformer2WTypeInput":
       case "LineTypeInput":
