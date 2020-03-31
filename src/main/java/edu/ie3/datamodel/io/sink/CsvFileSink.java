@@ -107,7 +107,7 @@ public class CsvFileSink implements DataSink {
   }
 
   @Override
-  public <C extends UniqueEntity> void persistAllIgnoreNested(C entity) {
+  public <C extends UniqueEntity> void persistIgnoreNested(C entity) {
     LinkedHashMap<String, String> entityFieldData =
         processorProvider
             .processEntity(entity)
@@ -130,16 +130,16 @@ public class CsvFileSink implements DataSink {
 
   @Override
   public <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities) {
-    entities.parallelStream().forEach(this::persistAllIgnoreNested);
+    entities.parallelStream().forEach(this::persistIgnoreNested);
   }
 
   @Override
   public <T extends UniqueEntity> void persist(T entity) {
     if (entity instanceof Nested) {
       try {
-        Extractor extractor = new Extractor((Type) entity);
-        for (InputEntity ent : extractor.getExtractedEntities()) {
-          persistAllIgnoreNested(ent);
+        persistIgnoreNested(entity);
+        for (InputEntity ent : new Extractor((Type) entity).getExtractedEntities()) {
+          persistIgnoreNested(ent);
         }
 
       } catch (ExtractorException e) {
@@ -150,7 +150,7 @@ public class CsvFileSink implements DataSink {
             e);
       }
     } else {
-      persistAllIgnoreNested(entity);
+      persistIgnoreNested(entity);
     }
   }
 

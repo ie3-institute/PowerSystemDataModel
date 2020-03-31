@@ -7,12 +7,19 @@ package edu.ie3.datamodel.io.sink
 
 import edu.ie3.datamodel.exceptions.SinkException
 import edu.ie3.datamodel.io.FileNamingStrategy
+import edu.ie3.datamodel.io.extractor.Nested
 import edu.ie3.datamodel.io.processor.ProcessorProvider
+import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.UniqueEntity
+import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.connector.Transformer2WInput
+import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.WecResult
+import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeTools
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
@@ -68,7 +75,10 @@ class CsvFileSinkTest extends Specification {
 				new ProcessorProvider([
 					new ResultEntityProcessor(PvResult),
 					new ResultEntityProcessor(WecResult),
-					new ResultEntityProcessor(EvResult)
+					new ResultEntityProcessor(EvResult),
+					new InputEntityProcessor(Transformer2WInput),
+					new InputEntityProcessor(NodeInput),
+					new InputEntityProcessor(Transformer2WTypeInput)
 				]),
 				new FileNamingStrategy(),
 				false,
@@ -82,13 +92,20 @@ class CsvFileSinkTest extends Specification {
 		WecResult wecResult = new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
 
 		when:
-		csvFileSink.persistAll([pvResult, wecResult])
+		csvFileSink.persistAll([
+			pvResult,
+			wecResult,
+			GridTestData.transformerCtoG
+		])
 		csvFileSink.dataConnector.shutdown()
 
 		then:
 		new File(testBaseFolderPath).exists()
 		new File(testBaseFolderPath + File.separator + "wec_res.csv").exists()
 		new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
+		new File(testBaseFolderPath + File.separator + "transformer2w_type_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "node_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "transformer2w_input.csv").exists()
 
 		!new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
 	}
@@ -116,4 +133,5 @@ class CsvFileSinkTest extends Specification {
 		then:
 		thrown(SinkException)
 	}
+
 }
