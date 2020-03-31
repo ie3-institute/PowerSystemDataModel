@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.extractor;
 
-import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
+import edu.ie3.datamodel.models.input.AssetTypeInput;
 
 /**
  * //ToDo: Class Description // todo uml
@@ -15,5 +15,5 @@ import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
  */
 public interface Type extends Nested {
 
-  SystemParticipantTypeInput getType();
+  AssetTypeInput getType();
 }

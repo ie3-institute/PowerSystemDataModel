@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.io.extractor.Type;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -13,7 +14,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Describes a battery storage */
-public class StorageInput extends SystemParticipantInput {
+public class StorageInput extends SystemParticipantInput implements Type {
   /** Type of this storage, containing default values for storages of this kind */
   private final StorageTypeInput type;
 
@@ -68,6 +69,7 @@ public class StorageInput extends SystemParticipantInput {
     this.behaviour = StorageStrategy.get(behaviour);
   }
 
+  @Override
   public StorageTypeInput getType() {
     return type;
   }

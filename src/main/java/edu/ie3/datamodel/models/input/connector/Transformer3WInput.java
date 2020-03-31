@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.connector;
 import static edu.ie3.util.quantities.PowerSystemUnits.PU;
 
 import edu.ie3.datamodel.io.extractor.NodeC;
+import edu.ie3.datamodel.io.extractor.Type;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -19,7 +20,7 @@ import tec.uom.se.quantity.Quantities;
  * Describes a three winding transformer, that is connected to three {@link
  * edu.ie3.datamodel.models.input.NodeInput}s
  */
-public class Transformer3WInput extends TransformerInput implements NodeC {
+public class Transformer3WInput extends TransformerInput implements NodeC, Type {
   /** Type of this 3W transformer, containing default values for transformers of this kind */
   private final Transformer3WTypeInput type;
   /** The lower voltage node */
@@ -109,6 +110,7 @@ public class Transformer3WInput extends TransformerInput implements NodeC {
             nodeA.getSubnet());
   }
 
+  @Override
   public Transformer3WTypeInput getType() {
     return type;
   }
