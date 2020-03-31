@@ -6,26 +6,40 @@
 package edu.ie3.datamodel.io.sink
 
 import edu.ie3.datamodel.exceptions.SinkException
+import edu.ie3.datamodel.io.CsvFileDefinition
 import edu.ie3.datamodel.io.FileNamingStrategy
-import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
-import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.WecResult
-import edu.ie3.util.TimeTools
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
-
-import javax.measure.Quantity
-import javax.measure.quantity.Power
 
 class CsvFileSinkTest extends Specification {
 
 	@Shared
 	String testBaseFolderPath = "test"
+
+	@Shared
+	CsvFileDefinition pvResultFileDefinition
+
+	@Shared
+	CsvFileDefinition evResultFileDefinition
+
+	@Shared
+	CsvFileDefinition wecResultFileDefinition
+
+	def setupSpec() {
+		FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+		ResultEntityProcessor pvResultEntityProcessor = new ResultEntityProcessor(PvResult)
+		ResultEntityProcessor evResultEntityProcessor = new ResultEntityProcessor(EvResult)
+		ResultEntityProcessor wecResultEntityProcessor = new ResultEntityProcessor(WecResult)
+
+		pvResultFileDefinition = new CsvFileDefinition(fileNamingStrategy.getFileName(PvResult).get(), pvResultEntityProcessor.getHeaderElements())
+		evResultFileDefinition = new CsvFileDefinition(fileNamingStrategy.getFileName(EvResult).get(), evResultEntityProcessor.getHeaderElements())
+		wecResultFileDefinition = new CsvFileDefinition(fileNamingStrategy.getFileName(WecResult).get(), wecResultEntityProcessor.getHeaderElements())
+	}
 
 	def cleanup() {
 		// delete files after each test if they exist
@@ -34,26 +48,12 @@ class CsvFileSinkTest extends Specification {
 		}
 	}
 
-	def "A valid CsvFileSink called by simple constructor should not initialize files by default and consist of several default values"() {
-		given:
-		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath)
-		csvFileSink.dataConnector.shutdown()
-
-		expect:
-		!new File(testBaseFolderPath).exists()
-		csvFileSink.csvSep == ","
-	}
-
 	def "A valid CsvFileSink with 'initFiles' enabled should create files as expected"() {
 		given:
-		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-				new ProcessorProvider([
-					new ResultEntityProcessor(PvResult),
-					new ResultEntityProcessor(EvResult)
-				]),
-				new FileNamingStrategy(),
-				true,
-				",")
+		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, [
+			pvResultFileDefinition,
+			evResultFileDefinition
+		], ",", true)
 		csvFileSink.dataConnector.shutdown()
 
 		expect:
@@ -62,27 +62,46 @@ class CsvFileSinkTest extends Specification {
 		new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
 	}
 
+	def "A valid CsvFileSink without 'initFiles' enabled should create files as expected"() {
+		given:
+		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, [
+			pvResultFileDefinition,
+			evResultFileDefinition
+		], ",", false)
+		csvFileSink.dataConnector.shutdown()
+
+		expect:
+		!new File(testBaseFolderPath).exists()
+		!new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
+		!new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
+	}
+
 	def "A valid CsvFileSink without 'initFiles' should only persist provided elements correctly but not all files"() {
 		given:
-		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-				new ProcessorProvider([
-					new ResultEntityProcessor(PvResult),
-					new ResultEntityProcessor(WecResult),
-					new ResultEntityProcessor(EvResult)
-				]),
-				new FileNamingStrategy(),
-				false,
-				",")
+		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, [
+			pvResultFileDefinition,
+			evResultFileDefinition,
+			wecResultFileDefinition
+		], ",", false)
 
-		UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-		UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-		Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
-		Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-		PvResult pvResult = new PvResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-		WecResult wecResult = new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+		LinkedHashMap<String, String> pvResult = [
+			"uuid": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+			"inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+			"timestamp": "2020-01-30 17:26:44",
+			"p": "0.01",
+			"q": "0.01"
+		]
+		LinkedHashMap<String, String> wecResult = [
+			"uuid": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+			"inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+			"timestamp": "2020-01-30 17:26:44",
+			"p": "0.01",
+			"q": "0.01"
+		]
 
 		when:
-		csvFileSink.persistAll([pvResult, wecResult])
+		csvFileSink.persist(pvResultFileDefinition, pvResult)
+		csvFileSink.persist(wecResultFileDefinition, wecResult)
 		csvFileSink.dataConnector.shutdown()
 
 		then:
@@ -93,27 +112,45 @@ class CsvFileSinkTest extends Specification {
 		!new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
 	}
 
-	def "A valid CsvFileSink should throw an exception if the provided entity cannot be handled"() {
+	def "A valid CsvFileSink throws a SinkException, if the data does not fit the header definition"() {
 		given:
-		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-				new ProcessorProvider([
-					new ResultEntityProcessor(PvResult)
-				]),
-				new FileNamingStrategy(),
-				false,
-				",")
+		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, [pvResultFileDefinition], ",", false)
 
-		UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-		UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-		Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
-		Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-		WecResult wecResult = new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+		LinkedHashMap<String, String> pvResult = [
+			"uuid": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+			"lilaLauneBaer": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+			"timestamp": "2020-01-30 17:26:44",
+			"p": "0.01",
+			"q": "0.01"
+		]
 
 		when:
-		csvFileSink.persist(wecResult)
+		csvFileSink.persist(pvResultFileDefinition, pvResult)
+
+		then:
+		SinkException exception = thrown()
+		csvFileSink.dataConnector.shutdown()
+
+		exception.message == "The provided data does not match the head line definition!"
+	}
+
+	def "A valid CsvFileSink should throw an exception if the provided entity cannot be handled"() {
+		given:
+		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath, [pvResultFileDefinition], ",", false)
+		LinkedHashMap<String, String> wecResult = [
+			"uuid": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+			"inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
+			"timestamp": "2020-01-30 17:26:44",
+			"p": "0.01",
+			"q": "0.01"
+		]
+
+		when:
+		csvFileSink.persist(wecResultFileDefinition, wecResult)
 		csvFileSink.dataConnector.shutdown()
 
 		then:
-		thrown(SinkException)
+		SinkException exception = thrown(SinkException)
+		exception.getMessage() == "Cannot find a matching writer for file definition: \"CsvFileDefinition{fileName='wec_res', fileExtension='csv', headLineElements=[uuid, inputModel, p, q, timestamp]}\"."
 	}
 }

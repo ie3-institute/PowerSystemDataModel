@@ -5,11 +5,11 @@
 */
 package edu.ie3.datamodel.io.sink;
 
+import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.exceptions.SinkException;
-import edu.ie3.datamodel.io.FileNamingStrategy;
+import edu.ie3.datamodel.io.CsvFileDefinition;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.connectors.DataConnector;
-import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -23,40 +23,33 @@ import org.apache.logging.log4j.Logger;
  * @version 0.1
  * @since 19.03.20
  */
-public class CsvFileSink implements DataSink {
+public class CsvFileSink implements DataSink<CsvFileDefinition, LinkedHashMap<String, String>> {
 
   private static final Logger log = LogManager.getLogger(CsvFileSink.class);
 
   private final CsvFileConnector connector;
-  private final ProcessorProvider processorProvider;
 
   private final String csvSep;
 
-  public CsvFileSink(String baseFolderPath) {
-    this(baseFolderPath, new ProcessorProvider(), new FileNamingStrategy(), false, ",");
-  }
-
   /**
-   * Create an instance of a csv file sink
-   *
    * @param baseFolderPath the base folder path where the files should be put into
-   * @param processorProvider the processor provided that should be used for entity de-serialization
-   * @param fileNamingStrategy the file naming strategy that should be used
-   * @param initFiles true if the files should be created during initialization (might create files,
-   *     that only consist of a headline, because no data will be writen into them), false otherwise
-   * @param csvSep the csv file separator that should be use
+   * @param fileDefinitions Collection of file definitions
+   * @param csvSep csv file separator that should be use
+   * @param initFiles true, if the files should be created during initialization (might create
+   *     files, that only consist of a headline, because no data will be written into them), false
+   *     otherwise
    */
   public CsvFileSink(
       String baseFolderPath,
-      ProcessorProvider processorProvider,
-      FileNamingStrategy fileNamingStrategy,
-      boolean initFiles,
-      String csvSep) {
+      Collection<CsvFileDefinition> fileDefinitions,
+      String csvSep,
+      boolean initFiles) {
     this.csvSep = csvSep;
-    this.processorProvider = processorProvider;
-    this.connector = new CsvFileConnector(baseFolderPath, fileNamingStrategy);
-
-    if (initFiles) initFiles(processorProvider, connector);
+    try {
+      this.connector = new CsvFileConnector(baseFolderPath, fileDefinitions, csvSep, initFiles);
+    } catch (ConnectorException e) {
+      throw new SinkException("Error during initialization of the file sink.", e);
+    }
   }
 
   @Override
@@ -64,51 +57,56 @@ public class CsvFileSink implements DataSink {
     return connector;
   }
 
+  /**
+   * Persists the given data to the specified location.
+   *
+   * @param destination Specific location of the data
+   * @param data Data to persist
+   */
   @Override
-  public <T extends UniqueEntity> void persistAll(Collection<T> entities) {
-    for (T entity : entities) {
-      persist(entity);
+  public void persist(CsvFileDefinition destination, LinkedHashMap<String, String> data) {
+    BufferedWriter writer;
+    try {
+      writer = connector.getWriter(destination);
+    } catch (ConnectorException e) {
+      throw new SinkException(
+          "Cannot find a matching writer for file definition: \"" + destination + "\".", e);
     }
-  }
 
-  @Override
-  public <T extends UniqueEntity> void persist(T entity) {
+    if (data.keySet().size() != destination.getHeadLineElements().length
+        || !data.keySet().containsAll(Arrays.asList(destination.getHeadLineElements()))) {
+      throw new SinkException("The provided data does not match the head line definition!");
+    }
 
-    LinkedHashMap<String, String> entityFieldData =
-        processorProvider
-            .processEntity(entity)
-            .orElseThrow(
-                () ->
-                    new SinkException(
-                        "Cannot persist entity of type '"
-                            + entity.getClass().getSimpleName()
-                            + "'. Is this sink properly initialized?"));
-
-    String[] headerElements =
-        processorProvider.getHeaderElements(entity.getClass()).orElse(new String[0]);
-    BufferedWriter writer = connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
-    write(entityFieldData, headerElements, writer);
+    write(data, destination.getHeadLineElements(), writer);
   }
 
   /**
-   * Initialize files, hence create a file for each expected class that will be processed in the
-   * future.
+   * Persists the given amount of data to the specified location.
    *
-   * @param processorProvider the processor provider all files that will be processed is derived
-   *     from
-   * @param connector the connector to the files
+   * @param destination Specific location of the data
+   * @param data Data to persist
    */
-  private void initFiles(
-      final ProcessorProvider processorProvider, final CsvFileConnector connector) {
+  @Override
+  public void persistAll(
+      CsvFileDefinition destination, Collection<LinkedHashMap<String, String>> data) {
+    BufferedWriter writer;
+    try {
+      writer = connector.getWriter(destination);
+    } catch (ConnectorException e) {
+      throw new SinkException(
+          "Cannot find a matching writer for file definition: \"" + destination + "\".", e);
+    }
 
-    processorProvider
-        .getRegisteredClasses()
-        .forEach(
-            clz ->
-                processorProvider
-                    .getHeaderElements(clz)
-                    .ifPresent(
-                        headerElements -> connector.getOrInitWriter(clz, headerElements, csvSep)));
+    data.forEach(
+        entry -> {
+          if (entry.keySet().size() != destination.getHeadLineElements().length
+              || !entry.keySet().containsAll(Arrays.asList(destination.getHeadLineElements()))) {
+            throw new SinkException("The provided data does not match the head line definition!");
+          }
+
+          write(entry, destination.getHeadLineElements(), writer);
+        });
   }
 
   /**

@@ -5,17 +5,22 @@
 */
 package edu.ie3.datamodel.io.sink;
 
+import edu.ie3.datamodel.io.Destination;
 import edu.ie3.datamodel.io.connectors.DataConnector;
-import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.Collection;
 
-/** Describes a class that manages data persistence */
-public interface DataSink {
+/**
+ * Describes a class that manages data persistence
+ *
+ * @param <D> Type of destination definition for a piece of data
+ * @param <T> Type of data, the sink is supposed to handle
+ */
+public interface DataSink<D extends Destination, T> {
 
   /** @return the connector of this sink */
   DataConnector getDataConnector();
 
-  <C extends UniqueEntity> void persist(C entity);
+  void persist(D destination, T data);
 
-  <C extends UniqueEntity> void persistAll(Collection<C> entities);
+  void persistAll(D destination, Collection<T> data);
 }
