@@ -7,12 +7,10 @@ package edu.ie3.datamodel.io.sink
 
 import edu.ie3.datamodel.exceptions.SinkException
 import edu.ie3.datamodel.io.FileNamingStrategy
-import edu.ie3.datamodel.io.extractor.Nested
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
