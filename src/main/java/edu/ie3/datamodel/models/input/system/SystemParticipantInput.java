@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.io.extractor.Nodes;
+import edu.ie3.datamodel.io.extractor.Node;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.*;
 
 /** Describes a system asset that is connected to a node */
-public abstract class SystemParticipantInput extends AssetInput implements Nodes {
+public abstract class SystemParticipantInput extends AssetInput implements Node {
 
   /** The node that the asset is connected to */
   private final NodeInput node;
@@ -61,12 +61,9 @@ public abstract class SystemParticipantInput extends AssetInput implements Nodes
     return qCharacteristics;
   }
 
+  @Override
   public NodeInput getNode() {
     return node;
-  }
-
-  public List<NodeInput> getNodes() {
-    return Collections.singletonList(node);
   }
 
   @Override

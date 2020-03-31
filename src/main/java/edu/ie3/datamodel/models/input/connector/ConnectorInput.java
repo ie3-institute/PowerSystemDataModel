@@ -63,16 +63,14 @@ public abstract class ConnectorInput extends AssetInput implements Nodes {
     this.noOfParallelDevices = noOfParallelDevices;
   }
 
+  @Override
   public NodeInput getNodeA() {
     return nodeA;
   }
 
+  @Override
   public NodeInput getNodeB() {
     return nodeB;
-  }
-
-  public List<NodeInput> getNodes() {
-    return Collections.unmodifiableList(Arrays.asList(nodeA, nodeB));
   }
 
   public int getNoOfParallelDevices() {

@@ -8,14 +8,12 @@ package edu.ie3.datamodel.io.extractor;
 import edu.ie3.datamodel.models.input.NodeInput;
 
 /**
- * //ToDo: Class Description // todo: UML
+ * //ToDo: Class Description
  *
  * @version 0.1
  * @since 31.03.20
  */
-public interface Nodes extends Nested {
+public interface Node extends Nested {
 
-  NodeInput getNodeA();
-
-  NodeInput getNodeB();
+  NodeInput getNode();
 }

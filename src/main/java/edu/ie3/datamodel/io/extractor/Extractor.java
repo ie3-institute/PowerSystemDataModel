@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.extractor;
 import edu.ie3.datamodel.exceptions.ExtractorException;
 import edu.ie3.datamodel.models.input.InputEntity;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,7 +29,14 @@ public class Extractor {
   private List<InputEntity> extractElements(Nested nestedEntity) throws ExtractorException {
     List<InputEntity> resultingList = new ArrayList<>();
     if (nestedEntity instanceof Nodes) {
-      resultingList.addAll(((Nodes) nestedEntity).getNodes());
+      resultingList.addAll(
+          Arrays.asList(((Nodes) nestedEntity).getNodeA(), ((Nodes) nestedEntity).getNodeB()));
+    }
+    if (nestedEntity instanceof Node) {
+      resultingList.add(((Node) nestedEntity).getNode());
+    }
+    if (nestedEntity instanceof NodeC) {
+      resultingList.add(((NodeC) nestedEntity).getNodeC());
     }
     if (nestedEntity instanceof Type) {
       resultingList.add(((Type) nestedEntity).getType());
