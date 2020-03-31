@@ -110,8 +110,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			"opex":	        "4",
 			"srated":       "5",
 			"cosphi":	    "6",
-
-			"loadgradient":	"7",
+			"activepowergradient":	"7",
 			"etaconv":      "8"
 		]
 		def typeInputClass = BmTypeInput
@@ -131,7 +130,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
 			assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
-			assert loadGradient == getQuant(parameter["loadgradient"], StandardUnits.LOAD_GRADIENT)
+			assert activePowerGradient == getQuant(parameter["activepowergradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
 			assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
 		}
 	}
@@ -218,20 +217,20 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 		given: "a system participant input type factory and model data"
 		def typeInputFactory = new SystemParticipantTypeInputFactory()
 		Map<String, String> parameter = [
-			"uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"id":	        "blablub",
-			"capex":        "3",
-			"opex":	        "4",
-			"srated":       "5",
-			"cosphi":	    "6",
+			"uuid"                  : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"id"                    : "blablub",
+			"capex"                 : "3",
+			"opex"                  : "4",
+			"srated"                : "5",
+			"cosphi"                : "6",
 
-			"estorage":	    "6",
-			"pmax":	        "8",
-			"cprate":       "1",
-			"eta":	        "9",
-			"dod":	        "10",
-			"lifetime":	    "11",
-			"lifecycle":    "12"
+			"estorage"              : "6",
+			"pmax"                  : "8",
+			"activepowergradient"   : "1",
+			"eta"                   : "9",
+			"dod"                   : "10",
+			"lifetime"              : "11",
+			"lifecycle"             : "12"
 		]
 		def typeInputClass = StorageTypeInput
 
@@ -252,7 +251,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
 			assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
 			assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
-			assert cpRate == getQuant(parameter["cprate"], StandardUnits.CP_RATE)
+			assert activePowerGradient == getQuant(parameter["activepowergradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
 			assert eta == getQuant(parameter["eta"], StandardUnits.EFFICIENCY)
 			assert dod == getQuant(parameter["dod"], StandardUnits.DOD)
 			assert lifeTime == getQuant(parameter["lifetime"], StandardUnits.LIFE_TIME)
@@ -286,6 +285,6 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 		FactoryException ex = thrown()
 		ex.message == "The provided fields [capex, cosphi, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data {capex -> 3,cosphi -> 6,dod -> 10,estorage -> 6,eta -> 9,id -> blablub,lifetime -> 11,opex -> 4,pmax -> 8,pmin -> 7,srated -> 5,uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
 				"The following fields to be passed to a constructor of StorageTypeInput are possible:\n" +
-				"0: [capex, cosphi, cprate, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, srated, uuid]\n"
+				"0: [activepowergradient, capex, cosphi, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, srated, uuid]\n"
 	}
 }

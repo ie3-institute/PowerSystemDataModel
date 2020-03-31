@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.connector;
 
 import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
@@ -60,7 +61,7 @@ public class LineInput extends ConnectorInput {
       Optional<String> olmCharacteristic) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices);
     this.type = type;
-    this.length = length;
+    this.length = length.to(StandardUnits.LINE_LENGTH);
     this.geoPosition = geoPosition;
     this.olmCharacteristic = olmCharacteristic;
   }

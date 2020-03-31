@@ -10,10 +10,15 @@ import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.EvcsInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.RandomLoadParameters
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
+import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
+import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.BmInput
@@ -25,6 +30,14 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
+import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
+import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
+import edu.ie3.datamodel.models.input.system.type.BmTypeInput
+import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
+import edu.ie3.datamodel.models.input.system.type.EvTypeInput
+import edu.ie3.datamodel.models.input.system.type.HpTypeInput
+import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
+import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
@@ -57,30 +70,48 @@ class ProcessorProviderTest extends Specification {
 		given:
 		ProcessorProvider provider = new ProcessorProvider()
 
-		// currently known processors
 		List knownProcessors = [
-			FixedFeedInInput,
-			PvInput,
-			WecInput,
+			/* InputEntity */
+			OperatorInput,
+			RandomLoadParameters,
+			WecCharacteristicInput,
+			EvCharacteristicInput,
+			/* - AssetInput */
+			NodeInput,
+			LineInput,
+			Transformer2WInput,
+			Transformer3WInput,
+			SwitchInput,
+			MeasurementUnitInput,
+			EvcsInput,
+			ThermalBusInput,
+			/* -- SystemParticipantInput */
 			ChpInput,
 			BmInput,
 			EvInput,
-			LoadInput,
-			StorageInput,
+			FixedFeedInInput,
 			HpInput,
-			LineInput,
-			SwitchInput,
-			Transformer2WInput,
-			Transformer3WInput,
+			LoadInput,
+			PvInput,
+			StorageInput,
+			WecInput,
+			/* -- ThermalUnitInput */
 			ThermalHouseInput,
 			CylindricalStorageInput,
-			ThermalBusInput,
-			MeasurementUnitInput,
-			NodeInput,
-			EvcsInput,
-			LoadResult,
+			/* - GraphicInput */
 			NodeGraphicInput,
 			LineGraphicInput,
+			/* - AssetTypeInput */
+			BmTypeInput,
+			ChpTypeInput,
+			EvTypeInput,
+			HpTypeInput,
+			LineTypeInput,
+			Transformer2WTypeInput,
+			Transformer3WTypeInput,
+			StorageTypeInput,
+			WecTypeInput,
+			/* ResultEntity */
 			FixedFeedInResult,
 			BmResult,
 			PvResult,
@@ -92,11 +123,13 @@ class ProcessorProviderTest extends Specification {
 			Transformer2WResult,
 			Transformer3WResult,
 			LineResult,
+			LoadResult,
 			SwitchResult,
 			NodeResult,
 			ThermalHouseResult,
 			CylindricalStorageResult
 		]
+		// currently known processors
 
 		expect:
 		provider.registeredClasses.size() == knownProcessors.size()

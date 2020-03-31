@@ -36,10 +36,19 @@ abstract Class ConnectorInput {
 }
 ConnectorInput --|> AssetInput
 
-abstract Class AssetCharacteristicsInput {
-+ type: String
+abstract Class AssetCharacteristicsInput<T extends AssetTypeInput> {
+    - type: T
+    - characteristic: String
 }
 AssetCharacteristicsInput --|> InputEntity
+
+Class WecCharacteristicInput {
+}
+WecCharacteristicInput --|> AssetCharacteristicsInput: <<bind>>T::WecTypeInput
+
+Class EvCharacteristicInput {
+}
+EvCharacteristicInput --|> AssetCharacteristicsInput: <<bind>>T::EvTypeInput
 
 abstract Class AssetTypeInput {
 + id: String
@@ -160,18 +169,6 @@ Class Transformer3WTypeInput {
 + tapMax: Integer
 }
 Transformer3WTypeInput --|> AssetTypeInput
-
-
-Class WecCharacteristicInput {
-+ cpCharacteristic: String
-}
-WecCharacteristicInput --|> AssetCharacteristicsInput
-
-Class EvCharacteristicInput {
- ???
-}
-EvCharacteristicInput --|> AssetCharacteristicsInput
-
 
 Class RandomLoadParameter {
 + quarterHour: Integer

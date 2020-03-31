@@ -44,8 +44,8 @@ class GridTestData {
 
 	private static final GeoJsonReader geoJsonReader = new GeoJsonReader()
 
-	private static final Transformer2WTypeInput transformerTypeBtoD = new Transformer2WTypeInput(
-	UUID.randomUUID(),
+	public static final Transformer2WTypeInput transformerTypeBtoD = new Transformer2WTypeInput(
+	UUID.fromString("202069a7-bcf8-422c-837c-273575220c8a"),
 	"HS-MS_1",
 	Quantities.getQuantity(45.375, OHM),
 	Quantities.getQuantity(102.759, OHM),
@@ -113,7 +113,7 @@ class GridTestData {
 	10
 	)
 
-	private static final Transformer3WTypeInput transformerTypeAtoBtoC = new Transformer3WTypeInput(
+	public static final Transformer3WTypeInput transformerTypeAtoBtoC = new Transformer3WTypeInput(
 	UUID.fromString("5b0ee546-21fb-4a7f-a801-5dbd3d7bb356"),
 	"HöS-HS-MS_1",
 	Quantities.getQuantity(120000d, KILOVOLTAMPERE),
@@ -308,7 +308,7 @@ class GridTestData {
 	true
 	)
 
-	private static final LineTypeInput lineTypeInputCtoD = new LineTypeInput(
+	public static final LineTypeInput lineTypeInputCtoD = new LineTypeInput(
 	UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
 	"lineType_AtoB",
 	Quantities.getQuantity(0.00000000322, PowerSystemUnits.SIEMENS_PER_KILOMETRE),

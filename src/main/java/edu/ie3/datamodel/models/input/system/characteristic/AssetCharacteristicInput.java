@@ -5,27 +5,37 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
+import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.InputEntity;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Describes characteristics of assets */
-public abstract class AssetCharacteristicInput extends InputEntity {
+public abstract class AssetCharacteristicInput<T extends AssetTypeInput> extends InputEntity {
 
   /** Type name of this characteristic */
-  private final String type;
+  protected final T type;
+
+  /** Actual characteristic */
+  protected final String characteristic;
 
   /**
    * @param uuid of the input entity
    * @param type The type name of this characteristic
+   * @param characteristic Actual characteristic
    */
-  public AssetCharacteristicInput(UUID uuid, String type) {
+  public AssetCharacteristicInput(UUID uuid, T type, String characteristic) {
     super(uuid);
     this.type = type;
+    this.characteristic = characteristic;
   }
 
-  public String getType() {
+  public T getType() {
     return type;
+  }
+
+  public String getCharacteristic() {
+    return characteristic;
   }
 
   @Override
@@ -33,17 +43,23 @@ public abstract class AssetCharacteristicInput extends InputEntity {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    AssetCharacteristicInput that = (AssetCharacteristicInput) o;
-    return Objects.equals(type, that.type);
+    AssetCharacteristicInput<?> that = (AssetCharacteristicInput<?>) o;
+    return type.equals(that.type) && characteristic.equals(that.characteristic);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), type);
+    return Objects.hash(super.hashCode(), type, characteristic);
   }
 
   @Override
   public String toString() {
-    return "AssetCharacteristicInput{" + "type='" + type + '\'' + '}';
+    return "AssetCharacteristicInput{"
+        + "type="
+        + type
+        + ", characteristic='"
+        + characteristic
+        + '\''
+        + '}';
   }
 }

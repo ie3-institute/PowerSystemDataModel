@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.system.StorageStrategy;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.TimeTools;
-import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.beans.Introspector;
 import java.lang.reflect.Method;
 import java.time.ZoneId;
@@ -23,7 +22,6 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
-import javax.measure.quantity.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,6 +50,14 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   private static final String VOLT_LVL_FIELD_NAME = "voltLvl";
   private static final String VOLT_LVL = NodeInputFactory.VOLT_LVL;
   private static final String V_RATED = NodeInputFactory.V_RATED;
+
+  /* Quantities associated to those fields must be treated differently (e.g. input and result), all other quantity /
+   * field combinations can be treated on a common basis and therefore need no further distinction */
+  private static final Set<String> specificQuantityFieldNames =
+      Collections.unmodifiableSet(
+          new HashSet<>(
+              Arrays.asList(
+                  "eConsAnnual", "energy", "eStorage", "q", "p", "pMax", "pOwn", "pThermal")));
 
   private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
 
@@ -181,6 +187,14 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
     return resultMapOpt;
   }
 
+  /**
+   * Processes the returned object to String by taking care of different conventions.
+   *
+   * @param methodReturnObject Return object to process
+   * @param method The method, that is invoked
+   * @param fieldName Name of the foreseen field
+   * @return A String representation of the result
+   */
   private String processMethodResult(Object methodReturnObject, Method method, String fieldName) {
 
     StringBuilder resultStringBuilder = new StringBuilder();
@@ -228,6 +242,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
         resultStringBuilder.append(((StorageStrategy) methodReturnObject).getToken());
         break;
       case "NodeInput":
+      case "AssetTypeInput":
       case "Transformer3WTypeInput":
       case "Transformer2WTypeInput":
       case "LineTypeInput":
@@ -323,8 +338,6 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
                               + "' in result entity "
                               + getRegisteredClass().getSimpleName()
                               + ".class.")));
-    ;
-
     return resultStringBuilder.toString();
   }
 
@@ -337,68 +350,11 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    *     or empty if an error occurred during processing
    */
   protected Optional<String> handleQuantity(Quantity<?> quantity, String fieldName) {
-
-    Optional<String> normalizedQuantityValue = Optional.empty();
-
-    switch (fieldName) {
-      case "p":
-      case "q":
-      case "energy":
-      case "vTarget":
-      case "vrated":
-      case "sRated":
-      case "eConsAnnual":
-        normalizedQuantityValue = handleProcessorSpecificQuantity(quantity, fieldName);
-        break;
-      case "soc":
-      case "vAng":
-      case "vMag":
-      case "iAAng":
-      case "iBAng":
-      case "iCAng":
-      case "etaConv":
-      case "azimuth":
-      case "height":
-        normalizedQuantityValue = quantityValToOptionalString(quantity);
-        break;
-      case "iAMag":
-      case "iBMag":
-      case "iCMag":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity
-                    .asType(ElectricCurrent.class)
-                    .to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE));
-        break;
-      case "qDot":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.Q_DOT_RESULT));
-        break;
-      case "fillLevel":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Dimensionless.class).to(StandardUnits.FILL_LEVEL));
-        break;
-      case "length":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Length.class).to(StandardUnits.LINE_LENGTH));
-        break;
-
-      case "feedInTariff":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(EnergyPrice.class).to(StandardUnits.ENERGY_PRICE));
-        break;
-      default:
-        log.error(
-            "Cannot process quantity with value '{}' for field with name {} in model processing!",
-            quantity,
-            fieldName);
-        break;
+    if (specificQuantityFieldNames.contains(fieldName)) {
+      return handleProcessorSpecificQuantity(quantity, fieldName);
+    } else {
+      return quantityValToOptionalString(quantity);
     }
-    return normalizedQuantityValue;
   }
 
   /**

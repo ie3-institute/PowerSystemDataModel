@@ -63,20 +63,25 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
       Quantity<?> quantity, String fieldName) {
     Optional<String> normalizedQuantityValue = Optional.empty();
     switch (fieldName) {
-      case "p":
+      case "energy":
+      case "eConsAnnual":
+      case "eStorage":
         normalizedQuantityValue =
             quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT));
+                quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
         break;
       case "q":
         normalizedQuantityValue =
             quantityValToOptionalString(
                 quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT));
         break;
-      case "energy":
+      case "p":
+      case "pMax":
+      case "pOwn":
+      case "pThermal":
         normalizedQuantityValue =
             quantityValToOptionalString(
-                quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
+                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT));
         break;
       default:
         log.error(
