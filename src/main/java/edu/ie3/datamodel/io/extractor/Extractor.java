@@ -28,22 +28,25 @@ public class Extractor {
 
   private List<InputEntity> extractElements(Nested nestedEntity) throws ExtractorException {
     List<InputEntity> resultingList = new ArrayList<>();
-    if (nestedEntity instanceof Nodes) {
-      resultingList.addAll(
-          Arrays.asList(((Nodes) nestedEntity).getNodeA(), ((Nodes) nestedEntity).getNodeB()));
-    }
     if (nestedEntity instanceof Node) {
       resultingList.add(((Node) nestedEntity).getNode());
     }
     if (nestedEntity instanceof NodeC) {
       resultingList.add(((NodeC) nestedEntity).getNodeC());
     }
+    if (nestedEntity instanceof Nodes) {
+      resultingList.addAll(
+          Arrays.asList(((Nodes) nestedEntity).getNodeA(), ((Nodes) nestedEntity).getNodeB()));
+    }
     if (nestedEntity instanceof Type) {
       resultingList.add(((Type) nestedEntity).getType());
-    } else {
+    }
+    if (resultingList.isEmpty()) {
       throw new ExtractorException(
-          "The interface 'Nested' is not meant to be extended and cannot be processed by "
-              + "the extractor! Currently only the interfaces ‘Nodes‘ and ‘Type' are supported!");
+          "The interface 'Nested' is not meant to be extended. The provided entity of class '"
+              + nestedEntity.getClass().getSimpleName()
+              + "' and cannot be processed by "
+              + "the extractor! Currently only the interfaces 'Node', 'NodeC', ‘Nodes‘ and ‘Type' are supported!");
     }
 
     return Collections.unmodifiableList(resultingList);
