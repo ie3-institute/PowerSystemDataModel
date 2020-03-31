@@ -15,13 +15,11 @@ import java.time.ZonedDateTime
 class IndividualTimeSeriesSpec extends Specification {
 	@Shared
 	IndividualTimeSeries<IntValue> timeSeries = new IndividualTimeSeries<>(
-	UUID.randomUUID(),
-	new HashMap<ZonedDateTime, IntValue>() { {
-			put(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")), new IntValue(3))
-			put(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), new IntValue(4))
-			put(ZonedDateTime.of(1990, 1, 1, 0, 30, 0, 0, ZoneId.of("UTC")), new IntValue(1))
-		}
-	})
+	UUID.randomUUID(), [
+		new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")), new IntValue(3)),
+		new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), new IntValue(4)),
+		new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 30, 0, 0, ZoneId.of("UTC")), new IntValue(1))
+	])
 
 	def "Return empty optional value when queried for non existent time" () {
 		expect:

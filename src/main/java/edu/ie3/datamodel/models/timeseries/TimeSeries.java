@@ -62,11 +62,11 @@ public abstract class TimeSeries<T extends Value> extends UniqueEntity {
    * @return the most recent available value before or at the given time step as a TimeBasedValue
    */
   public Optional<TimeBasedValue<T>> getPreviousTimeBasedValue(ZonedDateTime time) {
-    return getPreviousDateTime(time).map(this::getPreviousTimeBasedValue).map(Optional::get);
+    return getPreviousDateTime(time).map(this::getTimeBasedValue).map(Optional::get);
   }
 
   /** @return the next available value after or at the given time step as a TimeBasedValue */
   public Optional<TimeBasedValue<T>> getNextTimeBasedValue(ZonedDateTime time) {
-    return getNextDateTime(time).map(this::getPreviousTimeBasedValue).map(Optional::get);
+    return getNextDateTime(time).map(this::getTimeBasedValue).map(Optional::get);
   }
 }
