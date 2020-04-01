@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.extractor;
 
 import edu.ie3.datamodel.exceptions.ExtractorException;
+import edu.ie3.datamodel.models.Operable;
 import edu.ie3.datamodel.models.input.InputEntity;
 import java.util.*;
 
@@ -31,6 +32,10 @@ public final class Extractor {
     if (nestedEntity instanceof HasType) {
       resultingList.add(((HasType) nestedEntity).getType());
     }
+    if(nestedEntity instanceof Operable){
+      resultingList.add(((Operable) nestedEntity).getOperator());
+    }
+
     if (resultingList.isEmpty() || resultingList.contains(null)) {
       throw new ExtractorException(
           "Unable to extract entity of class '"

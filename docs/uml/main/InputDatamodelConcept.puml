@@ -10,6 +10,7 @@ InputEntity --|> UniqueEntity
 Interface Operable {
 + inOperation: Boolean
 }
+Operable --|> NestedEntity
 
 abstract Class AssetInput {
 - id: String
