@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.deserialize
 
+import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
+
 import edu.ie3.datamodel.io.CsvFileDefinition
 import edu.ie3.datamodel.models.timeseries.IndividualTimeSeries
 import edu.ie3.datamodel.models.value.EnergyPriceValue
@@ -16,8 +18,6 @@ import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
 import java.time.ZoneId
-
-import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 
 class TimeSeriesDeserializerTest extends Specification {
 	static {
@@ -37,10 +37,10 @@ class TimeSeriesDeserializerTest extends Specification {
 		individualTimeSeries = new IndividualTimeSeries<>(
 				UUID.fromString("178892cf-500f-4e62-9d1f-ff9e3a92215e"),
 				[
-					new TimeBasedValue<>(TimeTools.toZonedDateTime("2020-03-31 19:00:00") ,new EnergyPriceValue(Quantities.getQuantity(1d, EURO_PER_MEGAWATTHOUR))),
-					new TimeBasedValue<>(TimeTools.toZonedDateTime("2020-03-31 19:15:00") ,new EnergyPriceValue(Quantities.getQuantity(2d, EURO_PER_MEGAWATTHOUR))),
-					new TimeBasedValue<>(TimeTools.toZonedDateTime("2020-03-31 19:30:00") ,new EnergyPriceValue(Quantities.getQuantity(3d, EURO_PER_MEGAWATTHOUR))),
-					new TimeBasedValue<>(TimeTools.toZonedDateTime("2020-03-31 19:45:00") ,new EnergyPriceValue(Quantities.getQuantity(4d, EURO_PER_MEGAWATTHOUR)))
+					new TimeBasedValue<>(TimeTools.toZonedDateTime("2020-03-31 19:00:00"), new EnergyPriceValue(Quantities.getQuantity(1d, EURO_PER_MEGAWATTHOUR))),
+					new TimeBasedValue<>(TimeTools.toZonedDateTime("2020-03-31 19:15:00"), new EnergyPriceValue(Quantities.getQuantity(2d, EURO_PER_MEGAWATTHOUR))),
+					new TimeBasedValue<>(TimeTools.toZonedDateTime("2020-03-31 19:30:00"), new EnergyPriceValue(Quantities.getQuantity(3d, EURO_PER_MEGAWATTHOUR))),
+					new TimeBasedValue<>(TimeTools.toZonedDateTime("2020-03-31 19:45:00"), new EnergyPriceValue(Quantities.getQuantity(4d, EURO_PER_MEGAWATTHOUR)))
 				]
 				)
 
@@ -82,7 +82,7 @@ class TimeSeriesDeserializerTest extends Specification {
 	def "The IndividualTimeSeriesDeserializer handles a single time based value correctly"() {
 		given:
 		IndividualTimeSeriesDeserializer<EnergyPriceValue> timeSeriesDeserializer = new IndividualTimeSeriesDeserializer<>(EnergyPriceValue.class, testBaseFolderPath)
-		TimeBasedValue<EnergyPriceValue> dut = new TimeBasedValue<>(TimeTools.toZonedDateTime("2020-03-31 19:00:00") ,new EnergyPriceValue(Quantities.getQuantity(1d, EURO_PER_MEGAWATTHOUR)))
+		TimeBasedValue<EnergyPriceValue> dut = new TimeBasedValue<>(TimeTools.toZonedDateTime("2020-03-31 19:00:00"), new EnergyPriceValue(Quantities.getQuantity(1d, EURO_PER_MEGAWATTHOUR)))
 		Map expected = [
 			"uuid": "Egal - Michael Wendler",
 			"time": "2020-03-31 19:00:00",
@@ -96,16 +96,17 @@ class TimeSeriesDeserializerTest extends Specification {
 		/* The uuid is randomly generated here and therefore not checked */
 		actual.size() == expected.size()
 		expected.forEach { k, v ->
-			if(k == "uuid")
-				assert actual.containsKey(k)
-			else
-				assert (v == actual.get(k))
+			if (k == "uuid") {
+                assert actual.containsKey(k)
+            } else {
+                assert (v == actual.get(k))
+            }
 		}
 	}
 
 	def "The IndividualTimeSeriesDeserializer creates the correct file on deserialization"() {
 		given:
-		IndividualTimeSeriesDeserializer<EnergyPriceValue> timeSeriesDeserializer = new IndividualTimeSeriesDeserializer<>(EnergyPriceValue.class, testBaseFolderPath)
+		IndividualTimeSeriesDeserializer<EnergyPriceValue> timeSeriesDeserializer = new IndividualTimeSeriesDeserializer<>(EnergyPriceValue, testBaseFolderPath)
 
 		when:
 		timeSeriesDeserializer.deserialize(individualTimeSeries)

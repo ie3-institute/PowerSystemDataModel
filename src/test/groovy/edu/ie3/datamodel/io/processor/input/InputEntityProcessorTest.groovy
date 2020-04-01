@@ -289,7 +289,7 @@ class InputEntityProcessorTest extends Specification {
 		]
 	}
 
-	def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with point correctly"(){
+	def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with point correctly"() {
 		given:
 		InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput.class)
 		NodeGraphicInput validNode = GridTestData.nodeGraphicC
@@ -309,7 +309,7 @@ class InputEntityProcessorTest extends Specification {
 		actual.get() == expected
 	}
 
-	def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with path correctly"(){
+	def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with path correctly"() {
 		given:
 		InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput.class)
 		NodeGraphicInput validNode = GridTestData.nodeGraphicD
@@ -329,9 +329,9 @@ class InputEntityProcessorTest extends Specification {
 		actual.get() == expected
 	}
 
-	def "The InputEntityProcessor should de-serialize a provided LineGraphicInput correctly"(){
+	def "The InputEntityProcessor should de-serialize a provided LineGraphicInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(LineGraphicInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(LineGraphicInput)
 		LineGraphicInput validNode = GridTestData.lineGraphicCtoD
 		Map expected = [
 			"uuid"          : "ece86139-3238-4a35-9361-457ecb4258b0",
@@ -350,7 +350,7 @@ class InputEntityProcessorTest extends Specification {
 
 	def "The InputEntityProcessor should de-serialize a provided OperatorInput correctly"() {
 		given:
-		InputEntityProcessor processor = new InputEntityProcessor(OperatorInput.class)
+		InputEntityProcessor processor = new InputEntityProcessor(OperatorInput)
 		OperatorInput operator = new OperatorInput(UUID.fromString("420ee39c-dd5a-4d9c-9156-23dbdef13e5e"), "Prof. Brokkoli")
 		Map expected = [
 			"uuid"  : "420ee39c-dd5a-4d9c-9156-23dbdef13e5e",

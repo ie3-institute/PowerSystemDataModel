@@ -5,12 +5,12 @@
  */
 package edu.ie3.datamodel.io.processor.input
 
+import static edu.ie3.util.quantities.PowerSystemUnits.*
+
 import edu.ie3.util.TimeTools
 
 import java.time.ZoneId
 import java.time.ZonedDateTime
-
-import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.TimeBasedValue

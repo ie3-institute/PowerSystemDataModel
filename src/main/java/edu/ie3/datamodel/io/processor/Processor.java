@@ -34,6 +34,28 @@ import org.slf4j.LoggerFactory;
  * @param <T> Type parameter of the class to handle
  */
 public abstract class Processor<T> {
+  protected static final Logger logger = LoggerFactory.getLogger(Processor.class);
+
+  protected final Class<? extends T> registeredClass;
+
+  /* Quantities associated to those fields must be treated differently (e.g. input and result), all other quantity /
+   * field combinations can be treated on a common basis and therefore need no further distinction */
+  private static final Set<String> specificQuantityFieldNames =
+          Collections.unmodifiableSet(
+                  new HashSet<>(
+                          Arrays.asList(
+                                  "eConsAnnual", "energy", "eStorage", "q", "p", "pMax", "pOwn", "pThermal")));
+
+  private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
+
+  private static final String OPERATION_TIME_FIELD_NAME = OperationTime.class.getSimpleName();
+  private static final String OPERATES_FROM = "operatesFrom";
+  private static final String OPERATES_UNTIL = "operatesUntil";
+
+  private static final String VOLT_LVL_FIELD_NAME = "voltLvl";
+  private static final String VOLT_LVL = NodeInputFactory.VOLT_LVL;
+  private static final String V_RATED = NodeInputFactory.V_RATED;
+
   /**
    * Comparator to sort a Map of field name to getter method, so that the first entry is the uuid
    * and the rest is sorted alphabetically.
@@ -45,27 +67,6 @@ public abstract class Processor<T> {
       else return a.compareTo(b);
     }
   }
-
-  protected static final Logger logger = LoggerFactory.getLogger(Processor.class);
-  protected final Class<? extends T> registeredClass;
-
-  /* Quantities associated to those fields must be treated differently (e.g. input and result), all other quantity /
-   * field combinations can be treated on a common basis and therefore need no further distinction */
-  private static final Set<String> specificQuantityFieldNames =
-      Collections.unmodifiableSet(
-          new HashSet<>(
-              Arrays.asList(
-                  "eConsAnnual", "energy", "eStorage", "q", "p", "pMax", "pOwn", "pThermal")));
-
-  private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
-
-  private static final String OPERATION_TIME_FIELD_NAME = OperationTime.class.getSimpleName();
-  private static final String OPERATES_FROM = "operatesFrom";
-  private static final String OPERATES_UNTIL = "operatesUntil";
-
-  private static final String VOLT_LVL_FIELD_NAME = "voltLvl";
-  private static final String VOLT_LVL = NodeInputFactory.VOLT_LVL;
-  private static final String V_RATED = NodeInputFactory.V_RATED;
 
   /**
    * Instantiates a Processor for a foreseen class

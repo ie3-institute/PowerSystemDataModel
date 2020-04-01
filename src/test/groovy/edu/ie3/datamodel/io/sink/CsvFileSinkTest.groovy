@@ -36,9 +36,9 @@ class CsvFileSinkTest extends Specification {
 		ResultEntityProcessor evResultEntityProcessor = new ResultEntityProcessor(EvResult)
 		ResultEntityProcessor wecResultEntityProcessor = new ResultEntityProcessor(WecResult)
 
-		pvResultFileDefinition = new CsvFileDefinition(fileNamingStrategy.getFileName(PvResult).get(), pvResultEntityProcessor.getHeaderElements())
-		evResultFileDefinition = new CsvFileDefinition(fileNamingStrategy.getFileName(EvResult).get(), evResultEntityProcessor.getHeaderElements())
-		wecResultFileDefinition = new CsvFileDefinition(fileNamingStrategy.getFileName(WecResult).get(), wecResultEntityProcessor.getHeaderElements())
+		pvResultFileDefinition = new CsvFileDefinition(fileNamingStrategy.getFileName(PvResult).get(), pvResultEntityProcessor.headerElements)
+		evResultFileDefinition = new CsvFileDefinition(fileNamingStrategy.getFileName(EvResult).get(), evResultEntityProcessor.headerElements)
+		wecResultFileDefinition = new CsvFileDefinition(fileNamingStrategy.getFileName(WecResult).get(), wecResultEntityProcessor.headerElements)
 	}
 
 	def cleanup() {
@@ -151,7 +151,7 @@ class CsvFileSinkTest extends Specification {
 
 		then:
 		SinkException exception = thrown(SinkException)
-		exception.getMessage() == "Cannot find a matching writer for file definition: \"CsvFileDefinition{fileName='wec_res', fileExtension='csv', headLineElements=[uuid, inputModel, p, q, timestamp]}\"."
+		exception.message == "Cannot find a matching writer for file definition: \"CsvFileDefinition{fileName='wec_res', fileExtension='csv', headLineElements=[uuid, inputModel, p, q, timestamp]}\"."
 	}
 
 	def "A valid CsvFileSink registers a new destination if the provided destination is not registered and later registration is allowed"() {
