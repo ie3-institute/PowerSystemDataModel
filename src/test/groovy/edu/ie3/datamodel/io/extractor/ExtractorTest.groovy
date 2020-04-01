@@ -75,6 +75,9 @@ class ExtractorTest extends Specification {
 			sptd.hpInput.node,
 			sptd.hpInput.type
 		]
+
+		// todo test for graphic input
+		// todo test for thermal input
 	}
 
 	def "An Extractor should throw an ExtractorException if the provided Nested entity is unknown and or an invalid extension of the 'Nested' interface took place"() {

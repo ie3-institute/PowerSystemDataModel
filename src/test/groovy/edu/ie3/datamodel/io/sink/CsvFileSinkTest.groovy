@@ -105,6 +105,9 @@ class CsvFileSinkTest extends Specification {
 		new File(testBaseFolderPath + File.separator + "node_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "transformer2w_input.csv").exists()
 
+		// todo test for graphic input
+		// todo test for thermal input
+
 		!new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
 	}
 
