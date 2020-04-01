@@ -8,6 +8,8 @@ package edu.ie3.datamodel.models.input.system.type;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
@@ -17,13 +19,13 @@ import javax.measure.quantity.Power;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput} */
 public class ChpTypeInput extends SystemParticipantTypeInput {
   /** Electrical efficiency (typically in %) */
-  private final Quantity<Dimensionless> etaEl;
+  private final ComparableQuantity<Dimensionless> etaEl; // TODO doublecheck
   /** Thermal efficiency (typically in %) */
-  private final Quantity<Dimensionless> etaThermal;
+  private final ComparableQuantity<Dimensionless> etaThermal; // TODO doublecheck
   /** Rated thermal power (typically in kW) */
-  private final Quantity<Power> pThermal;
+  private final ComparableQuantity<Power> pThermal; // TODO doublecheck
   /** Internal consumption (typically in kW) */
-  private final Quantity<Power> pOwn;
+  private final ComparableQuantity<Power> pOwn; // TODO doublecheck
 
   /**
    * @param uuid of the input entity
@@ -42,12 +44,12 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       String id,
       Quantity<Currency> capex,
       Quantity<EnergyPrice> opex,
-      Quantity<Dimensionless> etaEl,
-      Quantity<Dimensionless> etaThermal,
+      ComparableQuantity<Dimensionless> etaEl, // TODO doublecheck
+      ComparableQuantity<Dimensionless> etaThermal, // TODO doublecheck
       Quantity<Power> sRated,
       double cosphiRated,
-      Quantity<Power> pThermal,
-      Quantity<Power> pOwn) {
+      ComparableQuantity<Power> pThermal, // TODO doublecheck
+      ComparableQuantity<Power> pOwn) { // TODO doublecheck
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.etaEl = etaEl.to(StandardUnits.EFFICIENCY);
     this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
@@ -55,19 +57,19 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
-  public Quantity<Dimensionless> getEtaEl() {
+  public ComparableQuantity<Dimensionless> getEtaEl() { // TODO doublecheck
     return etaEl;
   }
 
-  public Quantity<Dimensionless> getEtaThermal() {
+  public ComparableQuantity<Dimensionless> getEtaThermal() { // TODO doublecheck
     return etaThermal;
   }
 
-  public Quantity<Power> getpThermal() {
+  public ComparableQuantity<Power> getpThermal() { // TODO doublecheck
     return pThermal;
   }
 
-  public Quantity<Power> getpOwn() {
+  public ComparableQuantity<Power> getpOwn() { // TODO doublecheck
     return pOwn;
   }
 

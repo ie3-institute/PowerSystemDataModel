@@ -11,9 +11,10 @@ import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 
@@ -29,9 +30,9 @@ public class LoadInput extends SystemParticipantInput {
   /** True, if demand side management is activated for this load */
   private final boolean dsm;
   /** Annually consumed energy (typically in kWh) */
-  private final Quantity<Energy> eConsAnnual;
+  private final ComparableQuantity<Energy> eConsAnnual; //TODO doublecheck
   /** Active Power (typically in kVA) */
-  private final Quantity<Power> sRated;
+  private final ComparableQuantity<Power> sRated; //TODO doublecheck
   /** Rated power factor */
   private final double cosphiRated;
 
@@ -59,8 +60,8 @@ public class LoadInput extends SystemParticipantInput {
       String qCharacteristics,
       StandardLoadProfile standardLoadProfile,
       boolean dsm,
-      Quantity<Energy> eConsAnnual,
-      Quantity<Power> sRated,
+      ComparableQuantity<Energy> eConsAnnual, //TODO doublecheck
+      ComparableQuantity<Power> sRated, //TODO doublecheck
       double cosphiRated) {
     super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.standardLoadProfile = standardLoadProfile;
@@ -95,8 +96,8 @@ public class LoadInput extends SystemParticipantInput {
       String qCharacteristics,
       String bdewStandardLoadProfile,
       boolean dsm,
-      Quantity<Energy> eConsAnnual,
-      Quantity<Power> sRated,
+      ComparableQuantity<Energy> eConsAnnual, //TODO doublecheck
+      ComparableQuantity<Power> sRated, //TODO doublecheck
       double cosphiRated) {
     this(
         uuid,
@@ -131,8 +132,8 @@ public class LoadInput extends SystemParticipantInput {
       String qCharacteristics,
       StandardLoadProfile standardLoadProfile,
       boolean dsm,
-      Quantity<Energy> eConsAnnual,
-      Quantity<Power> sRated,
+      ComparableQuantity<Energy> eConsAnnual, //TODO doublecheck
+      ComparableQuantity<Power> sRated, //TODO doublecheck
       double cosphiRated) {
     super(uuid, id, node, qCharacteristics);
     this.standardLoadProfile = standardLoadProfile;
@@ -162,8 +163,8 @@ public class LoadInput extends SystemParticipantInput {
       String qCharacteristics,
       String bdewStandardLoadProfile,
       boolean dsm,
-      Quantity<Energy> eConsAnnual,
-      Quantity<Power> sRated,
+      ComparableQuantity<Energy> eConsAnnual, //TODO doublecheck
+      ComparableQuantity<Power> sRated, //TODO doublecheck
       double cosphiRated) {
     this(
         uuid,
@@ -185,13 +186,13 @@ public class LoadInput extends SystemParticipantInput {
     return dsm;
   }
 
-  public Quantity<Energy> geteConsAnnual() {
+  public ComparableQuantity<Energy> geteConsAnnual() {
     return eConsAnnual;
-  }
+  } //TODO doublecheck
 
-  public Quantity<Power> getsRated() {
+  public ComparableQuantity<Power> getsRated() {
     return sRated;
-  }
+  } //TODO doublecheck
 
   public double getCosphiRated() {
     return cosphiRated;

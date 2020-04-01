@@ -11,9 +11,10 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 
 /** Describes a biomass plant */
 public class BmInput extends SystemParticipantInput {
@@ -26,7 +27,7 @@ public class BmInput extends SystemParticipantInput {
    */
   private final boolean costControlled;
   /** Granted feed in tariff (typically in €/kWh) */
-  private final Quantity<EnergyPrice> feedInTariff;
+  private final ComparableQuantity<EnergyPrice> feedInTariff; //TODO doublecheck
 
   /**
    * Constructor for an operated biomass plant
@@ -53,7 +54,7 @@ public class BmInput extends SystemParticipantInput {
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
-      Quantity<EnergyPrice> feedInTariff) {
+      ComparableQuantity<EnergyPrice> feedInTariff) { //TODO doublecheck
     super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
@@ -82,7 +83,7 @@ public class BmInput extends SystemParticipantInput {
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
-      Quantity<EnergyPrice> feedInTariff) {
+      ComparableQuantity<EnergyPrice> feedInTariff) { //TODO doublecheck
     super(uuid, id, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
@@ -102,7 +103,7 @@ public class BmInput extends SystemParticipantInput {
     return costControlled;
   }
 
-  public Quantity<EnergyPrice> getFeedInTariff() {
+  public ComparableQuantity<EnergyPrice> getFeedInTariff() { //TODO doublecheck
     return feedInTariff;
   }
 
