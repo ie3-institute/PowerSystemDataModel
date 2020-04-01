@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import edu.ie3.datamodel.io.extractor.Type;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -21,7 +22,7 @@ import org.locationtech.jts.geom.LineString;
  * Describes an electrical grid line that connects two {@link
  * edu.ie3.datamodel.models.input.NodeInput}s
  */
-public class LineInput extends ConnectorInput {
+public class LineInput extends ConnectorInput implements Type {
 
   /** Type of this line, containing default values for lines of this kind */
   private final LineTypeInput type;
@@ -96,6 +97,7 @@ public class LineInput extends ConnectorInput {
     this.olmCharacteristic = olmCharacteristic;
   }
 
+  @Override
   public LineTypeInput getType() {
     return type;
   }

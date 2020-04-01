@@ -5,15 +5,15 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import edu.ie3.datamodel.io.extractor.Nodes;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /** Describes an asset that connects two {@link NodeInput}s */
-public abstract class ConnectorInput extends AssetInput {
+public abstract class ConnectorInput extends AssetInput implements Nodes {
   /** Grid node at one side of the connector */
   private final NodeInput nodeA;
   /** Grid node at the other side of the connector */
@@ -63,10 +63,12 @@ public abstract class ConnectorInput extends AssetInput {
     this.noOfParallelDevices = noOfParallelDevices;
   }
 
+  @Override
   public NodeInput getNodeA() {
     return nodeA;
   }
 
+  @Override
   public NodeInput getNodeB() {
     return nodeB;
   }
