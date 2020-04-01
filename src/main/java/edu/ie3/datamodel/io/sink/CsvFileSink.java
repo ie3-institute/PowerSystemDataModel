@@ -134,7 +134,7 @@ public class CsvFileSink implements DataSink {
     if (entity instanceof Nested) {
       try {
         persistIgnoreNested(entity);
-        for (InputEntity ent : new Extractor((Type) entity).getExtractedEntities()) {
+        for (InputEntity ent : new Extractor((Nested) entity).getExtractedEntities()) {
           persistIgnoreNested(ent);
         }
 
