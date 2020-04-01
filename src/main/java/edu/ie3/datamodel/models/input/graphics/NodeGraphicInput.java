@@ -5,14 +5,14 @@
 */
 package edu.ie3.datamodel.models.input.graphics;
 
+import edu.ie3.datamodel.io.extractor.Node;
 import edu.ie3.datamodel.models.input.NodeInput;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 
 /** Describes the graphic data belonging to a {@link NodeInput} */
-public class NodeGraphicInput extends GraphicInput {
+public class NodeGraphicInput extends GraphicInput implements Node {
   /** The NodeInput to this graphic data */
   private final NodeInput node;
   /** The geometric point of this node */
@@ -32,6 +32,7 @@ public class NodeGraphicInput extends GraphicInput {
     this.point = point;
   }
 
+  @Override
   public NodeInput getNode() {
     return node;
   }

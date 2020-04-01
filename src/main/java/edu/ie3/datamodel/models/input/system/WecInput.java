@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.io.extractor.Type;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -13,7 +14,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Describes a Wind Energy Converter */
-public class WecInput extends SystemParticipantInput {
+public class WecInput extends SystemParticipantInput implements Type {
 
   /** Type of this WEC, containing default values for WEC assets of this kind */
   private final WecTypeInput type;
@@ -71,6 +72,7 @@ public class WecInput extends SystemParticipantInput {
     return marketReaction;
   }
 
+  @Override
   public WecTypeInput getType() {
     return type;
   }

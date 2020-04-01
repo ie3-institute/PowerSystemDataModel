@@ -314,23 +314,36 @@ if (env.BRANCH_NAME == "master") {
     getFeatureBranchProps()
 
     node {
-        // curl the api to get debugging details
-        def jsonObj = getGithubPRJsonObj(env.CHANGE_ID, orgNames.get(0), projects.get(0))
 
-        // This displays colors using the 'xterm' ansi color map.
+        def repoName = ""
+        // init variables depending of this build is triggered by a branch with PR or without PR
+        if (env.CHANGE_ID == null) {
+            // no PR exists
+            featureBranchName = env.BRANCH_NAME
+            repoName = orgNames.get(0) + "/" + projects.get(0)
+        } else {
+            // PR exists
+            /// curl the api to get debugging details
+            def jsonObj = getGithubPRJsonObj(env.CHANGE_ID, orgNames.get(0), projects.get(0))
+
+            featureBranchName = jsonObj.head.ref
+            repoName = jsonObj.head.repo.full_name
+
+        }
+
+
         ansiColor('xterm') {
             try {
                 // set java version
                 setJavaVersion(javaVersionId)
 
                 /// set the build name
-                featureBranchName = jsonObj.head.ref
                 currentBuild.displayName = featureBranchName + " (" + currentBuild.displayName + ")"
 
                 // notify rocket chat about the started feature branch run
                 rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
                         message: "feature branch build triggered:\n" +
-                                "*repo:* ${jsonObj.head.repo.full_name}\n" +
+                                "*repo:* ${repoName}\n" +
                                 "*branch:* ${featureBranchName}\n"
                 rawMessage: true
 
@@ -383,7 +396,7 @@ if (env.BRANCH_NAME == "master") {
                     // notify rocket chat
                     rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
                             message: "feature branch test successful!\n" +
-                                    "*repo:* ${jsonObj.head.repo.full_name}\n" +
+                                    "*repo:* ${repoName}\n" +
                                     "*branch:* ${featureBranchName}\n"
                     rawMessage: true
                 }
@@ -401,7 +414,7 @@ if (env.BRANCH_NAME == "master") {
                 // notify rocket chat
                 rocketSend channel: rocketChatChannel, emoji: ':jenkins_explode:',
                         message: "feature branch test failed!\n" +
-                                "*repo:* ${jsonObj.head.repo.full_name}\n" +
+                                "*repo:* ${repoName}\n" +
                                 "*branch:* ${featureBranchName}\n"
                 rawMessage: true
             }
@@ -422,12 +435,12 @@ def getFeatureBranchProps() {
 
 
 def getMasterBranchProps() {
-    properties(
-            [[$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
-             [$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0, maxConcurrentTotal: 0, paramsToUseForLimit: '', throttleEnabled: true, throttleOption: 'project']
-            ])
+    properties([parameters(
+            [string(defaultValue: '', description: '', name: 'release', trim: true)]),
+                [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
+                [$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0, maxConcurrentTotal: 0, paramsToUseForLimit: '', throttleEnabled: true, throttleOption: 'project']
+    ])
 }
-
 
 ////////////////////////////////////
 // git checkout
