@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.extractor;
 
-import edu.ie3.datamodel.models.input.connector.LineInput;
+import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 
 /**
  * //ToDo: Class Description
@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.input.connector.LineInput;
  * @version 0.1
  * @since 01.04.20
  */
-public interface HasLine extends NestedEntity {
+public interface HasBus extends NestedEntity {
 
-  LineInput getLine();
+  ThermalBusInput getBus();
 }

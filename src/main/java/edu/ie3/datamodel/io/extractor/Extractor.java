@@ -32,8 +32,12 @@ public final class Extractor {
     if (nestedEntity instanceof HasType) {
       resultingList.add(((HasType) nestedEntity).getType());
     }
-    if(nestedEntity instanceof Operable){
+    if (nestedEntity instanceof Operable) {
       resultingList.add(((Operable) nestedEntity).getOperator());
+    }
+
+    if (nestedEntity instanceof HasBus) {
+      resultingList.add(((HasBus) nestedEntity).getBus());
     }
 
     if (resultingList.isEmpty() || resultingList.contains(null)) {

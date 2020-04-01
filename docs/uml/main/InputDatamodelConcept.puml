@@ -200,6 +200,9 @@ HasType --|> NestedEntity
 interface HasLine
 HasLine --|> NestedEntity
 
+interface HasBus
+HasBus --|> NestedEntity
+
 Class FixedFeedInInput {
 - sRated: Quantity<Power> [kVA]
 - cosphiRated: double
@@ -275,6 +278,7 @@ Abstract Class ThermalUnitInput {
  - bus: ThermalBusInput
 }
 ThermalUnitInput --|> AssetInput
+ThermalUnitInput --|> HasBus
 
 Class ThermalBusInput {
 }

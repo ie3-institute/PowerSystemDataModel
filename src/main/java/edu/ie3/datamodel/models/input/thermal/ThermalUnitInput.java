@@ -5,12 +5,13 @@
 */
 package edu.ie3.datamodel.models.input.thermal;
 
+import edu.ie3.datamodel.io.extractor.HasBus;
 import edu.ie3.datamodel.models.input.AssetInput;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Abstract class for grouping all common properties to thermal models. */
-public abstract class ThermalUnitInput extends AssetInput {
+public abstract class ThermalUnitInput extends AssetInput implements HasBus {
   /** The thermal bus, a thermal unit is connected to. */
   private final ThermalBusInput bus;
 
@@ -24,6 +25,7 @@ public abstract class ThermalUnitInput extends AssetInput {
     this.bus = bus;
   }
 
+  @Override
   public ThermalBusInput getBus() {
     return bus;
   }
