@@ -197,6 +197,9 @@ HasNodes --|> NestedEntity
 interface HasType
 HasType --|> NestedEntity
 
+interface HasLine
+HasLine --|> NestedEntity
+
 Class FixedFeedInInput {
 - sRated: Quantity<Power> [kVA]
 - cosphiRated: double
@@ -372,11 +375,13 @@ Class NodeGraphicInput {
 + point: Point
 }
 NodeGraphicInput --|> GraphicInput
+NodeGraphicInput --|> HasNodes
 
 Class LineGraphicInput {
 + line: LineInput
 }
 LineGraphicInput --|> GraphicInput
+LineGraphicInput --|> HasLine
 
 Interface Value
 

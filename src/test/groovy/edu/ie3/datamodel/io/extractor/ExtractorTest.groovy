@@ -13,6 +13,8 @@ import spock.lang.Specification
 
 import java.time.ZoneId
 
+
+// todo JH more tests for all possible classes
 class ExtractorTest extends Specification {
 
 	private final class InvalidNestedExtensionClass implements NestedEntity {}
