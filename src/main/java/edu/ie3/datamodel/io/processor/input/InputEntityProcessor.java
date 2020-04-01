@@ -120,7 +120,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
   }
 
   @Override
-  protected List<Class<? extends InputEntity>> getAllEligibleClasses() {
+  protected List<Class<? extends InputEntity>> getEligibleEntityClasses() {
     return eligibleEntityClasses;
   }
 }

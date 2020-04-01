@@ -94,7 +94,7 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
   }
 
   @Override
-  protected List<Class<? extends ResultEntity>> getAllEligibleClasses() {
+  protected List<Class<? extends ResultEntity>> getEligibleEntityClasses() {
     return eligibleEntityClasses;
   }
 }
