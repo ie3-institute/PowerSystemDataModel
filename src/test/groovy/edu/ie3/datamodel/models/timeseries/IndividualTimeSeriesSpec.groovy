@@ -5,7 +5,8 @@
  */
 package edu.ie3.datamodel.models.timeseries
 
-import edu.ie3.datamodel.models.value.TimeBasedValue
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -16,12 +17,12 @@ class IndividualTimeSeriesSpec extends Specification {
 	@Shared
 	IndividualTimeSeries<IntValue> timeSeries = new IndividualTimeSeries<>(
 	UUID.randomUUID(),
-	new HashMap<ZonedDateTime, IntValue>() { {
-			put(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")), new IntValue(3))
-			put(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), new IntValue(4))
-			put(ZonedDateTime.of(1990, 1, 1, 0, 30, 0, 0, ZoneId.of("UTC")), new IntValue(1))
-		}
-	})
+	[
+		new TimeBasedValue<IntValue>(UUID.fromString("52ccf570-53a5-490e-85d4-7a57082ebdfc"), ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")), new IntValue(3)),
+		new TimeBasedValue<IntValue>(UUID.fromString("23727eb1-e108-4187-99b2-bef959797078"), ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), new IntValue(4)),
+		new TimeBasedValue<IntValue>(UUID.fromString("21b1a544-2961-4488-a9f6-0e94a706a68f"), ZonedDateTime.of(1990, 1, 1, 0, 30, 0, 0, ZoneId.of("UTC")), new IntValue(1))
+	] as Set
+	)
 
 	def "Return empty optional value when queried for non existent time" () {
 		expect:

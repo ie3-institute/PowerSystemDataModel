@@ -3,21 +3,21 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.models.timeseries;
+package edu.ie3.datamodel.models.timeseries.individual;
 
-import edu.ie3.datamodel.models.value.TimeBasedValue;
+import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /** Describes a TimeSeries with individual values per time step */
-public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
+public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedValue<V>, V> {
   /** Maps a time to its respective value to retrieve faster */
-  private Map<ZonedDateTime, TimeBasedValue<T>> timeToValue;
+  private Map<ZonedDateTime, TimeBasedValue<V>> timeToValue;
 
-  public IndividualTimeSeries(UUID uuid, Collection<TimeBasedValue<T>> values) {
-    super(uuid);
+  public IndividualTimeSeries(UUID uuid, Set<TimeBasedValue<V>> values) {
+    super(uuid, values);
 
     timeToValue =
         values.stream()
@@ -29,18 +29,19 @@ public class IndividualTimeSeries<T extends Value> extends TimeSeries<T> {
    *
    * @return An unmodifiable sorted set of all known time based values of this time series
    */
-  public SortedSet<TimeBasedValue<T>> getAllEntries() {
-    TreeSet<TimeBasedValue<T>> sortedEntries = new TreeSet<>(timeToValue.values());
+  @Override
+  public SortedSet<TimeBasedValue<V>> getEntries() {
+    TreeSet<TimeBasedValue<V>> sortedEntries = new TreeSet<>(timeToValue.values());
     return Collections.unmodifiableSortedSet(sortedEntries);
   }
 
   @Override
-  public Optional<TimeBasedValue<T>> getTimeBasedValue(ZonedDateTime time) {
+  public Optional<TimeBasedValue<V>> getTimeBasedValue(ZonedDateTime time) {
     return Optional.ofNullable(timeToValue.get(time));
   }
 
   @Override
-  public Optional<T> getValue(ZonedDateTime time) {
+  public Optional<V> getValue(ZonedDateTime time) {
     return getTimeBasedValue(time).map(TimeBasedValue::getValue);
   }
 
