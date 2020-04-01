@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
+import java.util.Optional;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
@@ -43,7 +44,10 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
     final LineTypeInput type = data.getType();
     final Quantity<Length> length = data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH);
     final LineString geoPosition = data.getLineString(GEO_POSITION).orElse(null);
-    // TODO Add new characteristic
+    final Optional<String> olmCharacteristic =
+        data.containsKey(OLM_CHARACTERISTIC)
+            ? Optional.of(data.getField(OLM_CHARACTERISTIC))
+            : Optional.empty();
     return new LineInput(
         uuid,
         operationTime,
@@ -54,6 +58,7 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
         parallelDevices,
         type,
         length,
-        geoPosition);
+        geoPosition,
+        olmCharacteristic);
   }
 }
