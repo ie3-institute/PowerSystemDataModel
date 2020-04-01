@@ -57,7 +57,7 @@ class TimeSeriesDeserializerTest extends Specification {
 
 	def "The IndividualTimeSeriesDeserializer determines the headline elements correctly"() {
 		given:
-		IndividualTimeSeriesDeserializer<EnergyPriceValue> timeSeriesDeserializer = new IndividualTimeSeriesDeserializer<>(EnergyPriceValue.class, testBaseFolderPath)
+		IndividualTimeSeriesDeserializer<EnergyPriceValue> timeSeriesDeserializer = new IndividualTimeSeriesDeserializer<>(EnergyPriceValue, testBaseFolderPath)
 		String[] expected = headLineElements
 
 		when:
@@ -69,7 +69,7 @@ class TimeSeriesDeserializerTest extends Specification {
 
 	def "The IndividualTimeSeriesDeserializer determines the correct CsvFileDefinition"() {
 		given:
-		IndividualTimeSeriesDeserializer<EnergyPriceValue> timeSeriesDeserializer = new IndividualTimeSeriesDeserializer<>(EnergyPriceValue.class, testBaseFolderPath)
+		IndividualTimeSeriesDeserializer<EnergyPriceValue> timeSeriesDeserializer = new IndividualTimeSeriesDeserializer<>(EnergyPriceValue, testBaseFolderPath)
 		CsvFileDefinition expected = new CsvFileDefinition("individual_timeseries_178892cf-500f-4e62-9d1f-ff9e3a92215e", headLineElements)
 
 		when:
@@ -81,7 +81,7 @@ class TimeSeriesDeserializerTest extends Specification {
 
 	def "The IndividualTimeSeriesDeserializer handles a single time based value correctly"() {
 		given:
-		IndividualTimeSeriesDeserializer<EnergyPriceValue> timeSeriesDeserializer = new IndividualTimeSeriesDeserializer<>(EnergyPriceValue.class, testBaseFolderPath)
+		IndividualTimeSeriesDeserializer<EnergyPriceValue> timeSeriesDeserializer = new IndividualTimeSeriesDeserializer<>(EnergyPriceValue, testBaseFolderPath)
 		TimeBasedValue<EnergyPriceValue> dut = new TimeBasedValue<>(TimeTools.toZonedDateTime("2020-03-31 19:00:00"), new EnergyPriceValue(Quantities.getQuantity(1d, EURO_PER_MEGAWATTHOUR)))
 		Map expected = [
 			"uuid": "Egal - Michael Wendler",
