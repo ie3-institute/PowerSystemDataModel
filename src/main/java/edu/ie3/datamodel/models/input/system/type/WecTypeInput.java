@@ -8,9 +8,10 @@ package edu.ie3.datamodel.models.input.system.type;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Length;
@@ -19,11 +20,11 @@ import javax.measure.quantity.Power;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput} */
 public class WecTypeInput extends SystemParticipantTypeInput {
   /** Efficiency of converter for this type of WEC (typically in %) */
-  private final Quantity<Dimensionless> etaConv;
+  private final ComparableQuantity<Dimensionless> etaConv; // TODO doublecheck
   /** Swept Area of blades for this type of WEC (typically in m²) */
-  private final Quantity<Area> rotorArea;
+  private final ComparableQuantity<Area> rotorArea; // TODO doublecheck
   /** Height from ground to center of rotor for this type of WEC (typically in m) */
-  private final Quantity<Length> hubHeight;
+  private final ComparableQuantity<Length> hubHeight; // TODO doublecheck
 
   /**
    * @param uuid of the input entity
@@ -39,30 +40,30 @@ public class WecTypeInput extends SystemParticipantTypeInput {
   public WecTypeInput(
       UUID uuid,
       String id,
-      Quantity<Currency> capex,
-      Quantity<EnergyPrice> opex,
+      ComparableQuantity<Currency> capex, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<EnergyPrice> opex, // TODO doublecheck - no return value, but superclass expects comparable
       double cosphi,
-      Quantity<Dimensionless> etaConv,
-      Quantity<Power> sRated,
-      Quantity<Area> rotorArea,
-      Quantity<Length> hubHeight) {
+      ComparableQuantity<Dimensionless> etaConv, // TODO doublecheck
+      ComparableQuantity<Power> sRated, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Area> rotorArea, // TODO doublecheck
+      ComparableQuantity<Length> hubHeight) { // TODO doublecheck
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphi);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
     this.rotorArea = rotorArea.to(StandardUnits.ROTOR_AREA);
     this.hubHeight = hubHeight.to(StandardUnits.HUB_HEIGHT);
   }
 
-  public Quantity<Dimensionless> getEtaConv() {
+  public ComparableQuantity<Dimensionless> getEtaConv() {
     return etaConv;
-  }
+  } // TODO doublecheck
 
-  public Quantity<Area> getRotorArea() {
+  public ComparableQuantity<Area> getRotorArea() {
     return rotorArea;
-  }
+  } // TODO doublecheck
 
-  public Quantity<Length> getHubHeight() {
+  public ComparableQuantity<Length> getHubHeight() {
     return hubHeight;
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

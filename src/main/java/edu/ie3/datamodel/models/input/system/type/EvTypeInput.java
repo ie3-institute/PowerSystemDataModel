@@ -9,6 +9,8 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import edu.ie3.util.quantities.interfaces.SpecificEnergy;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
@@ -18,9 +20,9 @@ import javax.measure.quantity.Power;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput} */
 public class EvTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity of the storage (typically in kWh) */
-  private final Quantity<Energy> eStorage;
+  private final ComparableQuantity<Energy> eStorage; // TODO doublecheck
   /** Consumed electric energy per driven distance (typically in kWh/km) */
-  private final Quantity<SpecificEnergy> eCons;
+  private final ComparableQuantity<SpecificEnergy> eCons; // TODO doublecheck
 
   /**
    * @param uuid of the input entity
@@ -35,22 +37,22 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   public EvTypeInput(
       UUID uuid,
       String id,
-      Quantity<Currency> capex,
-      Quantity<EnergyPrice> opex,
-      Quantity<Energy> eStorage,
-      Quantity<SpecificEnergy> eCons,
-      Quantity<Power> sRated,
+      ComparableQuantity<Currency> capex, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<EnergyPrice> opex, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Energy> eStorage,
+      ComparableQuantity<SpecificEnergy> eCons,
+      ComparableQuantity<Power> sRated, // TODO doublecheck - no return value, but superclass expects comparable
       double cosphiRated) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage;
     this.eCons = eCons;
   }
 
-  public Quantity<Energy> geteStorage() {
+  public ComparableQuantity<Energy> geteStorage() { // TODO doublecheck
     return eStorage;
   }
 
-  public Quantity<SpecificEnergy> geteCons() {
+  public ComparableQuantity<SpecificEnergy> geteCons() { // TODO doublecheck
     return eCons;
   }
 

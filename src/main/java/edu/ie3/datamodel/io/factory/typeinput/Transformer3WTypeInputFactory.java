@@ -8,6 +8,8 @@ package edu.ie3.datamodel.io.factory.typeinput;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -74,25 +76,25 @@ public class Transformer3WTypeInputFactory
   protected Transformer3WTypeInput buildModel(SimpleEntityData data) {
     UUID uuid = data.getUUID(ENTITY_UUID);
     String id = data.getField(ENTITY_ID);
-    Quantity<Power> sRatedA = data.getQuantity(S_RATED_A, StandardUnits.S_RATED);
-    Quantity<Power> sRatedB = data.getQuantity(S_RATED_B, StandardUnits.S_RATED);
-    Quantity<Power> sRatedC = data.getQuantity(S_RATED_C, StandardUnits.S_RATED);
-    Quantity<ElectricPotential> vRatedA =
+    ComparableQuantity<Power> sRatedA = data.getQuantity(S_RATED_A, StandardUnits.S_RATED); // TODO doublecheck
+    ComparableQuantity<Power> sRatedB = data.getQuantity(S_RATED_B, StandardUnits.S_RATED); // TODO doublecheck
+    ComparableQuantity<Power> sRatedC = data.getQuantity(S_RATED_C, StandardUnits.S_RATED); // TODO doublecheck
+    ComparableQuantity<ElectricPotential> vRatedA = // TODO doublecheck
         data.getQuantity(V_RATED_A, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    Quantity<ElectricPotential> vRatedB =
+    ComparableQuantity<ElectricPotential> vRatedB = // TODO doublecheck
         data.getQuantity(V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    Quantity<ElectricPotential> vRatedC =
+    ComparableQuantity<ElectricPotential> vRatedC = // TODO doublecheck
         data.getQuantity(V_RATED_C, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    Quantity<ElectricResistance> rScA = data.getQuantity(R_SC_A, StandardUnits.IMPEDANCE);
-    Quantity<ElectricResistance> rScB = data.getQuantity(R_SC_B, StandardUnits.IMPEDANCE);
-    Quantity<ElectricResistance> rScC = data.getQuantity(R_SC_C, StandardUnits.IMPEDANCE);
-    Quantity<ElectricResistance> xScA = data.getQuantity(X_SC_A, StandardUnits.IMPEDANCE);
-    Quantity<ElectricResistance> xScB = data.getQuantity(X_SC_B, StandardUnits.IMPEDANCE);
-    Quantity<ElectricResistance> xScC = data.getQuantity(X_SC_C, StandardUnits.IMPEDANCE);
-    Quantity<ElectricConductance> gM = data.getQuantity(G_M, StandardUnits.ADMITTANCE);
-    Quantity<ElectricConductance> bM = data.getQuantity(B_M, StandardUnits.ADMITTANCE);
-    Quantity<Dimensionless> dV = data.getQuantity(D_V, StandardUnits.DV_TAP);
-    Quantity<Angle> dPhi = data.getQuantity(D_PHI, StandardUnits.DPHI_TAP);
+    ComparableQuantity<ElectricResistance> rScA = data.getQuantity(R_SC_A, StandardUnits.IMPEDANCE); // TODO doublecheck
+    ComparableQuantity<ElectricResistance> rScB = data.getQuantity(R_SC_B, StandardUnits.IMPEDANCE); // TODO doublecheck
+    ComparableQuantity<ElectricResistance> rScC = data.getQuantity(R_SC_C, StandardUnits.IMPEDANCE); // TODO doublecheck
+    ComparableQuantity<ElectricResistance> xScA = data.getQuantity(X_SC_A, StandardUnits.IMPEDANCE); // TODO doublecheck
+    ComparableQuantity<ElectricResistance> xScB = data.getQuantity(X_SC_B, StandardUnits.IMPEDANCE); // TODO doublecheck
+    ComparableQuantity<ElectricResistance> xScC = data.getQuantity(X_SC_C, StandardUnits.IMPEDANCE); // TODO doublecheck
+    ComparableQuantity<ElectricConductance> gM = data.getQuantity(G_M, StandardUnits.ADMITTANCE); // TODO doublecheck
+    ComparableQuantity<ElectricConductance> bM = data.getQuantity(B_M, StandardUnits.ADMITTANCE); // TODO doublecheck
+    ComparableQuantity<Dimensionless> dV = data.getQuantity(D_V, StandardUnits.DV_TAP); // TODO doublecheck
+    ComparableQuantity<Angle> dPhi = data.getQuantity(D_PHI, StandardUnits.DPHI_TAP); // TODO doublecheck
     int tapNeutr = data.getInt(TAP_NEUTR);
     int tapMin = data.getInt(TAP_MIN);
     int tapMax = data.getInt(TAP_MAX);

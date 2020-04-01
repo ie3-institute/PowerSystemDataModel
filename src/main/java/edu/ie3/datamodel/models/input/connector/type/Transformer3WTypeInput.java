@@ -7,6 +7,8 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
@@ -15,37 +17,37 @@ import javax.measure.quantity.*;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput} */
 public class Transformer3WTypeInput extends AssetTypeInput {
   /** Rated apparent power of the high voltage winding (typically in MVA) */
-  private final Quantity<Power> sRatedA; // Hv
+  private final ComparableQuantity<Power> sRatedA; // Hv // TODO doublecheck
   /** Rated apparent power of the medium voltage winding (typically in MVA) */
-  private final Quantity<Power> sRatedB; // Mv
+  private final ComparableQuantity<Power> sRatedB; // Mv // TODO doublecheck
   /** Rated apparent power of the low voltage windings (typically in MVA) */
-  private final Quantity<Power> sRatedC; // Lv
+  private final ComparableQuantity<Power> sRatedC; // Lv // TODO doublecheck
   /** Rated voltage magnitude of the high voltage winding (typically in kV) */
-  private final Quantity<ElectricPotential> vRatedA; // Hv
+  private final ComparableQuantity<ElectricPotential> vRatedA; // Hv // TODO doublecheck
   /** Rated voltage magnitude of the medium voltage winding (typically in kV) */
-  private final Quantity<ElectricPotential> vRatedB; // Mv
+  private final ComparableQuantity<ElectricPotential> vRatedB; // Mv // TODO doublecheck
   /** Rated voltage magnitude of the low voltage winding (typically in kV) */
-  private final Quantity<ElectricPotential> vRatedC; // Lv
+  private final ComparableQuantity<ElectricPotential> vRatedC; // Lv // TODO doublecheck
   /** Short-circuit resistance of the high voltage winding (typically in Ohm) */
-  private final Quantity<ElectricResistance> rScA; // Hv
+  private final ComparableQuantity<ElectricResistance> rScA; // Hv // TODO doublecheck
   /** Short-circuit resistance of the medium voltage winding (typically in Ohm) */
-  private final Quantity<ElectricResistance> rScB; // Mv
+  private final ComparableQuantity<ElectricResistance> rScB; // Mv // TODO doublecheck
   /** Short-circuit resistance of the low voltage winding (typically in Ohm) */
-  private final Quantity<ElectricResistance> rScC; // Lv
+  private final ComparableQuantity<ElectricResistance> rScC; // Lv // TODO doublecheck
   /** Short-circuit reactance of the high voltage winding (typically in Ohm) */
-  private final Quantity<ElectricResistance> xScA; // Hv
+  private final ComparableQuantity<ElectricResistance> xScA; // Hv // TODO doublecheck
   /** Short-circuit reactance of the medium voltage winding (typically in Ohm) */
-  private final Quantity<ElectricResistance> xScB; // Mv
+  private final ComparableQuantity<ElectricResistance> xScB; // Mv // TODO doublecheck
   /** Short-circuit reactance of the low voltage winding (typically in Ohm) */
-  private final Quantity<ElectricResistance> xScC; // Lv
+  private final ComparableQuantity<ElectricResistance> xScC; // Lv // TODO doublecheck
   /** Phase-to-ground conductance (typically in nS) */
-  private final Quantity<ElectricConductance> gM;
+  private final ComparableQuantity<ElectricConductance> gM; // TODO doublecheck
   /** Phase-to-ground susceptance (typically in nS) */
-  private final Quantity<ElectricConductance> bM;
+  private final ComparableQuantity<ElectricConductance> bM; // TODO doublecheck
   /** Voltage magnitude deviation per tap position (typically in %) */
-  private final Quantity<Dimensionless> dV;
+  private final ComparableQuantity<Dimensionless> dV; // TODO doublecheck
   /** Voltage angle deviation per tap position (typically in °) */
-  private final Quantity<Angle> dPhi;
+  private final ComparableQuantity<Angle> dPhi; // TODO doublecheck
   /** Neutral tap position */
   private final int tapNeutr;
   /** Minimum available tap position */
@@ -79,22 +81,22 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   public Transformer3WTypeInput(
       UUID uuid,
       String id,
-      Quantity<Power> sRatedA,
-      Quantity<Power> sRatedB,
-      Quantity<Power> sRatedC,
-      Quantity<ElectricPotential> vRatedA,
-      Quantity<ElectricPotential> vRatedB,
-      Quantity<ElectricPotential> vRatedC,
-      Quantity<ElectricResistance> rScA,
-      Quantity<ElectricResistance> rScB,
-      Quantity<ElectricResistance> rScC,
-      Quantity<ElectricResistance> xScA,
-      Quantity<ElectricResistance> xScB,
-      Quantity<ElectricResistance> xScC,
-      Quantity<ElectricConductance> gM,
-      Quantity<ElectricConductance> bM,
-      Quantity<Dimensionless> dV,
-      Quantity<Angle> dPhi,
+      ComparableQuantity<Power> sRatedA, // TODO doublecheck
+      ComparableQuantity<Power> sRatedB, // TODO doublecheck
+      ComparableQuantity<Power> sRatedC, // TODO doublecheck
+      ComparableQuantity<ElectricPotential> vRatedA, // TODO doublecheck
+      ComparableQuantity<ElectricPotential> vRatedB, // TODO doublecheck
+      ComparableQuantity<ElectricPotential> vRatedC, // TODO doublecheck
+      ComparableQuantity<ElectricResistance> rScA, // TODO doublecheck
+      ComparableQuantity<ElectricResistance> rScB, // TODO doublecheck
+      ComparableQuantity<ElectricResistance> rScC, // TODO doublecheck
+      ComparableQuantity<ElectricResistance> xScA, // TODO doublecheck
+      ComparableQuantity<ElectricResistance> xScB, // TODO doublecheck
+      ComparableQuantity<ElectricResistance> xScC, // TODO doublecheck
+      ComparableQuantity<ElectricConductance> gM, // TODO doublecheck
+      ComparableQuantity<ElectricConductance> bM, // TODO doublecheck
+      ComparableQuantity<Dimensionless> dV, // TODO doublecheck
+      ComparableQuantity<Angle> dPhi, // TODO doublecheck
       int tapNeutr,
       int tapMin,
       int tapMax) {
@@ -120,67 +122,67 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     this.tapMax = tapMax;
   }
 
-  public Quantity<Power> getsRatedA() {
+  public ComparableQuantity<Power> getsRatedA() { // TODO doublecheck
     return sRatedA;
   }
 
-  public Quantity<Power> getsRatedB() {
+  public Quantity<Power> getsRatedB() { // TODO doublecheck
     return sRatedB;
   }
 
-  public Quantity<Power> getsRatedC() {
+  public ComparableQuantity<Power> getsRatedC() { // TODO doublecheck
     return sRatedC;
   }
 
-  public Quantity<ElectricPotential> getvRatedA() {
+  public ComparableQuantity<ElectricPotential> getvRatedA() { // TODO doublecheck
     return vRatedA;
   }
 
-  public Quantity<ElectricPotential> getvRatedB() {
+  public ComparableQuantity<ElectricPotential> getvRatedB() { // TODO doublecheck
     return vRatedB;
   }
 
-  public Quantity<ElectricPotential> getvRatedC() {
+  public ComparableQuantity<ElectricPotential> getvRatedC() { // TODO doublecheck
     return vRatedC;
   }
 
-  public Quantity<ElectricResistance> getrScA() {
+  public ComparableQuantity<ElectricResistance> getrScA() { // TODO doublecheck
     return rScA;
   }
 
-  public Quantity<ElectricResistance> getrScB() {
+  public ComparableQuantity<ElectricResistance> getrScB() { // TODO doublecheck
     return rScB;
   }
 
-  public Quantity<ElectricResistance> getrScC() {
+  public ComparableQuantity<ElectricResistance> getrScC() { // TODO doublecheck
     return rScC;
   }
 
-  public Quantity<ElectricResistance> getxScA() {
+  public ComparableQuantity<ElectricResistance> getxScA() { // TODO doublecheck
     return xScA;
   }
 
-  public Quantity<ElectricResistance> getxScB() {
+  public ComparableQuantity<ElectricResistance> getxScB() { // TODO doublecheck
     return xScB;
   }
 
-  public Quantity<ElectricResistance> getxScC() {
+  public ComparableQuantity<ElectricResistance> getxScC() { // TODO doublecheck
     return xScC;
   }
 
-  public Quantity<ElectricConductance> getgM() {
+  public ComparableQuantity<ElectricConductance> getgM() { // TODO doublecheck
     return gM;
   }
 
-  public Quantity<ElectricConductance> getbM() {
+  public ComparableQuantity<ElectricConductance> getbM() { // TODO doublecheck
     return bM;
   }
 
-  public Quantity<Dimensionless> getdV() {
+  public ComparableQuantity<Dimensionless> getdV() { // TODO doublecheck
     return dV;
   }
 
-  public Quantity<Angle> getdPhi() {
+  public ComparableQuantity<Angle> getdPhi() { // TODO doublecheck
     return dPhi;
   }
 

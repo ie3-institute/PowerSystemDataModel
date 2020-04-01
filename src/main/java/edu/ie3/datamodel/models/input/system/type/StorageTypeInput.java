@@ -9,9 +9,10 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -20,17 +21,17 @@ import javax.measure.quantity.Time;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput} */
 public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity (typically in kWh) */
-  private final Quantity<Energy> eStorage;
+  private final ComparableQuantity<Energy> eStorage; // TODO doublecheck
   /** Maximum permissible active power (typically in kW) */
-  private final Quantity<Power> pMax;
+  private final ComparableQuantity<Power> pMax; // TODO doublecheck
   /** Maximum permissible gradient of active power change (typically % / h) */
-  private final Quantity<DimensionlessRate> activePowerGradient;
+  private final ComparableQuantity<DimensionlessRate> activePowerGradient; // TODO doublecheck
   /** Efficiency of the charging and discharging process (typically in %) */
-  private final Quantity<Dimensionless> eta;
+  private final ComparableQuantity<Dimensionless> eta; // TODO doublecheck
   /** Minimum permissible depth of discharge (typically in %) */
-  private final Quantity<Dimensionless> dod;
+  private final ComparableQuantity<Dimensionless> dod; // TODO doublecheck
   /** Maximum life time of the storage (typically in ms) */
-  private final Quantity<Time> lifeTime;
+  private final ComparableQuantity<Time> lifeTime; // TODO doublecheck
   /** Maximum amount of full charging cycles */
   private final int lifeCycle;
 
@@ -52,16 +53,16 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   public StorageTypeInput(
       UUID uuid,
       String id,
-      Quantity<Currency> capex,
-      Quantity<EnergyPrice> opex,
-      Quantity<Energy> eStorage,
-      Quantity<Power> sRated,
+      ComparableQuantity<Currency> capex, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<EnergyPrice> opex, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Energy> eStorage, // TODO doublecheck
+      ComparableQuantity<Power> sRated, // TODO doublecheck - no return value, but superclass expects comparable
       double cosPhiRated,
-      Quantity<Power> pMax,
-      Quantity<DimensionlessRate> activePowerGradient,
-      Quantity<Dimensionless> eta,
-      Quantity<Dimensionless> dod,
-      Quantity<Time> lifeTime,
+      ComparableQuantity<Power> pMax, // TODO doublecheck
+      ComparableQuantity<DimensionlessRate> activePowerGradient, // TODO doublecheck
+      ComparableQuantity<Dimensionless> eta, // TODO doublecheck
+      ComparableQuantity<Dimensionless> dod, // TODO doublecheck
+      ComparableQuantity<Time> lifeTime, // TODO doublecheck
       int lifeCycle) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
@@ -73,15 +74,15 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     this.lifeCycle = lifeCycle;
   }
 
-  public Quantity<Dimensionless> getEta() {
+  public ComparableQuantity<Dimensionless> getEta() { // TODO doublecheck
     return eta;
   }
 
-  public Quantity<Dimensionless> getDod() {
+  public ComparableQuantity<Dimensionless> getDod() { // TODO doublecheck
     return dod;
   }
 
-  public Quantity<Time> getLifeTime() {
+  public ComparableQuantity<Time> getLifeTime() { // TODO doublecheck
     return lifeTime;
   }
 
@@ -89,15 +90,15 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     return lifeCycle;
   }
 
-  public Quantity<Energy> geteStorage() {
+  public ComparableQuantity<Energy> geteStorage() { // TODO doublecheck
     return eStorage;
   }
 
-  public Quantity<Power> getpMax() {
+  public ComparableQuantity<Power> getpMax() { // TODO doublecheck
     return pMax;
   }
 
-  public Quantity<DimensionlessRate> getActivePowerGradient() {
+  public ComparableQuantity<DimensionlessRate> getActivePowerGradient() { // TODO doublecheck
     return activePowerGradient;
   }
 

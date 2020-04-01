@@ -13,9 +13,9 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
+import tec.uom.se.ComparableQuantity;
 
 /**
  * Describes an electrical grid line that connects two {@link
@@ -26,7 +26,7 @@ public class LineInput extends ConnectorInput {
   /** Type of this line, containing default values for lines of this kind */
   private final LineTypeInput type;
   /** Length of this line */
-  private final Quantity<Length> length;
+  private final ComparableQuantity<Length> length; // TODO doublecheck
   /** Coordinates of this line */
   private final LineString geoPosition;
   /** Description of an optional weather dependent operation curve */
@@ -56,7 +56,7 @@ public class LineInput extends ConnectorInput {
       NodeInput nodeB,
       int parallelDevices,
       LineTypeInput type,
-      Quantity<Length> length,
+      ComparableQuantity<Length> length, // TODO doublecheck
       LineString geoPosition,
       Optional<String> olmCharacteristic) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices);
@@ -86,7 +86,7 @@ public class LineInput extends ConnectorInput {
       NodeInput nodeB,
       int parallelDevices,
       LineTypeInput type,
-      Quantity<Length> length,
+      ComparableQuantity<Length> length, // TODO doublecheck
       LineString geoPosition,
       Optional<String> olmCharacteristic) {
     super(uuid, id, nodeA, nodeB, parallelDevices);
@@ -100,7 +100,7 @@ public class LineInput extends ConnectorInput {
     return type;
   }
 
-  public Quantity<Length> getLength() {
+  public ComparableQuantity<Length> getLength() { // TODO doublecheck
     return length;
   }
 

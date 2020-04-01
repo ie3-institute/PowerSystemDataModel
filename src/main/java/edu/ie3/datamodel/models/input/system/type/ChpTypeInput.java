@@ -12,7 +12,6 @@ import tec.uom.se.ComparableQuantity;
 
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 
@@ -42,11 +41,11 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
   public ChpTypeInput(
       UUID uuid,
       String id,
-      Quantity<Currency> capex,
-      Quantity<EnergyPrice> opex,
+      ComparableQuantity<Currency> capex, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<EnergyPrice> opex, // TODO doublecheck - no return value, but superclass expects comparable
       ComparableQuantity<Dimensionless> etaEl, // TODO doublecheck
       ComparableQuantity<Dimensionless> etaThermal, // TODO doublecheck
-      Quantity<Power> sRated,
+      ComparableQuantity<Power> sRated, // TODO doublecheck - no return value, but superclass expects comparable
       double cosphiRated,
       ComparableQuantity<Power> pThermal, // TODO doublecheck
       ComparableQuantity<Power> pOwn) { // TODO doublecheck
