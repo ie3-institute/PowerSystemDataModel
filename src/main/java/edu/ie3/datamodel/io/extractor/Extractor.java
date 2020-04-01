@@ -13,7 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * //ToDo: Class Description
+ * A simple utility class that can be used by sinks to extract nested elements (e.g. nodes, types)
+ * that should be persisted.
  *
  * @version 0.1
  * @since 31.03.20

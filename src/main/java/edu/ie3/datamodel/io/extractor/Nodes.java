@@ -8,7 +8,10 @@ package edu.ie3.datamodel.io.extractor;
 import edu.ie3.datamodel.models.input.NodeInput;
 
 /**
- * //ToDo: Class Description // todo: UML
+ * Interface that should be implemented by all elements holding a two {@link NodeInput} elements and
+ * should be processable by the {@link Extractor}. For now, this only holds true by all {@link
+ * edu.ie3.datamodel.models.input.connector.ConnectorInput} and {@link
+ * edu.ie3.datamodel.models.input.connector.TransformerInput}
  *
  * @version 0.1
  * @since 31.03.20

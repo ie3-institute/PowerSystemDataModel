@@ -8,7 +8,9 @@ package edu.ie3.datamodel.io.extractor;
 import edu.ie3.datamodel.models.input.NodeInput;
 
 /**
- * //ToDo: Class Description // todo UML
+ * Interface that should be implemented by all elements holding a third {@link NodeInput} and should
+ * be processable by the {@link Extractor}. For now, this only holds true by the {@link
+ * edu.ie3.datamodel.models.input.connector.Transformer3WInput}
  *
  * @version 0.1
  * @since 31.03.20

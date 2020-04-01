@@ -6,8 +6,10 @@
 package edu.ie3.datamodel.io.extractor;
 
 /**
- * //ToDo: Class Description THIS interface is not meant to be extended or implemented by other
- * classes or interfaces other than defined in this package and used by the extractor
+ * This interface should be implemented only by other interfaces that should be used by the {@link
+ * Extractor} It provides the entry point for the extraction method in the {@link Extractor}. If
+ * this interface is implemented by other interfaces one has to take care about, that the
+ * corresponding method {@link Extractor.extractElements()} is extended accordingly.
  *
  * @version 0.1
  * @since 31.03.20
