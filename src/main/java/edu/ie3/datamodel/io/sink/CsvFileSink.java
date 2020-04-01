@@ -15,6 +15,9 @@ import edu.ie3.datamodel.io.extractor.Nested;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.timeseries.TimeSeries;
+import edu.ie3.datamodel.models.timeseries.TimeSeriesMapping;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
@@ -130,22 +133,32 @@ public class CsvFileSink implements DataSink {
 
   @Override
   public <T extends UniqueEntity> void persist(T entity) {
-    if (entity instanceof Nested) {
-      try {
-        persistIgnoreNested(entity);
-        for (InputEntity ent : new Extractor((Nested) entity).getExtractedEntities()) {
-          persistIgnoreNested(ent);
+    /* Distinguish between "regular" input / result models and time series */
+    if (entity instanceof InputEntity || entity instanceof ResultEntity) {
+      /* This this a nested object or not? */
+      if (entity instanceof Nested) {
+        try {
+          persistIgnoreNested(entity);
+          for (InputEntity ent : new Extractor((Nested) entity).getExtractedEntities()) {
+            persistIgnoreNested(ent);
+          }
+        } catch (ExtractorException e) {
+          log.error(
+              "An error occurred during extraction of nested entity'"
+                  + entity.getClass().getSimpleName()
+                  + "': ",
+              e);
         }
-
-      } catch (ExtractorException e) {
-        log.error(
-            "An error occurred during extraction of nested entity'"
-                + entity.getClass().getSimpleName()
-                + "': ",
-            e);
+      } else {
+        persistIgnoreNested(entity);
       }
+    } else if (entity instanceof TimeSeries) {
+      log.info("Yeah, let's write a TimeSeries!");
+    } else if (entity instanceof TimeSeriesMapping) {
+      log.info("Yeah, let's write a TimeSeriesMapping!");
     } else {
-      persistIgnoreNested(entity);
+      throw new SinkException(
+          "I don't know how to handle an entity of class " + entity.getClass().getSimpleName());
     }
   }
 
