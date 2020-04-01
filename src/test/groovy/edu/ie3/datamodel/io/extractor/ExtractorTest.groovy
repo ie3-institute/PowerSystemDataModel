@@ -15,18 +15,16 @@ import java.time.ZoneId
 
 class ExtractorTest extends Specification {
 
-	private final class InvalidNestedExtensionClass implements Nested {}
+	private final class InvalidNestedExtensionClass implements NestedEntity {}
 
 	static {
 		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 	}
 
 	def "An Extractor should be able to extract an entity with nested elements correctly"() {
-		given:
-		def extractor = new Extractor(nestedEntity)
 
 		expect:
-		extractor.extractedEntities == expectedExtractedEntities
+		Extractor.extractElements(nestedEntity) == expectedExtractedEntities
 
 		where:
 		nestedEntity           || expectedExtractedEntities
@@ -36,9 +34,9 @@ class ExtractorTest extends Specification {
 			gtd.lineCtoD.type
 		]
 		gtd.transformerAtoBtoC || [
-			gtd.transformerAtoBtoC.nodeC,
 			gtd.transformerAtoBtoC.nodeA,
 			gtd.transformerAtoBtoC.nodeB,
+			gtd.transformerAtoBtoC.nodeC,
 			gtd.transformerAtoBtoC.type
 		]
 		gtd.transformerCtoG    || [
@@ -79,7 +77,7 @@ class ExtractorTest extends Specification {
 
 	def "An Extractor should throw an ExtractorException if the provided Nested entity is unknown and or an invalid extension of the 'Nested' interface took place"() {
 		when:
-		new Extractor(new InvalidNestedExtensionClass())
+		Extractor.extractElements(new InvalidNestedExtensionClass())
 
 		then:
 		ExtractorException ex = thrown()

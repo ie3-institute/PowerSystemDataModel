@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.io.extractor.Type;
+import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Describes an electric vehicle */
-public class EvInput extends SystemParticipantInput implements Type {
+public class EvInput extends SystemParticipantInput implements HasType {
   /** Type of this EV, containing default values for EVs of this kind */
   private final EvTypeInput type;
   /**

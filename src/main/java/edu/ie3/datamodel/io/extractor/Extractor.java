@@ -7,10 +7,7 @@ package edu.ie3.datamodel.io.extractor;
 
 import edu.ie3.datamodel.exceptions.ExtractorException;
 import edu.ie3.datamodel.models.input.InputEntity;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * A simple utility class that can be used by sinks to extract nested elements (e.g. nodes, types)
@@ -19,41 +16,32 @@ import java.util.List;
  * @version 0.1
  * @since 31.03.20
  */
-public class Extractor {
+public final class Extractor {
 
-  private final List<InputEntity> extractedEntities;
-
-  public Extractor(Nested nestedEntity) throws ExtractorException {
-    this.extractedEntities = extractElements(nestedEntity);
+  private Extractor() {
+    throw new IllegalStateException("Don't instantiate a utility class");
   }
 
-  private List<InputEntity> extractElements(Nested nestedEntity) throws ExtractorException {
+  public static List<InputEntity> extractElements(NestedEntity nestedEntity)
+      throws ExtractorException {
     List<InputEntity> resultingList = new ArrayList<>();
-    if (nestedEntity instanceof Node) {
-      resultingList.add(((Node) nestedEntity).getNode());
+    if (nestedEntity instanceof HasNodes) {
+      resultingList.addAll(((HasNodes) nestedEntity).allNodes());
     }
-    if (nestedEntity instanceof NodeC) {
-      resultingList.add(((NodeC) nestedEntity).getNodeC());
+    if (nestedEntity instanceof HasType) {
+      resultingList.add(((HasType) nestedEntity).getType());
     }
-    if (nestedEntity instanceof Nodes) {
-      resultingList.addAll(
-          Arrays.asList(((Nodes) nestedEntity).getNodeA(), ((Nodes) nestedEntity).getNodeB()));
-    }
-    if (nestedEntity instanceof Type) {
-      resultingList.add(((Type) nestedEntity).getType());
-    }
-    if (resultingList.isEmpty()) {
+    if (resultingList.isEmpty() || resultingList.contains(null)) {
       throw new ExtractorException(
-          "The interface 'Nested' is not meant to be extended. The provided entity of class '"
+          "Unable to extract entity of class '"
               + nestedEntity.getClass().getSimpleName()
-              + "' and cannot be processed by "
-              + "the extractor! Currently only the interfaces 'Node', 'NodeC', ‘Nodes‘ and ‘Type' are supported!");
+              + "' "
+              + ". Does this class implements "
+              + NestedEntity.class.getSimpleName()
+              + " and one of its "
+              + "sub-interfaces correctly?");
     }
 
     return Collections.unmodifiableList(resultingList);
-  }
-
-  public List<InputEntity> getExtractedEntities() {
-    return extractedEntities;
   }
 }

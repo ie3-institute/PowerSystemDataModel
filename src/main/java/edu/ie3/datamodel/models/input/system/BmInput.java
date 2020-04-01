@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.io.extractor.Type;
+import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -17,7 +17,7 @@ import java.util.UUID;
 import javax.measure.Quantity;
 
 /** Describes a biomass plant */
-public class BmInput extends SystemParticipantInput implements Type {
+public class BmInput extends SystemParticipantInput implements HasType {
   /** Type of this BM plant, containing default values for BM plants of this kind */
   private final BmTypeInput type;
   /** Is this asset market oriented? */
