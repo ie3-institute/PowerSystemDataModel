@@ -97,10 +97,10 @@ class TimeSeriesDeserializerTest extends Specification {
 		actual.size() == expected.size()
 		expected.forEach { k, v ->
 			if (k == "uuid") {
-                assert actual.containsKey(k)
-            } else {
-                assert (v == actual.get(k))
-            }
+				assert actual.containsKey(k)
+			} else {
+				assert (v == actual.get(k))
+			}
 		}
 	}
 
