@@ -97,16 +97,12 @@ public class TimeSeriesProcessor<
             .stream()
             .collect(
                 Collectors.toMap(
-                    Map.Entry::getKey,
-                    entry ->
-                        new FieldSourceToMethod(ENTRY, entry.getValue())));
+                    Map.Entry::getKey, entry -> new FieldSourceToMethod(ENTRY, entry.getValue())));
     Map<String, FieldSourceToMethod> valueMapping =
         super.mapFieldNameToGetter(valueClass).entrySet().stream()
             .collect(
                 Collectors.toMap(
-                    Map.Entry::getKey,
-                    entry ->
-                        new FieldSourceToMethod(VALUE, entry.getValue())));
+                    Map.Entry::getKey, entry -> new FieldSourceToMethod(VALUE, entry.getValue())));
 
     /* Put everything together */
     HashMap<String, FieldSourceToMethod> jointMapping = new HashMap<>();
