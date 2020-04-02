@@ -166,8 +166,4 @@ class SystemParticipantTestData {
 	public static final HpInput hpInput = new HpInput(participantUuid, operationTime, operator, "test_hpInput",
 	participantNode, thermalBus, qCharacteristics, hpTypeInput)
 
-
-	// thermal house input // todo
-
-
 }
