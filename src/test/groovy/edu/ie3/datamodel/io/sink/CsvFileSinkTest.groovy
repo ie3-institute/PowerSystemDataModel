@@ -55,7 +55,7 @@ class CsvFileSinkTest extends Specification {
 				new ProcessorProvider([
 					new ResultEntityProcessor(PvResult),
 					new ResultEntityProcessor(EvResult)
-				]),
+				], [] as Map),
 				new FileNamingStrategy(),
 				true,
 				",")
@@ -77,7 +77,7 @@ class CsvFileSinkTest extends Specification {
 					new InputEntityProcessor(Transformer2WInput),
 					new InputEntityProcessor(NodeInput),
 					new InputEntityProcessor(Transformer2WTypeInput)
-				]),
+				], [] as Map),
 				new FileNamingStrategy(),
 				false,
 				",")
@@ -113,7 +113,7 @@ class CsvFileSinkTest extends Specification {
 		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
 				new ProcessorProvider([
 					new ResultEntityProcessor(PvResult)
-				]),
+				], [] as Map),
 				new FileNamingStrategy(),
 				false,
 				",")
