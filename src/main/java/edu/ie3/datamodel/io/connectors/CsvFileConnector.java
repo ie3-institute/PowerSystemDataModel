@@ -6,13 +6,16 @@
 package edu.ie3.datamodel.io.connectors;
 
 import edu.ie3.datamodel.exceptions.ConnectorException;
+import edu.ie3.datamodel.io.CsvFileDefinition;
 import edu.ie3.datamodel.io.FileNamingStrategy;
+import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.util.io.FileIOUtils;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,10 +27,10 @@ import org.apache.logging.log4j.Logger;
  * @since 19.03.20
  */
 public class CsvFileConnector implements DataConnector {
-
   private static final Logger log = LogManager.getLogger(CsvFileConnector.class);
 
-  private final Map<Class<? extends UniqueEntity>, BufferedWriter> writers = new HashMap<>();
+  private final Map<Class<? extends UniqueEntity>, BufferedWriter> entityWriters = new HashMap<>();
+  private final Map<CsvFileDefinition, BufferedWriter> timeSeriesWriters = new HashMap<>();
   private final FileNamingStrategy fileNamingStrategy;
   private final String baseFolderName;
 
@@ -40,9 +43,8 @@ public class CsvFileConnector implements DataConnector {
 
   @Override
   public void shutdown() {
-
-    writers
-        .values()
+    Stream.of(entityWriters.values(), timeSeriesWriters.values())
+        .flatMap(Collection::stream)
         .forEach(
             bufferedWriter -> {
               try {
@@ -60,7 +62,7 @@ public class CsvFileConnector implements DataConnector {
   }
 
   public Optional<BufferedWriter> getWriter(Class<? extends UniqueEntity> clz) {
-    return Optional.ofNullable(writers.get(clz));
+    return Optional.ofNullable(entityWriters.get(clz));
   }
 
   public BufferedWriter getOrInitWriter(
@@ -76,9 +78,38 @@ public class CsvFileConnector implements DataConnector {
                 log.error("Error while initiating writer in CsvFileConnector.", e);
               }
 
-              writers.put(clz, newWriter);
+              entityWriters.put(clz, newWriter);
               return newWriter;
             });
+  }
+
+  public BufferedWriter getOrInitWriter(
+      TimeSeriesProcessorKey timeSeriesProcessorKey,
+      UUID timeSeriesUuid,
+      String[] headerElements,
+      String csvSep)
+      throws ConnectorException {
+    try {
+      CsvFileDefinition fileDefinition =
+          buildFileDefinition(timeSeriesProcessorKey, timeSeriesUuid, headerElements, csvSep);
+
+      return Optional.ofNullable(timeSeriesWriters.get(fileDefinition))
+          .orElseGet(
+              () -> {
+                BufferedWriter newWriter = null;
+                try {
+                  newWriter = initWriter(fileDefinition);
+                } catch (ConnectorException | IOException e) {
+                  log.error("Error while initiating writer in CsvFileConnector.", e);
+                }
+
+                timeSeriesWriters.put(fileDefinition, newWriter);
+                return newWriter;
+              });
+    } catch (ConnectorException e) {
+      throw new ConnectorException(
+          "Error during look up of writer, caused by wrong reference definition.", e);
+    }
   }
 
   private BufferedWriter initWriter(
@@ -108,29 +139,70 @@ public class CsvFileConnector implements DataConnector {
     BufferedWriter writer = FileIOUtils.getBufferedWriterUTF8(fullPath);
 
     // write header
-    writeFileHeader(clz, writer, headerElements, csvSep);
+    writeFileHeader(writer, headerElements, csvSep);
 
     return writer;
   }
 
-  private void writeFileHeader(
-      Class<? extends UniqueEntity> clz,
-      BufferedWriter writer,
-      final String[] headerElements,
-      String csvSep) {
-    try {
-      for (int i = 0; i < headerElements.length; i++) {
-        String attribute = headerElements[i];
-        writer.append("\"").append(attribute).append("\""); // adds " to headline
-        if (i + 1 < headerElements.length) {
-          writer.append(csvSep);
-        } else {
-          writer.append("\n");
-        }
+  private BufferedWriter initWriter(CsvFileDefinition fileDefinition)
+      throws ConnectorException, IOException {
+    File basePathDir = new File(baseFolderName);
+    if (basePathDir.isFile())
+      throw new ConnectorException(
+          "Base path dir '" + baseFolderName + "' already exists and is a file!");
+    if (!basePathDir.exists()) basePathDir.mkdirs();
+
+    String fullPath = baseFolderName + File.separator + fileDefinition.getFilePath();
+
+    BufferedWriter writer = FileIOUtils.getBufferedWriterUTF8(fullPath);
+
+    // write header
+    writeFileHeader(writer, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep());
+
+    return writer;
+  }
+
+  private void writeFileHeader(BufferedWriter writer, final String[] headerElements, String csvSep)
+      throws IOException {
+    for (int i = 0; i < headerElements.length; i++) {
+      String attribute = headerElements[i];
+      writer.append("\"").append(attribute).append("\""); // adds " to headline
+      if (i + 1 < headerElements.length) {
+        writer.append(csvSep);
+      } else {
+        writer.append("\n");
       }
-      writer.flush();
-    } catch (IOException e) {
-      log.error("Error during file header creation for class '" + clz.getSimpleName() + "'.", e);
     }
+    writer.flush();
+  }
+
+  /**
+   * Builds a new file definition consisting of file name and head line elements
+   *
+   * @param timeSeriesProcessorKey Key to identify the combination of time series elements
+   * @param timeSeriesUuid UUID of the time series
+   * @param headLineElements Array of head line elements
+   * @param csvSep Separator for csv columns
+   * @return A suitable file definition
+   * @throws ConnectorException If the definition cannot be determined
+   */
+  private CsvFileDefinition buildFileDefinition(
+      TimeSeriesProcessorKey timeSeriesProcessorKey,
+      UUID timeSeriesUuid,
+      String[] headLineElements,
+      String csvSep)
+      throws ConnectorException {
+    String fileName =
+        fileNamingStrategy
+            .getFileName(timeSeriesProcessorKey, timeSeriesUuid)
+            .orElseThrow(
+                () ->
+                    new ConnectorException(
+                        "Cannot determine the file name for time series definition '"
+                            + timeSeriesProcessorKey
+                            + "' and uuid '"
+                            + timeSeriesUuid
+                            + "'."));
+    return new CsvFileDefinition(fileName, headLineElements, csvSep);
   }
 }

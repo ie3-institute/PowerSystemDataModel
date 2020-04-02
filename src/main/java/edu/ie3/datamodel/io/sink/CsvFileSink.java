@@ -5,7 +5,9 @@
 */
 package edu.ie3.datamodel.io.sink;
 
+import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.exceptions.ExtractorException;
+import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
@@ -13,11 +15,14 @@ import edu.ie3.datamodel.io.connectors.DataConnector;
 import edu.ie3.datamodel.io.extractor.Extractor;
 import edu.ie3.datamodel.io.extractor.Nested;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
+import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
+import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesMapping;
+import edu.ie3.datamodel.models.value.Value;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
@@ -105,33 +110,6 @@ public class CsvFileSink implements DataSink {
   }
 
   @Override
-  public <C extends UniqueEntity> void persistIgnoreNested(C entity) {
-    LinkedHashMap<String, String> entityFieldData =
-        processorProvider
-            .processEntity(entity)
-            .orElseThrow(
-                () ->
-                    new SinkException(
-                        "Cannot persist entity of type '"
-                            + entity.getClass().getSimpleName()
-                            + "'. This sink can only process the following entities: ["
-                            + processorProvider.getRegisteredClasses().stream()
-                                .map(Class::getSimpleName)
-                                .collect(Collectors.joining(","))
-                            + "]"));
-
-    String[] headerElements =
-        processorProvider.getHeaderElements(entity.getClass()).orElse(new String[0]);
-    BufferedWriter writer = connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
-    write(entityFieldData, headerElements, writer);
-  }
-
-  @Override
-  public <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities) {
-    entities.parallelStream().forEach(this::persistIgnoreNested);
-  }
-
-  @Override
   public <T extends UniqueEntity> void persist(T entity) {
     /* Distinguish between "regular" input / result models and time series */
     if (entity instanceof InputEntity || entity instanceof ResultEntity) {
@@ -154,6 +132,8 @@ public class CsvFileSink implements DataSink {
       }
     } else if (entity instanceof TimeSeries) {
       log.info("Yeah, let's write a TimeSeries!");
+      TimeSeries<?, ?> timeSeries = (TimeSeries<?, ?>) entity;
+      persistTimeSeries(timeSeries);
     } else if (entity instanceof TimeSeriesMapping) {
       log.info("Yeah, let's write a TimeSeriesMapping!");
     } else {
@@ -162,9 +142,74 @@ public class CsvFileSink implements DataSink {
     }
   }
 
+  @Override
+  public <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities) {
+    entities.parallelStream().forEach(this::persistIgnoreNested);
+  }
+
+  @Override
+  public <C extends UniqueEntity> void persistIgnoreNested(C entity) {
+    LinkedHashMap<String, String> entityFieldData =
+        processorProvider
+            .handleEntity(entity)
+            .orElseThrow(
+                () ->
+                    new SinkException(
+                        "Cannot persist entity of type '"
+                            + entity.getClass().getSimpleName()
+                            + "'. This sink can only process the following entities: ["
+                            + processorProvider.getRegisteredClasses().stream()
+                                .map(Class::getSimpleName)
+                                .collect(Collectors.joining(","))
+                            + "]"));
+
+    try {
+      String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
+      BufferedWriter writer = connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
+      write(entityFieldData, headerElements, writer);
+    } catch (ProcessorProviderException e) {
+      log.error(
+          "Exception occurred during receiving of header elements. Cannot write this element", e);
+    }
+  }
+
+  @Override
+  public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
+      TimeSeries<E, V> timeSeries) {
+    TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
+    log.debug("I got a time series of type {}.", key);
+
+    Set<LinkedHashMap<String, String>> entityFieldData =
+        processorProvider
+            .handleTimeSeries(timeSeries)
+            .orElseThrow(
+                () ->
+                    new SinkException(
+                        "Cannot persist time series of combination '"
+                            + key
+                            + "'. This sink can only process the following combinations: ["
+                            + processorProvider.getRegisteredTimeSeriesCombinations().stream()
+                                .map(TimeSeriesProcessorKey::toString)
+                                .collect(Collectors.joining(","))
+                            + "]"));
+
+    try {
+      String[] headerElements = processorProvider.getHeaderElements(key);
+      BufferedWriter writer =
+          connector.getOrInitWriter(key, timeSeries.getUuid(), headerElements, csvSep);
+      entityFieldData.forEach(fieldData -> write(fieldData, headerElements, writer));
+    } catch (ProcessorProviderException e) {
+      log.error(
+          "Exception occurred during receiving of header elements. Cannot write this element", e);
+    } catch (ConnectorException e) {
+      log.error("Exception occurred during acquisition of writer");
+    }
+  }
+
   /**
    * Initialize files, hence create a file for each expected class that will be processed in the
-   * future.
+   * future. Please note, that files for time series can only be create on presence of a concrete
+   * time series, as their file name depends on the individual uuid of the time series.
    *
    * @param processorProvider the processor provider all files that will be processed is derived
    *     from
@@ -176,11 +221,17 @@ public class CsvFileSink implements DataSink {
     processorProvider
         .getRegisteredClasses()
         .forEach(
-            clz ->
-                processorProvider
-                    .getHeaderElements(clz)
-                    .ifPresent(
-                        headerElements -> connector.getOrInitWriter(clz, headerElements, csvSep)));
+            clz -> {
+              try {
+                String[] headerElements = processorProvider.getHeaderElements(clz);
+                connector.getOrInitWriter(clz, headerElements, csvSep);
+              } catch (ProcessorProviderException e) {
+                log.error(
+                    "Error during receiving of head line elements. Cannot prepare writer for class {}",
+                    clz,
+                    e);
+              }
+            });
   }
 
   /**
