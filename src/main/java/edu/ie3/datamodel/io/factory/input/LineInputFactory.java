@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import java.util.Optional;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
 import tec.uom.se.ComparableQuantity;

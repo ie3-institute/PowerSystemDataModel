@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.*;
 
 public class SystemParticipantTypeInputFactory

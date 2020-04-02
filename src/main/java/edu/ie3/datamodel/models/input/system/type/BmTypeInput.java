@@ -13,7 +13,6 @@ import tec.uom.se.ComparableQuantity;
 
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 
@@ -49,13 +48,13 @@ public class BmTypeInput extends SystemParticipantTypeInput {
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
   }
 
-  public ComparableQuantity<DimensionlessRate> getActivePowerGradient() { // TODO doublecheck
+  public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
     return activePowerGradient;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<Dimensionless> getEtaConv() { // TODO doublecheck
+  public ComparableQuantity<Dimensionless> getEtaConv() {
     return etaConv;
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

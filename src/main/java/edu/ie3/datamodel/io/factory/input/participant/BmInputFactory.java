@@ -15,7 +15,6 @@ import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import tec.uom.se.ComparableQuantity;
 
 import java.util.UUID;
-import javax.measure.Quantity;
 
 public class BmInputFactory
     extends SystemParticipantInputEntityFactory<

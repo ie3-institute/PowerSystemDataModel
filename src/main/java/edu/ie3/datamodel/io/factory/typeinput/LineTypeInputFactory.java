@@ -10,11 +10,12 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
 
@@ -41,13 +42,13 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
   protected LineTypeInput buildModel(SimpleEntityData data) {
     UUID uuid = data.getUUID(ENTITY_UUID);
     String id = data.getField(ENTITY_ID);
-    Quantity<SpecificConductance> b = data.getQuantity(B, StandardUnits.ADMITTANCE_PER_LENGTH);
-    Quantity<SpecificConductance> g = data.getQuantity(G, StandardUnits.ADMITTANCE_PER_LENGTH);
-    Quantity<SpecificResistance> r = data.getQuantity(R, StandardUnits.IMPEDANCE_PER_LENGTH);
-    Quantity<SpecificResistance> x = data.getQuantity(X, StandardUnits.IMPEDANCE_PER_LENGTH);
-    Quantity<ElectricCurrent> iMax =
+    ComparableQuantity<SpecificConductance> b = data.getQuantity(B, StandardUnits.ADMITTANCE_PER_LENGTH); // TODO doublecheck
+    ComparableQuantity<SpecificConductance> g = data.getQuantity(G, StandardUnits.ADMITTANCE_PER_LENGTH); // TODO doublecheck
+    ComparableQuantity<SpecificResistance> r = data.getQuantity(R, StandardUnits.IMPEDANCE_PER_LENGTH); // TODO doublecheck
+    ComparableQuantity<SpecificResistance> x = data.getQuantity(X, StandardUnits.IMPEDANCE_PER_LENGTH); // TODO doublecheck
+    ComparableQuantity<ElectricCurrent> iMax = // TODO doublecheck
         data.getQuantity(I_MAX, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    Quantity<ElectricPotential> vRated =
+    ComparableQuantity<ElectricPotential> vRated = // TODO doublecheck
         data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
 
     return new LineTypeInput(uuid, id, b, g, r, x, iMax, vRated);

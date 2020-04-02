@@ -22,12 +22,12 @@ public class HeatAndSValue extends SValue {
    * @param q Reactive power
    * @param heatDemand Heat demand
    */
-  public HeatAndSValue(Quantity<Power> p, Quantity<Power> q, ComparableQuantity<Power> heatDemand) { // TODO doublecheck
+  public HeatAndSValue(ComparableQuantity<Power> p, ComparableQuantity<Power> q, ComparableQuantity<Power> heatDemand) { // TODO doublecheck
     super(p, q);
     this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
-  public ComparableQuantity<Power> getHeatDemand() { // TODO doublecheck
+  public ComparableQuantity<Power> getHeatDemand() {
     return heatDemand;
   } // TODO doublecheck
 

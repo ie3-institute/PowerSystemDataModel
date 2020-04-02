@@ -6,11 +6,11 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.util.quantities.interfaces.Irradiation;
-import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes weather as a combination of irradiation, temperature and wind values */
 public class WeatherValue implements Value {
@@ -49,12 +49,12 @@ public class WeatherValue implements Value {
    * @param velocity Wind velocity for this coordinate (typically in m/s)
    */
   public WeatherValue(
-      Point coordinate,
-      Quantity<Irradiation> directirradiation,
-      Quantity<Irradiation> diffuseirradiation,
-      Quantity<Temperature> temperature,
-      Quantity<Angle> direction,
-      Quantity<Speed> velocity) {
+          Point coordinate,
+          ComparableQuantity<Irradiation> directirradiation, // TODO doublecheck
+          ComparableQuantity<Irradiation> diffuseirradiation, // TODO doublecheck
+          ComparableQuantity<Temperature> temperature, // TODO doublecheck
+          ComparableQuantity<Angle> direction, // TODO doublecheck
+          ComparableQuantity<Speed> velocity) { // TODO doublecheck
     this(
         coordinate,
         new IrradiationValue(directirradiation, diffuseirradiation),

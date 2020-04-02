@@ -10,7 +10,8 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.PvInput;
-import javax.measure.Quantity;
+import tec.uom.se.ComparableQuantity;
+
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
@@ -48,13 +49,13 @@ public class PvInputFactory
       OperatorInput operatorInput,
       OperationTime operationTime) {
     final double albedo = data.getDouble(ALBEDO);
-    final Quantity<Angle> azimuth = data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH);
-    final Quantity<Dimensionless> etaConv = data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
-    final Quantity<Angle> height = data.getQuantity(HEIGHT, StandardUnits.SOLAR_HEIGHT);
+    final ComparableQuantity<Angle> azimuth = data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH); // TODO doublecheck
+    final ComparableQuantity<Dimensionless> etaConv = data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY); // TODO doublecheck
+    final ComparableQuantity<Angle> height = data.getQuantity(HEIGHT, StandardUnits.SOLAR_HEIGHT); // TODO doublecheck
     final double kG = data.getDouble(KG);
     final double kT = data.getDouble(KT);
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
-    final Quantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
+    final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED); // TODO doublecheck
     final double cosPhi = data.getDouble(COS_PHI);
 
     return new PvInput(

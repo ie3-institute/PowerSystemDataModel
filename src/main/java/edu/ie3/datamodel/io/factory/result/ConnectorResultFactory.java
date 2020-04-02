@@ -11,9 +11,10 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.connector.*;
 import edu.ie3.util.TimeTools;
+import tec.uom.se.ComparableQuantity;
+
 import java.time.ZonedDateTime;
 import java.util.*;
-import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 
@@ -61,12 +62,12 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
 
     ZonedDateTime timestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModel = data.getUUID(INPUT_MODEL);
-    Quantity<ElectricCurrent> iAMag =
+    ComparableQuantity<ElectricCurrent> iAMag = // TODO doublecheck
         data.getQuantity(IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    Quantity<Angle> iAAng = data.getQuantity(IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
-    Quantity<ElectricCurrent> iBMag =
+    ComparableQuantity<Angle> iAAng = data.getQuantity(IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE); // TODO doublecheck
+    ComparableQuantity<ElectricCurrent> iBMag = // TODO doublecheck
         data.getQuantity(IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    Quantity<Angle> iBAng = data.getQuantity(IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+    ComparableQuantity<Angle> iBAng = data.getQuantity(IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE); // TODO doublecheck
 
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
@@ -97,9 +98,9 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
                   new Transformer2WResult(
                       timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos));
     } else if (entityClass.equals(Transformer3WResult.class)) {
-      Quantity<ElectricCurrent> iCMag =
+      ComparableQuantity<ElectricCurrent> iCMag = // TODO doublecheck
           data.getQuantity(ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-      Quantity<Angle> iCAng = data.getQuantity(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+      ComparableQuantity<Angle> iCAng = data.getQuantity(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE); // TODO doublecheck
       final int tapPos = data.getInt(TAPPOS);
 
       return uuidOpt

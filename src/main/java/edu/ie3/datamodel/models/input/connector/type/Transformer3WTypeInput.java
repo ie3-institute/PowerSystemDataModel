@@ -11,7 +11,6 @@ import tec.uom.se.ComparableQuantity;
 
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.*;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput} */
@@ -122,69 +121,69 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     this.tapMax = tapMax;
   }
 
-  public ComparableQuantity<Power> getsRatedA() { // TODO doublecheck
+  public ComparableQuantity<Power> getsRatedA() {
     return sRatedA;
-  }
+  } // TODO doublecheck
 
-  public Quantity<Power> getsRatedB() { // TODO doublecheck
+  public ComparableQuantity<Power> getsRatedB() {
     return sRatedB;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<Power> getsRatedC() { // TODO doublecheck
+  public ComparableQuantity<Power> getsRatedC() {
     return sRatedC;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<ElectricPotential> getvRatedA() { // TODO doublecheck
+  public ComparableQuantity<ElectricPotential> getvRatedA() {
     return vRatedA;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<ElectricPotential> getvRatedB() { // TODO doublecheck
+  public ComparableQuantity<ElectricPotential> getvRatedB() {
     return vRatedB;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<ElectricPotential> getvRatedC() { // TODO doublecheck
+  public ComparableQuantity<ElectricPotential> getvRatedC() {
     return vRatedC;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<ElectricResistance> getrScA() { // TODO doublecheck
+  public ComparableQuantity<ElectricResistance> getrScA() {
     return rScA;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<ElectricResistance> getrScB() { // TODO doublecheck
+  public ComparableQuantity<ElectricResistance> getrScB() {
     return rScB;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<ElectricResistance> getrScC() { // TODO doublecheck
+  public ComparableQuantity<ElectricResistance> getrScC() {
     return rScC;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<ElectricResistance> getxScA() { // TODO doublecheck
+  public ComparableQuantity<ElectricResistance> getxScA() {
     return xScA;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<ElectricResistance> getxScB() { // TODO doublecheck
+  public ComparableQuantity<ElectricResistance> getxScB() {
     return xScB;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<ElectricResistance> getxScC() { // TODO doublecheck
+  public ComparableQuantity<ElectricResistance> getxScC() {
     return xScC;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<ElectricConductance> getgM() { // TODO doublecheck
+  public ComparableQuantity<ElectricConductance> getgM() {
     return gM;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<ElectricConductance> getbM() { // TODO doublecheck
+  public ComparableQuantity<ElectricConductance> getbM() {
     return bM;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<Dimensionless> getdV() { // TODO doublecheck
+  public ComparableQuantity<Dimensionless> getdV() {
     return dV;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<Angle> getdPhi() { // TODO doublecheck
+  public ComparableQuantity<Angle> getdPhi() {
     return dPhi;
-  }
+  } // TODO doublecheck
 
   public int getTapNeutr() {
     return tapNeutr;

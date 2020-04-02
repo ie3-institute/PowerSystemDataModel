@@ -13,7 +13,6 @@ import tec.uom.se.ComparableQuantity;
 
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 
@@ -39,8 +38,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       String id,
       ComparableQuantity<Currency> capex, // TODO doublecheck - no return value, but superclass expects comparable
       ComparableQuantity<EnergyPrice> opex, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<Energy> eStorage,
-      ComparableQuantity<SpecificEnergy> eCons,
+      ComparableQuantity<Energy> eStorage, // TODO doublecheck
+      ComparableQuantity<SpecificEnergy> eCons, // TODO doublecheck
       ComparableQuantity<Power> sRated, // TODO doublecheck - no return value, but superclass expects comparable
       double cosphiRated) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
@@ -48,13 +47,13 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     this.eCons = eCons;
   }
 
-  public ComparableQuantity<Energy> geteStorage() { // TODO doublecheck
+  public ComparableQuantity<Energy> geteStorage() {
     return eStorage;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<SpecificEnergy> geteCons() { // TODO doublecheck
+  public ComparableQuantity<SpecificEnergy> geteCons() {
     return eCons;
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

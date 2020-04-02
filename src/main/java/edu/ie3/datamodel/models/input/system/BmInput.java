@@ -103,9 +103,9 @@ public class BmInput extends SystemParticipantInput {
     return costControlled;
   }
 
-  public ComparableQuantity<EnergyPrice> getFeedInTariff() { //TODO doublecheck
+  public ComparableQuantity<EnergyPrice> getFeedInTariff() {
     return feedInTariff;
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

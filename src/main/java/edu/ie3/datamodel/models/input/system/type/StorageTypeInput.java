@@ -74,33 +74,33 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     this.lifeCycle = lifeCycle;
   }
 
-  public ComparableQuantity<Dimensionless> getEta() { // TODO doublecheck
+  public ComparableQuantity<Dimensionless> getEta() {
     return eta;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<Dimensionless> getDod() { // TODO doublecheck
+  public ComparableQuantity<Dimensionless> getDod() {
     return dod;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<Time> getLifeTime() { // TODO doublecheck
+  public ComparableQuantity<Time> getLifeTime() {
     return lifeTime;
-  }
+  } // TODO doublecheck
 
   public int getLifeCycle() {
     return lifeCycle;
   }
 
-  public ComparableQuantity<Energy> geteStorage() { // TODO doublecheck
+  public ComparableQuantity<Energy> geteStorage() {
     return eStorage;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<Power> getpMax() { // TODO doublecheck
+  public ComparableQuantity<Power> getpMax() {
     return pMax;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<DimensionlessRate> getActivePowerGradient() { // TODO doublecheck
+  public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
     return activePowerGradient;
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

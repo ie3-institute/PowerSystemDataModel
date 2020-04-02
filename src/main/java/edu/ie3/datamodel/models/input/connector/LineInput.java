@@ -100,9 +100,9 @@ public class LineInput extends ConnectorInput {
     return type;
   }
 
-  public ComparableQuantity<Length> getLength() { // TODO doublecheck
+  public ComparableQuantity<Length> getLength() {
     return length;
-  }
+  } // TODO doublecheck
 
   public LineString getGeoPosition() {
     return geoPosition;

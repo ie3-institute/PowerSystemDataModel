@@ -12,7 +12,6 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput;
 import tec.uom.se.ComparableQuantity;
 
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 
 public class FixedFeedInInputFactory

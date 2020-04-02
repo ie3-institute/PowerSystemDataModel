@@ -12,7 +12,6 @@ import tec.uom.se.ComparableQuantity;
 
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
@@ -42,9 +41,9 @@ public class HpTypeInput extends SystemParticipantTypeInput {
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
-  public ComparableQuantity<Power> getpThermal() { // TODO doublecheck
+  public ComparableQuantity<Power> getpThermal() {
     return pThermal;
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

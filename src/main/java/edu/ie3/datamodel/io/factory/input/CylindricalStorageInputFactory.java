@@ -11,8 +11,9 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 
@@ -41,14 +42,14 @@ public class CylindricalStorageInputFactory
       OperatorInput operatorInput,
       OperationTime operationTime) {
     final ThermalBusInput bus = data.getBusInput();
-    final Quantity<Volume> storageVolumeLvl =
+    final ComparableQuantity<Volume> storageVolumeLvl = // TODO doublecheck
         data.getQuantity(STORAGE_VOLUME_LVL, StandardUnits.VOLUME);
-    final Quantity<Volume> storageVolumeLvlMin =
+    final ComparableQuantity<Volume> storageVolumeLvlMin = // TODO doublecheck
         data.getQuantity(STORAGE_VOLUME_LVL_MIN, StandardUnits.VOLUME);
-    final Quantity<Temperature> inletTemp = data.getQuantity(INLET_TEMP, StandardUnits.TEMPERATURE);
-    final Quantity<Temperature> returnTemp =
+    final ComparableQuantity<Temperature> inletTemp = data.getQuantity(INLET_TEMP, StandardUnits.TEMPERATURE); // TODO doublecheck
+    final ComparableQuantity<Temperature> returnTemp = // TODO doublecheck
         data.getQuantity(RETURN_TEMP, StandardUnits.TEMPERATURE);
-    final Quantity<SpecificHeatCapacity> c =
+    final ComparableQuantity<SpecificHeatCapacity> c = // TODO doublecheck
         data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
     return new CylindricalStorageInput(
         uuid, id, bus, storageVolumeLvl, storageVolumeLvlMin, inletTemp, returnTemp, c);

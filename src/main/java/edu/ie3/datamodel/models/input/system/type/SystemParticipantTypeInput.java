@@ -12,7 +12,6 @@ import tec.uom.se.ComparableQuantity;
 
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput} */
@@ -47,17 +46,17 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     this.cosphiRated = cosphiRated;
   }
 
-  public ComparableQuantity<Currency> getCapex() { // TODO doublecheck
+  public ComparableQuantity<Currency> getCapex() {
     return capex;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<EnergyPrice> getOpex() { // TODO doublecheck
+  public ComparableQuantity<EnergyPrice> getOpex() {
     return opex;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<Power> getsRated() { // TODO doublecheck
+  public ComparableQuantity<Power> getsRated() {
     return sRated;
-  }
+  } // TODO doublecheck
 
   public double getCosphiRated() {
     return cosphiRated;

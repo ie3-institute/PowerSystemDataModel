@@ -7,24 +7,25 @@ package edu.ie3.datamodel.models.input.thermal;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 
 /** Thermal storage with cylindrical shape */
 public class CylindricalStorageInput extends ThermalStorageInput {
   /** Available storage volume (typically in m³) */
-  private final Quantity<Volume> storageVolumeLvl;
+  private final ComparableQuantity<Volume> storageVolumeLvl; // TODO doublecheck
   /** Minimum permissible storage volume (typically in m³) */
-  private final Quantity<Volume> storageVolumeLvlMin;
+  private final ComparableQuantity<Volume> storageVolumeLvlMin; // TODO doublecheck
   /** Temperature of the inlet (typically in C) */
-  private final Quantity<Temperature> inletTemp;
+  private final ComparableQuantity<Temperature> inletTemp; // TODO doublecheck
   /** Temperature of the outlet (typically in C) */
-  private final Quantity<Temperature> returnTemp;
+  private final ComparableQuantity<Temperature> returnTemp; // TODO doublecheck
   /** Specific heat capacity of the storage medium (typically in kWh/K*m³) */
-  private final Quantity<SpecificHeatCapacity> c;
+  private final ComparableQuantity<SpecificHeatCapacity> c; // TODO doublecheck
 
   /**
    * @param uuid Unique identifier of a cylindrical storage
@@ -40,11 +41,11 @@ public class CylindricalStorageInput extends ThermalStorageInput {
       UUID uuid,
       String id,
       ThermalBusInput bus,
-      Quantity<Volume> storageVolumeLvl,
-      Quantity<Volume> storageVolumeLvlMin,
-      Quantity<Temperature> inletTemp,
-      Quantity<Temperature> returnTemp,
-      Quantity<SpecificHeatCapacity> c) {
+      ComparableQuantity<Volume> storageVolumeLvl, // TODO doublecheck
+      ComparableQuantity<Volume> storageVolumeLvlMin, // TODO doublecheck
+      ComparableQuantity<Temperature> inletTemp, // TODO doublecheck
+      ComparableQuantity<Temperature> returnTemp, // TODO doublecheck
+      ComparableQuantity<SpecificHeatCapacity> c) { // TODO doublecheck
     super(uuid, id, bus);
     this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
     this.storageVolumeLvlMin = storageVolumeLvlMin.to(StandardUnits.VOLUME);
@@ -53,25 +54,25 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
   }
 
-  public Quantity<Volume> getStorageVolumeLvl() {
+  public ComparableQuantity<Volume> getStorageVolumeLvl() {
     return storageVolumeLvl;
-  }
+  } // TODO doublecheck
 
-  public Quantity<Volume> getStorageVolumeLvlMin() {
+  public ComparableQuantity<Volume> getStorageVolumeLvlMin() {
     return storageVolumeLvlMin;
-  }
+  } // TODO doublecheck
 
-  public Quantity<Temperature> getInletTemp() {
+  public ComparableQuantity<Temperature> getInletTemp() {
     return inletTemp;
-  }
+  } // TODO doublecheck
 
-  public Quantity<Temperature> getReturnTemp() {
+  public ComparableQuantity<Temperature> getReturnTemp() {
     return returnTemp;
-  }
+  } // TODO doublecheck
 
-  public Quantity<SpecificHeatCapacity> getC() {
+  public ComparableQuantity<SpecificHeatCapacity> getC() {
     return c;
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

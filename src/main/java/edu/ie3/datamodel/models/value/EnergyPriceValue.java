@@ -7,26 +7,28 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Objects;
 import javax.measure.Quantity;
 
 /** Describes a price for energy */
 public class EnergyPriceValue implements Value {
   /** Price of energy (typically in €/MWh) */
-  private Quantity<EnergyPrice> price;
+  private ComparableQuantity<EnergyPrice> price; // TODO doublecheck
 
   /** @param price per MWh */
-  public EnergyPriceValue(Quantity<EnergyPrice> price) {
+  public EnergyPriceValue(ComparableQuantity<EnergyPrice> price) {
     this.price = price.to(StandardUnits.ENERGY_PRICE);
-  }
+  } // TODO doublecheck
 
-  public Quantity<EnergyPrice> getPrice() {
+  public ComparableQuantity<EnergyPrice> getPrice() {
     return price;
-  }
+  } // TODO doublecheck
 
-  public void setPrice(Quantity<EnergyPrice> price) {
+  public void setPrice(ComparableQuantity<EnergyPrice> price) {
     this.price = price.to(StandardUnits.ENERGY_PRICE);
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

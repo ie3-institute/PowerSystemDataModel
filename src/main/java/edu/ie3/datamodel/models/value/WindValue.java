@@ -6,42 +6,43 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Objects;
-import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 
 /** Describes wind as a pair of direction and velocity */
 public class WindValue implements Value {
   /** Wind direction as an angle from north (typically in rad) */
-  private Quantity<Angle> direction;
+  private ComparableQuantity<Angle> direction; // TODO doublecheck
   /** Wind velocity (typically in m/s) */
-  private Quantity<Speed> velocity;
+  private ComparableQuantity<Speed> velocity; // TODO doublecheck
 
   /**
    * @param direction Wind direction as an angle from north (typically in rad)
    * @param velocity Wind velocity (typically in m/s)
    */
-  public WindValue(Quantity<Angle> direction, Quantity<Speed> velocity) {
+  public WindValue(ComparableQuantity<Angle> direction, ComparableQuantity<Speed> velocity) { // TODO doublecheck
     this.direction = direction.to(StandardUnits.WIND_DIRECTION);
     this.velocity = velocity.to(StandardUnits.WIND_VELOCITY);
   }
 
-  public Quantity<Angle> getDirection() {
+  public ComparableQuantity<Angle> getDirection() {
     return direction;
-  }
+  } // TODO doublecheck
 
-  public void setDirection(Quantity<Angle> direction) {
+  public void setDirection(ComparableQuantity<Angle> direction) {
     this.direction = direction.to(StandardUnits.WIND_DIRECTION);
-  }
+  } // TODO doublecheck
 
-  public Quantity<Speed> getVelocity() {
+  public ComparableQuantity<Speed> getVelocity() {
     return velocity;
-  }
+  } // TODO doublecheck
 
-  public void setVelocity(Quantity<Speed> velocity) {
+  public void setVelocity(ComparableQuantity<Speed> velocity) {
     this.velocity = velocity.to(StandardUnits.WIND_VELOCITY);
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

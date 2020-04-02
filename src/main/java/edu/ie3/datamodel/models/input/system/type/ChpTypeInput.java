@@ -56,21 +56,21 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
-  public ComparableQuantity<Dimensionless> getEtaEl() { // TODO doublecheck
+  public ComparableQuantity<Dimensionless> getEtaEl() {
     return etaEl;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<Dimensionless> getEtaThermal() { // TODO doublecheck
+  public ComparableQuantity<Dimensionless> getEtaThermal() {
     return etaThermal;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<Power> getpThermal() { // TODO doublecheck
+  public ComparableQuantity<Power> getpThermal() {
     return pThermal;
-  }
+  } // TODO doublecheck
 
-  public ComparableQuantity<Power> getpOwn() { // TODO doublecheck
+  public ComparableQuantity<Power> getpOwn() {
     return pOwn;
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

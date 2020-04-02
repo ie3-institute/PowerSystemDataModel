@@ -6,29 +6,30 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
+import tec.uom.se.ComparableQuantity;
+
 import java.util.Objects;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 
 /** Describes a apparent power value as a pair of active and reactive power */
 public class SValue extends PValue {
 
   /** Reactive power */
-  private Quantity<Power> q;
+  private ComparableQuantity<Power> q; // TODO doublecheck
 
   /** @param q Reactive power */
-  public SValue(Quantity<Power> p, Quantity<Power> q) {
+  public SValue(ComparableQuantity<Power> p, ComparableQuantity<Power> q) { // TODO doublecheck
     super(p);
     this.q = q.to(StandardUnits.REACTIVE_POWER_IN);
   }
 
-  public Quantity<Power> getQ() {
+  public ComparableQuantity<Power> getQ() {
     return q;
-  }
+  } // TODO doublecheck
 
-  public void setQ(Quantity<Power> q) {
+  public void setQ(ComparableQuantity<Power> q) {
     this.q = q.to(StandardUnits.REACTIVE_POWER_IN);
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {
