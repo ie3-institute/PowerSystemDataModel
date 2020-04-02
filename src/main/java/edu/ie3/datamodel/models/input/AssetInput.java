@@ -29,7 +29,7 @@ public abstract class AssetInput extends InputEntity implements Operable {
 
   /** Constructor for a non-operated asset */
   public AssetInput(UUID uuid, String id) {
-    this(uuid, OperationTime.notLimited(), null, id);
+    this(uuid, OperationTime.notLimited(), OperatorInput.NO_OPERATOR_ASSIGNED, id);
   }
 
   @Override
