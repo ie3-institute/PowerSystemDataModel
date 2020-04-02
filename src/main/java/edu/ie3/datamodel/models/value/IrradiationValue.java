@@ -13,9 +13,9 @@ import tec.uom.se.ComparableQuantity;
 /** Describes an irradiation value as a pair of diffuse and direct radiation */
 public class IrradiationValue implements Value {
   /** Direct sun radiation (typically in W/m²) */
-  private ComparableQuantity<Irradiation> directIrradiation; // TODO doublecheck
+  private ComparableQuantity<Irradiation> directIrradiation; // TODO #65 Quantity replaced
   /** Diffuse sun radiation (typically in W/m²) */
-  private ComparableQuantity<Irradiation> diffuseIrradiation; // TODO doublecheck
+  private ComparableQuantity<Irradiation> diffuseIrradiation; // TODO #65 Quantity replaced
 
   /**
    * @param directIrradiation Direct sun radiation (typically in W/m²)
@@ -23,26 +23,26 @@ public class IrradiationValue implements Value {
    */
   public IrradiationValue(
       ComparableQuantity<Irradiation> directIrradiation,
-      ComparableQuantity<Irradiation> diffuseIrradiation) { // TODO doublecheck
+      ComparableQuantity<Irradiation> diffuseIrradiation) { // TODO #65 Quantity replaced
     this.directIrradiation = directIrradiation.to(StandardUnits.IRRADIATION);
     this.diffuseIrradiation = diffuseIrradiation.to(StandardUnits.IRRADIATION);
   }
 
   public ComparableQuantity<Irradiation> getDiffuseIrradiation() {
     return diffuseIrradiation;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public void setDiffuseIrradiation(
-      ComparableQuantity<Irradiation> diffuseIrradiation) { // TODO doublecheck
+      ComparableQuantity<Irradiation> diffuseIrradiation) { // TODO #65 Quantity replaced
     this.diffuseIrradiation = diffuseIrradiation.to(StandardUnits.IRRADIATION);
   }
 
   public ComparableQuantity<Irradiation> getDirectIrradiation() {
     return directIrradiation;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public void setDirectIrradiation(
-      ComparableQuantity<Irradiation> directIrradiation) { // TODO doublecheck
+      ComparableQuantity<Irradiation> directIrradiation) { // TODO #65 Quantity replaced
     this.directIrradiation = directIrradiation.to(StandardUnits.IRRADIATION);
   }
 

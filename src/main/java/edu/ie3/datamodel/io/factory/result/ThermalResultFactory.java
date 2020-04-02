@@ -52,12 +52,12 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
     ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Power> qDotQuantity =
-        data.getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND); // TODO doublecheck
+        data.getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND); // TODO #65 Quantity replaced
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
     if (clazz.equals(ThermalHouseResult.class)) {
-      ComparableQuantity<Temperature> indoorTemperature = // TODO doublecheck
+      ComparableQuantity<Temperature> indoorTemperature = // TODO #65 Quantity replaced
           data.getQuantity(INDOOR_TEMPERATURE, StandardUnits.TEMPERATURE);
 
       return uuidOpt
@@ -71,8 +71,8 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
                       zdtTimestamp, inputModelUuid, qDotQuantity, indoorTemperature));
     } else if (clazz.equals(CylindricalStorageResult.class)) {
       ComparableQuantity<Energy> energyQuantity =
-          data.getQuantity(ENERGY, StandardUnits.ENERGY_RESULT); // TODO doublecheck
-      ComparableQuantity<Dimensionless> fillLevelQuantity = // TODO doublecheck
+          data.getQuantity(ENERGY, StandardUnits.ENERGY_RESULT); // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> fillLevelQuantity = // TODO #65 Quantity replaced
           data.getQuantity(FILL_LEVEL, StandardUnits.FILL_LEVEL);
 
       return uuidOpt

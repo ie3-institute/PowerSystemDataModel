@@ -15,37 +15,37 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput} */
 public class Transformer3WTypeInput extends AssetTypeInput {
   /** Rated apparent power of the high voltage winding (typically in MVA) */
-  private final ComparableQuantity<Power> sRatedA; // Hv // TODO doublecheck
+  private final ComparableQuantity<Power> sRatedA; // Hv // TODO #65 Quantity replaced
   /** Rated apparent power of the medium voltage winding (typically in MVA) */
-  private final ComparableQuantity<Power> sRatedB; // Mv // TODO doublecheck
+  private final ComparableQuantity<Power> sRatedB; // Mv // TODO #65 Quantity replaced
   /** Rated apparent power of the low voltage windings (typically in MVA) */
-  private final ComparableQuantity<Power> sRatedC; // Lv // TODO doublecheck
+  private final ComparableQuantity<Power> sRatedC; // Lv // TODO #65 Quantity replaced
   /** Rated voltage magnitude of the high voltage winding (typically in kV) */
-  private final ComparableQuantity<ElectricPotential> vRatedA; // Hv // TODO doublecheck
+  private final ComparableQuantity<ElectricPotential> vRatedA; // Hv // TODO #65 Quantity replaced
   /** Rated voltage magnitude of the medium voltage winding (typically in kV) */
-  private final ComparableQuantity<ElectricPotential> vRatedB; // Mv // TODO doublecheck
+  private final ComparableQuantity<ElectricPotential> vRatedB; // Mv // TODO #65 Quantity replaced
   /** Rated voltage magnitude of the low voltage winding (typically in kV) */
-  private final ComparableQuantity<ElectricPotential> vRatedC; // Lv // TODO doublecheck
+  private final ComparableQuantity<ElectricPotential> vRatedC; // Lv // TODO #65 Quantity replaced
   /** Short-circuit resistance of the high voltage winding (typically in Ohm) */
-  private final ComparableQuantity<ElectricResistance> rScA; // Hv // TODO doublecheck
+  private final ComparableQuantity<ElectricResistance> rScA; // Hv // TODO #65 Quantity replaced
   /** Short-circuit resistance of the medium voltage winding (typically in Ohm) */
-  private final ComparableQuantity<ElectricResistance> rScB; // Mv // TODO doublecheck
+  private final ComparableQuantity<ElectricResistance> rScB; // Mv // TODO #65 Quantity replaced
   /** Short-circuit resistance of the low voltage winding (typically in Ohm) */
-  private final ComparableQuantity<ElectricResistance> rScC; // Lv // TODO doublecheck
+  private final ComparableQuantity<ElectricResistance> rScC; // Lv // TODO #65 Quantity replaced
   /** Short-circuit reactance of the high voltage winding (typically in Ohm) */
-  private final ComparableQuantity<ElectricResistance> xScA; // Hv // TODO doublecheck
+  private final ComparableQuantity<ElectricResistance> xScA; // Hv // TODO #65 Quantity replaced
   /** Short-circuit reactance of the medium voltage winding (typically in Ohm) */
-  private final ComparableQuantity<ElectricResistance> xScB; // Mv // TODO doublecheck
+  private final ComparableQuantity<ElectricResistance> xScB; // Mv // TODO #65 Quantity replaced
   /** Short-circuit reactance of the low voltage winding (typically in Ohm) */
-  private final ComparableQuantity<ElectricResistance> xScC; // Lv // TODO doublecheck
+  private final ComparableQuantity<ElectricResistance> xScC; // Lv // TODO #65 Quantity replaced
   /** Phase-to-ground conductance (typically in nS) */
-  private final ComparableQuantity<ElectricConductance> gM; // TODO doublecheck
+  private final ComparableQuantity<ElectricConductance> gM; // TODO #65 Quantity replaced
   /** Phase-to-ground susceptance (typically in nS) */
-  private final ComparableQuantity<ElectricConductance> bM; // TODO doublecheck
+  private final ComparableQuantity<ElectricConductance> bM; // TODO #65 Quantity replaced
   /** Voltage magnitude deviation per tap position (typically in %) */
-  private final ComparableQuantity<Dimensionless> dV; // TODO doublecheck
+  private final ComparableQuantity<Dimensionless> dV; // TODO #65 Quantity replaced
   /** Voltage angle deviation per tap position (typically in °) */
-  private final ComparableQuantity<Angle> dPhi; // TODO doublecheck
+  private final ComparableQuantity<Angle> dPhi; // TODO #65 Quantity replaced
   /** Neutral tap position */
   private final int tapNeutr;
   /** Minimum available tap position */
@@ -79,22 +79,22 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   public Transformer3WTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Power> sRatedA, // TODO doublecheck
-      ComparableQuantity<Power> sRatedB, // TODO doublecheck
-      ComparableQuantity<Power> sRatedC, // TODO doublecheck
-      ComparableQuantity<ElectricPotential> vRatedA, // TODO doublecheck
-      ComparableQuantity<ElectricPotential> vRatedB, // TODO doublecheck
-      ComparableQuantity<ElectricPotential> vRatedC, // TODO doublecheck
-      ComparableQuantity<ElectricResistance> rScA, // TODO doublecheck
-      ComparableQuantity<ElectricResistance> rScB, // TODO doublecheck
-      ComparableQuantity<ElectricResistance> rScC, // TODO doublecheck
-      ComparableQuantity<ElectricResistance> xScA, // TODO doublecheck
-      ComparableQuantity<ElectricResistance> xScB, // TODO doublecheck
-      ComparableQuantity<ElectricResistance> xScC, // TODO doublecheck
-      ComparableQuantity<ElectricConductance> gM, // TODO doublecheck
-      ComparableQuantity<ElectricConductance> bM, // TODO doublecheck
-      ComparableQuantity<Dimensionless> dV, // TODO doublecheck
-      ComparableQuantity<Angle> dPhi, // TODO doublecheck
+      ComparableQuantity<Power> sRatedA, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> sRatedB, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> sRatedC, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricPotential> vRatedA, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricPotential> vRatedB, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricPotential> vRatedC, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricResistance> rScA, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricResistance> rScB, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricResistance> rScC, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricResistance> xScA, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricResistance> xScB, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricResistance> xScC, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricConductance> gM, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricConductance> bM, // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> dV, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> dPhi, // TODO #65 Quantity replaced
       int tapNeutr,
       int tapMin,
       int tapMax) {
@@ -122,67 +122,67 @@ public class Transformer3WTypeInput extends AssetTypeInput {
 
   public ComparableQuantity<Power> getsRatedA() {
     return sRatedA;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Power> getsRatedB() {
     return sRatedB;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Power> getsRatedC() {
     return sRatedC;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricPotential> getvRatedA() {
     return vRatedA;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricPotential> getvRatedB() {
     return vRatedB;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricPotential> getvRatedC() {
     return vRatedC;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricResistance> getrScA() {
     return rScA;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricResistance> getrScB() {
     return rScB;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricResistance> getrScC() {
     return rScC;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricResistance> getxScA() {
     return xScA;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricResistance> getxScB() {
     return xScB;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricResistance> getxScC() {
     return xScC;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricConductance> getgM() {
     return gM;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricConductance> getbM() {
     return bM;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Dimensionless> getdV() {
     return dV;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Angle> getdPhi() {
     return dPhi;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public int getTapNeutr() {
     return tapNeutr;

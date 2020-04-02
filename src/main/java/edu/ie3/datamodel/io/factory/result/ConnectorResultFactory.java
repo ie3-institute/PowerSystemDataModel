@@ -61,14 +61,14 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
 
     ZonedDateTime timestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModel = data.getUUID(INPUT_MODEL);
-    ComparableQuantity<ElectricCurrent> iAMag = // TODO doublecheck
+    ComparableQuantity<ElectricCurrent> iAMag = // TODO #65 Quantity replaced
         data.getQuantity(IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
     ComparableQuantity<Angle> iAAng =
-        data.getQuantity(IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE); // TODO doublecheck
-    ComparableQuantity<ElectricCurrent> iBMag = // TODO doublecheck
+        data.getQuantity(IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE); // TODO #65 Quantity replaced
+    ComparableQuantity<ElectricCurrent> iBMag = // TODO #65 Quantity replaced
         data.getQuantity(IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
     ComparableQuantity<Angle> iBAng =
-        data.getQuantity(IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE); // TODO doublecheck
+        data.getQuantity(IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE); // TODO #65 Quantity replaced
 
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
@@ -99,10 +99,11 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
                   new Transformer2WResult(
                       timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos));
     } else if (entityClass.equals(Transformer3WResult.class)) {
-      ComparableQuantity<ElectricCurrent> iCMag = // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iCMag = // TODO #65 Quantity replaced
           data.getQuantity(ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
       ComparableQuantity<Angle> iCAng =
-          data.getQuantity(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE); // TODO doublecheck
+          data.getQuantity(
+              ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE); // TODO #65 Quantity replaced
       final int tapPos = data.getInt(TAPPOS);
 
       return uuidOpt

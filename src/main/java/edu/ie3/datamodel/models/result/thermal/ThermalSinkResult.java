@@ -26,7 +26,7 @@ public abstract class ThermalSinkResult extends ThermalUnitResult {
   public ThermalSinkResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Power> qDot) { // TODO doublecheck
+      ComparableQuantity<Power> qDot) { // TODO #65 Quantity replaced
     super(timestamp, inputModel, qDot);
   }
 
@@ -43,7 +43,7 @@ public abstract class ThermalSinkResult extends ThermalUnitResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Power> qDot) { // TODO doublecheck
+      ComparableQuantity<Power> qDot) { // TODO #65 Quantity replaced
     super(uuid, timestamp, inputModel, qDot);
   }
 }

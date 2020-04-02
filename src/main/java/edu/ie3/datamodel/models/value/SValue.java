@@ -14,21 +14,22 @@ import tec.uom.se.ComparableQuantity;
 public class SValue extends PValue {
 
   /** Reactive power */
-  private ComparableQuantity<Power> q; // TODO doublecheck
+  private ComparableQuantity<Power> q; // TODO #65 Quantity replaced
 
   /** @param q Reactive power */
-  public SValue(ComparableQuantity<Power> p, ComparableQuantity<Power> q) { // TODO doublecheck
+  public SValue(
+      ComparableQuantity<Power> p, ComparableQuantity<Power> q) { // TODO #65 Quantity replaced
     super(p);
     this.q = q.to(StandardUnits.REACTIVE_POWER_IN);
   }
 
   public ComparableQuantity<Power> getQ() {
     return q;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public void setQ(ComparableQuantity<Power> q) {
     this.q = q.to(StandardUnits.REACTIVE_POWER_IN);
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   @Override
   public boolean equals(Object o) {

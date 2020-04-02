@@ -18,7 +18,7 @@ import tec.uom.se.ComparableQuantity;
 public class StorageResult extends SystemParticipantResult {
 
   /** State of Charge (SoC) in % */
-  private ComparableQuantity<Dimensionless> soc; // TODO doublecheck
+  private ComparableQuantity<Dimensionless> soc; // TODO #65 Quantity replaced
 
   /**
    * Standard constructor with automatic uuid generation.
@@ -32,9 +32,9 @@ public class StorageResult extends SystemParticipantResult {
   public StorageResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Power> p, // TODO doublecheck
-      ComparableQuantity<Power> q, // TODO doublecheck
-      ComparableQuantity<Dimensionless> soc) { // TODO doublecheck
+      ComparableQuantity<Power> p, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> q, // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> soc) { // TODO #65 Quantity replaced
     super(timestamp, inputModel, p, q);
     this.soc = soc;
   }
@@ -52,20 +52,20 @@ public class StorageResult extends SystemParticipantResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Power> p, // TODO doublecheck
-      ComparableQuantity<Power> q, // TODO doublecheck
-      ComparableQuantity<Dimensionless> soc) { // TODO doublecheck
+      ComparableQuantity<Power> p, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> q, // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> soc) { // TODO #65 Quantity replaced
     super(uuid, timestamp, inputModel, p, q);
     this.soc = soc;
   }
 
   public ComparableQuantity<Dimensionless> getSoc() {
     return soc;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public void setSoc(ComparableQuantity<Dimensionless> soc) {
     this.soc = soc;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   @Override
   public boolean equals(Object o) {

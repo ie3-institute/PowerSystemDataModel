@@ -20,17 +20,18 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput} */
 public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity (typically in kWh) */
-  private final ComparableQuantity<Energy> eStorage; // TODO doublecheck
+  private final ComparableQuantity<Energy> eStorage; // TODO #65 Quantity replaced
   /** Maximum permissible active power (typically in kW) */
-  private final ComparableQuantity<Power> pMax; // TODO doublecheck
+  private final ComparableQuantity<Power> pMax; // TODO #65 Quantity replaced
   /** Maximum permissible gradient of active power change (typically % / h) */
-  private final ComparableQuantity<DimensionlessRate> activePowerGradient; // TODO doublecheck
+  private final ComparableQuantity<DimensionlessRate>
+      activePowerGradient; // TODO #65 Quantity replaced
   /** Efficiency of the charging and discharging process (typically in %) */
-  private final ComparableQuantity<Dimensionless> eta; // TODO doublecheck
+  private final ComparableQuantity<Dimensionless> eta; // TODO #65 Quantity replaced
   /** Minimum permissible depth of discharge (typically in %) */
-  private final ComparableQuantity<Dimensionless> dod; // TODO doublecheck
+  private final ComparableQuantity<Dimensionless> dod; // TODO #65 Quantity replaced
   /** Maximum life time of the storage (typically in ms) */
-  private final ComparableQuantity<Time> lifeTime; // TODO doublecheck
+  private final ComparableQuantity<Time> lifeTime; // TODO #65 Quantity replaced
   /** Maximum amount of full charging cycles */
   private final int lifeCycle;
 
@@ -52,19 +53,16 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   public StorageTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Currency>
-          capex, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<EnergyPrice>
-          opex, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<Energy> eStorage, // TODO doublecheck
-      ComparableQuantity<Power>
-          sRated, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Currency> capex, // TODO #65 Quantity replaced
+      ComparableQuantity<EnergyPrice> opex, // TODO #65 Quantity replaced
+      ComparableQuantity<Energy> eStorage, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosPhiRated,
-      ComparableQuantity<Power> pMax, // TODO doublecheck
-      ComparableQuantity<DimensionlessRate> activePowerGradient, // TODO doublecheck
-      ComparableQuantity<Dimensionless> eta, // TODO doublecheck
-      ComparableQuantity<Dimensionless> dod, // TODO doublecheck
-      ComparableQuantity<Time> lifeTime, // TODO doublecheck
+      ComparableQuantity<Power> pMax, // TODO #65 Quantity replaced
+      ComparableQuantity<DimensionlessRate> activePowerGradient, // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> eta, // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> dod, // TODO #65 Quantity replaced
+      ComparableQuantity<Time> lifeTime, // TODO #65 Quantity replaced
       int lifeCycle) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
@@ -78,15 +76,15 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<Dimensionless> getEta() {
     return eta;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Dimensionless> getDod() {
     return dod;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Time> getLifeTime() {
     return lifeTime;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public int getLifeCycle() {
     return lifeCycle;
@@ -94,15 +92,15 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<Energy> geteStorage() {
     return eStorage;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Power> getpMax() {
     return pMax;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
     return activePowerGradient;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   @Override
   public boolean equals(Object o) {

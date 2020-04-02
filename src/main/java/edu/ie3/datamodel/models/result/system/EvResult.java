@@ -15,7 +15,7 @@ import tec.uom.se.ComparableQuantity;
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvInput} */
 public class EvResult extends SystemParticipantResult {
 
-  private ComparableQuantity<Dimensionless> soc; // TODO doublecheck
+  private ComparableQuantity<Dimensionless> soc; // TODO #65 Quantity replaced
 
   /**
    * Standard constructor with automatic uuid generation.
@@ -29,9 +29,9 @@ public class EvResult extends SystemParticipantResult {
   public EvResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Power> p, // TODO doublecheck
-      ComparableQuantity<Power> q, // TODO doublecheck
-      ComparableQuantity<Dimensionless> soc) { // TODO doublecheck
+      ComparableQuantity<Power> p, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> q, // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> soc) { // TODO #65 Quantity replaced
     super(timestamp, inputModel, p, q);
     this.soc = soc;
   }
@@ -49,20 +49,20 @@ public class EvResult extends SystemParticipantResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Power> p, // TODO doublecheck
-      ComparableQuantity<Power> q, // TODO doublecheck
-      ComparableQuantity<Dimensionless> soc) { // TODO doublecheck
+      ComparableQuantity<Power> p, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> q, // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> soc) { // TODO #65 Quantity replaced
     super(uuid, timestamp, inputModel, p, q);
     this.soc = soc;
   }
 
   public ComparableQuantity<Dimensionless> getSoc() {
     return soc;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public void setSoc(ComparableQuantity<Dimensionless> soc) {
     this.soc = soc;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   @Override
   public boolean equals(Object o) {

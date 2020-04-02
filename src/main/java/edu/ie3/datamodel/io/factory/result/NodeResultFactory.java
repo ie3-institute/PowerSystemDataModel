@@ -36,9 +36,9 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
     ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Dimensionless> vMagValue =
-        data.getQuantity(VMAG, StandardUnits.VOLTAGE_MAGNITUDE); // TODO doublecheck
+        data.getQuantity(VMAG, StandardUnits.VOLTAGE_MAGNITUDE); // TODO #65 Quantity replaced
     ComparableQuantity<Angle> vAngValue =
-        data.getQuantity(VANG, StandardUnits.VOLTAGE_ANGLE); // TODO doublecheck
+        data.getQuantity(VANG, StandardUnits.VOLTAGE_ANGLE); // TODO #65 Quantity replaced
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 

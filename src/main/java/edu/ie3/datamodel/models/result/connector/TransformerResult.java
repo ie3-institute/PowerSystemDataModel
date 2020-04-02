@@ -35,10 +35,10 @@ public abstract class TransformerResult extends ConnectorResult {
   public TransformerResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag, // TODO doublecheck
-      ComparableQuantity<Angle> iAAng, // TODO doublecheck
-      ComparableQuantity<ElectricCurrent> iBMag, // TODO doublecheck
-      ComparableQuantity<Angle> iBAng, // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iAMag, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> iAAng, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricCurrent> iBMag, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> iBAng, // TODO #65 Quantity replaced
       int tapPos) {
     super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
     this.tapPos = tapPos;
@@ -59,10 +59,10 @@ public abstract class TransformerResult extends ConnectorResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag, // TODO doublecheck
-      ComparableQuantity<Angle> iAAng, // TODO doublecheck
-      ComparableQuantity<ElectricCurrent> iBMag, // TODO doublecheck
-      ComparableQuantity<Angle> iBAng, // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iAMag, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> iAAng, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricCurrent> iBMag, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> iBAng, // TODO #65 Quantity replaced
       int tapPos) {
     super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
     this.tapPos = tapPos;

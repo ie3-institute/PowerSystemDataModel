@@ -17,7 +17,7 @@ import tec.uom.se.ComparableQuantity;
 /** Describes an electrical grid node, that other assets can connect to */
 public class NodeInput extends AssetInput {
   /** Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.) */
-  private final ComparableQuantity<Dimensionless> vTarget; // TODO doublecheck
+  private final ComparableQuantity<Dimensionless> vTarget; // TODO #65 Quantity replaced
   /** Is this node a slack node? */
   private final boolean slack;
   /**
@@ -48,7 +48,7 @@ public class NodeInput extends AssetInput {
       OperationTime operationTime,
       OperatorInput operator,
       String id,
-      ComparableQuantity<Dimensionless> vTarget, // TODO doublecheck
+      ComparableQuantity<Dimensionless> vTarget, // TODO #65 Quantity replaced
       boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
@@ -76,7 +76,7 @@ public class NodeInput extends AssetInput {
   public NodeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Dimensionless> vTarget, // TODO doublecheck
+      ComparableQuantity<Dimensionless> vTarget, // TODO #65 Quantity replaced
       boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
@@ -91,7 +91,7 @@ public class NodeInput extends AssetInput {
 
   public ComparableQuantity<Dimensionless> getvTarget() {
     return vTarget;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public boolean isSlack() {
     return slack;

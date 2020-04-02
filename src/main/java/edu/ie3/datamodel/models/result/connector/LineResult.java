@@ -28,10 +28,10 @@ public class LineResult extends ConnectorResult {
   public LineResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag, // TODO doublecheck
-      ComparableQuantity<Angle> iAAng, // TODO doublecheck
-      ComparableQuantity<ElectricCurrent> iBMag, // TODO doublecheck
-      ComparableQuantity<Angle> iBAng) { // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iAMag, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> iAAng, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricCurrent> iBMag, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> iBAng) { // TODO #65 Quantity replaced
     super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
   }
 
@@ -51,10 +51,10 @@ public class LineResult extends ConnectorResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag, // TODO doublecheck
-      ComparableQuantity<Angle> iAAng, // TODO doublecheck
-      ComparableQuantity<ElectricCurrent> iBMag, // TODO doublecheck
-      ComparableQuantity<Angle> iBAng) { // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iAMag, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> iAAng, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricCurrent> iBMag, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> iBAng) { // TODO #65 Quantity replaced
     super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
   }
 }

@@ -42,16 +42,16 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
     UUID uuid = data.getUUID(ENTITY_UUID);
     String id = data.getField(ENTITY_ID);
     ComparableQuantity<SpecificConductance> b =
-        data.getQuantity(B, StandardUnits.ADMITTANCE_PER_LENGTH); // TODO doublecheck
+        data.getQuantity(B, StandardUnits.ADMITTANCE_PER_LENGTH); // TODO #65 Quantity replaced
     ComparableQuantity<SpecificConductance> g =
-        data.getQuantity(G, StandardUnits.ADMITTANCE_PER_LENGTH); // TODO doublecheck
+        data.getQuantity(G, StandardUnits.ADMITTANCE_PER_LENGTH); // TODO #65 Quantity replaced
     ComparableQuantity<SpecificResistance> r =
-        data.getQuantity(R, StandardUnits.IMPEDANCE_PER_LENGTH); // TODO doublecheck
+        data.getQuantity(R, StandardUnits.IMPEDANCE_PER_LENGTH); // TODO #65 Quantity replaced
     ComparableQuantity<SpecificResistance> x =
-        data.getQuantity(X, StandardUnits.IMPEDANCE_PER_LENGTH); // TODO doublecheck
-    ComparableQuantity<ElectricCurrent> iMax = // TODO doublecheck
+        data.getQuantity(X, StandardUnits.IMPEDANCE_PER_LENGTH); // TODO #65 Quantity replaced
+    ComparableQuantity<ElectricCurrent> iMax = // TODO #65 Quantity replaced
         data.getQuantity(I_MAX, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    ComparableQuantity<ElectricPotential> vRated = // TODO doublecheck
+    ComparableQuantity<ElectricPotential> vRated = // TODO #65 Quantity replaced
         data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
 
     return new LineTypeInput(uuid, id, b, g, r, x, iMax, vRated);

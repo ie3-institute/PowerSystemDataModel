@@ -22,11 +22,11 @@ public class PvInput extends SystemParticipantInput {
   /** Albedo value (typically a value between 0 and 1) */
   private final double albedo;
   /** Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦) */
-  private final ComparableQuantity<Angle> azimuth; // TODO doublecheck
+  private final ComparableQuantity<Angle> azimuth; // TODO #65 Quantity replaced
   /** Efficiency of converter (typically in %) */
-  private final ComparableQuantity<Dimensionless> etaConv; // TODO doublecheck
+  private final ComparableQuantity<Dimensionless> etaConv; // TODO #65 Quantity replaced
   /** Tilted inclination from horizontal (typically in °) */
-  private final ComparableQuantity<Angle> height; // TODO doublecheck
+  private final ComparableQuantity<Angle> height; // TODO #65 Quantity replaced
   /** Generator correction factor merging different technical influences */
   private final double kG;
   /** Temperature correction factor */
@@ -34,7 +34,7 @@ public class PvInput extends SystemParticipantInput {
   /** Is this asset market oriented? */
   private final boolean marketReaction;
   /** Rated apparent power (typically in kVA) */
-  private final ComparableQuantity<Power> sRated; // TODO doublecheck
+  private final ComparableQuantity<Power> sRated; // TODO #65 Quantity replaced
   /** Rated power factor */
   private final double cosphiRated;
   /**
@@ -64,13 +64,13 @@ public class PvInput extends SystemParticipantInput {
       NodeInput node,
       String qCharacteristics,
       double albedo,
-      ComparableQuantity<Angle> azimuth, // TODO doublecheck
-      ComparableQuantity<Dimensionless> etaConv, // TODO doublecheck
-      ComparableQuantity<Angle> height, // TODO doublecheck
+      ComparableQuantity<Angle> azimuth, // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> etaConv, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> height, // TODO #65 Quantity replaced
       double kG,
       double kT,
       boolean marketReaction,
-      ComparableQuantity<Power> sRated, // TODO doublecheck
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosphiRated) {
     super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.albedo = albedo;
@@ -107,13 +107,13 @@ public class PvInput extends SystemParticipantInput {
       NodeInput node,
       String qCharacteristics,
       double albedo,
-      ComparableQuantity<Angle> azimuth, // TODO doublecheck
-      ComparableQuantity<Dimensionless> etaConv, // TODO doublecheck
-      ComparableQuantity<Angle> height, // TODO doublecheck
+      ComparableQuantity<Angle> azimuth, // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> etaConv, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> height, // TODO #65 Quantity replaced
       double kG,
       double kT,
       boolean marketReaction,
-      ComparableQuantity<Power> sRated, // TODO doublecheck
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosphiRated) {
     super(uuid, id, node, qCharacteristics);
     this.albedo = albedo;
@@ -133,15 +133,15 @@ public class PvInput extends SystemParticipantInput {
 
   public ComparableQuantity<Angle> getAzimuth() {
     return azimuth;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Dimensionless> getEtaConv() {
     return etaConv;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Angle> getHeight() {
     return height;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public boolean isMarketReaction() {
     return marketReaction;
@@ -161,7 +161,7 @@ public class PvInput extends SystemParticipantInput {
 
   public ComparableQuantity<Power> getsRated() {
     return sRated;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   @Override
   public boolean equals(Object o) {

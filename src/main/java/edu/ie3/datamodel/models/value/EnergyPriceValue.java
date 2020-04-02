@@ -13,20 +13,20 @@ import tec.uom.se.ComparableQuantity;
 /** Describes a price for energy */
 public class EnergyPriceValue implements Value {
   /** Price of energy (typically in €/MWh) */
-  private ComparableQuantity<EnergyPrice> price; // TODO doublecheck
+  private ComparableQuantity<EnergyPrice> price; // TODO #65 Quantity replaced
 
   /** @param price per MWh */
   public EnergyPriceValue(ComparableQuantity<EnergyPrice> price) {
     this.price = price.to(StandardUnits.ENERGY_PRICE);
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<EnergyPrice> getPrice() {
     return price;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public void setPrice(ComparableQuantity<EnergyPrice> price) {
     this.price = price.to(StandardUnits.ENERGY_PRICE);
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   @Override
   public boolean equals(Object o) {

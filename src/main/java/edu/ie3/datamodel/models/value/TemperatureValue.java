@@ -13,18 +13,20 @@ import tec.uom.se.ComparableQuantity;
 /** Describes a temperature value */
 public class TemperatureValue implements Value {
   /** Temperature (typically in K) */
-  private ComparableQuantity<Temperature> temperature; // TODO doublecheck
+  private ComparableQuantity<Temperature> temperature; // TODO #65 Quantity replaced
 
   /** @param temperature (typically in K) */
-  public TemperatureValue(ComparableQuantity<Temperature> temperature) { // TODO doublecheck
+  public TemperatureValue(
+      ComparableQuantity<Temperature> temperature) { // TODO #65 Quantity replaced
     this.temperature = temperature.to(StandardUnits.TEMPERATURE);
   }
 
   public ComparableQuantity<Temperature> getTemperature() {
     return temperature;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
-  public void setTemperature(ComparableQuantity<Temperature> temperature) { // TODO doublecheck
+  public void setTemperature(
+      ComparableQuantity<Temperature> temperature) { // TODO #65 Quantity replaced
     this.temperature = temperature.to(StandardUnits.TEMPERATURE);
   }
 

@@ -25,7 +25,7 @@ public class WecResult extends SystemParticipantResult {
       ZonedDateTime timestamp,
       UUID inputModel,
       ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q) { // TODO doublecheck
+      ComparableQuantity<Power> q) { // TODO #65 Quantity replaced
     super(timestamp, inputModel, p, q);
   }
 
@@ -44,7 +44,7 @@ public class WecResult extends SystemParticipantResult {
       ZonedDateTime timestamp,
       UUID inputModel,
       ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q) { // TODO doublecheck
+      ComparableQuantity<Power> q) { // TODO #65 Quantity replaced
     super(uuid, timestamp, inputModel, p, q);
   }
 }

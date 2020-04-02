@@ -16,7 +16,7 @@ import tec.uom.se.ComparableQuantity;
 /** Represents the results of {@link edu.ie3.datamodel.models.input.thermal.ThermalHouseInput} */
 public class ThermalHouseResult extends ThermalSinkResult {
   /** Indoor room temperature of the house */
-  private ComparableQuantity<Temperature> indoorTemperature; // TODO doublecheck
+  private ComparableQuantity<Temperature> indoorTemperature; // TODO #65 Quantity replaced
 
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
@@ -29,8 +29,8 @@ public class ThermalHouseResult extends ThermalSinkResult {
   public ThermalHouseResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Power> qDot, // TODO doublecheck
-      ComparableQuantity<Temperature> indoorTemperature) { // TODO doublecheck
+      ComparableQuantity<Power> qDot, // TODO #65 Quantity replaced
+      ComparableQuantity<Temperature> indoorTemperature) { // TODO #65 Quantity replaced
     super(timestamp, inputModel, qDot);
     this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
   }
@@ -49,18 +49,18 @@ public class ThermalHouseResult extends ThermalSinkResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Power> qDot, // TODO doublecheck
-      ComparableQuantity<Temperature> indoorTemperature) { // TODO doublecheck
+      ComparableQuantity<Power> qDot, // TODO #65 Quantity replaced
+      ComparableQuantity<Temperature> indoorTemperature) { // TODO #65 Quantity replaced
     super(uuid, timestamp, inputModel, qDot);
     this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
   }
 
   public ComparableQuantity<Temperature> getIndoorTemperature() {
     return indoorTemperature;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public void setIndoorTemperature(
-      ComparableQuantity<Temperature> indoorTemperature) { // TODO doublecheck
+      ComparableQuantity<Temperature> indoorTemperature) { // TODO #65 Quantity replaced
     this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
   }
 

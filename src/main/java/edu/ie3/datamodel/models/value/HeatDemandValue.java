@@ -12,17 +12,17 @@ import tec.uom.se.ComparableQuantity;
 
 /** Describes as heat demand value */
 public class HeatDemandValue implements Value {
-  private ComparableQuantity<Power> heatDemand; // TODO doublecheck
+  private ComparableQuantity<Power> heatDemand; // TODO #65 Quantity replaced
 
-  public HeatDemandValue(ComparableQuantity<Power> heatDemand) { // TODO doublecheck
+  public HeatDemandValue(ComparableQuantity<Power> heatDemand) { // TODO #65 Quantity replaced
     this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
   public ComparableQuantity<Power> getHeatDemand() {
     return heatDemand;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
-  public void setHeatDemand(ComparableQuantity<Power> heatDemand) { // TODO doublecheck
+  public void setHeatDemand(ComparableQuantity<Power> heatDemand) { // TODO #65 Quantity replaced
     this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 

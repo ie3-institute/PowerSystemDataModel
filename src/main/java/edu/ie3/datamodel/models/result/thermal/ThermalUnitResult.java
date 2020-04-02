@@ -20,7 +20,7 @@ public abstract class ThermalUnitResult extends ResultEntity {
    * Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power
    * flowing from unit)
    */
-  private ComparableQuantity<Power> qDot; // TODO doublecheck
+  private ComparableQuantity<Power> qDot; // TODO #65 Quantity replaced
 
   /**
    * Constructor for the thermal result with
@@ -32,7 +32,7 @@ public abstract class ThermalUnitResult extends ResultEntity {
   public ThermalUnitResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Power> qDot) { // TODO doublecheck
+      ComparableQuantity<Power> qDot) { // TODO #65 Quantity replaced
     super(timestamp, inputModel);
     this.qDot = qDot;
   }
@@ -49,18 +49,18 @@ public abstract class ThermalUnitResult extends ResultEntity {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Power> qDot) { // TODO doublecheck
+      ComparableQuantity<Power> qDot) { // TODO #65 Quantity replaced
     super(uuid, timestamp, inputModel);
     this.qDot = qDot;
   }
 
   public ComparableQuantity<Power> getqDot() {
     return qDot;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public void setqDot(ComparableQuantity<Power> qDot) {
     this.qDot = qDot.to(StandardUnits.HEAT_DEMAND);
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   @Override
   public boolean equals(Object o) {

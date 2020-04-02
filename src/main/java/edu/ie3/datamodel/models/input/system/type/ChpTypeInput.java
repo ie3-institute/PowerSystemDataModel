@@ -17,13 +17,13 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput} */
 public class ChpTypeInput extends SystemParticipantTypeInput {
   /** Electrical efficiency (typically in %) */
-  private final ComparableQuantity<Dimensionless> etaEl; // TODO doublecheck
+  private final ComparableQuantity<Dimensionless> etaEl; // TODO #65 Quantity replaced
   /** Thermal efficiency (typically in %) */
-  private final ComparableQuantity<Dimensionless> etaThermal; // TODO doublecheck
+  private final ComparableQuantity<Dimensionless> etaThermal; // TODO #65 Quantity replaced
   /** Rated thermal power (typically in kW) */
-  private final ComparableQuantity<Power> pThermal; // TODO doublecheck
+  private final ComparableQuantity<Power> pThermal; // TODO #65 Quantity replaced
   /** Internal consumption (typically in kW) */
-  private final ComparableQuantity<Power> pOwn; // TODO doublecheck
+  private final ComparableQuantity<Power> pOwn; // TODO #65 Quantity replaced
 
   /**
    * @param uuid of the input entity
@@ -40,17 +40,14 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
   public ChpTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Currency>
-          capex, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<EnergyPrice>
-          opex, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<Dimensionless> etaEl, // TODO doublecheck
-      ComparableQuantity<Dimensionless> etaThermal, // TODO doublecheck
-      ComparableQuantity<Power>
-          sRated, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Currency> capex, // TODO #65 Quantity replaced
+      ComparableQuantity<EnergyPrice> opex, // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> etaEl, // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> etaThermal, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosphiRated,
-      ComparableQuantity<Power> pThermal, // TODO doublecheck
-      ComparableQuantity<Power> pOwn) { // TODO doublecheck
+      ComparableQuantity<Power> pThermal, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> pOwn) { // TODO #65 Quantity replaced
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.etaEl = etaEl.to(StandardUnits.EFFICIENCY);
     this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
@@ -60,19 +57,19 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<Dimensionless> getEtaEl() {
     return etaEl;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Dimensionless> getEtaThermal() {
     return etaThermal;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Power> getpThermal() {
     return pThermal;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Power> getpOwn() {
     return pOwn;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   @Override
   public boolean equals(Object o) {

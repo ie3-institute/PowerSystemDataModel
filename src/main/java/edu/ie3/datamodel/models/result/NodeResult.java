@@ -16,10 +16,10 @@ import tec.uom.se.ComparableQuantity;
 public class NodeResult extends ResultEntity {
 
   /** Voltage magnitude @ this node in p.u. */
-  private ComparableQuantity<Dimensionless> vMag; // TODO doublecheck
+  private ComparableQuantity<Dimensionless> vMag; // TODO #65 Quantity replaced
 
   /** Voltage angle @ this node in degree */
-  private ComparableQuantity<Angle> vAng; // TODO doublecheck
+  private ComparableQuantity<Angle> vAng; // TODO #65 Quantity replaced
 
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
@@ -32,8 +32,8 @@ public class NodeResult extends ResultEntity {
   public NodeResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Dimensionless> vMag, // TODO doublecheck
-      ComparableQuantity<Angle> vAng) { // TODO doublecheck
+      ComparableQuantity<Dimensionless> vMag, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> vAng) { // TODO #65 Quantity replaced
     super(timestamp, inputModel);
     this.vMag = vMag;
     this.vAng = vAng;
@@ -51,8 +51,8 @@ public class NodeResult extends ResultEntity {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Dimensionless> vMag, // TODO doublecheck
-      ComparableQuantity<Angle> vAng) { // TODO doublecheck
+      ComparableQuantity<Dimensionless> vMag, // TODO #65 Quantity replaced
+      ComparableQuantity<Angle> vAng) { // TODO #65 Quantity replaced
     super(uuid, timestamp, inputModel);
     this.vMag = vMag;
     this.vAng = vAng;
@@ -60,19 +60,19 @@ public class NodeResult extends ResultEntity {
 
   public ComparableQuantity<Dimensionless> getvMag() {
     return vMag;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public void setvMag(ComparableQuantity<Dimensionless> vMag) {
     this.vMag = vMag;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Angle> getvAng() {
     return vAng;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public void setvAng(ComparableQuantity<Angle> vAng) {
     this.vAng = vAng;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   @Override
   public boolean equals(Object o) {

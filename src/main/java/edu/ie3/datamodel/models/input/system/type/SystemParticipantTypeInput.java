@@ -16,11 +16,11 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput} */
 public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   /** Capital expense for this type of system participant (typically in €) */
-  private final ComparableQuantity<Currency> capex; // TODO doublecheck
+  private final ComparableQuantity<Currency> capex; // TODO #65 Quantity replaced
   /** Operating expense for this type of system participant (typically in €) */
-  private final ComparableQuantity<EnergyPrice> opex; // TODO doublecheck
+  private final ComparableQuantity<EnergyPrice> opex; // TODO #65 Quantity replaced
   /** Rated apparent power of the type (in kVA) */
-  private final ComparableQuantity<Power> sRated; // TODO doublecheck
+  private final ComparableQuantity<Power> sRated; // TODO #65 Quantity replaced
   /** Power factor for this type of system participant */
   private final double cosphiRated;
 
@@ -34,9 +34,9 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   public SystemParticipantTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capex, // TODO doublecheck
-      ComparableQuantity<EnergyPrice> opex, // TODO doublecheck
-      ComparableQuantity<Power> sRated, // TODO doublecheck
+      ComparableQuantity<Currency> capex, // TODO #65 Quantity replaced
+      ComparableQuantity<EnergyPrice> opex, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosphiRated) {
     super(uuid, id);
     this.capex = capex;
@@ -47,15 +47,15 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
 
   public ComparableQuantity<Currency> getCapex() {
     return capex;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<EnergyPrice> getOpex() {
     return opex;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Power> getsRated() {
     return sRated;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public double getCosphiRated() {
     return cosphiRated;

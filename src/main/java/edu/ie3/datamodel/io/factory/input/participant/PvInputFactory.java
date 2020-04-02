@@ -49,16 +49,16 @@ public class PvInputFactory
       OperationTime operationTime) {
     final double albedo = data.getDouble(ALBEDO);
     final ComparableQuantity<Angle> azimuth =
-        data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH); // TODO doublecheck
+        data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH); // TODO #65 Quantity replaced
     final ComparableQuantity<Dimensionless> etaConv =
-        data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY); // TODO doublecheck
+        data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY); // TODO #65 Quantity replaced
     final ComparableQuantity<Angle> height =
-        data.getQuantity(HEIGHT, StandardUnits.SOLAR_HEIGHT); // TODO doublecheck
+        data.getQuantity(HEIGHT, StandardUnits.SOLAR_HEIGHT); // TODO #65 Quantity replaced
     final double kG = data.getDouble(KG);
     final double kT = data.getDouble(KT);
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
     final ComparableQuantity<Power> sRated =
-        data.getQuantity(S_RATED, StandardUnits.S_RATED); // TODO doublecheck
+        data.getQuantity(S_RATED, StandardUnits.S_RATED); // TODO #65 Quantity replaced
     final double cosPhi = data.getDouble(COS_PHI);
 
     return new PvInput(

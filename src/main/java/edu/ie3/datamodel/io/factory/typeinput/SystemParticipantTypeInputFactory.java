@@ -104,21 +104,11 @@ public class SystemParticipantTypeInputFactory
     UUID uuid = data.getUUID(ENTITY_UUID);
     String id = data.getField(ENTITY_ID);
     ComparableQuantity<Currency> capEx =
-        data.getQuantity(
-            CAP_EX,
-            StandardUnits
-                .CAPEX); // TODO doublecheck - no return value, but superclass expects comparable
+        data.getQuantity(CAP_EX, StandardUnits.CAPEX); // TODO #65 Quantity replaced
     ComparableQuantity<EnergyPrice> opEx =
-        data.getQuantity(
-            OP_EX,
-            StandardUnits
-                .ENERGY_PRICE); // TODO doublecheck - no return value, but superclass expects
-    // comparable
+        data.getQuantity(OP_EX, StandardUnits.ENERGY_PRICE); // TODO #65 Quantity replaced
     ComparableQuantity<Power> sRated =
-        data.getQuantity(
-            S_RATED,
-            StandardUnits
-                .S_RATED); // TODO doublecheck - no return value, but superclass expects comparable
+        data.getQuantity(S_RATED, StandardUnits.S_RATED); // TODO #65 Quantity replaced
     double cosPhi = data.getDouble(COS_PHI);
 
     if (data.getEntityClass().equals(EvTypeInput.class))
@@ -143,23 +133,15 @@ public class SystemParticipantTypeInputFactory
       SimpleEntityData data,
       UUID uuid,
       String id,
-      ComparableQuantity<Currency>
-          capEx, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<EnergyPrice>
-          opEx, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<Power>
-          sRated, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Currency> capEx, // TODO #65 Quantity replaced
+      ComparableQuantity<EnergyPrice> opEx, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosPhi) {
     ComparableQuantity<Energy> eStorage =
-        data.getQuantity(
-            E_STORAGE,
-            StandardUnits.ENERGY_IN); // TODO doublecheck - no return value, but superclass expects
+        data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN); // TODO #65 Quantity replaced
     // comparable
     ComparableQuantity<SpecificEnergy> eCons =
-        data.getQuantity(
-            E_CONS,
-            StandardUnits
-                .ENERGY_PER_DISTANCE); // TODO doublecheck - no return value, but superclass expects
+        data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE); // TODO #65 Quantity replaced
     // comparable
 
     return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi);
@@ -169,18 +151,12 @@ public class SystemParticipantTypeInputFactory
       SimpleEntityData data,
       UUID uuid,
       String id,
-      ComparableQuantity<Currency>
-          capEx, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<EnergyPrice>
-          opEx, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<Power>
-          sRated, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Currency> capEx, // TODO #65 Quantity replaced
+      ComparableQuantity<EnergyPrice> opEx, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosPhi) {
     ComparableQuantity<Power> pThermal =
-        data.getQuantity(
-            P_THERMAL,
-            StandardUnits
-                .ACTIVE_POWER_IN); // TODO doublecheck - no return value, but superclass expects
+        data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN); // TODO #65 Quantity replaced
     // comparable
 
     return new HpTypeInput(uuid, id, capEx, opEx, sRated, cosPhi, pThermal);
@@ -190,20 +166,14 @@ public class SystemParticipantTypeInputFactory
       SimpleEntityData data,
       UUID uuid,
       String id,
-      ComparableQuantity<Currency>
-          capEx, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<EnergyPrice>
-          opEx, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<Power>
-          sRated, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Currency> capEx, // TODO #65 Quantity replaced
+      ComparableQuantity<EnergyPrice> opEx, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosPhi) {
-    ComparableQuantity<DimensionlessRate>
-        loadGradient = // TODO doublecheck - no return value, but superclass expects comparable
+    ComparableQuantity<DimensionlessRate> loadGradient = // TODO #65 Quantity replaced
         data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
     ComparableQuantity<Dimensionless> etaConv =
-        data.getQuantity(
-            ETA_CONV,
-            StandardUnits.EFFICIENCY); // TODO doublecheck - no return value, but superclass expects
+        data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY); // TODO #65 Quantity replaced
     // comparable
 
     return new BmTypeInput(uuid, id, capEx, opEx, loadGradient, sRated, cosPhi, etaConv);
@@ -213,27 +183,18 @@ public class SystemParticipantTypeInputFactory
       SimpleEntityData data,
       UUID uuid,
       String id,
-      ComparableQuantity<Currency>
-          capEx, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<EnergyPrice>
-          opEx, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<Power>
-          sRated, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Currency> capEx, // TODO #65 Quantity replaced
+      ComparableQuantity<EnergyPrice> opEx, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosPhi) {
     ComparableQuantity<Dimensionless> etaConv =
-        data.getQuantity(
-            ETA_CONV,
-            StandardUnits.EFFICIENCY); // TODO doublecheck - no return value, but superclass expects
+        data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY); // TODO #65 Quantity replaced
     // comparable
     ComparableQuantity<Area> rotorArea =
-        data.getQuantity(
-            ROTOR_AREA,
-            StandardUnits.ROTOR_AREA); // TODO doublecheck - no return value, but superclass expects
+        data.getQuantity(ROTOR_AREA, StandardUnits.ROTOR_AREA); // TODO #65 Quantity replaced
     // comparable
     ComparableQuantity<Length> hubHeight =
-        data.getQuantity(
-            HUB_HEIGHT,
-            StandardUnits.HUB_HEIGHT); // TODO doublecheck - no return value, but superclass expects
+        data.getQuantity(HUB_HEIGHT, StandardUnits.HUB_HEIGHT); // TODO #65 Quantity replaced
     // comparable
 
     return new WecTypeInput(uuid, id, capEx, opEx, cosPhi, etaConv, sRated, rotorArea, hubHeight);
@@ -243,34 +204,21 @@ public class SystemParticipantTypeInputFactory
       SimpleEntityData data,
       UUID uuid,
       String id,
-      ComparableQuantity<Currency>
-          capEx, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<EnergyPrice>
-          opEx, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<Power>
-          sRated, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Currency> capEx, // TODO #65 Quantity replaced
+      ComparableQuantity<EnergyPrice> opEx, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosPhi) {
     ComparableQuantity<Dimensionless> etaEl =
-        data.getQuantity(
-            ETA_EL,
-            StandardUnits.EFFICIENCY); // TODO doublecheck - no return value, but superclass expects
+        data.getQuantity(ETA_EL, StandardUnits.EFFICIENCY); // TODO #65 Quantity replaced
     // comparable
     ComparableQuantity<Dimensionless> etaThermal =
-        data.getQuantity(
-            ETA_THERMAL,
-            StandardUnits.EFFICIENCY); // TODO doublecheck - no return value, but superclass expects
+        data.getQuantity(ETA_THERMAL, StandardUnits.EFFICIENCY); // TODO #65 Quantity replaced
     // comparable
     ComparableQuantity<Power> pThermal =
-        data.getQuantity(
-            P_THERMAL,
-            StandardUnits
-                .ACTIVE_POWER_IN); // TODO doublecheck - no return value, but superclass expects
+        data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN); // TODO #65 Quantity replaced
     // comparable
     ComparableQuantity<Power> pOwn =
-        data.getQuantity(
-            P_OWN,
-            StandardUnits
-                .ACTIVE_POWER_IN); // TODO doublecheck - no return value, but superclass expects
+        data.getQuantity(P_OWN, StandardUnits.ACTIVE_POWER_IN); // TODO #65 Quantity replaced
     // comparable
 
     return new ChpTypeInput(
@@ -281,22 +229,22 @@ public class SystemParticipantTypeInputFactory
       SimpleEntityData data,
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capEx, // TODO doublecheck
-      ComparableQuantity<EnergyPrice> opEx, // TODO doublecheck
-      ComparableQuantity<Power> sRated, // TODO doublecheck
+      ComparableQuantity<Currency> capEx, // TODO #65 Quantity replaced
+      ComparableQuantity<EnergyPrice> opEx, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosPhi) {
     ComparableQuantity<Energy> eStorage =
-        data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN); // TODO doublecheck
+        data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN); // TODO #65 Quantity replaced
     ComparableQuantity<Power> pMax =
-        data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN); // TODO doublecheck
-    ComparableQuantity<DimensionlessRate> activePowerGradient = // TODO doublecheck
+        data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN); // TODO #65 Quantity replaced
+    ComparableQuantity<DimensionlessRate> activePowerGradient = // TODO #65 Quantity replaced
         data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
     ComparableQuantity<Dimensionless> eta =
-        data.getQuantity(ETA, StandardUnits.EFFICIENCY); // TODO doublecheck
+        data.getQuantity(ETA, StandardUnits.EFFICIENCY); // TODO #65 Quantity replaced
     ComparableQuantity<Dimensionless> dod =
-        data.getQuantity(DOD, StandardUnits.DOD); // TODO doublecheck
+        data.getQuantity(DOD, StandardUnits.DOD); // TODO #65 Quantity replaced
     ComparableQuantity<Time> lifeTime =
-        data.getQuantity(LIFETIME, StandardUnits.LIFE_TIME); // TODO doublecheck
+        data.getQuantity(LIFETIME, StandardUnits.LIFE_TIME); // TODO #65 Quantity replaced
     int lifeCycle = data.getInt(LIFECYCLE);
 
     return new StorageTypeInput(

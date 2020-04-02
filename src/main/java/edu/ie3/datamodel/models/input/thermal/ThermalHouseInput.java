@@ -15,9 +15,9 @@ import tec.uom.se.ComparableQuantity;
 /** Quite simple thermal model of a house to serve as a heat sink */
 public class ThermalHouseInput extends ThermalSinkInput {
   /** Thermal, transitional losses of the included thermal house model (typically in kW/K) */
-  private final ComparableQuantity<ThermalConductance> ethLosses; // TODO doublecheck
+  private final ComparableQuantity<ThermalConductance> ethLosses; // TODO #65 Quantity replaced
   /** Thermal capacity of the included thermal house model (typically in kWh) */
-  private final ComparableQuantity<HeatCapacity> ethCapa; // TODO doublecheck
+  private final ComparableQuantity<HeatCapacity> ethCapa; // TODO #65 Quantity replaced
 
   /**
    * @param uuid Unique identifier of a thermal house model
@@ -30,8 +30,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
       UUID uuid,
       String id,
       ThermalBusInput bus,
-      ComparableQuantity<ThermalConductance> ethLosses, // TODO doublecheck
-      ComparableQuantity<HeatCapacity> ethCapa) { // TODO doublecheck
+      ComparableQuantity<ThermalConductance> ethLosses, // TODO #65 Quantity replaced
+      ComparableQuantity<HeatCapacity> ethCapa) { // TODO #65 Quantity replaced
     super(uuid, id, bus);
     this.ethLosses = ethLosses.to(StandardUnits.THERMAL_TRANSMISSION);
     this.ethCapa = ethCapa.to(StandardUnits.HEAT_CAPACITY);
@@ -39,11 +39,11 @@ public class ThermalHouseInput extends ThermalSinkInput {
 
   public ComparableQuantity<ThermalConductance> getEthLosses() {
     return ethLosses;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<HeatCapacity> getEthCapa() {
     return ethCapa;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   @Override
   public boolean equals(Object o) {

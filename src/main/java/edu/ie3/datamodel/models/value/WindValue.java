@@ -14,35 +14,36 @@ import tec.uom.se.ComparableQuantity;
 /** Describes wind as a pair of direction and velocity */
 public class WindValue implements Value {
   /** Wind direction as an angle from north (typically in rad) */
-  private ComparableQuantity<Angle> direction; // TODO doublecheck
+  private ComparableQuantity<Angle> direction; // TODO #65 Quantity replaced
   /** Wind velocity (typically in m/s) */
-  private ComparableQuantity<Speed> velocity; // TODO doublecheck
+  private ComparableQuantity<Speed> velocity; // TODO #65 Quantity replaced
 
   /**
    * @param direction Wind direction as an angle from north (typically in rad)
    * @param velocity Wind velocity (typically in m/s)
    */
   public WindValue(
-      ComparableQuantity<Angle> direction, ComparableQuantity<Speed> velocity) { // TODO doublecheck
+      ComparableQuantity<Angle> direction,
+      ComparableQuantity<Speed> velocity) { // TODO #65 Quantity replaced
     this.direction = direction.to(StandardUnits.WIND_DIRECTION);
     this.velocity = velocity.to(StandardUnits.WIND_VELOCITY);
   }
 
   public ComparableQuantity<Angle> getDirection() {
     return direction;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public void setDirection(ComparableQuantity<Angle> direction) {
     this.direction = direction.to(StandardUnits.WIND_DIRECTION);
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<Speed> getVelocity() {
     return velocity;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public void setVelocity(ComparableQuantity<Speed> velocity) {
     this.velocity = velocity.to(StandardUnits.WIND_VELOCITY);
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   @Override
   public boolean equals(Object o) {

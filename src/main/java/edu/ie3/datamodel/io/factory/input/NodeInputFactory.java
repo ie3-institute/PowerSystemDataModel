@@ -41,7 +41,7 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
       String id,
       OperatorInput operatorInput,
       OperationTime operationTime) {
-    final ComparableQuantity<Dimensionless> vTarget = // TODO doublecheck
+    final ComparableQuantity<Dimensionless> vTarget = // TODO #65 Quantity replaced
         data.getQuantity(V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     final boolean slack = data.getBoolean(SLACK);
     final Point geoPosition = data.getPoint(GEO_POSITION).orElse(null);

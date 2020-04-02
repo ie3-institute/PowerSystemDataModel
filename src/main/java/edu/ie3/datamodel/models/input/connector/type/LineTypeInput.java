@@ -18,17 +18,17 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.LineInput} */
 public class LineTypeInput extends AssetTypeInput {
   /** Specific phase-to-ground susceptance for this type of line (typically in µS/km) */
-  private final ComparableQuantity<SpecificConductance> b; // TODO doublecheck
+  private final ComparableQuantity<SpecificConductance> b; // TODO #65 Quantity replaced
   /** Specific phase-to-ground conductance for this type of line (typically in µS/km) */
-  private final ComparableQuantity<SpecificConductance> g; // TODO doublecheck
+  private final ComparableQuantity<SpecificConductance> g; // TODO #65 Quantity replaced
   /** Specific resistance for this type of line (typically in Ohm/km) */
-  private final ComparableQuantity<SpecificResistance> r; // TODO doublecheck
+  private final ComparableQuantity<SpecificResistance> r; // TODO #65 Quantity replaced
   /** Specific reactance for this type of line (typically in Ohm/km) */
-  private final ComparableQuantity<SpecificResistance> x; // TODO doublecheck
+  private final ComparableQuantity<SpecificResistance> x; // TODO #65 Quantity replaced
   /** Maximum thermal current for this type of line (typically in A) */
-  private final ComparableQuantity<ElectricCurrent> iMax; // TODO doublecheck
+  private final ComparableQuantity<ElectricCurrent> iMax; // TODO #65 Quantity replaced
   /** Rated voltage for this type of line (typically in V) */
-  private final ComparableQuantity<ElectricPotential> vRated; // TODO doublecheck
+  private final ComparableQuantity<ElectricPotential> vRated; // TODO #65 Quantity replaced
 
   /**
    * @param uuid of the input entity
@@ -43,12 +43,12 @@ public class LineTypeInput extends AssetTypeInput {
   public LineTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<SpecificConductance> b, // TODO doublecheck
-      ComparableQuantity<SpecificConductance> g, // TODO doublecheck
-      ComparableQuantity<SpecificResistance> r, // TODO doublecheck
-      ComparableQuantity<SpecificResistance> x, // TODO doublecheck
-      ComparableQuantity<ElectricCurrent> iMax, // TODO doublecheck
-      ComparableQuantity<ElectricPotential> vRated) { // TODO doublecheck
+      ComparableQuantity<SpecificConductance> b, // TODO #65 Quantity replaced
+      ComparableQuantity<SpecificConductance> g, // TODO #65 Quantity replaced
+      ComparableQuantity<SpecificResistance> r, // TODO #65 Quantity replaced
+      ComparableQuantity<SpecificResistance> x, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricCurrent> iMax, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricPotential> vRated) { // TODO #65 Quantity replaced
     super(uuid, id);
     this.r = r.to(StandardUnits.IMPEDANCE_PER_LENGTH);
     this.x = x.to(StandardUnits.IMPEDANCE_PER_LENGTH);
@@ -60,27 +60,27 @@ public class LineTypeInput extends AssetTypeInput {
 
   public ComparableQuantity<SpecificConductance> getB() {
     return b;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<SpecificConductance> getG() {
     return g;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<SpecificResistance> getR() {
     return r;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<SpecificResistance> getX() {
     return x;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricCurrent> getiMax() {
     return iMax;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public ComparableQuantity<ElectricPotential> getvRated() {
     return vRated;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   @Override
   public boolean equals(Object o) {

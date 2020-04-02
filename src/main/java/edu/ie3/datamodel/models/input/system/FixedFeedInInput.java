@@ -17,7 +17,7 @@ import tec.uom.se.ComparableQuantity;
 /** Dummy class to represent a constant feed in regardless of its type */
 public class FixedFeedInInput extends SystemParticipantInput {
   /** Rated apparent power (typically in kVA) */
-  private final ComparableQuantity<Power> sRated; // TODO doublecheck
+  private final ComparableQuantity<Power> sRated; // TODO #65 Quantity replaced
   /** Rated power factor */
   private final double cosphiRated;
 
@@ -40,7 +40,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      ComparableQuantity<Power> sRated, // TODO doublecheck
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosphiRated) {
     super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.sRated = sRated.to(StandardUnits.S_RATED);
@@ -62,7 +62,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      ComparableQuantity<Power> sRated, // TODO doublecheck
+      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
       double cosphiRated) {
     super(uuid, id, node, qCharacteristics);
     this.sRated = sRated.to(StandardUnits.S_RATED);
@@ -71,7 +71,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
 
   public ComparableQuantity<Power> getsRated() {
     return sRated;
-  } // TODO doublecheck
+  } // TODO #65 Quantity replaced
 
   public double getCosphiRated() {
     return cosphiRated;

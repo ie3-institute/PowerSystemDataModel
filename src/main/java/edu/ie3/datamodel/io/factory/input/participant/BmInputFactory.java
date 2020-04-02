@@ -43,7 +43,7 @@ public class BmInputFactory
     final BmTypeInput typeInput = data.getTypeInput();
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
     final boolean costControlled = data.getBoolean(COST_CONTROLLED);
-    final ComparableQuantity<EnergyPrice> feedInTariff = // TODO doublecheck
+    final ComparableQuantity<EnergyPrice> feedInTariff = // TODO #65 Quantity replaced
         data.getQuantity(FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE);
 
     return new BmInput(
