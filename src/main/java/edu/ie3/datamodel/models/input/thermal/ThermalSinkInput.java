@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.thermal;
 
+import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.UUID;
 
 /** Common properties to all thermal sinks */
@@ -16,5 +18,21 @@ public abstract class ThermalSinkInput extends ThermalUnitInput {
    */
   ThermalSinkInput(UUID uuid, String id, ThermalBusInput bus) {
     super(uuid, id, bus);
+  }
+
+  /**
+   * @param uuid Unique identifier of a thermal sink input model
+   * @param id Identifier of the thermal unit
+   * @param operationTime operation time of the asset
+   * @param operator operator of the asset
+   * @param bus Thermal bus, a thermal unit is connected to
+   */
+  ThermalSinkInput(
+      UUID uuid,
+      String id,
+      OperationTime operationTime,
+      OperatorInput operator,
+      ThermalBusInput bus) {
+    super(uuid, id, operationTime, operator, bus);
   }
 }

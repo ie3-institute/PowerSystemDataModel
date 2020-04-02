@@ -6,7 +6,9 @@
 package edu.ie3.datamodel.models.input.thermal;
 
 import edu.ie3.datamodel.io.extractor.HasBus;
+import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,6 +24,23 @@ public abstract class ThermalUnitInput extends AssetInput implements HasBus {
    */
   ThermalUnitInput(UUID uuid, String id, ThermalBusInput bus) {
     super(uuid, id);
+    this.bus = bus;
+  }
+
+  /**
+   * @param uuid Unique identifier of a certain thermal input
+   * @param id Identifier of the thermal unit
+   * @param operationTime operation time of the asset
+   * @param operator operator of the asset
+   * @param bus thermal bus, a thermal unit is connected to
+   */
+  ThermalUnitInput(
+      UUID uuid,
+      String id,
+      OperationTime operationTime,
+      OperatorInput operator,
+      ThermalBusInput bus) {
+    super(uuid, operationTime, operator, id);
     this.bus = bus;
   }
 

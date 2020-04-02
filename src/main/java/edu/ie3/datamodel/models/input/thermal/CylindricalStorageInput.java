@@ -5,7 +5,9 @@
 */
 package edu.ie3.datamodel.models.input.thermal;
 
+import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import java.util.Objects;
 import java.util.UUID;
@@ -25,6 +27,37 @@ public class CylindricalStorageInput extends ThermalStorageInput {
   private final Quantity<Temperature> returnTemp;
   /** Specific heat capacity of the storage medium (typically in kWh/K*m³) */
   private final Quantity<SpecificHeatCapacity> c;
+
+  /**
+   * @param uuid Unique identifier of a cylindrical storage
+   * @param id Identifier of the thermal unit
+   * @param operationTime operation time of the asset
+   * @param operator operator of the asset
+   * @param bus Thermal bus, a thermal unit is connected to
+   * @param storageVolumeLvl Available storage volume
+   * @param storageVolumeLvlMin Minimum permissible storage volume
+   * @param inletTemp Temperature of the inlet
+   * @param returnTemp Temperature of the outlet
+   * @param c Specific heat capacity of the storage medium
+   */
+  public CylindricalStorageInput(
+      UUID uuid,
+      String id,
+      OperationTime operationTime,
+      OperatorInput operator,
+      ThermalBusInput bus,
+      Quantity<Volume> storageVolumeLvl,
+      Quantity<Volume> storageVolumeLvlMin,
+      Quantity<Temperature> inletTemp,
+      Quantity<Temperature> returnTemp,
+      Quantity<SpecificHeatCapacity> c) {
+    super(uuid, id, operationTime, operator, bus);
+    this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
+    this.storageVolumeLvlMin = storageVolumeLvlMin.to(StandardUnits.VOLUME);
+    this.inletTemp = inletTemp.to(StandardUnits.TEMPERATURE);
+    this.returnTemp = returnTemp.to(StandardUnits.TEMPERATURE);
+    this.c = c.to(StandardUnits.SPECIFIC_HEAT_CAPACITY);
+  }
 
   /**
    * @param uuid Unique identifier of a cylindrical storage
