@@ -16,7 +16,7 @@ import javax.measure.Quantity;
 public class ThermalHouseInput extends ThermalSinkInput {
   /** Thermal, transitional losses of the included thermal house model (typically in kW/K) */
   private final Quantity<ThermalConductance> ethLosses;
-  /** Thermal capacity of the included thermal house model (typically in kWh) */
+  /** Thermal capacity of the included thermal house model (typically in kWh/K) */
   private final Quantity<HeatCapacity> ethCapa;
 
   /**
