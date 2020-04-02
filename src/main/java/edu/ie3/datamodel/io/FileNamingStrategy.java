@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.RandomLoadParameters;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.AssetCharacteristicInput;
@@ -28,11 +29,9 @@ public class FileNamingStrategy {
   private static final Logger logger = LogManager.getLogger(FileNamingStrategy.class);
 
   private static final String RES_ENTITY_SUFFIX = "_res";
-  private static final String INPUT_ENTITY_SUFFIX = "_input";
-  private static final String TYPE_INPUT = "_type_input";
-  private static final String GRAPHIC_INPUT_SUFFIX = "_graphic";
 
-  private static final String INPUT_CLASS_STRING = "Input";
+  private final String camelCaseRegex = "([a-z])([A-Z]+)";
+  private final String snakeCaseReplacement = "$1_$2";
 
   private final String prefix;
   private final String suffix;
@@ -75,10 +74,12 @@ public class FileNamingStrategy {
       return getAssetCharacteristicsFileName(cls.asSubclass(AssetCharacteristicInput.class));
     if (cls.equals(RandomLoadParameters.class)) {
       String loadParamString = cls.getSimpleName().toLowerCase();
-      return Optional.of(prefix.concat(loadParamString).concat(INPUT_ENTITY_SUFFIX).concat(suffix));
+      return Optional.of(prefix.concat(loadParamString).concat(suffix));
     }
     if (GraphicInput.class.isAssignableFrom(cls))
       return getGraphicsInputFileName(cls.asSubclass(GraphicInput.class));
+    if (OperatorInput.class.isAssignableFrom(cls))
+      return getOperatorInputFileName(cls.asSubclass(OperatorInput.class));
     logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
     return Optional.empty();
   }
@@ -90,18 +91,8 @@ public class FileNamingStrategy {
    * @return the filename string
    */
   public Optional<String> getGraphicsInputFileName(Class<? extends GraphicInput> graphicClass) {
-    String assetInputString =
-        graphicClass
-            .getSimpleName()
-            .replace(INPUT_CLASS_STRING, "")
-            .replace("Graphic", "")
-            .toLowerCase();
-    return Optional.of(
-        prefix
-            .concat(assetInputString)
-            .concat(GRAPHIC_INPUT_SUFFIX)
-            .concat(INPUT_ENTITY_SUFFIX)
-            .concat(suffix));
+    String assetInputString = camelCaseToSnakeCase(graphicClass.getSimpleName());
+    return Optional.of(prefix.concat(assetInputString).concat(suffix));
   }
 
   /**
@@ -113,9 +104,8 @@ public class FileNamingStrategy {
    */
   public Optional<String> getAssetCharacteristicsFileName(
       Class<? extends AssetCharacteristicInput> assetCharClass) {
-    String assetCharString =
-        assetCharClass.getSimpleName().replace(INPUT_CLASS_STRING, "").toLowerCase();
-    return Optional.of(prefix.concat(assetCharString).concat(INPUT_ENTITY_SUFFIX).concat(suffix));
+    String assetCharString = camelCaseToSnakeCase(assetCharClass.getSimpleName());
+    return Optional.of(prefix.concat(assetCharString).concat(suffix));
   }
 
   /**
@@ -125,9 +115,8 @@ public class FileNamingStrategy {
    * @return the filename string
    */
   public Optional<String> getTypeFileName(Class<? extends AssetTypeInput> typeClass) {
-    String assetTypeString =
-        typeClass.getSimpleName().replace(INPUT_CLASS_STRING, "").replace("Type", "").toLowerCase();
-    return Optional.of(prefix.concat(assetTypeString).concat(TYPE_INPUT).concat(suffix));
+    String assetTypeString = camelCaseToSnakeCase(typeClass.getSimpleName());
+    return Optional.of(prefix.concat(assetTypeString).concat(suffix));
   }
 
   /**
@@ -137,9 +126,20 @@ public class FileNamingStrategy {
    * @return the filename string
    */
   public Optional<String> getAssetInputFileName(Class<? extends AssetInput> assetInputClass) {
-    String assetInputString =
-        assetInputClass.getSimpleName().replace(INPUT_CLASS_STRING, "").toLowerCase();
-    return Optional.of(prefix.concat(assetInputString).concat(INPUT_ENTITY_SUFFIX).concat(suffix));
+    String assetInputString = camelCaseToSnakeCase(assetInputClass.getSimpleName());
+    return Optional.of(prefix.concat(assetInputString).concat(suffix));
+  }
+
+  /**
+   * Get the the file name for all {@link OperatorInput}s
+   *
+   * @param operatorInputClass the asset input class a filename string should be generated from
+   * @return the filename string
+   */
+  public Optional<String> getOperatorInputFileName(
+      Class<? extends OperatorInput> operatorInputClass) {
+    String assetInputString = camelCaseToSnakeCase(operatorInputClass.getSimpleName());
+    return Optional.of(prefix.concat(assetInputString).concat(suffix));
   }
 
   /**
@@ -156,5 +156,9 @@ public class FileNamingStrategy {
     String resultEntityString =
         resultEntityClass.getSimpleName().replace("Result", "").toLowerCase();
     return prefix.concat(resultEntityString).concat(RES_ENTITY_SUFFIX).concat(suffix);
+  }
+
+  private String camelCaseToSnakeCase(String camelCaseString) {
+    return camelCaseString.replaceAll(camelCaseRegex, snakeCaseReplacement).toLowerCase();
   }
 }
