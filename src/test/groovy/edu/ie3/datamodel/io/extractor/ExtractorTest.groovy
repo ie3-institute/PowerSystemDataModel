@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.extractor
 import edu.ie3.datamodel.exceptions.ExtractorException
 import edu.ie3.test.common.GridTestData as gtd
 import edu.ie3.test.common.SystemParticipantTestData as sptd
+import edu.ie3.test.common.ThermalUnitInputTestData as tutd
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
 
@@ -29,55 +30,84 @@ class ExtractorTest extends Specification {
 		Extractor.extractElements(nestedEntity) == expectedExtractedEntities
 
 		where:
-		nestedEntity           || expectedExtractedEntities
-		gtd.lineCtoD           || [
+		nestedEntity               || expectedExtractedEntities
+		gtd.lineCtoD               || [
 			gtd.lineCtoD.nodeA,
 			gtd.lineCtoD.nodeB,
-			gtd.lineCtoD.type
+			gtd.lineCtoD.type,
+			gtd.lineCtoD.operator
 		]
-		gtd.transformerAtoBtoC || [
+		gtd.transformerAtoBtoC     || [
 			gtd.transformerAtoBtoC.nodeA,
 			gtd.transformerAtoBtoC.nodeB,
 			gtd.transformerAtoBtoC.nodeC,
-			gtd.transformerAtoBtoC.type
+			gtd.transformerAtoBtoC.type,
+			gtd.transformerAtoBtoC.operator
 		]
-		gtd.transformerCtoG    || [
+		gtd.transformerCtoG        || [
 			gtd.transformerCtoG.nodeA,
 			gtd.transformerCtoG.nodeB,
-			gtd.transformerCtoG.type
+			gtd.transformerCtoG.type,
+			gtd.transformerCtoG.operator
 		]
-		gtd.switchAtoB         || [
+		gtd.switchAtoB             || [
 			gtd.switchAtoB.nodeA,
-			gtd.switchAtoB.nodeB
+			gtd.switchAtoB.nodeB,
+			gtd.switchAtoB.operator
 		]
-		sptd.fixedFeedInInput  || [sptd.fixedFeedInInput.node]
-		sptd.wecInput          || [
+		sptd.fixedFeedInInput      || [
+			sptd.fixedFeedInInput.node,
+			sptd.fixedFeedInInput.operator
+		]
+		sptd.wecInput              || [
 			sptd.wecInput.node,
-			sptd.wecInput.type
+			sptd.wecInput.type,
+			sptd.wecInput.operator
 		]
-		sptd.chpInput          || [
+		sptd.chpInput              || [
 			sptd.chpInput.node,
-			sptd.chpInput.type
+			sptd.chpInput.type,
+			sptd.chpInput.operator
 		]
-		sptd.bmInput           || [
+		sptd.bmInput               || [
 			sptd.bmInput.node,
-			sptd.bmInput.type
+			sptd.bmInput.type,
+			sptd.bmInput.operator
 		]
-		sptd.evInput           || [
+		sptd.evInput               || [
 			sptd.evInput.node,
-			sptd.evInput.type
+			sptd.evInput.type,
+			sptd.evInput.operator
 		]
-		sptd.storageInput      || [
+		sptd.storageInput          || [
 			sptd.storageInput.node,
-			sptd.storageInput.type
+			sptd.storageInput.type,
+			sptd.storageInput.operator
 		]
-		sptd.hpInput           || [
+		sptd.hpInput               || [
 			sptd.hpInput.node,
-			sptd.hpInput.type
+			sptd.hpInput.type,
+			sptd.hpInput.operator
 		]
 
-		// todo test for graphic input
-		// todo test for thermal input
+		gtd.lineGraphicCtoD        || [gtd.lineGraphicCtoD.line]
+
+		gtd.nodeGraphicC           || [gtd.nodeGraphicC.node]
+
+		tutd.thermalBusInput       || [
+			tutd.thermalBusInput.operator
+		]
+
+		tutd.cylindricStorageInput || [
+			tutd.cylindricStorageInput.operator,
+			tutd.cylindricStorageInput.bus
+		]
+
+		tutd.thermalHouseInput     || [
+			tutd.thermalHouseInput.operator,
+			tutd.thermalHouseInput.bus
+		]
+
 	}
 
 	def "An Extractor should throw an ExtractorException if the provided Nested entity is unknown and or an invalid extension of the 'Nested' interface took place"() {
@@ -86,8 +116,7 @@ class ExtractorTest extends Specification {
 
 		then:
 		ExtractorException ex = thrown()
-		ex.message == "The interface 'Nested' is not meant to be extended. The provided entity of class " +
-				"'InvalidNestedExtensionClass' and cannot be processed by the extractor! Currently only the interfaces " +
-				"'Node', 'NodeC', ‘Nodes‘ and ‘Type' are supported!"
+		ex.message == "Unable to extract entity of class 'InvalidNestedExtensionClass'. " +
+				"Does this class implements NestedEntity and one of its sub-interfaces correctly?"
 	}
 }
