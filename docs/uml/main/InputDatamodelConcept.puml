@@ -298,14 +298,14 @@ Abstract Class ThermalStorageInput {
 }
 ThermalStorageInput --|> ThermalUnitInput
 
-Class CylindricalStorage {
+Class CylindricalStorageInput {
   - storageVolumeLvl: Quantity<Volume>
   - storageVolumeLvlMin: Quantity<Volume>
   - inletTemp: Quantity<Temperature>
   - returnTemp: Quantity<Temperature>
   - c: Quantity<SpecificHeatCapacity>
 }
-CylindricalStorage --|> ThermalStorageInput
+CylindricalStorageInput --|> ThermalStorageInput
 
 Class MeasurementUnitInput {
 + node: NodeInput
