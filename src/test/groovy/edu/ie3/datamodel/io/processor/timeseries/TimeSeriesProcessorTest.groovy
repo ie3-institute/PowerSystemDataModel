@@ -5,13 +5,11 @@
  */
 package edu.ie3.datamodel.io.processor.timeseries
 
-import edu.ie3.datamodel.exceptions.EntityProcessorException
-import edu.ie3.datamodel.models.timeseries.IntValue
-
-import java.lang.reflect.Method
-
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 
+import java.lang.reflect.Method
+import edu.ie3.datamodel.exceptions.EntityProcessorException
+import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
@@ -65,13 +63,13 @@ class TimeSeriesProcessorTest extends Specification {
 		then:
 		processor.with {
 			/* Check for attributes in higher classes also they are ignored by the class itself. */
-			assert processor.registeredClass == IndividualTimeSeries.class
+			assert processor.registeredClass == IndividualTimeSeries
 
 			assert processor.registeredKey == new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
 			assert processor.fieldToSource.size() == expectedSourceMapping.size()
-			processor.fieldToSource.each {key, value ->
+			processor.fieldToSource.each{ key, value ->
 				assert expectedSourceMapping.containsKey(key)
-				assert expectedSourceMapping.get(key) == value.getSource()
+				assert expectedSourceMapping.get(key) == value.source
 			}
 			/* Also test the logic of TimeSeriesProcessor#buildFieldToSource, because it is invoked during instantiation */
 			assert processor.headerElements == [
@@ -111,7 +109,7 @@ class TimeSeriesProcessorTest extends Specification {
 
 		then:
 		actual.size() == expectedFieldNames.size()
-		actual.each {entry -> expectedFieldNames.contains(entry.key)}
+		actual.each{ entry -> expectedFieldNames.contains(entry.key)}
 
 		where:
 		source || expectedFieldNames
