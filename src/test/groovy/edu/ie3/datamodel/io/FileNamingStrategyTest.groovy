@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io
 
+import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.models.input.EvcsInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -53,8 +54,9 @@ import edu.ie3.datamodel.models.result.system.LoadResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.StorageResult
 import edu.ie3.datamodel.models.result.system.WecResult
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import spock.lang.Specification
-
 
 class FileNamingStrategyTest extends Specification {
 
@@ -246,5 +248,43 @@ class FileNamingStrategyTest extends Specification {
 		modelClass       || expectedString
 		NodeGraphicInput || "node_graphic_input"
 		LineGraphicInput || "line_graphic_input"
+	}
+
+	def "A FileNamingStrategy without pre- or suffix should return valid file name for time series" () {
+		given:
+		FileNamingStrategy strategy = new FileNamingStrategy()
+		TimeSeriesProcessorKey key = Mock(TimeSeriesProcessorKey)
+		key.getTimeSeriesClass() >> clazz
+
+		when:
+		Optional<String> actual = strategy.getFileName(key, uuid)
+
+		then:
+		actual.present
+		actual.get() == expectedFileName
+
+		where:
+		clazz                || uuid || expectedFileName
+		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "individual_time_series_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
+		LoadProfileInput     || UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") || "load_profile_time_series_bee0a8b6-4788-4f18-bf72-be52035f7304"
+	}
+
+	def "A FileNamingStrategy with pre- or suffix should return valid file name for time series" () {
+		given:
+		FileNamingStrategy strategy = new FileNamingStrategy("aa", "zz")
+		TimeSeriesProcessorKey key = Mock(TimeSeriesProcessorKey)
+		key.getTimeSeriesClass() >> clazz
+
+		when:
+		Optional<String> actual = strategy.getFileName(key, uuid)
+
+		then:
+		actual.present
+		actual.get() == expectedFileName
+
+		where:
+		clazz                || uuid || expectedFileName
+		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_individual_time_series_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
+		LoadProfileInput     || UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") || "aa_load_profile_time_series_bee0a8b6-4788-4f18-bf72-be52035f7304_zz"
 	}
 }

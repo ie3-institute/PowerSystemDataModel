@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io;
 
+import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
@@ -12,7 +13,10 @@ import edu.ie3.datamodel.models.input.RandomLoadParameters;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.AssetCharacteristicInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import java.util.Optional;
+import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,6 +35,7 @@ public class FileNamingStrategy {
   private static final String INPUT_ENTITY_SUFFIX = "_input";
   private static final String TYPE_INPUT = "_type_input";
   private static final String GRAPHIC_INPUT_SUFFIX = "_graphic";
+  private static final String TIME_SERIES_SUFFIX = "_time_series";
 
   private static final String INPUT_CLASS_STRING = "Input";
 
@@ -64,7 +69,6 @@ public class FileNamingStrategy {
   }
 
   public Optional<String> getFileName(Class<? extends UniqueEntity> cls) {
-
     if (AssetTypeInput.class.isAssignableFrom(cls))
       return getTypeFileName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))
@@ -81,6 +85,37 @@ public class FileNamingStrategy {
       return getGraphicsInputFileName(cls.asSubclass(GraphicInput.class));
     logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
     return Optional.empty();
+  }
+
+  /**
+   * Builds a file name of the given information.
+   *
+   * @param timeSeriesProcessorKey Key to identify the combination of time series elements
+   * @param timeSeriesUuid UUID of the time series
+   * @return A file name for this particular time series
+   */
+  public Optional<String> getFileName(
+      TimeSeriesProcessorKey timeSeriesProcessorKey, UUID timeSeriesUuid) {
+    if (timeSeriesProcessorKey.getTimeSeriesClass().equals(IndividualTimeSeries.class)) {
+      return Optional.of(
+          prefix
+              .concat("individual")
+              .concat(TIME_SERIES_SUFFIX)
+              .concat("_")
+              .concat(timeSeriesUuid.toString())
+              .concat(suffix));
+    } else if (timeSeriesProcessorKey.getTimeSeriesClass().equals(LoadProfileInput.class)) {
+      return Optional.of(
+          prefix
+              .concat("load_profile")
+              .concat(TIME_SERIES_SUFFIX)
+              .concat("_")
+              .concat(timeSeriesUuid.toString())
+              .concat(suffix));
+    } else {
+      logger.error("There is no naming strategy defined for {}", timeSeriesProcessorKey);
+      return Optional.empty();
+    }
   }
 
   /**
