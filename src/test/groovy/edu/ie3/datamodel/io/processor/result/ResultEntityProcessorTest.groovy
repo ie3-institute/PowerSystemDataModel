@@ -124,7 +124,7 @@ class ResultEntityProcessorTest extends Specification {
 
 		then:
 		EntityProcessorException ex = thrown()
-		ex.message == "Cannot process StorageResult.class with this EntityProcessor. Please either provide an element of LoadResult.class or create a new factory for StorageResult.class!"
+		ex.message == "Cannot process StorageResult.class with this EntityProcessor. Please either provide an element of LoadResult.class or create a new processor for StorageResult.class!"
 	}
 
 	def "A ResultEntityProcessor should de-serialize a NodeResult correctly"() {
@@ -276,7 +276,7 @@ class ResultEntityProcessorTest extends Specification {
 		then:
 		EntityProcessorException exception = thrown()
 		exception.message == "Cannot process InvalidTestResult.class with this EntityProcessor. " +
-				"Please either provide an element of LoadResult.class or create a new factory for InvalidTestResult.class!"
+				"Please either provide an element of LoadResult.class or create a new processor for InvalidTestResult.class!"
 
 	}
 

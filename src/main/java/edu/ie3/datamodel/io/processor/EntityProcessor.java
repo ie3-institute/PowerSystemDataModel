@@ -55,7 +55,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
               + entity.getClass().getSimpleName()
               + ".class with this EntityProcessor. Please either provide an element of "
               + registeredClass.getSimpleName()
-              + ".class or create a new factory for "
+              + ".class or create a new processor for "
               + entity.getClass().getSimpleName()
               + ".class!");
 

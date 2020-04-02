@@ -64,6 +64,7 @@ public abstract class Processor<T> {
     @Override
     public int compare(String a, String b) {
       if (a.equalsIgnoreCase(UniqueEntity.UUID_FIELD_NAME)) return -1;
+      else if (b.equalsIgnoreCase(UniqueEntity.UUID_FIELD_NAME)) return 1;
       else return a.compareTo(b);
     }
   }
@@ -142,10 +143,11 @@ public abstract class Processor<T> {
    * Additionally, the map is immutable
    *
    * @param unsorted The unsorted map
+   * @param <V> Type of the values in the map
    * @return The sorted map - what a surprise!
    */
-  private SortedMap<String, Method> putUuidFirst(Map<String, Method> unsorted) {
-    SortedMap<String, Method> sortedMap = new TreeMap<>(new UuidFirstComparator());
+  protected <V> SortedMap<String, V> putUuidFirst(Map<String, V> unsorted) {
+    SortedMap<String, V> sortedMap = new TreeMap<>(new UuidFirstComparator());
     sortedMap.putAll(unsorted);
     return Collections.unmodifiableSortedMap(sortedMap);
   }
@@ -158,7 +160,7 @@ public abstract class Processor<T> {
    * @return Mapping from field name to value as String representation
    */
   protected LinkedHashMap<String, String> processObject(
-      Object object, SortedMap<String, Method> fieldNameToGetter) {
+      Object object, Map<String, Method> fieldNameToGetter) {
     try {
       LinkedHashMap<String, String> resultMap = new LinkedHashMap<>();
       for (Map.Entry<String, Method> entry : fieldNameToGetter.entrySet()) {
