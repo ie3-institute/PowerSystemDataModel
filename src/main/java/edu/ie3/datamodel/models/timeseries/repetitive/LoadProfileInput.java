@@ -65,8 +65,7 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     LoadProfileInput that = (LoadProfileInput) o;
-    return type.equals(that.type) &&
-            dayOfWeekToHourlyValues.equals(that.dayOfWeekToHourlyValues);
+    return type.equals(that.type) && dayOfWeekToHourlyValues.equals(that.dayOfWeekToHourlyValues);
   }
 
   @Override
