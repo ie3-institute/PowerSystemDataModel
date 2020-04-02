@@ -9,11 +9,10 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import tec.uom.se.ComparableQuantity;
-
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Dummy class to represent a constant feed in regardless of its type */
 public class FixedFeedInInput extends SystemParticipantInput {

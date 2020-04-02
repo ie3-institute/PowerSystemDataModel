@@ -7,8 +7,8 @@ package edu.ie3.datamodel.models.result.thermal;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link
@@ -23,7 +23,10 @@ public abstract class ThermalSinkResult extends ThermalUnitResult {
    * @param inputModel uuid of the input model that produces the result
    * @param qDot thermal heat demand of the sink
    */
-  public ThermalSinkResult(ZonedDateTime timestamp, UUID inputModel, Quantity<Power> qDot) {
+  public ThermalSinkResult(
+      ZonedDateTime timestamp,
+      UUID inputModel,
+      ComparableQuantity<Power> qDot) { // TODO doublecheck
     super(timestamp, inputModel, qDot);
   }
 
@@ -37,7 +40,10 @@ public abstract class ThermalSinkResult extends ThermalUnitResult {
    * @param qDot thermal heat demand of the sink
    */
   public ThermalSinkResult(
-      UUID uuid, ZonedDateTime timestamp, UUID inputModel, Quantity<Power> qDot) {
+      UUID uuid,
+      ZonedDateTime timestamp,
+      UUID inputModel,
+      ComparableQuantity<Power> qDot) { // TODO doublecheck
     super(uuid, timestamp, inputModel, qDot);
   }
 }

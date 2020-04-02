@@ -8,9 +8,9 @@ package edu.ie3.datamodel.models.result.system;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.StorageInput}
@@ -18,7 +18,7 @@ import javax.measure.quantity.Power;
 public class StorageResult extends SystemParticipantResult {
 
   /** State of Charge (SoC) in % */
-  private Quantity<Dimensionless> soc;
+  private ComparableQuantity<Dimensionless> soc; // TODO doublecheck
 
   /**
    * Standard constructor with automatic uuid generation.
@@ -32,9 +32,9 @@ public class StorageResult extends SystemParticipantResult {
   public StorageResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<Power> p,
-      Quantity<Power> q,
-      Quantity<Dimensionless> soc) {
+      ComparableQuantity<Power> p, // TODO doublecheck
+      ComparableQuantity<Power> q, // TODO doublecheck
+      ComparableQuantity<Dimensionless> soc) { // TODO doublecheck
     super(timestamp, inputModel, p, q);
     this.soc = soc;
   }
@@ -52,20 +52,20 @@ public class StorageResult extends SystemParticipantResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<Power> p,
-      Quantity<Power> q,
-      Quantity<Dimensionless> soc) {
+      ComparableQuantity<Power> p, // TODO doublecheck
+      ComparableQuantity<Power> q, // TODO doublecheck
+      ComparableQuantity<Dimensionless> soc) { // TODO doublecheck
     super(uuid, timestamp, inputModel, p, q);
     this.soc = soc;
   }
 
-  public Quantity<Dimensionless> getSoc() {
+  public ComparableQuantity<Dimensionless> getSoc() {
     return soc;
-  }
+  } // TODO doublecheck
 
-  public void setSoc(Quantity<Dimensionless> soc) {
+  public void setSoc(ComparableQuantity<Dimensionless> soc) {
     this.soc = soc;
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

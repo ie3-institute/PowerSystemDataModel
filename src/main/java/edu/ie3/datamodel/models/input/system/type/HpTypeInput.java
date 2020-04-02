@@ -8,11 +8,10 @@ package edu.ie3.datamodel.models.input.system.type;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
-import tec.uom.se.ComparableQuantity;
-
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpTypeInput extends SystemParticipantTypeInput {
@@ -32,9 +31,12 @@ public class HpTypeInput extends SystemParticipantTypeInput {
   public HpTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capex, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<EnergyPrice> opex, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<Power> sRated, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Currency>
+          capex, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<EnergyPrice>
+          opex, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Power>
+          sRated, // TODO doublecheck - no return value, but superclass expects comparable
       double cosphiRated,
       ComparableQuantity<Power> pThermal) { // TODO doublecheck
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);

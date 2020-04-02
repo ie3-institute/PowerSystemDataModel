@@ -6,10 +6,9 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import tec.uom.se.ComparableQuantity;
-
 import java.util.Objects;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes a apparent power value as a pair of active and reactive power */
 public class SValue extends PValue {

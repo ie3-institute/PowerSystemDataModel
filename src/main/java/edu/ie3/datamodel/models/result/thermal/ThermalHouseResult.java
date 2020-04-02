@@ -9,14 +9,14 @@ import edu.ie3.datamodel.models.StandardUnits;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
+import tec.uom.se.ComparableQuantity;
 
 /** Represents the results of {@link edu.ie3.datamodel.models.input.thermal.ThermalHouseInput} */
 public class ThermalHouseResult extends ThermalSinkResult {
   /** Indoor room temperature of the house */
-  private Quantity<Temperature> indoorTemperature;
+  private ComparableQuantity<Temperature> indoorTemperature; // TODO doublecheck
 
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
@@ -29,8 +29,8 @@ public class ThermalHouseResult extends ThermalSinkResult {
   public ThermalHouseResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<Power> qDot,
-      Quantity<Temperature> indoorTemperature) {
+      ComparableQuantity<Power> qDot, // TODO doublecheck
+      ComparableQuantity<Temperature> indoorTemperature) { // TODO doublecheck
     super(timestamp, inputModel, qDot);
     this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
   }
@@ -49,17 +49,18 @@ public class ThermalHouseResult extends ThermalSinkResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<Power> qDot,
-      Quantity<Temperature> indoorTemperature) {
+      ComparableQuantity<Power> qDot, // TODO doublecheck
+      ComparableQuantity<Temperature> indoorTemperature) { // TODO doublecheck
     super(uuid, timestamp, inputModel, qDot);
     this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
   }
 
-  public Quantity<Temperature> getIndoorTemperature() {
+  public ComparableQuantity<Temperature> getIndoorTemperature() {
     return indoorTemperature;
-  }
+  } // TODO doublecheck
 
-  public void setIndoorTemperature(Quantity<Temperature> indoorTemperature) {
+  public void setIndoorTemperature(
+      ComparableQuantity<Temperature> indoorTemperature) { // TODO doublecheck
     this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
   }
 

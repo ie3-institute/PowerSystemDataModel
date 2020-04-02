@@ -13,14 +13,13 @@ import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
 import edu.ie3.util.TimeTools;
-import tec.uom.se.ComparableQuantity;
-
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
+import tec.uom.se.ComparableQuantity;
 
 public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult> {
   private static final String Q_DOT = "qDot";
@@ -52,7 +51,8 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
 
     ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
-    ComparableQuantity<Power> qDotQuantity = data.getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND); // TODO doublecheck
+    ComparableQuantity<Power> qDotQuantity =
+        data.getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND); // TODO doublecheck
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
@@ -70,7 +70,8 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
                   new ThermalHouseResult(
                       zdtTimestamp, inputModelUuid, qDotQuantity, indoorTemperature));
     } else if (clazz.equals(CylindricalStorageResult.class)) {
-      ComparableQuantity<Energy> energyQuantity = data.getQuantity(ENERGY, StandardUnits.ENERGY_RESULT); // TODO doublecheck
+      ComparableQuantity<Energy> energyQuantity =
+          data.getQuantity(ENERGY, StandardUnits.ENERGY_RESULT); // TODO doublecheck
       ComparableQuantity<Dimensionless> fillLevelQuantity = // TODO doublecheck
           data.getQuantity(FILL_LEVEL, StandardUnits.FILL_LEVEL);
 

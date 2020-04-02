@@ -6,11 +6,10 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import tec.uom.se.ComparableQuantity;
-
 import java.util.Objects;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes wind as a pair of direction and velocity */
 public class WindValue implements Value {
@@ -23,7 +22,8 @@ public class WindValue implements Value {
    * @param direction Wind direction as an angle from north (typically in rad)
    * @param velocity Wind velocity (typically in m/s)
    */
-  public WindValue(ComparableQuantity<Angle> direction, ComparableQuantity<Speed> velocity) { // TODO doublecheck
+  public WindValue(
+      ComparableQuantity<Angle> direction, ComparableQuantity<Speed> velocity) { // TODO doublecheck
     this.direction = direction.to(StandardUnits.WIND_DIRECTION);
     this.velocity = velocity.to(StandardUnits.WIND_VELOCITY);
   }

@@ -8,18 +8,18 @@ package edu.ie3.datamodel.models.result;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
+import tec.uom.se.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput} */
 public class NodeResult extends ResultEntity {
 
   /** Voltage magnitude @ this node in p.u. */
-  private Quantity<Dimensionless> vMag;
+  private ComparableQuantity<Dimensionless> vMag; // TODO doublecheck
 
   /** Voltage angle @ this node in degree */
-  private Quantity<Angle> vAng;
+  private ComparableQuantity<Angle> vAng; // TODO doublecheck
 
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
@@ -32,8 +32,8 @@ public class NodeResult extends ResultEntity {
   public NodeResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<Dimensionless> vMag,
-      Quantity<Angle> vAng) {
+      ComparableQuantity<Dimensionless> vMag, // TODO doublecheck
+      ComparableQuantity<Angle> vAng) { // TODO doublecheck
     super(timestamp, inputModel);
     this.vMag = vMag;
     this.vAng = vAng;
@@ -51,28 +51,28 @@ public class NodeResult extends ResultEntity {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<Dimensionless> vMag,
-      Quantity<Angle> vAng) {
+      ComparableQuantity<Dimensionless> vMag, // TODO doublecheck
+      ComparableQuantity<Angle> vAng) { // TODO doublecheck
     super(uuid, timestamp, inputModel);
     this.vMag = vMag;
     this.vAng = vAng;
   }
 
-  public Quantity<Dimensionless> getvMag() {
+  public ComparableQuantity<Dimensionless> getvMag() {
     return vMag;
-  }
+  } // TODO doublecheck
 
-  public void setvMag(Quantity<Dimensionless> vMag) {
+  public void setvMag(ComparableQuantity<Dimensionless> vMag) {
     this.vMag = vMag;
-  }
+  } // TODO doublecheck
 
-  public Quantity<Angle> getvAng() {
+  public ComparableQuantity<Angle> getvAng() {
     return vAng;
-  }
+  } // TODO doublecheck
 
-  public void setvAng(Quantity<Angle> vAng) {
+  public void setvAng(ComparableQuantity<Angle> vAng) {
     this.vAng = vAng;
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

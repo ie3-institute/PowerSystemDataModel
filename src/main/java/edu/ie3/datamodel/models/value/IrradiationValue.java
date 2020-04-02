@@ -7,10 +7,8 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Irradiation;
-import tec.uom.se.ComparableQuantity;
-
 import java.util.Objects;
-import javax.measure.Quantity;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes an irradiation value as a pair of diffuse and direct radiation */
 public class IrradiationValue implements Value {
@@ -24,7 +22,8 @@ public class IrradiationValue implements Value {
    * @param diffuseIrradiation Diffuse sun radiation (typically in W/m²)
    */
   public IrradiationValue(
-          ComparableQuantity<Irradiation> directIrradiation, ComparableQuantity<Irradiation> diffuseIrradiation) { // TODO doublecheck
+      ComparableQuantity<Irradiation> directIrradiation,
+      ComparableQuantity<Irradiation> diffuseIrradiation) { // TODO doublecheck
     this.directIrradiation = directIrradiation.to(StandardUnits.IRRADIATION);
     this.diffuseIrradiation = diffuseIrradiation.to(StandardUnits.IRRADIATION);
   }
@@ -33,7 +32,8 @@ public class IrradiationValue implements Value {
     return diffuseIrradiation;
   } // TODO doublecheck
 
-  public void setDiffuseIrradiation(ComparableQuantity<Irradiation> diffuseIrradiation) { // TODO doublecheck
+  public void setDiffuseIrradiation(
+      ComparableQuantity<Irradiation> diffuseIrradiation) { // TODO doublecheck
     this.diffuseIrradiation = diffuseIrradiation.to(StandardUnits.IRRADIATION);
   }
 
@@ -41,7 +41,8 @@ public class IrradiationValue implements Value {
     return directIrradiation;
   } // TODO doublecheck
 
-  public void setDirectIrradiation(ComparableQuantity<Irradiation> directIrradiation) { // TODO doublecheck
+  public void setDirectIrradiation(
+      ComparableQuantity<Irradiation> directIrradiation) { // TODO doublecheck
     this.directIrradiation = directIrradiation.to(StandardUnits.IRRADIATION);
   }
 

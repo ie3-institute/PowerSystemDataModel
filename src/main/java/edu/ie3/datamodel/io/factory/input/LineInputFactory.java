@@ -42,7 +42,8 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
       OperationTime operationTime) {
     final int parallelDevices = data.getInt(PARALLEL_DEVICES);
     final LineTypeInput type = data.getType();
-    final ComparableQuantity<Length> length = data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH); // TODO doublecheck
+    final ComparableQuantity<Length> length =
+        data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH); // TODO doublecheck
     final LineString geoPosition = data.getLineString(GEO_POSITION).orElse(null);
     final Optional<String> olmCharacteristic =
         data.containsKey(OLM_CHARACTERISTIC)

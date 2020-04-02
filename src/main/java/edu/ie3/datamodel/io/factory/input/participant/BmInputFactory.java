@@ -12,9 +12,8 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.BmInput;
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
-import tec.uom.se.ComparableQuantity;
-
 import java.util.UUID;
+import tec.uom.se.ComparableQuantity;
 
 public class BmInputFactory
     extends SystemParticipantInputEntityFactory<

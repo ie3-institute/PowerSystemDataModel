@@ -10,15 +10,15 @@ import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Respresents the results of {@link CylindricalStorageInput} */
 public class CylindricalStorageResult extends ThermalStorageResult {
   /** Fill level of the storage */
-  private Quantity<Dimensionless> fillLevel;
+  private ComparableQuantity<Dimensionless> fillLevel; // TODO doublecheck
 
   /**
    * Constructs the result with
@@ -32,9 +32,9 @@ public class CylindricalStorageResult extends ThermalStorageResult {
   public CylindricalStorageResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<Energy> energy,
-      Quantity<Power> qDot,
-      Quantity<Dimensionless> fillLevel) {
+      ComparableQuantity<Energy> energy, // TODO doublecheck
+      ComparableQuantity<Power> qDot, // TODO doublecheck
+      ComparableQuantity<Dimensionless> fillLevel) { // TODO doublecheck
     super(timestamp, inputModel, energy, qDot);
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }
@@ -54,18 +54,18 @@ public class CylindricalStorageResult extends ThermalStorageResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<Energy> energy,
-      Quantity<Power> qDot,
-      Quantity<Dimensionless> fillLevel) {
+      ComparableQuantity<Energy> energy, // TODO doublecheck
+      ComparableQuantity<Power> qDot, // TODO doublecheck
+      ComparableQuantity<Dimensionless> fillLevel) { // TODO doublecheck
     super(uuid, timestamp, inputModel, energy, qDot);
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }
 
-  public Quantity<Dimensionless> getFillLevel() {
+  public ComparableQuantity<Dimensionless> getFillLevel() {
     return fillLevel;
-  }
+  } // TODO doublecheck
 
-  public void setFillLevel(Quantity<Dimensionless> fillLevel) {
+  public void setFillLevel(ComparableQuantity<Dimensionless> fillLevel) { // TODO doublecheck
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }
 

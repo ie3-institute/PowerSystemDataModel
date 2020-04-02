@@ -6,10 +6,9 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import tec.uom.se.ComparableQuantity;
-
 import java.util.Objects;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes a tuple based on active electrical power, as well as heat power */
 public class HeatAndPValue extends PValue {
@@ -20,7 +19,8 @@ public class HeatAndPValue extends PValue {
    * @param p Active power
    * @param heatDemand Heat demand
    */
-  public HeatAndPValue(ComparableQuantity<Power> p, ComparableQuantity<Power> heatDemand) { // TODO doublecheck
+  public HeatAndPValue(
+      ComparableQuantity<Power> p, ComparableQuantity<Power> heatDemand) { // TODO doublecheck
     super(p);
     this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }

@@ -7,12 +7,11 @@ package edu.ie3.datamodel.models.input.thermal;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
-import tec.uom.se.ComparableQuantity;
-
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
+import tec.uom.se.ComparableQuantity;
 
 /** Thermal storage with cylindrical shape */
 public class CylindricalStorageInput extends ThermalStorageInput {

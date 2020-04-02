@@ -49,12 +49,12 @@ public class WeatherValue implements Value {
    * @param velocity Wind velocity for this coordinate (typically in m/s)
    */
   public WeatherValue(
-          Point coordinate,
-          ComparableQuantity<Irradiation> directirradiation, // TODO doublecheck
-          ComparableQuantity<Irradiation> diffuseirradiation, // TODO doublecheck
-          ComparableQuantity<Temperature> temperature, // TODO doublecheck
-          ComparableQuantity<Angle> direction, // TODO doublecheck
-          ComparableQuantity<Speed> velocity) { // TODO doublecheck
+      Point coordinate,
+      ComparableQuantity<Irradiation> directirradiation, // TODO doublecheck
+      ComparableQuantity<Irradiation> diffuseirradiation, // TODO doublecheck
+      ComparableQuantity<Temperature> temperature, // TODO doublecheck
+      ComparableQuantity<Angle> direction, // TODO doublecheck
+      ComparableQuantity<Speed> velocity) { // TODO doublecheck
     this(
         coordinate,
         new IrradiationValue(directirradiation, diffuseirradiation),

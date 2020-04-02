@@ -9,24 +9,24 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
+import tec.uom.se.ComparableQuantity;
 
 /** Abstract class to hold most 'ElectricCurrent and Angle'-mappings common to all connectors */
 public abstract class ConnectorResult extends ResultEntity {
 
   /** Electric current magnitude @ port A, normally provided in Ampere */
-  private Quantity<ElectricCurrent> iAMag;
+  private ComparableQuantity<ElectricCurrent> iAMag; // TODO doublecheck
 
   /** Electric current angle @ Port A in degree ° */
-  private Quantity<Angle> iAAng;
+  private ComparableQuantity<Angle> iAAng; // TODO doublecheck
 
   /** Electric current magnitude @ port B, normally provided in Ampere */
-  private Quantity<ElectricCurrent> iBMag;
+  private ComparableQuantity<ElectricCurrent> iBMag; // TODO doublecheck
 
   /** Electric current angle @ Port B in degree ° */
-  private Quantity<Angle> iBAng;
+  private ComparableQuantity<Angle> iBAng; // TODO doublecheck
 
   /**
    * Standard constructor with automatic uuid generation.
@@ -41,10 +41,10 @@ public abstract class ConnectorResult extends ResultEntity {
   public ConnectorResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<ElectricCurrent> iAMag,
-      Quantity<Angle> iAAng,
-      Quantity<ElectricCurrent> iBMag,
-      Quantity<Angle> iBAng) {
+      ComparableQuantity<ElectricCurrent> iAMag, // TODO doublecheck
+      ComparableQuantity<Angle> iAAng, // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iBMag, // TODO doublecheck
+      ComparableQuantity<Angle> iBAng) { // TODO doublecheck
     super(timestamp, inputModel);
     this.iAMag = iAMag;
     this.iAAng = iAAng;
@@ -68,10 +68,10 @@ public abstract class ConnectorResult extends ResultEntity {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<ElectricCurrent> iAMag,
-      Quantity<Angle> iAAng,
-      Quantity<ElectricCurrent> iBMag,
-      Quantity<Angle> iBAng) {
+      ComparableQuantity<ElectricCurrent> iAMag, // TODO doublecheck
+      ComparableQuantity<Angle> iAAng, // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iBMag, // TODO doublecheck
+      ComparableQuantity<Angle> iBAng) { // TODO doublecheck
     super(uuid, timestamp, inputModel);
     this.iAMag = iAMag;
     this.iAAng = iAAng;
@@ -79,37 +79,37 @@ public abstract class ConnectorResult extends ResultEntity {
     this.iBAng = iBAng;
   }
 
-  public Quantity<ElectricCurrent> getiAMag() {
+  public ComparableQuantity<ElectricCurrent> getiAMag() {
     return iAMag;
-  }
+  } // TODO doublecheck
 
-  public void setiAMag(Quantity<ElectricCurrent> iAMag) {
+  public void setiAMag(ComparableQuantity<ElectricCurrent> iAMag) {
     this.iAMag = iAMag;
-  }
+  } // TODO doublecheck
 
-  public Quantity<Angle> getiAAng() {
+  public ComparableQuantity<Angle> getiAAng() {
     return iAAng;
-  }
+  } // TODO doublecheck
 
-  public void setiAAng(Quantity<Angle> iAAng) {
+  public void setiAAng(ComparableQuantity<Angle> iAAng) {
     this.iAAng = iAAng;
-  }
+  } // TODO doublecheck
 
-  public Quantity<ElectricCurrent> getiBMag() {
+  public ComparableQuantity<ElectricCurrent> getiBMag() {
     return iBMag;
-  }
+  } // TODO doublecheck
 
-  public void setiBMag(Quantity<ElectricCurrent> iBMag) {
+  public void setiBMag(ComparableQuantity<ElectricCurrent> iBMag) {
     this.iBMag = iBMag;
-  }
+  } // TODO doublecheck
 
-  public Quantity<Angle> getiBAng() {
+  public ComparableQuantity<Angle> getiBAng() {
     return iBAng;
-  }
+  } // TODO doublecheck
 
-  public void setiBAng(Quantity<Angle> iBAng) {
+  public void setiBAng(ComparableQuantity<Angle> iBAng) {
     this.iBAng = iBAng;
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

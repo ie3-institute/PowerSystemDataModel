@@ -8,17 +8,17 @@ package edu.ie3.datamodel.models.result.connector;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
+import tec.uom.se.ComparableQuantity;
 
 public class Transformer3WResult extends TransformerResult {
 
   /** Electric current magnitude @ port C, normally provided in Ampere */
-  private Quantity<ElectricCurrent> iCMag;
+  private ComparableQuantity<ElectricCurrent> iCMag; // TODO doublecheck
 
   /** Electric current angle @ Port C in degree ° */
-  private Quantity<Angle> iCAng;
+  private ComparableQuantity<Angle> iCAng; // TODO doublecheck
 
   /**
    * @param timestamp date and time when the result is produced
@@ -34,12 +34,12 @@ public class Transformer3WResult extends TransformerResult {
   public Transformer3WResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<ElectricCurrent> iAMag,
-      Quantity<Angle> iAAng,
-      Quantity<ElectricCurrent> iBMag,
-      Quantity<Angle> iBAng,
-      Quantity<ElectricCurrent> iCMag,
-      Quantity<Angle> iCAng,
+      ComparableQuantity<ElectricCurrent> iAMag, // TODO doublecheck
+      ComparableQuantity<Angle> iAAng, // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iBMag, // TODO doublecheck
+      ComparableQuantity<Angle> iBAng, // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iCMag, // TODO doublecheck
+      ComparableQuantity<Angle> iCAng, // TODO doublecheck
       int tapPos) {
     super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     this.iCMag = iCMag;
@@ -63,33 +63,33 @@ public class Transformer3WResult extends TransformerResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<ElectricCurrent> iAMag,
-      Quantity<Angle> iAAng,
-      Quantity<ElectricCurrent> iBMag,
-      Quantity<Angle> iBAng,
-      Quantity<ElectricCurrent> iCMag,
-      Quantity<Angle> iCAng,
+      ComparableQuantity<ElectricCurrent> iAMag, // TODO doublecheck
+      ComparableQuantity<Angle> iAAng, // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iBMag, // TODO doublecheck
+      ComparableQuantity<Angle> iBAng, // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iCMag, // TODO doublecheck
+      ComparableQuantity<Angle> iCAng, // TODO doublecheck
       int tapPos) {
     super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     this.iCMag = iCMag;
     this.iCAng = iCAng;
   }
 
-  public Quantity<ElectricCurrent> getiCMag() {
+  public ComparableQuantity<ElectricCurrent> getiCMag() {
     return iCMag;
-  }
+  } // TODO doublecheck
 
-  public void setiCMag(Quantity<ElectricCurrent> iCMag) {
+  public void setiCMag(ComparableQuantity<ElectricCurrent> iCMag) {
     this.iCMag = iCMag;
-  }
+  } // TODO doublecheck
 
-  public Quantity<Angle> getiCAng() {
+  public ComparableQuantity<Angle> getiCAng() {
     return iCAng;
-  }
+  } // TODO doublecheck
 
-  public void setiCAng(Quantity<Angle> iCAng) {
+  public void setiCAng(ComparableQuantity<Angle> iCAng) {
     this.iCAng = iCAng;
-  }
+  } // TODO doublecheck
 
   @Override
   public boolean equals(Object o) {

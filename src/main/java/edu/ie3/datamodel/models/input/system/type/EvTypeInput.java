@@ -9,12 +9,11 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import edu.ie3.util.quantities.interfaces.SpecificEnergy;
-import tec.uom.se.ComparableQuantity;
-
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput} */
 public class EvTypeInput extends SystemParticipantTypeInput {
@@ -36,11 +35,14 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   public EvTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capex, // TODO doublecheck - no return value, but superclass expects comparable
-      ComparableQuantity<EnergyPrice> opex, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Currency>
+          capex, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<EnergyPrice>
+          opex, // TODO doublecheck - no return value, but superclass expects comparable
       ComparableQuantity<Energy> eStorage, // TODO doublecheck
       ComparableQuantity<SpecificEnergy> eCons, // TODO doublecheck
-      ComparableQuantity<Power> sRated, // TODO doublecheck - no return value, but superclass expects comparable
+      ComparableQuantity<Power>
+          sRated, // TODO doublecheck - no return value, but superclass expects comparable
       double cosphiRated) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage;

@@ -15,7 +15,6 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
-
 import tec.uom.se.ComparableQuantity;
 import tec.uom.se.unit.Units;
 
@@ -63,8 +62,10 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
 
     ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
-    ComparableQuantity<Power> p = data.getQuantity(POWER, StandardUnits.ACTIVE_POWER_RESULT); // TODO doublecheck
-    ComparableQuantity<Power> q = data.getQuantity(REACTIVE_POWER, StandardUnits.REACTIVE_POWER_RESULT); // TODO doublecheck
+    ComparableQuantity<Power> p =
+        data.getQuantity(POWER, StandardUnits.ACTIVE_POWER_RESULT); // TODO doublecheck
+    ComparableQuantity<Power> q =
+        data.getQuantity(REACTIVE_POWER, StandardUnits.REACTIVE_POWER_RESULT); // TODO doublecheck
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
@@ -97,13 +98,15 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
           .map(uuid -> new WecResult(uuid, zdtTimestamp, inputModelUuid, p, q))
           .orElseGet(() -> new WecResult(zdtTimestamp, inputModelUuid, p, q));
     } else if (entityClass.equals(EvResult.class)) {
-      ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, Units.PERCENT); // TODO doublecheck
+      ComparableQuantity<Dimensionless> socQuantity =
+          data.getQuantity(SOC, Units.PERCENT); // TODO doublecheck
 
       return uuidOpt
           .map(uuid -> new EvResult(uuid, zdtTimestamp, inputModelUuid, p, q, socQuantity))
           .orElseGet(() -> new EvResult(zdtTimestamp, inputModelUuid, p, q, socQuantity));
     } else if (entityClass.equals(StorageResult.class)) {
-      ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, Units.PERCENT); // TODO doublecheck
+      ComparableQuantity<Dimensionless> socQuantity =
+          data.getQuantity(SOC, Units.PERCENT); // TODO doublecheck
 
       return uuidOpt
           .map(uuid -> new StorageResult(uuid, zdtTimestamp, inputModelUuid, p, q, socQuantity))

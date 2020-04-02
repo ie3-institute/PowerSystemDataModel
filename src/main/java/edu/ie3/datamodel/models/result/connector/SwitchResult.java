@@ -8,9 +8,9 @@ package edu.ie3.datamodel.models.result.connector;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
+import tec.uom.se.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link edu.ie3.datamodel.models.input.connector.SwitchInput}
@@ -34,10 +34,10 @@ public class SwitchResult extends ConnectorResult {
   public SwitchResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<ElectricCurrent> iAMag,
-      Quantity<Angle> iAAng,
-      Quantity<ElectricCurrent> iBMag,
-      Quantity<Angle> iBAng,
+      ComparableQuantity<ElectricCurrent> iAMag, // TODO doublecheck
+      ComparableQuantity<Angle> iAAng, // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iBMag, // TODO doublecheck
+      ComparableQuantity<Angle> iBAng, // TODO doublecheck
       boolean closed) {
     super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
     this.closed = closed;
@@ -60,10 +60,10 @@ public class SwitchResult extends ConnectorResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<ElectricCurrent> iAMag,
-      Quantity<Angle> iAAng,
-      Quantity<ElectricCurrent> iBMag,
-      Quantity<Angle> iBAng,
+      ComparableQuantity<ElectricCurrent> iAMag, // TODO doublecheck
+      ComparableQuantity<Angle> iAAng, // TODO doublecheck
+      ComparableQuantity<ElectricCurrent> iBMag, // TODO doublecheck
+      ComparableQuantity<Angle> iBAng, // TODO doublecheck
       boolean closed) {
     super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
     this.closed = closed;
