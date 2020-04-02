@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.processor.timeseries
 
+import static tec.uom.se.unit.Units.METRE
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 
 import java.lang.reflect.Method
@@ -19,8 +20,6 @@ import tec.uom.se.quantity.Quantities
 
 import java.time.ZoneId
 import java.time.ZonedDateTime
-
-import static tec.uom.se.unit.Units.METRE
 
 class TimeSeriesProcessorTest extends Specification {
 	@Shared
@@ -67,7 +66,7 @@ class TimeSeriesProcessorTest extends Specification {
 
 			assert processor.registeredKey == new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
 			assert processor.fieldToSource.size() == expectedSourceMapping.size()
-			processor.fieldToSource.each{ key, value ->
+			processor.fieldToSource.each { key, value ->
 				assert expectedSourceMapping.containsKey(key)
 				assert expectedSourceMapping.get(key) == value.source
 			}
@@ -109,7 +108,7 @@ class TimeSeriesProcessorTest extends Specification {
 
 		then:
 		actual.size() == expectedFieldNames.size()
-		actual.each{ entry -> expectedFieldNames.contains(entry.key)}
+		actual.each { entry -> expectedFieldNames.contains(entry.key) }
 
 		where:
 		source || expectedFieldNames
