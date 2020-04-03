@@ -93,6 +93,11 @@ class ExtractorTest extends Specification {
 
 		gtd.nodeGraphicC           || [gtd.nodeGraphicC.node]
 
+		gtd.measurementUnitInput   || [
+			gtd.measurementUnitInput.node,
+			gtd.measurementUnitInput.operator
+		]
+
 		tutd.thermalBusInput       || [
 			tutd.thermalBusInput.operator
 		]

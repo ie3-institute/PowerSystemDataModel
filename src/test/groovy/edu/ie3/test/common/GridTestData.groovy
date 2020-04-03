@@ -6,6 +6,7 @@
 package edu.ie3.test.common
 
 import edu.ie3.datamodel.models.OperationTime
+import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -315,7 +316,7 @@ class GridTestData {
 	Quantities.getQuantity(0, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
 	Quantities.getQuantity(0.437, PowerSystemUnits.OHM_PER_KILOMETRE),
 	Quantities.getQuantity(0.356, PowerSystemUnits.OHM_PER_KILOMETRE),
-	Quantities.getQuantity(300,  PowerSystemUnits.AMPERE),
+	Quantities.getQuantity(300, PowerSystemUnits.AMPERE),
 	Quantities.getQuantity(20, KILOVOLT)
 
 	)
@@ -337,5 +338,17 @@ class GridTestData {
 	"main",
 	geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[0, 0], [0, 10]]}") as LineString,
 	lineCtoD
+	)
+
+	public static final MeasurementUnitInput measurementUnitInput = new MeasurementUnitInput(
+	UUID.fromString("ce6119e3-f725-4166-b6e0-59f62e0c293d"),
+	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
+	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	"test_measurementUnit",
+	nodeG,
+	true,
+	true,
+	true,
+	true
 	)
 }
