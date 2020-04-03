@@ -17,6 +17,10 @@ public class OperatorInputFactory extends EntityFactory<OperatorInput, SimpleEnt
   private static final String ENTITY_UUID = "uuid";
   private static final String ENTITY_ID = "id";
 
+  public OperatorInputFactory() {
+    super(OperatorInput.class);
+  }
+
   @Override
   protected List<Set<String>> getFields(SimpleEntityData data) {
     Set<String> constructorParams = newSet(ENTITY_UUID, ENTITY_ID);
