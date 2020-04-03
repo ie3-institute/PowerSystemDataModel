@@ -58,7 +58,7 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
   }
 
   /**
-   * Constructor for a non-operated measurement unit
+   * Constructor for an operated, always on measurement unit
    *
    * @param uuid of the input entity
    * @param id of the asset

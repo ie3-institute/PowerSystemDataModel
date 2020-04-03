@@ -113,7 +113,7 @@ public class LoadInput extends SystemParticipantInput {
   }
 
   /**
-   * Constructor for a non-operated load
+   * Constructor for an operated, always on load
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -143,7 +143,7 @@ public class LoadInput extends SystemParticipantInput {
   }
 
   /**
-   * Constructor for a non-operated load
+   * Constructor for an operated, always on load
    *
    * @param uuid of the input entity
    * @param id of the asset

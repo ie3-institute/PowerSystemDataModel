@@ -41,7 +41,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
   }
 
   /**
-   * Constructor for a non-operated electric vehicle
+   * Constructor for an operated, always on electric vehicle
    *
    * @param uuid of the input entity
    * @param id of the asset

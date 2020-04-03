@@ -62,7 +62,7 @@ public class NodeInput extends AssetInput {
   }
 
   /**
-   * Constructor for a non-operated asset
+   * Constructor for an operated, always on asset
    *
    * @param uuid of the input entity
    * @param id of the asset

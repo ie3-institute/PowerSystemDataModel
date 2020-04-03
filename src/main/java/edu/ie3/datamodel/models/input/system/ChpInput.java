@@ -60,7 +60,7 @@ public class ChpInput extends SystemParticipantInput implements HasType {
   }
 
   /**
-   * Constructor for a non-operated combined heat and power plant
+   * Constructor for an operated, always on combined heat and power plant
    *
    * @param uuid of the input entity
    * @param id of the asset

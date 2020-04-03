@@ -40,7 +40,7 @@ public class SwitchInput extends ConnectorInput {
   }
 
   /**
-   * Constructor for a non-operated switch
+   * Constructor for an operated, always on switch
    *
    * @param uuid of the input entity
    * @param id of the asset

@@ -21,7 +21,7 @@ public class SystemParticipantEntityData extends AssetInputEntityData {
   private final NodeInput node;
 
   /**
-   * Creates a new SystemParticipantEntityData object for a non-operable system participant input
+   * Creates a new SystemParticipantEntityData object for an operated, always on system participant input
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data

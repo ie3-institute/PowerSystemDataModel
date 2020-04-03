@@ -48,7 +48,7 @@ public class StorageInput extends SystemParticipantInput implements HasType {
   }
 
   /**
-   * Constructor for a non-operated storage
+   * Constructor for an operated, always on storage
    *
    * @param uuid of the input entity
    * @param id of the asset

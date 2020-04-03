@@ -63,7 +63,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
   }
 
   /**
-   * Constructor for a non-operated biomass plant
+   * Constructor for an operated, always on biomass plant
    *
    * @param uuid of the input entity
    * @param id of the asset

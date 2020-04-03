@@ -71,7 +71,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
   }
 
   /**
-   * Constructor for a non-operated three winding transformer
+   * Constructor for an operated, always on three winding transformer
    *
    * @param uuid of the input entity
    * @param id of the asset

@@ -136,7 +136,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		}
 	}
 
-	def "An AssetInputFactory should parse a valid non-operated AssetInput correctly (no operation time provided)"() {
+	def "An AssetInputFactory should parse a valid operated, always on AssetInput correctly (no operation time provided)"() {
 		given: "a system participant input type factory and model data"
 		def inputFactory = new TestAssetInputFactory()
 		Map<String, String> parameter = [
@@ -185,7 +185,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		}
 	}
 
-	def "An AssetInputFactory should parse a valid non-operated AssetInput correctly (operation end time provided)"() {
+	def "An AssetInputFactory should parse a valid AssetInput correctly (operation end time provided)"() {
 		given: "a system participant input type factory and model data"
 		def inputFactory = new TestAssetInputFactory()
 		Map<String, String> parameter = [

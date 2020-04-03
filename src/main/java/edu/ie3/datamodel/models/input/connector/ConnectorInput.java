@@ -47,7 +47,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
   }
 
   /**
-   * Constructor for a non-operated connector
+   * Constructor for an operated, always on connector
    *
    * @param uuid of the input entity
    * @param id of the asset

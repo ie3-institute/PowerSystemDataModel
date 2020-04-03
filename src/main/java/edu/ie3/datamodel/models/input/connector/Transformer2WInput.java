@@ -51,7 +51,7 @@ public class Transformer2WInput extends TransformerInput implements HasType {
   }
 
   /**
-   * Constructor for a non-operated two winding transformer
+   * Constructor for an operated, always on two winding transformer
    *
    * @param uuid of the input entity
    * @param id of the asset

@@ -26,7 +26,7 @@ public class ThermalBusInput extends AssetInput {
   }
 
   /**
-   * Constructor for a non-operated thermal bus
+   * Constructor for an operated, always on thermal bus
    *
    * @param uuid Unique identifier of a certain thermal bus
    * @param id of the asset

@@ -48,7 +48,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
   }
 
   /**
-   * Constructor for a non-operated feed in
+   * Constructor for an operated, always on feed in
    *
    * @param uuid of the input entity
    * @param id of the asset

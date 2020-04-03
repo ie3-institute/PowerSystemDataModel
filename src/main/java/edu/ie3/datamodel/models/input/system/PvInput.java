@@ -85,7 +85,7 @@ public class PvInput extends SystemParticipantInput {
   }
 
   /**
-   * Constructor for a non-operated photovoltaic plant
+   * Constructor for an operated, always on photovoltaic plant
    *
    * @param uuid of the input entity
    * @param id of the asset

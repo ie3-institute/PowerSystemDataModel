@@ -68,7 +68,7 @@ public class LineInput extends ConnectorInput implements HasType {
   }
 
   /**
-   * Constructor for a non-operated line
+   * Constructor for an operated, always on line
    *
    * @param uuid of the input entity
    * @param id of the asset

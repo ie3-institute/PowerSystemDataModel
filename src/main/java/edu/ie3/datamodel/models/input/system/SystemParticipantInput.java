@@ -44,7 +44,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
   }
 
   /**
-   * Constructor for a non-operated system participant
+   * Constructor for an operated, always on system participant
    *
    * @param uuid of the input entity
    * @param id of the asset

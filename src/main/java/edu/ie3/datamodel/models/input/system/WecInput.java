@@ -47,7 +47,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
   }
 
   /**
-   * Constructor for a non-operated wind energy converter
+   * Constructor for an operated, always on wind energy converter
    *
    * @param uuid of the input entity
    * @param id of the asset

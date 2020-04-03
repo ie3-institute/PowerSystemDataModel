@@ -47,7 +47,7 @@ public abstract class TransformerInput extends ConnectorInput {
   }
 
   /**
-   * Constructor for a non-operated transformer
+   * Constructor for an operated, always on transformer
    *
    * @param uuid of the input entity
    * @param id of the asset

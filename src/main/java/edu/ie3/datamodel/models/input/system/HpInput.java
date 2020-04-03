@@ -48,7 +48,7 @@ public class HpInput extends SystemParticipantInput implements HasType {
   }
 
   /**
-   * Constructor for a non-operated heat pump
+   * Constructor for an operated, always on heat pump
    *
    * @param uuid of the input entity
    * @param id of the asset
