@@ -27,9 +27,11 @@ public class NodeInput extends AssetInput {
    * to this node
    */
   private final Point geoPosition;
+
   /** Use this default value if geoPosition is unknown */
   public static final Point DEFAULT_GEO_POSITION =
-      new GeometryFactory().createPoint(new Coordinate(151.492705, 7.412178));
+      new GeometryFactory().createPoint(new Coordinate(51.4843281, 7.4116482));
+
   /** Voltage level of this node */
   private final VoltageLevel voltLvl;
   /** Subnet of this node */
