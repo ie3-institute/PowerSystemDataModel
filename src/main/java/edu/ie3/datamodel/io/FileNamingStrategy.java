@@ -92,7 +92,7 @@ public class FileNamingStrategy {
    * @param input String to clean
    * @return the cleaned string
    */
-  private static String cleanString(String input) {
+  public static String cleanString(String input) {
     return input.replaceAll("[^\\w]", "_");
   }
 

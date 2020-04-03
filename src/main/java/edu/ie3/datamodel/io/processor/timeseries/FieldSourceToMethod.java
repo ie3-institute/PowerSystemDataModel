@@ -51,6 +51,9 @@ public class FieldSourceToMethod {
   public enum FieldSource {
     TIMESERIES,
     ENTRY,
-    VALUE
+    VALUE,
+    WEATHER_IRRADIATION,
+    WEATHER_TEMPERATURE,
+    WEATHER_WIND
   }
 }

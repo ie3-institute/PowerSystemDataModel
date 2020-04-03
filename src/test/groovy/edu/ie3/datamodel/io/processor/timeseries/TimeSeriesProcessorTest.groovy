@@ -5,16 +5,28 @@
  */
 package edu.ie3.datamodel.io.processor.timeseries
 
-import edu.ie3.test.common.TimeSeriesTestData
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
+import edu.ie3.datamodel.models.value.HeatAndPValue
+import edu.ie3.datamodel.models.value.HeatAndSValue
+import edu.ie3.datamodel.models.value.HeatDemandValue
+import edu.ie3.datamodel.models.value.IrradiationValue
+import edu.ie3.datamodel.models.value.PValue
+import edu.ie3.datamodel.models.value.SValue
+import edu.ie3.datamodel.models.value.WeatherValue
+import edu.ie3.datamodel.models.value.WindValue
 
 import static tec.uom.se.unit.Units.METRE
 
 import java.lang.reflect.Method
 import edu.ie3.datamodel.exceptions.EntityProcessorException
+import edu.ie3.datamodel.io.processor.Processor
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
+import edu.ie3.datamodel.models.value.TemperatureValue
+import edu.ie3.test.common.TimeSeriesTestData
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
@@ -87,55 +99,139 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 	def "A TimeSeriesProcessor handles an entry correctly"() {
 		given:
 		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
-		Map<String, String> expected = [
-			"uuid": "9e4dba1b-f3bb-4e40-bd7e-2de7e81b7704",
-			"time": "2020-04-02 10:00:00",
-			"price": "5.0"
+		Map<String, String> expected = Processor.putUuidFirst([
+			"uuid" : "9e4dba1b-f3bb-4e40-bd7e-2de7e81b7704",
+			"price": "5.0",
+			"time" : "2020-04-02 10:00:00"
 		]
+		)
 
 		when:
 		Map<String, String> actual = processor.handleEntry(individualEnergyPriceTimeSeries, timeBasedEntry)
 
 		then:
-		actual == expected
+		actual.size() == expected.size()
+		actual.each { key, value -> expected.get(key) == value }
 	}
 
-	def "A TimeSeriesProcessors handles a complete time series correctly"() {
+	def "A TimeSeriesProcessors handles a complete time series with EnergyPriceValues correctly"() {
 		given:
 		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
-		Set<Map<String, String>> expected = [
-			[
-				"uuid": "9e4dba1b-f3bb-4e40-bd7e-2de7e81b7704",
-				"time": "2020-04-02 10:00:00",
-				"price": "5.0"
-			],
-			[
-				"uuid": "520d8e37-b842-40fd-86fb-32007e88493e",
-				"time": "2020-04-02 10:15:00",
-				"price": "15.0"
-			],
-			[
-				"uuid": "593d006c-ef76-46a9-b8db-f8666f69c5db",
-				"time": "2020-04-02 10:30:00",
-				"price": "10.0"
-			]] as Set
 
 		when:
 		Set<Map<String, String>> actual = processor.handleTimeSeries(individualEnergyPriceTimeSeries)
 
 		then:
-		actual == expected
+		actual == individualEnergyPriceTimeSeriesProcessed
 	}
 
-	def "A TimeSeriesProcessor throws an Exception, when specific quantity handling is requested"() {
+	def "A TimeSeriesProcessors handles a complete time series with TemperatureValues correctly"() {
 		given:
-		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, TemperatureValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, TemperatureValue)
 
 		when:
-		processor.handleProcessorSpecificQuantity(Quantities.getQuantity(1d, METRE), "blubb")
+		Set<Map<String, String>> actual = processor.handleTimeSeries(individualTemperatureTimeSeries)
 
 		then:
-		UnsupportedOperationException thrown = thrown(UnsupportedOperationException)
-		thrown.message == "No specific handling of quantities needed here."
+		actual == individualTemperatureTimeSeriesProcessed
+	}
+
+	def "A TimeSeriesProcessors handles a complete time series with WindValues correctly"() {
+		given:
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, WindValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, WindValue)
+
+		when:
+		Set<Map<String, String>> actual = processor.handleTimeSeries(individualWindTimeSeries)
+
+		then:
+		actual == individualWindTimeSeriesProcessed
+	}
+
+	def "A TimeSeriesProcessors handles a complete time series with IrradiationValues correctly"() {
+		given:
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, IrradiationValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, IrradiationValue)
+
+		when:
+		Set<Map<String, String>> actual = processor.handleTimeSeries(individualIrradiationTimeSeries)
+
+		then:
+		actual == individualIrradiationTimeSeriesProcessed
+	}
+
+	def "A TimeSeriesProcessors handles a complete time series with WeatherValues correctly"() {
+		given:
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, WeatherValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, WeatherValue)
+
+		when:
+		Set<Map<String, String>> actual = processor.handleTimeSeries(individualWeatherTimeSeries)
+
+		then:
+		actual == individualWeatherTimeSeriesProcessed
+	}
+
+	def "A TimeSeriesProcessors handles a complete time series with HeatDemandValues correctly"() {
+		given:
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatDemandValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatDemandValue)
+
+		when:
+		Set<Map<String, String>> actual = processor.handleTimeSeries(individualHeatDemandTimeSeries)
+
+		then:
+		actual == individualHeatDemandTimeSeriesProcessed
+	}
+
+	def "A TimeSeriesProcessors handles a complete time series with PValues correctly"() {
+		given:
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, PValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, PValue)
+
+		when:
+		Set<Map<String, String>> actual = processor.handleTimeSeries(individualPTimeSeries)
+
+		then:
+		actual == individualPTimeSeriesProcessed
+	}
+
+	def "A TimeSeriesProcessors handles a complete time series with HeatAndPValues correctly"() {
+		given:
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatAndPValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatAndPValue)
+
+		when:
+		Set<Map<String, String>> actual = processor.handleTimeSeries(individualHeatAndPTimeSeries)
+
+		then:
+		actual == individualHeatAndPTimeSeriesProcessed
+	}
+
+	def "A TimeSeriesProcessors handles a complete time series with SValue correctly"() {
+		given:
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, SValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, SValue)
+
+		when:
+		Set<Map<String, String>> actual = processor.handleTimeSeries(individualSTimeSeries)
+
+		then:
+		actual == individualSTimeSeriesProcessed
+	}
+
+	def "A TimeSeriesProcessors handles a complete time series with HeatAndSValue correctly"() {
+		given:
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatAndSValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatAndSValue)
+
+		when:
+		Set<Map<String, String>> actual = processor.handleTimeSeries(individualHeatAndSTimeSeries)
+
+		then:
+		actual == individualHeatAndSTimeSeriesProcessed
+	}
+
+	def "A TimeSeriesProcessors handles a complete LoadProfileInput correctly"() {
+		given:
+		TimeSeriesProcessor<LoadProfileInput, LoadProfileEntry, PValue> processor = new TimeSeriesProcessor<>(LoadProfileInput, LoadProfileEntry, PValue)
+
+		when:
+		Set<Map<String, String>> actual = processor.handleTimeSeries(loadProfileInput)
+
+		then:
+		actual == loadProfileInputProcessed
 	}
 }

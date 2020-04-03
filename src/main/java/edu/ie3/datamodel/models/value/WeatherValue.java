@@ -15,13 +15,13 @@ import org.locationtech.jts.geom.Point;
 /** Describes weather as a combination of irradiation, temperature and wind values */
 public class WeatherValue implements Value {
   /** The coordinate of this weather value set */
-  private Point coordinate;
+  private final Point coordinate;
   /** irradiation values for this coordinate */
-  private IrradiationValue irradiation;
+  private final IrradiationValue irradiation;
   /** Temperature value for this coordinate */
-  private TemperatureValue temperature;
+  private final TemperatureValue temperature;
   /** Wind values for this coordinate */
-  private WindValue wind;
+  private final WindValue wind;
 
   /**
    * @param coordinate of this weather value set
@@ -66,32 +66,16 @@ public class WeatherValue implements Value {
     return coordinate;
   }
 
-  public void setCoordinate(Point coordinate) {
-    this.coordinate = coordinate;
-  }
-
-  public IrradiationValue getirradiation() {
+  public IrradiationValue getIrradiation() {
     return irradiation;
-  }
-
-  public void setirradiation(IrradiationValue irradiation) {
-    this.irradiation = irradiation;
   }
 
   public TemperatureValue getTemperature() {
     return temperature;
   }
 
-  public void setTemperature(TemperatureValue temperature) {
-    this.temperature = temperature;
-  }
-
   public WindValue getWind() {
     return wind;
-  }
-
-  public void setWind(WindValue wind) {
-    this.wind = wind;
   }
 
   @Override

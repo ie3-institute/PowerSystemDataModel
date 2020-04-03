@@ -9,16 +9,20 @@ import static edu.ie3.datamodel.io.processor.timeseries.FieldSourceToMethod.Fiel
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.value.EnergyPriceValue;
-import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import edu.ie3.datamodel.models.value.*;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
+import javax.measure.quantity.Energy;
+import javax.measure.quantity.Power;
 
 public class TimeSeriesProcessor<
         T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
@@ -29,9 +33,29 @@ public class TimeSeriesProcessor<
    */
   public static final List<TimeSeriesProcessorKey> eligibleKeys =
       Collections.unmodifiableList(
-          Collections.singletonList(
+          Arrays.asList(
               new TimeSeriesProcessorKey(
-                  IndividualTimeSeries.class, TimeBasedValue.class, EnergyPriceValue.class)));
+                  IndividualTimeSeries.class, TimeBasedValue.class, EnergyPriceValue.class),
+              new TimeSeriesProcessorKey(
+                  IndividualTimeSeries.class, TimeBasedValue.class, TemperatureValue.class),
+              new TimeSeriesProcessorKey(
+                  IndividualTimeSeries.class, TimeBasedValue.class, WindValue.class),
+              new TimeSeriesProcessorKey(
+                  IndividualTimeSeries.class, TimeBasedValue.class, IrradiationValue.class),
+              new TimeSeriesProcessorKey(
+                  IndividualTimeSeries.class, TimeBasedValue.class, WeatherValue.class),
+              new TimeSeriesProcessorKey(
+                  IndividualTimeSeries.class, TimeBasedValue.class, HeatDemandValue.class),
+              new TimeSeriesProcessorKey(
+                  IndividualTimeSeries.class, TimeBasedValue.class, PValue.class),
+              new TimeSeriesProcessorKey(
+                  IndividualTimeSeries.class, TimeBasedValue.class, HeatAndPValue.class),
+              new TimeSeriesProcessorKey(
+                  IndividualTimeSeries.class, TimeBasedValue.class, SValue.class),
+              new TimeSeriesProcessorKey(
+                  IndividualTimeSeries.class, TimeBasedValue.class, HeatAndSValue.class),
+              new TimeSeriesProcessorKey(
+                  LoadProfileInput.class, LoadProfileEntry.class, PValue.class)));
 
   /**
    * Specific combination of time series class, entry class and value class, this processor is
@@ -85,7 +109,7 @@ public class TimeSeriesProcessor<
       Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass) {
     /* Get the mapping from field name to getter method ignoring the getter for returning all entries */
     Map<String, FieldSourceToMethod> timeSeriesMapping =
-        super.mapFieldNameToGetter(timeSeriesClass, Arrays.asList("entries", "uuid")).entrySet()
+        mapFieldNameToGetter(timeSeriesClass, Arrays.asList("entries", "uuid", "type")).entrySet()
             .stream()
             .collect(
                 Collectors.toMap(
@@ -93,16 +117,51 @@ public class TimeSeriesProcessor<
                     entry -> new FieldSourceToMethod(TIMESERIES, entry.getValue())));
     /* Get the mapping from field name to getter method for the entry, but ignoring the getter for the value */
     Map<String, FieldSourceToMethod> entryMapping =
-        super.mapFieldNameToGetter(entryClass, Collections.singletonList("value")).entrySet()
-            .stream()
+        mapFieldNameToGetter(entryClass, Collections.singletonList("value")).entrySet().stream()
             .collect(
                 Collectors.toMap(
                     Map.Entry::getKey, entry -> new FieldSourceToMethod(ENTRY, entry.getValue())));
-    Map<String, FieldSourceToMethod> valueMapping =
-        super.mapFieldNameToGetter(valueClass).entrySet().stream()
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey, entry -> new FieldSourceToMethod(VALUE, entry.getValue())));
+    Map<String, FieldSourceToMethod> valueMapping;
+    if (!valueClass.equals(WeatherValue.class)) {
+      valueMapping =
+          mapFieldNameToGetter(valueClass).entrySet().stream()
+              .collect(
+                  Collectors.toMap(
+                      Map.Entry::getKey,
+                      entry -> new FieldSourceToMethod(VALUE, entry.getValue())));
+    } else {
+      /* Treat the nested weather values specially. */
+      /* Register all getters of the weather value itself */
+      valueMapping =
+          new HashMap<>(
+              mapFieldNameToGetter(valueClass, Arrays.asList("irradiation", "temperature", "wind"))
+                  .entrySet().stream()
+                  .collect(
+                      Collectors.toMap(
+                          Map.Entry::getKey,
+                          entry -> new FieldSourceToMethod(VALUE, entry.getValue()))));
+      /* Register all getters of the nested irradiation value */
+      valueMapping.putAll(
+          (mapFieldNameToGetter(IrradiationValue.class).entrySet().stream()
+              .collect(
+                  Collectors.toMap(
+                      Map.Entry::getKey,
+                      entry -> new FieldSourceToMethod(WEATHER_IRRADIATION, entry.getValue())))));
+      /* Register all getters of the nested irradiation value */
+      valueMapping.putAll(
+          (mapFieldNameToGetter(TemperatureValue.class).entrySet().stream()
+              .collect(
+                  Collectors.toMap(
+                      Map.Entry::getKey,
+                      entry -> new FieldSourceToMethod(WEATHER_TEMPERATURE, entry.getValue())))));
+      /* Register all getters of the nested irradiation value */
+      valueMapping.putAll(
+          (mapFieldNameToGetter(WindValue.class).entrySet().stream()
+              .collect(
+                  Collectors.toMap(
+                      Map.Entry::getKey,
+                      entry -> new FieldSourceToMethod(WEATHER_WIND, entry.getValue())))));
+    }
 
     /* Put everything together */
     HashMap<String, FieldSourceToMethod> jointMapping = new HashMap<>();
@@ -130,7 +189,7 @@ public class TimeSeriesProcessor<
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
     if (!registeredKey.equals(key))
       throw new EntityProcessorException(
-          "Cannot a time series combination "
+          "Cannot handle a time series combination "
               + key
               + " with this EntityProcessor. Please either provide a time series combination of "
               + registeredKey
@@ -171,13 +230,26 @@ public class TimeSeriesProcessor<
     /* Handle the information in the value */
     Map<String, Method> valueFieldToMethod = extractFieldToMethod(VALUE);
     LinkedHashMap<String, String> valueResult = processObject(entry.getValue(), valueFieldToMethod);
+    /* Treat WeatherValues specially, as they are nested ones */
+    if (entry.getValue() instanceof WeatherValue) {
+      WeatherValue weatherValue = (WeatherValue) entry.getValue();
+
+      Map<String, Method> irradiationFieldToMethod = extractFieldToMethod(WEATHER_IRRADIATION);
+      valueResult.putAll(processObject(weatherValue.getIrradiation(), irradiationFieldToMethod));
+
+      Map<String, Method> temperatureFieldToMethod = extractFieldToMethod(WEATHER_TEMPERATURE);
+      valueResult.putAll(processObject(weatherValue.getTemperature(), temperatureFieldToMethod));
+
+      Map<String, Method> windFieldToMethod = extractFieldToMethod(WEATHER_WIND);
+      valueResult.putAll(processObject(weatherValue.getWind(), windFieldToMethod));
+    }
 
     /* Join all information and sort them */
-    Map<String, String> sortedResult = new HashMap<>();
-    sortedResult.putAll(timeSeriesResults);
-    sortedResult.putAll(entryResults);
-    sortedResult.putAll(valueResult);
-    return sortedResult;
+    Map<String, String> combinedResult = new HashMap<>();
+    combinedResult.putAll(timeSeriesResults);
+    combinedResult.putAll(entryResults);
+    combinedResult.putAll(valueResult);
+    return putUuidFirst(combinedResult);
   }
 
   /**
@@ -195,7 +267,35 @@ public class TimeSeriesProcessor<
   @Override
   protected Optional<String> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
-    throw new UnsupportedOperationException("No specific handling of quantities needed here.");
+    Optional<String> normalizedQuantityValue = Optional.empty();
+    switch (fieldName) {
+      case "energy":
+      case "eConsAnnual":
+      case "eStorage":
+        normalizedQuantityValue =
+            quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
+        break;
+      case "q":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
+        break;
+      case "p":
+      case "pMax":
+      case "pOwn":
+      case "pThermal":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
+        break;
+      default:
+        log.error(
+            "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
+            quantity,
+            fieldName);
+        break;
+    }
+    return normalizedQuantityValue;
   }
 
   @Override

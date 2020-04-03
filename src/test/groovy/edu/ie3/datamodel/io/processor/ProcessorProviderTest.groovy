@@ -67,8 +67,19 @@ import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.value.EnergyPriceValue
+import edu.ie3.datamodel.models.value.HeatAndPValue
+import edu.ie3.datamodel.models.value.HeatAndSValue
+import edu.ie3.datamodel.models.value.HeatDemandValue
+import edu.ie3.datamodel.models.value.IrradiationValue
+import edu.ie3.datamodel.models.value.PValue
+import edu.ie3.datamodel.models.value.SValue
+import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.Value
+import edu.ie3.datamodel.models.value.WeatherValue
+import edu.ie3.datamodel.models.value.WindValue
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
@@ -148,29 +159,25 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 		provider.registeredClasses.sort() == knownEntityProcessors.sort()
 	}
 
-	def "A ProcessorProvider should initialize all known time series combinations by default"() {
-		given:
-		ProcessorProvider provider = new ProcessorProvider()
-		Set knownTimeSeriesCombinations = [
-			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
-		]
-
-		when:
-		Set<TimeSeriesProcessorKey> actual = provider.getRegisteredTimeSeriesCombinations()
-
-		then:
-		actual == knownTimeSeriesCombinations
-	}
-
 	def "A ProcessorProvider should initialize all known TimeSeriesProcessors by default"() {
 		given:
 		ProcessorProvider provider = new ProcessorProvider()
 		Set expected = [
-			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, IrradiationValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, TemperatureValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, WindValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, WeatherValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, HeatDemandValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, PValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, HeatAndPValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, SValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, HeatAndSValue),
+			new TimeSeriesProcessorKey(LoadProfileInput, LoadProfileEntry, PValue)
 		] as Set
 
 		when:
-		Set<TimeSeriesProcessorKey> actual = provider.timeSeriesProcessors.keySet()
+		Set<TimeSeriesProcessorKey> actual = provider.getRegisteredTimeSeriesCombinations()
 
 		then:
 		actual == expected
