@@ -5,56 +5,54 @@
 interface Nested
 
 interface Node
-Node --|> Nested
+Node ..|> Nested
 
 interface Nodes
-Nodes --|> Nested
+Nodes ..|> Nested
 
 interface NodeC
-NodeC --|> Nested
+NodeC ..|> Nested
 
 interface Type
-Type --|> Nested
-
-
+Type ..|> Nested
 
 abstract Class UniqueEntity {
-+ uuid: UUID
+    + uuid: UUID
 }
 
 abstract Class InputEntity
 InputEntity --|> UniqueEntity
 
 Interface Operable {
-+ inOperation: Boolean
+    + inOperation: Boolean
 }
 
 abstract Class AssetInput {
-- id: String
-- operationTime: OperationTime
-- operator: OperatorInput
+    - id: String
+    - operationTime: OperationTime
+    - operator: OperatorInput
 }
 AssetInput --|> InputEntity
-AssetInput --|> Operable
+AssetInput ..|> Operable
 
 abstract Class SystemParticipantInput {
-- node: NodeInput
-- qCharacteristics: String
+    - node: NodeInput
+    - qCharacteristics: String
 }
 SystemParticipantInput --|> AssetInput
-SystemParticipantInput --|> Node
+SystemParticipantInput ..|> Node
 
 Class OperatorInput {
-+ name: String
+    + name: String
 }
 OperatorInput --|> InputEntity
 
 abstract Class ConnectorInput {
-+ nodeA: NodeInput
-+ nodeB: NodeInput
+    + nodeA: NodeInput
+    + nodeB: NodeInput
 }
 ConnectorInput --|> AssetInput
-ConnectorInput --|> Nodes
+ConnectorInput ..|> Nodes
 
 abstract Class AssetCharacteristicsInput<T extends AssetTypeInput> {
     - type: T
@@ -71,15 +69,15 @@ Class EvCharacteristicInput {
 EvCharacteristicInput --|> AssetCharacteristicsInput: <<bind>>T::EvTypeInput
 
 abstract Class AssetTypeInput {
-+ id: String
+    + id: String
 }
 AssetTypeInput --|> InputEntity
 
 abstract Class SystemParticipantTypeInput {
-- capex: Quantity<Currency> [€]
-- opex: Quantity<EnergyPrice> [€/MWh]
-- sRated: Quantity<Power> [kVA]
-- cosphiRated: Double
+    - capex: Quantity<Currency> [€]
+    - opex: Quantity<EnergyPrice> [€/MWh]
+    - sRated: Quantity<Power> [kVA]
+    - cosphiRated: Double
 }
 SystemParticipantTypeInput --|> AssetTypeInput
 
@@ -120,159 +118,159 @@ HpTypeInput --|> SystemParticipantTypeInput
 
 
 Class StorageTypeInput {
-- sRated: Quantity<Power> [kVA]
-- pMin: Quantity<Power>[kW]
-- pMax: Quantity<Power> [kW]
-- eta: Quantity<Dimensionless> [%]
-- eStorage: Quantity<Energy> [kWh]
-- dod: Quantity<Dimensionless> [%]
-- lifeTime: Quantity<Time> [ms]
-- lifeCycle: Integer
+    - sRated: Quantity<Power> [kVA]
+    - pMin: Quantity<Power>[kW]
+    - pMax: Quantity<Power> [kW]
+    - eta: Quantity<Dimensionless> [%]
+    - eStorage: Quantity<Energy> [kWh]
+    - dod: Quantity<Dimensionless> [%]
+    - lifeTime: Quantity<Time> [ms]
+    - lifeCycle: Integer
 }
 StorageTypeInput --|> SystemParticipantTypeInput
 
 Class WecTypeInput {
-- rotorArea: Quantity<Area> [m²]
-- hubHeight: Quantity<Length> [m]
-- etaConv: Quantity<Dimensionless> [%]
+    - rotorArea: Quantity<Area> [m²]
+    - hubHeight: Quantity<Length> [m]
+    - etaConv: Quantity<Dimensionless> [%]
 }
 WecTypeInput --|> SystemParticipantTypeInput
 
 
 Class LineTypeInput {
-+ r: Quantity<SpecificResistance> (Ohm/km)
-+ x: Quantity<SpecificResistance> (Ohm/km)
-+ g: Quantity<SpecificConductance> (µS/km)
-+ b: Quantity<SpecificConductance> (µS/km)
-+ iMax: Quantity<ElectricCurrent> (A)
-+ vRated: Quantity<ElectricPotential> (V)
-+ olmChar: Optional<String>
+    + r: Quantity<SpecificResistance> (Ohm/km)
+    + x: Quantity<SpecificResistance> (Ohm/km)
+    + g: Quantity<SpecificConductance> (µS/km)
+    + b: Quantity<SpecificConductance> (µS/km)
+    + iMax: Quantity<ElectricCurrent> (A)
+    + vRated: Quantity<ElectricPotential> (V)
+    + olmChar: Optional<String>
 }
 LineTypeInput --|> AssetTypeInput
 
 Class Transformer2WTypeInput {
-+ sRated: Quantity<Power> (MVA)
-+ vRatedA: Quantity<ElectricPotential> (kV)
-+ vRatedB: Quantity<ElectricPotential> (kV)
-+ rSc: Quantity<ElectricalResistance> (Ohm)
-+ xSc: Quantity<ElectricalResistance> (Ohm)
-+ gM: Quantity<ElectricalConductance> (nS)
-+ bM: Quantity<ElectricalConductance> (nS)
-+ dV: Quantity<Dimensionless> (%)
-+ dPhi: Quantity<Angle> (Degrees)
-+ tapSide: Boolean
-+ tapNeutr: Integer
-+ tapMin: Integer
-+ tapMax: Integer
+    + sRated: Quantity<Power> (MVA)
+    + vRatedA: Quantity<ElectricPotential> (kV)
+    + vRatedB: Quantity<ElectricPotential> (kV)
+    + rSc: Quantity<ElectricalResistance> (Ohm)
+    + xSc: Quantity<ElectricalResistance> (Ohm)
+    + gM: Quantity<ElectricalConductance> (nS)
+    + bM: Quantity<ElectricalConductance> (nS)
+    + dV: Quantity<Dimensionless> (%)
+    + dPhi: Quantity<Angle> (Degrees)
+    + tapSide: Boolean
+    + tapNeutr: Integer
+    + tapMin: Integer
+    + tapMax: Integer
 }
 Transformer2WTypeInput --|> AssetTypeInput
 
 Class Transformer3WTypeInput {
-+ vRatedA: Quantity<ElectricPotential> (kV)
-+ vRatedB: Quantity<ElectricPotential> (kV)
-+ vRatedC: Quantity<ElectricPotential> (kV)
-+ rScA: Quantity<ElectricalResistance> (Ohm)
-+ rScB: Quantity<ElectricalResistance> (Ohm)
-+ rScC: Quantity<ElectricalResistance> (Ohm)
-+ xScA: Quantity<ElectricalResistance> (Ohm)
-+ xScB: Quantity<ElectricalResistance> (Ohm)
-+ xScC: Quantity<ElectricalResistance> (Ohm)
-+ gM: Quantity<ElectricalConductance> (nS)
-+ bM: Quantity<ElectricalConductance> (nS)
-+ sRatedA: Quantity<Power> (MVA)
-+ sRatedB: Quantity<Power> (MVA)
-+ sRatedC: Quantity<Power> (MVA)
-+ dV: Quantity<Dimensionless> (%)
-+ dPhi: Quantity<Angle> (Degrees)
-+ tapNeutr: Integer
-+ tapMin: Integer
-+ tapMax: Integer
+    + vRatedA: Quantity<ElectricPotential> (kV)
+    + vRatedB: Quantity<ElectricPotential> (kV)
+    + vRatedC: Quantity<ElectricPotential> (kV)
+    + rScA: Quantity<ElectricalResistance> (Ohm)
+    + rScB: Quantity<ElectricalResistance> (Ohm)
+    + rScC: Quantity<ElectricalResistance> (Ohm)
+    + xScA: Quantity<ElectricalResistance> (Ohm)
+    + xScB: Quantity<ElectricalResistance> (Ohm)
+    + xScC: Quantity<ElectricalResistance> (Ohm)
+    + gM: Quantity<ElectricalConductance> (nS)
+    + bM: Quantity<ElectricalConductance> (nS)
+    + sRatedA: Quantity<Power> (MVA)
+    + sRatedB: Quantity<Power> (MVA)
+    + sRatedC: Quantity<Power> (MVA)
+    + dV: Quantity<Dimensionless> (%)
+    + dPhi: Quantity<Angle> (Degrees)
+    + tapNeutr: Integer
+    + tapMin: Integer
+    + tapMax: Integer
 }
 Transformer3WTypeInput --|> AssetTypeInput
 
 Class RandomLoadParameter {
-+ quarterHour: Integer
-+ kWd: Double
-+ kSa: Double
-+ kSu: Double
-+ myWd: Double
-+ mySa: Double
-+ mySu: Double
-+ sigmaWd: Double
-+ sigmaSa: Double
-+ sigmaSu: Double
+    + quarterHour: Integer
+    + kWd: Double
+    + kSa: Double
+    + kSu: Double
+    + myWd: Double
+    + mySa: Double
+    + mySu: Double
+    + sigmaWd: Double
+    + sigmaSa: Double
+    + sigmaSu: Double
 }
 RandomLoadParameter --|> InputEntity
 
 Class FixedFeedInInput {
-- sRated: Quantity<Power> [kVA]
-- cosphiRated: double
+    - sRated: Quantity<Power> [kVA]
+    - cosphiRated: double
 }
 FixedFeedInInput --|> SystemParticipantInput
 
 Class PvInput {
-- sRated: Quantity<Power> [kVA]
-- cosphiRated: double
-- azimuth: Quantity<Angle> [Degrees]
-- solarHeight: Quantity<Angle> [Degrees]
-- etaConv: Quantity<Dimensionless> [%]
-- albedo: Double
-- kG: Double
-- kT: Double
-- marketReaction: Boolean
+    - sRated: Quantity<Power> [kVA]
+    - cosphiRated: double
+    - azimuth: Quantity<Angle> [Degrees]
+    - solarHeight: Quantity<Angle> [Degrees]
+    - etaConv: Quantity<Dimensionless> [%]
+    - albedo: Double
+    - kG: Double
+    - kT: Double
+    - marketReaction: Boolean
 }
 PvInput --|> SystemParticipantInput
 
 Class WecInput{
-- type: WecTypeInput
-- marketReaction: Boolean
+    - type: WecTypeInput
+    - marketReaction: Boolean
 }
 WecInput --|> SystemParticipantInput
-WecInput --|> Type
+WecInput ..|> Type
 
 Class ChpInput {
-- type: ChpTypeInput
-- marketReaction: Boolean
+    - type: ChpTypeInput
+    - marketReaction: Boolean
 }
 ChpInput --|> SystemParticipantInput
-ChpInput --|> Type
+ChpInput ..|> Type
 
 Class BmInput {
-- type: BmTypeInput
-- sRated: Quantity<Power> [KW]
-- feedInTariff: Quantity<SpecificCurrency> [€/kWh]
-- marketReaction: Boolean
-- costControlled: Boolean
+    - type: BmTypeInput
+    - sRated: Quantity<Power> [KW]
+    - feedInTariff: Quantity<SpecificCurrency> [€/kWh]
+    - marketReaction: Boolean
+    - costControlled: Boolean
 }
 BmInput --|> SystemParticipantInput
-BmInput --|> Type
+BmInput ..|> Type
 
 Class EvInput {
-- type: EvTypeInput
+    - type: EvTypeInput
 }
 EvInput --|> SystemParticipantInput
-EvInput --|> Type
+EvInput ..|> Type
 
 Class LoadInput {
-- scenario: String
-- sRated: Quantity<Power> [kVA]
-- eConsAnnual: Quantity<Energy> [kWh]
-- dsm: Boolean
+    - scenario: String
+    - sRated: Quantity<Power> [kVA]
+    - eConsAnnual: Quantity<Energy> [kWh]
+    - dsm: Boolean
 }
 LoadInput --|> SystemParticipantInput
 
 Class StorageInput {
-- type: StorageTypeInput
-- behaviour: String
+    - type: StorageTypeInput
+    - behaviour: String
 }
 StorageInput --|> SystemParticipantInput
-StorageInput --|> Type
+StorageInput ..|> Type
 
 Class HpInput {
-- type: HpTypeInput
+    - type: HpTypeInput
 }
 HpInput --|> SystemParticipantInput
-HpInput --|> Type
+HpInput ..|> Type
 
 Abstract Class ThermalUnitInput {
  - uuid: UUID
@@ -308,21 +306,21 @@ Class CylindricalStorage {
 CylindricalStorage --|> ThermalStorageInput
 
 Class MeasurementUnitInput {
-+ node: NodeInput
-+ vMag: Boolean [default f]
-+ vAng: Boolean [default f]
-+ p: Boolean [default f]
-+ q: Boolean [default f]
+    + node: NodeInput
+    + vMag: Boolean [default f]
+    + vAng: Boolean [default f]
+    + p: Boolean [default f]
+    + q: Boolean [default f]
 }
 MeasurementUnitInput --|> AssetInput
 
 Class NodeInput {
-+ vTarget: Quantity<Dimensionless> (pU)
-+ vRated: Quantity<ElectricPotential> (kV)
-+ slack: Boolean
-+ geoPosition: Point
-+ voltLvl: VoltageLevel
-+ subnet: Integer
+    + vTarget: Quantity<Dimensionless> (pU)
+    + vRated: Quantity<ElectricPotential> (kV)
+    + slack: Boolean
+    + geoPosition: Point
+    + voltLvl: VoltageLevel
+    + subnet: Integer
 }
 NodeInput --|> AssetInput
 
@@ -333,55 +331,55 @@ EvcsInput --|> AssetInput
 
 
 Class LineInput {
-+ type: LineTypeInput
-+ length: Quantity<Length> (km)
-+ amount: Integer
-+ olm: Optional<String>
-+ geoPosition: LineString
+    + type: LineTypeInput
+    + length: Quantity<Length> (km)
+    + amount: Integer
+    + olm: Optional<String>
+    + geoPosition: LineString
 }
 LineInput --|> ConnectorInput
-LineInput --|> Type
+LineInput ..|> Type
 
 Class SwitchInput {
-+ closed: Boolean
+    + closed: Boolean
 }
 SwitchInput --|> ConnectorInput
 
 abstract TransformerInput {
-+ tapPos: Integer
-+ amount: Integer
-+ autoTap: Boolean
+    + tapPos: Integer
+    + amount: Integer
+    + autoTap: Boolean
 }
 TransformerInput --|> ConnectorInput
 
 Class Transformer2WInput {
-+ type: Transformer2WTypeInput
+    + type: Transformer2WTypeInput
 }
 Transformer2WInput --|> TransformerInput
-Transformer2WInput --|> Type
+Transformer2WInput ..|> Type
 
 Class Transformer3WInput {
-+ nodeC: NodeInput
-+ type: Transformer3WTypeInput
+    + nodeC: NodeInput
+    + type: Transformer3WTypeInput
 }
 Transformer3WInput --|> TransformerInput
-Transformer3WInput --|> NodeC
-Transformer3WInput --|> Type
+Transformer3WInput ..|> NodeC
+Transformer3WInput ..|> Type
 
 abstract Class GraphicInput {
-+ graphicLayer: String
-+ path: LineString
+    + graphicLayer: String
+    + path: LineString
 }
 GraphicInput --|> InputEntity
 
 Class NodeGraphicInput {
-+ node: NodeInput
-+ point: Point
+    + node: NodeInput
+    + point: Point
 }
 NodeGraphicInput --|> GraphicInput
 
 Class LineGraphicInput {
-+ line: LineInput
+    + line: LineInput
 }
 LineGraphicInput --|> GraphicInput
 
@@ -390,8 +388,6 @@ Abstract Class Entry <V extends Value> {
 }
 Entry --|> UniqueEntity
 Entry --* Value
-
-Interface Value
 
 Class LoadProfileEntry {
     - dayOfWeek: DayOfWeek
@@ -404,76 +400,85 @@ abstract Class TimeBasedValue<V extends Value>{
 }
 TimeBasedValue --|> Entry: <<bind>>:V
 
-Class PowerValue {
-    - p: Quantity<Power> [kW]
-    - q: Quantity<Power> [kVA]
-}
-PowerValue --|> Value
-
-Class HeatAndPowerValue {
-    - heatDemand: Quantity<Power> [kW]
-}
-HeatAndPowerValue --|> PowerValue
-
-Class HeatDemandValue {
-    - heatDemand: Quantity<Power> [kW]
-}
-HeatDemandValue --|> Value
+Interface Value
 
 Class EnergyPriceValue {
     - price: Quantity<SpecificCurrency> [€/MWh]
 }
-EnergyPriceValue --|> Value
+EnergyPriceValue ..|> Value
+
+Class HeatDemandValue {
+    - heatDemand : Quantity<Power>
+}
+HeatDemandValue ..|> Value
+
+Class PValue {
+    - p: Quantity<Power>
+}
+PValue ..|> Value
+
+Class HeatAndPValue {
+    - heatDemand: Quantity<Power>
+}
+HeatAndPValue --|> PValue
+
+Class SValue {
+    - q: Quantity<Power>
+}
+SValue --|> PValue
+
+Class HeatAndSValue {
+    - heatDemand: Quantity<Power>
+}
+HeatAndSValue --|> SValue
 
 Class IrradiationValue {
-    - directIrradiation: Quantity<Irradiation>
-    - diffuseIrradiation: Quantity<Irradiation>
+  - directIrradiation: Quantity<Irradiation>
+  - diffuseIrradiation: Quantity<Irradiation>
 }
-IrradiationValue --|> Value
+IrradiationValue ..|> Value
 
 Class TemperatureValue {
-    - temperature: Quantity<Temperature>
+  - temperature: Quantity<Temperature>
 }
-TemperatureValue --|> Value
+TemperatureValue ..|> Value
 
 Class WindValue {
-    - direction: Quantity<Angle>
-    - velocity: Quantity<Speed>
+  - direction: Quantity<Angle>
+  - velocity: Quantity<Speed>
 }
-WindValue --|> Value
+WindValue ..|> Value
 
-Class WeatherValue {
+class WeatherValue {
   - coordinate: Point
   - irradiation: IrradiationValue
   - temperature: TemperatureValue
   - wind: WindValue
 }
-WeatherValue --|> Value
+WeatherValue ..|> Value
 WeatherValue --* IrradiationValue
 WeatherValue --* TemperatureValue
 WeatherValue --* WindValue
 
-Interface LoadProfileType {
-}
+Interface LoadProfileType
 
 enum PowerSystemLoadProfileType {
-BL_H
-G0_A
-G0_M
-...
+    BL_H
+    G0_A
+    G0_M
+    ...
 }
 PowerSystemLoadProfileType --|> LoadProfileType
 
-Interface VoltageLevel {
-}
+Interface VoltageLevel
 
 enum GermanVoltageLevel {
-HoeS,
-HS,
-MS,
-NS
+    HoeS,
+    HS,
+    MS,
+    NS
 }
-GermanVoltageLevel --|> VoltageLevel
+GermanVoltageLevel ..|> VoltageLevel
 
 Abstract Class TimeSeries<E extends Entry<V>, V extends Value> {
     - entries: Set<E>
@@ -500,6 +505,6 @@ Class LoadProfileInput {
     + profile: LoadProfileType
 }
 LoadProfileInput --|> RepetitiveTimeSeries
-LoadProfileInput --> LoadProfileType
+LoadProfileInput --* LoadProfileType
 
 @enduml
