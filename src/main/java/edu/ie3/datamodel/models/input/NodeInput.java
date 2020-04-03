@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 
 /** Describes an electrical grid node, that other assets can connect to */
@@ -25,6 +27,11 @@ public class NodeInput extends AssetInput {
    * to this node
    */
   private final Point geoPosition;
+
+  /** Use this default value if geoPosition is unknown */
+  public static final Point DEFAULT_GEO_POSITION =
+      new GeometryFactory().createPoint(new Coordinate(51.4843281, 7.4116482));
+
   /** Voltage level of this node */
   private final VoltageLevel voltLvl;
   /** Subnet of this node */
