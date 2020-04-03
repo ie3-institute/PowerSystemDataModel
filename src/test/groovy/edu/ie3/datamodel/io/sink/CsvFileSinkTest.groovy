@@ -23,6 +23,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.test.common.GridTestData
+import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.util.TimeTools
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
@@ -37,7 +38,7 @@ import java.time.ZonedDateTime
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 
-class CsvFileSinkTest extends Specification {
+class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
 	@Shared
 	String testBaseFolderPath = "test"
@@ -149,23 +150,7 @@ class CsvFileSinkTest extends Specification {
 		HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
 		timeSeriesProcessorMap.put(timeSeriesProcessorKey, timeSeriesProcessor)
 
-		IndividualTimeSeries<EnergyPriceValue> individualTimeSeries = new IndividualTimeSeries<>(
-				UUID.fromString("a4bbcb77-b9d0-4b88-92be-b9a14a3e332b"),
-				[
-					new TimeBasedValue<>(
-					UUID.fromString("9e4dba1b-f3bb-4e40-bd7e-2de7e81b7704"),
-					ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
-					new EnergyPriceValue(Quantities.getQuantity(5d, EURO_PER_MEGAWATTHOUR))),
-					new TimeBasedValue<>(
-					UUID.fromString("520d8e37-b842-40fd-86fb-32007e88493e"),
-					ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-					new EnergyPriceValue(Quantities.getQuantity(15d, EURO_PER_MEGAWATTHOUR))),
-					new TimeBasedValue<>(
-					UUID.fromString("593d006c-ef76-46a9-b8db-f8666f69c5db"),
-					ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
-					new EnergyPriceValue(Quantities.getQuantity(10d, EURO_PER_MEGAWATTHOUR))),
-				] as Set
-				)
+		IndividualTimeSeries<EnergyPriceValue> individualTimeSeries = individualEnergyPriceTimeSeries
 
 		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
 				new ProcessorProvider([], timeSeriesProcessorMap),

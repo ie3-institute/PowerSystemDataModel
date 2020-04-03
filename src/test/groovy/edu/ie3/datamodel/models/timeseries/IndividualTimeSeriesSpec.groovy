@@ -5,28 +5,17 @@
  */
 package edu.ie3.datamodel.models.timeseries
 
-import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import spock.lang.Shared
+import edu.ie3.test.common.TimeSeriesTestData
 import spock.lang.Specification
 
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-class IndividualTimeSeriesSpec extends Specification {
-	@Shared
-	IndividualTimeSeries<IntValue> timeSeries = new IndividualTimeSeries<>(
-	UUID.randomUUID(),
-	[
-		new TimeBasedValue<IntValue>(UUID.fromString("52ccf570-53a5-490e-85d4-7a57082ebdfc"), ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")), new IntValue(3)),
-		new TimeBasedValue<IntValue>(UUID.fromString("23727eb1-e108-4187-99b2-bef959797078"), ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), new IntValue(4)),
-		new TimeBasedValue<IntValue>(UUID.fromString("21b1a544-2961-4488-a9f6-0e94a706a68f"), ZonedDateTime.of(1990, 1, 1, 0, 30, 0, 0, ZoneId.of("UTC")), new IntValue(1))
-	] as Set
-	)
-
+class IndividualTimeSeriesSpec extends Specification implements TimeSeriesTestData {
 	def "Return empty optional value when queried for non existent time" () {
 		expect:
-		timeSeries.getValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
+		individualIntTimeSeries.getValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
 	}
 
 	def "Return correct optional value when queried for existent time" () {
@@ -34,7 +23,7 @@ class IndividualTimeSeriesSpec extends Specification {
 		IntValue expected = new IntValue(4)
 
 		when:
-		Optional<IntValue> actual = timeSeries.getValue(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
+		Optional<IntValue> actual = individualIntTimeSeries.getValue(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
 
 		then:
 		actual.present
@@ -46,7 +35,7 @@ class IndividualTimeSeriesSpec extends Specification {
 		TimeBasedValue<IntValue> expected = new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), new IntValue(4))
 
 		when:
-		Optional<TimeBasedValue<IntValue>> actual = timeSeries.getTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
+		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
 
 		then:
 		actual.present
@@ -56,12 +45,12 @@ class IndividualTimeSeriesSpec extends Specification {
 
 	def "Return empty optional time based value when queried for non existent time" () {
 		expect:
-		timeSeries.getTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
+		individualIntTimeSeries.getTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
 	}
 
 	def "The individual time series returns empty Optional, when queried time is before provided time frame" () {
 		expect:
-		timeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1989, 12, 31, 0, 0, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
+		individualIntTimeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1989, 12, 31, 0, 0, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
 	}
 
 	def "The individual time series returns correct Optional, when queried for the last known information" () {
@@ -69,7 +58,7 @@ class IndividualTimeSeriesSpec extends Specification {
 		Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")), new IntValue(3)))
 
 		when:
-		Optional<TimeBasedValue<IntValue>> actual = timeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC")))
+		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC")))
 
 		then:
 		expected.isPresent()
@@ -82,7 +71,7 @@ class IndividualTimeSeriesSpec extends Specification {
 		Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")), new IntValue(3)))
 
 		when:
-		Optional<TimeBasedValue<IntValue>> actual = timeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
+		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
 
 		then:
 		expected.isPresent()
@@ -92,7 +81,7 @@ class IndividualTimeSeriesSpec extends Specification {
 
 	def "The individual time series returns empty Optional, when queried time is after provided time frame" () {
 		expect:
-		timeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 45, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
+		individualIntTimeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 45, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
 	}
 
 	def "The individual time series returns correct Optional, when queried for the next known information" () {
@@ -100,7 +89,7 @@ class IndividualTimeSeriesSpec extends Specification {
 		Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), new IntValue(4)))
 
 		when:
-		Optional<TimeBasedValue<IntValue>> actual = timeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC")))
+		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC")))
 
 		then:
 		expected.isPresent()
@@ -113,7 +102,7 @@ class IndividualTimeSeriesSpec extends Specification {
 		Optional<TimeBasedValue<IntValue>> expected =  Optional.of(new TimeBasedValue<>(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), new IntValue(4)))
 
 		when:
-		Optional<TimeBasedValue<IntValue>> actual = timeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
+		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
 
 		then:
 		expected.isPresent()

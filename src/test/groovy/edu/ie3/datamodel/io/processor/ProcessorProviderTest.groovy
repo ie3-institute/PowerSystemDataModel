@@ -145,6 +145,20 @@ class ProcessorProviderTest extends Specification {
 		provider.registeredClasses.sort() == knownEntityProcessors.sort()
 	}
 
+	def "A ProcessorProvider should initialize all known time series combinations by default"() {
+		given:
+		ProcessorProvider provider = new ProcessorProvider()
+		Set knownTimeSeriesCombinations = [
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+		]
+
+		when:
+		Set<TimeSeriesProcessorKey> actual = provider.getRegisteredTimeSeriesCombinations()
+
+		then:
+		actual == knownTimeSeriesCombinations
+	}
+
 	def "A ProcessorProvider should initialize all known TimeSeriesProcessors by default"() {
 		given:
 		ProcessorProvider provider = new ProcessorProvider()
