@@ -11,7 +11,7 @@ import java.util.UUID;
 import org.locationtech.jts.geom.LineString;
 
 /** Describes the graphic data belonging to grid assets */
-public class GraphicInput extends InputEntity {
+public abstract class GraphicInput extends InputEntity {
   /** Description of the graphic layer, this graphic is located on */
   private final String graphicLayer;
   /** A graphic representation as path */

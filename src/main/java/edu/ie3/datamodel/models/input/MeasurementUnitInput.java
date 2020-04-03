@@ -5,12 +5,12 @@
 */
 package edu.ie3.datamodel.models.input;
 
-import edu.ie3.datamodel.io.extractor.Node;
+import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
 import java.util.*;
 
 /** Model of a measuring unit attached to a certain {@link NodeInput}. */
-public class MeasurementUnitInput extends AssetInput implements Node {
+public class MeasurementUnitInput extends AssetInput implements HasNodes {
   /** Grid node, the asset is attached to */
   private final NodeInput node;
 
@@ -78,7 +78,6 @@ public class MeasurementUnitInput extends AssetInput implements Node {
     this.q = q;
   }
 
-  @Override
   public NodeInput getNode() {
     return node;
   }
@@ -131,5 +130,10 @@ public class MeasurementUnitInput extends AssetInput implements Node {
         + ", q="
         + q
         + '}';
+  }
+
+  @Override
+  public List<NodeInput> allNodes() {
+    return Collections.singletonList(node);
   }
 }

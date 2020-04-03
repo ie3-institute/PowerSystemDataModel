@@ -154,12 +154,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		((TestAssetInput) input.get()).with {
 			assert uuid == UUID.fromString(parameter["uuid"])
 			assert operationTime == OperationTime.notLimited()
-			assert operator == null
+			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
 		}
 	}
 
-	def "An AssetInputFactory should parse a valid non-operated AssetInput correctly (operation start time provided)"() {
+	def "An AssetInputFactory should parse a valid AssetInput correctly (operation start time provided)"() {
 		given: "a system participant input type factory and model data"
 		def inputFactory = new TestAssetInputFactory()
 		Map<String, String> parameter = [
@@ -180,7 +180,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			assert operationTime.startDate.present
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert !operationTime.endDate.present
-			assert operator == null
+			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
 		}
 	}
@@ -206,12 +206,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			assert !operationTime.startDate.present
 			assert operationTime.endDate.present
 			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-			assert operator == null
+			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
 		}
 	}
 
-	def "An AssetInputFactory should parse a valid non-operated AssetInput correctly (operation start and end time provided"() {
+	def "An AssetInputFactory should parse a valid AssetInput correctly (operation start and end time provided"() {
 		given: "a system participant input type factory and model data"
 		def inputFactory = new TestAssetInputFactory()
 		Map<String, String> parameter = [
@@ -234,7 +234,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert operationTime.endDate.present
 			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-			assert operator == null
+			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
 		}
 	}

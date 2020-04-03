@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.input
 
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.test.helper.FactoryTestHelper
@@ -47,7 +48,7 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
 		((Transformer3WInput) input.get()).with {
 			assert uuid == UUID.fromString(parameter["uuid"])
 			assert operationTime == OperationTime.notLimited()
-			assert operator == null
+			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
 			assert nodeA == nodeInputA
 			assert nodeB == nodeInputB

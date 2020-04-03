@@ -27,7 +27,7 @@ public class AssetInputEntityData extends EntityData {
    */
   public AssetInputEntityData(
       Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
-    this(fieldsToAttributes, entityClass, null);
+    this(fieldsToAttributes, entityClass, OperatorInput.NO_OPERATOR_ASSIGNED);
   }
 
   /**

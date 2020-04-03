@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.io.extractor.Type;
+import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Describes a combined heat and power plant */
-public class ChpInput extends SystemParticipantInput implements Type {
+public class ChpInput extends SystemParticipantInput implements HasType {
   /** The thermal bus, this model is connected to */
   private final ThermalBusInput thermalBus;
   /** Type of this CHP plant, containing default values for CHP plants of this kind */
