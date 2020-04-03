@@ -44,7 +44,7 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
     final Quantity<Dimensionless> vTarget =
         data.getQuantity(V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     final boolean slack = data.getBoolean(SLACK);
-    final Point geoPosition = data.getPoint(GEO_POSITION).orElse(null);
+    final Point geoPosition = data.getPoint(GEO_POSITION).orElse(NodeInput.DEFAULT_GEO_POSITION);
     final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL.toLowerCase(), V_RATED.toLowerCase());
     final int subnet = data.getInt(SUBNET);
     return new NodeInput(

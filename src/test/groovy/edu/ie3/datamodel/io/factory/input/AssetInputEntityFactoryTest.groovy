@@ -154,7 +154,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		((TestAssetInput) input.get()).with {
 			assert uuid == UUID.fromString(parameter["uuid"])
 			assert operationTime == OperationTime.notLimited()
-			assert operator == null
+			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
 		}
 	}
@@ -180,7 +180,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			assert operationTime.startDate.present
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert !operationTime.endDate.present
-			assert operator == null
+			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
 		}
 	}
@@ -206,7 +206,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			assert !operationTime.startDate.present
 			assert operationTime.endDate.present
 			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-			assert operator == null
+			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
 		}
 	}
@@ -234,7 +234,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert operationTime.endDate.present
 			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-			assert operator == null
+			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
 		}
 	}
