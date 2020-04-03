@@ -45,11 +45,11 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 		]
 		def inputClass = PvInput
 		def nodeInput = Mock(NodeInput)
-		def operatorInput = Mock(OperatorInput)
+		def operator = Mock(OperatorInput)
 
 		when:
 		Optional<PvInput> input = inputFactory.getEntity(
-				new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput))
+				new SystemParticipantEntityData(parameter, inputClass, operator, nodeInput))
 
 		then:
 		input.present
@@ -60,7 +60,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert operationTime.endDate.present
 			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-			assert operator == operatorInput
+			assert operator == operator
 			assert id == parameter["id"]
 			assert node == nodeInput
 			assert qCharacteristics == parameter["qcharacteristics"]

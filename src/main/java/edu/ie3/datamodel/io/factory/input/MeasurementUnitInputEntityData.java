@@ -24,9 +24,9 @@ public class MeasurementUnitInputEntityData extends AssetInputEntityData {
   public MeasurementUnitInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       NodeInput node) {
-    super(fieldsToAttributes, entityClass, operatorInput);
+    super(fieldsToAttributes, entityClass, operator);
     this.node = node;
   }
 

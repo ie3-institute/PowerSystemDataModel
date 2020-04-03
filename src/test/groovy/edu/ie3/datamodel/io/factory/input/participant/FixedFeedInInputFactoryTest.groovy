@@ -39,10 +39,10 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 		]
 		def inputClass = FixedFeedInInput
 		def nodeInput = Mock(NodeInput)
-		def operatorInput = Mock(OperatorInput)
+		def operator = Mock(OperatorInput)
 
 		when:
-		Optional<FixedFeedInInput> input = inputFactory.getEntity(new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput))
+		Optional<FixedFeedInInput> input = inputFactory.getEntity(new SystemParticipantEntityData(parameter, inputClass, operator, nodeInput))
 
 		then:
 		input.present
@@ -52,7 +52,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 			assert operationTime.startDate.present
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert !operationTime.endDate.present
-			assert operator == operatorInput
+			assert operator == operator
 			assert id == parameter["id"]
 			assert node == nodeInput
 			assert qCharacteristics == parameter["qcharacteristics"]

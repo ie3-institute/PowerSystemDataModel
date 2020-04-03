@@ -37,13 +37,13 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
 			"autotap"        : "true"
 		]
 		def inputClass = Transformer2WInput
-		def operatorInput = Mock(OperatorInput)
+		def operator = Mock(OperatorInput)
 		def nodeInputA = Mock(NodeInput)
 		def nodeInputB = Mock(NodeInput)
 		def typeInput = Mock(Transformer2WTypeInput)
 
 		when:
-		Optional<Transformer2WInput> input = inputFactory.getEntity(new Transformer2WInputEntityData(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<Transformer2WInput> input = inputFactory.getEntity(new Transformer2WInputEntityData(parameter, inputClass, operator, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present
@@ -53,7 +53,7 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
 			assert operationTime.startDate.present
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert !operationTime.endDate.present
-			assert operator == operatorInput
+			assert operator == operator
 			assert id == parameter["id"]
 			assert nodeA == nodeInputA
 			assert nodeB == nodeInputB

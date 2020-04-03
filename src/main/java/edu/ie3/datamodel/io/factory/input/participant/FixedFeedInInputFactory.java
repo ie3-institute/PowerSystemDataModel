@@ -35,12 +35,12 @@ public class FixedFeedInInputFactory
       String id,
       NodeInput node,
       String qCharacteristics,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     final Quantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     final double cosPhiRated = data.getDouble(COSPHI_RATED);
 
     return new FixedFeedInInput(
-        uuid, id, operatorInput, operationTime, node, qCharacteristics, sRated, cosPhiRated);
+        uuid, id, operator, operationTime, node, qCharacteristics, sRated, cosPhiRated);
   }
 }

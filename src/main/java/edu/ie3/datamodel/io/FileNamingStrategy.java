@@ -131,12 +131,11 @@ public class FileNamingStrategy {
   /**
    * Get the the file name for all {@link OperatorInput}s
    *
-   * @param operatorInputClass the asset input class a filename string should be generated from
+   * @param operatorClass the asset input class a filename string should be generated from
    * @return the filename string
    */
-  public Optional<String> getOperatorInputFileName(
-      Class<? extends OperatorInput> operatorInputClass) {
-    String assetInputString = camelCaseToSnakeCase(operatorInputClass.getSimpleName());
+  public Optional<String> getOperatorInputFileName(Class<? extends OperatorInput> operatorClass) {
+    String assetInputString = camelCaseToSnakeCase(operatorClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetInputString));
   }
 

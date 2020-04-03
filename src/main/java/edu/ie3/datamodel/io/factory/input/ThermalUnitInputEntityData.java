@@ -24,9 +24,9 @@ public class ThermalUnitInputEntityData extends AssetInputEntityData {
   public ThermalUnitInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       ThermalBusInput busInput) {
-    super(fieldsToAttributes, entityClass, operatorInput);
+    super(fieldsToAttributes, entityClass, operator);
     this.busInput = busInput;
   }
 

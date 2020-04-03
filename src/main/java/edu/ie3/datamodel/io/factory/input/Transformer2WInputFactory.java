@@ -34,7 +34,7 @@ public class Transformer2WInputFactory
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     final int parallelDevices = data.getInt(PARALLEL_DEVICES);
     final Transformer2WTypeInput type = data.getType();
@@ -42,15 +42,6 @@ public class Transformer2WInputFactory
     final boolean autoTap = data.getBoolean(AUTO_TAP);
 
     return new Transformer2WInput(
-        uuid,
-        operationTime,
-        operatorInput,
-        id,
-        nodeA,
-        nodeB,
-        parallelDevices,
-        type,
-        tapPos,
-        autoTap);
+        uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, type, tapPos, autoTap);
   }
 }

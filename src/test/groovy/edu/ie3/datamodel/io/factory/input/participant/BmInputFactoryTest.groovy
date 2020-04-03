@@ -40,12 +40,12 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
 		]
 		def inputClass = BmInput
 		def nodeInput = Mock(NodeInput)
-		def operatorInput = Mock(OperatorInput)
+		def operator = Mock(OperatorInput)
 		def typeInput = Mock(BmTypeInput)
 
 		when:
 		Optional<BmInput> input = inputFactory.getEntity(
-				new SystemParticipantTypedEntityData<BmTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
+				new SystemParticipantTypedEntityData<BmTypeInput>(parameter, inputClass, operator, nodeInput, typeInput))
 
 		then:
 		input.present
@@ -56,7 +56,7 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert operationTime.endDate.present
 			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-			assert operator == operatorInput
+			assert operator == operator
 			assert id == parameter["id"]
 			assert node == nodeInput
 			assert qCharacteristics == parameter["qcharacteristics"]

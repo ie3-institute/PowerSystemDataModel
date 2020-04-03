@@ -36,10 +36,10 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			"id"  : "TestID"
 		]
 		def inputClass = TestAssetInput
-		def operatorInput = Mock(OperatorInput)
+		def operator = Mock(OperatorInput)
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operator))
 
 		then:
 		input.present
@@ -47,7 +47,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		((TestAssetInput) input.get()).with {
 			assert uuid == UUID.fromString(parameter["uuid"])
 			assert operationTime == OperationTime.notLimited()
-			assert operator == operatorInput
+			assert operator == operator
 			assert id == parameter["id"]
 		}
 	}
@@ -62,10 +62,10 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			"id"           : "TestID"
 		]
 		def inputClass = TestAssetInput
-		def operatorInput = Mock(OperatorInput)
+		def operator = Mock(OperatorInput)
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operator))
 
 		then:
 		input.present
@@ -75,7 +75,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			assert operationTime.startDate.present
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert !operationTime.endDate.present
-			assert operator == operatorInput
+			assert operator == operator
 			assert id == parameter["id"]
 		}
 	}
@@ -89,10 +89,10 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			"id"           : "TestID"
 		]
 		def inputClass = TestAssetInput
-		def operatorInput = Mock(OperatorInput)
+		def operator = Mock(OperatorInput)
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operator))
 
 		then:
 		input.present
@@ -102,7 +102,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			assert !operationTime.startDate.present
 			assert operationTime.endDate.present
 			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-			assert operator == operatorInput
+			assert operator == operator
 			assert id == parameter["id"]
 		}
 	}
@@ -117,10 +117,10 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			"id"           : "TestID"
 		]
 		def inputClass = TestAssetInput
-		def operatorInput = Mock(OperatorInput)
+		def operator = Mock(OperatorInput)
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operator))
 
 		then:
 		input.present
@@ -131,7 +131,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert operationTime.endDate.present
 			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-			assert operator == operatorInput
+			assert operator == operator
 			assert id == parameter["id"]
 		}
 	}
@@ -279,8 +279,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		}
 
 		@Override
-		protected TestAssetInput buildModel(AssetInputEntityData data, UUID uuid, String id, OperatorInput operatorInput, OperationTime operationTime) {
-			return new TestAssetInput(uuid, operationTime, operatorInput, id)
+		protected TestAssetInput buildModel(AssetInputEntityData data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+			return new TestAssetInput(uuid, operationTime, operator, id)
 		}
 	}
 }

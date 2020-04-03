@@ -34,7 +34,7 @@ public class Transformer3WInputFactory
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     final int parallelDevices = data.getInt(PARALLEL_DEVICES);
     final NodeInput nodeC = data.getNodeC();
@@ -45,7 +45,7 @@ public class Transformer3WInputFactory
     return new Transformer3WInput(
         uuid,
         id,
-        operatorInput,
+        operator,
         operationTime,
         nodeA,
         nodeB,

@@ -39,13 +39,13 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 			"olmcharacteristic": "blub"
 		]
 		def inputClass = LineInput
-		def operatorInput = Mock(OperatorInput)
+		def operator = Mock(OperatorInput)
 		def nodeInputA = Mock(NodeInput)
 		def nodeInputB = Mock(NodeInput)
 		def typeInput = Mock(LineTypeInput)
 
 		when:
-		Optional<LineInput> input = inputFactory.getEntity(new LineInputEntityData(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<LineInput> input = inputFactory.getEntity(new LineInputEntityData(parameter, inputClass, operator, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present
@@ -55,7 +55,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert operationTime.startDate.present
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert !operationTime.endDate.present
-			assert operator == operatorInput
+			assert operator == operator
 			assert id == parameter["id"]
 			assert nodeA == nodeInputA
 			assert nodeB == nodeInputB

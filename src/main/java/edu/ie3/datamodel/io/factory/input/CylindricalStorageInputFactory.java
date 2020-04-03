@@ -38,7 +38,7 @@ public class CylindricalStorageInputFactory
       ThermalUnitInputEntityData data,
       UUID uuid,
       String id,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     final ThermalBusInput bus = data.getBusInput();
     final Quantity<Volume> storageVolumeLvl =

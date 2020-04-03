@@ -31,14 +31,14 @@ public class ChpInputFactory
       String id,
       NodeInput node,
       String qCharacteristics,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
 
     return new ChpInput(
         uuid,
         id,
-        operatorInput,
+        operator,
         operationTime,
         node,
         data.getThermalBusInput(),

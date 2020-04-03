@@ -37,13 +37,13 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
 		]
 		def inputClass = HpInput
 		def nodeInput = Mock(NodeInput)
-		def operatorInput = Mock(OperatorInput)
+		def operator = Mock(OperatorInput)
 		def typeInput = Mock(HpTypeInput)
 		def thermalBusInput = Mock(ThermalBusInput)
 
 		when:
 		Optional<HpInput> input = inputFactory.getEntity(
-				new HpInputEntityData(parameter, operatorInput, nodeInput, typeInput, thermalBusInput))
+				new HpInputEntityData(parameter, operator, nodeInput, typeInput, thermalBusInput))
 
 		then:
 		input.present
@@ -54,7 +54,7 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert operationTime.endDate.present
 			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-			assert operator == operatorInput
+			assert operator == operator
 			assert id == parameter["id"]
 			assert node == nodeInput
 			assert qCharacteristics == parameter["qcharacteristics"]
