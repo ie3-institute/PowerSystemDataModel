@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io
 
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
+import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.input.EvcsInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -54,6 +55,7 @@ import edu.ie3.datamodel.models.result.system.LoadResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.StorageResult
 import edu.ie3.datamodel.models.result.system.WecResult
+import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
@@ -372,52 +374,68 @@ class FileNamingStrategyTest extends Specification {
 		LineGraphicInput || "line_graphic_input"
 	}
 
-	def "A FileNamingStrategy without pre- or suffix should return valid file name for time series" () {
+	def "A FileNamingStrategy without pre- or suffix should return valid file name for individual time series" () {
 		given:
 		FileNamingStrategy strategy = new FileNamingStrategy()
-		TimeSeriesProcessorKey key = Mock(TimeSeriesProcessorKey)
-		key.getTimeSeriesClass() >> clazz
+		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
+		timeSeries.getUuid() >> uuid
 
 		when:
-		Optional<String> actual = strategy.getFileName(key, uuid)
+		Optional<String> actual = strategy.getFileName(timeSeries)
 
 		then:
 		actual.present
 		actual.get() == expectedFileName
 
 		where:
-		clazz                || uuid || expectedFileName
+		clazz                || uuid 													|| expectedFileName
 		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "individual_time_series_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
-		LoadProfileInput     || UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") || "load_profile_time_series_bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
-	def "A FileNamingStrategy with pre- or suffix should return valid file name for time series" () {
+	def "A FileNamingStrategy with pre- or suffix should return valid file name for individual time series" () {
 		given:
 		FileNamingStrategy strategy = new FileNamingStrategy("aa", "zz")
-		TimeSeriesProcessorKey key = Mock(TimeSeriesProcessorKey)
-		key.getTimeSeriesClass() >> clazz
+		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
+		timeSeries.getUuid() >> uuid
 
 		when:
-		Optional<String> actual = strategy.getFileName(key, uuid)
+		Optional<String> actual = strategy.getFileName(timeSeries)
 
 		then:
 		actual.present
 		actual.get() == expectedFileName
 
 		where:
-		clazz                || uuid || expectedFileName
+		clazz                || uuid 													|| expectedFileName
 		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_individual_time_series_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
-		LoadProfileInput     || UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") || "aa_load_profile_time_series_bee0a8b6-4788-4f18-bf72-be52035f7304_zz"
+	}
+
+	def "A FileNamingStrategy without pre- or suffix should return valid file name for load profile input" () {
+		given:
+		FileNamingStrategy strategy = new FileNamingStrategy()
+		LoadProfileInput timeSeries = Mock(LoadProfileInput)
+		timeSeries.getUuid() >> uuid
+		timeSeries.getType() >> type
+
+		when:
+		Optional<String> actual = strategy.getFileName(timeSeries)
+
+		then:
+		actual.present
+		actual.get() == expectedFileName
+
+		where:
+		clazz                || uuid 													|| type 				|| expectedFileName
+		LoadProfileInput     || UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") || BdewLoadProfile.G3 	|| "load_profile_time_series_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
 	def "A FileNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {
 		given:
 		FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
-		TimeSeriesProcessorKey key = Mock(TimeSeriesProcessorKey)
-		key.getTimeSeriesClass() >> RepetitiveTimeSeries
+		RepetitiveTimeSeries timeSeries = Mock(RepetitiveTimeSeries)
 
 		when:
-		Optional<String> fileName = fileNamingStrategy.getFileName(key, UUID.randomUUID())
+		Optional<String> fileName = fileNamingStrategy.getFileName(timeSeries)
 
 		then:
 		!fileName.present

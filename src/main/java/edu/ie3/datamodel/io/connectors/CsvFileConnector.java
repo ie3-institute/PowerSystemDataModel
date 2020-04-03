@@ -8,8 +8,10 @@ package edu.ie3.datamodel.io.connectors;
 import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.io.CsvFileDefinition;
 import edu.ie3.datamodel.io.FileNamingStrategy;
-import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.timeseries.TimeSeries;
+import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
+import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.io.FileIOUtils;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -83,15 +85,11 @@ public class CsvFileConnector implements DataConnector {
             });
   }
 
-  public BufferedWriter getOrInitWriter(
-      TimeSeriesProcessorKey timeSeriesProcessorKey,
-      UUID timeSeriesUuid,
-      String[] headerElements,
-      String csvSep)
-      throws ConnectorException {
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+      BufferedWriter getOrInitWriter(T timeSeries, String[] headerElements, String csvSep)
+          throws ConnectorException {
     try {
-      CsvFileDefinition fileDefinition =
-          buildFileDefinition(timeSeriesProcessorKey, timeSeriesUuid, headerElements, csvSep);
+      CsvFileDefinition fileDefinition = buildFileDefinition(timeSeries, headerElements, csvSep);
 
       return Optional.ofNullable(timeSeriesWriters.get(fileDefinition))
           .orElseGet(
@@ -179,30 +177,22 @@ public class CsvFileConnector implements DataConnector {
   /**
    * Builds a new file definition consisting of file name and head line elements
    *
-   * @param timeSeriesProcessorKey Key to identify the combination of time series elements
-   * @param timeSeriesUuid UUID of the time series
+   * @param timeSeries Time series to derive naming information from
    * @param headLineElements Array of head line elements
    * @param csvSep Separator for csv columns
    * @return A suitable file definition
    * @throws ConnectorException If the definition cannot be determined
    */
-  private CsvFileDefinition buildFileDefinition(
-      TimeSeriesProcessorKey timeSeriesProcessorKey,
-      UUID timeSeriesUuid,
-      String[] headLineElements,
-      String csvSep)
-      throws ConnectorException {
+  private <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+      CsvFileDefinition buildFileDefinition(T timeSeries, String[] headLineElements, String csvSep)
+          throws ConnectorException {
     String fileName =
         fileNamingStrategy
-            .getFileName(timeSeriesProcessorKey, timeSeriesUuid)
+            .getFileName(timeSeries)
             .orElseThrow(
                 () ->
                     new ConnectorException(
-                        "Cannot determine the file name for time series definition '"
-                            + timeSeriesProcessorKey
-                            + "' and uuid '"
-                            + timeSeriesUuid
-                            + "'."));
+                        "Cannot determine the file name for time series '" + timeSeries + "'."));
     return new CsvFileDefinition(fileName, headLineElements, csvSep);
   }
 }

@@ -7,6 +7,7 @@ package edu.ie3.test.common
 
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.timeseries.IntValue
+import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
@@ -509,4 +510,18 @@ trait TimeSeriesTestData {
 			"quarterHourOfDay"	: "2"
 		] as LinkedHashMap
 	] as Set
+
+	List<TimeSeries> allTimeSeries = [
+		individualEnergyPriceTimeSeries,
+		individualHeatAndPTimeSeries,
+		individualHeatAndSTimeSeries,
+		individualHeatDemandTimeSeries,
+		individualIrradiationTimeSeries,
+		individualPTimeSeries,
+		individualSTimeSeries,
+		individualTemperatureTimeSeries,
+		individualWeatherTimeSeries,
+		individualWindTimeSeries,
+		loadProfileInput
+	]
 }

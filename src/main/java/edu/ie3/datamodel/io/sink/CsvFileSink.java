@@ -56,7 +56,8 @@ public class CsvFileSink implements DataSink {
    * @param baseFolderPath the base folder path where the files should be put into
    * @param fileNamingStrategy the file naming strategy that should be used
    * @param initFiles true if the files should be created during initialization (might create files,
-   *     that only consist of a headline, because no data will be writen into them), false otherwise
+   *     that only consist of a headline, because no data will be written into them), false
+   *     otherwise
    * @param csvSep the csv file separator that should be use
    */
   public CsvFileSink(
@@ -186,8 +187,7 @@ public class CsvFileSink implements DataSink {
 
     try {
       String[] headerElements = processorProvider.getHeaderElements(key);
-      BufferedWriter writer =
-          connector.getOrInitWriter(key, timeSeries.getUuid(), headerElements, csvSep);
+      BufferedWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
       entityFieldData.forEach(fieldData -> write(fieldData, headerElements, writer));
     } catch (ProcessorProviderException e) {
       log.error(

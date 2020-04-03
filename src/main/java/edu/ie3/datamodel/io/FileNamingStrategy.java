@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io;
 
-import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
@@ -13,10 +12,12 @@ import edu.ie3.datamodel.models.input.RandomLoadParameters;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.AssetCharacteristicInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.timeseries.TimeSeries;
+import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import edu.ie3.datamodel.models.value.Value;
 import java.util.Optional;
-import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -118,30 +119,32 @@ public class FileNamingStrategy {
   /**
    * Builds a file name of the given information.
    *
-   * @param timeSeriesProcessorKey Key to identify the combination of time series elements
-   * @param timeSeriesUuid UUID of the time series
+   * @param timeSeries Time series to derive naming information from
    * @return A file name for this particular time series
    */
-  public Optional<String> getFileName(
-      TimeSeriesProcessorKey timeSeriesProcessorKey, UUID timeSeriesUuid) {
-    if (timeSeriesProcessorKey.getTimeSeriesClass().equals(IndividualTimeSeries.class)) {
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+      Optional<String> getFileName(T timeSeries) {
+    if (timeSeries instanceof IndividualTimeSeries) {
       return Optional.of(
           prefix
               .concat("individual")
               .concat(TIME_SERIES_SUFFIX)
               .concat("_")
-              .concat(timeSeriesUuid.toString())
+              .concat(timeSeries.getUuid().toString())
               .concat(suffix));
-    } else if (timeSeriesProcessorKey.getTimeSeriesClass().equals(LoadProfileInput.class)) {
+    } else if (timeSeries instanceof LoadProfileInput) {
+      LoadProfileInput loadProfileInput = (LoadProfileInput) timeSeries;
       return Optional.of(
           prefix
               .concat("load_profile")
               .concat(TIME_SERIES_SUFFIX)
               .concat("_")
-              .concat(timeSeriesUuid.toString())
+              .concat(loadProfileInput.getType().getKey())
+              .concat("_")
+              .concat(loadProfileInput.getUuid().toString())
               .concat(suffix));
     } else {
-      logger.error("There is no naming strategy defined for {}", timeSeriesProcessorKey);
+      logger.error("There is no naming strategy defined for {}", timeSeries);
       return Optional.empty();
     }
   }
