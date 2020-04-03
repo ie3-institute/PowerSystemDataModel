@@ -314,23 +314,36 @@ if (env.BRANCH_NAME == "master") {
     getFeatureBranchProps()
 
     node {
-        // curl the api to get debugging details
-        def jsonObj = getGithubPRJsonObj(env.CHANGE_ID, orgNames.get(0), projects.get(0))
 
-        // This displays colors using the 'xterm' ansi color map.
+        def repoName = ""
+        // init variables depending of this build is triggered by a branch with PR or without PR
+        if (env.CHANGE_ID == null) {
+            // no PR exists
+            featureBranchName = env.BRANCH_NAME
+            repoName = orgNames.get(0) + "/" + projects.get(0)
+        } else {
+            // PR exists
+            /// curl the api to get debugging details
+            def jsonObj = getGithubPRJsonObj(env.CHANGE_ID, orgNames.get(0), projects.get(0))
+
+            featureBranchName = jsonObj.head.ref
+            repoName = jsonObj.head.repo.full_name
+
+        }
+
+
         ansiColor('xterm') {
             try {
                 // set java version
                 setJavaVersion(javaVersionId)
 
                 /// set the build name
-                featureBranchName = jsonObj.head.ref
                 currentBuild.displayName = featureBranchName + " (" + currentBuild.displayName + ")"
 
                 // notify rocket chat about the started feature branch run
                 rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
                         message: "feature branch build triggered:\n" +
-                                "*repo:* ${jsonObj.head.repo.full_name}\n" +
+                                "*repo:* ${repoName}\n" +
                                 "*branch:* ${featureBranchName}\n"
                 rawMessage: true
 
@@ -355,7 +368,16 @@ if (env.BRANCH_NAME == "master") {
                 // execute sonarqube code analysis
                 stage('SonarQube analysis') {
                     withSonarQubeEnv() { // Will pick the global server connection from jenkins for sonarqube
-                        gradle("sonarqube -Dsonar.projectKey=$sonarqubeProjectKey -Dsonar.pullrequest.branch=${featureBranchName} -Dsonar.pullrequest.key=${env.CHANGE_ID} -Dsonar.pullrequest.base=master -Dsonar.pullrequest.github.repository=${orgNames.get(0)}/${projects.get(0)} -Dsonar.pullrequest.provider=Github")
+                         // do we have a PR?
+                        String gradleCommand = "sonarqube -Dsonar.projectKey=$sonarqubeProjectKey"
+
+                        if (env.CHANGE_ID != null) {
+                            gradleCommand = gradleCommand + " -Dsonar.pullrequest.branch=${featureBranchName} -Dsonar.pullrequest.key=${env.CHANGE_ID} -Dsonar.pullrequest.base=master -Dsonar.pullrequest.github.repository=${orgNames.get(0)}/${projects.get(0)} -Dsonar.pullrequest.provider=Github"
+                        } else {
+                            gradleCommand = gradleCommand + " -Dsonar.branch.name=$featureBranchName"
+                        }
+                        gradle(gradleCommand)
+
                     }
                 }
 
@@ -383,7 +405,7 @@ if (env.BRANCH_NAME == "master") {
                     // notify rocket chat
                     rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
                             message: "feature branch test successful!\n" +
-                                    "*repo:* ${jsonObj.head.repo.full_name}\n" +
+                                    "*repo:* ${repoName}\n" +
                                     "*branch:* ${featureBranchName}\n"
                     rawMessage: true
                 }
@@ -401,7 +423,7 @@ if (env.BRANCH_NAME == "master") {
                 // notify rocket chat
                 rocketSend channel: rocketChatChannel, emoji: ':jenkins_explode:',
                         message: "feature branch test failed!\n" +
-                                "*repo:* ${jsonObj.head.repo.full_name}\n" +
+                                "*repo:* ${repoName}\n" +
                                 "*branch:* ${featureBranchName}\n"
                 rawMessage: true
             }

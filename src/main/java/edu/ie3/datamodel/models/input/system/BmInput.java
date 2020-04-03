@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.io.extractor.Type;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -16,7 +17,7 @@ import java.util.UUID;
 import tec.uom.se.ComparableQuantity;
 
 /** Describes a biomass plant */
-public class BmInput extends SystemParticipantInput {
+public class BmInput extends SystemParticipantInput implements Type {
   /** Type of this BM plant, containing default values for BM plants of this kind */
   private final BmTypeInput type;
   /** Is this asset market oriented? */
@@ -90,6 +91,7 @@ public class BmInput extends SystemParticipantInput {
     this.feedInTariff = feedInTariff.to(StandardUnits.ENERGY_PRICE);
   }
 
+  @Override
   public BmTypeInput getType() {
     return type;
   }

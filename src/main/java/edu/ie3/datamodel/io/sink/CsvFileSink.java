@@ -5,15 +5,20 @@
 */
 package edu.ie3.datamodel.io.sink;
 
+import edu.ie3.datamodel.exceptions.ExtractorException;
 import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.connectors.DataConnector;
+import edu.ie3.datamodel.io.extractor.Extractor;
+import edu.ie3.datamodel.io.extractor.Nested;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.InputEntity;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,11 +38,36 @@ public class CsvFileSink implements DataSink {
   private final String csvSep;
 
   public CsvFileSink(String baseFolderPath) {
-    this(baseFolderPath, new ProcessorProvider(), new FileNamingStrategy(), false, ",");
+    this(baseFolderPath, new FileNamingStrategy(), false, ",");
   }
 
   /**
-   * Create an instance of a csv file sink
+   * Create an instance of a csv file sink that can be used to persist Unique entities. This
+   * implementation processes in sequential order. To parallelize this process one might consider
+   * starting several sinks and use them for specific entities.
+   *
+   * @param baseFolderPath the base folder path where the files should be put into
+   * @param fileNamingStrategy the file naming strategy that should be used
+   * @param initFiles true if the files should be created during initialization (might create files,
+   *     that only consist of a headline, because no data will be writen into them), false otherwise
+   * @param csvSep the csv file separator that should be use
+   */
+  public CsvFileSink(
+      String baseFolderPath,
+      FileNamingStrategy fileNamingStrategy,
+      boolean initFiles,
+      String csvSep) {
+    this(baseFolderPath, new ProcessorProvider(), fileNamingStrategy, initFiles, csvSep);
+  }
+
+  /**
+   * Create an instance of a csv file sink that can be used to persist Unique entities. This
+   * implementation processes in sequential order. To parallelize this process one might consider
+   * starting several sinks and use them for specific entities. Be careful when providing your own
+   * {@link ProcessorProvider} because if you're not 100% sure that it knows about all entities
+   * you're going to process exceptions might occur. Therefore it is strongly advised to either use
+   * a constructor without providing the {@link ProcessorProvider} or provide a general {@link
+   * ProcessorProvider} by calling {@link ProcessorProvider()}
    *
    * @param baseFolderPath the base folder path where the files should be put into
    * @param processorProvider the processor provided that should be used for entity de-serialization
@@ -72,8 +102,7 @@ public class CsvFileSink implements DataSink {
   }
 
   @Override
-  public <T extends UniqueEntity> void persist(T entity) {
-
+  public <C extends UniqueEntity> void persistIgnoreNested(C entity) {
     LinkedHashMap<String, String> entityFieldData =
         processorProvider
             .processEntity(entity)
@@ -82,12 +111,42 @@ public class CsvFileSink implements DataSink {
                     new SinkException(
                         "Cannot persist entity of type '"
                             + entity.getClass().getSimpleName()
-                            + "'. Is this sink properly initialized?"));
+                            + "'. This sink can only process the following entities: ["
+                            + processorProvider.getRegisteredClasses().stream()
+                                .map(Class::getSimpleName)
+                                .collect(Collectors.joining(","))
+                            + "]"));
 
     String[] headerElements =
         processorProvider.getHeaderElements(entity.getClass()).orElse(new String[0]);
     BufferedWriter writer = connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
     write(entityFieldData, headerElements, writer);
+  }
+
+  @Override
+  public <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities) {
+    entities.parallelStream().forEach(this::persistIgnoreNested);
+  }
+
+  @Override
+  public <T extends UniqueEntity> void persist(T entity) {
+    if (entity instanceof Nested) {
+      try {
+        persistIgnoreNested(entity);
+        for (InputEntity ent : new Extractor((Nested) entity).getExtractedEntities()) {
+          persistIgnoreNested(ent);
+        }
+
+      } catch (ExtractorException e) {
+        log.error(
+            "An error occurred during extraction of nested entity'"
+                + entity.getClass().getSimpleName()
+                + "': ",
+            e);
+      }
+    } else {
+      persistIgnoreNested(entity);
+    }
   }
 
   /**

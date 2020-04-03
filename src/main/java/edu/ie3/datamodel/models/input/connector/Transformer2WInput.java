@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import edu.ie3.datamodel.io.extractor.Type;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -16,7 +17,7 @@ import java.util.UUID;
  * Describes a two winding transformer, that is connected to two {@link
  * edu.ie3.datamodel.models.input.NodeInput}s
  */
-public class Transformer2WInput extends TransformerInput {
+public class Transformer2WInput extends TransformerInput implements Type {
   /** Type of this 2W transformer, containing default values for transformers of this kind */
   private final Transformer2WTypeInput type;
 
@@ -74,6 +75,7 @@ public class Transformer2WInput extends TransformerInput {
     this.type = type;
   }
 
+  @Override
   public Transformer2WTypeInput getType() {
     return type;
   }

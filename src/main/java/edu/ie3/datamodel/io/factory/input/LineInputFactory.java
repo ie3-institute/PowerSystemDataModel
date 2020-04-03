@@ -14,6 +14,8 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import java.util.Optional;
 import java.util.UUID;
 import javax.measure.quantity.Length;
+import org.apache.commons.lang3.ArrayUtils;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import tec.uom.se.ComparableQuantity;
 
@@ -42,9 +44,15 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
       OperationTime operationTime) {
     final int parallelDevices = data.getInt(PARALLEL_DEVICES);
     final LineTypeInput type = data.getType();
-    final ComparableQuantity<Length> length = // TODO #65 Quantity replaced
-        data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH);
-    final LineString geoPosition = data.getLineString(GEO_POSITION).orElse(null);
+    final ComparableQuantity<Length> length = data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH); // TODO #65 Quantity replaced
+    final LineString geoPosition =
+        data.getLineString(GEO_POSITION)
+            .orElse(
+                new GeometryFactory()
+                    .createLineString(
+                        ArrayUtils.addAll(
+                            NodeInput.DEFAULT_GEO_POSITION.getCoordinates(),
+                            NodeInput.DEFAULT_GEO_POSITION.getCoordinates())));
     final Optional<String> olmCharacteristic =
         data.containsKey(OLM_CHARACTERISTIC)
             ? Optional.of(data.getField(OLM_CHARACTERISTIC))
