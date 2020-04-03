@@ -15,7 +15,6 @@ import spock.lang.Specification
 import java.time.ZoneId
 
 
-// todo JH more tests for all possible classes
 class ExtractorTest extends Specification {
 
 	private final class InvalidNestedExtensionClass implements NestedEntity {}
@@ -107,7 +106,6 @@ class ExtractorTest extends Specification {
 			tutd.thermalHouseInput.operator,
 			tutd.thermalHouseInput.bus
 		]
-
 	}
 
 	def "An Extractor should throw an ExtractorException if the provided Nested entity is unknown and or an invalid extension of the 'Nested' interface took place"() {
