@@ -56,9 +56,140 @@ import edu.ie3.datamodel.models.result.system.StorageResult
 import edu.ie3.datamodel.models.result.system.WecResult
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
+import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import spock.lang.Specification
 
 class FileNamingStrategyTest extends Specification {
+
+	def "The FileNamingStrategy is capable of cleaning up strings correctly"() {
+		when:
+		String actual = FileNamingStrategy.cleanString(input)
+
+		then:
+		actual == expected
+
+		where:
+		input 		|| expected
+		"ab123" 	|| "ab123"
+		"ab.123" 	|| "ab_123"
+		"ab-123" 	|| "ab_123"
+		"ab_123" 	|| "ab_123"
+		"ab/123" 	|| "ab_123"
+		"ab\\123" 	|| "ab_123"
+		"ab!123" 	|| "ab_123"
+		"ab\"123" 	|| "ab_123"
+		"ab§123" 	|| "ab_123"
+		"ab\$123" 	|| "ab_123"
+		"ab&123" 	|| "ab_123"
+		"ab{123" 	|| "ab_123"
+		"ab[123" 	|| "ab_123"
+		"ab}123" 	|| "ab_123"
+		"ab]123" 	|| "ab_123"
+		"ab(123" 	|| "ab_123"
+		"ab)123" 	|| "ab_123"
+		"ab=123" 	|| "ab_123"
+		"ab?123" 	|| "ab_123"
+		"abß123" 	|| "ab_123"
+		"ab123." 	|| "ab123_"
+		"ab123-" 	|| "ab123_"
+		"ab123_" 	|| "ab123_"
+		"ab123/" 	|| "ab123_"
+		"ab123\\" 	|| "ab123_"
+		"ab123!" 	|| "ab123_"
+		"ab123\"" 	|| "ab123_"
+		"ab123§" 	|| "ab123_"
+		"ab123\$" 	|| "ab123_"
+		"ab123&" 	|| "ab123_"
+		"ab123{" 	|| "ab123_"
+		"ab123[" 	|| "ab123_"
+		"ab123}" 	|| "ab123_"
+		"ab123]" 	|| "ab123_"
+		"ab123(" 	|| "ab123_"
+		"ab123)" 	|| "ab123_"
+		"ab123=" 	|| "ab123_"
+		"ab123?" 	|| "ab123_"
+		"ab123ß" 	|| "ab123_"
+		".ab123" 	|| "_ab123"
+		"-ab123" 	|| "_ab123"
+		"_ab123" 	|| "_ab123"
+		"/ab123" 	|| "_ab123"
+		"\\ab123" 	|| "_ab123"
+		"!ab123" 	|| "_ab123"
+		"\"ab123" 	|| "_ab123"
+		"§ab123" 	|| "_ab123"
+		"\$ab123"	|| "_ab123"
+		"&ab123" 	|| "_ab123"
+		"{ab123" 	|| "_ab123"
+		"[ab123" 	|| "_ab123"
+		"}ab123" 	|| "_ab123"
+		"]ab123" 	|| "_ab123"
+		"(ab123" 	|| "_ab123"
+		")ab123" 	|| "_ab123"
+		"=ab123" 	|| "_ab123"
+		"?ab123" 	|| "_ab123"
+		"ßab123" 	|| "_ab123"
+	}
+
+	def "The FileNamingStrategy is able to prepare the prefix properly"() {
+		when:
+		String actual = FileNamingStrategy.preparePrefix(prefix)
+
+		then:
+		actual == expected
+
+		where:
+		prefix 		|| expected
+		"abc123" 	|| "abc123_"
+		"aBc123" 	|| "abc123_"
+		"ABC123" 	|| "abc123_"
+		"abc123_" 	|| "abc123_"
+		"aBc123_"	|| "abc123_"
+		"ABC123_" 	|| "abc123_"
+	}
+
+	def "The FileNamingStrategy is able to prepare the suffix properly"() {
+		when:
+		String actual = FileNamingStrategy.prepareSuffix(prefix)
+
+		then:
+		actual == suffix
+
+		where:
+		prefix || suffix
+		"abc123" || "_abc123"
+		"aBc123" || "_abc123"
+		"ABC123" || "_abc123"
+		"_abc123" || "_abc123"
+		"_aBc123" || "_abc123"
+		"_ABC123" || "_abc123"
+	}
+
+	def "A FileNamingStrategy should recognize if empty strings are passed in the prefix/suffix constructor and don't add underlines then"() {
+		given: "a file naming strategy"
+		FileNamingStrategy strategy = new FileNamingStrategy("", "")
+
+		expect:
+		strategy.prefix == ""
+		strategy.suffix == ""
+	}
+
+	def "A FileNamingStrategy should correctly append and prepend underscores"() {
+		given: "a file naming strategy"
+		FileNamingStrategy strategy = new FileNamingStrategy("bla", "foo")
+
+		expect:
+		strategy.prefix == "bla_"
+		strategy.suffix == "_foo"
+	}
+
+	def "A FileNamingStrategy should correctly append underscore, when only prefix is set"() {
+		given: "a file naming strategy"
+		FileNamingStrategy strategy = new FileNamingStrategy("bla")
+
+		expect:
+		strategy.prefix == "bla_"
+		strategy.suffix == ""
+	}
 
 	def "A FileNamingStrategy should return an empty optional on a invalid class"() {
 		given: "a file naming strategy"
@@ -69,15 +200,6 @@ class FileNamingStrategyTest extends Specification {
 
 		then:
 		!res.present
-	}
-
-	def "A FileNamingStrategy should recognize if empty strings are passed in the prefix/suffix constructor and don't add underlines then"() {
-		given: "a file naming strategy"
-		FileNamingStrategy strategy = new FileNamingStrategy("", "")
-
-		expect:
-		strategy.prefix == ""
-		strategy.suffix == ""
 	}
 
 	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all result models"() {
@@ -286,5 +408,18 @@ class FileNamingStrategyTest extends Specification {
 		clazz                || uuid || expectedFileName
 		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_individual_time_series_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
 		LoadProfileInput     || UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") || "aa_load_profile_time_series_bee0a8b6-4788-4f18-bf72-be52035f7304_zz"
+	}
+
+	def "A FileNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {
+		given:
+		FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+		TimeSeriesProcessorKey key = Mock(TimeSeriesProcessorKey)
+		key.getTimeSeriesClass() >> RepetitiveTimeSeries
+
+		when:
+		Optional<String> fileName = fileNamingStrategy.getFileName(key, UUID.randomUUID())
+
+		then:
+		!fileName.present
 	}
 }

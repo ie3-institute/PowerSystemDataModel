@@ -42,11 +42,6 @@ public class FileNamingStrategy {
   private final String prefix;
   private final String suffix;
 
-  public FileNamingStrategy() {
-    this.prefix = "";
-    this.suffix = "";
-  }
-
   /**
    * Constructor for building the file names
    *
@@ -54,8 +49,12 @@ public class FileNamingStrategy {
    * @param suffix Suffixes of the files
    */
   public FileNamingStrategy(String prefix, String suffix) {
-    this.prefix = prefix.endsWith("_") || prefix.isEmpty() ? prefix : prefix.concat("_");
-    this.suffix = suffix.startsWith("_") || prefix.isEmpty() ? suffix : "_".concat(suffix);
+    this.prefix = preparePrefix(prefix);
+    this.suffix = prepareSuffix(suffix);
+  }
+
+  public FileNamingStrategy() {
+    this("", "");
   }
 
   /**
@@ -64,8 +63,37 @@ public class FileNamingStrategy {
    * @param prefix Prefix of the files
    */
   public FileNamingStrategy(String prefix) {
-    this.suffix = "";
-    this.prefix = prefix.endsWith("_") ? prefix : prefix.concat("_");
+    this(prefix, "");
+  }
+
+  /**
+   * Prepares the prefix by appending an underscore and bringing it to lower case
+   *
+   * @param prefix Intended prefix
+   * @return Prefix with trailing underscore
+   */
+  private static String preparePrefix(String prefix) {
+    return cleanString(prefix).replaceAll("([^_])$", "$1_").toLowerCase();
+  }
+
+  /**
+   * Prepares the suffix by prepending an underscore and bringing it to lower case
+   *
+   * @param suffix Intended suffix
+   * @return Suffix with trailing leading
+   */
+  private static String prepareSuffix(String suffix) {
+    return cleanString(suffix).replaceAll("^([^_])", "_$1").toLowerCase();
+  }
+
+  /**
+   * Replaces all non word-characters with an underscore
+   *
+   * @param input String to clean
+   * @return the cleaned string
+   */
+  private static String cleanString(String input) {
+    return input.replaceAll("[^\\w]", "_");
   }
 
   public Optional<String> getFileName(Class<? extends UniqueEntity> cls) {
