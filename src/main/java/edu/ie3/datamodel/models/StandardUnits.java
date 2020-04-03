@@ -45,7 +45,7 @@ public class StandardUnits {
   /** Admittance */
   public static final Unit<ElectricConductance> ADMITTANCE = MetricPrefix.NANO(SIEMENS);
   /** Admittance per length (mainly for lines) */
-  public static final Unit<SpecificConductance> ADMITTANCE_PER_LENGTH = SIEMENS_PER_KILOMETRE;
+  public static final Unit<SpecificConductance> ADMITTANCE_PER_LENGTH = MICRO_SIEMENS_PER_KILOMETRE;
   /** Target voltage magnitude */
   public static final Unit<Dimensionless> TARGET_VOLTAGE_MAGNITUDE = PU;
   /** Voltage magnitude (mainly for result purposes) */
