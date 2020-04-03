@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.factory.input
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
@@ -44,7 +45,7 @@ class MeasurementUnitInputFactoryTest extends Specification implements FactoryTe
 		((MeasurementUnitInput) input.get()).with {
 			assert uuid == UUID.fromString(parameter["uuid"])
 			assert operationTime == OperationTime.notLimited()
-			assert operator == null
+			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
 			assert node == nodeInput
 			assert VMag
