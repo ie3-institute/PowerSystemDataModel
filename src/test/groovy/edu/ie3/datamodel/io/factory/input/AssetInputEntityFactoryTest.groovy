@@ -263,7 +263,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 	}
 
 	private class TestAssetInput extends AssetInput {
-		TestAssetInput(UUID uuid, OperationTime operationTime, OperatorInput operator, String id) {
+		TestAssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
 			super(uuid, id, operator, operationTime)
 		}
 	}
@@ -280,7 +280,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
 		@Override
 		protected TestAssetInput buildModel(AssetInputEntityData data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
-			return new TestAssetInput(uuid, operationTime, operator, id)
+			return new TestAssetInput(uuid, id, operator, operationTime)
 		}
 	}
 }

@@ -60,9 +60,9 @@ public class Transformer3WInput extends TransformerInput implements HasType {
     this.nodeInternal =
         new NodeInput(
             UUID.randomUUID(),
-            operationTime,
-            operator,
             "internal_node_" + id,
+            operator,
+            operationTime,
             Quantities.getQuantity(1d, PU),
             false,
             null,
@@ -99,9 +99,9 @@ public class Transformer3WInput extends TransformerInput implements HasType {
     this.nodeInternal =
         new NodeInput(
             UUID.randomUUID(),
-            getOperationTime(),
-            getOperator(),
             "internal_node_" + id,
+            getOperator(),
+            getOperationTime(),
             Quantities.getQuantity(1d, PU),
             false,
             null,

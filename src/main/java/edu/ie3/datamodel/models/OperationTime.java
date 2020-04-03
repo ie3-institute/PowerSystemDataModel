@@ -32,7 +32,7 @@ public class OperationTime {
     this.isLimited = isLimited;
   }
 
-  /** Constructor for OperationTime without limitations (= always one) */
+  /** Constructor for OperationTime without limitations (= always on) */
   private OperationTime() {}
 
   /** @return an OperationTime without time limitations (= always on) */

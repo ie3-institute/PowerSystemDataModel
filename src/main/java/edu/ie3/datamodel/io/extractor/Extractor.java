@@ -24,7 +24,7 @@ public final class Extractor {
   private static final Logger log = LogManager.getLogger(Extractor.class);
 
   private Extractor() {
-    throw new IllegalStateException("Don't instantiate a utility class");
+    throw new IllegalStateException("Utility classes cannot be instantiated");
   }
 
   public static List<InputEntity> extractElements(NestedEntity nestedEntity)

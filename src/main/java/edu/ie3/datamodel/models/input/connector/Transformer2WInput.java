@@ -25,9 +25,9 @@ public class Transformer2WInput extends TransformerInput implements HasType {
    * Constructor for an operated two winding transformer
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param nodeA higher voltage node
    * @param nodeB lower voltage node
    * @param parallelDevices Amount of singular transformers
@@ -37,9 +37,9 @@ public class Transformer2WInput extends TransformerInput implements HasType {
    */
   public Transformer2WInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput nodeA,
       NodeInput nodeB,
       int parallelDevices,

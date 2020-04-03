@@ -48,6 +48,6 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
     final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL.toLowerCase(), V_RATED.toLowerCase());
     final int subnet = data.getInt(SUBNET);
     return new NodeInput(
-        uuid, operationTime, operator, id, vTarget, slack, geoPosition, voltLvl, subnet);
+        uuid, id, operator, operationTime, vTarget, slack, geoPosition, voltLvl, subnet);
   }
 }

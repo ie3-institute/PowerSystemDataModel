@@ -33,7 +33,7 @@ public class FileNamingStrategy {
   private final String prefix;
   private final String suffix;
 
-  /** Constructor for building the file names without files with prefix and suffix */
+  /** Constructor for building the file names without provided files with prefix and suffix */
   public FileNamingStrategy() {
     this.prefix = "";
     this.suffix = "";

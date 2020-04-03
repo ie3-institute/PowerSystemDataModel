@@ -109,10 +109,9 @@ class ContainerUtilTest extends Specification {
 		RawGridElements rawGrid = ContainerUtils.filterForSubnet(complexTopology.getRawGrid(), 4)
 
 		NodeInput corruptNode = new NodeInput(
-				UUID.randomUUID(),
-				OperationTime.notLimited(),
-				OperatorInput.NO_OPERATOR_ASSIGNED,
-				"node_e",
+				UUID.randomUUID(), "node_e", OperatorInput.NO_OPERATOR_ASSIGNED,
+				OperationTime.notLimited()
+				,
 				Quantities.getQuantity(1d, PU),
 				false,
 				null,

@@ -139,30 +139,27 @@ class GridTestData {
 	)
 
 	public static final NodeInput nodeA = new NodeInput(
-	UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
-	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	"node_a",
+	UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"), "node_a", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
+	,
 	Quantities.getQuantity(1d, PU),
 	true,
 	geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }") as Point,
 	GermanVoltageLevelUtils.EHV_380KV,
 	1)
 	public static final NodeInput nodeB = new NodeInput(
-	UUID.fromString("47d29df0-ba2d-4d23-8e75-c82229c5c758"),
-	OperationTime.notLimited(),
-	OperatorInput.NO_OPERATOR_ASSIGNED,
-	"node_b",
+	UUID.fromString("47d29df0-ba2d-4d23-8e75-c82229c5c758"), "node_b", OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited()
+	,
 	Quantities.getQuantity(1d, PU),
 	false,
 	null,
 	GermanVoltageLevelUtils.HV,
 	2)
 	public static final NodeInput nodeC = new NodeInput(
-	UUID.fromString("bd837a25-58f3-44ac-aa90-c6b6e3cd91b2"),
-	OperationTime.notLimited(),
-	OperatorInput.NO_OPERATOR_ASSIGNED,
-	"node_c",
+	UUID.fromString("bd837a25-58f3-44ac-aa90-c6b6e3cd91b2"), "node_c", OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited()
+	,
 	Quantities.getQuantity(1d, PU),
 	false,
 	null,
@@ -176,10 +173,9 @@ class GridTestData {
 	geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [0, 10] }") as Point
 	)
 	public static final NodeInput nodeD = new NodeInput(
-	UUID.fromString("6e0980e0-10f2-4e18-862b-eb2b7c90509b"),
-	OperationTime.notLimited(),
-	OperatorInput.NO_OPERATOR_ASSIGNED,
-	"node_d",
+	UUID.fromString("6e0980e0-10f2-4e18-862b-eb2b7c90509b"), "node_d", OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited()
+	,
 	Quantities.getQuantity(1d, PU),
 	false,
 	null,
@@ -193,30 +189,27 @@ class GridTestData {
 	null
 	)
 	public static final NodeInput nodeE = new NodeInput(
-	UUID.randomUUID(),
-	OperationTime.notLimited(),
-	OperatorInput.NO_OPERATOR_ASSIGNED,
-	"node_e",
+	UUID.randomUUID(), "node_e", OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited()
+	,
 	Quantities.getQuantity(1d, PU),
 	false,
 	null,
 	GermanVoltageLevelUtils.MV_10KV,
 	5)
 	public static final NodeInput nodeF = new NodeInput(
-	UUID.fromString("aaa74c1a-d07e-4615-99a5-e991f1d81cc4"),
-	OperationTime.notLimited(),
-	OperatorInput.NO_OPERATOR_ASSIGNED,
-	"node_f",
+	UUID.fromString("aaa74c1a-d07e-4615-99a5-e991f1d81cc4"), "node_f", OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited()
+	,
 	Quantities.getQuantity(1d, PU),
 	false,
 	null,
 	GermanVoltageLevelUtils.LV,
 	6)
 	public static final NodeInput nodeG = new NodeInput(
-	UUID.fromString("aaa74c1a-d07e-4615-99a5-e991f1d81cc4"),
-	OperationTime.notLimited(),
-	OperatorInput.NO_OPERATOR_ASSIGNED,
-	"node_g",
+	UUID.fromString("aaa74c1a-d07e-4615-99a5-e991f1d81cc4"), "node_g", OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited()
+	,
 	Quantities.getQuantity(1d, PU),
 	false,
 	null,
@@ -224,10 +217,9 @@ class GridTestData {
 	6)
 
 	public static final Transformer2WInput transformerBtoD = new Transformer2WInput(
-	UUID.randomUUID(),
-	OperationTime.notLimited(),
-	OperatorInput.NO_OPERATOR_ASSIGNED,
-	"2w_single_test",
+	UUID.randomUUID(), "2w_single_test", OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited()
+	,
 	nodeB,
 	nodeD,
 	1,
@@ -236,10 +228,9 @@ class GridTestData {
 	true
 	)
 	public static final Transformer2WInput transformerBtoE = new Transformer2WInput(
-	UUID.randomUUID(),
-	OperationTime.notLimited(),
-	OperatorInput.NO_OPERATOR_ASSIGNED,
-	"2w_v_1",
+	UUID.randomUUID(), "2w_v_1", OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited()
+	,
 	nodeB,
 	nodeE,
 	1,
@@ -248,10 +239,9 @@ class GridTestData {
 	true
 	)
 	public static final Transformer2WInput transformerCtoE = new Transformer2WInput(
-	UUID.randomUUID(),
-	OperationTime.notLimited(),
-	OperatorInput.NO_OPERATOR_ASSIGNED,
-	"2w_v_2",
+	UUID.randomUUID(), "2w_v_2", OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited()
+	,
 	nodeC,
 	nodeE,
 	1,
@@ -260,10 +250,9 @@ class GridTestData {
 	true
 	)
 	public static final Transformer2WInput transformerCtoF = new Transformer2WInput(
-	UUID.randomUUID(),
-	OperationTime.notLimited(),
-	OperatorInput.NO_OPERATOR_ASSIGNED,
-	"2w_parallel_1",
+	UUID.randomUUID(), "2w_parallel_1", OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited()
+	,
 	nodeC,
 	nodeF,
 	1,
@@ -272,10 +261,9 @@ class GridTestData {
 	true
 	)
 	public static final Transformer2WInput transformerCtoG = new Transformer2WInput(
-	UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
-	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	"2w_parallel_2",
+	UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"), "2w_parallel_2", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
+	,
 	nodeC,
 	nodeG,
 	1,

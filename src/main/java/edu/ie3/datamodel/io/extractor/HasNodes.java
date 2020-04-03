@@ -9,7 +9,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import java.util.List;
 
 /**
- * Interface that should be implemented by all elements holding a one or more {@link NodeInput}
+ * Interface that should be implemented by all elements holding one or more {@link NodeInput}
  * elements and should be processable by the {@link Extractor}.
  *
  * @version 0.1
