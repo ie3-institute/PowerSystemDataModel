@@ -100,4 +100,9 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
   public int hashCode() {
     return Objects.hash(super.hashCode(), entries);
   }
+
+  @Override
+  public String toString() {
+    return "TimeSeries{" + "uuid=" + uuid + ", #entries=" + entries.size() + '}';
+  }
 }

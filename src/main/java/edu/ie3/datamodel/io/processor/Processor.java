@@ -235,21 +235,23 @@ public abstract class Processor<T> {
       case "StorageStrategy":
         resultStringBuilder.append(((StorageStrategy) methodReturnObject).getToken());
         break;
-      case "NodeInput":
       case "AssetTypeInput":
-      case "Transformer3WTypeInput":
-      case "Transformer2WTypeInput":
+      case "BmTypeInput":
+      case "ChpTypeInput":
+      case "EvTypeInput":
+      case "HpTypeInput":
       case "LineTypeInput":
       case "LineInput":
+      case "NodeInput":
       case "OperatorInput":
-      case "WecTypeInput":
+      case "StorageTypeInput":
+      case "SystemParticipantInput":
       case "ThermalBusInput":
       case "ThermalStorageInput":
-      case "ChpTypeInput":
-      case "BmTypeInput":
-      case "EvTypeInput":
-      case "StorageTypeInput":
-      case "HpTypeInput":
+      case "TimeSeries":
+      case "Transformer2WTypeInput":
+      case "Transformer3WTypeInput":
+      case "WecTypeInput":
         resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
         break;
       case "Optional": // todo needs to be removed asap as this is very dangerous, but necessary as

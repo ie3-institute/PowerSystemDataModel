@@ -21,7 +21,6 @@ import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
-import edu.ie3.datamodel.models.timeseries.TimeSeriesMapping;
 import edu.ie3.datamodel.models.value.Value;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -131,11 +130,8 @@ public class CsvFileSink implements DataSink {
         persistIgnoreNested(entity);
       }
     } else if (entity instanceof TimeSeries) {
-      log.info("Yeah, let's write a TimeSeries!");
       TimeSeries<?, ?> timeSeries = (TimeSeries<?, ?>) entity;
       persistTimeSeries(timeSeries);
-    } else if (entity instanceof TimeSeriesMapping) {
-      log.info("Yeah, let's write a TimeSeriesMapping!");
     } else {
       throw new SinkException(
           "I don't know how to handle an entity of class " + entity.getClass().getSimpleName());
