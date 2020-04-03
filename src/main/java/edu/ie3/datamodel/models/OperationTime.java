@@ -35,9 +35,7 @@ public class OperationTime {
   /** Constructor for OperationTime without limitations (= always one) */
   private OperationTime() {}
 
-  /**
-   * @return an OperationTime without time limitations (= always on)
-   */
+  /** @return an OperationTime without time limitations (= always on) */
   public static OperationTime notLimited() {
     return new OperationTime();
   }

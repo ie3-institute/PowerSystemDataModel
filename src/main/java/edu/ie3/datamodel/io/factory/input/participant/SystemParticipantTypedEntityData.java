@@ -25,8 +25,8 @@ class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
   private final T typeInput;
 
   /**
-   * Creates a new SystemParticipantEntityData object for an operated, always on system participant input
-   * that needs a type input as well
+   * Creates a new SystemParticipantEntityData object for an operated, always on system participant
+   * input that needs a type input as well
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data
