@@ -138,7 +138,7 @@ public class TimeSeriesProcessor<
               + key
               + "!");
 
-    Set<LinkedHashMap<String, String>> fieldToValueSet = new HashSet<>();
+    Set<LinkedHashMap<String, String>> fieldToValueSet = new LinkedHashSet<>();
 
     for (E entry : timeSeries.getEntries()) {
       Map<String, String> entryResult = handleEntry(timeSeries, entry);

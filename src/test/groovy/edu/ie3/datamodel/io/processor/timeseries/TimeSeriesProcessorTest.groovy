@@ -5,8 +5,9 @@
  */
 package edu.ie3.datamodel.io.processor.timeseries
 
+import edu.ie3.test.common.TimeSeriesTestData
+
 import static tec.uom.se.unit.Units.METRE
-import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 
 import java.lang.reflect.Method
 import edu.ie3.datamodel.exceptions.EntityProcessorException
@@ -14,43 +15,10 @@ import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
-import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
-import java.time.ZoneId
-import java.time.ZonedDateTime
-
-class TimeSeriesProcessorTest extends Specification {
-	@Shared
-	IndividualTimeSeries<EnergyPriceValue> individualTimeSeries
-
-	@Shared
-	TimeBasedValue<EnergyPriceValue> firstEntry
-
-	def setupSpec() {
-		firstEntry = new TimeBasedValue<>(
-				UUID.fromString("9e4dba1b-f3bb-4e40-bd7e-2de7e81b7704"),
-				ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
-				new EnergyPriceValue(Quantities.getQuantity(5d, EURO_PER_MEGAWATTHOUR)))
-
-
-		individualTimeSeries = new IndividualTimeSeries<>(
-				UUID.fromString("a4bbcb77-b9d0-4b88-92be-b9a14a3e332b"),
-				[
-					firstEntry,
-					new TimeBasedValue<>(
-					UUID.fromString("520d8e37-b842-40fd-86fb-32007e88493e"),
-					ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-					new EnergyPriceValue(Quantities.getQuantity(15d, EURO_PER_MEGAWATTHOUR))),
-					new TimeBasedValue<>(
-					UUID.fromString("593d006c-ef76-46a9-b8db-f8666f69c5db"),
-					ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
-					new EnergyPriceValue(Quantities.getQuantity(10d, EURO_PER_MEGAWATTHOUR))),
-				] as Set
-				)
-	}
-
+class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestData {
 	def "A TimeSeriesProcessor is instantiated correctly"() {
 		when:
 		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
@@ -92,7 +60,7 @@ class TimeSeriesProcessorTest extends Specification {
 		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
 
 		when:
-		processor.handleEntity(individualTimeSeries)
+		processor.handleEntity(individualEnergyPriceTimeSeries)
 
 		then:
 		UnsupportedOperationException thrown = thrown(UnsupportedOperationException)
@@ -126,7 +94,7 @@ class TimeSeriesProcessorTest extends Specification {
 		]
 
 		when:
-		Map<String, String> actual = processor.handleEntry(individualTimeSeries, firstEntry)
+		Map<String, String> actual = processor.handleEntry(individualEnergyPriceTimeSeries, timeBasedEntry)
 
 		then:
 		actual == expected
@@ -153,7 +121,7 @@ class TimeSeriesProcessorTest extends Specification {
 			]] as Set
 
 		when:
-		Set<Map<String, String>> actual = processor.handleTimeSeries(individualTimeSeries)
+		Set<Map<String, String>> actual = processor.handleTimeSeries(individualEnergyPriceTimeSeries)
 
 		then:
 		actual == expected

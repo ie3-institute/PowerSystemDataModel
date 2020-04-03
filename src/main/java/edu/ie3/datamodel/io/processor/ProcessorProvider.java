@@ -273,7 +273,7 @@ public class ProcessorProvider {
   }
 
   @SuppressWarnings("unchecked cast")
-  private <T extends UniqueEntity> EntityProcessor<T> castProcessor(
+  private static <T extends UniqueEntity> EntityProcessor<T> castProcessor(
       EntityProcessor<? extends UniqueEntity> processor) throws ProcessorProviderException {
     try {
       return (EntityProcessor<T>) processor;

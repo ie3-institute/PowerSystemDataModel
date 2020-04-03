@@ -6,10 +6,12 @@
 package edu.ie3.datamodel.io.processor
 
 import edu.ie3.datamodel.exceptions.ProcessorProviderException
+import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.EvcsInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -67,6 +69,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
+import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
@@ -74,7 +77,7 @@ import tec.uom.se.quantity.Quantities
 import javax.measure.Quantity
 import javax.measure.quantity.Power
 
-class ProcessorProviderTest extends Specification {
+class ProcessorProviderTest extends Specification implements TimeSeriesTestData {
 
 	def "A ProcessorProvider should initialize all known EntityProcessors by default"() {
 		given:
@@ -257,5 +260,36 @@ class ProcessorProviderTest extends Specification {
 
 		then:
 		!result.present
+	}
+
+	def "A ProcessorProvider returns an empty Optional, if none of the assigned processors is able to handle a time series"() {
+		given:
+		TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+		Map<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
+		timeSeriesProcessorMap.put(key, processor)
+		ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessorMap)
+
+		when:
+		Optional<Set<LinkedHashMap<String, String>>> actual = provider.handleTimeSeries(individualIntTimeSeries)
+
+		then:
+		!actual.present
+	}
+
+	def "A ProcessorProvider handles a time series correctly"() {
+		given:
+		TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+		Map<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
+		timeSeriesProcessorMap.put(key, processor)
+		ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessorMap)
+
+		when:
+		Optional<Set<LinkedHashMap<String, String>>> actual = provider.handleTimeSeries(individualEnergyPriceTimeSeries)
+
+		then:
+		actual.present
+		actual.get() == individualEnergyPriceTimeSeriesProcessed
 	}
 }

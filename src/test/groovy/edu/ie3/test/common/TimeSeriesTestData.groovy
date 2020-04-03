@@ -37,6 +37,24 @@ trait TimeSeriesTestData {
 	] as Set
 	)
 
+	Set<LinkedHashMap<String, String>>  individualEnergyPriceTimeSeriesProcessed = [
+		[
+			"uuid" 	: "9e4dba1b-f3bb-4e40-bd7e-2de7e81b7704",
+			"time"	: "2020-04-02 10:00:00",
+			"price"	: "5.0"
+		] as LinkedHashMap,
+		[
+			"uuid" 	: "520d8e37-b842-40fd-86fb-32007e88493e",
+			"time"	: "2020-04-02 10:15:00",
+			"price"	: "15.0"
+		] as LinkedHashMap,
+		[
+			"uuid" 	: "593d006c-ef76-46a9-b8db-f8666f69c5db",
+			"time"	: "2020-04-02 10:30:00",
+			"price"	: "10.0"
+		] as LinkedHashMap
+	] as Set
+
 	IndividualTimeSeries<IntValue> individualIntTimeSeries = new IndividualTimeSeries<>(
 	UUID.randomUUID(),
 	[
