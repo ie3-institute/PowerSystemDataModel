@@ -34,12 +34,12 @@ class SwitchInputFactoryTest extends Specification implements FactoryTestHelper 
 			"closed"       : "true"
 		]
 		def inputClass = SwitchInput
-		def operator = Mock(OperatorInput)
+		def operatorInput = Mock(OperatorInput)
 		def nodeInputA = Mock(NodeInput)
 		def nodeInputB = Mock(NodeInput)
 
 		when:
-		Optional<SwitchInput> input = inputFactory.getEntity(new ConnectorInputEntityData(parameter, inputClass, operator, nodeInputA, nodeInputB))
+		Optional<SwitchInput> input = inputFactory.getEntity(new ConnectorInputEntityData(parameter, inputClass, operatorInput, nodeInputA, nodeInputB))
 
 		then:
 		input.present
@@ -49,7 +49,7 @@ class SwitchInputFactoryTest extends Specification implements FactoryTestHelper 
 			assert operationTime.startDate.present
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert !operationTime.endDate.present
-			assert operator == operator
+			assert operator == operatorInput
 			assert id == parameter["id"]
 			assert nodeA == nodeInputA
 			assert nodeB == nodeInputB

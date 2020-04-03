@@ -42,10 +42,10 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
 			"subnet"       : "7"
 		]
 		def inputClass = NodeInput
-		def operator = Mock(OperatorInput)
+		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<NodeInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operator))
+		Optional<NodeInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present
@@ -55,7 +55,7 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert operationTime.startDate.present
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert !operationTime.endDate.present
-			assert operator == operator
+			assert operator == operatorInput
 			assert id == parameter["id"]
 			assert vTarget == getQuant(parameter["vtarget"], StandardUnits.TARGET_VOLTAGE_MAGNITUDE)
 			assert slack

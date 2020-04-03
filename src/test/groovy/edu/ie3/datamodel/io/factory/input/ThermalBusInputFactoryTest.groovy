@@ -32,10 +32,10 @@ class ThermalBusInputFactoryTest extends Specification implements FactoryTestHel
 			"id"           : "TestID"
 		]
 		def inputClass = ThermalBusInput
-		def operator = Mock(OperatorInput)
+		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<ThermalBusInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operator))
+		Optional<ThermalBusInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present
@@ -45,7 +45,7 @@ class ThermalBusInputFactoryTest extends Specification implements FactoryTestHel
 			assert operationTime.startDate.present
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert !operationTime.endDate.present
-			assert operator == operator
+			assert operator == operatorInput
 			assert id == parameter["id"]
 		}
 	}

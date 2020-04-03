@@ -36,12 +36,12 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
 		]
 		def inputClass = EvInput
 		def nodeInput = Mock(NodeInput)
-		def operator = Mock(OperatorInput)
+		def operatorInput = Mock(OperatorInput)
 		def typeInput = Mock(EvTypeInput)
 
 		when:
 		Optional<EvInput> input = inputFactory.getEntity(
-				new SystemParticipantTypedEntityData<EvTypeInput>(parameter, inputClass, operator, nodeInput, typeInput))
+				new SystemParticipantTypedEntityData<EvTypeInput>(parameter, inputClass,operatorInput, nodeInput, typeInput))
 
 		then:
 		input.present
@@ -52,7 +52,7 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
 			assert operationTime.endDate.present
 			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-			assert operator == operator
+			assert operator == operatorInput
 			assert id == parameter["id"]
 			assert node == nodeInput
 			assert qCharacteristics == parameter["qcharacteristics"]

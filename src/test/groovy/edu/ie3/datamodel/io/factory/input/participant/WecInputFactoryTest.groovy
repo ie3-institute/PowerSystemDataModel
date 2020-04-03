@@ -37,12 +37,12 @@ class WecInputFactoryTest extends Specification implements FactoryTestHelper {
 		]
 		def inputClass = WecInput
 		def nodeInput = Mock(NodeInput)
-		def operator = Mock(OperatorInput)
+		def operatorInput = Mock(OperatorInput)
 		def typeInput = Mock(WecTypeInput)
 
 		when:
 		Optional<WecInput> input = inputFactory.getEntity(
-				new SystemParticipantTypedEntityData<WecTypeInput>(parameter, inputClass, operator, nodeInput, typeInput))
+				new SystemParticipantTypedEntityData<WecTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
 		then:
 		input.present
@@ -52,7 +52,7 @@ class WecInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert !operationTime.startDate.present
 			assert operationTime.endDate.present
 			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-			assert operator == operator
+			assert operator == operatorInput
 			assert id == parameter["id"]
 			assert node == nodeInput
 			assert qCharacteristics == parameter["qcharacteristics"]
