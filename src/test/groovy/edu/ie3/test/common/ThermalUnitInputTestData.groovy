@@ -33,13 +33,13 @@ class ThermalUnitInputTestData {
 
 
 	// thermal bus input
-	public static final thermalBusInput = new ThermalBusInput(thermalUnitUuid, operationTime, operator, "test_thermalBus")
+	public static final thermalBusInput = new ThermalBusInput(thermalUnitUuid, "test_thermalBus", operator, operationTime)
 
 	// thermal house input
 	private static final Quantity<ThermalConductance> thermalConductance = Quantities.getQuantity(10, StandardUnits.THERMAL_TRANSMISSION)
 	private static final Quantity<HeatCapacity> ethCapa = Quantities.getQuantity(20, StandardUnits.HEAT_CAPACITY)
-	public static final thermalHouseInput = new ThermalHouseInput(thermalUnitUuid, "test_thermalHouseInput", thermalBusInput,
-	operationTime, operator, thermalConductance, ethCapa)
+	public static final thermalHouseInput = new ThermalHouseInput(thermalUnitUuid, "test_thermalHouseInput", operator, operationTime, thermalBusInput
+	, thermalConductance, ethCapa)
 
 	// thermal cylindric storage input
 	private static final Quantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)
@@ -49,6 +49,6 @@ class ThermalUnitInputTestData {
 	private static final Quantity<SpecificHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)
 
 	public static final cylindricStorageInput = new CylindricalStorageInput(thermalUnitUuid,
-	"test_cylindricStorageInput", operationTime, operator, thermalBusInput, storageVolumeLvl, storageVolumeLvlMin, inletTemp, returnTemp, c)
+	"test_cylindricStorageInput", operator, operationTime, thermalBusInput, storageVolumeLvl, storageVolumeLvlMin, inletTemp, returnTemp, c)
 
 }

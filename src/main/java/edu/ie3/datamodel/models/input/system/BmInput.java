@@ -33,9 +33,9 @@ public class BmInput extends SystemParticipantInput implements HasType {
    * Constructor for an operated biomass plant
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics
    * @param type of BM
@@ -46,16 +46,16 @@ public class BmInput extends SystemParticipantInput implements HasType {
    */
   public BmInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       String qCharacteristics,
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
       Quantity<EnergyPrice> feedInTariff) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
     this.costControlled = costControlled;

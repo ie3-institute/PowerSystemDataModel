@@ -34,6 +34,6 @@ public class SwitchInputFactory
       OperatorInput operatorInput,
       OperationTime operationTime) {
     final boolean closed = data.getBoolean(CLOSED);
-    return new SwitchInput(uuid, operationTime, operatorInput, id, nodeA, nodeB, closed);
+    return new SwitchInput(uuid, id, operatorInput, operationTime, nodeA, nodeB, closed);
   }
 }

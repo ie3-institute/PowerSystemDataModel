@@ -31,8 +31,8 @@ public class CylindricalStorageInput extends ThermalStorageInput {
   /**
    * @param uuid Unique identifier of a cylindrical storage
    * @param id Identifier of the thermal unit
-   * @param operationTime operation time of the asset
    * @param operator operator of the asset
+   * @param operationTime operation time of the asset
    * @param bus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
    * @param storageVolumeLvlMin Minimum permissible storage volume
@@ -43,15 +43,15 @@ public class CylindricalStorageInput extends ThermalStorageInput {
   public CylindricalStorageInput(
       UUID uuid,
       String id,
-      OperationTime operationTime,
       OperatorInput operator,
+      OperationTime operationTime,
       ThermalBusInput bus,
       Quantity<Volume> storageVolumeLvl,
       Quantity<Volume> storageVolumeLvlMin,
       Quantity<Temperature> inletTemp,
       Quantity<Temperature> returnTemp,
       Quantity<SpecificHeatCapacity> c) {
-    super(uuid, id, operationTime, operator, bus);
+    super(uuid, id, operator, operationTime, bus);
     this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
     this.storageVolumeLvlMin = storageVolumeLvlMin.to(StandardUnits.VOLUME);
     this.inletTemp = inletTemp.to(StandardUnits.TEMPERATURE);

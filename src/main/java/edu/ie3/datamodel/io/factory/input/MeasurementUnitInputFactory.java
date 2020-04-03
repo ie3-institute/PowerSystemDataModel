@@ -39,6 +39,6 @@ public class MeasurementUnitInputFactory
     final boolean vAng = data.getBoolean(V_ANG);
     final boolean p = data.getBoolean(P);
     final boolean q = data.getBoolean(Q);
-    return new MeasurementUnitInput(uuid, operationTime, operatorInput, id, node, vMag, vAng, p, q);
+    return new MeasurementUnitInput(uuid, id, operatorInput, operationTime, node, vMag, vAng, p, q);
   }
 }

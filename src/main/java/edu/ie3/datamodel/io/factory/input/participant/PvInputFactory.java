@@ -59,9 +59,9 @@ public class PvInputFactory
 
     return new PvInput(
         uuid,
-        operationTime,
-        operatorInput,
         id,
+        operatorInput,
+        operationTime,
         node,
         qCharacteristics,
         albedo,

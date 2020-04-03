@@ -16,13 +16,13 @@ public class ThermalBusInput extends AssetInput {
    * Constructor for an operated thermal bus
    *
    * @param uuid Unique identifier of a certain thermal bus
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    */
   public ThermalBusInput(
-      UUID uuid, OperationTime operationTime, OperatorInput operator, String id) {
-    super(uuid, operationTime, operator, id);
+      UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+    super(uuid, id, operator, operationTime);
   }
 
   /**

@@ -31,9 +31,9 @@ public class Transformer3WInput extends TransformerInput implements HasType {
    * Constructor for an operated three winding transformer
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param nodeA The higher voltage node
    * @param nodeB The middle voltage node
    * @param nodeC The lower voltage node
@@ -44,9 +44,9 @@ public class Transformer3WInput extends TransformerInput implements HasType {
    */
   public Transformer3WInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput nodeA,
       NodeInput nodeB,
       NodeInput nodeC,

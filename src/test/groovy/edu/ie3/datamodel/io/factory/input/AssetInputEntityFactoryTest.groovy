@@ -264,7 +264,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
 	private class TestAssetInput extends AssetInput {
 		TestAssetInput(UUID uuid, OperationTime operationTime, OperatorInput operator, String id) {
-			super(uuid, operationTime, operator, id)
+			super(uuid, id, operator, operationTime)
 		}
 	}
 

@@ -24,9 +24,9 @@ public class WecInput extends SystemParticipantInput implements HasType {
    * Constructor for an operated wind energy converter
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics
    * @param type of this WEC
@@ -34,14 +34,14 @@ public class WecInput extends SystemParticipantInput implements HasType {
    */
   public WecInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       String qCharacteristics,
       WecTypeInput type,
       boolean marketReaction) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
   }

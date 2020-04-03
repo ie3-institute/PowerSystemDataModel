@@ -37,9 +37,9 @@ public class LineInput extends ConnectorInput implements HasType {
    * Constructor for an operated line
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param nodeA Grid node at one side of the line
    * @param nodeB Grid node at the other side of the line
    * @param parallelDevices Amount of parallel lines
@@ -50,9 +50,9 @@ public class LineInput extends ConnectorInput implements HasType {
    */
   public LineInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput nodeA,
       NodeInput nodeB,
       int parallelDevices,
@@ -60,7 +60,7 @@ public class LineInput extends ConnectorInput implements HasType {
       Quantity<Length> length,
       LineString geoPosition,
       Optional<String> olmCharacteristic) {
-    super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices);
+    super(uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices);
     this.type = type;
     this.length = length.to(StandardUnits.LINE_LENGTH);
     this.geoPosition = geoPosition;

@@ -25,9 +25,9 @@ public class StorageInput extends SystemParticipantInput implements HasType {
    * Constructor for an operated storage
    *
    * @param uuid of the input entity
-   * @param operationTime time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic for integrated inverter
    * @param type of storage
@@ -35,14 +35,14 @@ public class StorageInput extends SystemParticipantInput implements HasType {
    */
   public StorageInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       String qCharacteristics,
       StorageTypeInput type,
       String behaviour) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.type = type;
     this.behaviour = StorageStrategy.get(behaviour);
   }

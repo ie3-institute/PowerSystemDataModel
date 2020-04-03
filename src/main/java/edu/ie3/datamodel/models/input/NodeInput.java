@@ -53,7 +53,7 @@ public class NodeInput extends AssetInput {
       Point geoPosition,
       VoltageLevel voltLvl,
       int subnet) {
-    super(uuid, operationTime, operator, id);
+    super(uuid, id, operator, operationTime);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     this.slack = slack;
     this.geoPosition = geoPosition;

@@ -30,17 +30,17 @@ public abstract class ThermalUnitInput extends AssetInput implements HasBus {
   /**
    * @param uuid Unique identifier of a certain thermal input
    * @param id Identifier of the thermal unit
-   * @param operationTime operation time of the asset
    * @param operator operator of the asset
+   * @param operationTime operation time of the asset
    * @param bus thermal bus, a thermal unit is connected to
    */
   ThermalUnitInput(
       UUID uuid,
       String id,
-      OperationTime operationTime,
       OperatorInput operator,
+      OperationTime operationTime,
       ThermalBusInput bus) {
-    super(uuid, operationTime, operator, id);
+    super(uuid, id, operator, operationTime);
     this.bus = bus;
   }
 

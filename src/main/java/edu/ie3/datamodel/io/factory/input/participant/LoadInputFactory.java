@@ -63,9 +63,9 @@ public class LoadInputFactory
 
     return new LoadInput(
         uuid,
-        operationTime,
-        operatorInput,
         id,
+        operatorInput,
+        operationTime,
         node,
         qCharacteristics,
         slp,

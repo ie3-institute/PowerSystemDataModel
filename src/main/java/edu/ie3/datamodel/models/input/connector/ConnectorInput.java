@@ -25,22 +25,22 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * Constructor for an operated connector
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param nodeA Grid node at one side of the connector
    * @param nodeB Grid node at the other side of the connector
    * @param noOfParallelDevices Amount of parallel devices
    */
   public ConnectorInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput nodeA,
       NodeInput nodeB,
       int noOfParallelDevices) {
-    super(uuid, operationTime, operator, id);
+    super(uuid, id, operator, operationTime);
     this.nodeA = nodeA;
     this.nodeB = nodeB;
     this.noOfParallelDevices = noOfParallelDevices;

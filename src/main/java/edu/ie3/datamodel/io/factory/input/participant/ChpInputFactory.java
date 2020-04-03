@@ -37,9 +37,9 @@ public class ChpInputFactory
 
     return new ChpInput(
         uuid,
-        operationTime,
-        operatorInput,
         id,
+        operatorInput,
+        operationTime,
         node,
         data.getThermalBusInput(),
         qCharacteristics,

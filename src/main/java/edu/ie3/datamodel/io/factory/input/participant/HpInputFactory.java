@@ -34,9 +34,9 @@ public class HpInputFactory
       OperationTime operationTime) {
     return new HpInput(
         uuid,
-        operationTime,
-        operatorInput,
         id,
+        operatorInput,
+        operationTime,
         node,
         data.getThermalBusInput(),
         qCharacteristics,

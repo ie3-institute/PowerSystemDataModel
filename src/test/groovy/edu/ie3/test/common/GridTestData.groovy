@@ -285,10 +285,9 @@ class GridTestData {
 	)
 
 	public static Transformer3WInput transformerAtoBtoC = new Transformer3WInput(
-	UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
-	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	"3w_test",
+	UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"), "3w_test", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
+	,
 	nodeA,
 	nodeB,
 	nodeC,
@@ -300,10 +299,9 @@ class GridTestData {
 
 
 	public static final SwitchInput switchAtoB = new SwitchInput(
-	UUID.fromString("5dc88077-aeb6-4711-9142-db57287640b1"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
-	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	"test_switch_AtoB",
+	UUID.fromString("5dc88077-aeb6-4711-9142-db57287640b1"), "test_switch_AtoB", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
+	,
 	nodeA,
 	nodeB,
 	true
@@ -322,10 +320,9 @@ class GridTestData {
 	)
 
 	public static final LineInput lineCtoD = new LineInput(
-	UUID.fromString("91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
-	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	"test_line_AtoB",
+	UUID.fromString("91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"), "test_line_AtoB", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
+	,
 	nodeC, nodeD,
 	2,
 	lineTypeInputCtoD,
@@ -341,10 +338,9 @@ class GridTestData {
 	)
 
 	public static final MeasurementUnitInput measurementUnitInput = new MeasurementUnitInput(
-	UUID.fromString("ce6119e3-f725-4166-b6e0-59f62e0c293d"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
-	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	"test_measurementUnit",
+	UUID.fromString("ce6119e3-f725-4166-b6e0-59f62e0c293d"), "test_measurementUnit", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
+	,
 	nodeG,
 	true,
 	true,

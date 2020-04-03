@@ -30,9 +30,9 @@ public class ChpInput extends SystemParticipantInput implements HasType {
    * Constructor for an operated combined heat and power plant
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to (normally equal to the thermal
    *     bus of the provided thermal storage!)
@@ -43,16 +43,16 @@ public class ChpInput extends SystemParticipantInput implements HasType {
    */
   public ChpInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
       ChpTypeInput type,
       ThermalStorageInput thermalStorage,
       boolean marketReaction) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.thermalBus = thermalBus;
     this.type = type;
     this.thermalStorage = thermalStorage;

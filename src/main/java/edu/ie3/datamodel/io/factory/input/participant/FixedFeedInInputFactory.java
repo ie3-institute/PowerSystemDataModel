@@ -41,6 +41,6 @@ public class FixedFeedInInputFactory
     final double cosPhiRated = data.getDouble(COSPHI_RATED);
 
     return new FixedFeedInInput(
-        uuid, operationTime, operatorInput, id, node, qCharacteristics, sRated, cosPhiRated);
+        uuid, id, operatorInput, operationTime, node, qCharacteristics, sRated, cosPhiRated);
   }
 }

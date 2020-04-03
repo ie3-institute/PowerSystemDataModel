@@ -41,9 +41,9 @@ public class PvInput extends SystemParticipantInput {
    * Constructor for an operated photovoltaic plant
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param albedo Albedo value (typically a value between 0 and 1)
@@ -58,9 +58,9 @@ public class PvInput extends SystemParticipantInput {
    */
   public PvInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       String qCharacteristics,
       double albedo,
@@ -72,7 +72,7 @@ public class PvInput extends SystemParticipantInput {
       boolean marketReaction,
       Quantity<Power> sRated,
       double cosphiRated) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);

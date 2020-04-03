@@ -38,6 +38,6 @@ public class StorageInputFactory
     final StorageTypeInput typeInput = data.getTypeInput();
     final String behaviour = data.getField(BEHAVIOUR);
     return new StorageInput(
-        uuid, operationTime, operatorInput, id, node, qCharacteristics, typeInput, behaviour);
+        uuid, id, operatorInput, operationTime, node, qCharacteristics, typeInput, behaviour);
   }
 }

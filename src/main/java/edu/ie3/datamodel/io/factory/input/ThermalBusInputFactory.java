@@ -28,6 +28,6 @@ public class ThermalBusInputFactory
       String id,
       OperatorInput operatorInput,
       OperationTime operationTime) {
-    return new ThermalBusInput(uuid, operationTime, operatorInput, id);
+    return new ThermalBusInput(uuid, id, operatorInput, operationTime);
   }
 }

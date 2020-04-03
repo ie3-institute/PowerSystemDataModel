@@ -42,8 +42,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
   /**
    * @param uuid Unique identifier of a thermal house model
    * @param id Identifier of the model
-   * @param operationTime operation time of the asset
    * @param operator operator of the asset
+   * @param operationTime operation time of the asset
    * @param bus Thermal bus, the model is connected to
    * @param ethLosses Thermal, transitional losses of the included thermal house model
    * @param ethCapa Thermal capacity of the included thermal house model
@@ -51,12 +51,12 @@ public class ThermalHouseInput extends ThermalSinkInput {
   public ThermalHouseInput(
       UUID uuid,
       String id,
-      ThermalBusInput bus,
-      OperationTime operationTime,
       OperatorInput operator,
+      OperationTime operationTime,
+      ThermalBusInput bus,
       Quantity<ThermalConductance> ethLosses,
       Quantity<HeatCapacity> ethCapa) {
-    super(uuid, id, operationTime, operator, bus);
+    super(uuid, id, operator, operationTime, bus);
     this.ethLosses = ethLosses.to(StandardUnits.THERMAL_TRANSMISSION);
     this.ethCapa = ethCapa.to(StandardUnits.HEAT_CAPACITY);
   }

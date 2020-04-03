@@ -48,9 +48,9 @@ public class BmInputFactory
 
     return new BmInput(
         uuid,
-        operationTime,
-        operatorInput,
         id,
+        operatorInput,
+        operationTime,
         node,
         qCharacteristics,
         typeInput,

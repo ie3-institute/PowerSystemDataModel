@@ -44,9 +44,9 @@ public class Transformer3WInputFactory
 
     return new Transformer3WInput(
         uuid,
-        operationTime,
-        operatorInput,
         id,
+        operatorInput,
+        operationTime,
         nodeA,
         nodeB,
         nodeC,

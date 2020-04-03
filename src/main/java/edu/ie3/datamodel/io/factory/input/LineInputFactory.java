@@ -50,9 +50,9 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
             : Optional.empty();
     return new LineInput(
         uuid,
-        operationTime,
-        operatorInput,
         id,
+        operatorInput,
+        operationTime,
         nodeA,
         nodeB,
         parallelDevices,

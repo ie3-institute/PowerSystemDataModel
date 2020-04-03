@@ -39,6 +39,6 @@ public class WecInputFactory
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
 
     return new WecInput(
-        uuid, operationTime, operatorInput, id, node, qCharacteristics, typeInput, marketReaction);
+        uuid, id, operatorInput, operationTime, node, qCharacteristics, typeInput, marketReaction);
   }
 }

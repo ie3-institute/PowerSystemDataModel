@@ -25,9 +25,9 @@ public class FixedFeedInInput extends SystemParticipantInput {
    * Constructor for an operated feed in
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param sRated Rated apparent power
@@ -35,14 +35,14 @@ public class FixedFeedInInput extends SystemParticipantInput {
    */
   public FixedFeedInInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       String qCharacteristics,
       Quantity<Power> sRated,
       double cosphiRated) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosphiRated = cosphiRated;
   }
