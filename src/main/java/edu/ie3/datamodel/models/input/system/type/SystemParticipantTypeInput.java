@@ -16,11 +16,11 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput} */
 public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   /** Capital expense for this type of system participant (typically in €) */
-  private final ComparableQuantity<Currency> capex; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Currency> capex;
   /** Operating expense for this type of system participant (typically in €) */
-  private final ComparableQuantity<EnergyPrice> opex; // TODO #65 Quantity replaced
+  private final ComparableQuantity<EnergyPrice> opex;
   /** Rated apparent power of the type (in kVA) */
-  private final ComparableQuantity<Power> sRated; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Power> sRated;
   /** Power factor for this type of system participant */
   private final double cosphiRated;
 
@@ -34,9 +34,9 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   public SystemParticipantTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capex, // TODO #65 Quantity replaced
-      ComparableQuantity<EnergyPrice> opex, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Power> sRated,
       double cosphiRated) {
     super(uuid, id);
     this.capex = capex;
@@ -47,15 +47,15 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
 
   public ComparableQuantity<Currency> getCapex() {
     return capex;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<EnergyPrice> getOpex() {
     return opex;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Power> getsRated() {
     return sRated;
-  } // TODO #65 Quantity replaced
+  }
 
   public double getCosphiRated() {
     return cosphiRated;

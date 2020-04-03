@@ -87,7 +87,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
 
   @Override
   protected Optional<String> handleProcessorSpecificQuantity(
-      ComparableQuantity<?> quantity, String fieldName) { // TODO #65 Quantity replaced
+      ComparableQuantity<?> quantity, String fieldName) {
     Optional<String> normalizedQuantityValue = Optional.empty();
     switch (fieldName) {
       case "energy":

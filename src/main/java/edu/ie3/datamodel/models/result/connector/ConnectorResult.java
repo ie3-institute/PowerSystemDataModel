@@ -17,16 +17,16 @@ import tec.uom.se.ComparableQuantity;
 public abstract class ConnectorResult extends ResultEntity {
 
   /** Electric current magnitude @ port A, normally provided in Ampere */
-  private ComparableQuantity<ElectricCurrent> iAMag; // TODO #65 Quantity replaced
+  private ComparableQuantity<ElectricCurrent> iAMag;
 
   /** Electric current angle @ Port A in degree ° */
-  private ComparableQuantity<Angle> iAAng; // TODO #65 Quantity replaced
+  private ComparableQuantity<Angle> iAAng;
 
   /** Electric current magnitude @ port B, normally provided in Ampere */
-  private ComparableQuantity<ElectricCurrent> iBMag; // TODO #65 Quantity replaced
+  private ComparableQuantity<ElectricCurrent> iBMag;
 
   /** Electric current angle @ Port B in degree ° */
-  private ComparableQuantity<Angle> iBAng; // TODO #65 Quantity replaced
+  private ComparableQuantity<Angle> iBAng;
 
   /**
    * Standard constructor with automatic uuid generation.
@@ -41,10 +41,10 @@ public abstract class ConnectorResult extends ResultEntity {
   public ConnectorResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iAAng, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricCurrent> iBMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iBAng) { // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricCurrent> iAMag,
+      ComparableQuantity<Angle> iAAng,
+      ComparableQuantity<ElectricCurrent> iBMag,
+      ComparableQuantity<Angle> iBAng) {
     super(timestamp, inputModel);
     this.iAMag = iAMag;
     this.iAAng = iAAng;
@@ -68,10 +68,10 @@ public abstract class ConnectorResult extends ResultEntity {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iAAng, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricCurrent> iBMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iBAng) { // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricCurrent> iAMag,
+      ComparableQuantity<Angle> iAAng,
+      ComparableQuantity<ElectricCurrent> iBMag,
+      ComparableQuantity<Angle> iBAng) {
     super(uuid, timestamp, inputModel);
     this.iAMag = iAMag;
     this.iAAng = iAAng;
@@ -81,35 +81,35 @@ public abstract class ConnectorResult extends ResultEntity {
 
   public ComparableQuantity<ElectricCurrent> getiAMag() {
     return iAMag;
-  } // TODO #65 Quantity replaced
+  }
 
   public void setiAMag(ComparableQuantity<ElectricCurrent> iAMag) {
     this.iAMag = iAMag;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Angle> getiAAng() {
     return iAAng;
-  } // TODO #65 Quantity replaced
+  }
 
   public void setiAAng(ComparableQuantity<Angle> iAAng) {
     this.iAAng = iAAng;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<ElectricCurrent> getiBMag() {
     return iBMag;
-  } // TODO #65 Quantity replaced
+  }
 
   public void setiBMag(ComparableQuantity<ElectricCurrent> iBMag) {
     this.iBMag = iBMag;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Angle> getiBAng() {
     return iBAng;
-  } // TODO #65 Quantity replaced
+  }
 
   public void setiBAng(ComparableQuantity<Angle> iBAng) {
     this.iBAng = iBAng;
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public boolean equals(Object o) {

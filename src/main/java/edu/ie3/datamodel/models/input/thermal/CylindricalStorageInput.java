@@ -16,15 +16,15 @@ import tec.uom.se.ComparableQuantity;
 /** Thermal storage with cylindrical shape */
 public class CylindricalStorageInput extends ThermalStorageInput {
   /** Available storage volume (typically in m³) */
-  private final ComparableQuantity<Volume> storageVolumeLvl; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Volume> storageVolumeLvl;
   /** Minimum permissible storage volume (typically in m³) */
-  private final ComparableQuantity<Volume> storageVolumeLvlMin; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Volume> storageVolumeLvlMin;
   /** Temperature of the inlet (typically in C) */
-  private final ComparableQuantity<Temperature> inletTemp; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Temperature> inletTemp;
   /** Temperature of the outlet (typically in C) */
-  private final ComparableQuantity<Temperature> returnTemp; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Temperature> returnTemp;
   /** Specific heat capacity of the storage medium (typically in kWh/K*m³) */
-  private final ComparableQuantity<SpecificHeatCapacity> c; // TODO #65 Quantity replaced
+  private final ComparableQuantity<SpecificHeatCapacity> c;
 
   /**
    * @param uuid Unique identifier of a cylindrical storage
@@ -40,11 +40,11 @@ public class CylindricalStorageInput extends ThermalStorageInput {
       UUID uuid,
       String id,
       ThermalBusInput bus,
-      ComparableQuantity<Volume> storageVolumeLvl, // TODO #65 Quantity replaced
-      ComparableQuantity<Volume> storageVolumeLvlMin, // TODO #65 Quantity replaced
-      ComparableQuantity<Temperature> inletTemp, // TODO #65 Quantity replaced
-      ComparableQuantity<Temperature> returnTemp, // TODO #65 Quantity replaced
-      ComparableQuantity<SpecificHeatCapacity> c) { // TODO #65 Quantity replaced
+      ComparableQuantity<Volume> storageVolumeLvl,
+      ComparableQuantity<Volume> storageVolumeLvlMin,
+      ComparableQuantity<Temperature> inletTemp,
+      ComparableQuantity<Temperature> returnTemp,
+      ComparableQuantity<SpecificHeatCapacity> c) {
     super(uuid, id, bus);
     this.storageVolumeLvl = storageVolumeLvl.to(StandardUnits.VOLUME);
     this.storageVolumeLvlMin = storageVolumeLvlMin.to(StandardUnits.VOLUME);
@@ -55,23 +55,23 @@ public class CylindricalStorageInput extends ThermalStorageInput {
 
   public ComparableQuantity<Volume> getStorageVolumeLvl() {
     return storageVolumeLvl;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Volume> getStorageVolumeLvlMin() {
     return storageVolumeLvlMin;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Temperature> getInletTemp() {
     return inletTemp;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Temperature> getReturnTemp() {
     return returnTemp;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<SpecificHeatCapacity> getC() {
     return c;
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public boolean equals(Object o) {

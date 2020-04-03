@@ -44,8 +44,7 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
       OperationTime operationTime) {
     final int parallelDevices = data.getInt(PARALLEL_DEVICES);
     final LineTypeInput type = data.getType();
-    final ComparableQuantity<Length> length =
-        data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH); // TODO #65 Quantity replaced
+    final ComparableQuantity<Length> length = data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH);
     final LineString geoPosition =
         data.getLineString(GEO_POSITION)
             .orElse(

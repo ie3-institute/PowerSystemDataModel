@@ -19,9 +19,9 @@ public abstract class SystemParticipantResult extends ResultEntity {
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
    */
-  private ComparableQuantity<Power> p; // TODO #65 Quantity replaced
+  private ComparableQuantity<Power> p;
 
-  private ComparableQuantity<Power> q; // TODO #65 Quantity replaced
+  private ComparableQuantity<Power> q;
 
   /**
    * @param timestamp date and time when the result is produced
@@ -33,7 +33,7 @@ public abstract class SystemParticipantResult extends ResultEntity {
       ZonedDateTime timestamp,
       UUID inputModel,
       ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q) { // TODO #65 Quantity replaced
+      ComparableQuantity<Power> q) {
     super(timestamp, inputModel);
     this.p = p;
     this.q = q;
@@ -52,7 +52,7 @@ public abstract class SystemParticipantResult extends ResultEntity {
       ZonedDateTime timestamp,
       UUID inputModel,
       ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q) { // TODO #65 Quantity replaced
+      ComparableQuantity<Power> q) {
     super(uuid, timestamp, inputModel);
     this.p = p;
     this.q = q;
@@ -66,11 +66,11 @@ public abstract class SystemParticipantResult extends ResultEntity {
    */
   public ComparableQuantity<Power> getP() {
     return p;
-  } // TODO #65 Quantity replaced
+  }
 
   public void setP(ComparableQuantity<Power> p) {
     this.p = p;
-  } // TODO #65 Quantity replaced
+  }
 
   /**
    * Reactive power output of the decentralised energy resource asset. Convention: Generated powers
@@ -80,11 +80,11 @@ public abstract class SystemParticipantResult extends ResultEntity {
    */
   public ComparableQuantity<Power> getQ() {
     return q;
-  } // TODO #65 Quantity replaced
+  }
 
   public void setQ(ComparableQuantity<Power> q) {
     this.q = q;
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public boolean equals(Object o) {

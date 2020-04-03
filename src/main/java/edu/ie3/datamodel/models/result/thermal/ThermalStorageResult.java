@@ -19,7 +19,7 @@ import tec.uom.se.ComparableQuantity;
  */
 public abstract class ThermalStorageResult extends ThermalUnitResult {
   /** Currently stored energy */
-  private ComparableQuantity<Energy> energy; // TODO #65 Quantity replaced
+  private ComparableQuantity<Energy> energy;
 
   /**
    * Constructs the result with
@@ -32,8 +32,8 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
   public ThermalStorageResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Energy> energy, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> qDot) { // TODO #65 Quantity replaced
+      ComparableQuantity<Energy> energy,
+      ComparableQuantity<Power> qDot) {
     super(timestamp, inputModel, qDot);
     this.energy = energy.to(StandardUnits.ENERGY_RESULT);
   }
@@ -53,18 +53,18 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
       ZonedDateTime timestamp,
       UUID inputModel,
       ComparableQuantity<Energy> energy,
-      ComparableQuantity<Power> qDot) { // TODO #65 Quantity replaced
+      ComparableQuantity<Power> qDot) {
     super(uuid, timestamp, inputModel, qDot);
     this.energy = energy.to(StandardUnits.ENERGY_RESULT);
   }
 
   public ComparableQuantity<Energy> getEnergy() {
     return energy;
-  } // TODO #65 Quantity replaced
+  }
 
   public void setEnergy(ComparableQuantity<Energy> energy) {
     this.energy = energy.to(StandardUnits.ENERGY_RESULT);
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public boolean equals(Object o) {

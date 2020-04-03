@@ -15,23 +15,23 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput} */
 public class Transformer2WTypeInput extends AssetTypeInput {
   /** Short circuit resistance (typically in Ohm) */
-  private final ComparableQuantity<ElectricResistance> rSc; // TODO #65 Quantity replaced
+  private final ComparableQuantity<ElectricResistance> rSc;
   /** Short circuit reactance (typically in Ohm) */
-  private final ComparableQuantity<ElectricResistance> xSc; // TODO #65 Quantity replaced
+  private final ComparableQuantity<ElectricResistance> xSc;
   /** Rated apparent power (typically in MVA) */
-  private final ComparableQuantity<Power> sRated; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Power> sRated;
   /** Rated voltage of the high voltage winding (typically in kV) */
-  private final ComparableQuantity<ElectricPotential> vRatedA; // TODO #65 Quantity replaced
+  private final ComparableQuantity<ElectricPotential> vRatedA;
   /** Rated voltage of the low voltage winding (typically in kV) */
-  private final ComparableQuantity<ElectricPotential> vRatedB; // TODO #65 Quantity replaced
+  private final ComparableQuantity<ElectricPotential> vRatedB;
   /** Phase-to-ground conductance (typically in nS) */
-  private final ComparableQuantity<ElectricConductance> gM; // TODO #65 Quantity replaced
+  private final ComparableQuantity<ElectricConductance> gM;
   /** Phase-to-ground susceptance (typically in nS) */
-  private final ComparableQuantity<ElectricConductance> bM; // TODO #65 Quantity replaced
+  private final ComparableQuantity<ElectricConductance> bM;
   /** Voltage magnitude deviation per tap position (typically in %) */
-  private final ComparableQuantity<Dimensionless> dV; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Dimensionless> dV;
   /** Voltage angle deviation per tap position (typically in °) */
-  private final ComparableQuantity<Angle> dPhi; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Angle> dPhi;
   /** Selection of winding, where the tap changer is installed. Low voltage, if true */
   private final boolean tapSide;
   /** Neutral tap position */
@@ -61,15 +61,15 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   public Transformer2WTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<ElectricResistance> rSc, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricResistance> xSc, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricPotential> vRatedA, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricPotential> vRatedB, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricConductance> gM, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricConductance> bM, // TODO #65 Quantity replaced
-      ComparableQuantity<Dimensionless> dV, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> dPhi, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricResistance> rSc,
+      ComparableQuantity<ElectricResistance> xSc,
+      ComparableQuantity<Power> sRated,
+      ComparableQuantity<ElectricPotential> vRatedA,
+      ComparableQuantity<ElectricPotential> vRatedB,
+      ComparableQuantity<ElectricConductance> gM,
+      ComparableQuantity<ElectricConductance> bM,
+      ComparableQuantity<Dimensionless> dV,
+      ComparableQuantity<Angle> dPhi,
       boolean tapSide,
       int tapNeutr,
       int tapMin,
@@ -92,39 +92,39 @@ public class Transformer2WTypeInput extends AssetTypeInput {
 
   public ComparableQuantity<ElectricResistance> getrSc() {
     return rSc;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<ElectricResistance> getxSc() {
     return xSc;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Power> getsRated() {
     return sRated;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<ElectricPotential> getvRatedA() {
     return vRatedA;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<ElectricPotential> getvRatedB() {
     return vRatedB;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<ElectricConductance> getgM() {
     return gM;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<ElectricConductance> getbM() {
     return bM;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Dimensionless> getdV() {
     return dV;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Angle> getdPhi() {
     return dPhi;
-  } // TODO #65 Quantity replaced
+  }
 
   public boolean isTapSide() {
     return tapSide;

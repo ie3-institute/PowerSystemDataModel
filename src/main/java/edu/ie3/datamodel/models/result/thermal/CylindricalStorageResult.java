@@ -18,7 +18,7 @@ import tec.uom.se.ComparableQuantity;
 /** Respresents the results of {@link CylindricalStorageInput} */
 public class CylindricalStorageResult extends ThermalStorageResult {
   /** Fill level of the storage */
-  private ComparableQuantity<Dimensionless> fillLevel; // TODO #65 Quantity replaced
+  private ComparableQuantity<Dimensionless> fillLevel;
 
   /**
    * Constructs the result with
@@ -32,9 +32,9 @@ public class CylindricalStorageResult extends ThermalStorageResult {
   public CylindricalStorageResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Energy> energy, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> qDot, // TODO #65 Quantity replaced
-      ComparableQuantity<Dimensionless> fillLevel) { // TODO #65 Quantity replaced
+      ComparableQuantity<Energy> energy,
+      ComparableQuantity<Power> qDot,
+      ComparableQuantity<Dimensionless> fillLevel) {
     super(timestamp, inputModel, energy, qDot);
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }
@@ -54,19 +54,18 @@ public class CylindricalStorageResult extends ThermalStorageResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<Energy> energy, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> qDot, // TODO #65 Quantity replaced
-      ComparableQuantity<Dimensionless> fillLevel) { // TODO #65 Quantity replaced
+      ComparableQuantity<Energy> energy,
+      ComparableQuantity<Power> qDot,
+      ComparableQuantity<Dimensionless> fillLevel) {
     super(uuid, timestamp, inputModel, energy, qDot);
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }
 
   public ComparableQuantity<Dimensionless> getFillLevel() {
     return fillLevel;
-  } // TODO #65 Quantity replaced
+  }
 
-  public void setFillLevel(
-      ComparableQuantity<Dimensionless> fillLevel) { // TODO #65 Quantity replaced
+  public void setFillLevel(ComparableQuantity<Dimensionless> fillLevel) {
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }
 

@@ -30,7 +30,7 @@ public class DistanceWeightedGraph<V> extends SimpleWeightedGraph<V, DistanceWei
   public void setWeightQuantity(DistanceWeightedEdge edge, ComparableQuantity<Length> weight) {
     double weightDouble = weight.to(DistanceWeightedEdge.DEFAULT_UNIT).getValue().doubleValue();
     super.setEdgeWeight(edge, weightDouble);
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public void setEdgeWeight(DistanceWeightedEdge edge, double weight) {

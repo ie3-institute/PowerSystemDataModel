@@ -19,10 +19,9 @@ import tec.uom.se.ComparableQuantity;
 public class BmTypeInput extends SystemParticipantTypeInput {
 
   /** Permissible load gradient (typically in %/h) */
-  private final ComparableQuantity<DimensionlessRate>
-      activePowerGradient; // TODO #65 Quantity replaced
+  private final ComparableQuantity<DimensionlessRate> activePowerGradient;
   /** Efficiency of converter for this type of BM (typically in %) */
-  private final ComparableQuantity<Dimensionless> etaConv; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Dimensionless> etaConv;
 
   /**
    * @param uuid of the input entity
@@ -37,12 +36,12 @@ public class BmTypeInput extends SystemParticipantTypeInput {
   public BmTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capex, // TODO #65 Quantity replaced
-      ComparableQuantity<EnergyPrice> opex, // TODO #65 Quantity replaced
-      ComparableQuantity<DimensionlessRate> activePowerGradient, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<DimensionlessRate> activePowerGradient,
+      ComparableQuantity<Power> sRated,
       double cosphiRated,
-      ComparableQuantity<Dimensionless> etaConv) { // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> etaConv) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
@@ -50,11 +49,11 @@ public class BmTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
     return activePowerGradient;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Dimensionless> getEtaConv() {
     return etaConv;
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public boolean equals(Object o) {

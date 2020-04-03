@@ -35,10 +35,10 @@ public abstract class TransformerResult extends ConnectorResult {
   public TransformerResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iAAng, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricCurrent> iBMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iBAng, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricCurrent> iAMag,
+      ComparableQuantity<Angle> iAAng,
+      ComparableQuantity<ElectricCurrent> iBMag,
+      ComparableQuantity<Angle> iBAng,
       int tapPos) {
     super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
     this.tapPos = tapPos;
@@ -59,10 +59,10 @@ public abstract class TransformerResult extends ConnectorResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iAAng, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricCurrent> iBMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iBAng, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricCurrent> iAMag,
+      ComparableQuantity<Angle> iAAng,
+      ComparableQuantity<ElectricCurrent> iBMag,
+      ComparableQuantity<Angle> iBAng,
       int tapPos) {
     super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
     this.tapPos = tapPos;

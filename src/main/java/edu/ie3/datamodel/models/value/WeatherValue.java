@@ -50,11 +50,11 @@ public class WeatherValue implements Value {
    */
   public WeatherValue(
       Point coordinate,
-      ComparableQuantity<Irradiation> directirradiation, // TODO #65 Quantity replaced
-      ComparableQuantity<Irradiation> diffuseirradiation, // TODO #65 Quantity replaced
-      ComparableQuantity<Temperature> temperature, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> direction, // TODO #65 Quantity replaced
-      ComparableQuantity<Speed> velocity) { // TODO #65 Quantity replaced
+      ComparableQuantity<Irradiation> directirradiation,
+      ComparableQuantity<Irradiation> diffuseirradiation,
+      ComparableQuantity<Temperature> temperature,
+      ComparableQuantity<Angle> direction,
+      ComparableQuantity<Speed> velocity) {
     this(
         coordinate,
         new IrradiationValue(directirradiation, diffuseirradiation),

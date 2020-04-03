@@ -27,13 +27,12 @@ public class DistanceWeightedEdge extends DefaultWeightedEdge {
 
   private double distance;
 
-  public DistanceWeightedEdge(
-      ComparableQuantity<Length> weightQuantity) { // TODO #65 Quantity replaced
+  public DistanceWeightedEdge(ComparableQuantity<Length> weightQuantity) {
     this.distance = weightQuantity.to(DEFAULT_UNIT).getValue().doubleValue();
   }
 
   /** Returns the weightQuantity of the edge as {@link Quantity}. */
   protected ComparableQuantity<Length> getWeightQuantity() {
     return Quantities.getQuantity(distance, DEFAULT_UNIT);
-  } // TODO #65 Quantity replaced
+  }
 }

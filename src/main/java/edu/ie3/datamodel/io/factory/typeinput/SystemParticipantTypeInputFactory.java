@@ -103,12 +103,9 @@ public class SystemParticipantTypeInputFactory
   protected SystemParticipantTypeInput buildModel(SimpleEntityData data) {
     UUID uuid = data.getUUID(ENTITY_UUID);
     String id = data.getField(ENTITY_ID);
-    ComparableQuantity<Currency> capEx =
-        data.getQuantity(CAP_EX, StandardUnits.CAPEX); // TODO #65 Quantity replaced
-    ComparableQuantity<EnergyPrice> opEx =
-        data.getQuantity(OP_EX, StandardUnits.ENERGY_PRICE); // TODO #65 Quantity replaced
-    ComparableQuantity<Power> sRated =
-        data.getQuantity(S_RATED, StandardUnits.S_RATED); // TODO #65 Quantity replaced
+    ComparableQuantity<Currency> capEx = data.getQuantity(CAP_EX, StandardUnits.CAPEX);
+    ComparableQuantity<EnergyPrice> opEx = data.getQuantity(OP_EX, StandardUnits.ENERGY_PRICE);
+    ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     double cosPhi = data.getDouble(COS_PHI);
 
     if (data.getEntityClass().equals(EvTypeInput.class))
@@ -133,16 +130,14 @@ public class SystemParticipantTypeInputFactory
       SimpleEntityData data,
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capEx, // TODO #65 Quantity replaced
-      ComparableQuantity<EnergyPrice> opEx, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
+      ComparableQuantity<Currency> capEx,
+      ComparableQuantity<EnergyPrice> opEx,
+      ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<Energy> eStorage =
-        data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN); // TODO #65 Quantity replaced
-    // comparable
+    ComparableQuantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
+
     ComparableQuantity<SpecificEnergy> eCons =
-        data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE); // TODO #65 Quantity replaced
-    // comparable
+        data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
 
     return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi);
   }
@@ -151,13 +146,11 @@ public class SystemParticipantTypeInputFactory
       SimpleEntityData data,
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capEx, // TODO #65 Quantity replaced
-      ComparableQuantity<EnergyPrice> opEx, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
+      ComparableQuantity<Currency> capEx,
+      ComparableQuantity<EnergyPrice> opEx,
+      ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<Power> pThermal =
-        data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN); // TODO #65 Quantity replaced
-    // comparable
+    ComparableQuantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
 
     return new HpTypeInput(uuid, id, capEx, opEx, sRated, cosPhi, pThermal);
   }
@@ -166,15 +159,14 @@ public class SystemParticipantTypeInputFactory
       SimpleEntityData data,
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capEx, // TODO #65 Quantity replaced
-      ComparableQuantity<EnergyPrice> opEx, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
+      ComparableQuantity<Currency> capEx,
+      ComparableQuantity<EnergyPrice> opEx,
+      ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<DimensionlessRate> loadGradient = // TODO #65 Quantity replaced
+    ComparableQuantity<DimensionlessRate> loadGradient =
         data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
     ComparableQuantity<Dimensionless> etaConv =
-        data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY); // TODO #65 Quantity replaced
-    // comparable
+        data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
 
     return new BmTypeInput(uuid, id, capEx, opEx, loadGradient, sRated, cosPhi, etaConv);
   }
@@ -183,19 +175,16 @@ public class SystemParticipantTypeInputFactory
       SimpleEntityData data,
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capEx, // TODO #65 Quantity replaced
-      ComparableQuantity<EnergyPrice> opEx, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
+      ComparableQuantity<Currency> capEx,
+      ComparableQuantity<EnergyPrice> opEx,
+      ComparableQuantity<Power> sRated,
       double cosPhi) {
     ComparableQuantity<Dimensionless> etaConv =
-        data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY); // TODO #65 Quantity replaced
-    // comparable
-    ComparableQuantity<Area> rotorArea =
-        data.getQuantity(ROTOR_AREA, StandardUnits.ROTOR_AREA); // TODO #65 Quantity replaced
-    // comparable
-    ComparableQuantity<Length> hubHeight =
-        data.getQuantity(HUB_HEIGHT, StandardUnits.HUB_HEIGHT); // TODO #65 Quantity replaced
-    // comparable
+        data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
+
+    ComparableQuantity<Area> rotorArea = data.getQuantity(ROTOR_AREA, StandardUnits.ROTOR_AREA);
+
+    ComparableQuantity<Length> hubHeight = data.getQuantity(HUB_HEIGHT, StandardUnits.HUB_HEIGHT);
 
     return new WecTypeInput(uuid, id, capEx, opEx, cosPhi, etaConv, sRated, rotorArea, hubHeight);
   }
@@ -204,22 +193,18 @@ public class SystemParticipantTypeInputFactory
       SimpleEntityData data,
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capEx, // TODO #65 Quantity replaced
-      ComparableQuantity<EnergyPrice> opEx, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
+      ComparableQuantity<Currency> capEx,
+      ComparableQuantity<EnergyPrice> opEx,
+      ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<Dimensionless> etaEl =
-        data.getQuantity(ETA_EL, StandardUnits.EFFICIENCY); // TODO #65 Quantity replaced
-    // comparable
+    ComparableQuantity<Dimensionless> etaEl = data.getQuantity(ETA_EL, StandardUnits.EFFICIENCY);
+
     ComparableQuantity<Dimensionless> etaThermal =
-        data.getQuantity(ETA_THERMAL, StandardUnits.EFFICIENCY); // TODO #65 Quantity replaced
-    // comparable
-    ComparableQuantity<Power> pThermal =
-        data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN); // TODO #65 Quantity replaced
-    // comparable
-    ComparableQuantity<Power> pOwn =
-        data.getQuantity(P_OWN, StandardUnits.ACTIVE_POWER_IN); // TODO #65 Quantity replaced
-    // comparable
+        data.getQuantity(ETA_THERMAL, StandardUnits.EFFICIENCY);
+
+    ComparableQuantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
+
+    ComparableQuantity<Power> pOwn = data.getQuantity(P_OWN, StandardUnits.ACTIVE_POWER_IN);
 
     return new ChpTypeInput(
         uuid, id, capEx, opEx, etaEl, etaThermal, sRated, cosPhi, pThermal, pOwn);
@@ -229,22 +214,17 @@ public class SystemParticipantTypeInputFactory
       SimpleEntityData data,
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capEx, // TODO #65 Quantity replaced
-      ComparableQuantity<EnergyPrice> opEx, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
+      ComparableQuantity<Currency> capEx,
+      ComparableQuantity<EnergyPrice> opEx,
+      ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<Energy> eStorage =
-        data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN); // TODO #65 Quantity replaced
-    ComparableQuantity<Power> pMax =
-        data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN); // TODO #65 Quantity replaced
-    ComparableQuantity<DimensionlessRate> activePowerGradient = // TODO #65 Quantity replaced
+    ComparableQuantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
+    ComparableQuantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN);
+    ComparableQuantity<DimensionlessRate> activePowerGradient =
         data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
-    ComparableQuantity<Dimensionless> eta =
-        data.getQuantity(ETA, StandardUnits.EFFICIENCY); // TODO #65 Quantity replaced
-    ComparableQuantity<Dimensionless> dod =
-        data.getQuantity(DOD, StandardUnits.DOD); // TODO #65 Quantity replaced
-    ComparableQuantity<Time> lifeTime =
-        data.getQuantity(LIFETIME, StandardUnits.LIFE_TIME); // TODO #65 Quantity replaced
+    ComparableQuantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
+    ComparableQuantity<Dimensionless> dod = data.getQuantity(DOD, StandardUnits.DOD);
+    ComparableQuantity<Time> lifeTime = data.getQuantity(LIFETIME, StandardUnits.LIFE_TIME);
     int lifeCycle = data.getInt(LIFECYCLE);
 
     return new StorageTypeInput(

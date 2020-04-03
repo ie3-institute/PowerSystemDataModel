@@ -19,11 +19,11 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput} */
 public class WecTypeInput extends SystemParticipantTypeInput {
   /** Efficiency of converter for this type of WEC (typically in %) */
-  private final ComparableQuantity<Dimensionless> etaConv; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Dimensionless> etaConv;
   /** Swept Area of blades for this type of WEC (typically in m²) */
-  private final ComparableQuantity<Area> rotorArea; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Area> rotorArea;
   /** Height from ground to center of rotor for this type of WEC (typically in m) */
-  private final ComparableQuantity<Length> hubHeight; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Length> hubHeight;
 
   /**
    * @param uuid of the input entity
@@ -39,13 +39,13 @@ public class WecTypeInput extends SystemParticipantTypeInput {
   public WecTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capex, // TODO #65 Quantity replaced
-      ComparableQuantity<EnergyPrice> opex, // TODO #65 Quantity replaced
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
       double cosphi,
-      ComparableQuantity<Dimensionless> etaConv, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
-      ComparableQuantity<Area> rotorArea, // TODO #65 Quantity replaced
-      ComparableQuantity<Length> hubHeight) { // TODO #65 Quantity replaced
+      ComparableQuantity<Dimensionless> etaConv,
+      ComparableQuantity<Power> sRated,
+      ComparableQuantity<Area> rotorArea,
+      ComparableQuantity<Length> hubHeight) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphi);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
     this.rotorArea = rotorArea.to(StandardUnits.ROTOR_AREA);
@@ -54,15 +54,15 @@ public class WecTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<Dimensionless> getEtaConv() {
     return etaConv;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Area> getRotorArea() {
     return rotorArea;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Length> getHubHeight() {
     return hubHeight;
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public boolean equals(Object o) {

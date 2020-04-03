@@ -58,9 +58,8 @@ public class LoadInputFactory
     }
     final boolean dsm = data.getBoolean(DSM);
     final ComparableQuantity<Energy> eConsAnnual =
-        data.getQuantity(E_CONS_ANNUAL, StandardUnits.ENERGY_IN); // TODO #65 Quantity replaced
-    final ComparableQuantity<Power> sRated =
-        data.getQuantity(S_RATED, StandardUnits.S_RATED); // TODO #65 Quantity replaced
+        data.getQuantity(E_CONS_ANNUAL, StandardUnits.ENERGY_IN);
+    final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     final double cosPhi = data.getDouble(COS_PHI);
 
     return new LoadInput(

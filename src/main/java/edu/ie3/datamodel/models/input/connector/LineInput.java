@@ -27,7 +27,7 @@ public class LineInput extends ConnectorInput implements Type {
   /** Type of this line, containing default values for lines of this kind */
   private final LineTypeInput type;
   /** Length of this line */
-  private final ComparableQuantity<Length> length; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Length> length;
   /** Coordinates of this line */
   private final LineString geoPosition;
   /** Description of an optional weather dependent operation curve */
@@ -57,7 +57,7 @@ public class LineInput extends ConnectorInput implements Type {
       NodeInput nodeB,
       int parallelDevices,
       LineTypeInput type,
-      ComparableQuantity<Length> length, // TODO #65 Quantity replaced
+      ComparableQuantity<Length> length,
       LineString geoPosition,
       Optional<String> olmCharacteristic) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices);
@@ -87,7 +87,7 @@ public class LineInput extends ConnectorInput implements Type {
       NodeInput nodeB,
       int parallelDevices,
       LineTypeInput type,
-      ComparableQuantity<Length> length, // TODO #65 Quantity replaced
+      ComparableQuantity<Length> length,
       LineString geoPosition,
       Optional<String> olmCharacteristic) {
     super(uuid, id, nodeA, nodeB, parallelDevices);
@@ -104,7 +104,7 @@ public class LineInput extends ConnectorInput implements Type {
 
   public ComparableQuantity<Length> getLength() {
     return length;
-  } // TODO #65 Quantity replaced
+  }
 
   public LineString getGeoPosition() {
     return geoPosition;

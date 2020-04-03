@@ -24,9 +24,7 @@ public abstract class ThermalSinkResult extends ThermalUnitResult {
    * @param qDot thermal heat demand of the sink
    */
   public ThermalSinkResult(
-      ZonedDateTime timestamp,
-      UUID inputModel,
-      ComparableQuantity<Power> qDot) { // TODO #65 Quantity replaced
+      ZonedDateTime timestamp, UUID inputModel, ComparableQuantity<Power> qDot) {
     super(timestamp, inputModel, qDot);
   }
 
@@ -40,10 +38,7 @@ public abstract class ThermalSinkResult extends ThermalUnitResult {
    * @param qDot thermal heat demand of the sink
    */
   public ThermalSinkResult(
-      UUID uuid,
-      ZonedDateTime timestamp,
-      UUID inputModel,
-      ComparableQuantity<Power> qDot) { // TODO #65 Quantity replaced
+      UUID uuid, ZonedDateTime timestamp, UUID inputModel, ComparableQuantity<Power> qDot) {
     super(uuid, timestamp, inputModel, qDot);
   }
 }

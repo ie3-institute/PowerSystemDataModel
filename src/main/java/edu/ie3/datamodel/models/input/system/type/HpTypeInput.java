@@ -16,7 +16,7 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpTypeInput extends SystemParticipantTypeInput {
   /** Thermal output of the heat pump (typically in kW), when sRated * cosphi_rated is consumed */
-  private final ComparableQuantity<Power> pThermal; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Power> pThermal;
 
   /**
    * @param uuid of the input entity
@@ -31,18 +31,18 @@ public class HpTypeInput extends SystemParticipantTypeInput {
   public HpTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capex, // TODO #65 Quantity replaced
-      ComparableQuantity<EnergyPrice> opex, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Power> sRated,
       double cosphiRated,
-      ComparableQuantity<Power> pThermal) { // TODO #65 Quantity replaced
+      ComparableQuantity<Power> pThermal) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
   public ComparableQuantity<Power> getpThermal() {
     return pThermal;
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public boolean equals(Object o) {

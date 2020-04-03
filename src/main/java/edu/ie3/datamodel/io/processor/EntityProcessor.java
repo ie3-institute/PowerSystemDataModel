@@ -208,11 +208,9 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "String":
         resultStringBuilder.append(methodReturnObject.toString());
         break;
-      case "ComparableQuantity": // TODO #65 Quantity replaced
+      case "ComparableQuantity":
         resultStringBuilder.append(
-            handleQuantity(
-                    (ComparableQuantity<?>) methodReturnObject,
-                    fieldName) // TODO #65 Quantity replaced
+            handleQuantity((ComparableQuantity<?>) methodReturnObject, fieldName)
                 .orElseThrow(
                     () ->
                         new EntityProcessorException(
@@ -351,8 +349,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
    *     or empty if an error occurred during processing
    */
-  protected Optional<String> handleQuantity(
-      ComparableQuantity<?> quantity, String fieldName) { // TODO #65 Quantity replaced
+  protected Optional<String> handleQuantity(ComparableQuantity<?> quantity, String fieldName) {
     if (specificQuantityFieldNames.contains(fieldName)) {
       return handleProcessorSpecificQuantity(quantity, fieldName);
     } else {
@@ -373,10 +370,9 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    *     or empty if an error occurred during processing
    */
   protected abstract Optional<String> handleProcessorSpecificQuantity(
-      ComparableQuantity<?> quantity, String fieldName); // TODO #65 Quantity replaced
+      ComparableQuantity<?> quantity, String fieldName);
 
-  protected Optional<String> quantityValToOptionalString(
-      ComparableQuantity<?> quantity) { // TODO #65 Quantity replaced
+  protected Optional<String> quantityValToOptionalString(ComparableQuantity<?> quantity) {
     return Optional.of(Double.toString(quantity.getValue().doubleValue()));
   }
 

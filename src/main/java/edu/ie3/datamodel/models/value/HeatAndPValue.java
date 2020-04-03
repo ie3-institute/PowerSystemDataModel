@@ -13,24 +13,22 @@ import tec.uom.se.ComparableQuantity;
 /** Describes a tuple based on active electrical power, as well as heat power */
 public class HeatAndPValue extends PValue {
   /** Heat demand as power */
-  private ComparableQuantity<Power> heatDemand; // TODO #65 Quantity replaced
+  private ComparableQuantity<Power> heatDemand;
 
   /**
    * @param p Active power
    * @param heatDemand Heat demand
    */
-  public HeatAndPValue(
-      ComparableQuantity<Power> p,
-      ComparableQuantity<Power> heatDemand) { // TODO #65 Quantity replaced
+  public HeatAndPValue(ComparableQuantity<Power> p, ComparableQuantity<Power> heatDemand) {
     super(p);
     this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
   public ComparableQuantity<Power> getHeatDemand() {
     return heatDemand;
-  } // TODO #65 Quantity replaced
+  }
 
-  public void setHeatDemand(ComparableQuantity<Power> heatDemand) { // TODO #65 Quantity replaced
+  public void setHeatDemand(ComparableQuantity<Power> heatDemand) {
     this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 

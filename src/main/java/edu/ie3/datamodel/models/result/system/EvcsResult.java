@@ -24,7 +24,7 @@ public class EvcsResult extends SystemParticipantResult {
       ZonedDateTime timestamp,
       UUID inputModel,
       ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q) { // TODO #65 Quantity replaced
+      ComparableQuantity<Power> q) {
     super(timestamp, inputModel, p, q);
   }
 
@@ -43,7 +43,7 @@ public class EvcsResult extends SystemParticipantResult {
       ZonedDateTime timestamp,
       UUID inputModel,
       ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q) { // TODO #65 Quantity replaced
+      ComparableQuantity<Power> q) {
     super(uuid, timestamp, inputModel, p, q);
   }
 }

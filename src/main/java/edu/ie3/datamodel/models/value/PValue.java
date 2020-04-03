@@ -14,20 +14,20 @@ import tec.uom.se.ComparableQuantity;
 public class PValue implements Value {
 
   /** Active power */
-  private ComparableQuantity<Power> p; // TODO #65 Quantity replaced
+  private ComparableQuantity<Power> p;
 
   /** @param p Active power */
   public PValue(ComparableQuantity<Power> p) {
     this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Power> getP() {
     return p;
-  } // TODO #65 Quantity replaced
+  }
 
   public void setP(ComparableQuantity<Power> p) {
     this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public boolean equals(Object o) {

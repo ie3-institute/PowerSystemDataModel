@@ -15,10 +15,10 @@ import tec.uom.se.ComparableQuantity;
 public class Transformer3WResult extends TransformerResult {
 
   /** Electric current magnitude @ port C, normally provided in Ampere */
-  private ComparableQuantity<ElectricCurrent> iCMag; // TODO #65 Quantity replaced
+  private ComparableQuantity<ElectricCurrent> iCMag;
 
   /** Electric current angle @ Port C in degree ° */
-  private ComparableQuantity<Angle> iCAng; // TODO #65 Quantity replaced
+  private ComparableQuantity<Angle> iCAng;
 
   /**
    * @param timestamp date and time when the result is produced
@@ -34,12 +34,12 @@ public class Transformer3WResult extends TransformerResult {
   public Transformer3WResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iAAng, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricCurrent> iBMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iBAng, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricCurrent> iCMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iCAng, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricCurrent> iAMag,
+      ComparableQuantity<Angle> iAAng,
+      ComparableQuantity<ElectricCurrent> iBMag,
+      ComparableQuantity<Angle> iBAng,
+      ComparableQuantity<ElectricCurrent> iCMag,
+      ComparableQuantity<Angle> iCAng,
       int tapPos) {
     super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     this.iCMag = iCMag;
@@ -63,12 +63,12 @@ public class Transformer3WResult extends TransformerResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iAAng, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricCurrent> iBMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iBAng, // TODO #65 Quantity replaced
-      ComparableQuantity<ElectricCurrent> iCMag, // TODO #65 Quantity replaced
-      ComparableQuantity<Angle> iCAng, // TODO #65 Quantity replaced
+      ComparableQuantity<ElectricCurrent> iAMag,
+      ComparableQuantity<Angle> iAAng,
+      ComparableQuantity<ElectricCurrent> iBMag,
+      ComparableQuantity<Angle> iBAng,
+      ComparableQuantity<ElectricCurrent> iCMag,
+      ComparableQuantity<Angle> iCAng,
       int tapPos) {
     super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     this.iCMag = iCMag;
@@ -77,19 +77,19 @@ public class Transformer3WResult extends TransformerResult {
 
   public ComparableQuantity<ElectricCurrent> getiCMag() {
     return iCMag;
-  } // TODO #65 Quantity replaced
+  }
 
   public void setiCMag(ComparableQuantity<ElectricCurrent> iCMag) {
     this.iCMag = iCMag;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Angle> getiCAng() {
     return iCAng;
-  } // TODO #65 Quantity replaced
+  }
 
   public void setiCAng(ComparableQuantity<Angle> iCAng) {
     this.iCAng = iCAng;
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public boolean equals(Object o) {

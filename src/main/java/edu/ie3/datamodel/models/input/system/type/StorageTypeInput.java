@@ -20,18 +20,17 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput} */
 public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity (typically in kWh) */
-  private final ComparableQuantity<Energy> eStorage; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Energy> eStorage;
   /** Maximum permissible active power (typically in kW) */
-  private final ComparableQuantity<Power> pMax; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Power> pMax;
   /** Maximum permissible gradient of active power change (typically % / h) */
-  private final ComparableQuantity<DimensionlessRate>
-      activePowerGradient; // TODO #65 Quantity replaced
+  private final ComparableQuantity<DimensionlessRate> activePowerGradient;
   /** Efficiency of the charging and discharging process (typically in %) */
-  private final ComparableQuantity<Dimensionless> eta; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Dimensionless> eta;
   /** Minimum permissible depth of discharge (typically in %) */
-  private final ComparableQuantity<Dimensionless> dod; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Dimensionless> dod;
   /** Maximum life time of the storage (typically in ms) */
-  private final ComparableQuantity<Time> lifeTime; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Time> lifeTime;
   /** Maximum amount of full charging cycles */
   private final int lifeCycle;
 
@@ -53,16 +52,16 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   public StorageTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capex, // TODO #65 Quantity replaced
-      ComparableQuantity<EnergyPrice> opex, // TODO #65 Quantity replaced
-      ComparableQuantity<Energy> eStorage, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Energy> eStorage,
+      ComparableQuantity<Power> sRated,
       double cosPhiRated,
-      ComparableQuantity<Power> pMax, // TODO #65 Quantity replaced
-      ComparableQuantity<DimensionlessRate> activePowerGradient, // TODO #65 Quantity replaced
-      ComparableQuantity<Dimensionless> eta, // TODO #65 Quantity replaced
-      ComparableQuantity<Dimensionless> dod, // TODO #65 Quantity replaced
-      ComparableQuantity<Time> lifeTime, // TODO #65 Quantity replaced
+      ComparableQuantity<Power> pMax,
+      ComparableQuantity<DimensionlessRate> activePowerGradient,
+      ComparableQuantity<Dimensionless> eta,
+      ComparableQuantity<Dimensionless> dod,
+      ComparableQuantity<Time> lifeTime,
       int lifeCycle) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
@@ -76,15 +75,15 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<Dimensionless> getEta() {
     return eta;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Dimensionless> getDod() {
     return dod;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Time> getLifeTime() {
     return lifeTime;
-  } // TODO #65 Quantity replaced
+  }
 
   public int getLifeCycle() {
     return lifeCycle;
@@ -92,15 +91,15 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<Energy> geteStorage() {
     return eStorage;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<Power> getpMax() {
     return pMax;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
     return activePowerGradient;
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public boolean equals(Object o) {

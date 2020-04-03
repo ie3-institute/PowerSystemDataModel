@@ -13,9 +13,9 @@ import tec.uom.se.ComparableQuantity;
 /** Describes an irradiation value as a pair of diffuse and direct radiation */
 public class IrradiationValue implements Value {
   /** Direct sun radiation (typically in W/m²) */
-  private ComparableQuantity<Irradiation> directIrradiation; // TODO #65 Quantity replaced
+  private ComparableQuantity<Irradiation> directIrradiation;
   /** Diffuse sun radiation (typically in W/m²) */
-  private ComparableQuantity<Irradiation> diffuseIrradiation; // TODO #65 Quantity replaced
+  private ComparableQuantity<Irradiation> diffuseIrradiation;
 
   /**
    * @param directIrradiation Direct sun radiation (typically in W/m²)
@@ -23,26 +23,24 @@ public class IrradiationValue implements Value {
    */
   public IrradiationValue(
       ComparableQuantity<Irradiation> directIrradiation,
-      ComparableQuantity<Irradiation> diffuseIrradiation) { // TODO #65 Quantity replaced
+      ComparableQuantity<Irradiation> diffuseIrradiation) {
     this.directIrradiation = directIrradiation.to(StandardUnits.IRRADIATION);
     this.diffuseIrradiation = diffuseIrradiation.to(StandardUnits.IRRADIATION);
   }
 
   public ComparableQuantity<Irradiation> getDiffuseIrradiation() {
     return diffuseIrradiation;
-  } // TODO #65 Quantity replaced
+  }
 
-  public void setDiffuseIrradiation(
-      ComparableQuantity<Irradiation> diffuseIrradiation) { // TODO #65 Quantity replaced
+  public void setDiffuseIrradiation(ComparableQuantity<Irradiation> diffuseIrradiation) {
     this.diffuseIrradiation = diffuseIrradiation.to(StandardUnits.IRRADIATION);
   }
 
   public ComparableQuantity<Irradiation> getDirectIrradiation() {
     return directIrradiation;
-  } // TODO #65 Quantity replaced
+  }
 
-  public void setDirectIrradiation(
-      ComparableQuantity<Irradiation> directIrradiation) { // TODO #65 Quantity replaced
+  public void setDirectIrradiation(ComparableQuantity<Irradiation> directIrradiation) {
     this.directIrradiation = directIrradiation.to(StandardUnits.IRRADIATION);
   }
 

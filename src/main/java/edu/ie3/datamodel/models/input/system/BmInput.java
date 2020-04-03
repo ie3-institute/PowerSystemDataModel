@@ -27,7 +27,7 @@ public class BmInput extends SystemParticipantInput implements Type {
    */
   private final boolean costControlled;
   /** Granted feed in tariff (typically in €/kWh) */
-  private final ComparableQuantity<EnergyPrice> feedInTariff; // TODO #65 Quantity replaced
+  private final ComparableQuantity<EnergyPrice> feedInTariff;
 
   /**
    * Constructor for an operated biomass plant
@@ -54,7 +54,7 @@ public class BmInput extends SystemParticipantInput implements Type {
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
-      ComparableQuantity<EnergyPrice> feedInTariff) { // TODO #65 Quantity replaced
+      ComparableQuantity<EnergyPrice> feedInTariff) {
     super(uuid, operationTime, operator, id, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
@@ -83,7 +83,7 @@ public class BmInput extends SystemParticipantInput implements Type {
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
-      ComparableQuantity<EnergyPrice> feedInTariff) { // TODO #65 Quantity replaced
+      ComparableQuantity<EnergyPrice> feedInTariff) {
     super(uuid, id, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
@@ -106,7 +106,7 @@ public class BmInput extends SystemParticipantInput implements Type {
 
   public ComparableQuantity<EnergyPrice> getFeedInTariff() {
     return feedInTariff;
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public boolean equals(Object o) {

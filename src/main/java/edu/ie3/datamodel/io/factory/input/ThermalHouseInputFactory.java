@@ -37,10 +37,10 @@ public class ThermalHouseInputFactory
       OperatorInput operatorInput,
       OperationTime operationTime) {
     final ThermalBusInput busInput = data.getBusInput();
-    final ComparableQuantity<ThermalConductance> ethLosses = // TODO #65 Quantity replaced
+    final ComparableQuantity<ThermalConductance> ethLosses =
         data.getQuantity(ETH_LOSSES, StandardUnits.THERMAL_TRANSMISSION);
     final ComparableQuantity<HeatCapacity> ethCapa =
-        data.getQuantity(ETH_CAPA, StandardUnits.HEAT_CAPACITY); // TODO #65 Quantity replaced
+        data.getQuantity(ETH_CAPA, StandardUnits.HEAT_CAPACITY);
     return new ThermalHouseInput(uuid, id, busInput, ethLosses, ethCapa);
   }
 }

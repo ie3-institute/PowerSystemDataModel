@@ -18,9 +18,9 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput} */
 public class EvTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity of the storage (typically in kWh) */
-  private final ComparableQuantity<Energy> eStorage; // TODO #65 Quantity replaced
+  private final ComparableQuantity<Energy> eStorage;
   /** Consumed electric energy per driven distance (typically in kWh/km) */
-  private final ComparableQuantity<SpecificEnergy> eCons; // TODO #65 Quantity replaced
+  private final ComparableQuantity<SpecificEnergy> eCons;
 
   /**
    * @param uuid of the input entity
@@ -35,11 +35,11 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   public EvTypeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Currency> capex, // TODO #65 Quantity replaced
-      ComparableQuantity<EnergyPrice> opex, // TODO #65 Quantity replaced
-      ComparableQuantity<Energy> eStorage, // TODO #65 Quantity replaced
-      ComparableQuantity<SpecificEnergy> eCons, // TODO #65 Quantity replaced
-      ComparableQuantity<Power> sRated, // TODO #65 Quantity replaced
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Energy> eStorage,
+      ComparableQuantity<SpecificEnergy> eCons,
+      ComparableQuantity<Power> sRated,
       double cosphiRated) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage;
@@ -48,11 +48,11 @@ public class EvTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<Energy> geteStorage() {
     return eStorage;
-  } // TODO #65 Quantity replaced
+  }
 
   public ComparableQuantity<SpecificEnergy> geteCons() {
     return eCons;
-  } // TODO #65 Quantity replaced
+  }
 
   @Override
   public boolean equals(Object o) {
