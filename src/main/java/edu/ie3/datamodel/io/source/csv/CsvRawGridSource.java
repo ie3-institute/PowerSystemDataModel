@@ -13,8 +13,10 @@ import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,8 +45,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
   // factories
   private final NodeInputFactory nodeInputFactory;
-  private final Transformer2WInputFactory transformer2WInputFactory;
   private final LineInputFactory lineInputFactory;
+  private final Transformer2WInputFactory transformer2WInputFactory;
+  private final Transformer3WInputFactory transformer3WInputFactory;
 
   // todo dangerous if csvSep != ; because of the json strings -> find a way to parse that stuff
   //  anyway
@@ -65,8 +68,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
     // init factories
     nodeInputFactory = new NodeInputFactory();
-    transformer2WInputFactory = new Transformer2WInputFactory();
     lineInputFactory = new LineInputFactory();
+    transformer2WInputFactory = new Transformer2WInputFactory();
+    transformer3WInputFactory = new Transformer3WInputFactory();
   }
 
   @Override
@@ -85,6 +89,20 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   }
 
   @Override
+  public Collection<LineInput> getLines() {
+    return filterEmptyOptionals(
+        readLines(getNodes(), typeSource.getLineTypes(), typeSource.getOperators()));
+  }
+
+  @Override
+  public Collection<LineInput> getLines(
+      Collection<NodeInput> nodes,
+      Collection<LineTypeInput> lineTypeInputs,
+      Collection<OperatorInput> operators) {
+    return filterEmptyOptionals(readLines(nodes, lineTypeInputs, operators));
+  }
+
+  @Override
   public Collection<Transformer2WInput> get2WTransformers() {
     return filterEmptyOptionals(
         read2WTransformers(
@@ -100,17 +118,18 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   }
 
   @Override
-  public Collection<LineInput> getLines() {
+  public Collection<Transformer3WInput> get3WTransformers() {
     return filterEmptyOptionals(
-        readLines(getNodes(), typeSource.getLineTypes(), typeSource.getOperators()));
+        read3WTransformers(
+            getNodes(), typeSource.getTransformer3WTypes(), typeSource.getOperators()));
   }
 
   @Override
-  public Collection<LineInput> getLines(
+  public Collection<Transformer3WInput> get3WTransformers(
       Collection<NodeInput> nodes,
-      Collection<LineTypeInput> lineTypeInputs,
+      Collection<Transformer3WTypeInput> transformer3WTypeInputs,
       Collection<OperatorInput> operators) {
-    return filterEmptyOptionals(readLines(nodes, lineTypeInputs, operators));
+    return filterEmptyOptionals(read3WTransformers(nodes, transformer3WTypeInputs, operators));
   }
 
   private Collection<NodeInput> readNodes(Collection<OperatorInput> operators) {
@@ -152,6 +171,89 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     }
     // todo test for this!
     catch (IOException e) {
+      e.printStackTrace(); // todo
+    }
+
+    return resultingAssets;
+  }
+
+  private Collection<Optional<LineInput>> readLines(
+      Collection<NodeInput> nodes,
+      Collection<LineTypeInput> lineTypeInputs,
+      Collection<OperatorInput> operators) {
+    Set<Optional<LineInput>> resultingAssets = new HashSet<>();
+
+    final Class<LineInput> entityClass = LineInput.class;
+
+    try (BufferedReader reader = connector.getReader(entityClass)) {
+      String[] headline = readHeadline(reader);
+
+      resultingAssets =
+          reader
+              .lines()
+              .parallel()
+              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
+              .map(
+                  fieldsToAttributes -> {
+
+                    // get the line nodes
+                    Optional<NodeInput> nodeA =
+                        findNodeByUuid(fieldsToAttributes.get("nodeA"), nodes);
+                    Optional<NodeInput> nodeB =
+                        findNodeByUuid(fieldsToAttributes.get("nodeB"), nodes);
+
+                    // get the line type
+                    Optional<LineTypeInput> lineType =
+                        findTypeByUuid(fieldsToAttributes.get("type"), lineTypeInputs);
+
+                    // if nodeA, nodeB or the type are not present we return an empty element and
+                    // log a warning
+                    Optional<LineInput> lineOpt;
+                    if (!nodeA.isPresent() || !nodeB.isPresent() || !lineType.isPresent()) {
+                      lineOpt = Optional.empty();
+                      log.warn(
+                          "Skipping line with uuid '{}' and id '{}'. Not all required entities found!"
+                              + "Missing elements: {}",
+                          fieldsToAttributes.get("uuid"),
+                          fieldsToAttributes.get("id"),
+                          (nodeA.isPresent() ? "" : "\nnode_a: " + fieldsToAttributes.get("node_a"))
+                              .concat(
+                                  nodeB.isPresent()
+                                      ? ""
+                                      : "\nnode_b: " + fieldsToAttributes.get("node_b"))
+                              .concat(
+                                  lineType.isPresent()
+                                      ? ""
+                                      : "\ntype: " + fieldsToAttributes.get("type")));
+
+                    } else {
+
+                      // remove fields that are passed as objects to constructor
+                      fieldsToAttributes
+                          .keySet()
+                          .removeAll(
+                              new HashSet<>(
+                                  Arrays.asList(OPERATOR_FIELD, "nodeA", "nodeB", "type")));
+
+                      // build the asset data
+                      LineInputEntityData data =
+                          new LineInputEntityData(
+                              fieldsToAttributes,
+                              entityClass,
+                              getOrDefaultOperator(
+                                  operators, fieldsToAttributes.get(OPERATOR_FIELD)),
+                              nodeA.get(),
+                              nodeB.get(),
+                              lineType.get());
+                      // build the model
+                      lineOpt = lineInputFactory.getEntity(data);
+                    }
+
+                    return lineOpt;
+                  })
+              .collect(Collectors.toSet());
+
+    } catch (IOException e) {
       e.printStackTrace(); // todo
     }
 
@@ -242,13 +344,13 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     return resultingAssets;
   }
 
-  private Collection<Optional<LineInput>> readLines(
+  private Collection<Optional<Transformer3WInput>> read3WTransformers(
       Collection<NodeInput> nodes,
-      Collection<LineTypeInput> lineTypeInputs,
+      Collection<Transformer3WTypeInput> transformer3WTypes,
       Collection<OperatorInput> operators) {
-    Set<Optional<LineInput>> resultingAssets = new HashSet<>();
+    Set<Optional<Transformer3WInput>> resultingAssets = new HashSet<>();
 
-    final Class<LineInput> entityClass = LineInput.class;
+    final Class<Transformer3WInput> entityClass = Transformer3WInput.class;
 
     try (BufferedReader reader = connector.getReader(entityClass)) {
       String[] headline = readHeadline(reader);
@@ -257,27 +359,33 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
           reader
               .lines()
               .parallel()
-              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
               .map(
-                  fieldsToAttributes -> {
+                  csvRow -> {
+                    final Map<String, String> fieldsToAttributes =
+                        buildFieldsToAttributes(csvRow, headline);
 
-                    // get the line nodes
+                    // get the transformer nodes
                     Optional<NodeInput> nodeA =
                         findNodeByUuid(fieldsToAttributes.get("nodeA"), nodes);
                     Optional<NodeInput> nodeB =
                         findNodeByUuid(fieldsToAttributes.get("nodeB"), nodes);
+                    Optional<NodeInput> nodeC =
+                        findNodeByUuid(fieldsToAttributes.get("nodeC"), nodes);
 
-                    // get the line type
-                    Optional<LineTypeInput> lineType =
-                        findTypeByUuid(fieldsToAttributes.get("type"), lineTypeInputs);
+                    // get the transformer type
+                    Optional<Transformer3WTypeInput> transformerType =
+                        findTypeByUuid(fieldsToAttributes.get("type"), transformer3WTypes);
 
                     // if nodeA, nodeB or the type are not present we return an empty element and
                     // log a warning
-                    Optional<LineInput> lineOpt;
-                    if (!nodeA.isPresent() || !nodeB.isPresent() || !lineType.isPresent()) {
-                      lineOpt = Optional.empty();
+                    Optional<Transformer3WInput> trafoOpt;
+                    if (!nodeA.isPresent()
+                        || !nodeB.isPresent()
+                        || !nodeC.isPresent()
+                        || !transformerType.isPresent()) {
+                      trafoOpt = Optional.empty();
                       log.warn(
-                          "Skipping line with uuid '{}' and id '{}'. Not all required entities found!"
+                          "Skipping transformer with uuid '{}' and id '{}'. Not all required entities found!"
                               + "Missing elements: {}",
                           fieldsToAttributes.get("uuid"),
                           fieldsToAttributes.get("id"),
@@ -287,7 +395,11 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                                       ? ""
                                       : "\nnode_b: " + fieldsToAttributes.get("node_b"))
                               .concat(
-                                  lineType.isPresent()
+                                  nodeB.isPresent()
+                                      ? ""
+                                      : "\nnode_c: " + fieldsToAttributes.get("node_c"))
+                              .concat(
+                                  transformerType.isPresent()
                                       ? ""
                                       : "\ntype: " + fieldsToAttributes.get("type")));
 
@@ -298,23 +410,25 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                           .keySet()
                           .removeAll(
                               new HashSet<>(
-                                  Arrays.asList(OPERATOR_FIELD, "nodeA", "nodeB", "type")));
+                                  Arrays.asList(
+                                      OPERATOR_FIELD, "nodeA", "nodeB", "nodeC", "type")));
 
                       // build the asset data
-                      LineInputEntityData data =
-                          new LineInputEntityData(
+                      Transformer3WInputEntityData data =
+                          new Transformer3WInputEntityData(
                               fieldsToAttributes,
                               entityClass,
                               getOrDefaultOperator(
                                   operators, fieldsToAttributes.get(OPERATOR_FIELD)),
                               nodeA.get(),
                               nodeB.get(),
-                              lineType.get());
+                              nodeC.get(),
+                              transformerType.get());
                       // build the model
-                      lineOpt = lineInputFactory.getEntity(data);
+                      trafoOpt = transformer3WInputFactory.getEntity(data);
                     }
 
-                    return lineOpt;
+                    return trafoOpt;
                   })
               .collect(Collectors.toSet());
 

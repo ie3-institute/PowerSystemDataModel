@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import java.util.Collection;
 
 public interface TypeSource extends DataSource {
@@ -18,4 +19,6 @@ public interface TypeSource extends DataSource {
   Collection<OperatorInput> getOperators();
 
   Collection<LineTypeInput> getLineTypes();
+
+  Collection<Transformer3WTypeInput> getTransformer3WTypes();
 }

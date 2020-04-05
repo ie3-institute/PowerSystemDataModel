@@ -12,11 +12,13 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.Transformer3WTypeInputFactory;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
@@ -39,6 +41,7 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
   private final OperatorInputFactory operatorInputFactory;
   private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
   private final LineTypeInputFactory lineTypeInputFactory;
+  private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
 
   public CsvTypeSource(
       String csvSep, String gridFolderPath, FileNamingStrategy fileNamingStrategy) {
@@ -49,6 +52,7 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
     operatorInputFactory = new OperatorInputFactory();
     transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();
     lineTypeInputFactory = new LineTypeInputFactory();
+    transformer3WTypeInputFactory = new Transformer3WTypeInputFactory();
   }
 
   @Override
@@ -64,6 +68,11 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
   @Override
   public Collection<LineTypeInput> getLineTypes() {
     return readSimpleEntities(LineTypeInput.class, lineTypeInputFactory);
+  }
+
+  @Override
+  public Collection<Transformer3WTypeInput> getTransformer3WTypes() {
+    return readSimpleEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory);
   }
 
   private <T extends UniqueEntity> Collection<T> readSimpleEntities(

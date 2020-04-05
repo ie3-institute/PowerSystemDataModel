@@ -9,8 +9,10 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import java.util.Collection;
 
@@ -24,15 +26,6 @@ public interface RawGridSource extends DataSource {
 
   Collection<NodeInput> getNodes(Collection<OperatorInput> operators);
 
-  //  Collection<LineInput> getLines();
-  //
-  Collection<Transformer2WInput> get2WTransformers();
-
-  Collection<Transformer2WInput> get2WTransformers(
-      Collection<NodeInput> nodes,
-      Collection<Transformer2WTypeInput> transformer2WTypes,
-      Collection<OperatorInput> operators);
-
   Collection<LineInput> getLines();
 
   Collection<LineInput> getLines(
@@ -40,8 +33,20 @@ public interface RawGridSource extends DataSource {
       Collection<LineTypeInput> lineTypeInputs,
       Collection<OperatorInput> operators);
 
-  //
-  //  Collection<Transformer3WInput> get3WTransformers();
+  Collection<Transformer2WInput> get2WTransformers();
+
+  Collection<Transformer2WInput> get2WTransformers(
+      Collection<NodeInput> nodes,
+      Collection<Transformer2WTypeInput> transformer2WTypes,
+      Collection<OperatorInput> operators);
+
+  Collection<Transformer3WInput> get3WTransformers();
+
+  Collection<Transformer3WInput> get3WTransformers(
+      Collection<NodeInput> nodes,
+      Collection<Transformer3WTypeInput> transformer3WTypeInputs,
+      Collection<OperatorInput> operators);
+
   //
   //  Collection<SwitchInput> getSwitches();
 
