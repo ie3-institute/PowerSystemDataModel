@@ -7,7 +7,9 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import java.util.Collection;
@@ -30,6 +32,14 @@ public interface RawGridSource extends DataSource {
       Collection<NodeInput> nodes,
       Collection<Transformer2WTypeInput> transformer2WTypes,
       Collection<OperatorInput> operators);
+
+  Collection<LineInput> getLines();
+
+  Collection<LineInput> getLines(
+      Collection<NodeInput> nodes,
+      Collection<LineTypeInput> lineTypeInputs,
+      Collection<OperatorInput> operators);
+
   //
   //  Collection<Transformer3WInput> get3WTransformers();
   //

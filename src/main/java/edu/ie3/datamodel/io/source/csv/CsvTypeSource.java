@@ -10,15 +10,19 @@ import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+// TODO use Sets to prevent duplicates!
 
 /**
  * //ToDo: Class Description
@@ -34,6 +38,7 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
   // factories
   private final OperatorInputFactory operatorInputFactory;
   private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
+  private final LineTypeInputFactory lineTypeInputFactory;
 
   public CsvTypeSource(
       String csvSep, String gridFolderPath, FileNamingStrategy fileNamingStrategy) {
@@ -43,6 +48,7 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
     // init factories
     operatorInputFactory = new OperatorInputFactory();
     transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();
+    lineTypeInputFactory = new LineTypeInputFactory();
   }
 
   @Override
@@ -53,6 +59,11 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
   @Override
   public Collection<OperatorInput> getOperators() {
     return readSimpleEntities(OperatorInput.class, operatorInputFactory);
+  }
+
+  @Override
+  public Collection<LineTypeInput> getLineTypes() {
+    return readSimpleEntities(LineTypeInput.class, lineTypeInputFactory);
   }
 
   private <T extends UniqueEntity> Collection<T> readSimpleEntities(

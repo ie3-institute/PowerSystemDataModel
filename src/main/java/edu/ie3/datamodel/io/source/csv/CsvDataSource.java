@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,6 +73,19 @@ public abstract class CsvDataSource {
         .collect(Collectors.toList());
   }
 
+  protected Optional<NodeInput> findNodeByUuid(String nodeUuid, Collection<NodeInput> nodes) {
+    return nodes.stream()
+        .filter(node -> node.getUuid().toString().equalsIgnoreCase(nodeUuid))
+        .findFirst();
+  }
+
+  protected <T extends AssetTypeInput> Optional<T> findTypeByUuid(
+      String typeUuid, Collection<T> types) {
+    return types.stream()
+        .filter(type -> type.getUuid().toString().equalsIgnoreCase(typeUuid))
+        .findFirst();
+  }
+
   private String snakeCaseToCamelCase(String snakeCaseString) {
     StringBuilder sb = new StringBuilder();
     for (String s : snakeCaseString.split("_")) {
@@ -79,7 +94,6 @@ public abstract class CsvDataSource {
         sb.append(s.substring(1).toLowerCase());
       }
     }
-
     return sb.toString();
   }
 }
