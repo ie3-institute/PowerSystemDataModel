@@ -35,7 +35,7 @@ OperatorInput --|> InputEntity
 abstract Class ConnectorInput {
 + nodeA: NodeInput
 + nodeB: NodeInput
-+ noOfParallelDevices: Integer
++ parallelDevices: Integer
 }
 ConnectorInput --|> AssetInput
 ConnectorInput --|> HasNodes

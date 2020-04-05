@@ -60,7 +60,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert nodeA == nodeInputA
 			assert nodeB == nodeInputB
 			assert type == typeInput
-			assert noOfParallelDevices == Integer.parseInt(parameter["paralleldevices"])
+			assert parallelDevices == Integer.parseInt(parameter["paralleldevices"])
 			assert length == getQuant(parameter["length"], StandardUnits.LINE_LENGTH)
 			assert geoPosition == getGeometry(parameter["geoposition"])
 			assert olmCharacteristic == Optional.of(parameter["olmcharacteristic"])

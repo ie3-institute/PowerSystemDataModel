@@ -10,11 +10,15 @@ import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.EvInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
 import edu.ie3.test.helper.FactoryTestHelper
+import edu.ie3.util.TimeTools
 import spock.lang.Specification
 
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class EvInputFactoryTest extends Specification implements FactoryTestHelper {
+
+
 	def "A EvInputFactory should contain exactly the expected class for parsing"() {
 		given:
 		def inputFactory = new EvInputFactory()
@@ -41,7 +45,7 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
 
 		when:
 		Optional<EvInput> input = inputFactory.getEntity(
-				new SystemParticipantTypedEntityData<EvTypeInput>(parameter, inputClass,operatorInput, nodeInput, typeInput))
+				new SystemParticipantTypedEntityData<EvTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
 		then:
 		input.present

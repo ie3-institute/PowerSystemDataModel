@@ -279,15 +279,13 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   }
 
   /**
-   * Standard method to process a ZonedDateTime to a String based on a method return object NOTE:
-   * this method does NOT check if the provided object is of type ZonedDateTime. This has to be done
-   * manually BEFORE calling this method!
+   * Standard method to process a ZonedDateTime to a String based on a method return object
    *
    * @param zonedDateTime representation of the ZonedDateTime
    * @return string representation of the ZonedDateTime
    */
   protected String processZonedDateTime(ZonedDateTime zonedDateTime) {
-    return TimeTools.toString(zonedDateTime);
+    return zonedDateTime.toString();
   }
 
   /**

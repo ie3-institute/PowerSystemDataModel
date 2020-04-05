@@ -54,7 +54,7 @@ class ResultEntityProcessorTest extends Specification {
 		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 		p         : '0.01',
 		q         : '0.01',
-		timestamp : '2020-01-30 17:26:44']
+		timestamp : '2020-01-30T17:26:44Z[UTC]']
 
 	@Shared
 	def expectedSocResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
@@ -62,7 +62,7 @@ class ResultEntityProcessorTest extends Specification {
 		p         : '0.01',
 		q         : '0.01',
 		soc       : '50.0',
-		timestamp : '2020-01-30 17:26:44']
+		timestamp : '2020-01-30T17:26:44Z[UTC]']
 
 
 	def "A ResultEntityProcessor should de-serialize a provided SystemParticipantResult correctly"() {
@@ -80,15 +80,15 @@ class ResultEntityProcessorTest extends Specification {
 
 		where:
 		modelClass        | validSystemParticipantResult                                                                     || expectedResults
-		LoadResult        | new LoadResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)         || expectedStandardResults
-		FixedFeedInResult | new FixedFeedInResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)  || expectedStandardResults
-		BmResult          | new BmResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)           || expectedStandardResults
-		EvResult          | new EvResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q, soc)      || expectedSocResults
-		PvResult          | new PvResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)           || expectedStandardResults
-		EvcsResult        | new EvcsResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)         || expectedStandardResults
-		ChpResult         | new ChpResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)          || expectedStandardResults
-		WecResult         | new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)          || expectedStandardResults
-		StorageResult     | new StorageResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q, soc) || expectedSocResults
+		LoadResult        | new LoadResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)         || expectedStandardResults
+		FixedFeedInResult | new FixedFeedInResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)  || expectedStandardResults
+		BmResult          | new BmResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)           || expectedStandardResults
+		EvResult          | new EvResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, soc)      || expectedSocResults
+		PvResult          | new PvResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)           || expectedStandardResults
+		EvcsResult        | new EvcsResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)         || expectedStandardResults
+		ChpResult         | new ChpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
+		WecResult         | new WecResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
+		StorageResult     | new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, soc) || expectedSocResults
 
 	}
 
@@ -96,7 +96,7 @@ class ResultEntityProcessorTest extends Specification {
 		given:
 		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(StorageResult)
-		def storageResult = new StorageResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q, null)
+		def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, null)
 
 
 		when:
@@ -109,7 +109,7 @@ class ResultEntityProcessorTest extends Specification {
 			p         : '0.01',
 			q         : '0.01',
 			soc       : '',
-			timestamp : '2020-01-30 17:26:44']
+			timestamp : '2020-01-30T17:26:44Z[UTC]']
 
 	}
 
@@ -117,7 +117,7 @@ class ResultEntityProcessorTest extends Specification {
 		given:
 		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(LoadResult)
-		def storageResult = new StorageResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q, null)
+		def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, null)
 
 		when:
 		sysPartResProcessor.handleEntity(storageResult)
@@ -135,13 +135,13 @@ class ResultEntityProcessorTest extends Specification {
 		Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PowerSystemUnits.PU)
 		Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.VOLTAGE_ANGLE)
 
-		def validResult = new NodeResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, vMag, vAng)
+		def validResult = new NodeResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, vMag, vAng)
 
 		def expectedResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 			inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 			vAng      : '45.0',
 			vMag      : '0.95',
-			timestamp : '2020-01-30 17:26:44']
+			timestamp : '2020-01-30T17:26:44Z[UTC]']
 
 		when:
 		def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
@@ -159,7 +159,7 @@ class ResultEntityProcessorTest extends Specification {
 		iAAng     : '45.0',
 		iBMag     : '150.0',
 		iBAng     : '30.0',
-		timestamp : '2020-01-30 17:26:44']
+		timestamp : '2020-01-30T17:26:44Z[UTC]']
 
 	@Shared
 	def expectedTrafo2WResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
@@ -169,7 +169,7 @@ class ResultEntityProcessorTest extends Specification {
 		iBMag     : '150.0',
 		iBAng     : '30.0',
 		tapPos    : '5',
-		timestamp : '2020-01-30 17:26:44']
+		timestamp : '2020-01-30T17:26:44Z[UTC]']
 
 
 	@Shared
@@ -182,7 +182,7 @@ class ResultEntityProcessorTest extends Specification {
 		iCMag     : '300.0',
 		iCAng     : '70.0',
 		tapPos    : '5',
-		timestamp : '2020-01-30 17:26:44']
+		timestamp : '2020-01-30T17:26:44Z[UTC]']
 
 	@Shared
 	def expectedSwitchResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
@@ -192,7 +192,7 @@ class ResultEntityProcessorTest extends Specification {
 		iBMag     : '150.0',
 		iBAng     : '30.0',
 		closed    : 'true',
-		timestamp : '2020-01-30 17:26:44']
+		timestamp : '2020-01-30T17:26:44Z[UTC]']
 
 
 	@Shared
@@ -229,10 +229,10 @@ class ResultEntityProcessorTest extends Specification {
 
 		where:
 		modelClass          | validConnectorResult                                                                                                                          || expectedResults
-		LineResult          | new LineResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, iAMag, iAAng, iBMag, iBAng)                                || expectedLineResults
-		SwitchResult        | new SwitchResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, iAMag, iAAng, iBMag, iBAng, closed)                      || expectedSwitchResults
-		Transformer2WResult | new Transformer2WResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, iAMag, iAAng, iBMag, iBAng, tapPos)               || expectedTrafo2WResults
-		Transformer3WResult | new Transformer3WResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos) || expectedTrafo3WResults
+		LineResult          | new LineResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, iAMag, iAAng, iBMag, iBAng)                                || expectedLineResults
+		SwitchResult        | new SwitchResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, iAMag, iAAng, iBMag, iBAng, closed)                      || expectedSwitchResults
+		Transformer2WResult | new Transformer2WResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, iAMag, iAAng, iBMag, iBAng, tapPos)               || expectedTrafo2WResults
+		Transformer3WResult | new Transformer3WResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos) || expectedTrafo3WResults
 	}
 
 	def "A ResultEntityProcessor should de-serialize a CylindricalStorageResult correctly"() {
@@ -244,14 +244,14 @@ class ResultEntityProcessorTest extends Specification {
 		Quantity<Energy> energy = Quantities.getQuantity(3, StandardUnits.ENERGY_RESULT)
 		Quantity<Dimensionless> fillLevel = Quantities.getQuantity(20, Units.PERCENT)
 
-		def validResult = new CylindricalStorageResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, energy, qDot, fillLevel)
+		def validResult = new CylindricalStorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, energy, qDot, fillLevel)
 
 		def expectedResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 			energy    : '3.0',
 			fillLevel : '20.0',
 			inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 			qDot      : '2.0',
-			timestamp : '2020-01-30 17:26:44']
+			timestamp : '2020-01-30T17:26:44Z[UTC]']
 
 		when:
 		def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
@@ -268,7 +268,7 @@ class ResultEntityProcessorTest extends Specification {
 		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(ResultEntityProcessor.eligibleEntityClasses.get(0))
 
-		def invalidClassResult = new InvalidTestResult(TimeTools.toZonedDateTime("2020-01-30 17:26:44"), uuid)
+		def invalidClassResult = new InvalidTestResult(ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), uuid)
 
 		when:
 		sysPartResProcessor.handleEntity(invalidClassResult)
