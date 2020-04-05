@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.system.StorageStrategy;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.TimeTools;
@@ -52,6 +53,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   private static final String V_RATED = NodeInputFactory.V_RATED;
 
   private static final String NODE_INTERNAL = "nodeInternal";
+  private static final String PARALLEL_DEVICES = "parallelDevices";
 
   /* Quantities associated to those fields must be treated differently (e.g. input and result), all other quantity /
    * field combinations can be treated on a common basis and therefore need no further distinction */
@@ -115,6 +117,12 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
                   !pd.getName()
                       .equalsIgnoreCase(
                           NODE_INTERNAL)) // filter internal node for 3 winding transformer
+          .filter(
+              pd ->
+                  // switches can never be parallel but have this field due to inheritance -> filter
+                  // it out as it cannot be passed into the constructor
+                  !(registeredClass.equals(SwitchInput.class)
+                      && pd.getName().equalsIgnoreCase(PARALLEL_DEVICES)))
           .forEach(
               pd -> { // invoke method to get value
                 if (pd.getReadMethod() != null) {
