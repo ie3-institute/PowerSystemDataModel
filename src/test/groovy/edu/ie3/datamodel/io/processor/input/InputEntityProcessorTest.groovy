@@ -93,8 +93,7 @@ class InputEntityProcessorTest extends Specification {
 		processingResult.present
 
 		processingResult.get().forEach { k, v ->
-			if (k != "nodeInternal")     // the internal 3w node is always randomly generated, hence we can skip to test on this
-				assert (v == expectedResult.get(k))
+			assert (v == expectedResult.get(k))
 		}
 
 		where:

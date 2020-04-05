@@ -51,6 +51,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
   private static final String VOLT_LVL = NodeInputFactory.VOLT_LVL;
   private static final String V_RATED = NodeInputFactory.V_RATED;
 
+  private static final String NODE_INTERNAL = "nodeInternal";
+
   /* Quantities associated to those fields must be treated differently (e.g. input and result), all other quantity /
    * field combinations can be treated on a common basis and therefore need no further distinction */
   private static final Set<String> specificQuantityFieldNames =
@@ -108,6 +110,11 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       Arrays.stream(Introspector.getBeanInfo(cls, Object.class).getPropertyDescriptors())
           // filter out properties with setters only
           .filter(pd -> Objects.nonNull(pd.getReadMethod()))
+          .filter(
+              pd ->
+                  !pd.getName()
+                      .equalsIgnoreCase(
+                          NODE_INTERNAL)) // filter internal node for 3 winding transformer
           .forEach(
               pd -> { // invoke method to get value
                 if (pd.getReadMethod() != null) {
