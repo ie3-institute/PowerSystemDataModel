@@ -26,8 +26,8 @@ public class ThermalBusInputFactory
       AssetInputEntityData data,
       UUID uuid,
       String id,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
-    return new ThermalBusInput(uuid, operationTime, operatorInput, id);
+    return new ThermalBusInput(uuid, id, operator, operationTime);
   }
 }

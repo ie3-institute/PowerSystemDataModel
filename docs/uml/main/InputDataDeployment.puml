@@ -11,6 +11,8 @@ database psql [
     graphics
     --
     weather
+    __
+    time series
 ]
 database neo4j [
     <b> Neo4J
@@ -47,6 +49,8 @@ interface assets_source
 interface types_source
 interface graphics_source
 interface weather_source
+interface time_series_source
+interface config_source
 agent inputAccumulator
 node "Simulation"
 
@@ -66,13 +70,19 @@ graphics_source --> graphics
 weather_source --> psql
 weather_source --> streams
 
+time_series_source --> psql
+time_series_source --> streams
+
+config_source --> inputAccumulator
+
 inputAccumulator --> grid_source
 inputAccumulator --> assets_source
 inputAccumulator --> types_source
 inputAccumulator --> graphics_source
 inputAccumulator --> weather_source
+inputAccumulator --> time_series_source
 
-projName_model.conf --> inputAccumulator
+projName_model.conf --> config_source
 
 projName_simulation.conf --> Simulation
 

@@ -44,7 +44,7 @@ public class LoadInputFactory
       String id,
       NodeInput node,
       String qCharacteristics,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     StandardLoadProfile slp;
     try {
@@ -63,9 +63,9 @@ public class LoadInputFactory
 
     return new LoadInput(
         uuid,
-        operationTime,
-        operatorInput,
         id,
+        operator,
+        operationTime,
         node,
         qCharacteristics,
         slp,

@@ -7,8 +7,7 @@ package edu.ie3.datamodel.models.input.connector;
 
 import static edu.ie3.util.quantities.PowerSystemUnits.PU;
 
-import edu.ie3.datamodel.io.extractor.NodeC;
-import edu.ie3.datamodel.io.extractor.Type;
+import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -20,7 +19,7 @@ import tec.uom.se.quantity.Quantities;
  * Describes a three winding transformer, that is connected to three {@link
  * edu.ie3.datamodel.models.input.NodeInput}s
  */
-public class Transformer3WInput extends TransformerInput implements NodeC, Type {
+public class Transformer3WInput extends TransformerInput implements HasType {
   /** Type of this 3W transformer, containing default values for transformers of this kind */
   private final Transformer3WTypeInput type;
   /** The lower voltage node */
@@ -32,9 +31,9 @@ public class Transformer3WInput extends TransformerInput implements NodeC, Type 
    * Constructor for an operated three winding transformer
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param nodeA The higher voltage node
    * @param nodeB The middle voltage node
    * @param nodeC The lower voltage node
@@ -45,9 +44,9 @@ public class Transformer3WInput extends TransformerInput implements NodeC, Type 
    */
   public Transformer3WInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput nodeA,
       NodeInput nodeB,
       NodeInput nodeC,
@@ -61,9 +60,9 @@ public class Transformer3WInput extends TransformerInput implements NodeC, Type 
     this.nodeInternal =
         new NodeInput(
             UUID.randomUUID(),
-            operationTime,
-            operator,
             "internal_node_" + id,
+            operator,
+            operationTime,
             Quantities.getQuantity(1d, PU),
             false,
             null,
@@ -72,7 +71,7 @@ public class Transformer3WInput extends TransformerInput implements NodeC, Type 
   }
 
   /**
-   * Constructor for a non-operated three winding transformer
+   * Constructor for an operated, always on three winding transformer
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -100,9 +99,9 @@ public class Transformer3WInput extends TransformerInput implements NodeC, Type 
     this.nodeInternal =
         new NodeInput(
             UUID.randomUUID(),
-            getOperationTime(),
-            getOperator(),
             "internal_node_" + id,
+            getOperator(),
+            getOperationTime(),
             Quantities.getQuantity(1d, PU),
             false,
             null,
@@ -128,7 +127,6 @@ public class Transformer3WInput extends TransformerInput implements NodeC, Type 
   }
 
   /** @return the node with the lowest voltage level */
-  @Override
   public NodeInput getNodeC() {
     return nodeC;
   }
@@ -155,5 +153,10 @@ public class Transformer3WInput extends TransformerInput implements NodeC, Type 
   @Override
   public String toString() {
     return "Transformer3WInput{" + "type=" + type + ", nodeC=" + nodeC + '}';
+  }
+
+  @Override
+  public List<NodeInput> allNodes() {
+    return Collections.unmodifiableList(Arrays.asList(getNodeA(), getNodeB(), nodeC));
   }
 }

@@ -136,7 +136,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		}
 	}
 
-	def "An AssetInputFactory should parse a valid non-operated AssetInput correctly (no operation time provided)"() {
+	def "An AssetInputFactory should parse a valid operated, always on AssetInput correctly (no operation time provided)"() {
 		given: "a system participant input type factory and model data"
 		def inputFactory = new TestAssetInputFactory()
 		Map<String, String> parameter = [
@@ -159,7 +159,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		}
 	}
 
-	def "An AssetInputFactory should parse a valid non-operated AssetInput correctly (operation start time provided)"() {
+	def "An AssetInputFactory should parse a valid AssetInput correctly (operation start time provided)"() {
 		given: "a system participant input type factory and model data"
 		def inputFactory = new TestAssetInputFactory()
 		Map<String, String> parameter = [
@@ -185,7 +185,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		}
 	}
 
-	def "An AssetInputFactory should parse a valid non-operated AssetInput correctly (operation end time provided)"() {
+	def "An AssetInputFactory should parse a valid AssetInput correctly (operation end time provided)"() {
 		given: "a system participant input type factory and model data"
 		def inputFactory = new TestAssetInputFactory()
 		Map<String, String> parameter = [
@@ -211,7 +211,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		}
 	}
 
-	def "An AssetInputFactory should parse a valid non-operated AssetInput correctly (operation start and end time provided"() {
+	def "An AssetInputFactory should parse a valid AssetInput correctly (operation start and end time provided"() {
 		given: "a system participant input type factory and model data"
 		def inputFactory = new TestAssetInputFactory()
 		Map<String, String> parameter = [
@@ -263,8 +263,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 	}
 
 	private class TestAssetInput extends AssetInput {
-		TestAssetInput(UUID uuid, OperationTime operationTime, OperatorInput operator, String id) {
-			super(uuid, operationTime, operator, id)
+		TestAssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+			super(uuid, id, operator, operationTime)
 		}
 	}
 
@@ -279,8 +279,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		}
 
 		@Override
-		protected TestAssetInput buildModel(AssetInputEntityData data, UUID uuid, String id, OperatorInput operatorInput, OperationTime operationTime) {
-			return new TestAssetInput(uuid, operationTime, operatorInput, id)
+		protected TestAssetInput buildModel(AssetInputEntityData data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+			return new TestAssetInput(uuid, id, operator, operationTime)
 		}
 	}
 }

@@ -5,12 +5,12 @@
 */
 package edu.ie3.datamodel.models.input;
 
-import edu.ie3.datamodel.io.extractor.Node;
+import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
 import java.util.*;
 
 /** Model of a measuring unit attached to a certain {@link NodeInput}. */
-public class MeasurementUnitInput extends AssetInput implements Node {
+public class MeasurementUnitInput extends AssetInput implements HasNodes {
   /** Grid node, the asset is attached to */
   private final NodeInput node;
 
@@ -30,9 +30,9 @@ public class MeasurementUnitInput extends AssetInput implements Node {
    * Constructor for an operated measurement unit
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param node Grid node, the asset is attached to
    * @param vMag True, if the voltage magnitude is measured
    * @param vAng True, if the voltage angle is measured
@@ -41,15 +41,15 @@ public class MeasurementUnitInput extends AssetInput implements Node {
    */
   public MeasurementUnitInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       boolean vMag,
       boolean vAng,
       boolean p,
       boolean q) {
-    super(uuid, operationTime, operator, id);
+    super(uuid, id, operator, operationTime);
     this.node = node;
     this.vMag = vMag;
     this.vAng = vAng;
@@ -58,7 +58,7 @@ public class MeasurementUnitInput extends AssetInput implements Node {
   }
 
   /**
-   * Constructor for a non-operated measurement unit
+   * Constructor for an operated, always on measurement unit
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -78,7 +78,6 @@ public class MeasurementUnitInput extends AssetInput implements Node {
     this.q = q;
   }
 
-  @Override
   public NodeInput getNode() {
     return node;
   }
@@ -131,5 +130,10 @@ public class MeasurementUnitInput extends AssetInput implements Node {
         + ", q="
         + q
         + '}';
+  }
+
+  @Override
+  public List<NodeInput> allNodes() {
+    return Collections.singletonList(node);
   }
 }

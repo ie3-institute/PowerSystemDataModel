@@ -106,9 +106,24 @@ public class CsvFileConnector implements DataConnector {
     BufferedWriter writer = FileIOUtils.getBufferedWriterUTF8(fullPath);
 
     // write header
-    writeFileHeader(clz, writer, headerElements, csvSep);
+    writeFileHeader(clz, writer, prepareHeader(headerElements), csvSep);
 
     return writer;
+  }
+
+  /**
+   * Prepares the header to be written out. In our case this means adding double quotes at the
+   * beginning and end of each header element as well as transforming the header element to snake
+   * case to allow for database compatibility
+   *
+   * @param headerElements the header elements that should be written out
+   * @return ready to be written header elements
+   */
+  private String[] prepareHeader(final String[] headerElements) {
+    // adds " to headline + transforms camel case to snake case
+    return Arrays.stream(headerElements)
+        .map(headerElement -> "\"" + camelCaseToSnakeCase(headerElement).concat("\""))
+        .toArray(String[]::new);
   }
 
   private void writeFileHeader(
@@ -119,7 +134,7 @@ public class CsvFileConnector implements DataConnector {
     try {
       for (int i = 0; i < headerElements.length; i++) {
         String attribute = headerElements[i];
-        writer.append("\"").append(attribute).append("\""); // adds " to headline
+        writer.append(attribute);
         if (i + 1 < headerElements.length) {
           writer.append(csvSep);
         } else {
@@ -154,5 +169,22 @@ public class CsvFileConnector implements DataConnector {
     newReader = new BufferedReader(new FileReader(filePath), 16384);
 
     return newReader;
+  }
+
+  /**
+   * Converts a given camel case string to its snake case representation
+   *
+   * @param camelCaseString the camel case string
+   * @return the resulting snake case representation
+   */
+  private String camelCaseToSnakeCase(String camelCaseString) {
+    String regularCamelCaseRegex = "([a-z])([A-Z]+)";
+    String regularSnakeCaseReplacement = "$1_$2";
+    String specialCamelCaseRegex = "((?<!_)[A-Z]?)((?<!^)[A-Z]+)";
+    String specialSnakeCaseReplacement = "$1_$2";
+    return camelCaseString
+        .replaceAll(regularCamelCaseRegex, regularSnakeCaseReplacement)
+        .replaceAll(specialCamelCaseRegex, specialSnakeCaseReplacement)
+        .toLowerCase();
   }
 }

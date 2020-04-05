@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.io.extractor.Type;
+import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Describes a heat pump */
-public class HpInput extends SystemParticipantInput implements Type {
+public class HpInput extends SystemParticipantInput implements HasType {
   /** Type of this heat pump, containing default values for heat pump of this kind */
   private final HpTypeInput type;
   /** The thermal bus, this model is connected to */
@@ -25,9 +25,9 @@ public class HpInput extends SystemParticipantInput implements Type {
    * Constructor for an operated heat pump
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
@@ -35,20 +35,20 @@ public class HpInput extends SystemParticipantInput implements Type {
    */
   public HpInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       ThermalBusInput thermalBus,
       String qCharacteristics,
       HpTypeInput type) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.thermalBus = thermalBus;
     this.type = type;
   }
 
   /**
-   * Constructor for a non-operated heat pump
+   * Constructor for an operated, always on heat pump
    *
    * @param uuid of the input entity
    * @param id of the asset

@@ -27,11 +27,11 @@ public class Transformer2WInputEntityData extends ConnectorInputEntityData {
   public Transformer2WInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       NodeInput nodeA,
       NodeInput nodeB,
       Transformer2WTypeInput type) {
-    super(fieldsToAttributes, entityClass, operatorInput, nodeA, nodeB);
+    super(fieldsToAttributes, entityClass, operator, nodeA, nodeB);
     this.type = type;
   }
 

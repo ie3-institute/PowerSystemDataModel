@@ -34,7 +34,7 @@ public class ThermalHouseInputFactory
       ThermalUnitInputEntityData data,
       UUID uuid,
       String id,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     final ThermalBusInput busInput = data.getBusInput();
     final Quantity<ThermalConductance> ethLosses =

@@ -37,11 +37,11 @@ abstract class ConnectorInputEntityFactory<
 
   @Override
   protected T buildModel(
-      D data, UUID uuid, String id, OperatorInput operatorInput, OperationTime operationTime) {
+      D data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
     final NodeInput nodeA = data.getNodeA();
     final NodeInput nodeB = data.getNodeB();
 
-    return buildModel(data, uuid, id, nodeA, nodeB, operatorInput, operationTime);
+    return buildModel(data, uuid, id, nodeA, nodeB, operator, operationTime);
   }
 
   protected abstract T buildModel(
@@ -50,6 +50,6 @@ abstract class ConnectorInputEntityFactory<
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime);
 }

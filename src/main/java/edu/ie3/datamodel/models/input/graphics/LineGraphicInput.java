@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.graphics;
 
+import edu.ie3.datamodel.io.extractor.HasLine;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import java.util.Objects;
 import java.util.UUID;
@@ -14,7 +15,7 @@ import org.locationtech.jts.geom.LineString;
  * Describes the graphic data belonging to a {@link
  * edu.ie3.datamodel.models.input.connector.LineInput}
  */
-public class LineGraphicInput extends GraphicInput {
+public class LineGraphicInput extends GraphicInput implements HasLine {
   /** The LineInput to this graphic data */
   private final LineInput line;
 
@@ -29,6 +30,7 @@ public class LineGraphicInput extends GraphicInput {
     this.line = line;
   }
 
+  @Override
   public LineInput getLine() {
     return line;
   }
