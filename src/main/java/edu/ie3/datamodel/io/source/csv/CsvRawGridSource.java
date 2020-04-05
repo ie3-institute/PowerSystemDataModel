@@ -12,6 +12,7 @@ import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.LineInput;
+import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
@@ -48,6 +49,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   private final LineInputFactory lineInputFactory;
   private final Transformer2WInputFactory transformer2WInputFactory;
   private final Transformer3WInputFactory transformer3WInputFactory;
+  private final SwitchInputFactory switchInputFactory;
+  private final MeasurementUnitInputFactory measurementUnitInputFactory;
 
   // todo dangerous if csvSep != ; because of the json strings -> find a way to parse that stuff
   //  anyway
@@ -71,10 +74,20 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     lineInputFactory = new LineInputFactory();
     transformer2WInputFactory = new Transformer2WInputFactory();
     transformer3WInputFactory = new Transformer3WInputFactory();
+    switchInputFactory = new SwitchInputFactory();
+    measurementUnitInputFactory = new MeasurementUnitInputFactory();
   }
 
   @Override
   public RawGridElements getGridData() {
+
+    //      Set<NodeInput> nodes, done
+    //      Set<LineInput> lines, done
+    //      Set<Transformer2WInput> transformer2Ws, done
+    //      Set<Transformer3WInput> transformer3Ws, done
+    //      Set<SwitchInput> switches,
+    //      Set<MeasurementUnitInput> measurementUnits
+
     return null; // todo
   }
 
@@ -130,6 +143,28 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Collection<Transformer3WTypeInput> transformer3WTypeInputs,
       Collection<OperatorInput> operators) {
     return filterEmptyOptionals(read3WTransformers(nodes, transformer3WTypeInputs, operators));
+  }
+
+  @Override
+  public Collection<SwitchInput> getSwitches() {
+    return filterEmptyOptionals(readSwitches(getNodes(), typeSource.getOperators()));
+  }
+
+  @Override
+  public Collection<SwitchInput> getSwitches(
+      Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
+    return filterEmptyOptionals(readSwitches(nodes, operators));
+  }
+
+  @Override
+  public Collection<MeasurementUnitInput> getMeasurementUnits() {
+    return filterEmptyOptionals(readMeasurementUnits(getNodes(), typeSource.getOperators()));
+  }
+
+  @Override
+  public Collection<MeasurementUnitInput> getMeasurementUnits(
+      Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
+    return filterEmptyOptionals(readMeasurementUnits(nodes, operators));
   }
 
   private Collection<NodeInput> readNodes(Collection<OperatorInput> operators) {
@@ -296,7 +331,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                     if (!nodeA.isPresent() || !nodeB.isPresent() || !transformerType.isPresent()) {
                       trafoOpt = Optional.empty();
                       log.warn(
-                          "Skipping transformer with uuid '{}' and id '{}'. Not all required entities found!"
+                          "Skipping 2 winding transformer with uuid '{}' and id '{}'. Not all required entities found!"
                               + "Missing elements: {}",
                           fieldsToAttributes.get("uuid"),
                           fieldsToAttributes.get("id"),
@@ -385,7 +420,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                         || !transformerType.isPresent()) {
                       trafoOpt = Optional.empty();
                       log.warn(
-                          "Skipping transformer with uuid '{}' and id '{}'. Not all required entities found!"
+                          "Skipping 3 winding transformer with uuid '{}' and id '{}'. Not all required entities found!"
                               + "Missing elements: {}",
                           fieldsToAttributes.get("uuid"),
                           fieldsToAttributes.get("id"),
@@ -429,6 +464,141 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                     }
 
                     return trafoOpt;
+                  })
+              .collect(Collectors.toSet());
+
+    } catch (IOException e) {
+      e.printStackTrace(); // todo
+    }
+
+    return resultingAssets;
+  }
+
+  private Collection<Optional<SwitchInput>> readSwitches(
+      Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
+    Set<Optional<SwitchInput>> resultingAssets = new HashSet<>();
+
+    final Class<SwitchInput> entityClass = SwitchInput.class;
+
+    try (BufferedReader reader = connector.getReader(entityClass)) {
+      String[] headline = readHeadline(reader);
+
+      resultingAssets =
+          reader
+              .lines()
+              .parallel()
+              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
+              .map(
+                  fieldsToAttributes -> {
+
+                    // get the line nodes
+                    Optional<NodeInput> nodeA =
+                        findNodeByUuid(fieldsToAttributes.get("nodeA"), nodes);
+                    Optional<NodeInput> nodeB =
+                        findNodeByUuid(fieldsToAttributes.get("nodeB"), nodes);
+
+                    // if nodeA or nodeB are not present we return an empty element and log a
+                    // warning
+                    Optional<SwitchInput> switchOpt;
+                    if (!nodeA.isPresent() || !nodeB.isPresent()) {
+                      switchOpt = Optional.empty();
+                      log.warn(
+                          "Skipping switch with uuid '{}' and id '{}'. Not all required entities found!"
+                              + "Missing elements: {}",
+                          fieldsToAttributes.get("uuid"),
+                          fieldsToAttributes.get("id"),
+                          (nodeA.isPresent() ? "" : "\nnode_a: " + fieldsToAttributes.get("node_a"))
+                              .concat(
+                                  nodeB.isPresent()
+                                      ? ""
+                                      : "\nnode_b: " + fieldsToAttributes.get("node_b")));
+
+                    } else {
+
+                      // remove fields that are passed as objects to constructor
+                      fieldsToAttributes
+                          .keySet()
+                          .removeAll(
+                              new HashSet<>(Arrays.asList(OPERATOR_FIELD, "nodeA", "nodeB")));
+
+                      // build the asset data
+                      ConnectorInputEntityData data =
+                          new ConnectorInputEntityData(
+                              fieldsToAttributes,
+                              entityClass,
+                              getOrDefaultOperator(
+                                  operators, fieldsToAttributes.get(OPERATOR_FIELD)),
+                              nodeA.get(),
+                              nodeB.get());
+                      // build the model
+                      switchOpt = switchInputFactory.getEntity(data);
+                    }
+
+                    return switchOpt;
+                  })
+              .collect(Collectors.toSet());
+
+    } catch (IOException e) {
+      e.printStackTrace(); // todo
+    }
+
+    return resultingAssets;
+  }
+
+  private Collection<Optional<MeasurementUnitInput>> readMeasurementUnits(
+      Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
+
+    Set<Optional<MeasurementUnitInput>> resultingAssets = new HashSet<>();
+
+    final Class<MeasurementUnitInput> entityClass = MeasurementUnitInput.class;
+
+    try (BufferedReader reader = connector.getReader(entityClass)) {
+      String[] headline = readHeadline(reader);
+
+      resultingAssets =
+          reader
+              .lines()
+              .parallel()
+              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
+              .map(
+                  fieldsToAttributes -> {
+
+                    // get the line nodes
+                    Optional<NodeInput> node =
+                        findNodeByUuid(fieldsToAttributes.get("node"), nodes);
+
+                    // if nodeA or nodeB are not present we return an empty element and log a
+                    // warning
+                    Optional<MeasurementUnitInput> measurementUnitOpt;
+                    if (!node.isPresent()) {
+                      measurementUnitOpt = Optional.empty();
+                      log.warn(
+                          "Skipping measurement unit with uuid '{}' and id '{}'. Not all required entities found!"
+                              + "Missing elements: {}",
+                          fieldsToAttributes.get("uuid"),
+                          fieldsToAttributes.get("id"),
+                          (node.isPresent() ? "" : "\nnode: " + fieldsToAttributes.get("node")));
+
+                    } else {
+
+                      // remove fields that are passed as objects to constructor
+                      fieldsToAttributes
+                          .keySet()
+                          .removeAll(new HashSet<>(Arrays.asList(OPERATOR_FIELD, "node")));
+
+                      // build the asset data
+                      MeasurementUnitInputEntityData data =
+                          new MeasurementUnitInputEntityData(
+                              fieldsToAttributes,
+                              entityClass,
+                              getOrDefaultOperator(
+                                  operators, fieldsToAttributes.get(OPERATOR_FIELD)),
+                              node.get());
+                      // build the model
+                      measurementUnitOpt = measurementUnitInputFactory.getEntity(data);
+                    }
+
+                    return measurementUnitOpt;
                   })
               .collect(Collectors.toSet());
 

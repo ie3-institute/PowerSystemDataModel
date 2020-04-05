@@ -5,9 +5,11 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
+import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
@@ -21,7 +23,6 @@ public interface RawGridSource extends DataSource {
   /** @return grid data as an aggregation of its elements */
   RawGridElements getGridData();
 
-  // todo
   Collection<NodeInput> getNodes();
 
   Collection<NodeInput> getNodes(Collection<OperatorInput> operators);
@@ -47,12 +48,13 @@ public interface RawGridSource extends DataSource {
       Collection<Transformer3WTypeInput> transformer3WTypeInputs,
       Collection<OperatorInput> operators);
 
-  //
-  //  Collection<SwitchInput> getSwitches();
+  Collection<SwitchInput> getSwitches();
 
-  //  // ** For Performance Measurement Purposes only */
-  //  Collection<NodeInput> getNeighborNodesOfSubnet(Integer subnet);
-  //
-  //  // ** For Performance Measurement Purposes only */
-  //  Optional<AggregatedRawGridInput> getSubnet(Integer subnet);
+  Collection<SwitchInput> getSwitches(
+      Collection<NodeInput> nodes, Collection<OperatorInput> operators);
+
+  Collection<MeasurementUnitInput> getMeasurementUnits();
+
+  Collection<MeasurementUnitInput> getMeasurementUnits(
+      Collection<NodeInput> nodes, Collection<OperatorInput> operators);
 }
