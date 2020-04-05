@@ -7,23 +7,21 @@ package edu.ie3.datamodel.exceptions;
 
 /**
  * Exception that should be used whenever an error occurs in a instance of a {@link
- * edu.ie3.datamodel.io.sink.DataSink}
+ * edu.ie3.datamodel.io.source.DataSource}
  *
  * @version 0.1
  * @since 19.03.20
  */
-public class SinkException
-    extends RuntimeException { // todo fix this and let it extend Exception instead of
-  // RuntimeException
-  public SinkException(final String message, final Throwable cause) {
+public class SourceException extends Exception {
+  public SourceException(final String message, final Throwable cause) {
     super(message, cause);
   }
 
-  public SinkException(final Throwable cause) {
+  public SourceException(final Throwable cause) {
     super(cause);
   }
 
-  public SinkException(final String message) {
+  public SourceException(final String message) {
     super(message);
   }
 }

@@ -5,11 +5,9 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.io.connectors.DataConnector;
-
 /** Describes a class that fetches data from a persistence location */
 public interface DataSource {
 
   /** @return the connector of this source */
-  DataConnector getDataConnector();
+  //  DataConnector getDataConnector(); // todo check if we need this
 }

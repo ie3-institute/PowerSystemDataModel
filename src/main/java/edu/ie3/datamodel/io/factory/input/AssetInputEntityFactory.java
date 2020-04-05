@@ -28,6 +28,7 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
   private static final String OPERATES_FROM = "operatesfrom";
   private static final String OPERATES_UNTIL = "operatesuntil";
   private static final String ID = "id";
+  private static final String OPERATOR = "operator";
 
   public AssetInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
@@ -48,6 +49,7 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
     Set<String> constructorParamsFrom = expandSet(constructorParamsMin, OPERATES_FROM);
     Set<String> constructorParamsUntil = expandSet(constructorParamsMin, OPERATES_UNTIL);
     Set<String> constructorParamsBoth = expandSet(constructorParamsFrom, OPERATES_UNTIL);
+    Set<String> constructorParamsWithOp = expandSet(constructorParamsBoth, OPERATOR);
 
     final String[] additionalFields = getAdditionalFields();
 
@@ -55,8 +57,13 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
     constructorParamsFrom = expandSet(constructorParamsFrom, additionalFields);
     constructorParamsUntil = expandSet(constructorParamsUntil, additionalFields);
     constructorParamsBoth = expandSet(constructorParamsBoth, additionalFields);
+    constructorParamsWithOp = expandSet(constructorParamsWithOp, additionalFields);
     return Arrays.asList(
-        constructorParamsMin, constructorParamsFrom, constructorParamsUntil, constructorParamsBoth);
+        constructorParamsMin,
+        constructorParamsFrom,
+        constructorParamsUntil,
+        constructorParamsBoth,
+        constructorParamsWithOp);
   }
 
   /**

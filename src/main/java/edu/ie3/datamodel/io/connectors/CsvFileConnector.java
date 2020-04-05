@@ -9,9 +9,7 @@ import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.util.io.FileIOUtils;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -132,5 +130,29 @@ public class CsvFileConnector implements DataConnector {
     } catch (IOException e) {
       log.error("Error during file header creation for class '" + clz.getSimpleName() + "'.", e);
     }
+  }
+
+  public BufferedReader getReader(Class<? extends UniqueEntity> clz) throws FileNotFoundException {
+
+    BufferedReader newReader = null;
+
+    String fileName = null;
+    try {
+      fileName =
+          fileNamingStrategy
+              .getFileName(clz)
+              .orElseThrow(
+                  () ->
+                      new ConnectorException(
+                          "Cannot find a naming strategy for class '"
+                              + clz.getSimpleName()
+                              + "'."));
+    } catch (ConnectorException e) {
+      e.printStackTrace(); // todo
+    }
+    File filePath = new File(baseFolderName + File.separator + fileName + FILE_ENDING);
+    newReader = new BufferedReader(new FileReader(filePath), 16384);
+
+    return newReader;
   }
 }

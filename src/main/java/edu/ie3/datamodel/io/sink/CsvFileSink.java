@@ -25,6 +25,9 @@ import org.apache.logging.log4j.Logger;
 /**
  * Sink that provides all capabilities to write {@link UniqueEntity}s to .csv-files
  *
+ * <p>// todo JH convert headline fields to snake case when writing out to be concruent with
+ * database
+ *
  * @version 0.1
  * @since 19.03.20
  */
