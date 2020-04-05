@@ -166,7 +166,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                                 node ->
                                     node.getUuid()
                                         .toString()
-                                        .equalsIgnoreCase(fieldsToAttributes.get("node_a")))
+                                        .equalsIgnoreCase(fieldsToAttributes.get("nodeA")))
                             .findFirst();
                     Optional<NodeInput> nodeB =
                         nodes.stream()
@@ -174,7 +174,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                                 node ->
                                     node.getUuid()
                                         .toString()
-                                        .equalsIgnoreCase(fieldsToAttributes.get("node_b")))
+                                        .equalsIgnoreCase(fieldsToAttributes.get("nodeB")))
                             .findFirst();
 
                     // get the transformer type

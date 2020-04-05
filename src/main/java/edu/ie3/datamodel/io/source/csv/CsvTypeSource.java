@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
@@ -34,9 +35,10 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
   private final OperatorInputFactory operatorInputFactory;
   private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
 
-  public CsvTypeSource(CsvFileConnector connector, String csvSep) {
+  public CsvTypeSource(
+      String csvSep, String gridFolderPath, FileNamingStrategy fileNamingStrategy) {
     super(csvSep);
-    this.connector = connector;
+    this.connector = new CsvFileConnector(gridFolderPath, fileNamingStrategy);
 
     // init factories
     operatorInputFactory = new OperatorInputFactory();

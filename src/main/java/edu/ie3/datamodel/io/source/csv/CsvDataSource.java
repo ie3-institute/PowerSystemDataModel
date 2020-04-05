@@ -45,7 +45,7 @@ public abstract class CsvDataSource {
     insensitiveFieldsToAttributes.putAll(
         IntStream.range(0, fieldVals.length)
             .boxed()
-            .collect(Collectors.toMap(k -> headline[k], v -> fieldVals[v])));
+            .collect(Collectors.toMap(k -> snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
     return insensitiveFieldsToAttributes;
   }
 
@@ -69,5 +69,17 @@ public abstract class CsvDataSource {
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toList());
+  }
+
+  private String snakeCaseToCamelCase(String snakeCaseString) {
+    StringBuilder sb = new StringBuilder();
+    for (String s : snakeCaseString.split("_")) {
+      sb.append(Character.toUpperCase(s.charAt(0)));
+      if (s.length() > 1) {
+        sb.append(s.substring(1).toLowerCase());
+      }
+    }
+
+    return sb.toString();
   }
 }
