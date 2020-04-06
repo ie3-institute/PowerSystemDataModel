@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.system.characteristic
 
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
 import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
+import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
@@ -45,5 +46,14 @@ class EvCharacteristicTest extends Specification {
 
 		then:
 		actual == "ev:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}"
+	}
+
+	def "A EvCharacteristicInput is correctly set up from a correctly formatted string"() {
+		when:
+		EvCharacteristicInput actual = new EvCharacteristicInput(UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512"), "ev:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
+
+		then:
+		actual.getUuid() == UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512")
+		actual.getCoordinates() == validInput.getCoordinates()
 	}
 }

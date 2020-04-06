@@ -46,4 +46,13 @@ class WecCharacteristicTest extends Specification {
 		then:
 		actual == "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}"
 	}
+
+	def "A WecCharacteristicInput is correctly set up from a correctly formatted string"() {
+		when:
+		WecCharacteristicInput actual = new WecCharacteristicInput(UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512"), "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
+
+		then:
+		actual.getUuid() == UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512")
+		actual.getCoordinates() == validInput.getCoordinates()
+	}
 }

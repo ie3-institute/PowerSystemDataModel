@@ -6,12 +6,13 @@
 package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.models.input.InputEntity;
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.UUID;
+import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
+import javax.measure.Unit;
+import tec.uom.se.quantity.Quantities;
 
 /** Describes characteristics of assets */
 public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quantity<O>>
@@ -35,9 +36,63 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
       String prefix,
       int decimalPlaces) {
     super(uuid);
-    this.coordinates = coordinates;
+    this.coordinates = Collections.unmodifiableSortedSet(coordinates);
     this.prefix = prefix;
     this.decimalPlaces = decimalPlaces;
+  }
+
+  public CharacteristicInput(
+      UUID uuid,
+      String input,
+      Pattern matchingPattern,
+      Unit<A> abscissaUnit,
+      Unit<O> ordinateUnit,
+      String prefix,
+      int decimalPlaces) {
+    super(uuid);
+    this.prefix = prefix;
+    this.decimalPlaces = decimalPlaces;
+    String coordinateList = extractCoordinateList(input, matchingPattern);
+    this.coordinates = buildCoordinatesFromString(coordinateList, abscissaUnit, ordinateUnit);
+  }
+
+  /**
+   * Extracts the coordinate list from the given input
+   *
+   * @param input Input string for the whole characteristic
+   * @param matchingPattern Pattern to match the underlying characteristic
+   * @return The string list of coordinates
+   */
+  private String extractCoordinateList(String input, Pattern matchingPattern) {
+    Matcher matcher = matchingPattern.matcher(input);
+    if (!matcher.matches())
+      throw new IllegalArgumentException(
+          "The given input '" + input + "' is not a valid representation.");
+    return matcher.group(1);
+  }
+
+  /**
+   * Extracts the coordinates from the input string
+   *
+   * @param input string list of coordinates
+   * @param abscissaUnit Unit for the abscissa
+   * @param ordinateUnit Unit for the ordinate
+   * @return an unmodifiable sorted set of coordinates
+   */
+  private SortedSet<CharacteristicCoordinate<A, O>> buildCoordinatesFromString(
+      String input, Unit<A> abscissaUnit, Unit<O> ordinateUnit) {
+    Matcher coordinateMatcher = CharacteristicCoordinate.MATCHING_PATTERN.matcher(input);
+    SortedSet<CharacteristicCoordinate<A, O>> parsedCoordinate = new TreeSet<>();
+    while (coordinateMatcher.find()) {
+      double xValue = CharacteristicCoordinate.getXFromString(coordinateMatcher.group(0));
+      double yValue = CharacteristicCoordinate.getYFromString(coordinateMatcher.group(0));
+
+      parsedCoordinate.add(
+          new CharacteristicCoordinate<>(
+              Quantities.getQuantity(xValue, abscissaUnit),
+              Quantities.getQuantity(yValue, ordinateUnit)));
+    }
+    return Collections.unmodifiableSortedSet(parsedCoordinate);
   }
 
   public SortedSet<CharacteristicCoordinate<A, O>> getCoordinates() {

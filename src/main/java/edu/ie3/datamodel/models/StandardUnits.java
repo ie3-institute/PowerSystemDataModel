@@ -102,6 +102,10 @@ public class StandardUnits {
   public static final Unit<Angle> WIND_DIRECTION = DEGREE_GEOM;
   /** Velocity of the wind */
   public static final Unit<Speed> WIND_VELOCITY = METRE_PER_SECOND;
+  /** Standard unit for the Betz' coefficient curve of wind energy converters */
+  public static final Unit<Dimensionless> CP_CHARACTERISTIC = PU;
+  /** Standard unit for the ev charging curve */
+  public static final Unit<Dimensionless> EV_CHARACTERISTIC = PU;
   /** Solar irradiation on a flat surface */
   public static final Unit<Irradiation> IRRADIATION = KILOWATTHOUR_PER_SQUAREMETRE;
   /** Capex (capital expenditure) */
