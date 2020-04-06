@@ -33,7 +33,7 @@ import spock.lang.Specification
 
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
-class ContainerUtilTest extends Specification {
+class ContainerUtilsTest extends Specification {
 	static {
 		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 	}
@@ -228,22 +228,6 @@ class ContainerUtilTest extends Specification {
 		then:
 		actual == expected
 	}
-
-	def "The container utils should determine if a collection with UniqueEntity's is distinct by their uuid"() {
-		expect:
-		ContainerUtils.distinctUuids(collection) == distinct
-
-		where:
-		collection                                      || distinct
-		[
-			GridTestData.nodeF,
-			GridTestData.nodeG] as Set || false
-		[
-			GridTestData.nodeD,
-			GridTestData.nodeE] as Set || true
-		[] as Set                                       || true
-	}
-
 
 	/* TODO: Extend testing data so that,
 	 *   - filtering of system participants can be tested

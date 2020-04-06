@@ -44,6 +44,9 @@ public class RawGridElements implements InputContainer {
     this.transformer3Ws = transformer3Ws;
     this.switches = switches;
     this.measurementUnits = measurementUnits;
+
+    // sanity check to ensure distinct uuids
+    ValidationUtils.checkForDuplicateUuids("RawGridElements", this.allEntitiesAsList());
   }
 
   /**

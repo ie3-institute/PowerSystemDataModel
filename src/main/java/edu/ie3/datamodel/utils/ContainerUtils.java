@@ -8,7 +8,6 @@ package edu.ie3.datamodel.utils;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.graph.SubGridGate;
 import edu.ie3.datamodel.graph.SubGridTopologyGraph;
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
@@ -18,9 +17,7 @@ import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jgrapht.graph.DirectedMultigraph;
@@ -420,18 +417,5 @@ public class ContainerUtils {
 
     return new JointGridContainer(
         gridName, rawGrid, systemParticipants, graphicElements, subGridTopologyGraph);
-  }
-
-  public static boolean distinctUuids(Collection<? extends UniqueEntity> entities) {
-    return entities.stream()
-            .filter(distinctByKey(UniqueEntity::getUuid))
-            .collect(Collectors.toSet())
-            .size()
-        == entities.size();
-  }
-
-  private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-    Set<Object> seen = ConcurrentHashMap.newKeySet();
-    return t -> seen.add(keyExtractor.apply(t));
   }
 }

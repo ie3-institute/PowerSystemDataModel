@@ -43,6 +43,8 @@ public abstract class GridContainer implements InputContainer {
 
   @Override
   public void validate() {
+    ValidationUtils.checkForDuplicateUuids(
+        this.getClass().getSimpleName(), this.allEntitiesAsList());
     ValidationUtils.checkGrid(this);
   }
 

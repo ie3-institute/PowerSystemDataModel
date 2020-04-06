@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.container;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.EvcsInput;
 import edu.ie3.datamodel.models.input.system.*;
+import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,9 @@ public class SystemParticipants implements InputContainer {
     this.pvPlants = pvPlants;
     this.storages = storages;
     this.wecPlants = wecPlants;
+
+    // sanity check for distinct uuids
+    ValidationUtils.checkForDuplicateUuids("SystemParticipants", this.allEntitiesAsList());
   }
 
   /**

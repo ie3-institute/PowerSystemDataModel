@@ -24,6 +24,8 @@ import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
@@ -516,6 +518,47 @@ public class ValidationUtils {
             .collect(Collectors.joining(", "));
     if (!malformedQuantities.isEmpty()) {
       throw new UnsafeEntityException(msg + ": " + malformedQuantities, entity);
+    }
+  }
+
+  public static boolean distinctUuids(Collection<UniqueEntity> entities) {
+    return entities.stream()
+            .filter(distinctByKey(UniqueEntity::getUuid))
+            .collect(Collectors.toSet())
+            .size()
+        == entities.size();
+  }
+
+  public static Collection<UniqueEntity> distinctUuidSet(Collection<UniqueEntity> entities) {
+    return entities.stream()
+        .filter(distinctByKey(UniqueEntity::getUuid))
+        .collect(Collectors.toSet());
+  }
+
+  private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+    Set<Object> seen = ConcurrentHashMap.newKeySet();
+    return t -> seen.add(keyExtractor.apply(t));
+  }
+
+  public static void checkForDuplicateUuids(
+      String containerClassName, Collection<UniqueEntity> entities) {
+    if (!distinctUuids(entities)) {
+      Collection<UniqueEntity> duplicateUuids =
+          entities.stream()
+              .filter(entity -> distinctUuidSet(entities).contains(entity))
+              .collect(Collectors.toSet());
+
+      String exceptionString =
+          duplicateUuids.stream()
+              .map(entity -> entity.getUuid().toString())
+              .collect(Collectors.joining("\n"));
+
+      throw new InvalidGridException(
+          "The provided entities in "
+              + containerClassName
+              + "contain duplicate uuids. "
+              + "This is not allowed.\nDuplicate entries:\n"
+              + exceptionString);
     }
   }
 }
