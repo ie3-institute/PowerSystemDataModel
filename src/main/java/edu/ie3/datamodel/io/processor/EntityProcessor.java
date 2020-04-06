@@ -259,10 +259,6 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "HpTypeInput":
         resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
         break;
-      case "Optional": // todo needs to be removed asap as this is very dangerous, but necessary as
-        // long as #75 is not addressed
-        resultStringBuilder.append(((Optional<String>) methodReturnObject).orElse(""));
-        break;
       case "EvCharacteristicInput":
       case "OlmCharacteristicInput":
       case "WecCharacteristicInput":
