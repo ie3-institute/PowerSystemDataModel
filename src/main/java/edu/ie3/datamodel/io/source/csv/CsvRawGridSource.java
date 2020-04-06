@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
@@ -20,10 +19,10 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
-import edu.ie3.datamodel.utils.ValidationUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
@@ -78,7 +77,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   }
 
   @Override
-  public RawGridElements getGridData() {
+  public Optional<RawGridElements> getGridData() {
 
     // read all needed entities
     /// start with the types and operators
@@ -88,24 +87,80 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     Collection<Transformer3WTypeInput> transformer3WTypeInputs = typeSource.getTransformer3WTypes();
 
     /// assets incl. filter of unique entities + warning if duplicate uuids got filtered out
-    Set<NodeInput> nodes = checkForUuidDuplicates(NodeInput.class, getNodes(operators));
+    Set<NodeInput> nodes = checkForUuidDuplicates(NodeInput.class, readNodes(operators));
+
+    List<Optional<LineInput>> invalidLines = new CopyOnWriteArrayList<>();
+    List<Optional<Transformer2WInput>> invalidTrafo2Ws = new CopyOnWriteArrayList<>();
+    List<Optional<Transformer3WInput>> invalidTrafo3Ws = new CopyOnWriteArrayList<>();
+    List<Optional<SwitchInput>> invalidSwitches = new CopyOnWriteArrayList<>();
+    List<Optional<MeasurementUnitInput>> invalidMeasurementUnits = new CopyOnWriteArrayList<>();
 
     Set<LineInput> lineInputs =
-        checkForUuidDuplicates(LineInput.class, getLines(nodes, lineTypes, operators));
+        checkForUuidDuplicates(
+            LineInput.class,
+            readLines(nodes, lineTypes, operators).stream()
+                .filter(isPresentWithInvalidList(invalidLines))
+                .map(Optional::get)
+                .collect(Collectors.toSet()));
     Set<Transformer2WInput> transformer2WInputs =
         checkForUuidDuplicates(
-            Transformer2WInput.class, get2WTransformers(nodes, transformer2WTypeInputs, operators));
+            Transformer2WInput.class,
+            read2WTransformers(nodes, transformer2WTypeInputs, operators).stream()
+                .filter(isPresentWithInvalidList(invalidTrafo2Ws))
+                .map(Optional::get)
+                .collect(Collectors.toSet()));
     Set<Transformer3WInput> transformer3WInputs =
         checkForUuidDuplicates(
-            Transformer3WInput.class, get3WTransformers(nodes, transformer3WTypeInputs, operators));
+            Transformer3WInput.class,
+            read3WTransformers(nodes, transformer3WTypeInputs, operators).stream()
+                .filter(isPresentWithInvalidList(invalidTrafo3Ws))
+                .map(Optional::get)
+                .collect(Collectors.toSet()));
     Set<SwitchInput> switches =
-        checkForUuidDuplicates(SwitchInput.class, getSwitches(nodes, operators));
+        checkForUuidDuplicates(
+            SwitchInput.class,
+            readSwitches(nodes, operators).stream()
+                .filter(isPresentWithInvalidList(invalidSwitches))
+                .map(Optional::get)
+                .collect(Collectors.toSet()));
     Set<MeasurementUnitInput> measurementUnits =
-        checkForUuidDuplicates(MeasurementUnitInput.class, getMeasurementUnits(nodes, operators));
+        checkForUuidDuplicates(
+            MeasurementUnitInput.class,
+            readMeasurementUnits(nodes, operators).stream()
+                .filter(isPresentWithInvalidList(invalidMeasurementUnits))
+                .map(Optional::get)
+                .collect(Collectors.toSet()));
 
-    // finally build the grid
-    return new RawGridElements(
-        nodes, lineInputs, transformer2WInputs, transformer3WInputs, switches, measurementUnits);
+    // check if we have invalid elements and if yes, log information
+    boolean invalidExists =
+        Stream.of(
+                new AbstractMap.SimpleEntry<>(LineInput.class, invalidLines),
+                new AbstractMap.SimpleEntry<>(Transformer2WInput.class, invalidTrafo2Ws),
+                new AbstractMap.SimpleEntry<>(Transformer3WInput.class, invalidTrafo3Ws),
+                new AbstractMap.SimpleEntry<>(SwitchInput.class, invalidSwitches),
+                new AbstractMap.SimpleEntry<>(MeasurementUnitInput.class, invalidMeasurementUnits))
+            .filter(entry -> !entry.getValue().isEmpty())
+            .map(
+                entry -> {
+                  printInvalidElementInformation(entry.getKey(), entry.getValue());
+                  return Optional.empty();
+                })
+            .anyMatch(x -> true);
+
+    // if we found invalid elements return an empty optional
+    if (invalidExists) {
+      return Optional.empty();
+    }
+
+    // if everything is fine, return a grid
+    return Optional.of(
+        new RawGridElements(
+            nodes,
+            lineInputs,
+            transformer2WInputs,
+            transformer3WInputs,
+            switches,
+            measurementUnits));
   }
 
   @Override
@@ -632,33 +687,5 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     }
 
     return resultingAssets;
-  }
-
-  private void logSkippingWarning(
-      String entityDesc, String entityUuid, String entityId, String missingElementsString) {
-
-    log.warn(
-        "Skipping {} with uuid '{}' and id '{}'. Not all required entities found!\nMissing elements:\n{}",
-        entityDesc,
-        entityUuid,
-        entityId,
-        missingElementsString);
-  }
-
-  private void logIOExceptionFromConnector(Class<? extends AssetInput> entityClass, IOException e) {
-    log.warn(
-        "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-  }
-
-  private <T extends UniqueEntity> Set<T> checkForUuidDuplicates(
-      Class<T> entity, Collection<T> entities) {
-    Collection<T> distinctUuidEntities = ValidationUtils.distinctUuidSet(entities);
-    if (distinctUuidEntities.size() != entities.size()) {
-      log.warn(
-          "Duplicate UUIDs found and removed in file with '{}' entities. It is highly advisable to revise the file!",
-          entity.getSimpleName());
-      return new HashSet<>(distinctUuidEntities);
-    }
-    return new HashSet<>(entities);
   }
 }

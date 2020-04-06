@@ -6,15 +6,15 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.utils.ValidationUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.logging.log4j.LogManager;
@@ -98,5 +98,54 @@ public abstract class CsvDataSource {
       }
     }
     return sb.toString();
+  }
+
+  protected void logIOExceptionFromConnector(
+      Class<? extends AssetInput> entityClass, IOException e) {
+    log.warn(
+        "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+  }
+
+  protected <T> Predicate<Optional<T>> isPresentWithInvalidList(List<Optional<T>> invalidList) {
+    return o -> {
+      if (o.isPresent()) {
+        return true;
+      } else {
+        invalidList.add(o);
+        return false;
+      }
+    };
+  }
+
+  protected <T> void printInvalidElementInformation(
+      Class<? extends UniqueEntity> entityClass, List<T> invalidList) {
+
+    log.error(
+        "{} entities of type '{}' are missing required elements!",
+        invalidList.size(),
+        entityClass.getSimpleName());
+  }
+
+  protected void logSkippingWarning(
+      String entityDesc, String entityUuid, String entityId, String missingElementsString) {
+
+    log.warn(
+        "Skipping {} with uuid '{}' and id '{}'. Not all required entities found!\nMissing elements:\n{}",
+        entityDesc,
+        entityUuid,
+        entityId,
+        missingElementsString);
+  }
+
+  protected <T extends UniqueEntity> Set<T> checkForUuidDuplicates(
+      Class<T> entity, Collection<T> entities) {
+    Collection<T> distinctUuidEntities = ValidationUtils.distinctUuidSet(entities);
+    if (distinctUuidEntities.size() != entities.size()) {
+      log.warn(
+          "Duplicate UUIDs found and removed in file with '{}' entities. It is highly advisable to revise the file!",
+          entity.getSimpleName());
+      return new HashSet<>(distinctUuidEntities);
+    }
+    return new HashSet<>(entities);
   }
 }

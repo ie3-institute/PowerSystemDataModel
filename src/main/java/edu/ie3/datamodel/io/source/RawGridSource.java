@@ -17,11 +17,12 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import java.util.Collection;
+import java.util.Optional;
 
 /** Describes a data source for raw grid data */
 public interface RawGridSource extends DataSource {
   /** @return grid data as an aggregation of its elements */
-  RawGridElements getGridData();
+  Optional<RawGridElements> getGridData();
 
   Collection<NodeInput> getNodes();
 
