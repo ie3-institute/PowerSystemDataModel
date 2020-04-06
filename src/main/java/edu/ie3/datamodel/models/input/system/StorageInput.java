@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.io.extractor.Type;
+import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Describes a battery storage */
-public class StorageInput extends SystemParticipantInput implements Type {
+public class StorageInput extends SystemParticipantInput implements HasType {
   /** Type of this storage, containing default values for storages of this kind */
   private final StorageTypeInput type;
 
@@ -25,9 +25,9 @@ public class StorageInput extends SystemParticipantInput implements Type {
    * Constructor for an operated storage
    *
    * @param uuid of the input entity
-   * @param operationTime time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic for integrated inverter
    * @param type of storage
@@ -35,20 +35,20 @@ public class StorageInput extends SystemParticipantInput implements Type {
    */
   public StorageInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       String qCharacteristics,
       StorageTypeInput type,
       String behaviour) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.type = type;
     this.behaviour = StorageStrategy.get(behaviour);
   }
 
   /**
-   * Constructor for a non-operated storage
+   * Constructor for an operated, always on storage
    *
    * @param uuid of the input entity
    * @param id of the asset

@@ -45,7 +45,7 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
 
 		when:
 		Optional<BmInput> input = inputFactory.getEntity(
-				new SystemParticipantTypedEntityData<BmTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
+				new SystemParticipantTypedEntityData<BmTypeInput>(parameter, inputClass,operatorInput, nodeInput, typeInput))
 
 		then:
 		input.present

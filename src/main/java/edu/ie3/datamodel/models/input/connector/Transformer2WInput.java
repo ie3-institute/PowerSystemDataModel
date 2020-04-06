@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
-import edu.ie3.datamodel.io.extractor.Type;
+import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -17,7 +17,7 @@ import java.util.UUID;
  * Describes a two winding transformer, that is connected to two {@link
  * edu.ie3.datamodel.models.input.NodeInput}s
  */
-public class Transformer2WInput extends TransformerInput implements Type {
+public class Transformer2WInput extends TransformerInput implements HasType {
   /** Type of this 2W transformer, containing default values for transformers of this kind */
   private final Transformer2WTypeInput type;
 
@@ -25,9 +25,9 @@ public class Transformer2WInput extends TransformerInput implements Type {
    * Constructor for an operated two winding transformer
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param nodeA higher voltage node
    * @param nodeB lower voltage node
    * @param parallelDevices Amount of singular transformers
@@ -37,9 +37,9 @@ public class Transformer2WInput extends TransformerInput implements Type {
    */
   public Transformer2WInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput nodeA,
       NodeInput nodeB,
       int parallelDevices,
@@ -51,7 +51,7 @@ public class Transformer2WInput extends TransformerInput implements Type {
   }
 
   /**
-   * Constructor for a non-operated two winding transformer
+   * Constructor for an operated, always on two winding transformer
    *
    * @param uuid of the input entity
    * @param id of the asset

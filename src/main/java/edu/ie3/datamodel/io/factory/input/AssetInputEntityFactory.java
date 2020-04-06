@@ -71,10 +71,10 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
   protected T buildModel(D data) {
     UUID uuid = data.getUUID(UUID);
     String id = data.getField(ID);
-    Optional<OperatorInput> operatorInput = data.getOperatorInput();
+    Optional<OperatorInput> operator = data.getOperatorInput();
     OperationTime operationTime = buildOperationTime(data);
 
-    return buildModel(data, uuid, id, operatorInput.orElse(null), operationTime);
+    return buildModel(data, uuid, id, operator.orElse(null), operationTime);
   }
 
   /**
@@ -83,12 +83,12 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
    * @param data entity data
    * @param uuid UUID of the input entity
    * @param id ID
-   * @param operatorInput Operator of the asset
+   * @param operator Operator of the asset
    * @param operationTime time in which the entity is operated
    * @return newly created asset object
    */
   protected abstract T buildModel(
-      D data, UUID uuid, String id, OperatorInput operatorInput, OperationTime operationTime);
+      D data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime);
 
   /**
    * Creates an {@link OperationTime} from the entity data from attributes OPERATES_FROM and

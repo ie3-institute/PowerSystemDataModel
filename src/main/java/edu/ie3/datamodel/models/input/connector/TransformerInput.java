@@ -41,13 +41,13 @@ public abstract class TransformerInput extends ConnectorInput {
       int parallelDevices,
       int tapPos,
       boolean autoTap) {
-    super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices);
+    super(uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices);
     this.tapPos = tapPos;
     this.autoTap = autoTap;
   }
 
   /**
-   * Constructor for a non-operated transformer
+   * Constructor for an operated, always on transformer
    *
    * @param uuid of the input entity
    * @param id of the asset

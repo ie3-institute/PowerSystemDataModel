@@ -1,23 +1,5 @@
 @startuml
 
-'extractor interface information
-
-interface Nested
-
-interface Node
-Node --|> Nested
-
-interface Nodes
-Nodes --|> Nested
-
-interface NodeC
-NodeC --|> Nested
-
-interface Type
-Type --|> Nested
-
-
-
 abstract Class UniqueEntity {
 + uuid: UUID
 }
@@ -28,6 +10,7 @@ InputEntity --|> UniqueEntity
 Interface Operable {
 + inOperation: Boolean
 }
+Operable --|> NestedEntity
 
 abstract Class AssetInput {
 - id: String
@@ -42,7 +25,7 @@ abstract Class SystemParticipantInput {
 - qCharacteristics: String
 }
 SystemParticipantInput --|> AssetInput
-SystemParticipantInput --|> Node
+SystemParticipantInput --|> HasNodes
 
 Class OperatorInput {
 + name: String
@@ -54,7 +37,7 @@ abstract Class ConnectorInput {
 + nodeB: NodeInput
 }
 ConnectorInput --|> AssetInput
-ConnectorInput --|> Nodes
+ConnectorInput --|> HasNodes
 
 abstract Class AssetCharacteristicsInput<T extends AssetTypeInput> {
     - type: T
@@ -204,6 +187,22 @@ Class RandomLoadParameter {
 }
 RandomLoadParameter --|> InputEntity
 
+'extractor interface information
+
+interface NestedEntity
+
+interface HasNodes
+HasNodes --|> NestedEntity
+
+interface HasType
+HasType --|> NestedEntity
+
+interface HasLine
+HasLine --|> NestedEntity
+
+interface HasBus
+HasBus --|> NestedEntity
+
 Class FixedFeedInInput {
 - sRated: Quantity<Power> [kVA]
 - cosphiRated: double
@@ -228,14 +227,14 @@ Class WecInput{
 - marketReaction: Boolean
 }
 WecInput --|> SystemParticipantInput
-WecInput --|> Type
+WecInput --|> HasType
 
 Class ChpInput {
 - type: ChpTypeInput
 - marketReaction: Boolean
 }
 ChpInput --|> SystemParticipantInput
-ChpInput --|> Type
+ChpInput --|> HasType
 
 Class BmInput {
 - type: BmTypeInput
@@ -245,13 +244,13 @@ Class BmInput {
 - costControlled: Boolean
 }
 BmInput --|> SystemParticipantInput
-BmInput --|> Type
+BmInput --|> HasType
 
 Class EvInput {
 - type: EvTypeInput
 }
 EvInput --|> SystemParticipantInput
-EvInput --|> Type
+EvInput --|> HasType
 
 Class LoadInput {
 - scenario: String
@@ -266,19 +265,20 @@ Class StorageInput {
 - behaviour: String
 }
 StorageInput --|> SystemParticipantInput
-StorageInput --|> Type
+StorageInput --|> HasType
 
 Class HpInput {
 - type: HpTypeInput
 }
 HpInput --|> SystemParticipantInput
-HpInput --|> Type
+HpInput --|> HasType
 
 Abstract Class ThermalUnitInput {
  - uuid: UUID
  - bus: ThermalBusInput
 }
 ThermalUnitInput --|> AssetInput
+ThermalUnitInput --|> HasBus
 
 Class ThermalBusInput {
 }
@@ -298,14 +298,14 @@ Abstract Class ThermalStorageInput {
 }
 ThermalStorageInput --|> ThermalUnitInput
 
-Class CylindricalStorage {
+Class CylindricalStorageInput {
   - storageVolumeLvl: Quantity<Volume>
   - storageVolumeLvlMin: Quantity<Volume>
   - inletTemp: Quantity<Temperature>
   - returnTemp: Quantity<Temperature>
   - c: Quantity<SpecificHeatCapacity>
 }
-CylindricalStorage --|> ThermalStorageInput
+CylindricalStorageInput --|> ThermalStorageInput
 
 Class MeasurementUnitInput {
 + node: NodeInput
@@ -315,6 +315,7 @@ Class MeasurementUnitInput {
 + q: Boolean [default f]
 }
 MeasurementUnitInput --|> AssetInput
+MeasurementUnitInput --|> HasNodes
 
 Class NodeInput {
 + vTarget: Quantity<Dimensionless> (pU)
@@ -331,7 +332,6 @@ Class EvcsInput {
 }
 EvcsInput --|> AssetInput
 
-
 Class LineInput {
 + type: LineTypeInput
 + length: Quantity<Length> (km)
@@ -340,7 +340,7 @@ Class LineInput {
 + geoPosition: LineString
 }
 LineInput --|> ConnectorInput
-LineInput --|> Type
+LineInput --|> HasType
 
 Class SwitchInput {
 + closed: Boolean
@@ -358,15 +358,15 @@ Class Transformer2WInput {
 + type: Transformer2WTypeInput
 }
 Transformer2WInput --|> TransformerInput
-Transformer2WInput --|> Type
+Transformer2WInput --|> HasType
 
 Class Transformer3WInput {
 + nodeC: NodeInput
 + type: Transformer3WTypeInput
 }
 Transformer3WInput --|> TransformerInput
-Transformer3WInput --|> NodeC
-Transformer3WInput --|> Type
+
+Transformer3WInput --|> HasType
 
 abstract Class GraphicInput {
 + graphicLayer: String
@@ -379,11 +379,13 @@ Class NodeGraphicInput {
 + point: Point
 }
 NodeGraphicInput --|> GraphicInput
+NodeGraphicInput --|> HasNodes
 
 Class LineGraphicInput {
 + line: LineInput
 }
 LineGraphicInput --|> GraphicInput
+LineGraphicInput --|> HasLine
 
 Interface Value
 
