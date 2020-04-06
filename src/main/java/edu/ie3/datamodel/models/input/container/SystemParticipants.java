@@ -19,6 +19,7 @@ public class SystemParticipants implements InputContainer {
   private final Set<BmInput> bmPlants;
   private final Set<ChpInput> chpPlants;
   private final Set<EvcsInput> evCS;
+  private final Set<EvInput> evs;
   private final Set<FixedFeedInInput> fixedFeedIns;
   private final Set<HpInput> heatPumps;
   private final Set<LoadInput> loads;
@@ -30,6 +31,7 @@ public class SystemParticipants implements InputContainer {
       Set<BmInput> bmPlants,
       Set<ChpInput> chpPlants,
       Set<EvcsInput> evCS,
+      Set<EvInput> evs,
       Set<FixedFeedInInput> fixedFeedIns,
       Set<HpInput> heatPumps,
       Set<LoadInput> loads,
@@ -39,6 +41,7 @@ public class SystemParticipants implements InputContainer {
     this.bmPlants = bmPlants;
     this.chpPlants = chpPlants;
     this.evCS = evCS;
+    this.evs = evs;
     this.fixedFeedIns = fixedFeedIns;
     this.heatPumps = heatPumps;
     this.loads = loads;
@@ -64,6 +67,10 @@ public class SystemParticipants implements InputContainer {
     this.evCS =
         systemParticipants.stream()
             .flatMap(participants -> participants.evCS.stream())
+            .collect(Collectors.toSet());
+    this.evs =
+        systemParticipants.stream()
+            .flatMap(participants -> participants.evs.stream())
             .collect(Collectors.toSet());
     this.fixedFeedIns =
         systemParticipants.stream()
@@ -97,6 +104,7 @@ public class SystemParticipants implements InputContainer {
     allEntities.addAll(bmPlants);
     allEntities.addAll(chpPlants);
     allEntities.addAll(evCS);
+    allEntities.addAll(evs);
     allEntities.addAll(fixedFeedIns);
     allEntities.addAll(heatPumps);
     allEntities.addAll(loads);
@@ -122,6 +130,10 @@ public class SystemParticipants implements InputContainer {
 
   public void add(EvcsInput evcsInput) {
     evCS.add(evcsInput);
+  }
+
+  public void add(EvInput evInput) {
+    evs.add(evInput);
   }
 
   public void add(FixedFeedInInput fixedFeedIn) {
@@ -152,34 +164,47 @@ public class SystemParticipants implements InputContainer {
   public Set<BmInput> getBmPlants() {
     return Collections.unmodifiableSet(bmPlants);
   }
+
   /** @return unmodifiable Set of all CHP plants in this grid */
   public Set<ChpInput> getChpPlants() {
     return Collections.unmodifiableSet(chpPlants);
   }
+
   /** @return unmodifiable Set of all ev charging stations in this grid */
   public Set<EvcsInput> getEvCS() {
     return Collections.unmodifiableSet(evCS);
   }
+
+  /** @return unmodifiable Set of all electric vehicles in this grid */
+  public Set<EvInput> getEvs() {
+    return evs;
+  }
+
   /** @return unmodifiable Set of all fixed feed in in this grid */
   public Set<FixedFeedInInput> getFixedFeedIns() {
     return Collections.unmodifiableSet(fixedFeedIns);
   }
+
   /** @return unmodifiable Set of all heat pumps in this grid */
   public Set<HpInput> getHeatPumps() {
     return Collections.unmodifiableSet(heatPumps);
   }
+
   /** @return unmodifiable Set of all loads in this grid */
   public Set<LoadInput> getLoads() {
     return Collections.unmodifiableSet(loads);
   }
+
   /** @return unmodifiable Set of all PV plants in this grid */
   public Set<PvInput> getPvPlants() {
     return Collections.unmodifiableSet(pvPlants);
   }
+
   /** @return unmodifiable Set of all storages in this grid */
   public Set<StorageInput> getStorages() {
     return Collections.unmodifiableSet(storages);
   }
+
   /** @return unmodifiable Set of all WECs in this grid */
   public Set<WecInput> getWecPlants() {
     return Collections.unmodifiableSet(wecPlants);
@@ -190,20 +215,30 @@ public class SystemParticipants implements InputContainer {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     SystemParticipants that = (SystemParticipants) o;
-    return bmPlants.equals(that.bmPlants)
-        && chpPlants.equals(that.chpPlants)
-        && evCS.equals(that.evCS)
-        && fixedFeedIns.equals(that.fixedFeedIns)
-        && heatPumps.equals(that.heatPumps)
-        && loads.equals(that.loads)
-        && pvPlants.equals(that.pvPlants)
-        && storages.equals(that.storages)
-        && wecPlants.equals(that.wecPlants);
+    return Objects.equals(bmPlants, that.bmPlants)
+        && Objects.equals(chpPlants, that.chpPlants)
+        && Objects.equals(evCS, that.evCS)
+        && Objects.equals(evs, that.evs)
+        && Objects.equals(fixedFeedIns, that.fixedFeedIns)
+        && Objects.equals(heatPumps, that.heatPumps)
+        && Objects.equals(loads, that.loads)
+        && Objects.equals(pvPlants, that.pvPlants)
+        && Objects.equals(storages, that.storages)
+        && Objects.equals(wecPlants, that.wecPlants);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        bmPlants, chpPlants, evCS, fixedFeedIns, heatPumps, loads, pvPlants, storages, wecPlants);
+        bmPlants,
+        chpPlants,
+        evCS,
+        evs,
+        fixedFeedIns,
+        heatPumps,
+        loads,
+        pvPlants,
+        storages,
+        wecPlants);
   }
 }
