@@ -515,7 +515,7 @@ public class ValidationUtils {
     }
   }
 
-  public static boolean distinctUuids(Collection<UniqueEntity> entities) {
+  public static boolean distinctUuids(Collection<? extends UniqueEntity> entities) {
     return entities.stream()
             .filter(distinctByKey(UniqueEntity::getUuid))
             .collect(Collectors.toSet())
@@ -523,7 +523,7 @@ public class ValidationUtils {
         == entities.size();
   }
 
-  public static Collection<UniqueEntity> distinctUuidSet(Collection<UniqueEntity> entities) {
+  public static <T extends UniqueEntity> Collection<T> distinctUuidSet(Collection<T> entities) {
     return entities.stream()
         .filter(distinctByKey(UniqueEntity::getUuid))
         .collect(Collectors.toSet());

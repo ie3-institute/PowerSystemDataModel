@@ -29,7 +29,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Sink that provides all capabilities to write {@link UniqueEntity}s to .csv-files
+ * Sink that provides all capabilities to write {@link UniqueEntity}s to .csv-files. Be careful
+ * about using methods other than {@link #persistJointGrid(JointGridContainer)} because all other
+ * methods <b>do not check</b> for duplicate entries but only dump the data they received. In
+ * contrast, when using {@link #persistJointGrid(JointGridContainer)}, all nested entities get
+ * extracted first and then dumped individually without any duplicate lines.
  *
  * @version 0.1
  * @since 19.03.20

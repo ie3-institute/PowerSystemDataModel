@@ -23,6 +23,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 // TODO use Sets to prevent duplicates!
 
@@ -33,6 +35,8 @@ import java.util.stream.Collectors;
  * @since 05.04.20
  */
 public class CsvTypeSource extends CsvDataSource implements TypeSource {
+
+  private static final Logger log = LogManager.getLogger(CsvTypeSource.class);
 
   // general fields
   private final CsvFileConnector connector;
@@ -100,7 +104,10 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
               .collect(Collectors.toList());
 
     } catch (IOException e) {
-      e.printStackTrace(); // todo
+      log.warn(
+          "Cannot read file to build entity '{}':‚ {}",
+          entityClass.getSimpleName(),
+          e.getMessage());
     }
     return resultingOperators;
   }

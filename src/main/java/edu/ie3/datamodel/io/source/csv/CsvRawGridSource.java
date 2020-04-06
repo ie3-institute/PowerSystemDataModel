@@ -10,6 +10,7 @@ import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
@@ -19,6 +20,7 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
+import edu.ie3.datamodel.utils.ValidationUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
@@ -81,14 +83,32 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   @Override
   public RawGridElements getGridData() {
 
-    //      Set<NodeInput> nodes, done
-    //      Set<LineInput> lines, done
-    //      Set<Transformer2WInput> transformer2Ws, done
-    //      Set<Transformer3WInput> transformer3Ws, done
-    //      Set<SwitchInput> switches, done
-    //      Set<MeasurementUnitInput> measurementUnits done
+    // read all needed entities
+    /// start with the types and operators
+    Collection<OperatorInput> operators = typeSource.getOperators();
+    Collection<LineTypeInput> lineTypes = typeSource.getLineTypes();
+    Collection<Transformer2WTypeInput> transformer2WTypeInputs = typeSource.getTransformer2WTypes();
+    Collection<Transformer3WTypeInput> transformer3WTypeInputs = typeSource.getTransformer3WTypes();
 
-    return null; // todo
+    /// assets incl. filter of unique entities + warning if duplicate uuids got filtered out
+    Set<NodeInput> nodes = checkForUuidDuplicates(NodeInput.class, getNodes());
+
+    Set<LineInput> lineInputs =
+        checkForUuidDuplicates(LineInput.class, getLines(nodes, lineTypes, operators));
+    Set<Transformer2WInput> transformer2WInputs =
+        checkForUuidDuplicates(
+            Transformer2WInput.class, get2WTransformers(nodes, transformer2WTypeInputs, operators));
+    Set<Transformer3WInput> transformer3WInputs =
+        checkForUuidDuplicates(
+            Transformer3WInput.class, get3WTransformers(nodes, transformer3WTypeInputs, operators));
+    Set<SwitchInput> switches =
+        checkForUuidDuplicates(SwitchInput.class, getSwitches(nodes, operators));
+    Set<MeasurementUnitInput> measurementUnits =
+        checkForUuidDuplicates(MeasurementUnitInput.class, getMeasurementUnits(nodes, operators));
+
+    // finally build the grid
+    return new RawGridElements(
+        nodes, lineInputs, transformer2WInputs, transformer3WInputs, switches, measurementUnits);
   }
 
   @Override
@@ -203,10 +223,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               .map(Optional::get)
               .collect(Collectors.toSet());
 
-    }
-    // todo test for this!
-    catch (IOException e) {
-      e.printStackTrace(); // todo
+    } catch (IOException e) {
+      logIOExceptionFromConnector(NodeInput.class, e);
     }
 
     return resultingAssets;
@@ -290,7 +308,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               .collect(Collectors.toSet());
 
     } catch (IOException e) {
-      e.printStackTrace(); // todo
+      logIOExceptionFromConnector(LineInput.class, e);
     }
 
     return resultingAssets;
@@ -375,7 +393,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               .collect(Collectors.toSet());
 
     } catch (IOException e) {
-      e.printStackTrace(); // todo
+      logIOExceptionFromConnector(Transformer2WInput.class, e);
     }
 
     return resultingAssets;
@@ -469,7 +487,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               .collect(Collectors.toSet());
 
     } catch (IOException e) {
-      e.printStackTrace(); // todo
+      logIOExceptionFromConnector(Transformer3WInput.class, e);
     }
 
     return resultingAssets;
@@ -543,7 +561,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               .collect(Collectors.toSet());
 
     } catch (IOException e) {
-      e.printStackTrace(); // todo
+      logIOExceptionFromConnector(SwitchInput.class, e);
     }
 
     return resultingAssets;
@@ -613,7 +631,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               .collect(Collectors.toSet());
 
     } catch (IOException e) {
-      e.printStackTrace(); // todo
+      logIOExceptionFromConnector(MeasurementUnitInput.class, e);
     }
 
     return resultingAssets;
@@ -628,5 +646,22 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         entityUuid,
         entityId,
         missingElementsString);
+  }
+
+  private void logIOExceptionFromConnector(Class<? extends AssetInput> entityClass, IOException e) {
+    log.warn(
+        "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+  }
+
+  private <T extends UniqueEntity> Set<T> checkForUuidDuplicates(
+      Class<T> entity, Collection<T> entities) {
+    Collection<T> distinctUuidEntities = ValidationUtils.distinctUuidSet(entities);
+    if (distinctUuidEntities.size() != entities.size()) {
+      log.warn(
+          "Duplicate UUIDs found and removed in file with '{}' entities. It is highly advisable to revise the file!",
+          entity.getSimpleName());
+      return new HashSet<>(distinctUuidEntities);
+    }
+    return new HashSet<>(entities);
   }
 }
