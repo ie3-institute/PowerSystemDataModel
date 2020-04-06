@@ -171,7 +171,11 @@ public class CsvFileSink implements DataSink {
                 storages,
                 wecPlants)
             .flatMap(Collection::stream)
-            .map(entityWithType -> Extractor.extractType(entityWithType))
+            .map(
+                entityWithType ->
+                    Extractor.extractType(
+                        entityWithType)) // due to a bug in java 8 this *cannot* be replaced with
+            // method reference!
             .collect(Collectors.toSet());
 
     // extract operators

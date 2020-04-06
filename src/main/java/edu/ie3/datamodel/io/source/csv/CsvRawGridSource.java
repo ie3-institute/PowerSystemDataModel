@@ -23,10 +23,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-// TODO use Sets to prevent duplicates!
 
 /**
  * //ToDo: Class Description Nothing is buffered -> for performance one might consider reading
@@ -57,8 +57,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
   // field names
   private static final String OPERATOR_FIELD = "operator";
-  //    private static final String NODE_A = "nodeA";
-  //    private static final String NODE_B = "nodeB";
+  private static final String NODE_A = "nodeA";
+  private static final String NODE_B = "nodeB";
+  private static final String TYPE = "type";
 
   public CsvRawGridSource(
       String csvSep,
@@ -85,8 +86,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     //      Set<LineInput> lines, done
     //      Set<Transformer2WInput> transformer2Ws, done
     //      Set<Transformer3WInput> transformer3Ws, done
-    //      Set<SwitchInput> switches,
-    //      Set<MeasurementUnitInput> measurementUnits
+    //      Set<SwitchInput> switches, done
+    //      Set<MeasurementUnitInput> measurementUnits done
 
     return null; // todo
   }
@@ -232,34 +233,36 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                   fieldsToAttributes -> {
 
                     // get the line nodes
+                    String nodeBUuid = fieldsToAttributes.get(NODE_B);
                     Optional<NodeInput> nodeA =
-                        findNodeByUuid(fieldsToAttributes.get("nodeA"), nodes);
-                    Optional<NodeInput> nodeB =
-                        findNodeByUuid(fieldsToAttributes.get("nodeB"), nodes);
+                        findNodeByUuid(fieldsToAttributes.get(NODE_A), nodes);
+                    Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
 
                     // get the line type
-                    Optional<LineTypeInput> lineType =
-                        findTypeByUuid(fieldsToAttributes.get("type"), lineTypeInputs);
+                    String typeUuid = fieldsToAttributes.get("type");
+                    Optional<LineTypeInput> lineType = findTypeByUuid(typeUuid, lineTypeInputs);
 
                     // if nodeA, nodeB or the type are not present we return an empty element and
                     // log a warning
                     Optional<LineInput> lineOpt;
                     if (!nodeA.isPresent() || !nodeB.isPresent() || !lineType.isPresent()) {
                       lineOpt = Optional.empty();
-                      log.warn(
-                          "Skipping line with uuid '{}' and id '{}'. Not all required entities found!"
-                              + "Missing elements: {}",
+
+                      String debugString =
+                          Stream.of(
+                                  new AbstractMap.SimpleEntry<>(
+                                      nodeA, NODE_A + ": " + fieldsToAttributes.get(NODE_A)),
+                                  new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid),
+                                  new AbstractMap.SimpleEntry<>(lineType, TYPE + ": " + typeUuid))
+                              .filter(entry -> !entry.getKey().isPresent())
+                              .map(AbstractMap.SimpleEntry::getValue)
+                              .collect(Collectors.joining("\n"));
+
+                      logSkippingWarning(
+                          "line",
                           fieldsToAttributes.get("uuid"),
                           fieldsToAttributes.get("id"),
-                          (nodeA.isPresent() ? "" : "\nnode_a: " + fieldsToAttributes.get("node_a"))
-                              .concat(
-                                  nodeB.isPresent()
-                                      ? ""
-                                      : "\nnode_b: " + fieldsToAttributes.get("node_b"))
-                              .concat(
-                                  lineType.isPresent()
-                                      ? ""
-                                      : "\ntype: " + fieldsToAttributes.get("type")));
+                          debugString);
 
                     } else {
 
@@ -267,8 +270,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                       fieldsToAttributes
                           .keySet()
                           .removeAll(
-                              new HashSet<>(
-                                  Arrays.asList(OPERATOR_FIELD, "nodeA", "nodeB", "type")));
+                              new HashSet<>(Arrays.asList(OPERATOR_FIELD, NODE_A, NODE_B, "type")));
 
                       // build the asset data
                       LineInputEntityData data =
@@ -310,40 +312,42 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
           reader
               .lines()
               .parallel()
+              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
               .map(
-                  csvRow -> {
-                    final Map<String, String> fieldsToAttributes =
-                        buildFieldsToAttributes(csvRow, headline);
+                  fieldsToAttributes -> {
 
                     // get the transformer nodes
-                    Optional<NodeInput> nodeA =
-                        findNodeByUuid(fieldsToAttributes.get("nodeA"), nodes);
-                    Optional<NodeInput> nodeB =
-                        findNodeByUuid(fieldsToAttributes.get("nodeB"), nodes);
+                    String nodeAUuid = fieldsToAttributes.get(NODE_A);
+                    String nodeBUuid = fieldsToAttributes.get(NODE_B);
+                    Optional<NodeInput> nodeA = findNodeByUuid(nodeAUuid, nodes);
+                    Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
 
                     // get the transformer type
+                    String typeUuid = fieldsToAttributes.get("type");
                     Optional<Transformer2WTypeInput> transformerType =
-                        findTypeByUuid(fieldsToAttributes.get("type"), transformer2WTypes);
+                        findTypeByUuid(typeUuid, transformer2WTypes);
 
                     // if nodeA, nodeB or the type are not present we return an empty element and
                     // log a warning
-                    Optional<Transformer2WInput> trafoOpt;
+                    Optional<Transformer2WInput> trafo2WOpt;
                     if (!nodeA.isPresent() || !nodeB.isPresent() || !transformerType.isPresent()) {
-                      trafoOpt = Optional.empty();
-                      log.warn(
-                          "Skipping 2 winding transformer with uuid '{}' and id '{}'. Not all required entities found!"
-                              + "Missing elements: {}",
+                      trafo2WOpt = Optional.empty();
+
+                      String debugString =
+                          Stream.of(
+                                  new AbstractMap.SimpleEntry<>(nodeA, NODE_A + ": " + nodeAUuid),
+                                  new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid),
+                                  new AbstractMap.SimpleEntry<>(
+                                      transformerType, TYPE + ": " + typeUuid))
+                              .filter(entry -> !entry.getKey().isPresent())
+                              .map(AbstractMap.SimpleEntry::getValue)
+                              .collect(Collectors.joining("\n"));
+
+                      logSkippingWarning(
+                          "2 winding transformer",
                           fieldsToAttributes.get("uuid"),
                           fieldsToAttributes.get("id"),
-                          (nodeA.isPresent() ? "" : "\nnode_a: " + fieldsToAttributes.get("node_a"))
-                              .concat(
-                                  nodeB.isPresent()
-                                      ? ""
-                                      : "\nnode_b: " + fieldsToAttributes.get("node_b"))
-                              .concat(
-                                  transformerType.isPresent()
-                                      ? ""
-                                      : "\ntype: " + fieldsToAttributes.get("type")));
+                          debugString);
 
                     } else {
 
@@ -351,8 +355,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                       fieldsToAttributes
                           .keySet()
                           .removeAll(
-                              new HashSet<>(
-                                  Arrays.asList(OPERATOR_FIELD, "nodeA", "nodeB", "type")));
+                              new HashSet<>(Arrays.asList(OPERATOR_FIELD, NODE_A, NODE_B, "type")));
 
                       // build the asset data
                       Transformer2WInputEntityData data =
@@ -365,10 +368,10 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                               nodeB.get(),
                               transformerType.get());
                       // build the model
-                      trafoOpt = transformer2WInputFactory.getEntity(data);
+                      trafo2WOpt = transformer2WInputFactory.getEntity(data);
                     }
 
-                    return trafoOpt;
+                    return trafo2WOpt;
                   })
               .collect(Collectors.toSet());
 
@@ -394,49 +397,49 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
           reader
               .lines()
               .parallel()
+              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
               .map(
-                  csvRow -> {
-                    final Map<String, String> fieldsToAttributes =
-                        buildFieldsToAttributes(csvRow, headline);
+                  fieldsToAttributes -> {
 
                     // get the transformer nodes
+                    String nodeBUuid = fieldsToAttributes.get(NODE_B);
+                    String nodeCUuid = fieldsToAttributes.get("nodeC");
                     Optional<NodeInput> nodeA =
-                        findNodeByUuid(fieldsToAttributes.get("nodeA"), nodes);
-                    Optional<NodeInput> nodeB =
-                        findNodeByUuid(fieldsToAttributes.get("nodeB"), nodes);
-                    Optional<NodeInput> nodeC =
-                        findNodeByUuid(fieldsToAttributes.get("nodeC"), nodes);
+                        findNodeByUuid(fieldsToAttributes.get(NODE_A), nodes);
+                    Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
+                    Optional<NodeInput> nodeC = findNodeByUuid(nodeCUuid, nodes);
 
                     // get the transformer type
+                    String typeUuid = fieldsToAttributes.get("type");
                     Optional<Transformer3WTypeInput> transformerType =
-                        findTypeByUuid(fieldsToAttributes.get("type"), transformer3WTypes);
+                        findTypeByUuid(typeUuid, transformer3WTypes);
 
                     // if nodeA, nodeB or the type are not present we return an empty element and
                     // log a warning
-                    Optional<Transformer3WInput> trafoOpt;
+                    Optional<Transformer3WInput> trafo3WOpt;
                     if (!nodeA.isPresent()
                         || !nodeB.isPresent()
                         || !nodeC.isPresent()
                         || !transformerType.isPresent()) {
-                      trafoOpt = Optional.empty();
-                      log.warn(
-                          "Skipping 3 winding transformer with uuid '{}' and id '{}'. Not all required entities found!"
-                              + "Missing elements: {}",
+                      trafo3WOpt = Optional.empty();
+
+                      String debugString =
+                          Stream.of(
+                                  new AbstractMap.SimpleEntry<>(
+                                      nodeA, NODE_A + ": " + fieldsToAttributes.get(NODE_A)),
+                                  new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid),
+                                  new AbstractMap.SimpleEntry<>(nodeC, "node_c: " + nodeCUuid),
+                                  new AbstractMap.SimpleEntry<>(
+                                      transformerType, TYPE + ": " + typeUuid))
+                              .filter(entry -> !entry.getKey().isPresent())
+                              .map(AbstractMap.SimpleEntry::getValue)
+                              .collect(Collectors.joining("\n"));
+
+                      logSkippingWarning(
+                          "3 winding transformer",
                           fieldsToAttributes.get("uuid"),
                           fieldsToAttributes.get("id"),
-                          (nodeA.isPresent() ? "" : "\nnode_a: " + fieldsToAttributes.get("node_a"))
-                              .concat(
-                                  nodeB.isPresent()
-                                      ? ""
-                                      : "\nnode_b: " + fieldsToAttributes.get("node_b"))
-                              .concat(
-                                  nodeB.isPresent()
-                                      ? ""
-                                      : "\nnode_c: " + fieldsToAttributes.get("node_c"))
-                              .concat(
-                                  transformerType.isPresent()
-                                      ? ""
-                                      : "\ntype: " + fieldsToAttributes.get("type")));
+                          debugString);
 
                     } else {
 
@@ -445,8 +448,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                           .keySet()
                           .removeAll(
                               new HashSet<>(
-                                  Arrays.asList(
-                                      OPERATOR_FIELD, "nodeA", "nodeB", "nodeC", "type")));
+                                  Arrays.asList(OPERATOR_FIELD, NODE_A, NODE_B, "nodeC", "type")));
 
                       // build the asset data
                       Transformer3WInputEntityData data =
@@ -460,10 +462,10 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                               nodeC.get(),
                               transformerType.get());
                       // build the model
-                      trafoOpt = transformer3WInputFactory.getEntity(data);
+                      trafo3WOpt = transformer3WInputFactory.getEntity(data);
                     }
 
-                    return trafoOpt;
+                    return trafo3WOpt;
                   })
               .collect(Collectors.toSet());
 
@@ -491,35 +493,38 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               .map(
                   fieldsToAttributes -> {
 
-                    // get the line nodes
-                    Optional<NodeInput> nodeA =
-                        findNodeByUuid(fieldsToAttributes.get("nodeA"), nodes);
-                    Optional<NodeInput> nodeB =
-                        findNodeByUuid(fieldsToAttributes.get("nodeB"), nodes);
+                    // get the switch nodes
+                    String nodeAUuid = fieldsToAttributes.get(NODE_A);
+                    String nodeBUuid = fieldsToAttributes.get(NODE_B);
+                    Optional<NodeInput> nodeA = findNodeByUuid(nodeAUuid, nodes);
+                    Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
 
                     // if nodeA or nodeB are not present we return an empty element and log a
                     // warning
                     Optional<SwitchInput> switchOpt;
                     if (!nodeA.isPresent() || !nodeB.isPresent()) {
                       switchOpt = Optional.empty();
-                      log.warn(
-                          "Skipping switch with uuid '{}' and id '{}'. Not all required entities found!"
-                              + "Missing elements: {}",
+
+                      String debugString =
+                          Stream.of(
+                                  new AbstractMap.SimpleEntry<>(nodeA, NODE_A + ": " + nodeAUuid),
+                                  new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid))
+                              .filter(entry -> !entry.getKey().isPresent())
+                              .map(AbstractMap.SimpleEntry::getValue)
+                              .collect(Collectors.joining("\n"));
+
+                      logSkippingWarning(
+                          "switch",
                           fieldsToAttributes.get("uuid"),
                           fieldsToAttributes.get("id"),
-                          (nodeA.isPresent() ? "" : "\nnode_a: " + fieldsToAttributes.get("node_a"))
-                              .concat(
-                                  nodeB.isPresent()
-                                      ? ""
-                                      : "\nnode_b: " + fieldsToAttributes.get("node_b")));
+                          debugString);
 
                     } else {
 
                       // remove fields that are passed as objects to constructor
                       fieldsToAttributes
                           .keySet()
-                          .removeAll(
-                              new HashSet<>(Arrays.asList(OPERATOR_FIELD, "nodeA", "nodeB")));
+                          .removeAll(new HashSet<>(Arrays.asList(OPERATOR_FIELD, NODE_A, NODE_B)));
 
                       // build the asset data
                       ConnectorInputEntityData data =
@@ -563,21 +568,27 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               .map(
                   fieldsToAttributes -> {
 
-                    // get the line nodes
-                    Optional<NodeInput> node =
-                        findNodeByUuid(fieldsToAttributes.get("node"), nodes);
+                    // get the measurement unit node
+                    String nodeUuid = fieldsToAttributes.get("node");
+                    Optional<NodeInput> node = findNodeByUuid(nodeUuid, nodes);
 
                     // if nodeA or nodeB are not present we return an empty element and log a
                     // warning
                     Optional<MeasurementUnitInput> measurementUnitOpt;
                     if (!node.isPresent()) {
                       measurementUnitOpt = Optional.empty();
-                      log.warn(
-                          "Skipping measurement unit with uuid '{}' and id '{}'. Not all required entities found!"
-                              + "Missing elements: {}",
+
+                      String debugString =
+                          Stream.of(new AbstractMap.SimpleEntry<>(node, "node: " + nodeUuid))
+                              .filter(entry -> !entry.getKey().isPresent())
+                              .map(AbstractMap.SimpleEntry::getValue)
+                              .collect(Collectors.joining("\n"));
+
+                      logSkippingWarning(
+                          "measurement unit",
                           fieldsToAttributes.get("uuid"),
                           fieldsToAttributes.get("id"),
-                          (node.isPresent() ? "" : "\nnode: " + fieldsToAttributes.get("node")));
+                          debugString);
 
                     } else {
 
@@ -607,5 +618,16 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     }
 
     return resultingAssets;
+  }
+
+  private void logSkippingWarning(
+      String entityDesc, String entityUuid, String entityId, String missingElementsString) {
+
+    log.warn(
+        "Skipping {} with uuid '{}' and id '{}'. Not all required entities found!\nMissing elements:\n{}",
+        entityDesc,
+        entityUuid,
+        entityId,
+        missingElementsString);
   }
 }
