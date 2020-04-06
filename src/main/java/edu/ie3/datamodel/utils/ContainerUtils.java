@@ -98,6 +98,7 @@ public class ContainerUtils {
     Set<BmInput> bmPlants = filterParticipants(input.getBmPlants(), subnet);
     Set<ChpInput> chpPlants = filterParticipants(input.getChpPlants(), subnet);
     /* Electric vehicle charging systems are currently dummy implementations without nodal reverence */
+    Set<EvInput> evs = filterParticipants(input.getEvs(), subnet);
     Set<FixedFeedInInput> fixedFeedIns = filterParticipants(input.getFixedFeedIns(), subnet);
     Set<HpInput> heatpumps = filterParticipants(input.getHeatPumps(), subnet);
     Set<LoadInput> loads = filterParticipants(input.getLoads(), subnet);
@@ -109,6 +110,7 @@ public class ContainerUtils {
         bmPlants,
         chpPlants,
         new HashSet<>(),
+        evs,
         fixedFeedIns,
         heatpumps,
         loads,

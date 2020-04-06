@@ -13,11 +13,18 @@ import edu.ie3.datamodel.io.extractor.Extractor;
 import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.*;
+import edu.ie3.datamodel.models.input.connector.LineInput;
+import edu.ie3.datamodel.models.input.connector.SwitchInput;
+import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.container.*;
+import edu.ie3.datamodel.models.input.system.*;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -120,6 +127,86 @@ public class CsvFileSink implements DataSink {
   @Override
   public <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities) {
     entities.parallelStream().forEach(this::persistIgnoreNested);
+  }
+
+  @Override
+  // todo test
+  public void persistJointGrid(JointGridContainer jointGridContainer) {
+    // get raw grid entities with types or operators
+    RawGridElements rawGridElements = jointGridContainer.getRawGrid();
+    Set<NodeInput> nodes = rawGridElements.getNodes();
+    Set<LineInput> lines = rawGridElements.getLines();
+    Set<Transformer2WInput> transformer2Ws = rawGridElements.getTransformer2Ws();
+    Set<Transformer3WInput> transformer3Ws = rawGridElements.getTransformer3Ws();
+    Set<SwitchInput> switches = rawGridElements.getSwitches();
+    Set<MeasurementUnitInput> measurementUnits = rawGridElements.getMeasurementUnits();
+
+    // get system participants with types or operators
+    SystemParticipants systemParticipants = jointGridContainer.getSystemParticipants();
+    Set<BmInput> bmPlants = systemParticipants.getBmPlants();
+    Set<ChpInput> chpPlants = systemParticipants.getChpPlants();
+    Set<EvcsInput> evCS = systemParticipants.getEvCS();
+    Set<EvInput> evs = systemParticipants.getEvs();
+    Set<FixedFeedInInput> fixedFeedIns = systemParticipants.getFixedFeedIns();
+    Set<HpInput> heatPumps = systemParticipants.getHeatPumps();
+    Set<LoadInput> loads = systemParticipants.getLoads();
+    Set<PvInput> pvPlants = systemParticipants.getPvPlants();
+    Set<StorageInput> storages = systemParticipants.getStorages();
+    Set<WecInput> wecPlants = systemParticipants.getWecPlants();
+
+    // get graphic elements (just for better readability, we could also just get them directly
+    // below)
+    GraphicElements graphicElements = jointGridContainer.getGraphics();
+
+    // extract types
+    Set<AssetTypeInput> types =
+        Stream.of(
+                lines,
+                transformer2Ws,
+                transformer3Ws,
+                bmPlants,
+                chpPlants,
+                evs,
+                heatPumps,
+                storages,
+                wecPlants)
+            .flatMap(Collection::stream)
+            .map(entityWithType -> Extractor.extractType(entityWithType))
+            .collect(Collectors.toSet());
+
+    // extract operators
+    Set<OperatorInput> operators =
+        Stream.of(
+                nodes,
+                lines,
+                transformer2Ws,
+                transformer3Ws,
+                switches,
+                measurementUnits,
+                bmPlants,
+                chpPlants,
+                evCS,
+                evs,
+                fixedFeedIns,
+                heatPumps,
+                loads,
+                pvPlants,
+                storages,
+                wecPlants)
+            .flatMap(Collection::stream)
+            .map(Extractor::extractOperator)
+            .collect(Collectors.toSet());
+
+    // persist all entities
+    Stream.of(
+            rawGridElements.allEntitiesAsList(),
+            systemParticipants.allEntitiesAsList(),
+            graphicElements.allEntitiesAsList(),
+            types,
+            operators)
+        .flatMap(Collection::stream)
+        .parallel()
+        .forEach(this::persistIgnoreNested);
   }
 
   @Override

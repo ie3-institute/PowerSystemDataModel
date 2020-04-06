@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.sink;
 import edu.ie3.datamodel.io.connectors.DataConnector;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import java.util.Collection;
 
 /**
@@ -80,4 +81,7 @@ public interface DataSink {
    *     executed by a specific {@link EntityProcessor}
    */
   <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities);
+
+  // todo
+  void persistJointGrid(JointGridContainer jointGridContainer);
 }

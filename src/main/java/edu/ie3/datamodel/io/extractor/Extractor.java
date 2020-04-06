@@ -7,7 +7,9 @@ package edu.ie3.datamodel.io.extractor;
 
 import edu.ie3.datamodel.exceptions.ExtractorException;
 import edu.ie3.datamodel.models.Operable;
+import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,10 +36,10 @@ public final class Extractor {
       resultingList.addAll(((HasNodes) nestedEntity).allNodes());
     }
     if (nestedEntity instanceof HasType) {
-      resultingList.add(((HasType) nestedEntity).getType());
+      resultingList.add(extractType((HasType) nestedEntity));
     }
     if (nestedEntity instanceof Operable) {
-      resultingList.add(((Operable) nestedEntity).getOperator());
+      resultingList.add(extractOperator((Operable) nestedEntity));
     }
 
     if (nestedEntity instanceof HasBus) {
@@ -65,5 +67,13 @@ public final class Extractor {
     }
 
     return Collections.unmodifiableList(resultingList);
+  }
+
+  public static AssetTypeInput extractType(HasType entityWithType) {
+    return entityWithType.getType();
+  }
+
+  public static OperatorInput extractOperator(Operable entityWithOperator) {
+    return entityWithOperator.getOperator();
   }
 }
