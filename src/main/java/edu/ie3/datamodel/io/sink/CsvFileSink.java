@@ -9,7 +9,6 @@ import edu.ie3.datamodel.exceptions.ExtractorException;
 import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.connectors.DataConnector;
 import edu.ie3.datamodel.io.extractor.Extractor;
 import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
@@ -24,9 +23,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Sink that provides all capabilities to write {@link UniqueEntity}s to .csv-files
- *
- * <p>// todo JH convert headline fields to snake case when writing out to be concruent with
- * database
  *
  * @version 0.1
  * @since 19.03.20
@@ -93,11 +89,6 @@ public class CsvFileSink implements DataSink {
   }
 
   @Override
-  public DataConnector getDataConnector() {
-    return connector;
-  }
-
-  @Override
   public <T extends UniqueEntity> void persistAll(Collection<T> entities) {
     for (T entity : entities) {
       persist(entity);
@@ -129,6 +120,12 @@ public class CsvFileSink implements DataSink {
   @Override
   public <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities) {
     entities.parallelStream().forEach(this::persistIgnoreNested);
+  }
+
+  @Override
+  public void shutdown() {
+    // shutdown the connector
+    connector.shutdown();
   }
 
   @Override

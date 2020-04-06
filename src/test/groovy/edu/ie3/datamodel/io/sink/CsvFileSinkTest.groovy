@@ -50,7 +50,7 @@ class CsvFileSinkTest extends Specification {
 	def "A valid CsvFileSink called by simple constructor should not initialize files by default and consist of several default values"() {
 		given:
 		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath)
-		csvFileSink.dataConnector.shutdown()
+		csvFileSink.shutdown()
 
 		expect:
 		!new File(testBaseFolderPath).exists()
@@ -67,7 +67,7 @@ class CsvFileSinkTest extends Specification {
 				new FileNamingStrategy(),
 				true,
 				",")
-		csvFileSink.dataConnector.shutdown()
+		csvFileSink.shutdown()
 
 		expect:
 		new File(testBaseFolderPath).exists()
@@ -114,7 +114,7 @@ class CsvFileSinkTest extends Specification {
 			ThermalUnitInputTestData.cylindricStorageInput,
 			ThermalUnitInputTestData.thermalHouseInput
 		])
-		csvFileSink.dataConnector.shutdown()
+		csvFileSink.shutdown()
 
 		then:
 		new File(testBaseFolderPath).exists()
@@ -153,7 +153,7 @@ class CsvFileSinkTest extends Specification {
 
 		when:
 		csvFileSink.persist(wecResult)
-		csvFileSink.dataConnector.shutdown()
+		csvFileSink.shutdown()
 
 		then:
 		thrown(SinkException)

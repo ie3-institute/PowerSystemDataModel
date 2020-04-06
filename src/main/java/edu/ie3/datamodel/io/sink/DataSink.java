@@ -17,10 +17,11 @@ import java.util.Collection;
  */
 public interface DataSink {
 
-  /** @return the connector of this sink */
-  DataConnector
-      getDataConnector(); // todo check if we need this, maybe instead of returning the connector it
-  // would more sense to have a shutdown method for the sink?!
+  /**
+   * Shutdown this sink and do all cleanup operations (e.g. closing of the {@link DataConnector}
+   * here
+   */
+  void shutdown();
 
   /**
    * Should implement the entry point of a data sink to persist an entity. By default this method
