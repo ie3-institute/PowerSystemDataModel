@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io
 
-import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.input.EvcsInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
@@ -55,7 +54,6 @@ import edu.ie3.datamodel.models.result.system.LoadResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.StorageResult
 import edu.ie3.datamodel.models.result.system.WecResult
-import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
@@ -279,7 +277,7 @@ class FileNamingStrategyTest extends Specification {
 
 		where:
 		modelClass              || expectedString
-		FixedFeedInInput        || "fixedfeedin_input"
+		FixedFeedInInput        || "fixed_feed_in_input"
 		PvInput                 || "pv_input"
 		WecInput                || "wec_input"
 		ChpInput                || "chp_input"
@@ -291,12 +289,12 @@ class FileNamingStrategyTest extends Specification {
 		LineInput               || "line_input"
 		SwitchInput             || "switch_input"
 		NodeInput               || "node_input"
-		MeasurementUnitInput    || "measurementunit_input"
+		MeasurementUnitInput    || "measurement_unit_input"
 		EvcsInput               || "evcs_input"
 		Transformer2WInput      || "transformer2w_input"
 		Transformer3WInput      || "transformer3w_input"
-		CylindricalStorageInput || "cylindricalstorage_input"
-		ThermalHouseInput       || "thermalhouse_input"
+		CylindricalStorageInput || "cylindrical_storage_input"
+		ThermalHouseInput       || "thermal_house_input"
 	}
 
 	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all asset characteristics models"() {
@@ -312,8 +310,8 @@ class FileNamingStrategyTest extends Specification {
 
 		where:
 		modelClass             || expectedString
-		WecCharacteristicInput || "weccharacteristic_input"
-		EvCharacteristicInput  || "evcharacteristic_input"
+		WecCharacteristicInput || "wec_characteristic_input"
+		EvCharacteristicInput  || "ev_characteristic_input"
 	}
 
 	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all input types models"() {
@@ -354,7 +352,7 @@ class FileNamingStrategyTest extends Specification {
 
 		where:
 		modelClass           || expectedString
-		RandomLoadParameters || "randomloadparameters_input"
+		RandomLoadParameters || "random_load_parameters_input"
 	}
 
 	def "A FileNamingStrategy without pre- or suffixes should return valid strings for a graphic input Model"() {

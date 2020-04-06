@@ -27,11 +27,11 @@ public class LineInputEntityData extends ConnectorInputEntityData {
   public LineInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       NodeInput nodeA,
       NodeInput nodeB,
       LineTypeInput type) {
-    super(fieldsToAttributes, entityClass, operatorInput, nodeA, nodeB);
+    super(fieldsToAttributes, entityClass, operator, nodeA, nodeB);
     this.type = type;
   }
 

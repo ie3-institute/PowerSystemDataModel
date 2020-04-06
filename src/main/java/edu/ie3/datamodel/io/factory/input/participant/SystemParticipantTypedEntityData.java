@@ -25,8 +25,8 @@ class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
   private final T typeInput;
 
   /**
-   * Creates a new SystemParticipantEntityData object for a non-operable system participant input
-   * that needs a type input as well
+   * Creates a new SystemParticipantEntityData object for an operated, always on system participant
+   * input that needs a type input as well
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data
@@ -48,17 +48,17 @@ class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data
-   * @param operatorInput operator input
+   * @param operator operator input
    * @param node input node
    * @param typeInput type input
    */
   public SystemParticipantTypedEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       NodeInput node,
       T typeInput) {
-    super(fieldsToAttributes, entityClass, operatorInput, node);
+    super(fieldsToAttributes, entityClass, operator, node);
     this.typeInput = typeInput;
   }
 

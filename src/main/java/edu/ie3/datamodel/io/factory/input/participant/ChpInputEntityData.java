@@ -30,12 +30,12 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
 
   public ChpInputEntityData(
       Map<String, String> fieldsToAttributes,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       NodeInput node,
       ChpTypeInput typeInput,
       ThermalBusInput thermalBusInput,
       ThermalStorageInput thermalStorageInput) {
-    super(fieldsToAttributes, ChpInput.class, operatorInput, node, typeInput);
+    super(fieldsToAttributes, ChpInput.class, operator, node, typeInput);
     this.thermalBusInput = thermalBusInput;
     this.thermalStorageInput = thermalStorageInput;
   }

@@ -32,9 +32,9 @@ public class EvInputFactory
       String id,
       NodeInput node,
       String qCharacteristics,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     return new EvInput(
-        uuid, operationTime, operatorInput, id, node, qCharacteristics, data.getTypeInput());
+        uuid, id, operator, operationTime, node, qCharacteristics, data.getTypeInput());
   }
 }

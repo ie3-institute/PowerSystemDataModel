@@ -40,9 +40,9 @@ public class NodeInput extends AssetInput {
    * Constructor for an operated node
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
    * @param slack Is this node a slack node?
    * @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
@@ -52,15 +52,15 @@ public class NodeInput extends AssetInput {
    */
   public NodeInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       Quantity<Dimensionless> vTarget,
       boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
       int subnet) {
-    super(uuid, operationTime, operator, id);
+    super(uuid, id, operator, operationTime);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     this.slack = slack;
     this.geoPosition = geoPosition;
@@ -69,7 +69,7 @@ public class NodeInput extends AssetInput {
   }
 
   /**
-   * Constructor for a non-operated asset
+   * Constructor for an operated, always on asset
    *
    * @param uuid of the input entity
    * @param id of the asset

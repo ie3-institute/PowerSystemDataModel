@@ -43,7 +43,7 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
 
 		when:
 		Optional<HpInput> input = inputFactory.getEntity(
-				new HpInputEntityData(parameter, operatorInput, nodeInput, typeInput, thermalBusInput))
+				new HpInputEntityData(parameter,operatorInput, nodeInput, typeInput, thermalBusInput))
 
 		then:
 		input.present

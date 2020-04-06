@@ -13,7 +13,7 @@ import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.connectors.DataConnector;
 import edu.ie3.datamodel.io.extractor.Extractor;
-import edu.ie3.datamodel.io.extractor.Nested;
+import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -81,7 +81,8 @@ public class CsvFileSink implements DataSink {
    * @param processorProvider the processor provided that should be used for entity de-serialization
    * @param fileNamingStrategy the file naming strategy that should be used
    * @param initFiles true if the files should be created during initialization (might create files,
-   *     that only consist of a headline, because no data will be writen into them), false otherwise
+   *     that only consist of a headline, because no data will be written into them), false
+   *     otherwise
    * @param csvSep the csv file separator that should be use
    */
   public CsvFileSink(
@@ -114,10 +115,10 @@ public class CsvFileSink implements DataSink {
     /* Distinguish between "regular" input / result models and time series */
     if (entity instanceof InputEntity || entity instanceof ResultEntity) {
       /* This this a nested object or not? */
-      if (entity instanceof Nested) {
+      if (entity instanceof NestedEntity) {
         try {
           persistIgnoreNested(entity);
-          for (InputEntity ent : new Extractor((Nested) entity).getExtractedEntities()) {
+          for (InputEntity ent : Extractor.extractElements((NestedEntity) entity)) {
             persistIgnoreNested(ent);
           }
         } catch (ExtractorException e) {

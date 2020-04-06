@@ -41,9 +41,9 @@ public class LoadInput extends SystemParticipantInput {
    * Constructor for an operated load
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param standardLoadProfile Standard load profile to use for this model
@@ -54,9 +54,9 @@ public class LoadInput extends SystemParticipantInput {
    */
   public LoadInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       String qCharacteristics,
       StandardLoadProfile standardLoadProfile,
@@ -64,7 +64,7 @@ public class LoadInput extends SystemParticipantInput {
       Quantity<Energy> eConsAnnual,
       Quantity<Power> sRated,
       double cosphiRated) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.standardLoadProfile = standardLoadProfile;
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
@@ -102,9 +102,9 @@ public class LoadInput extends SystemParticipantInput {
       double cosphiRated) {
     this(
         uuid,
-        operationTime,
-        operator,
         id,
+        operator,
+        operationTime,
         node,
         qCharacteristics,
         BdewLoadProfile.get(bdewStandardLoadProfile),
@@ -115,7 +115,7 @@ public class LoadInput extends SystemParticipantInput {
   }
 
   /**
-   * Constructor for a non-operated load
+   * Constructor for an operated, always on load
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -145,7 +145,7 @@ public class LoadInput extends SystemParticipantInput {
   }
 
   /**
-   * Constructor for a non-operated load
+   * Constructor for an operated, always on load
    *
    * @param uuid of the input entity
    * @param id of the asset

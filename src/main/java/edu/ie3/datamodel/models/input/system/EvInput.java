@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.io.extractor.Type;
+import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -14,34 +14,34 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Describes an electric vehicle */
-public class EvInput extends SystemParticipantInput implements Type {
+public class EvInput extends SystemParticipantInput implements HasType {
   /** Type of this EV, containing default values for EVs of this kind */
   private final EvTypeInput type;
   /**
    * Constructor for an operated electric vehicle
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics
    * @param type of EV
    */
   public EvInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       String qCharacteristics,
       EvTypeInput type) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.type = type;
   }
 
   /**
-   * Constructor for a non-operated electric vehicle
+   * Constructor for an operated, always on electric vehicle
    *
    * @param uuid of the input entity
    * @param id of the asset
