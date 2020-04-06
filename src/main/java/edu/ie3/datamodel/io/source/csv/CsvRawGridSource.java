@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
  * //ToDo: Class Description Nothing is buffered -> for performance one might consider reading
  * nodes, operators etc. first and then passing in all required collections, otherwise reading is
