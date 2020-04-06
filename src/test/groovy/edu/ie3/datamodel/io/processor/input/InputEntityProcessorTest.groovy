@@ -59,7 +59,7 @@ class InputEntityProcessorTest extends Specification {
 		def validResult = GridTestData.nodeA
 
 		Map expectedResults = [
-			"uuid"         : "5dc88077-aeb6-4711-9142-db57292640b1",
+			"uuid"         : "4ca90220-74c2-4369-9afa-a18bf068840d",
 			"geoPosition"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"id"           : "node_a",
 			"operatesUntil": "2020-03-25T15:11:31Z[UTC]",
@@ -97,11 +97,11 @@ class InputEntityProcessorTest extends Specification {
 		where:
 		modelClass         | modelInstance                   || expectedResult
 		Transformer3WInput | GridTestData.transformerAtoBtoC || [
-			"uuid"           : "5dc88077-aeb6-4711-9142-db57292640b1",
+			"uuid"           : "cc327469-7d56-472b-a0df-edbb64f90e8f",
 			"autoTap"        : "true",
 			"id"             : "3w_test",
 			"parallelDevices": "1",
-			"nodeA"          : "5dc88077-aeb6-4711-9142-db57292640b1",
+			"nodeA"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
 			"nodeB"          : "47d29df0-ba2d-4d23-8e75-c82229c5c758",
 			"nodeC"          : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
 			"operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
@@ -128,7 +128,7 @@ class InputEntityProcessorTest extends Specification {
 			"uuid"         : "5dc88077-aeb6-4711-9142-db57287640b1",
 			"closed"       : "true",
 			"id"           : "test_switch_AtoB",
-			"nodeA"        : "5dc88077-aeb6-4711-9142-db57292640b1",
+			"nodeA"        : "4ca90220-74c2-4369-9afa-a18bf068840d",
 			"nodeB"        : "47d29df0-ba2d-4d23-8e75-c82229c5c758",
 			"operatesUntil": "2020-03-25T15:11:31Z[UTC]",
 			"operatesFrom" : "2020-03-24T15:11:31Z[UTC]",

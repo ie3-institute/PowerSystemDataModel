@@ -139,7 +139,7 @@ class GridTestData {
 	)
 
 	public static final NodeInput nodeA = new NodeInput(
-	UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"), "node_a", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	UUID.fromString("4ca90220-74c2-4369-9afa-a18bf068840d"), "node_a", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
 	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
 	,
 	Quantities.getQuantity(1d, PU),
@@ -198,7 +198,7 @@ class GridTestData {
 	GermanVoltageLevelUtils.MV_10KV,
 	5)
 	public static final NodeInput nodeF = new NodeInput(
-	UUID.fromString("aaa74c1a-d07e-4615-99a5-e991f1d81cc4"), "node_f", OperatorInput.NO_OPERATOR_ASSIGNED,
+	UUID.fromString("9e37ce48-9650-44ec-b888-c2fd182aff01"), "node_f", OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited()
 	,
 	Quantities.getQuantity(1d, PU),
@@ -273,7 +273,7 @@ class GridTestData {
 	)
 
 	public static Transformer3WInput transformerAtoBtoC = new Transformer3WInput(
-	UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"), "3w_test", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	UUID.fromString("cc327469-7d56-472b-a0df-edbb64f90e8f"), "3w_test", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
 	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
 	,
 	nodeA,
