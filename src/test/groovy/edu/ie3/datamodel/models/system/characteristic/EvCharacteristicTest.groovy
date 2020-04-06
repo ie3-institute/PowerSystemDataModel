@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.system.characteristic
 
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
 import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
-import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
@@ -23,16 +22,14 @@ class EvCharacteristicTest extends Specification {
 	EvCharacteristicInput validInput
 
 	def setupSpec() {
-		SortedSet<CharacteristicCoordinate<Power, Dimensionless>> coordinates = new TreeSet<>()
-		coordinates.add(
-				new CharacteristicCoordinate<Power, Dimensionless>(Quantities.getQuantity(10, KILOWATT),
-				Quantities.getQuantity(0.05, PU)))
-		coordinates.add(
-				new CharacteristicCoordinate<Power, Dimensionless>(Quantities.getQuantity(15, KILOWATT),
-				Quantities.getQuantity(0.10, PU)))
-		coordinates.add(
-				new CharacteristicCoordinate<Power, Dimensionless>(Quantities.getQuantity(20, KILOWATT),
-				Quantities.getQuantity(0.20, PU)))
+		SortedSet<CharacteristicCoordinate<Power, Dimensionless>> coordinates = [
+			new CharacteristicCoordinate<Power, Dimensionless>(Quantities.getQuantity(10, KILOWATT),
+			Quantities.getQuantity(0.05, PU)),
+			new CharacteristicCoordinate<Power, Dimensionless>(Quantities.getQuantity(15, KILOWATT),
+			Quantities.getQuantity(0.10, PU)),
+			new CharacteristicCoordinate<Power, Dimensionless>(Quantities.getQuantity(20, KILOWATT),
+			Quantities.getQuantity(0.20, PU))
+		] as SortedSet
 
 		validInput = new EvCharacteristicInput(
 				UUID.fromString("591db0f4-b1dc-4cd5-9a7f-9e6ed0f064b2"),
@@ -53,7 +50,7 @@ class EvCharacteristicTest extends Specification {
 		EvCharacteristicInput actual = new EvCharacteristicInput(UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512"), "ev:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
 
 		then:
-		actual.getUuid() == UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512")
-		actual.getCoordinates() == validInput.getCoordinates()
+		actual.uuid == UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512")
+		actual.coordinates == validInput.coordinates
 	}
 }

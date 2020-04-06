@@ -22,16 +22,14 @@ class WecCharacteristicTest extends Specification {
 	WecCharacteristicInput validInput
 
 	def setupSpec() {
-		SortedSet<CharacteristicCoordinate<Speed, Dimensionless>> coordinates = new TreeSet<>()
-		coordinates.add(
-				new CharacteristicCoordinate<Speed, Dimensionless>(Quantities.getQuantity(10, METRE_PER_SECOND),
-				Quantities.getQuantity(0.05, PU)))
-		coordinates.add(
-				new CharacteristicCoordinate<Speed, Dimensionless>(Quantities.getQuantity(15, METRE_PER_SECOND),
-				Quantities.getQuantity(0.10, PU)))
-		coordinates.add(
-				new CharacteristicCoordinate<Speed, Dimensionless>(Quantities.getQuantity(20, METRE_PER_SECOND),
-				Quantities.getQuantity(0.20, PU)))
+		SortedSet<CharacteristicCoordinate<Speed, Dimensionless>> coordinates = [
+			new CharacteristicCoordinate<Speed, Dimensionless>(Quantities.getQuantity(10, METRE_PER_SECOND),
+			Quantities.getQuantity(0.05, PU)),
+			new CharacteristicCoordinate<Speed, Dimensionless>(Quantities.getQuantity(15, METRE_PER_SECOND),
+			Quantities.getQuantity(0.10, PU)),
+			new CharacteristicCoordinate<Speed, Dimensionless>(Quantities.getQuantity(20, METRE_PER_SECOND),
+			Quantities.getQuantity(0.20, PU))
+		] as SortedSet
 
 		validInput = new WecCharacteristicInput(
 				UUID.fromString("9fee3c6c-4b00-4807-8eb1-1e1e4bbe52ac"),
@@ -52,7 +50,7 @@ class WecCharacteristicTest extends Specification {
 		WecCharacteristicInput actual = new WecCharacteristicInput(UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512"), "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
 
 		then:
-		actual.getUuid() == UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512")
-		actual.getCoordinates() == validInput.getCoordinates()
+		actual.uuid == UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512")
+		actual.coordinates == validInput.coordinates
 	}
 }

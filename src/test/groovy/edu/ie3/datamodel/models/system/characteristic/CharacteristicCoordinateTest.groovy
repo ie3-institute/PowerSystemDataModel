@@ -5,10 +5,10 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
-import java.util.regex.Matcher
-
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
 import static edu.ie3.util.quantities.PowerSystemUnits.PERCENT
+
+import java.util.regex.Matcher
 
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
 import spock.lang.Specification
@@ -42,26 +42,16 @@ class CharacteristicCoordinateTest extends Specification {
 				Quantities.getQuantity(5d, PERCENT))
 
 		and: "an expected order"
-		LinkedList<CharacteristicCoordinate<Power, Dimensionless>> expected = new LinkedList<>()
-		expected.add(a)
-		expected.add(b)
-		expected.add(c)
-		expected.add(d)
-		expected.add(e)
+		LinkedList<CharacteristicCoordinate<Power, Dimensionless>> expected = [a, b, c, d, e] as Queue
 
 		when: "the coordinates are put to sorted set randomly"
-		SortedSet<CharacteristicCoordinate<Power, Dimensionless>> actual = new TreeSet<>()
-		actual.add(d)
-		actual.add(c)
-		actual.add(a)
-		actual.add(e)
-		actual.add(b)
+		SortedSet<CharacteristicCoordinate<Power, Dimensionless>> actual =  [d, c, a, e, b] as SortedSet
 
 		then: "they appear in the correct order"
 		actual.size() == expected.size()
 		Iterator<CharacteristicCoordinate<Power, Dimensionless>> expectedIterator = expected.iterator()
 		Iterator<CharacteristicCoordinate<Power, Dimensionless>> actualIterator = actual.iterator()
-		while(expectedIterator.hasNext()) {
+		while (expectedIterator.hasNext()) {
 			CharacteristicCoordinate<Power, Dimensionless> expectedCoordinate = expectedIterator.next()
 			CharacteristicCoordinate<Power, Dimensionless> actualCoordinate = actualIterator.next()
 			assert expectedCoordinate == actualCoordinate

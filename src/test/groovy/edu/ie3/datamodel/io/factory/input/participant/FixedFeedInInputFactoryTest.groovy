@@ -5,19 +5,19 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import tec.uom.se.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Power
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
-
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification

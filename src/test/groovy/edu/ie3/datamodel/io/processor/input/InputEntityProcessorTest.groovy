@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.processor.input
 
-import edu.ie3.datamodel.exceptions.EntityProcessorException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -28,7 +27,6 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
-import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
