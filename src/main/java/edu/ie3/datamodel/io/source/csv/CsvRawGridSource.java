@@ -52,12 +52,6 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   private final SwitchInputFactory switchInputFactory;
   private final MeasurementUnitInputFactory measurementUnitInputFactory;
 
-  // field names
-  private static final String OPERATOR_FIELD = "operator";
-  private static final String NODE_A = "nodeA";
-  private static final String NODE_B = "nodeB";
-  private static final String TYPE = "type";
-
   public CsvRawGridSource(
       String csvSep,
       String gridFolderPath,
@@ -257,12 +251,12 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
                     // get the operator
                     OperatorInput nodeOperator =
-                        getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR_FIELD));
+                        getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR));
 
                     // remove fields that are passed as objects to constructor
                     fieldsToAttributes
                         .keySet()
-                        .removeAll(new HashSet<>(Collections.singletonList(OPERATOR_FIELD)));
+                        .removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
 
                     // build the asset data
                     AssetInputEntityData data =
@@ -339,15 +333,14 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                       fieldsToAttributes
                           .keySet()
                           .removeAll(
-                              new HashSet<>(Arrays.asList(OPERATOR_FIELD, NODE_A, NODE_B, "type")));
+                              new HashSet<>(Arrays.asList(OPERATOR, NODE_A, NODE_B, "type")));
 
                       // build the asset data
                       LineInputEntityData data =
                           new LineInputEntityData(
                               fieldsToAttributes,
                               entityClass,
-                              getOrDefaultOperator(
-                                  operators, fieldsToAttributes.get(OPERATOR_FIELD)),
+                              getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
                               nodeA.get(),
                               nodeB.get(),
                               lineType.get());
@@ -424,15 +417,14 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                       fieldsToAttributes
                           .keySet()
                           .removeAll(
-                              new HashSet<>(Arrays.asList(OPERATOR_FIELD, NODE_A, NODE_B, "type")));
+                              new HashSet<>(Arrays.asList(OPERATOR, NODE_A, NODE_B, "type")));
 
                       // build the asset data
                       Transformer2WInputEntityData data =
                           new Transformer2WInputEntityData(
                               fieldsToAttributes,
                               entityClass,
-                              getOrDefaultOperator(
-                                  operators, fieldsToAttributes.get(OPERATOR_FIELD)),
+                              getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
                               nodeA.get(),
                               nodeB.get(),
                               transformerType.get());
@@ -517,15 +509,14 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                           .keySet()
                           .removeAll(
                               new HashSet<>(
-                                  Arrays.asList(OPERATOR_FIELD, NODE_A, NODE_B, "nodeC", "type")));
+                                  Arrays.asList(OPERATOR, NODE_A, NODE_B, "nodeC", "type")));
 
                       // build the asset data
                       Transformer3WInputEntityData data =
                           new Transformer3WInputEntityData(
                               fieldsToAttributes,
                               entityClass,
-                              getOrDefaultOperator(
-                                  operators, fieldsToAttributes.get(OPERATOR_FIELD)),
+                              getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
                               nodeA.get(),
                               nodeB.get(),
                               nodeC.get(),
@@ -593,15 +584,14 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                       // remove fields that are passed as objects to constructor
                       fieldsToAttributes
                           .keySet()
-                          .removeAll(new HashSet<>(Arrays.asList(OPERATOR_FIELD, NODE_A, NODE_B)));
+                          .removeAll(new HashSet<>(Arrays.asList(OPERATOR, NODE_A, NODE_B)));
 
                       // build the asset data
                       ConnectorInputEntityData data =
                           new ConnectorInputEntityData(
                               fieldsToAttributes,
                               entityClass,
-                              getOrDefaultOperator(
-                                  operators, fieldsToAttributes.get(OPERATOR_FIELD)),
+                              getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
                               nodeA.get(),
                               nodeB.get());
                       // build the model
@@ -664,15 +654,14 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                       // remove fields that are passed as objects to constructor
                       fieldsToAttributes
                           .keySet()
-                          .removeAll(new HashSet<>(Arrays.asList(OPERATOR_FIELD, "node")));
+                          .removeAll(new HashSet<>(Arrays.asList(OPERATOR, "node")));
 
                       // build the asset data
                       MeasurementUnitInputEntityData data =
                           new MeasurementUnitInputEntityData(
                               fieldsToAttributes,
                               entityClass,
-                              getOrDefaultOperator(
-                                  operators, fieldsToAttributes.get(OPERATOR_FIELD)),
+                              getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
                               node.get());
                       // build the model
                       measurementUnitOpt = measurementUnitInputFactory.getEntity(data);

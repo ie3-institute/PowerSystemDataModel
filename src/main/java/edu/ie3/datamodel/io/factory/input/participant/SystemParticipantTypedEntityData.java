@@ -19,7 +19,7 @@ import java.util.Map;
  * @param <T> Subclass of {@link SystemParticipantTypeInput} that is required for the construction
  *     of the SystemParticipantInput
  */
-class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
+public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
     extends SystemParticipantEntityData {
 
   private final T typeInput;

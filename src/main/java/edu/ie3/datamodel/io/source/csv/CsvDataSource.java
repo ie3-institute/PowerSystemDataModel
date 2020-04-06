@@ -32,6 +32,13 @@ public abstract class CsvDataSource {
 
   private final String csvSep;
 
+  // field names
+  protected final String OPERATOR = "operator";
+  protected final String NODE_A = "nodeA";
+  protected final String NODE_B = "nodeB";
+  protected final String NODE = "node";
+  protected final String TYPE = "type";
+
   public CsvDataSource(String csvSep) {
     this.csvSep = csvSep;
   }
