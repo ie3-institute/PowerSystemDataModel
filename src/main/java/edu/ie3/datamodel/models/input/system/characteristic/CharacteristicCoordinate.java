@@ -5,7 +5,10 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
+import java.util.Locale;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.measure.Quantity;
 import org.jetbrains.annotations.NotNull;
 import tec.uom.se.ComparableQuantity;
@@ -13,6 +16,9 @@ import tec.uom.se.ComparableQuantity;
 /** Class to describe one coordinate of a given {@link CharacteristicInput} */
 public class CharacteristicCoordinate<A extends Quantity<A>, O extends Quantity<O>>
     implements Comparable<CharacteristicCoordinate<A, O>> {
+  public static final Pattern MATCHING_PATTERN =
+      Pattern.compile("\\((\\d+\\.?\\d*),(\\d+\\.?\\d*)\\)");
+
   private final ComparableQuantity<A> x;
   private final ComparableQuantity<O> y;
 
@@ -35,6 +41,49 @@ public class CharacteristicCoordinate<A extends Quantity<A>, O extends Quantity<
   /** @return the position on the ordinate */
   public ComparableQuantity<O> getY() {
     return y;
+  }
+
+  /**
+   * De-serializes the given coordinate to a string
+   *
+   * @param decimalPlaces Desired amount of decimal places
+   * @return The de-serialized coordinate
+   */
+  public String deSerialize(int decimalPlaces) {
+    String formattingString = String.format("(%%.%sf,%%.%sf)", decimalPlaces, decimalPlaces);
+    return String.format(Locale.ENGLISH, formattingString, x.getValue(), y.getValue());
+  }
+
+  /**
+   * Returns the abscissa value from a properly formatted String
+   *
+   * @param input Properly formatted input string
+   * @return The abscissa value
+   */
+  protected static double getXFromString(String input) {
+    Matcher matcher = MATCHING_PATTERN.matcher(input);
+    if (!matcher.matches())
+      throw new IllegalArgumentException(
+          "The given input '"
+              + input
+              + "' is not a valid representation of a CharacteristicCoordinate.");
+    return Double.parseDouble(matcher.group(1));
+  }
+
+  /**
+   * Returns the ordinate value from a properly formatted String
+   *
+   * @param input Properly formatted input string
+   * @return The ordinate value
+   */
+  protected static double getYFromString(String input) {
+    Matcher matcher = MATCHING_PATTERN.matcher(input);
+    if (!matcher.matches())
+      throw new IllegalArgumentException(
+          "The given input '"
+              + input
+              + "' is not a valid representation of a CharacteristicCoordinate.");
+    return Double.parseDouble(matcher.group(2));
   }
 
   @Override

@@ -44,11 +44,14 @@ Interface Comparable
 Class CharacteristicCoordinate <A extends Quantity<A>, O extends Quantity<O>> {
     - x: ComparableQuantity<A>
     - y: ComparableQuantity<O>
+    + deSerialize(Int): String
+    - getXFromString(String): double
+    - getYFromString(String): double
 }
 CharacteristicCoordinate ..|> Comparable
 
 abstract Class CharacteristicInput <A extends Quantity<A>, O extends Quantity<O>> {
-    - characteristic: SortedSet<CharacteristicCoordinate>
+    - coordinates: SortedSet<CharacteristicCoordinate>
 }
 CharacteristicInput --|> InputEntity
 CharacteristicInput "1" --* "n" CharacteristicCoordinate
