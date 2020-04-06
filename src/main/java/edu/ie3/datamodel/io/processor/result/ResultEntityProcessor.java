@@ -18,9 +18,9 @@ import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import java.util.*;
-import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /**
  * 'De-serializer' for {@link ResultEntity}s into a fieldName -> value representation to allow for
@@ -60,7 +60,7 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
 
   @Override
   protected Optional<String> handleProcessorSpecificQuantity(
-      Quantity<?> quantity, String fieldName) {
+      ComparableQuantity<?> quantity, String fieldName) {
     Optional<String> normalizedQuantityValue = Optional.empty();
     switch (fieldName) {
       case "energy":

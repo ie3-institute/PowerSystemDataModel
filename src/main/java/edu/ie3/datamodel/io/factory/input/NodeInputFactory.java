@@ -11,9 +11,9 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import org.locationtech.jts.geom.Point;
+import tec.uom.se.ComparableQuantity;
 
 public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetInputEntityData> {
   private static final String V_TARGET = "vtarget";
@@ -41,7 +41,7 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
       String id,
       OperatorInput operator,
       OperationTime operationTime) {
-    final Quantity<Dimensionless> vTarget =
+    final ComparableQuantity<Dimensionless> vTarget =
         data.getQuantity(V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     final boolean slack = data.getBoolean(SLACK);
     final Point geoPosition = data.getPoint(GEO_POSITION).orElse(NodeInput.DEFAULT_GEO_POSITION);

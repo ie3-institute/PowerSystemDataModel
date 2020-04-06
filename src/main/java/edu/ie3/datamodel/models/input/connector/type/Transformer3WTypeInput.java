@@ -9,43 +9,43 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.*;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput} */
 public class Transformer3WTypeInput extends AssetTypeInput {
   /** Rated apparent power of the high voltage winding (typically in MVA) */
-  private final Quantity<Power> sRatedA; // Hv
+  private final ComparableQuantity<Power> sRatedA; // Hv
   /** Rated apparent power of the medium voltage winding (typically in MVA) */
-  private final Quantity<Power> sRatedB; // Mv
+  private final ComparableQuantity<Power> sRatedB; // Mv
   /** Rated apparent power of the low voltage windings (typically in MVA) */
-  private final Quantity<Power> sRatedC; // Lv
+  private final ComparableQuantity<Power> sRatedC; // Lv
   /** Rated voltage magnitude of the high voltage winding (typically in kV) */
-  private final Quantity<ElectricPotential> vRatedA; // Hv
+  private final ComparableQuantity<ElectricPotential> vRatedA; // Hv
   /** Rated voltage magnitude of the medium voltage winding (typically in kV) */
-  private final Quantity<ElectricPotential> vRatedB; // Mv
+  private final ComparableQuantity<ElectricPotential> vRatedB; // Mv
   /** Rated voltage magnitude of the low voltage winding (typically in kV) */
-  private final Quantity<ElectricPotential> vRatedC; // Lv
+  private final ComparableQuantity<ElectricPotential> vRatedC; // Lv
   /** Short-circuit resistance of the high voltage winding (typically in Ohm) */
-  private final Quantity<ElectricResistance> rScA; // Hv
+  private final ComparableQuantity<ElectricResistance> rScA; // Hv
   /** Short-circuit resistance of the medium voltage winding (typically in Ohm) */
-  private final Quantity<ElectricResistance> rScB; // Mv
+  private final ComparableQuantity<ElectricResistance> rScB; // Mv
   /** Short-circuit resistance of the low voltage winding (typically in Ohm) */
-  private final Quantity<ElectricResistance> rScC; // Lv
+  private final ComparableQuantity<ElectricResistance> rScC; // Lv
   /** Short-circuit reactance of the high voltage winding (typically in Ohm) */
-  private final Quantity<ElectricResistance> xScA; // Hv
+  private final ComparableQuantity<ElectricResistance> xScA; // Hv
   /** Short-circuit reactance of the medium voltage winding (typically in Ohm) */
-  private final Quantity<ElectricResistance> xScB; // Mv
+  private final ComparableQuantity<ElectricResistance> xScB; // Mv
   /** Short-circuit reactance of the low voltage winding (typically in Ohm) */
-  private final Quantity<ElectricResistance> xScC; // Lv
+  private final ComparableQuantity<ElectricResistance> xScC; // Lv
   /** Phase-to-ground conductance (typically in nS) */
-  private final Quantity<ElectricConductance> gM;
+  private final ComparableQuantity<ElectricConductance> gM;
   /** Phase-to-ground susceptance (typically in nS) */
-  private final Quantity<ElectricConductance> bM;
+  private final ComparableQuantity<ElectricConductance> bM;
   /** Voltage magnitude deviation per tap position (typically in %) */
-  private final Quantity<Dimensionless> dV;
+  private final ComparableQuantity<Dimensionless> dV;
   /** Voltage angle deviation per tap position (typically in °) */
-  private final Quantity<Angle> dPhi;
+  private final ComparableQuantity<Angle> dPhi;
   /** Neutral tap position */
   private final int tapNeutr;
   /** Minimum available tap position */
@@ -79,22 +79,22 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   public Transformer3WTypeInput(
       UUID uuid,
       String id,
-      Quantity<Power> sRatedA,
-      Quantity<Power> sRatedB,
-      Quantity<Power> sRatedC,
-      Quantity<ElectricPotential> vRatedA,
-      Quantity<ElectricPotential> vRatedB,
-      Quantity<ElectricPotential> vRatedC,
-      Quantity<ElectricResistance> rScA,
-      Quantity<ElectricResistance> rScB,
-      Quantity<ElectricResistance> rScC,
-      Quantity<ElectricResistance> xScA,
-      Quantity<ElectricResistance> xScB,
-      Quantity<ElectricResistance> xScC,
-      Quantity<ElectricConductance> gM,
-      Quantity<ElectricConductance> bM,
-      Quantity<Dimensionless> dV,
-      Quantity<Angle> dPhi,
+      ComparableQuantity<Power> sRatedA,
+      ComparableQuantity<Power> sRatedB,
+      ComparableQuantity<Power> sRatedC,
+      ComparableQuantity<ElectricPotential> vRatedA,
+      ComparableQuantity<ElectricPotential> vRatedB,
+      ComparableQuantity<ElectricPotential> vRatedC,
+      ComparableQuantity<ElectricResistance> rScA,
+      ComparableQuantity<ElectricResistance> rScB,
+      ComparableQuantity<ElectricResistance> rScC,
+      ComparableQuantity<ElectricResistance> xScA,
+      ComparableQuantity<ElectricResistance> xScB,
+      ComparableQuantity<ElectricResistance> xScC,
+      ComparableQuantity<ElectricConductance> gM,
+      ComparableQuantity<ElectricConductance> bM,
+      ComparableQuantity<Dimensionless> dV,
+      ComparableQuantity<Angle> dPhi,
       int tapNeutr,
       int tapMin,
       int tapMax) {
@@ -120,67 +120,67 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     this.tapMax = tapMax;
   }
 
-  public Quantity<Power> getsRatedA() {
+  public ComparableQuantity<Power> getsRatedA() {
     return sRatedA;
   }
 
-  public Quantity<Power> getsRatedB() {
+  public ComparableQuantity<Power> getsRatedB() {
     return sRatedB;
   }
 
-  public Quantity<Power> getsRatedC() {
+  public ComparableQuantity<Power> getsRatedC() {
     return sRatedC;
   }
 
-  public Quantity<ElectricPotential> getvRatedA() {
+  public ComparableQuantity<ElectricPotential> getvRatedA() {
     return vRatedA;
   }
 
-  public Quantity<ElectricPotential> getvRatedB() {
+  public ComparableQuantity<ElectricPotential> getvRatedB() {
     return vRatedB;
   }
 
-  public Quantity<ElectricPotential> getvRatedC() {
+  public ComparableQuantity<ElectricPotential> getvRatedC() {
     return vRatedC;
   }
 
-  public Quantity<ElectricResistance> getrScA() {
+  public ComparableQuantity<ElectricResistance> getrScA() {
     return rScA;
   }
 
-  public Quantity<ElectricResistance> getrScB() {
+  public ComparableQuantity<ElectricResistance> getrScB() {
     return rScB;
   }
 
-  public Quantity<ElectricResistance> getrScC() {
+  public ComparableQuantity<ElectricResistance> getrScC() {
     return rScC;
   }
 
-  public Quantity<ElectricResistance> getxScA() {
+  public ComparableQuantity<ElectricResistance> getxScA() {
     return xScA;
   }
 
-  public Quantity<ElectricResistance> getxScB() {
+  public ComparableQuantity<ElectricResistance> getxScB() {
     return xScB;
   }
 
-  public Quantity<ElectricResistance> getxScC() {
+  public ComparableQuantity<ElectricResistance> getxScC() {
     return xScC;
   }
 
-  public Quantity<ElectricConductance> getgM() {
+  public ComparableQuantity<ElectricConductance> getgM() {
     return gM;
   }
 
-  public Quantity<ElectricConductance> getbM() {
+  public ComparableQuantity<ElectricConductance> getbM() {
     return bM;
   }
 
-  public Quantity<Dimensionless> getdV() {
+  public ComparableQuantity<Dimensionless> getdV() {
     return dV;
   }
 
-  public Quantity<Angle> getdPhi() {
+  public ComparableQuantity<Angle> getdPhi() {
     return dPhi;
   }
 

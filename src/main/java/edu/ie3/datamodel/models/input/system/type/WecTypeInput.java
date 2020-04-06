@@ -10,20 +10,20 @@ import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput} */
 public class WecTypeInput extends SystemParticipantTypeInput {
   /** Efficiency of converter for this type of WEC (typically in %) */
-  private final Quantity<Dimensionless> etaConv;
+  private final ComparableQuantity<Dimensionless> etaConv;
   /** Swept Area of blades for this type of WEC (typically in m²) */
-  private final Quantity<Area> rotorArea;
+  private final ComparableQuantity<Area> rotorArea;
   /** Height from ground to center of rotor for this type of WEC (typically in m) */
-  private final Quantity<Length> hubHeight;
+  private final ComparableQuantity<Length> hubHeight;
 
   /**
    * @param uuid of the input entity
@@ -39,28 +39,28 @@ public class WecTypeInput extends SystemParticipantTypeInput {
   public WecTypeInput(
       UUID uuid,
       String id,
-      Quantity<Currency> capex,
-      Quantity<EnergyPrice> opex,
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
       double cosphi,
-      Quantity<Dimensionless> etaConv,
-      Quantity<Power> sRated,
-      Quantity<Area> rotorArea,
-      Quantity<Length> hubHeight) {
+      ComparableQuantity<Dimensionless> etaConv,
+      ComparableQuantity<Power> sRated,
+      ComparableQuantity<Area> rotorArea,
+      ComparableQuantity<Length> hubHeight) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphi);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
     this.rotorArea = rotorArea.to(StandardUnits.ROTOR_AREA);
     this.hubHeight = hubHeight.to(StandardUnits.HUB_HEIGHT);
   }
 
-  public Quantity<Dimensionless> getEtaConv() {
+  public ComparableQuantity<Dimensionless> getEtaConv() {
     return etaConv;
   }
 
-  public Quantity<Area> getRotorArea() {
+  public ComparableQuantity<Area> getRotorArea() {
     return rotorArea;
   }
 
-  public Quantity<Length> getHubHeight() {
+  public ComparableQuantity<Length> getHubHeight() {
     return hubHeight;
   }
 

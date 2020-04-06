@@ -9,29 +9,29 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.*;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput} */
 public class Transformer2WTypeInput extends AssetTypeInput {
   /** Short circuit resistance (typically in Ohm) */
-  private final Quantity<ElectricResistance> rSc;
+  private final ComparableQuantity<ElectricResistance> rSc;
   /** Short circuit reactance (typically in Ohm) */
-  private final Quantity<ElectricResistance> xSc;
+  private final ComparableQuantity<ElectricResistance> xSc;
   /** Rated apparent power (typically in MVA) */
-  private final Quantity<Power> sRated;
+  private final ComparableQuantity<Power> sRated;
   /** Rated voltage of the high voltage winding (typically in kV) */
-  private final Quantity<ElectricPotential> vRatedA;
+  private final ComparableQuantity<ElectricPotential> vRatedA;
   /** Rated voltage of the low voltage winding (typically in kV) */
-  private final Quantity<ElectricPotential> vRatedB;
+  private final ComparableQuantity<ElectricPotential> vRatedB;
   /** Phase-to-ground conductance (typically in nS) */
-  private final Quantity<ElectricConductance> gM;
+  private final ComparableQuantity<ElectricConductance> gM;
   /** Phase-to-ground susceptance (typically in nS) */
-  private final Quantity<ElectricConductance> bM;
+  private final ComparableQuantity<ElectricConductance> bM;
   /** Voltage magnitude deviation per tap position (typically in %) */
-  private final Quantity<Dimensionless> dV;
+  private final ComparableQuantity<Dimensionless> dV;
   /** Voltage angle deviation per tap position (typically in °) */
-  private final Quantity<Angle> dPhi;
+  private final ComparableQuantity<Angle> dPhi;
   /** Selection of winding, where the tap changer is installed. Low voltage, if true */
   private final boolean tapSide;
   /** Neutral tap position */
@@ -61,15 +61,15 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   public Transformer2WTypeInput(
       UUID uuid,
       String id,
-      Quantity<ElectricResistance> rSc,
-      Quantity<ElectricResistance> xSc,
-      Quantity<Power> sRated,
-      Quantity<ElectricPotential> vRatedA,
-      Quantity<ElectricPotential> vRatedB,
-      Quantity<ElectricConductance> gM,
-      Quantity<ElectricConductance> bM,
-      Quantity<Dimensionless> dV,
-      Quantity<Angle> dPhi,
+      ComparableQuantity<ElectricResistance> rSc,
+      ComparableQuantity<ElectricResistance> xSc,
+      ComparableQuantity<Power> sRated,
+      ComparableQuantity<ElectricPotential> vRatedA,
+      ComparableQuantity<ElectricPotential> vRatedB,
+      ComparableQuantity<ElectricConductance> gM,
+      ComparableQuantity<ElectricConductance> bM,
+      ComparableQuantity<Dimensionless> dV,
+      ComparableQuantity<Angle> dPhi,
       boolean tapSide,
       int tapNeutr,
       int tapMin,
@@ -90,39 +90,39 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     this.tapMax = tapMax;
   }
 
-  public Quantity<ElectricResistance> getrSc() {
+  public ComparableQuantity<ElectricResistance> getrSc() {
     return rSc;
   }
 
-  public Quantity<ElectricResistance> getxSc() {
+  public ComparableQuantity<ElectricResistance> getxSc() {
     return xSc;
   }
 
-  public Quantity<Power> getsRated() {
+  public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 
-  public Quantity<ElectricPotential> getvRatedA() {
+  public ComparableQuantity<ElectricPotential> getvRatedA() {
     return vRatedA;
   }
 
-  public Quantity<ElectricPotential> getvRatedB() {
+  public ComparableQuantity<ElectricPotential> getvRatedB() {
     return vRatedB;
   }
 
-  public Quantity<ElectricConductance> getgM() {
+  public ComparableQuantity<ElectricConductance> getgM() {
     return gM;
   }
 
-  public Quantity<ElectricConductance> getbM() {
+  public ComparableQuantity<ElectricConductance> getbM() {
     return bM;
   }
 
-  public Quantity<Dimensionless> getdV() {
+  public ComparableQuantity<Dimensionless> getdV() {
     return dV;
   }
 
-  public Quantity<Angle> getdPhi() {
+  public ComparableQuantity<Angle> getdPhi() {
     return dPhi;
   }
 

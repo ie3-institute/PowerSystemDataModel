@@ -10,15 +10,15 @@ abstract Class ResultEntity{
 }
 
 abstract Class SystemParticipantResult{
-    + p: Quantity<Power>
-    + q: Quantity<Power>
+    + p: ComparableQuantity<Power>
+    + q: ComparableQuantity<Power>
 }
 
 abstract Class ConnectorResult{
-    + iAMag: Quantity<ElectricCurrent>
-    + iAAng: Quantity<Angle>
-    + iBMag: Quantity<ElectricCurrent>
-    + iBAng: Quantity<Angle>
+    + iAMag: ComparableQuantity<ElectricCurrent>
+    + iAAng: ComparableQuantity<Angle>
+    + iBMag: ComparableQuantity<ElectricCurrent>
+    + iBAng: ComparableQuantity<Angle>
 }
 
 abstract Class TransformerResult{
@@ -26,8 +26,8 @@ abstract Class TransformerResult{
 }
 
 Class NodeResult{
-    + vMag: Quantity<ElectricCurrent>
-    + vAng: Quantity<Angle>
+    + vMag: ComparableQuantity<ElectricCurrent>
+    + vAng: ComparableQuantity<Angle>
 }
 
 Class LineResult{
@@ -37,9 +37,9 @@ Class LineResult{
 Class TransformerResult2wResult{
 }
 
-Class TransformerResult3wResult{
-    + iCMag: Quantity<ElectricCurrent>
-    + iCAng: Quantity<Angle>
+Class Transformer3wResult{
+    + iCMag: ComparableQuantity<ElectricCurrent>
+    + iCAng: ComparableQuantity<Angle>
 }
 
 Class LoadResult
@@ -59,21 +59,19 @@ Class ChpResult
 Class WecResult
 
 Abstract Class ThermalUnitResult {
-    - qDot: Quantity<Power> [MW]
+    - qDot: ComparableQuantity<Power> [MW]
 }
 
-Abstract Class ThermalSinkResult
-
 Class ThermalHouseResult {
-    - indoorTemperature: Quantity<Temperature> [°C]
+    - indoorTemperature: ComparableQuantity<Temperature> [°C]
 }
 
 Abstract Class ThermalStorageResult {
-    - energy: Quantity<Energy> [MWh]
+    - energy: ComparableQuantity<Energy> [MWh]
 }
 
 Class CylindricalStorageResult {
-  - fillLevel: Quantity<Dimensionless> [%]
+  - fillLevel: ComparableQuantity<Dimensionless> [%]
 }
 
 Class EvcsResult

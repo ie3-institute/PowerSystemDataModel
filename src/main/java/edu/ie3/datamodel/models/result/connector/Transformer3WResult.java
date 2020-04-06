@@ -8,17 +8,17 @@ package edu.ie3.datamodel.models.result.connector;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
+import tec.uom.se.ComparableQuantity;
 
 public class Transformer3WResult extends TransformerResult {
 
   /** Electric current magnitude @ port C, normally provided in Ampere */
-  private Quantity<ElectricCurrent> iCMag;
+  private ComparableQuantity<ElectricCurrent> iCMag;
 
   /** Electric current angle @ Port C in degree ° */
-  private Quantity<Angle> iCAng;
+  private ComparableQuantity<Angle> iCAng;
 
   /**
    * @param timestamp date and time when the result is produced
@@ -34,12 +34,12 @@ public class Transformer3WResult extends TransformerResult {
   public Transformer3WResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<ElectricCurrent> iAMag,
-      Quantity<Angle> iAAng,
-      Quantity<ElectricCurrent> iBMag,
-      Quantity<Angle> iBAng,
-      Quantity<ElectricCurrent> iCMag,
-      Quantity<Angle> iCAng,
+      ComparableQuantity<ElectricCurrent> iAMag,
+      ComparableQuantity<Angle> iAAng,
+      ComparableQuantity<ElectricCurrent> iBMag,
+      ComparableQuantity<Angle> iBAng,
+      ComparableQuantity<ElectricCurrent> iCMag,
+      ComparableQuantity<Angle> iCAng,
       int tapPos) {
     super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     this.iCMag = iCMag;
@@ -63,31 +63,31 @@ public class Transformer3WResult extends TransformerResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<ElectricCurrent> iAMag,
-      Quantity<Angle> iAAng,
-      Quantity<ElectricCurrent> iBMag,
-      Quantity<Angle> iBAng,
-      Quantity<ElectricCurrent> iCMag,
-      Quantity<Angle> iCAng,
+      ComparableQuantity<ElectricCurrent> iAMag,
+      ComparableQuantity<Angle> iAAng,
+      ComparableQuantity<ElectricCurrent> iBMag,
+      ComparableQuantity<Angle> iBAng,
+      ComparableQuantity<ElectricCurrent> iCMag,
+      ComparableQuantity<Angle> iCAng,
       int tapPos) {
     super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     this.iCMag = iCMag;
     this.iCAng = iCAng;
   }
 
-  public Quantity<ElectricCurrent> getiCMag() {
+  public ComparableQuantity<ElectricCurrent> getiCMag() {
     return iCMag;
   }
 
-  public void setiCMag(Quantity<ElectricCurrent> iCMag) {
+  public void setiCMag(ComparableQuantity<ElectricCurrent> iCMag) {
     this.iCMag = iCMag;
   }
 
-  public Quantity<Angle> getiCAng() {
+  public ComparableQuantity<Angle> getiCAng() {
     return iCAng;
   }
 
-  public void setiCAng(Quantity<Angle> iCAng) {
+  public void setiCAng(ComparableQuantity<Angle> iCAng) {
     this.iCAng = iCAng;
   }
 

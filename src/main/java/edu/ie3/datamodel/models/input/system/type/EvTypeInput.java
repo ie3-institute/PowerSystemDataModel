@@ -11,16 +11,16 @@ import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import edu.ie3.util.quantities.interfaces.SpecificEnergy;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput} */
 public class EvTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity of the storage (typically in kWh) */
-  private final Quantity<Energy> eStorage;
+  private final ComparableQuantity<Energy> eStorage;
   /** Consumed electric energy per driven distance (typically in kWh/km) */
-  private final Quantity<SpecificEnergy> eCons;
+  private final ComparableQuantity<SpecificEnergy> eCons;
 
   /**
    * @param uuid of the input entity
@@ -35,22 +35,22 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   public EvTypeInput(
       UUID uuid,
       String id,
-      Quantity<Currency> capex,
-      Quantity<EnergyPrice> opex,
-      Quantity<Energy> eStorage,
-      Quantity<SpecificEnergy> eCons,
-      Quantity<Power> sRated,
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Energy> eStorage,
+      ComparableQuantity<SpecificEnergy> eCons,
+      ComparableQuantity<Power> sRated,
       double cosphiRated) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.eStorage = eStorage;
     this.eCons = eCons;
   }
 
-  public Quantity<Energy> geteStorage() {
+  public ComparableQuantity<Energy> geteStorage() {
     return eStorage;
   }
 
-  public Quantity<SpecificEnergy> geteCons() {
+  public ComparableQuantity<SpecificEnergy> geteCons() {
     return eCons;
   }
 

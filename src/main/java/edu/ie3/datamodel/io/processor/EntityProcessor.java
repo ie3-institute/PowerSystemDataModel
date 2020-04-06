@@ -21,12 +21,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import javax.measure.Quantity;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.geojson.GeoJsonWriter;
+import tec.uom.se.ComparableQuantity;
 
 /**
  * Internal API Interface for EntityProcessors. Main purpose is to 'de-serialize' models into a
@@ -208,9 +208,9 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "String":
         resultStringBuilder.append(methodReturnObject.toString());
         break;
-      case "Quantity":
+      case "ComparableQuantity":
         resultStringBuilder.append(
-            handleQuantity((Quantity<?>) methodReturnObject, fieldName)
+            handleQuantity((ComparableQuantity<?>) methodReturnObject, fieldName)
                 .orElseThrow(
                     () ->
                         new EntityProcessorException(
@@ -349,7 +349,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
    *     or empty if an error occurred during processing
    */
-  protected Optional<String> handleQuantity(Quantity<?> quantity, String fieldName) {
+  protected Optional<String> handleQuantity(ComparableQuantity<?> quantity, String fieldName) {
     if (specificQuantityFieldNames.contains(fieldName)) {
       return handleProcessorSpecificQuantity(quantity, fieldName);
     } else {
@@ -370,9 +370,9 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
    *     or empty if an error occurred during processing
    */
   protected abstract Optional<String> handleProcessorSpecificQuantity(
-      Quantity<?> quantity, String fieldName);
+      ComparableQuantity<?> quantity, String fieldName);
 
-  protected Optional<String> quantityValToOptionalString(Quantity<?> quantity) {
+  protected Optional<String> quantityValToOptionalString(ComparableQuantity<?> quantity) {
     return Optional.of(Double.toString(quantity.getValue().doubleValue()));
   }
 

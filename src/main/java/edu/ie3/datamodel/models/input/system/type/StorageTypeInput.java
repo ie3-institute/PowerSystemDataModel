@@ -11,26 +11,26 @@ import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Time;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput} */
 public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity (typically in kWh) */
-  private final Quantity<Energy> eStorage;
+  private final ComparableQuantity<Energy> eStorage;
   /** Maximum permissible active power (typically in kW) */
-  private final Quantity<Power> pMax;
+  private final ComparableQuantity<Power> pMax;
   /** Maximum permissible gradient of active power change (typically % / h) */
-  private final Quantity<DimensionlessRate> activePowerGradient;
+  private final ComparableQuantity<DimensionlessRate> activePowerGradient;
   /** Efficiency of the charging and discharging process (typically in %) */
-  private final Quantity<Dimensionless> eta;
+  private final ComparableQuantity<Dimensionless> eta;
   /** Minimum permissible depth of discharge (typically in %) */
-  private final Quantity<Dimensionless> dod;
+  private final ComparableQuantity<Dimensionless> dod;
   /** Maximum life time of the storage (typically in ms) */
-  private final Quantity<Time> lifeTime;
+  private final ComparableQuantity<Time> lifeTime;
   /** Maximum amount of full charging cycles */
   private final int lifeCycle;
 
@@ -52,16 +52,16 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   public StorageTypeInput(
       UUID uuid,
       String id,
-      Quantity<Currency> capex,
-      Quantity<EnergyPrice> opex,
-      Quantity<Energy> eStorage,
-      Quantity<Power> sRated,
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Energy> eStorage,
+      ComparableQuantity<Power> sRated,
       double cosPhiRated,
-      Quantity<Power> pMax,
-      Quantity<DimensionlessRate> activePowerGradient,
-      Quantity<Dimensionless> eta,
-      Quantity<Dimensionless> dod,
-      Quantity<Time> lifeTime,
+      ComparableQuantity<Power> pMax,
+      ComparableQuantity<DimensionlessRate> activePowerGradient,
+      ComparableQuantity<Dimensionless> eta,
+      ComparableQuantity<Dimensionless> dod,
+      ComparableQuantity<Time> lifeTime,
       int lifeCycle) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
@@ -73,15 +73,15 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     this.lifeCycle = lifeCycle;
   }
 
-  public Quantity<Dimensionless> getEta() {
+  public ComparableQuantity<Dimensionless> getEta() {
     return eta;
   }
 
-  public Quantity<Dimensionless> getDod() {
+  public ComparableQuantity<Dimensionless> getDod() {
     return dod;
   }
 
-  public Quantity<Time> getLifeTime() {
+  public ComparableQuantity<Time> getLifeTime() {
     return lifeTime;
   }
 
@@ -89,15 +89,15 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     return lifeCycle;
   }
 
-  public Quantity<Energy> geteStorage() {
+  public ComparableQuantity<Energy> geteStorage() {
     return eStorage;
   }
 
-  public Quantity<Power> getpMax() {
+  public ComparableQuantity<Power> getpMax() {
     return pMax;
   }
 
-  public Quantity<DimensionlessRate> getActivePowerGradient() {
+  public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
     return activePowerGradient;
   }
 
