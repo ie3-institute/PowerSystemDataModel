@@ -11,5 +11,5 @@ import edu.ie3.datamodel.models.input.container.SystemParticipants;
 public interface SystemParticipantSource extends DataSource {
 
   /** @return system participant data as an aggregation of all elements in this grid */
-  SystemParticipants fetchSystemParticipants();
+  SystemParticipants getSystemParticipants();
 }

@@ -53,9 +53,6 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   private final SwitchInputFactory switchInputFactory;
   private final MeasurementUnitInputFactory measurementUnitInputFactory;
 
-  // todo dangerous if csvSep != ; because of the json strings -> find a way to parse that stuff
-  //  anyway
-
   // field names
   private static final String OPERATOR_FIELD = "operator";
   private static final String NODE_A = "nodeA";

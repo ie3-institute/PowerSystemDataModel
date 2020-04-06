@@ -26,8 +26,6 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-// TODO use Sets to prevent duplicates!
-
 /**
  * //ToDo: Class Description
  *
@@ -82,7 +80,7 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
   private <T extends UniqueEntity> Collection<T> readSimpleEntities(
       Class<T> entityClass, EntityFactory<T, SimpleEntityData> factory) {
 
-    List<T> resultingOperators = new ArrayList<>();
+    Set<T> resultingOperators = new HashSet<>();
     try (BufferedReader reader = connector.getReader(entityClass)) {
       final String[] headline = readHeadline(reader);
 
@@ -101,7 +99,7 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
                   })
               .filter(Optional::isPresent)
               .map(Optional::get)
-              .collect(Collectors.toList());
+              .collect(Collectors.toSet());
 
     } catch (IOException e) {
       log.warn(

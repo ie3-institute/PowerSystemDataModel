@@ -41,7 +41,10 @@ public abstract class CsvDataSource {
   }
 
   protected Map<String, String> buildFieldsToAttributes(String csvRow, String[] headline) {
-    final String[] fieldVals = csvRow.split(csvSep);
+    // sometimes we have a json string as field value -> we need to consider this one as well
+    String cswRowRegex = csvSep + "(?=(?:\\{))|" + csvSep + "(?=(?:\\{*[^\\}]*$))";
+    final String[] fieldVals = csvRow.split(cswRowRegex);
+
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     insensitiveFieldsToAttributes.putAll(
