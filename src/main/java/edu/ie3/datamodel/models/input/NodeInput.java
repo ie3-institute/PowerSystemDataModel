@@ -10,16 +10,16 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes an electrical grid node, that other assets can connect to */
 public class NodeInput extends AssetInput {
   /** Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.) */
-  private final Quantity<Dimensionless> vTarget;
+  private final ComparableQuantity<Dimensionless> vTarget;
   /** Is this node a slack node? */
   private final boolean slack;
   /**
@@ -56,7 +56,7 @@ public class NodeInput extends AssetInput {
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      Quantity<Dimensionless> vTarget,
+      ComparableQuantity<Dimensionless> vTarget,
       boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
@@ -84,7 +84,7 @@ public class NodeInput extends AssetInput {
   public NodeInput(
       UUID uuid,
       String id,
-      Quantity<Dimensionless> vTarget,
+      ComparableQuantity<Dimensionless> vTarget,
       boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
@@ -97,7 +97,7 @@ public class NodeInput extends AssetInput {
     this.subnet = subnet;
   }
 
-  public Quantity<Dimensionless> getvTarget() {
+  public ComparableQuantity<Dimensionless> getvTarget() {
     return vTarget;
   }
 

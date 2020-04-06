@@ -7,25 +7,25 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes a actove power value as active power */
 public class PValue implements Value {
 
   /** Active power */
-  private Quantity<Power> p;
+  private ComparableQuantity<Power> p;
 
   /** @param p Active power */
-  public PValue(Quantity<Power> p) {
+  public PValue(ComparableQuantity<Power> p) {
     this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
-  public Quantity<Power> getP() {
+  public ComparableQuantity<Power> getP() {
     return p;
   }
 
-  public void setP(Quantity<Power> p) {
+  public void setP(ComparableQuantity<Power> p) {
     this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
   }
 

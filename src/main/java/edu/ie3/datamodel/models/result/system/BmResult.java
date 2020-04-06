@@ -7,8 +7,8 @@ package edu.ie3.datamodel.models.result.system;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.BmInput} */
 public class BmResult extends SystemParticipantResult {
@@ -21,7 +21,11 @@ public class BmResult extends SystemParticipantResult {
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
    */
-  public BmResult(ZonedDateTime timestamp, UUID inputModel, Quantity<Power> p, Quantity<Power> q) {
+  public BmResult(
+      ZonedDateTime timestamp,
+      UUID inputModel,
+      ComparableQuantity<Power> p,
+      ComparableQuantity<Power> q) {
     super(timestamp, inputModel, p, q);
   }
 
@@ -36,7 +40,11 @@ public class BmResult extends SystemParticipantResult {
    * @param q reactive power output normally provided in MVAr
    */
   public BmResult(
-      UUID uuid, ZonedDateTime timestamp, UUID inputModel, Quantity<Power> p, Quantity<Power> q) {
+      UUID uuid,
+      ZonedDateTime timestamp,
+      UUID inputModel,
+      ComparableQuantity<Power> p,
+      ComparableQuantity<Power> q) {
     super(uuid, timestamp, inputModel, p, q);
   }
 }

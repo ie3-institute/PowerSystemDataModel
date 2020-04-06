@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.input.system.BmInput;
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.UUID;
-import javax.measure.Quantity;
+import tec.uom.se.ComparableQuantity;
 
 public class BmInputFactory
     extends SystemParticipantInputEntityFactory<
@@ -43,7 +43,7 @@ public class BmInputFactory
     final BmTypeInput typeInput = data.getTypeInput();
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
     final boolean costControlled = data.getBoolean(COST_CONTROLLED);
-    final Quantity<EnergyPrice> feedInTariff =
+    final ComparableQuantity<EnergyPrice> feedInTariff =
         data.getQuantity(FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE);
 
     return new BmInput(

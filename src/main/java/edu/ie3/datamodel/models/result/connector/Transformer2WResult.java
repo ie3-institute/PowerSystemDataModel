@@ -7,9 +7,9 @@ package edu.ie3.datamodel.models.result.connector;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
+import tec.uom.se.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link
@@ -30,10 +30,10 @@ public class Transformer2WResult extends TransformerResult {
   public Transformer2WResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<ElectricCurrent> iAMag,
-      Quantity<Angle> iAAng,
-      Quantity<ElectricCurrent> iBMag,
-      Quantity<Angle> iBAng,
+      ComparableQuantity<ElectricCurrent> iAMag,
+      ComparableQuantity<Angle> iAAng,
+      ComparableQuantity<ElectricCurrent> iBMag,
+      ComparableQuantity<Angle> iBAng,
       int tapPos) {
     super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
   }
@@ -54,10 +54,10 @@ public class Transformer2WResult extends TransformerResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<ElectricCurrent> iAMag,
-      Quantity<Angle> iAAng,
-      Quantity<ElectricCurrent> iBMag,
-      Quantity<Angle> iBAng,
+      ComparableQuantity<ElectricCurrent> iAMag,
+      ComparableQuantity<Angle> iAAng,
+      ComparableQuantity<ElectricCurrent> iBMag,
+      ComparableQuantity<Angle> iBAng,
       int tapPos) {
     super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
   }

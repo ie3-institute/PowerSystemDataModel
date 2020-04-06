@@ -25,8 +25,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import javax.measure.Quantity;
 import javax.measure.quantity.*;
+import tec.uom.se.ComparableQuantity;
 
 /**
  * Processes all {@link InputEntity}s and it's child classes
@@ -87,7 +87,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
 
   @Override
   protected Optional<String> handleProcessorSpecificQuantity(
-      Quantity<?> quantity, String fieldName) {
+      ComparableQuantity<?> quantity, String fieldName) {
     Optional<String> normalizedQuantityValue = Optional.empty();
     switch (fieldName) {
       case "energy":

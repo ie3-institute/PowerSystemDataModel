@@ -13,11 +13,11 @@ import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import java.util.Optional;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import org.apache.commons.lang3.ArrayUtils;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
+import tec.uom.se.ComparableQuantity;
 
 public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, LineInputEntityData> {
   private static final String LENGTH = "length";
@@ -44,7 +44,7 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
       OperationTime operationTime) {
     final int parallelDevices = data.getInt(PARALLEL_DEVICES);
     final LineTypeInput type = data.getType();
-    final Quantity<Length> length = data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH);
+    final ComparableQuantity<Length> length = data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH);
     final LineString geoPosition =
         data.getLineString(GEO_POSITION)
             .orElse(

@@ -11,6 +11,7 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import tec.uom.se.ComparableQuantity;
 import tec.uom.se.quantity.Quantities;
 
 /**
@@ -26,12 +27,12 @@ public class DistanceWeightedEdge extends DefaultWeightedEdge {
 
   private double distance;
 
-  public DistanceWeightedEdge(Quantity<Length> weightQuantity) {
+  public DistanceWeightedEdge(ComparableQuantity<Length> weightQuantity) {
     this.distance = weightQuantity.to(DEFAULT_UNIT).getValue().doubleValue();
   }
 
   /** Returns the weightQuantity of the edge as {@link Quantity}. */
-  protected Quantity<Length> getWeightQuantity() {
+  protected ComparableQuantity<Length> getWeightQuantity() {
     return Quantities.getQuantity(distance, DEFAULT_UNIT);
   }
 }
