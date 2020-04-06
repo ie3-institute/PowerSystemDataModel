@@ -416,15 +416,9 @@ public class ValidationUtils {
         new Quantity<?>[] {trafoType.getgM(), trafoType.getbM(), trafoType.getdPhi()}, trafoType);
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {
-          trafoType.getsRatedA(),
-          trafoType.getsRatedB(),
-          trafoType.getsRatedC(),
-          trafoType.getvRatedA(),
-          trafoType.getvRatedB(),
-          trafoType.getvRatedC(),
-          trafoType.getxScA(),
-          trafoType.getxScB(),
-          trafoType.getxScC(),
+          trafoType.getsRatedA(), trafoType.getsRatedB(), trafoType.getsRatedC(),
+          trafoType.getvRatedA(), trafoType.getvRatedB(), trafoType.getvRatedC(),
+          trafoType.getxScA(), trafoType.getxScB(), trafoType.getxScC(),
           trafoType.getdV()
         },
         trafoType);
@@ -543,21 +537,34 @@ public class ValidationUtils {
   public static void checkForDuplicateUuids(
       String containerClassName, Collection<UniqueEntity> entities) {
     if (!distinctUuids(entities)) {
-      Collection<UniqueEntity> duplicateUuids =
-          entities.stream()
-              .filter(entity -> distinctUuidSet(entities).contains(entity))
-              .collect(Collectors.toSet());
 
       String exceptionString =
-          duplicateUuids.stream()
-              .map(entity -> entity.getUuid().toString())
-              .collect(Collectors.joining("\n"));
+          entities.stream()
+              .collect(Collectors.groupingBy(UniqueEntity::getUuid, Collectors.counting()))
+              .entrySet()
+              .stream()
+              .filter(entry -> entry.getValue() > 1)
+              .map(
+                  entry -> {
+                    String duplicateEntitiesString =
+                        entities.stream()
+                            .filter(entity -> entity.getUuid().equals(entry.getKey()))
+                            .map(UniqueEntity::toString)
+                            .collect(Collectors.joining("\n - "));
+
+                    return entry.getKey()
+                        + ": "
+                        + entry.getValue()
+                        + "\n - "
+                        + duplicateEntitiesString;
+                  })
+              .collect(Collectors.joining("\n\n"));
 
       throw new InvalidGridException(
           "The provided entities in "
               + containerClassName
-              + "contain duplicate uuids. "
-              + "This is not allowed.\nDuplicate entries:\n"
+              + " contain duplicate uuids. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
               + exceptionString);
     }
   }
