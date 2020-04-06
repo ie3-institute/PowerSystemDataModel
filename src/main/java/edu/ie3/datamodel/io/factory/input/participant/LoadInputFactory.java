@@ -12,11 +12,11 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.LoadInput;
-import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tec.uom.se.ComparableQuantity;
 
 public class LoadInputFactory
     extends SystemParticipantInputEntityFactory<LoadInput, SystemParticipantEntityData> {
@@ -57,8 +57,9 @@ public class LoadInputFactory
       slp = StandardLoadProfile.DefaultLoadProfiles.NO_STANDARD_LOAD_PROFILE;
     }
     final boolean dsm = data.getBoolean(DSM);
-    final Quantity<Energy> eConsAnnual = data.getQuantity(E_CONS_ANNUAL, StandardUnits.ENERGY_IN);
-    final Quantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
+    final ComparableQuantity<Energy> eConsAnnual =
+        data.getQuantity(E_CONS_ANNUAL, StandardUnits.ENERGY_IN);
+    final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     final double cosPhi = data.getDouble(COS_PHI);
 
     return new LoadInput(

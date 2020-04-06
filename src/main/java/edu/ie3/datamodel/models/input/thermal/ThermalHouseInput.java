@@ -12,14 +12,14 @@ import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalConductance;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
+import tec.uom.se.ComparableQuantity;
 
 /** Quite simple thermal model of a house to serve as a heat sink */
 public class ThermalHouseInput extends ThermalSinkInput {
   /** Thermal, transitional losses of the included thermal house model (typically in kW/K) */
-  private final Quantity<ThermalConductance> ethLosses;
+  private final ComparableQuantity<ThermalConductance> ethLosses;
   /** Thermal capacity of the included thermal house model (typically in kWh/K) */
-  private final Quantity<HeatCapacity> ethCapa;
+  private final ComparableQuantity<HeatCapacity> ethCapa;
 
   /**
    * @param uuid Unique identifier of a thermal house model
@@ -32,8 +32,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
       UUID uuid,
       String id,
       ThermalBusInput bus,
-      Quantity<ThermalConductance> ethLosses,
-      Quantity<HeatCapacity> ethCapa) {
+      ComparableQuantity<ThermalConductance> ethLosses,
+      ComparableQuantity<HeatCapacity> ethCapa) {
     super(uuid, id, bus);
     this.ethLosses = ethLosses.to(StandardUnits.THERMAL_TRANSMISSION);
     this.ethCapa = ethCapa.to(StandardUnits.HEAT_CAPACITY);
@@ -54,18 +54,18 @@ public class ThermalHouseInput extends ThermalSinkInput {
       OperatorInput operator,
       OperationTime operationTime,
       ThermalBusInput bus,
-      Quantity<ThermalConductance> ethLosses,
-      Quantity<HeatCapacity> ethCapa) {
+      ComparableQuantity<ThermalConductance> ethLosses,
+      ComparableQuantity<HeatCapacity> ethCapa) {
     super(uuid, id, operator, operationTime, bus);
     this.ethLosses = ethLosses.to(StandardUnits.THERMAL_TRANSMISSION);
     this.ethCapa = ethCapa.to(StandardUnits.HEAT_CAPACITY);
   }
 
-  public Quantity<ThermalConductance> getEthLosses() {
+  public ComparableQuantity<ThermalConductance> getEthLosses() {
     return ethLosses;
   }
 
-  public Quantity<HeatCapacity> getEthCapa() {
+  public ComparableQuantity<HeatCapacity> getEthCapa() {
     return ethCapa;
   }
 

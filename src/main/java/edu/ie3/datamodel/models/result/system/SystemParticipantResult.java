@@ -9,8 +9,8 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Abstract class that holds values common to all other result entities */
 public abstract class SystemParticipantResult extends ResultEntity {
@@ -19,9 +19,9 @@ public abstract class SystemParticipantResult extends ResultEntity {
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
    */
-  private Quantity<Power> p;
+  private ComparableQuantity<Power> p;
 
-  private Quantity<Power> q;
+  private ComparableQuantity<Power> q;
 
   /**
    * @param timestamp date and time when the result is produced
@@ -30,7 +30,10 @@ public abstract class SystemParticipantResult extends ResultEntity {
    * @param q reactive power output normally provided in MVAr
    */
   public SystemParticipantResult(
-      ZonedDateTime timestamp, UUID inputModel, Quantity<Power> p, Quantity<Power> q) {
+      ZonedDateTime timestamp,
+      UUID inputModel,
+      ComparableQuantity<Power> p,
+      ComparableQuantity<Power> q) {
     super(timestamp, inputModel);
     this.p = p;
     this.q = q;
@@ -45,7 +48,11 @@ public abstract class SystemParticipantResult extends ResultEntity {
    * @param q reactive power output normally provided in MVAr
    */
   public SystemParticipantResult(
-      UUID uuid, ZonedDateTime timestamp, UUID inputModel, Quantity<Power> p, Quantity<Power> q) {
+      UUID uuid,
+      ZonedDateTime timestamp,
+      UUID inputModel,
+      ComparableQuantity<Power> p,
+      ComparableQuantity<Power> q) {
     super(uuid, timestamp, inputModel);
     this.p = p;
     this.q = q;
@@ -57,11 +64,11 @@ public abstract class SystemParticipantResult extends ResultEntity {
    *
    * @return Active power output in MW.
    */
-  public Quantity<Power> getP() {
+  public ComparableQuantity<Power> getP() {
     return p;
   }
 
-  public void setP(Quantity<Power> p) {
+  public void setP(ComparableQuantity<Power> p) {
     this.p = p;
   }
 
@@ -71,11 +78,11 @@ public abstract class SystemParticipantResult extends ResultEntity {
    *
    * @return Reactive power output in MVAr.
    */
-  public Quantity<Power> getQ() {
+  public ComparableQuantity<Power> getQ() {
     return q;
   }
 
-  public void setQ(Quantity<Power> q) {
+  public void setQ(ComparableQuantity<Power> q) {
     this.q = q;
   }
 

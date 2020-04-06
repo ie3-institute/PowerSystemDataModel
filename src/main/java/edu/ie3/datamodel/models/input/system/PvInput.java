@@ -11,10 +11,10 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes a photovoltaic plant */
 public class PvInput extends SystemParticipantInput {
@@ -22,11 +22,11 @@ public class PvInput extends SystemParticipantInput {
   /** Albedo value (typically a value between 0 and 1) */
   private final double albedo;
   /** Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦) */
-  private final Quantity<Angle> azimuth;
+  private final ComparableQuantity<Angle> azimuth;
   /** Efficiency of converter (typically in %) */
-  private final Quantity<Dimensionless> etaConv;
+  private final ComparableQuantity<Dimensionless> etaConv;
   /** Tilted inclination from horizontal (typically in °) */
-  private final Quantity<Angle> height;
+  private final ComparableQuantity<Angle> height;
   /** Generator correction factor merging different technical influences */
   private final double kG;
   /** Temperature correction factor */
@@ -34,7 +34,7 @@ public class PvInput extends SystemParticipantInput {
   /** Is this asset market oriented? */
   private final boolean marketReaction;
   /** Rated apparent power (typically in kVA) */
-  private final Quantity<Power> sRated;
+  private final ComparableQuantity<Power> sRated;
   /** Rated power factor */
   private final double cosphiRated;
   /**
@@ -64,13 +64,13 @@ public class PvInput extends SystemParticipantInput {
       NodeInput node,
       String qCharacteristics,
       double albedo,
-      Quantity<Angle> azimuth,
-      Quantity<Dimensionless> etaConv,
-      Quantity<Angle> height,
+      ComparableQuantity<Angle> azimuth,
+      ComparableQuantity<Dimensionless> etaConv,
+      ComparableQuantity<Angle> height,
       double kG,
       double kT,
       boolean marketReaction,
-      Quantity<Power> sRated,
+      ComparableQuantity<Power> sRated,
       double cosphiRated) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.albedo = albedo;
@@ -107,13 +107,13 @@ public class PvInput extends SystemParticipantInput {
       NodeInput node,
       String qCharacteristics,
       double albedo,
-      Quantity<Angle> azimuth,
-      Quantity<Dimensionless> etaConv,
-      Quantity<Angle> height,
+      ComparableQuantity<Angle> azimuth,
+      ComparableQuantity<Dimensionless> etaConv,
+      ComparableQuantity<Angle> height,
       double kG,
       double kT,
       boolean marketReaction,
-      Quantity<Power> sRated,
+      ComparableQuantity<Power> sRated,
       double cosphiRated) {
     super(uuid, id, node, qCharacteristics);
     this.albedo = albedo;
@@ -131,15 +131,15 @@ public class PvInput extends SystemParticipantInput {
     return albedo;
   }
 
-  public Quantity<Angle> getAzimuth() {
+  public ComparableQuantity<Angle> getAzimuth() {
     return azimuth;
   }
 
-  public Quantity<Dimensionless> getEtaConv() {
+  public ComparableQuantity<Dimensionless> getEtaConv() {
     return etaConv;
   }
 
-  public Quantity<Angle> getHeight() {
+  public ComparableQuantity<Angle> getHeight() {
     return height;
   }
 
@@ -159,7 +159,7 @@ public class PvInput extends SystemParticipantInput {
     return kT;
   }
 
-  public Quantity<Power> getsRated() {
+  public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 

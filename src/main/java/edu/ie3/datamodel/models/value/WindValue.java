@@ -7,39 +7,39 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
-import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes wind as a pair of direction and velocity */
 public class WindValue implements Value {
   /** Wind direction as an angle from north (typically in rad) */
-  private Quantity<Angle> direction;
+  private ComparableQuantity<Angle> direction;
   /** Wind velocity (typically in m/s) */
-  private Quantity<Speed> velocity;
+  private ComparableQuantity<Speed> velocity;
 
   /**
    * @param direction Wind direction as an angle from north (typically in rad)
    * @param velocity Wind velocity (typically in m/s)
    */
-  public WindValue(Quantity<Angle> direction, Quantity<Speed> velocity) {
+  public WindValue(ComparableQuantity<Angle> direction, ComparableQuantity<Speed> velocity) {
     this.direction = direction.to(StandardUnits.WIND_DIRECTION);
     this.velocity = velocity.to(StandardUnits.WIND_VELOCITY);
   }
 
-  public Quantity<Angle> getDirection() {
+  public ComparableQuantity<Angle> getDirection() {
     return direction;
   }
 
-  public void setDirection(Quantity<Angle> direction) {
+  public void setDirection(ComparableQuantity<Angle> direction) {
     this.direction = direction.to(StandardUnits.WIND_DIRECTION);
   }
 
-  public Quantity<Speed> getVelocity() {
+  public ComparableQuantity<Speed> getVelocity() {
     return velocity;
   }
 
-  public void setVelocity(Quantity<Speed> velocity) {
+  public void setVelocity(ComparableQuantity<Speed> velocity) {
     this.velocity = velocity.to(StandardUnits.WIND_VELOCITY);
   }
 

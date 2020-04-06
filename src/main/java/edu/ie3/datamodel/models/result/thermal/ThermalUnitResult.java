@@ -10,8 +10,8 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Representation of a result with regard to a thermal unit */
 public abstract class ThermalUnitResult extends ResultEntity {
@@ -20,7 +20,7 @@ public abstract class ThermalUnitResult extends ResultEntity {
    * Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power
    * flowing from unit)
    */
-  private Quantity<Power> qDot;
+  private ComparableQuantity<Power> qDot;
 
   /**
    * Constructor for the thermal result with
@@ -29,7 +29,8 @@ public abstract class ThermalUnitResult extends ResultEntity {
    * @param inputModel The input model's UUID, the result is related to
    * @param qDot Average thermal power exchanged with the unit
    */
-  public ThermalUnitResult(ZonedDateTime timestamp, UUID inputModel, Quantity<Power> qDot) {
+  public ThermalUnitResult(
+      ZonedDateTime timestamp, UUID inputModel, ComparableQuantity<Power> qDot) {
     super(timestamp, inputModel);
     this.qDot = qDot;
   }
@@ -43,16 +44,16 @@ public abstract class ThermalUnitResult extends ResultEntity {
    * @param qDot Average thermal power exchanged with the unit
    */
   public ThermalUnitResult(
-      UUID uuid, ZonedDateTime timestamp, UUID inputModel, Quantity<Power> qDot) {
+      UUID uuid, ZonedDateTime timestamp, UUID inputModel, ComparableQuantity<Power> qDot) {
     super(uuid, timestamp, inputModel);
     this.qDot = qDot;
   }
 
-  public Quantity<Power> getqDot() {
+  public ComparableQuantity<Power> getqDot() {
     return qDot;
   }
 
-  public void setqDot(Quantity<Power> qDot) {
+  public void setqDot(ComparableQuantity<Power> qDot) {
     this.qDot = qDot.to(StandardUnits.HEAT_DEMAND);
   }
 

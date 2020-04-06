@@ -14,9 +14,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
+import tec.uom.se.ComparableQuantity;
 
 public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeInput> {
   private static final String B = "b";
@@ -41,13 +41,17 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
   protected LineTypeInput buildModel(SimpleEntityData data) {
     UUID uuid = data.getUUID(ENTITY_UUID);
     String id = data.getField(ENTITY_ID);
-    Quantity<SpecificConductance> b = data.getQuantity(B, StandardUnits.ADMITTANCE_PER_LENGTH);
-    Quantity<SpecificConductance> g = data.getQuantity(G, StandardUnits.ADMITTANCE_PER_LENGTH);
-    Quantity<SpecificResistance> r = data.getQuantity(R, StandardUnits.IMPEDANCE_PER_LENGTH);
-    Quantity<SpecificResistance> x = data.getQuantity(X, StandardUnits.IMPEDANCE_PER_LENGTH);
-    Quantity<ElectricCurrent> iMax =
+    ComparableQuantity<SpecificConductance> b =
+        data.getQuantity(B, StandardUnits.ADMITTANCE_PER_LENGTH);
+    ComparableQuantity<SpecificConductance> g =
+        data.getQuantity(G, StandardUnits.ADMITTANCE_PER_LENGTH);
+    ComparableQuantity<SpecificResistance> r =
+        data.getQuantity(R, StandardUnits.IMPEDANCE_PER_LENGTH);
+    ComparableQuantity<SpecificResistance> x =
+        data.getQuantity(X, StandardUnits.IMPEDANCE_PER_LENGTH);
+    ComparableQuantity<ElectricCurrent> iMax =
         data.getQuantity(I_MAX, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    Quantity<ElectricPotential> vRated =
+    ComparableQuantity<ElectricPotential> vRated =
         data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
 
     return new LineTypeInput(uuid, id, b, g, r, x, iMax, vRated);

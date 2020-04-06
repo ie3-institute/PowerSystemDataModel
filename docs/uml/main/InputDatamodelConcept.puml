@@ -59,9 +59,9 @@ abstract Class AssetTypeInput {
 AssetTypeInput --|> InputEntity
 
 abstract Class SystemParticipantTypeInput {
-    - capex: Quantity<Currency> [€]
-    - opex: Quantity<EnergyPrice> [€/MWh]
-    - sRated: Quantity<Power> [kVA]
+    - capex: ComparableQuantity<Currency> [€]
+    - opex: ComparableQuantity<EnergyPrice> [€/MWh]
+    - sRated: ComparableQuantity<Power> [kVA]
     - cosphiRated: Double
 }
 SystemParticipantTypeInput --|> AssetTypeInput
@@ -69,80 +69,92 @@ SystemParticipantTypeInput --|> AssetTypeInput
 
 
 Class BmTypeInput {
-   - etaConv: Quantity<Dimensionless> [%]
-   - loadGradient: Quantity<DimensionlessRate> [%/h]
+   - capex: ComparableQuantity<Currency> [€]
+   - opex: ComparableQuantity<EnergyPrice> [€/MWh]
+   - cosphiRated: double
+   - sRated: ComparableQuantity<Power> [kVA]
+   - etaConv: ComparableQuantity<Dimensionless> [%]
+   - loadGradient: ComparableQuantity<DimensionlessRate> [%/h]
 }
 BmTypeInput --|> SystemParticipantTypeInput
 
 Class ChpTypeInput {
-    - pEl: Quantity<Quantity<Power>> [kW]
-    - pThermal: Quantity<Quantity<Power>> [KW]
-    - etaEl: Quantity<Dimensionless> [%]
-    - etaTh: Quantity<Dimensionless> [%]
-    - pOwn: Quantity<Quantity<Power>> [kW]
+    - capex: ComparableQuantity<Currency> [€]
+    - opex: ComparableQuantity<EnergyPrice> [€/MWh]
+    - cosphiRated: double
+    - pThermal: ComparableQuantity<Power> [KW]
+    - etaEl: ComparableQuantity<Dimensionless> [%]
+    - etaTh: ComparableQuantity<Dimensionless> [%]
+    - pOwn: ComparableQuantity<Power> [kW]
     - thermalStorage: ThermalStorageInput
  }
 ChpTypeInput --|> SystemParticipantTypeInput
 
 Class EvTypeInput {
-    - eStorage: Quantity<Energy> [kWh]
-    - sRated: Quantity<Power> [kVA]
-    - eCons: Quantity<SpecificEnergy> [kWh/km]
+    - capex: ComparableQuantity<Currency> [€]
+    - opex: ComparableQuantity<EnergyPrice> [€/MWh]
+    - cosphiRated: double
+    - eStorage: ComparableQuantity<Energy> [kWh]
+    - sRated: ComparableQuantity<Power> [kVA]
+    - eCons: ComparableQuantity<SpecificEnergy> [kWh/km]
 }
 EvTypeInput --|> SystemParticipantTypeInput
 
 
 Class HpTypeInput {
-    - ethLosses: Quantity<ThermalConductance> [kW/K]
-    - ethCapa: Quantity<Energy> [kWh]
-    - sRated: Quantity<Power> [kVA]
-    - pThermal: Quantity<Power> [kW]
-    - pEl: Quantity<Power> [kW]
+    - capex: ComparableQuantity<Currency> [€]
+    - opex: ComparableQuantity<EnergyPrice> [€/MWh]
+    - cosphiRated: double
+    - sRated: ComparableQuantity<Power> [kVA]
+    - pThermal: ComparableQuantity<Power> [kW]
 }
 HpTypeInput --|> SystemParticipantTypeInput
 
 
 Class StorageTypeInput {
-    - sRated: Quantity<Power> [kVA]
-    - pMin: Quantity<Power>[kW]
-    - pMax: Quantity<Power> [kW]
-    - eta: Quantity<Dimensionless> [%]
-    - eStorage: Quantity<Energy> [kWh]
-    - dod: Quantity<Dimensionless> [%]
-    - lifeTime: Quantity<Time> [ms]
+    - capex: ComparableQuantity<Currency> [€]
+- opex: ComparableQuantity<EnergyPrice> [€/MWh]
+- cosphiRated: double
+- sRated: ComparableQuantity<Power> [kVA]
+    - activePowerGradient: ComparableQuantity<DimensionlessRate>
+    - pMax: ComparableQuantity<Power> [kW]
+    - eta: ComparableQuantity<Dimensionless> [%]
+    - eStorage: ComparableQuantity<Energy> [kWh]
+    - dod: ComparableQuantity<Dimensionless> [%]
+    - lifeTime: ComparableQuantity<Time> [ms]
     - lifeCycle: Integer
 }
 StorageTypeInput --|> SystemParticipantTypeInput
 
 Class WecTypeInput {
-    - rotorArea: Quantity<Area> [m²]
-    - hubHeight: Quantity<Length> [m]
-    - etaConv: Quantity<Dimensionless> [%]
+    - rotorArea: ComparableQuantity<Area> [m²]
+    - hubHeight: ComparableQuantity<Length> [m]
+    - etaConv: ComparableQuantity<Dimensionless> [%]
 }
 WecTypeInput --|> SystemParticipantTypeInput
 
 
 Class LineTypeInput {
-    + r: Quantity<SpecificResistance> (Ohm/km)
-    + x: Quantity<SpecificResistance> (Ohm/km)
-    + g: Quantity<SpecificConductance> (µS/km)
-    + b: Quantity<SpecificConductance> (µS/km)
-    + iMax: Quantity<ElectricCurrent> (A)
-    + vRated: Quantity<ElectricPotential> (V)
+    + r: ComparableQuantity<SpecificResistance> (Ohm/km)
+    + x: ComparableQuantity<SpecificResistance> (Ohm/km)
+    + g: ComparableQuantity<SpecificConductance> (µS/km)
+    + b: ComparableQuantity<SpecificConductance> (µS/km)
+    + iMax: ComparableQuantity<ElectricCurrent> (A)
+    + vRated: ComparableQuantity<ElectricPotential> (V)
     + olmChar: Optional<String>
 }
 LineTypeInput --|> AssetTypeInput
 
 Class Transformer2WTypeInput {
-    + sRated: Quantity<Power> (MVA)
-    + vRatedA: Quantity<ElectricPotential> (kV)
-    + vRatedB: Quantity<ElectricPotential> (kV)
-    + rSc: Quantity<ElectricalResistance> (Ohm)
-    + xSc: Quantity<ElectricalResistance> (Ohm)
-    + gM: Quantity<ElectricalConductance> (nS)
-    + bM: Quantity<ElectricalConductance> (nS)
-    + dV: Quantity<Dimensionless> (%)
-    + dPhi: Quantity<Angle> (Degrees)
+    + sRated: ComparableQuantity<Power> (MVA)
+    + vRatedA: ComparableQuantity<ElectricPotential> (kV)
+    + vRatedB: ComparableQuantity<ElectricPotential> (kV)
+    + rSc: ComparableQuantity<ElectricalResistance> (Ohm)
+    + xSc: ComparableQuantity<ElectricalResistance> (Ohm)
+    + gM: ComparableQuantity<ElectricalConductance> (nS)
+    + bM: ComparableQuantity<ElectricalConductance> (nS)
+    + dV: ComparableQuantity<Dimensionless> (%)
+    + dPhi: ComparableQuantity<Angle> (Degrees)
     + tapSide: Boolean
     + tapNeutr: Integer
     + tapMin: Integer
@@ -151,22 +163,22 @@ Class Transformer2WTypeInput {
 Transformer2WTypeInput --|> AssetTypeInput
 
 Class Transformer3WTypeInput {
-    + vRatedA: Quantity<ElectricPotential> (kV)
-    + vRatedB: Quantity<ElectricPotential> (kV)
-    + vRatedC: Quantity<ElectricPotential> (kV)
-    + rScA: Quantity<ElectricalResistance> (Ohm)
-    + rScB: Quantity<ElectricalResistance> (Ohm)
-    + rScC: Quantity<ElectricalResistance> (Ohm)
-    + xScA: Quantity<ElectricalResistance> (Ohm)
-    + xScB: Quantity<ElectricalResistance> (Ohm)
-    + xScC: Quantity<ElectricalResistance> (Ohm)
-    + gM: Quantity<ElectricalConductance> (nS)
-    + bM: Quantity<ElectricalConductance> (nS)
-    + sRatedA: Quantity<Power> (MVA)
-    + sRatedB: Quantity<Power> (MVA)
-    + sRatedC: Quantity<Power> (MVA)
-    + dV: Quantity<Dimensionless> (%)
-    + dPhi: Quantity<Angle> (Degrees)
+    + vRatedA: ComparableQuantity<ElectricPotential> (kV)
+    + vRatedB: ComparableQuantity<ElectricPotential> (kV)
+    + vRatedC: ComparableQuantity<ElectricPotential> (kV)
+    + rScA: ComparableQuantity<ElectricalResistance> (Ohm)
+    + rScB: ComparableQuantity<ElectricalResistance> (Ohm)
+    + rScC: ComparableQuantity<ElectricalResistance> (Ohm)
+    + xScA: ComparableQuantity<ElectricalResistance> (Ohm)
+    + xScB: ComparableQuantity<ElectricalResistance> (Ohm)
+    + xScC: ComparableQuantity<ElectricalResistance> (Ohm)
+    + gM: ComparableQuantity<ElectricalConductance> (nS)
+    + bM: ComparableQuantity<ElectricalConductance> (nS)
+    + sRatedA: ComparableQuantity<Power> (MVA)
+    + sRatedB: ComparableQuantity<Power> (MVA)
+    + sRatedC: ComparableQuantity<Power> (MVA)
+    + dV: ComparableQuantity<Dimensionless> (%)
+    + dPhi: ComparableQuantity<Angle> (Degrees)
     + tapNeutr: Integer
     + tapMin: Integer
     + tapMax: Integer
@@ -204,17 +216,17 @@ interface HasBus
 HasBus --|> NestedEntity
 
 Class FixedFeedInInput {
-    - sRated: Quantity<Power> [kVA]
+    - sRated: ComparableQuantity<Power> [kVA]
     - cosphiRated: double
 }
 FixedFeedInInput --|> SystemParticipantInput
 
 Class PvInput {
-    - sRated: Quantity<Power> [kVA]
+    - sRated: ComparableQuantity<Power> [kVA]
     - cosphiRated: double
-    - azimuth: Quantity<Angle> [Degrees]
-    - solarHeight: Quantity<Angle> [Degrees]
-    - etaConv: Quantity<Dimensionless> [%]
+    - azimuth: ComparableQuantity<Angle> [Degrees]
+    - solarHeight: ComparableQuantity<Angle> [Degrees]
+    - etaConv: ComparableQuantity<Dimensionless> [%]
     - albedo: Double
     - kG: Double
     - kT: Double
@@ -238,8 +250,8 @@ ChpInput ..|> HasType
 
 Class BmInput {
     - type: BmTypeInput
-    - sRated: Quantity<Power> [KW]
-    - feedInTariff: Quantity<SpecificCurrency> [€/kWh]
+    - sRated: ComparableQuantity<Power> [KW]
+    - feedInTariff: ComparableQuantity<SpecificCurrency> [€/kWh]
     - marketReaction: Boolean
     - costControlled: Boolean
 }
@@ -254,8 +266,8 @@ EvInput ..|> HasType
 
 Class LoadInput {
     - scenario: String
-    - sRated: Quantity<Power> [kVA]
-    - eConsAnnual: Quantity<Energy> [kWh]
+    - sRated: ComparableQuantity<Power> [kVA]
+    - eConsAnnual: ComparableQuantity<Energy> [kWh]
     - dsm: Boolean
 }
 LoadInput --|> SystemParticipantInput
@@ -289,8 +301,8 @@ Abstract Class ThermalSinkInput {
 ThermalSinkInput --|> ThermalUnitInput
 
 Class ThermalHouseInput {
- - ethCapa: Quantity<HeatCapacity> [kWh / K]
- - ethLosses: Quantity<ThermalConductance> [kW / K]
+ - ethCapa: ComparableQuantity<HeatCapacity> [kWh / K]
+ - ethLosses: ComparableQuantity<ThermalConductance> [kW / K]
 }
 ThermalHouseInput --|> ThermalSinkInput
 
@@ -299,11 +311,11 @@ Abstract Class ThermalStorageInput {
 ThermalStorageInput --|> ThermalUnitInput
 
 Class CylindricalStorageInput {
-  - storageVolumeLvl: Quantity<Volume>
-  - storageVolumeLvlMin: Quantity<Volume>
-  - inletTemp: Quantity<Temperature>
-  - returnTemp: Quantity<Temperature>
-  - c: Quantity<SpecificHeatCapacity>
+  - storageVolumeLvl: ComparableQuantity<Volume>
+  - storageVolumeLvlMin: ComparableQuantity<Volume>
+  - inletTemp: ComparableQuantity<Temperature>
+  - returnTemp: ComparableQuantity<Temperature>
+  - c: ComparableQuantity<SpecificHeatCapacity>
 }
 CylindricalStorageInput --|> ThermalStorageInput
 
@@ -318,8 +330,8 @@ MeasurementUnitInput --|> AssetInput
 MeasurementUnitInput --|> HasNodes
 
 Class NodeInput {
-    + vTarget: Quantity<Dimensionless> (pU)
-    + vRated: Quantity<ElectricPotential> (kV)
+    + vTarget: ComparableQuantity<Dimensionless> (pU)
+    + vRated: ComparableQuantity<ElectricPotential> (kV)
     + slack: Boolean
     + geoPosition: Point
     + voltLvl: VoltageLevel
@@ -334,7 +346,7 @@ EvcsInput --|> AssetInput
 
 Class LineInput {
     + type: LineTypeInput
-    + length: Quantity<Length> (km)
+    + length: ComparableQuantity<Length> (km)
     + amount: Integer
     + olm: Optional<String>
     + geoPosition: LineString
@@ -406,49 +418,49 @@ TimeBasedValue --|> Entry: <<bind>>:V
 Interface Value
 
 Class EnergyPriceValue {
-    - price: Quantity<SpecificCurrency> [€/MWh]
+    - price: ComparableQuantity<SpecificCurrency> [€/MWh]
 }
 EnergyPriceValue ..|> Value
 
 Class HeatDemandValue {
-    - heatDemand : Quantity<Power>
+    - heatDemand : ComparableQuantity<Power>
 }
 HeatDemandValue ..|> Value
 
 Class PValue {
-    - p: Quantity<Power>
+    - p: ComparableQuantity<Power>
 }
 PValue ..|> Value
 
 Class HeatAndPValue {
-    - heatDemand: Quantity<Power>
+    - heatDemand: ComparableQuantity<Power>
 }
 HeatAndPValue --|> PValue
 
 Class SValue {
-    - q: Quantity<Power>
+    - q: ComparableQuantity<Power>
 }
 SValue --|> PValue
 
 Class HeatAndSValue {
-    - heatDemand: Quantity<Power>
+    - heatDemand: ComparableQuantity<Power>
 }
 HeatAndSValue --|> SValue
 
 Class IrradiationValue {
-  - directIrradiation: Quantity<Irradiation>
-  - diffuseIrradiation: Quantity<Irradiation>
+  - directIrradiation: ComparableQuantity<Irradiation>
+  - diffuseIrradiation: ComparableQuantity<Irradiation>
 }
 IrradiationValue ..|> Value
 
 Class TemperatureValue {
-  - temperature: Quantity<Temperature>
+  - temperature: ComparableQuantity<Temperature>
 }
 TemperatureValue ..|> Value
 
 Class WindValue {
-  - direction: Quantity<Angle>
-  - velocity: Quantity<Speed>
+  - direction: ComparableQuantity<Angle>
+  - velocity: ComparableQuantity<Speed>
 }
 WindValue ..|> Value
 

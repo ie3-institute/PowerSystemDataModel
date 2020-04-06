@@ -10,17 +10,17 @@ import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput} */
 public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   /** Capital expense for this type of system participant (typically in €) */
-  private final Quantity<Currency> capex;
+  private final ComparableQuantity<Currency> capex;
   /** Operating expense for this type of system participant (typically in €) */
-  private final Quantity<EnergyPrice> opex;
+  private final ComparableQuantity<EnergyPrice> opex;
   /** Rated apparent power of the type (in kVA) */
-  private final Quantity<Power> sRated;
+  private final ComparableQuantity<Power> sRated;
   /** Power factor for this type of system participant */
   private final double cosphiRated;
 
@@ -34,9 +34,9 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   public SystemParticipantTypeInput(
       UUID uuid,
       String id,
-      Quantity<Currency> capex,
-      Quantity<EnergyPrice> opex,
-      Quantity<Power> sRated,
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Power> sRated,
       double cosphiRated) {
     super(uuid, id);
     this.capex = capex;
@@ -45,15 +45,15 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     this.cosphiRated = cosphiRated;
   }
 
-  public Quantity<Currency> getCapex() {
+  public ComparableQuantity<Currency> getCapex() {
     return capex;
   }
 
-  public Quantity<EnergyPrice> getOpex() {
+  public ComparableQuantity<EnergyPrice> getOpex() {
     return opex;
   }
 
-  public Quantity<Power> getsRated() {
+  public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 

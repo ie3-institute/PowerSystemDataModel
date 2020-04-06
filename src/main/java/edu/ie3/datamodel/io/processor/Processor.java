@@ -204,6 +204,7 @@ public abstract class Processor<T> {
         resultStringBuilder.append(methodReturnObject.toString());
         break;
       case "Quantity":
+      case "ComparableQuantity":
         resultStringBuilder.append(
             handleQuantity((Quantity<?>) methodReturnObject, fieldName)
                 .orElseThrow(
