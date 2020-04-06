@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.system.characteristic;
 
 import java.util.SortedSet;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 
@@ -15,11 +16,14 @@ import javax.measure.quantity.Power;
  * dimensionless multiplier to the rated active power
  */
 public class EvCharacteristicInput extends CharacteristicInput<Power, Dimensionless> {
+  private static final String PREFIX = "ev";
+  private static final Pattern MATCHING_PATTERN = CharacteristicInput.buildMatchingPattern(PREFIX);
+
   @Deprecated
   public EvCharacteristicInput(
       UUID uuid,
       SortedSet<CharacteristicCoordinate<Power, Dimensionless>> characteristicCoordinates) {
-    super(uuid, characteristicCoordinates);
+    super(uuid, characteristicCoordinates, PREFIX, 2);
   }
 
   @Override

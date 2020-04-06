@@ -51,7 +51,8 @@ public class CharacteristicCoordinate<A extends Quantity<A>, O extends Quantity<
    */
   public String deSerialize(int decimalPlaces) {
     String formattingString = String.format("(%%.%sf,%%.%sf)", decimalPlaces, decimalPlaces);
-    return String.format(Locale.ENGLISH, formattingString, x.getValue(), y.getValue());
+    return String.format(
+        Locale.ENGLISH, formattingString, x.getValue().doubleValue(), y.getValue().doubleValue());
   }
 
   /**

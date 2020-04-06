@@ -51,7 +51,11 @@ Class CharacteristicCoordinate <A extends Quantity<A>, O extends Quantity<O>> {
 CharacteristicCoordinate ..|> Comparable
 
 abstract Class CharacteristicInput <A extends Quantity<A>, O extends Quantity<O>> {
+    - prefix: String
+    - decimalPlaces: int
     - coordinates: SortedSet<CharacteristicCoordinate>
+    + deSerialize(): String
+    + <<static>> buildMatchingPattern(String): Pattern
 }
 CharacteristicInput --|> InputEntity
 CharacteristicInput "1" --* "n" CharacteristicCoordinate
