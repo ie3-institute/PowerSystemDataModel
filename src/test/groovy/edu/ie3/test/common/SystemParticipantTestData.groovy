@@ -46,14 +46,18 @@ import javax.measure.quantity.Power
 import javax.measure.quantity.Temperature
 import javax.measure.quantity.Time
 import javax.measure.quantity.Volume
+import java.time.ZoneId
 
 import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 
 class SystemParticipantTestData {
 
+	static {
+		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
+	}
+
 	// general participant data
-	private static final UUID participantUuid = UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a")
 	private static final OperationTime operationTime = OperationTime.builder()
 	.withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31"))
 	.withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
@@ -72,7 +76,7 @@ class SystemParticipantTestData {
 
 
 	// FixedFeedInput
-	public static final FixedFeedInInput fixedFeedInInput = new FixedFeedInInput(participantUuid, "test_fixedFeedInInput", operator,
+	public static final FixedFeedInInput fixedFeedInInput = new FixedFeedInInput(UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a"), "test_fixedFeedInInput", operator,
 	operationTime, participantNode, qCharacteristics,
 	sRated, cosPhiRated)
 
@@ -82,7 +86,7 @@ class SystemParticipantTestData {
 	private static final Quantity<Angle> height = Quantities.getQuantity(41.01871871948242, DEGREE_GEOM)
 	private static double kT = 1
 	private static double kG = 0.8999999761581421
-	public static final PvInput pvInput = new PvInput(participantUuid, "test_pvInput", operator, operationTime,
+	public static final PvInput pvInput = new PvInput(UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"), "test_pvInput", operator, operationTime,
 	participantNode, qCharacteristics, albedo, azimuth,
 	etaConv, height, kG, kT, false, sRated, cosPhiRated)
 
@@ -93,7 +97,7 @@ class SystemParticipantTestData {
 	public static final WecTypeInput wecType = new WecTypeInput(typeUuid, "test_wecType", capex, opex,
 	cosPhiRated, etaConv, sRated, rotorArea, hubHeight)
 
-	public static final WecInput wecInput = new WecInput(participantUuid, "test_wecInput", operator,
+	public static final WecInput wecInput = new WecInput(UUID.fromString("ee7e2e37-a5ad-4def-a832-26a317567ca1"), "test_wecInput", operator,
 	operationTime, participantNode, qCharacteristics,
 	wecType, false)
 
@@ -105,7 +109,7 @@ class SystemParticipantTestData {
 	public static final ChpTypeInput chpTypeInput = new ChpTypeInput(typeUuid, "test_chpType", capex, opex,
 	etaEl, etaThermal, sRated, cosPhiRated, pThermal, pOwn)
 
-	private static final ThermalBusInput thermalBus = new ThermalBusInput(participantUuid, "test_thermalBusInput", operator, operationTime
+	private static final ThermalBusInput thermalBus = new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermalBusInput", operator, operationTime
 	)
 	private static final Quantity<Volume> storageVolumeLvl = Quantities.getQuantity(1.039154027, CUBIC_METRE)
 	private static final Quantity<Volume> storageVolumeLvlMin = Quantities.getQuantity(0.3, CUBIC_METRE)
@@ -113,11 +117,11 @@ class SystemParticipantTestData {
 	private static final Quantity<Temperature> returnTemp = Quantities.getQuantity(80, CELSIUS)
 	private static final Quantity<SpecificHeatCapacity> c = Quantities.getQuantity(
 	1, KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE)
-	private static final ThermalStorageInput thermalStorage = new CylindricalStorageInput(participantUuid,
+	private static final ThermalStorageInput thermalStorage = new CylindricalStorageInput(UUID.fromString("8851813b-3a7d-4fee-874b-4df9d724e4b3"),
 	"test_cylindricThermalStorage", thermalBus, storageVolumeLvl, storageVolumeLvlMin,
 	inletTemp, returnTemp, c)
 
-	public static final ChpInput chpInput = new ChpInput(participantUuid, "test_chpInput", operator, operationTime,
+	public static final ChpInput chpInput = new ChpInput(UUID.fromString("9981b4d7-5a8e-4909-9602-e2e7ef4fca5c"), "test_chpInput", operator, operationTime,
 	participantNode, thermalBus, qCharacteristics, chpTypeInput, thermalStorage, false)
 
 
@@ -127,7 +131,7 @@ class SystemParticipantTestData {
 	loadGradient, sRated, cosPhiRated, etaConv)
 
 	private static final Quantity<EnergyPrice> feedInTarif = Quantities.getQuantity(10, EURO_PER_MEGAWATTHOUR)
-	public static final BmInput bmInput = new BmInput(participantUuid, "test_bmInput", operator, operationTime,
+	public static final BmInput bmInput = new BmInput(UUID.fromString("d06e5bb7-a3c7-4749-bdd1-4581ff2f6f4d"), "test_bmInput", operator, operationTime,
 	participantNode, qCharacteristics, bmTypeInput, false, false, feedInTarif)
 
 	// EV
@@ -135,13 +139,13 @@ class SystemParticipantTestData {
 	private static final Quantity<SpecificEnergy> eCons = Quantities.getQuantity(5, KILOWATTHOUR_PER_KILOMETRE)
 	public static final EvTypeInput evTypeInput = new EvTypeInput(typeUuid, "test_evTypeInput", capex, opex,
 	eStorage, eCons, sRated, cosPhiRated)
-	public static final EvInput evInput = new EvInput(participantUuid, "test_evInput", operator, operationTime,
+	public static final EvInput evInput = new EvInput(UUID.fromString("a17be20f-c7a7-471d-8ffe-015487c9d022"), "test_evInput", operator, operationTime,
 	participantNode, qCharacteristics, evTypeInput)
 
 	// Load
 	private static final Quantity<Energy> eConsAnnual = Quantities.getQuantity(4000, KILOWATTHOUR)
 	private static final StandardLoadProfile standardLoadProfile = BdewLoadProfile.H0
-	public static final LoadInput loadInput = new LoadInput(participantUuid, "test_loadInput", operator, operationTime,
+	public static final LoadInput loadInput = new LoadInput(UUID.fromString("eaf77f7e-9001-479f-94ca-7fb657766f5f"), "test_loadInput", operator, operationTime,
 	participantNode, qCharacteristics, standardLoadProfile, false, eConsAnnual, sRated, cosPhiRated)
 
 	// Storage
@@ -153,14 +157,14 @@ class SystemParticipantTestData {
 	private static final int lifeCycle = 100
 	public static final StorageTypeInput storageTypeInput = new StorageTypeInput(typeUuid, "test_storageTypeInput",
 	capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, eta, dod, lifeTime, lifeCycle)
-	public static final StorageInput storageInput = new StorageInput(participantUuid, "test_storageInput", operator, operationTime
+	public static final StorageInput storageInput = new StorageInput(UUID.fromString("06b58276-8350-40fb-86c0-2414aa4a0452"), "test_storageInput", operator, operationTime
 	, participantNode, qCharacteristics, storageTypeInput, "market")
 
 	// HP
 	public static final HpTypeInput hpTypeInput = new HpTypeInput(typeUuid, "test_hpTypeInput", capex, opex,
 	sRated, cosPhiRated, pThermal)
 
-	public static final HpInput hpInput = new HpInput(participantUuid, "test_hpInput", operator, operationTime,
+	public static final HpInput hpInput = new HpInput(UUID.fromString("798028b5-caff-4da7-bcd9-1750fdd8742b"), "test_hpInput", operator, operationTime,
 	participantNode, thermalBus, qCharacteristics, hpTypeInput)
 
 }
