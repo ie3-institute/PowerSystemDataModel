@@ -21,7 +21,8 @@ public class SystemParticipantEntityData extends AssetInputEntityData {
   private final NodeInput node;
 
   /**
-   * Creates a new SystemParticipantEntityData object for a non-operable system participant input
+   * Creates a new SystemParticipantEntityData object for an operated, always on system participant
+   * input
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data
@@ -41,14 +42,14 @@ public class SystemParticipantEntityData extends AssetInputEntityData {
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data
    * @param node input node
-   * @param operatorInput operator input
+   * @param operator operator input
    */
   public SystemParticipantEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       NodeInput node) {
-    super(fieldsToAttributes, entityClass, operatorInput);
+    super(fieldsToAttributes, entityClass, operator);
     this.node = node;
   }
 

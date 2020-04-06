@@ -12,12 +12,20 @@ import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
+import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
+import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
+import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
+import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
+import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.WecResult
 import edu.ie3.test.common.GridTestData
+import edu.ie3.test.common.ThermalUnitInputTestData
 import edu.ie3.util.TimeTools
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
@@ -76,7 +84,14 @@ class CsvFileSinkTest extends Specification {
 					new ResultEntityProcessor(EvResult),
 					new InputEntityProcessor(Transformer2WInput),
 					new InputEntityProcessor(NodeInput),
-					new InputEntityProcessor(Transformer2WTypeInput)
+					new InputEntityProcessor(Transformer2WTypeInput),
+					new InputEntityProcessor(LineGraphicInput),
+					new InputEntityProcessor(NodeGraphicInput),
+					new InputEntityProcessor(CylindricalStorageInput),
+					new InputEntityProcessor(ThermalHouseInput),
+					new InputEntityProcessor(OperatorInput),
+					new InputEntityProcessor(LineInput),
+					new InputEntityProcessor(ThermalBusInput)
 				]),
 				new FileNamingStrategy(),
 				false,
@@ -93,7 +108,11 @@ class CsvFileSinkTest extends Specification {
 		csvFileSink.persistAll([
 			pvResult,
 			wecResult,
-			GridTestData.transformerCtoG
+			GridTestData.transformerCtoG,
+			GridTestData.lineGraphicCtoD,
+			GridTestData.nodeGraphicC,
+			ThermalUnitInputTestData.cylindricStorageInput,
+			ThermalUnitInputTestData.thermalHouseInput
 		])
 		csvFileSink.dataConnector.shutdown()
 
@@ -104,6 +123,14 @@ class CsvFileSinkTest extends Specification {
 		new File(testBaseFolderPath + File.separator + "transformer2w_type_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "node_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "transformer2w_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "operator_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "cylindrical_storage_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "line_graphic_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "line_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "operator_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "node_graphic_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "thermal_bus_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "thermal_house_input.csv").exists()
 
 		!new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
 	}

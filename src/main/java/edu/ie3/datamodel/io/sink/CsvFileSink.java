@@ -11,7 +11,7 @@ import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.connectors.DataConnector;
 import edu.ie3.datamodel.io.extractor.Extractor;
-import edu.ie3.datamodel.io.extractor.Nested;
+import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.InputEntity;
@@ -130,10 +130,10 @@ public class CsvFileSink implements DataSink {
 
   @Override
   public <T extends UniqueEntity> void persist(T entity) {
-    if (entity instanceof Nested) {
+    if (entity instanceof NestedEntity) {
       try {
         persistIgnoreNested(entity);
-        for (InputEntity ent : new Extractor((Nested) entity).getExtractedEntities()) {
+        for (InputEntity ent : Extractor.extractElements((NestedEntity) entity)) {
           persistIgnoreNested(ent);
         }
 

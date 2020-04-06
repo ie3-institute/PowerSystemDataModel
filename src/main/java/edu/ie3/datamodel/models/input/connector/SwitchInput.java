@@ -20,27 +20,27 @@ public class SwitchInput extends ConnectorInput {
    * Constructor for an operated switch
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param nodeA
    * @param nodeB
    * @param closed Is the switching state 'closed'?
    */
   public SwitchInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput nodeA,
       NodeInput nodeB,
       boolean closed) {
-    super(uuid, operationTime, operator, id, nodeA, nodeB, 1);
+    super(uuid, id, operator, operationTime, nodeA, nodeB, 1);
     this.closed = closed;
   }
 
   /**
-   * Constructor for a non-operated switch
+   * Constructor for an operated, always on switch
    *
    * @param uuid of the input entity
    * @param id of the asset

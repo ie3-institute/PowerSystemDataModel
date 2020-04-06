@@ -26,11 +26,11 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
 
   public HpInputEntityData(
       Map<String, String> fieldsToAttributes,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       NodeInput node,
       HpTypeInput typeInput,
       ThermalBusInput thermalBusInput) {
-    super(fieldsToAttributes, HpInput.class, operatorInput, node, typeInput);
+    super(fieldsToAttributes, HpInput.class, operator, node, typeInput);
     this.thermalBusInput = thermalBusInput;
   }
 

@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.io.extractor.Type;
+import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -17,7 +17,7 @@ import java.util.UUID;
 import tec.uom.se.ComparableQuantity;
 
 /** Describes a biomass plant */
-public class BmInput extends SystemParticipantInput implements Type {
+public class BmInput extends SystemParticipantInput implements HasType {
   /** Type of this BM plant, containing default values for BM plants of this kind */
   private final BmTypeInput type;
   /** Is this asset market oriented? */
@@ -33,9 +33,9 @@ public class BmInput extends SystemParticipantInput implements Type {
    * Constructor for an operated biomass plant
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics
    * @param type of BM
@@ -46,16 +46,16 @@ public class BmInput extends SystemParticipantInput implements Type {
    */
   public BmInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       String qCharacteristics,
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
       ComparableQuantity<EnergyPrice> feedInTariff) {
-    super(uuid, operationTime, operator, id, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.type = type;
     this.marketReaction = marketReaction;
     this.costControlled = costControlled;
@@ -63,7 +63,7 @@ public class BmInput extends SystemParticipantInput implements Type {
   }
 
   /**
-   * Constructor for a non-operated biomass plant
+   * Constructor for an operated, always on biomass plant
    *
    * @param uuid of the input entity
    * @param id of the asset

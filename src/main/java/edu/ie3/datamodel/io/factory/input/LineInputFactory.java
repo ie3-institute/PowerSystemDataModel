@@ -40,7 +40,7 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     final int parallelDevices = data.getInt(PARALLEL_DEVICES);
     final LineTypeInput type = data.getType();
@@ -59,9 +59,9 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
             : Optional.empty();
     return new LineInput(
         uuid,
-        operationTime,
-        operatorInput,
         id,
+        operator,
+        operationTime,
         nodeA,
         nodeB,
         parallelDevices,

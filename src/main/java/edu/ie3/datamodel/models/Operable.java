@@ -5,11 +5,12 @@
 */
 package edu.ie3.datamodel.models;
 
+import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.time.ZonedDateTime;
 
 /** Describes an operable Entity, with operation period interval */
-public interface Operable {
+public interface Operable extends NestedEntity {
 
   OperationTime getOperationTime();
 
