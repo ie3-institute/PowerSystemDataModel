@@ -38,7 +38,7 @@ public class BmInputFactory
       String id,
       NodeInput node,
       String qCharacteristics,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     final BmTypeInput typeInput = data.getTypeInput();
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
@@ -48,9 +48,9 @@ public class BmInputFactory
 
     return new BmInput(
         uuid,
-        operationTime,
-        operatorInput,
         id,
+        operator,
+        operationTime,
         node,
         qCharacteristics,
         typeInput,

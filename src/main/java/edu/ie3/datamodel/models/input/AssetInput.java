@@ -20,16 +20,16 @@ public abstract class AssetInput extends InputEntity implements Operable {
   private final String id;
 
   /** Constructor for an operated asset */
-  public AssetInput(UUID uuid, OperationTime operationTime, OperatorInput operator, String id) {
+  public AssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
     super(uuid);
     this.operationTime = operationTime;
     this.operator = operator;
     this.id = id;
   }
 
-  /** Constructor for a non-operated asset */
+  /** Constructor for an operated, always on asset */
   public AssetInput(UUID uuid, String id) {
-    this(uuid, OperationTime.notLimited(), null, id);
+    this(uuid, id, OperatorInput.NO_OPERATOR_ASSIGNED, OperationTime.notLimited());
   }
 
   @Override

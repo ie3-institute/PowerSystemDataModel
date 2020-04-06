@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.RandomLoadParameters;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.AssetCharacteristicInput;
@@ -28,15 +29,11 @@ public class FileNamingStrategy {
   private static final Logger logger = LogManager.getLogger(FileNamingStrategy.class);
 
   private static final String RES_ENTITY_SUFFIX = "_res";
-  private static final String INPUT_ENTITY_SUFFIX = "_input";
-  private static final String TYPE_INPUT = "_type_input";
-  private static final String GRAPHIC_INPUT_SUFFIX = "_graphic";
-
-  private static final String INPUT_CLASS_STRING = "Input";
 
   private final String prefix;
   private final String suffix;
 
+  /** Constructor for building the file names without provided files with prefix and suffix */
   public FileNamingStrategy() {
     this.prefix = "";
     this.suffix = "";
@@ -74,11 +71,13 @@ public class FileNamingStrategy {
     if (AssetCharacteristicInput.class.isAssignableFrom(cls))
       return getAssetCharacteristicsFileName(cls.asSubclass(AssetCharacteristicInput.class));
     if (cls.equals(RandomLoadParameters.class)) {
-      String loadParamString = cls.getSimpleName().toLowerCase();
-      return Optional.of(prefix.concat(loadParamString).concat(INPUT_ENTITY_SUFFIX).concat(suffix));
+      String loadParamString = camelCaseToSnakeCase(cls.getSimpleName());
+      return Optional.of(addPrefixAndSuffix(loadParamString.concat("_input")));
     }
     if (GraphicInput.class.isAssignableFrom(cls))
       return getGraphicsInputFileName(cls.asSubclass(GraphicInput.class));
+    if (OperatorInput.class.isAssignableFrom(cls))
+      return getOperatorInputFileName(cls.asSubclass(OperatorInput.class));
     logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
     return Optional.empty();
   }
@@ -90,18 +89,8 @@ public class FileNamingStrategy {
    * @return the filename string
    */
   public Optional<String> getGraphicsInputFileName(Class<? extends GraphicInput> graphicClass) {
-    String assetInputString =
-        graphicClass
-            .getSimpleName()
-            .replace(INPUT_CLASS_STRING, "")
-            .replace("Graphic", "")
-            .toLowerCase();
-    return Optional.of(
-        prefix
-            .concat(assetInputString)
-            .concat(GRAPHIC_INPUT_SUFFIX)
-            .concat(INPUT_ENTITY_SUFFIX)
-            .concat(suffix));
+    String assetInputString = camelCaseToSnakeCase(graphicClass.getSimpleName());
+    return Optional.of(addPrefixAndSuffix(assetInputString));
   }
 
   /**
@@ -113,9 +102,8 @@ public class FileNamingStrategy {
    */
   public Optional<String> getAssetCharacteristicsFileName(
       Class<? extends AssetCharacteristicInput> assetCharClass) {
-    String assetCharString =
-        assetCharClass.getSimpleName().replace(INPUT_CLASS_STRING, "").toLowerCase();
-    return Optional.of(prefix.concat(assetCharString).concat(INPUT_ENTITY_SUFFIX).concat(suffix));
+    String assetCharString = camelCaseToSnakeCase(assetCharClass.getSimpleName());
+    return Optional.of(addPrefixAndSuffix(assetCharString));
   }
 
   /**
@@ -125,9 +113,8 @@ public class FileNamingStrategy {
    * @return the filename string
    */
   public Optional<String> getTypeFileName(Class<? extends AssetTypeInput> typeClass) {
-    String assetTypeString =
-        typeClass.getSimpleName().replace(INPUT_CLASS_STRING, "").replace("Type", "").toLowerCase();
-    return Optional.of(prefix.concat(assetTypeString).concat(TYPE_INPUT).concat(suffix));
+    String assetTypeString = camelCaseToSnakeCase(typeClass.getSimpleName());
+    return Optional.of(addPrefixAndSuffix(assetTypeString));
   }
 
   /**
@@ -137,9 +124,19 @@ public class FileNamingStrategy {
    * @return the filename string
    */
   public Optional<String> getAssetInputFileName(Class<? extends AssetInput> assetInputClass) {
-    String assetInputString =
-        assetInputClass.getSimpleName().replace(INPUT_CLASS_STRING, "").toLowerCase();
-    return Optional.of(prefix.concat(assetInputString).concat(INPUT_ENTITY_SUFFIX).concat(suffix));
+    String assetInputString = camelCaseToSnakeCase(assetInputClass.getSimpleName());
+    return Optional.of(addPrefixAndSuffix(assetInputString));
+  }
+
+  /**
+   * Get the the file name for all {@link OperatorInput}s
+   *
+   * @param operatorClass the asset input class a filename string should be generated from
+   * @return the filename string
+   */
+  public Optional<String> getOperatorInputFileName(Class<? extends OperatorInput> operatorClass) {
+    String assetInputString = camelCaseToSnakeCase(operatorClass.getSimpleName());
+    return Optional.of(addPrefixAndSuffix(assetInputString));
   }
 
   /**
@@ -155,6 +152,33 @@ public class FileNamingStrategy {
   private String buildResultEntityString(Class<? extends ResultEntity> resultEntityClass) {
     String resultEntityString =
         resultEntityClass.getSimpleName().replace("Result", "").toLowerCase();
-    return prefix.concat(resultEntityString).concat(RES_ENTITY_SUFFIX).concat(suffix);
+    return addPrefixAndSuffix(resultEntityString.concat(RES_ENTITY_SUFFIX));
+  }
+
+  /**
+   * Converts a given camel case string to its snake case representation
+   *
+   * @param camelCaseString the camel case string
+   * @return the resulting snake case representation
+   */
+  private String camelCaseToSnakeCase(String camelCaseString) {
+    String regularCamelCaseRegex = "([a-z])([A-Z]+)";
+    String regularSnakeCaseReplacement = "$1_$2";
+    String specialCamelCaseRegex = "((?<!_)[A-Z]?)((?<!^)[A-Z]+)";
+    String specialSnakeCaseReplacement = "$1_$2";
+    return camelCaseString
+        .replaceAll(regularCamelCaseRegex, regularSnakeCaseReplacement)
+        .replaceAll(specialCamelCaseRegex, specialSnakeCaseReplacement)
+        .toLowerCase();
+  }
+
+  /**
+   * Adds prefix and suffix to the provided String
+   *
+   * @param s the string that should be pre-/suffixed
+   * @return the original string with prefixes/suffixes
+   */
+  private String addPrefixAndSuffix(String s) {
+    return prefix.concat(s).concat(suffix);
   }
 }

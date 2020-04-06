@@ -33,12 +33,12 @@ public class WecInputFactory
       String id,
       NodeInput node,
       String qCharacteristics,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     WecTypeInput typeInput = data.getTypeInput();
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
 
     return new WecInput(
-        uuid, operationTime, operatorInput, id, node, qCharacteristics, typeInput, marketReaction);
+        uuid, id, operator, operationTime, node, qCharacteristics, typeInput, marketReaction);
   }
 }

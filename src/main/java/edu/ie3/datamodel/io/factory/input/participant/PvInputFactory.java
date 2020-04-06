@@ -45,7 +45,7 @@ public class PvInputFactory
       String id,
       NodeInput node,
       String qCharacteristics,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     final double albedo = data.getDouble(ALBEDO);
     final Quantity<Angle> azimuth = data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH);
@@ -59,9 +59,9 @@ public class PvInputFactory
 
     return new PvInput(
         uuid,
-        operationTime,
-        operatorInput,
         id,
+        operator,
+        operationTime,
         node,
         qCharacteristics,
         albedo,

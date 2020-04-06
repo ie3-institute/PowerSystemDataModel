@@ -25,7 +25,7 @@ import org.jgrapht.graph.DirectedMultigraph;
 /** Offers functionality useful for grouping different models together */
 public class ContainerUtils {
   private ContainerUtils() {
-    throw new IllegalStateException("Don't instantiate a utility class");
+    throw new IllegalStateException("Utility classes cannot be instantiated");
   }
 
   /**

@@ -14,7 +14,7 @@ import java.util.Optional;
 
 /**
  * Time for which something is operated, can be limited to a time frame with one or two bounds or
- * not limited
+ * not limited which is by definition equal to always on
  */
 public class OperationTime {
 
@@ -32,14 +32,10 @@ public class OperationTime {
     this.isLimited = isLimited;
   }
 
-  /** Constructor for OperationTime without limitations */
+  /** Constructor for OperationTime without limitations (= always on) */
   private OperationTime() {}
 
-  /**
-   * @return an OperationTime without time limitations. When used inside an asset this is equal to
-   *     'not operated' as a not limited operation time is equal to no start and end date which
-   *     means the asset has no start of operation and hence it is out of operation.
-   */
+  /** @return an OperationTime without time limitations (= always on) */
   public static OperationTime notLimited() {
     return new OperationTime();
   }

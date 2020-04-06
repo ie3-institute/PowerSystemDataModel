@@ -17,7 +17,7 @@ import java.util.Optional;
  * be provided through the attribute map.
  */
 public class AssetInputEntityData extends EntityData {
-  private final OperatorInput operatorInput;
+  private final OperatorInput operator;
 
   /**
    * Creates a new AssetInputEntityData object without operator.
@@ -35,17 +35,17 @@ public class AssetInputEntityData extends EntityData {
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data
-   * @param operatorInput operator input
+   * @param operator operator input
    */
   public AssetInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
-      OperatorInput operatorInput) {
+      OperatorInput operator) {
     super(fieldsToAttributes, entityClass);
-    this.operatorInput = operatorInput;
+    this.operator = operator;
   }
 
   public Optional<OperatorInput> getOperatorInput() {
-    return Optional.ofNullable(operatorInput);
+    return Optional.ofNullable(operator);
   }
 }

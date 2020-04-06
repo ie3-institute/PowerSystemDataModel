@@ -6,15 +6,15 @@
 package edu.ie3.datamodel.io.extractor;
 
 import edu.ie3.datamodel.models.input.NodeInput;
+import java.util.List;
 
 /**
- * Interface that should be implemented by all elements holding a {@link NodeInput} and should be
- * processable by the {@link Extractor}
+ * Interface that should be implemented by all elements holding one or more {@link NodeInput}
+ * elements and should be processable by the {@link Extractor}.
  *
  * @version 0.1
  * @since 31.03.20
  */
-public interface Node extends Nested {
-
-  NodeInput getNode();
+public interface HasNodes extends NestedEntity {
+  List<NodeInput> allNodes();
 }

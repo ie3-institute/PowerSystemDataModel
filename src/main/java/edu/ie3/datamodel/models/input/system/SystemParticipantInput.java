@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.io.extractor.Node;
+import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.*;
 
 /** Describes a system asset that is connected to a node */
-public abstract class SystemParticipantInput extends AssetInput implements Node {
+public abstract class SystemParticipantInput extends AssetInput implements HasNodes {
 
   /** The node that the asset is connected to */
   private final NodeInput node;
@@ -25,26 +25,26 @@ public abstract class SystemParticipantInput extends AssetInput implements Node 
    * Constructor for an operated system participant
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    */
   public SystemParticipantInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput node,
       String qCharacteristics) {
-    super(uuid, operationTime, operator, id);
+    super(uuid, id, operator, operationTime);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
   }
 
   /**
-   * Constructor for a non-operated system participant
+   * Constructor for an operated, always on system participant
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -61,9 +61,13 @@ public abstract class SystemParticipantInput extends AssetInput implements Node 
     return qCharacteristics;
   }
 
-  @Override
   public NodeInput getNode() {
     return node;
+  }
+
+  @Override
+  public List<NodeInput> allNodes() {
+    return Collections.singletonList(node);
   }
 
   @Override

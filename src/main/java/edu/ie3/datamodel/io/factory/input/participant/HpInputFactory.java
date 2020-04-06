@@ -30,13 +30,13 @@ public class HpInputFactory
       String id,
       NodeInput node,
       String qCharacteristics,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       OperationTime operationTime) {
     return new HpInput(
         uuid,
-        operationTime,
-        operatorInput,
         id,
+        operator,
+        operationTime,
         node,
         data.getThermalBusInput(),
         qCharacteristics,

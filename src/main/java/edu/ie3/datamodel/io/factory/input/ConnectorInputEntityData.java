@@ -33,10 +33,10 @@ public class ConnectorInputEntityData extends AssetInputEntityData {
   public ConnectorInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
-      OperatorInput operatorInput,
+      OperatorInput operator,
       NodeInput nodeA,
       NodeInput nodeB) {
-    super(fieldsToAttributes, entityClass, operatorInput);
+    super(fieldsToAttributes, entityClass, operator);
     this.nodeA = nodeA;
     this.nodeB = nodeB;
   }
