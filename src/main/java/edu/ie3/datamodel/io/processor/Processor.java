@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
-import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.input.NodeInputFactory;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.OperationTime;
@@ -21,7 +20,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
 import org.locationtech.jts.geom.Geometry;
@@ -138,27 +136,6 @@ public abstract class Processor<T> {
       throw new EntityProcessorException(
           "Error during EntityProcessor class registration process.", e);
     }
-  }
-
-  /**
-   * Converts camel to snake case
-   *
-   * @param input Camel case string to convert
-   * @return The same string in snake case
-   */
-  private static String camel2snakeCase(String input) {
-    Pattern startsWithDigit = Pattern.compile("\\b(\\d+)(\\w)");
-    Pattern endsWithDigit = Pattern.compile("(\\w)(\\d+)\\b");
-    Pattern camelHump = Pattern.compile("([a-z])([A-Z])");
-    Pattern digitHump = Pattern.compile("([a-z])(\\d+)([a-z])");
-
-    String cleanString = FileNamingStrategy.cleanString(input);
-    String digitsAtStartTreated = startsWithDigit.matcher(cleanString).replaceAll("$1_$2");
-    String digitsAtEndTreated = endsWithDigit.matcher(digitsAtStartTreated).replaceAll("$1_$2");
-    String camelHumpsTreated = camelHump.matcher(digitsAtEndTreated).replaceAll("$1_$2");
-    String digitHumpsTreated = digitHump.matcher(camelHumpsTreated).replaceAll("$1_$2_$3");
-
-    return digitHumpsTreated.toLowerCase();
   }
 
   /**
