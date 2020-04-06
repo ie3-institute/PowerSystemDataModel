@@ -5,6 +5,15 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
+import tec.uom.se.quantity.Quantities
+
+import javax.measure.quantity.Dimensionless
+import javax.measure.quantity.Power
+
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
@@ -30,7 +39,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 		Map<String, String> parameter = [
 			"uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
 			"id"              : "TestID",
-			"qcharacteristics": "cosphi_fixed:1",
+			"qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
 			"slp"             : "G-4",
 			"dsm"             : "true",
 			"econsannual"     : "3",
@@ -53,7 +62,12 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
 			assert node == nodeInput
-			assert qCharacteristics == parameter["qcharacteristics"]
+			assert qCharacteristics.with {
+				assert uuid != null
+				assert coordinates == Collections.unmodifiableSortedSet([
+					new CharacteristicCoordinate<Power, Dimensionless>(Quantities.getQuantity(0d, KILOWATT), Quantities.getQuantity(1d, PU))
+				] as TreeSet)
+			}
 			assert standardLoadProfile == BdewLoadProfile.G4
 			assert dsm
 			assert eConsAnnual == getQuant(parameter["econsannual"], StandardUnits.ENERGY_IN)

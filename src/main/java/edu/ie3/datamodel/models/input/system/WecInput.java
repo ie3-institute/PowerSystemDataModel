@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput;
 import java.util.Objects;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
       OperatorInput operator,
       OperationTime operationTime,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic<?> qCharacteristics,
       WecTypeInput type,
       boolean marketReaction) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
@@ -60,7 +61,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
       UUID uuid,
       String id,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic<?> qCharacteristics,
       WecTypeInput type,
       boolean marketReaction) {
     super(uuid, id, node, qCharacteristics);

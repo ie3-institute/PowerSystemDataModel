@@ -266,6 +266,10 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "EvCharacteristicInput":
       case "OlmCharacteristicInput":
       case "WecCharacteristicInput":
+      case "CosPhiFixed":
+      case "CosPhiP":
+      case "QV":
+      case "ReactivePowerCharacteristic":
       case "CharacteristicInput":
         resultStringBuilder.append(((CharacteristicInput) methodReturnObject).deSerialize());
         break;

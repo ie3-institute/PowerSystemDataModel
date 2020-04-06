@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
@@ -48,7 +49,7 @@ public class ChpInput extends SystemParticipantInput implements HasType {
       OperationTime operationTime,
       NodeInput node,
       ThermalBusInput thermalBus,
-      String qCharacteristics,
+      ReactivePowerCharacteristic<?> qCharacteristics,
       ChpTypeInput type,
       ThermalStorageInput thermalStorage,
       boolean marketReaction) {
@@ -77,7 +78,7 @@ public class ChpInput extends SystemParticipantInput implements HasType {
       String id,
       NodeInput node,
       ThermalBusInput thermalBus,
-      String qCharacteristics,
+      ReactivePowerCharacteristic<?> qCharacteristics,
       ChpTypeInput type,
       ThermalStorageInput thermalStorage,
       boolean marketReaction) {

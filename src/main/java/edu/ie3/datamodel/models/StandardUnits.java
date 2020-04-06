@@ -108,6 +108,8 @@ public class StandardUnits {
   public static final Unit<Dimensionless> EV_CHARACTERISTIC = PU;
   /** Standard unit for the overhead line monitoring characteristic */
   public static final Unit<Dimensionless> OLM_CHARACTERISTIC = PU;
+  /** Standard unit for reactive power characteristics */
+  public static final Unit<Dimensionless> Q_CHARACTERISTIC = PU;
   /** Solar irradiation on a flat surface */
   public static final Unit<Irradiation> IRRADIATION = KILOWATTHOUR_PER_SQUAREMETRE;
   /** Capex (capital expenditure) */

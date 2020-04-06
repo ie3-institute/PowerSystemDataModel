@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.WecInput;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput;
 import java.util.UUID;
 
@@ -32,7 +33,7 @@ public class WecInputFactory
       UUID uuid,
       String id,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic<?> qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
     WecTypeInput typeInput = data.getTypeInput();

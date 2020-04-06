@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.HpInput;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.UUID;
 
 public class HpInputFactory
@@ -29,7 +30,7 @@ public class HpInputFactory
       UUID uuid,
       String id,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic<?> qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
     return new HpInput(

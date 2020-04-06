@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.ChpInput;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.UUID;
 
 public class ChpInputFactory
@@ -30,7 +31,7 @@ public class ChpInputFactory
       UUID uuid,
       String id,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic<?> qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);

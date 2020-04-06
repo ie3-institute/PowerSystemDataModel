@@ -5,14 +5,21 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.BmInput
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
+import tec.uom.se.quantity.Quantities
 
+import javax.measure.quantity.Dimensionless
+import javax.measure.quantity.Power
 import java.time.ZonedDateTime
 
 class BmInputFactoryTest extends Specification implements FactoryTestHelper {
@@ -33,7 +40,7 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
 			"operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
 			"operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
 			"id"              : "TestID",
-			"qcharacteristics": "cosphi_fixed:1",
+			"qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
 			"marketreaction"  : "false",
 			"costControlled"  : "true",
 			"feedintariff"    : "3"
@@ -59,7 +66,12 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert operator == operatorInput
 			assert id == parameter["id"]
 			assert node == nodeInput
-			assert qCharacteristics == parameter["qcharacteristics"]
+			assert qCharacteristics.with {
+				assert uuid != null
+				assert coordinates == Collections.unmodifiableSortedSet([
+					new CharacteristicCoordinate<Power, Dimensionless>(Quantities.getQuantity(0d, KILOWATT), Quantities.getQuantity(1d, PU))
+				] as TreeSet)
+			}
 			assert type == typeInput
 			assert !marketReaction
 			assert costControlled

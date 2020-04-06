@@ -19,6 +19,8 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
+import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
@@ -63,7 +65,8 @@ class SystemParticipantTestData {
 	private static final NodeInput participantNode = GridTestData.nodeA
 
 	// general type data
-	private static final String qCharacteristics = "cosphi_fixed:0.95"
+	private static final CosPhiFixed qCharacteristics = new CosPhiFixed(UUID.fromString("cc383c30-3e41-45a8-a2b7-5e3a217c7863"),"cosPhiFixed:{(0.0,0.95)}")
+	private static final String expectedQCharacteristic = "cosPhiFixed:{(0.00,0.95)}"
 	private static final Quantity<Power> sRated = Quantities.getQuantity(25, KILOVOLTAMPERE)
 	private static final double cosPhiRated = 0.95
 	private static final UUID typeUuid = UUID.fromString("5ebd8f7e-dedb-4017-bb86-6373c4b68eb8")

@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput;
 import java.util.Objects;
 import java.util.UUID;
@@ -34,7 +35,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
       OperatorInput operator,
       OperationTime operationTime,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic<?> qCharacteristics,
       EvTypeInput type) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.type = type;
@@ -49,7 +50,12 @@ public class EvInput extends SystemParticipantInput implements HasType {
    * @param qCharacteristics
    * @param type of EV
    */
-  public EvInput(UUID uuid, String id, NodeInput node, String qCharacteristics, EvTypeInput type) {
+  public EvInput(
+      UUID uuid,
+      String id,
+      NodeInput node,
+      ReactivePowerCharacteristic<?> qCharacteristics,
+      EvTypeInput type) {
     super(uuid, id, node, qCharacteristics);
     this.type = type;
   }

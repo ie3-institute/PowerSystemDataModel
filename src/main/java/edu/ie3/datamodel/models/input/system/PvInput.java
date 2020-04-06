@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
@@ -62,7 +63,7 @@ public class PvInput extends SystemParticipantInput {
       OperatorInput operator,
       OperationTime operationTime,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic<?> qCharacteristics,
       double albedo,
       ComparableQuantity<Angle> azimuth,
       ComparableQuantity<Dimensionless> etaConv,
@@ -105,7 +106,7 @@ public class PvInput extends SystemParticipantInput {
       UUID uuid,
       String id,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic<?> qCharacteristics,
       double albedo,
       ComparableQuantity<Angle> azimuth,
       ComparableQuantity<Dimensionless> etaConv,

@@ -22,7 +22,7 @@ AssetInput --|> Operable
 
 abstract Class SystemParticipantInput {
 - node: NodeInput
-- qCharacteristics: String
+- qCharacteristics: ReactivePowerCharacteristicInput<?>
 }
 SystemParticipantInput --|> AssetInput
 SystemParticipantInput --|> HasNodes
@@ -69,8 +69,29 @@ Class EvCharacteristicInput {
 EvCharacteristicInput --|> CharacteristicInput: <<bind>>A::Speed,O::Dimensionless
 
 Class OlmCharacteristicInput {
+    + <<static>> CONSTANT_CHARACTERISTIC: OlmCharacteristicInput
 }
 OlmCharacteristicInput --|> CharacteristicInput: <<bind>>A::Speed,O::Dimensionless
+
+abstract Class ReactivePowerCharacteristic<A extends Quantity<A>> {
+    + <<static>> parse(String): ReactivePowerCharacteristic<?>
+}
+ReactivePowerCharacteristic --|> CharacteristicInput: <<bind>>O::Dimensionless
+
+Class CosPhiFixed {
+    + <<static>> CONSTANT_CHARACTERISTIC: CosPhiFixed
+}
+CosPhiFixed --|> ReactivePowerCharacteristic: <<bind>>A::Power
+
+Class CosPhiP {
+    + <<static>> CONSTANT_CHARACTERISTIC: CosPhiP
+}
+CosPhiP --|> ReactivePowerCharacteristic: <<bind>>A::Power
+
+Class QV {
+    + <<static>> CONSTANT_CHARACTERISTIC: QV
+}
+QV --|> ReactivePowerCharacteristic: <<bind>>A::Power
 
 abstract Class AssetTypeInput {
 + id: String

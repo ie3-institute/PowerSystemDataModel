@@ -14,7 +14,12 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import tec.uom.se.quantity.Quantities;
 
-/** Describes characteristics of assets */
+/**
+ * Describes characteristics of assets
+ *
+ * @param <A> Type of quantity, that applies to the abscissa
+ * @param <O> Type of quantity, that applies to the ordinate
+ */
 public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quantity<O>>
     extends InputEntity {
   protected final String prefix;
