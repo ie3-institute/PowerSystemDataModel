@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
+import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.util.TimeTools
 import edu.ie3.util.quantities.PowerSystemUnits
@@ -309,14 +310,13 @@ class GridTestData {
 
 	public static final LineInput lineCtoD = new LineInput(
 	UUID.fromString("91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"), "test_line_AtoB", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
-	,
+	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
 	nodeC, nodeD,
 	2,
 	lineTypeInputCtoD,
 	Quantities.getQuantity(3, Units.METRE),
 	geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}") as LineString,
-	Optional.of("olm")
+	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
 	)
 	public static final LineGraphicInput lineGraphicCtoD = new LineGraphicInput(
 	UUID.fromString("ece86139-3238-4a35-9361-457ecb4258b0"),

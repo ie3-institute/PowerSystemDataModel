@@ -68,6 +68,10 @@ Class EvCharacteristicInput {
 }
 EvCharacteristicInput --|> CharacteristicInput: <<bind>>A::Speed,O::Dimensionless
 
+Class OlmCharacteristicInput {
+}
+OlmCharacteristicInput --|> CharacteristicInput: <<bind>>A::Speed,O::Dimensionless
+
 abstract Class AssetTypeInput {
 + id: String
 }
@@ -361,11 +365,11 @@ Class EvcsInput {
 EvcsInput --|> AssetInput
 
 Class LineInput {
-+ type: LineTypeInput
-+ length: ComparableQuantity<Length> (km)
-+ amount: Integer
-+ olm: Optional<String>
-+ geoPosition: LineString
+    - type: LineTypeInput
+    - length: ComparableQuantity<Length> (km)
+    - amount: Integer
+    - olm: OlmCharacteristicInput
+    - geoPosition: LineString
 }
 LineInput --|> ConnectorInput
 LineInput --|> HasType

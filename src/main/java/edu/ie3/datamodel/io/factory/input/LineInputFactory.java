@@ -11,7 +11,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
-import java.util.Optional;
+import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
 import java.util.UUID;
 import javax.measure.quantity.Length;
 import org.apache.commons.lang3.ArrayUtils;
@@ -53,10 +53,10 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
                         ArrayUtils.addAll(
                             NodeInput.DEFAULT_GEO_POSITION.getCoordinates(),
                             NodeInput.DEFAULT_GEO_POSITION.getCoordinates())));
-    final Optional<String> olmCharacteristic =
-        data.containsKey(OLM_CHARACTERISTIC)
-            ? Optional.of(data.getField(OLM_CHARACTERISTIC))
-            : Optional.empty();
+    final OlmCharacteristicInput olmCharacteristic =
+        data.containsKey(OLM_CHARACTERISTIC) && !data.getField(OLM_CHARACTERISTIC).isEmpty()
+            ? new OlmCharacteristicInput(UUID.randomUUID(), data.getField(OLM_CHARACTERISTIC))
+            : OlmCharacteristicInput.CONSTANT_CHARACTERISTIC;
     return new LineInput(
         uuid,
         id,

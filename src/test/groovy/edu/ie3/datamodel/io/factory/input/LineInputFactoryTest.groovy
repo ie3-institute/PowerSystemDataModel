@@ -5,14 +5,21 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
+import tec.uom.se.quantity.Quantities
 
+import javax.measure.quantity.Dimensionless
+import javax.measure.quantity.Speed
 import java.time.ZonedDateTime
 
 class LineInputFactoryTest extends Specification implements FactoryTestHelper {
@@ -36,7 +43,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 			"paralleldevices"  : "2",
 			"length"           : "3",
 			"geoposition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
-			"olmcharacteristic": "blub"
+			"olmcharacteristic": "olm:{(0.0,1.0)}"
 		]
 		def inputClass = LineInput
 		def operatorInput = Mock(OperatorInput)
@@ -63,7 +70,63 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert noOfParallelDevices == Integer.parseInt(parameter["paralleldevices"])
 			assert length == getQuant(parameter["length"], StandardUnits.LINE_LENGTH)
 			assert geoPosition == getGeometry(parameter["geoposition"])
-			assert olmCharacteristic == Optional.of(parameter["olmcharacteristic"])
+			olmCharacteristic.with {
+				assert uuid != null
+				assert coordinates == Collections.unmodifiableSortedSet([
+					new CharacteristicCoordinate<Speed, Dimensionless>(
+					Quantities.getQuantity(0d, METRE_PER_SECOND),
+					Quantities.getQuantity(1d, PU))
+				] as TreeSet)
+			}
+		}
+	}
+
+	def "A LineInputFactory should parse a valid LineInput without olm characteristic correctly"() {
+		given: "a system participant input type factory and model data"
+		def inputFactory = new LineInputFactory()
+		Map<String, String> parameter = [
+			"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"operatesfrom"     : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+			"operatesuntil"    : "",
+			"id"               : "TestID",
+			"paralleldevices"  : "2",
+			"length"           : "3",
+			"geoposition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+			"olmcharacteristic": ""
+		]
+		def inputClass = LineInput
+		def operatorInput = Mock(OperatorInput)
+		def nodeInputA = Mock(NodeInput)
+		def nodeInputB = Mock(NodeInput)
+		def typeInput = Mock(LineTypeInput)
+
+		when:
+		Optional<LineInput> input = inputFactory.getEntity(new LineInputEntityData(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+
+		then:
+		input.present
+		input.get().getClass() == inputClass
+		((LineInput) input.get()).with {
+			assert uuid == UUID.fromString(parameter["uuid"])
+			assert operationTime.startDate.present
+			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+			assert !operationTime.endDate.present
+			assert operator == operatorInput
+			assert id == parameter["id"]
+			assert nodeA == nodeInputA
+			assert nodeB == nodeInputB
+			assert type == typeInput
+			assert noOfParallelDevices == Integer.parseInt(parameter["paralleldevices"])
+			assert length == getQuant(parameter["length"], StandardUnits.LINE_LENGTH)
+			assert geoPosition == getGeometry(parameter["geoposition"])
+			olmCharacteristic.with {
+				assert uuid != null
+				assert coordinates == Collections.unmodifiableSortedSet([
+					new CharacteristicCoordinate<Speed, Dimensionless>(
+					Quantities.getQuantity(0d, METRE_PER_SECOND),
+					Quantities.getQuantity(1d, PU))
+				] as TreeSet)
+			}
 		}
 	}
 }

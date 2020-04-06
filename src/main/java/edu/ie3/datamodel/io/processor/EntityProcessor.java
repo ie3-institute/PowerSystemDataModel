@@ -264,6 +264,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
         resultStringBuilder.append(((Optional<String>) methodReturnObject).orElse(""));
         break;
       case "EvCharacteristicInput":
+      case "OlmCharacteristicInput":
       case "WecCharacteristicInput":
       case "CharacteristicInput":
         resultStringBuilder.append(((CharacteristicInput) methodReturnObject).deSerialize());
