@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.processor.input
 
+import edu.ie3.datamodel.exceptions.EntityProcessorException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -403,39 +404,21 @@ class InputEntityProcessorTest extends Specification {
 		actual.get() == expected
 	}
 
-	/* TODO: Re-enable */
-	//	def "The InputEntityProcessor should de-serialize a provided WecCharacteristicInput correctly"() {
-	//		given:
-	//		InputEntityProcessor processor = new InputEntityProcessor(WecCharacteristicInput)
-	//		WecCharacteristicInput characteristic = TypeTestData.wecCharacteristic
-	//		Map expected = [
-	//			"uuid"              : "ab5ed9e4-62b5-4f40-adf1-286bda97569c",
-	//			"type"              : "a24fc5b9-a26f-44de-96b8-c9f50b665cb3",
-	//			"characteristic"    : "{(0.0,0.0), (8.0,0.2), (12.0,0.5), (14.0,1.0), (22.0,0.0)}"
-	//		]
-	//
-	//		when:
-	//		Optional<Map<String, String>> actual = processor.handleEntity(characteristic)
-	//
-	//		then:
-	//		actual.present
-	//		actual.get() == expected
-	//	}
-
 	def "The InputEntityProcessor should de-serialize a provided WecTypeInput correctly"() {
 		given:
 		InputEntityProcessor processor = new InputEntityProcessor(WecTypeInput)
 		WecTypeInput type = TypeTestData.wecType
 		Map expected = [
-			"uuid"          : "a24fc5b9-a26f-44de-96b8-c9f50b665cb3",
-			"id"            : "Test wec type",
-			"capex"         : "100.0",
-			"opex"          : "101.0",
-			"cosphiRated"   : "0.95",
-			"etaConv"       : "90.0",
-			"sRated"        : "2500.0",
-			"rotorArea"     : "2000.0",
-			"hubHeight"     : "130.0"
+			"uuid"          	: "a24fc5b9-a26f-44de-96b8-c9f50b665cb3",
+			"id"            	: "Test wec type",
+			"capex"         	: "100.0",
+			"opex"          	: "101.0",
+			"cosphiRated"   	: "0.95",
+			"cpCharacteristic"	: "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",
+			"etaConv"       	: "90.0",
+			"sRated"        	: "2500.0",
+			"rotorArea"    		: "2000.0",
+			"hubHeight"     	: "130.0"
 		]
 
 		when:

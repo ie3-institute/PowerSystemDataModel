@@ -142,9 +142,10 @@ Class StorageTypeInput {
 StorageTypeInput --|> SystemParticipantTypeInput
 
 Class WecTypeInput {
-- rotorArea: ComparableQuantity<Area> [m²]
-- hubHeight: ComparableQuantity<Length> [m]
-- etaConv: ComparableQuantity<Dimensionless> [%]
+    - rotorArea: ComparableQuantity<Area> [m²]
+    - hubHeight: ComparableQuantity<Length> [m]
+    - etaConv: ComparableQuantity<Dimensionless> [%]
+    - cpCharacteristic: WecCharacteristicInput
 }
 WecTypeInput --|> SystemParticipantTypeInput
 

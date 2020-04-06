@@ -19,6 +19,7 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
+import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
@@ -88,10 +89,11 @@ class SystemParticipantTestData {
 
 
 	// WEC
+	private static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput(UUID.fromString("1e04139a-d7e0-4211-8357-0040e0319a67"), "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
 	private static final Quantity<Area> rotorArea = Quantities.getQuantity(20, SQUARE_METRE)
 	private static final Quantity<Length> hubHeight = Quantities.getQuantity(200, METRE)
 	public static final WecTypeInput wecType = new WecTypeInput(typeUuid, "test_wecType", capex, opex,
-	cosPhiRated, etaConv, sRated, rotorArea, hubHeight)
+	cosPhiRated, wecCharacteristic, etaConv, sRated, rotorArea, hubHeight)
 
 	public static final WecInput wecInput = new WecInput(participantUuid, "test_wecInput", operator,
 	operationTime, participantNode, qCharacteristics,
