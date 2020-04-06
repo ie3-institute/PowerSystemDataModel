@@ -19,7 +19,6 @@ import static tec.uom.se.unit.Units.PERCENT
 import static tec.uom.se.unit.Units.SQUARE_METRE
 import static tec.uom.se.unit.Units.METRE
 
-import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
@@ -103,9 +102,9 @@ class TypeTestData extends GridTestData {
 	Quantities.getQuantity(130d, METRE)
 	)
 
-	public static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput(
-	UUID.fromString("ab5ed9e4-62b5-4f40-adf1-286bda97569c"),
-	wecType,
-	"{(0.0,0.0), (8.0,0.2), (12.0,0.5), (14.0,1.0), (22.0,0.0)}"
-	)
+	//	public static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput(
+	//	UUID.fromString("ab5ed9e4-62b5-4f40-adf1-286bda97569c"),
+	//	wecType,
+	//	"{(0.0,0.0), (8.0,0.2), (12.0,0.5), (14.0,1.0), (22.0,0.0)}"
+	//	)
 }

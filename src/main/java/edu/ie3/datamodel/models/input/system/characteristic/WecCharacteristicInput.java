@@ -5,28 +5,21 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
-import edu.ie3.datamodel.models.input.system.type.WecTypeInput;
+import java.util.SortedSet;
 import java.util.UUID;
+import javax.measure.quantity.Dimensionless;
+import javax.measure.quantity.Speed;
 
 /** Characteristic mapping the wind velocity to its corresponding Betz coefficient */
-public class WecCharacteristicInput extends AssetCharacteristicInput<WecTypeInput> {
-  /**
-   * @param uuid of the input entity
-   * @param type of this characteristic
-   * @param characteristic Curve of the Betz coefficient in the form "{(v1,cp1),(v2,cp2), ...}"
-   */
-  public WecCharacteristicInput(UUID uuid, WecTypeInput type, String characteristic) {
-    super(uuid, type, characteristic);
+public class WecCharacteristicInput extends CharacteristicInput<Speed, Dimensionless> {
+  public WecCharacteristicInput(
+      UUID uuid,
+      SortedSet<CharacteristicCoordinate<Speed, Dimensionless>> characteristicCoordinates) {
+    super(uuid, characteristicCoordinates);
   }
 
   @Override
   public String toString() {
-    return "WecCharacteristicInput{"
-        + "type="
-        + type
-        + ", characteristic='"
-        + characteristic
-        + '\''
-        + '}';
+    return "WecCharacteristicInput{" + "uuid=" + uuid + ", coordinates=" + coordinates + '}';
   }
 }

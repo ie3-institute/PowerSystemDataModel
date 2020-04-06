@@ -39,19 +39,27 @@ abstract Class ConnectorInput {
 ConnectorInput --|> AssetInput
 ConnectorInput --|> HasNodes
 
-abstract Class AssetCharacteristicsInput<T extends AssetTypeInput> {
-    - type: T
-    - characteristic: String
+Interface Comparable
+
+Class CharacteristicCoordinate <A extends Quantity<A>, O extends Quantity<O>> {
+    - x: ComparableQuantity<A>
+    - y: ComparableQuantity<O>
 }
-AssetCharacteristicsInput --|> InputEntity
+CharacteristicCoordinate ..|> Comparable
+
+abstract Class CharacteristicInput <A extends Quantity<A>, O extends Quantity<O>> {
+    - characteristic: SortedSet<CharacteristicCoordinate>
+}
+CharacteristicInput --|> InputEntity
+CharacteristicInput "1" --* "n" CharacteristicCoordinate
 
 Class WecCharacteristicInput {
 }
-WecCharacteristicInput --|> AssetCharacteristicsInput: <<bind>>T::WecTypeInput
+WecCharacteristicInput --|> CharacteristicInput: <<bind>>A::Power,O::Dimensionless
 
 Class EvCharacteristicInput {
 }
-EvCharacteristicInput --|> AssetCharacteristicsInput: <<bind>>T::EvTypeInput
+EvCharacteristicInput --|> CharacteristicInput: <<bind>>A::Speed,O::Dimensionless
 
 abstract Class AssetTypeInput {
 + id: String
