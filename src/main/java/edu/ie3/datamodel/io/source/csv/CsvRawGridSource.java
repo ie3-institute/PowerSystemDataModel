@@ -91,7 +91,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     Collection<Transformer3WTypeInput> transformer3WTypeInputs = typeSource.getTransformer3WTypes();
 
     /// assets incl. filter of unique entities + warning if duplicate uuids got filtered out
-    Set<NodeInput> nodes = checkForUuidDuplicates(NodeInput.class, getNodes());
+    Set<NodeInput> nodes = checkForUuidDuplicates(NodeInput.class, getNodes(operators));
 
     Set<LineInput> lineInputs =
         checkForUuidDuplicates(LineInput.class, getLines(nodes, lineTypes, operators));
