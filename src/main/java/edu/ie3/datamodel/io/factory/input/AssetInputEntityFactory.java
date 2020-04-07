@@ -28,7 +28,6 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
   private static final String OPERATES_FROM = "operatesfrom";
   private static final String OPERATES_UNTIL = "operatesuntil";
   private static final String ID = "id";
-  private static final String OPERATOR = "operator";
 
   public AssetInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);

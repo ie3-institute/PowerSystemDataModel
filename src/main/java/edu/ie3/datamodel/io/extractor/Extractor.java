@@ -42,8 +42,12 @@ public final class Extractor {
       resultingList.add(extractOperator((Operable) nestedEntity));
     }
 
-    if (nestedEntity instanceof HasBus) {
-      resultingList.add(((HasBus) nestedEntity).getBus());
+    if (nestedEntity instanceof HasThermalBus) {
+      resultingList.add(((HasThermalBus) nestedEntity).getThermalBus());
+    }
+
+    if (nestedEntity instanceof HasThermalStorage) {
+      resultingList.add(((HasThermalStorage) nestedEntity).getThermalStorage());
     }
 
     if (nestedEntity instanceof HasLine) {

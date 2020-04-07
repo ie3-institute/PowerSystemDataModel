@@ -49,7 +49,7 @@ class CylindricalStorageInputFactoryTest  extends Specification implements Facto
 			assert operationTime == OperationTime.notLimited()
 			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
-			assert bus == thermalBusInput
+			assert thermalBus == thermalBusInput
 			assert storageVolumeLvl == getQuant(parameter["storagevolumelvl"], StandardUnits.VOLUME)
 			assert storageVolumeLvlMin == getQuant(parameter["storagevolumelvlmin"], StandardUnits.VOLUME)
 			assert inletTemp == getQuant(parameter["inlettemp"], StandardUnits.TEMPERATURE)
