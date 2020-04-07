@@ -5,9 +5,9 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.SortedSet;
-import java.util.regex.Pattern;
 import javax.measure.quantity.Dimensionless;
 
 /**
@@ -15,21 +15,16 @@ import javax.measure.quantity.Dimensionless;
  * infeed
  */
 public class CosPhiP extends ReactivePowerCharacteristic {
-  public static final Pattern MATCHING_PATTERN = buildMatchingPattern("cosPhiP");
+  public static final String PREFIX = "cosPhiP";
+  public static final String STARTING_REGEX = buildStartingRegex(PREFIX);
 
   public CosPhiP(
       SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>> characteristicCoordinates) {
-    super(characteristicCoordinates, "cosPhiP", 2);
+    super(characteristicCoordinates, PREFIX, 2);
   }
 
-  public CosPhiP(String input) {
-    super(
-        input,
-        MATCHING_PATTERN,
-        StandardUnits.Q_CHARACTERISTIC,
-        StandardUnits.Q_CHARACTERISTIC,
-        "cosPhiP",
-        2);
+  public CosPhiP(String input) throws ParsingException {
+    super(input, StandardUnits.Q_CHARACTERISTIC, StandardUnits.Q_CHARACTERISTIC, PREFIX, 2);
   }
 
   @Override

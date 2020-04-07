@@ -5,9 +5,9 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.SortedSet;
-import java.util.regex.Pattern;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 
@@ -16,7 +16,6 @@ import javax.measure.quantity.Power;
  * dimensionless multiplier to the rated active power
  */
 public class EvCharacteristicInput extends CharacteristicInput<Power, Dimensionless> {
-  private static final Pattern MATCHING_PATTERN = CharacteristicInput.buildMatchingPattern("ev");
 
   @Deprecated
   public EvCharacteristicInput(
@@ -25,14 +24,8 @@ public class EvCharacteristicInput extends CharacteristicInput<Power, Dimensionl
   }
 
   @Deprecated
-  public EvCharacteristicInput(String input) {
-    super(
-        input,
-        MATCHING_PATTERN,
-        StandardUnits.ACTIVE_POWER_IN,
-        StandardUnits.EV_CHARACTERISTIC,
-        "ev",
-        2);
+  public EvCharacteristicInput(String input) throws ParsingException {
+    super(input, StandardUnits.ACTIVE_POWER_IN, StandardUnits.EV_CHARACTERISTIC, "ev", 2);
   }
 
   @Override

@@ -5,31 +5,38 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
+import static edu.ie3.util.quantities.PowerSystemUnits.PU;
+import static java.util.Collections.unmodifiableSortedSet;
+import static tec.uom.se.unit.Units.METRE_PER_SECOND;
+
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.SortedSet;
-import java.util.regex.Pattern;
+import java.util.TreeSet;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Speed;
+import tec.uom.se.quantity.Quantities;
 
 /** Characteristic for overhead line monitoring */
 public class OlmCharacteristicInput extends CharacteristicInput<Speed, Dimensionless> {
-  private static final Pattern MATCHING_PATTERN = buildMatchingPattern("olm");
   public static final OlmCharacteristicInput CONSTANT_CHARACTERISTIC =
-      new OlmCharacteristicInput("olm:{(0.0,1.0)}");
+      buildConstantCharacteristic();
 
   public OlmCharacteristicInput(
       SortedSet<CharacteristicCoordinate<Speed, Dimensionless>> characteristicCoordinates) {
     super(characteristicCoordinates, "olm", 2);
   }
 
-  public OlmCharacteristicInput(String input) {
-    super(
-        input,
-        MATCHING_PATTERN,
-        StandardUnits.WIND_VELOCITY,
-        StandardUnits.OLM_CHARACTERISTIC,
-        "olm",
-        2);
+  public OlmCharacteristicInput(String input) throws ParsingException {
+    super(input, StandardUnits.WIND_VELOCITY, StandardUnits.OLM_CHARACTERISTIC, "olm", 2);
+  }
+
+  private static OlmCharacteristicInput buildConstantCharacteristic() {
+    TreeSet<CharacteristicCoordinate<Speed, Dimensionless>> coordinates = new TreeSet<>();
+    coordinates.add(
+        new CharacteristicCoordinate<>(
+            Quantities.getQuantity(0d, METRE_PER_SECOND), Quantities.getQuantity(1d, PU)));
+    return new OlmCharacteristicInput(unmodifiableSortedSet(coordinates));
   }
 
   @Override

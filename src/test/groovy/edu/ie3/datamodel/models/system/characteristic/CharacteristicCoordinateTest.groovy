@@ -5,12 +5,10 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
+import edu.ie3.datamodel.exceptions.ParsingException
+
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
 import static edu.ie3.util.quantities.PowerSystemUnits.PERCENT
-
-import java.util.regex.Pattern
-
-import java.util.regex.Matcher
 
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
 import spock.lang.Specification
@@ -18,6 +16,8 @@ import tec.uom.se.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Power
+
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class CharacteristicCoordinateTest extends Specification {
 	def "A set of CharacteristicCoordinates are sorted correctly"() {
@@ -60,17 +60,6 @@ class CharacteristicCoordinateTest extends Specification {
 		}
 	}
 
-	def "The CharacteristicCoordinate has the correct pattern to recognize a pair of double values"() {
-		given: "An expected Pattern"
-		String expected = "\\(([+-]?\\d+\\.?\\d*),([+-]?\\d+\\.?\\d*)\\)"
-
-		when: "getting the actual pattern"
-		Pattern actual = CharacteristicCoordinate.MATCHING_PATTERN
-
-		then: "it has the same content"
-		actual.pattern == expected
-	}
-
 	def "An CharacteristicCoordinate is de-serialized correctly"() {
 		given: "A coordinate"
 		CharacteristicCoordinate<Power, Dimensionless> coordinate =
@@ -87,53 +76,46 @@ class CharacteristicCoordinateTest extends Specification {
 		noPlace == "(3,4)"
 	}
 
-	def "The CharacteristicCoordinate has a pattern, that matches it's own de-serialized output"() {
-		given: "The matchers"
-		Matcher firstMatcher = CharacteristicCoordinate.MATCHING_PATTERN.matcher("(3.00,4.00)")
-		Matcher secondMatcher = CharacteristicCoordinate.MATCHING_PATTERN.matcher("(3,4)")
+	def "The CharacteristicCoordinate is able to parse a String to itself"(String input, double x, double y) {
+		when: "Parsing the input"
+		CharacteristicCoordinate<Dimensionless, Dimensionless> actual = new CharacteristicCoordinate<>(input, PU, PU)
 
-		expect: "that they recognize correct output correctly"
-		assert firstMatcher.matches()
-		assert secondMatcher.matches()
+		then: "it has correct values"
+		actual.x.getValue().doubleValue() == x
+		actual.y.getValue().doubleValue() == y
+
+		where: "different inputs are tested"
+		input 			|| x 	|| y
+		"(3.00,2.00)"	|| 3.0 	|| 2.0
+		"(3.00,2)" 		|| 3.0 	|| 2.0
+		"(3,2.00)" 		|| 3.0 	|| 2.0
+		"(3.00,-2.00)" 	|| 3.0 	|| -2.0
 	}
 
-	def "The CharacteristicCoordinate has a pattern, that recognizes wrong formatted strings"() {
-		given: "The matchers"
-		Matcher firstMatcher = CharacteristicCoordinate.MATCHING_PATTERN.matcher("(3.00, 4.00)")
-		Matcher secondMatcher = CharacteristicCoordinate.MATCHING_PATTERN.matcher("(3,a)")
+	def "The CharacteristicCoordinate throws a parsing exception, if the input is malformed"() {
+		when: "Parsing the input"
+		CharacteristicCoordinate<Dimensionless, Dimensionless> actual = new CharacteristicCoordinate<>("bla", PU, PU)
 
-		expect: "that recognize correct output correctly"
-		assert !firstMatcher.matches()
-		assert !secondMatcher.matches()
+		then: "it throws an exception"
+		ParsingException exception = thrown(ParsingException)
+		exception.message == "Cannot parse bla to CharacteristicCoordinate. It doesn't comply with the required format '(%d,%d)'."
 	}
 
-	def "The CharacteristicCoordinate is able to correctly extract the abscissa value from properly formatted string"() {
-		expect:
-		CharacteristicCoordinate.getXFromString("(3.00,4.00)") - 3.0 < 1E-12
-		CharacteristicCoordinate.getXFromString("(3,4)") - 3.0 < 1E-12
+	def "The CharacteristicCoordinate throws a parsing exception, if abscissa cannot be parsed to double"() {
+		when: "Parsing the input"
+		CharacteristicCoordinate<Dimensionless, Dimensionless> actual = new CharacteristicCoordinate<>("(bla,2.0)", PU, PU)
+
+		then: "it throws an exception"
+		ParsingException exception = thrown(ParsingException)
+		exception.message == "Cannot parse (bla,2.0) to CharacteristicCoordinate. Abscissa value cannot be parsed to double."
 	}
 
-	def "The CharacteristicCoordinate throws an exception, when the String is malformed on extraction of abscissa value"() {
-		when:
-		CharacteristicCoordinate.getXFromString("3.0")
+	def "The CharacteristicCoordinate throws a parsing exception, if ordinate cannot be parsed to double"() {
+		when: "Parsing the input"
+		CharacteristicCoordinate<Dimensionless, Dimensionless> actual = new CharacteristicCoordinate<>("(1.0,bla)", PU, PU)
 
-		then:
-		IllegalArgumentException exception = thrown(IllegalArgumentException)
-		exception.message == "The given input '3.0' is not a valid representation of a CharacteristicCoordinate."
-	}
-
-	def "The CharacteristicCoordinate is able to correctly extract the ordinate value from properly formatted string"() {
-		expect:
-		CharacteristicCoordinate.getYFromString("(3.00,4.00)") - 4.0 < 1E-12
-		CharacteristicCoordinate.getYFromString("(3,4)") - 4.0 < 1E-12
-	}
-
-	def "The CharacteristicCoordinate throws an exception, when the String is malformed on extraction of ordinate value"() {
-		when:
-		CharacteristicCoordinate.getYFromString("3.0")
-
-		then:
-		IllegalArgumentException exception = thrown(IllegalArgumentException)
-		exception.message == "The given input '3.0' is not a valid representation of a CharacteristicCoordinate."
+		then: "it throws an exception"
+		ParsingException exception = thrown(ParsingException)
+		exception.message == "Cannot parse (1.0,bla) to CharacteristicCoordinate. Abscissa value cannot be parsed to double."
 	}
 }

@@ -5,9 +5,9 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.SortedSet;
-import java.util.regex.Pattern;
 import javax.measure.quantity.Dimensionless;
 
 /**
@@ -15,21 +15,16 @@ import javax.measure.quantity.Dimensionless;
  * connecting node
  */
 public class QV extends ReactivePowerCharacteristic {
-  public static final Pattern MATCHING_PATTERN = buildMatchingPattern("qV");
+  public static final String PREFIX = "qV";
+  public static final String STARTING_REGEX = buildStartingRegex(PREFIX);
 
   public QV(
       SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>> characteristicCoordinates) {
-    super(characteristicCoordinates, "qV", 2);
+    super(characteristicCoordinates, PREFIX, 2);
   }
 
-  public QV(String input) {
-    super(
-        input,
-        MATCHING_PATTERN,
-        StandardUnits.VOLTAGE_MAGNITUDE,
-        StandardUnits.Q_CHARACTERISTIC,
-        "qV",
-        2);
+  public QV(String input) throws ParsingException {
+    super(input, StandardUnits.VOLTAGE_MAGNITUDE, StandardUnits.Q_CHARACTERISTIC, PREFIX, 2);
   }
 
   @Override

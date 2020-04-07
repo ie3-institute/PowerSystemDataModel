@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.typeinput;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
@@ -190,8 +191,16 @@ public class SystemParticipantTypeInputFactory
 
     ComparableQuantity<Length> hubHeight = data.getQuantity(HUB_HEIGHT, StandardUnits.HUB_HEIGHT);
 
-    WecCharacteristicInput cpCharacteristic =
-        new WecCharacteristicInput(data.getField(CP_CHARACTERISTIC));
+    WecCharacteristicInput cpCharacteristic = null;
+    try {
+      cpCharacteristic = new WecCharacteristicInput(data.getField(CP_CHARACTERISTIC));
+    } catch (ParsingException e) {
+      throw new FactoryException(
+          "Cannot parse the following Betz characteristic: '"
+              + data.getField(CP_CHARACTERISTIC)
+              + "'",
+          e);
+    }
 
     return new WecTypeInput(
         uuid, id, capEx, opEx, cosPhi, cpCharacteristic, etaConv, sRated, rotorArea, hubHeight);

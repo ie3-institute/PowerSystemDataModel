@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -53,10 +55,19 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
                         ArrayUtils.addAll(
                             NodeInput.DEFAULT_GEO_POSITION.getCoordinates(),
                             NodeInput.DEFAULT_GEO_POSITION.getCoordinates())));
-    final OlmCharacteristicInput olmCharacteristic =
-        data.containsKey(OLM_CHARACTERISTIC) && !data.getField(OLM_CHARACTERISTIC).isEmpty()
-            ? new OlmCharacteristicInput(data.getField(OLM_CHARACTERISTIC))
-            : OlmCharacteristicInput.CONSTANT_CHARACTERISTIC;
+    final OlmCharacteristicInput olmCharacteristic;
+    try {
+      olmCharacteristic =
+          data.containsKey(OLM_CHARACTERISTIC) && !data.getField(OLM_CHARACTERISTIC).isEmpty()
+              ? new OlmCharacteristicInput(data.getField(OLM_CHARACTERISTIC))
+              : OlmCharacteristicInput.CONSTANT_CHARACTERISTIC;
+    } catch (ParsingException e) {
+      throw new FactoryException(
+          "Cannot parse the following overhead line monitoring characteristic: '"
+              + data.getField(OLM_CHARACTERISTIC)
+              + "'",
+          e);
+    }
     return new LineInput(
         uuid,
         id,

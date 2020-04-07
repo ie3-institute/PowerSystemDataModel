@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
+import edu.ie3.datamodel.exceptions.ParsingException
+
 import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
@@ -55,7 +57,7 @@ class WecCharacteristicTest extends Specification {
 		new WecCharacteristicInput("cP:{(10.00),(15.00),(20.00)}")
 
 		then:
-		IllegalArgumentException exception = thrown(IllegalArgumentException)
-		exception.message == "The given input 'cP:{(10.00),(15.00),(20.00)}' is not a valid representation."
+		ParsingException exception = thrown(ParsingException)
+		exception.message == "Cannot parse '(10.00),(15.00),(20.00)' to Set of coordinates as it contains a malformed coordinate."
 	}
 }

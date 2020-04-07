@@ -5,13 +5,11 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
+import edu.ie3.datamodel.exceptions.ParsingException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import tec.uom.se.quantity.Quantities;
 
 /**
  * Describes characteristics of assets
@@ -20,7 +18,7 @@ import tec.uom.se.quantity.Quantities;
  * @param <O> Type of quantity, that applies to the ordinate
  */
 public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quantity<O>> {
-  protected final String prefix;
+  protected final String characteristicPrefix;
   protected final int decimalPlaces;
 
   protected final SortedSet<CharacteristicCoordinate<A, O>> coordinates;
@@ -29,66 +27,89 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
    * Constructor for the abstract class
    *
    * @param coordinates Set of coordinates that describe the characteristic
-   * @param prefix Prefix, that prepends the actual characteristic
+   * @param characteristicPrefix Prefix, that prepends the actual characteristic
    * @param decimalPlaces Desired amount of decimal places when de-serializing the characteristic
    */
   public CharacteristicInput(
-      SortedSet<CharacteristicCoordinate<A, O>> coordinates, String prefix, int decimalPlaces) {
+      SortedSet<CharacteristicCoordinate<A, O>> coordinates,
+      String characteristicPrefix,
+      int decimalPlaces) {
     this.coordinates = Collections.unmodifiableSortedSet(coordinates);
-    this.prefix = prefix;
+    this.characteristicPrefix = characteristicPrefix;
     this.decimalPlaces = decimalPlaces;
   }
 
   public CharacteristicInput(
       String input,
-      Pattern matchingPattern,
       Unit<A> abscissaUnit,
       Unit<O> ordinateUnit,
-      String prefix,
-      int decimalPlaces) {
-    this.prefix = prefix;
+      String characteristicPrefix,
+      int decimalPlaces)
+      throws ParsingException {
+    this.characteristicPrefix = characteristicPrefix;
     this.decimalPlaces = decimalPlaces;
-    String coordinateList = extractCoordinateList(input, matchingPattern);
+
+    if (!input.startsWith(characteristicPrefix + ":{") || !input.endsWith("}"))
+      throw new ParsingException(
+          "Cannot parse '"
+              + input
+              + "' to characteristic. It has to be of the form '"
+              + characteristicPrefix
+              + ":{"
+              + CharacteristicCoordinate.REQUIRED_FORMAT
+              + ",...}'");
+
+    String coordinateList = extractCoordinateList(input);
     this.coordinates = buildCoordinatesFromString(coordinateList, abscissaUnit, ordinateUnit);
+  }
+
+  /**
+   * Builds a regex, that is suitable to match '[prefix]:{'
+   *
+   * @param prefix Unique prefix to an instance of the Characteristic
+   * @return The suitable regex
+   */
+  public static String buildStartingRegex(String prefix) {
+    return "^" + prefix + ":\\{";
   }
 
   /**
    * Extracts the coordinate list from the given input
    *
    * @param input Input string for the whole characteristic
-   * @param matchingPattern Pattern to match the underlying characteristic
    * @return The string list of coordinates
    */
-  private String extractCoordinateList(String input, Pattern matchingPattern) {
-    Matcher matcher = matchingPattern.matcher(input);
-    if (!matcher.matches())
-      throw new IllegalArgumentException(
-          "The given input '" + input + "' is not a valid representation.");
-    return matcher.group(1);
+  private String extractCoordinateList(String input) {
+    return input.replaceAll(buildStartingRegex(characteristicPrefix), "").replaceAll("}$", "");
   }
 
   /**
-   * Extracts the coordinates from the input string
+   * Splits up a String of coordinate definition and parses them to {@link CharacteristicCoordinate}
    *
-   * @param input string list of coordinates
-   * @param abscissaUnit Unit for the abscissa
-   * @param ordinateUnit Unit for the ordinate
-   * @return an unmodifiable sorted set of coordinates
+   * @param input Comma-separated list of coordinate definitions
+   * @param abscissaUnit Unit to use on the abscissa
+   * @param ordinateUnit Unit to use on the ordinate
+   * @return An unmodifiable sorted set of {@link CharacteristicCoordinate}s
+   * @throws ParsingException If one of the coordinates cannot be parsed
    */
   private SortedSet<CharacteristicCoordinate<A, O>> buildCoordinatesFromString(
-      String input, Unit<A> abscissaUnit, Unit<O> ordinateUnit) {
-    Matcher coordinateMatcher = CharacteristicCoordinate.MATCHING_PATTERN.matcher(input);
-    SortedSet<CharacteristicCoordinate<A, O>> parsedCoordinate = new TreeSet<>();
-    while (coordinateMatcher.find()) {
-      double xValue = CharacteristicCoordinate.getXFromString(coordinateMatcher.group(0));
-      double yValue = CharacteristicCoordinate.getYFromString(coordinateMatcher.group(0));
+      String input, Unit<A> abscissaUnit, Unit<O> ordinateUnit) throws ParsingException {
+    /* Splits the coordinates only at those commas, that are preceded by a ')' */
+    String[] entries = input.split("(?<=\\)),");
 
-      parsedCoordinate.add(
-          new CharacteristicCoordinate<>(
-              Quantities.getQuantity(xValue, abscissaUnit),
-              Quantities.getQuantity(yValue, ordinateUnit)));
+    SortedSet<CharacteristicCoordinate<A, O>> parsedCoordinates = new TreeSet<>();
+    for (String entry : entries) {
+      try {
+        parsedCoordinates.add(new CharacteristicCoordinate<>(entry, abscissaUnit, ordinateUnit));
+      } catch (ParsingException pe) {
+        throw new ParsingException(
+            "Cannot parse '"
+                + input
+                + "' to Set of coordinates as it contains a malformed coordinate.",
+            pe);
+      }
     }
-    return Collections.unmodifiableSortedSet(parsedCoordinate);
+    return Collections.unmodifiableSortedSet(parsedCoordinates);
   }
 
   public SortedSet<CharacteristicCoordinate<A, O>> getCoordinates() {
@@ -101,23 +122,12 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
    * @return the characteristic as de-serialized string
    */
   public String deSerialize() {
-    return prefix
+    return characteristicPrefix
         + ":{"
         + coordinates.stream()
             .map(coordinate -> coordinate.deSerialize(decimalPlaces))
             .collect(Collectors.joining(","))
         + "}";
-  }
-
-  /**
-   * Builds a matching pattern that is able to recognize a specific characteristic
-   *
-   * @param prefix The concrete prefix
-   * @return A pattern, that matches the characteristic
-   */
-  public static Pattern buildMatchingPattern(String prefix) {
-    return Pattern.compile(
-        prefix + ":\\{((" + CharacteristicCoordinate.MATCHING_PATTERN.pattern() + ",?)+)}");
   }
 
   @Override

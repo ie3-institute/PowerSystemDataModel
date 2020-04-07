@@ -5,7 +5,8 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
+import edu.ie3.datamodel.exceptions.ParsingException
+
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
@@ -18,7 +19,6 @@ import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
-import javax.measure.quantity.Power
 
 class ReactivePowerCharacteristicTest extends Specification {
 	@Shared
@@ -93,8 +93,8 @@ class ReactivePowerCharacteristicTest extends Specification {
 		new CosPhiFixed("cosPhiFixed:{(10.00)}")
 
 		then:
-		IllegalArgumentException exception = thrown(IllegalArgumentException)
-		exception.message == "The given input 'cosPhiFixed:{(10.00)}' is not a valid representation."
+		ParsingException exception = thrown(ParsingException)
+		exception.message == "Cannot parse '(10.00)' to Set of coordinates as it contains a malformed coordinate."
 	}
 
 	def "A valid CosPhiP is correctly de-serialized"() {
@@ -118,8 +118,8 @@ class ReactivePowerCharacteristicTest extends Specification {
 		new CosPhiFixed("cosPhiP:{(0.00),(0.90),(1.20)}")
 
 		then:
-		IllegalArgumentException exception = thrown(IllegalArgumentException)
-		exception.message == "The given input 'cosPhiP:{(0.00),(0.90),(1.20)}' is not a valid representation."
+		ParsingException exception = thrown(ParsingException)
+		exception.message == "Cannot parse 'cosPhiP:{(0.00),(0.90),(1.20)}' to characteristic. It has to be of the form 'cosPhiFixed:{(%d,%d),...}'"
 	}
 
 	def "A valid QV is correctly de-serialized"() {
@@ -143,8 +143,8 @@ class ReactivePowerCharacteristicTest extends Specification {
 		new CosPhiFixed("qV:{(0.90),(0.95),(1.05),(1.10)}")
 
 		then:
-		IllegalArgumentException exception = thrown(IllegalArgumentException)
-		exception.message == "The given input 'qV:{(0.90),(0.95),(1.05),(1.10)}' is not a valid representation."
+		ParsingException exception = thrown(ParsingException)
+		exception.message == "Cannot parse 'qV:{(0.90),(0.95),(1.05),(1.10)}' to characteristic. It has to be of the form 'cosPhiFixed:{(%d,%d),...}'"
 	}
 
 	def "The ReactivePowerCharacteristic is able to parse a fixed power factor correctly from string"() {
@@ -179,7 +179,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 		ReactivePowerCharacteristic.parse("nonSense:{bli,bla,blob}")
 
 		then:
-		IllegalArgumentException exception = thrown(IllegalArgumentException)
+		ParsingException exception = thrown(ParsingException)
 		exception.message == "Cannot parse 'nonSense:{bli,bla,blob}' to a reactive power characteristic, as it does " +
 				"not meet the specifications of any of the available classes."
 	}

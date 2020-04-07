@@ -5,8 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
+import edu.ie3.datamodel.exceptions.ParsingException;
 import java.util.SortedSet;
-import java.util.regex.Pattern;
 import javax.measure.Unit;
 import javax.measure.quantity.Dimensionless;
 
@@ -22,12 +22,12 @@ public abstract class ReactivePowerCharacteristic
 
   public ReactivePowerCharacteristic(
       String input,
-      Pattern matchingPattern,
       Unit<Dimensionless> abscissaUnit,
       Unit<Dimensionless> ordinateUnit,
       String prefix,
-      int decimalPlaces) {
-    super(input, matchingPattern, abscissaUnit, ordinateUnit, prefix, decimalPlaces);
+      int decimalPlaces)
+      throws ParsingException {
+    super(input, abscissaUnit, ordinateUnit, prefix, decimalPlaces);
   }
 
   /**
@@ -37,12 +37,12 @@ public abstract class ReactivePowerCharacteristic
    * @param input String to parse
    * @return Matching reactive power characteristic
    */
-  public static ReactivePowerCharacteristic parse(String input) {
-    if (CosPhiFixed.MATCHING_PATTERN.matcher(input).matches()) return new CosPhiFixed(input);
-    else if (CosPhiP.MATCHING_PATTERN.matcher(input).matches()) return new CosPhiP(input);
-    else if (QV.MATCHING_PATTERN.matcher(input).matches()) return new QV(input);
+  public static ReactivePowerCharacteristic parse(String input) throws ParsingException {
+    if (input.startsWith(CosPhiFixed.PREFIX + ":{")) return new CosPhiFixed(input);
+    else if (input.startsWith(CosPhiP.PREFIX + ":{")) return new CosPhiP(input);
+    else if (input.startsWith(QV.PREFIX + ":{")) return new QV(input);
     else
-      throw new IllegalArgumentException(
+      throw new ParsingException(
           "Cannot parse '"
               + input
               + "' to a reactive power characteristic, as it does not meet the specifications of any of the available classes.");

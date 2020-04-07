@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.models.StandardUnits
@@ -19,7 +18,6 @@ import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
-import javax.measure.quantity.Power
 import java.time.ZonedDateTime
 
 class BmInputFactoryTest extends Specification implements FactoryTestHelper {
