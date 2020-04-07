@@ -205,6 +205,8 @@ public class CsvFileSink implements DataSink {
             .map(Extractor::extractOperator)
             .collect(Collectors.toSet());
 
+    // todo JH extract thermal units
+
     // persist all entities
     Stream.of(
             rawGridElements.allEntitiesAsList(),

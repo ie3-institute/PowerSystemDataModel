@@ -178,14 +178,14 @@ public abstract class CsvDataSource {
     Collection<T> distinctUuidEntities = ValidationUtils.distinctUuidSet(entities);
     if (distinctUuidEntities.size() != entities.size()) {
       log.warn(
-          "Duplicate UUIDs found and removed in file with '{}' entities. It is highly advisable to revise the file!",
+          "Duplicate UUIDs found and removed in file with '{}' entities. It is highly advisable to revise the input file!",
           entity.getSimpleName());
       return new HashSet<>(distinctUuidEntities);
     }
     return new HashSet<>(entities);
   }
 
-  protected <T extends AssetInput> Stream<Optional<AssetInputEntityData>> buildAssetInputEntityData(
+  protected <T extends AssetInput> Stream<AssetInputEntityData> buildAssetInputEntityData(
       Class<T> entityClass, Collection<OperatorInput> operators) {
 
     return buildStreamWithFieldsToAttributesMap(entityClass, connector)
@@ -201,8 +201,7 @@ public abstract class CsvDataSource {
                   .keySet()
                   .removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
 
-              return Optional.of(
-                  new AssetInputEntityData(fieldsToAttributes, entityClass, operator));
+              return new AssetInputEntityData(fieldsToAttributes, entityClass, operator);
             });
   }
 }

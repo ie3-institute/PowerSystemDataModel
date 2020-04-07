@@ -73,8 +73,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     Collection<Transformer3WTypeInput> transformer3WTypeInputs = typeSource.getTransformer3WTypes();
 
     /// assets incl. filter of unique entities + warning if duplicate uuids got filtered out
-    Set<NodeInput> nodes =
-        checkForUuidDuplicates(NodeInput.class, readNodes(operators).collect(Collectors.toSet()));
+    Set<NodeInput> nodes = checkForUuidDuplicates(NodeInput.class, getNodes(operators));
 
     List<Optional<LineInput>> invalidLines = new CopyOnWriteArrayList<>();
     List<Optional<Transformer2WInput>> invalidTrafo2Ws = new CopyOnWriteArrayList<>();
@@ -152,12 +151,18 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
   @Override
   public Set<NodeInput> getNodes() {
-    return readNodes(typeSource.getOperators()).collect(Collectors.toSet());
+
+    return filterEmptyOptionals(
+            buildAssetInputEntityData(NodeInput.class, typeSource.getOperators())
+                .map(nodeInputFactory::getEntity))
+        .collect(Collectors.toSet());
   }
 
   @Override
   public Set<NodeInput> getNodes(Collection<OperatorInput> operators) {
-    return readNodes(operators).collect(Collectors.toSet());
+    return filterEmptyOptionals(
+            buildAssetInputEntityData(NodeInput.class, operators).map(nodeInputFactory::getEntity))
+        .collect(Collectors.toSet());
   }
 
   @Override
@@ -232,33 +237,6 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   public Set<MeasurementUnitInput> getMeasurementUnits(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
     return filterEmptyOptionals(readMeasurementUnits(nodes, operators)).collect(Collectors.toSet());
-  }
-
-  private Stream<NodeInput> readNodes(Collection<OperatorInput> operators) {
-    final Class<NodeInput> entityClass = NodeInput.class;
-
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
-        .map(
-            fieldsToAttributes -> {
-
-              // get the operator
-              OperatorInput nodeOperator =
-                  getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR));
-
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes
-                  .keySet()
-                  .removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
-
-              // build the asset data
-              AssetInputEntityData data =
-                  new AssetInputEntityData(fieldsToAttributes, entityClass, nodeOperator);
-
-              // build the model
-              return nodeInputFactory.getEntity(data);
-            })
-        .filter(Optional::isPresent)
-        .map(Optional::get);
   }
 
   private Stream<Optional<LineInput>> readLines(
