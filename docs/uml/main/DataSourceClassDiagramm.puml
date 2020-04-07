@@ -62,6 +62,9 @@ interface AssetDataSource {
 }
 AssetDataSource 	--|> DataSource
 
+interface ThermalSource
+ThermalSource --|> DataSource
+
 interface TypeDataSource {
 {abstract}Future<TypeData> fetchTypeData()
 {abstract}Future<List<EVTypeModel>> fetchEvTypes()

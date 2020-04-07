@@ -19,7 +19,7 @@ import java.util.Set;
  * @version 0.1
  * @since 07.04.20
  */
-public interface ThermalSource {
+public interface ThermalSource extends DataSource{
 
   Collection<ThermalBusInput> getThermalBuses();
 
