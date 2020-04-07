@@ -25,7 +25,7 @@ public class PvInputFactory
   private static final String KT = "kt";
   private static final String MARKET_REACTION = "marketreaction";
   private static final String S_RATED = "srated";
-  private static final String COS_PHI = "cosphi";
+  private static final String COS_PHI = "cosphirated";
 
   public PvInputFactory() {
     super(PvInput.class);

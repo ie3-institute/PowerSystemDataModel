@@ -22,11 +22,11 @@ public class LoadInputFactory
     extends SystemParticipantInputEntityFactory<LoadInput, SystemParticipantEntityData> {
   private static final Logger logger = LoggerFactory.getLogger(LoadInputFactory.class);
 
-  private static final String SLP = "slp";
+  private static final String SLP = "standardloadprofile";
   private static final String DSM = "dsm";
   private static final String E_CONS_ANNUAL = "econsannual";
   private static final String S_RATED = "srated";
-  private static final String COS_PHI = "cosphi";
+  private static final String COS_PHI = "cosphirated";
 
   public LoadInputFactory() {
     super(LoadInput.class);

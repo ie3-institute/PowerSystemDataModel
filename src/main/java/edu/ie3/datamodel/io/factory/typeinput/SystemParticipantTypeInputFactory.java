@@ -25,7 +25,7 @@ public class SystemParticipantTypeInputFactory
   // SystemParticipantTypeInput parameters
   private static final String CAP_EX = "capex";
   private static final String OP_EX = "opex";
-  private static final String S_RATED       = "srated";
+  private static final String S_RATED = "srated";
   private static final String COS_PHI_RATED = "cosphirated";
 
   // required in multiple types

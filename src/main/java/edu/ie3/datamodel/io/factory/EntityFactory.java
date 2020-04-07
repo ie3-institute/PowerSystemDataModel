@@ -72,8 +72,10 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
   private void isValidClass(Class<? extends UniqueEntity> entityClass) {
     if (!classes.contains(entityClass))
       throw new FactoryException(
-          "Cannot process " + entityClass.getSimpleName() + ".class with this factory!\nThis factory can only process the following classes:\n - " +
-          classes.stream().map(Class::getSimpleName).collect(Collectors.joining("\n - ")));
+          "Cannot process "
+              + entityClass.getSimpleName()
+              + ".class with this factory!\nThis factory can only process the following classes:\n - "
+              + classes.stream().map(Class::getSimpleName).collect(Collectors.joining("\n - ")));
   }
 
   /**
