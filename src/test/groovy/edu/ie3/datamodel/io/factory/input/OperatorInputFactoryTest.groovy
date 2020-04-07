@@ -20,7 +20,7 @@ class OperatorInputFactoryTest extends Specification {
 		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
 	}
 
-	def "An OperatorInputFactory should parse a valid NodeInput correctly"() {
+	def "An OperatorInputFactory should parse a valid OperatorInput correctly"() {
 		given: "a system participant input type factory and model data"
 		def inputFactory = new OperatorInputFactory()
 		Map<String, String> parameter = [
