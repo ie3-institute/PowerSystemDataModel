@@ -9,7 +9,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
-import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
+import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
@@ -17,9 +17,9 @@ import tec.uom.se.quantity.Quantities
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Speed
 
-class WecCharacteristicTest extends Specification {
+class OlmCharacteristicTest extends Specification {
 	@Shared
-	WecCharacteristicInput validInput
+	OlmCharacteristicInput validInput
 
 	def setupSpec() {
 		SortedSet<CharacteristicCoordinate<Speed, Dimensionless>> coordinates = [
@@ -31,35 +31,35 @@ class WecCharacteristicTest extends Specification {
 			Quantities.getQuantity(0.20, PU))
 		] as SortedSet
 
-		validInput = new WecCharacteristicInput(
-				UUID.fromString("9fee3c6c-4b00-4807-8eb1-1e1e4bbe52ac"),
+		validInput = new OlmCharacteristicInput(
+				UUID.fromString("53bee0c7-35f2-4c89-bdca-c30636face82"),
 				coordinates
 				)
 	}
 
-	def "A WecCharacteristicInput is correctly de-serialized"() {
+	def "A OlmCharacteristicInput is correctly de-serialized"() {
 		when:
 		String actual = validInput.deSerialize()
 
 		then:
-		actual == "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}"
+		actual == "olm:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}"
 	}
 
-	def "A WecCharacteristicInput is correctly set up from a correctly formatted string"() {
+	def "A OlmCharacteristicInput is correctly set up from a correctly formatted string"() {
 		when:
-		WecCharacteristicInput actual = new WecCharacteristicInput(UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512"), "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
+		OlmCharacteristicInput actual = new OlmCharacteristicInput(UUID.fromString("c039ca9a-4e69-4570-8f63-d2d67d775dfa"), "olm:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
 
 		then:
-		actual.uuid == UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512")
+		actual.uuid == UUID.fromString("c039ca9a-4e69-4570-8f63-d2d67d775dfa")
 		actual.coordinates == validInput.coordinates
 	}
 
-	def "A WecCharacteristicInput throws an exception if it should be set up from a malformed string"() {
+	def "A OlmCharacteristicInput throws an exception if it should be set up from a malformed string"() {
 		when:
-		new WecCharacteristicInput(UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512"), "cP:{(10.00),(15.00),(20.00)}")
+		new OlmCharacteristicInput(UUID.fromString("e1aca1cb-793d-4f36-8b7c-e64e7e6e8c47"), "olm:{(10.00),(15.00),(20.00)}")
 
 		then:
 		IllegalArgumentException exception = thrown(IllegalArgumentException)
-		exception.message == "The given input 'cP:{(10.00),(15.00),(20.00)}' is not a valid representation."
+		exception.message == "The given input 'olm:{(10.00),(15.00),(20.00)}' is not a valid representation."
 	}
 }

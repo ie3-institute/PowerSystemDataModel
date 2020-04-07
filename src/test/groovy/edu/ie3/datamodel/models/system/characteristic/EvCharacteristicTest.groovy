@@ -53,4 +53,13 @@ class EvCharacteristicTest extends Specification {
 		actual.uuid == UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512")
 		actual.coordinates == validInput.coordinates
 	}
+
+	def "A EvCharacteristicInput throws an exception if it should be set up from a malformed string"() {
+		when:
+		new EvCharacteristicInput(UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512"), "ev:{(10.00),(15.00),(20.00)}")
+
+		then:
+		IllegalArgumentException exception = thrown(IllegalArgumentException)
+		exception.message == "The given input 'ev:{(10.00),(15.00),(20.00)}' is not a valid representation."
+	}
 }

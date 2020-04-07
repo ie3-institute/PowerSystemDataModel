@@ -38,6 +38,13 @@ public abstract class ReactivePowerCharacteristic<A extends Quantity<A>>
     super(uuid, input, matchingPattern, abscissaUnit, ordinateUnit, prefix, decimalPlaces);
   }
 
+  /**
+   * Parses a given input to a valid reactive power characteristic, if it is recognized correctly.
+   * Otherwise, an IllegalArgumentException is thrown.
+   *
+   * @param input String to parse
+   * @return Matching reactive power characteristic
+   */
   public static ReactivePowerCharacteristic<?> parse(String input) {
     if (CosPhiFixed.MATCHING_PATTERN.matcher(input).matches())
       return new CosPhiFixed(UUID.randomUUID(), input);

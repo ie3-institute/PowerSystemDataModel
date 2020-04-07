@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
+import java.util.regex.Pattern
+
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
 import static edu.ie3.util.quantities.PowerSystemUnits.PERCENT
 
@@ -58,6 +60,17 @@ class CharacteristicCoordinateTest extends Specification {
 		}
 	}
 
+	def "The CharacteristicCoordinate has the correct pattern to recognize a pair of double values"() {
+		given: "An expected Pattern"
+		String expected = "\\(([+-]?\\d+\\.?\\d*),([+-]?\\d+\\.?\\d*)\\)"
+
+		when: "getting the actual pattern"
+		Pattern actual = CharacteristicCoordinate.MATCHING_PATTERN
+
+		then: "it has the same content"
+		actual.pattern == expected
+	}
+
 	def "An CharacteristicCoordinate is de-serialized correctly"() {
 		given: "A coordinate"
 		CharacteristicCoordinate<Power, Dimensionless> coordinate =
@@ -100,9 +113,27 @@ class CharacteristicCoordinateTest extends Specification {
 		CharacteristicCoordinate.getXFromString("(3,4)") - 3.0 < 1E-12
 	}
 
+	def "The CharacteristicCoordinate throws an exception, when the String is malformed on extraction of abscissa value"() {
+		when:
+		CharacteristicCoordinate.getXFromString("3.0")
+
+		then:
+		IllegalArgumentException exception = thrown(IllegalArgumentException)
+		exception.message == "The given input '3.0' is not a valid representation of a CharacteristicCoordinate."
+	}
+
 	def "The CharacteristicCoordinate is able to correctly extract the ordinate value from properly formatted string"() {
 		expect:
 		CharacteristicCoordinate.getYFromString("(3.00,4.00)") - 4.0 < 1E-12
 		CharacteristicCoordinate.getYFromString("(3,4)") - 4.0 < 1E-12
+	}
+
+	def "The CharacteristicCoordinate throws an exception, when the String is malformed on extraction of ordinate value"() {
+		when:
+		CharacteristicCoordinate.getYFromString("3.0")
+
+		then:
+		IllegalArgumentException exception = thrown(IllegalArgumentException)
+		exception.message == "The given input '3.0' is not a valid representation of a CharacteristicCoordinate."
 	}
 }
