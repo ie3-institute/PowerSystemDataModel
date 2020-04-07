@@ -77,8 +77,8 @@ class CharacteristicCoordinateTest extends Specification {
 		CharacteristicCoordinate<Dimensionless, Dimensionless> actual = new CharacteristicCoordinate<>(input, PU, PU)
 
 		then: "it has correct values"
-		actual.x.getValue().doubleValue() == x
-		actual.y.getValue().doubleValue() == y
+		actual.x.value.doubleValue() == x
+		actual.y.value.doubleValue() == y
 
 		where: "different inputs are tested"
 		input 			|| x 	|| y
