@@ -19,14 +19,10 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * //ToDo: Class Description Nothing is buffered -> for performance one might consider reading
@@ -37,8 +33,6 @@ import org.apache.logging.log4j.Logger;
  * @since 03.04.20
  */
 public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
-
-  private static final Logger log = LogManager.getLogger(CsvRawGridSource.class);
 
   // general fields
   private final CsvFileConnector connector;
@@ -62,12 +56,12 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     this.typeSource = typeSource;
 
     // init factories
-    nodeInputFactory = new NodeInputFactory();
-    lineInputFactory = new LineInputFactory();
-    transformer2WInputFactory = new Transformer2WInputFactory();
-    transformer3WInputFactory = new Transformer3WInputFactory();
-    switchInputFactory = new SwitchInputFactory();
-    measurementUnitInputFactory = new MeasurementUnitInputFactory();
+    this.nodeInputFactory = new NodeInputFactory();
+    this.lineInputFactory = new LineInputFactory();
+    this.transformer2WInputFactory = new Transformer2WInputFactory();
+    this.transformer3WInputFactory = new Transformer3WInputFactory();
+    this.switchInputFactory = new SwitchInputFactory();
+    this.measurementUnitInputFactory = new MeasurementUnitInputFactory();
   }
 
   @Override
@@ -170,7 +164,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   @Override
   public Collection<LineInput> getLines() {
     return filterEmptyOptionals(
-        readLines(getNodes(), typeSource.getLineTypes(), typeSource.getOperators()));
+            readLines(getNodes(), typeSource.getLineTypes(), typeSource.getOperators()))
+        .collect(Collectors.toSet());
   }
 
   @Override
@@ -178,14 +173,16 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Collection<NodeInput> nodes,
       Collection<LineTypeInput> lineTypeInputs,
       Collection<OperatorInput> operators) {
-    return filterEmptyOptionals(readLines(nodes, lineTypeInputs, operators));
+    return filterEmptyOptionals(readLines(nodes, lineTypeInputs, operators))
+        .collect(Collectors.toSet());
   }
 
   @Override
   public Collection<Transformer2WInput> get2WTransformers() {
     return filterEmptyOptionals(
-        read2WTransformers(
-            getNodes(), typeSource.getTransformer2WTypes(), typeSource.getOperators()));
+            read2WTransformers(
+                getNodes(), typeSource.getTransformer2WTypes(), typeSource.getOperators()))
+        .collect(Collectors.toSet());
   }
 
   @Override
@@ -193,14 +190,16 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Collection<NodeInput> nodes,
       Collection<Transformer2WTypeInput> transformer2WTypes,
       Collection<OperatorInput> operators) {
-    return filterEmptyOptionals(read2WTransformers(nodes, transformer2WTypes, operators));
+    return filterEmptyOptionals(read2WTransformers(nodes, transformer2WTypes, operators))
+        .collect(Collectors.toSet());
   }
 
   @Override
   public Collection<Transformer3WInput> get3WTransformers() {
     return filterEmptyOptionals(
-        read3WTransformers(
-            getNodes(), typeSource.getTransformer3WTypes(), typeSource.getOperators()));
+            read3WTransformers(
+                getNodes(), typeSource.getTransformer3WTypes(), typeSource.getOperators()))
+        .collect(Collectors.toSet());
   }
 
   @Override
@@ -208,473 +207,381 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Collection<NodeInput> nodes,
       Collection<Transformer3WTypeInput> transformer3WTypeInputs,
       Collection<OperatorInput> operators) {
-    return filterEmptyOptionals(read3WTransformers(nodes, transformer3WTypeInputs, operators));
+    return filterEmptyOptionals(read3WTransformers(nodes, transformer3WTypeInputs, operators))
+        .collect(Collectors.toSet());
   }
 
   @Override
   public Collection<SwitchInput> getSwitches() {
-    return filterEmptyOptionals(readSwitches(getNodes(), typeSource.getOperators()));
+    return filterEmptyOptionals(readSwitches(getNodes(), typeSource.getOperators()))
+        .collect(Collectors.toSet());
   }
 
   @Override
   public Collection<SwitchInput> getSwitches(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
-    return filterEmptyOptionals(readSwitches(nodes, operators));
+    return filterEmptyOptionals(readSwitches(nodes, operators)).collect(Collectors.toSet());
   }
 
   @Override
   public Collection<MeasurementUnitInput> getMeasurementUnits() {
-    return filterEmptyOptionals(readMeasurementUnits(getNodes(), typeSource.getOperators()));
+    return filterEmptyOptionals(readMeasurementUnits(getNodes(), typeSource.getOperators()))
+        .collect(Collectors.toSet());
   }
 
   @Override
   public Collection<MeasurementUnitInput> getMeasurementUnits(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
-    return filterEmptyOptionals(readMeasurementUnits(nodes, operators));
+    return filterEmptyOptionals(readMeasurementUnits(nodes, operators)).collect(Collectors.toSet());
   }
 
   private Collection<NodeInput> readNodes(Collection<OperatorInput> operators) {
-    Set<NodeInput> resultingAssets = new HashSet<>();
     final Class<NodeInput> entityClass = NodeInput.class;
 
-    try (BufferedReader reader = connector.getReader(entityClass)) {
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
+        .map(
+            fieldsToAttributes -> {
 
-      final String[] headline = readHeadline(reader);
-      resultingAssets =
-          reader
-              .lines()
-              .parallel()
-              .map(
-                  csvRow -> {
-                    Map<String, String> fieldsToAttributes =
-                        buildFieldsToAttributes(csvRow, headline);
+              // get the operator
+              OperatorInput nodeOperator =
+                  getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR));
 
-                    // get the operator
-                    OperatorInput nodeOperator =
-                        getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR));
+              // remove fields that are passed as objects to constructor
+              fieldsToAttributes
+                  .keySet()
+                  .removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
 
-                    // remove fields that are passed as objects to constructor
-                    fieldsToAttributes
-                        .keySet()
-                        .removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
+              // build the asset data
+              AssetInputEntityData data =
+                  new AssetInputEntityData(fieldsToAttributes, entityClass, nodeOperator);
 
-                    // build the asset data
-                    AssetInputEntityData data =
-                        new AssetInputEntityData(fieldsToAttributes, entityClass, nodeOperator);
-
-                    // build the model
-                    return nodeInputFactory.getEntity(data);
-                  })
-              .filter(Optional::isPresent)
-              .map(Optional::get)
-              .collect(Collectors.toSet());
-
-    } catch (IOException e) {
-      logIOExceptionFromConnector(NodeInput.class, e);
-    }
-
-    return resultingAssets;
+              // build the model
+              return nodeInputFactory.getEntity(data);
+            })
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.toSet());
   }
 
   private Collection<Optional<LineInput>> readLines(
       Collection<NodeInput> nodes,
       Collection<LineTypeInput> lineTypeInputs,
       Collection<OperatorInput> operators) {
-    Set<Optional<LineInput>> resultingAssets = new HashSet<>();
 
     final Class<LineInput> entityClass = LineInput.class;
 
-    try (BufferedReader reader = connector.getReader(entityClass)) {
-      String[] headline = readHeadline(reader);
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
+        .map(
+            fieldsToAttributes -> {
 
-      resultingAssets =
-          reader
-              .lines()
-              .parallel()
-              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-              .map(
-                  fieldsToAttributes -> {
+              // get the line nodes
+              String nodeBUuid = fieldsToAttributes.get(NODE_B);
+              Optional<NodeInput> nodeA = findNodeByUuid(fieldsToAttributes.get(NODE_A), nodes);
+              Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
 
-                    // get the line nodes
-                    String nodeBUuid = fieldsToAttributes.get(NODE_B);
-                    Optional<NodeInput> nodeA =
-                        findNodeByUuid(fieldsToAttributes.get(NODE_A), nodes);
-                    Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
+              // get the line type
+              String typeUuid = fieldsToAttributes.get("type");
+              Optional<LineTypeInput> lineType = findTypeByUuid(typeUuid, lineTypeInputs);
 
-                    // get the line type
-                    String typeUuid = fieldsToAttributes.get("type");
-                    Optional<LineTypeInput> lineType = findTypeByUuid(typeUuid, lineTypeInputs);
+              // if nodeA, nodeB or the type are not present we return an empty element and
+              // log a warning
+              Optional<LineInput> lineOpt;
+              if (!nodeA.isPresent() || !nodeB.isPresent() || !lineType.isPresent()) {
+                lineOpt = Optional.empty();
 
-                    // if nodeA, nodeB or the type are not present we return an empty element and
-                    // log a warning
-                    Optional<LineInput> lineOpt;
-                    if (!nodeA.isPresent() || !nodeB.isPresent() || !lineType.isPresent()) {
-                      lineOpt = Optional.empty();
+                String debugString =
+                    Stream.of(
+                            new AbstractMap.SimpleEntry<>(
+                                nodeA, NODE_A + ": " + fieldsToAttributes.get(NODE_A)),
+                            new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid),
+                            new AbstractMap.SimpleEntry<>(lineType, TYPE + ": " + typeUuid))
+                        .filter(entry -> !entry.getKey().isPresent())
+                        .map(AbstractMap.SimpleEntry::getValue)
+                        .collect(Collectors.joining("\n"));
 
-                      String debugString =
-                          Stream.of(
-                                  new AbstractMap.SimpleEntry<>(
-                                      nodeA, NODE_A + ": " + fieldsToAttributes.get(NODE_A)),
-                                  new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid),
-                                  new AbstractMap.SimpleEntry<>(lineType, TYPE + ": " + typeUuid))
-                              .filter(entry -> !entry.getKey().isPresent())
-                              .map(AbstractMap.SimpleEntry::getValue)
-                              .collect(Collectors.joining("\n"));
+                logSkippingWarning(
+                    "line",
+                    fieldsToAttributes.get("uuid"),
+                    fieldsToAttributes.get("id"),
+                    debugString);
 
-                      logSkippingWarning(
-                          "line",
-                          fieldsToAttributes.get("uuid"),
-                          fieldsToAttributes.get("id"),
-                          debugString);
+              } else {
 
-                    } else {
+                // remove fields that are passed as objects to constructor
+                fieldsToAttributes
+                    .keySet()
+                    .removeAll(new HashSet<>(Arrays.asList(OPERATOR, NODE_A, NODE_B, "type")));
 
-                      // remove fields that are passed as objects to constructor
-                      fieldsToAttributes
-                          .keySet()
-                          .removeAll(
-                              new HashSet<>(Arrays.asList(OPERATOR, NODE_A, NODE_B, "type")));
+                // build the asset data
+                LineInputEntityData data =
+                    new LineInputEntityData(
+                        fieldsToAttributes,
+                        entityClass,
+                        getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
+                        nodeA.get(),
+                        nodeB.get(),
+                        lineType.get());
+                // build the model
+                lineOpt = lineInputFactory.getEntity(data);
+              }
 
-                      // build the asset data
-                      LineInputEntityData data =
-                          new LineInputEntityData(
-                              fieldsToAttributes,
-                              entityClass,
-                              getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
-                              nodeA.get(),
-                              nodeB.get(),
-                              lineType.get());
-                      // build the model
-                      lineOpt = lineInputFactory.getEntity(data);
-                    }
-
-                    return lineOpt;
-                  })
-              .collect(Collectors.toSet());
-
-    } catch (IOException e) {
-      logIOExceptionFromConnector(LineInput.class, e);
-    }
-
-    return resultingAssets;
+              return lineOpt;
+            })
+        .collect(Collectors.toSet());
   }
 
   private Collection<Optional<Transformer2WInput>> read2WTransformers(
       Collection<NodeInput> nodes,
       Collection<Transformer2WTypeInput> transformer2WTypes,
       Collection<OperatorInput> operators) {
-    Set<Optional<Transformer2WInput>> resultingAssets = new HashSet<>();
 
     final Class<Transformer2WInput> entityClass = Transformer2WInput.class;
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
+        .map(
+            fieldsToAttributes -> {
 
-    try (BufferedReader reader = connector.getReader(entityClass)) {
-      String[] headline = readHeadline(reader);
+              // get the transformer nodes
+              String nodeAUuid = fieldsToAttributes.get(NODE_A);
+              String nodeBUuid = fieldsToAttributes.get(NODE_B);
+              Optional<NodeInput> nodeA = findNodeByUuid(nodeAUuid, nodes);
+              Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
 
-      resultingAssets =
-          reader
-              .lines()
-              .parallel()
-              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-              .map(
-                  fieldsToAttributes -> {
+              // get the transformer type
+              String typeUuid = fieldsToAttributes.get("type");
+              Optional<Transformer2WTypeInput> transformerType =
+                  findTypeByUuid(typeUuid, transformer2WTypes);
 
-                    // get the transformer nodes
-                    String nodeAUuid = fieldsToAttributes.get(NODE_A);
-                    String nodeBUuid = fieldsToAttributes.get(NODE_B);
-                    Optional<NodeInput> nodeA = findNodeByUuid(nodeAUuid, nodes);
-                    Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
+              // if nodeA, nodeB or the type are not present we return an empty element and
+              // log a warning
+              Optional<Transformer2WInput> trafo2WOpt;
+              if (!nodeA.isPresent() || !nodeB.isPresent() || !transformerType.isPresent()) {
+                trafo2WOpt = Optional.empty();
 
-                    // get the transformer type
-                    String typeUuid = fieldsToAttributes.get("type");
-                    Optional<Transformer2WTypeInput> transformerType =
-                        findTypeByUuid(typeUuid, transformer2WTypes);
+                String debugString =
+                    Stream.of(
+                            new AbstractMap.SimpleEntry<>(nodeA, NODE_A + ": " + nodeAUuid),
+                            new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid),
+                            new AbstractMap.SimpleEntry<>(transformerType, TYPE + ": " + typeUuid))
+                        .filter(entry -> !entry.getKey().isPresent())
+                        .map(AbstractMap.SimpleEntry::getValue)
+                        .collect(Collectors.joining("\n"));
 
-                    // if nodeA, nodeB or the type are not present we return an empty element and
-                    // log a warning
-                    Optional<Transformer2WInput> trafo2WOpt;
-                    if (!nodeA.isPresent() || !nodeB.isPresent() || !transformerType.isPresent()) {
-                      trafo2WOpt = Optional.empty();
+                logSkippingWarning(
+                    "2 winding transformer",
+                    fieldsToAttributes.get("uuid"),
+                    fieldsToAttributes.get("id"),
+                    debugString);
 
-                      String debugString =
-                          Stream.of(
-                                  new AbstractMap.SimpleEntry<>(nodeA, NODE_A + ": " + nodeAUuid),
-                                  new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid),
-                                  new AbstractMap.SimpleEntry<>(
-                                      transformerType, TYPE + ": " + typeUuid))
-                              .filter(entry -> !entry.getKey().isPresent())
-                              .map(AbstractMap.SimpleEntry::getValue)
-                              .collect(Collectors.joining("\n"));
+              } else {
 
-                      logSkippingWarning(
-                          "2 winding transformer",
-                          fieldsToAttributes.get("uuid"),
-                          fieldsToAttributes.get("id"),
-                          debugString);
+                // remove fields that are passed as objects to constructor
+                fieldsToAttributes
+                    .keySet()
+                    .removeAll(new HashSet<>(Arrays.asList(OPERATOR, NODE_A, NODE_B, "type")));
 
-                    } else {
+                // build the asset data
+                Transformer2WInputEntityData data =
+                    new Transformer2WInputEntityData(
+                        fieldsToAttributes,
+                        entityClass,
+                        getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
+                        nodeA.get(),
+                        nodeB.get(),
+                        transformerType.get());
+                // build the model
+                trafo2WOpt = transformer2WInputFactory.getEntity(data);
+              }
 
-                      // remove fields that are passed as objects to constructor
-                      fieldsToAttributes
-                          .keySet()
-                          .removeAll(
-                              new HashSet<>(Arrays.asList(OPERATOR, NODE_A, NODE_B, "type")));
-
-                      // build the asset data
-                      Transformer2WInputEntityData data =
-                          new Transformer2WInputEntityData(
-                              fieldsToAttributes,
-                              entityClass,
-                              getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
-                              nodeA.get(),
-                              nodeB.get(),
-                              transformerType.get());
-                      // build the model
-                      trafo2WOpt = transformer2WInputFactory.getEntity(data);
-                    }
-
-                    return trafo2WOpt;
-                  })
-              .collect(Collectors.toSet());
-
-    } catch (IOException e) {
-      logIOExceptionFromConnector(Transformer2WInput.class, e);
-    }
-
-    return resultingAssets;
+              return trafo2WOpt;
+            })
+        .collect(Collectors.toSet());
   }
 
   private Collection<Optional<Transformer3WInput>> read3WTransformers(
       Collection<NodeInput> nodes,
       Collection<Transformer3WTypeInput> transformer3WTypes,
       Collection<OperatorInput> operators) {
-    Set<Optional<Transformer3WInput>> resultingAssets = new HashSet<>();
 
     final Class<Transformer3WInput> entityClass = Transformer3WInput.class;
 
-    try (BufferedReader reader = connector.getReader(entityClass)) {
-      String[] headline = readHeadline(reader);
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
+        .map(
+            fieldsToAttributes -> {
 
-      resultingAssets =
-          reader
-              .lines()
-              .parallel()
-              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-              .map(
-                  fieldsToAttributes -> {
+              // get the transformer nodes
+              String nodeBUuid = fieldsToAttributes.get(NODE_B);
+              String nodeCUuid = fieldsToAttributes.get("nodeC");
+              Optional<NodeInput> nodeA = findNodeByUuid(fieldsToAttributes.get(NODE_A), nodes);
+              Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
+              Optional<NodeInput> nodeC = findNodeByUuid(nodeCUuid, nodes);
 
-                    // get the transformer nodes
-                    String nodeBUuid = fieldsToAttributes.get(NODE_B);
-                    String nodeCUuid = fieldsToAttributes.get("nodeC");
-                    Optional<NodeInput> nodeA =
-                        findNodeByUuid(fieldsToAttributes.get(NODE_A), nodes);
-                    Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
-                    Optional<NodeInput> nodeC = findNodeByUuid(nodeCUuid, nodes);
+              // get the transformer type
+              String typeUuid = fieldsToAttributes.get("type");
+              Optional<Transformer3WTypeInput> transformerType =
+                  findTypeByUuid(typeUuid, transformer3WTypes);
 
-                    // get the transformer type
-                    String typeUuid = fieldsToAttributes.get("type");
-                    Optional<Transformer3WTypeInput> transformerType =
-                        findTypeByUuid(typeUuid, transformer3WTypes);
+              // if nodeA, nodeB or the type are not present we return an empty element and
+              // log a warning
+              Optional<Transformer3WInput> trafo3WOpt;
+              if (!nodeA.isPresent()
+                  || !nodeB.isPresent()
+                  || !nodeC.isPresent()
+                  || !transformerType.isPresent()) {
+                trafo3WOpt = Optional.empty();
 
-                    // if nodeA, nodeB or the type are not present we return an empty element and
-                    // log a warning
-                    Optional<Transformer3WInput> trafo3WOpt;
-                    if (!nodeA.isPresent()
-                        || !nodeB.isPresent()
-                        || !nodeC.isPresent()
-                        || !transformerType.isPresent()) {
-                      trafo3WOpt = Optional.empty();
+                String debugString =
+                    Stream.of(
+                            new AbstractMap.SimpleEntry<>(
+                                nodeA, NODE_A + ": " + fieldsToAttributes.get(NODE_A)),
+                            new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid),
+                            new AbstractMap.SimpleEntry<>(nodeC, "node_c: " + nodeCUuid),
+                            new AbstractMap.SimpleEntry<>(transformerType, TYPE + ": " + typeUuid))
+                        .filter(entry -> !entry.getKey().isPresent())
+                        .map(AbstractMap.SimpleEntry::getValue)
+                        .collect(Collectors.joining("\n"));
 
-                      String debugString =
-                          Stream.of(
-                                  new AbstractMap.SimpleEntry<>(
-                                      nodeA, NODE_A + ": " + fieldsToAttributes.get(NODE_A)),
-                                  new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid),
-                                  new AbstractMap.SimpleEntry<>(nodeC, "node_c: " + nodeCUuid),
-                                  new AbstractMap.SimpleEntry<>(
-                                      transformerType, TYPE + ": " + typeUuid))
-                              .filter(entry -> !entry.getKey().isPresent())
-                              .map(AbstractMap.SimpleEntry::getValue)
-                              .collect(Collectors.joining("\n"));
+                logSkippingWarning(
+                    "3 winding transformer",
+                    fieldsToAttributes.get("uuid"),
+                    fieldsToAttributes.get("id"),
+                    debugString);
 
-                      logSkippingWarning(
-                          "3 winding transformer",
-                          fieldsToAttributes.get("uuid"),
-                          fieldsToAttributes.get("id"),
-                          debugString);
+              } else {
 
-                    } else {
+                // remove fields that are passed as objects to constructor
+                fieldsToAttributes
+                    .keySet()
+                    .removeAll(
+                        new HashSet<>(Arrays.asList(OPERATOR, NODE_A, NODE_B, "nodeC", "type")));
 
-                      // remove fields that are passed as objects to constructor
-                      fieldsToAttributes
-                          .keySet()
-                          .removeAll(
-                              new HashSet<>(
-                                  Arrays.asList(OPERATOR, NODE_A, NODE_B, "nodeC", "type")));
+                // build the asset data
+                Transformer3WInputEntityData data =
+                    new Transformer3WInputEntityData(
+                        fieldsToAttributes,
+                        entityClass,
+                        getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
+                        nodeA.get(),
+                        nodeB.get(),
+                        nodeC.get(),
+                        transformerType.get());
+                // build the model
+                trafo3WOpt = transformer3WInputFactory.getEntity(data);
+              }
 
-                      // build the asset data
-                      Transformer3WInputEntityData data =
-                          new Transformer3WInputEntityData(
-                              fieldsToAttributes,
-                              entityClass,
-                              getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
-                              nodeA.get(),
-                              nodeB.get(),
-                              nodeC.get(),
-                              transformerType.get());
-                      // build the model
-                      trafo3WOpt = transformer3WInputFactory.getEntity(data);
-                    }
-
-                    return trafo3WOpt;
-                  })
-              .collect(Collectors.toSet());
-
-    } catch (IOException e) {
-      logIOExceptionFromConnector(Transformer3WInput.class, e);
-    }
-
-    return resultingAssets;
+              return trafo3WOpt;
+            })
+        .collect(Collectors.toSet());
   }
 
   private Collection<Optional<SwitchInput>> readSwitches(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
-    Set<Optional<SwitchInput>> resultingAssets = new HashSet<>();
 
     final Class<SwitchInput> entityClass = SwitchInput.class;
 
-    try (BufferedReader reader = connector.getReader(entityClass)) {
-      String[] headline = readHeadline(reader);
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
+        .map(
+            fieldsToAttributes -> {
 
-      resultingAssets =
-          reader
-              .lines()
-              .parallel()
-              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-              .map(
-                  fieldsToAttributes -> {
+              // get the switch nodes
+              String nodeAUuid = fieldsToAttributes.get(NODE_A);
+              String nodeBUuid = fieldsToAttributes.get(NODE_B);
+              Optional<NodeInput> nodeA = findNodeByUuid(nodeAUuid, nodes);
+              Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
 
-                    // get the switch nodes
-                    String nodeAUuid = fieldsToAttributes.get(NODE_A);
-                    String nodeBUuid = fieldsToAttributes.get(NODE_B);
-                    Optional<NodeInput> nodeA = findNodeByUuid(nodeAUuid, nodes);
-                    Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
+              // if nodeA or nodeB are not present we return an empty element and log a
+              // warning
+              Optional<SwitchInput> switchOpt;
+              if (!nodeA.isPresent() || !nodeB.isPresent()) {
+                switchOpt = Optional.empty();
 
-                    // if nodeA or nodeB are not present we return an empty element and log a
-                    // warning
-                    Optional<SwitchInput> switchOpt;
-                    if (!nodeA.isPresent() || !nodeB.isPresent()) {
-                      switchOpt = Optional.empty();
+                String debugString =
+                    Stream.of(
+                            new AbstractMap.SimpleEntry<>(nodeA, NODE_A + ": " + nodeAUuid),
+                            new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid))
+                        .filter(entry -> !entry.getKey().isPresent())
+                        .map(AbstractMap.SimpleEntry::getValue)
+                        .collect(Collectors.joining("\n"));
 
-                      String debugString =
-                          Stream.of(
-                                  new AbstractMap.SimpleEntry<>(nodeA, NODE_A + ": " + nodeAUuid),
-                                  new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid))
-                              .filter(entry -> !entry.getKey().isPresent())
-                              .map(AbstractMap.SimpleEntry::getValue)
-                              .collect(Collectors.joining("\n"));
+                logSkippingWarning(
+                    "switch",
+                    fieldsToAttributes.get("uuid"),
+                    fieldsToAttributes.get("id"),
+                    debugString);
 
-                      logSkippingWarning(
-                          "switch",
-                          fieldsToAttributes.get("uuid"),
-                          fieldsToAttributes.get("id"),
-                          debugString);
+              } else {
 
-                    } else {
+                // remove fields that are passed as objects to constructor
+                fieldsToAttributes
+                    .keySet()
+                    .removeAll(new HashSet<>(Arrays.asList(OPERATOR, NODE_A, NODE_B)));
 
-                      // remove fields that are passed as objects to constructor
-                      fieldsToAttributes
-                          .keySet()
-                          .removeAll(new HashSet<>(Arrays.asList(OPERATOR, NODE_A, NODE_B)));
+                // build the asset data
+                ConnectorInputEntityData data =
+                    new ConnectorInputEntityData(
+                        fieldsToAttributes,
+                        entityClass,
+                        getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
+                        nodeA.get(),
+                        nodeB.get());
+                // build the model
+                switchOpt = switchInputFactory.getEntity(data);
+              }
 
-                      // build the asset data
-                      ConnectorInputEntityData data =
-                          new ConnectorInputEntityData(
-                              fieldsToAttributes,
-                              entityClass,
-                              getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
-                              nodeA.get(),
-                              nodeB.get());
-                      // build the model
-                      switchOpt = switchInputFactory.getEntity(data);
-                    }
-
-                    return switchOpt;
-                  })
-              .collect(Collectors.toSet());
-
-    } catch (IOException e) {
-      logIOExceptionFromConnector(SwitchInput.class, e);
-    }
-
-    return resultingAssets;
+              return switchOpt;
+            })
+        .collect(Collectors.toSet());
   }
 
   private Collection<Optional<MeasurementUnitInput>> readMeasurementUnits(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
 
-    Set<Optional<MeasurementUnitInput>> resultingAssets = new HashSet<>();
-
     final Class<MeasurementUnitInput> entityClass = MeasurementUnitInput.class;
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
+        .map(
+            fieldsToAttributes -> {
 
-    try (BufferedReader reader = connector.getReader(entityClass)) {
-      String[] headline = readHeadline(reader);
+              // get the measurement unit node
+              String nodeUuid = fieldsToAttributes.get("node");
+              Optional<NodeInput> node = findNodeByUuid(nodeUuid, nodes);
 
-      resultingAssets =
-          reader
-              .lines()
-              .parallel()
-              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-              .map(
-                  fieldsToAttributes -> {
+              // if nodeA or nodeB are not present we return an empty element and log a
+              // warning
+              Optional<MeasurementUnitInput> measurementUnitOpt;
+              if (!node.isPresent()) {
+                measurementUnitOpt = Optional.empty();
 
-                    // get the measurement unit node
-                    String nodeUuid = fieldsToAttributes.get("node");
-                    Optional<NodeInput> node = findNodeByUuid(nodeUuid, nodes);
+                String debugString =
+                    Stream.of(new AbstractMap.SimpleEntry<>(node, "node: " + nodeUuid))
+                        .filter(entry -> !entry.getKey().isPresent())
+                        .map(AbstractMap.SimpleEntry::getValue)
+                        .collect(Collectors.joining("\n"));
 
-                    // if nodeA or nodeB are not present we return an empty element and log a
-                    // warning
-                    Optional<MeasurementUnitInput> measurementUnitOpt;
-                    if (!node.isPresent()) {
-                      measurementUnitOpt = Optional.empty();
+                logSkippingWarning(
+                    "measurement unit",
+                    fieldsToAttributes.get("uuid"),
+                    fieldsToAttributes.get("id"),
+                    debugString);
 
-                      String debugString =
-                          Stream.of(new AbstractMap.SimpleEntry<>(node, "node: " + nodeUuid))
-                              .filter(entry -> !entry.getKey().isPresent())
-                              .map(AbstractMap.SimpleEntry::getValue)
-                              .collect(Collectors.joining("\n"));
+              } else {
 
-                      logSkippingWarning(
-                          "measurement unit",
-                          fieldsToAttributes.get("uuid"),
-                          fieldsToAttributes.get("id"),
-                          debugString);
+                // remove fields that are passed as objects to constructor
+                fieldsToAttributes
+                    .keySet()
+                    .removeAll(new HashSet<>(Arrays.asList(OPERATOR, "node")));
 
-                    } else {
+                // build the asset data
+                MeasurementUnitInputEntityData data =
+                    new MeasurementUnitInputEntityData(
+                        fieldsToAttributes,
+                        entityClass,
+                        getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
+                        node.get());
+                // build the model
+                measurementUnitOpt = measurementUnitInputFactory.getEntity(data);
+              }
 
-                      // remove fields that are passed as objects to constructor
-                      fieldsToAttributes
-                          .keySet()
-                          .removeAll(new HashSet<>(Arrays.asList(OPERATOR, "node")));
-
-                      // build the asset data
-                      MeasurementUnitInputEntityData data =
-                          new MeasurementUnitInputEntityData(
-                              fieldsToAttributes,
-                              entityClass,
-                              getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
-                              node.get());
-                      // build the model
-                      measurementUnitOpt = measurementUnitInputFactory.getEntity(data);
-                    }
-
-                    return measurementUnitOpt;
-                  })
-              .collect(Collectors.toSet());
-
-    } catch (IOException e) {
-      logIOExceptionFromConnector(MeasurementUnitInput.class, e);
-    }
-
-    return resultingAssets;
+              return measurementUnitOpt;
+            })
+        .collect(Collectors.toSet());
   }
 }

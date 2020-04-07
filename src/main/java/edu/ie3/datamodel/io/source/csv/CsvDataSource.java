@@ -5,8 +5,8 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -75,18 +76,30 @@ public abstract class CsvDataSource {
             });
   }
 
-  protected <T extends UniqueEntity> Collection<T> filterEmptyOptionals(
+  protected <T extends UniqueEntity> Stream<T> filterEmptyOptionals(
       Collection<Optional<T>> elements) {
-    return elements.stream()
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toList());
+    return elements.stream().filter(Optional::isPresent).map(Optional::get);
+  }
+
+  protected <T extends UniqueEntity> Stream<T> filterEmptyOptionals(Stream<Optional<T>> elements) {
+    return elements.filter(Optional::isPresent).map(Optional::get);
   }
 
   protected Optional<NodeInput> findNodeByUuid(String nodeUuid, Collection<NodeInput> nodes) {
     return nodes.stream()
         .filter(node -> node.getUuid().toString().equalsIgnoreCase(nodeUuid))
         .findFirst();
+  }
+
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+      Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
+    try (BufferedReader reader = connector.getReader(entityClass)) {
+      String[] headline = readHeadline(reader);
+      return reader.lines().parallel().map(csvRow -> buildFieldsToAttributes(csvRow, headline));
+    } catch (IOException e) {
+      logIOExceptionFromConnector(entityClass, e);
+    }
+    return Stream.empty();
   }
 
   protected <T extends AssetTypeInput> Optional<T> findTypeByUuid(
@@ -108,7 +121,7 @@ public abstract class CsvDataSource {
   }
 
   protected void logIOExceptionFromConnector(
-      Class<? extends AssetInput> entityClass, IOException e) {
+      Class<? extends UniqueEntity> entityClass, IOException e) {
     log.warn(
         "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
   }
