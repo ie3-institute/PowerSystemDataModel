@@ -27,7 +27,8 @@ import java.util.stream.Stream;
 /**
  * //ToDo: Class Description Nothing is buffered -> for performance one might consider reading
  * nodes, operators etc. first and then passing in all required collections, otherwise reading is
- * done in a hierarchical cascading way to get all elements needed
+ * done in a hierarchical cascading way to get all elements needed TODO description needs hint that
+ * Set does NOT mean uuid uniqueness
  *
  * @version 0.1
  * @since 03.04.20
@@ -75,7 +76,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     Collection<Transformer3WTypeInput> transformer3WTypeInputs = typeSource.getTransformer3WTypes();
 
     /// assets incl. filter of unique entities + warning if duplicate uuids got filtered out
-    Set<NodeInput> nodes = checkForUuidDuplicates(NodeInput.class, readNodes(operators));
+    Set<NodeInput> nodes =
+        checkForUuidDuplicates(NodeInput.class, readNodes(operators).collect(Collectors.toSet()));
 
     List<Optional<LineInput>> invalidLines = new CopyOnWriteArrayList<>();
     List<Optional<Transformer2WInput>> invalidTrafo2Ws = new CopyOnWriteArrayList<>();
@@ -86,35 +88,35 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     Set<LineInput> lineInputs =
         checkForUuidDuplicates(
             LineInput.class,
-            readLines(nodes, lineTypes, operators).stream()
+            readLines(nodes, lineTypes, operators)
                 .filter(isPresentWithInvalidList(invalidLines))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<Transformer2WInput> transformer2WInputs =
         checkForUuidDuplicates(
             Transformer2WInput.class,
-            read2WTransformers(nodes, transformer2WTypeInputs, operators).stream()
+            read2WTransformers(nodes, transformer2WTypeInputs, operators)
                 .filter(isPresentWithInvalidList(invalidTrafo2Ws))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<Transformer3WInput> transformer3WInputs =
         checkForUuidDuplicates(
             Transformer3WInput.class,
-            read3WTransformers(nodes, transformer3WTypeInputs, operators).stream()
+            read3WTransformers(nodes, transformer3WTypeInputs, operators)
                 .filter(isPresentWithInvalidList(invalidTrafo3Ws))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<SwitchInput> switches =
         checkForUuidDuplicates(
             SwitchInput.class,
-            readSwitches(nodes, operators).stream()
+            readSwitches(nodes, operators)
                 .filter(isPresentWithInvalidList(invalidSwitches))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<MeasurementUnitInput> measurementUnits =
         checkForUuidDuplicates(
             MeasurementUnitInput.class,
-            readMeasurementUnits(nodes, operators).stream()
+            readMeasurementUnits(nodes, operators)
                 .filter(isPresentWithInvalidList(invalidMeasurementUnits))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
@@ -152,24 +154,24 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   }
 
   @Override
-  public Collection<NodeInput> getNodes() {
-    return readNodes(typeSource.getOperators());
+  public Set<NodeInput> getNodes() {
+    return readNodes(typeSource.getOperators()).collect(Collectors.toSet());
   }
 
   @Override
-  public Collection<NodeInput> getNodes(Collection<OperatorInput> operators) {
-    return readNodes(operators);
+  public Set<NodeInput> getNodes(Collection<OperatorInput> operators) {
+    return readNodes(operators).collect(Collectors.toSet());
   }
 
   @Override
-  public Collection<LineInput> getLines() {
+  public Set<LineInput> getLines() {
     return filterEmptyOptionals(
             readLines(getNodes(), typeSource.getLineTypes(), typeSource.getOperators()))
         .collect(Collectors.toSet());
   }
 
   @Override
-  public Collection<LineInput> getLines(
+  public Set<LineInput> getLines(
       Collection<NodeInput> nodes,
       Collection<LineTypeInput> lineTypeInputs,
       Collection<OperatorInput> operators) {
@@ -178,7 +180,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   }
 
   @Override
-  public Collection<Transformer2WInput> get2WTransformers() {
+  public Set<Transformer2WInput> get2WTransformers() {
     return filterEmptyOptionals(
             read2WTransformers(
                 getNodes(), typeSource.getTransformer2WTypes(), typeSource.getOperators()))
@@ -186,7 +188,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   }
 
   @Override
-  public Collection<Transformer2WInput> get2WTransformers(
+  public Set<Transformer2WInput> get2WTransformers(
       Collection<NodeInput> nodes,
       Collection<Transformer2WTypeInput> transformer2WTypes,
       Collection<OperatorInput> operators) {
@@ -195,7 +197,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   }
 
   @Override
-  public Collection<Transformer3WInput> get3WTransformers() {
+  public Set<Transformer3WInput> get3WTransformers() {
     return filterEmptyOptionals(
             read3WTransformers(
                 getNodes(), typeSource.getTransformer3WTypes(), typeSource.getOperators()))
@@ -203,7 +205,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   }
 
   @Override
-  public Collection<Transformer3WInput> get3WTransformers(
+  public Set<Transformer3WInput> get3WTransformers(
       Collection<NodeInput> nodes,
       Collection<Transformer3WTypeInput> transformer3WTypeInputs,
       Collection<OperatorInput> operators) {
@@ -212,30 +214,30 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   }
 
   @Override
-  public Collection<SwitchInput> getSwitches() {
+  public Set<SwitchInput> getSwitches() {
     return filterEmptyOptionals(readSwitches(getNodes(), typeSource.getOperators()))
         .collect(Collectors.toSet());
   }
 
   @Override
-  public Collection<SwitchInput> getSwitches(
+  public Set<SwitchInput> getSwitches(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
     return filterEmptyOptionals(readSwitches(nodes, operators)).collect(Collectors.toSet());
   }
 
   @Override
-  public Collection<MeasurementUnitInput> getMeasurementUnits() {
+  public Set<MeasurementUnitInput> getMeasurementUnits() {
     return filterEmptyOptionals(readMeasurementUnits(getNodes(), typeSource.getOperators()))
         .collect(Collectors.toSet());
   }
 
   @Override
-  public Collection<MeasurementUnitInput> getMeasurementUnits(
+  public Set<MeasurementUnitInput> getMeasurementUnits(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
     return filterEmptyOptionals(readMeasurementUnits(nodes, operators)).collect(Collectors.toSet());
   }
 
-  private Collection<NodeInput> readNodes(Collection<OperatorInput> operators) {
+  private Stream<NodeInput> readNodes(Collection<OperatorInput> operators) {
     final Class<NodeInput> entityClass = NodeInput.class;
 
     return buildStreamWithFieldsToAttributesMap(entityClass, connector)
@@ -259,11 +261,10 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               return nodeInputFactory.getEntity(data);
             })
         .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toSet());
+        .map(Optional::get);
   }
 
-  private Collection<Optional<LineInput>> readLines(
+  private Stream<Optional<LineInput>> readLines(
       Collection<NodeInput> nodes,
       Collection<LineTypeInput> lineTypeInputs,
       Collection<OperatorInput> operators) {
@@ -326,11 +327,10 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               }
 
               return lineOpt;
-            })
-        .collect(Collectors.toSet());
+            });
   }
 
-  private Collection<Optional<Transformer2WInput>> read2WTransformers(
+  private Stream<Optional<Transformer2WInput>> read2WTransformers(
       Collection<NodeInput> nodes,
       Collection<Transformer2WTypeInput> transformer2WTypes,
       Collection<OperatorInput> operators) {
@@ -393,11 +393,10 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               }
 
               return trafo2WOpt;
-            })
-        .collect(Collectors.toSet());
+            });
   }
 
-  private Collection<Optional<Transformer3WInput>> read3WTransformers(
+  private Stream<Optional<Transformer3WInput>> read3WTransformers(
       Collection<NodeInput> nodes,
       Collection<Transformer3WTypeInput> transformer3WTypes,
       Collection<OperatorInput> operators) {
@@ -469,11 +468,10 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               }
 
               return trafo3WOpt;
-            })
-        .collect(Collectors.toSet());
+            });
   }
 
-  private Collection<Optional<SwitchInput>> readSwitches(
+  private Stream<Optional<SwitchInput>> readSwitches(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
 
     final Class<SwitchInput> entityClass = SwitchInput.class;
@@ -528,11 +526,10 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               }
 
               return switchOpt;
-            })
-        .collect(Collectors.toSet());
+            });
   }
 
-  private Collection<Optional<MeasurementUnitInput>> readMeasurementUnits(
+  private Stream<Optional<MeasurementUnitInput>> readMeasurementUnits(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
 
     final Class<MeasurementUnitInput> entityClass = MeasurementUnitInput.class;
@@ -581,7 +578,6 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               }
 
               return measurementUnitOpt;
-            })
-        .collect(Collectors.toSet());
+            });
   }
 }
