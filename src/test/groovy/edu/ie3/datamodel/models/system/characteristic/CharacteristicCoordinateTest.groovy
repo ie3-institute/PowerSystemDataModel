@@ -5,10 +5,10 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
-import java.util.regex.Pattern
-
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
 import static edu.ie3.util.quantities.PowerSystemUnits.PERCENT
+
+import java.util.regex.Pattern
 
 import java.util.regex.Matcher
 

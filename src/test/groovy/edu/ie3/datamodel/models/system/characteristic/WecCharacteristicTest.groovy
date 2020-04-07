@@ -31,10 +31,7 @@ class WecCharacteristicTest extends Specification {
 			Quantities.getQuantity(0.20, PU))
 		] as SortedSet
 
-		validInput = new WecCharacteristicInput(
-				UUID.fromString("9fee3c6c-4b00-4807-8eb1-1e1e4bbe52ac"),
-				coordinates
-				)
+		validInput = new WecCharacteristicInput(coordinates)
 	}
 
 	def "A WecCharacteristicInput is correctly de-serialized"() {
@@ -47,16 +44,15 @@ class WecCharacteristicTest extends Specification {
 
 	def "A WecCharacteristicInput is correctly set up from a correctly formatted string"() {
 		when:
-		WecCharacteristicInput actual = new WecCharacteristicInput(UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512"), "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
+		WecCharacteristicInput actual = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
 
 		then:
-		actual.uuid == UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512")
 		actual.coordinates == validInput.coordinates
 	}
 
 	def "A WecCharacteristicInput throws an exception if it should be set up from a malformed string"() {
 		when:
-		new WecCharacteristicInput(UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512"), "cP:{(10.00),(15.00),(20.00)}")
+		new WecCharacteristicInput("cP:{(10.00),(15.00),(20.00)}")
 
 		then:
 		IllegalArgumentException exception = thrown(IllegalArgumentException)

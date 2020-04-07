@@ -92,9 +92,7 @@ class TypeTestData extends GridTestData {
 	100000
 	)
 
-	public static final WecCharacteristicInput wecCharacteristicInput = new WecCharacteristicInput(
-	UUID.fromString("2902f46a-90d3-4541-9e13-39def130eda4"),
-	"cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
+	public static final WecCharacteristicInput wecCharacteristicInput = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
 
 	public static final WecTypeInput wecType = new WecTypeInput(
 	UUID.fromString("a24fc5b9-a26f-44de-96b8-c9f50b665cb3"),

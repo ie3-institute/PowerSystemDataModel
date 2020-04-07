@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.SortedSet;
-import java.util.UUID;
 import java.util.regex.Pattern;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
@@ -18,18 +17,15 @@ import javax.measure.quantity.Power;
  */
 public class CosPhiP extends ReactivePowerCharacteristic<Power> {
   public static final Pattern MATCHING_PATTERN = buildMatchingPattern("cosPhiP");
-  public static final CosPhiP CONSTANT_CHARACTERISTIC =
-      new CosPhiP(UUID.fromString("de42d205-b970-4ae3-9d3e-8cdeb6fcf372"), "cosPhiP:{(0.0,1.0)}");
+  public static final CosPhiP CONSTANT_CHARACTERISTIC = new CosPhiP("cosPhiP:{(0.0,1.0)}");
 
   public CosPhiP(
-      UUID uuid,
       SortedSet<CharacteristicCoordinate<Power, Dimensionless>> characteristicCoordinates) {
-    super(uuid, characteristicCoordinates, "cosPhiP", 2);
+    super(characteristicCoordinates, "cosPhiP", 2);
   }
 
-  public CosPhiP(UUID uuid, String input) {
+  public CosPhiP(String input) {
     super(
-        uuid,
         input,
         MATCHING_PATTERN,
         StandardUnits.ACTIVE_POWER_IN,
@@ -40,6 +36,6 @@ public class CosPhiP extends ReactivePowerCharacteristic<Power> {
 
   @Override
   public String toString() {
-    return "CosPhiP{" + "uuid=" + uuid + ", coordinates=" + coordinates + '}';
+    return "CosPhiP{" + "coordinates=" + coordinates + '}';
   }
 }

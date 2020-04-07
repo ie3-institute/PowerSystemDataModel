@@ -66,9 +66,9 @@ class SystemParticipantTestData {
 	private static final NodeInput participantNode = GridTestData.nodeA
 
 	// general type data
-	private static final CosPhiFixed cosPhiFixed = new CosPhiFixed(UUID.fromString("cc383c30-3e41-45a8-a2b7-5e3a217c7863"), "cosPhiFixed:{(0.0,0.95)}")
-	private static final CosPhiP cosPhiP = new CosPhiP(UUID.fromString("aebd0cbf-b6f4-4cd3-9ee6-d42796be1c5d"), "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}")
-	private static final QV qV = new QV(UUID.fromString("d70436c0-3246-4c80-8bfc-b0ffeb4ee7a0"), "qV:{(0.9,-0.3),(0.95,0.0),(1.05,0.0),(1.1,0.3)}")
+	private static final CosPhiFixed cosPhiFixed = new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}")
+	private static final CosPhiP cosPhiP = new CosPhiP("cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}")
+	private static final QV qV = new QV("qV:{(0.9,-0.3),(0.95,0.0),(1.05,0.0),(1.1,0.3)}")
 	public static final String cosPhiFixedDeSerialized = "cosPhiFixed:{(0.00,0.95)}"
 	public static final String cosPhiPDeSerialized = "cosPhiP:{(0.00,1.00),(0.90,1.00),(1.20,-0.30)}"
 	public static final String qVDeSerialized = "qV:{(0.90,-0.30),(0.95,0.00),(1.05,0.00),(1.10,0.30)}"
@@ -97,7 +97,7 @@ class SystemParticipantTestData {
 
 
 	// WEC
-	private static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput(UUID.fromString("1e04139a-d7e0-4211-8357-0040e0319a67"), "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
+	private static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
 	private static final Quantity<Area> rotorArea = Quantities.getQuantity(20, SQUARE_METRE)
 	private static final Quantity<Length> hubHeight = Quantities.getQuantity(200, METRE)
 	public static final WecTypeInput wecType = new WecTypeInput(typeUuid, "test_wecType", capex, opex,

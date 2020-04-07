@@ -5,23 +5,20 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiP
 import edu.ie3.datamodel.models.input.system.characteristic.QV
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic
-import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Power
-import javax.measure.quantity.Speed
-
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
-import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ReactivePowerCharacteristicTest extends Specification {
 	@Shared
@@ -44,7 +41,6 @@ class ReactivePowerCharacteristicTest extends Specification {
 
 	def setupSpec() {
 		validCosPhiFixed = new CosPhiFixed(
-				UUID.fromString("f390cea4-fb5a-4401-ad79-4009fe8cf7b7"),
 				[
 					new CharacteristicCoordinate<Power, Dimensionless>(
 					Quantities.getQuantity(0d, KILOWATT), Quantities.getQuantity(0.95, PU))
@@ -52,7 +48,6 @@ class ReactivePowerCharacteristicTest extends Specification {
 				)
 
 		validCosPhiP = new CosPhiP(
-				UUID.fromString("7fa3b085-28fa-413c-9650-49d256e7cdea"),
 				[
 					new CharacteristicCoordinate<Power, Dimensionless>(
 					Quantities.getQuantity(0d, KILOWATT), Quantities.getQuantity(1.0, PU)),
@@ -64,7 +59,6 @@ class ReactivePowerCharacteristicTest extends Specification {
 				)
 
 		validQV = new QV(
-				UUID.fromString("bdd907fd-f0ab-4ab8-9cad-7b9d98e2f264"),
 				[
 					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
 					Quantities.getQuantity(0.9, PU), Quantities.getQuantity(-0.3, PU)),
@@ -88,16 +82,15 @@ class ReactivePowerCharacteristicTest extends Specification {
 
 	def "A CosPhiFixed is correctly set up from a correctly formatted string"() {
 		when:
-		CosPhiFixed actual = new CosPhiFixed(UUID.fromString("09722d5c-0a31-4046-aa17-5b3f7b7db1e2"), validCosPhiFixedDeSerialized)
+		CosPhiFixed actual = new CosPhiFixed(validCosPhiFixedDeSerialized)
 
 		then:
-		actual.uuid == UUID.fromString("09722d5c-0a31-4046-aa17-5b3f7b7db1e2")
 		actual.coordinates == validCosPhiFixed.coordinates
 	}
 
 	def "A CosPhiFixed throws an exception if it should be set up from a malformed string"() {
 		when:
-		new CosPhiFixed(UUID.fromString("09722d5c-0a31-4046-aa17-5b3f7b7db1e2"), "cosPhiFixed:{(10.00)}")
+		new CosPhiFixed("cosPhiFixed:{(10.00)}")
 
 		then:
 		IllegalArgumentException exception = thrown(IllegalArgumentException)
@@ -114,16 +107,15 @@ class ReactivePowerCharacteristicTest extends Specification {
 
 	def "A CosPhiP is correctly set up from a correctly formatted string"() {
 		when:
-		CosPhiP actual = new CosPhiP(UUID.fromString("46c43f0f-60d8-4f09-9a91-a45146efa1e4"), validCosPhiPDeSerialized)
+		CosPhiP actual = new CosPhiP(validCosPhiPDeSerialized)
 
 		then:
-		actual.uuid == UUID.fromString("46c43f0f-60d8-4f09-9a91-a45146efa1e4")
 		actual.coordinates == validCosPhiP.coordinates
 	}
 
 	def "A CosPhiP throws an exception if it should be set up from a malformed string"() {
 		when:
-		new CosPhiFixed(UUID.fromString("46c43f0f-60d8-4f09-9a91-a45146efa1e4"), "cosPhiP:{(0.00),(0.90),(1.20)}")
+		new CosPhiFixed("cosPhiP:{(0.00),(0.90),(1.20)}")
 
 		then:
 		IllegalArgumentException exception = thrown(IllegalArgumentException)
@@ -140,16 +132,15 @@ class ReactivePowerCharacteristicTest extends Specification {
 
 	def "A QV is correctly set up from a correctly formatted string"() {
 		when:
-		QV actual = new QV(UUID.fromString("f456981b-5800-47bd-ae5f-6b491e9d2117"), validQVDeSerialized)
+		QV actual = new QV(validQVDeSerialized)
 
 		then:
-		actual.uuid == UUID.fromString("f456981b-5800-47bd-ae5f-6b491e9d2117")
 		actual.coordinates == validQV.coordinates
 	}
 
 	def "A QV throws an exception if it should be set up from a malformed string"() {
 		when:
-		new CosPhiFixed(UUID.fromString("f456981b-5800-47bd-ae5f-6b491e9d2117"), "qV:{(0.90),(0.95),(1.05),(1.10)}")
+		new CosPhiFixed("qV:{(0.90),(0.95),(1.05),(1.10)}")
 
 		then:
 		IllegalArgumentException exception = thrown(IllegalArgumentException)

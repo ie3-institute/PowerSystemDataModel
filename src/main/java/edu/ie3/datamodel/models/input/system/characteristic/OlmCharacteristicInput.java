@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.SortedSet;
-import java.util.UUID;
 import java.util.regex.Pattern;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Speed;
@@ -16,18 +15,15 @@ import javax.measure.quantity.Speed;
 public class OlmCharacteristicInput extends CharacteristicInput<Speed, Dimensionless> {
   private static final Pattern MATCHING_PATTERN = buildMatchingPattern("olm");
   public static final OlmCharacteristicInput CONSTANT_CHARACTERISTIC =
-      new OlmCharacteristicInput(
-          UUID.fromString("9723ddea-f713-4552-8355-71d9fd831127"), "olm:{(0.0,1.0)}");
+      new OlmCharacteristicInput("olm:{(0.0,1.0)}");
 
   public OlmCharacteristicInput(
-      UUID uuid,
       SortedSet<CharacteristicCoordinate<Speed, Dimensionless>> characteristicCoordinates) {
-    super(uuid, characteristicCoordinates, "olm", 2);
+    super(characteristicCoordinates, "olm", 2);
   }
 
-  public OlmCharacteristicInput(UUID uuid, String input) {
+  public OlmCharacteristicInput(String input) {
     super(
-        uuid,
         input,
         MATCHING_PATTERN,
         StandardUnits.WIND_VELOCITY,
@@ -38,6 +34,6 @@ public class OlmCharacteristicInput extends CharacteristicInput<Speed, Dimension
 
   @Override
   public String toString() {
-    return "OlmCharacteristicInput{" + "uuid=" + uuid + ", coordinates=" + coordinates + '}';
+    return "OlmCharacteristicInput{" + "coordinates=" + coordinates + '}';
   }
 }

@@ -55,7 +55,7 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
                             NodeInput.DEFAULT_GEO_POSITION.getCoordinates())));
     final OlmCharacteristicInput olmCharacteristic =
         data.containsKey(OLM_CHARACTERISTIC) && !data.getField(OLM_CHARACTERISTIC).isEmpty()
-            ? new OlmCharacteristicInput(UUID.randomUUID(), data.getField(OLM_CHARACTERISTIC))
+            ? new OlmCharacteristicInput(data.getField(OLM_CHARACTERISTIC))
             : OlmCharacteristicInput.CONSTANT_CHARACTERISTIC;
     return new LineInput(
         uuid,

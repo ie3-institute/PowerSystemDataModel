@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input.system.characteristic;
 
 import java.util.SortedSet;
-import java.util.UUID;
 import java.util.regex.Pattern;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -20,22 +19,20 @@ import javax.measure.quantity.Dimensionless;
 public abstract class ReactivePowerCharacteristic<A extends Quantity<A>>
     extends CharacteristicInput<A, Dimensionless> {
   public ReactivePowerCharacteristic(
-      UUID uuid,
       SortedSet<CharacteristicCoordinate<A, Dimensionless>> characteristicCoordinates,
       String prefix,
       int decimalPlaces) {
-    super(uuid, characteristicCoordinates, prefix, decimalPlaces);
+    super(characteristicCoordinates, prefix, decimalPlaces);
   }
 
   public ReactivePowerCharacteristic(
-      UUID uuid,
       String input,
       Pattern matchingPattern,
       Unit<A> abscissaUnit,
       Unit<Dimensionless> ordinateUnit,
       String prefix,
       int decimalPlaces) {
-    super(uuid, input, matchingPattern, abscissaUnit, ordinateUnit, prefix, decimalPlaces);
+    super(input, matchingPattern, abscissaUnit, ordinateUnit, prefix, decimalPlaces);
   }
 
   /**
@@ -46,11 +43,9 @@ public abstract class ReactivePowerCharacteristic<A extends Quantity<A>>
    * @return Matching reactive power characteristic
    */
   public static ReactivePowerCharacteristic<?> parse(String input) {
-    if (CosPhiFixed.MATCHING_PATTERN.matcher(input).matches())
-      return new CosPhiFixed(UUID.randomUUID(), input);
-    else if (CosPhiP.MATCHING_PATTERN.matcher(input).matches())
-      return new CosPhiP(UUID.randomUUID(), input);
-    else if (QV.MATCHING_PATTERN.matcher(input).matches()) return new QV(UUID.randomUUID(), input);
+    if (CosPhiFixed.MATCHING_PATTERN.matcher(input).matches()) return new CosPhiFixed(input);
+    else if (CosPhiP.MATCHING_PATTERN.matcher(input).matches()) return new CosPhiP(input);
+    else if (QV.MATCHING_PATTERN.matcher(input).matches()) return new QV(input);
     else
       throw new IllegalArgumentException(
           "Cannot parse '"

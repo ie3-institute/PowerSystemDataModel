@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
 import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
 import spock.lang.Shared
@@ -13,9 +16,6 @@ import tec.uom.se.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Power
-
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class EvCharacteristicTest extends Specification {
 	@Shared
@@ -31,10 +31,7 @@ class EvCharacteristicTest extends Specification {
 			Quantities.getQuantity(0.20, PU))
 		] as SortedSet
 
-		validInput = new EvCharacteristicInput(
-				UUID.fromString("591db0f4-b1dc-4cd5-9a7f-9e6ed0f064b2"),
-				coordinates
-				)
+		validInput = new EvCharacteristicInput(coordinates)
 	}
 
 	def "A EvCharacteristicInput is correctly de-serialized"() {
@@ -47,16 +44,15 @@ class EvCharacteristicTest extends Specification {
 
 	def "A EvCharacteristicInput is correctly set up from a correctly formatted string"() {
 		when:
-		EvCharacteristicInput actual = new EvCharacteristicInput(UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512"), "ev:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
+		EvCharacteristicInput actual = new EvCharacteristicInput("ev:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
 
 		then:
-		actual.uuid == UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512")
 		actual.coordinates == validInput.coordinates
 	}
 
 	def "A EvCharacteristicInput throws an exception if it should be set up from a malformed string"() {
 		when:
-		new EvCharacteristicInput(UUID.fromString("6979beaa-fceb-4115-981f-b91154a34512"), "ev:{(10.00),(15.00),(20.00)}")
+		new EvCharacteristicInput("ev:{(10.00),(15.00),(20.00)}")
 
 		then:
 		IllegalArgumentException exception = thrown(IllegalArgumentException)

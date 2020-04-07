@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.SortedSet;
-import java.util.UUID;
 import java.util.regex.Pattern;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
@@ -21,15 +20,13 @@ public class EvCharacteristicInput extends CharacteristicInput<Power, Dimensionl
 
   @Deprecated
   public EvCharacteristicInput(
-      UUID uuid,
       SortedSet<CharacteristicCoordinate<Power, Dimensionless>> characteristicCoordinates) {
-    super(uuid, characteristicCoordinates, "ev", 2);
+    super(characteristicCoordinates, "ev", 2);
   }
 
   @Deprecated
-  public EvCharacteristicInput(UUID uuid, String input) {
+  public EvCharacteristicInput(String input) {
     super(
-        uuid,
         input,
         MATCHING_PATTERN,
         StandardUnits.ACTIVE_POWER_IN,
@@ -40,6 +37,6 @@ public class EvCharacteristicInput extends CharacteristicInput<Power, Dimensionl
 
   @Override
   public String toString() {
-    return "EvCharacteristicInput{" + "uuid=" + uuid + ", coordinates=" + coordinates + '}';
+    return "EvCharacteristicInput{" + "coordinates=" + coordinates + '}';
   }
 }

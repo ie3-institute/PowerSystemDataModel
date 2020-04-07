@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.SortedSet;
-import java.util.UUID;
 import java.util.regex.Pattern;
 import javax.measure.quantity.Dimensionless;
 
@@ -17,18 +16,15 @@ import javax.measure.quantity.Dimensionless;
  */
 public class QV extends ReactivePowerCharacteristic<Dimensionless> {
   public static final Pattern MATCHING_PATTERN = buildMatchingPattern("qV");
-  public static final QV CONSTANT_CHARACTERISTIC =
-      new QV(UUID.fromString("d129c2d0-7fc8-42c0-9359-3883ebb09682"), "qV:{(0.0,0.0)}");
+  public static final QV CONSTANT_CHARACTERISTIC = new QV("qV:{(0.0,0.0)}");
 
   public QV(
-      UUID uuid,
       SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>> characteristicCoordinates) {
-    super(uuid, characteristicCoordinates, "qV", 2);
+    super(characteristicCoordinates, "qV", 2);
   }
 
-  public QV(UUID uuid, String input) {
+  public QV(String input) {
     super(
-        uuid,
         input,
         MATCHING_PATTERN,
         StandardUnits.VOLTAGE_MAGNITUDE,
@@ -39,6 +35,6 @@ public class QV extends ReactivePowerCharacteristic<Dimensionless> {
 
   @Override
   public String toString() {
-    return "QV{" + "uuid=" + uuid + ", coordinates=" + coordinates + '}';
+    return "QV{" + "coordinates=" + coordinates + '}';
   }
 }

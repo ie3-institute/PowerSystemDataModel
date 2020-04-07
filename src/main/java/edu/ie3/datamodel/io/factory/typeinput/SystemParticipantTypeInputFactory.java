@@ -191,7 +191,7 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<Length> hubHeight = data.getQuantity(HUB_HEIGHT, StandardUnits.HUB_HEIGHT);
 
     WecCharacteristicInput cpCharacteristic =
-        new WecCharacteristicInput(UUID.randomUUID(), data.getField(CP_CHARACTERISTIC));
+        new WecCharacteristicInput(data.getField(CP_CHARACTERISTIC));
 
     return new WecTypeInput(
         uuid, id, capEx, opEx, cosPhi, cpCharacteristic, etaConv, sRated, rotorArea, hubHeight);

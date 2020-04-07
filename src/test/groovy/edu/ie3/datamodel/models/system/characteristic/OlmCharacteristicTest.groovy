@@ -31,10 +31,7 @@ class OlmCharacteristicTest extends Specification {
 			Quantities.getQuantity(0.20, PU))
 		] as SortedSet
 
-		validInput = new OlmCharacteristicInput(
-				UUID.fromString("53bee0c7-35f2-4c89-bdca-c30636face82"),
-				coordinates
-				)
+		validInput = new OlmCharacteristicInput(coordinates)
 	}
 
 	def "A OlmCharacteristicInput is correctly de-serialized"() {
@@ -47,16 +44,15 @@ class OlmCharacteristicTest extends Specification {
 
 	def "A OlmCharacteristicInput is correctly set up from a correctly formatted string"() {
 		when:
-		OlmCharacteristicInput actual = new OlmCharacteristicInput(UUID.fromString("c039ca9a-4e69-4570-8f63-d2d67d775dfa"), "olm:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
+		OlmCharacteristicInput actual = new OlmCharacteristicInput("olm:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
 
 		then:
-		actual.uuid == UUID.fromString("c039ca9a-4e69-4570-8f63-d2d67d775dfa")
 		actual.coordinates == validInput.coordinates
 	}
 
 	def "A OlmCharacteristicInput throws an exception if it should be set up from a malformed string"() {
 		when:
-		new OlmCharacteristicInput(UUID.fromString("e1aca1cb-793d-4f36-8b7c-e64e7e6e8c47"), "olm:{(10.00),(15.00),(20.00)}")
+		new OlmCharacteristicInput("olm:{(10.00),(15.00),(20.00)}")
 
 		then:
 		IllegalArgumentException exception = thrown(IllegalArgumentException)

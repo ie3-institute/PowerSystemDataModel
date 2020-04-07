@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
-import edu.ie3.datamodel.models.input.InputEntity;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,8 +19,7 @@ import tec.uom.se.quantity.Quantities;
  * @param <A> Type of quantity, that applies to the abscissa
  * @param <O> Type of quantity, that applies to the ordinate
  */
-public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quantity<O>>
-    extends InputEntity {
+public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quantity<O>> {
   protected final String prefix;
   protected final int decimalPlaces;
 
@@ -36,25 +34,19 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
    * @param decimalPlaces Desired amount of decimal places when de-serializing the characteristic
    */
   public CharacteristicInput(
-      UUID uuid,
-      SortedSet<CharacteristicCoordinate<A, O>> coordinates,
-      String prefix,
-      int decimalPlaces) {
-    super(uuid);
+      SortedSet<CharacteristicCoordinate<A, O>> coordinates, String prefix, int decimalPlaces) {
     this.coordinates = Collections.unmodifiableSortedSet(coordinates);
     this.prefix = prefix;
     this.decimalPlaces = decimalPlaces;
   }
 
   public CharacteristicInput(
-      UUID uuid,
       String input,
       Pattern matchingPattern,
       Unit<A> abscissaUnit,
       Unit<O> ordinateUnit,
       String prefix,
       int decimalPlaces) {
-    super(uuid);
     this.prefix = prefix;
     this.decimalPlaces = decimalPlaces;
     String coordinateList = extractCoordinateList(input, matchingPattern);
@@ -145,6 +137,6 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
 
   @Override
   public String toString() {
-    return "CharacteristicInput{" + "uuid=" + uuid + ", coordinates=" + coordinates + '}';
+    return "CharacteristicInput{" + "coordinates=" + coordinates + '}';
   }
 }
