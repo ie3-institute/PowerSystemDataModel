@@ -5,11 +5,10 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
-import edu.ie3.datamodel.exceptions.ParsingException
-
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
+import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
 import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
 import spock.lang.Shared

@@ -5,13 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
-
-import tec.uom.se.quantity.Quantities
-
-import javax.measure.quantity.Dimensionless
-import javax.measure.quantity.Power
 
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -21,7 +15,9 @@ import edu.ie3.datamodel.models.input.system.type.HpTypeInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
+import tec.uom.se.quantity.Quantities
 
+import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
 
 class HpInputFactoryTest extends Specification implements FactoryTestHelper {

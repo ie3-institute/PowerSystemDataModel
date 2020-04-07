@@ -5,15 +5,10 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
-import edu.ie3.datamodel.exceptions.ParsingException
-
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
-import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
-import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
-import edu.ie3.datamodel.models.input.system.characteristic.CosPhiP
-import edu.ie3.datamodel.models.input.system.characteristic.QV
-import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic
+import edu.ie3.datamodel.exceptions.ParsingException
+import edu.ie3.datamodel.models.input.system.characteristic.*
 import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities

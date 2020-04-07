@@ -5,19 +5,15 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
+import static edu.ie3.util.quantities.PowerSystemUnits.*
+
 import edu.ie3.datamodel.exceptions.ParsingException
-
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
-import static edu.ie3.util.quantities.PowerSystemUnits.PERCENT
-
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Power
-
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class CharacteristicCoordinateTest extends Specification {
 	def "A set of CharacteristicCoordinates are sorted correctly"() {
@@ -94,7 +90,7 @@ class CharacteristicCoordinateTest extends Specification {
 
 	def "The CharacteristicCoordinate throws a parsing exception, if the input is malformed"() {
 		when: "Parsing the input"
-		CharacteristicCoordinate<Dimensionless, Dimensionless> actual = new CharacteristicCoordinate<>("bla", PU, PU)
+		new CharacteristicCoordinate<>("bla", PU, PU)
 
 		then: "it throws an exception"
 		ParsingException exception = thrown(ParsingException)
@@ -103,7 +99,7 @@ class CharacteristicCoordinateTest extends Specification {
 
 	def "The CharacteristicCoordinate throws a parsing exception, if abscissa cannot be parsed to double"() {
 		when: "Parsing the input"
-		CharacteristicCoordinate<Dimensionless, Dimensionless> actual = new CharacteristicCoordinate<>("(bla,2.0)", PU, PU)
+		new CharacteristicCoordinate<>("(bla,2.0)", PU, PU)
 
 		then: "it throws an exception"
 		ParsingException exception = thrown(ParsingException)
@@ -112,7 +108,7 @@ class CharacteristicCoordinateTest extends Specification {
 
 	def "The CharacteristicCoordinate throws a parsing exception, if ordinate cannot be parsed to double"() {
 		when: "Parsing the input"
-		CharacteristicCoordinate<Dimensionless, Dimensionless> actual = new CharacteristicCoordinate<>("(1.0,bla)", PU, PU)
+		new CharacteristicCoordinate<>("(1.0,bla)", PU, PU)
 
 		then: "it throws an exception"
 		ParsingException exception = thrown(ParsingException)

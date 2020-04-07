@@ -5,13 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
-
-import tec.uom.se.quantity.Quantities
-
-import javax.measure.quantity.Dimensionless
-import javax.measure.quantity.Power
 
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -20,7 +14,9 @@ import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordi
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
+import tec.uom.se.quantity.Quantities
 
+import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
 
 class WecInputFactoryTest extends Specification implements FactoryTestHelper {
