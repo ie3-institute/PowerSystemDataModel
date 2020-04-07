@@ -16,8 +16,10 @@ import tec.uom.se.ComparableQuantity;
 /** Class to describe one coordinate of a given {@link CharacteristicInput} */
 public class CharacteristicCoordinate<A extends Quantity<A>, O extends Quantity<O>>
     implements Comparable<CharacteristicCoordinate<A, O>> {
+  private static final Pattern DOUBLE_PATTERN = Pattern.compile("[+-]?\\d+\\.?\\d*");
   public static final Pattern MATCHING_PATTERN =
-      Pattern.compile("\\((\\d+\\.?\\d*),(\\d+\\.?\\d*)\\)");
+      Pattern.compile(
+          "\\((" + DOUBLE_PATTERN.pattern() + "),(" + DOUBLE_PATTERN.pattern() + ")\\)");
 
   private final ComparableQuantity<A> x;
   private final ComparableQuantity<O> y;

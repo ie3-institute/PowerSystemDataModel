@@ -181,7 +181,7 @@ class InputEntityProcessorTest extends Specification {
 			"operatesUntil"   : TimeTools.toString(SystemParticipantTestData.fixedFeedInInput.operationTime.endDate.orElse(ZonedDateTime.now())),
 			"operatesFrom"    : TimeTools.toString(SystemParticipantTestData.fixedFeedInInput.operationTime.startDate.orElse(ZonedDateTime.now())),
 			"operator"        : SystemParticipantTestData.fixedFeedInInput.operator.getUuid().toString(),
-			"qCharacteristics": SystemParticipantTestData.expectedQCharacteristic,
+			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"sRated"          : SystemParticipantTestData.fixedFeedInInput.sRated.to(StandardUnits.S_RATED).getValue().doubleValue().toString()
 		]
 		PvInput          | SystemParticipantTestData.pvInput          || [
@@ -199,7 +199,7 @@ class InputEntityProcessorTest extends Specification {
 			"operatesUntil"   : TimeTools.toString(SystemParticipantTestData.pvInput.operationTime.endDate.orElse(ZonedDateTime.now())),
 			"operatesFrom"    : TimeTools.toString(SystemParticipantTestData.pvInput.operationTime.startDate.orElse(ZonedDateTime.now())),
 			"operator"        : SystemParticipantTestData.pvInput.operator.getUuid().toString(),
-			"qCharacteristics": SystemParticipantTestData.expectedQCharacteristic,
+			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"sRated"          : SystemParticipantTestData.pvInput.sRated.to(StandardUnits.S_RATED).getValue().doubleValue().toString()
 		]
 		WecInput         | SystemParticipantTestData.wecInput         || [
@@ -210,7 +210,7 @@ class InputEntityProcessorTest extends Specification {
 			"operatesUntil"   : TimeTools.toString(SystemParticipantTestData.wecInput.operationTime.endDate.orElse(ZonedDateTime.now())),
 			"operatesFrom"    : TimeTools.toString(SystemParticipantTestData.wecInput.operationTime.startDate.orElse(ZonedDateTime.now())),
 			"operator"        : SystemParticipantTestData.wecInput.operator.getUuid().toString(),
-			"qCharacteristics": SystemParticipantTestData.expectedQCharacteristic,
+			"qCharacteristics": SystemParticipantTestData.cosPhiPDeSerialized,
 			"type"            : SystemParticipantTestData.wecInput.type.getUuid().toString()
 		]
 		ChpInput         | SystemParticipantTestData.chpInput         || [
@@ -221,7 +221,7 @@ class InputEntityProcessorTest extends Specification {
 			"operatesUntil"   : TimeTools.toString(SystemParticipantTestData.chpInput.operationTime.endDate.orElse(ZonedDateTime.now())),
 			"operatesFrom"    : TimeTools.toString(SystemParticipantTestData.chpInput.operationTime.startDate.orElse(ZonedDateTime.now())),
 			"operator"        : SystemParticipantTestData.chpInput.operator.getUuid().toString(),
-			"qCharacteristics": SystemParticipantTestData.expectedQCharacteristic,
+			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"thermalBus"      : SystemParticipantTestData.chpInput.thermalBus.getUuid().toString(),
 			"thermalStorage"  : SystemParticipantTestData.chpInput.thermalStorage.getUuid().toString(),
 			"type"            : SystemParticipantTestData.chpInput.type.getUuid().toString(),
@@ -236,7 +236,7 @@ class InputEntityProcessorTest extends Specification {
 			"operatesUntil"   : TimeTools.toString(SystemParticipantTestData.bmInput.operationTime.endDate.orElse(ZonedDateTime.now())),
 			"operatesFrom"    : TimeTools.toString(SystemParticipantTestData.bmInput.operationTime.startDate.orElse(ZonedDateTime.now())),
 			"operator"        : SystemParticipantTestData.bmInput.operator.getUuid().toString(),
-			"qCharacteristics": SystemParticipantTestData.expectedQCharacteristic,
+			"qCharacteristics": SystemParticipantTestData.qVDeSerialized,
 			"type"            : SystemParticipantTestData.bmInput.type.getUuid().toString()
 		]
 		EvInput          | SystemParticipantTestData.evInput          || [
@@ -246,7 +246,7 @@ class InputEntityProcessorTest extends Specification {
 			"operatesUntil"   : TimeTools.toString(SystemParticipantTestData.evInput.operationTime.endDate.orElse(ZonedDateTime.now())),
 			"operatesFrom"    : TimeTools.toString(SystemParticipantTestData.evInput.operationTime.startDate.orElse(ZonedDateTime.now())),
 			"operator"        : SystemParticipantTestData.evInput.operator.getUuid().toString(),
-			"qCharacteristics": SystemParticipantTestData.expectedQCharacteristic,
+			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"type"            : SystemParticipantTestData.evInput.type.getUuid().toString()
 		]
 
@@ -260,7 +260,7 @@ class InputEntityProcessorTest extends Specification {
 			"operatesUntil"      : TimeTools.toString(SystemParticipantTestData.loadInput.operationTime.endDate.orElse(ZonedDateTime.now())),
 			"operatesFrom"       : TimeTools.toString(SystemParticipantTestData.loadInput.operationTime.startDate.orElse(ZonedDateTime.now())),
 			"operator"           : SystemParticipantTestData.loadInput.operator.getUuid().toString(),
-			"qCharacteristics"   : SystemParticipantTestData.expectedQCharacteristic,
+			"qCharacteristics"   : SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"sRated"             : SystemParticipantTestData.loadInput.sRated.getValue().doubleValue().toString(),
 			"standardLoadProfile": SystemParticipantTestData.loadInput.standardLoadProfile.key
 		]
@@ -272,7 +272,7 @@ class InputEntityProcessorTest extends Specification {
 			"operatesUntil"   : TimeTools.toString(SystemParticipantTestData.storageInput.operationTime.endDate.orElse(ZonedDateTime.now())),
 			"operatesFrom"    : TimeTools.toString(SystemParticipantTestData.storageInput.operationTime.startDate.orElse(ZonedDateTime.now())),
 			"operator"        : SystemParticipantTestData.storageInput.operator.getUuid().toString(),
-			"qCharacteristics": SystemParticipantTestData.expectedQCharacteristic,
+			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"type"            : SystemParticipantTestData.storageInput.type.getUuid().toString()
 		]
 		HpInput          | SystemParticipantTestData.hpInput          || [
@@ -282,7 +282,7 @@ class InputEntityProcessorTest extends Specification {
 			"operatesUntil"   : TimeTools.toString(SystemParticipantTestData.hpInput.operationTime.endDate.orElse(ZonedDateTime.now())),
 			"operatesFrom"    : TimeTools.toString(SystemParticipantTestData.hpInput.operationTime.startDate.orElse(ZonedDateTime.now())),
 			"operator"        : SystemParticipantTestData.hpInput.operator.getUuid().toString(),
-			"qCharacteristics": SystemParticipantTestData.expectedQCharacteristic,
+			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"thermalBus"      : SystemParticipantTestData.hpInput.thermalBus.uuid.toString(),
 			"type"            : SystemParticipantTestData.hpInput.type.getUuid().toString()
 		]
