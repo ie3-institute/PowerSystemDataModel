@@ -11,13 +11,13 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Dummy class to represent a constant feed in regardless of its type */
 public class FixedFeedInInput extends SystemParticipantInput {
   /** Rated apparent power (typically in kVA) */
-  private final Quantity<Power> sRated;
+  private final ComparableQuantity<Power> sRated;
   /** Rated power factor */
   private final double cosphiRated;
 
@@ -40,7 +40,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
       OperationTime operationTime,
       NodeInput node,
       String qCharacteristics,
-      Quantity<Power> sRated,
+      ComparableQuantity<Power> sRated,
       double cosphiRated) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.sRated = sRated.to(StandardUnits.S_RATED);
@@ -62,14 +62,14 @@ public class FixedFeedInInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       String qCharacteristics,
-      Quantity<Power> sRated,
+      ComparableQuantity<Power> sRated,
       double cosphiRated) {
     super(uuid, id, node, qCharacteristics);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosphiRated = cosphiRated;
   }
 
-  public Quantity<Power> getsRated() {
+  public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 

@@ -9,9 +9,9 @@ import edu.ie3.datamodel.models.StandardUnits;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /**
  * Represents calculation results of {@link
@@ -19,7 +19,7 @@ import javax.measure.quantity.Power;
  */
 public abstract class ThermalStorageResult extends ThermalUnitResult {
   /** Currently stored energy */
-  private Quantity<Energy> energy;
+  private ComparableQuantity<Energy> energy;
 
   /**
    * Constructs the result with
@@ -30,7 +30,10 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
    * @param qDot Heat power flowing into (> 0) or coming from (< 0) the storage
    */
   public ThermalStorageResult(
-      ZonedDateTime timestamp, UUID inputModel, Quantity<Energy> energy, Quantity<Power> qDot) {
+      ZonedDateTime timestamp,
+      UUID inputModel,
+      ComparableQuantity<Energy> energy,
+      ComparableQuantity<Power> qDot) {
     super(timestamp, inputModel, qDot);
     this.energy = energy.to(StandardUnits.ENERGY_RESULT);
   }
@@ -49,17 +52,17 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<Energy> energy,
-      Quantity<Power> qDot) {
+      ComparableQuantity<Energy> energy,
+      ComparableQuantity<Power> qDot) {
     super(uuid, timestamp, inputModel, qDot);
     this.energy = energy.to(StandardUnits.ENERGY_RESULT);
   }
 
-  public Quantity<Energy> getEnergy() {
+  public ComparableQuantity<Energy> getEnergy() {
     return energy;
   }
 
-  public void setEnergy(Quantity<Energy> energy) {
+  public void setEnergy(ComparableQuantity<Energy> energy) {
     this.energy = energy.to(StandardUnits.ENERGY_RESULT);
   }
 

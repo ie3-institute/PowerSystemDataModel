@@ -10,8 +10,8 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 public class FixedFeedInInputFactory
     extends SystemParticipantInputEntityFactory<FixedFeedInInput, SystemParticipantEntityData> {
@@ -37,7 +37,7 @@ public class FixedFeedInInputFactory
       String qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    final Quantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
+    final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     final double cosPhiRated = data.getDouble(COSPHI_RATED);
 
     return new FixedFeedInInput(

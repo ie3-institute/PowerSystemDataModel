@@ -7,24 +7,24 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
-import javax.measure.Quantity;
 import javax.measure.quantity.Temperature;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes a temperature value */
 public class TemperatureValue implements Value {
   /** Temperature (typically in K) */
-  private Quantity<Temperature> temperature;
+  private ComparableQuantity<Temperature> temperature;
 
   /** @param temperature (typically in K) */
-  public TemperatureValue(Quantity<Temperature> temperature) {
+  public TemperatureValue(ComparableQuantity<Temperature> temperature) {
     this.temperature = temperature.to(StandardUnits.TEMPERATURE);
   }
 
-  public Quantity<Temperature> getTemperature() {
+  public ComparableQuantity<Temperature> getTemperature() {
     return temperature;
   }
 
-  public void setTemperature(Quantity<Temperature> temperature) {
+  public void setTemperature(ComparableQuantity<Temperature> temperature) {
     this.temperature = temperature.to(StandardUnits.TEMPERATURE);
   }
 

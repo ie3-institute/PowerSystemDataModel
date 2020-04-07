@@ -8,14 +8,14 @@ package edu.ie3.datamodel.models.result.system;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvInput} */
 public class EvResult extends SystemParticipantResult {
 
-  private Quantity<Dimensionless> soc;
+  private ComparableQuantity<Dimensionless> soc;
 
   /**
    * Standard constructor with automatic uuid generation.
@@ -29,9 +29,9 @@ public class EvResult extends SystemParticipantResult {
   public EvResult(
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<Power> p,
-      Quantity<Power> q,
-      Quantity<Dimensionless> soc) {
+      ComparableQuantity<Power> p,
+      ComparableQuantity<Power> q,
+      ComparableQuantity<Dimensionless> soc) {
     super(timestamp, inputModel, p, q);
     this.soc = soc;
   }
@@ -49,18 +49,18 @@ public class EvResult extends SystemParticipantResult {
       UUID uuid,
       ZonedDateTime timestamp,
       UUID inputModel,
-      Quantity<Power> p,
-      Quantity<Power> q,
-      Quantity<Dimensionless> soc) {
+      ComparableQuantity<Power> p,
+      ComparableQuantity<Power> q,
+      ComparableQuantity<Dimensionless> soc) {
     super(uuid, timestamp, inputModel, p, q);
     this.soc = soc;
   }
 
-  public Quantity<Dimensionless> getSoc() {
+  public ComparableQuantity<Dimensionless> getSoc() {
     return soc;
   }
 
-  public void setSoc(Quantity<Dimensionless> soc) {
+  public void setSoc(ComparableQuantity<Dimensionless> soc) {
     this.soc = soc;
   }
 

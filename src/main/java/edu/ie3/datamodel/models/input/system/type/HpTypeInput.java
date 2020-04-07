@@ -10,13 +10,13 @@ import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpTypeInput extends SystemParticipantTypeInput {
   /** Thermal output of the heat pump (typically in kW), when sRated * cosphi_rated is consumed */
-  private final Quantity<Power> pThermal;
+  private final ComparableQuantity<Power> pThermal;
 
   /**
    * @param uuid of the input entity
@@ -31,16 +31,16 @@ public class HpTypeInput extends SystemParticipantTypeInput {
   public HpTypeInput(
       UUID uuid,
       String id,
-      Quantity<Currency> capex,
-      Quantity<EnergyPrice> opex,
-      Quantity<Power> sRated,
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Power> sRated,
       double cosphiRated,
-      Quantity<Power> pThermal) {
+      ComparableQuantity<Power> pThermal) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
     this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
-  public Quantity<Power> getpThermal() {
+  public ComparableQuantity<Power> getpThermal() {
     return pThermal;
   }
 

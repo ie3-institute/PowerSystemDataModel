@@ -15,11 +15,11 @@ import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
 import edu.ie3.util.TimeTools;
 import java.time.ZonedDateTime;
 import java.util.*;
-import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
+import tec.uom.se.ComparableQuantity;
 
 public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult> {
   private static final String Q_DOT = "qDot";
@@ -51,12 +51,12 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
 
     ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
-    Quantity<Power> qDotQuantity = data.getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND);
+    ComparableQuantity<Power> qDotQuantity = data.getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND);
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
     if (clazz.equals(ThermalHouseResult.class)) {
-      Quantity<Temperature> indoorTemperature =
+      ComparableQuantity<Temperature> indoorTemperature =
           data.getQuantity(INDOOR_TEMPERATURE, StandardUnits.TEMPERATURE);
 
       return uuidOpt
@@ -69,8 +69,9 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
                   new ThermalHouseResult(
                       zdtTimestamp, inputModelUuid, qDotQuantity, indoorTemperature));
     } else if (clazz.equals(CylindricalStorageResult.class)) {
-      Quantity<Energy> energyQuantity = data.getQuantity(ENERGY, StandardUnits.ENERGY_RESULT);
-      Quantity<Dimensionless> fillLevelQuantity =
+      ComparableQuantity<Energy> energyQuantity =
+          data.getQuantity(ENERGY, StandardUnits.ENERGY_RESULT);
+      ComparableQuantity<Dimensionless> fillLevelQuantity =
           data.getQuantity(FILL_LEVEL, StandardUnits.FILL_LEVEL);
 
       return uuidOpt

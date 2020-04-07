@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalConductance;
 import java.util.UUID;
-import javax.measure.Quantity;
+import tec.uom.se.ComparableQuantity;
 
 public class ThermalHouseInputFactory
     extends AssetInputEntityFactory<ThermalHouseInput, ThermalUnitInputEntityData> {
@@ -37,9 +37,10 @@ public class ThermalHouseInputFactory
       OperatorInput operator,
       OperationTime operationTime) {
     final ThermalBusInput busInput = data.getBusInput();
-    final Quantity<ThermalConductance> ethLosses =
+    final ComparableQuantity<ThermalConductance> ethLosses =
         data.getQuantity(ETH_LOSSES, StandardUnits.THERMAL_TRANSMISSION);
-    final Quantity<HeatCapacity> ethCapa = data.getQuantity(ETH_CAPA, StandardUnits.HEAT_CAPACITY);
+    final ComparableQuantity<HeatCapacity> ethCapa =
+        data.getQuantity(ETH_CAPA, StandardUnits.HEAT_CAPACITY);
     return new ThermalHouseInput(uuid, id, busInput, ethLosses, ethCapa);
   }
 }
