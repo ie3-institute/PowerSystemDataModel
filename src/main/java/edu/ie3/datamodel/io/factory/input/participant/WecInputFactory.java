@@ -33,7 +33,7 @@ public class WecInputFactory
       UUID uuid,
       String id,
       NodeInput node,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
     WecTypeInput typeInput = data.getTypeInput();

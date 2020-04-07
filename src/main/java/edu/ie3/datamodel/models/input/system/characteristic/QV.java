@@ -14,9 +14,8 @@ import javax.measure.quantity.Dimensionless;
  * Characteristic giving the reactive power behaviour based on the current voltage magnitude at the
  * connecting node
  */
-public class QV extends ReactivePowerCharacteristic<Dimensionless> {
+public class QV extends ReactivePowerCharacteristic {
   public static final Pattern MATCHING_PATTERN = buildMatchingPattern("qV");
-  public static final QV CONSTANT_CHARACTERISTIC = new QV("qV:{(0.0,0.0)}");
 
   public QV(
       SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>> characteristicCoordinates) {

@@ -44,7 +44,7 @@ public class LoadInputFactory
       java.util.UUID uuid,
       String id,
       NodeInput node,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
     StandardLoadProfile slp;

@@ -45,7 +45,7 @@ abstract class SystemParticipantInputEntityFactory<
   protected T buildModel(
       D data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
     NodeInput node = data.getNode();
-    ReactivePowerCharacteristic<?> qCharacteristics =
+    ReactivePowerCharacteristic qCharacteristics =
         ReactivePowerCharacteristic.parse(data.getField(Q_CHARACTERISTICS));
 
     return buildModel(data, uuid, id, node, qCharacteristics, operator, operationTime);
@@ -68,7 +68,7 @@ abstract class SystemParticipantInputEntityFactory<
       UUID uuid,
       String id,
       NodeInput node,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime);
 }

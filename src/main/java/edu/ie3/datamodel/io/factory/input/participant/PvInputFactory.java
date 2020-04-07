@@ -45,7 +45,7 @@ public class PvInputFactory
       java.util.UUID uuid,
       String id,
       NodeInput node,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
     final double albedo = data.getDouble(ALBEDO);

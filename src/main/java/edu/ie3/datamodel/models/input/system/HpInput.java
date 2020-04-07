@@ -41,7 +41,7 @@ public class HpInput extends SystemParticipantInput implements HasType {
       OperationTime operationTime,
       NodeInput node,
       ThermalBusInput thermalBus,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       HpTypeInput type) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.thermalBus = thermalBus;
@@ -63,7 +63,7 @@ public class HpInput extends SystemParticipantInput implements HasType {
       String id,
       NodeInput node,
       ThermalBusInput thermalBus,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       HpTypeInput type) {
     super(uuid, id, node, qCharacteristics);
     this.thermalBus = thermalBus;

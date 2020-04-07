@@ -38,7 +38,7 @@ public class BmInputFactory
       UUID uuid,
       String id,
       NodeInput node,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
     final BmTypeInput typeInput = data.getTypeInput();

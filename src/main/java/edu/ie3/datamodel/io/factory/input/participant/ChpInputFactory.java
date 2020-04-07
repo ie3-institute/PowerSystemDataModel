@@ -31,7 +31,7 @@ public class ChpInputFactory
       UUID uuid,
       String id,
       NodeInput node,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);

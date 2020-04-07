@@ -49,7 +49,7 @@ public class ChpInput extends SystemParticipantInput implements HasType {
       OperationTime operationTime,
       NodeInput node,
       ThermalBusInput thermalBus,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       ChpTypeInput type,
       ThermalStorageInput thermalStorage,
       boolean marketReaction) {
@@ -78,7 +78,7 @@ public class ChpInput extends SystemParticipantInput implements HasType {
       String id,
       NodeInput node,
       ThermalBusInput thermalBus,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       ChpTypeInput type,
       ThermalStorageInput thermalStorage,
       boolean marketReaction) {

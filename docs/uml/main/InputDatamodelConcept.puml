@@ -72,20 +72,20 @@ Class OlmCharacteristicInput {
 }
 OlmCharacteristicInput --|> CharacteristicInput: <<bind>>A::Speed,O::Dimensionless
 
-abstract Class ReactivePowerCharacteristic<A extends Quantity<A>> {
-    + <<static>> parse(String): ReactivePowerCharacteristic<?>
+abstract Class ReactivePowerCharacteristic {
+    + <<static>> parse(String): ReactivePowerCharacteristic
 }
-ReactivePowerCharacteristic --|> CharacteristicInput: <<bind>>O::Dimensionless
+ReactivePowerCharacteristic --|> CharacteristicInput: <<bind>>A::Dimensionless,O::Dimensionless
 
 Class CosPhiFixed {
     + <<static>> CONSTANT_CHARACTERISTIC: CosPhiFixed
 }
-CosPhiFixed --|> ReactivePowerCharacteristic: <<bind>>A::Power
+CosPhiFixed --|> ReactivePowerCharacteristic
 
 Class CosPhiP {
     + <<static>> CONSTANT_CHARACTERISTIC: CosPhiP
 }
-CosPhiP --|> ReactivePowerCharacteristic: <<bind>>A::Power
+CosPhiP --|> ReactivePowerCharacteristic
 
 Class QV {
     + <<static>> CONSTANT_CHARACTERISTIC: QV

@@ -20,7 +20,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
   private final NodeInput node;
 
   /** Description of a reactive power characteristic. For details see further documentation */
-  private final ReactivePowerCharacteristic<?> qCharacteristics;
+  private final ReactivePowerCharacteristic qCharacteristics;
 
   /**
    * Constructor for an operated system participant
@@ -38,7 +38,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       OperatorInput operator,
       OperationTime operationTime,
       NodeInput node,
-      ReactivePowerCharacteristic<?> qCharacteristics) {
+      ReactivePowerCharacteristic qCharacteristics) {
     super(uuid, id, operator, operationTime);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
@@ -53,13 +53,13 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
    * @param qCharacteristics Description of a reactive power characteristic
    */
   public SystemParticipantInput(
-      UUID uuid, String id, NodeInput node, ReactivePowerCharacteristic<?> qCharacteristics) {
+      UUID uuid, String id, NodeInput node, ReactivePowerCharacteristic qCharacteristics) {
     super(uuid, id);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
   }
 
-  public ReactivePowerCharacteristic<?> getqCharacteristics() {
+  public ReactivePowerCharacteristic getqCharacteristics() {
     return qCharacteristics;
   }
 

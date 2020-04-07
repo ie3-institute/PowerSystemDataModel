@@ -39,7 +39,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
       OperatorInput operator,
       OperationTime operationTime,
       NodeInput node,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       WecTypeInput type,
       boolean marketReaction) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
@@ -61,7 +61,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
       UUID uuid,
       String id,
       NodeInput node,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       WecTypeInput type,
       boolean marketReaction) {
     super(uuid, id, node, qCharacteristics);

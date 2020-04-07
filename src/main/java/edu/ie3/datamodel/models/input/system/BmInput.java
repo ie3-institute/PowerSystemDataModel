@@ -51,7 +51,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
       OperatorInput operator,
       OperationTime operationTime,
       NodeInput node,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,

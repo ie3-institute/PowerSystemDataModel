@@ -28,7 +28,6 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
   /**
    * Constructor for the abstract class
    *
-   * @param uuid Unique identifier
    * @param coordinates Set of coordinates that describe the characteristic
    * @param prefix Prefix, that prepends the actual characteristic
    * @param decimalPlaces Desired amount of decimal places when de-serializing the characteristic

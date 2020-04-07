@@ -7,19 +7,14 @@ package edu.ie3.datamodel.models.input.system.characteristic;
 
 import java.util.SortedSet;
 import java.util.regex.Pattern;
-import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Dimensionless;
 
-/**
- * Abstract class (only for grouping all reactive power characteristics together
- *
- * @param <A> Type of quantity, that applies to the abscissa
- */
-public abstract class ReactivePowerCharacteristic<A extends Quantity<A>>
-    extends CharacteristicInput<A, Dimensionless> {
+/** Abstract class (only for grouping all reactive power characteristics together */
+public abstract class ReactivePowerCharacteristic
+    extends CharacteristicInput<Dimensionless, Dimensionless> {
   public ReactivePowerCharacteristic(
-      SortedSet<CharacteristicCoordinate<A, Dimensionless>> characteristicCoordinates,
+      SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>> characteristicCoordinates,
       String prefix,
       int decimalPlaces) {
     super(characteristicCoordinates, prefix, decimalPlaces);
@@ -28,7 +23,7 @@ public abstract class ReactivePowerCharacteristic<A extends Quantity<A>>
   public ReactivePowerCharacteristic(
       String input,
       Pattern matchingPattern,
-      Unit<A> abscissaUnit,
+      Unit<Dimensionless> abscissaUnit,
       Unit<Dimensionless> ordinateUnit,
       String prefix,
       int decimalPlaces) {
@@ -42,7 +37,7 @@ public abstract class ReactivePowerCharacteristic<A extends Quantity<A>>
    * @param input String to parse
    * @return Matching reactive power characteristic
    */
-  public static ReactivePowerCharacteristic<?> parse(String input) {
+  public static ReactivePowerCharacteristic parse(String input) {
     if (CosPhiFixed.MATCHING_PATTERN.matcher(input).matches()) return new CosPhiFixed(input);
     else if (CosPhiP.MATCHING_PATTERN.matcher(input).matches()) return new CosPhiP(input);
     else if (QV.MATCHING_PATTERN.matcher(input).matches()) return new QV(input);

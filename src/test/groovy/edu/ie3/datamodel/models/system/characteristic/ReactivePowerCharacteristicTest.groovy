@@ -42,20 +42,20 @@ class ReactivePowerCharacteristicTest extends Specification {
 	def setupSpec() {
 		validCosPhiFixed = new CosPhiFixed(
 				[
-					new CharacteristicCoordinate<Power, Dimensionless>(
-					Quantities.getQuantity(0d, KILOWATT), Quantities.getQuantity(0.95, PU))
-				] as SortedSet<CharacteristicCoordinate<Power, Dimensionless>>
+					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
+					Quantities.getQuantity(0d, PU), Quantities.getQuantity(0.95, PU))
+				] as SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>>
 				)
 
 		validCosPhiP = new CosPhiP(
 				[
-					new CharacteristicCoordinate<Power, Dimensionless>(
-					Quantities.getQuantity(0d, KILOWATT), Quantities.getQuantity(1.0, PU)),
-					new CharacteristicCoordinate<Power, Dimensionless>(
-					Quantities.getQuantity(0.9, KILOWATT), Quantities.getQuantity(1.0, PU)),
-					new CharacteristicCoordinate<Power, Dimensionless>(
-					Quantities.getQuantity(1.2, KILOWATT), Quantities.getQuantity(-0.3, PU))
-				] as SortedSet<CharacteristicCoordinate<Power, Dimensionless>>
+					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
+					Quantities.getQuantity(0d, PU), Quantities.getQuantity(1.0, PU)),
+					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
+					Quantities.getQuantity(0.9, PU), Quantities.getQuantity(1.0, PU)),
+					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
+					Quantities.getQuantity(1.2, PU), Quantities.getQuantity(-0.3, PU))
+				] as SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>>
 				)
 
 		validQV = new QV(

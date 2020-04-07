@@ -35,7 +35,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
       OperatorInput operator,
       OperationTime operationTime,
       NodeInput node,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       EvTypeInput type) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.type = type;
@@ -54,7 +54,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
       UUID uuid,
       String id,
       NodeInput node,
-      ReactivePowerCharacteristic<?> qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       EvTypeInput type) {
     super(uuid, id, node, qCharacteristics);
     this.type = type;

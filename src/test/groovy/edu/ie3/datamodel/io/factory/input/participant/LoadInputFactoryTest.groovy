@@ -65,7 +65,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert qCharacteristics.with {
 				assert uuid != null
 				assert coordinates == Collections.unmodifiableSortedSet([
-					new CharacteristicCoordinate<Power, Dimensionless>(Quantities.getQuantity(0d, KILOWATT), Quantities.getQuantity(1d, PU))
+					new CharacteristicCoordinate<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
 				] as TreeSet)
 			}
 			assert standardLoadProfile == BdewLoadProfile.G4

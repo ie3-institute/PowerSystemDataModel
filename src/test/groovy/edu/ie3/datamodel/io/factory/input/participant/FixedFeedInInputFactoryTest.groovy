@@ -67,7 +67,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 			assert qCharacteristics.with {
 				assert uuid != null
 				assert coordinates == Collections.unmodifiableSortedSet([
-					new CharacteristicCoordinate<Power, Dimensionless>(Quantities.getQuantity(0d, KILOWATT), Quantities.getQuantity(1d, PU))
+					new CharacteristicCoordinate<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
 				] as TreeSet)
 			}
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)

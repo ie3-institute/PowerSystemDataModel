@@ -9,19 +9,18 @@ import edu.ie3.datamodel.models.StandardUnits;
 import java.util.SortedSet;
 import java.util.regex.Pattern;
 import javax.measure.quantity.Dimensionless;
-import javax.measure.quantity.Power;
 
 /**
  * Characteristic denoting a power factor, that is dependent on the current power consumption or
  * infeed
  */
-public class CosPhiFixed extends ReactivePowerCharacteristic<Power> {
+public class CosPhiFixed extends ReactivePowerCharacteristic {
   public static final Pattern MATCHING_PATTERN = buildMatchingPattern("cosPhiFixed");
   public static final CosPhiFixed CONSTANT_CHARACTERISTIC =
       new CosPhiFixed("cosPhiFixed:{(0.0,1.0)}");
 
   public CosPhiFixed(
-      SortedSet<CharacteristicCoordinate<Power, Dimensionless>> characteristicCoordinates) {
+      SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>> characteristicCoordinates) {
     super(characteristicCoordinates, "cosPhiFixed", 2);
   }
 
@@ -29,7 +28,7 @@ public class CosPhiFixed extends ReactivePowerCharacteristic<Power> {
     super(
         input,
         MATCHING_PATTERN,
-        StandardUnits.ACTIVE_POWER_IN,
+        StandardUnits.Q_CHARACTERISTIC,
         StandardUnits.Q_CHARACTERISTIC,
         "cosPhiFixed",
         2);
