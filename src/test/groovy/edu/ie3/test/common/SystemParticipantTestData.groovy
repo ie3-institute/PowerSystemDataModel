@@ -167,4 +167,17 @@ class SystemParticipantTestData {
 	public static final HpInput hpInput = new HpInput(UUID.fromString("798028b5-caff-4da7-bcd9-1750fdd8742b"), "test_hpInput", operator, operationTime,
 	participantNode, thermalBus, qCharacteristics, hpTypeInput)
 
+
+	public static allParticipants = [
+		fixedFeedInInput,
+		pvInput,
+		loadInput,
+		bmInput,
+		storageInput,
+		wecInput,
+		evInput,
+		chpInput,
+		hpInput
+	]
+
 }
