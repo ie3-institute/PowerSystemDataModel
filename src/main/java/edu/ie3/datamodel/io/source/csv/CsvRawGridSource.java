@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.FileNamingStrategy;
-import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
@@ -36,7 +35,6 @@ import java.util.stream.Stream;
 public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
   // general fields
-  private final CsvFileConnector connector;
   private final TypeSource typeSource;
 
   // factories
@@ -52,8 +50,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       String gridFolderPath,
       FileNamingStrategy fileNamingStrategy,
       TypeSource typeSource) {
-    super(csvSep);
-    this.connector = new CsvFileConnector(gridFolderPath, fileNamingStrategy);
+    super(csvSep, gridFolderPath, fileNamingStrategy);
     this.typeSource = typeSource;
 
     // init factories

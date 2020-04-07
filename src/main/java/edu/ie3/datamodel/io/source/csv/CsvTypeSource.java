@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.FileNamingStrategy;
-import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
@@ -33,21 +32,16 @@ import java.util.stream.Collectors;
  */
 public class CsvTypeSource extends CsvDataSource implements TypeSource {
 
-  // general fields
-  private final CsvFileConnector connector;
-
   // factories
   private final OperatorInputFactory operatorInputFactory;
   private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
   private final LineTypeInputFactory lineTypeInputFactory;
   private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
   private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
-  //  private final
 
   public CsvTypeSource(
-      String csvSep, String gridFolderPath, FileNamingStrategy fileNamingStrategy) {
-    super(csvSep);
-    this.connector = new CsvFileConnector(gridFolderPath, fileNamingStrategy);
+      String csvSep, String typeFolderPath, FileNamingStrategy fileNamingStrategy) {
+    super(csvSep, typeFolderPath, fileNamingStrategy);
 
     // init factories
     operatorInputFactory = new OperatorInputFactory();

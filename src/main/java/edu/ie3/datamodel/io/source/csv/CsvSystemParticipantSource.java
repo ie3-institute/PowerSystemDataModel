@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.FileNamingStrategy;
-import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.input.participant.*;
 import edu.ie3.datamodel.io.source.SystemParticipantSource;
 import edu.ie3.datamodel.io.source.ThermalSource;
@@ -37,7 +36,6 @@ import org.apache.commons.lang3.NotImplementedException;
 public class CsvSystemParticipantSource extends CsvDataSource implements SystemParticipantSource {
 
   // general fields
-  private final CsvFileConnector connector;
   private final TypeSource typeSource;
   private final CsvRawGridSource csvRawGridSource;
   private final ThermalSource thermalSource;
@@ -60,8 +58,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       TypeSource typeSource,
       ThermalSource thermalSource,
       CsvRawGridSource csvRawGridSource) {
-    super(csvSep);
-    this.connector = new CsvFileConnector(participantsFolderPath, fileNamingStrategy);
+    super(csvSep, participantsFolderPath, fileNamingStrategy);
     this.typeSource = typeSource;
     this.csvRawGridSource = csvRawGridSource;
     this.thermalSource = thermalSource;

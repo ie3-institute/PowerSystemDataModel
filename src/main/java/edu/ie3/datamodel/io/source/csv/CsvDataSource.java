@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
@@ -31,7 +32,9 @@ public abstract class CsvDataSource {
 
   private static final Logger log = LogManager.getLogger(CsvDataSource.class);
 
+  // general fields
   private final String csvSep;
+  protected final CsvFileConnector connector;
 
   // field names
   protected final String OPERATOR = "operator";
@@ -40,8 +43,9 @@ public abstract class CsvDataSource {
   protected final String NODE = "node";
   protected final String TYPE = "type";
 
-  public CsvDataSource(String csvSep) {
+  public CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
+    this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
 
   protected String[] readHeadline(BufferedReader reader) throws IOException {
