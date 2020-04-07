@@ -7,9 +7,11 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.input.participant.*;
+import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.SystemParticipantSource;
 import edu.ie3.datamodel.io.source.ThermalSource;
 import edu.ie3.datamodel.io.source.TypeSource;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.EvcsInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -37,7 +39,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   // general fields
   private final TypeSource typeSource;
-  private final CsvRawGridSource csvRawGridSource;
+  private final RawGridSource rawGridSource;
   private final ThermalSource thermalSource;
 
   // factories
@@ -57,10 +59,10 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       FileNamingStrategy fileNamingStrategy,
       TypeSource typeSource,
       ThermalSource thermalSource,
-      CsvRawGridSource csvRawGridSource) {
+      RawGridSource rawGridSource) {
     super(csvSep, participantsFolderPath, fileNamingStrategy);
     this.typeSource = typeSource;
-    this.csvRawGridSource = csvRawGridSource;
+    this.rawGridSource = rawGridSource;
     this.thermalSource = thermalSource;
 
     // init factories
@@ -100,7 +102,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<FixedFeedInInput> getFixedFeedIns() {
     return filterEmptyOptionals(
             buildUntypedEntityData(
-                    FixedFeedInInput.class, csvRawGridSource.getNodes(), typeSource.getOperators())
+                    FixedFeedInInput.class, rawGridSource.getNodes(), typeSource.getOperators())
                 .map(dataOpt -> dataOpt.flatMap(fixedFeedInInputFactory::getEntity)))
         .collect(Collectors.toSet());
   }
@@ -119,7 +121,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<PvInput> getPvPlants() {
     return filterEmptyOptionals(
             buildUntypedEntityData(
-                    PvInput.class, csvRawGridSource.getNodes(), typeSource.getOperators())
+                    PvInput.class, rawGridSource.getNodes(), typeSource.getOperators())
                 .map(dataOpt -> dataOpt.flatMap(pvInputFactory::getEntity)))
         .collect(Collectors.toSet());
   }
@@ -137,7 +139,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<LoadInput> getLoads() {
     return filterEmptyOptionals(
             buildUntypedEntityData(
-                    LoadInput.class, csvRawGridSource.getNodes(), typeSource.getOperators())
+                    LoadInput.class, rawGridSource.getNodes(), typeSource.getOperators())
                 .map(dataOpt -> dataOpt.flatMap(loadInputFactory::getEntity)))
         .collect(Collectors.toSet());
   }
@@ -164,7 +166,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<BmInput> getBmPlants() {
 
     return buildUntypedEntityData(
-            BmInput.class, csvRawGridSource.getNodes(), typeSource.getOperators())
+            BmInput.class, rawGridSource.getNodes(), typeSource.getOperators())
         .filter(Optional::isPresent)
         .map(Optional::get)
         .map(
@@ -195,7 +197,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<StorageInput> getStorages() {
 
     return buildUntypedEntityData(
-            StorageInput.class, csvRawGridSource.getNodes(), typeSource.getOperators())
+            StorageInput.class, rawGridSource.getNodes(), typeSource.getOperators())
         .filter(Optional::isPresent)
         .map(Optional::get)
         .map(
@@ -226,7 +228,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<WecInput> getWecPlants() {
 
     return buildUntypedEntityData(
-            WecInput.class, csvRawGridSource.getNodes(), typeSource.getOperators())
+            WecInput.class, rawGridSource.getNodes(), typeSource.getOperators())
         .filter(Optional::isPresent)
         .map(Optional::get)
         .map(
@@ -256,7 +258,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<EvInput> getEvs() {
     return buildUntypedEntityData(
-            EvInput.class, csvRawGridSource.getNodes(), typeSource.getOperators())
+            EvInput.class, rawGridSource.getNodes(), typeSource.getOperators())
         .filter(Optional::isPresent)
         .map(Optional::get)
         .map(
@@ -287,7 +289,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<ChpInput> getChpPlants() {
 
     return buildUntypedEntityData(
-            ChpInput.class, csvRawGridSource.getNodes(), typeSource.getOperators())
+            ChpInput.class, rawGridSource.getNodes(), typeSource.getOperators())
         .filter(Optional::isPresent)
         .map(Optional::get)
         .map(
@@ -333,7 +335,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<HpInput> getHeatPumps() {
 
     return buildUntypedEntityData(
-            HpInput.class, csvRawGridSource.getNodes(), typeSource.getOperators())
+            HpInput.class, rawGridSource.getNodes(), typeSource.getOperators())
         .filter(Optional::isPresent)
         .map(Optional::get)
         .map(
@@ -369,7 +371,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
         .collect(Collectors.toSet());
   }
 
-  private <T extends SystemParticipantInput>
+  private <T extends AssetInput>
       Stream<Optional<SystemParticipantEntityData>> buildUntypedEntityData(
           Class<T> entityClass, Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
 

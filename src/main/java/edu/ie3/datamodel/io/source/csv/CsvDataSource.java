@@ -7,7 +7,9 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
+import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -181,5 +183,26 @@ public abstract class CsvDataSource {
       return new HashSet<>(distinctUuidEntities);
     }
     return new HashSet<>(entities);
+  }
+
+  protected <T extends AssetInput> Stream<Optional<AssetInputEntityData>> buildAssetInputEntityData(
+      Class<T> entityClass, Collection<OperatorInput> operators) {
+
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
+        .map(
+            fieldsToAttributes -> {
+
+              // get the operator of the entity
+              String operatorUuid = fieldsToAttributes.get(OPERATOR);
+              OperatorInput operator = getOrDefaultOperator(operators, operatorUuid);
+
+              // remove fields that are passed as objects to constructor
+              fieldsToAttributes
+                  .keySet()
+                  .removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
+
+              return Optional.of(
+                  new AssetInputEntityData(fieldsToAttributes, entityClass, operator));
+            });
   }
 }
