@@ -97,7 +97,8 @@ public abstract class CsvDataSource {
       String[] headline = readHeadline(reader);
       return reader.lines().parallel().map(csvRow -> buildFieldsToAttributes(csvRow, headline));
     } catch (IOException e) {
-      logIOExceptionFromConnector(entityClass, e);
+      log.warn(
+          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
     return Stream.empty();
   }
@@ -118,12 +119,6 @@ public abstract class CsvDataSource {
       }
     }
     return sb.toString();
-  }
-
-  protected void logIOExceptionFromConnector(
-      Class<? extends UniqueEntity> entityClass, IOException e) {
-    log.warn(
-        "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
   }
 
   protected <T> Predicate<Optional<T>> isPresentWithInvalidList(List<Optional<T>> invalidList) {

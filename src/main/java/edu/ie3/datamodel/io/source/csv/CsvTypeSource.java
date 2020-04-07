@@ -11,20 +11,20 @@ import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer3WTypeInputFactory;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import java.io.BufferedReader;
-import java.io.IOException;
+import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
+import edu.ie3.datamodel.models.input.system.type.ChpTypeInput;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * //ToDo: Class Description
@@ -33,8 +33,6 @@ import org.apache.logging.log4j.Logger;
  * @since 05.04.20
  */
 public class CsvTypeSource extends CsvDataSource implements TypeSource {
-
-  private static final Logger log = LogManager.getLogger(CsvTypeSource.class);
 
   // general fields
   private final CsvFileConnector connector;
@@ -55,6 +53,7 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
     transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();
     lineTypeInputFactory = new LineTypeInputFactory();
     transformer3WTypeInputFactory = new Transformer3WTypeInputFactory();
+    systemParticipantTypeInputFactory = new SystemParticipantTypeInputFactory();
   }
 
   @Override
@@ -77,36 +76,29 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
     return readSimpleEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory);
   }
 
-  private <T extends UniqueEntity> Collection<T> readSimpleEntities(
-      Class<T> entityClass, EntityFactory<T, SimpleEntityData> factory) {
+  @Override
+  public Collection<BmTypeInput> getBmTypes() {
+    return readSimpleEntities(BmTypeInput.class, systemParticipantTypeInputFactory);
+  }
 
-    Set<T> resultingOperators = new HashSet<>();
-    try (BufferedReader reader = connector.getReader(entityClass)) {
-      final String[] headline = readHeadline(reader);
+  @Override
+  public Collection<ChpTypeInput> getChpTypes() {
+    return readSimpleEntities(ChpTypeInput.class, systemParticipantTypeInputFactory);
+  }
 
-      resultingOperators =
-          reader
-              .lines()
-              .parallel()
-              .map(
-                  csvRow -> {
-                    final Map<String, String> fieldsToAttributes =
-                        buildFieldsToAttributes(csvRow, headline);
-
-                    SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
-
-                    return factory.getEntity(data);
-                  })
-              .filter(Optional::isPresent)
-              .map(Optional::get)
-              .collect(Collectors.toSet());
-
-    } catch (IOException e) {
-      log.warn(
-          "Cannot read file to build entity '{}':‚ {}",
-          entityClass.getSimpleName(),
-          e.getMessage());
-    }
-    return resultingOperators;
+  @SuppressWarnings("unchecked cast")
+  private <T extends InputEntity> Collection<T> readSimpleEntities(
+      Class<? extends UniqueEntity> entityClass,
+      EntityFactory<? extends UniqueEntity, SimpleEntityData> factory) {
+    return (Set<T>)
+        buildStreamWithFieldsToAttributesMap(entityClass, connector)
+            .map(
+                fieldsToAttributes -> {
+                  SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
+                  return factory.getEntity(data);
+                })
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toSet());
   }
 }
