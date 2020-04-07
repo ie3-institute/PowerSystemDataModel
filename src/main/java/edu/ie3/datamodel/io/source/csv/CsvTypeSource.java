@@ -21,13 +21,12 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
-import edu.ie3.datamodel.models.input.system.type.ChpTypeInput;
+import edu.ie3.datamodel.models.input.system.type.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * //ToDo: Class Description
+ * //ToDo: Class Description // todo hint that set does NOT check for uuid uniqueness!
  *
  * @version 0.1
  * @since 05.04.20
@@ -42,6 +41,8 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
   private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
   private final LineTypeInputFactory lineTypeInputFactory;
   private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
+  private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
+  //  private final
 
   public CsvTypeSource(
       String csvSep, String gridFolderPath, FileNamingStrategy fileNamingStrategy) {
@@ -57,37 +58,57 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
   }
 
   @Override
-  public Collection<Transformer2WTypeInput> getTransformer2WTypes() {
+  public Set<Transformer2WTypeInput> getTransformer2WTypes() {
     return readSimpleEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory);
   }
 
   @Override
-  public Collection<OperatorInput> getOperators() {
+  public Set<OperatorInput> getOperators() {
     return readSimpleEntities(OperatorInput.class, operatorInputFactory);
   }
 
   @Override
-  public Collection<LineTypeInput> getLineTypes() {
+  public Set<LineTypeInput> getLineTypes() {
     return readSimpleEntities(LineTypeInput.class, lineTypeInputFactory);
   }
 
   @Override
-  public Collection<Transformer3WTypeInput> getTransformer3WTypes() {
+  public Set<Transformer3WTypeInput> getTransformer3WTypes() {
     return readSimpleEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory);
   }
 
   @Override
-  public Collection<BmTypeInput> getBmTypes() {
+  public Set<BmTypeInput> getBmTypes() {
     return readSimpleEntities(BmTypeInput.class, systemParticipantTypeInputFactory);
   }
 
   @Override
-  public Collection<ChpTypeInput> getChpTypes() {
+  public Set<ChpTypeInput> getChpTypes() {
     return readSimpleEntities(ChpTypeInput.class, systemParticipantTypeInputFactory);
   }
 
+  @Override
+  public Collection<HpTypeInput> getHpTypes() {
+    return readSimpleEntities(HpTypeInput.class, systemParticipantTypeInputFactory);
+  }
+
+  @Override
+  public Set<StorageTypeInput> getStorageTypes() {
+    return readSimpleEntities(StorageTypeInput.class, systemParticipantTypeInputFactory);
+  }
+
+  @Override
+  public Set<WecTypeInput> getWecTypes() {
+    return readSimpleEntities(WecTypeInput.class, systemParticipantTypeInputFactory);
+  }
+
+  @Override
+  public Set<EvTypeInput> getEvTypes() {
+    return readSimpleEntities(EvTypeInput.class, systemParticipantTypeInputFactory);
+  }
+
   @SuppressWarnings("unchecked cast")
-  private <T extends InputEntity> Collection<T> readSimpleEntities(
+  private <T extends InputEntity> Set<T> readSimpleEntities(
       Class<? extends UniqueEntity> entityClass,
       EntityFactory<? extends UniqueEntity, SimpleEntityData> factory) {
     return (Set<T>)

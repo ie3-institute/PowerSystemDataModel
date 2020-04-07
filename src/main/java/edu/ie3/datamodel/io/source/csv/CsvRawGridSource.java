@@ -89,35 +89,35 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         checkForUuidDuplicates(
             LineInput.class,
             readLines(nodes, lineTypes, operators)
-                .filter(isPresentWithInvalidList(invalidLines))
+                .filter(collectIfNotPresent(invalidLines))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<Transformer2WInput> transformer2WInputs =
         checkForUuidDuplicates(
             Transformer2WInput.class,
             read2WTransformers(nodes, transformer2WTypeInputs, operators)
-                .filter(isPresentWithInvalidList(invalidTrafo2Ws))
+                .filter(collectIfNotPresent(invalidTrafo2Ws))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<Transformer3WInput> transformer3WInputs =
         checkForUuidDuplicates(
             Transformer3WInput.class,
             read3WTransformers(nodes, transformer3WTypeInputs, operators)
-                .filter(isPresentWithInvalidList(invalidTrafo3Ws))
+                .filter(collectIfNotPresent(invalidTrafo3Ws))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<SwitchInput> switches =
         checkForUuidDuplicates(
             SwitchInput.class,
             readSwitches(nodes, operators)
-                .filter(isPresentWithInvalidList(invalidSwitches))
+                .filter(collectIfNotPresent(invalidSwitches))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<MeasurementUnitInput> measurementUnits =
         checkForUuidDuplicates(
             MeasurementUnitInput.class,
             readMeasurementUnits(nodes, operators)
-                .filter(isPresentWithInvalidList(invalidMeasurementUnits))
+                .filter(collectIfNotPresent(invalidMeasurementUnits))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
 

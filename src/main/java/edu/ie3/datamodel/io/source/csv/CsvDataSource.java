@@ -76,11 +76,6 @@ public abstract class CsvDataSource {
             });
   }
 
-  protected <T extends UniqueEntity> Stream<T> filterEmptyOptionals(
-      Collection<Optional<T>> elements) {
-    return elements.stream().filter(Optional::isPresent).map(Optional::get);
-  }
-
   protected <T extends UniqueEntity> Stream<T> filterEmptyOptionals(Stream<Optional<T>> elements) {
     return elements.filter(Optional::isPresent).map(Optional::get);
   }
@@ -91,15 +86,35 @@ public abstract class CsvDataSource {
         .findFirst();
   }
 
+  /**
+   * TODO note that the stream is already parallel
+   *
+   * @param entityClass
+   * @param connector
+   * @return
+   */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
     try (BufferedReader reader = connector.getReader(entityClass)) {
       String[] headline = readHeadline(reader);
-      return reader.lines().parallel().map(csvRow -> buildFieldsToAttributes(csvRow, headline));
+      // by default try-with-resources closes the reader directly when we leave this method (which
+      // is wanted to
+      // avoid a lock on the file), but this causes a closing of the stream as well.
+      // As we still want to consume the data at other places, we start a new stream instead of
+      // returning the original one
+      Collection<Map<String, String>> allRows =
+          reader
+              .lines()
+              .parallel()
+              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
+              .collect(Collectors.toList());
+      return allRows.stream().parallel();
+
     } catch (IOException e) {
       log.warn(
           "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
+
     return Stream.empty();
   }
 
@@ -121,7 +136,7 @@ public abstract class CsvDataSource {
     return sb.toString();
   }
 
-  protected <T> Predicate<Optional<T>> isPresentWithInvalidList(List<Optional<T>> invalidList) {
+  protected <T> Predicate<Optional<T>> collectIfNotPresent(List<Optional<T>> invalidList) {
     return o -> {
       if (o.isPresent()) {
         return true;
