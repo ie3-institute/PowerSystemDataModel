@@ -160,9 +160,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
             new ThermalUnitInputEntityData(
                 assetInputEntityData.getFieldsToValues(),
                 assetInputEntityData.getEntityClass(),
-                assetInputEntityData
-                    .getOperatorInput()
-                    .orElseGet(() -> OperatorInput.NO_OPERATOR_ASSIGNED),
+                assetInputEntityData.getOperatorInput(),
                 thermalBus.get())));
   }
 }

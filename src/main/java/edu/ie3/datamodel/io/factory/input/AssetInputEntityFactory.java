@@ -71,10 +71,10 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
   protected T buildModel(D data) {
     UUID uuid = data.getUUID(UUID);
     String id = data.getField(ID);
-    Optional<OperatorInput> operator = data.getOperatorInput();
+    OperatorInput operator = data.getOperatorInput();
     OperationTime operationTime = buildOperationTime(data);
 
-    return buildModel(data, uuid, id, operator.orElse(null), operationTime);
+    return buildModel(data, uuid, id, operator, operationTime);
   }
 
   /**
