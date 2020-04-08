@@ -14,8 +14,8 @@ import javax.measure.quantity.Speed;
 /** Characteristic mapping the wind velocity to its corresponding Betz coefficient */
 public class WecCharacteristicInput extends CharacteristicInput<Speed, Dimensionless> {
   public WecCharacteristicInput(
-      SortedSet<CharacteristicCoordinate<Speed, Dimensionless>> characteristicCoordinates) {
-    super(characteristicCoordinates, "cP", 2);
+      SortedSet<CharacteristicPoint<Speed, Dimensionless>> characteristicPoints) {
+    super(characteristicPoints, "cP", 2);
   }
 
   public WecCharacteristicInput(String input) throws ParsingException {
@@ -24,6 +24,6 @@ public class WecCharacteristicInput extends CharacteristicInput<Speed, Dimension
 
   @Override
   public String toString() {
-    return "WecCharacteristicInput{" + "coordinates=" + coordinates + '}';
+    return "WecCharacteristicInput{" + "points=" + points + '}';
   }
 }

@@ -21,8 +21,8 @@ import javax.measure.quantity.Power;
 public class EvCharacteristicInput extends CharacteristicInput<Power, Dimensionless> {
 
   public EvCharacteristicInput(
-      SortedSet<CharacteristicCoordinate<Power, Dimensionless>> characteristicCoordinates) {
-    super(characteristicCoordinates, "ev", 2);
+      SortedSet<CharacteristicPoint<Power, Dimensionless>> characteristicPoints) {
+    super(characteristicPoints, "ev", 2);
   }
 
   public EvCharacteristicInput(String input) throws ParsingException {
@@ -31,6 +31,6 @@ public class EvCharacteristicInput extends CharacteristicInput<Power, Dimensionl
 
   @Override
   public String toString() {
-    return "EvCharacteristicInput{" + "coordinates=" + coordinates + '}';
+    return "EvCharacteristicInput{" + "points=" + points + '}';
   }
 }

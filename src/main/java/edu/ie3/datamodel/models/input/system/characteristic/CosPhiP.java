@@ -19,8 +19,8 @@ public class CosPhiP extends ReactivePowerCharacteristic {
   public static final String STARTING_REGEX = buildStartingRegex(PREFIX);
 
   public CosPhiP(
-      SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>> characteristicCoordinates) {
-    super(characteristicCoordinates, PREFIX, 2);
+      SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>> characteristicPoints) {
+    super(characteristicPoints, PREFIX, 2);
   }
 
   public CosPhiP(String input) throws ParsingException {
@@ -29,6 +29,6 @@ public class CosPhiP extends ReactivePowerCharacteristic {
 
   @Override
   public String toString() {
-    return "CosPhiP{" + "coordinates=" + coordinates + '}';
+    return "CosPhiP{" + "points=" + points + '}';
   }
 }

@@ -18,9 +18,8 @@ public class QV extends ReactivePowerCharacteristic {
   public static final String PREFIX = "qV";
   public static final String STARTING_REGEX = buildStartingRegex(PREFIX);
 
-  public QV(
-      SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>> characteristicCoordinates) {
-    super(characteristicCoordinates, PREFIX, 2);
+  public QV(SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>> characteristicPoints) {
+    super(characteristicPoints, PREFIX, 2);
   }
 
   public QV(String input) throws ParsingException {
@@ -29,6 +28,6 @@ public class QV extends ReactivePowerCharacteristic {
 
   @Override
   public String toString() {
-    return "QV{" + "coordinates=" + coordinates + '}';
+    return "QV{" + "points=" + points + '}';
   }
 }

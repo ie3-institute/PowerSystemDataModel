@@ -25,8 +25,8 @@ public class CosPhiFixed extends ReactivePowerCharacteristic {
   public static final String STARTING_REGEX = buildStartingRegex(PREFIX);
 
   public CosPhiFixed(
-      SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>> characteristicCoordinates) {
-    super(characteristicCoordinates, PREFIX, 2);
+      SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>> characteristicPoints) {
+    super(characteristicPoints, PREFIX, 2);
   }
 
   public CosPhiFixed(String input) throws ParsingException {
@@ -34,15 +34,14 @@ public class CosPhiFixed extends ReactivePowerCharacteristic {
   }
 
   private static CosPhiFixed buildConstantCharacteristic() {
-    TreeSet<CharacteristicCoordinate<Dimensionless, Dimensionless>> coordinates = new TreeSet<>();
-    coordinates.add(
-        new CharacteristicCoordinate<>(
-            Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU)));
-    return new CosPhiFixed(unmodifiableSortedSet(coordinates));
+    TreeSet<CharacteristicPoint<Dimensionless, Dimensionless>> points = new TreeSet<>();
+    points.add(
+        new CharacteristicPoint<>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU)));
+    return new CosPhiFixed(unmodifiableSortedSet(points));
   }
 
   @Override
   public String toString() {
-    return "cosPhiFixed{" + "coordinates=" + coordinates + '}';
+    return "cosPhiFixed{" + "points=" + points + '}';
   }
 }

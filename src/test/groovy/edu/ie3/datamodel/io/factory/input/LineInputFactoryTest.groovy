@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
-import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
@@ -72,8 +72,8 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert geoPosition == getGeometry(parameter["geoposition"])
 			olmCharacteristic.with {
 				assert uuid != null
-				assert coordinates == Collections.unmodifiableSortedSet([
-					new CharacteristicCoordinate<Speed, Dimensionless>(
+				assert points == Collections.unmodifiableSortedSet([
+					new CharacteristicPoint<Speed, Dimensionless>(
 					Quantities.getQuantity(0d, METRE_PER_SECOND),
 					Quantities.getQuantity(1d, PU))
 				] as TreeSet)
@@ -121,8 +121,8 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert geoPosition == getGeometry(parameter["geoposition"])
 			olmCharacteristic.with {
 				assert uuid != null
-				assert coordinates == Collections.unmodifiableSortedSet([
-					new CharacteristicCoordinate<Speed, Dimensionless>(
+				assert points == Collections.unmodifiableSortedSet([
+					new CharacteristicPoint<Speed, Dimensionless>(
 					Quantities.getQuantity(0d, METRE_PER_SECOND),
 					Quantities.getQuantity(1d, PU))
 				] as TreeSet)

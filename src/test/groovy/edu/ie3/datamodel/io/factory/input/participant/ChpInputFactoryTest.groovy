@@ -10,7 +10,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.ChpInput
-import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
@@ -67,8 +67,8 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert node == nodeInput
 			assert qCharacteristics.with {
 				assert uuid != null
-				assert coordinates == Collections.unmodifiableSortedSet([
-					new CharacteristicCoordinate<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
+				assert points == Collections.unmodifiableSortedSet([
+					new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
 				] as TreeSet)
 			}
 			assert type == typeInput

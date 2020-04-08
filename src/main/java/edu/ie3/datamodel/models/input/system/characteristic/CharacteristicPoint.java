@@ -13,34 +13,34 @@ import javax.measure.Unit;
 import tec.uom.se.ComparableQuantity;
 import tec.uom.se.quantity.Quantities;
 
-/** Class to describe one coordinate of a given {@link CharacteristicInput} */
-public class CharacteristicCoordinate<A extends Quantity<A>, O extends Quantity<O>>
-    implements Comparable<CharacteristicCoordinate<A, O>> {
+/** Class to describe one point of a given {@link CharacteristicInput} */
+public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
+    implements Comparable<CharacteristicPoint<A, O>> {
   public static final String REQUIRED_FORMAT = "(%d,%d)";
 
   private final ComparableQuantity<A> x;
   private final ComparableQuantity<O> y;
 
   /**
-   * Build a new coordinate
+   * Build a new point
    *
    * @param x Value on the abscissa
    * @param y Value on the ordinate
    */
-  public CharacteristicCoordinate(ComparableQuantity<A> x, ComparableQuantity<O> y) {
+  public CharacteristicPoint(ComparableQuantity<A> x, ComparableQuantity<O> y) {
     this.x = x;
     this.y = y;
   }
 
   /**
-   * Builds a coordinate from a given input string. The string has to be of format '(%d,%d)'. Spaces
-   * are tolerated
+   * Builds a point from a given input string. The string has to be of format '(%d,%d)'. Spaces are
+   * tolerated
    *
    * @param input Input string to parse
    * @param abscissaUnit Unit to use on the abscissa
    * @param ordinateUnit Unit to use on the ordinate
    */
-  public CharacteristicCoordinate(String input, Unit<A> abscissaUnit, Unit<O> ordinateUnit)
+  public CharacteristicPoint(String input, Unit<A> abscissaUnit, Unit<O> ordinateUnit)
       throws ParsingException {
     String trimmed = input.trim();
     if (!trimmed.startsWith("(") || !trimmed.endsWith(")"))
@@ -94,10 +94,10 @@ public class CharacteristicCoordinate<A extends Quantity<A>, O extends Quantity<
   }
 
   /**
-   * De-serializes the given coordinate to a string
+   * De-serializes the given point to a string
    *
    * @param decimalPlaces Desired amount of decimal places
-   * @return The de-serialized coordinate
+   * @return The de-serialized point
    */
   public String deSerialize(int decimalPlaces) {
     String formattingString = String.format("(%%.%sf,%%.%sf)", decimalPlaces, decimalPlaces);
@@ -109,7 +109,7 @@ public class CharacteristicCoordinate<A extends Quantity<A>, O extends Quantity<
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    CharacteristicCoordinate<?, ?> that = (CharacteristicCoordinate<?, ?>) o;
+    CharacteristicPoint<?, ?> that = (CharacteristicPoint<?, ?>) o;
     return Objects.equals(x, that.x) && Objects.equals(y, that.y);
   }
 
@@ -124,14 +124,14 @@ public class CharacteristicCoordinate<A extends Quantity<A>, O extends Quantity<
   }
 
   /**
-   * Compares this instance against another coordinate. They are compared on the abscissa first. If
-   * they are on the same location there, the ordinate is taken into account.
+   * Compares this instance against another point. They are compared on the abscissa first. If they
+   * are on the same location there, the ordinate is taken into account.
    *
-   * @param b The other coordinate
+   * @param b The other point
    * @return The comparision result
    */
   @Override
-  public int compareTo(CharacteristicCoordinate<A, O> b) {
+  public int compareTo(CharacteristicPoint<A, O> b) {
     int abscissaCompare = x.compareTo(b.getX());
     return abscissaCompare != 0 ? abscissaCompare : y.compareTo(b.getY());
   }

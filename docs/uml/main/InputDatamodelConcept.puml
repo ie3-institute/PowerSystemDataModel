@@ -51,7 +51,7 @@ CharacteristicCoordinate ..|> Comparable
 abstract Class CharacteristicInput <A extends Quantity<A>, O extends Quantity<O>> {
     - characteristicPrefix: String
     - decimalPlaces: int
-    - coordinates: SortedSet<CharacteristicCoordinate>
+    - points: SortedSet<CharacteristicCoordinate>
     + deSerialize(): String
     + <<static>> buildStartingRegex(String): String
     - extractCoordinateList(String): String

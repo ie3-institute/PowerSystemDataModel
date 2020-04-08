@@ -9,7 +9,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
@@ -178,10 +178,10 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
 			cpCharacteristic.with {
 				assert uuid != null
-				assert coordinates == Collections.unmodifiableSortedSet([
-					new CharacteristicCoordinate<Speed, Dimensionless>(Quantities.getQuantity(10d, METRE_PER_SECOND), Quantities.getQuantity(0.05, PU)),
-					new CharacteristicCoordinate<Speed, Dimensionless>(Quantities.getQuantity(15d, METRE_PER_SECOND), Quantities.getQuantity(0.1, PU)),
-					new CharacteristicCoordinate<Speed, Dimensionless>(Quantities.getQuantity(20d, METRE_PER_SECOND), Quantities.getQuantity(0.2, PU))
+				assert points == Collections.unmodifiableSortedSet([
+					new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(10d, METRE_PER_SECOND), Quantities.getQuantity(0.05, PU)),
+					new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(15d, METRE_PER_SECOND), Quantities.getQuantity(0.1, PU)),
+					new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(20d, METRE_PER_SECOND), Quantities.getQuantity(0.2, PU))
 				] as TreeSet)
 			}
 			assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)

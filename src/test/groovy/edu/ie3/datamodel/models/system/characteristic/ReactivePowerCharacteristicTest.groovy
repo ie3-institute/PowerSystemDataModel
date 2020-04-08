@@ -37,33 +37,33 @@ class ReactivePowerCharacteristicTest extends Specification {
 	def setupSpec() {
 		validCosPhiFixed = new CosPhiFixed(
 				[
-					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
+					new CharacteristicPoint<Dimensionless, Dimensionless>(
 					Quantities.getQuantity(0d, PU), Quantities.getQuantity(0.95, PU))
-				] as SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>>
+				] as SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>>
 				)
 
 		validCosPhiP = new CosPhiP(
 				[
-					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
+					new CharacteristicPoint<Dimensionless, Dimensionless>(
 					Quantities.getQuantity(0d, PU), Quantities.getQuantity(1.0, PU)),
-					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
+					new CharacteristicPoint<Dimensionless, Dimensionless>(
 					Quantities.getQuantity(0.9, PU), Quantities.getQuantity(1.0, PU)),
-					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
+					new CharacteristicPoint<Dimensionless, Dimensionless>(
 					Quantities.getQuantity(1.2, PU), Quantities.getQuantity(-0.3, PU))
-				] as SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>>
+				] as SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>>
 				)
 
 		validQV = new QV(
 				[
-					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
+					new CharacteristicPoint<Dimensionless, Dimensionless>(
 					Quantities.getQuantity(0.9, PU), Quantities.getQuantity(-0.3, PU)),
-					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
+					new CharacteristicPoint<Dimensionless, Dimensionless>(
 					Quantities.getQuantity(0.95, PU), Quantities.getQuantity(0.0, PU)),
-					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
+					new CharacteristicPoint<Dimensionless, Dimensionless>(
 					Quantities.getQuantity(1.05, PU), Quantities.getQuantity(0.0, PU)),
-					new CharacteristicCoordinate<Dimensionless, Dimensionless>(
+					new CharacteristicPoint<Dimensionless, Dimensionless>(
 					Quantities.getQuantity(1.1, PU), Quantities.getQuantity(0.3, PU))
-				] as SortedSet<CharacteristicCoordinate<Dimensionless, Dimensionless>>
+				] as SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>>
 				)
 	}
 
@@ -80,7 +80,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 		CosPhiFixed actual = new CosPhiFixed(validCosPhiFixedDeSerialized)
 
 		then:
-		actual.coordinates == validCosPhiFixed.coordinates
+		actual.points == validCosPhiFixed.points
 	}
 
 	def "A CosPhiFixed throws an exception if it should be set up from a malformed string"() {
@@ -89,7 +89,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 
 		then:
 		ParsingException exception = thrown(ParsingException)
-		exception.message == "Cannot parse '(10.00)' to Set of coordinates as it contains a malformed coordinate."
+		exception.message == "Cannot parse '(10.00)' to Set of points as it contains a malformed point."
 	}
 
 	def "A valid CosPhiP is correctly de-serialized"() {
@@ -105,7 +105,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 		CosPhiP actual = new CosPhiP(validCosPhiPDeSerialized)
 
 		then:
-		actual.coordinates == validCosPhiP.coordinates
+		actual.points == validCosPhiP.points
 	}
 
 	def "A CosPhiP throws an exception if it should be set up from a malformed string"() {
@@ -130,7 +130,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 		QV actual = new QV(validQVDeSerialized)
 
 		then:
-		actual.coordinates == validQV.coordinates
+		actual.points == validQV.points
 	}
 
 	def "A QV throws an exception if it should be set up from a malformed string"() {
@@ -148,7 +148,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 
 		then:
 		actual instanceof CosPhiFixed
-		actual.coordinates == validCosPhiFixed.coordinates
+		actual.points == validCosPhiFixed.points
 	}
 
 	def "The ReactivePowerCharacteristic is able to parse a power dependent power factor correctly from string"() {
@@ -157,7 +157,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 
 		then:
 		actual instanceof CosPhiP
-		actual.coordinates == validCosPhiP.coordinates
+		actual.points == validCosPhiP.points
 	}
 
 	def "The ReactivePowerCharacteristic is able to parse voltage dependent reactive power correctly from string"() {
@@ -166,7 +166,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 
 		then:
 		actual instanceof QV
-		actual.coordinates == validQV.coordinates
+		actual.points == validQV.points
 	}
 
 	def "The ReactivePowerCharacteristic throws an Exception, if no valid characteristic format can be recognized"() {

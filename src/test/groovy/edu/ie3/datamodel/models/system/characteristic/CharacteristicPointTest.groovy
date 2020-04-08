@@ -8,64 +8,64 @@ package edu.ie3.datamodel.models.system.characteristic
 import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 import edu.ie3.datamodel.exceptions.ParsingException
-import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Power
 
-class CharacteristicCoordinateTest extends Specification {
+class CharacteristicPointTest extends Specification {
 	def "A set of CharacteristicCoordinates are sorted correctly"() {
-		given: "A set of coordinates"
-		CharacteristicCoordinate<Power, Dimensionless> a =
-				new CharacteristicCoordinate<Power, Dimensionless>(
+		given: "A set of points"
+		CharacteristicPoint<Power, Dimensionless> a =
+				new CharacteristicPoint<Power, Dimensionless>(
 				Quantities.getQuantity(1d, KILOWATT),
 				Quantities.getQuantity(1d, PERCENT))
-		CharacteristicCoordinate<Power, Dimensionless> b =
-				new CharacteristicCoordinate<Power, Dimensionless>(
+		CharacteristicPoint<Power, Dimensionless> b =
+				new CharacteristicPoint<Power, Dimensionless>(
 				Quantities.getQuantity(2d, KILOWATT),
 				Quantities.getQuantity(2d, PERCENT))
-		CharacteristicCoordinate<Power, Dimensionless> c =
-				new CharacteristicCoordinate<Power, Dimensionless>(
+		CharacteristicPoint<Power, Dimensionless> c =
+				new CharacteristicPoint<Power, Dimensionless>(
 				Quantities.getQuantity(3d, KILOWATT),
 				Quantities.getQuantity(3d, PERCENT))
-		CharacteristicCoordinate<Power, Dimensionless> d =
-				new CharacteristicCoordinate<Power, Dimensionless>(
+		CharacteristicPoint<Power, Dimensionless> d =
+				new CharacteristicPoint<Power, Dimensionless>(
 				Quantities.getQuantity(3d, KILOWATT),
 				Quantities.getQuantity(4d, PERCENT))
-		CharacteristicCoordinate<Power, Dimensionless> e =
-				new CharacteristicCoordinate<Power, Dimensionless>(
+		CharacteristicPoint<Power, Dimensionless> e =
+				new CharacteristicPoint<Power, Dimensionless>(
 				Quantities.getQuantity(5d, KILOWATT),
 				Quantities.getQuantity(5d, PERCENT))
 
 		and: "an expected order"
-		LinkedList<CharacteristicCoordinate<Power, Dimensionless>> expected = [a, b, c, d, e] as Queue
+		LinkedList<CharacteristicPoint<Power, Dimensionless>> expected = [a, b, c, d, e] as Queue
 
-		when: "the coordinates are put to sorted set randomly"
-		SortedSet<CharacteristicCoordinate<Power, Dimensionless>> actual =  [d, c, a, e, b] as SortedSet
+		when: "the points are put to sorted set randomly"
+		SortedSet<CharacteristicPoint<Power, Dimensionless>> actual =  [d, c, a, e, b] as SortedSet
 
 		then: "they appear in the correct order"
 		actual.size() == expected.size()
-		Iterator<CharacteristicCoordinate<Power, Dimensionless>> expectedIterator = expected.iterator()
-		Iterator<CharacteristicCoordinate<Power, Dimensionless>> actualIterator = actual.iterator()
+		Iterator<CharacteristicPoint<Power, Dimensionless>> expectedIterator = expected.iterator()
+		Iterator<CharacteristicPoint<Power, Dimensionless>> actualIterator = actual.iterator()
 		while (expectedIterator.hasNext()) {
-			CharacteristicCoordinate<Power, Dimensionless> expectedCoordinate = expectedIterator.next()
-			CharacteristicCoordinate<Power, Dimensionless> actualCoordinate = actualIterator.next()
+			CharacteristicPoint<Power, Dimensionless> expectedCoordinate = expectedIterator.next()
+			CharacteristicPoint<Power, Dimensionless> actualCoordinate = actualIterator.next()
 			assert expectedCoordinate == actualCoordinate
 		}
 	}
 
 	def "An CharacteristicCoordinate is de-serialized correctly"() {
-		given: "A coordinate"
-		CharacteristicCoordinate<Power, Dimensionless> coordinate =
-				new CharacteristicCoordinate<Power, Dimensionless>(
+		given: "A point"
+		CharacteristicPoint<Power, Dimensionless> point =
+				new CharacteristicPoint<Power, Dimensionless>(
 				Quantities.getQuantity(3d, KILOWATT),
 				Quantities.getQuantity(4d, PERCENT))
 
 		when: "de-serialized"
-		String twoPlaces = coordinate.deSerialize(2)
-		String noPlace = coordinate.deSerialize(0)
+		String twoPlaces = point.deSerialize(2)
+		String noPlace = point.deSerialize(0)
 
 		then: "the result is correct"
 		twoPlaces == "(3.00,4.00)"
@@ -74,7 +74,7 @@ class CharacteristicCoordinateTest extends Specification {
 
 	def "The CharacteristicCoordinate is able to parse a String to itself"(String input, double x, double y) {
 		when: "Parsing the input"
-		CharacteristicCoordinate<Dimensionless, Dimensionless> actual = new CharacteristicCoordinate<>(input, PU, PU)
+		CharacteristicPoint<Dimensionless, Dimensionless> actual = new CharacteristicPoint<>(input, PU, PU)
 
 		then: "it has correct values"
 		actual.x.value.doubleValue() == x
@@ -90,7 +90,7 @@ class CharacteristicCoordinateTest extends Specification {
 
 	def "The CharacteristicCoordinate throws a parsing exception, if the input is malformed"() {
 		when: "Parsing the input"
-		new CharacteristicCoordinate<>("bla", PU, PU)
+		new CharacteristicPoint<>("bla", PU, PU)
 
 		then: "it throws an exception"
 		ParsingException exception = thrown(ParsingException)
@@ -99,7 +99,7 @@ class CharacteristicCoordinateTest extends Specification {
 
 	def "The CharacteristicCoordinate throws a parsing exception, if abscissa cannot be parsed to double"() {
 		when: "Parsing the input"
-		new CharacteristicCoordinate<>("(bla,2.0)", PU, PU)
+		new CharacteristicPoint<>("(bla,2.0)", PU, PU)
 
 		then: "it throws an exception"
 		ParsingException exception = thrown(ParsingException)
@@ -108,7 +108,7 @@ class CharacteristicCoordinateTest extends Specification {
 
 	def "The CharacteristicCoordinate throws a parsing exception, if ordinate cannot be parsed to double"() {
 		when: "Parsing the input"
-		new CharacteristicCoordinate<>("(1.0,bla)", PU, PU)
+		new CharacteristicPoint<>("(1.0,bla)", PU, PU)
 
 		then: "it throws an exception"
 		ParsingException exception = thrown(ParsingException)

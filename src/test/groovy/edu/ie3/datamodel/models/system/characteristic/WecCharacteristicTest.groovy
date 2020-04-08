@@ -9,7 +9,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.ParsingException
-import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import spock.lang.Shared
 import spock.lang.Specification
@@ -23,16 +23,16 @@ class WecCharacteristicTest extends Specification {
 	WecCharacteristicInput validInput
 
 	def setupSpec() {
-		SortedSet<CharacteristicCoordinate<Speed, Dimensionless>> coordinates = [
-			new CharacteristicCoordinate<Speed, Dimensionless>(Quantities.getQuantity(10, METRE_PER_SECOND),
+		SortedSet<CharacteristicPoint<Speed, Dimensionless>> points = [
+			new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(10, METRE_PER_SECOND),
 			Quantities.getQuantity(0.05, PU)),
-			new CharacteristicCoordinate<Speed, Dimensionless>(Quantities.getQuantity(15, METRE_PER_SECOND),
+			new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(15, METRE_PER_SECOND),
 			Quantities.getQuantity(0.10, PU)),
-			new CharacteristicCoordinate<Speed, Dimensionless>(Quantities.getQuantity(20, METRE_PER_SECOND),
+			new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(20, METRE_PER_SECOND),
 			Quantities.getQuantity(0.20, PU))
 		] as SortedSet
 
-		validInput = new WecCharacteristicInput(coordinates)
+		validInput = new WecCharacteristicInput(points)
 	}
 
 	def "A WecCharacteristicInput is correctly de-serialized"() {
@@ -48,7 +48,7 @@ class WecCharacteristicTest extends Specification {
 		WecCharacteristicInput actual = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
 
 		then:
-		actual.coordinates == validInput.coordinates
+		actual.points == validInput.points
 	}
 
 	def "A WecCharacteristicInput throws an exception if it should be set up from a malformed string"() {
@@ -57,6 +57,6 @@ class WecCharacteristicTest extends Specification {
 
 		then:
 		ParsingException exception = thrown(ParsingException)
-		exception.message == "Cannot parse '(10.00),(15.00),(20.00)' to Set of coordinates as it contains a malformed coordinate."
+		exception.message == "Cannot parse '(10.00),(15.00),(20.00)' to Set of points as it contains a malformed point."
 	}
 }

@@ -21,20 +21,18 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
   protected final String characteristicPrefix;
   protected final int decimalPlaces;
 
-  protected final SortedSet<CharacteristicCoordinate<A, O>> coordinates;
+  protected final SortedSet<CharacteristicPoint<A, O>> points;
 
   /**
    * Constructor for the abstract class
    *
-   * @param coordinates Set of coordinates that describe the characteristic
+   * @param points Set of points that describe the characteristic
    * @param characteristicPrefix Prefix, that prepends the actual characteristic
    * @param decimalPlaces Desired amount of decimal places when de-serializing the characteristic
    */
   public CharacteristicInput(
-      SortedSet<CharacteristicCoordinate<A, O>> coordinates,
-      String characteristicPrefix,
-      int decimalPlaces) {
-    this.coordinates = Collections.unmodifiableSortedSet(coordinates);
+      SortedSet<CharacteristicPoint<A, O>> points, String characteristicPrefix, int decimalPlaces) {
+    this.points = Collections.unmodifiableSortedSet(points);
     this.characteristicPrefix = characteristicPrefix;
     this.decimalPlaces = decimalPlaces;
   }
@@ -56,11 +54,11 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
               + "' to characteristic. It has to be of the form '"
               + characteristicPrefix
               + ":{"
-              + CharacteristicCoordinate.REQUIRED_FORMAT
+              + CharacteristicPoint.REQUIRED_FORMAT
               + ",...}'");
 
     String coordinateList = extractCoordinateList(input);
-    this.coordinates = buildCoordinatesFromString(coordinateList, abscissaUnit, ordinateUnit);
+    this.points = buildCoordinatesFromString(coordinateList, abscissaUnit, ordinateUnit);
   }
 
   /**
@@ -74,46 +72,43 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
   }
 
   /**
-   * Extracts the coordinate list from the given input
+   * Extracts the point list from the given input
    *
    * @param input Input string for the whole characteristic
-   * @return The string list of coordinates
+   * @return The string list of points
    */
   private String extractCoordinateList(String input) {
     return input.replaceAll(buildStartingRegex(characteristicPrefix), "").replaceAll("}$", "");
   }
 
   /**
-   * Splits up a String of coordinate definition and parses them to {@link CharacteristicCoordinate}
+   * Splits up a String of point definition and parses them to {@link CharacteristicPoint}
    *
-   * @param input Comma-separated list of coordinate definitions
+   * @param input Comma-separated list of point definitions
    * @param abscissaUnit Unit to use on the abscissa
    * @param ordinateUnit Unit to use on the ordinate
-   * @return An unmodifiable sorted set of {@link CharacteristicCoordinate}s
-   * @throws ParsingException If one of the coordinates cannot be parsed
+   * @return An unmodifiable sorted set of {@link CharacteristicPoint}s
+   * @throws ParsingException If one of the points cannot be parsed
    */
-  private SortedSet<CharacteristicCoordinate<A, O>> buildCoordinatesFromString(
+  private SortedSet<CharacteristicPoint<A, O>> buildCoordinatesFromString(
       String input, Unit<A> abscissaUnit, Unit<O> ordinateUnit) throws ParsingException {
-    /* Splits the coordinates only at those commas, that are preceded by a ')' */
+    /* Splits the points only at those commas, that are preceded by a ')' */
     String[] entries = input.split("(?<=\\)),");
 
-    SortedSet<CharacteristicCoordinate<A, O>> parsedCoordinates = new TreeSet<>();
+    SortedSet<CharacteristicPoint<A, O>> parsedCoordinates = new TreeSet<>();
     for (String entry : entries) {
       try {
-        parsedCoordinates.add(new CharacteristicCoordinate<>(entry, abscissaUnit, ordinateUnit));
+        parsedCoordinates.add(new CharacteristicPoint<>(entry, abscissaUnit, ordinateUnit));
       } catch (ParsingException pe) {
         throw new ParsingException(
-            "Cannot parse '"
-                + input
-                + "' to Set of coordinates as it contains a malformed coordinate.",
-            pe);
+            "Cannot parse '" + input + "' to Set of points as it contains a malformed point.", pe);
       }
     }
     return Collections.unmodifiableSortedSet(parsedCoordinates);
   }
 
-  public SortedSet<CharacteristicCoordinate<A, O>> getCoordinates() {
-    return coordinates;
+  public SortedSet<CharacteristicPoint<A, O>> getPoints() {
+    return points;
   }
 
   /**
@@ -124,8 +119,8 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
   public String deSerialize() {
     return characteristicPrefix
         + ":{"
-        + coordinates.stream()
-            .map(coordinate -> coordinate.deSerialize(decimalPlaces))
+        + points.stream()
+            .map(point -> point.deSerialize(decimalPlaces))
             .collect(Collectors.joining(","))
         + "}";
   }
@@ -136,16 +131,16 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     CharacteristicInput<?, ?> that = (CharacteristicInput<?, ?>) o;
-    return coordinates.equals(that.coordinates);
+    return points.equals(that.points);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), coordinates);
+    return Objects.hash(super.hashCode(), points);
   }
 
   @Override
   public String toString() {
-    return "CharacteristicInput{" + "coordinates=" + coordinates + '}';
+    return "CharacteristicInput{" + "points=" + points + '}';
   }
 }

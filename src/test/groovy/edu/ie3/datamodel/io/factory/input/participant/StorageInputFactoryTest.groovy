@@ -11,7 +11,7 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.StorageStrategy
-import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicCoordinate
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
@@ -64,8 +64,8 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
 			assert node == nodeInput
 			assert qCharacteristics.with {
 				assert uuid != null
-				assert coordinates == Collections.unmodifiableSortedSet([
-					new CharacteristicCoordinate<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
+				assert points == Collections.unmodifiableSortedSet([
+					new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
 				] as TreeSet)
 			}
 			assert type == typeInput

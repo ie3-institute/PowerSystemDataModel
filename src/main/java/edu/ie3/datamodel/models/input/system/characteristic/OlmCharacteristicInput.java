@@ -23,8 +23,8 @@ public class OlmCharacteristicInput extends CharacteristicInput<Speed, Dimension
       buildConstantCharacteristic();
 
   public OlmCharacteristicInput(
-      SortedSet<CharacteristicCoordinate<Speed, Dimensionless>> characteristicCoordinates) {
-    super(characteristicCoordinates, "olm", 2);
+      SortedSet<CharacteristicPoint<Speed, Dimensionless>> characteristicPoints) {
+    super(characteristicPoints, "olm", 2);
   }
 
   public OlmCharacteristicInput(String input) throws ParsingException {
@@ -32,15 +32,15 @@ public class OlmCharacteristicInput extends CharacteristicInput<Speed, Dimension
   }
 
   private static OlmCharacteristicInput buildConstantCharacteristic() {
-    TreeSet<CharacteristicCoordinate<Speed, Dimensionless>> coordinates = new TreeSet<>();
-    coordinates.add(
-        new CharacteristicCoordinate<>(
+    TreeSet<CharacteristicPoint<Speed, Dimensionless>> points = new TreeSet<>();
+    points.add(
+        new CharacteristicPoint<>(
             Quantities.getQuantity(0d, METRE_PER_SECOND), Quantities.getQuantity(1d, PU)));
-    return new OlmCharacteristicInput(unmodifiableSortedSet(coordinates));
+    return new OlmCharacteristicInput(unmodifiableSortedSet(points));
   }
 
   @Override
   public String toString() {
-    return "OlmCharacteristicInput{" + "coordinates=" + coordinates + '}';
+    return "OlmCharacteristicInput{" + "points=" + points + '}';
   }
 }
