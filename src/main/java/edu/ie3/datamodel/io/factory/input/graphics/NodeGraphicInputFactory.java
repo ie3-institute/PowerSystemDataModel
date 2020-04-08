@@ -33,8 +33,8 @@ public final class NodeGraphicInputFactory
 
   @Override
   protected NodeGraphicInput buildModel(
-      NodeGraphicInputEntityData data, UUID uuid, String graphicLayer, LineString pathLineString) {
+      NodeGraphicInputEntityData data, UUID uuid, String graphicLayer, LineString path) {
     final Point point = data.getPoint(POINT).orElse(NodeInput.DEFAULT_GEO_POSITION);
-    return new NodeGraphicInput(uuid, graphicLayer, pathLineString, data.getNode(), point);
+    return new NodeGraphicInput(uuid, graphicLayer, path, data.getNode(), point);
   }
 }

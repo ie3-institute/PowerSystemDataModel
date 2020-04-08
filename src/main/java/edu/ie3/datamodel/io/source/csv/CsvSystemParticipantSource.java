@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.SystemParticipantSource;
 import edu.ie3.datamodel.io.source.ThermalSource;
 import edu.ie3.datamodel.io.source.TypeSource;
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.models.input.system.*;
@@ -80,6 +81,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   }
 
   @Override
+  // todo check for all duplciates!
   public Optional<SystemParticipants> getSystemParticipants() {
 
     // read all needed entities
@@ -103,7 +105,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
     // start with the entities needed for SystemParticipants container
     /// as we want to return a working grid, keep an eye on empty optionals
-    ConcurrentHashMap<Class<? extends AssetInput>, LongAdder> invalidElementsCounter =
+    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounter =
         new ConcurrentHashMap<>();
 
     Set<FixedFeedInInput> fixedFeedInInputs =

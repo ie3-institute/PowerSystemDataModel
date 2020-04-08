@@ -53,10 +53,15 @@ public abstract class CsvDataSource {
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
 
-  private Map<String, String> buildFieldsToAttributes(String csvRow, String[] headline) {
+  private Map<String, String> buildFieldsToAttributes(
+      final String csvRow, final String[] headline) {
     // sometimes we have a json string as field value -> we need to consider this one as well
-    String cswRowRegex = csvSep + "(?=(?:\\{))|" + csvSep + "(?=(?:\\{*[^\\}]*$))";
-    final String[] fieldVals = csvRow.split(cswRowRegex);
+    final String addDoubleQuotesToGeoJsonRegex = "(\\{.*\\}\\}\\})";
+    final String cswRowRegex = csvSep + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
+    final String[] fieldVals =
+        Arrays.stream(csvRow.replaceAll(addDoubleQuotesToGeoJsonRegex, "\"$1\"").split(cswRowRegex))
+            .map(string -> string.replaceAll("^\"|\"$", ""))
+            .toArray(String[]::new);
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -93,9 +98,9 @@ public abstract class CsvDataSource {
     return sb.toString();
   }
 
-  protected <T extends AssetInput> Predicate<Optional<T>> isPresentCollectIfNot(
-      Class<? extends AssetInput> entityClass,
-      ConcurrentHashMap<Class<? extends AssetInput>, LongAdder> invalidElementsCounterMap) {
+  protected <T extends UniqueEntity> Predicate<Optional<T>> isPresentCollectIfNot(
+      Class<? extends UniqueEntity> entityClass,
+      ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounterMap) {
     return o -> {
       if (o.isPresent()) {
         return true;
