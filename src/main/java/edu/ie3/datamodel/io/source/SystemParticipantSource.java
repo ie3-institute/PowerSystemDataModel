@@ -72,8 +72,8 @@ public interface SystemParticipantSource extends DataSource {
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators,
       Collection<ChpTypeInput> types,
-      Collection<ThermalStorageInput> thermalStorages,
-      Collection<ThermalBusInput> thermalBuses);
+      Collection<ThermalBusInput> thermalBuses,
+      Collection<ThermalStorageInput> thermalStorages);
 
   Collection<HpInput> getHeatPumps();
 

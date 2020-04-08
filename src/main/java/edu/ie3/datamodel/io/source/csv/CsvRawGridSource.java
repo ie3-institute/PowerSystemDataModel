@@ -29,6 +29,9 @@ import java.util.stream.Stream;
  * done in a hierarchical cascading way to get all elements needed TODO description needs hint that
  * Set does NOT mean uuid uniqueness
  *
+ * <p>// todo performance improvements in all sources to make as as less possible recursive stream
+ * calls on files
+ *
  * @version 0.1
  * @since 03.04.20
  */
@@ -252,12 +255,13 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
               // get the line nodes
               String nodeBUuid = fieldsToAttributes.get(NODE_B);
-              Optional<NodeInput> nodeA = findNodeByUuid(fieldsToAttributes.get(NODE_A), nodes);
-              Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
+              Optional<NodeInput> nodeA =
+                  findFirstEntityByUuid(fieldsToAttributes.get(NODE_A), nodes);
+              Optional<NodeInput> nodeB = findFirstEntityByUuid(nodeBUuid, nodes);
 
               // get the line type
               String typeUuid = fieldsToAttributes.get("type");
-              Optional<LineTypeInput> lineType = findTypeByUuid(typeUuid, lineTypeInputs);
+              Optional<LineTypeInput> lineType = findFirstEntityByUuid(typeUuid, lineTypeInputs);
 
               // if nodeA, nodeB or the type are not present we return an empty element and
               // log a warning
@@ -318,13 +322,13 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               // get the transformer nodes
               String nodeAUuid = fieldsToAttributes.get(NODE_A);
               String nodeBUuid = fieldsToAttributes.get(NODE_B);
-              Optional<NodeInput> nodeA = findNodeByUuid(nodeAUuid, nodes);
-              Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
+              Optional<NodeInput> nodeA = findFirstEntityByUuid(nodeAUuid, nodes);
+              Optional<NodeInput> nodeB = findFirstEntityByUuid(nodeBUuid, nodes);
 
               // get the transformer type
               String typeUuid = fieldsToAttributes.get("type");
               Optional<Transformer2WTypeInput> transformerType =
-                  findTypeByUuid(typeUuid, transformer2WTypes);
+                  findFirstEntityByUuid(typeUuid, transformer2WTypes);
 
               // if nodeA, nodeB or the type are not present we return an empty element and
               // log a warning
@@ -385,14 +389,15 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               // get the transformer nodes
               String nodeBUuid = fieldsToAttributes.get(NODE_B);
               String nodeCUuid = fieldsToAttributes.get("nodeC");
-              Optional<NodeInput> nodeA = findNodeByUuid(fieldsToAttributes.get(NODE_A), nodes);
-              Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
-              Optional<NodeInput> nodeC = findNodeByUuid(nodeCUuid, nodes);
+              Optional<NodeInput> nodeA =
+                  findFirstEntityByUuid(fieldsToAttributes.get(NODE_A), nodes);
+              Optional<NodeInput> nodeB = findFirstEntityByUuid(nodeBUuid, nodes);
+              Optional<NodeInput> nodeC = findFirstEntityByUuid(nodeCUuid, nodes);
 
               // get the transformer type
               String typeUuid = fieldsToAttributes.get("type");
               Optional<Transformer3WTypeInput> transformerType =
-                  findTypeByUuid(typeUuid, transformer3WTypes);
+                  findFirstEntityByUuid(typeUuid, transformer3WTypes);
 
               // if nodeA, nodeB or the type are not present we return an empty element and
               // log a warning
@@ -458,8 +463,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               // get the switch nodes
               String nodeAUuid = fieldsToAttributes.get(NODE_A);
               String nodeBUuid = fieldsToAttributes.get(NODE_B);
-              Optional<NodeInput> nodeA = findNodeByUuid(nodeAUuid, nodes);
-              Optional<NodeInput> nodeB = findNodeByUuid(nodeBUuid, nodes);
+              Optional<NodeInput> nodeA = findFirstEntityByUuid(nodeAUuid, nodes);
+              Optional<NodeInput> nodeB = findFirstEntityByUuid(nodeBUuid, nodes);
 
               // if nodeA or nodeB are not present we return an empty element and log a
               // warning
@@ -514,7 +519,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
               // get the measurement unit node
               String nodeUuid = fieldsToAttributes.get("node");
-              Optional<NodeInput> node = findNodeByUuid(nodeUuid, nodes);
+              Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
 
               // if nodeA or nodeB are not present we return an empty element and log a
               // warning

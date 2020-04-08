@@ -10,8 +10,6 @@ import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.io.BufferedReader;
@@ -39,11 +37,11 @@ public abstract class CsvDataSource {
   protected final CsvFileConnector connector;
 
   // field names
-  protected final String OPERATOR = "operator";
-  protected final String NODE_A = "nodeA";
-  protected final String NODE_B = "nodeB";
-  protected final String NODE = "node";
-  protected final String TYPE = "type";
+  protected static final String OPERATOR = "operator";
+  protected static final String NODE_A = "nodeA";
+  protected static final String NODE_B = "nodeB";
+  protected static final String NODE = "node";
+  protected static final String TYPE = "type";
 
   public CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
@@ -86,9 +84,11 @@ public abstract class CsvDataSource {
     return elements.filter(Optional::isPresent).map(Optional::get);
   }
 
-  protected Optional<NodeInput> findNodeByUuid(String nodeUuid, Collection<NodeInput> nodes) {
-    return nodes.stream()
-        .filter(node -> node.getUuid().toString().equalsIgnoreCase(nodeUuid))
+  protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
+      String typeUuid, Collection<T> types) {
+    return types.stream()
+        .parallel()
+        .filter(type -> type.getUuid().toString().equalsIgnoreCase(typeUuid))
         .findFirst();
   }
 
@@ -122,13 +122,6 @@ public abstract class CsvDataSource {
     }
 
     return Stream.empty();
-  }
-
-  protected <T extends AssetTypeInput> Optional<T> findTypeByUuid(
-      String typeUuid, Collection<T> types) {
-    return types.stream()
-        .filter(type -> type.getUuid().toString().equalsIgnoreCase(typeUuid))
-        .findFirst();
   }
 
   private String snakeCaseToCamelCase(String snakeCaseString) {
