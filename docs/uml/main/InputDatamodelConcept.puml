@@ -45,17 +45,17 @@ Class CharacteristicCoordinate <A extends Quantity<A>, O extends Quantity<O>> {
     - x: ComparableQuantity<A>
     - y: ComparableQuantity<O>
     + deSerialize(Int): String
-    - getXFromString(String): double
-    - getYFromString(String): double
 }
 CharacteristicCoordinate ..|> Comparable
 
 abstract Class CharacteristicInput <A extends Quantity<A>, O extends Quantity<O>> {
-    - prefix: String
+    - characteristicPrefix: String
     - decimalPlaces: int
     - coordinates: SortedSet<CharacteristicCoordinate>
     + deSerialize(): String
-    + <<static>> buildMatchingPattern(String): Pattern
+    + <<static>> buildStartingRegex(String): String
+    - extractCoordinateList(String): String
+    - buildCoordinatesFromString(String, Unit<A>, Unit<O>): SortedSet<CharacteristicCoordinate<A, O>>
 }
 CharacteristicInput "1" --* "n" CharacteristicCoordinate
 
