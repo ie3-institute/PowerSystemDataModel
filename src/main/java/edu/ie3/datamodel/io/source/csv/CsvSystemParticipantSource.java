@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
+import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.SystemParticipantSource;
@@ -330,7 +331,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
         .collect(Collectors.toSet());
   }
 
-  private Stream<Optional<SystemParticipantEntityData>> buildUntypedEntityData(
+  private Stream<Optional<UntypedSingleNodeEntityData>> buildUntypedEntityData(
       Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
 
     return assetInputEntityDataStream
@@ -360,7 +361,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
               fieldsToAttributes.keySet().remove(NODE);
 
               return Optional.of(
-                  new SystemParticipantEntityData(
+                  new UntypedSingleNodeEntityData(
                       fieldsToAttributes,
                       assetInputEntityData.getEntityClass(),
                       assetInputEntityData.getOperatorInput(),
@@ -370,7 +371,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   private <T extends SystemParticipantTypeInput>
       Stream<Optional<SystemParticipantTypedEntityData<T>>> buildTypedEntityData(
-          Stream<SystemParticipantEntityData> noTypeEntityDataStream, Collection<T> types) {
+          Stream<UntypedSingleNodeEntityData> noTypeEntityDataStream, Collection<T> types) {
 
     return noTypeEntityDataStream
         .parallel()

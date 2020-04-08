@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -16,7 +17,7 @@ import javax.measure.quantity.Power;
 import tec.uom.se.ComparableQuantity;
 
 public class PvInputFactory
-    extends SystemParticipantInputEntityFactory<PvInput, SystemParticipantEntityData> {
+    extends SystemParticipantInputEntityFactory<PvInput, UntypedSingleNodeEntityData> {
   private static final String ALBEDO = "albedo";
   private static final String AZIMUTH = "azimuth";
   private static final String ETA_CONV = "etaconv";
@@ -40,7 +41,7 @@ public class PvInputFactory
 
   @Override
   protected PvInput buildModel(
-      SystemParticipantEntityData data,
+      UntypedSingleNodeEntityData data,
       java.util.UUID uuid,
       String id,
       NodeInput node,

@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -37,7 +38,7 @@ class MeasurementUnitInputFactoryTest extends Specification implements FactoryTe
 		def nodeInput = Mock(NodeInput)
 
 		when:
-		Optional<MeasurementUnitInput> input = inputFactory.getEntity(new MeasurementUnitInputEntityData(parameter, inputClass, nodeInput))
+		Optional<MeasurementUnitInput> input = inputFactory.getEntity(new UntypedSingleNodeEntityData(parameter, inputClass, nodeInput))
 
 		then:
 		input.present

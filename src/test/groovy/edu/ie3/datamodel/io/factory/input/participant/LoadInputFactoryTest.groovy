@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
@@ -42,7 +43,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 
 		when:
 		Optional<LoadInput> input = inputFactory.getEntity(
-				new SystemParticipantEntityData(parameter, inputClass, nodeInput))
+				new UntypedSingleNodeEntityData(parameter, inputClass, nodeInput))
 
 		then:
 		input.present

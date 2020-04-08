@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.input.participant;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -19,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import tec.uom.se.ComparableQuantity;
 
 public class LoadInputFactory
-    extends SystemParticipantInputEntityFactory<LoadInput, SystemParticipantEntityData> {
+    extends SystemParticipantInputEntityFactory<LoadInput, UntypedSingleNodeEntityData> {
   private static final Logger logger = LoggerFactory.getLogger(LoadInputFactory.class);
 
   private static final String SLP = "standardloadprofile";
@@ -39,7 +40,7 @@ public class LoadInputFactory
 
   @Override
   protected LoadInput buildModel(
-      SystemParticipantEntityData data,
+      UntypedSingleNodeEntityData data,
       java.util.UUID uuid,
       String id,
       NodeInput node,

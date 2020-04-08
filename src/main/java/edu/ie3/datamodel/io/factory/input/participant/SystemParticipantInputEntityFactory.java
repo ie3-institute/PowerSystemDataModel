@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.input.participant;
 
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityFactory;
+import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -14,7 +15,7 @@ import java.util.*;
 
 /**
  * Abstract factory class for creating {@link SystemParticipantInput} entities with {@link
- * SystemParticipantEntityData} data objects.
+ * UntypedSingleNodeEntityData} data objects.
  *
  * @param <T> Type of entity that this factory can create. Must be a subclass of {@link
  *     SystemParticipantInput}
@@ -23,7 +24,7 @@ import java.util.*;
  * @since 28.01.20
  */
 abstract class SystemParticipantInputEntityFactory<
-        T extends SystemParticipantInput, D extends SystemParticipantEntityData>
+        T extends SystemParticipantInput, D extends UntypedSingleNodeEntityData>
     extends AssetInputEntityFactory<T, D> {
 
   private static final String Q_CHARACTERISTICS = "qcharacteristics";

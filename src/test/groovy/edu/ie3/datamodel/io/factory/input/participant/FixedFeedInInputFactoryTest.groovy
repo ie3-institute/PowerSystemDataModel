@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.input.participant
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -42,7 +43,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<FixedFeedInInput> input = inputFactory.getEntity(new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput))
+		Optional<FixedFeedInInput> input = inputFactory.getEntity(new UntypedSingleNodeEntityData(parameter, inputClass, operatorInput, nodeInput))
 
 		then:
 		input.present
@@ -74,7 +75,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 		def nodeInput = Mock(NodeInput)
 
 		when:
-		inputFactory.getEntity(new SystemParticipantEntityData(parameter, inputClass, nodeInput))
+		inputFactory.getEntity(new UntypedSingleNodeEntityData(parameter, inputClass, nodeInput))
 
 		then:
 		FactoryException ex = thrown()

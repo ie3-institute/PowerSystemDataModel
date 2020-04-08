@@ -513,51 +513,52 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
 
     final Class<MeasurementUnitInput> entityClass = MeasurementUnitInput.class;
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
-        .map(
-            fieldsToAttributes -> {
-
-              // get the measurement unit node
-              String nodeUuid = fieldsToAttributes.get("node");
-              Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
-
-              // if nodeA or nodeB are not present we return an empty element and log a
-              // warning
-              Optional<MeasurementUnitInput> measurementUnitOpt;
-              if (!node.isPresent()) {
-                measurementUnitOpt = Optional.empty();
-
-                String debugString =
-                    Stream.of(new AbstractMap.SimpleEntry<>(node, "node: " + nodeUuid))
-                        .filter(entry -> !entry.getKey().isPresent())
-                        .map(AbstractMap.SimpleEntry::getValue)
-                        .collect(Collectors.joining("\n"));
-
-                logSkippingWarning(
-                    "measurement unit",
-                    fieldsToAttributes.get("uuid"),
-                    fieldsToAttributes.get("id"),
-                    debugString);
-
-              } else {
-
-                // remove fields that are passed as objects to constructor
-                fieldsToAttributes
-                    .keySet()
-                    .removeAll(new HashSet<>(Arrays.asList(OPERATOR, "node")));
-
-                // build the asset data
-                MeasurementUnitInputEntityData data =
-                    new MeasurementUnitInputEntityData(
-                        fieldsToAttributes,
-                        entityClass,
-                        getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
-                        node.get());
-                // build the model
-                measurementUnitOpt = measurementUnitInputFactory.getEntity(data);
-              }
-
-              return measurementUnitOpt;
-            });
+    return null;
+    //    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
+    //        .map(
+    //            fieldsToAttributes -> {
+    //
+    //              // get the measurement unit node
+    //              String nodeUuid = fieldsToAttributes.get("node");
+    //              Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
+    //
+    //              // if nodeA or nodeB are not present we return an empty element and log a
+    //              // warning
+    //              Optional<MeasurementUnitInput> measurementUnitOpt;
+    //              if (!node.isPresent()) {
+    //                measurementUnitOpt = Optional.empty();
+    //
+    //                String debugString =
+    //                    Stream.of(new AbstractMap.SimpleEntry<>(node, "node: " + nodeUuid))
+    //                        .filter(entry -> !entry.getKey().isPresent())
+    //                        .map(AbstractMap.SimpleEntry::getValue)
+    //                        .collect(Collectors.joining("\n"));
+    //
+    //                logSkippingWarning(
+    //                    "measurement unit",
+    //                    fieldsToAttributes.get("uuid"),
+    //                    fieldsToAttributes.get("id"),
+    //                    debugString);
+    //
+    //              } else {
+    //
+    //                // remove fields that are passed as objects to constructor
+    //                fieldsToAttributes
+    //                    .keySet()
+    //                    .removeAll(new HashSet<>(Arrays.asList(OPERATOR, "node")));
+    //
+    //                // build the asset data
+    //                MeasurementUnitInputEntityData data =
+    //                    new MeasurementUnitInputEntityData(
+    //                        fieldsToAttributes,
+    //                        entityClass,
+    //                        getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
+    //                        node.get());
+    //                // build the model
+    //                measurementUnitOpt = measurementUnitInputFactory.getEntity(data);
+    //              }
+    //
+    //              return measurementUnitOpt;
+    //            });
   }
 }

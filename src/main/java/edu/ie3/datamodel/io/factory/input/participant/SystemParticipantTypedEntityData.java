@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -20,7 +21,7 @@ import java.util.Map;
  *     of the SystemParticipantInput
  */
 public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
-    extends SystemParticipantEntityData {
+    extends UntypedSingleNodeEntityData {
 
   private final T typeInput;
 
