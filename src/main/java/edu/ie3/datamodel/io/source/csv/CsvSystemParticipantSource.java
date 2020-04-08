@@ -110,28 +110,28 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
         checkForUuidDuplicates(
             FixedFeedInInput.class,
             untypedEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators)
-                .filter(collectIfNotPresent(FixedFeedInInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(FixedFeedInInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<PvInput> pvInputs =
         checkForUuidDuplicates(
             PvInput.class,
             untypedEntityStream(PvInput.class, pvInputFactory, nodes, operators)
-                .filter(collectIfNotPresent(PvInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(PvInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<LoadInput> loads =
         checkForUuidDuplicates(
             LoadInput.class,
             untypedEntityStream(LoadInput.class, loadInputFactory, nodes, operators)
-                .filter(collectIfNotPresent(LoadInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(LoadInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<BmInput> bmInputs =
         checkForUuidDuplicates(
             BmInput.class,
             typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, bmTypes)
-                .filter(collectIfNotPresent(BmInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(BmInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<StorageInput> storages =
@@ -139,35 +139,35 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             StorageInput.class,
             typedEntityStream(
                     StorageInput.class, storageInputFactory, nodes, operators, storageTypes)
-                .filter(collectIfNotPresent(StorageInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(StorageInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<WecInput> wecInputs =
         checkForUuidDuplicates(
             WecInput.class,
             typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, wecTypes)
-                .filter(collectIfNotPresent(WecInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(WecInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<EvInput> evs =
         checkForUuidDuplicates(
             EvInput.class,
             typedEntityStream(EvInput.class, evInputFactory, nodes, operators, evTypes)
-                .filter(collectIfNotPresent(EvInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(EvInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<ChpInput> chpInputs =
         checkForUuidDuplicates(
             ChpInput.class,
             chpInputStream(nodes, operators, chpTypes, thermalBuses, thermalStorages)
-                .filter(collectIfNotPresent(ChpInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(ChpInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<HpInput> hpInputs =
         checkForUuidDuplicates(
             HpInput.class,
             hpInputStream(nodes, operators, hpTypes, thermalBuses)
-                .filter(collectIfNotPresent(HpInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(HpInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
 

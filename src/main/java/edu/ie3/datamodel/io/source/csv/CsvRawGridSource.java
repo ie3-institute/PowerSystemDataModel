@@ -89,7 +89,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         checkForUuidDuplicates(
             LineInput.class,
             typedEntityStream(LineInput.class, lineInputFactory, nodes, operators, lineTypes)
-                .filter(collectIfNotPresent(LineInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(LineInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<Transformer2WInput> transformer2WInputs =
@@ -101,14 +101,14 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                     nodes,
                     operators,
                     transformer2WTypeInputs)
-                .filter(collectIfNotPresent(Transformer2WInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(Transformer2WInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<Transformer3WInput> transformer3WInputs =
         checkForUuidDuplicates(
             Transformer3WInput.class,
             transformer3WEntityStream(nodes, transformer3WTypeInputs, operators)
-                .filter(collectIfNotPresent(Transformer3WInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(Transformer3WInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<SwitchInput> switches =
@@ -116,7 +116,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
             SwitchInput.class,
             untypedConnectorInputEntityStream(
                     SwitchInput.class, switchInputFactory, nodes, operators)
-                .filter(collectIfNotPresent(SwitchInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(SwitchInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<MeasurementUnitInput> measurementUnits =
@@ -124,7 +124,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
             MeasurementUnitInput.class,
             untypedEntityStream(
                     MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators)
-                .filter(collectIfNotPresent(MeasurementUnitInput.class, invalidElementsCounter))
+                .filter(isPresentCollectIfNot(MeasurementUnitInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
 

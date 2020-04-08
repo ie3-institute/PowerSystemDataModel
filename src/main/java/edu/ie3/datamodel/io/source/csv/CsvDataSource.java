@@ -93,7 +93,7 @@ public abstract class CsvDataSource {
     return sb.toString();
   }
 
-  protected <T extends AssetInput> Predicate<Optional<T>> collectIfNotPresent(
+  protected <T extends AssetInput> Predicate<Optional<T>> isPresentCollectIfNot(
       Class<? extends AssetInput> entityClass,
       ConcurrentHashMap<Class<? extends AssetInput>, LongAdder> invalidElementsCounterMap) {
     return o -> {
@@ -220,8 +220,7 @@ public abstract class CsvDataSource {
     try (BufferedReader reader = connector.getReader(entityClass)) {
       String[] headline = reader.readLine().replaceAll("\"", "").split(csvSep);
       // by default try-with-resources closes the reader directly when we leave this method (which
-      // is wanted to
-      // avoid a lock on the file), but this causes a closing of the stream as well.
+      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
       Collection<Map<String, String>> allRows =
