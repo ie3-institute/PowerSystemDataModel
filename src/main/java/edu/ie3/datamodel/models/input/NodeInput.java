@@ -11,8 +11,9 @@ import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
+
+import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import tec.uom.se.ComparableQuantity;
 
@@ -30,7 +31,7 @@ public class NodeInput extends AssetInput {
 
   /** Use this default value if geoPosition is unknown */
   public static final Point DEFAULT_GEO_POSITION =
-      new GeometryFactory().createPoint(new Coordinate(51.4843281, 7.4116482));
+      GridAndGeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(51.4843281, 7.4116482));
 
   /** Voltage level of this node */
   private final VoltageLevel voltLvl;
