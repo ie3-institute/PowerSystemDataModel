@@ -11,7 +11,8 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import java.util.Map;
 
-public class Transformer3WInputEntityData extends TypedConnectorInputEntityData<Transformer3WTypeInput> {
+public class Transformer3WInputEntityData
+    extends TypedConnectorInputEntityData<Transformer3WTypeInput> {
   private final NodeInput nodeC;
 
   public Transformer3WInputEntityData(
@@ -40,5 +41,4 @@ public class Transformer3WInputEntityData extends TypedConnectorInputEntityData<
   public NodeInput getNodeC() {
     return nodeC;
   }
-
 }

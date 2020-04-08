@@ -8,8 +8,10 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
+import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
+import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.io.BufferedReader;
@@ -48,11 +50,7 @@ public abstract class CsvDataSource {
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
 
-  protected String[] readHeadline(BufferedReader reader) throws IOException {
-    return reader.readLine().replaceAll("\"", "").split(csvSep);
-  }
-
-  protected Map<String, String> buildFieldsToAttributes(String csvRow, String[] headline) {
+  private Map<String, String> buildFieldsToAttributes(String csvRow, String[] headline) {
     // sometimes we have a json string as field value -> we need to consider this one as well
     String cswRowRegex = csvSep + "(?=(?:\\{))|" + csvSep + "(?=(?:\\{*[^\\}]*$))";
     final String[] fieldVals = csvRow.split(cswRowRegex);
@@ -66,9 +64,10 @@ public abstract class CsvDataSource {
     return insensitiveFieldsToAttributes;
   }
 
-  protected OperatorInput getOrDefaultOperator(
+  private OperatorInput getFirstOrDefaultOperator(
       Collection<OperatorInput> operators, String operatorUuid) {
     return operators.stream()
+        .parallel()
         .filter(operator -> operator.getUuid().toString().equalsIgnoreCase(operatorUuid))
         .findFirst()
         .orElseGet(
@@ -78,50 +77,6 @@ public abstract class CsvDataSource {
                   operatorUuid);
               return OperatorInput.NO_OPERATOR_ASSIGNED;
             });
-  }
-
-  protected <T extends UniqueEntity> Stream<T> filterEmptyOptionals(Stream<Optional<T>> elements) {
-    return elements.filter(Optional::isPresent).map(Optional::get);
-  }
-
-  protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
-      String typeUuid, Collection<T> types) {
-    return types.stream()
-        .parallel()
-        .filter(type -> type.getUuid().toString().equalsIgnoreCase(typeUuid))
-        .findFirst();
-  }
-
-  /**
-   * TODO note that the stream is already parallel
-   *
-   * @param entityClass
-   * @param connector
-   * @return
-   */
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
-    try (BufferedReader reader = connector.getReader(entityClass)) {
-      String[] headline = readHeadline(reader);
-      // by default try-with-resources closes the reader directly when we leave this method (which
-      // is wanted to
-      // avoid a lock on the file), but this causes a closing of the stream as well.
-      // As we still want to consume the data at other places, we start a new stream instead of
-      // returning the original one
-      Collection<Map<String, String>> allRows =
-          reader
-              .lines()
-              .parallel()
-              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-              .collect(Collectors.toList());
-      return allRows.stream().parallel();
-
-    } catch (IOException e) {
-      log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-    }
-
-    return Stream.empty();
   }
 
   private String snakeCaseToCamelCase(String snakeCaseString) {
@@ -187,7 +142,7 @@ public abstract class CsvDataSource {
 
               // get the operator of the entity
               String operatorUuid = fieldsToAttributes.get(OPERATOR);
-              OperatorInput operator = getOrDefaultOperator(operators, operatorUuid);
+              OperatorInput operator = getFirstOrDefaultOperator(operators, operatorUuid);
 
               // remove fields that are passed as objects to constructor
               fieldsToAttributes
@@ -196,5 +151,87 @@ public abstract class CsvDataSource {
 
               return new AssetInputEntityData(fieldsToAttributes, entityClass, operator);
             });
+  }
+
+  protected Stream<Optional<UntypedSingleNodeEntityData>> buildUntypedEntityData(
+      Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
+
+    return assetInputEntityDataStream
+        .parallel()
+        .map(
+            assetInputEntityData -> {
+
+              // get the raw data
+              Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
+
+              // get the node of the entity
+              String nodeUuid = fieldsToAttributes.get(NODE);
+              Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
+
+              // if the node is not present we return an empty element and
+              // log a warning
+              if (!node.isPresent()) {
+                logSkippingWarning(
+                    assetInputEntityData.getEntityClass().getSimpleName(),
+                    fieldsToAttributes.get("uuid"),
+                    fieldsToAttributes.get("id"),
+                    NODE + ": " + nodeUuid);
+                return Optional.empty();
+              }
+
+              // remove fields that are passed as objects to constructor
+              fieldsToAttributes.keySet().remove(NODE);
+
+              return Optional.of(
+                  new UntypedSingleNodeEntityData(
+                      fieldsToAttributes,
+                      assetInputEntityData.getEntityClass(),
+                      assetInputEntityData.getOperatorInput(),
+                      node.get()));
+            });
+  }
+
+  protected <T extends UniqueEntity> Stream<T> filterEmptyOptionals(Stream<Optional<T>> elements) {
+    return elements.filter(Optional::isPresent).map(Optional::get);
+  }
+
+  protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
+      String typeUuid, Collection<T> types) {
+    return types.stream()
+        .parallel()
+        .filter(type -> type.getUuid().toString().equalsIgnoreCase(typeUuid))
+        .findFirst();
+  }
+
+  /**
+   * TODO note that the stream is already parallel
+   *
+   * @param entityClass
+   * @param connector
+   * @return
+   */
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+      Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
+    try (BufferedReader reader = connector.getReader(entityClass)) {
+      String[] headline = reader.readLine().replaceAll("\"", "").split(csvSep);
+      // by default try-with-resources closes the reader directly when we leave this method (which
+      // is wanted to
+      // avoid a lock on the file), but this causes a closing of the stream as well.
+      // As we still want to consume the data at other places, we start a new stream instead of
+      // returning the original one
+      Collection<Map<String, String>> allRows =
+          reader
+              .lines()
+              .parallel()
+              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
+              .collect(Collectors.toList());
+      return allRows.stream().parallel();
+
+    } catch (IOException e) {
+      log.warn(
+          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+    }
+
+    return Stream.empty();
   }
 }

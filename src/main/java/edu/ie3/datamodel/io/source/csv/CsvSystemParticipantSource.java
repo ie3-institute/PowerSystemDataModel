@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.FileNamingStrategy;
-import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
 import edu.ie3.datamodel.io.source.RawGridSource;
@@ -100,16 +99,13 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<FixedFeedInInput> getFixedFeedIns() {
-
     Collection<OperatorInput> operators = typeSource.getOperators();
-
     return getFixedFeedIns(rawGridSource.getNodes(operators), operators);
   }
 
   @Override
   public Set<FixedFeedInInput> getFixedFeedIns(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
-
     return filterEmptyOptionals(
             buildUntypedEntityData(
                     buildAssetInputEntityData(FixedFeedInInput.class, operators), nodes)
@@ -120,14 +116,12 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<PvInput> getPvPlants() {
     Collection<OperatorInput> operators = typeSource.getOperators();
-
     return getPvPlants(rawGridSource.getNodes(operators), operators);
   }
 
   @Override
   public Set<PvInput> getPvPlants(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
-
     return filterEmptyOptionals(
             buildUntypedEntityData(buildAssetInputEntityData(PvInput.class, operators), nodes)
                 .map(dataOpt -> dataOpt.flatMap(pvInputFactory::getEntity)))
@@ -136,15 +130,12 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<LoadInput> getLoads() {
-
     Collection<OperatorInput> operators = typeSource.getOperators();
-
     return getLoads(rawGridSource.getNodes(operators), operators);
   }
 
   @Override
   public Set<LoadInput> getLoads(Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
-
     return filterEmptyOptionals(
             buildUntypedEntityData(buildAssetInputEntityData(LoadInput.class, operators), nodes)
                 .map(dataOpt -> dataOpt.flatMap(loadInputFactory::getEntity)))
@@ -163,9 +154,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<BmInput> getBmPlants() {
-
     Collection<OperatorInput> operators = typeSource.getOperators();
-
     return getBmPlants(rawGridSource.getNodes(operators), operators, typeSource.getBmTypes());
   }
 
@@ -261,10 +250,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<ChpInput> getChpPlants() {
-
     Collection<OperatorInput> operators = typeSource.getOperators();
     Collection<ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
-
     return getChpPlants(
         rawGridSource.getNodes(operators),
         operators,
@@ -282,7 +269,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       Collection<ThermalStorageInput> thermalStorages) {
 
     return filterEmptyOptionals(
-            buildChpInputData(
+            buildChpEntityData(
                     buildTypedEntityData(
                             buildUntypedEntityData(
                                     buildAssetInputEntityData(ChpInput.class, operators), nodes)
@@ -299,9 +286,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<HpInput> getHeatPumps() {
-
     Collection<OperatorInput> operators = typeSource.getOperators();
-
     return getHeatPumps(
         rawGridSource.getNodes(operators),
         operators,
@@ -329,44 +314,6 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                     thermalBuses)
                 .map(dataOpt -> dataOpt.flatMap(hpInputFactory::getEntity)))
         .collect(Collectors.toSet());
-  }
-
-  private Stream<Optional<UntypedSingleNodeEntityData>> buildUntypedEntityData(
-      Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
-
-    return assetInputEntityDataStream
-        .parallel()
-        .map(
-            assetInputEntityData -> {
-
-              // get the raw data
-              Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
-
-              // get the node of the entity
-              String nodeUuid = fieldsToAttributes.get(NODE);
-              Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
-
-              // if the node is not present we return an empty element and
-              // log a warning
-              if (!node.isPresent()) {
-                logSkippingWarning(
-                    assetInputEntityData.getEntityClass().getSimpleName(),
-                    fieldsToAttributes.get("uuid"),
-                    fieldsToAttributes.get("id"),
-                    NODE + ": " + nodeUuid);
-                return Optional.empty();
-              }
-
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().remove(NODE);
-
-              return Optional.of(
-                  new UntypedSingleNodeEntityData(
-                      fieldsToAttributes,
-                      assetInputEntityData.getEntityClass(),
-                      assetInputEntityData.getOperatorInput(),
-                      node.get()));
-            });
   }
 
   private <T extends SystemParticipantTypeInput>
@@ -451,7 +398,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             });
   }
 
-  private Stream<Optional<ChpInputEntityData>> buildChpInputData(
+  private Stream<Optional<ChpInputEntityData>> buildChpEntityData(
       Stream<SystemParticipantTypedEntityData<ChpTypeInput>> typedEntityDataStream,
       Collection<ThermalStorageInput> thermalStorages,
       Collection<ThermalBusInput> thermalBuses) {
@@ -475,8 +422,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                   findFirstEntityByUuid(thermalBusUuid, thermalBuses);
 
               // if the thermal storage or the thermal bus are not present we return an empty
-              // element and
-              // log a warning
+              // element and log a warning
               if (!thermalStorage.isPresent() || !thermalBus.isPresent()) {
                 String debugString =
                     Stream.of(
