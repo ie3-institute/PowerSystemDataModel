@@ -39,7 +39,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			"capex":    "3",
 			"opex":	    "4",
 			"srated":   "5",
-			"cosphi":	"6",
+			"cosphirated":	"6",
 
 			"estorage":	"7",
 			"econs":	"8",
@@ -59,7 +59,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
 			assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-			assert cosphiRated == Double.parseDouble(parameter["cosphi"])
+			assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
 
 			assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
 			assert eCons == getQuant(parameter["econs"], StandardUnits.ENERGY_PER_DISTANCE)
@@ -75,7 +75,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			"capex":    "3",
 			"opex":	    "4",
 			"srated":   "5",
-			"cosphi":	"6",
+			"cosphirated":	"6",
 
 			"pthermal":	"7",
 		]
@@ -94,7 +94,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
 			assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-			assert cosphiRated == Double.parseDouble(parameter["cosphi"])
+			assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
 
 			assert pThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
 		}
@@ -109,7 +109,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			"capex":        "3",
 			"opex":	        "4",
 			"srated":       "5",
-			"cosphi":	    "6",
+			"cosphirated":	    "6",
 			"activepowergradient":	"7",
 			"etaconv":      "8"
 		]
@@ -128,7 +128,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
 			assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-			assert cosphiRated == Double.parseDouble(parameter["cosphi"])
+			assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
 
 			assert activePowerGradient == getQuant(parameter["activepowergradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
 			assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
@@ -144,7 +144,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			"capex":        "3",
 			"opex":	        "4",
 			"srated":       "5",
-			"cosphi":	    "6",
+			"cosphirated":	    "6",
 
 			"etaconv":  	"7",
 			"rotorarea":    "8",
@@ -165,7 +165,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
 			assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-			assert cosphiRated == Double.parseDouble(parameter["cosphi"])
+			assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
 
 			assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
 			assert rotorArea == getQuant(parameter["rotorarea"], StandardUnits.ROTOR_AREA)
@@ -182,7 +182,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			"capex":                "3",
 			"opex":	                "4",
 			"srated":               "5",
-			"cosphi":	            "6",
+			"cosphirated":	            "6",
 
 			"etael":	            "7",
 			"etathermal":           "8",
@@ -204,7 +204,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
 			assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-			assert cosphiRated == Double.parseDouble(parameter["cosphi"])
+			assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
 
 			assert etaEl == getQuant(parameter["etael"], StandardUnits.EFFICIENCY)
 			assert etaThermal == getQuant(parameter["etathermal"], StandardUnits.EFFICIENCY)
@@ -222,7 +222,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			"capex"                 : "3",
 			"opex"                  : "4",
 			"srated"                : "5",
-			"cosphi"                : "6",
+			"cosphirated"                : "6",
 
 			"estorage"              : "6",
 			"pmax"                  : "8",
@@ -247,7 +247,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			assert capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
 			assert opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-			assert cosphiRated == Double.parseDouble(parameter["cosphi"])
+			assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
 
 			assert eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
 			assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
@@ -268,8 +268,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			"capex":        "3",
 			"opex":	        "4",
 			"srated":       "5",
-			"cosphi":	    "6",
-
+			"cosphirated":	    "6",
 			"estorage":	    "6",
 			"pmin":	        "7",
 			"pmax":	        "8",
@@ -283,8 +282,8 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
 		then:
 		FactoryException ex = thrown()
-		ex.message == "The provided fields [capex, cosphi, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data {capex -> 3,cosphi -> 6,dod -> 10,estorage -> 6,eta -> 9,id -> blablub,lifetime -> 11,opex -> 4,pmax -> 8,pmin -> 7,srated -> 5,uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
-				"The following fields to be passed to a constructor of StorageTypeInput are possible:\n" +
-				"0: [activepowergradient, capex, cosphi, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, srated, uuid]\n"
+		ex.message == "The provided fields [capex, cosphirated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data {capex -> 3,cosphirated -> 6,dod -> 10,estorage -> 6,eta -> 9,id -> blablub,lifetime -> 11,opex -> 4,pmax -> 8,pmin -> 7,srated -> 5,uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
+				"The following fields to be passed to a constructor of 'StorageTypeInput' are possible (NOT case-sensitive!):\n" +
+				"0: [activepowergradient, capex, cosphirated, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, srated, uuid]\n"
 	}
 }

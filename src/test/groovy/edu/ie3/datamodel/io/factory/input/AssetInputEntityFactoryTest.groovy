@@ -255,7 +255,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		then:
 		FactoryException ex = thrown()
 		ex.message == "The provided fields [operatesfrom, operatesuntil, uuid] with data {operatesfrom -> 2019-01-01T00:00:00+01:00[Europe/Berlin],operatesuntil -> 2019-12-31T00:00:00+01:00[Europe/Berlin],uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of TestAssetInput. \n" +
-				"The following fields to be passed to a constructor of TestAssetInput are possible:\n" +
+				"The following fields to be passed to a constructor of 'TestAssetInput' are possible (NOT case-sensitive!):\n" +
 				"0: [id, uuid]\n" +
 				"1: [id, operatesfrom, uuid]\n" +
 				"2: [id, operatesuntil, uuid]\n" +

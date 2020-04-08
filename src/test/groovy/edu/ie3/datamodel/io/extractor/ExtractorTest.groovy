@@ -66,7 +66,9 @@ class ExtractorTest extends Specification {
 		sptd.chpInput              || [
 			sptd.chpInput.node,
 			sptd.chpInput.type,
-			sptd.chpInput.operator
+			sptd.chpInput.operator,
+			sptd.chpInput.thermalBus,
+			sptd.chpInput.thermalStorage
 		]
 		sptd.bmInput               || [
 			sptd.bmInput.node,
@@ -86,7 +88,8 @@ class ExtractorTest extends Specification {
 		sptd.hpInput               || [
 			sptd.hpInput.node,
 			sptd.hpInput.type,
-			sptd.hpInput.operator
+			sptd.hpInput.operator,
+			sptd.hpInput.thermalBus
 		]
 
 		gtd.lineGraphicCtoD        || [gtd.lineGraphicCtoD.line]
