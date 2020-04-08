@@ -293,8 +293,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                     .removeAll(new HashSet<>(Arrays.asList(OPERATOR, NODE_A, NODE_B, "type")));
 
                 // build the asset data
-                LineInputEntityData data =
-                    new LineInputEntityData(
+                TypedConnectorInputEntityData<LineTypeInput> data =
+                    new TypedConnectorInputEntityData<>(
                         fieldsToAttributes,
                         entityClass,
                         getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),
@@ -359,8 +359,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                     .removeAll(new HashSet<>(Arrays.asList(OPERATOR, NODE_A, NODE_B, "type")));
 
                 // build the asset data
-                Transformer2WInputEntityData data =
-                    new Transformer2WInputEntityData(
+                TypedConnectorInputEntityData<Transformer2WTypeInput> data =
+                    new TypedConnectorInputEntityData<>(
                         fieldsToAttributes,
                         entityClass,
                         getOrDefaultOperator(operators, fieldsToAttributes.get(OPERATOR)),

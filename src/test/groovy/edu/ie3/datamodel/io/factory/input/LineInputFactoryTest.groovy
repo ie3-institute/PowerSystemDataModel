@@ -45,7 +45,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(LineTypeInput)
 
 		when:
-		Optional<LineInput> input = inputFactory.getEntity(new LineInputEntityData(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<LineInput> input = inputFactory.getEntity(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present

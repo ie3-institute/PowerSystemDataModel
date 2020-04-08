@@ -13,7 +13,8 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import java.util.UUID;
 
 public class Transformer2WInputFactory
-    extends ConnectorInputEntityFactory<Transformer2WInput, Transformer2WInputEntityData> {
+    extends ConnectorInputEntityFactory<
+        Transformer2WInput, TypedConnectorInputEntityData<Transformer2WTypeInput>> {
 
   private static final String TAP_POS = "tappos";
   private static final String AUTO_TAP = "autotap";
@@ -29,7 +30,7 @@ public class Transformer2WInputFactory
 
   @Override
   protected Transformer2WInput buildModel(
-      Transformer2WInputEntityData data,
+      TypedConnectorInputEntityData<Transformer2WTypeInput> data,
       UUID uuid,
       String id,
       NodeInput nodeA,
