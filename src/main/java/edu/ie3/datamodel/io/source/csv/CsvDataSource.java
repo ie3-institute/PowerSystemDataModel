@@ -17,6 +17,8 @@ import edu.ie3.datamodel.utils.ValidationUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -90,23 +92,25 @@ public abstract class CsvDataSource {
     return sb.toString();
   }
 
-  protected <T> Predicate<Optional<T>> collectIfNotPresent(List<Optional<T>> invalidList) {
+  protected <T extends AssetInput> Predicate<Optional<T>> collectIfNotPresent(
+      Class<? extends AssetInput> entityClass,
+      ConcurrentHashMap<Class<? extends AssetInput>, LongAdder> invalidElementsCounterMap) {
     return o -> {
       if (o.isPresent()) {
         return true;
       } else {
-        invalidList.add(o);
+        invalidElementsCounterMap.computeIfAbsent(entityClass, k -> new LongAdder()).increment();
         return false;
       }
     };
   }
 
-  protected <T> void printInvalidElementInformation(
-      Class<? extends UniqueEntity> entityClass, List<T> invalidList) {
+  protected void printInvalidElementInformation(
+      Class<? extends UniqueEntity> entityClass, LongAdder noOfInvalidElements) {
 
     log.error(
         "{} entities of type '{}' are missing required elements!",
-        invalidList.size(),
+        noOfInvalidElements,
         entityClass.getSimpleName());
   }
 

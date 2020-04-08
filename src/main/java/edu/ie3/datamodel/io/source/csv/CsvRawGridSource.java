@@ -19,7 +19,8 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -78,11 +79,11 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     /// assets incl. filter of unique entities + warning if duplicate uuids got filtered out
     Set<NodeInput> nodes = checkForUuidDuplicates(NodeInput.class, getNodes(operators));
 
-    List<Optional<LineInput>> invalidLines = new CopyOnWriteArrayList<>();
-    List<Optional<Transformer2WInput>> invalidTrafo2Ws = new CopyOnWriteArrayList<>();
-    List<Optional<Transformer3WInput>> invalidTrafo3Ws = new CopyOnWriteArrayList<>();
-    List<Optional<SwitchInput>> invalidSwitches = new CopyOnWriteArrayList<>();
-    List<Optional<MeasurementUnitInput>> invalidMeasurementUnits = new CopyOnWriteArrayList<>();
+    // start with the entities needed for a RawGridElement
+    /// to keep track of invalid elements (elements that are lacking something are returned as
+    // Optional.empty() by their construction method) we keep an eye on these
+    ConcurrentHashMap<Class<? extends AssetInput>, LongAdder> invalidElementsCounter =
+        new ConcurrentHashMap<>();
 
     Set<LineInput> lineInputs =
         checkForUuidDuplicates(
@@ -95,7 +96,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                         .map(Optional::get),
                     lineTypes)
                 .map(dataOpt -> dataOpt.flatMap(lineInputFactory::getEntity))
-                .filter(collectIfNotPresent(invalidLines))
+                .filter(collectIfNotPresent(LineInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<Transformer2WInput> transformer2WInputs =
@@ -108,7 +109,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                         .map(Optional::get),
                     transformer2WTypeInputs)
                 .map(dataOpt -> dataOpt.flatMap(transformer2WInputFactory::getEntity))
-                .filter(collectIfNotPresent(invalidTrafo2Ws))
+                .filter(collectIfNotPresent(Transformer2WInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<Transformer3WInput> transformer3WInputs =
@@ -126,7 +127,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                         .map(Optional::get),
                     nodes)
                 .map(dataOpt -> dataOpt.flatMap(transformer3WInputFactory::getEntity))
-                .filter(collectIfNotPresent(invalidTrafo3Ws))
+                .filter(collectIfNotPresent(Transformer3WInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<SwitchInput> switches =
@@ -135,7 +136,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
             buildUntypedConnectorInputEntityData(
                     buildAssetInputEntityData(SwitchInput.class, operators), nodes)
                 .map(dataOpt -> dataOpt.flatMap(switchInputFactory::getEntity))
-                .filter(collectIfNotPresent(invalidSwitches))
+                .filter(collectIfNotPresent(SwitchInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<MeasurementUnitInput> measurementUnits =
@@ -144,28 +145,13 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
             buildUntypedEntityData(
                     buildAssetInputEntityData(MeasurementUnitInput.class, operators), nodes)
                 .map(dataOpt -> dataOpt.flatMap(measurementUnitInputFactory::getEntity))
-                .filter(collectIfNotPresent(invalidMeasurementUnits))
+                .filter(collectIfNotPresent(MeasurementUnitInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
 
-    // check if we have invalid elements and if yes, log information
-    boolean invalidExists =
-        Stream.of(
-                new AbstractMap.SimpleEntry<>(LineInput.class, invalidLines),
-                new AbstractMap.SimpleEntry<>(Transformer2WInput.class, invalidTrafo2Ws),
-                new AbstractMap.SimpleEntry<>(Transformer3WInput.class, invalidTrafo3Ws),
-                new AbstractMap.SimpleEntry<>(SwitchInput.class, invalidSwitches),
-                new AbstractMap.SimpleEntry<>(MeasurementUnitInput.class, invalidMeasurementUnits))
-            .filter(entry -> !entry.getValue().isEmpty())
-            .map(
-                entry -> {
-                  printInvalidElementInformation(entry.getKey(), entry.getValue());
-                  return Optional.empty();
-                })
-            .anyMatch(x -> true);
-
-    // if we found invalid elements return an empty optional
-    if (invalidExists) {
+    // if we found invalid elements return an empty optional and log the problems
+    if (!invalidElementsCounter.isEmpty()) {
+      invalidElementsCounter.forEach(this::printInvalidElementInformation);
       return Optional.empty();
     }
 
