@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,7 +32,7 @@ public final class Extractor {
 
   public static List<InputEntity> extractElements(NestedEntity nestedEntity)
       throws ExtractorException {
-    List<InputEntity> resultingList = new ArrayList<>();
+    CopyOnWriteArrayList<InputEntity> resultingList = new CopyOnWriteArrayList<>();
     if (nestedEntity instanceof HasNodes) {
       resultingList.addAll(((HasNodes) nestedEntity).allNodes());
     }
@@ -69,6 +70,23 @@ public final class Extractor {
               + " and one of its "
               + "sub-interfaces correctly?");
     }
+
+    resultingList.stream()
+        .parallel()
+        .forEach(
+            element -> {
+              if (element instanceof NestedEntity) {
+                try {
+                  resultingList.addAll(extractElements((NestedEntity) element));
+                } catch (ExtractorException e) {
+                  log.error(
+                      "An error occurred during extraction of nested entity'"
+                          + element.getClass().getSimpleName()
+                          + "': ",
+                      e);
+                }
+              }
+            });
 
     return Collections.unmodifiableList(resultingList);
   }
