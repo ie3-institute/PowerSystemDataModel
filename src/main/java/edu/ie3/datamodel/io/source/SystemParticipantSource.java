@@ -14,12 +14,13 @@ import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import java.util.Collection;
+import java.util.Optional;
 
 /** Describes a data source for system participants */
 public interface SystemParticipantSource extends DataSource {
 
   /** @return system participant data as an aggregation of all elements in this grid */
-  SystemParticipants getSystemParticipants();
+  Optional<SystemParticipants> getSystemParticipants();
 
   Collection<FixedFeedInInput> getFixedFeedIns();
 

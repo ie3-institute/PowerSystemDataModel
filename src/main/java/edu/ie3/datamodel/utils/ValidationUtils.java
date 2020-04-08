@@ -525,6 +525,7 @@ public class ValidationUtils {
 
   public static <T extends UniqueEntity> Collection<T> distinctUuidSet(Collection<T> entities) {
     return entities.stream()
+        .parallel()
         .filter(distinctByKey(UniqueEntity::getUuid))
         .collect(Collectors.toSet());
   }

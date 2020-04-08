@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
+import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -237,5 +238,14 @@ public abstract class CsvDataSource {
     }
 
     return Stream.empty();
+  }
+
+  protected <T extends AssetInput> Stream<Optional<T>> untypedEntityStream(
+      Class<T> entityClass,
+      EntityFactory<T, UntypedSingleNodeEntityData> factory,
+      Collection<NodeInput> nodes,
+      Collection<OperatorInput> operators) {
+    return buildUntypedEntityData(buildAssetInputEntityData(entityClass, operators), nodes)
+        .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
   }
 }

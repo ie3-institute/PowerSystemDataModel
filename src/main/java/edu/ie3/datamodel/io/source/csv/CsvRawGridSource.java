@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.FileNamingStrategy;
+import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
@@ -80,71 +81,49 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     Set<NodeInput> nodes = checkForUuidDuplicates(NodeInput.class, getNodes(operators));
 
     // start with the entities needed for a RawGridElement
-    /// to keep track of invalid elements (elements that are lacking something are returned as
-    // Optional.empty() by their construction method) we keep an eye on these
+    /// as we want to return a working grid, keep an eye on empty optionals
     ConcurrentHashMap<Class<? extends AssetInput>, LongAdder> invalidElementsCounter =
         new ConcurrentHashMap<>();
 
     Set<LineInput> lineInputs =
         checkForUuidDuplicates(
             LineInput.class,
-            buildTypedConnectorEntityData(
-                    buildUntypedConnectorInputEntityData(
-                            buildAssetInputEntityData(LineInput.class, operators),
-                            getNodes(operators))
-                        .filter(Optional::isPresent)
-                        .map(Optional::get),
-                    lineTypes)
-                .map(dataOpt -> dataOpt.flatMap(lineInputFactory::getEntity))
+            typedEntityStream(LineInput.class, lineInputFactory, nodes, operators, lineTypes)
                 .filter(collectIfNotPresent(LineInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<Transformer2WInput> transformer2WInputs =
         checkForUuidDuplicates(
             Transformer2WInput.class,
-            buildTypedConnectorEntityData(
-                    buildUntypedConnectorInputEntityData(
-                            buildAssetInputEntityData(Transformer2WInput.class, operators), nodes)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get),
+            typedEntityStream(
+                    Transformer2WInput.class,
+                    transformer2WInputFactory,
+                    nodes,
+                    operators,
                     transformer2WTypeInputs)
-                .map(dataOpt -> dataOpt.flatMap(transformer2WInputFactory::getEntity))
                 .filter(collectIfNotPresent(Transformer2WInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<Transformer3WInput> transformer3WInputs =
         checkForUuidDuplicates(
             Transformer3WInput.class,
-            buildTransformer3WEntityData(
-                    buildTypedConnectorEntityData(
-                            buildUntypedConnectorInputEntityData(
-                                    buildAssetInputEntityData(Transformer3WInput.class, operators),
-                                    nodes)
-                                .filter(Optional::isPresent)
-                                .map(Optional::get),
-                            transformer3WTypeInputs)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get),
-                    nodes)
-                .map(dataOpt -> dataOpt.flatMap(transformer3WInputFactory::getEntity))
+            transformer3WEntityStream(nodes, transformer3WTypeInputs, operators)
                 .filter(collectIfNotPresent(Transformer3WInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<SwitchInput> switches =
         checkForUuidDuplicates(
             SwitchInput.class,
-            buildUntypedConnectorInputEntityData(
-                    buildAssetInputEntityData(SwitchInput.class, operators), nodes)
-                .map(dataOpt -> dataOpt.flatMap(switchInputFactory::getEntity))
+            untypedConnectorInputEntityStream(
+                    SwitchInput.class, switchInputFactory, nodes, operators)
                 .filter(collectIfNotPresent(SwitchInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<MeasurementUnitInput> measurementUnits =
         checkForUuidDuplicates(
             MeasurementUnitInput.class,
-            buildUntypedEntityData(
-                    buildAssetInputEntityData(MeasurementUnitInput.class, operators), nodes)
-                .map(dataOpt -> dataOpt.flatMap(measurementUnitInputFactory::getEntity))
+            untypedEntityStream(
+                    MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators)
                 .filter(collectIfNotPresent(MeasurementUnitInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
@@ -190,13 +169,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Collection<LineTypeInput> lineTypeInputs,
       Collection<OperatorInput> operators) {
     return filterEmptyOptionals(
-            buildTypedConnectorEntityData(
-                    buildUntypedConnectorInputEntityData(
-                            buildAssetInputEntityData(LineInput.class, operators), nodes)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get),
-                    lineTypeInputs)
-                .map(dataOpt -> dataOpt.flatMap(lineInputFactory::getEntity)))
+            typedEntityStream(LineInput.class, lineInputFactory, nodes, operators, lineTypeInputs))
         .collect(Collectors.toSet());
   }
 
@@ -212,14 +185,27 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Collection<Transformer2WTypeInput> transformer2WTypes,
       Collection<OperatorInput> operators) {
     return filterEmptyOptionals(
-            buildTypedConnectorEntityData(
-                    buildUntypedConnectorInputEntityData(
-                            buildAssetInputEntityData(Transformer2WInput.class, operators), nodes)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get),
-                    transformer2WTypes)
-                .map(dataOpt -> dataOpt.flatMap(transformer2WInputFactory::getEntity)))
+            typedEntityStream(
+                Transformer2WInput.class,
+                transformer2WInputFactory,
+                nodes,
+                operators,
+                transformer2WTypes))
         .collect(Collectors.toSet());
+  }
+
+  private <T extends AssetInput, A extends AssetTypeInput> Stream<Optional<T>> typedEntityStream(
+      Class<T> entityClass,
+      EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
+      Collection<NodeInput> nodes,
+      Collection<OperatorInput> operators,
+      Collection<A> types) {
+
+    return buildTypedConnectorEntityData(
+            buildUntypedConnectorInputEntityData(
+                buildAssetInputEntityData(entityClass, operators), nodes),
+            types)
+        .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
   }
 
   @Override
@@ -235,19 +221,22 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Collection<OperatorInput> operators) {
 
     return filterEmptyOptionals(
-            buildTransformer3WEntityData(
-                    buildTypedConnectorEntityData(
-                            buildUntypedConnectorInputEntityData(
-                                    buildAssetInputEntityData(Transformer3WInput.class, operators),
-                                    nodes)
-                                .filter(Optional::isPresent)
-                                .map(Optional::get),
-                            transformer3WTypeInputs)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get),
-                    nodes)
-                .map(dataOpt -> dataOpt.flatMap(transformer3WInputFactory::getEntity)))
+            transformer3WEntityStream(nodes, transformer3WTypeInputs, operators))
         .collect(Collectors.toSet());
+  }
+
+  private Stream<Optional<Transformer3WInput>> transformer3WEntityStream(
+      Collection<NodeInput> nodes,
+      Collection<Transformer3WTypeInput> transformer3WTypeInputs,
+      Collection<OperatorInput> operators) {
+
+    return buildTransformer3WEntityData(
+            buildTypedConnectorEntityData(
+                buildUntypedConnectorInputEntityData(
+                    buildAssetInputEntityData(Transformer3WInput.class, operators), nodes),
+                transformer3WTypeInputs),
+            nodes)
+        .map(dataOpt -> dataOpt.flatMap(transformer3WInputFactory::getEntity));
   }
 
   @Override
@@ -261,10 +250,20 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
 
     return filterEmptyOptionals(
-            buildUntypedConnectorInputEntityData(
-                    buildAssetInputEntityData(SwitchInput.class, operators), nodes)
-                .map(dataOpt -> dataOpt.flatMap(switchInputFactory::getEntity)))
+            untypedConnectorInputEntityStream(
+                SwitchInput.class, switchInputFactory, nodes, operators))
         .collect(Collectors.toSet());
+  }
+
+  private <T extends AssetInput> Stream<Optional<T>> untypedConnectorInputEntityStream(
+      Class<T> entityClass,
+      EntityFactory<T, ConnectorInputEntityData> factory,
+      Collection<NodeInput> nodes,
+      Collection<OperatorInput> operators) {
+
+    return buildUntypedConnectorInputEntityData(
+            buildAssetInputEntityData(entityClass, operators), nodes)
+        .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
   }
 
   @Override
@@ -277,9 +276,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   public Set<MeasurementUnitInput> getMeasurementUnits(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
     return filterEmptyOptionals(
-            buildUntypedEntityData(
-                    buildAssetInputEntityData(MeasurementUnitInput.class, operators), nodes)
-                .map(dataOpt -> dataOpt.flatMap(measurementUnitInputFactory::getEntity)))
+            untypedEntityStream(
+                MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators))
         .collect(Collectors.toSet());
   }
 
@@ -333,82 +331,88 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
   private <T extends AssetTypeInput>
       Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntityData(
-          Stream<ConnectorInputEntityData> noTypeConnectorEntityDataStream, Collection<T> types) {
+          Stream<Optional<ConnectorInputEntityData>> noTypeConnectorEntityDataStream,
+          Collection<T> types) {
     return noTypeConnectorEntityDataStream
         .parallel()
         .map(
-            noTypeEntityData -> {
+            noTypeEntityDataOpt ->
+                noTypeEntityDataOpt.flatMap(
+                    noTypeEntityData -> {
 
-              // get the raw data
-              Map<String, String> fieldsToAttributes = noTypeEntityData.getFieldsToValues();
+                      // get the raw data
+                      Map<String, String> fieldsToAttributes = noTypeEntityData.getFieldsToValues();
 
-              // get the type entity of this entity
-              String typeUuid = fieldsToAttributes.get(TYPE);
-              Optional<T> assetType = findFirstEntityByUuid(typeUuid, types);
+                      // get the type entity of this entity
+                      String typeUuid = fieldsToAttributes.get(TYPE);
+                      Optional<T> assetType = findFirstEntityByUuid(typeUuid, types);
 
-              // if the type is not present we return an empty element and
-              // log a warning
-              if (!assetType.isPresent()) {
-                logSkippingWarning(
-                    noTypeEntityData.getEntityClass().getSimpleName(),
-                    fieldsToAttributes.get("uuid"),
-                    fieldsToAttributes.get("id"),
-                    TYPE + ": " + typeUuid);
-                return Optional.empty();
-              }
+                      // if the type is not present we return an empty element and
+                      // log a warning
+                      if (!assetType.isPresent()) {
+                        logSkippingWarning(
+                            noTypeEntityData.getEntityClass().getSimpleName(),
+                            fieldsToAttributes.get("uuid"),
+                            fieldsToAttributes.get("id"),
+                            TYPE + ": " + typeUuid);
+                        return Optional.empty();
+                      }
 
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().remove(TYPE);
+                      // remove fields that are passed as objects to constructor
+                      fieldsToAttributes.keySet().remove(TYPE);
 
-              return Optional.of(
-                  new TypedConnectorInputEntityData<>(
-                      fieldsToAttributes,
-                      noTypeEntityData.getEntityClass(),
-                      noTypeEntityData.getOperatorInput(),
-                      noTypeEntityData.getNodeA(),
-                      noTypeEntityData.getNodeB(),
-                      assetType.get()));
-            });
+                      return Optional.of(
+                          new TypedConnectorInputEntityData<>(
+                              fieldsToAttributes,
+                              noTypeEntityData.getEntityClass(),
+                              noTypeEntityData.getOperatorInput(),
+                              noTypeEntityData.getNodeA(),
+                              noTypeEntityData.getNodeB(),
+                              assetType.get()));
+                    }));
   }
 
   private Stream<Optional<Transformer3WInputEntityData>> buildTransformer3WEntityData(
-      Stream<TypedConnectorInputEntityData<Transformer3WTypeInput>> typedConnectorEntityDataStream,
+      Stream<Optional<TypedConnectorInputEntityData<Transformer3WTypeInput>>>
+          typedConnectorEntityDataStream,
       Collection<NodeInput> nodes) {
     return typedConnectorEntityDataStream
         .parallel()
         .map(
-            typeEntityData -> {
+            typedEntityDataOpt ->
+                typedEntityDataOpt.flatMap(
+                    typeEntityData -> {
 
-              // get the raw data
-              Map<String, String> fieldsToAttributes = typeEntityData.getFieldsToValues();
+                      // get the raw data
+                      Map<String, String> fieldsToAttributes = typeEntityData.getFieldsToValues();
 
-              // get nodeC of the transformer
-              String nodeCUuid = fieldsToAttributes.get("nodeC");
-              Optional<NodeInput> nodeC = findFirstEntityByUuid(nodeCUuid, nodes);
+                      // get nodeC of the transformer
+                      String nodeCUuid = fieldsToAttributes.get("nodeC");
+                      Optional<NodeInput> nodeC = findFirstEntityByUuid(nodeCUuid, nodes);
 
-              // if nodeC is not present we return an empty element and
-              // log a warning
-              if (!nodeC.isPresent()) {
-                logSkippingWarning(
-                    typeEntityData.getEntityClass().getSimpleName(),
-                    fieldsToAttributes.get("uuid"),
-                    fieldsToAttributes.get("id"),
-                    "nodeC: " + nodeCUuid);
-                return Optional.empty();
-              }
+                      // if nodeC is not present we return an empty element and
+                      // log a warning
+                      if (!nodeC.isPresent()) {
+                        logSkippingWarning(
+                            typeEntityData.getEntityClass().getSimpleName(),
+                            fieldsToAttributes.get("uuid"),
+                            fieldsToAttributes.get("id"),
+                            "nodeC: " + nodeCUuid);
+                        return Optional.empty();
+                      }
 
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().remove("nodeC");
+                      // remove fields that are passed as objects to constructor
+                      fieldsToAttributes.keySet().remove("nodeC");
 
-              return Optional.of(
-                  new Transformer3WInputEntityData(
-                      fieldsToAttributes,
-                      typeEntityData.getEntityClass(),
-                      typeEntityData.getOperatorInput(),
-                      typeEntityData.getNodeA(),
-                      typeEntityData.getNodeB(),
-                      nodeC.get(),
-                      typeEntityData.getType()));
-            });
+                      return Optional.of(
+                          new Transformer3WInputEntityData(
+                              fieldsToAttributes,
+                              typeEntityData.getEntityClass(),
+                              typeEntityData.getOperatorInput(),
+                              typeEntityData.getNodeA(),
+                              typeEntityData.getNodeB(),
+                              nodeC.get(),
+                              typeEntityData.getType()));
+                    }));
   }
 }
