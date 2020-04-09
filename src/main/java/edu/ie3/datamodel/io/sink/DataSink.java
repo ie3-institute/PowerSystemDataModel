@@ -66,6 +66,23 @@ public interface DataSink {
   <C extends UniqueEntity> void persistIgnoreNested(C entity);
 
   /**
+   * Should implement the entry point of a data sink to persist multiple entities in a collection.
+   * In contrast to {@link DataSink#persistAll(Collection)}, this method should <b>not</b> take care
+   * about the extraction process of nested entities (if any) but only persist the uuid of the
+   * nested entity. This <b>might</b> speed up things a little bit because of missing
+   * if-/else-clauses but but can also lead to missing persisted data that should be persisted, but
+   * is not e.g. nested types that are not available anymore afterwards. It might be useful
+   * especially for all entities without nested entities. For all doubts about if the provided
+   * entity contains needed nested data or not {@link DataSink#persistAll(Collection)} is the
+   * recommended method to be used.
+   *
+   * @param entities the entities that should be persisted
+   * @param <C> bounded to be all unique entities. Handling of specific entities is normally then
+   *     executed by a specific {@link EntityProcessor}
+   */
+  <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities);
+
+  /**
    * Should implement the handling of a whole time series. Therefore the single entries have to be
    * extracted and persisted accordingly.
    *

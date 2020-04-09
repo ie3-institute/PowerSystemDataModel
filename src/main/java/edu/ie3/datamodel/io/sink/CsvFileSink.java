@@ -172,6 +172,11 @@ public class CsvFileSink implements DataSink {
   }
 
   @Override
+  public <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities) {
+    entities.parallelStream().forEach(this::persistIgnoreNested);
+  }
+
+  @Override
   public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries) {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
