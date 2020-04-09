@@ -103,6 +103,6 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
 
   @Override
   public String toString() {
-    return "TimeSeries{" + "uuid=" + uuid + ", #entries=" + entries.size() + '}';
+    return "TimeSeries{" + "uuid=" + getUuid() + ", entries=" + entries + '}';
   }
 }

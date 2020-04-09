@@ -13,7 +13,7 @@ public abstract class UniqueEntity {
   /** Field name of {@link UniqueEntity} uuid */
   public static final String UUID_FIELD_NAME = "uuid";
 
-  protected final UUID uuid;
+  private final UUID uuid;
 
   public UniqueEntity() {
     uuid = UUID.randomUUID();

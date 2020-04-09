@@ -47,6 +47,6 @@ public abstract class TimeSeriesEntry<V extends Value> extends UniqueEntity {
 
   @Override
   public String toString() {
-    return "Entry{" + "uuid=" + uuid + ", value=" + value + '}';
+    return "TimeSeriesEntry{" + "uuid=" + getUuid() + ", value=" + value + '}';
   }
 }

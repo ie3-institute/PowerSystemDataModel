@@ -49,7 +49,7 @@ public class TimeBasedValue<T extends Value> extends TimeSeriesEntry<T>
 
   @Override
   public String toString() {
-    return "TimeBasedValue{" + "uuid=" + uuid + ", time=" + time + ", value=" + value + '}';
+    return "TimeBasedValue{" + "uuid=" + getUuid() + ", time=" + time + ", value=" + value + '}';
   }
 
   @Override

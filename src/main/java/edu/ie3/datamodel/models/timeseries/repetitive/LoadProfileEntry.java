@@ -52,13 +52,13 @@ public class LoadProfileEntry extends TimeSeriesEntry<PValue> {
   public String toString() {
     return "LoadProfileEntry{"
         + "uuid="
-        + uuid
-        + ", value="
-        + value
+        + getUuid()
         + ", dayOfWeek="
         + dayOfWeek
         + ", quarterHourOfDay="
         + quarterHourOfDay
+        + ", value="
+        + value
         + '}';
   }
 }
