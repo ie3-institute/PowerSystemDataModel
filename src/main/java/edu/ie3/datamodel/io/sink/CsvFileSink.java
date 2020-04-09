@@ -12,6 +12,7 @@ import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.connectors.DataConnector;
+import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
 import edu.ie3.datamodel.io.extractor.Extractor;
 import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
@@ -22,7 +23,6 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -158,11 +158,16 @@ public class CsvFileSink implements DataSink {
 
     try {
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
-      BufferedWriter writer = connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
-      write(entityFieldData, headerElements, writer);
+      BufferedCsvWriter writer =
+          connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
+      writer.write(entityFieldData);
     } catch (ProcessorProviderException e) {
       log.error(
-          "Exception occurred during receiving of header elements. Cannot write this element", e);
+          "Exception occurred during receiving of header elements. Cannot write this element.", e);
+    } catch (ConnectorException e) {
+      log.error("Exception occurred during retrieval of writer. Cannot write this element.", e);
+    } catch (IOException e) {
+      log.error("Exception occurred during writing of this element. Cannot write this element.", e);
     }
   }
 
@@ -188,8 +193,15 @@ public class CsvFileSink implements DataSink {
 
     try {
       String[] headerElements = processorProvider.getHeaderElements(key);
-      BufferedWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
-      entityFieldData.forEach(fieldData -> write(fieldData, headerElements, writer));
+      BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
+      entityFieldData.forEach(
+          data -> {
+            try {
+              writer.write(data);
+            } catch (IOException e) {
+              log.error("Cannot write the following entity data: '{}'", data);
+            }
+          });
     } catch (ProcessorProviderException e) {
       log.error(
           "Exception occurred during receiving of header elements. Cannot write this element", e);
@@ -209,7 +221,6 @@ public class CsvFileSink implements DataSink {
    */
   private void initFiles(
       final ProcessorProvider processorProvider, final CsvFileConnector connector) {
-
     processorProvider
         .getRegisteredClasses()
         .forEach(
@@ -219,42 +230,15 @@ public class CsvFileSink implements DataSink {
                 connector.getOrInitWriter(clz, headerElements, csvSep);
               } catch (ProcessorProviderException e) {
                 log.error(
-                    "Error during receiving of head line elements. Cannot prepare writer for class {}",
+                    "Error during receiving of head line elements. Cannot prepare writer for class {}.",
+                    clz,
+                    e);
+              } catch (ConnectorException e) {
+                log.error(
+                    "Error during instantiation files. Cannot get or init writer for class {}.",
                     clz,
                     e);
               }
             });
-  }
-
-  /**
-   * Actually persisting the provided entity field data
-   *
-   * @param entityFieldData a mapping of an entity instance fields to their values
-   * @param headerElements the header elements of the entity, normally all attributes of the entity
-   *     class
-   * @param writer the corresponding writer for that should be used
-   */
-  private void write(
-      LinkedHashMap<String, String> entityFieldData,
-      String[] headerElements,
-      BufferedWriter writer) {
-
-    try {
-      for (int i = 0; i < headerElements.length; i++) {
-        String attribute = headerElements[i];
-        writer.append(entityFieldData.get(attribute));
-        if (i + 1 < headerElements.length) {
-          writer.append(csvSep);
-        } else {
-          writer.append("\n");
-        }
-      }
-      writer.flush();
-    } catch (IOException e) {
-      log.error(
-          "Error while writing entity with field data: "
-              + Arrays.toString(entityFieldData.entrySet().toArray()),
-          e);
-    }
   }
 }

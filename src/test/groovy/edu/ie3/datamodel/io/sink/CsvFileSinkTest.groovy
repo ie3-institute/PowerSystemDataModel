@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.sink
 
 import edu.ie3.datamodel.exceptions.SinkException
-import edu.ie3.datamodel.io.CsvFileDefinition
 import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
@@ -27,12 +26,9 @@ import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.WecResult
-import edu.ie3.datamodel.models.timeseries.TimeSeries
-import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
-import edu.ie3.datamodel.models.value.Value
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.test.common.ThermalUnitInputTestData
@@ -44,11 +40,6 @@ import tec.uom.se.quantity.Quantities
 
 import javax.measure.Quantity
 import javax.measure.quantity.Power
-import java.time.ZoneId
-import java.time.ZonedDateTime
-
-import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
-import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 
 class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
@@ -69,7 +60,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
 		expect:
 		!new File(testBaseFolderPath).exists()
-		csvFileSink.csvSep == ","
 	}
 
 	def "A valid CsvFileSink with 'initFiles' enabled should create files as expected"() {
