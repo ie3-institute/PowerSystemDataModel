@@ -25,7 +25,6 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
 
   // general fields
   private final TypeSource typeSource;
-  private final CsvRawGridSource rawGridSource;
 
   // factories
   private final ThermalBusInputFactory thermalBusInputFactory;
@@ -40,7 +39,6 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
       CsvRawGridSource rawGridSource) {
     super(csvSep, thermalUnitsFolderPath, fileNamingStrategy);
     this.typeSource = typeSource;
-    this.rawGridSource = rawGridSource;
 
     // init factories
     this.thermalBusInputFactory = new ThermalBusInputFactory();
