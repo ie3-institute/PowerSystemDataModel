@@ -12,7 +12,7 @@ import spock.lang.Specification
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-class IndividualTimeSeriesSpec extends Specification implements TimeSeriesTestData {
+class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestData {
 	def "Return empty optional value when queried for non existent time" () {
 		expect:
 		individualIntTimeSeries.getValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC"))) == Optional.empty()
