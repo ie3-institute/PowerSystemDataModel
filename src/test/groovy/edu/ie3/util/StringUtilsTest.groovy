@@ -106,4 +106,73 @@ class StringUtilsTest extends Specification {
 		then:
 		actual == expected
 	}
+
+	def "The StringUtils are capable of cleaning up strings correctly"() {
+		when:
+		String actual = StringUtils.cleanString(input)
+
+		then:
+		actual == expected
+
+		where:
+		input 		|| expected
+		"ab123" 	|| "ab123"
+		"ab.123" 	|| "ab_123"
+		"ab-123" 	|| "ab_123"
+		"ab_123" 	|| "ab_123"
+		"ab/123" 	|| "ab_123"
+		"ab\\123" 	|| "ab_123"
+		"ab!123" 	|| "ab_123"
+		"ab\"123" 	|| "ab_123"
+		"ab§123" 	|| "ab_123"
+		"ab\$123" 	|| "ab_123"
+		"ab&123" 	|| "ab_123"
+		"ab{123" 	|| "ab_123"
+		"ab[123" 	|| "ab_123"
+		"ab}123" 	|| "ab_123"
+		"ab]123" 	|| "ab_123"
+		"ab(123" 	|| "ab_123"
+		"ab)123" 	|| "ab_123"
+		"ab=123" 	|| "ab_123"
+		"ab?123" 	|| "ab_123"
+		"abß123" 	|| "ab_123"
+		"ab123." 	|| "ab123_"
+		"ab123-" 	|| "ab123_"
+		"ab123_" 	|| "ab123_"
+		"ab123/" 	|| "ab123_"
+		"ab123\\" 	|| "ab123_"
+		"ab123!" 	|| "ab123_"
+		"ab123\"" 	|| "ab123_"
+		"ab123§" 	|| "ab123_"
+		"ab123\$" 	|| "ab123_"
+		"ab123&" 	|| "ab123_"
+		"ab123{" 	|| "ab123_"
+		"ab123[" 	|| "ab123_"
+		"ab123}" 	|| "ab123_"
+		"ab123]" 	|| "ab123_"
+		"ab123(" 	|| "ab123_"
+		"ab123)" 	|| "ab123_"
+		"ab123=" 	|| "ab123_"
+		"ab123?" 	|| "ab123_"
+		"ab123ß" 	|| "ab123_"
+		".ab123" 	|| "_ab123"
+		"-ab123" 	|| "_ab123"
+		"_ab123" 	|| "_ab123"
+		"/ab123" 	|| "_ab123"
+		"\\ab123" 	|| "_ab123"
+		"!ab123" 	|| "_ab123"
+		"\"ab123" 	|| "_ab123"
+		"§ab123" 	|| "_ab123"
+		"\$ab123"	|| "_ab123"
+		"&ab123" 	|| "_ab123"
+		"{ab123" 	|| "_ab123"
+		"[ab123" 	|| "_ab123"
+		"}ab123" 	|| "_ab123"
+		"]ab123" 	|| "_ab123"
+		"(ab123" 	|| "_ab123"
+		")ab123" 	|| "_ab123"
+		"=ab123" 	|| "_ab123"
+		"?ab123" 	|| "_ab123"
+		"ßab123" 	|| "_ab123"
+	}
 }

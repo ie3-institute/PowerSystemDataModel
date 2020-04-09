@@ -19,6 +19,8 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
 import java.util.Optional;
+
+import edu.ie3.util.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,7 +72,7 @@ public class FileNamingStrategy {
    * @return Prefix with trailing underscore
    */
   private static String preparePrefix(String prefix) {
-    return cleanString(prefix).replaceAll("([^_])$", "$1_").toLowerCase();
+    return StringUtils.cleanString(prefix).replaceAll("([^_])$", "$1_").toLowerCase();
   }
 
   /**
@@ -80,17 +82,7 @@ public class FileNamingStrategy {
    * @return Suffix with trailing leading
    */
   private static String prepareSuffix(String suffix) {
-    return cleanString(suffix).replaceAll("^([^_])", "_$1").toLowerCase();
-  }
-
-  /**
-   * Replaces all non word-characters with an underscore
-   *
-   * @param input String to clean
-   * @return the cleaned string
-   */
-  public static String cleanString(String input) {
-    return input.replaceAll("[^\\w]", "_");
+    return StringUtils.cleanString(suffix).replaceAll("^([^_])", "_$1").toLowerCase();
   }
 
   public Optional<String> getFileName(Class<? extends UniqueEntity> cls) {

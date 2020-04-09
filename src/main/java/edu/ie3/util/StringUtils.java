@@ -63,4 +63,14 @@ public class StringUtils {
   public static String[] quote(String[] input) {
     return Arrays.stream(input).map(StringUtils::quote).toArray(String[]::new);
   }
+
+  /**
+   * Replaces all non word-characters with an underscore
+   *
+   * @param input String to clean
+   * @return the cleaned string
+   */
+  public static String cleanString(String input) {
+    return input.replaceAll("[^\\w]", "_");
+  }
 }
