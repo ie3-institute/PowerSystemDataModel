@@ -267,7 +267,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "QV":
       case "ReactivePowerCharacteristic":
       case "CharacteristicInput":
-        resultStringBuilder.append(((CharacteristicInput) methodReturnObject).deSerialize());
+        resultStringBuilder.append(((CharacteristicInput<?, ?>) methodReturnObject).deSerialize());
         break;
       default:
         throw new EntityProcessorException(
