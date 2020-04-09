@@ -20,6 +20,7 @@ import edu.ie3.datamodel.models.value.*;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -131,36 +132,40 @@ public class TimeSeriesProcessor<
                       entry -> new FieldSourceToMethod(VALUE, entry.getValue())));
     } else {
       /* Treat the nested weather values specially. */
-      /* Register all getters of the weather value itself */
+      /* Flatten the nested structure of Weather value */
       valueMapping =
-          new HashMap<>(
-              mapFieldNameToGetter(valueClass, Arrays.asList("irradiation", "temperature", "wind"))
-                  .entrySet().stream()
-                  .collect(
-                      Collectors.toMap(
-                          Map.Entry::getKey,
-                          entry -> new FieldSourceToMethod(VALUE, entry.getValue()))));
-      /* Register all getters of the nested irradiation value */
-      valueMapping.putAll(
-          (mapFieldNameToGetter(IrradiationValue.class).entrySet().stream()
-              .collect(
-                  Collectors.toMap(
-                      Map.Entry::getKey,
-                      entry -> new FieldSourceToMethod(WEATHER_IRRADIATION, entry.getValue())))));
-      /* Register all getters of the nested irradiation value */
-      valueMapping.putAll(
-          (mapFieldNameToGetter(TemperatureValue.class).entrySet().stream()
-              .collect(
-                  Collectors.toMap(
-                      Map.Entry::getKey,
-                      entry -> new FieldSourceToMethod(WEATHER_TEMPERATURE, entry.getValue())))));
-      /* Register all getters of the nested irradiation value */
-      valueMapping.putAll(
-          (mapFieldNameToGetter(WindValue.class).entrySet().stream()
-              .collect(
-                  Collectors.toMap(
-                      Map.Entry::getKey,
-                      entry -> new FieldSourceToMethod(WEATHER_WIND, entry.getValue())))));
+          Stream.concat(
+                  Stream.concat(
+                      Stream.concat(
+                          mapFieldNameToGetter(
+                                  valueClass, Arrays.asList("irradiation", "temperature", "wind"))
+                              .entrySet().stream()
+                              .map(
+                                  entry ->
+                                      new AbstractMap.SimpleEntry<>(
+                                          entry.getKey(),
+                                          new FieldSourceToMethod(VALUE, entry.getValue()))),
+                          mapFieldNameToGetter(IrradiationValue.class).entrySet().stream()
+                              .map(
+                                  entry ->
+                                      new AbstractMap.SimpleEntry<>(
+                                          entry.getKey(),
+                                          new FieldSourceToMethod(
+                                              WEATHER_IRRADIATION, entry.getValue())))),
+                      mapFieldNameToGetter(TemperatureValue.class).entrySet().stream()
+                          .map(
+                              entry ->
+                                  new AbstractMap.SimpleEntry<>(
+                                      entry.getKey(),
+                                      new FieldSourceToMethod(
+                                          WEATHER_TEMPERATURE, entry.getValue())))),
+                  mapFieldNameToGetter(WindValue.class).entrySet().stream()
+                      .map(
+                          entry ->
+                              new AbstractMap.SimpleEntry<>(
+                                  entry.getKey(),
+                                  new FieldSourceToMethod(WEATHER_WIND, entry.getValue()))))
+              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     /* Put everything together */

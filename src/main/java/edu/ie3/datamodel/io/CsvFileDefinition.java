@@ -23,10 +23,9 @@ public class CsvFileDefinition {
   protected final String csvSep;
 
   public CsvFileDefinition(String fileName, String[] headLineElements, String csvSep) {
-    if (fileName.matches(fullPathPattern.pattern())) {
-      Matcher matcher = fullPathPattern.matcher(fileName);
-      matcher.matches();
-      this.fileName = matcher.group(0).replaceAll("\\\\/", File.separator);
+    Matcher fullPathMatcher = fullPathPattern.matcher(fileName);
+    if (fullPathMatcher.matches()) {
+      this.fileName = fullPathMatcher.group(0).replaceAll("\\\\/", File.separator);
     } else if (fileName.matches(fileNamePattern.pattern())) {
       this.fileName = fileName.replaceAll("\\\\/", File.separator);
     } else {

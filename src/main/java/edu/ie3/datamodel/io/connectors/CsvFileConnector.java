@@ -96,7 +96,7 @@ public class CsvFileConnector implements DataConnector {
               () -> {
                 BufferedWriter newWriter = null;
                 try {
-                  newWriter = initWriter(fileDefinition);
+                  newWriter = initWriter(baseFolderName, fileDefinition);
                 } catch (ConnectorException | IOException e) {
                   log.error("Error while initiating writer in CsvFileConnector.", e);
                 }
@@ -108,38 +108,6 @@ public class CsvFileConnector implements DataConnector {
       throw new ConnectorException(
           "Error during look up of writer, caused by wrong reference definition.", e);
     }
-  }
-
-  private BufferedWriter initWriter(
-      String baseFolderName,
-      Class<? extends UniqueEntity> clz,
-      FileNamingStrategy fileNamingStrategy,
-      String[] headerElements,
-      String csvSep)
-      throws ConnectorException, IOException {
-    File basePathDir = new File(baseFolderName);
-    if (basePathDir.isFile())
-      throw new ConnectorException(
-          "Base path dir '" + baseFolderName + "' already exists and is a file!");
-    if (!basePathDir.exists()) basePathDir.mkdirs();
-
-    String fileName =
-        fileNamingStrategy
-            .getFileName(clz)
-            .orElseThrow(
-                () ->
-                    new ConnectorException(
-                        "Cannot determine the file name for provided class '"
-                            + clz.getSimpleName()
-                            + "'."));
-    String fullPath = baseFolderName + File.separator + fileName + FILE_ENDING;
-
-    BufferedWriter writer = FileIOUtils.getBufferedWriterUTF8(fullPath);
-
-    // write header
-    writeFileHeader(writer, prepareHeader(headerElements), csvSep);
-
-    return writer;
   }
 
   /**
@@ -174,21 +142,47 @@ public class CsvFileConnector implements DataConnector {
         .toLowerCase();
   }
 
-  private BufferedWriter initWriter(CsvFileDefinition fileDefinition)
+  private BufferedWriter initWriter(String baseFolderName, CsvFileDefinition fileDefinition)
+      throws ConnectorException, IOException {
+    return initWriter(
+        baseFolderName,
+        fileDefinition.getFilePath(),
+        fileDefinition.getHeadLineElements(),
+        fileDefinition.getCsvSep());
+  }
+
+  private BufferedWriter initWriter(
+      String baseFolderName,
+      Class<? extends UniqueEntity> clz,
+      FileNamingStrategy fileNamingStrategy,
+      String[] headerElements,
+      String csvSep)
+      throws ConnectorException, IOException {
+    String fileName =
+        fileNamingStrategy
+            .getFileName(clz)
+            .orElseThrow(
+                () ->
+                    new ConnectorException(
+                        "Cannot determine the file name for provided class '"
+                            + clz.getSimpleName()
+                            + "'."));
+    return initWriter(
+        baseFolderName, fileName + FILE_ENDING, prepareHeader(headerElements), csvSep);
+  }
+
+  private BufferedWriter initWriter(
+      String baseFolderName, String fileNameWithEnding, String[] headerElements, String csvSep)
       throws ConnectorException, IOException {
     File basePathDir = new File(baseFolderName);
     if (basePathDir.isFile())
       throw new ConnectorException(
           "Base path dir '" + baseFolderName + "' already exists and is a file!");
     if (!basePathDir.exists()) basePathDir.mkdirs();
-
-    String fullPath = baseFolderName + File.separator + fileDefinition.getFilePath();
-
+    String fullPath = baseFolderName + File.separator + fileNameWithEnding;
     BufferedWriter writer = FileIOUtils.getBufferedWriterUTF8(fullPath);
-
     // write header
-    writeFileHeader(writer, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep());
-
+    writeFileHeader(writer, headerElements, csvSep);
     return writer;
   }
 
