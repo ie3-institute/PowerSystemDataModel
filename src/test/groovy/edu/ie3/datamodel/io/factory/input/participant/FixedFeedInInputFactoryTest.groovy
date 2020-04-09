@@ -5,15 +5,20 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
+import tec.uom.se.quantity.Quantities
 
+import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
 
 class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHelper {
@@ -34,7 +39,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 			"operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
 			"operatesuntil"   : "",
 			"id"              : "TestID",
-			"qcharacteristics": "cosphi_fixed:1",
+			"qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
 			"srated"          : "3",
 			"cosphirated"     : "4"
 		]
@@ -56,7 +61,12 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 			assert operator == operatorInput
 			assert id == parameter["id"]
 			assert node == nodeInput
-			assert qCharacteristics == parameter["qcharacteristics"]
+			assert qCharacteristics.with {
+				assert uuid != null
+				assert points == Collections.unmodifiableSortedSet([
+					new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
+				] as TreeSet)
+			}
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
 			assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
 		}

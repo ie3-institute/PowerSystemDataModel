@@ -10,6 +10,7 @@ import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.Objects;
@@ -41,7 +42,7 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
       OperationTime operationTime,
       NodeInput node,
       ThermalBusInput thermalBus,
-      String qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       HpTypeInput type) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.thermalBus = thermalBus;
@@ -63,7 +64,7 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
       String id,
       NodeInput node,
       ThermalBusInput thermalBus,
-      String qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       HpTypeInput type) {
     super(uuid, id, node, qCharacteristics);
     this.thermalBus = thermalBus;

@@ -15,6 +15,7 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
@@ -28,6 +29,7 @@ import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.ThermalUnitInputTestData
 import edu.ie3.util.TimeTools
 import edu.ie3.util.io.FileIOUtils
+import jdk.internal.util.xml.impl.Input
 import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
@@ -91,7 +93,8 @@ class CsvFileSinkTest extends Specification {
 					new InputEntityProcessor(ThermalHouseInput),
 					new InputEntityProcessor(OperatorInput),
 					new InputEntityProcessor(LineInput),
-					new InputEntityProcessor(ThermalBusInput)
+					new InputEntityProcessor(ThermalBusInput),
+						new InputEntityProcessor(LineTypeInput)
 				]),
 				new FileNamingStrategy(),
 				false,
