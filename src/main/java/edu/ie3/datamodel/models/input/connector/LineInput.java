@@ -11,8 +11,8 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
+import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
@@ -31,7 +31,7 @@ public class LineInput extends ConnectorInput implements HasType {
   /** Coordinates of this line */
   private final LineString geoPosition;
   /** Description of an optional weather dependent operation curve */
-  private final Optional<String> olmCharacteristic;
+  private final OlmCharacteristicInput olmCharacteristic;
 
   /**
    * Constructor for an operated line
@@ -59,7 +59,7 @@ public class LineInput extends ConnectorInput implements HasType {
       LineTypeInput type,
       ComparableQuantity<Length> length,
       LineString geoPosition,
-      Optional<String> olmCharacteristic) {
+      OlmCharacteristicInput olmCharacteristic) {
     super(uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices);
     this.type = type;
     this.length = length.to(StandardUnits.LINE_LENGTH);
@@ -89,7 +89,7 @@ public class LineInput extends ConnectorInput implements HasType {
       LineTypeInput type,
       ComparableQuantity<Length> length,
       LineString geoPosition,
-      Optional<String> olmCharacteristic) {
+      OlmCharacteristicInput olmCharacteristic) {
     super(uuid, id, nodeA, nodeB, parallelDevices);
     this.type = type;
     this.length = length;
@@ -110,7 +110,7 @@ public class LineInput extends ConnectorInput implements HasType {
     return geoPosition;
   }
 
-  public Optional<String> getOlmCharacteristic() {
+  public OlmCharacteristicInput getOlmCharacteristic() {
     return olmCharacteristic;
   }
 

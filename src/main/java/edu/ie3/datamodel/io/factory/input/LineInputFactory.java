@@ -5,13 +5,15 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
-import java.util.Optional;
+import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
 import java.util.UUID;
 import javax.measure.quantity.Length;
 import org.apache.commons.lang3.ArrayUtils;
@@ -53,10 +55,19 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
                         ArrayUtils.addAll(
                             NodeInput.DEFAULT_GEO_POSITION.getCoordinates(),
                             NodeInput.DEFAULT_GEO_POSITION.getCoordinates())));
-    final Optional<String> olmCharacteristic =
-        data.containsKey(OLM_CHARACTERISTIC)
-            ? Optional.of(data.getField(OLM_CHARACTERISTIC))
-            : Optional.empty();
+    final OlmCharacteristicInput olmCharacteristic;
+    try {
+      olmCharacteristic =
+          data.containsKey(OLM_CHARACTERISTIC) && !data.getField(OLM_CHARACTERISTIC).isEmpty()
+              ? new OlmCharacteristicInput(data.getField(OLM_CHARACTERISTIC))
+              : OlmCharacteristicInput.CONSTANT_CHARACTERISTIC;
+    } catch (ParsingException e) {
+      throw new FactoryException(
+          "Cannot parse the following overhead line monitoring characteristic: '"
+              + data.getField(OLM_CHARACTERISTIC)
+              + "'",
+          e);
+    }
     return new LineInput(
         uuid,
         id,

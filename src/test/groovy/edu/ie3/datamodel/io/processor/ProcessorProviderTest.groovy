@@ -74,8 +74,6 @@ class ProcessorProviderTest extends Specification {
 			/* InputEntity */
 			OperatorInput,
 			RandomLoadParameters,
-			WecCharacteristicInput,
-			EvCharacteristicInput,
 			/* - AssetInput */
 			NodeInput,
 			LineInput,
