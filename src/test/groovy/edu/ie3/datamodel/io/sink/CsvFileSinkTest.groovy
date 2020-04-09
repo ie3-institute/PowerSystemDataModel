@@ -94,7 +94,7 @@ class CsvFileSinkTest extends Specification {
 					new InputEntityProcessor(OperatorInput),
 					new InputEntityProcessor(LineInput),
 					new InputEntityProcessor(ThermalBusInput),
-						new InputEntityProcessor(LineTypeInput)
+					new InputEntityProcessor(LineTypeInput)
 				]),
 				new FileNamingStrategy(),
 				false,

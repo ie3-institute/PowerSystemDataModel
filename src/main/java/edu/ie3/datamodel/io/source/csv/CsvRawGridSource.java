@@ -124,7 +124,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     Set<MeasurementUnitInput> measurementUnits =
         checkForUuidDuplicates(
             MeasurementUnitInput.class,
-            untypedEntityStream(
+            nodeAssetEntityStream(
                     MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators)
                 .filter(isPresentCollectIfNot(MeasurementUnitInput.class, invalidElementsCounter))
                 .map(Optional::get)
@@ -278,7 +278,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   public Set<MeasurementUnitInput> getMeasurementUnits(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
     return filterEmptyOptionals(
-            untypedEntityStream(
+            nodeAssetEntityStream(
                 MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators))
         .collect(Collectors.toSet());
   }

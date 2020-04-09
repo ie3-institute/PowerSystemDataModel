@@ -38,7 +38,7 @@ class MeasurementUnitInputFactoryTest extends Specification implements FactoryTe
 		def nodeInput = Mock(NodeInput)
 
 		when:
-		Optional<MeasurementUnitInput> input = inputFactory.getEntity(new UntypedSingleNodeEntityData(parameter, inputClass, nodeInput))
+		Optional<MeasurementUnitInput> input = inputFactory.getEntity(new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
 
 		then:
 		input.present

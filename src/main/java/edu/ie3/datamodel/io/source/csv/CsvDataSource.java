@@ -9,7 +9,7 @@ import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData;
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -163,7 +163,7 @@ public abstract class CsvDataSource {
             });
   }
 
-  protected Stream<Optional<UntypedSingleNodeEntityData>> buildUntypedEntityData(
+  protected Stream<Optional<NodeAssetInputEntityData>> buildUntypedEntityData(
       Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
 
     return assetInputEntityDataStream
@@ -193,7 +193,7 @@ public abstract class CsvDataSource {
               fieldsToAttributes.keySet().remove(NODE);
 
               return Optional.of(
-                  new UntypedSingleNodeEntityData(
+                  new NodeAssetInputEntityData(
                       fieldsToAttributes,
                       assetInputEntityData.getEntityClass(),
                       assetInputEntityData.getOperatorInput(),
@@ -214,11 +214,16 @@ public abstract class CsvDataSource {
   }
 
   /**
-   * TODO note that the stream is already parallel
+   * Tries to open a file reader from the connector based on the provided entity class, reads the
+   * first line (considered to be the headline with headline fields) and returns a stream of
+   * (fieldname -> fieldValue) mapping where each map represents one row of the .csv file. Since the
+   * returning stream is a parallel stream, the order of the elements cannot be guaranteed.
    *
-   * @param entityClass
-   * @param connector
-   * @return
+   * @param entityClass the entity class that should be build and that is used to get the
+   *     corresponding reader
+   * @param connector the connector that should be used to get the reader from
+   * @return a parallel stream of maps, where each map represents one row of the csv file with the
+   *     mapping (fieldname -> fieldValue)
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
@@ -244,9 +249,23 @@ public abstract class CsvDataSource {
     return Stream.empty();
   }
 
-  protected <T extends AssetInput> Stream<Optional<T>> untypedEntityStream(
+  /**
+   * Returns a stream of optional entities that can be build by using {@link
+   * NodeAssetInputEntityData} and their corresponding factory.
+   *
+   * @param entityClass the entity class that should be build
+   * @param factory the factory that should be used for the building process
+   * @param nodes a collection of {@link NodeInput} entities that should be used to build the
+   *     entities
+   * @param operators a collection of {@link OperatorInput} entities should be used to build the
+   *     entities
+   * @param <T> type of the entity that should be build
+   * @return stream of optionals of the entities that has been built by the factor or empty
+   *     optionals if the entity could not have been build
+   */
+  protected <T extends AssetInput> Stream<Optional<T>> nodeAssetEntityStream(
       Class<T> entityClass,
-      EntityFactory<T, UntypedSingleNodeEntityData> factory,
+      EntityFactory<T, NodeAssetInputEntityData> factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators) {
     return buildUntypedEntityData(buildAssetInputEntityData(entityClass, operators), nodes)

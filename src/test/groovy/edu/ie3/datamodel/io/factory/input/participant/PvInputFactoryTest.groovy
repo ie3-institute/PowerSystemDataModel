@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.models.StandardUnits
@@ -55,7 +55,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 
 		when:
 		Optional<PvInput> input = inputFactory.getEntity(
-				new UntypedSingleNodeEntityData(parameter, inputClass, operatorInput, nodeInput))
+				new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
 		then:
 		input.present

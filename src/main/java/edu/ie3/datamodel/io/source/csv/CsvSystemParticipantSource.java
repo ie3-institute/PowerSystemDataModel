@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.EntityFactory;
-import edu.ie3.datamodel.io.factory.input.UntypedSingleNodeEntityData;
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.SystemParticipantSource;
@@ -111,21 +111,21 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     Set<FixedFeedInInput> fixedFeedInInputs =
         checkForUuidDuplicates(
             FixedFeedInInput.class,
-            untypedEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators)
+            nodeAssetEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators)
                 .filter(isPresentCollectIfNot(FixedFeedInInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<PvInput> pvInputs =
         checkForUuidDuplicates(
             PvInput.class,
-            untypedEntityStream(PvInput.class, pvInputFactory, nodes, operators)
+            nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators)
                 .filter(isPresentCollectIfNot(PvInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
     Set<LoadInput> loads =
         checkForUuidDuplicates(
             LoadInput.class,
-            untypedEntityStream(LoadInput.class, loadInputFactory, nodes, operators)
+            nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators)
                 .filter(isPresentCollectIfNot(LoadInput.class, invalidElementsCounter))
                 .map(Optional::get)
                 .collect(Collectors.toSet()));
@@ -204,7 +204,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<FixedFeedInInput> getFixedFeedIns(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
     return filterEmptyOptionals(
-            untypedEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators))
+            nodeAssetEntityStream(
+                FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators))
         .collect(Collectors.toSet());
   }
 
@@ -218,7 +219,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public Set<PvInput> getPvPlants(
       Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
     return filterEmptyOptionals(
-            untypedEntityStream(PvInput.class, pvInputFactory, nodes, operators))
+            nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators))
         .collect(Collectors.toSet());
   }
 
@@ -231,7 +232,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<LoadInput> getLoads(Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
     return filterEmptyOptionals(
-            untypedEntityStream(LoadInput.class, loadInputFactory, nodes, operators))
+            nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators))
         .collect(Collectors.toSet());
   }
 
@@ -402,8 +403,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   private <T extends SystemParticipantTypeInput>
       Stream<Optional<SystemParticipantTypedEntityData<T>>> buildTypedEntityData(
-          Stream<Optional<UntypedSingleNodeEntityData>> noTypeEntityDataStream,
-          Collection<T> types) {
+                  Stream<Optional<NodeAssetInputEntityData>> noTypeEntityDataStream, Collection<T> types) {
 
     return noTypeEntityDataStream
         .parallel()

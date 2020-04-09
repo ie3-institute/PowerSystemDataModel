@@ -16,7 +16,7 @@ import java.util.Map;
  * additional information about the {@link edu.ie3.datamodel.models.input.NodeInput}, which cannot
  * be provided through the attribute map.
  */
-public class UntypedSingleNodeEntityData extends AssetInputEntityData {
+public class NodeAssetInputEntityData extends AssetInputEntityData {
   private final NodeInput node;
 
   /**
@@ -27,7 +27,7 @@ public class UntypedSingleNodeEntityData extends AssetInputEntityData {
    * @param entityClass class of the entity to be created with this data
    * @param node input node
    */
-  public UntypedSingleNodeEntityData(
+  public NodeAssetInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       NodeInput node) {
@@ -43,7 +43,7 @@ public class UntypedSingleNodeEntityData extends AssetInputEntityData {
    * @param node input node
    * @param operator operator input
    */
-  public UntypedSingleNodeEntityData(
+  public NodeAssetInputEntityData(
       Map<String, String> fieldsToAttributes,
       Class<? extends UniqueEntity> entityClass,
       OperatorInput operator,
