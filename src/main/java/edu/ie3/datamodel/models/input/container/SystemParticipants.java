@@ -51,7 +51,8 @@ public class SystemParticipants implements InputContainer {
     this.wecPlants = wecPlants;
 
     // sanity check for distinct uuids
-    ValidationUtils.checkForDuplicateUuids("SystemParticipants", this.allEntitiesAsList());
+    ValidationUtils.checkForDuplicateUuids(
+        "SystemParticipants", new HashSet<>(this.allEntitiesAsList()));
   }
 
   /**

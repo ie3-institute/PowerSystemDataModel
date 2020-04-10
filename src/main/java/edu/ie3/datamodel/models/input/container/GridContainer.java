@@ -43,8 +43,9 @@ public abstract class GridContainer implements InputContainer {
 
   @Override
   public void validate() {
+    // sanity check to ensure distinct UUIDs
     ValidationUtils.checkForDuplicateUuids(
-        this.getClass().getSimpleName(), this.allEntitiesAsList());
+        this.getClass().getSimpleName(), new HashSet<>(this.allEntitiesAsList()));
     ValidationUtils.checkGrid(this);
   }
 

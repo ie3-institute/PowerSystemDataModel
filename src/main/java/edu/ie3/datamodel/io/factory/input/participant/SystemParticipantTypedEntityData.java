@@ -21,7 +21,7 @@ import java.util.Map;
  *     of the SystemParticipantInput
  */
 public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
-                extends NodeAssetInputEntityData {
+    extends NodeAssetInputEntityData {
 
   private final T typeInput;
 

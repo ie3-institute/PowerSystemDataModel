@@ -82,7 +82,7 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
   }
 
   @Override
-  public Collection<HpTypeInput> getHpTypes() {
+  public Set<HpTypeInput> getHpTypes() {
     return readSimpleEntities(HpTypeInput.class, systemParticipantTypeInputFactory);
   }
 

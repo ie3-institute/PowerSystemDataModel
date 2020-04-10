@@ -45,8 +45,9 @@ public class RawGridElements implements InputContainer {
     this.switches = switches;
     this.measurementUnits = measurementUnits;
 
-    // sanity check to ensure distinct uuids
-    ValidationUtils.checkForDuplicateUuids("RawGridElements", this.allEntitiesAsList());
+    // sanity check to ensure distinct UUIDs
+    ValidationUtils.checkForDuplicateUuids(
+        "RawGridElements", new HashSet<>(this.allEntitiesAsList()));
   }
 
   /**

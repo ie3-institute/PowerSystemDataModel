@@ -18,44 +18,41 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 /** Describes a data source for raw grid data */
 public interface RawGridSource extends DataSource {
   /** @return grid data as an aggregation of its elements */
   Optional<RawGridElements> getGridData();
 
-  Collection<NodeInput> getNodes();
+  Set<NodeInput> getNodes();
 
-  Collection<NodeInput> getNodes(Collection<OperatorInput> operators);
+  Set<NodeInput> getNodes(Collection<OperatorInput> operators);
 
-  Collection<LineInput> getLines();
+  Set<LineInput> getLines();
 
-  Collection<LineInput> getLines(
-      Collection<NodeInput> nodes,
-      Collection<LineTypeInput> lineTypeInputs,
-      Collection<OperatorInput> operators);
+  Set<LineInput> getLines(
+      Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators);
 
-  Collection<Transformer2WInput> get2WTransformers();
+  Set<Transformer2WInput> get2WTransformers();
 
-  Collection<Transformer2WInput> get2WTransformers(
-      Collection<NodeInput> nodes,
-      Collection<Transformer2WTypeInput> transformer2WTypes,
-      Collection<OperatorInput> operators);
+  Set<Transformer2WInput> get2WTransformers(
+      Set<NodeInput> nodes,
+      Set<Transformer2WTypeInput> transformer2WTypes,
+      Set<OperatorInput> operators);
 
-  Collection<Transformer3WInput> get3WTransformers();
+  Set<Transformer3WInput> get3WTransformers();
 
-  Collection<Transformer3WInput> get3WTransformers(
-      Collection<NodeInput> nodes,
-      Collection<Transformer3WTypeInput> transformer3WTypeInputs,
-      Collection<OperatorInput> operators);
+  Set<Transformer3WInput> get3WTransformers(
+      Set<NodeInput> nodes,
+      Set<Transformer3WTypeInput> transformer3WTypeInputs,
+      Set<OperatorInput> operators);
 
-  Collection<SwitchInput> getSwitches();
+  Set<SwitchInput> getSwitches();
 
-  Collection<SwitchInput> getSwitches(
-      Collection<NodeInput> nodes, Collection<OperatorInput> operators);
+  Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators);
 
-  Collection<MeasurementUnitInput> getMeasurementUnits();
+  Set<MeasurementUnitInput> getMeasurementUnits();
 
-  Collection<MeasurementUnitInput> getMeasurementUnits(
-      Collection<NodeInput> nodes, Collection<OperatorInput> operators);
+  Set<MeasurementUnitInput> getMeasurementUnits(Set<NodeInput> nodes, Set<OperatorInput> operators);
 }

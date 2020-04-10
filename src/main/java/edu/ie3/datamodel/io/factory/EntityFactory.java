@@ -161,7 +161,7 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
       String providedFieldMapString =
           fieldsToValues.keySet().stream()
               .map(key -> key + " -> " + fieldsToValues.get(key))
-              .collect(Collectors.joining(","));
+              .collect(Collectors.joining(",\n"));
 
       String providedKeysString = "[" + String.join(", ", fieldsToValues.keySet()) + "]";
 
@@ -170,7 +170,7 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
       throw new FactoryException(
           "The provided fields "
               + providedKeysString
-              + " with data {"
+              + " with data \n{"
               + providedFieldMapString
               + "}"
               + " are invalid for instance of "

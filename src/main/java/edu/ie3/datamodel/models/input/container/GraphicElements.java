@@ -39,7 +39,8 @@ public class GraphicElements implements InputContainer {
             .collect(Collectors.toSet());
 
     // sanity check for distinct uuids
-    ValidationUtils.checkForDuplicateUuids("GraphicElements", this.allEntitiesAsList());
+    ValidationUtils.checkForDuplicateUuids(
+        "GraphicElements", new HashSet<>(this.allEntitiesAsList()));
   }
 
   @Override

@@ -65,14 +65,11 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
     // read all needed entities
     /// start with types and operators
-    Collection<OperatorInput> operators = typeSource.getOperators();
-    Collection<LineTypeInput> lineTypes = typeSource.getLineTypes();
+    Set<OperatorInput> operators = typeSource.getOperators();
+    Set<LineTypeInput> lineTypes = typeSource.getLineTypes();
 
-    Set<NodeInput> nodes =
-        checkForUuidDuplicates(NodeInput.class, rawGridSource.getNodes(operators));
-    Set<LineInput> lines =
-        checkForUuidDuplicates(
-            LineInput.class, rawGridSource.getLines(nodes, lineTypes, operators));
+    Set<NodeInput> nodes = rawGridSource.getNodes(operators);
+    Set<LineInput> lines = rawGridSource.getLines(nodes, lineTypes, operators);
 
     // start with the entities needed for a GraphicElements entity
     /// as we want to return a working grid, keep an eye on empty optionals
@@ -80,22 +77,18 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
         new ConcurrentHashMap<>();
 
     Set<NodeGraphicInput> nodeGraphics =
-        checkForUuidDuplicates(
-            NodeGraphicInput.class,
-            buildNodeGraphicEntityData(nodes)
-                .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::getEntity))
-                .filter(isPresentCollectIfNot(NodeGraphicInput.class, invalidElementsCounter))
-                .map(Optional::get)
-                .collect(Collectors.toSet()));
+        buildNodeGraphicEntityData(nodes)
+            .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::getEntity))
+            .filter(isPresentCollectIfNot(NodeGraphicInput.class, invalidElementsCounter))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
 
     Set<LineGraphicInput> lineGraphics =
-        checkForUuidDuplicates(
-            LineGraphicInput.class,
-            buildLineGraphicEntityData(lines)
-                .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::getEntity))
-                .filter(isPresentCollectIfNot(LineGraphicInput.class, invalidElementsCounter))
-                .map(Optional::get)
-                .collect(Collectors.toSet()));
+        buildLineGraphicEntityData(lines)
+            .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::getEntity))
+            .filter(isPresentCollectIfNot(LineGraphicInput.class, invalidElementsCounter))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
 
     // if we found invalid elements return an empty optional and log the problems
     if (!invalidElementsCounter.isEmpty()) {
@@ -122,7 +115,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
   @Override
   public Collection<LineGraphicInput> getLineGraphicInput() {
-    Collection<OperatorInput> operators = typeSource.getOperators();
+    Set<OperatorInput> operators = typeSource.getOperators();
     return getLineGraphicInput(
         rawGridSource.getLines(
             rawGridSource.getNodes(operators), typeSource.getLineTypes(), operators));

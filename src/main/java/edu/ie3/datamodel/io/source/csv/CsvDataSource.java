@@ -28,7 +28,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * //ToDo: Class Description
+ * Parent class of all .csv file related sources containing methods and fields consumed by allmost
+ * all implementations of .csv file related sources.
  *
  * @version 0.1
  * @since 05.04.20
@@ -53,6 +54,16 @@ public abstract class CsvDataSource {
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
 
+  /**
+   * Takes a row string of a .csv file and a string array of the csv file headline, tries to split
+   * the csv row string based and zip it together with the headline. This method does not contain
+   * any sanity checks. Order of the headline needs to be the same as the fields in the csv row
+   *
+   * @param csvRow the csv row string that contains the data
+   * @param headline the headline of the csv file
+   * @return a map containing the mapping of (fieldName -> fieldValue) or an empty map if an error
+   *     occurred
+   */
   private Map<String, String> buildFieldsToAttributes(
       final String csvRow, final String[] headline) {
     // sometimes we have a json string as field value -> we need to consider this one as well
@@ -65,13 +76,31 @@ public abstract class CsvDataSource {
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    insensitiveFieldsToAttributes.putAll(
-        IntStream.range(0, fieldVals.length)
-            .boxed()
-            .collect(Collectors.toMap(k -> snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
+    try {
+      insensitiveFieldsToAttributes.putAll(
+          IntStream.range(0, fieldVals.length)
+              .boxed()
+              .collect(
+                  Collectors.toMap(k -> snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
+    } catch (Exception e) {
+      log.error(
+          "Cannot build fields to attributes map for row '{}' with headline '{}'. Exception: {}",
+          csvRow,
+          String.join(",", headline),
+          e);
+    }
     return insensitiveFieldsToAttributes;
   }
 
+  /**
+   * Returns either the first instance of a {@link OperatorInput} in the provided collection of or
+   * {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   *
+   * @param operators the collections of {@link OperatorInput}s that should be searched in
+   * @param operatorUuid the operator uuid that is requested
+   * @return either the first found instancen of {@link OperatorInput} or {@link
+   *     OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   private OperatorInput getFirstOrDefaultOperator(
       Collection<OperatorInput> operators, String operatorUuid) {
     return operators.stream()
@@ -98,6 +127,18 @@ public abstract class CsvDataSource {
     return sb.toString();
   }
 
+  /**
+   * Returns a predicate that can be used to filter optionals of {@link UniqueEntity}s and keep
+   * track on the number of elements that have been empty optionals. Example usage:
+   * Collection.stream().filter(isPresentCollectIfNot(NodeInput.class, new ConcurrentHashMap<>()))
+   * ...
+   *
+   * @param entityClass entity class that should be used as they key in the provided counter map
+   * @param invalidElementsCounterMap a map that counts the number of empty optionals and maps it to
+   *     the provided entity clas
+   * @param <T> the type of the entity
+   * @return a predicate that can be used to filter and count empty optionals
+   */
   protected <T extends UniqueEntity> Predicate<Optional<T>> isPresentCollectIfNot(
       Class<? extends UniqueEntity> entityClass,
       ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounterMap) {
@@ -131,19 +172,125 @@ public abstract class CsvDataSource {
         missingElementsString);
   }
 
-  protected <T extends UniqueEntity> Set<T> checkForUuidDuplicates(
-      Class<T> entity, Collection<T> entities) {
-    Collection<T> distinctUuidEntities = ValidationUtils.distinctUuidSet(entities);
-    if (distinctUuidEntities.size() != entities.size()) {
-      log.warn(
-          "Duplicate UUIDs found and removed in file with '{}' entities. It is highly advisable to revise the input file!",
-          entity.getSimpleName());
-      return new HashSet<>(distinctUuidEntities);
-    }
-    return new HashSet<>(entities);
+  protected <T extends UniqueEntity> Stream<T> filterEmptyOptionals(Stream<Optional<T>> elements) {
+    return elements.filter(Optional::isPresent).map(Optional::get);
   }
 
-  protected <T extends AssetInput> Stream<AssetInputEntityData> buildAssetInputEntityData(
+  /**
+   * Returns an {@link Optional} of the first {@link UniqueEntity} element of this collection
+   * matching the provided UUID or an empty {@code Optional} if no matching entity can be found.
+   *
+   * @param entityUuid uuid of the entity that should be looked for
+   * @param entities collection of entities that should be
+   * @param <T> type of the entity that will be returned, derived from the provided collection
+   * @return either an optional containing the first entity that has the provided uuid or an empty
+   *     optional if no matching entity with the provided uuid can be found
+   */
+  protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
+      String entityUuid, Collection<T> entities) {
+    return entities.stream()
+        .parallel()
+        .filter(uniqueEntity -> uniqueEntity.getUuid().toString().equalsIgnoreCase(entityUuid))
+        .findFirst();
+  }
+
+  /**
+   * Tries to open a file reader from the connector based on the provided entity class, reads the
+   * first line (considered to be the headline with headline fields) and returns a stream of
+   * (fieldName -> fieldValue) mapping where each map represents one row of the .csv file. Since the
+   * returning stream is a parallel stream, the order of the elements cannot be guaranteed.
+   *
+   * @param entityClass the entity class that should be build and that is used to get the
+   *     corresponding reader
+   * @param connector the connector that should be used to get the reader from
+   * @return a parallel stream of maps, where each map represents one row of the csv file with the
+   *     mapping (fieldName -> fieldValue)
+   */
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+      Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
+    try (BufferedReader reader = connector.getReader(entityClass)) {
+      String[] headline = reader.readLine().replaceAll("\"", "").split(csvSep);
+      // by default try-with-resources closes the reader directly when we leave this method (which
+      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
+      // As we still want to consume the data at other places, we start a new stream instead of
+      // returning the original one
+      Collection<Map<String, String>> allRows =
+          reader
+              .lines()
+              .parallel()
+              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
+              .filter(map -> !map.isEmpty())
+              .collect(Collectors.toList());
+
+      return distinctRowsWithLog(entityClass, allRows).parallelStream();
+
+    } catch (IOException e) {
+      log.warn(
+          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+    }
+
+    return Stream.empty();
+  }
+
+  /**
+   * Returns a collection of maps each representing a row in csv file that can be used to built an
+   * instance of a {@link UniqueEntity}. The uniqueness of each row is doubled checked by a) that no
+   * duplicated rows are returned that are full (1:1) matches and b) that no rows are returned that
+   * have the same UUID but different field values. As the later case is destroying the contract of
+   * UUIDs an empty Set is returned to indicate the error. For the first case, only the duplicates
+   * are filtered out an a set with unique rows is returned.
+   *
+   * @param entityClass the entity class that should be built based on the provided (fieldName ->
+   *     fieldValue) collection
+   * @param allRows collection of rows of a csv file an entity should be built from
+   * @param <T> type of the entity
+   * @return either a set containing only unique rows or an empty set if at least two rows with the
+   *     same UUID but different field values exist
+   */
+  private <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
+      Class<T> entityClass, Collection<Map<String, String>> allRows) {
+    Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
+    // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial
+    if (!(allRows.size() == allRowsSet.size())) {
+      log.warn(
+          "File with '{}' entities contains {} exact duplicated rows. File cleanup is recommended!",
+          entityClass.getSimpleName(),
+          (allRows.size() - allRowsSet.size()));
+    }
+
+    // check for rows that match exactly by their UUID, but have different fields -> crucial, we
+    // allow only unique UUID entities
+    Set<Map<String, String>> distinctUuidRowSet =
+        allRowsSet
+            .parallelStream()
+            .filter(ValidationUtils.distinctByKey(x -> x.get("uuid")))
+            .collect(Collectors.toSet());
+    if (distinctUuidRowSet.size() != allRowsSet.size()) {
+      allRowsSet.removeAll(distinctUuidRowSet);
+      log.error(
+          "'{}' entities with duplicated UUIDs, but different field values found! Please review the corresponding input file!\nAffected UUIDs:\n{}",
+          entityClass.getSimpleName(),
+          allRowsSet.stream().map(row -> row.get("uuid")).collect(Collectors.joining(",\n")));
+      // if this happens, we return an empty set to prevent further processing
+      return new HashSet<>();
+    }
+
+    return allRowsSet;
+  }
+
+  /**
+   * Returns a stream of optional {@link AssetInputEntityData} that can be used to build instances
+   * of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory} that
+   * consumes this data.
+   *
+   * @param entityClass the entity class that should be build
+   * @param operators a collection of {@link OperatorInput} entities that should be used to build
+   *     the data
+   * @param <T> type of the entity that should be build
+   * @return stream of optionals of the entity data or empty optionals of the operator required for
+   *     the data cannot be found
+   */
+  protected <T extends AssetInput> Stream<AssetInputEntityData> assetInputEntityDataStream(
       Class<T> entityClass, Collection<OperatorInput> operators) {
 
     return buildStreamWithFieldsToAttributesMap(entityClass, connector)
@@ -163,7 +310,18 @@ public abstract class CsvDataSource {
             });
   }
 
-  protected Stream<Optional<NodeAssetInputEntityData>> buildUntypedEntityData(
+  /**
+   * Returns a stream of optional {@link NodeAssetInputEntityData} that can be used to build
+   * instances of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory}
+   * that consumes this data. param assetInputEntityDataStream
+   *
+   * @param assetInputEntityDataStream a stream consisting of {@link AssetInputEntityData} that is
+   *     enriched with {@link NodeInput} data
+   * @param nodes a collection of {@link NodeInput} entities that should be used to build the data
+   * @return stream of optionals of the entity data or empty optionals of the node required for the
+   *     data cannot be found
+   */
+  protected Stream<Optional<NodeAssetInputEntityData>> nodeAssetInputEntityDataStream(
       Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
 
     return assetInputEntityDataStream
@@ -201,54 +359,6 @@ public abstract class CsvDataSource {
             });
   }
 
-  protected <T extends UniqueEntity> Stream<T> filterEmptyOptionals(Stream<Optional<T>> elements) {
-    return elements.filter(Optional::isPresent).map(Optional::get);
-  }
-
-  protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
-      String typeUuid, Collection<T> types) {
-    return types.stream()
-        .parallel()
-        .filter(type -> type.getUuid().toString().equalsIgnoreCase(typeUuid))
-        .findFirst();
-  }
-
-  /**
-   * Tries to open a file reader from the connector based on the provided entity class, reads the
-   * first line (considered to be the headline with headline fields) and returns a stream of
-   * (fieldname -> fieldValue) mapping where each map represents one row of the .csv file. Since the
-   * returning stream is a parallel stream, the order of the elements cannot be guaranteed.
-   *
-   * @param entityClass the entity class that should be build and that is used to get the
-   *     corresponding reader
-   * @param connector the connector that should be used to get the reader from
-   * @return a parallel stream of maps, where each map represents one row of the csv file with the
-   *     mapping (fieldname -> fieldValue)
-   */
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
-    try (BufferedReader reader = connector.getReader(entityClass)) {
-      String[] headline = reader.readLine().replaceAll("\"", "").split(csvSep);
-      // by default try-with-resources closes the reader directly when we leave this method (which
-      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
-      // As we still want to consume the data at other places, we start a new stream instead of
-      // returning the original one
-      Collection<Map<String, String>> allRows =
-          reader
-              .lines()
-              .parallel()
-              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-              .collect(Collectors.toList());
-      return allRows.stream().parallel();
-
-    } catch (IOException e) {
-      log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
-    }
-
-    return Stream.empty();
-  }
-
   /**
    * Returns a stream of optional entities that can be build by using {@link
    * NodeAssetInputEntityData} and their corresponding factory.
@@ -268,7 +378,7 @@ public abstract class CsvDataSource {
       EntityFactory<T, NodeAssetInputEntityData> factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators) {
-    return buildUntypedEntityData(buildAssetInputEntityData(entityClass, operators), nodes)
+    return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
         .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
   }
 }

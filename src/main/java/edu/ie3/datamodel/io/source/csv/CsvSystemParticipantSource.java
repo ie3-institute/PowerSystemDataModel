@@ -98,84 +98,66 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     Collection<ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
     Collection<ThermalStorageInput> thermalStorages =
         thermalSource.getThermalStorages(operators, thermalBuses);
-    /// go on with the nodes incl. filter of unique entities + warning if duplicate uuids got
-    // filtered out
-    Collection<NodeInput> nodes =
-        checkForUuidDuplicates(NodeInput.class, rawGridSource.getNodes(operators));
+
+    /// go on with the nodes
+    Collection<NodeInput> nodes = rawGridSource.getNodes(operators);
 
     // start with the entities needed for SystemParticipants container
-    /// as we want to return a working grid, keep an eye on empty optionals
-    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounter =
+    /// as we want to return a working grid, keep an eye on empty optionals which is equal to
+    // elements that
+    /// have been unable to be built e.g. due to missing elements they depend on
+    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities =
         new ConcurrentHashMap<>();
 
     Set<FixedFeedInInput> fixedFeedInInputs =
-        checkForUuidDuplicates(
-            FixedFeedInInput.class,
-            nodeAssetEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators)
-                .filter(isPresentCollectIfNot(FixedFeedInInput.class, invalidElementsCounter))
-                .map(Optional::get)
-                .collect(Collectors.toSet()));
+        nodeAssetEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators)
+            .filter(isPresentCollectIfNot(FixedFeedInInput.class, nonBuildEntities))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
     Set<PvInput> pvInputs =
-        checkForUuidDuplicates(
-            PvInput.class,
-            nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators)
-                .filter(isPresentCollectIfNot(PvInput.class, invalidElementsCounter))
-                .map(Optional::get)
-                .collect(Collectors.toSet()));
+        nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators)
+            .filter(isPresentCollectIfNot(PvInput.class, nonBuildEntities))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
     Set<LoadInput> loads =
-        checkForUuidDuplicates(
-            LoadInput.class,
-            nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators)
-                .filter(isPresentCollectIfNot(LoadInput.class, invalidElementsCounter))
-                .map(Optional::get)
-                .collect(Collectors.toSet()));
+        nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators)
+            .filter(isPresentCollectIfNot(LoadInput.class, nonBuildEntities))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
     Set<BmInput> bmInputs =
-        checkForUuidDuplicates(
-            BmInput.class,
-            typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, bmTypes)
-                .filter(isPresentCollectIfNot(BmInput.class, invalidElementsCounter))
-                .map(Optional::get)
-                .collect(Collectors.toSet()));
+        typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, bmTypes)
+            .filter(isPresentCollectIfNot(BmInput.class, nonBuildEntities))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
     Set<StorageInput> storages =
-        checkForUuidDuplicates(
-            StorageInput.class,
-            typedEntityStream(
-                    StorageInput.class, storageInputFactory, nodes, operators, storageTypes)
-                .filter(isPresentCollectIfNot(StorageInput.class, invalidElementsCounter))
-                .map(Optional::get)
-                .collect(Collectors.toSet()));
+        typedEntityStream(StorageInput.class, storageInputFactory, nodes, operators, storageTypes)
+            .filter(isPresentCollectIfNot(StorageInput.class, nonBuildEntities))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
     Set<WecInput> wecInputs =
-        checkForUuidDuplicates(
-            WecInput.class,
-            typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, wecTypes)
-                .filter(isPresentCollectIfNot(WecInput.class, invalidElementsCounter))
-                .map(Optional::get)
-                .collect(Collectors.toSet()));
+        typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, wecTypes)
+            .filter(isPresentCollectIfNot(WecInput.class, nonBuildEntities))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
     Set<EvInput> evs =
-        checkForUuidDuplicates(
-            EvInput.class,
-            typedEntityStream(EvInput.class, evInputFactory, nodes, operators, evTypes)
-                .filter(isPresentCollectIfNot(EvInput.class, invalidElementsCounter))
-                .map(Optional::get)
-                .collect(Collectors.toSet()));
+        typedEntityStream(EvInput.class, evInputFactory, nodes, operators, evTypes)
+            .filter(isPresentCollectIfNot(EvInput.class, nonBuildEntities))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
     Set<ChpInput> chpInputs =
-        checkForUuidDuplicates(
-            ChpInput.class,
-            chpInputStream(nodes, operators, chpTypes, thermalBuses, thermalStorages)
-                .filter(isPresentCollectIfNot(ChpInput.class, invalidElementsCounter))
-                .map(Optional::get)
-                .collect(Collectors.toSet()));
+        chpInputStream(nodes, operators, chpTypes, thermalBuses, thermalStorages)
+            .filter(isPresentCollectIfNot(ChpInput.class, nonBuildEntities))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
     Set<HpInput> hpInputs =
-        checkForUuidDuplicates(
-            HpInput.class,
-            hpInputStream(nodes, operators, hpTypes, thermalBuses)
-                .filter(isPresentCollectIfNot(HpInput.class, invalidElementsCounter))
-                .map(Optional::get)
-                .collect(Collectors.toSet()));
+        hpInputStream(nodes, operators, hpTypes, thermalBuses)
+            .filter(isPresentCollectIfNot(HpInput.class, nonBuildEntities))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
 
     // if we found invalid elements return an empty optional and log the problems
-    if (!invalidElementsCounter.isEmpty()) {
-      invalidElementsCounter.forEach(this::printInvalidElementInformation);
+    if (!nonBuildEntities.isEmpty()) {
+      nonBuildEntities.forEach(this::printInvalidElementInformation);
       return Optional.empty();
     }
 
@@ -324,7 +306,9 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
           Collection<OperatorInput> operators,
           Collection<A> types) {
     return buildTypedEntityData(
-            buildUntypedEntityData(buildAssetInputEntityData(entityClass, operators), nodes), types)
+            nodeAssetInputEntityDataStream(
+                assetInputEntityDataStream(entityClass, operators), nodes),
+            types)
         .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
   }
 
@@ -361,7 +345,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       Collection<ThermalStorageInput> thermalStorages) {
     return buildChpEntityData(
             buildTypedEntityData(
-                buildUntypedEntityData(buildAssetInputEntityData(ChpInput.class, operators), nodes),
+                nodeAssetInputEntityDataStream(
+                    assetInputEntityDataStream(ChpInput.class, operators), nodes),
                 types),
             thermalStorages,
             thermalBuses)
@@ -395,7 +380,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       Collection<ThermalBusInput> thermalBuses) {
     return buildHpEntityData(
             buildTypedEntityData(
-                buildUntypedEntityData(buildAssetInputEntityData(HpInput.class, operators), nodes),
+                nodeAssetInputEntityDataStream(
+                    assetInputEntityDataStream(HpInput.class, operators), nodes),
                 types),
             thermalBuses)
         .map(dataOpt -> dataOpt.flatMap(hpInputFactory::getEntity));
@@ -403,7 +389,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   private <T extends SystemParticipantTypeInput>
       Stream<Optional<SystemParticipantTypedEntityData<T>>> buildTypedEntityData(
-                  Stream<Optional<NodeAssetInputEntityData>> noTypeEntityDataStream, Collection<T> types) {
+          Stream<Optional<NodeAssetInputEntityData>> noTypeEntityDataStream, Collection<T> types) {
 
     return noTypeEntityDataStream
         .parallel()

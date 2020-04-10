@@ -49,7 +49,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   @Override
   public Set<ThermalBusInput> getThermalBuses() {
     return filterEmptyOptionals(
-            buildAssetInputEntityData(ThermalBusInput.class, typeSource.getOperators())
+            assetInputEntityDataStream(ThermalBusInput.class, typeSource.getOperators())
                 .map(thermalBusInputFactory::getEntity))
         .collect(Collectors.toSet());
   }
@@ -57,7 +57,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   @Override
   public Set<ThermalBusInput> getThermalBuses(Collection<OperatorInput> operators) {
     return filterEmptyOptionals(
-            buildAssetInputEntityData(ThermalBusInput.class, operators)
+            assetInputEntityDataStream(ThermalBusInput.class, operators)
                 .map(thermalBusInputFactory::getEntity))
         .collect(Collectors.toSet());
   }
@@ -76,7 +76,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   @Override
   public Set<ThermalHouseInput> getThermalHouses() {
 
-    return (buildAssetInputEntityData(ThermalHouseInput.class, typeSource.getOperators())
+    return (assetInputEntityDataStream(ThermalHouseInput.class, typeSource.getOperators())
         .map(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
@@ -89,7 +89,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<ThermalHouseInput> getThermalHouses(
       Collection<OperatorInput> operators, Collection<ThermalBusInput> thermalBuses) {
 
-    return (buildAssetInputEntityData(ThermalHouseInput.class, operators)
+    return (assetInputEntityDataStream(ThermalHouseInput.class, operators)
         .map(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
@@ -101,7 +101,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   @Override
   public Set<CylindricalStorageInput> getCylindricStorages() {
 
-    return (buildAssetInputEntityData(CylindricalStorageInput.class, typeSource.getOperators())
+    return (assetInputEntityDataStream(CylindricalStorageInput.class, typeSource.getOperators())
         .map(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
@@ -114,7 +114,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<CylindricalStorageInput> getCylindricStorages(
       Collection<OperatorInput> operators, Collection<ThermalBusInput> thermalBuses) {
 
-    return (buildAssetInputEntityData(CylindricalStorageInput.class, operators)
+    return (assetInputEntityDataStream(CylindricalStorageInput.class, operators)
         .map(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)

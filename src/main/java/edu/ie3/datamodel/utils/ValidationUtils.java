@@ -515,7 +515,13 @@ public class ValidationUtils {
     }
   }
 
-  public static boolean distinctUuids(Collection<? extends UniqueEntity> entities) {
+  /**
+   * Determines if the provided set only contains elements with distinct UUIDs
+   *
+   * @param entities the set that should be checked
+   * @return true if all UUIDs of the provided entities are unique, false otherwise
+   */
+  public static boolean distinctUuids(Set<? extends UniqueEntity> entities) {
     return entities.stream()
             .filter(distinctByKey(UniqueEntity::getUuid))
             .collect(Collectors.toSet())
@@ -523,22 +529,28 @@ public class ValidationUtils {
         == entities.size();
   }
 
-  public static <T extends UniqueEntity> Collection<T> distinctUuidSet(Collection<T> entities) {
-    return entities.stream()
-        .parallel()
-        .filter(distinctByKey(UniqueEntity::getUuid))
-        .collect(Collectors.toSet());
-  }
-
-  private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+  /**
+   * Predicate that can be used to filter elements based on a given Function
+   *
+   * @param keyExtractor the function that should be used for the filter operations
+   * @param <T> the type of the returning predicate
+   * @return the filter predicate that filters based on the provided function
+   */
+  public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
     Set<Object> seen = ConcurrentHashMap.newKeySet();
     return t -> seen.add(keyExtractor.apply(t));
   }
 
-  public static void checkForDuplicateUuids(
-      String containerClassName, Collection<UniqueEntity> entities) {
+  /**
+   * Checks if the provided set of unique entities only contains elements with distinct UUIDs and
+   * throws an {@link InvalidGridException} otherwise. Normally, this method is used inside
+   * container classes to check validity of the provided data.
+   *
+   * @param containerClassName the container class name that uses this method
+   * @param entities the entities that should be checkd for UUID uniqueness
+   */
+  public static void checkForDuplicateUuids(String containerClassName, Set<UniqueEntity> entities) {
     if (!distinctUuids(entities)) {
-
       String exceptionString =
           entities.stream()
               .collect(Collectors.groupingBy(UniqueEntity::getUuid, Collectors.counting()))
@@ -562,9 +574,9 @@ public class ValidationUtils {
               .collect(Collectors.joining("\n\n"));
 
       throw new InvalidGridException(
-          "The provided entities in "
+          "The provided entities in '"
               + containerClassName
-              + " contain duplicate uuids. "
+              + "' contains duplicate UUIDs. "
               + "This is not allowed!\nDuplicated uuids:\n\n"
               + exceptionString);
     }

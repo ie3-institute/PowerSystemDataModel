@@ -10,28 +10,28 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
-import java.util.Collection;
+import java.util.Set;
 
 public interface TypeSource extends DataSource {
   // TODO
 
-  Collection<Transformer2WTypeInput> getTransformer2WTypes();
+  Set<Transformer2WTypeInput> getTransformer2WTypes();
 
-  Collection<OperatorInput> getOperators();
+  Set<OperatorInput> getOperators();
 
-  Collection<LineTypeInput> getLineTypes();
+  Set<LineTypeInput> getLineTypes();
 
-  Collection<Transformer3WTypeInput> getTransformer3WTypes();
+  Set<Transformer3WTypeInput> getTransformer3WTypes();
 
-  Collection<BmTypeInput> getBmTypes();
+  Set<BmTypeInput> getBmTypes();
 
-  Collection<ChpTypeInput> getChpTypes();
+  Set<ChpTypeInput> getChpTypes();
 
-  Collection<HpTypeInput> getHpTypes();
+  Set<HpTypeInput> getHpTypes();
 
-  Collection<StorageTypeInput> getStorageTypes();
+  Set<StorageTypeInput> getStorageTypes();
 
-  Collection<WecTypeInput> getWecTypes();
+  Set<WecTypeInput> getWecTypes();
 
-  Collection<EvTypeInput> getEvTypes();
+  Set<EvTypeInput> getEvTypes();
 }
