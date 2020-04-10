@@ -40,7 +40,7 @@ public final class Extractor {
       resultingList.add(extractType((HasType) nestedEntity));
     }
     if (nestedEntity instanceof Operable) {
-      resultingList.add(extractOperator((Operable) nestedEntity));
+      extractOperator((Operable) nestedEntity).ifPresent(resultingList::add);
     }
 
     if (nestedEntity instanceof HasThermalBus) {
@@ -95,7 +95,9 @@ public final class Extractor {
     return entityWithType.getType();
   }
 
-  public static OperatorInput extractOperator(Operable entityWithOperator) {
-    return entityWithOperator.getOperator();
+  public static Optional<OperatorInput> extractOperator(Operable entityWithOperator) {
+    return entityWithOperator.getOperator().getId().equalsIgnoreCase("NO_OPERATOR_ASSIGNED")
+        ? Optional.empty()
+        : Optional.of(entityWithOperator.getOperator());
   }
 }

@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.io.extractor
 
 import edu.ie3.datamodel.exceptions.ExtractorException
+import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.system.FixedFeedInInput
 import edu.ie3.test.common.GridTestData as gtd
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 import edu.ie3.test.common.ThermalUnitInputTestData as tutd
@@ -125,7 +127,8 @@ class ExtractorTest extends Specification {
 
 		gtd.nodeGraphicC           || [
 			gtd.nodeGraphicC.node,
-			gtd.nodeGraphicC.node.operator] as List
+			gtd.nodeGraphicC.node.operator
+		]
 
 		gtd.measurementUnitInput   || [
 			gtd.measurementUnitInput.node,
@@ -158,5 +161,17 @@ class ExtractorTest extends Specification {
 		ExtractorException ex = thrown()
 		ex.message == "Unable to extract entity of class 'InvalidNestedExtensionClass'. " +
 				"Does this class implements NestedEntity and one of its sub-interfaces correctly?"
+	}
+
+	def "An Extractor should not extract an operator that is marked as not assigned"() {
+		given:
+		def sampleFixedFeedInput = new FixedFeedInInput(UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a"), "test_fixedFeedInInput",
+				OperatorInput.NO_OPERATOR_ASSIGNED,
+				sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics,
+				sptd.fixedFeedInInput.sRated,sptd.fixedFeedInInput.cosphiRated)
+		expect:
+		Extractor.extractElements(sampleFixedFeedInput) as Set == [
+			sptd.fixedFeedInInput.node,
+			sptd.fixedFeedInInput.node.operator] as Set
 	}
 }

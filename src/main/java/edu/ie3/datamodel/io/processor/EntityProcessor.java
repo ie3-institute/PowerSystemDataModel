@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.system.StorageStrategy;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
@@ -263,7 +264,6 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "Transformer2WTypeInput":
       case "LineTypeInput":
       case "LineInput":
-      case "OperatorInput":
       case "WecTypeInput":
       case "ThermalBusInput":
       case "ThermalStorageInput":
@@ -273,6 +273,12 @@ public abstract class EntityProcessor<T extends UniqueEntity> {
       case "StorageTypeInput":
       case "HpTypeInput":
         resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
+        break;
+      case "OperatorInput":
+        resultStringBuilder.append(
+            ((OperatorInput) methodReturnObject).getId().equalsIgnoreCase("NO_OPERATOR_ASSIGNED")
+                ? ""
+                : ((OperatorInput) methodReturnObject).getUuid());
         break;
       case "EvCharacteristicInput":
       case "OlmCharacteristicInput":

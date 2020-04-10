@@ -29,7 +29,7 @@ class ThermalUnitInputTestData {
 	.withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31"))
 	.withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
 	private static final OperatorInput operator = new OperatorInput(
-	UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "SystemParticipantOperator")
+	UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator")
 
 
 	// thermal bus input
