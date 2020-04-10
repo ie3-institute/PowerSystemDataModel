@@ -68,9 +68,14 @@ public abstract class CsvDataSource {
       final String csvRow, final String[] headline) {
     // sometimes we have a json string as field value -> we need to consider this one as well
     final String addDoubleQuotesToGeoJsonRegex = "(\\{.*\\}\\}\\})";
+    final String addDoubleQuotesToCpJsonString = "((cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.*\\})";
     final String cswRowRegex = csvSep + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
     final String[] fieldVals =
-        Arrays.stream(csvRow.replaceAll(addDoubleQuotesToGeoJsonRegex, "\"$1\"").split(cswRowRegex))
+        Arrays.stream(
+                csvRow
+                    .replaceAll(addDoubleQuotesToGeoJsonRegex, "\"$1\"")
+                    .replaceAll(addDoubleQuotesToCpJsonString, "\"$1\"")
+                    .split(cswRowRegex))
             .map(string -> string.replaceAll("^\"|\"$", ""))
             .toArray(String[]::new);
 
