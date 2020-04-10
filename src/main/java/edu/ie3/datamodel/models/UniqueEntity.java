@@ -10,7 +10,7 @@ import java.util.UUID;
 
 /** Supplies every subclass with a generated UUID, making it unique */
 public abstract class UniqueEntity {
-  private final UUID uuid;
+  protected final UUID uuid;
 
   public UniqueEntity() {
     uuid = UUID.randomUUID();

@@ -6,8 +6,10 @@
 package edu.ie3.datamodel.io.factory.typeinput;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
@@ -55,6 +57,9 @@ public class SystemParticipantTypeInputFactory
   private static final String LIFETIME = "lifetime";
   private static final String LIFECYCLE = "lifecycle";
 
+  // WecTypeInput
+  private static final String CP_CHARACTERISTIC = "cpCharacteristic";
+
   public SystemParticipantTypeInputFactory() {
     super(
         EvTypeInput.class,
@@ -79,7 +84,7 @@ public class SystemParticipantTypeInputFactory
       constructorParameters = expandSet(standardConstructorParams, ACTIVE_POWER_GRADIENT, ETA_CONV);
     } else if (data.getEntityClass().equals(WecTypeInput.class)) {
       constructorParameters =
-          expandSet(standardConstructorParams, ETA_CONV, ROTOR_AREA, HUB_HEIGHT);
+          expandSet(standardConstructorParams, CP_CHARACTERISTIC, ETA_CONV, ROTOR_AREA, HUB_HEIGHT);
     } else if (data.getEntityClass().equals(ChpTypeInput.class)) { // into new file
       constructorParameters =
           expandSet(standardConstructorParams, ETA_EL, ETA_THERMAL, P_THERMAL, P_OWN);
@@ -186,7 +191,19 @@ public class SystemParticipantTypeInputFactory
 
     ComparableQuantity<Length> hubHeight = data.getQuantity(HUB_HEIGHT, StandardUnits.HUB_HEIGHT);
 
-    return new WecTypeInput(uuid, id, capEx, opEx, cosPhi, etaConv, sRated, rotorArea, hubHeight);
+    WecCharacteristicInput cpCharacteristic;
+    try {
+      cpCharacteristic = new WecCharacteristicInput(data.getField(CP_CHARACTERISTIC));
+    } catch (ParsingException e) {
+      throw new FactoryException(
+          "Cannot parse the following Betz characteristic: '"
+              + data.getField(CP_CHARACTERISTIC)
+              + "'",
+          e);
+    }
+
+    return new WecTypeInput(
+        uuid, id, capEx, opEx, cosPhi, cpCharacteristic, etaConv, sRated, rotorArea, hubHeight);
   }
 
   private SystemParticipantTypeInput buildChpTypeInput(

@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
@@ -50,7 +51,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
       OperatorInput operator,
       OperationTime operationTime,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
@@ -79,7 +80,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
       UUID uuid,
       String id,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       BmTypeInput type,
       boolean marketReaction,
       boolean costControlled,
