@@ -12,8 +12,7 @@ package edu.ie3.datamodel.exceptions;
  * @version 0.1
  * @since 19.03.20
  */
-public class SinkException
-    extends RuntimeException { // todo fix this and let it extend Exception instead of
+public class SinkException extends Exception {
   // RuntimeException
   public SinkException(final String message, final Throwable cause) {
     super(message, cause);

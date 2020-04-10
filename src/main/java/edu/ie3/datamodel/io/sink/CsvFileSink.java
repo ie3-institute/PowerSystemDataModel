@@ -108,19 +108,27 @@ public class CsvFileSink implements DataSink {
 
   @Override
   public <C extends UniqueEntity> void persistIgnoreNested(C entity) {
-    LinkedHashMap<String, String> entityFieldData =
-        processorProvider
-            .processEntity(entity)
-            .orElseThrow(
-                () ->
-                    new SinkException(
-                        "Cannot persist entity of type '"
-                            + entity.getClass().getSimpleName()
-                            + "'. This sink can only process the following entities: ["
-                            + processorProvider.getRegisteredClasses().stream()
-                                .map(Class::getSimpleName)
-                                .collect(Collectors.joining(","))
-                            + "]"));
+    LinkedHashMap<String, String> entityFieldData = null;
+    try {
+      entityFieldData =
+          processorProvider
+              .processEntity(entity)
+              .orElseThrow(
+                  () ->
+                      new SinkException(
+                          "Cannot persist entity of type '"
+                              + entity.getClass().getSimpleName()
+                              + "'. This sink can only process the following entities: ["
+                              + processorProvider.getRegisteredClasses().stream()
+                                  .map(Class::getSimpleName)
+                                  .collect(Collectors.joining(","))
+                              + "]"));
+    } catch (SinkException e) {
+      log.error(
+          "Cannot persist provided entity '{}'. Exception: {}",
+          entity.getClass().getSimpleName(),
+          e);
+    }
 
     String[] headerElements =
         processorProvider.getHeaderElements(entity.getClass()).orElse(new String[0]);
