@@ -129,7 +129,6 @@ public class ProcessorProvider {
 
     Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
 
-    // todo add missing processors here
     // Input Entity Processor
     for (Class<? extends InputEntity> cls : InputEntityProcessor.eligibleEntityClasses) {
       resultingProcessors.add(new InputEntityProcessor(cls));

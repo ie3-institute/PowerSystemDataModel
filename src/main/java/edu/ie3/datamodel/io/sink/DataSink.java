@@ -82,6 +82,10 @@ public interface DataSink {
    */
   <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities);
 
-  // todo
+  /**
+   * Should implement the entry point of a data sink to persist a whole {@link JointGridContainer}
+   *
+   * @param jointGridContainer the {@link JointGridContainer} that should be persisted
+   */
   void persistJointGrid(JointGridContainer jointGridContainer);
 }

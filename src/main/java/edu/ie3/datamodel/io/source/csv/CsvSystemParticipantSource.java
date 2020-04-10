@@ -81,7 +81,6 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   }
 
   @Override
-  // todo check for all duplciates!
   public Optional<SystemParticipants> getSystemParticipants() {
 
     // read all needed entities

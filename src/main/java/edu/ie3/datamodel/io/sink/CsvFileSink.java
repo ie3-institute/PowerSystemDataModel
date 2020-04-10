@@ -142,7 +142,6 @@ public class CsvFileSink implements DataSink {
   }
 
   @Override
-  // todo test
   public void persistJointGrid(JointGridContainer jointGridContainer) {
     // get raw grid entities with types or operators
     RawGridElements rawGridElements = jointGridContainer.getRawGrid();
@@ -212,8 +211,6 @@ public class CsvFileSink implements DataSink {
             .flatMap(Collection::stream)
             .map(Extractor::extractOperator)
             .collect(Collectors.toSet());
-
-    // todo JH extract thermal units
 
     // persist all entities
     Stream.of(
