@@ -11,7 +11,7 @@ import spock.lang.Specification
 
 class CsvFileConnectorTest extends Specification {
 
-	def "A CsvFileConnector should transformer given headline string arrays as expecte"() {
+	def "A CsvFileConnector should transformer given headline string arrays as expected"() {
 		given:
 		String[] headline = [
 			"inputModel",

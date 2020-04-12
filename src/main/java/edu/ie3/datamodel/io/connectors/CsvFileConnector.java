@@ -10,6 +10,7 @@ import static edu.ie3.util.io.FileIOUtils.CHARSET_UTF8;
 import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.util.StringUtils;
 import edu.ie3.util.io.FileIOUtils;
 import java.io.*;
 import java.util.*;
@@ -134,7 +135,7 @@ public class CsvFileConnector implements DataConnector {
   private String[] prepareHeader(final String[] headerElements) {
     // adds " to headline + transforms camel case to snake case
     return Arrays.stream(headerElements)
-        .map(headerElement -> "\"" + camelCaseToSnakeCase(headerElement).concat("\""))
+        .map(headerElement -> "\"" + StringUtils.camelCaseToSnakeCase(headerElement).concat("\""))
         .toArray(String[]::new);
   }
 
@@ -184,22 +185,5 @@ public class CsvFileConnector implements DataConnector {
     newReader = new BufferedReader(new FileReader(filePath), 16384);
 
     return newReader;
-  }
-
-  /**
-   * Converts a given camel case string to its snake case representation
-   *
-   * @param camelCaseString the camel case string
-   * @return the resulting snake case representation
-   */
-  private String camelCaseToSnakeCase(String camelCaseString) {
-    String regularCamelCaseRegex = "([a-z])([A-Z]+)";
-    String regularSnakeCaseReplacement = "$1_$2";
-    String specialCamelCaseRegex = "((?<!_)[A-Z]?)((?<!^)[A-Z]+)";
-    String specialSnakeCaseReplacement = "$1_$2";
-    return camelCaseString
-        .replaceAll(regularCamelCaseRegex, regularSnakeCaseReplacement)
-        .replaceAll(specialCamelCaseRegex, specialSnakeCaseReplacement)
-        .toLowerCase();
   }
 }
