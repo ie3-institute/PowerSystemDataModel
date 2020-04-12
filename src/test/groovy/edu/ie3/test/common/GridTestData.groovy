@@ -20,7 +20,7 @@ import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
-import edu.ie3.util.TimeTools
+import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.PowerSystemUnits
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
@@ -141,7 +141,7 @@ class GridTestData {
 
 	public static final NodeInput nodeA = new NodeInput(
 	UUID.fromString("4ca90220-74c2-4369-9afa-a18bf068840d"), "node_a", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
+	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
 	,
 	Quantities.getQuantity(1d, PU),
 	true,
@@ -263,7 +263,7 @@ class GridTestData {
 	)
 	public static final Transformer2WInput transformerCtoG = new Transformer2WInput(
 	UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"), "2w_parallel_2", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
+	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
 	,
 	nodeC,
 	nodeG,
@@ -275,7 +275,7 @@ class GridTestData {
 
 	public static Transformer3WInput transformerAtoBtoC = new Transformer3WInput(
 	UUID.fromString("cc327469-7d56-472b-a0df-edbb64f90e8f"), "3w_test", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
+	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
 	,
 	nodeA,
 	nodeB,
@@ -289,7 +289,7 @@ class GridTestData {
 
 	public static final SwitchInput switchAtoB = new SwitchInput(
 	UUID.fromString("5dc88077-aeb6-4711-9142-db57287640b1"), "test_switch_AtoB", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
+	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
 	,
 	nodeA,
 	nodeB,
@@ -310,7 +310,7 @@ class GridTestData {
 
 	public static final LineInput lineCtoD = new LineInput(
 	UUID.fromString("91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"), "test_line_AtoB", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build(),
+	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
 	nodeC, nodeD,
 	2,
 	lineTypeInputCtoD,
@@ -327,7 +327,7 @@ class GridTestData {
 
 	public static final MeasurementUnitInput measurementUnitInput = new MeasurementUnitInput(
 	UUID.fromString("ce6119e3-f725-4166-b6e0-59f62e0c293d"), "test_measurementUnit", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	OperationTime.builder().withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
+	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
 	,
 	nodeG,
 	true,

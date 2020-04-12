@@ -57,10 +57,11 @@ public abstract class CsvDataSource {
   /**
    * Takes a row string of a .csv file and a string array of the csv file headline, tries to split
    * the csv row string based and zip it together with the headline. This method does not contain
-   * any sanity checks. Order of the headline needs to be the same as the fields in the csv row
+   * any sanity checks. Order of the headline needs to be the same as the fields in the csv row. If
+   * the zipping fails, an empty map is returned and the error is logged.
    *
    * @param csvRow the csv row string that contains the data
-   * @param headline the headline of the csv file
+   * @param headline the headline fields of the csv file
    * @return a map containing the mapping of (fieldName -> fieldValue) or an empty map if an error
    *     occurred
    */
@@ -121,6 +122,7 @@ public abstract class CsvDataSource {
             });
   }
 
+  // todo remove when powerSystemUtils/jh/#24-add-snake-case-to-camel-case-to-string-utils is merged into master
   private String snakeCaseToCamelCase(String snakeCaseString) {
     StringBuilder sb = new StringBuilder();
     for (String s : snakeCaseString.split("_")) {
