@@ -33,108 +33,108 @@ class ExtractorTest extends Specification {
 		where:
 		nestedEntity               || expectedExtractedEntities
 		gtd.lineCtoD               || [
-				gtd.lineCtoD.nodeA,
-				gtd.lineCtoD.nodeB,
-				gtd.lineCtoD.type,
-				gtd.lineCtoD.operator,
+			gtd.lineCtoD.nodeA,
+			gtd.lineCtoD.nodeB,
+			gtd.lineCtoD.type,
+			gtd.lineCtoD.operator,
 		]
 		gtd.transformerAtoBtoC     || [
-				gtd.transformerAtoBtoC.nodeA,
-				gtd.transformerAtoBtoC.nodeB,
-				gtd.transformerAtoBtoC.nodeC,
-				gtd.transformerAtoBtoC.type,
-				gtd.transformerAtoBtoC.operator,
-				gtd.transformerAtoBtoC.nodeA.operator,
+			gtd.transformerAtoBtoC.nodeA,
+			gtd.transformerAtoBtoC.nodeB,
+			gtd.transformerAtoBtoC.nodeC,
+			gtd.transformerAtoBtoC.type,
+			gtd.transformerAtoBtoC.operator,
+			gtd.transformerAtoBtoC.nodeA.operator,
 		]
 		gtd.transformerCtoG        || [
-				gtd.transformerCtoG.nodeA,
-				gtd.transformerCtoG.nodeB,
-				gtd.transformerCtoG.type,
-				gtd.transformerCtoG.operator,
+			gtd.transformerCtoG.nodeA,
+			gtd.transformerCtoG.nodeB,
+			gtd.transformerCtoG.type,
+			gtd.transformerCtoG.operator,
 		]
 		gtd.switchAtoB             || [
-				gtd.switchAtoB.nodeA,
-				gtd.switchAtoB.nodeB,
-				gtd.switchAtoB.nodeA.operator,
-				gtd.switchAtoB.operator
+			gtd.switchAtoB.nodeA,
+			gtd.switchAtoB.nodeB,
+			gtd.switchAtoB.nodeA.operator,
+			gtd.switchAtoB.operator
 		]
 		sptd.fixedFeedInInput      || [
-				sptd.fixedFeedInInput.node,
-				sptd.fixedFeedInInput.operator,
-				sptd.fixedFeedInInput.node.operator
+			sptd.fixedFeedInInput.node,
+			sptd.fixedFeedInInput.operator,
+			sptd.fixedFeedInInput.node.operator
 		]
 		sptd.wecInput              || [
-				sptd.wecInput.node,
-				sptd.wecInput.type,
-				sptd.wecInput.operator,
-				sptd.wecInput.node.operator
+			sptd.wecInput.node,
+			sptd.wecInput.type,
+			sptd.wecInput.operator,
+			sptd.wecInput.node.operator
 		]
 		sptd.chpInput              || [
-				sptd.chpInput.node,
-				sptd.chpInput.type,
-				sptd.chpInput.thermalBus,
-				sptd.chpInput.thermalStorage,
-				sptd.chpInput.thermalStorage.thermalBus,
-				sptd.chpInput.thermalStorage.thermalBus.operator
+			sptd.chpInput.node,
+			sptd.chpInput.type,
+			sptd.chpInput.thermalBus,
+			sptd.chpInput.thermalStorage,
+			sptd.chpInput.thermalStorage.thermalBus,
+			sptd.chpInput.thermalStorage.thermalBus.operator
 		]
 		sptd.bmInput               || [
-				sptd.bmInput.node,
-				sptd.bmInput.type,
-				sptd.bmInput.operator,
-				sptd.bmInput.node.operator
+			sptd.bmInput.node,
+			sptd.bmInput.type,
+			sptd.bmInput.operator,
+			sptd.bmInput.node.operator
 		]
 		sptd.evInput               || [
-				sptd.evInput.node,
-				sptd.evInput.type,
-				sptd.evInput.operator,
-				sptd.evInput.node.operator
+			sptd.evInput.node,
+			sptd.evInput.type,
+			sptd.evInput.operator,
+			sptd.evInput.node.operator
 		]
 		sptd.storageInput          || [
-				sptd.storageInput.node,
-				sptd.storageInput.type,
-				sptd.storageInput.operator,
-				sptd.storageInput.node.operator
+			sptd.storageInput.node,
+			sptd.storageInput.type,
+			sptd.storageInput.operator,
+			sptd.storageInput.node.operator
 		]
 		sptd.hpInput               || [
-				sptd.hpInput.node,
-				sptd.hpInput.type,
-				sptd.hpInput.operator,
-				sptd.hpInput.thermalBus,
-				sptd.hpInput.thermalBus.operator,
-				sptd.hpInput.node.operator
+			sptd.hpInput.node,
+			sptd.hpInput.type,
+			sptd.hpInput.operator,
+			sptd.hpInput.thermalBus,
+			sptd.hpInput.thermalBus.operator,
+			sptd.hpInput.node.operator
 		]
 
 		gtd.lineGraphicCtoD        || [
-				gtd.lineGraphicCtoD.line,
-				gtd.lineGraphicCtoD.line.nodeB,
-				gtd.lineGraphicCtoD.line.nodeA,
-				gtd.lineGraphicCtoD.line.type,
-				gtd.lineGraphicCtoD.line.operator,
+			gtd.lineGraphicCtoD.line,
+			gtd.lineGraphicCtoD.line.nodeB,
+			gtd.lineGraphicCtoD.line.nodeA,
+			gtd.lineGraphicCtoD.line.type,
+			gtd.lineGraphicCtoD.line.operator,
 		]
 
 		gtd.nodeGraphicC           || [
-				gtd.nodeGraphicC.node,
+			gtd.nodeGraphicC.node,
 		]
 
 		gtd.measurementUnitInput   || [
-				gtd.measurementUnitInput.node,
-				gtd.measurementUnitInput.operator,
+			gtd.measurementUnitInput.node,
+			gtd.measurementUnitInput.operator,
 		]
 
 		tutd.thermalBusInput       || [
-				tutd.thermalBusInput.operator
+			tutd.thermalBusInput.operator
 		]
 
 		tutd.cylindricStorageInput || [
-				tutd.cylindricStorageInput.operator,
-				tutd.cylindricStorageInput.thermalBus,
-				tutd.cylindricStorageInput.thermalBus.operator
+			tutd.cylindricStorageInput.operator,
+			tutd.cylindricStorageInput.thermalBus,
+			tutd.cylindricStorageInput.thermalBus.operator
 		]
 
 		tutd.thermalHouseInput     || [
-				tutd.thermalHouseInput.operator,
-				tutd.thermalHouseInput.thermalBus,
-				tutd.thermalHouseInput.thermalBus.operator
+			tutd.thermalHouseInput.operator,
+			tutd.thermalHouseInput.thermalBus,
+			tutd.thermalHouseInput.thermalBus.operator
 		]
 	}
 
@@ -166,7 +166,5 @@ class ExtractorTest extends Specification {
 
 		expect:
 		Extractor.extractElements(sampleNodeInput) == []
-
 	}
-
 }
