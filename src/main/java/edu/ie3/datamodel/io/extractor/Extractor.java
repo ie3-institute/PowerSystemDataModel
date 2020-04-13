@@ -36,21 +36,18 @@ public final class Extractor {
     if (nestedEntity instanceof HasNodes) {
       resultingList.addAll(((HasNodes) nestedEntity).allNodes());
     }
-    if (nestedEntity instanceof HasType) {
-      resultingList.add(extractType((HasType) nestedEntity));
-    }
     if (nestedEntity instanceof Operable) {
       extractOperator((Operable) nestedEntity).ifPresent(resultingList::add);
     }
-
+    if (nestedEntity instanceof HasType) {
+      resultingList.add(extractType((HasType) nestedEntity));
+    }
     if (nestedEntity instanceof HasThermalBus) {
       resultingList.add(((HasThermalBus) nestedEntity).getThermalBus());
     }
-
     if (nestedEntity instanceof HasThermalStorage) {
       resultingList.add(((HasThermalStorage) nestedEntity).getThermalStorage());
     }
-
     if (nestedEntity instanceof HasLine) {
       resultingList.add(((HasLine) nestedEntity).getLine());
     }
@@ -61,7 +58,7 @@ public final class Extractor {
           nestedEntity.getClass().getSimpleName());
     }
 
-    if (resultingList.isEmpty()) {
+    if (resultingList.isEmpty() && !(nestedEntity instanceof Operable)) {
       throw new ExtractorException(
           "Unable to extract entity of class '"
               + nestedEntity.getClass().getSimpleName()
