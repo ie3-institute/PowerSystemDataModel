@@ -12,9 +12,11 @@ import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 /**
- * //ToDo: Class Description
+ * Interface that provides the capability to build entities of type {@link edu.ie3.datamodel.models.input.graphics.GraphicInput}
+ * from different data sources e.g. .csv files or databases
  *
  * @version 0.1
  * @since 08.04.20
@@ -25,9 +27,9 @@ public interface GraphicSource extends DataSource {
 
   Collection<NodeGraphicInput> getNodeGraphicInput();
 
-  Collection<NodeGraphicInput> getNodeGraphicInput(Collection<NodeInput> nodes);
+  Collection<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes);
 
   Collection<LineGraphicInput> getLineGraphicInput();
 
-  Collection<LineGraphicInput> getLineGraphicInput(Collection<LineInput> lines);
+  Collection<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines);
 }

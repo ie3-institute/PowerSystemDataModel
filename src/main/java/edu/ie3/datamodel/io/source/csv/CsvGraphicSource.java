@@ -22,6 +22,7 @@ import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,7 +31,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * //ToDo: Class Description
+ * Implementation of the {@link GraphicSource} interface to read {@link NodeGraphicInput} and {@link
+ * LineGraphicInput} entities from .csv files
  *
  * @version 0.1
  * @since 08.04.20
@@ -73,26 +75,26 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
     // start with the entities needed for a GraphicElements entity
     /// as we want to return a working grid, keep an eye on empty optionals
-    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> invalidElementsCounter =
+    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities =
         new ConcurrentHashMap<>();
 
     Set<NodeGraphicInput> nodeGraphics =
         buildNodeGraphicEntityData(nodes)
             .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::getEntity))
-            .filter(isPresentCollectIfNot(NodeGraphicInput.class, invalidElementsCounter))
+            .filter(isPresentCollectIfNot(NodeGraphicInput.class, nonBuildEntities))
             .map(Optional::get)
             .collect(Collectors.toSet());
 
     Set<LineGraphicInput> lineGraphics =
         buildLineGraphicEntityData(lines)
             .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::getEntity))
-            .filter(isPresentCollectIfNot(LineGraphicInput.class, invalidElementsCounter))
+            .filter(isPresentCollectIfNot(LineGraphicInput.class, nonBuildEntities))
             .map(Optional::get)
             .collect(Collectors.toSet());
 
     // if we found invalid elements return an empty optional and log the problems
-    if (!invalidElementsCounter.isEmpty()) {
-      invalidElementsCounter.forEach(this::printInvalidElementInformation);
+    if (!nonBuildEntities.isEmpty()) {
+      nonBuildEntities.forEach(this::printInvalidElementInformation);
       return Optional.empty();
     }
 
@@ -106,7 +108,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
   }
 
   @Override
-  public Collection<NodeGraphicInput> getNodeGraphicInput(Collection<NodeInput> nodes) {
+  public Collection<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) {
     return filterEmptyOptionals(
             buildNodeGraphicEntityData(nodes)
                 .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::getEntity)))
@@ -122,7 +124,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
   }
 
   @Override
-  public Collection<LineGraphicInput> getLineGraphicInput(Collection<LineInput> lines) {
+  public Collection<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) {
 
     return filterEmptyOptionals(
             buildLineGraphicEntityData(lines)
@@ -130,61 +132,93 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
         .collect(Collectors.toSet());
   }
 
+  /**
+   * Builds a stream of {@link NodeGraphicInputEntityData} instances that can be consumed by a
+   * {@link NodeGraphicInputFactory} to build instances of {@link NodeGraphicInput} entities. This
+   * method depends on corresponding instances of {@link NodeInput} entities that are represented by
+   * a corresponding {@link NodeGraphicInput} entity. The determination of matching {@link
+   * NodeInput} and {@link NodeGraphicInput} entities is carried out by the UUID of the {@link
+   * NodeInput} entity. Hence it is crucial to only pass over collections that are pre-checked for
+   * the uniqueness of the UUIDs of the nodes they contain. No further sanity checks are included in
+   * this method. If no UUID of a {@link NodeInput} entity can be found for a {@link
+   * NodeGraphicInputEntityData} instance, an empty optional is included in the stream and warning
+   * is logged.
+   *
+   * @param nodes a set of nodes with unique uuids
+   * @return a stream of optional {@link NodeGraphicInput} entities
+   */
   private Stream<Optional<NodeGraphicInputEntityData>> buildNodeGraphicEntityData(
-      Collection<NodeInput> nodes) {
-
+      Set<NodeInput> nodes) {
     return buildStreamWithFieldsToAttributesMap(NodeGraphicInput.class, connector)
-        .map(
-            fieldsToAttributes -> {
-
-              // get the node of the entity
-              String nodeUuid = fieldsToAttributes.get(NODE);
-              Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
-
-              // if the node is not present we return an empty element and
-              // log a warning
-              if (!node.isPresent()) {
-                logSkippingWarning(
-                    NodeGraphicInput.class.getSimpleName(),
-                    fieldsToAttributes.get("uuid"),
-                    "no id (graphic entities don't have one)",
-                    NODE + ": " + nodeUuid);
-                return Optional.empty();
-              }
-
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().remove(NODE);
-
-              return Optional.of(new NodeGraphicInputEntityData(fieldsToAttributes, node.get()));
-            });
+        .map(fieldsToAttributes -> buildNodeGraphicEntityData(fieldsToAttributes, nodes));
   }
 
+  private Optional<NodeGraphicInputEntityData> buildNodeGraphicEntityData(
+      Map<String, String> fieldsToAttributes, Set<NodeInput> nodes) {
+
+    // get the node of the entity
+    String nodeUuid = fieldsToAttributes.get(NODE);
+    Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
+
+    // if the node is not present we return an empty element and
+    // log a warning
+    if (!node.isPresent()) {
+      logSkippingWarning(
+          NodeGraphicInput.class.getSimpleName(),
+          fieldsToAttributes.get("uuid"),
+          "no id (graphic entities don't have one)",
+          NODE + ": " + nodeUuid);
+      return Optional.empty();
+    }
+
+    // remove fields that are passed as objects to constructor
+    fieldsToAttributes.keySet().remove(NODE);
+
+    return Optional.of(new NodeGraphicInputEntityData(fieldsToAttributes, node.get()));
+  }
+
+  /**
+   * Builds a stream of {@link LineGraphicInputEntityData} instances that can be consumed by a
+   * {@link LineGraphicInputFactory} to build instances of {@link LineGraphicInput} entities. This
+   * method depends on corresponding instances of {@link LineInput} entities that are represented by
+   * a corresponding {@link LineGraphicInput} entity. The determination of matching {@link
+   * LineInput} and {@link LineGraphicInput} entities is carried out by the UUID of the {@link
+   * LineInput} entity. Hence it is crucial to only pass over collections that are pre-checked for
+   * the uniqueness of the UUIDs of the nodes they contain. No further sanity checks are included in
+   * this method. If no UUID of a {@link LineInput} entity can be found for a {@link
+   * LineGraphicInputEntityData} instance, an empty optional is included in the stream and warning
+   * is logged.
+   *
+   * @param lines a set of lines with unique uuids
+   * @return a stream of optional {@link LineGraphicInput} entities
+   */
   private Stream<Optional<LineGraphicInputEntityData>> buildLineGraphicEntityData(
-      Collection<LineInput> lines) {
-
+      Set<LineInput> lines) {
     return buildStreamWithFieldsToAttributesMap(LineGraphicInput.class, connector)
-        .map(
-            fieldsToAttributes -> {
+        .map(fieldsToAttributes -> buildLineGraphicEntityData(fieldsToAttributes, lines));
+  }
 
-              // get the node of the entity
-              String lineUuid = fieldsToAttributes.get("line");
-              Optional<LineInput> line = findFirstEntityByUuid(lineUuid, lines);
+  private Optional<LineGraphicInputEntityData> buildLineGraphicEntityData(
+      Map<String, String> fieldsToAttributes, Set<LineInput> lines) {
 
-              // if the node is not present we return an empty element and
-              // log a warning
-              if (!line.isPresent()) {
-                logSkippingWarning(
-                    LineGraphicInput.class.getSimpleName(),
-                    fieldsToAttributes.get("uuid"),
-                    "no id (graphic entities don't have one)",
-                    "line: " + lineUuid);
-                return Optional.empty();
-              }
+    // get the node of the entity
+    String lineUuid = fieldsToAttributes.get("line");
+    Optional<LineInput> line = findFirstEntityByUuid(lineUuid, lines);
 
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().remove("line");
+    // if the node is not present we return an empty element and
+    // log a warning
+    if (!line.isPresent()) {
+      logSkippingWarning(
+          LineGraphicInput.class.getSimpleName(),
+          fieldsToAttributes.get("uuid"),
+          "no id (graphic entities don't have one)",
+          "line: " + lineUuid);
+      return Optional.empty();
+    }
 
-              return Optional.of(new LineGraphicInputEntityData(fieldsToAttributes, line.get()));
-            });
+    // remove fields that are passed as objects to constructor
+    fieldsToAttributes.keySet().remove("line");
+
+    return Optional.of(new LineGraphicInputEntityData(fieldsToAttributes, line.get()));
   }
 }

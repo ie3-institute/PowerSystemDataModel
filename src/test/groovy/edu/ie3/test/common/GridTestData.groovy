@@ -325,6 +325,17 @@ class GridTestData {
 	lineCtoD
 	)
 
+	public static final LineInput lineAtoB = new LineInput(
+	UUID.fromString("92ec3bcf-1777-4d38-af67-0bf7c9fa73c7"), "test_line_AtoB", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
+	nodeA, nodeB,
+	2,
+	lineTypeInputCtoD,
+	Quantities.getQuantity(3, Units.METRE),
+	geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}") as LineString,
+	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
+	)
+
 	public static final MeasurementUnitInput measurementUnitInput = new MeasurementUnitInput(
 	UUID.fromString("ce6119e3-f725-4166-b6e0-59f62e0c293d"), "test_measurementUnit", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
 	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
