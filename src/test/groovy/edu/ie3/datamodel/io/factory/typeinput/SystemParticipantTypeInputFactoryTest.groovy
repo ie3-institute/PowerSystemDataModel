@@ -299,7 +299,19 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
 		then:
 		FactoryException ex = thrown()
-		ex.message == "The provided fields [capex, cosphirated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data {capex -> 3,cosphirated -> 6,dod -> 10,estorage -> 6,eta -> 9,id -> blablub,lifetime -> 11,opex -> 4,pmax -> 8,pmin -> 7,srated -> 5,uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
+		ex.message == "The provided fields [capex, cosphirated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data \n" +
+				"{capex -> 3,\n" +
+				"cosphirated -> 6,\n" +
+				"dod -> 10,\n" +
+				"estorage -> 6,\n" +
+				"eta -> 9,\n" +
+				"id -> blablub,\n" +
+				"lifetime -> 11,\n" +
+				"opex -> 4,\n" +
+				"pmax -> 8,\n" +
+				"pmin -> 7,\n" +
+				"srated -> 5,\n" +
+				"uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
 				"The following fields to be passed to a constructor of 'StorageTypeInput' are possible (NOT case-sensitive!):\n" +
 				"0: [activepowergradient, capex, cosphirated, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, srated, uuid]\n"
 	}

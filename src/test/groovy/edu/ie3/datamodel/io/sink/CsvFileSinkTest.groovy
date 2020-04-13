@@ -30,6 +30,7 @@ import edu.ie3.test.common.ThermalUnitInputTestData
 import edu.ie3.util.TimeTools
 import edu.ie3.util.io.FileIOUtils
 import jdk.internal.util.xml.impl.Input
+import org.junit.Ignore
 import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
@@ -136,30 +137,6 @@ class CsvFileSinkTest extends Specification {
 		new File(testBaseFolderPath + File.separator + "thermal_house_input.csv").exists()
 
 		!new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
-	}
-
-	def "A valid CsvFileSink should throw an exception if the provided entity cannot be handled"() {
-		given:
-		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-				new ProcessorProvider([
-					new ResultEntityProcessor(PvResult)
-				]),
-				new FileNamingStrategy(),
-				false,
-				",")
-
-		UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-		UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-		Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
-		Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-		WecResult wecResult = new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-
-		when:
-		csvFileSink.persist(wecResult)
-		csvFileSink.shutdown()
-
-		then:
-		thrown(SinkException)
 	}
 
 }

@@ -89,7 +89,11 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 
 		then:
 		FactoryException ex = thrown()
-		ex.message == "The provided fields [cosphirated, id, srated, uuid] with data {cosphirated -> 4,id -> TestID,srated -> 3,uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of FixedFeedInInput. \n" +
+		ex.message == "The provided fields [cosphirated, id, srated, uuid] with data \n" +
+				"{cosphirated -> 4,\n" +
+				"id -> TestID,\n" +
+				"srated -> 3,\n" +
+				"uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of FixedFeedInInput. \n" +
 				"The following fields to be passed to a constructor of 'FixedFeedInInput' are possible (NOT case-sensitive!):\n" +
 				"0: [cosphirated, id, qcharacteristics, srated, uuid]\n" +
 				"1: [cosphirated, id, operatesfrom, qcharacteristics, srated, uuid]\n" +
