@@ -77,7 +77,7 @@ public abstract class CsvDataSource {
                 csvRow
                     .replaceAll(addDoubleQuotesToGeoJsonRegex, "\"$1\"")
                     .replaceAll(addDoubleQuotesToCpJsonString, "\"$1\"")
-                    .split(cswRowRegex))
+                    .split(cswRowRegex, -1))
             .map(string -> string.replaceAll("^\"|\"$", "").replaceAll("\n|\\s+", ""))
             .toArray(String[]::new);
 
@@ -258,9 +258,10 @@ public abstract class CsvDataSource {
    * Returns a collection of maps each representing a row in csv file that can be used to built an
    * instance of a {@link UniqueEntity}. The uniqueness of each row is doubled checked by a) that no
    * duplicated rows are returned that are full (1:1) matches and b) that no rows are returned that
-   * have the same UUID but different field values. As the later case (b) is destroying the contract of
-   * UUIDs an empty set is returned to indicate that these data cannot be processed safely and the error is
-   * logged. For case a), only the duplicates are filtered out an a set with unique rows is returned.
+   * have the same UUID but different field values. As the later case (b) is destroying the contract
+   * of UUIDs an empty set is returned to indicate that these data cannot be processed safely and
+   * the error is logged. For case a), only the duplicates are filtered out an a set with unique
+   * rows is returned.
    *
    * @param entityClass the entity class that should be built based on the provided (fieldName ->
    *     fieldValue) collection
@@ -289,7 +290,8 @@ public abstract class CsvDataSource {
             .collect(Collectors.toSet());
     if (distinctUuidRowSet.size() != allRowsSet.size()) {
       allRowsSet.removeAll(distinctUuidRowSet);
-      String affectedUuids = allRowsSet.stream().map(row -> row.get("uuid")).collect(Collectors.joining(",\n"));
+      String affectedUuids =
+          allRowsSet.stream().map(row -> row.get("uuid")).collect(Collectors.joining(",\n"));
       log.error(
           "'{}' entities with duplicated UUIDs, but different field values found! Please review the corresponding input file!\nAffected UUIDs:\n{}",
           entityClass.getSimpleName(),
