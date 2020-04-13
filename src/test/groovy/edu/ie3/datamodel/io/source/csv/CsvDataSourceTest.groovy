@@ -179,7 +179,7 @@ class CsvDataSourceTest extends Specification {
 
         then:
         distinctRows.size() == distinctSize
-        distinctRows[0] == firstElement
+        distinctRows.first() == firstElement
 
         where:
         noOfEntities || distinctSize || firstElement
