@@ -14,8 +14,4 @@ package edu.ie3.datamodel.io.extractor;
  * @version 0.1
  * @since 31.03.20
  */
-public interface NestedEntity {
-
-  Extractable extractable(); // intentionally prevents the extension of this interface, because
-  // Extractable() has only package access
-}
+public interface NestedEntity {}

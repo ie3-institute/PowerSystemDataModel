@@ -19,6 +19,8 @@ import java.time.ZoneId
 
 class ExtractorTest extends Specification {
 
+	private final class InvalidNestedExtensionClass implements NestedEntity {}
+
 	static {
 		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 	}
@@ -35,6 +37,8 @@ class ExtractorTest extends Specification {
 			gtd.lineCtoD.nodeB,
 			gtd.lineCtoD.type,
 			gtd.lineCtoD.operator,
+			gtd.lineCtoD.nodeA.operator,
+			gtd.lineCtoD.nodeB.operator,
 		]
 		gtd.transformerAtoBtoC     || [
 			gtd.transformerAtoBtoC.nodeA,
@@ -42,18 +46,23 @@ class ExtractorTest extends Specification {
 			gtd.transformerAtoBtoC.nodeC,
 			gtd.transformerAtoBtoC.type,
 			gtd.transformerAtoBtoC.operator,
+			gtd.transformerAtoBtoC.nodeC.operator,
 			gtd.transformerAtoBtoC.nodeA.operator,
+			gtd.transformerAtoBtoC.nodeB.operator
 		]
 		gtd.transformerCtoG        || [
 			gtd.transformerCtoG.nodeA,
 			gtd.transformerCtoG.nodeB,
 			gtd.transformerCtoG.type,
 			gtd.transformerCtoG.operator,
+			gtd.transformerCtoG.nodeB.operator,
+			gtd.transformerCtoG.nodeA.operator
 		]
 		gtd.switchAtoB             || [
 			gtd.switchAtoB.nodeA,
 			gtd.switchAtoB.nodeB,
 			gtd.switchAtoB.nodeA.operator,
+			gtd.switchAtoB.nodeB.operator,
 			gtd.switchAtoB.operator
 		]
 		sptd.fixedFeedInInput      || [
@@ -70,8 +79,12 @@ class ExtractorTest extends Specification {
 		sptd.chpInput              || [
 			sptd.chpInput.node,
 			sptd.chpInput.type,
+			sptd.chpInput.operator,
 			sptd.chpInput.thermalBus,
 			sptd.chpInput.thermalStorage,
+			sptd.chpInput.thermalBus.operator,
+			sptd.chpInput.node.operator,
+			sptd.chpInput.thermalStorage.operator,
 			sptd.chpInput.thermalStorage.thermalBus,
 			sptd.chpInput.thermalStorage.thermalBus.operator
 		]
@@ -104,19 +117,23 @@ class ExtractorTest extends Specification {
 
 		gtd.lineGraphicCtoD        || [
 			gtd.lineGraphicCtoD.line,
-			gtd.lineGraphicCtoD.line.nodeB,
 			gtd.lineGraphicCtoD.line.nodeA,
+			gtd.lineGraphicCtoD.line.nodeB,
 			gtd.lineGraphicCtoD.line.type,
 			gtd.lineGraphicCtoD.line.operator,
+			gtd.lineGraphicCtoD.line.nodeA.operator,
+			gtd.lineGraphicCtoD.line.nodeB.operator
 		]
 
 		gtd.nodeGraphicC           || [
 			gtd.nodeGraphicC.node,
+			gtd.nodeGraphicC.node.operator
 		]
 
 		gtd.measurementUnitInput   || [
 			gtd.measurementUnitInput.node,
 			gtd.measurementUnitInput.operator,
+			gtd.measurementUnitInput.node.operator
 		]
 
 		tutd.thermalBusInput       || [
@@ -136,12 +153,22 @@ class ExtractorTest extends Specification {
 		]
 	}
 
+	def "An Extractor should throw an ExtractorException if the provided Nested entity is unknown and or an invalid extension of the 'Nested' interface took place"() {
+		when:
+		Extractor.extractElements(new InvalidNestedExtensionClass())
+
+		then:
+		ExtractorException ex = thrown()
+		ex.message == "Unable to extract entity of class 'InvalidNestedExtensionClass'. " +
+				"Does this class implements NestedEntity and one of its sub-interfaces correctly?"
+	}
+
 	def "An Extractor should not extract an operator that is marked as not assigned"() {
 		given:
 		def sampleFixedFeedInput = new FixedFeedInInput(UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a"), "test_fixedFeedInInput",
 				OperatorInput.NO_OPERATOR_ASSIGNED,
 				sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics,
-				sptd.fixedFeedInInput.sRated, sptd.fixedFeedInInput.cosphiRated)
+				sptd.fixedFeedInInput.sRated,sptd.fixedFeedInInput.cosphiRated)
 		expect:
 		Extractor.extractElements(sampleFixedFeedInput) as Set == [
 			sptd.fixedFeedInInput.node,
