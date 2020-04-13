@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
@@ -36,7 +37,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class CsvDataSource {
 
-  private static final Logger log = LogManager.getLogger(CsvDataSource.class);
+  protected static final Logger log = LogManager.getLogger(CsvDataSource.class);
 
   // general fields
   private final String csvSep;
@@ -58,7 +59,7 @@ public abstract class CsvDataSource {
    * Takes a row string of a .csv file and a string array of the csv file headline, tries to split
    * the csv row string based and zip it together with the headline. This method does not contain
    * any sanity checks. Order of the headline needs to be the same as the fields in the csv row. If
-   * the zipping fails, an empty map is returned and the error is logged.
+   * the zipping fails, an empty map is returned and the causing error is logged.
    *
    * @param csvRow the csv row string that contains the data
    * @param headline the headline fields of the csv file
@@ -69,7 +70,7 @@ public abstract class CsvDataSource {
       final String csvRow, final String[] headline) {
     // sometimes we have a json string as field value -> we need to consider this one as well
     final String addDoubleQuotesToGeoJsonRegex = "(\\{.*\\}\\}\\})";
-    final String addDoubleQuotesToCpJsonString = "((cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.*\\})";
+    final String addDoubleQuotesToCpJsonString = "((cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.+?\\})";
     final String cswRowRegex = csvSep + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
     final String[] fieldVals =
         Arrays.stream(
@@ -77,7 +78,7 @@ public abstract class CsvDataSource {
                     .replaceAll(addDoubleQuotesToGeoJsonRegex, "\"$1\"")
                     .replaceAll(addDoubleQuotesToCpJsonString, "\"$1\"")
                     .split(cswRowRegex))
-            .map(string -> string.replaceAll("^\"|\"$", ""))
+            .map(string -> string.replaceAll("^\"|\"$", "").replaceAll("\n|\\s+", ""))
             .toArray(String[]::new);
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
@@ -88,10 +89,25 @@ public abstract class CsvDataSource {
               .boxed()
               .collect(
                   Collectors.toMap(k -> snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
+
+      if (insensitiveFieldsToAttributes.size() != headline.length) {
+        Set<String> fieldsToAttributesKeySet = insensitiveFieldsToAttributes.keySet();
+        insensitiveFieldsToAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        throw new SourceException(
+            "The size of the headline does not fit to the size of the resulting fields to attributes mapping.\nHeadline: "
+                + String.join(", ", headline)
+                + "\nResultingMap: "
+                + String.join(", ", fieldsToAttributesKeySet)
+                + "\nCsvRow: "
+                + csvRow.trim()
+                + ".\nIs the csv separator in the file matching the separator provided in the constructor ('"
+                + csvSep
+                + "') and does the number of columns match the number of headline fields?");
+      }
     } catch (Exception e) {
       log.error(
-          "Cannot build fields to attributes map for row '{}' with headline '{}'. Exception: {}",
-          csvRow,
+          "Cannot build fields to attributes map for row '{}' with headline '{}'.\nException: {}",
+          csvRow.trim(),
           String.join(",", headline),
           e);
     }
@@ -109,10 +125,7 @@ public abstract class CsvDataSource {
    */
   private OperatorInput getFirstOrDefaultOperator(
       Collection<OperatorInput> operators, String operatorUuid) {
-    return operators.stream()
-        .parallel()
-        .filter(operator -> operator.getUuid().toString().equalsIgnoreCase(operatorUuid))
-        .findFirst()
+    return findFirstEntityByUuid(operatorUuid, operators)
         .orElseGet(
             () -> {
               log.debug(
@@ -122,13 +135,14 @@ public abstract class CsvDataSource {
             });
   }
 
-  // todo remove when powerSystemUtils/jh/#24-add-snake-case-to-camel-case-to-string-utils is merged into master
+  // todo remove when powerSystemUtils/jh/#24-add-snake-case-to-camel-case-to-string-utils is merged
+  // into master
   private String snakeCaseToCamelCase(String snakeCaseString) {
-    StringBuilder sb = new StringBuilder();
-    for (String s : snakeCaseString.split("_")) {
-      sb.append(Character.toUpperCase(s.charAt(0)));
-      if (s.length() > 1) {
-        sb.append(s.substring(1).toLowerCase());
+    StringBuilder sb = new StringBuilder(snakeCaseString);
+    for (int i = 0; i < sb.length(); i++) {
+      if (sb.charAt(i) == '_') {
+        sb.deleteCharAt(i);
+        sb.replace(i, i + 1, String.valueOf(Character.toUpperCase(sb.charAt(i))));
       }
     }
     return sb.toString();
@@ -136,7 +150,8 @@ public abstract class CsvDataSource {
 
   /**
    * Returns a predicate that can be used to filter optionals of {@link UniqueEntity}s and keep
-   * track on the number of elements that have been empty optionals. Example usage:
+   * track on the number of elements that have been empty optionals. This filter let only pass
+   * optionals that are non-empty. Example usage:
    * Collection.stream().filter(isPresentCollectIfNot(NodeInput.class, new ConcurrentHashMap<>()))
    * ...
    *
@@ -243,9 +258,9 @@ public abstract class CsvDataSource {
    * Returns a collection of maps each representing a row in csv file that can be used to built an
    * instance of a {@link UniqueEntity}. The uniqueness of each row is doubled checked by a) that no
    * duplicated rows are returned that are full (1:1) matches and b) that no rows are returned that
-   * have the same UUID but different field values. As the later case is destroying the contract of
-   * UUIDs an empty Set is returned to indicate the error. For the first case, only the duplicates
-   * are filtered out an a set with unique rows is returned.
+   * have the same UUID but different field values. As the later case (b) is destroying the contract of
+   * UUIDs an empty set is returned to indicate that these data cannot be processed safely and the error is
+   * logged. For case a), only the duplicates are filtered out an a set with unique rows is returned.
    *
    * @param entityClass the entity class that should be built based on the provided (fieldName ->
    *     fieldValue) collection
@@ -274,10 +289,11 @@ public abstract class CsvDataSource {
             .collect(Collectors.toSet());
     if (distinctUuidRowSet.size() != allRowsSet.size()) {
       allRowsSet.removeAll(distinctUuidRowSet);
+      String affectedUuids = allRowsSet.stream().map(row -> row.get("uuid")).collect(Collectors.joining(",\n"));
       log.error(
           "'{}' entities with duplicated UUIDs, but different field values found! Please review the corresponding input file!\nAffected UUIDs:\n{}",
           entityClass.getSimpleName(),
-          allRowsSet.stream().map(row -> row.get("uuid")).collect(Collectors.joining(",\n")));
+          affectedUuids);
       // if this happens, we return an empty set to prevent further processing
       return new HashSet<>();
     }
