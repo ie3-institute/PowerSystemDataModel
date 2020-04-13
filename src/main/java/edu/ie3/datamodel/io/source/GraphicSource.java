@@ -15,8 +15,9 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Interface that provides the capability to build entities of type {@link edu.ie3.datamodel.models.input.graphics.GraphicInput}
- * from different data sources e.g. .csv files or databases
+ * Interface that provides the capability to build entities of type {@link
+ * edu.ie3.datamodel.models.input.graphics.GraphicInput} from different data sources e.g. .csv files
+ * or databases
  *
  * @version 0.1
  * @since 08.04.20

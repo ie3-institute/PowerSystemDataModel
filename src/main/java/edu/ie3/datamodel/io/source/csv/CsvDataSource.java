@@ -317,22 +317,25 @@ public abstract class CsvDataSource {
    */
   protected <T extends AssetInput> Stream<AssetInputEntityData> assetInputEntityDataStream(
       Class<T> entityClass, Collection<OperatorInput> operators) {
-
     return buildStreamWithFieldsToAttributesMap(entityClass, connector)
         .map(
-            fieldsToAttributes -> {
+            fieldsToAttributes ->
+                assetInputEntityDataStream(entityClass, fieldsToAttributes, operators));
+  }
 
-              // get the operator of the entity
-              String operatorUuid = fieldsToAttributes.get(OPERATOR);
-              OperatorInput operator = getFirstOrDefaultOperator(operators, operatorUuid);
+  protected <T extends AssetInput> AssetInputEntityData assetInputEntityDataStream(
+      Class<T> entityClass,
+      Map<String, String> fieldsToAttributes,
+      Collection<OperatorInput> operators) {
 
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes
-                  .keySet()
-                  .removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
+    // get the operator of the entity
+    String operatorUuid = fieldsToAttributes.get(OPERATOR);
+    OperatorInput operator = getFirstOrDefaultOperator(operators, operatorUuid);
 
-              return new AssetInputEntityData(fieldsToAttributes, entityClass, operator);
-            });
+    // remove fields that are passed as objects to constructor
+    fieldsToAttributes.keySet().removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
+
+    return new AssetInputEntityData(fieldsToAttributes, entityClass, operator);
   }
 
   /**
