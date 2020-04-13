@@ -61,16 +61,6 @@ public final class Extractor {
           nestedEntity.getClass().getSimpleName());
     }
 
-    if (resultingList.isEmpty()) {
-      throw new ExtractorException(
-          "Unable to extract entity of class '"
-              + nestedEntity.getClass().getSimpleName()
-              + "'. Does this class implements "
-              + NestedEntity.class.getSimpleName()
-              + " and one of its "
-              + "sub-interfaces correctly?");
-    }
-
     resultingList.stream()
         .parallel()
         .forEach(
