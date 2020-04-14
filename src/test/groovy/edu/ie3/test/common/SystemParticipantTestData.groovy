@@ -19,6 +19,10 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
+import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
+import edu.ie3.datamodel.models.input.system.characteristic.CosPhiP
+import edu.ie3.datamodel.models.input.system.characteristic.QV
+import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
@@ -28,7 +32,7 @@ import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
-import edu.ie3.util.TimeTools
+import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.Currency
 import edu.ie3.util.quantities.interfaces.DimensionlessRate
 import edu.ie3.util.quantities.interfaces.EnergyPrice
@@ -55,14 +59,19 @@ class SystemParticipantTestData {
 	// general participant data
 	private static final UUID participantUuid = UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a")
 	private static final OperationTime operationTime = OperationTime.builder()
-	.withStart(TimeTools.toZonedDateTime("2020-03-24 15:11:31"))
-	.withEnd(TimeTools.toZonedDateTime("2020-03-25 15:11:31")).build()
+	.withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31"))
+	.withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
 	private static final OperatorInput operator = new OperatorInput(
 	UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "SystemParticipantOperator")
 	private static final NodeInput participantNode = GridTestData.nodeA
 
 	// general type data
-	private static final String qCharacteristics = "cosphi_fixed:0.95"
+	private static final CosPhiFixed cosPhiFixed = new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}")
+	private static final CosPhiP cosPhiP = new CosPhiP("cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}")
+	private static final QV qV = new QV("qV:{(0.9,-0.3),(0.95,0.0),(1.05,0.0),(1.1,0.3)}")
+	public static final String cosPhiFixedDeSerialized = "cosPhiFixed:{(0.00,0.95)}"
+	public static final String cosPhiPDeSerialized = "cosPhiP:{(0.00,1.00),(0.90,1.00),(1.20,-0.30)}"
+	public static final String qVDeSerialized = "qV:{(0.90,-0.30),(0.95,0.00),(1.05,0.00),(1.10,0.30)}"
 	private static final Quantity<Power> sRated = Quantities.getQuantity(25, KILOVOLTAMPERE)
 	private static final double cosPhiRated = 0.95
 	private static final UUID typeUuid = UUID.fromString("5ebd8f7e-dedb-4017-bb86-6373c4b68eb8")
@@ -73,7 +82,7 @@ class SystemParticipantTestData {
 
 	// FixedFeedInput
 	public static final FixedFeedInInput fixedFeedInInput = new FixedFeedInInput(participantUuid, "test_fixedFeedInInput", operator,
-	operationTime, participantNode, qCharacteristics,
+	operationTime, participantNode, cosPhiFixed,
 	sRated, cosPhiRated)
 
 	// PV
@@ -83,18 +92,19 @@ class SystemParticipantTestData {
 	private static double kT = 1
 	private static double kG = 0.8999999761581421
 	public static final PvInput pvInput = new PvInput(participantUuid, "test_pvInput", operator, operationTime,
-	participantNode, qCharacteristics, albedo, azimuth,
+	participantNode, cosPhiFixed, albedo, azimuth,
 	etaConv, height, kG, kT, false, sRated, cosPhiRated)
 
 
 	// WEC
+	private static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
 	private static final Quantity<Area> rotorArea = Quantities.getQuantity(20, SQUARE_METRE)
 	private static final Quantity<Length> hubHeight = Quantities.getQuantity(200, METRE)
 	public static final WecTypeInput wecType = new WecTypeInput(typeUuid, "test_wecType", capex, opex,
-	cosPhiRated, etaConv, sRated, rotorArea, hubHeight)
+	cosPhiRated, wecCharacteristic, etaConv, sRated, rotorArea, hubHeight)
 
 	public static final WecInput wecInput = new WecInput(participantUuid, "test_wecInput", operator,
-	operationTime, participantNode, qCharacteristics,
+	operationTime, participantNode, cosPhiP,
 	wecType, false)
 
 	// CHP
@@ -118,7 +128,7 @@ class SystemParticipantTestData {
 	inletTemp, returnTemp, c)
 
 	public static final ChpInput chpInput = new ChpInput(participantUuid, "test_chpInput", operator, operationTime,
-	participantNode, thermalBus, qCharacteristics, chpTypeInput, thermalStorage, false)
+	participantNode, thermalBus, cosPhiFixed, chpTypeInput, thermalStorage, false)
 
 
 	// BM
@@ -128,7 +138,7 @@ class SystemParticipantTestData {
 
 	private static final Quantity<EnergyPrice> feedInTarif = Quantities.getQuantity(10, EURO_PER_MEGAWATTHOUR)
 	public static final BmInput bmInput = new BmInput(participantUuid, "test_bmInput", operator, operationTime,
-	participantNode, qCharacteristics, bmTypeInput, false, false, feedInTarif)
+	participantNode, qV, bmTypeInput, false, false, feedInTarif)
 
 	// EV
 	private static final Quantity<Energy> eStorage = Quantities.getQuantity(100, KILOWATTHOUR)
@@ -136,13 +146,13 @@ class SystemParticipantTestData {
 	public static final EvTypeInput evTypeInput = new EvTypeInput(typeUuid, "test_evTypeInput", capex, opex,
 	eStorage, eCons, sRated, cosPhiRated)
 	public static final EvInput evInput = new EvInput(participantUuid, "test_evInput", operator, operationTime,
-	participantNode, qCharacteristics, evTypeInput)
+	participantNode, cosPhiFixed, evTypeInput)
 
 	// Load
 	private static final Quantity<Energy> eConsAnnual = Quantities.getQuantity(4000, KILOWATTHOUR)
 	private static final StandardLoadProfile standardLoadProfile = BdewLoadProfile.H0
 	public static final LoadInput loadInput = new LoadInput(participantUuid, "test_loadInput", operator, operationTime,
-	participantNode, qCharacteristics, standardLoadProfile, false, eConsAnnual, sRated, cosPhiRated)
+	participantNode, cosPhiFixed, standardLoadProfile, false, eConsAnnual, sRated, cosPhiRated)
 
 	// Storage
 	private static final Quantity<Power> pMax = Quantities.getQuantity(15, KILOWATT)
@@ -154,13 +164,13 @@ class SystemParticipantTestData {
 	public static final StorageTypeInput storageTypeInput = new StorageTypeInput(typeUuid, "test_storageTypeInput",
 	capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, eta, dod, lifeTime, lifeCycle)
 	public static final StorageInput storageInput = new StorageInput(participantUuid, "test_storageInput", operator, operationTime
-	, participantNode, qCharacteristics, storageTypeInput, "market")
+	, participantNode, cosPhiFixed, storageTypeInput, "market")
 
 	// HP
 	public static final HpTypeInput hpTypeInput = new HpTypeInput(typeUuid, "test_hpTypeInput", capex, opex,
 	sRated, cosPhiRated, pThermal)
 
 	public static final HpInput hpInput = new HpInput(participantUuid, "test_hpInput", operator, operationTime,
-	participantNode, thermalBus, qCharacteristics, hpTypeInput)
+	participantNode, thermalBus, cosPhiFixed, hpTypeInput)
 
 }

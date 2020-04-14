@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
@@ -56,7 +57,7 @@ public class LoadInput extends SystemParticipantInput {
       OperatorInput operator,
       OperationTime operationTime,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       StandardLoadProfile standardLoadProfile,
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
@@ -92,7 +93,7 @@ public class LoadInput extends SystemParticipantInput {
       OperatorInput operator,
       String id,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       String bdewStandardLoadProfile,
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
@@ -128,7 +129,7 @@ public class LoadInput extends SystemParticipantInput {
       UUID uuid,
       String id,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       StandardLoadProfile standardLoadProfile,
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
@@ -159,7 +160,7 @@ public class LoadInput extends SystemParticipantInput {
       UUID uuid,
       String id,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       String bdewStandardLoadProfile,
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,

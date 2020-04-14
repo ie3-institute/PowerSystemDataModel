@@ -5,14 +5,20 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.LoadInput
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
+import tec.uom.se.quantity.Quantities
+
+import javax.measure.quantity.Dimensionless
 
 class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 	def "A LoadInputFactory should contain exactly the expected class for parsing"() {
@@ -30,7 +36,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 		Map<String, String> parameter = [
 			"uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
 			"id"              : "TestID",
-			"qcharacteristics": "cosphi_fixed:1",
+			"qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
 			"slp"             : "G-4",
 			"dsm"             : "true",
 			"econsannual"     : "3",
@@ -53,7 +59,12 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
 			assert node == nodeInput
-			assert qCharacteristics == parameter["qcharacteristics"]
+			assert qCharacteristics.with {
+				assert uuid != null
+				assert points == Collections.unmodifiableSortedSet([
+					new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
+				] as TreeSet)
+			}
 			assert standardLoadProfile == BdewLoadProfile.G4
 			assert dsm
 			assert eConsAnnual == getQuant(parameter["econsannual"], StandardUnits.ENERGY_IN)

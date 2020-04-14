@@ -27,7 +27,7 @@ public class GridAndGeoUtils extends GeoUtils {
    */
   public static LineString buildLineStringBetweenNodes(NodeInput a, NodeInput b) {
     return DEFAULT_GEOMETRY_FACTORY.createLineString(
-            ArrayUtils.addAll(
-                    a.getGeoPosition().getCoordinates(), b.getGeoPosition().getCoordinates()));
+        ArrayUtils.addAll(
+            a.getGeoPosition().getCoordinates(), b.getGeoPosition().getCoordinates()));
   }
 }

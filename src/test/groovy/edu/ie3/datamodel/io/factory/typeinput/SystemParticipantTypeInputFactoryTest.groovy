@@ -5,12 +5,20 @@
  */
 package edu.ie3.datamodel.io.factory.typeinput
 
+import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.system.type.*
 import spock.lang.Specification
+import tec.uom.se.quantity.Quantities
+
+import javax.measure.quantity.Dimensionless
+import javax.measure.quantity.Speed
 
 class SystemParticipantTypeInputFactoryTest extends Specification implements FactoryTestHelper {
 
@@ -146,6 +154,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			"srated":       "5",
 			"cosphi":	    "6",
 
+			"cpCharacteristic": "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",
 			"etaconv":  	"7",
 			"rotorarea":    "8",
 			"hubheight":    "9"
@@ -167,6 +176,14 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
 			assert cosphiRated == Double.parseDouble(parameter["cosphi"])
 
+			cpCharacteristic.with {
+				assert uuid != null
+				assert points == Collections.unmodifiableSortedSet([
+					new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(10d, METRE_PER_SECOND), Quantities.getQuantity(0.05, PU)),
+					new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(15d, METRE_PER_SECOND), Quantities.getQuantity(0.1, PU)),
+					new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(20d, METRE_PER_SECOND), Quantities.getQuantity(0.2, PU))
+				] as TreeSet)
+			}
 			assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
 			assert rotorArea == getQuant(parameter["rotorarea"], StandardUnits.ROTOR_AREA)
 			assert hubHeight == getQuant(parameter["hubheight"], StandardUnits.HUB_HEIGHT)

@@ -5,14 +5,19 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.StorageStrategy
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
+import tec.uom.se.quantity.Quantities
 
+import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
 
 class StorageInputFactoryTest extends Specification implements FactoryTestHelper {
@@ -33,7 +38,7 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
 			"operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
 			"operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
 			"id"              : "TestID",
-			"qcharacteristics": "cosphi_fixed:1",
+			"qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
 			"behaviour"       : "market"
 		]
 		def inputClass = StorageInput
@@ -57,7 +62,12 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
 			assert operator == operatorInput
 			assert id == parameter["id"]
 			assert node == nodeInput
-			assert qCharacteristics == parameter["qcharacteristics"]
+			assert qCharacteristics.with {
+				assert uuid != null
+				assert points == Collections.unmodifiableSortedSet([
+					new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
+				] as TreeSet)
+			}
 			assert type == typeInput
 			assert behaviour == StorageStrategy.get(parameter["behaviour"])
 		}
