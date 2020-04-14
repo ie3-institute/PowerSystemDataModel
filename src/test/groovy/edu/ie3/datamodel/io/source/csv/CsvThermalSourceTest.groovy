@@ -12,71 +12,71 @@ import java.util.stream.Collectors
 
 class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
-// todo
+	// todo
 
-    def "A CsvThermalSource should build thermal unit input entity data as expected"() {
-        given:
-        def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
-        def fieldsToAttributes = null // todo
-        def assetInputEntityData = null // todo
+	def "A CsvThermalSource should build thermal unit input entity from valid and invalid input data as expected"() {
+		given:
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
+		def fieldsToAttributes = null // todo
+		def assetInputEntityData = null // todo
 
-        when:
-        def resultingDataOpt = csvThermalSource.buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses).collect(Collectors.toList())
+		when:
+		def resultingDataOpt = csvThermalSource.buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses).collect(Collectors.toList())
 
-        then:
-        resultingDataOpt.size() == 1
-        resultingDataOpt.first().isPresent() == resultIsPresent
-        resultingDataOpt.first().ifPresent({ resultingData ->
-            assert (resultingData == expectedThermalUnitInputEntityData)
-        })
+		then:
+		resultingDataOpt.size() == 1
+		resultingDataOpt.first().isPresent() == resultIsPresent
+		resultingDataOpt.first().ifPresent({ resultingData ->
+			assert (resultingData == expectedThermalUnitInputEntityData)
+		})
 
-        where:
-        thermalBuses || resultIsPresent || expectedThermalUnitInputEntityData
-        []           || false           || null  // thermal buses are not present -> method should return an empty optional -> do not check for thermal unit entity data
-        []           || true            || new ThermalUnitInputEntityData()//todo add bus, fill with data etc.
+		where:
+		thermalBuses || resultIsPresent || expectedThermalUnitInputEntityData
+		[]|| false           || null  // thermal buses are not present -> method should return an empty optional -> do not check for thermal unit entity data
+		[]|| true            || new ThermalUnitInputEntityData()//todo add bus, fill with data etc.
 
-    }
+	}
 
-    def "A CsvThermalSource should return a CylindricStorageInput as expected"() {
-        given:
-        def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
-        def operators = null // todo
-        def thermalBuses = null // todo
+	def "A CsvThermalSource should return a CylindricStorageInput from valid and invalid input data as expected"() {
+		given:
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
+		def operators = null // todo
+		def thermalBuses = null // todo
 
-        when:
-        def resultingCylindricStorage = csvThermalSource.getCylindricStorages(operators, thermalBuses)
+		when:
+		def resultingCylindricStorage = csvThermalSource.getCylindricStorages(operators, thermalBuses)
 
-        then:
-        resultingCylindricStorage == null // todo checks
+		then:
+		resultingCylindricStorage == null // todo checks
 
-    }
+	}
 
-    def "A CsvThermalSource should return a ThermalHouseInput as expected"() {
-        given:
-        def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
-        def operators = null // todo
-        def thermalBuses = null // todo
+	def "A CsvThermalSource should return a ThermalHouseInput from valid and invalid input data as expected"() {
+		given:
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
+		def operators = null // todo
+		def thermalBuses = null // todo
 
-        when:
-        def resultingThermalHouses = csvThermalSource.getThermalHouses(operators, thermalBuses)
+		when:
+		def resultingThermalHouses = csvThermalSource.getThermalHouses(operators, thermalBuses)
 
-        then:
-        resultingThermalHouses == null // todo checks
+		then:
+		resultingThermalHouses == null // todo checks
 
-    }
+	}
 
-    def "A CsvThermalSource should return a ThermalBuses as expected"() {
-        given:
-        def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
-        def operators = null // todo
+	def "A CsvThermalSource should return a ThermalBuses from valid and invalid input data as expected"() {
+		given:
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
+		def operators = null // todo
 
-        when:
-        def resultingThermalBuses = csvThermalSource.getThermalBuses(operators)
+		when:
+		def resultingThermalBuses = csvThermalSource.getThermalBuses(operators)
 
-        then:
-        resultingThermalBuses == null // todo checks
+		then:
+		resultingThermalBuses == null // todo checks
 
-    }
+	}
 
 
 }

@@ -37,7 +37,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 		})
 	}
 
-	def "A CsvGraphicSource should process invalid input data correctly when requested to provide an instance of GraphicElements"() {
+	def "A CsvGraphicSource should process invalid input data as expected when requested to provide an instance of GraphicElements"() {
 		given:
 		def typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
 		def rawGridSource = Spy(CsvRawGridSource, constructorArgs: [
@@ -102,7 +102,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 		lineGraphics.first() == gtd.lineGraphicCtoD
 	}
 
-	def "A CsvGraphicSource should build node graphic entity data for valid and invalid data correctly"() {
+	def "A CsvGraphicSource should build node graphic entity data from valid and invalid input data correctly"() {
 		given:
 		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
 		def fieldsToAttributesMap = [
@@ -136,7 +136,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
 	}
 
-	def "A CsvGraphicSource should build line graphic entity data for valid and invalid data correctly"() {
+	def "A CsvGraphicSource should build line graphic entity data from valid and invalid input data correctly"() {
 		given:
 		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
 		def fieldsToAttributesMap = [

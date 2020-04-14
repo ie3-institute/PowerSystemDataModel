@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Data used for those classes of {@link
@@ -61,6 +62,19 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
       T typeInput) {
     super(fieldsToAttributes, entityClass, operator, node);
     this.typeInput = typeInput;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    SystemParticipantTypedEntityData<?> that = (SystemParticipantTypedEntityData<?>) o;
+    return getTypeInput().equals(that.getTypeInput());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getTypeInput());
   }
 
   public T getTypeInput() {
