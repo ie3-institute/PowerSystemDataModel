@@ -12,6 +12,8 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
@@ -22,9 +24,9 @@ import tec.uom.se.ComparableQuantity;
 public class LoadInput extends SystemParticipantInput {
   /**
    * Reference to a standard load profile to use for the model. If you intend to assign specific
-   * values, create an {@link edu.ie3.datamodel.models.timeseries.IndividualTimeSeries} or {@link
-   * edu.ie3.datamodel.models.timeseries.RepetitiveTimeSeries} and assign it via an external mapping
-   * (e.g. by providing a global time series for a specific load profile) to this model
+   * values, create an {@link IndividualTimeSeries} or {@link RepetitiveTimeSeries} and assign it
+   * via an external mapping (e.g. by providing a global time series for a specific load profile) to
+   * this model
    */
   private final StandardLoadProfile standardLoadProfile;
   /** True, if demand side management is activated for this load */

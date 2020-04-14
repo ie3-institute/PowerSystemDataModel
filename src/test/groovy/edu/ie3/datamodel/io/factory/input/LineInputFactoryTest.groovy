@@ -48,7 +48,9 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def inputClass = LineInput
 		def operatorInput = Mock(OperatorInput)
 		def nodeInputA = Mock(NodeInput)
+		nodeInputA.getGeoPosition() >> NodeInput.DEFAULT_GEO_POSITION
 		def nodeInputB = Mock(NodeInput)
+		nodeInputB.getGeoPosition() >> NodeInput.DEFAULT_GEO_POSITION
 		def typeInput = Mock(LineTypeInput)
 
 		when:
@@ -97,7 +99,9 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def inputClass = LineInput
 		def operatorInput = Mock(OperatorInput)
 		def nodeInputA = Mock(NodeInput)
+		nodeInputA.getGeoPosition() >> NodeInput.DEFAULT_GEO_POSITION
 		def nodeInputB = Mock(NodeInput)
+		nodeInputB.getGeoPosition() >> NodeInput.DEFAULT_GEO_POSITION
 		def typeInput = Mock(LineTypeInput)
 
 		when:

@@ -5,15 +5,19 @@
 */
 package edu.ie3.datamodel.io.connectors;
 
-import static edu.ie3.util.io.FileIOUtils.CHARSET_UTF8;
-
 import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
+import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
+import edu.ie3.datamodel.io.csv.CsvFileDefinition;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.util.StringUtils;
-import edu.ie3.util.io.FileIOUtils;
+import edu.ie3.datamodel.models.timeseries.TimeSeries;
+import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
+import edu.ie3.datamodel.models.value.Value;
 import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,10 +29,11 @@ import org.apache.logging.log4j.Logger;
  * @since 19.03.20
  */
 public class CsvFileConnector implements DataConnector {
-
   private static final Logger log = LogManager.getLogger(CsvFileConnector.class);
 
-  private final Map<Class<? extends UniqueEntity>, BufferedWriter> writers = new HashMap<>();
+  private final Map<Class<? extends UniqueEntity>, BufferedCsvWriter> entityWriters =
+      new HashMap<>();
+  private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
   private final FileNamingStrategy fileNamingStrategy;
   private final String baseFolderName;
 
@@ -39,11 +44,125 @@ public class CsvFileConnector implements DataConnector {
     this.fileNamingStrategy = fileNamingStrategy;
   }
 
+  public BufferedCsvWriter getOrInitWriter(
+      Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep)
+      throws ConnectorException {
+    /* Try to the the right writer */
+    BufferedCsvWriter predefinedWriter = entityWriters.get(clz);
+    if (predefinedWriter != null) return predefinedWriter;
+
+    /* If it is not available, build and register one */
+    try {
+      CsvFileDefinition fileDefinition = buildFileDefinition(clz, headerElements, csvSep);
+      BufferedCsvWriter newWriter = initWriter(baseFolderName, fileDefinition);
+
+      entityWriters.put(clz, newWriter);
+      return newWriter;
+    } catch (ConnectorException | IOException e) {
+      throw new ConnectorException(
+          "Can neither find suitable writer nor build the correct one in CsvFileConnector.", e);
+    }
+  }
+
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+      BufferedCsvWriter getOrInitWriter(T timeSeries, String[] headerElements, String csvSep)
+          throws ConnectorException {
+    /* Try to the the right writer */
+    BufferedCsvWriter predefinedWriter = timeSeriesWriters.get(timeSeries.getUuid());
+    if (predefinedWriter != null) return predefinedWriter;
+
+    /* If it is not available, build and register one */
+    try {
+      CsvFileDefinition fileDefinition = buildFileDefinition(timeSeries, headerElements, csvSep);
+      BufferedCsvWriter newWriter = initWriter(baseFolderName, fileDefinition);
+
+      timeSeriesWriters.put(timeSeries.getUuid(), newWriter);
+      return newWriter;
+    } catch (ConnectorException | IOException e) {
+      throw new ConnectorException(
+          "Can neither find suitable writer nor build the correct one in CsvFileConnector.", e);
+    }
+  }
+
+  /**
+   * Initializes a writer with the given base folder and file definition
+   *
+   * @param baseFolder Base folder, where the file hierarchy should start
+   * @param fileDefinition Definition of the files shape
+   * @return an initialized buffered writer
+   * @throws ConnectorException If the base folder is a file
+   * @throws IOException If the writer cannot be initialized correctly
+   */
+  private BufferedCsvWriter initWriter(String baseFolder, CsvFileDefinition fileDefinition)
+      throws ConnectorException, IOException {
+    File basePathDir = new File(baseFolder);
+    if (basePathDir.isFile())
+      throw new ConnectorException(
+          "Base path dir '" + baseFolder + "' already exists and is a file!");
+    if (!basePathDir.exists()) basePathDir.mkdirs();
+
+    String fullPathToFile = baseFolder + File.separator + fileDefinition.getFilePath();
+
+    File pathFile = new File(fullPathToFile);
+    if (!pathFile.exists()) {
+      BufferedCsvWriter writer = new BufferedCsvWriter(baseFolder, fileDefinition, true);
+      return writer;
+    }
+    log.warn(
+        "File '{}.csv' already exist. Will append new content WITHOUT new header! Full path: {}",
+        fileDefinition.getFileName(),
+        pathFile.getAbsolutePath());
+    return new BufferedCsvWriter(baseFolder, fileDefinition, false);
+  }
+
+  /**
+   * Builds a new file definition consisting of file name and head line elements
+   *
+   * @param timeSeries Time series to derive naming information from
+   * @param headLineElements Array of head line elements
+   * @param csvSep Separator for csv columns
+   * @return A suitable file definition
+   * @throws ConnectorException If the definition cannot be determined
+   */
+  private <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+      CsvFileDefinition buildFileDefinition(T timeSeries, String[] headLineElements, String csvSep)
+          throws ConnectorException {
+    String fileName =
+        fileNamingStrategy
+            .getFileName(timeSeries)
+            .orElseThrow(
+                () ->
+                    new ConnectorException(
+                        "Cannot determine the file name for time series '" + timeSeries + "'."));
+    return new CsvFileDefinition(fileName, headLineElements, csvSep);
+  }
+
+  /**
+   * Builds a new file definition consisting of file name and head line elements
+   *
+   * @param clz Class that is meant to be de-serialized into this file
+   * @param headLineElements Array of head line elements
+   * @param csvSep Separator for csv columns
+   * @return A suitable file definition
+   * @throws ConnectorException If the definition cannot be determined
+   */
+  private CsvFileDefinition buildFileDefinition(
+      Class<? extends UniqueEntity> clz, String[] headLineElements, String csvSep)
+      throws ConnectorException {
+    String fileName =
+        fileNamingStrategy
+            .getFileName(clz)
+            .orElseThrow(
+                () ->
+                    new ConnectorException(
+                        "Cannot determine the file name for class '" + clz + "'."));
+    return new CsvFileDefinition(fileName, headLineElements, csvSep);
+  }
+
   @Override
   public void shutdown() {
-
-    writers
-        .values()
+    Stream.of(entityWriters.values(), timeSeriesWriters.values())
+        .flatMap(Collection::stream)
         .forEach(
             bufferedWriter -> {
               try {
@@ -54,115 +173,9 @@ public class CsvFileConnector implements DataConnector {
             });
   }
 
-  public BufferedWriter initWriter(
-      Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep)
-      throws ConnectorException, IOException {
-    return initWriter(baseFolderName, clz, fileNamingStrategy, headerElements, csvSep);
-  }
-
-  public Optional<BufferedWriter> getWriter(Class<? extends UniqueEntity> clz) {
-    return Optional.ofNullable(writers.get(clz));
-  }
-
-  public BufferedWriter getOrInitWriter(
-      Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep) {
-
-    return getWriter(clz)
-        .orElseGet(
-            () -> {
-              BufferedWriter newWriter = null;
-              try {
-                newWriter = initWriter(clz, headerElements, csvSep);
-              } catch (ConnectorException | IOException e) {
-                log.error("Error while initiating writer in CsvFileConnector.", e);
-              }
-
-              writers.put(clz, newWriter);
-              return newWriter;
-            });
-  }
-
-  private BufferedWriter initWriter(
-      String baseFolderName,
-      Class<? extends UniqueEntity> clz,
-      FileNamingStrategy fileNamingStrategy,
-      String[] headerElements,
-      String csvSep)
-      throws ConnectorException, IOException {
-    File basePathDir = new File(baseFolderName);
-    if (basePathDir.isFile())
-      throw new ConnectorException(
-          "Base path dir '" + baseFolderName + "' already exists and is a file!");
-    if (!basePathDir.exists()) basePathDir.mkdirs();
-
-    String fileName =
-        fileNamingStrategy
-            .getFileName(clz)
-            .orElseThrow(
-                () ->
-                    new ConnectorException(
-                        "Cannot determine the file name for provided class '"
-                            + clz.getSimpleName()
-                            + "'."));
-    String fullPath = baseFolderName + File.separator + fileName + FILE_ENDING;
-
-    File pathFile = new File(fullPath);
-
-    if (!pathFile.exists()) {
-      BufferedWriter writer = FileIOUtils.getBufferedWriter(fullPath, CHARSET_UTF8, true);
-      // write header
-      writeFileHeader(clz, writer, prepareHeader(headerElements), csvSep);
-      return writer;
-    }
-
-    log.warn(
-        "File '{}{}' already exist. Will append new content WITHOUT new header! Full path: {}",
-        fileName,
-        FILE_ENDING,
-        pathFile.getAbsolutePath());
-
-    return FileIOUtils.getBufferedWriter(fullPath, CHARSET_UTF8, true);
-  }
-
-  /**
-   * Prepares the header to be written out. In our case this means adding double quotes at the
-   * beginning and end of each header element as well as transforming the header element to snake
-   * case to allow for database compatibility
-   *
-   * @param headerElements the header elements that should be written out
-   * @return ready to be written header elements
-   */
-  private String[] prepareHeader(final String[] headerElements) {
-    // adds " to headline + transforms camel case to snake case
-    return Arrays.stream(headerElements)
-        .map(headerElement -> "\"" + StringUtils.camelCaseToSnakeCase(headerElement).concat("\""))
-        .toArray(String[]::new);
-  }
-
-  private void writeFileHeader(
-      Class<? extends UniqueEntity> clz,
-      BufferedWriter writer,
-      final String[] headerElements,
-      String csvSep) {
-    try {
-      for (int i = 0; i < headerElements.length; i++) {
-        String attribute = headerElements[i];
-        writer.append(attribute);
-        if (i + 1 < headerElements.length) {
-          writer.append(csvSep);
-        } else {
-          writer.append("\n");
-        }
-      }
-      writer.flush();
-    } catch (IOException e) {
-      log.error("Error during file header creation for class '" + clz.getSimpleName() + "'.", e);
-    }
-  }
-
   public BufferedReader getReader(Class<? extends UniqueEntity> clz) throws FileNotFoundException {
 
-    BufferedReader newReader = null;
+    BufferedReader newReader;
 
     String fileName = null;
     try {

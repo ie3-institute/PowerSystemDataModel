@@ -14,10 +14,9 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
+import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import java.util.UUID;
 import javax.measure.quantity.Length;
-import org.apache.commons.lang3.ArrayUtils;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import tec.uom.se.ComparableQuantity;
 
@@ -50,12 +49,7 @@ public class LineInputFactory
     final ComparableQuantity<Length> length = data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH);
     final LineString geoPosition =
         data.getLineString(GEO_POSITION)
-            .orElse(
-                new GeometryFactory()
-                    .createLineString(
-                        ArrayUtils.addAll(
-                            NodeInput.DEFAULT_GEO_POSITION.getCoordinates(),
-                            NodeInput.DEFAULT_GEO_POSITION.getCoordinates())));
+            .orElse(GridAndGeoUtils.buildLineStringBetweenNodes(nodeA, nodeB));
     final OlmCharacteristicInput olmCharacteristic;
     try {
       olmCharacteristic =

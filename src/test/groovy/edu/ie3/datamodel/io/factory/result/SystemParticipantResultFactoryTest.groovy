@@ -125,7 +125,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 				"1: [inputModel, p, q, timestamp, uuid]\n"
 	}
 
-	def "A SystempParticipantResultFactor should be performant"() {
+	def "A SystemParticipantResultFactory should be performant"() {
 		given: "a factory and dummy model data"
 		def resultFactory = new SystemParticipantResultFactory()
 		Map<String, String> parameter = [

@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.models;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries;
 import java.util.Arrays;
 
 /**
@@ -13,10 +15,8 @@ import java.util.Arrays;
  * edu.ie3.datamodel.models.input.system.LoadInput}. This interface does nothing more, than giving a
  * reference, the values have to be provided by the simulator using the models.
  *
- * <p>If you intend to provide distinct values, create either an {@link
- * edu.ie3.datamodel.models.timeseries.IndividualTimeSeries} or {@link
- * edu.ie3.datamodel.models.timeseries.RepetitiveTimeSeries} and assign it to the model via mapping
- * to the model.
+ * <p>If you intend to provide distinct values, create either an {@link IndividualTimeSeries} or
+ * {@link RepetitiveTimeSeries} and assign it to the model via mapping to the model.
  */
 public interface StandardLoadProfile {
   /** @return The identifying String */

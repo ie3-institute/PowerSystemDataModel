@@ -60,7 +60,7 @@ class CsvDataSourceTest extends Specification {
 		dummyCsvSource.connector != null
 		dummyCsvSource.connector.baseFolderName == testBaseFolderPath
 		dummyCsvSource.connector.fileNamingStrategy == fileNamingStrategy
-		dummyCsvSource.connector.writers.isEmpty()
+		dummyCsvSource.connector.entityWriters.isEmpty()
 
 	}
 

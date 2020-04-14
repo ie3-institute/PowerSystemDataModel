@@ -191,7 +191,7 @@ public class SystemParticipantTypeInputFactory
 
     ComparableQuantity<Length> hubHeight = data.getQuantity(HUB_HEIGHT, StandardUnits.HUB_HEIGHT);
 
-    WecCharacteristicInput cpCharacteristic = null;
+    WecCharacteristicInput cpCharacteristic;
     try {
       cpCharacteristic = new WecCharacteristicInput(data.getField(CP_CHARACTERISTIC));
     } catch (ParsingException e) {

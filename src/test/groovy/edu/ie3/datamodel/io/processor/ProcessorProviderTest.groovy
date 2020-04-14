@@ -5,8 +5,13 @@
  */
 package edu.ie3.datamodel.io.processor
 
+import edu.ie3.datamodel.exceptions.ProcessorProviderException
+import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
+import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
+import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.EvcsInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -57,6 +62,25 @@ import edu.ie3.datamodel.models.result.system.StorageResult
 import edu.ie3.datamodel.models.result.system.WecResult
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
+import edu.ie3.datamodel.models.timeseries.IntValue
+import edu.ie3.datamodel.models.timeseries.TimeSeries
+import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
+import edu.ie3.datamodel.models.value.EnergyPriceValue
+import edu.ie3.datamodel.models.value.HeatAndPValue
+import edu.ie3.datamodel.models.value.HeatAndSValue
+import edu.ie3.datamodel.models.value.HeatDemandValue
+import edu.ie3.datamodel.models.value.IrradiationValue
+import edu.ie3.datamodel.models.value.PValue
+import edu.ie3.datamodel.models.value.SValue
+import edu.ie3.datamodel.models.value.TemperatureValue
+import edu.ie3.datamodel.models.value.Value
+import edu.ie3.datamodel.models.value.WeatherValue
+import edu.ie3.datamodel.models.value.WindValue
+import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
@@ -64,13 +88,12 @@ import tec.uom.se.quantity.Quantities
 import javax.measure.Quantity
 import javax.measure.quantity.Power
 
-class ProcessorProviderTest extends Specification {
+class ProcessorProviderTest extends Specification implements TimeSeriesTestData {
 
 	def "A ProcessorProvider should initialize all known EntityProcessors by default"() {
 		given:
 		ProcessorProvider provider = new ProcessorProvider()
-
-		List knownProcessors = [
+		List knownEntityProcessors = [
 			/* InputEntity */
 			OperatorInput,
 			RandomLoadParameters,
@@ -130,24 +153,46 @@ class ProcessorProviderTest extends Specification {
 		// currently known processors
 
 		expect:
-		provider.registeredClasses.size() == knownProcessors.size()
-		provider.registeredClasses.sort() == knownProcessors.sort()
-
+		provider.registeredClasses.size() == knownEntityProcessors.size()
+		provider.registeredClasses.sort() == knownEntityProcessors.sort()
 	}
 
-	def "A ProcessorProvider should return the header elements for a class known by one of its processors and do nothing otherwise"() {
+	def "A ProcessorProvider should initialize all known TimeSeriesProcessors by default"() {
+		given:
+		ProcessorProvider provider = new ProcessorProvider()
+		Set expected = [
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, IrradiationValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, TemperatureValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, WindValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, WeatherValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, HeatDemandValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, PValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, HeatAndPValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, SValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, HeatAndSValue),
+			new TimeSeriesProcessorKey(LoadProfileInput, LoadProfileEntry, PValue)
+		] as Set
+
+		when:
+		Set<TimeSeriesProcessorKey> actual = provider.getRegisteredTimeSeriesCombinations()
+
+		then:
+		actual == expected
+	}
+
+	def "A ProcessorProvider should return the header elements for a entity class known by one of its processors and do nothing otherwise"() {
 		given:
 		ProcessorProvider provider = new ProcessorProvider([
 			new ResultEntityProcessor(PvResult),
 			new ResultEntityProcessor(EvResult)
-		])
+		], [] as Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>)
 
 		when:
-		Optional headerResults = provider.getHeaderElements(PvResult)
+		String[] headerResults = provider.getHeaderElements(PvResult)
 
 		then:
-		headerResults.present
-		headerResults.get() == [
+		headerResults == [
 			"uuid",
 			"inputModel",
 			"p",
@@ -155,10 +200,35 @@ class ProcessorProviderTest extends Specification {
 			"timestamp"] as String[]
 
 		when:
-		headerResults = provider.getHeaderElements(WecResult)
+		provider.getHeaderElements(WecResult)
 
 		then:
-		!headerResults.present
+		ProcessorProviderException exception = thrown(ProcessorProviderException)
+		exception.message == "Error during determination of header elements for entity class 'WecResult'."
+	}
+
+	def "A ProcessorProvider should return the header elements for a time series key known by one of its processors and do nothing otherwise"() {
+		given:
+		TimeSeriesProcessorKey availableKey = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+		Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>> timeSeriesProcessors = new HashMap<>()
+		timeSeriesProcessors.put(availableKey, new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue))
+		ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessors)
+
+		when:
+		String[] headerResults = provider.getHeaderElements(availableKey)
+
+		then:
+		headerResults == [
+			"uuid",
+			"price",
+			"time"] as String[]
+
+		when:
+		provider.getHeaderElements(new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, IntValue))
+
+		then:
+		ProcessorProviderException exception = thrown(ProcessorProviderException)
+		exception.message == "Error during determination of header elements for time series combination 'TimeSeriesProcessorKey{timeSeriesClass=class edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries, entryClass=class edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue, valueClass=class edu.ie3.datamodel.models.timeseries.IntValue}'."
 	}
 
 	def "A ProcessorProvider should process an entity known by its underlying processors correctly and do nothing otherwise"() {
@@ -166,7 +236,7 @@ class ProcessorProviderTest extends Specification {
 		ProcessorProvider provider = new ProcessorProvider([
 			new ResultEntityProcessor(PvResult),
 			new ResultEntityProcessor(EvResult)
-		])
+		], [] as Map<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>)
 
 		Map expectedMap = ["uuid"      : "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
 			"inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
@@ -182,7 +252,7 @@ class ProcessorProviderTest extends Specification {
 		PvResult pvResult = new PvResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
 
 		and:
-		Optional processorResult = provider.processEntity(pvResult)
+		Optional processorResult = provider.handleEntity(pvResult)
 
 		then:
 		processorResult.present
@@ -191,9 +261,40 @@ class ProcessorProviderTest extends Specification {
 		resultMap == expectedMap
 
 		when:
-		Optional result = provider.processEntity(new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q))
+		Optional result = provider.handleEntity(new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q))
 
 		then:
 		!result.present
+	}
+
+	def "A ProcessorProvider returns an empty Optional, if none of the assigned processors is able to handle a time series"() {
+		given:
+		TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+		Map<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
+		timeSeriesProcessorMap.put(key, processor)
+		ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessorMap)
+
+		when:
+		Optional<Set<LinkedHashMap<String, String>>> actual = provider.handleTimeSeries(individualIntTimeSeries)
+
+		then:
+		!actual.present
+	}
+
+	def "A ProcessorProvider handles a time series correctly"() {
+		given:
+		TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
+		Map<TimeSeriesProcessorKey, TimeSeriesProcessor> timeSeriesProcessorMap = new HashMap<>()
+		timeSeriesProcessorMap.put(key, processor)
+		ProcessorProvider provider = new ProcessorProvider([], timeSeriesProcessorMap)
+
+		when:
+		Optional<Set<LinkedHashMap<String, String>>> actual = provider.handleTimeSeries(individualEnergyPriceTimeSeries)
+
+		then:
+		actual.present
+		actual.get() == individualEnergyPriceTimeSeriesProcessed
 	}
 }
