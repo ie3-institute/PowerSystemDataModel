@@ -137,7 +137,7 @@ class InputEntityProcessorTest extends Specification {
 		LineInput          | GridTestData.lineCtoD           || [
 			"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
 			"geoPosition"      : "{\"type\":\"LineString\",\"coordinates\":[[7.411111,51.492528],[7.414116,51.484136]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-			"id"               : "test_line_AtoB",
+			"id"               : "test_line_CtoD",
 			"length"           : "0.003",
 			"parallelDevices"  : "2",
 			"nodeA"            : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",

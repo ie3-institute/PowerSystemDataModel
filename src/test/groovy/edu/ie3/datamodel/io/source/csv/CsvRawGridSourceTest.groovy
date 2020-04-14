@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData
+import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.test.common.GridTestData as rgtd
@@ -100,18 +101,19 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 				], SwitchInput.class),
 				new AssetInputEntityData([
 					"uuid"				: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-					"id"				: "test_line_AtoB",
+					"id"				: "test_lineCtoD",
 					"operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
 					"operatesFrom"		: "2020-03-24 15:11:31",
 					"operatesUntil"		: "",
 					"nodeA"				: "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
 					"nodeB"				: "6e0980e0-10f2-4e18-862b-eb2b7c90509b",
 					"parallelDevices"	: "2",
-					"lineType"			: "3bed3eb3-9790-4874-89b5-a5434d408088",
+					"type"				: "3bed3eb3-9790-4874-89b5-a5434d408088",
 					"length"			: "0.003",
 					"geoPosition"		: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 					"olmCharacteristic"	: "olm:{(0.0,1.0)}"
-				], LineInput.class)
+				],
+				LineInput.class)
 				)
 
 		def expectedSet = [
@@ -129,16 +131,17 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			)),
 			Optional.of(new ConnectorInputEntityData([
 				"uuid"				: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-				"id"				: "test_line_AtoB",
+				"id"				: "test_lineCtoD",
 				"operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
 				"operatesFrom"		: "2020-03-24 15:11:31",
 				"operatesUntil"		: "",
 				"parallelDevices"	: "2",
-				"lineType"			: "3bed3eb3-9790-4874-89b5-a5434d408088",
+				"type"				: "3bed3eb3-9790-4874-89b5-a5434d408088",
 				"length"			: "0.003",
 				"geoPosition"		: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 				"olmCharacteristic"	: "olm:{(0.0,1.0)}"
-			], LineInput.class,
+			],
+			LineInput.class,
 			rgtd.nodeC,
 			rgtd.nodeD
 			))
@@ -153,6 +156,202 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
 		when: "the source tries to convert it"
 		def actualSet = source.buildUntypedConnectorInputEntityData(validStream, nodes).collect(Collectors.toSet())
+
+		then: "everything is fine"
+		actualSet.size() == expectedSet.size()
+		actualSet.containsAll(expectedSet)
+	}
+
+	def "The CsvRawGridSource is able to add a type to untyped ConnectorInputEntityData correctly"() {
+		given: "valid input data"
+		def validConnectorEntityData = new ConnectorInputEntityData([
+			"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"id"               : "test_lineCtoD",
+			"operator"         : "8f9682df-0744-4b58-a122-f0dc730f6510",
+			"operatesFrom"     : "2020-03-24 15:11:31",
+			"operatesUntil"    : "",
+			"parallelDevices"  : "2",
+			"type"         		: "3bed3eb3-9790-4874-89b5-a5434d408088",
+			"length"           : "0.003",
+			"geoPosition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+			"olmCharacteristic": "olm:{(0.0,1.0)}"
+		],
+		LineInput.class,
+		rgtd.nodeC,
+		rgtd.nodeD
+		)
+
+		def expectedTypedEntityData = new TypedConnectorInputEntityData([
+			"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"id"               : "test_lineCtoD",
+			"operator"         : "8f9682df-0744-4b58-a122-f0dc730f6510",
+			"operatesFrom"     : "2020-03-24 15:11:31",
+			"operatesUntil"    : "",
+			"parallelDevices"  : "2",
+			"length"           : "0.003",
+			"geoPosition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+			"olmCharacteristic": "olm:{(0.0,1.0)}"
+		],
+		LineInput.class,
+		rgtd.nodeC,
+		rgtd.nodeD,
+		rgtd.lineTypeInputCtoD
+		)
+
+		when: "the source tries to convert it"
+		def actual = source.addTypeToEntityData(validConnectorEntityData, rgtd.lineTypeInputCtoD)
+
+		then: "everything is fine"
+		actual == expectedTypedEntityData
+	}
+
+	def "The CsvRawGridSource is able to find and add a type to untyped ConnectorInputEntityData correctly"() {
+		given: "valid input data"
+		def validConnectorEntityData = new ConnectorInputEntityData([
+			"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"id"               : "test_lineCtoD",
+			"operator"         : "8f9682df-0744-4b58-a122-f0dc730f6510",
+			"operatesFrom"     : "2020-03-24 15:11:31",
+			"operatesUntil"    : "",
+			"parallelDevices"  : "2",
+			"type"             : "3bed3eb3-9790-4874-89b5-a5434d408088",
+			"length"           : "0.003",
+			"geoPosition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+			"olmCharacteristic": "olm:{(0.0,1.0)}"
+		],
+		LineInput.class,
+		rgtd.nodeC,
+		rgtd.nodeD
+		)
+
+		def expectedTypedEntityData = Optional.of(new TypedConnectorInputEntityData([
+			"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"id"               : "test_lineCtoD",
+			"operator"         : "8f9682df-0744-4b58-a122-f0dc730f6510",
+			"operatesFrom"     : "2020-03-24 15:11:31",
+			"operatesUntil"    : "",
+			"parallelDevices"  : "2",
+			"length"           : "0.003",
+			"geoPosition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+			"olmCharacteristic": "olm:{(0.0,1.0)}"
+		],
+		LineInput.class,
+		rgtd.nodeC,
+		rgtd.nodeD,
+		rgtd.lineTypeInputCtoD
+		))
+
+		def availableTypes = [rgtd.lineTypeInputCtoD]
+
+		when: "the source tries to convert it"
+		def actual = source.findAndAddType(validConnectorEntityData, availableTypes)
+
+		then: "everything is fine"
+		actual == expectedTypedEntityData
+	}
+
+	def "The CsvRawGridSource is able to identify ConnectorInputEntityData data with non matching type requirements correctly"() {
+		given: "valid input data"
+		def validConnectorEntityData = new ConnectorInputEntityData([
+			"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"id"               : "test_lineCtoD",
+			"operator"         : "8f9682df-0744-4b58-a122-f0dc730f6510",
+			"operatesFrom"     : "2020-03-24 15:11:31",
+			"operatesUntil"    : "",
+			"parallelDevices"  : "2",
+			"type"             : "fd5b128d-ed35-4355-94b6-7518c55425fe",
+			"length"           : "0.003",
+			"geoPosition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+			"olmCharacteristic": "olm:{(0.0,1.0)}"
+		],
+		LineInput.class,
+		rgtd.nodeC,
+		rgtd.nodeD
+		)
+
+		def availableTypes = [rgtd.lineTypeInputCtoD]
+
+		when: "the source tries to convert it"
+		def actual = source.findAndAddType(validConnectorEntityData, availableTypes)
+
+		then: "everything is fine"
+		!actual.isPresent()
+	}
+
+	def "The CsvRawGridSource is able to convert a stream of valid ConnectorInputEntityData to TypedConnectorInputEntityData"() {
+		given: "valid input data"
+		def validStream = Stream.of(
+				Optional.of(new ConnectorInputEntityData([
+					"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+					"id"               : "test_lineCtoD",
+					"operator"         : "8f9682df-0744-4b58-a122-f0dc730f6510",
+					"operatesFrom"     : "2020-03-24 15:11:31",
+					"operatesUntil"    : "",
+					"parallelDevices"  : "2",
+					"type"             : "3bed3eb3-9790-4874-89b5-a5434d408088",
+					"length"           : "0.003",
+					"geoPosition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+					"olmCharacteristic": "olm:{(0.0,1.0)}"
+				],
+				LineInput.class,
+				rgtd.nodeC,
+				rgtd.nodeD
+				)),
+				Optional.of(new ConnectorInputEntityData([
+					"uuid"             : "92ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+					"id"               : "test_line_AtoB",
+					"operator"         : "8f9682df-0744-4b58-a122-f0dc730f6510",
+					"operatesFrom"     : "2020-03-24 15:11:31",
+					"operatesUntil"    : "",
+					"parallelDevices"  : "2",
+					"type"             : "3bed3eb3-9790-4874-89b5-a5434d408088",
+					"length"           : "0.003",
+					"geoPosition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+					"olmCharacteristic": "olm:{(0.0,1.0)}"
+				], LineInput.class,
+				rgtd.nodeA,
+				rgtd.nodeB
+				))
+				)
+
+		def expectedSet = [
+			Optional.of(new TypedConnectorInputEntityData<>([
+				"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+				"id"               : "test_lineCtoD",
+				"operator"         : "8f9682df-0744-4b58-a122-f0dc730f6510",
+				"operatesFrom"     : "2020-03-24 15:11:31",
+				"operatesUntil"    : "",
+				"parallelDevices"  : "2",
+				"length"           : "0.003",
+				"geoPosition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+				"olmCharacteristic": "olm:{(0.0,1.0)}"
+			],
+			LineInput.class,
+			rgtd.nodeC,
+			rgtd.nodeD,
+			rgtd.lineTypeInputCtoD
+			)),
+			Optional.of(new TypedConnectorInputEntityData<>([
+				"uuid"             : "92ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+				"id"               : "test_line_AtoB",
+				"operator"         : "8f9682df-0744-4b58-a122-f0dc730f6510",
+				"operatesFrom"     : "2020-03-24 15:11:31",
+				"operatesUntil"    : "",
+				"parallelDevices"  : "2",
+				"length"           : "0.003",
+				"geoPosition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+				"olmCharacteristic": "olm:{(0.0,1.0)}"
+			], LineInput.class,
+			rgtd.nodeA,
+			rgtd.nodeB,
+			rgtd.lineTypeInputCtoD
+			))
+		]
+
+		def availableTypes = [rgtd.lineTypeInputCtoD]
+
+		when: "the source tries to convert it"
+		def actualSet = source.buildTypedConnectorEntityData(validStream, availableTypes).collect(Collectors.toSet())
 
 		then: "everything is fine"
 		actualSet.size() == expectedSet.size()
