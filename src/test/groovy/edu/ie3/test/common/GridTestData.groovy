@@ -288,9 +288,10 @@ class GridTestData {
 
 
 	public static final SwitchInput switchAtoB = new SwitchInput(
-	UUID.fromString("5dc88077-aeb6-4711-9142-db57287640b1"), "test_switch_AtoB", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
-	,
+	UUID.fromString("5dc88077-aeb6-4711-9142-db57287640b1"),
+	"test_switch_AtoB",
+	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
 	nodeA,
 	nodeB,
 	true
