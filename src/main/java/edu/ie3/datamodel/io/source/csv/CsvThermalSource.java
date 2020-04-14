@@ -35,8 +35,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
       String csvSep,
       String thermalUnitsFolderPath,
       FileNamingStrategy fileNamingStrategy,
-      TypeSource typeSource,
-      CsvRawGridSource rawGridSource) {
+      TypeSource typeSource) {
     super(csvSep, thermalUnitsFolderPath, fileNamingStrategy);
     this.typeSource = typeSource;
 
