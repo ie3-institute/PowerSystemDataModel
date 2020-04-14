@@ -1,0 +1,36 @@
+/*
+ * © 2020. TU Dortmund University,
+ * Institute of Energy Systems, Energy Efficiency and Energy Economics,
+ * Research group Distribution grid planning and operation
+*/
+package edu.ie3.datamodel.io.factory.input.graphics;
+
+import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
+import java.util.Map;
+
+/**
+ * Data used by {@link NodeGraphicInputFactory} used to create instances of {@link
+ * edu.ie3.datamodel.models.input.graphics.NodeGraphicInput}s holding one {@link NodeInput} entity.
+ */
+public class NodeGraphicInputEntityData extends EntityData {
+
+  /** The NodeInput to this graphic data */
+  private final NodeInput node;
+
+  /**
+   * Creates a new NodeGraphicInputentityData object for an a NodeGraphicInput
+   *
+   * @param fieldsToAttributes attribute map: field name -> value
+   * @param node node input element of this graphic
+   */
+  public NodeGraphicInputEntityData(Map<String, String> fieldsToAttributes, NodeInput node) {
+    super(fieldsToAttributes, NodeGraphicInput.class);
+    this.node = node;
+  }
+
+  public NodeInput getNode() {
+    return node;
+  }
+}

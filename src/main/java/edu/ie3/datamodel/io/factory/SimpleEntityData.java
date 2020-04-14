@@ -10,12 +10,14 @@ import java.util.Map;
 
 /**
  * Data used by {@link SimpleEntityFactory} to create an instance of an entity than can be created
- * based only on a mapping of fieldName -> value
+ * based only on a mapping of fieldName -> value. This class can be used whenever no additional data
+ * is needed, but should not be used as parent class for extensions. Use {@link EntityData} for
+ * extensions instead.
  *
  * @version 0.1
  * @since 28.01.20
  */
-public class SimpleEntityData extends EntityData {
+public final class SimpleEntityData extends EntityData {
 
   public SimpleEntityData(
       Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> clazz) {
