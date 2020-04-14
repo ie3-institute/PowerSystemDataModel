@@ -6,11 +6,16 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
+import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData
+import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.test.common.GridTestData as rgtd
 
 import spock.lang.Shared
 import spock.lang.Specification
+
+import java.util.stream.Collectors
+import java.util.stream.Stream
 
 class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 	@Shared
@@ -22,7 +27,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
 			"id"			: "test_switch_AtoB",
 			"operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-			"operationTime"	: "2020-03-24 15:11:31",
+			"operatesFrom"	: "2020-03-24 15:11:31",
+			"operatesUntil"	: "",
 			"nodeA"			: "4ca90220-74c2-4369-9afa-a18bf068840d",
 			"nodeB"			: "47d29df0-ba2d-4d23-8e75-c82229c5c758",
 			"closed"		: "true"
@@ -32,7 +38,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
 			"id"			: "test_switch_AtoB",
 			"operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-			"operationTime"	: "2020-03-24 15:11:31",
+			"operatesFrom"	: "2020-03-24 15:11:31",
+			"operatesUntil"	: "",
 			"closed"		: "true"
 		]
 
@@ -59,7 +66,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
 			"id"			: "test_switch_AtoB",
 			"operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
-			"operationTime"	: "2020-03-24 15:11:31",
+			"operatesFrom"	: "2020-03-24 15:11:31",
+			"operatesUntil"	: "",
 			"nodeA"			: "4ca90220-74c2-4369-9afa-a18bf068840d",
 			"nodeB"			: "620d35fc-34f8-48af-8020-3897fe75add7",
 			"closed"		: "true"
@@ -74,5 +82,80 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
 		then: "it returns en empty Optional"
 		!connectorDataOption.isPresent()
+	}
+
+
+	def "The CsvRawGridSource is able to convert a stream of valid AssetInputEntityData to ConnectorInputEntityData"() {
+		given: "valid input data"
+		def validStream = Stream.of(
+				new AssetInputEntityData([
+					"uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
+					"id"			: "test_switch_AtoB",
+					"operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
+					"operatesFrom"	: "2020-03-24 15:11:31",
+					"operatesUntil"	: "",
+					"nodeA"			: "4ca90220-74c2-4369-9afa-a18bf068840d",
+					"nodeB"			: "47d29df0-ba2d-4d23-8e75-c82229c5c758",
+					"closed"		: "true"
+				], SwitchInput.class),
+				new AssetInputEntityData([
+					"uuid"				: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+					"id"				: "test_line_AtoB",
+					"operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
+					"operatesFrom"		: "2020-03-24 15:11:31",
+					"operatesUntil"		: "",
+					"nodeA"				: "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
+					"nodeB"				: "6e0980e0-10f2-4e18-862b-eb2b7c90509b",
+					"parallelDevices"	: "2",
+					"lineType"			: "3bed3eb3-9790-4874-89b5-a5434d408088",
+					"length"			: "0.003",
+					"geoPosition"		: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+					"olmCharacteristic"	: "olm:{(0.0,1.0)}"
+				], LineInput.class)
+				)
+
+		def expectedSet = [
+			Optional.of(new ConnectorInputEntityData([
+				"uuid"			: "5dc88077-aeb6-4711-9142-db57287640b1",
+				"id"			: "test_switch_AtoB",
+				"operator"		: "8f9682df-0744-4b58-a122-f0dc730f6510",
+				"operatesFrom"	: "2020-03-24 15:11:31",
+				"operatesUntil"	: "",
+				"closed"		: "true"
+			],
+			SwitchInput.class,
+			rgtd.nodeA,
+			rgtd.nodeB
+			)),
+			Optional.of(new ConnectorInputEntityData([
+				"uuid"				: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+				"id"				: "test_line_AtoB",
+				"operator"			: "8f9682df-0744-4b58-a122-f0dc730f6510",
+				"operatesFrom"		: "2020-03-24 15:11:31",
+				"operatesUntil"		: "",
+				"parallelDevices"	: "2",
+				"lineType"			: "3bed3eb3-9790-4874-89b5-a5434d408088",
+				"length"			: "0.003",
+				"geoPosition"		: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+				"olmCharacteristic"	: "olm:{(0.0,1.0)}"
+			], LineInput.class,
+			rgtd.nodeC,
+			rgtd.nodeD
+			))
+		] as Set
+
+		def nodes = [
+			rgtd.nodeA,
+			rgtd.nodeB,
+			rgtd.nodeC,
+			rgtd.nodeD
+		]
+
+		when: "the source tries to convert it"
+		def actualSet = source.buildUntypedConnectorInputEntityData(validStream, nodes).collect(Collectors.toSet())
+
+		then: "everything is fine"
+		actualSet.size() == expectedSet.size()
+		actualSet.containsAll(expectedSet)
 	}
 }

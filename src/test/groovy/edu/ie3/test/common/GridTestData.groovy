@@ -310,9 +310,12 @@ class GridTestData {
 	)
 
 	public static final LineInput lineCtoD = new LineInput(
-	UUID.fromString("91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"), "test_line_AtoB", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	UUID.fromString("91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
+	"test_line_AtoB",
+	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
 	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
-	nodeC, nodeD,
+	nodeC,
+	nodeD,
 	2,
 	lineTypeInputCtoD,
 	Quantities.getQuantity(3, Units.METRE),
