@@ -50,6 +50,7 @@ public abstract class CsvDataSource {
   protected static final String NODE_B = "nodeB";
   protected static final String NODE = "node";
   protected static final String TYPE = "type";
+  protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
 
   public CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
@@ -197,7 +198,7 @@ public abstract class CsvDataSource {
       String entityDesc, String entityUuid, String entityId, String missingElementsString) {
 
     log.warn(
-        "Skipping '{}' with uuid '{}' and id '{}'. Not all required entities found!\nMissing elements:\n{}",
+        "Skipping '{}' with uuid '{}' and id '{}'. Not all required entities found or map is missing entity key!\nMissing elements:\n{}",
         entityDesc,
         entityUuid,
         entityId,
@@ -338,9 +339,9 @@ public abstract class CsvDataSource {
     if (!assetType.isPresent()) {
       logSkippingWarning(
           skippedClassString,
-          saveMapGet(fieldsToAttributes, "uuid", "fieldsToValuesMap"),
-          saveMapGet(fieldsToAttributes, "id", "fieldsToValuesMap"),
-          TYPE + ": " + saveMapGet(fieldsToAttributes, TYPE, "fieldsToValuesMap"));
+          saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
+          saveMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
+          TYPE + ": " + saveMapGet(fieldsToAttributes, TYPE, FIELDS_TO_VALUES_MAP));
     }
     return assetType;
   }
