@@ -97,8 +97,6 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 			/* InputEntity */
 			OperatorInput,
 			RandomLoadParameters,
-			WecCharacteristicInput,
-			EvCharacteristicInput,
 			/* - AssetInput */
 			NodeInput,
 			LineInput,

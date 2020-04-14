@@ -11,7 +11,7 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.RandomLoadParameters;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
-import edu.ie3.datamodel.models.input.system.characteristic.AssetCharacteristicInput;
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -91,8 +91,8 @@ public class FileNamingStrategy {
       return getAssetInputFileName(cls.asSubclass(AssetInput.class));
     if (ResultEntity.class.isAssignableFrom(cls))
       return getResultEntityFileName(cls.asSubclass(ResultEntity.class));
-    if (AssetCharacteristicInput.class.isAssignableFrom(cls))
-      return getAssetCharacteristicsFileName(cls.asSubclass(AssetCharacteristicInput.class));
+    if (CharacteristicInput.class.isAssignableFrom(cls))
+      return getAssetCharacteristicsFileName(cls.asSubclass(CharacteristicInput.class));
     if (cls.equals(RandomLoadParameters.class)) {
       String loadParamString = camelCaseToSnakeCase(cls.getSimpleName());
       return Optional.of(addPrefixAndSuffix(loadParamString.concat("_input")));
@@ -150,14 +150,14 @@ public class FileNamingStrategy {
   }
 
   /**
-   * Get the the file name for all {@link AssetCharacteristicInput}s
+   * Get the the file name for all {@link CharacteristicInput}s
    *
    * @param assetCharClass the asset characteristics class a filename string should be generated
    *     from
    * @return the filename string
    */
   public Optional<String> getAssetCharacteristicsFileName(
-      Class<? extends AssetCharacteristicInput> assetCharClass) {
+      Class<? extends CharacteristicInput> assetCharClass) {
     String assetCharString = camelCaseToSnakeCase(assetCharClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetCharString));
   }

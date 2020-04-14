@@ -15,8 +15,6 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
-import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput;
-import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
@@ -43,8 +41,6 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               /* InputEntity */
               OperatorInput.class,
               RandomLoadParameters.class,
-              WecCharacteristicInput.class,
-              EvCharacteristicInput.class,
               /* - AssetInput */
               NodeInput.class,
               LineInput.class,

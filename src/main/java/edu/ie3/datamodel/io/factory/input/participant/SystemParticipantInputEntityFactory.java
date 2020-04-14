@@ -5,11 +5,14 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityFactory;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.*;
 
 /**
@@ -44,7 +47,16 @@ abstract class SystemParticipantInputEntityFactory<
   protected T buildModel(
       D data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
     NodeInput node = data.getNode();
-    String qCharacteristics = data.getField(Q_CHARACTERISTICS);
+    ReactivePowerCharacteristic qCharacteristics;
+    try {
+      qCharacteristics = ReactivePowerCharacteristic.parse(data.getField(Q_CHARACTERISTICS));
+    } catch (ParsingException e) {
+      throw new FactoryException(
+          "Cannot parse the following reactive power characteristic: '"
+              + data.getField(Q_CHARACTERISTICS)
+              + "'",
+          e);
+    }
 
     return buildModel(data, uuid, id, node, qCharacteristics, operator, operationTime);
   }
@@ -66,7 +78,7 @@ abstract class SystemParticipantInputEntityFactory<
       UUID uuid,
       String id,
       NodeInput node,
-      String qCharacteristics,
+      ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime);
 }

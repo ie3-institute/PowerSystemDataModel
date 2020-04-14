@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.system.StorageStrategy;
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.TimeTools;
 import java.beans.Introspector;
@@ -256,9 +257,15 @@ public abstract class Processor<T> {
       case "WecTypeInput":
         resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
         break;
-      case "Optional": // todo needs to be removed asap as this is very dangerous, but necessary as
-        // long as #75 is not addressed
-        resultStringBuilder.append(((Optional<String>) methodReturnObject).orElse(""));
+      case "EvCharacteristicInput":
+      case "OlmCharacteristicInput":
+      case "WecCharacteristicInput":
+      case "CosPhiFixed":
+      case "CosPhiP":
+      case "QV":
+      case "ReactivePowerCharacteristic":
+      case "CharacteristicInput":
+        resultStringBuilder.append(((CharacteristicInput<?, ?>) methodReturnObject).deSerialize());
         break;
       default:
         throw new EntityProcessorException(

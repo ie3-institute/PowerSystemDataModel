@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.*;
 
 /** Describes a system asset that is connected to a node */
@@ -19,7 +20,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
   private final NodeInput node;
 
   /** Description of a reactive power characteristic. For details see further documentation */
-  private final String qCharacteristics;
+  private final ReactivePowerCharacteristic qCharacteristics;
 
   /**
    * Constructor for an operated system participant
@@ -37,7 +38,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       OperatorInput operator,
       OperationTime operationTime,
       NodeInput node,
-      String qCharacteristics) {
+      ReactivePowerCharacteristic qCharacteristics) {
     super(uuid, id, operator, operationTime);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
@@ -51,13 +52,14 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    */
-  public SystemParticipantInput(UUID uuid, String id, NodeInput node, String qCharacteristics) {
+  public SystemParticipantInput(
+      UUID uuid, String id, NodeInput node, ReactivePowerCharacteristic qCharacteristics) {
     super(uuid, id);
     this.node = node;
     this.qCharacteristics = qCharacteristics;
   }
 
-  public String getqCharacteristics() {
+  public ReactivePowerCharacteristic getqCharacteristics() {
     return qCharacteristics;
   }
 

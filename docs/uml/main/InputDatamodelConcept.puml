@@ -22,7 +22,7 @@ AssetInput ..|> Operable
 
 abstract Class SystemParticipantInput {
     - node: NodeInput
-    - qCharacteristics: String
+    - qCharacteristics: ReactivePowerCharacteristicInput
 }
 SystemParticipantInput --|> AssetInput
 SystemParticipantInput ..|> HasNodes
@@ -39,19 +39,58 @@ abstract Class ConnectorInput {
 ConnectorInput --|> AssetInput
 ConnectorInput ..|> HasNodes
 
-abstract Class AssetCharacteristicsInput<T extends AssetTypeInput> {
-    - type: T
-    - characteristic: String
+Interface Comparable
+
+Class CharacteristicCoordinate <A extends Quantity<A>, O extends Quantity<O>> {
+    - x: ComparableQuantity<A>
+    - y: ComparableQuantity<O>
+    + deSerialize(Int): String
 }
-AssetCharacteristicsInput --|> InputEntity
+CharacteristicCoordinate ..|> Comparable
+
+abstract Class CharacteristicInput <A extends Quantity<A>, O extends Quantity<O>> {
+    - characteristicPrefix: String
+    - decimalPlaces: int
+    - points: SortedSet<CharacteristicCoordinate>
+    + deSerialize(): String
+    + <<static>> buildStartingRegex(String): String
+    - extractCoordinateList(String): String
+    - buildCoordinatesFromString(String, Unit<A>, Unit<O>): SortedSet<CharacteristicCoordinate<A, O>>
+}
+CharacteristicInput "1" --* "n" CharacteristicCoordinate
 
 Class WecCharacteristicInput {
 }
-WecCharacteristicInput --|> AssetCharacteristicsInput: <<bind>>T::WecTypeInput
+WecCharacteristicInput --|> CharacteristicInput: <<bind>>A::Power,O::Dimensionless
 
 Class EvCharacteristicInput {
 }
-EvCharacteristicInput --|> AssetCharacteristicsInput: <<bind>>T::EvTypeInput
+EvCharacteristicInput --|> CharacteristicInput: <<bind>>A::Speed,O::Dimensionless
+
+Class OlmCharacteristicInput {
+    + <<static>> CONSTANT_CHARACTERISTIC: OlmCharacteristicInput
+}
+OlmCharacteristicInput --|> CharacteristicInput: <<bind>>A::Speed,O::Dimensionless
+
+abstract Class ReactivePowerCharacteristic {
+    + <<static>> parse(String): ReactivePowerCharacteristic
+}
+ReactivePowerCharacteristic --|> CharacteristicInput: <<bind>>A::Dimensionless,O::Dimensionless
+
+Class CosPhiFixed {
+    + <<static>> CONSTANT_CHARACTERISTIC: CosPhiFixed
+}
+CosPhiFixed --|> ReactivePowerCharacteristic
+
+Class CosPhiP {
+    + <<static>> CONSTANT_CHARACTERISTIC: CosPhiP
+}
+CosPhiP --|> ReactivePowerCharacteristic
+
+Class QV {
+    + <<static>> CONSTANT_CHARACTERISTIC: QV
+}
+QV --|> ReactivePowerCharacteristic: <<bind>>A::Power
 
 abstract Class AssetTypeInput {
     + id: String
@@ -130,6 +169,7 @@ Class WecTypeInput {
     - rotorArea: ComparableQuantity<Area> [m²]
     - hubHeight: ComparableQuantity<Length> [m]
     - etaConv: ComparableQuantity<Dimensionless> [%]
+    - cpCharacteristic: WecCharacteristicInput
 }
 WecTypeInput --|> SystemParticipantTypeInput
 
@@ -345,11 +385,11 @@ Class EvcsInput {
 EvcsInput --|> AssetInput
 
 Class LineInput {
-    + type: LineTypeInput
-    + length: ComparableQuantity<Length> (km)
-    + amount: Integer
-    + olm: Optional<String>
-    + geoPosition: LineString
+    - type: LineTypeInput
+    - length: ComparableQuantity<Length> (km)
+    - amount: Integer
+    - olm: OlmCharacteristicInput
+    - geoPosition: LineString
 }
 LineInput --|> ConnectorInput
 LineInput ..|> HasType

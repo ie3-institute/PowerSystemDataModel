@@ -57,7 +57,6 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
     try {
       // build the model
       return Optional.of(buildModel(data));
-
     } catch (FactoryException e) {
       // only catch FactoryExceptions, as more serious exceptions should be handled elsewhere
       log.error(
@@ -90,6 +89,7 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
    *
    * @param data EntityData (or subclass) containing the data
    * @return entity created from data
+   * @throws FactoryException if the model cannot be build
    */
   protected abstract T buildModel(D data);
 
