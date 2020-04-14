@@ -95,7 +95,7 @@ public class WecTypeInput extends SystemParticipantTypeInput {
   public String toString() {
     return "WecTypeInput{"
         + "uuid="
-        + uuid
+        + getUuid()
         + ", cpCharacteristic="
         + cpCharacteristic
         + ", etaConv="

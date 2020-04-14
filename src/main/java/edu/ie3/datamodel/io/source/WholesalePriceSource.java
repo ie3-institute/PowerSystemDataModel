@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.models.timeseries.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.value.EnergyPriceValue;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;

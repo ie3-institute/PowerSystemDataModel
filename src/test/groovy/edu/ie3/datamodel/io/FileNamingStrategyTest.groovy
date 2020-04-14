@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io
 
+import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.input.EvcsInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -53,10 +54,73 @@ import edu.ie3.datamodel.models.result.system.LoadResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.StorageResult
 import edu.ie3.datamodel.models.result.system.WecResult
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
+import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import spock.lang.Specification
 
-
 class FileNamingStrategyTest extends Specification {
+
+	def "The FileNamingStrategy is able to prepare the prefix properly"() {
+		when:
+		String actual = FileNamingStrategy.preparePrefix(prefix)
+
+		then:
+		actual == expected
+
+		where:
+		prefix 		|| expected
+		"abc123" 	|| "abc123_"
+		"aBc123" 	|| "abc123_"
+		"ABC123" 	|| "abc123_"
+		"abc123_" 	|| "abc123_"
+		"aBc123_"	|| "abc123_"
+		"ABC123_" 	|| "abc123_"
+	}
+
+	def "The FileNamingStrategy is able to prepare the suffix properly"() {
+		when:
+		String actual = FileNamingStrategy.prepareSuffix(prefix)
+
+		then:
+		actual == suffix
+
+		where:
+		prefix || suffix
+		"abc123" || "_abc123"
+		"aBc123" || "_abc123"
+		"ABC123" || "_abc123"
+		"_abc123" || "_abc123"
+		"_aBc123" || "_abc123"
+		"_ABC123" || "_abc123"
+	}
+
+	def "A FileNamingStrategy should recognize if empty strings are passed in the prefix/suffix constructor and don't add underlines then"() {
+		given: "a file naming strategy"
+		FileNamingStrategy strategy = new FileNamingStrategy("", "")
+
+		expect:
+		strategy.prefix == ""
+		strategy.suffix == ""
+	}
+
+	def "A FileNamingStrategy should correctly append and prepend underscores"() {
+		given: "a file naming strategy"
+		FileNamingStrategy strategy = new FileNamingStrategy("bla", "foo")
+
+		expect:
+		strategy.prefix == "bla_"
+		strategy.suffix == "_foo"
+	}
+
+	def "A FileNamingStrategy should correctly append underscore, when only prefix is set"() {
+		given: "a file naming strategy"
+		FileNamingStrategy strategy = new FileNamingStrategy("bla")
+
+		expect:
+		strategy.prefix == "bla_"
+		strategy.suffix == ""
+	}
 
 	def "A FileNamingStrategy should return an empty optional on a invalid class"() {
 		given: "a file naming strategy"
@@ -67,15 +131,6 @@ class FileNamingStrategyTest extends Specification {
 
 		then:
 		!res.present
-	}
-
-	def "A FileNamingStrategy should recognize if empty strings are passed in the prefix/suffix constructor and don't add underlines then"() {
-		given: "a file naming strategy"
-		FileNamingStrategy strategy = new FileNamingStrategy("", "")
-
-		expect:
-		strategy.prefix == ""
-		strategy.suffix == ""
 	}
 
 	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all result models"() {
@@ -246,5 +301,72 @@ class FileNamingStrategyTest extends Specification {
 		modelClass       || expectedString
 		NodeGraphicInput || "node_graphic_input"
 		LineGraphicInput || "line_graphic_input"
+	}
+
+	def "A FileNamingStrategy without pre- or suffix should return valid file name for individual time series" () {
+		given:
+		FileNamingStrategy strategy = new FileNamingStrategy()
+		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
+		timeSeries.getUuid() >> uuid
+
+		when:
+		Optional<String> actual = strategy.getFileName(timeSeries)
+
+		then:
+		actual.present
+		actual.get() == expectedFileName
+
+		where:
+		clazz                || uuid 													|| expectedFileName
+		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "individual_time_series_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
+	}
+
+	def "A FileNamingStrategy with pre- or suffix should return valid file name for individual time series" () {
+		given:
+		FileNamingStrategy strategy = new FileNamingStrategy("aa", "zz")
+		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
+		timeSeries.getUuid() >> uuid
+
+		when:
+		Optional<String> actual = strategy.getFileName(timeSeries)
+
+		then:
+		actual.present
+		actual.get() == expectedFileName
+
+		where:
+		clazz                || uuid 													|| expectedFileName
+		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_individual_time_series_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
+	}
+
+	def "A FileNamingStrategy without pre- or suffix should return valid file name for load profile input" () {
+		given:
+		FileNamingStrategy strategy = new FileNamingStrategy()
+		LoadProfileInput timeSeries = Mock(LoadProfileInput)
+		timeSeries.getUuid() >> uuid
+		timeSeries.getType() >> type
+
+		when:
+		Optional<String> actual = strategy.getFileName(timeSeries)
+
+		then:
+		actual.present
+		actual.get() == expectedFileName
+
+		where:
+		clazz                || uuid 													|| type 				|| expectedFileName
+		LoadProfileInput     || UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") || BdewLoadProfile.G3 	|| "load_profile_time_series_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
+	}
+
+	def "A FileNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {
+		given:
+		FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+		RepetitiveTimeSeries timeSeries = Mock(RepetitiveTimeSeries)
+
+		when:
+		Optional<String> fileName = fileNamingStrategy.getFileName(timeSeries)
+
+		then:
+		!fileName.present
 	}
 }

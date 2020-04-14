@@ -13,6 +13,12 @@ import edu.ie3.datamodel.models.input.RandomLoadParameters;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.models.timeseries.TimeSeries;
+import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.util.StringUtils;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,12 +39,6 @@ public class FileNamingStrategy {
   private final String prefix;
   private final String suffix;
 
-  /** Constructor for building the file names without provided files with prefix and suffix */
-  public FileNamingStrategy() {
-    this.prefix = "";
-    this.suffix = "";
-  }
-
   /**
    * Constructor for building the file names
    *
@@ -46,8 +46,13 @@ public class FileNamingStrategy {
    * @param suffix Suffixes of the files
    */
   public FileNamingStrategy(String prefix, String suffix) {
-    this.prefix = prefix.endsWith("_") || prefix.isEmpty() ? prefix : prefix.concat("_");
-    this.suffix = suffix.startsWith("_") || prefix.isEmpty() ? suffix : "_".concat(suffix);
+    this.prefix = preparePrefix(prefix);
+    this.suffix = prepareSuffix(suffix);
+  }
+
+  /** Constructor for building the file names without provided files with prefix and suffix */
+  public FileNamingStrategy() {
+    this("", "");
   }
 
   /**
@@ -56,12 +61,30 @@ public class FileNamingStrategy {
    * @param prefix Prefix of the files
    */
   public FileNamingStrategy(String prefix) {
-    this.suffix = "";
-    this.prefix = prefix.endsWith("_") ? prefix : prefix.concat("_");
+    this(prefix, "");
+  }
+
+  /**
+   * Prepares the prefix by appending an underscore and bringing it to lower case
+   *
+   * @param prefix Intended prefix
+   * @return Prefix with trailing underscore
+   */
+  private static String preparePrefix(String prefix) {
+    return StringUtils.cleanString(prefix).replaceAll("([^_])$", "$1_").toLowerCase();
+  }
+
+  /**
+   * Prepares the suffix by prepending an underscore and bringing it to lower case
+   *
+   * @param suffix Intended suffix
+   * @return Suffix with trailing leading
+   */
+  private static String prepareSuffix(String suffix) {
+    return StringUtils.cleanString(suffix).replaceAll("^([^_])", "_$1").toLowerCase();
   }
 
   public Optional<String> getFileName(Class<? extends UniqueEntity> cls) {
-
     if (AssetTypeInput.class.isAssignableFrom(cls))
       return getTypeFileName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))
@@ -80,6 +103,39 @@ public class FileNamingStrategy {
       return getOperatorInputFileName(cls.asSubclass(OperatorInput.class));
     logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
     return Optional.empty();
+  }
+
+  /**
+   * Builds a file name of the given information.
+   *
+   * @param timeSeries Time series to derive naming information from
+   * @return A file name for this particular time series
+   */
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+      Optional<String> getFileName(T timeSeries) {
+    if (timeSeries instanceof IndividualTimeSeries) {
+      return Optional.of(
+          prefix
+              .concat("individual")
+              .concat("_time_series")
+              .concat("_")
+              .concat(timeSeries.getUuid().toString())
+              .concat(suffix));
+    } else if (timeSeries instanceof LoadProfileInput) {
+      LoadProfileInput loadProfileInput = (LoadProfileInput) timeSeries;
+      return Optional.of(
+          prefix
+              .concat("load_profile")
+              .concat("_time_series")
+              .concat("_")
+              .concat(loadProfileInput.getType().getKey())
+              .concat("_")
+              .concat(loadProfileInput.getUuid().toString())
+              .concat(suffix));
+    } else {
+      logger.error("There is no naming strategy defined for {}", timeSeries);
+      return Optional.empty();
+    }
   }
 
   /**

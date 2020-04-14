@@ -3,42 +3,34 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.models.value;
+package edu.ie3.datamodel.models.timeseries.individual;
 
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
+import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Describes an entity of a time series by mapping a value to a timestamp
  *
  * @param <T> type of value
  */
-public class TimeBasedValue<T extends Value> extends UniqueEntity {
-
-  private T value;
-
+public class TimeBasedValue<T extends Value> extends TimeSeriesEntry<T>
+    implements Comparable<TimeBasedValue> {
   private ZonedDateTime time;
 
-  public TimeBasedValue(ZonedDateTime time, T value) {
-    this.value = value;
+  public TimeBasedValue(UUID uuid, ZonedDateTime time, T value) {
+    super(uuid, value);
     this.time = time;
   }
 
-  public T getValue() {
-    return value;
-  }
-
-  public void setValue(T value) {
-    this.value = value;
+  public TimeBasedValue(ZonedDateTime time, T value) {
+    this(UUID.randomUUID(), time, value);
   }
 
   public ZonedDateTime getTime() {
     return time;
-  }
-
-  public void setTime(ZonedDateTime time) {
-    this.time = time;
   }
 
   @Override
@@ -47,16 +39,21 @@ public class TimeBasedValue<T extends Value> extends UniqueEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     TimeBasedValue<?> that = (TimeBasedValue<?>) o;
-    return Objects.equals(value, that.value) && Objects.equals(time, that.time);
+    return time.equals(that.time);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), value, time);
+    return Objects.hash(super.hashCode(), time);
   }
 
   @Override
   public String toString() {
-    return "TimeBasedValue{" + value + "}@" + time;
+    return "TimeBasedValue{" + "uuid=" + getUuid() + ", time=" + time + ", value=" + value + '}';
+  }
+
+  @Override
+  public int compareTo(TimeBasedValue timeBasedValue) {
+    return time.compareTo(timeBasedValue.time);
   }
 }
