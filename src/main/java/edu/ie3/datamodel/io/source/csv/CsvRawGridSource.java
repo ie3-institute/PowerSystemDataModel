@@ -275,88 +275,146 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         .collect(Collectors.toSet());
   }
 
+  /**
+   * Converts a stream of {@link AssetInputEntityData} in connection with a collection of known
+   * {@link NodeInput}s to a stream of {@link ConnectorInputEntityData}.
+   *
+   * @param assetInputEntityDataStream Input stream of {@link AssetInputEntityData}
+   * @param nodes A collection of known nodes
+   * @return A stream on option to matching {@link ConnectorInputEntityData}
+   */
   private Stream<Optional<ConnectorInputEntityData>> buildUntypedConnectorInputEntityData(
       Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
     return assetInputEntityDataStream
         .parallel()
         .map(
-            assetInputEntityData -> {
-
-              // get the raw data
-              Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
-
-              // get the two connector nodes
-              String nodeAUuid = fieldsToAttributes.get(NODE_A);
-              String nodeBUuid = fieldsToAttributes.get(NODE_B);
-              Optional<NodeInput> nodeA = findFirstEntityByUuid(nodeAUuid, nodes);
-              Optional<NodeInput> nodeB = findFirstEntityByUuid(nodeBUuid, nodes);
-
-              // if nodeA or nodeB are not present we return an empty element and log a
-              // warning
-              if (!nodeA.isPresent() || !nodeB.isPresent()) {
-                String debugString =
-                    Stream.of(
-                            new AbstractMap.SimpleEntry<>(nodeA, NODE_A + ": " + nodeAUuid),
-                            new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid))
-                        .filter(entry -> !entry.getKey().isPresent())
-                        .map(AbstractMap.SimpleEntry::getValue)
-                        .collect(Collectors.joining("\n"));
-
-                logSkippingWarning(
-                    assetInputEntityData.getEntityClass().getSimpleName(),
-                    fieldsToAttributes.get("uuid"),
-                    fieldsToAttributes.get("id"),
-                    debugString);
-                return Optional.empty();
-              }
-
-              // remove fields that are passed as objects to constructor
-              fieldsToAttributes.keySet().removeAll(new HashSet<>(Arrays.asList(NODE_A, NODE_B)));
-
-              return Optional.of(
-                  new ConnectorInputEntityData(
-                      fieldsToAttributes,
-                      assetInputEntityData.getEntityClass(),
-                      assetInputEntityData.getOperatorInput(),
-                      nodeA.get(),
-                      nodeB.get()));
-            });
+            assetInputEntityData ->
+                buildUntypedConnectorInputEntityData(assetInputEntityData, nodes));
   }
 
+  /**
+   * Converts a single given {@link AssetInputEntityData} in connection with a collection of known
+   * {@link NodeInput}s to {@link ConnectorInputEntityData}. If this is not possible, an empty
+   * option is given back.
+   *
+   * @param assetInputEntityData Input entity data to convert
+   * @param nodes A collection of known nodes
+   * @return An option to matching {@link ConnectorInputEntityData}
+   */
+  private Optional<ConnectorInputEntityData> buildUntypedConnectorInputEntityData(
+      AssetInputEntityData assetInputEntityData, Collection<NodeInput> nodes) {
+    // get the raw data
+    Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
+
+    // get the two connector nodes
+    String nodeAUuid = fieldsToAttributes.get(NODE_A);
+    String nodeBUuid = fieldsToAttributes.get(NODE_B);
+    Optional<NodeInput> nodeA = findFirstEntityByUuid(nodeAUuid, nodes);
+    Optional<NodeInput> nodeB = findFirstEntityByUuid(nodeBUuid, nodes);
+
+    // if nodeA or nodeB are not present we return an empty element and log a
+    // warning
+    if (!nodeA.isPresent() || !nodeB.isPresent()) {
+      String debugString =
+          Stream.of(
+                  new AbstractMap.SimpleEntry<>(nodeA, NODE_A + ": " + nodeAUuid),
+                  new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid))
+              .filter(entry -> !entry.getKey().isPresent())
+              .map(AbstractMap.SimpleEntry::getValue)
+              .collect(Collectors.joining("\n"));
+
+      logSkippingWarning(
+          assetInputEntityData.getEntityClass().getSimpleName(),
+          fieldsToAttributes.get("uuid"),
+          fieldsToAttributes.get("id"),
+          debugString);
+      return Optional.empty();
+    }
+
+    // remove fields that are passed as objects to constructor
+    fieldsToAttributes.keySet().removeAll(new HashSet<>(Arrays.asList(NODE_A, NODE_B)));
+
+    return Optional.of(
+        new ConnectorInputEntityData(
+            fieldsToAttributes,
+            assetInputEntityData.getEntityClass(),
+            assetInputEntityData.getOperatorInput(),
+            nodeA.get(),
+            nodeB.get()));
+  }
+
+  /**
+   * Enriches the given untyped entity data with the equivalent asset type. If this is not possible,
+   * an empty Optional is returned
+   *
+   * @param noTypeConnectorEntityDataStream Stream of untyped entity data
+   * @param availableTypes Yet available asset types
+   * @param <T> Type of the asset type
+   * @return Stream of option to enhanced data
+   */
   private <T extends AssetTypeInput>
       Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntityData(
           Stream<Optional<ConnectorInputEntityData>> noTypeConnectorEntityDataStream,
-          Collection<T> types) {
+          Collection<T> availableTypes) {
     return noTypeConnectorEntityDataStream
         .parallel()
         .map(
             noTypeEntityDataOpt ->
                 noTypeEntityDataOpt.flatMap(
-                    noTypeEntityData ->
-                        getAssetType(
-                                types,
-                                noTypeEntityData.getFieldsToValues(),
-                                noTypeEntityData.getClass().getSimpleName())
-                            .map( // if the optional is present, transform and return to the data,
-                                // otherwise return an empty optional
-                                assetType -> {
-                                  Map<String, String> fieldsToAttributes =
-                                      noTypeEntityData.getFieldsToValues();
-
-                                  // remove fields that are passed as objects to constructor
-                                  fieldsToAttributes.keySet().remove(TYPE);
-
-                                  // build result object
-                                  return new TypedConnectorInputEntityData<>(
-                                      fieldsToAttributes,
-                                      noTypeEntityData.getEntityClass(),
-                                      noTypeEntityData.getOperatorInput(),
-                                      noTypeEntityData.getNodeA(),
-                                      noTypeEntityData.getNodeB(),
-                                      assetType);
-                                })));
+                    noTypeEntityData -> findAndAddType(noTypeEntityData, availableTypes)));
   }
 
+  /**
+   * Finds the required asset type and if present, adds it to the untyped entity data
+   *
+   * @param untypedEntityData Untyped entity data to enrich
+   * @param availableTypes Yet available asset types
+   * @param <T> Type of the asset type
+   * @return Option to enhanced data
+   */
+  private <T extends AssetTypeInput> Optional<TypedConnectorInputEntityData<T>> findAndAddType(
+      ConnectorInputEntityData untypedEntityData, Collection<T> availableTypes) {
+    Optional<T> assetTypeOption =
+        getAssetType(
+            availableTypes,
+            untypedEntityData.getFieldsToValues(),
+            untypedEntityData.getClass().getSimpleName());
+    return assetTypeOption.map(assetType -> addTypeToEntityData(untypedEntityData, assetType));
+  }
+
+  /**
+   * Enriches the given, untyped entity data with the provided asset type
+   *
+   * @param untypedEntityData Untyped entity data to enrich
+   * @param assetType Asset type to add
+   * @param <T> Type of the asset type
+   * @return The enriched entity data
+   */
+  private <T extends AssetTypeInput> TypedConnectorInputEntityData<T> addTypeToEntityData(
+      ConnectorInputEntityData untypedEntityData, T assetType) {
+    Map<String, String> fieldsToAttributes = untypedEntityData.getFieldsToValues();
+
+    // remove fields that are passed as objects to constructor
+    fieldsToAttributes.keySet().remove(TYPE);
+
+    // build result object
+    return new TypedConnectorInputEntityData<>(
+        fieldsToAttributes,
+        untypedEntityData.getEntityClass(),
+        untypedEntityData.getOperatorInput(),
+        untypedEntityData.getNodeA(),
+        untypedEntityData.getNodeB(),
+        assetType);
+  }
+
+  /**
+   * Enriches the Stream of options on {@link Transformer3WInputEntityData} with the information of
+   * the internal node
+   *
+   * @param typedConnectorEntityDataStream Stream of already typed input entity data
+   * @param nodes Yet available nodes
+   * @return A stream of options on enriched data
+   */
   private Stream<Optional<Transformer3WInputEntityData>> buildTransformer3WEntityData(
       Stream<Optional<TypedConnectorInputEntityData<Transformer3WTypeInput>>>
           typedConnectorEntityDataStream,
@@ -366,38 +424,50 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         .map(
             typedEntityDataOpt ->
                 typedEntityDataOpt.flatMap(
-                    typeEntityData -> {
+                    typeEntityData -> addInternalNode(typeEntityData, nodes)));
+  }
 
-                      // get the raw data
-                      Map<String, String> fieldsToAttributes = typeEntityData.getFieldsToValues();
+  /**
+   * Enriches the internal node to the already typed entity data of a three winding transformer. If
+   * no matching node can be found, return an empty Optional.
+   *
+   * @param typeEntityData Already typed entity data
+   * @param nodes Yet available nodes
+   * @return An option to the enriched data
+   */
+  private Optional<Transformer3WInputEntityData> addInternalNode(
+      TypedConnectorInputEntityData<Transformer3WTypeInput> typeEntityData,
+      Collection<NodeInput> nodes) {
 
-                      // get nodeC of the transformer
-                      String nodeCUuid = fieldsToAttributes.get("nodeC");
-                      Optional<NodeInput> nodeC = findFirstEntityByUuid(nodeCUuid, nodes);
+    // get the raw data
+    Map<String, String> fieldsToAttributes = typeEntityData.getFieldsToValues();
 
-                      // if nodeC is not present we return an empty element and
-                      // log a warning
-                      if (!nodeC.isPresent()) {
-                        logSkippingWarning(
-                            typeEntityData.getEntityClass().getSimpleName(),
-                            fieldsToAttributes.get("uuid"),
-                            fieldsToAttributes.get("id"),
-                            "nodeC: " + nodeCUuid);
-                        return Optional.empty();
-                      }
+    // get nodeC of the transformer
+    String nodeCUuid = fieldsToAttributes.get("nodeC");
+    Optional<NodeInput> nodeC = findFirstEntityByUuid(nodeCUuid, nodes);
 
-                      // remove fields that are passed as objects to constructor
-                      fieldsToAttributes.keySet().remove("nodeC");
+    // if nodeC is not present we return an empty element and
+    // log a warning
+    if (!nodeC.isPresent()) {
+      logSkippingWarning(
+          typeEntityData.getEntityClass().getSimpleName(),
+          fieldsToAttributes.get("uuid"),
+          fieldsToAttributes.get("id"),
+          "nodeC: " + nodeCUuid);
+      return Optional.empty();
+    }
 
-                      return Optional.of(
-                          new Transformer3WInputEntityData(
-                              fieldsToAttributes,
-                              typeEntityData.getEntityClass(),
-                              typeEntityData.getOperatorInput(),
-                              typeEntityData.getNodeA(),
-                              typeEntityData.getNodeB(),
-                              nodeC.get(),
-                              typeEntityData.getType()));
-                    }));
+    // remove fields that are passed as objects to constructor
+    fieldsToAttributes.keySet().remove("nodeC");
+
+    return Optional.of(
+        new Transformer3WInputEntityData(
+            fieldsToAttributes,
+            typeEntityData.getEntityClass(),
+            typeEntityData.getOperatorInput(),
+            typeEntityData.getNodeA(),
+            typeEntityData.getNodeB(),
+            nodeC.get(),
+            typeEntityData.getType()));
   }
 }
