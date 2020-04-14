@@ -7,9 +7,7 @@ package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.util.TimeTools;
 import java.lang.reflect.Method;
-import java.time.ZoneId;
 import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,8 +35,6 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
     super(registeredClass);
     this.fieldNameToMethod = mapFieldNameToGetter(registeredClass);
     this.headerElements = fieldNameToMethod.keySet().toArray(new String[0]);
-
-    TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss");
   }
 
   /**
