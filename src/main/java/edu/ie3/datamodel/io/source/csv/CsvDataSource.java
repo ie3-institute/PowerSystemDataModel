@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
+import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.utils.ValidationUtils;
@@ -301,6 +302,28 @@ public abstract class CsvDataSource {
     }
 
     return allRowsSet;
+  }
+
+  // todo rename
+  protected <T extends AssetTypeInput> Optional<T> getType(
+      Collection<T> types,
+      Map<String, String> fieldsToAttributes,
+      Class<? extends AssetInputEntityData> noTypeEntityData) {
+    // get the type entity of this entity
+    String typeUuid = fieldsToAttributes.get(TYPE);
+    Optional<T> assetType = findFirstEntityByUuid(typeUuid, types);
+
+    // if the type is not present we return an empty element and
+    // log a warning
+    if (!assetType.isPresent()) {
+      logSkippingWarning(
+          noTypeEntityData.getSimpleName(),
+          fieldsToAttributes.get("uuid"),
+          fieldsToAttributes.get("id"),
+          TYPE + ": " + typeUuid);
+      return Optional.empty();
+    }
+    return assetType;
   }
 
   /**

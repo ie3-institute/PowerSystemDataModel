@@ -395,36 +395,27 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
         .map(
             typedEntityDataOpt ->
                 typedEntityDataOpt.flatMap(
-                    noTypeEntityData -> {
-                      // get the raw data
-                      Map<String, String> fieldsToAttributes = noTypeEntityData.getFieldsToValues();
+                    noTypeEntityData ->
+                        getType(
+                                types,
+                                noTypeEntityData.getFieldsToValues(),
+                                noTypeEntityData.getClass())
+                            .map( // if the optional is present, transform and return to the data,
+                                // otherwise return an empty optional
+                                assetType -> {
+                                  Map<String, String> fieldsToAttributes =
+                                      noTypeEntityData.getFieldsToValues();
 
-                      // get the type entity of this entity
-                      String typeUuid = fieldsToAttributes.get(TYPE);
-                      Optional<T> assetType = findFirstEntityByUuid(typeUuid, types);
+                                  // remove fields that are passed as objects to constructor
+                                  fieldsToAttributes.keySet().remove(TYPE);
 
-                      // if the type is not present we return an empty element and
-                      // log a warning
-                      if (!assetType.isPresent()) {
-                        logSkippingWarning(
-                            noTypeEntityData.getEntityClass().getSimpleName(),
-                            fieldsToAttributes.get("uuid"),
-                            fieldsToAttributes.get("id"),
-                            TYPE + ": " + typeUuid);
-                        return Optional.empty();
-                      }
-
-                      // remove fields that are passed as objects to constructor
-                      fieldsToAttributes.keySet().remove(TYPE);
-
-                      return Optional.of(
-                          new SystemParticipantTypedEntityData<>(
-                              fieldsToAttributes,
-                              noTypeEntityData.getEntityClass(),
-                              noTypeEntityData.getOperatorInput(),
-                              noTypeEntityData.getNode(),
-                              assetType.get()));
-                    }));
+                                  return new SystemParticipantTypedEntityData<>(
+                                      fieldsToAttributes,
+                                      noTypeEntityData.getEntityClass(),
+                                      noTypeEntityData.getOperatorInput(),
+                                      noTypeEntityData.getNode(),
+                                      assetType);
+                                })));
   }
 
   private Stream<Optional<HpInputEntityData>> buildHpEntityData(

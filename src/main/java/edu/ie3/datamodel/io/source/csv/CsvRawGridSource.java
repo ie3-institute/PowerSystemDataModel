@@ -332,38 +332,29 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         .map(
             noTypeEntityDataOpt ->
                 noTypeEntityDataOpt.flatMap(
-                    noTypeEntityData -> {
+                    noTypeEntityData ->
+                        getType(
+                                types,
+                                noTypeEntityData.getFieldsToValues(),
+                                noTypeEntityData.getClass())
+                            .map( // if the optional is present, transform and return to the data,
+                                // otherwise return an empty optional
+                                assetType -> {
+                                  Map<String, String> fieldsToAttributes =
+                                      noTypeEntityData.getFieldsToValues();
 
-                      // get the raw data
-                      Map<String, String> fieldsToAttributes = noTypeEntityData.getFieldsToValues();
+                                  // remove fields that are passed as objects to constructor
+                                  fieldsToAttributes.keySet().remove(TYPE);
 
-                      // get the type entity of this entity
-                      String typeUuid = fieldsToAttributes.get(TYPE);
-                      Optional<T> assetType = findFirstEntityByUuid(typeUuid, types);
-
-                      // if the type is not present we return an empty element and
-                      // log a warning
-                      if (!assetType.isPresent()) {
-                        logSkippingWarning(
-                            noTypeEntityData.getEntityClass().getSimpleName(),
-                            fieldsToAttributes.get("uuid"),
-                            fieldsToAttributes.get("id"),
-                            TYPE + ": " + typeUuid);
-                        return Optional.empty();
-                      }
-
-                      // remove fields that are passed as objects to constructor
-                      fieldsToAttributes.keySet().remove(TYPE);
-
-                      return Optional.of(
-                          new TypedConnectorInputEntityData<>(
-                              fieldsToAttributes,
-                              noTypeEntityData.getEntityClass(),
-                              noTypeEntityData.getOperatorInput(),
-                              noTypeEntityData.getNodeA(),
-                              noTypeEntityData.getNodeB(),
-                              assetType.get()));
-                    }));
+                                  // build result object
+                                  return new TypedConnectorInputEntityData<>(
+                                      fieldsToAttributes,
+                                      noTypeEntityData.getEntityClass(),
+                                      noTypeEntityData.getOperatorInput(),
+                                      noTypeEntityData.getNodeA(),
+                                      noTypeEntityData.getNodeB(),
+                                      assetType);
+                                })));
   }
 
   private Stream<Optional<Transformer3WInputEntityData>> buildTransformer3WEntityData(
