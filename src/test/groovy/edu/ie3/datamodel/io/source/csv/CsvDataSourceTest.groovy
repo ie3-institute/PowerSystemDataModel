@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.test.common.SystemParticipantTestData as sptd
+import edu.ie3.test.common.GridTestData as gtd
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -253,5 +254,23 @@ class CsvDataSourceTest extends Specification {
 		distinctRows.size() == 0
 	}
 
+	def "A CsvDataSource should be able to handle the extraction process of an asset type correctly"() {
+
+		when:
+		def assetTypeOpt = dummyCsvSource.getAssetType(types, fieldsToAttributes, "TestClassName")
+
+		then:
+		assetTypeOpt.present == resultIsPresent
+		assetTypeOpt.ifPresent({ assetType ->
+			assert(assetType == resultData)
+		})
+
+		where:
+		types | fieldsToAttributes || resultIsPresent || resultData
+		[]| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || false || null
+		[]| ["bla": "foo"] || false || null
+		[gtd.transformerTypeBtoD]| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || true || gtd.transformerTypeBtoD
+		[sptd.chpTypeInput]| ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"] || true || sptd.chpTypeInput
+	}
 
 }

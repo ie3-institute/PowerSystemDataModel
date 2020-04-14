@@ -333,10 +333,10 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
             noTypeEntityDataOpt ->
                 noTypeEntityDataOpt.flatMap(
                     noTypeEntityData ->
-                        getType(
+                        getAssetType(
                                 types,
                                 noTypeEntityData.getFieldsToValues(),
-                                noTypeEntityData.getClass())
+                                noTypeEntityData.getClass().getSimpleName())
                             .map( // if the optional is present, transform and return to the data,
                                 // otherwise return an empty optional
                                 assetType -> {

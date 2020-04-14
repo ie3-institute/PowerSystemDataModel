@@ -184,11 +184,20 @@ public abstract class CsvDataSource {
         entityClass.getSimpleName());
   }
 
+  protected String saveMapGet(Map<String, String> map, String key, String mapName) {
+    return Optional.ofNullable(map.get(key))
+        .orElse(
+            "Key '"
+                + key
+                + "' not found"
+                + (mapName.isEmpty() ? "!" : " in map '" + mapName + "'!"));
+  }
+
   protected void logSkippingWarning(
       String entityDesc, String entityUuid, String entityId, String missingElementsString) {
 
     log.warn(
-        "Skipping {} with uuid '{}' and id '{}'. Not all required entities found!\nMissing elements:\n{}",
+        "Skipping '{}' with uuid '{}' and id '{}'. Not all required entities found!\nMissing elements:\n{}",
         entityDesc,
         entityUuid,
         entityId,
@@ -304,24 +313,34 @@ public abstract class CsvDataSource {
     return allRowsSet;
   }
 
-  // todo rename
-  protected <T extends AssetTypeInput> Optional<T> getType(
-      Collection<T> types,
-      Map<String, String> fieldsToAttributes,
-      Class<? extends AssetInputEntityData> noTypeEntityData) {
-    // get the type entity of this entity
-    String typeUuid = fieldsToAttributes.get(TYPE);
-    Optional<T> assetType = findFirstEntityByUuid(typeUuid, types);
+  /**
+   * Checks if the requested type of an asset can be found in the provided collection of types based
+   * on the provided fields to values mapping. The provided fields to values mapping needs to have
+   * one and only one field with key {@link this#TYPE} and a corresponding UUID value. If the type
+   * can be found in the provided collection based on the UUID it is returned wrapped in an
+   * optional. Otherwise an empty optional is returned and a warning is logged.
+   *
+   * @param types a collection of types that should be used for searching
+   * @param fieldsToAttributes the field name to value mapping incl. the key {@link this#TYPE}
+   * @param skippedClassString debug string of the class that will be skipping
+   * @param <T> the type of the resulting type instance
+   * @return either an optional containing the type or an empty optional if the type cannot be found
+   */
+  protected <T extends AssetTypeInput> Optional<T> getAssetType(
+      Collection<T> types, Map<String, String> fieldsToAttributes, String skippedClassString) {
+
+    Optional<T> assetType =
+        Optional.ofNullable(fieldsToAttributes.get(TYPE))
+            .flatMap(typeUuid -> findFirstEntityByUuid(typeUuid, types));
 
     // if the type is not present we return an empty element and
     // log a warning
     if (!assetType.isPresent()) {
       logSkippingWarning(
-          noTypeEntityData.getSimpleName(),
-          fieldsToAttributes.get("uuid"),
-          fieldsToAttributes.get("id"),
-          TYPE + ": " + typeUuid);
-      return Optional.empty();
+          skippedClassString,
+          saveMapGet(fieldsToAttributes, "uuid", "fieldsToValuesMap"),
+          saveMapGet(fieldsToAttributes, "id", "fieldsToValuesMap"),
+          TYPE + ": " + saveMapGet(fieldsToAttributes, TYPE, "fieldsToValuesMap"));
     }
     return assetType;
   }
