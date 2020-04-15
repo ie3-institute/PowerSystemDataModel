@@ -113,8 +113,8 @@ public abstract class CsvDataSource {
 
   private String[] fieldVals(String csvSep, String csvRow) {
 
-    final String geoJsonRegex = "([\\{].+\\}\\}\\})";
-    final String qCharRegex = "((cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.+?\\})";
+    final String geoJsonRegex = "[\\{].+\\}\\}\\}";
+    final String qCharRegex = "(cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.+?\\}";
 
     List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow);
     List<String> qList = extractMatchingStrings(qCharRegex, csvRow);
