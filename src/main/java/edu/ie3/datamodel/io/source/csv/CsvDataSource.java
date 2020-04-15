@@ -125,7 +125,7 @@ public abstract class CsvDataSource {
                 .replaceAll(qCharRegex, "QCHAR")
                 .replaceAll(geoJsonRegex, "GEOJSON")
                 .replaceAll("\"", "")
-                .split(csvSep,-1))
+                .split(csvSep, -1))
         .map(
             fieldVal -> {
               String returningFieldVal = fieldVal;
