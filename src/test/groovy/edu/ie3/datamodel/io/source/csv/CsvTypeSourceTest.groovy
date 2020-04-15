@@ -14,9 +14,6 @@ import edu.ie3.test.common.SystemParticipantTestData as sptd
 
 class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
-	// todo tests for all types
-	//  -> create files in test/resources/testGridFiles/types and create a test for each get method in CsvTypeSource
-
 	def "A CsvTypeSource should read and handle valid 2W Transformer type file as expected"() {
 		given:
 		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
@@ -24,8 +21,19 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		expect:
 		def transformer2WTypes = typeSource.transformer2WTypes
 		transformer2WTypes.size() == 1
-		transformer2WTypes.first() == gtd.transformerTypeBtoD
-
+		transformer2WTypes.first().rSc == gtd.transformerTypeBtoD.rSc
+		transformer2WTypes.first().xSc == gtd.transformerTypeBtoD.xSc
+		transformer2WTypes.first().sRated == gtd.transformerTypeBtoD.sRated
+		transformer2WTypes.first().vRatedA == gtd.transformerTypeBtoD.vRatedA
+		transformer2WTypes.first().vRatedB == gtd.transformerTypeBtoD.vRatedB
+		transformer2WTypes.first().gM == gtd.transformerTypeBtoD.gM
+		transformer2WTypes.first().bM == gtd.transformerTypeBtoD.bM
+		transformer2WTypes.first().dV == gtd.transformerTypeBtoD.dV
+		transformer2WTypes.first().dPhi == gtd.transformerTypeBtoD.dPhi
+		transformer2WTypes.first().tapSide == gtd.transformerTypeBtoD.tapSide
+		transformer2WTypes.first().tapNeutr == gtd.transformerTypeBtoD.tapNeutr
+		transformer2WTypes.first().tapMin == gtd.transformerTypeBtoD.tapMin
+		transformer2WTypes.first().tapMax == gtd.transformerTypeBtoD.tapMax
 	}
 
 	def "A CsvTypeSource should read and handle valid operator file as expected"() {
@@ -38,7 +46,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		def operators = typeSource.operators
 		operators.size() == 1
 		operators.first() == operator
-
 	}
 
 	def "A CsvTypeSource should read and handle valid line type file as expected"() {
@@ -49,7 +56,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		def lineTypes = typeSource.lineTypes
 		lineTypes.size() == 1
 		lineTypes.first() == gtd.lineTypeInputCtoD
-
 	}
 
 	def "A CsvTypeSource should read and handle valid 3W Transformer type file as expected"() {
@@ -60,7 +66,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		def transformer3WTypes = typeSource.transformer3WTypes
 		transformer3WTypes.size() == 1
 		transformer3WTypes.first() == gtd.transformerTypeAtoBtoC
-
 	}
 
 	def "A CsvTypeSource should read and handle valid bm type file as expected"() {
@@ -71,7 +76,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		def bmTypes = typeSource.bmTypes
 		bmTypes.size() == 1
 		bmTypes.first() == sptd.bmTypeInput
-
 	}
 
 	def "A CsvTypeSource should read and handle valid chp type file as expected"() {
@@ -82,7 +86,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		def chpTypes = typeSource.chpTypes
 		chpTypes.size() == 1
 		chpTypes.first() == sptd.chpTypeInput
-
 	}
 
 	def "A CsvTypeSource should read and handle valid hp type file as expected"() {
@@ -93,7 +96,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		def hpTypes = typeSource.hpTypes
 		hpTypes.size() == 1
 		hpTypes.first() == sptd.hpTypeInput
-
 	}
 
 	def "A CsvTypeSource should read and handle valid storage type file as expected"() {
@@ -104,7 +106,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		def storageTypes = typeSource.storageTypes
 		storageTypes.size() == 1
 		storageTypes.first() == sptd.storageTypeInput
-
 	}
 
 	def "A CsvTypeSource should read and handle valid wec type file as expected"() {
@@ -127,6 +128,5 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		def evTypes = typeSource.evTypes
 		evTypes.size() == 1
 		evTypes.first() == sptd.evTypeInput
-
 	}
 }
