@@ -12,8 +12,6 @@ import java.util.stream.Collectors
 
 class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
-	// todo
-
 	def "A CsvThermalSource should build thermal unit input entity from valid and invalid input data as expected"() {
 		given:
 		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
