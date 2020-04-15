@@ -191,6 +191,13 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		expect:
 		def evTypes = typeSource.evTypes
 		evTypes.size() == 1
-		evTypes.first() == sptd.evTypeInput
+		evTypes.first().uuid == sptd.evTypeInput.uuid
+		evTypes.first().id == sptd.evTypeInput.id
+		evTypes.first().capex == sptd.evTypeInput.capex
+		evTypes.first().opex == sptd.evTypeInput.opex
+		evTypes.first().eStorage == sptd.evTypeInput.eStorage
+		evTypes.first().eCons == sptd.evTypeInput.eCons
+		evTypes.first().sRated == sptd.evTypeInput.sRated
+		evTypes.first().cosphiRated == sptd.evTypeInput.cosphiRated
 	}
 }
