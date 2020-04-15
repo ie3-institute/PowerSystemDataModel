@@ -190,9 +190,9 @@ public class CsvFileConnector implements DataConnector {
                               + "'."));
     } catch (ConnectorException e) {
       log.error(
-          "Cannot get reader for entity '{}' as no file naming strategy for this file exists. Exception: {}",
-          clz.getSimpleName(),
-          e);
+          "Cannot get reader for entity '{}' as no file naming strategy for this file exists. Exception:{}",
+          clz::getSimpleName,
+          () -> e);
     }
     File filePath = new File(baseFolderName + File.separator + fileName + FILE_ENDING);
     newReader = new BufferedReader(new FileReader(filePath), 16384);

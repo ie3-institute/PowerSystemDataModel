@@ -102,9 +102,9 @@ public abstract class CsvDataSource {
     } catch (Exception e) {
       log.error(
           "Cannot build fields to attributes map for row '{}' with headline '{}'.\nException: {}",
-          csvRow.trim(),
-          String.join(",", headline),
-          e);
+          csvRow::trim,
+          () -> String.join(",", headline),
+          () -> e);
     }
     return insensitiveFieldsToAttributes;
   }
