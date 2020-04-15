@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.factory.input.ThermalUnitInputEntityData
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.util.stream.Collectors
@@ -13,7 +14,7 @@ import java.util.stream.Collectors
 class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	// todo
-
+	@Ignore
 	def "A CsvThermalSource should build thermal unit input entity from valid and invalid input data as expected"() {
 		given:
 		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
@@ -37,6 +38,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	}
 
+	@Ignore
 	def "A CsvThermalSource should return a CylindricStorageInput from valid and invalid input data as expected"() {
 		given:
 		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
@@ -51,6 +53,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	}
 
+	@Ignore
 	def "A CsvThermalSource should return a ThermalHouseInput from valid and invalid input data as expected"() {
 		given:
 		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
@@ -65,6 +68,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	}
 
+	@Ignore
 	def "A CsvThermalSource should return a ThermalBuses from valid and invalid input data as expected"() {
 		given:
 		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
