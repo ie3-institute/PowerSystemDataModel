@@ -1,2 +1,2 @@
-"uuid","id","sRatedA","sRatedB","sRatedC","vRatedA","vRatedB","vRatedC","rScA","rScB","rScC","xScA","xScB","xScC","gM","bM","dV","dPhi","tapNeutr","tapMin","tapMax"
+"uuid","id","s_rated_A","s_rated_B","s_rated_C","v_rated_A","v_rated_B","v_rated_C","r_sc_A","r_sc_B","r_sc_C","x_sc_A","x_sc_B","x_sc_C","g_m","b_m","d_v","d_phi","tap_neutr","tap_min","tap_max"
 5b0ee546-21fb-4a7f-a801-5dbd3d7bb356,"HöS-HS-MS_1",120000,60000,40000,380,110,20,0.3,0.025,0.0008,1,0.08,0.003,40000,1000,1.5,0,0,-10,10

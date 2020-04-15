@@ -1,2 +1,2 @@
-"uuid","id","rSc","xSc","sRated","vRatedA","vRatedB","gM","bM","dV","dPhi","tapSide","tapNeutr","tapMin","tapMax"
+"uuid","id","r_sc","x_sc","s_rated","v_rated_A","v_rated_B","g_m","b_m","d_v","d_phi","tap_side","tap_neutr","tap_min","tap_max"
 202069a7-bcf8-422c-837c-273575220c8a,"HS-MS_1",45.375,102.759,20000,110,20,0,0,1.5,0,false,0,-10,10
