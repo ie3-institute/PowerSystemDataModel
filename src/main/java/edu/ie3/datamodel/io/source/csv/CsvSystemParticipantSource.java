@@ -25,6 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import edu.ie3.datamodel.utils.ValidationUtils;
 import org.apache.commons.lang3.NotImplementedException;
 
 /**
@@ -39,6 +41,9 @@ import org.apache.commons.lang3.NotImplementedException;
  * @since 06.04.20
  */
 public class CsvSystemParticipantSource extends CsvDataSource implements SystemParticipantSource {
+
+  private static final String THERMAL_STORAGE = "thermalstorage";
+  private static final String THERMAL_BUS = "thermalbus";
 
   // general fields
   private final TypeSource typeSource;
@@ -440,13 +445,13 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   /**
    * Enriches a given stream of {@link SystemParticipantTypedEntityData} optionals with a type of
    * {@link ThermalBusInput} based on the provided collection of buses and the fields to values
-   * mapping that inside the already provided {@link SystemParticipantTypedEntityData} instance.
+   * mapping inside the already provided {@link SystemParticipantTypedEntityData} instance.
    *
    * @param typedEntityDataStream the data stream of {@link SystemParticipantTypedEntityData}
    *     optionals
    * @param thermalBuses the thermal buses that should be used for enrichment and to build {@link
    *     HpInputEntityData}
-   * @returna stream of optional @link HpInputEntityData}instances or empty optionals if they
+   * @return stream of optional {@link HpInputEntityData} instances or empty optionals if they
    *     thermal bus couldn't be found
    */
   private Stream<Optional<HpInputEntityData>> buildHpEntityData(
@@ -469,7 +474,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
     // get the thermal bus input for this chp unit and try to built the entity data
     Optional<HpInputEntityData> hpInputEntityDataOpt =
-        Optional.ofNullable(fieldsToAttributes.get("thermalbus"))
+        Optional.ofNullable(fieldsToAttributes.get(THERMAL_BUS))
             .flatMap(
                 thermalBusUuid ->
                     thermalBuses.stream()
@@ -478,13 +483,17 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                                 storage.getUuid().toString().equalsIgnoreCase(thermalBusUuid))
                         .findFirst()
                         .map(
-                            thermalBus ->
-                                new HpInputEntityData(
+                            thermalBus ->{
+
+                              // remove fields that are passed as objects to constructor
+                              fieldsToAttributes.keySet().remove(THERMAL_BUS);
+
+                                return new HpInputEntityData(
                                     fieldsToAttributes,
                                     typedEntityData.getOperatorInput(),
                                     typedEntityData.getNode(),
                                     typedEntityData.getTypeInput(),
-                                    thermalBus)));
+                                    thermalBus);}));
 
     // if the requested entity is not present we return an empty element and
     // log a warning
@@ -493,12 +502,27 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
           typedEntityData.getEntityClass().getSimpleName(),
           saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
           saveMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
-          "thermalBus: " + saveMapGet(fieldsToAttributes, "thermalbus", FIELDS_TO_VALUES_MAP));
+          "thermalBus: " + saveMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
     }
 
     return hpInputEntityDataOpt;
   }
 
+  /**
+   * Enriches a given stream of {@link SystemParticipantTypedEntityData} optionals with a type of
+   * {@link ThermalBusInput} and {@link ThermalStorageInput} based on the provided collection of
+   * buses, storages and the fields to values mapping inside the already provided {@link
+   * SystemParticipantTypedEntityData} instance.
+   *
+   * @param typedEntityDataStream the data stream of {@link SystemParticipantTypedEntityData}
+   *     optionals
+   * @param thermalStorages the thermal storages that should be used for enrichment and to build
+   *     {@link ChpInputEntityData}
+   * @param thermalBuses the thermal buses that should be used for enrichment and to build {@link
+   *     ChpInputEntityData}
+   * @return stream of optional {@link ChpInputEntityData}instances or empty optionals if they
+   *     thermal bus couldn't be found
+   */
   private Stream<Optional<ChpInputEntityData>> buildChpEntityData(
       Stream<Optional<SystemParticipantTypedEntityData<ChpTypeInput>>> typedEntityDataStream,
       Collection<ThermalStorageInput> thermalStorages,
@@ -523,7 +547,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
     // get the thermal storage input for this chp unit
     Optional<ThermalStorageInput> thermalStorage =
-        Optional.ofNullable(fieldsToAttributes.get("thermalstorage"))
+        Optional.ofNullable(fieldsToAttributes.get(THERMAL_STORAGE))
             .flatMap(
                 thermalStorageUuid -> findFirstEntityByUuid(thermalStorageUuid, thermalStorages));
 
@@ -538,11 +562,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       StringBuilder sB = new StringBuilder();
       if (!thermalStorage.isPresent()) {
         sB.append("thermalStorage: ")
-            .append(saveMapGet(fieldsToAttributes, "thermalstorage", FIELDS_TO_VALUES_MAP));
+            .append(saveMapGet(fieldsToAttributes, THERMAL_STORAGE, FIELDS_TO_VALUES_MAP));
       }
       if (!thermalBus.isPresent()) {
         sB.append("\nthermalBus: ")
-            .append(saveMapGet(fieldsToAttributes, "thermalbus", FIELDS_TO_VALUES_MAP));
+            .append(saveMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
       }
 
       logSkippingWarning(

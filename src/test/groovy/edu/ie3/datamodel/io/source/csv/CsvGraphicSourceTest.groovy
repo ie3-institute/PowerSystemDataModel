@@ -49,9 +49,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 			// -> elements to build NodeGraphicInputs are missing
 			getNodes() >> new HashSet<NodeInput>()
 			getNodes(_) >> new HashSet<NodeInput>()
-		}
+		} as RawGridSource
 
-		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, typeSource, rawGridSource as RawGridSource)
+		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, typeSource, rawGridSource)
 
 		when:
 		def graphicElementsOpt = csvGraphicSource.getGraphicElements()
