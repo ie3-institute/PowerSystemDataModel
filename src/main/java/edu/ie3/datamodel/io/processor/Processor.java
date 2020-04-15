@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.system.StorageStrategy;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
@@ -254,7 +255,6 @@ public abstract class Processor<T> {
       case "LineTypeInput":
       case "LineInput":
       case "NodeInput":
-      case "OperatorInput":
       case "StorageTypeInput":
       case "SystemParticipantInput":
       case "ThermalBusInput":
@@ -265,6 +265,12 @@ public abstract class Processor<T> {
       case "WecTypeInput":
         resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
         break;
+    case "OperatorInput":
+      resultStringBuilder.append(
+                      ((OperatorInput) methodReturnObject).getId().equalsIgnoreCase("NO_OPERATOR_ASSIGNED")
+                                      ? ""
+                                      : ((OperatorInput) methodReturnObject).getUuid());
+      break;
       case "EvCharacteristicInput":
       case "OlmCharacteristicInput":
       case "WecCharacteristicInput":
