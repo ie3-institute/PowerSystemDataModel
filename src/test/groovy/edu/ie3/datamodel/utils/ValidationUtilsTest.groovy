@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.utils
 
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -15,8 +16,6 @@ import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
 import java.time.ZoneId
-
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ValidationUtilsTest extends Specification {
 
