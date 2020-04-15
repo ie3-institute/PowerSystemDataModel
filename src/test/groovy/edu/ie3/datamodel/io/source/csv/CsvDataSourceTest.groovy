@@ -21,256 +21,278 @@ import java.util.stream.Collectors
 
 class CsvDataSourceTest extends Specification {
 
-	// Using a groovy bug to gain access to private methods in superclass:
-	// by default, we cannot access private methods with parameters from abstract parent classes, introducing a
-	// class that extends the abstract parent class and unveils the private methods by calling the parents private
-	// methods in a public or protected method makes them available for testing
-	private final class DummyCsvSource extends CsvDataSource {
+    // Using a groovy bug to gain access to private methods in superclass:
+    // by default, we cannot access private methods with parameters from abstract parent classes, introducing a
+    // class that extends the abstract parent class and unveils the private methods by calling the parents private
+    // methods in a public or protected method makes them available for testing
+    private final class DummyCsvSource extends CsvDataSource {
 
-		DummyCsvSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
-			super(csvSep, folderPath, fileNamingStrategy)
-		}
+        DummyCsvSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+            super(csvSep, folderPath, fileNamingStrategy)
+        }
 
-		Map<String, String> buildFieldsToAttributes(
-				final String csvRow, final String[] headline) {
-			return super.buildFieldsToAttributes(csvRow, headline)
-		}
+        Map<String, String> buildFieldsToAttributes(
+                final String csvRow, final String[] headline) {
+            return super.buildFieldsToAttributes(csvRow, headline)
+        }
 
-		OperatorInput getFirstOrDefaultOperator(
-				Collection<OperatorInput> operators, String operatorUuid) {
-			return super.getFirstOrDefaultOperator(operators, operatorUuid)
-		}
+        OperatorInput getFirstOrDefaultOperator(
+                Collection<OperatorInput> operators, String operatorUuid) {
+            return super.getFirstOrDefaultOperator(operators, operatorUuid)
+        }
 
-		def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
-				Class<T> entityClass, Collection<Map<String, String>> allRows) {
-			super.distinctRowsWithLog(entityClass, allRows)
-		}
+        def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
+                Class<T> entityClass, Collection<Map<String, String>> allRows) {
+            super.distinctRowsWithLog(entityClass, allRows)
+        }
 
-	}
+    }
 
-	@Shared
-	String csvSep = ","
-	String testBaseFolderPath = new File(getClass().getResource('/testGridFiles').toURI()).getAbsolutePath()
-	FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+    @Shared
+    String csvSep = ","
+    String testBaseFolderPath = new File(getClass().getResource('/testGridFiles').toURI()).getAbsolutePath()
+    FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
 
-	DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, fileNamingStrategy)
+    DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, fileNamingStrategy)
 
-	def "A DataSource should contain a valid connector after initialization"() {
-		expect:
-		dummyCsvSource.connector != null
-		dummyCsvSource.connector.baseFolderName == testBaseFolderPath
-		dummyCsvSource.connector.fileNamingStrategy == fileNamingStrategy
-		dummyCsvSource.connector.entityWriters.isEmpty()
+    def "A DataSource should contain a valid connector after initialization"() {
+        expect:
+        dummyCsvSource.connector != null
+        dummyCsvSource.connector.baseFolderName == testBaseFolderPath
+        dummyCsvSource.connector.fileNamingStrategy == fileNamingStrategy
+        dummyCsvSource.connector.entityWriters.isEmpty()
 
-	}
+    }
 
-	def "A CsvDataSource should build a valid fields to attributes map with valid data as expected"() {
-		given:
-		def validHeadline = [
-			"uuid",
-			"active_power_gradient",
-			"capex",
-			"cosphi_rated",
-			"eta_conv",
-			"id",
-			"opex",
-			"s_rated",
-			"olmcharacteristic",
-			"cosPhiFixed"] as String[]
-		def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,olm:{(0.0,1.0)},cosPhiFixed:{(0.0,1.0)}"
+    def "A CsvDataSource should build a valid fields to attributes map with valid data as expected"() {
+        given:
+        def validHeadline = [
+                "uuid",
+                "active_power_gradient",
+                "capex",
+                "cosphi_rated",
+                "eta_conv",
+                "id",
+                "opex",
+                "s_rated",
+                "olmcharacteristic",
+                "cosPhiFixed"] as String[]
+        def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,olm:{(0.0,1.0)},cosPhiFixed:{(0.0,1.0)}"
 
-		expect:
-		dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [activePowerGradient: "25.0",
-			capex              : "100.0",
-			cosphiRated        : "0.95",
-			etaConv            : "98.0",
-			id                 : "test_bmTypeInput",
-			opex               : "50.0",
-			sRated             : "25.0",
-			uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-			olmcharacteristic  : "olm:{(0.0,1.0)}",
-			cosPhiFixed        : "cosPhiFixed:{(0.0,1.0)}"]
+        expect:
+        dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [activePowerGradient: "25.0",
+                                                                               capex              : "100.0",
+                                                                               cosphiRated        : "0.95",
+                                                                               etaConv            : "98.0",
+                                                                               id                 : "test_bmTypeInput",
+                                                                               opex               : "50.0",
+                                                                               sRated             : "25.0",
+                                                                               uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
+                                                                               olmcharacteristic  : "olm:{(0.0,1.0)}",
+                                                                               cosPhiFixed        : "cosPhiFixed:{(0.0,1.0)}"]
 
-	}
+    }
 
-	def "A CsvDataSource should build a valid fields to attributes map with valid data and empty value fields as expected"() {
-		given:
-		def validHeadline = [
-			"uuid",
-			"active_power_gradient",
-			"capex",
-			"cosphi_rated",
-			"eta_conv",
-			"id",
-			"opex",
-			"s_rated",
-			"olmcharacteristic",
-			"cosPhiFixed"] as String[]
-		def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,olm:{(0.0,1.0)},"
+    def "A CsvDataSource should build a valid fields to attributes map with a quoted valid data string as expected"() {
+        given:
+        def validQuotedCsvRow = '"798028b5-caff-4da7-bcd9-1750fdd8742b","test_hpInput","4ca90220-74c2-4369-9afa-a18bf068840d","2020-03-24T15:11:31Z[UTC]","2020-03-25T15:11:31Z[UTC]","8f9682df-0744-4b58-a122-f0dc730f6510","cosPhiFixed:{(0.00,0.95)}","0d95d7f2-49fb-4d49-8636-383a5220384e","5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"'
+        def validHeadline = ["uuid", "id", "node", "operates_from", "operates_until", "operator", "q_characteristics", "thermal_bus", "type"] as String[]
 
-		expect:
-		dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [activePowerGradient: "25.0",
-			capex              : "100.0",
-			cosphiRated        : "0.95",
-			etaConv            : "98.0",
-			id                 : "test_bmTypeInput",
-			opex               : "50.0",
-			sRated             : "25.0",
-			uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-			olmcharacteristic  : "olm:{(0.0,1.0)}",
-			cosPhiFixed        : ""]
+        expect:
+        dummyCsvSource.buildFieldsToAttributes(validQuotedCsvRow, validHeadline) == [
+                "id"              : "test_hpInput",
+                "node"            : "4ca90220-74c2-4369-9afa-a18bf068840d",
+                "operatesFrom"    : "2020-03-24T15:11:31Z[UTC]",
+                "operatesUntil"   : "2020-03-25T15:11:31Z[UTC]",
+                "operator"        : "8f9682df-0744-4b58-a122-f0dc730f6510",
+                "qCharacteristics": "cosPhiFixed:{(0.00,0.95)}",
+                "thermalBus"      : "0d95d7f2-49fb-4d49-8636-383a5220384e",
+                "type"            : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
+                "uuid"            : "798028b5-caff-4da7-bcd9-1750fdd8742b"
 
-	}
+        ]
 
-	def "A CsvDataSource should be able to handle several errors when the csvRow is invalid or cannot be processed"() {
-		given:
-		def validHeadline = [
-			"uuid",
-			"active_power_gradient",
-			"capex",
-			"cosphi_rated",
-			"eta_conv",
-			"id",
-			"opex",
-			"s_rated"] as String[]
+    }
 
-		expect:
-		dummyCsvSource.buildFieldsToAttributes(invalidCsvRow, validHeadline) == [:]
 
-		where:
-		invalidCsvRow                                                                          || explaination
-		"5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator"
-		"5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too less columns"
-		"5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too much columns"
+    def "A CsvDataSource should build a valid fields to attributes map with valid data and empty value fields as expected"() {
+        given:
+        def validHeadline = [
+                "uuid",
+                "active_power_gradient",
+                "capex",
+                "cosphi_rated",
+                "eta_conv",
+                "id",
+                "opex",
+                "s_rated",
+                "olmcharacteristic",
+                "cosPhiFixed"] as String[]
+        def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,olm:{(0.0,1.0)},"
 
-	}
+        expect:
+        dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [activePowerGradient: "25.0",
+                                                                               capex              : "100.0",
+                                                                               cosphiRated        : "0.95",
+                                                                               etaConv            : "98.0",
+                                                                               id                 : "test_bmTypeInput",
+                                                                               opex               : "50.0",
+                                                                               sRated             : "25.0",
+                                                                               uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
+                                                                               olmcharacteristic  : "olm:{(0.0,1.0)}",
+                                                                               cosPhiFixed        : ""]
 
-	def "A CsvDataSource should always return an operator. Either the found one (if any) or OperatorInput.NO_OPERATOR_ASSIGNED"() {
+    }
 
-		expect:
-		dummyCsvSource.getFirstOrDefaultOperator(operators, operatorUuid) == expectedOperator
+    def "A CsvDataSource should be able to handle several errors when the csvRow is invalid or cannot be processed"() {
+        given:
+        def validHeadline = [
+                "uuid",
+                "active_power_gradient",
+                "capex",
+                "cosphi_rated",
+                "eta_conv",
+                "id",
+                "opex",
+                "s_rated"] as String[]
 
-		where:
-		operatorUuid                           | operators               || expectedOperator
-		"8f9682df-0744-4b58-a122-f0dc730f6510" | [sptd.hpInput.operator]|| sptd.hpInput.operator
-		"8f9682df-0744-4b58-a122-f0dc730f6520" | [sptd.hpInput.operator]|| OperatorInput.NO_OPERATOR_ASSIGNED
-		"8f9682df-0744-4b58-a122-f0dc730f6510" | []|| OperatorInput.NO_OPERATOR_ASSIGNED
+        expect:
+        dummyCsvSource.buildFieldsToAttributes(invalidCsvRow, validHeadline) == [:]
 
-	}
+        where:
+        invalidCsvRow                                                                          || explaination
+        "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator"
+        "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too less columns"
+        "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too much columns"
 
-	def "A CsvDataSource should collect be able to collect empty optionals when asked to do so"() {
+    }
 
-		given:
-		ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> emptyCollector = new ConcurrentHashMap<>();
-		def nodeInputOptionals = [
-			Optional.of(sptd.hpInput.node),
-			Optional.empty(),
-			Optional.of(sptd.chpInput.node)
-		]
+    def "A CsvDataSource should always return an operator. Either the found one (if any) or OperatorInput.NO_OPERATOR_ASSIGNED"() {
 
-		when:
-		def resultingList = nodeInputOptionals.stream().filter(dummyCsvSource.isPresentCollectIfNot(NodeInput, emptyCollector)).collect(Collectors.toList());
+        expect:
+        dummyCsvSource.getFirstOrDefaultOperator(operators, operatorUuid) == expectedOperator
 
-		then:
-		emptyCollector.size() == 1
-		emptyCollector.get(NodeInput).toInteger() == 1
+        where:
+        operatorUuid                           | operators               || expectedOperator
+        "8f9682df-0744-4b58-a122-f0dc730f6510" | [sptd.hpInput.operator] || sptd.hpInput.operator
+        "8f9682df-0744-4b58-a122-f0dc730f6520" | [sptd.hpInput.operator] || OperatorInput.NO_OPERATOR_ASSIGNED
+        "8f9682df-0744-4b58-a122-f0dc730f6510" | []                      || OperatorInput.NO_OPERATOR_ASSIGNED
 
-		resultingList.size() == 2
-		resultingList.get(0) == Optional.of(sptd.hpInput.node)
-		resultingList.get(1) == Optional.of(sptd.chpInput.node)
-	}
+    }
 
-	def "A CsvDataSource should return a given collection of csv row mappings as distinct rows collection correctly"() {
+    def "A CsvDataSource should collect be able to collect empty optionals when asked to do so"() {
 
-		given:
-		def nodeInputRow = ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
-			"geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-			"id"            : "node_a",
-			"operates_until": "2020-03-25T15:11:31Z[UTC]",
-			"operates_from" : "2020-03-24T15:11:31Z[UTC]",
-			"operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
-			"slack"         : "true",
-			"subnet"        : "1",
-			"v_target"      : "1.0",
-			"volt_lvl"      : "Höchstspannung",
-			"v_rated"       : "380"]
+        given:
+        ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> emptyCollector = new ConcurrentHashMap<>();
+        def nodeInputOptionals = [
+                Optional.of(sptd.hpInput.node),
+                Optional.empty(),
+                Optional.of(sptd.chpInput.node)
+        ]
 
-		when:
-		def allRows = [nodeInputRow]* noOfEntities
-		def distinctRows = dummyCsvSource.distinctRowsWithLog(NodeInput, allRows)
+        when:
+        def resultingList = nodeInputOptionals.stream().filter(dummyCsvSource.isPresentCollectIfNot(NodeInput, emptyCollector)).collect(Collectors.toList());
 
-		then:
-		distinctRows.size() == distinctSize
-		distinctRows[0] == firstElement
+        then:
+        emptyCollector.size() == 1
+        emptyCollector.get(NodeInput).toInteger() == 1
 
-		where:
-		noOfEntities || distinctSize || firstElement
-		0            || 0            || null
-		10           || 1            || ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
-			"geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-			"id"            : "node_a",
-			"operates_until": "2020-03-25T15:11:31Z[UTC]",
-			"operates_from" : "2020-03-24T15:11:31Z[UTC]",
-			"operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
-			"slack"         : "true",
-			"subnet"        : "1",
-			"v_target"      : "1.0",
-			"volt_lvl"      : "Höchstspannung",
-			"v_rated"       : "380"]
+        resultingList.size() == 2
+        resultingList.get(0) == Optional.of(sptd.hpInput.node)
+        resultingList.get(1) == Optional.of(sptd.chpInput.node)
+    }
 
-	}
+    def "A CsvDataSource should return a given collection of csv row mappings as distinct rows collection correctly"() {
 
-	def "A CsvDataSource should return an empty set of csv row mappings if the provided collection of mappings contains duplicated UUIDs with different data"() {
+        given:
+        def nodeInputRow = ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
+                            "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+                            "id"            : "node_a",
+                            "operates_until": "2020-03-25T15:11:31Z[UTC]",
+                            "operates_from" : "2020-03-24T15:11:31Z[UTC]",
+                            "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
+                            "slack"         : "true",
+                            "subnet"        : "1",
+                            "v_target"      : "1.0",
+                            "volt_lvl"      : "Höchstspannung",
+                            "v_rated"       : "380"]
 
-		given:
-		def nodeInputRow1 = ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
-			"geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-			"id"            : "node_a",
-			"operates_until": "2020-03-25T15:11:31Z[UTC]",
-			"operates_from" : "2020-03-24T15:11:31Z[UTC]",
-			"operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
-			"slack"         : "true",
-			"subnet"        : "1",
-			"v_target"      : "1.0",
-			"volt_lvl"      : "Höchstspannung",
-			"v_rated"       : "380"]
-		def nodeInputRow2 = ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
-			"geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-			"id"            : "node_b",
-			"operates_until": "2020-03-25T15:11:31Z[UTC]",
-			"operates_from" : "2020-03-24T15:11:31Z[UTC]",
-			"operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
-			"slack"         : "true",
-			"subnet"        : "1",
-			"v_target"      : "1.0",
-			"volt_lvl"      : "Höchstspannung",
-			"v_rated"       : "380"]
+        when:
+        def allRows = [nodeInputRow] * noOfEntities
+        def distinctRows = dummyCsvSource.distinctRowsWithLog(NodeInput, allRows)
 
-		when:
-		def allRows = [nodeInputRow1, nodeInputRow2]* 10
-		def distinctRows = dummyCsvSource.distinctRowsWithLog(NodeInput, allRows)
+        then:
+        distinctRows.size() == distinctSize
+        distinctRows[0] == firstElement
 
-		then:
-		distinctRows.size() == 0
-	}
+        where:
+        noOfEntities || distinctSize || firstElement
+        0            || 0            || null
+        10           || 1            || ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
+                                         "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+                                         "id"            : "node_a",
+                                         "operates_until": "2020-03-25T15:11:31Z[UTC]",
+                                         "operates_from" : "2020-03-24T15:11:31Z[UTC]",
+                                         "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
+                                         "slack"         : "true",
+                                         "subnet"        : "1",
+                                         "v_target"      : "1.0",
+                                         "volt_lvl"      : "Höchstspannung",
+                                         "v_rated"       : "380"]
 
-	def "A CsvDataSource should be able to handle the extraction process of an asset type correctly"() {
+    }
 
-		when:
-		def assetTypeOpt = dummyCsvSource.getAssetType(types, fieldsToAttributes, "TestClassName")
+    def "A CsvDataSource should return an empty set of csv row mappings if the provided collection of mappings contains duplicated UUIDs with different data"() {
 
-		then:
-		assetTypeOpt.present == resultIsPresent
-		assetTypeOpt.ifPresent({ assetType ->
-			assert(assetType == resultData)
-		})
+        given:
+        def nodeInputRow1 = ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
+                             "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+                             "id"            : "node_a",
+                             "operates_until": "2020-03-25T15:11:31Z[UTC]",
+                             "operates_from" : "2020-03-24T15:11:31Z[UTC]",
+                             "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
+                             "slack"         : "true",
+                             "subnet"        : "1",
+                             "v_target"      : "1.0",
+                             "volt_lvl"      : "Höchstspannung",
+                             "v_rated"       : "380"]
+        def nodeInputRow2 = ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
+                             "geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+                             "id"            : "node_b",
+                             "operates_until": "2020-03-25T15:11:31Z[UTC]",
+                             "operates_from" : "2020-03-24T15:11:31Z[UTC]",
+                             "operator"      : "8f9682df-0744-4b58-a122-f0dc730f6510",
+                             "slack"         : "true",
+                             "subnet"        : "1",
+                             "v_target"      : "1.0",
+                             "volt_lvl"      : "Höchstspannung",
+                             "v_rated"       : "380"]
 
-		where:
-		types | fieldsToAttributes || resultIsPresent || resultData
-		[]| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || false || null
-		[]| ["bla": "foo"] || false || null
-		[gtd.transformerTypeBtoD]| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || true || gtd.transformerTypeBtoD
-		[sptd.chpTypeInput]| ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"] || true || sptd.chpTypeInput
-	}
+        when:
+        def allRows = [nodeInputRow1, nodeInputRow2] * 10
+        def distinctRows = dummyCsvSource.distinctRowsWithLog(NodeInput, allRows)
+
+        then:
+        distinctRows.size() == 0
+    }
+
+    def "A CsvDataSource should be able to handle the extraction process of an asset type correctly"() {
+
+        when:
+        def assetTypeOpt = dummyCsvSource.getAssetType(types, fieldsToAttributes, "TestClassName")
+
+        then:
+        assetTypeOpt.present == resultIsPresent
+        assetTypeOpt.ifPresent({ assetType ->
+            assert (assetType == resultData)
+        })
+
+        where:
+        types                     | fieldsToAttributes                               || resultIsPresent || resultData
+        []                        | ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || false           || null
+        []                        | ["bla": "foo"]                                   || false           || null
+        [gtd.transformerTypeBtoD] | ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || true            || gtd.transformerTypeBtoD
+        [sptd.chpTypeInput]       | ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"] || true            || sptd.chpTypeInput
+    }
 
 }
