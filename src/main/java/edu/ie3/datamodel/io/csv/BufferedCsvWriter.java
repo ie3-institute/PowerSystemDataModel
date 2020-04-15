@@ -80,10 +80,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    * @throws IOException If something is messed up
    */
   private void writeFileHeader(boolean quoted, String[] headLineElements) throws IOException {
-    writeOneLine(
-        quoted
-            ? StringUtils.quote(StringUtils.camelCaseToSnakeCase(headLineElements))
-            : StringUtils.camelCaseToSnakeCase(headLineElements));
+    writeOneLine(StringUtils.quote(StringUtils.camelCaseToSnakeCase(headLineElements)));
   }
 
   /**
