@@ -21,6 +21,8 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		expect:
 		def transformer2WTypes = typeSource.transformer2WTypes
 		transformer2WTypes.size() == 1
+		transformer2WTypes.first().uuid == gtd.transformerTypeBtoD.uuid
+		transformer2WTypes.first().id == gtd.transformerTypeBtoD.id
 		transformer2WTypes.first().rSc == gtd.transformerTypeBtoD.rSc
 		transformer2WTypes.first().xSc == gtd.transformerTypeBtoD.xSc
 		transformer2WTypes.first().sRated == gtd.transformerTypeBtoD.sRated
@@ -56,6 +58,8 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		expect:
 		def lineTypes = typeSource.lineTypes
 		lineTypes.size() == 1
+		lineTypes.first().uuid == gtd.lineTypeInputCtoD.uuid
+		lineTypes.first().id == gtd.lineTypeInputCtoD.id
 		lineTypes.first().b == gtd.lineTypeInputCtoD.b
 		lineTypes.first().g == gtd.lineTypeInputCtoD.g
 		lineTypes.first().r == gtd.lineTypeInputCtoD.r
@@ -71,6 +75,8 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		expect:
 		def transformer3WTypes = typeSource.transformer3WTypes
 		transformer3WTypes.size() == 1
+		transformer3WTypes.first().uuid == gtd.transformerTypeAtoBtoC.uuid
+		transformer3WTypes.first().id == gtd.transformerTypeAtoBtoC.id
 		transformer3WTypes.first().sRatedA == gtd.transformerTypeAtoBtoC.sRatedA
 		transformer3WTypes.first().sRatedB == gtd.transformerTypeAtoBtoC.sRatedB
 		transformer3WTypes.first().sRatedC == gtd.transformerTypeAtoBtoC.sRatedC
