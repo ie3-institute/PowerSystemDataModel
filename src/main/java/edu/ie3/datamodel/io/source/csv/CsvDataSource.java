@@ -76,7 +76,7 @@ public abstract class CsvDataSource {
     final String cswRowRegex = csvSep + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
     final String[] fieldVals =
         Arrays.stream(
-                csvRow.replaceAll("\"","")
+                csvRow
                     .replaceAll(addDoubleQuotesToGeoJsonRegex, "\"$1\"")
                     .replaceAll(addDoubleQuotesToCpJsonString, "\"$1\"")
                     .split(cswRowRegex, -1))

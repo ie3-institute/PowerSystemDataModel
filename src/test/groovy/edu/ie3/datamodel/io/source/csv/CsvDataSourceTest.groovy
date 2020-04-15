@@ -93,28 +93,6 @@ class CsvDataSourceTest extends Specification {
 
     }
 
-    def "A CsvDataSource should build a valid fields to attributes map with a quoted valid data string as expected"() {
-        given:
-        def validQuotedCsvRow = '"798028b5-caff-4da7-bcd9-1750fdd8742b","test_hpInput","4ca90220-74c2-4369-9afa-a18bf068840d","2020-03-24T15:11:31Z[UTC]","2020-03-25T15:11:31Z[UTC]","8f9682df-0744-4b58-a122-f0dc730f6510","cosPhiFixed:{(0.00,0.95)}","0d95d7f2-49fb-4d49-8636-383a5220384e","5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"'
-        def validHeadline = ["uuid", "id", "node", "operates_from", "operates_until", "operator", "q_characteristics", "thermal_bus", "type"] as String[]
-
-        expect:
-        dummyCsvSource.buildFieldsToAttributes(validQuotedCsvRow, validHeadline) == [
-                "id"              : "test_hpInput",
-                "node"            : "4ca90220-74c2-4369-9afa-a18bf068840d",
-                "operatesFrom"    : "2020-03-24T15:11:31Z[UTC]",
-                "operatesUntil"   : "2020-03-25T15:11:31Z[UTC]",
-                "operator"        : "8f9682df-0744-4b58-a122-f0dc730f6510",
-                "qCharacteristics": "cosPhiFixed:{(0.00,0.95)}",
-                "thermalBus"      : "0d95d7f2-49fb-4d49-8636-383a5220384e",
-                "type"            : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-                "uuid"            : "798028b5-caff-4da7-bcd9-1750fdd8742b"
-
-        ]
-
-    }
-
-
     def "A CsvDataSource should build a valid fields to attributes map with valid data and empty value fields as expected"() {
         given:
         def validHeadline = [
