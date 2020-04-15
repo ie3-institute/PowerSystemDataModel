@@ -71,7 +71,25 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		expect:
 		def transformer3WTypes = typeSource.transformer3WTypes
 		transformer3WTypes.size() == 1
-		transformer3WTypes.first() == gtd.transformerTypeAtoBtoC
+		transformer3WTypes.first().sRatedA == gtd.transformerTypeAtoBtoC.sRatedA
+		transformer3WTypes.first().sRatedB == gtd.transformerTypeAtoBtoC.sRatedB
+		transformer3WTypes.first().sRatedC == gtd.transformerTypeAtoBtoC.sRatedC
+		transformer3WTypes.first().vRatedA == gtd.transformerTypeAtoBtoC.vRatedA
+		transformer3WTypes.first().vRatedB == gtd.transformerTypeAtoBtoC.vRatedB
+		transformer3WTypes.first().vRatedC == gtd.transformerTypeAtoBtoC.vRatedC
+		transformer3WTypes.first().rScA == gtd.transformerTypeAtoBtoC.rScA
+		transformer3WTypes.first().rScB == gtd.transformerTypeAtoBtoC.rScB
+		transformer3WTypes.first().rScC == gtd.transformerTypeAtoBtoC.rScC
+		transformer3WTypes.first().xScA == gtd.transformerTypeAtoBtoC.xScA
+		transformer3WTypes.first().xScB == gtd.transformerTypeAtoBtoC.xScB
+		transformer3WTypes.first().xScC == gtd.transformerTypeAtoBtoC.xScC
+		transformer3WTypes.first().gM == gtd.transformerTypeAtoBtoC.gM
+		transformer3WTypes.first().bM == gtd.transformerTypeAtoBtoC.bM
+		transformer3WTypes.first().dV == gtd.transformerTypeAtoBtoC.dV
+		transformer3WTypes.first().dPhi == gtd.transformerTypeAtoBtoC.dPhi
+		transformer3WTypes.first().tapNeutr == gtd.transformerTypeAtoBtoC.tapNeutr
+		transformer3WTypes.first().tapMin == gtd.transformerTypeAtoBtoC.tapMin
+		transformer3WTypes.first().tapMax == gtd.transformerTypeAtoBtoC.tapMax
 	}
 
 	def "A CsvTypeSource should read and handle valid bm type file as expected"() {
