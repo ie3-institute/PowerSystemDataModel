@@ -17,6 +17,10 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 	// todo tests for all types
 	//  -> create files in test/resources/testGridFiles/types and create a test for each get method in CsvTypeSource
 
+	def "A CsvTypeSource should read and handle valid 2W Transformer type file as expected"() {
+
+	}
+
 	def "A CsvTypeSource should read and handle valid bm type file as expected"() {
 		given:
 		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
