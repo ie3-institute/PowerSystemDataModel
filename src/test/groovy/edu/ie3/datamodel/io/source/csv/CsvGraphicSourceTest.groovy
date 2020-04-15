@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData
 import edu.ie3.datamodel.io.source.RawGridSource
@@ -29,7 +28,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 		def graphicElementsOpt = csvGraphicSource.getGraphicElements()
 
 		then:
-		graphicElementsOpt.isPresent()
+		graphicElementsOpt.present
 		graphicElementsOpt.ifPresent({ graphicElements ->
 			assert (graphicElements.allEntitiesAsList().size() == 3)
 			assert (graphicElements.nodeGraphics.size() == 2)
@@ -58,7 +57,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 		def graphicElementsOpt = csvGraphicSource.getGraphicElements()
 
 		then:
-		!graphicElementsOpt.isPresent()
+		!graphicElementsOpt.present
 	}
 
 
@@ -115,7 +114,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def res = csvGraphicSource.buildNodeGraphicEntityData(fieldsToAttributesMap, nodeCollection as Set)
-		res.isPresent() == isPresent
+		res.present == isPresent
 
 		res.ifPresent({ value ->
 			assert value == new NodeGraphicInputEntityData([
@@ -148,7 +147,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def res = csvGraphicSource.buildLineGraphicEntityData(fieldsToAttributesMap, nodeCollection as Set)
-		res.isPresent() == isPresent
+		res.present == isPresent
 
 		res.ifPresent({ value ->
 			assert value == new LineGraphicInputEntityData([
