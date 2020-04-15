@@ -9,6 +9,8 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.Map;
+import java.util.Objects;
+
 
 /**
  * Data used by all factories used to create instances of {@link
@@ -54,5 +56,22 @@ public class NodeAssetInputEntityData extends AssetInputEntityData {
 
   public NodeInput getNode() {
     return node;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if(this == o)
+      return true;
+    if(o == null || getClass() != o.getClass())
+      return false;
+    if(!super.equals(o))
+      return false;
+    NodeAssetInputEntityData that = (NodeAssetInputEntityData) o;
+    return getNode().equals(that.getNode());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getNode());
   }
 }
