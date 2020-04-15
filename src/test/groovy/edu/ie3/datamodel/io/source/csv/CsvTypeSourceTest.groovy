@@ -156,7 +156,19 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		expect:
 		def storageTypes = typeSource.storageTypes
 		storageTypes.size() == 1
-		storageTypes.first() == sptd.storageTypeInput
+		storageTypes.first().uuid == sptd.storageTypeInput.uuid
+		storageTypes.first().id == sptd.storageTypeInput.id
+		storageTypes.first().capex == sptd.storageTypeInput.capex
+		storageTypes.first().opex == sptd.storageTypeInput.opex
+		storageTypes.first().eStorage == sptd.storageTypeInput.eStorage
+		storageTypes.first().sRated == sptd.storageTypeInput.sRated
+		storageTypes.first().cosphiRated == sptd.storageTypeInput.cosphiRated
+		storageTypes.first().pMax == sptd.storageTypeInput.pMax
+		storageTypes.first().activePowerGradient == sptd.storageTypeInput.activePowerGradient
+		storageTypes.first().eta == sptd.storageTypeInput.eta
+		storageTypes.first().dod == sptd.storageTypeInput.dod
+		storageTypes.first().lifeTime == sptd.storageTypeInput.lifeTime
+		storageTypes.first().lifeCycle == sptd.storageTypeInput.lifeCycle
 	}
 
 	@Ignore
