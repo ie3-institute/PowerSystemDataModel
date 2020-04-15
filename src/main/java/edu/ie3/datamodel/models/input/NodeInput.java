@@ -137,17 +137,16 @@ public class NodeInput extends AssetInput {
 
   @Override
   public String toString() {
-    return "NodeInput{"
-        + "vTarget="
-        + vTarget
-        + ", slack="
-        + slack
-        + ", geoPosition="
-        + geoPosition
-        + ", voltLvl="
-        + voltLvl
-        + ", subnet="
-        + subnet
-        + '}';
+    return "NodeInput{" +
+            "uuid=" + getUuid() +
+            ", id='" + getId() + '\'' +
+            ", operator=" + getOperator() +
+            ", operationTime=" + getOperationTime() +
+            ", vTarget=" + vTarget +
+            ", slack=" + slack +
+            ", geoPosition=" + geoPosition +
+            ", voltLvl=" + voltLvl +
+            ", subnet=" + subnet +
+            '}';
   }
 }
