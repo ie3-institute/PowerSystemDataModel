@@ -47,4 +47,14 @@ public abstract class ReactivePowerCharacteristic
               + input
               + "' to a reactive power characteristic, as it does not meet the specifications of any of the available classes.");
   }
+
+  @Override
+  public boolean equals(Object o) {
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

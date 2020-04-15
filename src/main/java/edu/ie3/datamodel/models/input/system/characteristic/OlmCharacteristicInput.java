@@ -40,6 +40,16 @@ public class OlmCharacteristicInput extends CharacteristicInput<Speed, Dimension
   }
 
   @Override
+  public boolean equals(Object o) {
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
+
+  @Override
   public String toString() {
     return "OlmCharacteristicInput{" + "points=" + points + '}';
   }
