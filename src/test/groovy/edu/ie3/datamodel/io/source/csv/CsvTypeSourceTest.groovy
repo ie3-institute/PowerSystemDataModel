@@ -45,7 +45,8 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		expect:
 		def operators = typeSource.operators
 		operators.size() == 1
-		operators.first() == operator
+		operators.first().uuid == operator.uuid
+		operators.first().id == operator.id
 	}
 
 	def "A CsvTypeSource should read and handle valid line type file as expected"() {
