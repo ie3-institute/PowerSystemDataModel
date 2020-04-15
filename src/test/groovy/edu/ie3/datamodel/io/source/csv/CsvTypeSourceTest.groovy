@@ -7,8 +7,8 @@ package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.models.input.OperatorInput
-import spock.lang.Shared
 import spock.lang.Specification
+import edu.ie3.test.common.GridTestData as gtd
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 
 
@@ -18,6 +18,13 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 	//  -> create files in test/resources/testGridFiles/types and create a test for each get method in CsvTypeSource
 
 	def "A CsvTypeSource should read and handle valid 2W Transformer type file as expected"() {
+		given:
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+
+		expect:
+		def transformer2WTypes = typeSource.transformer2WTypes
+		transformer2WTypes.size() == 1
+		transformer2WTypes.first() == gtd.transformerTypeBtoD
 
 	}
 
