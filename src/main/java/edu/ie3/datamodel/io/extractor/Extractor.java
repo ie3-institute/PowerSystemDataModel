@@ -77,10 +77,9 @@ public final class Extractor {
                   resultingList.addAll(extractElements((NestedEntity) element));
                 } catch (ExtractorException e) {
                   log.error(
-                      "An error occurred during extraction of nested entity'"
-                          + element.getClass().getSimpleName()
-                          + "': ",
-                      e);
+                      "An error occurred during extraction of nested entity '{}':{}",
+                      () -> element.getClass().getSimpleName(),
+                      () -> e);
                 }
               }
             });

@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.utils.ValidationUtils;
+import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
@@ -83,7 +84,8 @@ public abstract class CsvDataSource {
           IntStream.range(0, fieldVals.length)
               .boxed()
               .collect(
-                  Collectors.toMap(k -> snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
+                  Collectors.toMap(
+                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
 
       if (insensitiveFieldsToAttributes.size() != headline.length) {
         Set<String> fieldsToAttributesKeySet = insensitiveFieldsToAttributes.keySet();
@@ -170,19 +172,6 @@ public abstract class CsvDataSource {
                   operatorUuid);
               return OperatorInput.NO_OPERATOR_ASSIGNED;
             });
-  }
-
-  // todo remove when powerSystemUtils/jh/#24-add-snake-case-to-camel-case-to-string-utils is merged
-  // into master
-  private String snakeCaseToCamelCase(String snakeCaseString) {
-    StringBuilder sb = new StringBuilder(snakeCaseString);
-    for (int i = 0; i < sb.length(); i++) {
-      if (sb.charAt(i) == '_') {
-        sb.deleteCharAt(i);
-        sb.replace(i, i + 1, String.valueOf(Character.toUpperCase(sb.charAt(i))));
-      }
-    }
-    return sb.toString();
   }
 
   /**
@@ -320,7 +309,7 @@ public abstract class CsvDataSource {
       Class<T> entityClass, Collection<Map<String, String>> allRows) {
     Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
     // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial
-    if (!(allRows.size() == allRowsSet.size())) {
+    if (allRows.size() != allRowsSet.size()) {
       log.warn(
           "File with '{}' entities contains {} exact duplicated rows. File cleanup is recommended!",
           entityClass.getSimpleName(),
