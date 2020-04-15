@@ -28,6 +28,19 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 	}
 
+	def "A CsvTypeSource should read and handle valid operator file as expected"() {
+		given:
+		def operator = new OperatorInput(
+				UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator")
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+
+		expect:
+		def operators = typeSource.operators
+		operators.size() == 1
+		operators.first() == operator
+
+	}
+
 	def "A CsvTypeSource should read and handle valid 3W Transformer type file as expected"() {
 		given:
 		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
@@ -50,19 +63,5 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		bmTypes.first() == sptd.bmTypeInput
 
 	}
-
-	def "A CsvTypeSource should read and handle valid operator file as expected"() {
-		given:
-		def operator = new OperatorInput(
-				UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator")
-		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
-
-		expect:
-		def operators = typeSource.operators
-		operators.size() == 1
-		operators.first() == operator
-
-	}
-
 
 }
