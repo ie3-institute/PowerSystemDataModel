@@ -56,7 +56,12 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		expect:
 		def lineTypes = typeSource.lineTypes
 		lineTypes.size() == 1
-		lineTypes.first() == gtd.lineTypeInputCtoD
+		lineTypes.first().b == gtd.lineTypeInputCtoD.b
+		lineTypes.first().g == gtd.lineTypeInputCtoD.g
+		lineTypes.first().r == gtd.lineTypeInputCtoD.r
+		lineTypes.first().x == gtd.lineTypeInputCtoD.x
+		lineTypes.first().iMax == gtd.lineTypeInputCtoD.iMax
+		lineTypes.first().vRated == gtd.lineTypeInputCtoD.vRated
 	}
 
 	def "A CsvTypeSource should read and handle valid 3W Transformer type file as expected"() {
