@@ -187,7 +187,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		wecTypes.first().sRated == sptd.wecType.sRated
 		wecTypes.first().rotorArea == sptd.wecType.rotorArea
 		wecTypes.first().hubHeight == sptd.wecType.hubHeight
-		//wecTypes.first().cpCharacteristic == sptd.wecType.cpCharacteristic
+		wecTypes.first().cpCharacteristic == sptd.wecType.cpCharacteristic
 		//check for the individual points
 		if (wecTypes.first().cpCharacteristic.points.iterator().hasNext())
 			wecTypes.first().cpCharacteristic.points.iterator().next() == sptd.wecType.cpCharacteristic.points.iterator().next()
