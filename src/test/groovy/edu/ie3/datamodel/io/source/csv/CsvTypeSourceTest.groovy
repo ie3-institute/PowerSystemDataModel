@@ -20,33 +20,39 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def transformer2WTypes = typeSource.transformer2WTypes
-		transformer2WTypes.first().uuid == gtd.transformerTypeBtoD.uuid
-		transformer2WTypes.first().id == gtd.transformerTypeBtoD.id
-		transformer2WTypes.first().rSc == gtd.transformerTypeBtoD.rSc
-		transformer2WTypes.first().xSc == gtd.transformerTypeBtoD.xSc
-		transformer2WTypes.first().sRated == gtd.transformerTypeBtoD.sRated
-		transformer2WTypes.first().vRatedA == gtd.transformerTypeBtoD.vRatedA
-		transformer2WTypes.first().vRatedB == gtd.transformerTypeBtoD.vRatedB
-		transformer2WTypes.first().gM == gtd.transformerTypeBtoD.gM
-		transformer2WTypes.first().bM == gtd.transformerTypeBtoD.bM
-		transformer2WTypes.first().dV == gtd.transformerTypeBtoD.dV
-		transformer2WTypes.first().dPhi == gtd.transformerTypeBtoD.dPhi
-		transformer2WTypes.first().tapSide == gtd.transformerTypeBtoD.tapSide
-		transformer2WTypes.first().tapNeutr == gtd.transformerTypeBtoD.tapNeutr
-		transformer2WTypes.first().tapMin == gtd.transformerTypeBtoD.tapMin
-		transformer2WTypes.first().tapMax == gtd.transformerTypeBtoD.tapMax
+		def transformerToBeFound = transformer2WTypes.find {trafoType ->
+			trafoType.uuid ==gtd.transformerTypeBtoD.uuid
+		}
+		transformerToBeFound.id == gtd.transformerTypeBtoD.id
+		transformerToBeFound.rSc == gtd.transformerTypeBtoD.rSc
+		transformerToBeFound.xSc == gtd.transformerTypeBtoD.xSc
+		transformerToBeFound.sRated == gtd.transformerTypeBtoD.sRated
+		transformerToBeFound.vRatedA == gtd.transformerTypeBtoD.vRatedA
+		transformerToBeFound.vRatedB == gtd.transformerTypeBtoD.vRatedB
+		transformerToBeFound.gM == gtd.transformerTypeBtoD.gM
+		transformerToBeFound.bM == gtd.transformerTypeBtoD.bM
+		transformerToBeFound.dV == gtd.transformerTypeBtoD.dV
+		transformerToBeFound.dPhi == gtd.transformerTypeBtoD.dPhi
+		transformerToBeFound.tapSide == gtd.transformerTypeBtoD.tapSide
+		transformerToBeFound.tapNeutr == gtd.transformerTypeBtoD.tapNeutr
+		transformerToBeFound.tapMin == gtd.transformerTypeBtoD.tapMin
+		transformerToBeFound.tapMax == gtd.transformerTypeBtoD.tapMax
 	}
 
 	def "A CsvTypeSource should read and handle valid operator file as expected"() {
 		given:
-		def operator = new OperatorInput(
+		def firstOperator = new OperatorInput(
+				UUID.fromString("f15105c4-a2de-4ab8-a621-4bc98e372d92"), "Univ.-Prof. Dr. rer. hort. Klaus-Dieter Brokkoli")
+		def secondOperator = new OperatorInput(
 				UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator")
 		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 
 		expect:
 		def operators = typeSource.operators
-		operators.first().uuid == operator.uuid
-		operators.first().id == operator.id
+		operators.first().uuid == firstOperator.uuid
+		operators.first().id == firstOperator.id
+		operators[1].uuid == secondOperator.uuid
+		operators[1].id == secondOperator.id
 	}
 
 	def "A CsvTypeSource should read and handle valid line type file as expected"() {
