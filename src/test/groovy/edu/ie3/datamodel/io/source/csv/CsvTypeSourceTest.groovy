@@ -171,7 +171,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		storageTypes.first().lifeCycle == sptd.storageTypeInput.lifeCycle
 	}
 
-	@Ignore
 	def "A CsvTypeSource should read and handle valid wec type file as expected"() {
 		given:
 		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
@@ -179,9 +178,20 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		expect:
 		def wecTypes = typeSource.wecTypes
 		wecTypes.size() == 1
-		//if (wecTypes.first().cpCharacteristic.points.iterator().hasNext())
-		//wecTypes.first().cpCharacteristic.points.iterator().next() == sptd.wecType.cpCharacteristic.points.iterator().next()
-		wecTypes.first() == sptd.wecType
+		wecTypes.first().uuid == sptd.wecType.uuid
+		wecTypes.first().id == sptd.wecType.id
+		wecTypes.first().capex == sptd.wecType.capex
+		wecTypes.first().opex == sptd.wecType.opex
+		wecTypes.first().cosphiRated == sptd.wecType.cosphiRated
+		wecTypes.first().etaConv == sptd.wecType.etaConv
+		wecTypes.first().sRated == sptd.wecType.sRated
+		wecTypes.first().rotorArea == sptd.wecType.rotorArea
+		wecTypes.first().hubHeight == sptd.wecType.hubHeight
+		//wecTypes.first().cpCharacteristic == sptd.wecType.cpCharacteristic
+		//check for the individual points
+		if (wecTypes.first().cpCharacteristic.points.iterator().hasNext())
+			wecTypes.first().cpCharacteristic.points.iterator().next() == sptd.wecType.cpCharacteristic.points.iterator().next()
+
 	}
 
 	def "A CsvTypeSource should read and handle valid ev type file as expected"() {
