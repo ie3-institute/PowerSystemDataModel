@@ -525,6 +525,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
 		then: "all nodes are there"
 		actualSet.size() == expectedSet.size()
+
 		actualSet.each {actual ->
 			def expected = expectedSet.find {it.uuid == actual.uuid}
 			assert expected != null
@@ -539,6 +540,36 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 				assert geoPosition.coordinates == expected.geoPosition.coordinates
 				assert voltLvl == expected.voltLvl
 				assert subnet == expected.subnet
+			}
+		}
+	}
+
+	def "The CsvRawGridSource is able to load all lines from file"() {
+		when: "loading all lines from file"
+		def actualSet = source.getLines()
+		def expectedSet = [
+			rgtd.lineAtoB,
+			rgtd.lineCtoD
+		]
+
+		then: "all lines are there"
+		actualSet.size() == expectedSet.size()
+		actualSet.each {actual ->
+			def expected = expectedSet.find {it.uuid == actual.uuid}
+			assert expected != null
+
+			actual.with {
+				assert uuid == expected.uuid
+				assert id == expected.id
+				assert operator == expected.operator
+				assert operationTime == expected.operationTime
+				assert nodeA.uuid == expected.nodeA.uuid
+				assert nodeB.uuid == expected.nodeB.uuid
+				assert parallelDevices == expected.parallelDevices
+				assert type == expected.type
+				assert length == expected.length
+				assert geoPosition.coordinates == expected.geoPosition.coordinates
+				assert olmCharacteristic == expected.olmCharacteristic
 			}
 		}
 	}

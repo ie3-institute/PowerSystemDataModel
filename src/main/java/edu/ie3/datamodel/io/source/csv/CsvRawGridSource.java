@@ -189,20 +189,6 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         .collect(Collectors.toSet());
   }
 
-  private <T extends AssetInput, A extends AssetTypeInput> Stream<Optional<T>> typedEntityStream(
-      Class<T> entityClass,
-      EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<A> types) {
-
-    return buildTypedConnectorEntityData(
-            buildUntypedConnectorInputEntityData(
-                assetInputEntityDataStream(entityClass, operators), nodes),
-            types)
-        .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
-  }
-
   @Override
   public Set<Transformer3WInput> get3WTransformers() {
     Set<OperatorInput> operators = typeSource.getOperators();
@@ -273,6 +259,20 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
             nodeAssetEntityStream(
                 MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators))
         .collect(Collectors.toSet());
+  }
+
+  private <T extends AssetInput, A extends AssetTypeInput> Stream<Optional<T>> typedEntityStream(
+      Class<T> entityClass,
+      EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
+      Collection<NodeInput> nodes,
+      Collection<OperatorInput> operators,
+      Collection<A> types) {
+
+    return buildTypedConnectorEntityData(
+            buildUntypedConnectorInputEntityData(
+                assetInputEntityDataStream(entityClass, operators), nodes),
+            types)
+        .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
   }
 
   /**

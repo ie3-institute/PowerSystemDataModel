@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.value.Value;
 import java.io.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
@@ -194,7 +195,9 @@ public class CsvFileConnector implements DataConnector {
           e);
     }
     File filePath = new File(baseFolderName + File.separator + fileName + FILE_ENDING);
-    newReader = new BufferedReader(new FileReader(filePath), 16384);
+    newReader =
+        new BufferedReader(
+            new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8), 16384);
 
     return newReader;
   }
