@@ -43,7 +43,12 @@ class CsvDataSourceTest extends Specification {
 
 		def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
 				Class<T> entityClass, Collection<Map<String, String>> allRows) {
-			super.distinctRowsWithLog(entityClass, allRows)
+			return super.distinctRowsWithLog(entityClass, allRows)
+		}
+
+		String[] fieldVals(
+				String csvSep, String csvRow) {
+			return super.fieldVals(csvSep, csvRow)
 		}
 
 	}
@@ -92,6 +97,76 @@ class CsvDataSourceTest extends Specification {
 			cosPhiFixed        : "cosPhiFixed:{(0.0,1.0)}"]
 
 	}
+
+	def "A CsvDataSource should be able to handle a variety of different csvRows correctly"() {
+		expect:
+		dummyCsvSource.fieldVals(csvSep, csvRow) as List == resultingArray
+
+		where:
+		csvSep | csvRow                                                                                                                                                                                                                                                                                                                                                                                                              || resultingArray
+		","    | "4ca90220-74c2-4369-9afa-a18bf068840d,{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}},node_a,2020-03-25T15:11:31Z[UTC],2020-03-24T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,true,1,1.0,Höchstspannung,380.0,olm:{(0.00,1.00)},cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"                                                     || [
+			"4ca90220-74c2-4369-9afa-a18bf068840d",
+			"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"node_a",
+			"2020-03-25T15:11:31Z[UTC]",
+			"2020-03-24T15:11:31Z[UTC]",
+			"8f9682df-0744-4b58-a122-f0dc730f6510",
+			"true",
+			"1",
+			"1.0",
+			"Höchstspannung",
+			"380.0",
+			"olm:{(0.00,1.00)}",
+			"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+		]
+		","    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\",\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\",\"node_a\",\"2020-03-25T15:11:31Z[UTC]\",\"2020-03-24T15:11:31Z[UTC]\",\"8f9682df-0744-4b58-a122-f0dc730f6510\",\"true\",\"1\",\"1.0\",\"Höchstspannung\",\"380.0\",\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+			"4ca90220-74c2-4369-9afa-a18bf068840d",
+			"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"node_a",
+			"2020-03-25T15:11:31Z[UTC]",
+			"2020-03-24T15:11:31Z[UTC]",
+			"8f9682df-0744-4b58-a122-f0dc730f6510",
+			"true",
+			"1",
+			"1.0",
+			"Höchstspannung",
+			"380.0",
+			"olm:{(0.00,1.00)}",
+			"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+		]
+		";"    | "4ca90220-74c2-4369-9afa-a18bf068840d;cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)};{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}};node_a;2020-03-25T15:11:31Z[UTC];2020-03-24T15:11:31Z[UTC];8f9682df-0744-4b58-a122-f0dc730f6510;true;1;1.0;Höchstspannung;380.0;olm:{(0.00,1.00)};cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"            || [
+			"4ca90220-74c2-4369-9afa-a18bf068840d",
+			"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}",
+			"{(0.0,1.0),(0.9,1.0),(1.2,-0.3)};{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"node_a",
+			"2020-03-25T15:11:31Z[UTC]",
+			"2020-03-24T15:11:31Z[UTC]",
+			"8f9682df-0744-4b58-a122-f0dc730f6510",
+			"true",
+			"1",
+			"1.0",
+			"Höchstspannung",
+			"380.0",
+			"olm:{(0.00,1.00)}",
+			"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+		]
+		";"    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\";\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\";\"node_a\";\"2020-03-25T15:11:31Z[UTC]\";\"2020-03-24T15:11:31Z[UTC]\";\"8f9682df-0744-4b58-a122-f0dc730f6510\";\"true\";\"1\";\"1.0\";\"Höchstspannung\";\"380.0\";\"olm:{(0.00,1.00)}\";\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+			"4ca90220-74c2-4369-9afa-a18bf068840d",
+			"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"node_a",
+			"2020-03-25T15:11:31Z[UTC]",
+			"2020-03-24T15:11:31Z[UTC]",
+			"8f9682df-0744-4b58-a122-f0dc730f6510",
+			"true",
+			"1",
+			"1.0",
+			"Höchstspannung",
+			"380.0",
+			"olm:{(0.00,1.00)}",
+			"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+		]
+	}
+
 
 	def "A CsvDataSource should build a valid fields to attributes map with valid data and empty value fields as expected"() {
 		given:
