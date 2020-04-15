@@ -25,8 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import edu.ie3.datamodel.utils.ValidationUtils;
 import org.apache.commons.lang3.NotImplementedException;
 
 /**
@@ -483,17 +481,18 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                                 storage.getUuid().toString().equalsIgnoreCase(thermalBusUuid))
                         .findFirst()
                         .map(
-                            thermalBus ->{
+                            thermalBus -> {
 
                               // remove fields that are passed as objects to constructor
                               fieldsToAttributes.keySet().remove(THERMAL_BUS);
 
-                                return new HpInputEntityData(
-                                    fieldsToAttributes,
-                                    typedEntityData.getOperatorInput(),
-                                    typedEntityData.getNode(),
-                                    typedEntityData.getTypeInput(),
-                                    thermalBus);}));
+                              return new HpInputEntityData(
+                                  fieldsToAttributes,
+                                  typedEntityData.getOperatorInput(),
+                                  typedEntityData.getNode(),
+                                  typedEntityData.getTypeInput(),
+                                  thermalBus);
+                            }));
 
     // if the requested entity is not present we return an empty element and
     // log a warning

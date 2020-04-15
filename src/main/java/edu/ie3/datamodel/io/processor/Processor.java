@@ -265,12 +265,12 @@ public abstract class Processor<T> {
       case "WecTypeInput":
         resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
         break;
-    case "OperatorInput":
-      resultStringBuilder.append(
-                      ((OperatorInput) methodReturnObject).getId().equalsIgnoreCase("NO_OPERATOR_ASSIGNED")
-                                      ? ""
-                                      : ((OperatorInput) methodReturnObject).getUuid());
-      break;
+      case "OperatorInput":
+        resultStringBuilder.append(
+            ((OperatorInput) methodReturnObject).getId().equalsIgnoreCase("NO_OPERATOR_ASSIGNED")
+                ? ""
+                : ((OperatorInput) methodReturnObject).getUuid());
+        break;
       case "EvCharacteristicInput":
       case "OlmCharacteristicInput":
       case "WecCharacteristicInput":
