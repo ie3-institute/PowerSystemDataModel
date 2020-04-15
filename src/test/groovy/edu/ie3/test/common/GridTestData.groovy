@@ -274,9 +274,10 @@ class GridTestData {
 	)
 
 	public static Transformer3WInput transformerAtoBtoC = new Transformer3WInput(
-	UUID.fromString("cc327469-7d56-472b-a0df-edbb64f90e8f"), "3w_test", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
-	,
+	UUID.fromString("cc327469-7d56-472b-a0df-edbb64f90e8f"),
+	"3w_test",
+	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
 	nodeA,
 	nodeB,
 	nodeC,

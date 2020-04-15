@@ -423,19 +423,18 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         .parallel()
         .map(
             typedEntityDataOpt ->
-                typedEntityDataOpt.flatMap(
-                    typeEntityData -> addInternalNode(typeEntityData, nodes)));
+                typedEntityDataOpt.flatMap(typeEntityData -> addThirdNode(typeEntityData, nodes)));
   }
 
   /**
-   * Enriches the internal node to the already typed entity data of a three winding transformer. If
-   * no matching node can be found, return an empty Optional.
+   * Enriches the third node to the already typed entity data of a three winding transformer. If no
+   * matching node can be found, return an empty Optional.
    *
    * @param typeEntityData Already typed entity data
    * @param nodes Yet available nodes
    * @return An option to the enriched data
    */
-  private Optional<Transformer3WInputEntityData> addInternalNode(
+  private Optional<Transformer3WInputEntityData> addThirdNode(
       TypedConnectorInputEntityData<Transformer3WTypeInput> typeEntityData,
       Collection<NodeInput> nodes) {
 
