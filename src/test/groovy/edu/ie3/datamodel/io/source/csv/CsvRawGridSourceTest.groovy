@@ -544,6 +544,33 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		}
 	}
 
+	def "The CsvRawGridSource is able to load all measurement units from file"() {
+		when: "loading all measurement units from file"
+		def actualSet = source.getMeasurementUnits()
+		def expectedSet = [
+			rgtd.measurementUnitInput
+		]
+
+		then: "all measurement units are there"
+		actualSet.size() == expectedSet.size()
+		actualSet.each {actual ->
+			def expected = expectedSet.find {it.uuid == actual.uuid}
+			assert expected != null
+
+			actual.with {
+				assert uuid == expected.uuid
+				assert id == expected.id
+				assert operator == expected.operator
+				assert operationTime == expected.operationTime
+				assert node.uuid == expected.node.uuid
+				assert vMag == expected.vMag
+				assert vAng == expected.vAng
+				assert p == expected.p
+				assert q == expected.q
+			}
+		}
+	}
+
 	def "The CsvRawGridSource is able to load all lines from file"() {
 		when: "loading all lines from file"
 		def actualSet = source.getLines()
