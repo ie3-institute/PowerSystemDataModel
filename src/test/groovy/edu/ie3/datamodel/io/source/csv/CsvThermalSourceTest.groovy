@@ -11,7 +11,7 @@ import spock.lang.Specification
 import java.util.stream.Collectors
 
 class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
-	//
+
 	//	// todo
 	//
 	//	def "A CsvThermalSource should build thermal unit input entity from valid and invalid input data as expected"() {
@@ -77,5 +77,6 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 	//		resultingThermalBuses == null // todo checks
 	//
 	//	}
+
 
 }

@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.value.Value;
 import java.io.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
@@ -105,13 +106,13 @@ public class CsvFileConnector implements DataConnector {
 
     File pathFile = new File(fullPathToFile);
     if (!pathFile.exists()) {
-      return new BufferedCsvWriter(baseFolder, fileDefinition, true);
+      return new BufferedCsvWriter(baseFolder, fileDefinition, false, true);
     }
     log.warn(
         "File '{}.csv' already exist. Will append new content WITHOUT new header! Full path: {}",
         fileDefinition.getFileName(),
         pathFile.getAbsolutePath());
-    return new BufferedCsvWriter(baseFolder, fileDefinition, false);
+    return new BufferedCsvWriter(baseFolder, fileDefinition, false, false);
   }
 
   /**
@@ -194,7 +195,9 @@ public class CsvFileConnector implements DataConnector {
           () -> e);
     }
     File filePath = new File(baseFolderName + File.separator + fileName + FILE_ENDING);
-    newReader = new BufferedReader(new FileReader(filePath), 16384);
+    newReader =
+        new BufferedReader(
+            new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8), 16384);
 
     return newReader;
   }

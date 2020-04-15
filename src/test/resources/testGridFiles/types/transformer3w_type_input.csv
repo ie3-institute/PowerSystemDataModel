@@ -1,2 +1,2 @@
-"uuid","id","s_rated_A","s_rated_B","s_rated_C","v_rated_A","v_rated_B","v_rated_C","r_sc_A","r_sc_B","r_sc_C","x_sc_A","x_sc_B","x_sc_C","g_m","b_m","d_v","d_phi","tap_neutr","tap_min","tap_max"
-5b0ee546-21fb-4a7f-a801-5dbd3d7bb356,"HöS-HS-MS_1",120000,60000,40000,380,110,20,0.3,0.025,0.0008,1,0.08,0.003,40000,1000,1.5,0,0,-10,10
+"uuid","b_m","d_phi","d_v","g_m","id","r_sc_a","r_sc_b","r_sc_c","s_rated_a","s_rated_b","s_rated_c","tap_max","tap_min","tap_neutr","v_rated_a","v_rated_b","v_rated_c","x_sc_a","x_sc_b","x_sc_c"
+5b0ee546-21fb-4a7f-a801-5dbd3d7bb356,1000.0,0.0,1.5,40000.0,HöS-HS-MS_1,0.3,0.025,8.0E-4,120000.0,60000.0,40000.0,10,-10,0,380.0,110.0,20.0,1.0,0.08,0.003
