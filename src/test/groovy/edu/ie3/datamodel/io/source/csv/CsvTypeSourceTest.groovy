@@ -122,7 +122,15 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		expect:
 		def chpTypes = typeSource.chpTypes
 		chpTypes.size() == 1
-		chpTypes.first() == sptd.chpTypeInput
+		chpTypes.first().uuid == sptd.chpTypeInput.uuid
+		chpTypes.first().id == sptd.chpTypeInput.id
+		chpTypes.first().capex == sptd.chpTypeInput.capex
+		chpTypes.first().opex == sptd.chpTypeInput.opex
+		chpTypes.first().etaEl == sptd.chpTypeInput.etaEl
+		chpTypes.first().etaThermal == sptd.chpTypeInput.etaThermal
+		chpTypes.first().sRated == sptd.chpTypeInput.sRated
+		chpTypes.first().pThermal == sptd.chpTypeInput.pThermal
+		chpTypes.first().pOwn == sptd.chpTypeInput.pOwn
 	}
 
 	def "A CsvTypeSource should read and handle valid hp type file as expected"() {
