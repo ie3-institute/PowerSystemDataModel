@@ -80,7 +80,7 @@ public abstract class CsvDataSource {
                     .replaceAll(addDoubleQuotesToGeoJsonRegex, "\"$1\"")
                     .replaceAll(addDoubleQuotesToCpJsonString, "\"$1\"")
                     .split(cswRowRegex, -1))
-            .map(string -> string.replaceAll("^\"|\"$", "").replaceAll("\n|\\s+", ""))
+            .map(string -> string.replaceAll("^\"|\"$", "").replaceAll("\n|(?<=,)\\s+|\\s+(?=,)", ""))
             .toArray(String[]::new);
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
