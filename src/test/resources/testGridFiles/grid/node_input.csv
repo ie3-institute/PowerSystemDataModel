@@ -1,3 +1,4 @@
 "uuid","geo_position","id","operates_until","operates_from","operator","slack","subnet","v_target","volt_lvl","v_rated"
 bd837a25-58f3-44ac-aa90-c6b6e3cd91b2,,node_c,,,,false,3,1.0,Mittelspannung,20.0
 6e0980e0-10f2-4e18-862b-eb2b7c90509b,,node_d,,,,false,4,1.0,Mittelspannung,20.0
+4ca90220-74c2-4369-9afa-a18bf068840d,{"type":"Point","coordinates":[7.411111,51.492528],"crs":{"type":"name","properties":{"name":"EPSG:4326"}}},node_a,2020-03-25T15:11:31Z[UTC],2020-03-24T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,true,1,1.0,Höchstspannung,380.0

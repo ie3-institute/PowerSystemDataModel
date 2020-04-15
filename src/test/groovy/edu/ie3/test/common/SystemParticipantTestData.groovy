@@ -72,12 +72,12 @@ class SystemParticipantTestData {
 	public static final String cosPhiFixedDeSerialized = "cosPhiFixed:{(0.00,0.95)}"
 	public static final String cosPhiPDeSerialized = "cosPhiP:{(0.00,1.00),(0.90,1.00),(1.20,-0.30)}"
 	public static final String qVDeSerialized = "qV:{(0.90,-0.30),(0.95,0.00),(1.05,0.00),(1.10,0.30)}"
-	private static final Quantity<Power> sRated = Quantities.getQuantity(25, KILOVOLTAMPERE)
+	private static final Quantity<Power> sRated = Quantities.getQuantity(25d, KILOVOLTAMPERE)
 	private static final double cosPhiRated = 0.95
 	private static final UUID typeUuid = UUID.fromString("5ebd8f7e-dedb-4017-bb86-6373c4b68eb8")
-	private static final Quantity<Currency> capex = Quantities.getQuantity(100, EURO)
-	private static final Quantity<EnergyPrice> opex = Quantities.getQuantity(50, EURO_PER_MEGAWATTHOUR)
-	private static final Quantity<Dimensionless> etaConv = Quantities.getQuantity(98, PERCENT)
+	private static final Quantity<Currency> capex = Quantities.getQuantity(100d, EURO)
+	private static final Quantity<EnergyPrice> opex = Quantities.getQuantity(50d, EURO_PER_MEGAWATTHOUR)
+	private static final Quantity<Dimensionless> etaConv = Quantities.getQuantity(98d, PERCENT)
 
 
 	// FixedFeedInput

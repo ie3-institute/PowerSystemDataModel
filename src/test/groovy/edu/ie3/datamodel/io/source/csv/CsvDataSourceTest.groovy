@@ -262,15 +262,15 @@ class CsvDataSourceTest extends Specification {
 		then:
 		assetTypeOpt.present == resultIsPresent
 		assetTypeOpt.ifPresent({ assetType ->
-			assert(assetType == resultData)
+			assert (assetType == resultData)
 		})
 
 		where:
-		types | fieldsToAttributes || resultIsPresent || resultData
-		[]| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || false || null
-		[]| ["bla": "foo"] || false || null
-		[gtd.transformerTypeBtoD]| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || true || gtd.transformerTypeBtoD
-		[sptd.chpTypeInput]| ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"] || true || sptd.chpTypeInput
+		types                     | fieldsToAttributes                               || resultIsPresent || resultData
+		[]| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || false           || null
+		[]| ["bla": "foo"]                                   || false           || null
+		[gtd.transformerTypeBtoD]| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || true            || gtd.transformerTypeBtoD
+		[sptd.chpTypeInput]| ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"] || true            || sptd.chpTypeInput
 	}
 
 }
