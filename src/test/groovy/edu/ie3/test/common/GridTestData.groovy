@@ -46,6 +46,10 @@ class GridTestData {
 
 	private static final GeoJsonReader geoJsonReader = new GeoJsonReader()
 
+	public static final OperationTime defaultOperationTime = OperationTime.builder().
+	withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).
+	withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
+
 	public static final OperatorInput profBroccoli = new OperatorInput(
 	UUID.fromString("f15105c4-a2de-4ab8-a621-4bc98e372d92"),
 	"Univ.-Prof. Dr. rer. hort. Klaus-Dieter Brokkoli"
@@ -148,7 +152,7 @@ class GridTestData {
 	UUID.fromString("4ca90220-74c2-4369-9afa-a18bf068840d"),
 	"node_a",
 	profBroccoli,
-	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
+	defaultOperationTime,
 	Quantities.getQuantity(1d, PU),
 	true,
 	geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }") as Point,
@@ -281,7 +285,7 @@ class GridTestData {
 	public static final Transformer2WInput transformerCtoG = new Transformer2WInput(
 	UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"), "2w_parallel_2",
 	profBroccoli,
-	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
+	defaultOperationTime,
 	nodeC,
 	nodeG,
 	1,
@@ -294,7 +298,7 @@ class GridTestData {
 	UUID.fromString("cc327469-7d56-472b-a0df-edbb64f90e8f"),
 	"3w_test",
 	profBroccoli,
-	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
+	defaultOperationTime,
 	nodeA,
 	nodeB,
 	nodeC,
@@ -309,7 +313,7 @@ class GridTestData {
 	UUID.fromString("5dc88077-aeb6-4711-9142-db57287640b1"),
 	"test_switch_AtoB",
 	profBroccoli,
-	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
+	defaultOperationTime,
 	nodeA,
 	nodeB,
 	true
@@ -331,7 +335,7 @@ class GridTestData {
 	UUID.fromString("91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
 	"test_line_CtoD",
 	profBroccoli,
-	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
+	defaultOperationTime,
 	nodeC,
 	nodeD,
 	2,
@@ -351,7 +355,7 @@ class GridTestData {
 	UUID.fromString("92ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
 	"test_line_AtoB",
 	profBroccoli,
-	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
+	defaultOperationTime,
 	nodeA,
 	nodeB,
 	2,
@@ -365,7 +369,7 @@ class GridTestData {
 	UUID.fromString("ce6119e3-f725-4166-b6e0-59f62e0c293d"),
 	"test_measurementUnit",
 	profBroccoli,
-	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
+	defaultOperationTime,
 	nodeG,
 	true,
 	true,

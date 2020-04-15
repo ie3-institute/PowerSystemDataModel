@@ -571,6 +571,29 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		}
 	}
 
+	def "The CsvRawGridSource is able to load all switches from file"() {
+		when: "loading all switches from file"
+		def actualSet = source.getSwitches()
+		def expectedSet = [rgtd.switchAtoB]
+
+		then: "all switches are there"
+		actualSet.size() == expectedSet.size()
+		actualSet.each {actual ->
+			def expected = expectedSet.find {it.uuid == actual.uuid}
+			assert expected != null
+
+			actual.with {
+				assert uuid == expected.uuid
+				assert id == expected.id
+				assert operator == expected.operator
+				assert operationTime == expected.operationTime
+				assert nodeA.uuid == expected.nodeA.uuid
+				assert nodeB.uuid == expected.nodeB.uuid
+				assert closed == expected.closed
+			}
+		}
+	}
+
 	def "The CsvRawGridSource is able to load all lines from file"() {
 		when: "loading all lines from file"
 		def actualSet = source.getLines()
