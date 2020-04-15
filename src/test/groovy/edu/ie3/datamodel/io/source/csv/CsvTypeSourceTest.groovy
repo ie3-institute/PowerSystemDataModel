@@ -20,7 +20,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def transformer2WTypes = typeSource.transformer2WTypes
-		transformer2WTypes.size() == 1
 		transformer2WTypes.first().uuid == gtd.transformerTypeBtoD.uuid
 		transformer2WTypes.first().id == gtd.transformerTypeBtoD.id
 		transformer2WTypes.first().rSc == gtd.transformerTypeBtoD.rSc
@@ -46,7 +45,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def operators = typeSource.operators
-		operators.size() == 1
 		operators.first().uuid == operator.uuid
 		operators.first().id == operator.id
 	}
@@ -57,7 +55,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def lineTypes = typeSource.lineTypes
-		lineTypes.size() == 1
 		lineTypes.first().uuid == gtd.lineTypeInputCtoD.uuid
 		lineTypes.first().id == gtd.lineTypeInputCtoD.id
 		lineTypes.first().b == gtd.lineTypeInputCtoD.b
@@ -74,7 +71,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def transformer3WTypes = typeSource.transformer3WTypes
-		transformer3WTypes.size() == 1
 		transformer3WTypes.first().uuid == gtd.transformerTypeAtoBtoC.uuid
 		transformer3WTypes.first().id == gtd.transformerTypeAtoBtoC.id
 		transformer3WTypes.first().sRatedA == gtd.transformerTypeAtoBtoC.sRatedA
@@ -104,7 +100,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def bmTypes = typeSource.bmTypes
-		bmTypes.size() == 1
 		bmTypes.first().uuid == sptd.bmTypeInput.uuid
 		bmTypes.first().id == sptd.bmTypeInput.id
 		bmTypes.first().capex == sptd.bmTypeInput.capex
@@ -120,7 +115,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def chpTypes = typeSource.chpTypes
-		chpTypes.size() == 1
 		chpTypes.first().uuid == sptd.chpTypeInput.uuid
 		chpTypes.first().id == sptd.chpTypeInput.id
 		chpTypes.first().capex == sptd.chpTypeInput.capex
@@ -138,7 +132,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def hpTypes = typeSource.hpTypes
-		hpTypes.size() == 1
 		hpTypes.first().uuid == sptd.hpTypeInput.uuid
 		hpTypes.first().id == sptd.hpTypeInput.id
 		hpTypes.first().capex == sptd.hpTypeInput.capex
@@ -154,7 +147,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def storageTypes = typeSource.storageTypes
-		storageTypes.size() == 1
 		storageTypes.first().uuid == sptd.storageTypeInput.uuid
 		storageTypes.first().id == sptd.storageTypeInput.id
 		storageTypes.first().capex == sptd.storageTypeInput.capex
@@ -176,7 +168,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def wecTypes = typeSource.wecTypes
-		wecTypes.size() == 1
 		wecTypes.first().uuid == sptd.wecType.uuid
 		wecTypes.first().id == sptd.wecType.id
 		wecTypes.first().capex == sptd.wecType.capex
@@ -199,7 +190,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def evTypes = typeSource.evTypes
-		evTypes.size() == 1
 		evTypes.first().uuid == sptd.evTypeInput.uuid
 		evTypes.first().id == sptd.evTypeInput.id
 		evTypes.first().capex == sptd.evTypeInput.capex
