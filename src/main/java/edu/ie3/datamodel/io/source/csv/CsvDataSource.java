@@ -17,12 +17,16 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.utils.ValidationUtils;
+import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -70,18 +74,8 @@ public abstract class CsvDataSource {
    */
   private Map<String, String> buildFieldsToAttributes(
       final String csvRow, final String[] headline) {
-    // sometimes we have a json string as field value -> we need to consider this one as well
-    final String addDoubleQuotesToGeoJsonRegex = "(\\{.*\\}\\}\\})";
-    final String addDoubleQuotesToCpJsonString = "((cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.+?\\})";
-    final String cswRowRegex = csvSep + "(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
-    final String[] fieldVals =
-        Arrays.stream(
-                csvRow
-                    .replaceAll(addDoubleQuotesToGeoJsonRegex, "\"$1\"")
-                    .replaceAll(addDoubleQuotesToCpJsonString, "\"$1\"")
-                    .split(cswRowRegex, -1))
-            .map(string -> string.replaceAll("^\"|\"$", "").replaceAll("\n|\\s+", ""))
-            .toArray(String[]::new);
+
+    final String[] fieldVals = fieldVals(csvSep, csvRow);
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -90,7 +84,8 @@ public abstract class CsvDataSource {
           IntStream.range(0, fieldVals.length)
               .boxed()
               .collect(
-                  Collectors.toMap(k -> snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
+                  Collectors.toMap(
+                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
 
       if (insensitiveFieldsToAttributes.size() != headline.length) {
         Set<String> fieldsToAttributesKeySet = insensitiveFieldsToAttributes.keySet();
@@ -109,11 +104,53 @@ public abstract class CsvDataSource {
     } catch (Exception e) {
       log.error(
           "Cannot build fields to attributes map for row '{}' with headline '{}'.\nException: {}",
-          csvRow.trim(),
-          String.join(",", headline),
-          e);
+          csvRow::trim,
+          () -> String.join(",", headline),
+          () -> e);
     }
     return insensitiveFieldsToAttributes;
+  }
+
+  private String[] fieldVals(String csvSep, String csvRow) {
+
+    final String geoJsonRegex = "[\\{].+\\}\\}\\}";
+    final String qCharRegex = "(cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.+?\\}";
+
+    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow);
+    List<String> qList = extractMatchingStrings(qCharRegex, csvRow);
+
+    AtomicInteger geoCounter = new AtomicInteger(0);
+    AtomicInteger qCharCounter = new AtomicInteger(0);
+
+    return Arrays.stream(
+            csvRow
+                .replaceAll(qCharRegex, "QCHAR")
+                .replaceAll(geoJsonRegex, "GEOJSON")
+                .replaceAll("\"", "")
+                .split(csvSep, -1))
+        .map(
+            fieldVal -> {
+              String returningFieldVal = fieldVal;
+              if (fieldVal.equalsIgnoreCase("GEOJSON")) {
+                returningFieldVal = geoList.get(geoCounter.getAndIncrement());
+              }
+              if (fieldVal.equalsIgnoreCase("QCHAR")) {
+                returningFieldVal = qList.get(qCharCounter.getAndIncrement());
+              }
+              return returningFieldVal.trim();
+            })
+        .toArray(String[]::new);
+  }
+
+  private List<String> extractMatchingStrings(String regexString, String csvRow) {
+    Pattern pattern = Pattern.compile(regexString);
+    Matcher matcher = pattern.matcher(csvRow);
+
+    ArrayList<String> matchingList = new ArrayList<>();
+    while (matcher.find()) {
+      matchingList.add(matcher.group());
+    }
+    return matchingList;
   }
 
   /**
@@ -135,19 +172,6 @@ public abstract class CsvDataSource {
                   operatorUuid);
               return OperatorInput.NO_OPERATOR_ASSIGNED;
             });
-  }
-
-  // todo remove when powerSystemUtils/jh/#24-add-snake-case-to-camel-case-to-string-utils is merged
-  // into master
-  private String snakeCaseToCamelCase(String snakeCaseString) {
-    StringBuilder sb = new StringBuilder(snakeCaseString);
-    for (int i = 0; i < sb.length(); i++) {
-      if (sb.charAt(i) == '_') {
-        sb.deleteCharAt(i);
-        sb.replace(i, i + 1, String.valueOf(Character.toUpperCase(sb.charAt(i))));
-      }
-    }
-    return sb.toString();
   }
 
   /**
@@ -285,7 +309,7 @@ public abstract class CsvDataSource {
       Class<T> entityClass, Collection<Map<String, String>> allRows) {
     Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
     // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial
-    if (!(allRows.size() == allRowsSet.size())) {
+    if (allRows.size() != allRowsSet.size()) {
       log.warn(
           "File with '{}' entities contains {} exact duplicated rows. File cleanup is recommended!",
           entityClass.getSimpleName(),

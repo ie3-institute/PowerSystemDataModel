@@ -165,8 +165,8 @@ public class CsvFileSink implements DataSink {
     } catch (SinkException e) {
       log.error(
           "Cannot persist provided entity '{}'. Exception: {}",
-          entity.getClass().getSimpleName(),
-          e);
+          () -> entity.getClass().getSimpleName(),
+          () -> e);
     }
 
     try {
@@ -310,7 +310,10 @@ public class CsvFileSink implements DataSink {
             try {
               writer.write(data);
             } catch (IOException e) {
-              log.error("Cannot write the following entity data: '{}'. Exception: {}", data, e);
+              log.error(
+                  "Cannot write the following entity data: '{}'. Exception: {}",
+                  () -> data,
+                  () -> e);
             } catch (SinkException e) {
               log.error("Exception occurred during processing the provided data fields: ", e);
             }

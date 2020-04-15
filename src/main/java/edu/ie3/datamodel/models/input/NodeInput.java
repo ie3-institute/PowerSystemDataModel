@@ -138,7 +138,16 @@ public class NodeInput extends AssetInput {
   @Override
   public String toString() {
     return "NodeInput{"
-        + "vTarget="
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operator="
+        + getOperator()
+        + ", operationTime="
+        + getOperationTime()
+        + ", vTarget="
         + vTarget
         + ", slack="
         + slack

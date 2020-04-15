@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Data used for those classes of {@link edu.ie3.datamodel.models.input.connector.ConnectorInput}
@@ -67,5 +68,37 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
 
   public T getType() {
     return type;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    TypedConnectorInputEntityData<?> that = (TypedConnectorInputEntityData<?>) o;
+    return type.equals(that.type);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), type);
+  }
+
+  @Override
+  public String toString() {
+    return "TypedConnectorInputEntityData{"
+        + "fieldsToValues="
+        + getFieldsToValues()
+        + ", entityClass="
+        + getEntityClass()
+        + ", operatorInput="
+        + getOperatorInput()
+        + ", nodeA="
+        + getNodeA()
+        + ", nodeB="
+        + getNodeB()
+        + ", type="
+        + type
+        + '}';
   }
 }

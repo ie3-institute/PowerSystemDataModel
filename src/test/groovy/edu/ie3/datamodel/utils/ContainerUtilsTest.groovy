@@ -5,10 +5,11 @@
  */
 package edu.ie3.datamodel.utils
 
+import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.datamodel.models.OperationTime
-import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
@@ -19,19 +20,15 @@ import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SubGridContainer
 import edu.ie3.datamodel.models.input.container.SystemParticipants
-import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeTools
 import tec.uom.se.quantity.Quantities
 
 import java.time.ZoneId
 
-import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
 import edu.ie3.test.common.ComplexTopology
 import spock.lang.Shared
 import spock.lang.Specification
-
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ContainerUtilsTest extends Specification {
 	static {
@@ -43,12 +40,12 @@ class ContainerUtilsTest extends Specification {
 
 	def "The container utils filter raw grid elements correctly for a given subnet"() {
 		when:
-		RawGridElements actual = ContainerUtils.filterForSubnet(complexTopology.getRawGrid(), subnet)
+		RawGridElements actual = ContainerUtils.filterForSubnet(complexTopology.rawGrid, subnet)
 
 		then:
-		actual.getNodes() == expectedNodes
-		actual.getTransformer2Ws() == expectedTransformers2W
-		actual.getTransformer3Ws() == expectedTransformers3W
+		actual.nodes == expectedNodes
+		actual.transformer2Ws == expectedTransformers2W
+		actual.transformer3Ws == expectedTransformers3W
 		/* TODO: Add lines, switches etc. to testing data */
 
 		where:
@@ -88,7 +85,7 @@ class ContainerUtilsTest extends Specification {
 
 	def "The container utils are able to derive the predominant voltage level"() {
 		given:
-		RawGridElements rawGrid = ContainerUtils.filterForSubnet(complexTopology.getRawGrid(), subnet)
+		RawGridElements rawGrid = ContainerUtils.filterForSubnet(complexTopology.rawGrid, subnet)
 
 		when:
 		VoltageLevel actual = ContainerUtils.determinePredominantVoltLvl(rawGrid, subnet)
@@ -108,7 +105,7 @@ class ContainerUtilsTest extends Specification {
 
 	def "The container utils throw an exception, when there is an ambiguous voltage level in the grid"() {
 		given:
-		RawGridElements rawGrid = ContainerUtils.filterForSubnet(complexTopology.getRawGrid(), 4)
+		RawGridElements rawGrid = ContainerUtils.filterForSubnet(complexTopology.rawGrid, 4)
 
 		NodeInput corruptNode = new NodeInput(
 				UUID.randomUUID(), "node_e", OperatorInput.NO_OPERATOR_ASSIGNED,
@@ -140,13 +137,13 @@ class ContainerUtilsTest extends Specification {
 
 	def "The container util determines the set of subnet number correctly"() {
 		expect:
-		ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.getRawGrid().getNodes()) == [1, 2, 3, 4, 5, 6] as Set
+		ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes) == [1, 2, 3, 4, 5, 6] as Set
 	}
 
 	def "The container util builds the sub grid containers correctly"() {
 		given:
-		String gridName = ComplexTopology.grid.getGridName()
-		Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.getRawGrid().getNodes())
+		String gridName = ComplexTopology.grid.gridName
+		Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
 		RawGridElements rawGrid = ComplexTopology.grid.rawGrid
 		SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
 		GraphicElements graphics = ComplexTopology.grid.graphics
@@ -163,8 +160,8 @@ class ContainerUtilsTest extends Specification {
 		then:
 		actual.size() == 6
 		for (Map.Entry<Integer, SubGridContainer> entry : actual) {
-			int subnetNo = entry.getKey()
-			SubGridContainer actualSubGrid = entry.getValue()
+			int subnetNo = entry.key
+			SubGridContainer actualSubGrid = entry.value
 			SubGridContainer expectedSubGrid = expectedSubGrids.get(subnetNo)
 
 			assert actualSubGrid == expectedSubGrid
@@ -173,8 +170,8 @@ class ContainerUtilsTest extends Specification {
 
 	def "The container util builds the correct sub grid dependency graph"() {
 		given:
-		String gridName = ComplexTopology.grid.getGridName()
-		Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.getRawGrid().getNodes())
+		String gridName = ComplexTopology.grid.gridName
+		Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
 		RawGridElements rawGrid = ComplexTopology.grid.rawGrid
 		SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
 		GraphicElements graphics = ComplexTopology.grid.graphics
@@ -184,8 +181,8 @@ class ContainerUtilsTest extends Specification {
 				rawGrid,
 				systemParticipants,
 				graphics)
-		Set<Transformer2WInput> transformer2ws = ComplexTopology.grid.rawGrid.getTransformer2Ws()
-		Set<Transformer3WInput> transformer3ws = ComplexTopology.grid.rawGrid.getTransformer3Ws()
+		Set<Transformer2WInput> transformer2ws = ComplexTopology.grid.rawGrid.transformer2Ws
+		Set<Transformer3WInput> transformer3ws = ComplexTopology.grid.rawGrid.transformer3Ws
 		SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
 		when:
