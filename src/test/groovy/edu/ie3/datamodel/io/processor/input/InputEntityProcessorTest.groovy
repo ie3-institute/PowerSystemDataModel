@@ -63,7 +63,7 @@ class InputEntityProcessorTest extends Specification {
 			"id"           : "node_a",
 			"operatesUntil": "2020-03-25T15:11:31Z[UTC]",
 			"operatesFrom" : "2020-03-24T15:11:31Z[UTC]",
-			"operator"     : "8f9682df-0744-4b58-a122-f0dc730f6510",
+			"operator"     : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
 			"slack"        : "true",
 			"subnet"       : "1",
 			"vTarget"      : "1.0",
@@ -105,7 +105,7 @@ class InputEntityProcessorTest extends Specification {
 			"nodeC"          : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
 			"operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
 			"operatesFrom"   : "2020-03-24T15:11:31Z[UTC]",
-			"operator"       : "8f9682df-0744-4b58-a122-f0dc730f6510",
+			"operator"       : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
 			"tapPos"         : "0",
 			"type"           : "5b0ee546-21fb-4a7f-a801-5dbd3d7bb356"
 		]
@@ -118,7 +118,7 @@ class InputEntityProcessorTest extends Specification {
 			"nodeB"          : "aaa74c1a-d07e-4615-99a5-e991f1d81cc4",
 			"operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
 			"operatesFrom"   : "2020-03-24T15:11:31Z[UTC]",
-			"operator"       : "8f9682df-0744-4b58-a122-f0dc730f6510",
+			"operator"       : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
 			"tapPos"         : "0",
 			"type"           : "08559390-d7c0-4427-a2dc-97ba312ae0ac"
 		]
@@ -131,7 +131,7 @@ class InputEntityProcessorTest extends Specification {
 			"nodeB"        : "47d29df0-ba2d-4d23-8e75-c82229c5c758",
 			"operatesUntil": "2020-03-25T15:11:31Z[UTC]",
 			"operatesFrom" : "2020-03-24T15:11:31Z[UTC]",
-			"operator"     : "8f9682df-0744-4b58-a122-f0dc730f6510"
+			"operator"     : "f15105c4-a2de-4ab8-a621-4bc98e372d92"
 		]
 
 		LineInput          | GridTestData.lineCtoD           || [
@@ -145,7 +145,7 @@ class InputEntityProcessorTest extends Specification {
 			"olmCharacteristic": "olm:{(0.00,1.00)}",
 			"operatesUntil"    : "2020-03-25T15:11:31Z[UTC]",
 			"operatesFrom"     : "2020-03-24T15:11:31Z[UTC]",
-			"operator"         : "8f9682df-0744-4b58-a122-f0dc730f6510",
+			"operator"         : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
 			"type"             : "3bed3eb3-9790-4874-89b5-a5434d408088"
 		]
 	}

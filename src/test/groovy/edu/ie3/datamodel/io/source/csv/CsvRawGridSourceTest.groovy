@@ -22,7 +22,12 @@ import java.util.stream.Stream
 
 class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 	@Shared
-	CsvRawGridSource source = new CsvRawGridSource(csvSep, gridFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
+	CsvRawGridSource source
+
+	def setupSpec() {
+		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
+		source = new CsvRawGridSource(csvSep, gridFolderPath, fileNamingStrategy, typeSource)
+	}
 
 	def "The CsvRawGridSource is able to convert single valid AssetInputEntityData to ConnectorInputEntityData"() {
 		given: "valid input data"
@@ -46,7 +51,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"closed"		: "true"
 		]
 
-		def validAssetEntityInputData = new AssetInputEntityData(fieldsToAttributes, SwitchInput.class)
+		def validAssetEntityInputData = new AssetInputEntityData(fieldsToAttributes, SwitchInput)
 
 		def nodes = [rgtd.nodeA, rgtd.nodeB]
 
@@ -57,7 +62,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		connectorDataOption.isPresent()
 		connectorDataOption.get().with {
 			assert fieldsToValues == expectedFieldsToAttributes
-			assert entityClass == SwitchInput.class
+			assert entityClass == SwitchInput
 			assert nodeA == rgtd.nodeA
 			assert nodeB == rgtd.nodeB
 		}
@@ -76,7 +81,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"closed"		: "true"
 		]
 
-		def validAssetEntityInputData = new AssetInputEntityData(fieldsToAttributes, SwitchInput.class)
+		def validAssetEntityInputData = new AssetInputEntityData(fieldsToAttributes, SwitchInput)
 
 		def nodes = [rgtd.nodeA, rgtd.nodeB]
 
@@ -100,7 +105,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 					"nodeA"			: "4ca90220-74c2-4369-9afa-a18bf068840d",
 					"nodeB"			: "47d29df0-ba2d-4d23-8e75-c82229c5c758",
 					"closed"		: "true"
-				], SwitchInput.class),
+				], SwitchInput),
 				new AssetInputEntityData([
 					"uuid"				: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
 					"id"				: "test_lineCtoD",
@@ -115,7 +120,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 					"geoPosition"		: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 					"olmCharacteristic"	: "olm:{(0.0,1.0)}"
 				],
-				LineInput.class)
+				LineInput)
 				)
 
 		def expectedSet = [
@@ -127,7 +132,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 				"operatesUntil"	: "2020-03-24 15:11:31",
 				"closed"		: "true"
 			],
-			SwitchInput.class,
+			SwitchInput,
 			rgtd.nodeA,
 			rgtd.nodeB
 			)),
@@ -143,7 +148,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 				"geoPosition"		: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 				"olmCharacteristic"	: "olm:{(0.0,1.0)}"
 			],
-			LineInput.class,
+			LineInput,
 			rgtd.nodeC,
 			rgtd.nodeD
 			))
@@ -178,7 +183,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 			"olmCharacteristic"	: "olm:{(0.0,1.0)}"
 		],
-		LineInput.class,
+		LineInput,
 		rgtd.nodeC,
 		rgtd.nodeD
 		)
@@ -194,7 +199,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 			"olmCharacteristic"	: "olm:{(0.0,1.0)}"
 		],
-		LineInput.class,
+		LineInput,
 		rgtd.nodeC,
 		rgtd.nodeD,
 		rgtd.lineTypeInputCtoD
@@ -221,7 +226,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 			"olmCharacteristic"	: "olm:{(0.0,1.0)}"
 		],
-		LineInput.class,
+		LineInput,
 		rgtd.nodeC,
 		rgtd.nodeD
 		)
@@ -237,7 +242,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 			"olmCharacteristic"	: "olm:{(0.0,1.0)}"
 		],
-		LineInput.class,
+		LineInput,
 		rgtd.nodeC,
 		rgtd.nodeD,
 		rgtd.lineTypeInputCtoD
@@ -266,7 +271,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 			"olmCharacteristic"	: "olm:{(0.0,1.0)}"
 		],
-		LineInput.class,
+		LineInput,
 		rgtd.nodeC,
 		rgtd.nodeD
 		)
@@ -295,7 +300,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 					"geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 					"olmCharacteristic"	: "olm:{(0.0,1.0)}"
 				],
-				LineInput.class,
+				LineInput,
 				rgtd.nodeC,
 				rgtd.nodeD
 				)),
@@ -310,7 +315,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 					"length"           	: "0.003",
 					"geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 					"olmCharacteristic"	: "olm:{(0.0,1.0)}"
-				], LineInput.class,
+				], LineInput,
 				rgtd.nodeA,
 				rgtd.nodeB
 				))
@@ -328,7 +333,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 				"geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 				"olmCharacteristic"	: "olm:{(0.0,1.0)}"
 			],
-			LineInput.class,
+			LineInput,
 			rgtd.nodeC,
 			rgtd.nodeD,
 			rgtd.lineTypeInputCtoD
@@ -343,7 +348,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 				"length"           	: "0.003",
 				"geoPosition"      	: "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
 				"olmCharacteristic"	: "olm:{(0.0,1.0)}"
-			], LineInput.class,
+			], LineInput,
 			rgtd.nodeA,
 			rgtd.nodeB,
 			rgtd.lineTypeInputCtoD
@@ -373,7 +378,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"tapPos"			: "0",
 			"autoTap"			: "true"
 		],
-		Transformer3WInput.class,
+		Transformer3WInput,
 		rgtd.nodeA,
 		rgtd.nodeB,
 		rgtd.transformerTypeAtoBtoC)
@@ -388,7 +393,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"tapPos"			: "0",
 			"autoTap"			: "true"
 		],
-		Transformer3WInput.class,
+		Transformer3WInput,
 		rgtd.nodeA,
 		rgtd.nodeB,
 		rgtd.nodeC,
@@ -420,7 +425,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"tapPos"			: "0",
 			"autoTap"			: "true"
 		],
-		Transformer3WInput.class,
+		Transformer3WInput,
 		rgtd.nodeA,
 		rgtd.nodeB,
 		rgtd.transformerTypeAtoBtoC)
@@ -451,7 +456,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"tapPos"			: "0",
 			"autoTap"			: "true"
 		],
-		Transformer3WInput.class,
+		Transformer3WInput,
 		rgtd.nodeA,
 		rgtd.nodeB,
 		rgtd.transformerTypeAtoBtoC)),
@@ -466,7 +471,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			"tapPos"			: "0",
 			"autoTap"			: "true"
 		],
-		Transformer3WInput.class,
+		Transformer3WInput,
 		rgtd.nodeA,
 		rgtd.nodeB,
 		rgtd.transformerTypeAtoBtoC))
@@ -489,7 +494,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 				"tapPos"			: "0",
 				"autoTap"			: "true"
 			],
-			Transformer3WInput.class,
+			Transformer3WInput,
 			rgtd.nodeA,
 			rgtd.nodeB,
 			rgtd.nodeC,
@@ -502,5 +507,39 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
 		then: "everything is fine"
 		actualSet.size() == expectedSet.size()
+		actualSet.containsAll(expectedSet)
+	}
+
+	def "The CsvRawGridSource is able to load all nodes from file"() {
+		when: "loading all nodes from file"
+		def actualSet = source.getNodes()
+		def expectedSet = [
+			rgtd.nodeA,
+			rgtd.nodeB,
+			rgtd.nodeC,
+			rgtd.nodeD,
+			rgtd.nodeE,
+			rgtd.nodeF,
+			rgtd.nodeG
+		]
+
+		then: "all nodes are there"
+		actualSet.size() == expectedSet.size()
+		actualSet.each {actual ->
+			def expected = expectedSet.find {it.uuid == actual.uuid}
+			assert expected != null
+
+			actual.with {
+				assert uuid == expected.uuid
+				assert id == expected.id
+				assert operator == expected.operator
+				assert operationTime == expected.operationTime
+				assert vTarget == expected.vTarget
+				assert slack == expected.slack
+				assert geoPosition.coordinates == expected.geoPosition.coordinates
+				assert voltLvl == expected.voltLvl
+				assert subnet == expected.subnet
+			}
+		}
 	}
 }

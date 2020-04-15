@@ -71,6 +71,7 @@ class ExtractorTest extends Specification {
 		]
 		sptd.chpInput              || [
 			sptd.chpInput.node,
+			sptd.chpInput.node.operator,
 			sptd.chpInput.type,
 			sptd.chpInput.thermalBus,
 			sptd.chpInput.thermalStorage,

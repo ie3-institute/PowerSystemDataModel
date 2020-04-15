@@ -46,6 +46,11 @@ class GridTestData {
 
 	private static final GeoJsonReader geoJsonReader = new GeoJsonReader()
 
+	public static final OperatorInput profBroccoli = new OperatorInput(
+	UUID.fromString("f15105c4-a2de-4ab8-a621-4bc98e372d92"),
+	"Univ.-Prof. Dr. rer. hort. Klaus-Dieter Brokkoli"
+	)
+
 	public static final Transformer2WTypeInput transformerTypeBtoD = new Transformer2WTypeInput(
 	UUID.fromString("202069a7-bcf8-422c-837c-273575220c8a"),
 	"HS-MS_1",
@@ -140,32 +145,34 @@ class GridTestData {
 	)
 
 	public static final NodeInput nodeA = new NodeInput(
-	UUID.fromString("4ca90220-74c2-4369-9afa-a18bf068840d"), "node_a", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
-	,
+	UUID.fromString("4ca90220-74c2-4369-9afa-a18bf068840d"),
+	"node_a",
+	profBroccoli,
+	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
 	Quantities.getQuantity(1d, PU),
 	true,
 	geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }") as Point,
 	GermanVoltageLevelUtils.EHV_380KV,
 	1)
+
 	public static final NodeInput nodeB = new NodeInput(
 	UUID.fromString("47d29df0-ba2d-4d23-8e75-c82229c5c758"), "node_b", OperatorInput.NO_OPERATOR_ASSIGNED,
-	OperationTime.notLimited()
-	,
+	OperationTime.notLimited(),
 	Quantities.getQuantity(1d, PU),
 	false,
-	null,
+	NodeInput.DEFAULT_GEO_POSITION,
 	GermanVoltageLevelUtils.HV,
 	2)
+
 	public static final NodeInput nodeC = new NodeInput(
 	UUID.fromString("bd837a25-58f3-44ac-aa90-c6b6e3cd91b2"), "node_c", OperatorInput.NO_OPERATOR_ASSIGNED,
-	OperationTime.notLimited()
-	,
+	OperationTime.notLimited(),
 	Quantities.getQuantity(1d, PU),
 	false,
-	null,
+	NodeInput.DEFAULT_GEO_POSITION,
 	GermanVoltageLevelUtils.MV_20KV,
 	3)
+
 	public static final NodeGraphicInput nodeGraphicC = new NodeGraphicInput(
 	UUID.fromString("09aec636-791b-45aa-b981-b14edf171c4c"),
 	"main",
@@ -173,13 +180,13 @@ class GridTestData {
 	nodeC,
 	geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [0, 10] }") as Point
 	)
+
 	public static final NodeInput nodeD = new NodeInput(
 	UUID.fromString("6e0980e0-10f2-4e18-862b-eb2b7c90509b"), "node_d", OperatorInput.NO_OPERATOR_ASSIGNED,
-	OperationTime.notLimited()
-	,
+	OperationTime.notLimited(),
 	Quantities.getQuantity(1d, PU),
 	false,
-	null,
+	NodeInput.DEFAULT_GEO_POSITION,
 	GermanVoltageLevelUtils.MV_20KV,
 	4)
 	public static final NodeGraphicInput nodeGraphicD = new NodeGraphicInput(
@@ -189,38 +196,45 @@ class GridTestData {
 	nodeD,
 	null
 	)
+
 	public static final NodeInput nodeE = new NodeInput(
-	UUID.randomUUID(), "node_e", OperatorInput.NO_OPERATOR_ASSIGNED,
-	OperationTime.notLimited()
-	,
+	UUID.fromString("98a3e7fa-c456-455b-a5ea-bb19e7cbeb63"),
+	"node_e",
+	OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited(),
 	Quantities.getQuantity(1d, PU),
 	false,
-	null,
+	NodeInput.DEFAULT_GEO_POSITION,
 	GermanVoltageLevelUtils.MV_10KV,
 	5)
+
 	public static final NodeInput nodeF = new NodeInput(
-	UUID.fromString("9e37ce48-9650-44ec-b888-c2fd182aff01"), "node_f", OperatorInput.NO_OPERATOR_ASSIGNED,
-	OperationTime.notLimited()
-	,
+	UUID.fromString("9e37ce48-9650-44ec-b888-c2fd182aff01"),
+	"node_f",
+	OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited(),
 	Quantities.getQuantity(1d, PU),
 	false,
-	null,
+	NodeInput.DEFAULT_GEO_POSITION,
 	GermanVoltageLevelUtils.LV,
 	6)
+
 	public static final NodeInput nodeG = new NodeInput(
-	UUID.fromString("aaa74c1a-d07e-4615-99a5-e991f1d81cc4"), "node_g", OperatorInput.NO_OPERATOR_ASSIGNED,
-	OperationTime.notLimited()
-	,
+	UUID.fromString("aaa74c1a-d07e-4615-99a5-e991f1d81cc4"),
+	"node_g",
+	OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited(),
 	Quantities.getQuantity(1d, PU),
 	false,
-	null,
+	NodeInput.DEFAULT_GEO_POSITION,
 	GermanVoltageLevelUtils.LV,
 	6)
 
 	public static final Transformer2WInput transformerBtoD = new Transformer2WInput(
-	UUID.randomUUID(), "2w_single_test", OperatorInput.NO_OPERATOR_ASSIGNED,
-	OperationTime.notLimited()
-	,
+	UUID.fromString("58247de7-e297-4d9b-a5e4-b662c058c655"),
+	"2w_single_test",
+	OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited(),
 	nodeB,
 	nodeD,
 	1,
@@ -229,9 +243,10 @@ class GridTestData {
 	true
 	)
 	public static final Transformer2WInput transformerBtoE = new Transformer2WInput(
-	UUID.randomUUID(), "2w_v_1", OperatorInput.NO_OPERATOR_ASSIGNED,
-	OperationTime.notLimited()
-	,
+	UUID.fromString("8542bfa5-dc34-4367-b549-e9f515e6cced"),
+	"2w_v_1",
+	OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited(),
 	nodeB,
 	nodeE,
 	1,
@@ -240,9 +255,10 @@ class GridTestData {
 	true
 	)
 	public static final Transformer2WInput transformerCtoE = new Transformer2WInput(
-	UUID.randomUUID(), "2w_v_2", OperatorInput.NO_OPERATOR_ASSIGNED,
-	OperationTime.notLimited()
-	,
+	UUID.fromString("0c03391d-47e1-49b3-9c9c-1616258e78a7"),
+	"2w_v_2",
+	OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited(),
 	nodeC,
 	nodeE,
 	1,
@@ -251,9 +267,9 @@ class GridTestData {
 	true
 	)
 	public static final Transformer2WInput transformerCtoF = new Transformer2WInput(
-	UUID.randomUUID(), "2w_parallel_1", OperatorInput.NO_OPERATOR_ASSIGNED,
-	OperationTime.notLimited()
-	,
+	UUID.fromString("26a3583e-8e62-40b7-ba4c-092f6fd5a70d"),
+	"2w_parallel_1", OperatorInput.NO_OPERATOR_ASSIGNED,
+	OperationTime.notLimited(),
 	nodeC,
 	nodeF,
 	1,
@@ -261,10 +277,11 @@ class GridTestData {
 	0,
 	true
 	)
+
 	public static final Transformer2WInput transformerCtoG = new Transformer2WInput(
-	UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"), "2w_parallel_2", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
-	,
+	UUID.fromString("5dc88077-aeb6-4711-9142-db57292640b1"), "2w_parallel_2",
+	profBroccoli,
+	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
 	nodeC,
 	nodeG,
 	1,
@@ -276,7 +293,7 @@ class GridTestData {
 	public static Transformer3WInput transformerAtoBtoC = new Transformer3WInput(
 	UUID.fromString("cc327469-7d56-472b-a0df-edbb64f90e8f"),
 	"3w_test",
-	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	profBroccoli,
 	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
 	nodeA,
 	nodeB,
@@ -291,7 +308,7 @@ class GridTestData {
 	public static final SwitchInput switchAtoB = new SwitchInput(
 	UUID.fromString("5dc88077-aeb6-4711-9142-db57287640b1"),
 	"test_switch_AtoB",
-	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	profBroccoli,
 	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
 	nodeA,
 	nodeB,
@@ -313,7 +330,7 @@ class GridTestData {
 	public static final LineInput lineCtoD = new LineInput(
 	UUID.fromString("91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
 	"test_line_CtoD",
-	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	profBroccoli,
 	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
 	nodeC,
 	nodeD,
@@ -333,7 +350,7 @@ class GridTestData {
 	public static final LineInput lineAtoB = new LineInput(
 	UUID.fromString("92ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
 	"test_line_AtoB",
-	new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
+	profBroccoli,
 	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
 	nodeA,
 	nodeB,
@@ -345,9 +362,10 @@ class GridTestData {
 	)
 
 	public static final MeasurementUnitInput measurementUnitInput = new MeasurementUnitInput(
-	UUID.fromString("ce6119e3-f725-4166-b6e0-59f62e0c293d"), "test_measurementUnit", new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator"),
-	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
-	,
+	UUID.fromString("ce6119e3-f725-4166-b6e0-59f62e0c293d"),
+	"test_measurementUnit",
+	profBroccoli,
+	OperationTime.builder().withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build(),
 	nodeG,
 	true,
 	true,
