@@ -28,6 +28,18 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 	}
 
+	def "A CsvTypeSource should read and handle valid 3W Transformer type file as expected"() {
+		given:
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+
+		expect:
+		def transformer3WTypes = typeSource.transformer3WTypes
+		print(transformer3WTypes)
+		transformer3WTypes.size() == 1
+		transformer3WTypes.first() == gtd.transformerTypeAtoBtoC
+
+	}
+
 	def "A CsvTypeSource should read and handle valid bm type file as expected"() {
 		given:
 		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
