@@ -140,7 +140,13 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		expect:
 		def hpTypes = typeSource.hpTypes
 		hpTypes.size() == 1
-		hpTypes.first() == sptd.hpTypeInput
+		hpTypes.first().uuid == sptd.hpTypeInput.uuid
+		hpTypes.first().id == sptd.hpTypeInput.id
+		hpTypes.first().capex == sptd.hpTypeInput.capex
+		hpTypes.first().opex == sptd.hpTypeInput.opex
+		hpTypes.first().sRated == sptd.hpTypeInput.sRated
+		hpTypes.first().cosphiRated == sptd.hpTypeInput.cosphiRated
+		hpTypes.first().pThermal == sptd.hpTypeInput.pThermal
 	}
 
 	def "A CsvTypeSource should read and handle valid storage type file as expected"() {
