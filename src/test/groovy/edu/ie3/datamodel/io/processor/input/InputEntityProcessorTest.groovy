@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.processor.input
 
+import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -33,14 +34,18 @@ import edu.ie3.datamodel.models.input.system.type.EvTypeInput
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput
 import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
+import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.TypeTestData
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
+import tec.uom.se.quantity.Quantities
 
 import java.time.ZoneId
 import java.time.ZonedDateTime
+
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 /**
  * Testing the function of processors
@@ -402,16 +407,16 @@ class InputEntityProcessorTest extends Specification {
 		InputEntityProcessor processor = new InputEntityProcessor(WecTypeInput)
 		WecTypeInput type = TypeTestData.wecType
 		Map expected = [
-			"uuid"          	: "a24fc5b9-a26f-44de-96b8-c9f50b665cb3",
-			"id"            	: "Test wec type",
-			"capex"         	: "100.0",
-			"opex"          	: "101.0",
-			"cosphiRated"   	: "0.95",
-			"cpCharacteristic"	: "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",
-			"etaConv"       	: "90.0",
-			"sRated"        	: "2500.0",
-			"rotorArea"    		: "2000.0",
-			"hubHeight"     	: "130.0"
+			"uuid"            : "a24fc5b9-a26f-44de-96b8-c9f50b665cb3",
+			"id"              : "Test wec type",
+			"capex"           : "100.0",
+			"opex"            : "101.0",
+			"cosphiRated"     : "0.95",
+			"cpCharacteristic": "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",
+			"etaConv"         : "90.0",
+			"sRated"          : "2500.0",
+			"rotorArea"       : "2000.0",
+			"hubHeight"       : "130.0"
 		]
 
 		when:
@@ -626,6 +631,41 @@ class InputEntityProcessorTest extends Specification {
 
 		when:
 		Optional<Map<String, String>> actual = processor.handleEntity(type)
+
+		then:
+		actual.present
+		actual.get() == expected
+	}
+
+	def "The InputEntityProcessor should not deserialize an entity with an OperatorInput that is marked as NO_OPERATOR_ASSIGNED"() {
+		given:
+		InputEntityProcessor processor = new InputEntityProcessor(NodeInput)
+		def nodeWithOutOperator = new NodeInput(
+				UUID.fromString("6e0980e0-10f2-4e18-862b-eb2b7c90509b"), "node_d", OperatorInput.NO_OPERATOR_ASSIGNED,
+				OperationTime.notLimited()
+				,
+				Quantities.getQuantity(1d, PU),
+				false,
+				null,
+				GermanVoltageLevelUtils.MV_20KV,
+				4)
+
+		Map expected = [
+			"geoPosition"  : "",
+			"id"           : "node_d",
+			"operatesFrom" : "",
+			"operatesUntil": "",
+			"operator"     : "",
+			"slack"        : "false",
+			"subnet"       : "4",
+			"uuid"         : "6e0980e0-10f2-4e18-862b-eb2b7c90509b",
+			"vRated"       : "20.0",
+			"vTarget"      : "1.0",
+			"voltLvl"      : "Mittelspannung"
+		]
+
+		when:
+		Optional<Map<String, String>> actual = processor.handleEntity(nodeWithOutOperator)
 
 		then:
 		actual.present

@@ -40,7 +40,7 @@ public class BufferedCsvWriter extends BufferedWriter {
             StandardCharsets.UTF_8));
     this.fileDefinition = fileDefinition;
     this.quoted = quoted;
-    if (writeHeader) writeFileHeader(quoted, fileDefinition.headLineElements);
+    if (writeHeader) writeFileHeader(fileDefinition.headLineElements);
   }
 
   /**
@@ -52,7 +52,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    */
   public BufferedCsvWriter(String baseFolder, CsvFileDefinition fileDefinition, boolean writeHeader)
       throws IOException {
-    this(baseFolder, fileDefinition, true, writeHeader);
+    this(baseFolder, fileDefinition, false, writeHeader);
   }
 
   /**
@@ -79,7 +79,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    *
    * @throws IOException If something is messed up
    */
-  private void writeFileHeader(boolean quoted, String[] headLineElements) throws IOException {
+  private void writeFileHeader(String[] headLineElements) throws IOException {
     writeOneLine(StringUtils.quote(StringUtils.camelCaseToSnakeCase(headLineElements)));
   }
 

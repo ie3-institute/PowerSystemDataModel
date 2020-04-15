@@ -247,12 +247,6 @@ public abstract class Processor<T> {
       case "StorageStrategy":
         resultStringBuilder.append(((StorageStrategy) methodReturnObject).getToken());
         break;
-      case "OperatorInput":
-        resultStringBuilder.append(
-            ((OperatorInput) methodReturnObject).getId().equalsIgnoreCase("NO_OPERATOR_ASSIGNED")
-                ? ""
-                : ((OperatorInput) methodReturnObject).getUuid());
-        break;
       case "AssetTypeInput":
       case "BmTypeInput":
       case "ChpTypeInput":
@@ -270,6 +264,12 @@ public abstract class Processor<T> {
       case "Transformer3WTypeInput":
       case "WecTypeInput":
         resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
+        break;
+      case "OperatorInput":
+        resultStringBuilder.append(
+            ((OperatorInput) methodReturnObject).getId().equalsIgnoreCase("NO_OPERATOR_ASSIGNED")
+                ? ""
+                : ((OperatorInput) methodReturnObject).getUuid());
         break;
       case "EvCharacteristicInput":
       case "OlmCharacteristicInput":

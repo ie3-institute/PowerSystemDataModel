@@ -543,42 +543,37 @@ public class ValidationUtils {
 
   /**
    * Checks if the provided set of unique entities only contains elements with distinct UUIDs and
-   * throws an {@link InvalidGridException} otherwise. Normally, this method is used inside
-   * container classes to check validity of the provided data.
+   * either returns a string with duplicated UUIDs or an empty optional otherwise.
    *
-   * @param containerClassName the container class name that uses this method
    * @param entities the entities that should be checkd for UUID uniqueness
+   * @return either a string wrapped in an optional with duplicate UUIDs or an empty optional
    */
-  public static void checkForDuplicateUuids(String containerClassName, Set<UniqueEntity> entities) {
-    if (!distinctUuids(entities)) {
-      String exceptionString =
-          entities.stream()
-              .collect(Collectors.groupingBy(UniqueEntity::getUuid, Collectors.counting()))
-              .entrySet()
-              .stream()
-              .filter(entry -> entry.getValue() > 1)
-              .map(
-                  entry -> {
-                    String duplicateEntitiesString =
-                        entities.stream()
-                            .filter(entity -> entity.getUuid().equals(entry.getKey()))
-                            .map(UniqueEntity::toString)
-                            .collect(Collectors.joining("\n - "));
-
-                    return entry.getKey()
-                        + ": "
-                        + entry.getValue()
-                        + "\n - "
-                        + duplicateEntitiesString;
-                  })
-              .collect(Collectors.joining("\n\n"));
-
-      throw new InvalidGridException(
-          "The provided entities in '"
-              + containerClassName
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
+  public static Optional<String> checkForDuplicateUuids(Set<UniqueEntity> entities) {
+    if (distinctUuids(entities)) {
+      return Optional.empty();
     }
+    String duplicationsString =
+        entities.stream()
+            .collect(Collectors.groupingBy(UniqueEntity::getUuid, Collectors.counting()))
+            .entrySet()
+            .stream()
+            .filter(entry -> entry.getValue() > 1)
+            .map(
+                entry -> {
+                  String duplicateEntitiesString =
+                      entities.stream()
+                          .filter(entity -> entity.getUuid().equals(entry.getKey()))
+                          .map(UniqueEntity::toString)
+                          .collect(Collectors.joining("\n - "));
+
+                  return entry.getKey()
+                      + ": "
+                      + entry.getValue()
+                      + "\n - "
+                      + duplicateEntitiesString;
+                })
+            .collect(Collectors.joining("\n\n"));
+
+    return Optional.of(duplicationsString);
   }
 }

@@ -147,7 +147,7 @@ public class CsvFileSink implements DataSink {
 
   @Override
   public <C extends UniqueEntity> void persistIgnoreNested(C entity) {
-    LinkedHashMap<String, String> entityFieldData = null;
+    LinkedHashMap<String, String> entityFieldData = new LinkedHashMap<>();
     try {
       entityFieldData =
           processorProvider
