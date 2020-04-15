@@ -71,20 +71,19 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   @Override
   public Optional<RawGridElements> getGridData() {
 
-    // read all needed entities
-    /// start with the types and operators
+    /* read all needed entities start with the types and operators */
     Set<OperatorInput> operators = typeSource.getOperators();
     Set<LineTypeInput> lineTypes = typeSource.getLineTypes();
     Set<Transformer2WTypeInput> transformer2WTypeInputs = typeSource.getTransformer2WTypes();
     Set<Transformer3WTypeInput> transformer3WTypeInputs = typeSource.getTransformer3WTypes();
 
-    /// assets
+    /* assets */
     Set<NodeInput> nodes = getNodes(operators);
 
-    // start with the entities needed for a RawGridElement
-    /// as we want to return a working grid, keep an eye on empty optionals which is equal to
-    // elements that
-    /// have been unable to be built e.g. due to missing elements they depend on
+    /* start with the entities needed for a RawGridElement as we want to return a working grid, keep an eye on empty
+     * optionals which is equal to elements that have been unable to be built e.g. due to missing elements they depend
+     * on
+     */
     ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities =
         new ConcurrentHashMap<>();
 
@@ -120,13 +119,13 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
             .map(Optional::get)
             .collect(Collectors.toSet());
 
-    // if we found non-build elements return an empty optional and log the problems
+    /* if we found non-build elements return an empty optional and log the problems */
     if (!nonBuildEntities.isEmpty()) {
       nonBuildEntities.forEach(this::printInvalidElementInformation);
       return Optional.empty();
     }
 
-    // build the grid
+    /* build the grid */
     RawGridElements gridElements =
         new RawGridElements(
             nodes,
@@ -136,7 +135,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
             switches,
             measurementUnits);
 
-    // return the grid if it is not empty
+    /* return the grid if it is not empty */
     return gridElements.allEntitiesAsList().isEmpty()
         ? Optional.empty()
         : Optional.of(gridElements);

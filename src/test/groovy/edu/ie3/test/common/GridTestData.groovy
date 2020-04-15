@@ -73,7 +73,7 @@ class GridTestData {
 	10
 	)
 	private static final Transformer2WTypeInput transformerTypeBtoE = new Transformer2WTypeInput(
-	UUID.randomUUID(),
+	UUID.fromString("ac30443b-29e7-4635-b399-1062cfb3ffda"),
 	"transformer_type_gedfi89fc7c895076ff25ec6d3b2e7ab9a1b24b37f73ecf30f895005d766a8d8d2774aa",
 	Quantities.getQuantity(0d, OHM),
 	Quantities.getQuantity(51.72750115394592, OHM),
@@ -89,8 +89,9 @@ class GridTestData {
 	1,
 	19
 	)
+
 	private static final Transformer2WTypeInput transformerTypeCtoE = new Transformer2WTypeInput(
-	UUID.randomUUID(),
+	UUID.fromString("8441dd78-c528-4e63-830d-52d341131432"),
 	"no_shunt_elements_mv-mv",
 	Quantities.getQuantity(1.5, OHM),
 	Quantities.getQuantity(15.5, OHM),
@@ -106,6 +107,7 @@ class GridTestData {
 	-5,
 	5
 	)
+
 	private static final Transformer2WTypeInput transformerTypeCtoX = new Transformer2WTypeInput(
 	UUID.fromString("08559390-d7c0-4427-a2dc-97ba312ae0ac"),
 	"MS-NS_1",
@@ -246,6 +248,7 @@ class GridTestData {
 	0,
 	true
 	)
+
 	public static final Transformer2WInput transformerBtoE = new Transformer2WInput(
 	UUID.fromString("8542bfa5-dc34-4367-b549-e9f515e6cced"),
 	"2w_v_1",
@@ -258,6 +261,7 @@ class GridTestData {
 	0,
 	true
 	)
+
 	public static final Transformer2WInput transformerCtoE = new Transformer2WInput(
 	UUID.fromString("0c03391d-47e1-49b3-9c9c-1616258e78a7"),
 	"2w_v_2",
@@ -270,6 +274,7 @@ class GridTestData {
 	0,
 	true
 	)
+
 	public static final Transformer2WInput transformerCtoF = new Transformer2WInput(
 	UUID.fromString("26a3583e-8e62-40b7-ba4c-092f6fd5a70d"),
 	"2w_parallel_1", OperatorInput.NO_OPERATOR_ASSIGNED,

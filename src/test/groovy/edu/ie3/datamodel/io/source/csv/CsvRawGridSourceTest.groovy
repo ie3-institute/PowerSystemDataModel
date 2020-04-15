@@ -12,6 +12,7 @@ import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.GridTestData as rgtd
 
 import spock.lang.Shared
@@ -620,6 +621,38 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 				assert length == expected.length
 				assert geoPosition.coordinates == expected.geoPosition.coordinates
 				assert olmCharacteristic == expected.olmCharacteristic
+			}
+		}
+	}
+
+	def "The CsvRawGridSource is able to load all two winding transformers from file"() {
+		when: "loading all two winding transformers from file"
+		def actualSet = source.get2WTransformers()
+		def expectedSet = [
+			GridTestData.transformerBtoD,
+			GridTestData.transformerBtoE,
+			GridTestData.transformerCtoE,
+			GridTestData.transformerCtoF,
+			GridTestData.transformerCtoG
+		]
+
+		then: "all two winding transformers are there"
+		actualSet.size() == expectedSet.size()
+		actualSet.each {actual ->
+			def expected = expectedSet.find {it.uuid == actual.uuid}
+			assert expected != null
+
+			actual.with {
+				assert uuid == expected.uuid
+				assert id == expected.id
+				assert operator == expected.operator
+				assert operationTime == expected.operationTime
+				assert nodeA.uuid == expected.nodeA.uuid
+				assert nodeB.uuid == expected.nodeB.uuid
+				assert parallelDevices == expected.parallelDevices
+				assert type == expected.type
+				assert tapPos == expected.tapPos
+				assert autoTap == expected.autoTap
 			}
 		}
 	}
