@@ -58,7 +58,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 		expect:
 		def transformer3WTypes = typeSource.transformer3WTypes
-		print(transformer3WTypes)
 		transformer3WTypes.size() == 1
 		transformer3WTypes.first() == gtd.transformerTypeAtoBtoC
 
@@ -75,4 +74,59 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 	}
 
+	def "A CsvTypeSource should read and handle valid chp type file as expected"() {
+		given:
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+
+		expect:
+		def chpTypes = typeSource.chpTypes
+		chpTypes.size() == 1
+		chpTypes.first() == sptd.chpTypeInput
+
+	}
+
+	def "A CsvTypeSource should read and handle valid hp type file as expected"() {
+		given:
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+
+		expect:
+		def hpTypes = typeSource.hpTypes
+		hpTypes.size() == 1
+		hpTypes.first() == sptd.hpTypeInput
+
+	}
+
+	def "A CsvTypeSource should read and handle valid storage type file as expected"() {
+		given:
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+
+		expect:
+		def storageTypes = typeSource.storageTypes
+		storageTypes.size() == 1
+		storageTypes.first() == sptd.storageTypeInput
+
+	}
+
+	def "A CsvTypeSource should read and handle valid wec type file as expected"() {
+		given:
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+
+		expect:
+		def wecTypes = typeSource.wecTypes
+		wecTypes.size() == 1
+		//if (wecTypes.first().cpCharacteristic.points.iterator().hasNext())
+		//wecTypes.first().cpCharacteristic.points.iterator().next() == sptd.wecType.cpCharacteristic.points.iterator().next()
+		wecTypes.first() == sptd.wecType
+	}
+
+	def "A CsvTypeSource should read and handle valid ev type file as expected"() {
+		given:
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+
+		expect:
+		def evTypes = typeSource.evTypes
+		evTypes.size() == 1
+		evTypes.first() == sptd.evTypeInput
+
+	}
 }
