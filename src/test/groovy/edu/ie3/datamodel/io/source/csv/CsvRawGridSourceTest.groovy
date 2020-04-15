@@ -12,6 +12,7 @@ import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.GridTestData as rgtd
 
@@ -684,5 +685,82 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 				assert autoTap == expected.autoTap
 			}
 		}
+	}
+
+	def "The CsvRawGridSource is able to provide a correct RawGridElements"() {
+		when: "loading a total grid structure from file"
+		def actual = source.getGridData()
+		def expected = new RawGridElements(
+				[
+					rgtd.nodeA,
+					rgtd.nodeB,
+					rgtd.nodeC,
+					rgtd.nodeD,
+					rgtd.nodeE,
+					rgtd.nodeF,
+					rgtd.nodeG
+				] as Set,
+				[
+					rgtd.lineAtoB,
+					rgtd.lineCtoD
+				] as Set,
+				[
+					GridTestData.transformerBtoD,
+					GridTestData.transformerBtoE,
+					GridTestData.transformerCtoE,
+					GridTestData.transformerCtoF,
+					GridTestData.transformerCtoG
+				] as Set,
+				[
+					GridTestData.transformerAtoBtoC
+				] as Set,
+				[rgtd.switchAtoB
+				] as Set,
+				[
+					rgtd.measurementUnitInput
+				] as Set
+				)
+
+		then: "all elements are there"
+		actual.isPresent()
+		actual.get().with {
+			/* It's okay, to only test the uuids, because content is tested with the other test mehtods */
+			assert nodes.size() == expected.nodes.size()
+			assert nodes.each {entry -> expected.nodes.contains({it.uuid == entry.uuid})}
+			assert lines.size() == expected.lines.size()
+			assert lines.each {entry -> expected.lines.contains({it.uuid == entry.uuid})}
+			assert transformer2Ws.size() == expected.transformer2Ws.size()
+			assert transformer2Ws.each {entry -> expected.transformer2Ws.contains({it.uuid == entry.uuid})}
+			assert transformer3Ws.size() == expected.transformer3Ws.size()
+			assert transformer3Ws.each {entry -> expected.transformer3Ws.contains({it.uuid == entry.uuid})}
+			assert switches.size() == expected.switches.size()
+			assert switches.each {entry -> expected.switches.contains({it.uuid == entry.uuid})}
+			assert measurementUnits.size() == expected.measurementUnits.size()
+			assert measurementUnits.each {entry -> expected.measurementUnits.contains({it.uuid == entry.uuid})}
+		}
+	}
+
+	def "The CsvRawGridSource returns an empty Optional, if one mandatory element for the RawGridElements is missing"() {
+		given: "a source pointing to malformed grid data"
+		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
+		source = new CsvRawGridSource(csvSep, gridFolderPath+"_malformed", fileNamingStrategy, typeSource)
+
+		when: "loading a total grid structure from file"
+		def actual = source.getGridData()
+
+		then: "the optional is empty"
+		!actual.isPresent()
+	}
+
+	def "The CsvRawGridSource returns an empty Optional, if the RawGridElements contain no single element"() {
+		given: "a source pointing to malformed grid data"
+		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
+		source = new CsvRawGridSource(csvSep, gridFolderPath+"_empty", fileNamingStrategy, typeSource)
+
+		when: "loading a total grid structure from file"
+		def actual = source.getGridData()
+
+		then: "the optional is empty"
+		!actual.isPresent()
 	}
 }
