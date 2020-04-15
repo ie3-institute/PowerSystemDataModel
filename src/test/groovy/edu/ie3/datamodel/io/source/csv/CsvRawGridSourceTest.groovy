@@ -656,4 +656,33 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 			}
 		}
 	}
+
+	def "The CsvRawGridSource is able to load all three winding transformers from file"() {
+		when: "loading all three winding transformers from file"
+		def actualSet = source.get3WTransformers()
+		def expectedSet = [
+			GridTestData.transformerAtoBtoC
+		]
+
+		then: "all three winding transformers are there"
+		actualSet.size() == expectedSet.size()
+		actualSet.each {actual ->
+			def expected = expectedSet.find {it.uuid == actual.uuid}
+			assert expected != null
+
+			actual.with {
+				assert uuid == expected.uuid
+				assert id == expected.id
+				assert operator == expected.operator
+				assert operationTime == expected.operationTime
+				assert nodeA.uuid == expected.nodeA.uuid
+				assert nodeB.uuid == expected.nodeB.uuid
+				assert nodeC.uuid == expected.nodeC.uuid
+				assert parallelDevices == expected.parallelDevices
+				assert type == expected.type
+				assert tapPos == expected.tapPos
+				assert autoTap == expected.autoTap
+			}
+		}
+	}
 }
