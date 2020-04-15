@@ -41,11 +41,14 @@ public class GraphicElements implements InputContainer {
 
     // sanity check for distinct uuids
     Optional<String> exceptionString =
-                    ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
-    if(exceptionString.isPresent()) {
-      throw new InvalidGridException("The provided entities in '" + this.getClass().getSimpleName() +
-                                     "' contains duplicate UUIDs. " +
-                                     "This is not allowed!\nDuplicated uuids:\n\n" + exceptionString);
+        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
+    if (exceptionString.isPresent()) {
+      throw new InvalidGridException(
+          "The provided entities in '"
+              + this.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
     }
   }
 
