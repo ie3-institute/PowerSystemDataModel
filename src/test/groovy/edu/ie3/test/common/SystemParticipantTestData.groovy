@@ -117,19 +117,18 @@ class SystemParticipantTestData {
 
 	public static final ThermalBusInput thermalBus = new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermalBusInput", operator, operationTime
 	)
-	private static final Quantity<Volume> storageVolumeLvl = Quantities.getQuantity(1.039154027, CUBIC_METRE)
-	private static final Quantity<Volume> storageVolumeLvlMin = Quantities.getQuantity(0.3, CUBIC_METRE)
-	private static final Quantity<Temperature> inletTemp = Quantities.getQuantity(110, CELSIUS)
-	private static final Quantity<Temperature> returnTemp = Quantities.getQuantity(80, CELSIUS)
-	private static final Quantity<SpecificHeatCapacity> c = Quantities.getQuantity(
+	public static final Quantity<Volume> storageVolumeLvl = Quantities.getQuantity(1.039154027, CUBIC_METRE)
+	public static final Quantity<Volume> storageVolumeLvlMin = Quantities.getQuantity(0.3, CUBIC_METRE)
+	public static final Quantity<Temperature> inletTemp = Quantities.getQuantity(110, CELSIUS)
+	public static final Quantity<Temperature> returnTemp = Quantities.getQuantity(80, CELSIUS)
+	public static final Quantity<SpecificHeatCapacity> c = Quantities.getQuantity(
 	1, KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE)
-	private static final ThermalStorageInput thermalStorage = new CylindricalStorageInput(UUID.fromString("8851813b-3a7d-4fee-874b-4df9d724e4b3"),
+	public static final ThermalStorageInput thermalStorage = new CylindricalStorageInput(UUID.fromString("8851813b-3a7d-4fee-874b-4df9d724e4b3"),
 	"test_cylindricThermalStorage", thermalBus, storageVolumeLvl, storageVolumeLvlMin,
 	inletTemp, returnTemp, c)
 
 	public static final ChpInput chpInput = new ChpInput(UUID.fromString("9981b4d7-5a8e-4909-9602-e2e7ef4fca5c"), "test_chpInput", operator, operationTime,
 	participantNode, thermalBus, cosPhiFixed, chpTypeInput, thermalStorage, false)
-
 
 	// BM
 	private static final Quantity<DimensionlessRate> loadGradient = Quantities.getQuantity(25, PERCENT_PER_HOUR)

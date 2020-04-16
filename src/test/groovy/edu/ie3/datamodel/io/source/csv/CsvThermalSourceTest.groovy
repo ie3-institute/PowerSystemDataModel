@@ -23,7 +23,6 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		//test method when no operators are provided as constructor parameters
 		when:
 		def resultingThermalBusesWoOperator = csvThermalSource.getThermalBuses()
-		print(resultingThermalBusesWoOperator)
 
 		then:
 		resultingThermalBusesWoOperator.size() == 1
@@ -35,7 +34,6 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		//test method when operators are provided as constructor parameters
 		when:
 		def resultingThermalBuses = csvThermalSource.getThermalBuses(operators)
-		print(resultingThermalBuses)
 
 		then:
 		resultingThermalBuses.size() == 1
@@ -43,6 +41,49 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		resultingThermalBuses.first().id == sptd.thermalBus.id
 		resultingThermalBuses.first().operator == sptd.thermalBus.operator
 		resultingThermalBuses.first().operationTime == sptd.thermalBus.operationTime
+	}
+
+	def "A CsvThermalSource should return a CylindricStorageInput from valid and invalid input data as expected"() {
+		given:
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
+		def operators = csvTypeSource.operators
+		def thermalBuses = csvThermalSource.thermalBuses
+
+		//test method when operators and thermal buses are not provided as constructor parameters
+		when:
+		def resultingCylindricStorageWoOperator = csvThermalSource.getCylindricStorages()
+
+		then:
+		resultingCylindricStorageWoOperator.size() == 1
+		resultingCylindricStorageWoOperator.first().uuid == sptd.thermalStorage.uuid
+		resultingCylindricStorageWoOperator.first().id == sptd.thermalStorage.id
+		resultingCylindricStorageWoOperator.first().operator == sptd.thermalStorage.operator
+		resultingCylindricStorageWoOperator.first().operationTime == sptd.thermalStorage.operationTime
+		resultingCylindricStorageWoOperator.first().thermalBus == sptd.thermalStorage.thermalBus
+		resultingCylindricStorageWoOperator.first().storageVolumeLvl == sptd.storageVolumeLvl
+		resultingCylindricStorageWoOperator.first().storageVolumeLvlMin == sptd.storageVolumeLvlMin
+		resultingCylindricStorageWoOperator.first().inletTemp == sptd.inletTemp
+		resultingCylindricStorageWoOperator.first().returnTemp == sptd.returnTemp
+		resultingCylindricStorageWoOperator.first().c == sptd.c
+
+		//test method when operators and thermal buses are provided as constructor parameters
+		when:
+		def resultingCylindricStorage = csvThermalSource.getCylindricStorages(operators, thermalBuses)
+
+		then:
+		resultingCylindricStorage.size() == 1
+		resultingCylindricStorage.first().uuid == sptd.thermalStorage.uuid
+		resultingCylindricStorage.first().id == sptd.thermalStorage.id
+		resultingCylindricStorage.first().operator == sptd.thermalStorage.operator
+		resultingCylindricStorage.first().operationTime == sptd.thermalStorage.operationTime
+		resultingCylindricStorage.first().thermalBus == sptd.thermalStorage.thermalBus
+		resultingCylindricStorage.first().storageVolumeLvl == sptd.storageVolumeLvl
+		resultingCylindricStorage.first().storageVolumeLvlMin == sptd.storageVolumeLvlMin
+		resultingCylindricStorage.first().inletTemp == sptd.inletTemp
+		resultingCylindricStorage.first().returnTemp == sptd.returnTemp
+		resultingCylindricStorage.first().c == sptd.c
+
 	}
 
 	def "A CsvThermalSource should build thermal unit input entity from valid and invalid input data as expected"() {
@@ -65,20 +106,6 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		thermalBuses || resultIsPresent || expectedThermalUnitInputEntityData
 		[]|| false           || null  // thermal buses are not present -> method should return an empty optional -> do not check for thermal unit entity data
 		[]|| true            || new ThermalUnitInputEntityData()//todo add bus, fill with data etc.
-
-	}
-
-	def "A CsvThermalSource should return a CylindricStorageInput from valid and invalid input data as expected"() {
-		given:
-		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
-		def operators = null // todo
-		def thermalBuses = null // todo
-
-		when:
-		def resultingCylindricStorage = csvThermalSource.getCylindricStorages(operators, thermalBuses)
-
-		then:
-		resultingCylindricStorage == null // todo checks
 
 	}
 
