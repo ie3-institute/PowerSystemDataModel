@@ -65,16 +65,33 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
   }
 
   @Override
+  public String toString() {
+    return "SystemParticipantTypedEntityData{"
+        + "typeInput="
+        + typeInput
+        + ", node="
+        + getNode()
+        + ", operatorInput="
+        + getOperatorInput()
+        + ", fieldsToValues="
+        + getFieldsToValues()
+        + ", entityClass="
+        + getEntityClass()
+        + '}';
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     SystemParticipantTypedEntityData<?> that = (SystemParticipantTypedEntityData<?>) o;
     return getTypeInput().equals(that.getTypeInput());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getTypeInput());
+    return Objects.hash(super.hashCode(), getTypeInput());
   }
 
   public T getTypeInput() {

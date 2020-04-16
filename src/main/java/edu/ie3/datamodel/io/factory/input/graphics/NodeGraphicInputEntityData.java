@@ -10,7 +10,6 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import java.util.Map;
 import java.util.Objects;
-import java.util.StringJoiner;
 
 /**
  * Data used by {@link NodeGraphicInputFactory} used to create instances of {@link
@@ -38,23 +37,27 @@ public class NodeGraphicInputEntityData extends EntityData {
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", NodeGraphicInputEntityData.class.getSimpleName() + "[", "]")
-        .add("node=" + node)
-        .add("fieldsToValues=" + getFieldsToValues())
-        .add("entityClass=" + getEntityClass())
-        .toString();
+    return "NodeGraphicInputEntityData{"
+        + "node="
+        + node
+        + ", fieldsToValues="
+        + getFieldsToValues()
+        + ", entityClass="
+        + getEntityClass()
+        + '}';
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     NodeGraphicInputEntityData that = (NodeGraphicInputEntityData) o;
     return getNode().equals(that.getNode());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getNode());
+    return Objects.hash(super.hashCode(), getNode());
   }
 }

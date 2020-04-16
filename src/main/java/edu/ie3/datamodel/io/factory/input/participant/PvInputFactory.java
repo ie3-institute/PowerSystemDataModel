@@ -27,7 +27,7 @@ public class PvInputFactory
   private static final String KT = "kt";
   private static final String MARKET_REACTION = "marketreaction";
   private static final String S_RATED = "srated";
-  private static final String COS_PHI = "cosphirated";
+  private static final String COS_PHI_RATED = "cosphirated";
 
   public PvInputFactory() {
     super(PvInput.class);
@@ -36,7 +36,7 @@ public class PvInputFactory
   @Override
   protected String[] getAdditionalFields() {
     return new String[] {
-      ALBEDO, AZIMUTH, ETA_CONV, HEIGHT, KG, KT, MARKET_REACTION, S_RATED, COS_PHI
+      ALBEDO, AZIMUTH, ETA_CONV, HEIGHT, KG, KT, MARKET_REACTION, S_RATED, COS_PHI_RATED
     };
   }
 
@@ -58,7 +58,7 @@ public class PvInputFactory
     final double kT = data.getDouble(KT);
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
     final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
-    final double cosPhi = data.getDouble(COS_PHI);
+    final double cosPhi = data.getDouble(COS_PHI_RATED);
 
     return new PvInput(
         uuid,

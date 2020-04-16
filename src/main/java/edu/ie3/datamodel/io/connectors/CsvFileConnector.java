@@ -116,6 +116,43 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
+   * Initializes a file reader for the given class that should be read in. The expected file name is
+   * determined based on {@link FileNamingStrategy} of the this {@link CsvFileConnector} instance
+   *
+   * @param clz the class of the entity that should be read
+   * @return the reader that contains information about the file to be read in
+   * @throws FileNotFoundException
+   */
+  public BufferedReader initReader(Class<? extends UniqueEntity> clz) throws FileNotFoundException {
+
+    BufferedReader newReader;
+
+    String fileName = null;
+    try {
+      fileName =
+          fileNamingStrategy
+              .getFileName(clz)
+              .orElseThrow(
+                  () ->
+                      new ConnectorException(
+                          "Cannot find a naming strategy for class '"
+                              + clz.getSimpleName()
+                              + "'."));
+    } catch (ConnectorException e) {
+      log.error(
+          "Cannot get reader for entity '{}' as no file naming strategy for this file exists. Exception:{}",
+          clz::getSimpleName,
+          () -> e);
+    }
+    File filePath = new File(baseFolderName + File.separator + fileName + FILE_ENDING);
+    newReader =
+        new BufferedReader(
+            new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8), 16384);
+
+    return newReader;
+  }
+
+  /**
    * Builds a new file definition consisting of file name and head line elements
    *
    * @param timeSeries Time series to derive naming information from
@@ -171,34 +208,5 @@ public class CsvFileConnector implements DataConnector {
                 log.error("Error during CsvFileConnector shutdown process.", e);
               }
             });
-  }
-
-  public BufferedReader getReader(Class<? extends UniqueEntity> clz) throws FileNotFoundException {
-
-    BufferedReader newReader;
-
-    String fileName = null;
-    try {
-      fileName =
-          fileNamingStrategy
-              .getFileName(clz)
-              .orElseThrow(
-                  () ->
-                      new ConnectorException(
-                          "Cannot find a naming strategy for class '"
-                              + clz.getSimpleName()
-                              + "'."));
-    } catch (ConnectorException e) {
-      log.error(
-          "Cannot get reader for entity '{}' as no file naming strategy for this file exists. Exception:{}",
-          clz::getSimpleName,
-          () -> e);
-    }
-    File filePath = new File(baseFolderName + File.separator + fileName + FILE_ENDING);
-    newReader =
-        new BufferedReader(
-            new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8), 16384);
-
-    return newReader;
   }
 }

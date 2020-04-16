@@ -30,7 +30,7 @@ public final class Extractor {
     throw new IllegalStateException("Utility classes cannot be instantiated");
   }
 
-  public static List<InputEntity> extractElements(NestedEntity nestedEntity)
+  public static Set<InputEntity> extractElements(NestedEntity nestedEntity)
       throws ExtractorException {
     CopyOnWriteArrayList<InputEntity> resultingList = new CopyOnWriteArrayList<>();
     if (nestedEntity instanceof HasNodes) {
@@ -84,7 +84,7 @@ public final class Extractor {
               }
             });
 
-    return Collections.unmodifiableList(resultingList);
+    return Collections.unmodifiableSet(new HashSet<>(resultingList));
   }
 
   public static AssetTypeInput extractType(HasType entityWithType) {

@@ -21,7 +21,6 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -62,6 +61,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
     this.nodeGraphicInputFactory = new NodeGraphicInputFactory();
   }
 
+  /** {@inheritDoc} */
   @Override
   public Optional<GraphicElements> getGraphicElements() {
 
@@ -101,30 +101,45 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
     // if everything is fine, return a GraphicElements instance
     return Optional.of(new GraphicElements(nodeGraphics, lineGraphics));
   }
-
+  /** {@inheritDoc} */
   @Override
-  public Collection<NodeGraphicInput> getNodeGraphicInput() {
+  public Set<NodeGraphicInput> getNodeGraphicInput() {
     return getNodeGraphicInput(rawGridSource.getNodes(typeSource.getOperators()));
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If the set of {@link NodeInput} entities is not exhaustive for all available {@link
+   * NodeGraphicInput} entities or if an error during the building process occurs, all entities that
+   * has been able to be built are returned and the not-built ones are ignored (= filtered out).
+   */
   @Override
-  public Collection<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) {
+  public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) {
     return filterEmptyOptionals(
             buildNodeGraphicEntityData(nodes)
                 .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::getEntity)))
         .collect(Collectors.toSet());
   }
 
+  /** {@inheritDoc} */
   @Override
-  public Collection<LineGraphicInput> getLineGraphicInput() {
+  public Set<LineGraphicInput> getLineGraphicInput() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getLineGraphicInput(
         rawGridSource.getLines(
             rawGridSource.getNodes(operators), typeSource.getLineTypes(), operators));
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If the set of {@link LineInput} entities is not exhaustive for all available {@link
+   * LineGraphicInput} entities or if an error during the building process occurs, all entities that
+   * has been able to be built are returned and the not-built ones are ignored (= filtered out).
+   */
   @Override
-  public Collection<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) {
+  public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) {
 
     return filterEmptyOptionals(
             buildLineGraphicEntityData(lines)

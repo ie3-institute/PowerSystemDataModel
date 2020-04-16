@@ -13,7 +13,6 @@ package edu.ie3.datamodel.exceptions;
  * @since 19.03.20
  */
 public class SinkException extends Exception {
-  // RuntimeException
   public SinkException(final String message, final Throwable cause) {
     super(message, cause);
   }

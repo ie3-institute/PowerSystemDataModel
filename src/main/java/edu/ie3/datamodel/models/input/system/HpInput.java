@@ -76,6 +76,7 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
     return type;
   }
 
+  @Override
   public ThermalBusInput getThermalBus() {
     return thermalBus;
   }

@@ -170,7 +170,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 				fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvThermalSource), Mock(CsvRawGridSource))
 
 		expect:
-		def heatPumps = csvSystemParticipantSource.getHeatPumps(nodes, operators, types, thermalBuses)
+		def heatPumps = csvSystemParticipantSource.getHeatPumps(nodes as Set, operators as Set, types as Set, thermalBuses as Set)
 		heatPumps.size() == resultingSize
 		heatPumps == resultingSet as Set
 
@@ -192,7 +192,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 				fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvThermalSource), Mock(CsvRawGridSource))
 
 		expect:
-		def chpUnits = csvSystemParticipantSource.getChpPlants(nodes, operators, types, thermalBuses, thermalStorages)
+		def chpUnits = csvSystemParticipantSource.getChpPlants(nodes as Set, operators as Set, types as Set, thermalBuses as Set, thermalStorages as Set)
 		chpUnits.size() == resultingSize
 		chpUnits == resultingSet as Set
 
@@ -216,7 +216,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 				fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvThermalSource), Mock(CsvRawGridSource))
 
 		expect:
-		def sysParts = csvSystemParticipantSource.getEvs(nodes, operators, types)
+		def sysParts = csvSystemParticipantSource.getEvs(nodes as Set, operators as Set, types as Set)
 		sysParts.size() == resultingSize
 		sysParts == resultingSet as Set
 
@@ -237,7 +237,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 				fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvThermalSource), Mock(CsvRawGridSource))
 
 		expect:
-		def sysParts = csvSystemParticipantSource.getWecPlants(nodes, operators, types)
+		def sysParts = csvSystemParticipantSource.getWecPlants(nodes as Set, operators as Set, types as Set)
 		sysParts.size() == resultingSize
 		sysParts == resultingSet as Set
 
@@ -258,7 +258,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 				fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvThermalSource), Mock(CsvRawGridSource))
 
 		expect:
-		def sysParts = csvSystemParticipantSource.getStorages(nodes, operators, types)
+		def sysParts = csvSystemParticipantSource.getStorages(nodes as Set, operators as Set, types as Set)
 		sysParts.size() == resultingSize
 		sysParts == resultingSet as Set
 
@@ -279,7 +279,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 				fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvThermalSource), Mock(CsvRawGridSource))
 
 		expect:
-		def sysParts = csvSystemParticipantSource.getBmPlants(nodes, operators, types)
+		def sysParts = csvSystemParticipantSource.getBmPlants(nodes as Set, operators as Set, types as Set)
 		sysParts.size() == resultingSize
 		sysParts == resultingSet as Set
 
@@ -313,7 +313,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 				fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvThermalSource), Mock(CsvRawGridSource))
 
 		expect:
-		def sysParts = csvSystemParticipantSource.getLoads(nodes, operators)
+		def sysParts = csvSystemParticipantSource.getLoads(nodes as Set, operators as Set)
 		sysParts.size() == resultingSize
 		sysParts == resultingSet as Set
 
@@ -333,7 +333,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 				fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvThermalSource), Mock(CsvRawGridSource))
 
 		expect:
-		def sysParts = csvSystemParticipantSource.getPvPlants(nodes, operators)
+		def sysParts = csvSystemParticipantSource.getPvPlants(nodes as Set, operators as Set)
 		sysParts.size() == resultingSize
 		sysParts == resultingSet as Set
 
@@ -353,7 +353,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 				fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvThermalSource), Mock(CsvRawGridSource))
 
 		expect:
-		def sysParts = csvSystemParticipantSource.getFixedFeedIns(nodes, operators)
+		def sysParts = csvSystemParticipantSource.getFixedFeedIns(nodes as Set, operators as Set)
 		sysParts.size() == resultingSize
 		sysParts == resultingSet as Set
 

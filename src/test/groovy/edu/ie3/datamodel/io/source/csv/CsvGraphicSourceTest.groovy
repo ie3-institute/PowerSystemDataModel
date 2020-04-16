@@ -29,10 +29,10 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
 		then:
 		graphicElementsOpt.present
-		graphicElementsOpt.ifPresent({ graphicElements ->
-			assert (graphicElements.allEntitiesAsList().size() == 3)
-			assert (graphicElements.nodeGraphics.size() == 2)
-			assert (graphicElements.lineGraphics.size() == 1)
+		graphicElementsOpt.ifPresent({
+			assert (it.allEntitiesAsList().size() == 3)
+			assert (it.nodeGraphics.size() == 2)
+			assert (it.lineGraphics.size() == 1)
 		})
 	}
 
@@ -150,12 +150,11 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 		res.present == isPresent
 
 		res.ifPresent({ value ->
-			assert value == new LineGraphicInputEntityData([
-				"uuid"         : "09aec636-791b-45aa-b981-b14edf171c4c",
+			assert value == new LineGraphicInputEntityData(["uuid"         : "ece86139-3238-4a35-9361-457ecb4258b0",
 				"graphic_layer": "main",
-				"path"         : "",
-				"point"        : "{\"type\":\"Point\",\"coordinates\":[0.0,10],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}"
-			], gtd.lineAtoB)
+				"path"         : "{\"type\":\"LineString\",\"coordinates\":[[0.0,0.0],[0.0,10]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}"
+			]
+			, gtd.lineAtoB)
 			assert value.line == gtd.lineAtoB
 		})
 
