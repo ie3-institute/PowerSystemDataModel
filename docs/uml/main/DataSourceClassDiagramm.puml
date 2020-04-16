@@ -51,32 +51,31 @@ JDBCGridDataSource -->  JDBCDataConnector
 
 class CSVGridDataSource {
 }
-CSVGridDataSource --|> GridDataSource
-CSVGridDataSource -->  CSVDataConnector
+CSVGridDataSource ..|> GridDataSource
+CSVGridDataSource ..|> CSVDataConnector
 
 interface AssetDataSource {
-{abstract}Future<AssetData> fetchAssetData()
-{abstract}Future<List<EVModel>> fetchEvs()
-{abstract}Future<List<WECModel>> fetchWecs()
-{abstract}Future<List<...>> fetch...()
+{abstract}Set<EVModel> fetchEvs()
+{abstract}Set<WECModel> fetchWecPlants()
+{abstract}Set<...> fetch...()
 }
-AssetDataSource 	--|> DataSource
+AssetDataSource 	..|> DataSource
 
 interface ThermalSource
-ThermalSource --|> DataSource
+ThermalSource ..|> DataSource
 
 interface TypeDataSource {
 {abstract}Future<TypeData> fetchTypeData()
 {abstract}Future<List<EVTypeModel>> fetchEvTypes()
 {abstract}Future<List<...>> fetch...()
 }
-TypeDataSource 	--|> DataSource
+TypeDataSource 	..|> DataSource
 
 interface GraphicDataSource {
 {abstract}Future<GraphicData> fetchGraphicData()
 {abstract}Future<List<...>> fetch...()
 }
-GraphicDataSource 	--|> DataSource
+GraphicDataSource 	..|> DataSource
 
 interface WeatherDataSource {
 {abstract}Future<WeatherData> fetchWeatherData()

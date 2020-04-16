@@ -46,8 +46,8 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
   }
 
   /**
-   * Creates a new TypedConnectorInputEntityData object for an operable system participant input
-   * that input that needs a type input as well
+   * Creates a new TypedConnectorInputEntityData object for an operable connector input input that
+   * input that needs a type input as well
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data

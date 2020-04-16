@@ -289,7 +289,7 @@ public abstract class CsvDataSource {
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
-    try (BufferedReader reader = connector.getReader(entityClass)) {
+    try (BufferedReader reader = connector.initReader(entityClass)) {
       String[] headline = reader.readLine().replaceAll("\"", "").split(csvSep);
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
