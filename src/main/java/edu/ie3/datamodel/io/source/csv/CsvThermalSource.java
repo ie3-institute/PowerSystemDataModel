@@ -16,10 +16,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * //ToDo: Class Description todo note that Set does not check for unique uuids
+ * Source that provides the capability to uild thermal {@link
+ * edu.ie3.datamodel.models.input.AssetInput} entities from .csv files
+ *
+ * <p>This source is <b>not buffered</b> which means each call on a getter method always tries to
+ * read all data is necessary to return the requested objects in a hierarchical cascading way.
+ *
+ * <p>If performance is an issue, it is recommended to read the data cascading starting with reading
+ * nodes and then using the getters with arguments to avoid reading the same data multiple times.
+ *
+ * <p>The resulting sets are always unique on object <b>and</b> UUID base (with distinct UUIDs).
  *
  * @version 0.1
- * @since 07.04.20
+ * @since 03.04.20
  */
 public class CsvThermalSource extends CsvDataSource implements ThermalSource {
 
@@ -44,7 +53,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
     this.cylindricalStorageInputFactory = new CylindricalStorageInputFactory();
     this.thermalHouseInputFactory = new ThermalHouseInputFactory();
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<ThermalBusInput> getThermalBuses() {
     return filterEmptyOptionals(
@@ -53,6 +62,12 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .collect(Collectors.toSet());
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<ThermalBusInput> getThermalBuses(Set<OperatorInput> operators) {
     return filterEmptyOptionals(
@@ -60,18 +75,30 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
                 .map(thermalBusInputFactory::getEntity))
         .collect(Collectors.toSet());
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<ThermalStorageInput> getThermalStorages() {
     return new HashSet<>(getCylindricStorages());
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If the set of {@link ThermalBusInput} entities is not exhaustive for all available {@link
+   * ThermalStorageInput} entities (e.g. a {@link ThermalBusInput} entity is missing) or if an error
+   * during the building process occurs, the entity that misses something will be skipped (which can
+   * be seen as a filtering functionality) but all entities that are able to be built will be
+   * returned anyway and the elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<ThermalStorageInput> getThermalStorages(
       Set<OperatorInput> operators, Set<ThermalBusInput> thermalBuses) {
     return new HashSet<>(getCylindricStorages(operators, thermalBuses));
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<ThermalHouseInput> getThermalHouses() {
 
@@ -84,6 +111,18 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .collect(Collectors.toSet()));
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If the set of {@link ThermalBusInput} entities is not exhaustive for all available {@link
+   * ThermalHouseInput} entities (e.g. a {@link ThermalBusInput} entity is missing) or if an error
+   * during the building process occurs, the entity that misses something will be skipped (which can
+   * be seen as a filtering functionality) but all entities that are able to be built will be
+   * returned anyway and the elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<ThermalHouseInput> getThermalHouses(
       Set<OperatorInput> operators, Set<ThermalBusInput> thermalBuses) {
@@ -96,7 +135,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .flatMap(this::filterEmptyOptionals)
         .collect(Collectors.toSet()));
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<CylindricalStorageInput> getCylindricStorages() {
 
@@ -109,6 +148,18 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .collect(Collectors.toSet()));
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If the set of {@link ThermalBusInput} entities is not exhaustive for all available {@link
+   * CylindricalStorageInput} entities (e.g. a {@link ThermalBusInput} entity is missing) or if an
+   * error during the building process occurs, the entity that misses something will be skipped
+   * (which can be seen as a filtering functionality) but all entities that are able to be built
+   * will be returned anyway and the elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<CylindricalStorageInput> getCylindricStorages(
       Set<OperatorInput> operators, Set<ThermalBusInput> thermalBuses) {
