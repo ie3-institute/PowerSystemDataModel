@@ -11,6 +11,4 @@ package edu.ie3.datamodel.io.source;
  * development and should be considered more as an internal API. It might change or even will be
  * removed in the future!
  */
-public interface DataSource {
-
-}
+public interface DataSource {}
