@@ -13,7 +13,6 @@ import edu.ie3.test.common.GridTestData as gtd
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 import edu.ie3.test.common.ThermalUnitInputTestData as tutd
 import edu.ie3.util.TimeTools
-import org.locationtech.jts.geom.Point
 import spock.lang.Specification
 
 import java.time.ZoneId
@@ -129,8 +128,8 @@ class ExtractorTest extends Specification {
 			gtd.measurementUnitInput.operator
 		]
 
-		tutd.thermalBusInput       || [
-			tutd.thermalBusInput.operator
+		tutd.thermalBus       || [
+			tutd.thermalBus.operator
 		]
 
 		tutd.cylindricStorageInput || [

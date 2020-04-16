@@ -200,9 +200,6 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
       return Stream.of(Optional.empty());
     }
 
-    // for operator ignore warning for excessive lambda usage in .orElseGet()
-    // because of performance (see https://www.baeldung.com/java-optional-or-else-vs-or-else-get=
-    // for details)
     return Stream.of(
         Optional.of(
             new ThermalUnitInputEntityData(

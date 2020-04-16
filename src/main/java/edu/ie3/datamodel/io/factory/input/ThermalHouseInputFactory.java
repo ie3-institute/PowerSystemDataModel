@@ -41,6 +41,6 @@ public class ThermalHouseInputFactory
         data.getQuantity(ETH_LOSSES, StandardUnits.THERMAL_TRANSMISSION);
     final ComparableQuantity<HeatCapacity> ethCapa =
         data.getQuantity(ETH_CAPA, StandardUnits.HEAT_CAPACITY);
-    return new ThermalHouseInput(uuid, id, busInput, ethLosses, ethCapa);
+    return new ThermalHouseInput(uuid, id, operator, operationTime, busInput, ethLosses, ethCapa);
   }
 }
