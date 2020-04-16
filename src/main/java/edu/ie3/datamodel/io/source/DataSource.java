@@ -6,10 +6,10 @@
 package edu.ie3.datamodel.io.source;
 
 /**
- * General interface that is implemented by all specific data sources for different types of data structures that
- * are persisted in different locations.
- * Note: This interface is still under development and should be considered more as an internal API. It might change or
- * even will be removed in the future!
+ * General interface that is implemented by all specific data sources for different types of data
+ * structures that are persisted in different locations. Note: This interface is still under
+ * development and should be considered more as an internal API. It might change or even will be
+ * removed in the future!
  */
 public interface DataSource {
 

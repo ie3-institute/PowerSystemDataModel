@@ -75,10 +75,11 @@ public abstract class CsvDataSource {
   private Map<String, String> buildFieldsToAttributes(
       final String csvRow, final String[] headline) {
 
-    final String[] fieldVals = fieldVals(csvSep, csvRow);
-
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+    final String[] fieldVals = fieldVals(csvSep, csvRow);
+
     try {
       insensitiveFieldsToAttributes.putAll(
           IntStream.range(0, fieldVals.length)
@@ -111,37 +112,60 @@ public abstract class CsvDataSource {
     return insensitiveFieldsToAttributes;
   }
 
+  /**
+   * Build an array of from the provided csv row string considering special cases where geoJson or
+   * {@link edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput} are provided
+   * in the csv row string.
+   *
+   * @param csvSep the column separator of the csv row string
+   * @param csvRow the csv row string
+   * @return an array with one entry per column of the provided csv row string
+   */
   private String[] fieldVals(String csvSep, String csvRow) {
 
+    /*geo json support*/
     final String geoJsonRegex = "[\\{].+\\}\\}\\}";
-    final String qCharRegex = "(cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.+?\\}";
+    final String geoReplacement = "geoJSON";
+
+    /*characteristic input support */
+    final String charInputRegex = "(cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.+?\\}";
+    final String charReplacement = "charRepl";
 
     List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow);
-    List<String> qList = extractMatchingStrings(qCharRegex, csvRow);
+    List<String> charList = extractMatchingStrings(charInputRegex, csvRow);
 
     AtomicInteger geoCounter = new AtomicInteger(0);
-    AtomicInteger qCharCounter = new AtomicInteger(0);
+    AtomicInteger charCounter = new AtomicInteger(0);
 
     return Arrays.stream(
             csvRow
-                .replaceAll(qCharRegex, "QCHAR")
-                .replaceAll(geoJsonRegex, "GEOJSON")
+                .replaceAll(charInputRegex, charReplacement)
+                .replaceAll(geoJsonRegex, geoReplacement)
                 .replaceAll("\"", "")
                 .split(csvSep, -1))
         .map(
             fieldVal -> {
               String returningFieldVal = fieldVal;
-              if (fieldVal.equalsIgnoreCase("GEOJSON")) {
+              if (fieldVal.equalsIgnoreCase(geoReplacement)) {
                 returningFieldVal = geoList.get(geoCounter.getAndIncrement());
               }
-              if (fieldVal.equalsIgnoreCase("QCHAR")) {
-                returningFieldVal = qList.get(qCharCounter.getAndIncrement());
+              if (fieldVal.equalsIgnoreCase(charReplacement)) {
+                returningFieldVal = charList.get(charCounter.getAndIncrement());
               }
               return returningFieldVal.trim();
             })
         .toArray(String[]::new);
   }
 
+  /**
+   * Extracts all strings from the provided csvRow matching the provided regexString and returns a
+   * list of strings in the order of their appearance in the csvRow string
+   *
+   * @param regexString regex string that should be searched for
+   * @param csvRow csv row string that should be searched in for the regex string
+   * @return a list of strings matching the provided regex in the order of their appearance in the
+   *     provided csv row string
+   */
   private List<String> extractMatchingStrings(String regexString, String csvRow) {
     Pattern pattern = Pattern.compile(regexString);
     Matcher matcher = pattern.matcher(csvRow);
