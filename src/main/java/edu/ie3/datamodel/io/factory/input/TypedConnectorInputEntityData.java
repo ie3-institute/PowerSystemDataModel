@@ -26,8 +26,7 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
   private final T type;
 
   /**
-   * Creates a new TypedConnectorInputEntityData object for an operated, always on system
-   * participant input that needs a type input as well
+   * Creates a new TypedConnectorInputEntityData object for a connector input that needs a type input as well. It sets the operator to default.
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data
