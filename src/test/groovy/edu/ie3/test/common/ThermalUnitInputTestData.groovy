@@ -26,7 +26,7 @@ class ThermalUnitInputTestData {
 
 	// general participant data
 	private static final UUID thermalUnitUuid = UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a")
-	private static final OperationTime operationTime = OperationTime.builder()
+	public static final OperationTime operationTime = OperationTime.builder()
 	.withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31"))
 	.withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
 	private static final OperatorInput operator = new OperatorInput(
