@@ -397,6 +397,18 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
         .collect(Collectors.toSet());
   }
 
+  /**
+   * Constructs a stream of {@link SystemParticipantInput} entities wrapped in {@link Optional}s.
+   *
+   * @param entityClass the class of the entities that should be built
+   * @param factory the corresponding factory that is capable of building this entities
+   * @param nodes the nodes that should be considered for these entities
+   * @param operators the operators that should be considered for these entities
+   * @param types the types that should be considered for these entities
+   * @param <T> the type of the resulting entity
+   * @param <A> the type of the type model of the resulting entity
+   * @return a stream of optionals being either empty or holding an instance of a {@link SystemParticipantInput} of the requested entity class
+   */
   private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
       Stream<Optional<T>> typedEntityStream(
           Class<T> entityClass,

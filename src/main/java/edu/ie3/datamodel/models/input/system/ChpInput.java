@@ -102,6 +102,7 @@ public class ChpInput extends SystemParticipantInput
     return type;
   }
 
+  @Override
   public ThermalStorageInput getThermalStorage() {
     return thermalStorage;
   }

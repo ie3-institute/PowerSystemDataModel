@@ -134,46 +134,6 @@ public class SystemParticipants implements InputContainer {
         "Currently there are no tests for system participants in ValidationUtils.");
   }
 
-  public void add(BmInput bm) {
-    bmPlants.add(bm);
-  }
-
-  public void add(ChpInput chp) {
-    chpPlants.add(chp);
-  }
-
-  public void add(EvcsInput evcsInput) {
-    evCS.add(evcsInput);
-  }
-
-  public void add(EvInput evInput) {
-    evs.add(evInput);
-  }
-
-  public void add(FixedFeedInInput fixedFeedIn) {
-    fixedFeedIns.add(fixedFeedIn);
-  }
-
-  public void add(HpInput hp) {
-    heatPumps.add(hp);
-  }
-
-  public void add(LoadInput load) {
-    loads.add(load);
-  }
-
-  public void add(PvInput pv) {
-    pvPlants.add(pv);
-  }
-
-  public void add(StorageInput storage) {
-    this.storages.add(storage);
-  }
-
-  public void add(WecInput wec) {
-    wecPlants.add(wec);
-  }
-
   /** @return unmodifiable Set of all biomass plants in this grid */
   public Set<BmInput> getBmPlants() {
     return Collections.unmodifiableSet(bmPlants);

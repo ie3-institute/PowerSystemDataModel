@@ -9,6 +9,8 @@ import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
+import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData;
+import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
@@ -16,10 +18,12 @@ import edu.ie3.datamodel.io.factory.typeinput.Transformer3WTypeInputFactory;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,58 +57,72 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
   /** {@inheritDoc} */
   @Override
   public Set<Transformer2WTypeInput> getTransformer2WTypes() {
-    return readSimpleEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory);
+    return buildSimpleEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory);
   }
   /** {@inheritDoc} */
   @Override
   public Set<OperatorInput> getOperators() {
-    return readSimpleEntities(OperatorInput.class, operatorInputFactory);
+    return buildSimpleEntities(OperatorInput.class, operatorInputFactory);
   }
   /** {@inheritDoc} */
   @Override
   public Set<LineTypeInput> getLineTypes() {
-    return readSimpleEntities(LineTypeInput.class, lineTypeInputFactory);
+    return buildSimpleEntities(LineTypeInput.class, lineTypeInputFactory);
   }
   /** {@inheritDoc} */
   @Override
   public Set<Transformer3WTypeInput> getTransformer3WTypes() {
-    return readSimpleEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory);
+    return buildSimpleEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory);
   }
   /** {@inheritDoc} */
   @Override
   public Set<BmTypeInput> getBmTypes() {
-    return readSimpleEntities(BmTypeInput.class, systemParticipantTypeInputFactory);
+    return buildSimpleEntities(BmTypeInput.class, systemParticipantTypeInputFactory);
   }
   /** {@inheritDoc} */
   @Override
   public Set<ChpTypeInput> getChpTypes() {
-    return readSimpleEntities(ChpTypeInput.class, systemParticipantTypeInputFactory);
+    return buildSimpleEntities(ChpTypeInput.class, systemParticipantTypeInputFactory);
   }
   /** {@inheritDoc} */
   @Override
   public Set<HpTypeInput> getHpTypes() {
-    return readSimpleEntities(HpTypeInput.class, systemParticipantTypeInputFactory);
+    return buildSimpleEntities(HpTypeInput.class, systemParticipantTypeInputFactory);
   }
   /** {@inheritDoc} */
   @Override
   public Set<StorageTypeInput> getStorageTypes() {
-    return readSimpleEntities(StorageTypeInput.class, systemParticipantTypeInputFactory);
+    return buildSimpleEntities(StorageTypeInput.class, systemParticipantTypeInputFactory);
   }
   /** {@inheritDoc} */
   @Override
   public Set<WecTypeInput> getWecTypes() {
-    return readSimpleEntities(WecTypeInput.class, systemParticipantTypeInputFactory);
+    return buildSimpleEntities(WecTypeInput.class, systemParticipantTypeInputFactory);
   }
   /** {@inheritDoc} */
   @Override
   public Set<EvTypeInput> getEvTypes() {
-    return readSimpleEntities(EvTypeInput.class, systemParticipantTypeInputFactory);
+    return buildSimpleEntities(EvTypeInput.class, systemParticipantTypeInputFactory);
   }
 
+  /**
+   * Tries to build a set of {@link InputEntity}s of the provided entity class based on the provided factory.
+   * To do so, first entity data of type {@link SimpleEntityData} is constructed based on the input .csv file that
+   * can be derived from the entity class. This data is than passed to the factory and used to build the corresponding
+   * entities.
+   *
+   * Be careful, that always a factory that is able to produce an entity of type <T> is passed into as argument.
+   * Otherwise, a casting exception will be thrown.
+   *
+   * @param entityClass the concrete class of the {@link InputEntity} that should be built
+   * @param factory the entity factory that should be used
+   * @param <T> the type of the resulting entity
+   * @return a set containing all entities that could have been built or an empty set if no entity could been built
+   */
   @SuppressWarnings("unchecked cast")
-  private <T extends InputEntity> Set<T> readSimpleEntities(
-      Class<? extends UniqueEntity> entityClass,
-      EntityFactory<? extends UniqueEntity, SimpleEntityData> factory) {
+  private <T extends InputEntity> Set<T> buildSimpleEntities(
+      Class<T> entityClass,
+      EntityFactory<? extends InputEntity, SimpleEntityData> factory) {
     return (Set<T>)
         buildStreamWithFieldsToAttributesMap(entityClass, connector)
             .map(

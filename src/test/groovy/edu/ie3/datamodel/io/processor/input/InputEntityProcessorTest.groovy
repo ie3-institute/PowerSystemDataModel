@@ -50,7 +50,8 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
 /**
  * Testing the function of processors
  *
- * @version 0.1* @since 24.03.20
+ * @version 0.1
+ * @since 24.03.20
  */
 class InputEntityProcessorTest extends Specification {
 	static {
@@ -637,7 +638,7 @@ class InputEntityProcessorTest extends Specification {
 		actual.get() == expected
 	}
 
-	def "The InputEntityProcessor should not deserialize an entity with an OperatorInput that is marked as NO_OPERATOR_ASSIGNED"() {
+	def "The InputEntityProcessor should deserialize an entity but ignore the operator field when OperatorInput is equal to NO_OPERATOR_ASSIGNED"() {
 		given:
 		InputEntityProcessor processor = new InputEntityProcessor(NodeInput)
 		def nodeWithOutOperator = new NodeInput(

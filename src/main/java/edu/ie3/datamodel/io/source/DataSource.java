@@ -13,6 +13,4 @@ package edu.ie3.datamodel.io.source;
  */
 public interface DataSource {
 
-  /** @return the connector of this source */
-  //  DataConnector getDataConnector(); // todo check if we need this
 }

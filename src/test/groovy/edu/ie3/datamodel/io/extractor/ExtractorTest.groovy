@@ -38,7 +38,7 @@ class ExtractorTest extends Specification {
 			gtd.lineCtoD.nodeA,
 			gtd.lineCtoD.nodeB,
 			gtd.lineCtoD.type,
-			gtd.lineCtoD.operator,
+			gtd.lineCtoD.operator
 		]
 		gtd.transformerAtoBtoC     || [
 			gtd.transformerAtoBtoC.nodeA,
@@ -46,13 +46,13 @@ class ExtractorTest extends Specification {
 			gtd.transformerAtoBtoC.nodeC,
 			gtd.transformerAtoBtoC.type,
 			gtd.transformerAtoBtoC.operator,
-			gtd.transformerAtoBtoC.nodeA.operator,
+			gtd.transformerAtoBtoC.nodeA.operator
 		]
 		gtd.transformerCtoG        || [
 			gtd.transformerCtoG.nodeA,
 			gtd.transformerCtoG.nodeB,
 			gtd.transformerCtoG.type,
-			gtd.transformerCtoG.operator,
+			gtd.transformerCtoG.operator
 		]
 		gtd.switchAtoB             || [
 			gtd.switchAtoB.nodeA,
@@ -112,7 +112,7 @@ class ExtractorTest extends Specification {
 			gtd.lineGraphicCtoD.line.nodeB,
 			gtd.lineGraphicCtoD.line.nodeA,
 			gtd.lineGraphicCtoD.line.type,
-			gtd.lineGraphicCtoD.line.operator,
+			gtd.lineGraphicCtoD.line.operator
 		]
 
 		gtd.nodeGraphicC           || [gtd.nodeGraphicC.node]
@@ -126,7 +126,7 @@ class ExtractorTest extends Specification {
 
 		gtd.measurementUnitInput   || [
 			gtd.measurementUnitInput.node,
-			gtd.measurementUnitInput.operator,
+			gtd.measurementUnitInput.operator
 		]
 
 		tutd.thermalBusInput       || [

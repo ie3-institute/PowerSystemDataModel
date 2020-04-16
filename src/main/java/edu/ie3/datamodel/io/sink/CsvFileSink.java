@@ -162,14 +162,7 @@ public class CsvFileSink implements DataSink {
                                   .map(Class::getSimpleName)
                                   .collect(Collectors.joining(","))
                               + "]"));
-    } catch (SinkException e) {
-      log.error(
-          "Cannot persist provided entity '{}'. Exception: {}",
-          () -> entity.getClass().getSimpleName(),
-          () -> e);
-    }
 
-    try {
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
       BufferedCsvWriter writer =
           connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
@@ -182,7 +175,10 @@ public class CsvFileSink implements DataSink {
     } catch (IOException e) {
       log.error("Exception occurred during writing of this element. Cannot write this element.", e);
     } catch (SinkException e) {
-      log.error("Exception occurred during processing the provided data fields: ", e);
+      log.error(
+          "Cannot persist provided entity '{}'. Exception: {}",
+          () -> entity.getClass().getSimpleName(),
+          () -> e);
     }
   }
 
@@ -286,7 +282,6 @@ public class CsvFileSink implements DataSink {
   public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries) {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
-    log.debug("I got a time series of type {}.", key);
 
     try {
       Set<LinkedHashMap<String, String>> entityFieldData =
