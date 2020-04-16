@@ -225,7 +225,7 @@ class FileNamingStrategyTest extends Specification {
 		Transformer2WInput      || "transformer2w_input"
 		Transformer3WInput      || "transformer3w_input"
 		CylindricalStorageInput || "cylindrical_storage_input"
-		ThermalHouseInput       || "thermal_house_input.csv"
+		ThermalHouseInput       || "thermal_house_input"
 	}
 
 	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all asset characteristics models"() {

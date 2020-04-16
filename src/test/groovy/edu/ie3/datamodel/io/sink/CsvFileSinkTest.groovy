@@ -137,7 +137,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		new File(testBaseFolderPath + File.separator + "operator_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "node_graphic_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "thermal_bus_input.csv").exists()
-		new File(testBaseFolderPath + File.separator + "thermal_house_input.csv.csv").exists()
+		new File(testBaseFolderPath + File.separator + "thermal_house_input.csv").exists()
 
 		!new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
 	}
