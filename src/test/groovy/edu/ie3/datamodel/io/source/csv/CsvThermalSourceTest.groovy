@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput
 import edu.ie3.test.common.SystemParticipantTestData as sptd
-import edu.ie3.test.common.ThermalUnitInputTestData as tutd
+import edu.ie3.test.common.ThermalUnitInputTestData
 import spock.lang.Specification
 
 import java.util.stream.Collectors
@@ -95,6 +95,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		given:
 		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
+		def operator = new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "testOperator")
 		def validFieldsToAttributes = [
 			"uuid"			: "717af017-cc69-406f-b452-e022d7fb516a",
 			"id"			: "test_thermal_unit",
@@ -103,11 +104,10 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 			"operatesUntil"	: "2020-03-25 15:11:31",
 			"thermalBus"    : "0d95d7f2-49fb-4d49-8636-383a5220384e"
 		]
-		def assetInputEntityData = new AssetInputEntityData(validFieldsToAttributes, ThermalUnitInput)
+		def assetInputEntityData = new AssetInputEntityData(validFieldsToAttributes, ThermalUnitInput, operator)
 
 		when:
 		def resultingDataOpt = csvThermalSource.buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses).collect(Collectors.toList())
-		print(resultingDataOpt)
 
 		then:
 		resultingDataOpt.size() == 1
@@ -119,21 +119,52 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		where:
 		thermalBuses || resultIsPresent || expectedThermalUnitInputEntityData
 		[]|| false           || null  // thermal buses are not present -> method should return an empty optional -> do not check for thermal unit entity data
-		[]|| true            || new ThermalUnitInputEntityData(["uuid": "717af017-cc69-406f-b452-e022d7fb516a", "id": "test_thermal_unit", "operator": "8f9682df-0744-4b58-a122-f0dc730f6510", "operatesFrom": "2020-03-24 15:11:31", "operatesUntil": "2020-03-25 15:11:31", "thermalBus": "0d95d7f2-49fb-4d49-8636-383a5220384e"], ThermalUnitInput, new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermal_bus"))
+		[new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermal_bus")]|| true            ||
+				new ThermalUnitInputEntityData(["uuid": "717af017-cc69-406f-b452-e022d7fb516a",
+												"id": "test_thermal_unit",
+												"operator": "8f9682df-0744-4b58-a122-f0dc730f6510",
+												"operatesFrom": "2020-03-24 15:11:31",
+												"operatesUntil": "2020-03-25 15:11:31"],
+				ThermalUnitInput,
+				new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "testOperator"),
+				new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermal_bus"))
 
 	}
 
 	def "A CsvThermalSource should return a ThermalHouseInput from valid and invalid input data as expected"() {
 		given:
-		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
-		def operators = null // todo
-		def thermalBuses = null // todo
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
+		def operators = csvTypeSource.operators
+		def thermalBuses = csvThermalSource.thermalBuses
 
+		//test method when operators and thermal buses are not provided as constructor parameters
 		when:
-		def resultingThermalHouses = csvThermalSource.getThermalHouses(operators, thermalBuses)
+		def resultingThermalHouseWoOperator = csvThermalSource.getThermalHouses()
 
 		then:
-		resultingThermalHouses == null // todo checks
+		resultingThermalHouseWoOperator.size() == 1
+		resultingThermalHouseWoOperator.first().uuid == ThermalUnitInputTestData.thermalHouseInput.uuid
+		resultingThermalHouseWoOperator.first().id == ThermalUnitInputTestData.thermalHouseInput.id
+		resultingThermalHouseWoOperator.first().operator == ThermalUnitInputTestData.thermalHouseInput.operator
+		resultingThermalHouseWoOperator.first().operationTime == ThermalUnitInputTestData.thermalHouseInput.operationTime
+		resultingThermalHouseWoOperator.first().thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
+		resultingThermalHouseWoOperator.first().ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
+		resultingThermalHouseWoOperator.first().ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
+
+		//test method when operators and thermal buses are provided as constructor parameters
+		when:
+		def resultingThermalHouse = csvThermalSource.getThermalHouses(operators, thermalBuses)
+
+		then:
+		resultingThermalHouse.size() == 1
+		resultingThermalHouse.first().uuid == ThermalUnitInputTestData.thermalHouseInput.uuid
+		resultingThermalHouse.first().id == ThermalUnitInputTestData.thermalHouseInput.id
+		resultingThermalHouse.first().operator == ThermalUnitInputTestData.thermalHouseInput.operator
+		resultingThermalHouse.first().operationTime == ThermalUnitInputTestData.thermalHouseInput.operationTime
+		resultingThermalHouse.first().thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
+		resultingThermalHouse.first().ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
+		resultingThermalHouse.first().ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
 
 	}
 }
