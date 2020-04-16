@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import java.util.Optional;
 import java.util.Set;
@@ -41,7 +40,7 @@ public interface RawGridSource extends DataSource {
    * information to debug the error and fix the persistent data that has been failed to processed.
    *
    * <p>Furthermore, it is expected, that the specific implementation of this method ensures not
-   * only the completeness of the resulting {@link GraphicElements} instance, but also its validity
+   * only the completeness of the resulting {@link RawGridElements} instance, but also its validity
    * e.g. in the sense that not duplicate UUIDs exist within all entities contained in the returning
    * instance.
    *
@@ -74,8 +73,8 @@ public interface RawGridSource extends DataSource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique nodes that should be used for the returning
-   *     instances
+   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
+   *     the returning instances
    * @return a set of object and uuid unique {@link NodeInput} entities
    */
   Set<NodeInput> getNodes(Set<OperatorInput> operators);
@@ -106,8 +105,10 @@ public interface RawGridSource extends DataSource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique nodes that should be used for the returning
-   *     instances
+   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
+   *     the returning instances
+   * @param nodes a set of object and uuid unique {@link NodeInput} entities
+   * @param lineTypeInputs a set of object and uuid unique {@link LineTypeInput} entities
    * @return a set of object and uuid unique {@link LineInput} entities
    */
   Set<LineInput> getLines(
@@ -140,8 +141,11 @@ public interface RawGridSource extends DataSource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique nodes that should be used for the returning
-   *     instances
+   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
+   *     the returning instances
+   * @param nodes a set of object and uuid unique {@link NodeInput} entities
+   * @param transformer2WTypes a set of object and uuid unique {@link Transformer2WTypeInput}
+   *     entities
    * @return a set of object and uuid unique {@link Transformer2WInput} entities
    */
   Set<Transformer2WInput> get2WTransformers(
@@ -176,8 +180,11 @@ public interface RawGridSource extends DataSource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique nodes that should be used for the returning
-   *     instances
+   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
+   *     the returning instances
+   * @param nodes a set of object and uuid unique {@link NodeInput} entities
+   * @param transformer3WTypeInputs a set of object and uuid unique {@link Transformer3WTypeInput}
+   *     entities
    * @return a set of object and uuid unique {@link Transformer3WInput} entities
    */
   Set<Transformer3WInput> get3WTransformers(
@@ -211,8 +218,9 @@ public interface RawGridSource extends DataSource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique nodes that should be used for the returning
-   *     instances
+   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
+   *     the returning instances
+   * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link SwitchInput} entities
    */
   Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators);
@@ -244,8 +252,9 @@ public interface RawGridSource extends DataSource {
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
    *
-   * @param operators a set of object and uuid unique nodes that should be used for the returning
-   *     instances
+   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
+   *     the returning instances
+   * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link MeasurementUnitInput} entities
    */
   Set<MeasurementUnitInput> getMeasurementUnits(Set<NodeInput> nodes, Set<OperatorInput> operators);

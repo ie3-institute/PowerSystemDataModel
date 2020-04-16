@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 
 /**
  * Source that provides the capability to build entities that are hold by a {@link RawGridElements}
- * as well as the {@link RawGridElements} container as well from .csv files.
+ * as well as the {@link RawGridElements} container from .csv files.
  *
  * <p>This source is <b>not buffered</b> which means each call on a getter method always tries to
  * read all data is necessary to return the requested objects in a hierarchical cascading way.
@@ -176,7 +176,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    *
    * <p>If one of the sets of {@link NodeInput} or {@link LineTypeInput} entities is not exhaustive
    * for all available {@link LineInput} entities (e.g. a {@link NodeInput} or {@link LineTypeInput}
-   * entity is missed) or if an error during the building process occurs, the entity that misses
+   * entity is missing) or if an error during the building process occurs, the entity that misses
    * something will be skipped (which can be seen as a filtering functionality) but all entities
    * that are able to be built will be returned anyway and the elements that couldn't have been
    * built are logged.
@@ -204,7 +204,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    *
    * <p>If one of the sets of {@link NodeInput} or {@link Transformer2WTypeInput} entities is not
    * exhaustive for all available {@link Transformer2WInput} entities (e.g. a {@link NodeInput} or
-   * {@link Transformer2WTypeInput} entity is missed) or if an error during the building process
+   * {@link Transformer2WTypeInput} entity is missing) or if an error during the building process
    * occurs, the entity that misses something will be skipped (which can be seen as a filtering
    * functionality) but all entities that are able to be built will be returned anyway and the
    * elements that couldn't have been built are logged.
@@ -239,7 +239,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    *
    * <p>If one of the sets of {@link NodeInput} or {@link Transformer3WTypeInput} entities is not
    * exhaustive for all available {@link Transformer3WInput} entities (e.g. a {@link NodeInput} or
-   * {@link Transformer3WTypeInput} entity is missed) or if an error during the building process
+   * {@link Transformer3WTypeInput} entity is missing) or if an error during the building process
    * occurs, the entity that misses something will be skipped (which can be seen as a filtering
    * functionality) but all entities that are able to be built will be returned anyway and the
    * elements that couldn't have been built are logged.
@@ -283,7 +283,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * {@inheritDoc}
    *
    * <p>If one of the sets of {@link NodeInput} entities is not exhaustive for all available {@link
-   * SwitchInput} entities (e.g. a {@link NodeInput} entity is missed) or if an error during the
+   * SwitchInput} entities (e.g. a {@link NodeInput} entity is missing) or if an error during the
    * building process occurs, the entity that misses something will be skipped (which can be seen as
    * a filtering functionality) but all entities that are able to be built will be returned anyway
    * and the elements that couldn't have been built are logged.
@@ -322,7 +322,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * {@inheritDoc}
    *
    * <p>If one of the sets of {@link NodeInput} entities is not exhaustive for all available {@link
-   * MeasurementUnitInput} entities (e.g. a {@link NodeInput} entity is missed) or if an error
+   * MeasurementUnitInput} entities (e.g. a {@link NodeInput} entity is missing) or if an error
    * during the building process occurs, the entity that misses something will be skipped (which can
    * be seen as a filtering functionality) but all entities that are able to be built will be
    * returned anyway and the elements that couldn't have been built are logged.

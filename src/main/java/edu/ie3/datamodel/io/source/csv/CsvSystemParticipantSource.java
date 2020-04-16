@@ -28,15 +28,19 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.NotImplementedException;
 
 /**
- * //ToDo: Class Description
+ * Source that provides the capability to build entities of type {@link SystemParticipantInput} as
+ * well as {@link SystemParticipants} container from .csv files.
  *
- * <p>TODO description needs hint that Set does NOT mean uuid uniqueness -> using the () getter //
- * todo performance improvements in all sources to make as as less possible recursive stream calls
- * on files without providing files with unique entities might cause confusing results if duplicate
- * uuids exist on a file specific level (e.g. for types!)
+ * <p>This source is <b>not buffered</b> which means each call on a getter method always tries to
+ * read all data is necessary to return the requested objects in a hierarchical cascading way.
+ *
+ * <p>If performance is an issue, it is recommended to read the data cascading starting with reading
+ * nodes and then using the getters with arguments to avoid reading the same data multiple times.
+ *
+ * <p>The resulting sets are always unique on object <b>and</b> UUID base (with distinct UUIDs).
  *
  * @version 0.1
- * @since 06.04.20
+ * @since 03.04.20
  */
 public class CsvSystemParticipantSource extends CsvDataSource implements SystemParticipantSource {
 
@@ -83,6 +87,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     this.wecInputFactory = new WecInputFactory();
   }
 
+  /** {@inheritDoc} */
   @Override
   public Optional<SystemParticipants> getSystemParticipants() {
 
@@ -178,12 +183,24 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             wecInputs));
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<FixedFeedInInput> getFixedFeedIns() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getFixedFeedIns(rawGridSource.getNodes(operators), operators);
   }
-
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If the set of {@link NodeInput} entities is not exhaustive for all available {@link
+   * FixedFeedInInput} entities (e.g. a {@link NodeInput} entity is missing) or if an error during
+   * the building process occurs, the entity that misses something will be skipped (which can be
+   * seen as a filtering functionality), but all entities that are able to be built will be returned
+   * anyway and the elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     return filterEmptyOptionals(
@@ -192,12 +209,25 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
         .collect(Collectors.toSet());
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<PvInput> getPvPlants() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getPvPlants(rawGridSource.getNodes(operators), operators);
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If the set of {@link NodeInput} entities is not exhaustive for all available {@link PvInput}
+   * entities (e.g. a {@link NodeInput} entity is missing) or if an error during the building
+   * process occurs, the entity that misses something will be skipped (which can be seen as a
+   * filtering functionality), but all entities that are able to be built will be returned anyway
+   * and the elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<PvInput> getPvPlants(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     return filterEmptyOptionals(
@@ -205,35 +235,73 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
         .collect(Collectors.toSet());
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<LoadInput> getLoads() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getLoads(rawGridSource.getNodes(operators), operators);
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If the set of {@link NodeInput} entities is not exhaustive for all available {@link
+   * LoadInput} entities (e.g. a {@link NodeInput} entity is missing) or if an error during the
+   * building process occurs, the entity that misses something will be skipped (which can be seen as
+   * a filtering functionality), but all entities that are able to be built will be returned anyway
+   * and the elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<LoadInput> getLoads(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     return filterEmptyOptionals(
             nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators))
         .collect(Collectors.toSet());
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<EvcsInput> getEvCS() {
     throw new NotImplementedException("Ev Charging Stations are not implemented yet!");
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If the set of {@link NodeInput} entities is not exhaustive for all available {@link
+   * EvcsInput} entities (e.g. a {@link NodeInput} entity is missing) or if an error during the
+   * building process occurs, the entity that misses something will be skipped (which can be seen as
+   * a filtering functionality), but all entities that are able to be built will be returned anyway
+   * and the elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     throw new NotImplementedException("Ev Charging Stations are not implemented yet!");
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<BmInput> getBmPlants() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getBmPlants(rawGridSource.getNodes(operators), operators, typeSource.getBmTypes());
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If one of the sets of {@link NodeInput} or {@link BmTypeInput} entities is not exhaustive
+   * for all available {@link BmInput} entities (e.g. a {@link NodeInput} or {@link BmTypeInput}
+   * entity is missing) or if an error during the building process occurs, the entity that misses
+   * something will be skipped (which can be seen as a filtering functionality) but all entities
+   * that are able to be built will be returned anyway and the elements that couldn't have been
+   * built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<BmInput> getBmPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<BmTypeInput> types) {
@@ -241,13 +309,26 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, types))
         .collect(Collectors.toSet());
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<StorageInput> getStorages() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getStorages(rawGridSource.getNodes(operators), operators, typeSource.getStorageTypes());
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If one of the sets of {@link NodeInput} or {@link StorageTypeInput} entities is not
+   * exhaustive for all available {@link StorageInput} entities (e.g. a {@link NodeInput} or {@link
+   * StorageTypeInput} entity is missing) or if an error during the building process occurs, the
+   * entity that misses something will be skipped (which can be seen as a filtering functionality)
+   * but all entities that are able to be built will be returned anyway and the elements that
+   * couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<StorageInput> getStorages(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<StorageTypeInput> types) {
@@ -255,7 +336,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             typedEntityStream(StorageInput.class, storageInputFactory, nodes, operators, types))
         .collect(Collectors.toSet());
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<WecInput> getWecPlants() {
 
@@ -264,6 +345,19 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     return getWecPlants(rawGridSource.getNodes(operators), operators, typeSource.getWecTypes());
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If one of the sets of {@link NodeInput} or {@link WecTypeInput} entities is not exhaustive
+   * for all available {@link WecInput} entities (e.g. a {@link NodeInput} or {@link WecTypeInput}
+   * entity is missing) or if an error during the building process occurs, the entity that misses
+   * something will be skipped (which can be seen as a filtering functionality) but all entities
+   * that are able to be built will be returned anyway and the elements that couldn't have been
+   * built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<WecInput> getWecPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types) {
@@ -272,7 +366,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, types))
         .collect(Collectors.toSet());
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<EvInput> getEvs() {
 
@@ -281,6 +375,19 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     return getEvs(rawGridSource.getNodes(operators), operators, typeSource.getEvTypes());
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If one of the sets of {@link NodeInput} or {@link EvTypeInput} entities is not exhaustive
+   * for all available {@link EvInput} entities (e.g. a {@link NodeInput} or {@link EvTypeInput}
+   * entity is missing) or if an error during the building process occurs, the entity that misses
+   * something will be skipped (which can be seen as a filtering functionality) but all entities
+   * that are able to be built will be returned anyway and the elements that couldn't have been
+   * built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<EvInput> getEvs(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types) {
@@ -303,7 +410,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             types)
         .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<ChpInput> getChpPlants() {
     Set<OperatorInput> operators = typeSource.getOperators();
@@ -316,6 +423,19 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
         thermalSource.getThermalStorages(operators, thermalBuses));
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If one of the sets of {@link NodeInput}, {@link ThermalBusInput}, {@link
+   * ThermalStorageInput} or {@link ChpTypeInput} entities is not exhaustive for all available
+   * {@link ChpInput} entities (e.g. a {@link NodeInput} or {@link ChpTypeInput} entity is missing)
+   * or if an error during the building process occurs, the entity that misses something will be
+   * skipped (which can be seen as a filtering functionality) but all entities that are able to be
+   * built will be returned anyway and the elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<ChpInput> getChpPlants(
       Set<NodeInput> nodes,
@@ -344,7 +464,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             thermalBuses)
         .map(dataOpt -> dataOpt.flatMap(chpInputFactory::getEntity));
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<HpInput> getHeatPumps() {
     Set<OperatorInput> operators = typeSource.getOperators();
@@ -355,6 +475,19 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
         thermalSource.getThermalBuses());
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If one of the sets of {@link NodeInput}, {@link ThermalBusInput} or {@link HpTypeInput}
+   * entities is not exhaustive for all available {@link HpInput} entities (e.g. a {@link NodeInput}
+   * or {@link HpTypeInput} entity is missing) or if an error during the building process occurs,
+   * the entity that misses something will be skipped (which can be seen as a filtering
+   * functionality) but all entities that are able to be built will be returned anyway and the
+   * elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<HpInput> getHeatPumps(
       Set<NodeInput> nodes,
