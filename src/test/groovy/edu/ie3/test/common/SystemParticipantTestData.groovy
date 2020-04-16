@@ -115,7 +115,7 @@ class SystemParticipantTestData {
 	public static final ChpTypeInput chpTypeInput = new ChpTypeInput(typeUuid, "test_chpType", capex, opex,
 	etaEl, etaThermal, sRated, cosPhiRated, pThermal, pOwn)
 
-	private static final ThermalBusInput thermalBus = new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermalBusInput", operator, operationTime
+	public static final ThermalBusInput thermalBus = new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermalBusInput", operator, operationTime
 	)
 	private static final Quantity<Volume> storageVolumeLvl = Quantities.getQuantity(1.039154027, CUBIC_METRE)
 	private static final Quantity<Volume> storageVolumeLvlMin = Quantities.getQuantity(0.3, CUBIC_METRE)

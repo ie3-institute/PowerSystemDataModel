@@ -5,12 +5,45 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.input.ThermalUnitInputEntityData
+import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Specification
 
 import java.util.stream.Collectors
 
 class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
+
+	def "A CsvThermalSource should return ThermalBuses from valid and invalid input data as expected"() {
+		given:
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
+		def operators = csvTypeSource.operators
+
+		//test method when no operators are provided as constructor parameters
+		when:
+		def resultingThermalBusesWoOperator = csvThermalSource.getThermalBuses()
+		print(resultingThermalBusesWoOperator)
+
+		then:
+		resultingThermalBusesWoOperator.size() == 1
+		resultingThermalBusesWoOperator.first().uuid == sptd.thermalBus.uuid
+		resultingThermalBusesWoOperator.first().id == sptd.thermalBus.id
+		resultingThermalBusesWoOperator.first().operator == sptd.thermalBus.operator
+		resultingThermalBusesWoOperator.first().operationTime == sptd.thermalBus.operationTime
+
+		//test method when operators are provided as constructor parameters
+		when:
+		def resultingThermalBuses = csvThermalSource.getThermalBuses(operators)
+		print(resultingThermalBuses)
+
+		then:
+		resultingThermalBuses.size() == 1
+		resultingThermalBuses.first().uuid == sptd.thermalBus.uuid
+		resultingThermalBuses.first().id == sptd.thermalBus.id
+		resultingThermalBuses.first().operator == sptd.thermalBus.operator
+		resultingThermalBuses.first().operationTime == sptd.thermalBus.operationTime
+	}
 
 	def "A CsvThermalSource should build thermal unit input entity from valid and invalid input data as expected"() {
 		given:
@@ -62,19 +95,4 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		resultingThermalHouses == null // todo checks
 
 	}
-
-	def "A CsvThermalSource should return a ThermalBuses from valid and invalid input data as expected"() {
-		given:
-		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, Mock(CsvTypeSource))
-		def operators = null // todo
-
-		when:
-		def resultingThermalBuses = csvThermalSource.getThermalBuses(operators)
-
-		then:
-		resultingThermalBuses == null // todo checks
-
-	}
-
-
 }
