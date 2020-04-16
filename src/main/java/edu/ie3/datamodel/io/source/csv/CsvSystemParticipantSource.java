@@ -339,9 +339,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   /** {@inheritDoc} */
   @Override
   public Set<WecInput> getWecPlants() {
-
     Set<OperatorInput> operators = typeSource.getOperators();
-
     return getWecPlants(rawGridSource.getNodes(operators), operators, typeSource.getWecTypes());
   }
 
@@ -361,7 +359,6 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<WecInput> getWecPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types) {
-
     return filterEmptyOptionals(
             typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, types))
         .collect(Collectors.toSet());
@@ -369,9 +366,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   /** {@inheritDoc} */
   @Override
   public Set<EvInput> getEvs() {
-
     Set<OperatorInput> operators = typeSource.getOperators();
-
     return getEvs(rawGridSource.getNodes(operators), operators, typeSource.getEvTypes());
   }
 
@@ -391,7 +386,6 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<EvInput> getEvs(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types) {
-
     return filterEmptyOptionals(
             typedEntityStream(EvInput.class, evInputFactory, nodes, operators, types))
         .collect(Collectors.toSet());
