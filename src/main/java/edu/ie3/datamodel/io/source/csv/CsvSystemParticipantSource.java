@@ -88,21 +88,21 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
     // read all needed entities
     /// start with types and operators
-    Collection<OperatorInput> operators = typeSource.getOperators();
-    Collection<BmTypeInput> bmTypes = typeSource.getBmTypes();
-    Collection<ChpTypeInput> chpTypes = typeSource.getChpTypes();
-    Collection<EvTypeInput> evTypes = typeSource.getEvTypes();
-    Collection<HpTypeInput> hpTypes = typeSource.getHpTypes();
-    Collection<StorageTypeInput> storageTypes = typeSource.getStorageTypes();
-    Collection<WecTypeInput> wecTypes = typeSource.getWecTypes();
+    Set<OperatorInput> operators = typeSource.getOperators();
+    Set<BmTypeInput> bmTypes = typeSource.getBmTypes();
+    Set<ChpTypeInput> chpTypes = typeSource.getChpTypes();
+    Set<EvTypeInput> evTypes = typeSource.getEvTypes();
+    Set<HpTypeInput> hpTypes = typeSource.getHpTypes();
+    Set<StorageTypeInput> storageTypes = typeSource.getStorageTypes();
+    Set<WecTypeInput> wecTypes = typeSource.getWecTypes();
 
     /// go on with the thermal assets
-    Collection<ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
-    Collection<ThermalStorageInput> thermalStorages =
+    Set<ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
+    Set<ThermalStorageInput> thermalStorages =
         thermalSource.getThermalStorages(operators, thermalBuses);
 
     /// go on with the nodes
-    Collection<NodeInput> nodes = rawGridSource.getNodes(operators);
+    Set<NodeInput> nodes = rawGridSource.getNodes(operators);
 
     // start with the entities needed for SystemParticipants container
     /// as we want to return a working grid, keep an eye on empty optionals which is equal to
@@ -180,13 +180,12 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<FixedFeedInInput> getFixedFeedIns() {
-    Collection<OperatorInput> operators = typeSource.getOperators();
+    Set<OperatorInput> operators = typeSource.getOperators();
     return getFixedFeedIns(rawGridSource.getNodes(operators), operators);
   }
 
   @Override
-  public Set<FixedFeedInInput> getFixedFeedIns(
-      Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
+  public Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     return filterEmptyOptionals(
             nodeAssetEntityStream(
                 FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators))
@@ -195,13 +194,12 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<PvInput> getPvPlants() {
-    Collection<OperatorInput> operators = typeSource.getOperators();
+    Set<OperatorInput> operators = typeSource.getOperators();
     return getPvPlants(rawGridSource.getNodes(operators), operators);
   }
 
   @Override
-  public Set<PvInput> getPvPlants(
-      Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
+  public Set<PvInput> getPvPlants(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     return filterEmptyOptionals(
             nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators))
         .collect(Collectors.toSet());
@@ -209,12 +207,12 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<LoadInput> getLoads() {
-    Collection<OperatorInput> operators = typeSource.getOperators();
+    Set<OperatorInput> operators = typeSource.getOperators();
     return getLoads(rawGridSource.getNodes(operators), operators);
   }
 
   @Override
-  public Set<LoadInput> getLoads(Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
+  public Set<LoadInput> getLoads(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     return filterEmptyOptionals(
             nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators))
         .collect(Collectors.toSet());
@@ -226,21 +224,19 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   }
 
   @Override
-  public Set<EvcsInput> getEvCS(Collection<NodeInput> nodes, Collection<OperatorInput> operators) {
+  public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     throw new NotImplementedException("Ev Charging Stations are not implemented yet!");
   }
 
   @Override
   public Set<BmInput> getBmPlants() {
-    Collection<OperatorInput> operators = typeSource.getOperators();
+    Set<OperatorInput> operators = typeSource.getOperators();
     return getBmPlants(rawGridSource.getNodes(operators), operators, typeSource.getBmTypes());
   }
 
   @Override
   public Set<BmInput> getBmPlants(
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<BmTypeInput> types) {
+      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<BmTypeInput> types) {
     return filterEmptyOptionals(
             typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, types))
         .collect(Collectors.toSet());
@@ -248,15 +244,13 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<StorageInput> getStorages() {
-    Collection<OperatorInput> operators = typeSource.getOperators();
+    Set<OperatorInput> operators = typeSource.getOperators();
     return getStorages(rawGridSource.getNodes(operators), operators, typeSource.getStorageTypes());
   }
 
   @Override
   public Set<StorageInput> getStorages(
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<StorageTypeInput> types) {
+      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<StorageTypeInput> types) {
     return filterEmptyOptionals(
             typedEntityStream(StorageInput.class, storageInputFactory, nodes, operators, types))
         .collect(Collectors.toSet());
@@ -265,16 +259,14 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<WecInput> getWecPlants() {
 
-    Collection<OperatorInput> operators = typeSource.getOperators();
+    Set<OperatorInput> operators = typeSource.getOperators();
 
     return getWecPlants(rawGridSource.getNodes(operators), operators, typeSource.getWecTypes());
   }
 
   @Override
   public Set<WecInput> getWecPlants(
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<WecTypeInput> types) {
+      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types) {
 
     return filterEmptyOptionals(
             typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, types))
@@ -284,16 +276,14 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<EvInput> getEvs() {
 
-    Collection<OperatorInput> operators = typeSource.getOperators();
+    Set<OperatorInput> operators = typeSource.getOperators();
 
     return getEvs(rawGridSource.getNodes(operators), operators, typeSource.getEvTypes());
   }
 
   @Override
   public Set<EvInput> getEvs(
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<EvTypeInput> types) {
+      Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types) {
 
     return filterEmptyOptionals(
             typedEntityStream(EvInput.class, evInputFactory, nodes, operators, types))
@@ -304,9 +294,9 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       Stream<Optional<T>> typedEntityStream(
           Class<T> entityClass,
           EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
-          Collection<NodeInput> nodes,
-          Collection<OperatorInput> operators,
-          Collection<A> types) {
+          Set<NodeInput> nodes,
+          Set<OperatorInput> operators,
+          Set<A> types) {
     return buildTypedEntityData(
             nodeAssetInputEntityDataStream(
                 assetInputEntityDataStream(entityClass, operators), nodes),
@@ -316,8 +306,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<ChpInput> getChpPlants() {
-    Collection<OperatorInput> operators = typeSource.getOperators();
-    Collection<ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
+    Set<OperatorInput> operators = typeSource.getOperators();
+    Set<ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
     return getChpPlants(
         rawGridSource.getNodes(operators),
         operators,
@@ -328,11 +318,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<ChpInput> getChpPlants(
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<ChpTypeInput> types,
-      Collection<ThermalBusInput> thermalBuses,
-      Collection<ThermalStorageInput> thermalStorages) {
+      Set<NodeInput> nodes,
+      Set<OperatorInput> operators,
+      Set<ChpTypeInput> types,
+      Set<ThermalBusInput> thermalBuses,
+      Set<ThermalStorageInput> thermalStorages) {
 
     return filterEmptyOptionals(
             chpInputStream(nodes, operators, types, thermalBuses, thermalStorages))
@@ -340,11 +330,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   }
 
   private Stream<Optional<ChpInput>> chpInputStream(
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<ChpTypeInput> types,
-      Collection<ThermalBusInput> thermalBuses,
-      Collection<ThermalStorageInput> thermalStorages) {
+      Set<NodeInput> nodes,
+      Set<OperatorInput> operators,
+      Set<ChpTypeInput> types,
+      Set<ThermalBusInput> thermalBuses,
+      Set<ThermalStorageInput> thermalStorages) {
     return buildChpEntityData(
             buildTypedEntityData(
                 nodeAssetInputEntityDataStream(
@@ -357,7 +347,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<HpInput> getHeatPumps() {
-    Collection<OperatorInput> operators = typeSource.getOperators();
+    Set<OperatorInput> operators = typeSource.getOperators();
     return getHeatPumps(
         rawGridSource.getNodes(operators),
         operators,
@@ -367,19 +357,19 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   @Override
   public Set<HpInput> getHeatPumps(
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<HpTypeInput> types,
-      Collection<ThermalBusInput> thermalBuses) {
+      Set<NodeInput> nodes,
+      Set<OperatorInput> operators,
+      Set<HpTypeInput> types,
+      Set<ThermalBusInput> thermalBuses) {
     return filterEmptyOptionals(hpInputStream(nodes, operators, types, thermalBuses))
         .collect(Collectors.toSet());
   }
 
   private Stream<Optional<HpInput>> hpInputStream(
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<HpTypeInput> types,
-      Collection<ThermalBusInput> thermalBuses) {
+      Set<NodeInput> nodes,
+      Set<OperatorInput> operators,
+      Set<HpTypeInput> types,
+      Set<ThermalBusInput> thermalBuses) {
     return buildHpEntityData(
             buildTypedEntityData(
                 nodeAssetInputEntityDataStream(
