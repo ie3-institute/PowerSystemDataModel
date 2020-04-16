@@ -173,6 +173,6 @@ class ExtractorTest extends Specification {
 		def sampleNodeInput = gtd.nodeB
 
 		expect:
-		Extractor.extractElements(sampleNodeInput) == []
+		Extractor.extractElements(sampleNodeInput) == [] as Set
 	}
 }

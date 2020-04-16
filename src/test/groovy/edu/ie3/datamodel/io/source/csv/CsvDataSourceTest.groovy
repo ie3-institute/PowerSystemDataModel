@@ -86,7 +86,7 @@ class CsvDataSourceTest extends Specification {
 
 		expect:
 		dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
-		        activePowerGradient: "25.0",
+			activePowerGradient: "25.0",
 			capex              : "100.0",
 			cosphiRated        : "0.95",
 			etaConv            : "98.0",
@@ -187,7 +187,7 @@ class CsvDataSourceTest extends Specification {
 
 		expect:
 		dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
-		        activePowerGradient: "25.0",
+			activePowerGradient: "25.0",
 			capex              : "100.0",
 			cosphiRated        : "0.95",
 			etaConv            : "98.0",
@@ -240,7 +240,7 @@ class CsvDataSourceTest extends Specification {
 	def "A CsvDataSource should collect be able to collect empty optionals when asked to do so"() {
 
 		given:
-		ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> emptyCollector = new ConcurrentHashMap<>();
+		ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> emptyCollector = new ConcurrentHashMap<>()
 		def nodeInputOptionals = [
 			Optional.of(sptd.hpInput.node),
 			Optional.empty(),
@@ -248,7 +248,7 @@ class CsvDataSourceTest extends Specification {
 		]
 
 		when:
-		def resultingList = nodeInputOptionals.stream().filter(dummyCsvSource.isPresentCollectIfNot(NodeInput, emptyCollector)).collect(Collectors.toList());
+		def resultingList = nodeInputOptionals.stream().filter(dummyCsvSource.isPresentCollectIfNot(NodeInput, emptyCollector)).collect(Collectors.toList())
 
 		then:
 		emptyCollector.size() == 1
@@ -263,7 +263,7 @@ class CsvDataSourceTest extends Specification {
 
 		given:
 		def nodeInputRow = [
-		        "uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
+			"uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
 			"geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"id"            : "node_a",
 			"operates_until": "2020-03-25T15:11:31Z[UTC]",
@@ -305,7 +305,7 @@ class CsvDataSourceTest extends Specification {
 
 		given:
 		def nodeInputRow1 = [
-		        "uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
+			"uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
 			"geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"id"            : "node_a",
 			"operates_until": "2020-03-25T15:11:31Z[UTC]",
@@ -318,7 +318,7 @@ class CsvDataSourceTest extends Specification {
 			"v_rated"       : "380"
 		]
 		def nodeInputRow2 = [
-		        "uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
+			"uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
 			"geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"id"            : "node_b",
 			"operates_until": "2020-03-25T15:11:31Z[UTC]",

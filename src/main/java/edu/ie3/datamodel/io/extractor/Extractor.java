@@ -11,7 +11,7 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,33 +32,33 @@ public final class Extractor {
 
   public static Set<InputEntity> extractElements(NestedEntity nestedEntity)
       throws ExtractorException {
-    ConcurrentHashMap.KeySetView<InputEntity, Boolean> resultingSet = ConcurrentHashMap.newKeySet();
+    CopyOnWriteArrayList<InputEntity> resultingList = new CopyOnWriteArrayList<>();
     if (nestedEntity instanceof HasNodes) {
-      resultingSet.addAll(((HasNodes) nestedEntity).allNodes());
+      resultingList.addAll(((HasNodes) nestedEntity).allNodes());
     }
     if (nestedEntity instanceof Operable) {
-      extractOperator((Operable) nestedEntity).ifPresent(resultingSet::add);
+      extractOperator((Operable) nestedEntity).ifPresent(resultingList::add);
     }
     if (nestedEntity instanceof HasType) {
-      resultingSet.add(extractType((HasType) nestedEntity));
+      resultingList.add(extractType((HasType) nestedEntity));
     }
     if (nestedEntity instanceof HasThermalBus) {
-      resultingSet.add(((HasThermalBus) nestedEntity).getThermalBus());
+      resultingList.add(((HasThermalBus) nestedEntity).getThermalBus());
     }
     if (nestedEntity instanceof HasThermalStorage) {
-      resultingSet.add(((HasThermalStorage) nestedEntity).getThermalStorage());
+      resultingList.add(((HasThermalStorage) nestedEntity).getThermalStorage());
     }
     if (nestedEntity instanceof HasLine) {
-      resultingSet.add(((HasLine) nestedEntity).getLine());
+      resultingList.add(((HasLine) nestedEntity).getLine());
     }
 
-    if (resultingSet.contains(null)) {
+    if (resultingList.contains(null)) {
       log.warn(
           "Entity of class '{}' contains null values in fields!",
           nestedEntity.getClass().getSimpleName());
     }
 
-    if (resultingSet.isEmpty() && !(nestedEntity instanceof Operable)) {
+    if (resultingList.isEmpty() && !(nestedEntity instanceof Operable)) {
       throw new ExtractorException(
           "Unable to extract entity of class '"
               + nestedEntity.getClass().getSimpleName()
@@ -68,13 +68,13 @@ public final class Extractor {
               + "sub-interfaces correctly?");
     }
 
-    resultingSet.stream()
+    resultingList.stream()
         .parallel()
         .forEach(
             element -> {
               if (element instanceof NestedEntity) {
                 try {
-                  resultingSet.addAll(extractElements((NestedEntity) element));
+                  resultingList.addAll(extractElements((NestedEntity) element));
                 } catch (ExtractorException e) {
                   log.error(
                       "An error occurred during extraction of nested entity '{}':{}",
@@ -84,7 +84,7 @@ public final class Extractor {
               }
             });
 
-    return Collections.unmodifiableSet(resultingSet);
+    return Collections.unmodifiableSet(new HashSet<>(resultingList));
   }
 
   public static AssetTypeInput extractType(HasType entityWithType) {
