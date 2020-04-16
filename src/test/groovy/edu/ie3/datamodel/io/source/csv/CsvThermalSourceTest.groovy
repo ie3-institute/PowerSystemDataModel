@@ -48,7 +48,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		resultingThermalBuses.first().operationTime == sptd.thermalBus.operationTime
 	}
 
-	def "A CsvThermalSource should return a CylindricStorageInput from valid and invalid input data as expected"() {
+	def "A CsvThermalSource should return a CylindricalStorageInput from valid and invalid input data as expected"() {
 		given:
 		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
@@ -57,37 +57,37 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 		//test method when operators and thermal buses are not provided as constructor parameters
 		when:
-		def resultingCylindricStorageWoOperator = csvThermalSource.getCylindricStorages()
+		def resultingCylindricalStorageWoOperator = csvThermalSource.getCylindricStorages()
 
 		then:
-		resultingCylindricStorageWoOperator.size() == 1
-		resultingCylindricStorageWoOperator.first().uuid == sptd.thermalStorage.uuid
-		resultingCylindricStorageWoOperator.first().id == sptd.thermalStorage.id
-		resultingCylindricStorageWoOperator.first().operator == sptd.thermalStorage.operator
-		resultingCylindricStorageWoOperator.first().operationTime == sptd.thermalStorage.operationTime
-		resultingCylindricStorageWoOperator.first().thermalBus == sptd.thermalStorage.thermalBus
-		resultingCylindricStorageWoOperator.first().storageVolumeLvl == sptd.storageVolumeLvl
-		resultingCylindricStorageWoOperator.first().storageVolumeLvlMin == sptd.storageVolumeLvlMin
-		resultingCylindricStorageWoOperator.first().inletTemp == sptd.inletTemp
-		resultingCylindricStorageWoOperator.first().returnTemp == sptd.returnTemp
-		resultingCylindricStorageWoOperator.first().c == sptd.c
+		resultingCylindricalStorageWoOperator.size() == 1
+		resultingCylindricalStorageWoOperator.first().uuid == sptd.thermalStorage.uuid
+		resultingCylindricalStorageWoOperator.first().id == sptd.thermalStorage.id
+		resultingCylindricalStorageWoOperator.first().operator == sptd.thermalStorage.operator
+		resultingCylindricalStorageWoOperator.first().operationTime == sptd.thermalStorage.operationTime
+		resultingCylindricalStorageWoOperator.first().thermalBus == sptd.thermalStorage.thermalBus
+		resultingCylindricalStorageWoOperator.first().storageVolumeLvl == sptd.storageVolumeLvl
+		resultingCylindricalStorageWoOperator.first().storageVolumeLvlMin == sptd.storageVolumeLvlMin
+		resultingCylindricalStorageWoOperator.first().inletTemp == sptd.inletTemp
+		resultingCylindricalStorageWoOperator.first().returnTemp == sptd.returnTemp
+		resultingCylindricalStorageWoOperator.first().c == sptd.c
 
 		//test method when operators and thermal buses are provided as constructor parameters
 		when:
-		def resultingCylindricStorage = csvThermalSource.getCylindricStorages(operators, thermalBuses)
+		def resultingCylindricalStorage = csvThermalSource.getCylindricStorages(operators, thermalBuses)
 
 		then:
-		resultingCylindricStorage.size() == 1
-		resultingCylindricStorage.first().uuid == sptd.thermalStorage.uuid
-		resultingCylindricStorage.first().id == sptd.thermalStorage.id
-		resultingCylindricStorage.first().operator == sptd.thermalStorage.operator
-		resultingCylindricStorage.first().operationTime == sptd.thermalStorage.operationTime
-		resultingCylindricStorage.first().thermalBus == sptd.thermalStorage.thermalBus
-		resultingCylindricStorage.first().storageVolumeLvl == sptd.storageVolumeLvl
-		resultingCylindricStorage.first().storageVolumeLvlMin == sptd.storageVolumeLvlMin
-		resultingCylindricStorage.first().inletTemp == sptd.inletTemp
-		resultingCylindricStorage.first().returnTemp == sptd.returnTemp
-		resultingCylindricStorage.first().c == sptd.c
+		resultingCylindricalStorage.size() == 1
+		resultingCylindricalStorage.first().uuid == sptd.thermalStorage.uuid
+		resultingCylindricalStorage.first().id == sptd.thermalStorage.id
+		resultingCylindricalStorage.first().operator == sptd.thermalStorage.operator
+		resultingCylindricalStorage.first().operationTime == sptd.thermalStorage.operationTime
+		resultingCylindricalStorage.first().thermalBus == sptd.thermalStorage.thermalBus
+		resultingCylindricalStorage.first().storageVolumeLvl == sptd.storageVolumeLvl
+		resultingCylindricalStorage.first().storageVolumeLvlMin == sptd.storageVolumeLvlMin
+		resultingCylindricalStorage.first().inletTemp == sptd.inletTemp
+		resultingCylindricalStorage.first().returnTemp == sptd.returnTemp
+		resultingCylindricalStorage.first().c == sptd.c
 
 	}
 
@@ -148,10 +148,10 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		resultingThermalHouseWoOperator.size() == 1
 		resultingThermalHouseWoOperator.first().uuid == ThermalUnitInputTestData.thermalHouseInput.uuid
 		resultingThermalHouseWoOperator.first().id == ThermalUnitInputTestData.thermalHouseInput.id
-		if (resultingThermalHouseWoOperator.first().operator.id == "NO_OPERATOR_ASSIGNED") {
-			!resultingThermalHouseWoOperator.first().operationTime.limited
-			resultingThermalHouseWoOperator.first().thermalBus == new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermalBusInput")
-		}
+		resultingThermalHouseWoOperator.first().operator == ThermalUnitInputTestData.thermalHouseInput.operator
+		resultingThermalHouseWoOperator.first().operationTime.isLimited()
+		resultingThermalHouseWoOperator.first().operationTime == ThermalUnitInputTestData.thermalHouseInput.operationTime
+		resultingThermalHouseWoOperator.first().thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
 		resultingThermalHouseWoOperator.first().ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
 		resultingThermalHouseWoOperator.first().ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
 
@@ -163,10 +163,10 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		resultingThermalHouse.size() == 1
 		resultingThermalHouse.first().uuid == ThermalUnitInputTestData.thermalHouseInput.uuid
 		resultingThermalHouse.first().id == ThermalUnitInputTestData.thermalHouseInput.id
-		if (resultingThermalHouseWoOperator.first().operator.id == "NO_OPERATOR_ASSIGNED") {
-			!resultingThermalHouseWoOperator.first().operationTime.limited
-			resultingThermalHouseWoOperator.first().thermalBus == new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermalBusInput")
-		}
+		resultingThermalHouse.first().operator == ThermalUnitInputTestData.thermalHouseInput.operator
+		resultingThermalHouse.first().operationTime.isLimited()
+		resultingThermalHouse.first().operationTime == ThermalUnitInputTestData.thermalHouseInput.operationTime
+		resultingThermalHouseWoOperator.first().thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
 		resultingThermalHouse.first().ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
 		resultingThermalHouse.first().ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
 
