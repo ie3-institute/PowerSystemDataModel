@@ -9,7 +9,7 @@ import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * Data used for the construction of {@link edu.ie3.datamodel.models.input.AssetInput} entities.
@@ -45,7 +45,33 @@ public class AssetInputEntityData extends EntityData {
     this.operator = operator;
   }
 
-  public Optional<OperatorInput> getOperatorInput() {
-    return Optional.ofNullable(operator);
+  public OperatorInput getOperatorInput() {
+    return operator;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    AssetInputEntityData that = (AssetInputEntityData) o;
+    return operator.equals(that.operator);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), operator);
+  }
+
+  @Override
+  public String toString() {
+    return "AssetInputEntityData{"
+        + "fieldsToValues="
+        + getFieldsToValues()
+        + ", entityClass="
+        + getEntityClass()
+        + ", operatorInput="
+        + operator
+        + "} ";
   }
 }

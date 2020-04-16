@@ -47,6 +47,7 @@ weather
 interface grid_source
 interface assets_source
 interface types_source
+interface thermal_source
 interface graphics_source
 interface weather_source
 interface time_series_source
@@ -63,6 +64,9 @@ assets_source --> assets
 
 types_source --> psql
 types_source --> types
+
+thermal_source --> psql
+thermal_source --> types
 
 graphics_source --> psql
 graphics_source --> graphics
@@ -81,6 +85,7 @@ inputAccumulator --> types_source
 inputAccumulator --> graphics_source
 inputAccumulator --> weather_source
 inputAccumulator --> time_series_source
+inputAccumulator --> thermal_source
 
 projName_model.conf --> config_source
 

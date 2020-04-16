@@ -10,10 +10,11 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import java.util.Map;
+import java.util.Objects;
 
-public class Transformer3WInputEntityData extends ConnectorInputEntityData {
+public class Transformer3WInputEntityData
+    extends TypedConnectorInputEntityData<Transformer3WTypeInput> {
   private final NodeInput nodeC;
-  private final Transformer3WTypeInput type;
 
   public Transformer3WInputEntityData(
       Map<String, String> fieldsToAttributes,
@@ -22,9 +23,8 @@ public class Transformer3WInputEntityData extends ConnectorInputEntityData {
       NodeInput nodeB,
       NodeInput nodeC,
       Transformer3WTypeInput type) {
-    super(fieldsToAttributes, entityClass, nodeA, nodeB);
+    super(fieldsToAttributes, entityClass, nodeA, nodeB, type);
     this.nodeC = nodeC;
-    this.type = type;
   }
 
   public Transformer3WInputEntityData(
@@ -35,16 +35,45 @@ public class Transformer3WInputEntityData extends ConnectorInputEntityData {
       NodeInput nodeB,
       NodeInput nodeC,
       Transformer3WTypeInput type) {
-    super(fieldsToAttributes, entityClass, operator, nodeA, nodeB);
+    super(fieldsToAttributes, entityClass, operator, nodeA, nodeB, type);
     this.nodeC = nodeC;
-    this.type = type;
   }
 
   public NodeInput getNodeC() {
     return nodeC;
   }
 
-  public Transformer3WTypeInput getType() {
-    return type;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    Transformer3WInputEntityData that = (Transformer3WInputEntityData) o;
+    return Objects.equals(nodeC, that.nodeC);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), nodeC);
+  }
+
+  @Override
+  public String toString() {
+    return "Transformer3WInputEntityData{"
+        + "fieldsToValues="
+        + getFieldsToValues()
+        + ", entityClass="
+        + getEntityClass()
+        + ", operatorInput="
+        + getOperatorInput()
+        + ", nodeA="
+        + getNodeA()
+        + ", nodeB="
+        + getNodeB()
+        + ", nodeC="
+        + nodeC
+        + ", type="
+        + getType()
+        + '}';
   }
 }

@@ -51,6 +51,7 @@ class ComplexTopology extends GridTestData {
 	[] as Set,
 	[] as Set,
 	[] as Set,
+	[] as Set,
 	[] as Set),
 	new GraphicElements(
 	[] as Set,
@@ -72,6 +73,7 @@ class ComplexTopology extends GridTestData {
 				[] as Set,
 				[] as Set),
 				new SystemParticipants(
+				[] as Set,
 				[] as Set,
 				[] as Set,
 				[] as Set,
@@ -105,6 +107,7 @@ class ComplexTopology extends GridTestData {
 				[] as Set,
 				[] as Set,
 				[] as Set,
+				[] as Set,
 				[] as Set),
 				new GraphicElements(
 				[] as Set,
@@ -130,6 +133,7 @@ class ComplexTopology extends GridTestData {
 				[] as Set,
 				[] as Set,
 				[] as Set,
+				[] as Set,
 				[] as Set),
 				new GraphicElements(
 				[] as Set,
@@ -147,6 +151,7 @@ class ComplexTopology extends GridTestData {
 				[] as Set,
 				[] as Set),
 				new SystemParticipants(
+				[] as Set,
 				[] as Set,
 				[] as Set,
 				[] as Set,
@@ -182,6 +187,7 @@ class ComplexTopology extends GridTestData {
 				[] as Set,
 				[] as Set,
 				[] as Set,
+				[] as Set,
 				[] as Set),
 				new GraphicElements(
 				[] as Set,
@@ -209,6 +215,7 @@ class ComplexTopology extends GridTestData {
 				[] as Set,
 				[] as Set,
 				[] as Set,
+				[] as Set,
 				[] as Set),
 				new GraphicElements(
 				[] as Set,
@@ -219,7 +226,7 @@ class ComplexTopology extends GridTestData {
 		DirectedMultigraph<SubGridContainer, SubGridGate> mutableGraph =
 				new DirectedMultigraph<>(SubGridGate.class)
 		/* Add all edges */
-		expectedSubGrids.values().forEach({subGrid -> mutableGraph.addVertex(subGrid)})
+		expectedSubGrids.values().forEach({ subGrid -> mutableGraph.addVertex(subGrid) })
 
 		mutableGraph.addEdge(expectedSubGrids.get(1), expectedSubGrids.get(2), new SubGridGate(transformerAtoBtoC, ConnectorPort.B))
 		mutableGraph.addEdge(expectedSubGrids.get(1), expectedSubGrids.get(3), new SubGridGate(transformerAtoBtoC, ConnectorPort.C))

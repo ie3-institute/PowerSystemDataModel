@@ -11,14 +11,19 @@ import edu.ie3.datamodel.exceptions.ProcessorProviderException;
 import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.connectors.DataConnector;
 import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
 import edu.ie3.datamodel.io.extractor.Extractor;
 import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.*;
+import edu.ie3.datamodel.models.input.connector.LineInput;
+import edu.ie3.datamodel.models.input.connector.SwitchInput;
+import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.container.*;
+import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -26,11 +31,16 @@ import edu.ie3.datamodel.models.value.Value;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Sink that provides all capabilities to write {@link UniqueEntity}s to .csv-files
+ * Sink that provides all capabilities to write {@link UniqueEntity}s to .csv-files. Be careful
+ * about using methods other than {@link #persistJointGrid(JointGridContainer)} because all other
+ * methods <b>do not check</b> for duplicate entries but only dump the data they received. In
+ * contrast, when using {@link #persistJointGrid(JointGridContainer)}, all nested entities get
+ * extracted first and then dumped individually without any duplicate lines.
  *
  * @version 0.1
  * @since 19.03.20
@@ -99,11 +109,6 @@ public class CsvFileSink implements DataSink {
   }
 
   @Override
-  public DataConnector getDataConnector() {
-    return connector;
-  }
-
-  @Override
   public <T extends UniqueEntity> void persistAll(Collection<T> entities) {
     for (T entity : entities) {
       persist(entity);
@@ -135,28 +140,29 @@ public class CsvFileSink implements DataSink {
       TimeSeries<?, ?> timeSeries = (TimeSeries<?, ?>) entity;
       persistTimeSeries(timeSeries);
     } else {
-      throw new SinkException(
-          "I don't know how to handle an entity of class " + entity.getClass().getSimpleName());
+      log.error(
+          "I don't know how to handle an entity of class {}", entity.getClass().getSimpleName());
     }
   }
 
   @Override
   public <C extends UniqueEntity> void persistIgnoreNested(C entity) {
-    LinkedHashMap<String, String> entityFieldData =
-        processorProvider
-            .handleEntity(entity)
-            .orElseThrow(
-                () ->
-                    new SinkException(
-                        "Cannot persist entity of type '"
-                            + entity.getClass().getSimpleName()
-                            + "'. This sink can only process the following entities: ["
-                            + processorProvider.getRegisteredClasses().stream()
-                                .map(Class::getSimpleName)
-                                .collect(Collectors.joining(","))
-                            + "]"));
-
+    LinkedHashMap<String, String> entityFieldData = new LinkedHashMap<>();
     try {
+      entityFieldData =
+          processorProvider
+              .handleEntity(entity)
+              .orElseThrow(
+                  () ->
+                      new SinkException(
+                          "Cannot persist entity of type '"
+                              + entity.getClass().getSimpleName()
+                              + "'. This sink can only process the following entities: ["
+                              + processorProvider.getRegisteredClasses().stream()
+                                  .map(Class::getSimpleName)
+                                  .collect(Collectors.joining(","))
+                              + "]"));
+
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
       BufferedCsvWriter writer =
           connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
@@ -168,6 +174,11 @@ public class CsvFileSink implements DataSink {
       log.error("Exception occurred during retrieval of writer. Cannot write this element.", e);
     } catch (IOException e) {
       log.error("Exception occurred during writing of this element. Cannot write this element.", e);
+    } catch (SinkException e) {
+      log.error(
+          "Cannot persist provided entity '{}'. Exception: {}",
+          () -> entity.getClass().getSimpleName(),
+          () -> e);
     }
   }
 
@@ -177,26 +188,116 @@ public class CsvFileSink implements DataSink {
   }
 
   @Override
+  public void persistJointGrid(JointGridContainer jointGridContainer) {
+    // get raw grid entities with types or operators
+    RawGridElements rawGridElements = jointGridContainer.getRawGrid();
+    Set<NodeInput> nodes = rawGridElements.getNodes();
+    Set<LineInput> lines = rawGridElements.getLines();
+    Set<Transformer2WInput> transformer2Ws = rawGridElements.getTransformer2Ws();
+    Set<Transformer3WInput> transformer3Ws = rawGridElements.getTransformer3Ws();
+    Set<SwitchInput> switches = rawGridElements.getSwitches();
+    Set<MeasurementUnitInput> measurementUnits = rawGridElements.getMeasurementUnits();
+
+    // get system participants with types or operators
+    SystemParticipants systemParticipants = jointGridContainer.getSystemParticipants();
+    Set<BmInput> bmPlants = systemParticipants.getBmPlants();
+    Set<ChpInput> chpPlants = systemParticipants.getChpPlants();
+    Set<EvcsInput> evCS = systemParticipants.getEvCS();
+    Set<EvInput> evs = systemParticipants.getEvs();
+    Set<FixedFeedInInput> fixedFeedIns = systemParticipants.getFixedFeedIns();
+    Set<HpInput> heatPumps = systemParticipants.getHeatPumps();
+    Set<LoadInput> loads = systemParticipants.getLoads();
+    Set<PvInput> pvPlants = systemParticipants.getPvPlants();
+    Set<StorageInput> storages = systemParticipants.getStorages();
+    Set<WecInput> wecPlants = systemParticipants.getWecPlants();
+
+    // get graphic elements (just for better readability, we could also just get them directly
+    // below)
+    GraphicElements graphicElements = jointGridContainer.getGraphics();
+
+    // extract types
+    Set<AssetTypeInput> types =
+        Stream.of(
+                lines,
+                transformer2Ws,
+                transformer3Ws,
+                bmPlants,
+                chpPlants,
+                evs,
+                heatPumps,
+                storages,
+                wecPlants)
+            .flatMap(Collection::stream)
+            .map(
+                entityWithType ->
+                    Extractor.extractType(
+                        entityWithType)) // due to a bug in java 8 this *cannot* be replaced with
+            // method reference!
+            .collect(Collectors.toSet());
+
+    // extract operators
+    Set<OperatorInput> operators =
+        Stream.of(
+                nodes,
+                lines,
+                transformer2Ws,
+                transformer3Ws,
+                switches,
+                measurementUnits,
+                bmPlants,
+                chpPlants,
+                evCS,
+                evs,
+                fixedFeedIns,
+                heatPumps,
+                loads,
+                pvPlants,
+                storages,
+                wecPlants)
+            .flatMap(Collection::stream)
+            .map(Extractor::extractOperator)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toSet());
+
+    // persist all entities
+    Stream.of(
+            rawGridElements.allEntitiesAsList(),
+            systemParticipants.allEntitiesAsList(),
+            graphicElements.allEntitiesAsList(),
+            types,
+            operators)
+        .flatMap(Collection::stream)
+        .parallel()
+        .forEach(this::persistIgnoreNested);
+  }
+
+  @Override
+  public void shutdown() {
+    // shutdown the connector
+    connector.shutdown();
+  }
+
+  @Override
   public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries) {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
-    log.debug("I got a time series of type {}.", key);
-
-    Set<LinkedHashMap<String, String>> entityFieldData =
-        processorProvider
-            .handleTimeSeries(timeSeries)
-            .orElseThrow(
-                () ->
-                    new SinkException(
-                        "Cannot persist time series of combination '"
-                            + key
-                            + "'. This sink can only process the following combinations: ["
-                            + processorProvider.getRegisteredTimeSeriesCombinations().stream()
-                                .map(TimeSeriesProcessorKey::toString)
-                                .collect(Collectors.joining(","))
-                            + "]"));
 
     try {
+      Set<LinkedHashMap<String, String>> entityFieldData =
+          processorProvider
+              .handleTimeSeries(timeSeries)
+              .orElseThrow(
+                  () ->
+                      new SinkException(
+                          "Cannot persist time series of combination '"
+                              + key
+                              + "'. This sink can only process the following combinations: ["
+                              + processorProvider.getRegisteredTimeSeriesCombinations().stream()
+                                  .map(TimeSeriesProcessorKey::toString)
+                                  .collect(Collectors.joining(","))
+                              + "]"));
+
       String[] headerElements = processorProvider.getHeaderElements(key);
       BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
       entityFieldData.forEach(
@@ -204,14 +305,21 @@ public class CsvFileSink implements DataSink {
             try {
               writer.write(data);
             } catch (IOException e) {
-              log.error("Cannot write the following entity data: '{}'", data);
+              log.error(
+                  "Cannot write the following entity data: '{}'. Exception: {}",
+                  () -> data,
+                  () -> e);
+            } catch (SinkException e) {
+              log.error("Exception occurred during processing the provided data fields: ", e);
             }
           });
     } catch (ProcessorProviderException e) {
       log.error(
-          "Exception occurred during receiving of header elements. Cannot write this element", e);
+          "Exception occurred during receiving of header elements. Cannot write this element.", e);
     } catch (ConnectorException e) {
-      log.error("Exception occurred during acquisition of writer");
+      log.error("Exception occurred during acquisition of writer.", e);
+    } catch (SinkException e) {
+      log.error("Exception occurred during processor request: ", e);
     }
   }
 

@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.models.StandardUnits
@@ -46,7 +47,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 			"kt"              : "8",
 			"marketreaction"  : "true",
 			"srated"          : "9",
-			"cosphi"          : "10",
+			"cosphirated"          : "10",
 		]
 		def inputClass = PvInput
 		def nodeInput = Mock(NodeInput)
@@ -54,7 +55,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 
 		when:
 		Optional<PvInput> input = inputFactory.getEntity(
-				new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput))
+				new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
 		then:
 		input.present
@@ -82,7 +83,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert kT == Double.parseDouble(parameter["kt"])
 			assert marketReaction
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-			assert cosphiRated == Double.parseDouble(parameter["cosphi"])
+			assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
 		}
 	}
 }

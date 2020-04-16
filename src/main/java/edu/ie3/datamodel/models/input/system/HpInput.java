@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.io.extractor.HasThermalBus;
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -16,7 +17,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Describes a heat pump */
-public class HpInput extends SystemParticipantInput implements HasType {
+public class HpInput extends SystemParticipantInput implements HasType, HasThermalBus {
   /** Type of this heat pump, containing default values for heat pump of this kind */
   private final HpTypeInput type;
   /** The thermal bus, this model is connected to */
@@ -75,6 +76,7 @@ public class HpInput extends SystemParticipantInput implements HasType {
     return type;
   }
 
+  @Override
   public ThermalBusInput getThermalBus() {
     return thermalBus;
   }

@@ -5,9 +5,11 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
+import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,18 @@ public class GraphicElements implements InputContainer {
         graphicElements.stream()
             .flatMap(graphics -> graphics.lineGraphics.stream())
             .collect(Collectors.toSet());
+
+    // sanity check for distinct uuids
+    Optional<String> exceptionString =
+        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
+    if (exceptionString.isPresent()) {
+      throw new InvalidGridException(
+          "The provided entities in '"
+              + this.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
+    }
   }
 
   @Override

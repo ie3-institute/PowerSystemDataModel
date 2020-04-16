@@ -54,7 +54,7 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
 			assert nodeB == nodeInputB
 			assert nodeC == nodeInputC
 			assert type == typeInput
-			assert noOfParallelDevices == Integer.parseInt(parameter["paralleldevices"])
+			assert parallelDevices == Integer.parseInt(parameter["paralleldevices"])
 			assert tapPos == Integer.parseInt(parameter["tappos"])
 			assert autoTap
 		}

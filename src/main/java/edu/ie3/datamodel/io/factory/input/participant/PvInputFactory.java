@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -17,7 +18,7 @@ import javax.measure.quantity.Power;
 import tec.uom.se.ComparableQuantity;
 
 public class PvInputFactory
-    extends SystemParticipantInputEntityFactory<PvInput, SystemParticipantEntityData> {
+    extends SystemParticipantInputEntityFactory<PvInput, NodeAssetInputEntityData> {
   private static final String ALBEDO = "albedo";
   private static final String AZIMUTH = "azimuth";
   private static final String ETA_CONV = "etaconv";
@@ -26,7 +27,7 @@ public class PvInputFactory
   private static final String KT = "kt";
   private static final String MARKET_REACTION = "marketreaction";
   private static final String S_RATED = "srated";
-  private static final String COS_PHI = "cosphi";
+  private static final String COS_PHI_RATED = "cosphirated";
 
   public PvInputFactory() {
     super(PvInput.class);
@@ -35,13 +36,13 @@ public class PvInputFactory
   @Override
   protected String[] getAdditionalFields() {
     return new String[] {
-      ALBEDO, AZIMUTH, ETA_CONV, HEIGHT, KG, KT, MARKET_REACTION, S_RATED, COS_PHI
+      ALBEDO, AZIMUTH, ETA_CONV, HEIGHT, KG, KT, MARKET_REACTION, S_RATED, COS_PHI_RATED
     };
   }
 
   @Override
   protected PvInput buildModel(
-      SystemParticipantEntityData data,
+      NodeAssetInputEntityData data,
       java.util.UUID uuid,
       String id,
       NodeInput node,
@@ -57,7 +58,7 @@ public class PvInputFactory
     final double kT = data.getDouble(KT);
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
     final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
-    final double cosPhi = data.getDouble(COS_PHI);
+    final double cosPhi = data.getDouble(COS_PHI_RATED);
 
     return new PvInput(
         uuid,

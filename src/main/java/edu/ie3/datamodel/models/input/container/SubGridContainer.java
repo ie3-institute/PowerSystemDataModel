@@ -5,12 +5,13 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
 
-/** Represents the accumulation of all data needed to create a complete single grid */
+/**
+ * Represents the accumulation of all data needed to create one galvanically complete single grid
+ */
 public class SubGridContainer extends GridContainer {
   /** subnet number of this grid */
   private final int subnet;
@@ -25,17 +26,7 @@ public class SubGridContainer extends GridContainer {
       GraphicElements graphics) {
     super(gridName, rawGrid, systemParticipants, graphics);
     this.subnet = subnet;
-
-    try {
-      this.predominantVoltageLevel = ContainerUtils.determinePredominantVoltLvl(rawGrid, subnet);
-    } catch (InvalidGridException e) {
-      throw new InvalidGridException(
-          "Cannot build sub grid model for ("
-              + gridName
-              + ", "
-              + subnet
-              + "), as the predominant voltage level cannot be determined.");
-    }
+    this.predominantVoltageLevel = ContainerUtils.determinePredominantVoltLvl(rawGrid, subnet);
   }
 
   public int getSubnet() {

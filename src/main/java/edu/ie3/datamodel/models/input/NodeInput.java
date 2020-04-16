@@ -30,12 +30,13 @@ public class NodeInput extends AssetInput {
 
   /** Use this default value if geoPosition is unknown */
   public static final Point DEFAULT_GEO_POSITION =
-      GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(51.4843281, 7.4116482));
+      GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281));
 
   /** Voltage level of this node */
   private final VoltageLevel voltLvl;
   /** Subnet of this node */
   private final int subnet;
+
   /**
    * Constructor for an operated node
    *
@@ -137,7 +138,16 @@ public class NodeInput extends AssetInput {
   @Override
   public String toString() {
     return "NodeInput{"
-        + "vTarget="
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operator="
+        + getOperator()
+        + ", operationTime="
+        + getOperationTime()
+        + ", vTarget="
         + vTarget
         + ", slack="
         + slack

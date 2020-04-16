@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.exceptions.SinkException
 import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
@@ -18,6 +17,7 @@ import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
@@ -32,7 +32,7 @@ import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.test.common.ThermalUnitInputTestData
-import edu.ie3.util.TimeTools
+import edu.ie3.util.TimeUtil
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
 import spock.lang.Specification
@@ -56,10 +56,11 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 	def "A valid CsvFileSink called by simple constructor should not initialize files by default and consist of several default values"() {
 		given:
 		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath)
-		csvFileSink.dataConnector.shutdown()
+		csvFileSink.shutdown()
 
 		expect:
 		!new File(testBaseFolderPath).exists()
+		csvFileSink.csvSep == ","
 	}
 
 	def "A valid CsvFileSink with 'initFiles' enabled should create files as expected"() {
@@ -72,7 +73,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 				new FileNamingStrategy(),
 				true,
 				",")
-		csvFileSink.dataConnector.shutdown()
+		csvFileSink.shutdown()
 
 		expect:
 		new File(testBaseFolderPath).exists()
@@ -96,7 +97,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 					new InputEntityProcessor(ThermalHouseInput),
 					new InputEntityProcessor(OperatorInput),
 					new InputEntityProcessor(LineInput),
-					new InputEntityProcessor(ThermalBusInput)
+					new InputEntityProcessor(ThermalBusInput),
+					new InputEntityProcessor(LineTypeInput)
 				], [] as Map),
 				new FileNamingStrategy(),
 				false,
@@ -106,8 +108,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
 		Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
 		Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-		PvResult pvResult = new PvResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-		WecResult wecResult = new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+		PvResult pvResult = new PvResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+		WecResult wecResult = new WecResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
 
 		when:
 		csvFileSink.persistAll([
@@ -119,7 +121,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 			ThermalUnitInputTestData.cylindricStorageInput,
 			ThermalUnitInputTestData.thermalHouseInput
 		])
-		csvFileSink.dataConnector.shutdown()
+		csvFileSink.shutdown()
 
 		then:
 		new File(testBaseFolderPath).exists()
@@ -140,30 +142,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		!new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
 	}
 
-	def "A valid CsvFileSink should throw an exception if the provided entity cannot be handled"() {
-		given:
-		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-				new ProcessorProvider([
-					new ResultEntityProcessor(PvResult)
-				], [] as Map),
-				new FileNamingStrategy(),
-				false,
-				",")
-
-		UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-		UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-		Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
-		Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-		WecResult wecResult = new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
-
-		when:
-		csvFileSink.persist(wecResult)
-		csvFileSink.dataConnector.shutdown()
-
-		then:
-		thrown(SinkException)
-	}
-
 	def "A valid CsvFileSink should persist a time series correctly"() {
 		given:
 		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue> timeSeriesProcessor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
@@ -181,7 +159,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
 		when:
 		csvFileSink.persist(individualTimeSeries)
-		csvFileSink.dataConnector.shutdown()
+		csvFileSink.shutdown()
 
 		then:
 		new File(testBaseFolderPath).exists()
@@ -194,7 +172,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
 		when:
 		csvFileSink.persistAll(allTimeSeries)
-		csvFileSink.dataConnector.shutdown()
+		csvFileSink.shutdown()
 
 		then:
 		new File(testBaseFolderPath).exists()

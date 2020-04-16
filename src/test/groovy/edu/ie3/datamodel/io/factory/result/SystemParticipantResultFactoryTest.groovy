@@ -116,8 +116,11 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 
 		then:
 		FactoryException ex = thrown()
-		ex.message == "The provided fields [inputModel, q, timestamp] with data {inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,q -> 2,timestamp -> 2020-01-30 17:26:44} are invalid for instance of WecResult. \n" +
-				"The following fields to be passed to a constructor of WecResult are possible:\n" +
+		ex.message == "The provided fields [inputModel, q, timestamp] with data \n" +
+				"{inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,\n" +
+				"q -> 2,\n" +
+				"timestamp -> 2020-01-30 17:26:44} are invalid for instance of WecResult. \n" +
+				"The following fields to be passed to a constructor of 'WecResult' are possible (NOT case-sensitive!):\n" +
 				"0: [inputModel, p, q, timestamp]\n" +
 				"1: [inputModel, p, q, timestamp, uuid]\n"
 	}

@@ -20,7 +20,8 @@ import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
 import tec.uom.se.ComparableQuantity;
 
-public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, LineInputEntityData> {
+public class LineInputFactory
+    extends ConnectorInputEntityFactory<LineInput, TypedConnectorInputEntityData<LineTypeInput>> {
   private static final String LENGTH = "length";
   private static final String GEO_POSITION = "geoposition";
   private static final String OLM_CHARACTERISTIC = "olmcharacteristic";
@@ -36,7 +37,7 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput, Lin
 
   @Override
   protected LineInput buildModel(
-      LineInputEntityData data,
+      TypedConnectorInputEntityData<LineTypeInput> data,
       UUID uuid,
       String id,
       NodeInput nodeA,

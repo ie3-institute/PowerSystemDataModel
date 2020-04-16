@@ -19,7 +19,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
   /** Grid node at the other side of the connector */
   private final NodeInput nodeB;
   /** Amount of parallelDevices */
-  private final int noOfParallelDevices;
+  private final int parallelDevices;
 
   /**
    * Constructor for an operated connector
@@ -30,7 +30,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * @param operationTime Time for which the entity is operated
    * @param nodeA Grid node at one side of the connector
    * @param nodeB Grid node at the other side of the connector
-   * @param noOfParallelDevices Amount of parallel devices
+   * @param parallelDevices Amount of parallel devices
    */
   public ConnectorInput(
       UUID uuid,
@@ -39,11 +39,11 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
       OperationTime operationTime,
       NodeInput nodeA,
       NodeInput nodeB,
-      int noOfParallelDevices) {
+      int parallelDevices) {
     super(uuid, id, operator, operationTime);
     this.nodeA = nodeA;
     this.nodeB = nodeB;
-    this.noOfParallelDevices = noOfParallelDevices;
+    this.parallelDevices = parallelDevices;
   }
 
   /**
@@ -53,14 +53,14 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * @param id of the asset
    * @param nodeA Grid node at one side of the connector
    * @param nodeB Grid node at the other side of the connector
-   * @param noOfParallelDevices Amount of parallel devices
+   * @param parallelDevices Amount of parallel devices
    */
   public ConnectorInput(
-      UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, int noOfParallelDevices) {
+      UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, int parallelDevices) {
     super(uuid, id);
     this.nodeA = nodeA;
     this.nodeB = nodeB;
-    this.noOfParallelDevices = noOfParallelDevices;
+    this.parallelDevices = parallelDevices;
   }
 
   public NodeInput getNodeA() {
@@ -76,8 +76,8 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
     return Collections.unmodifiableList(Arrays.asList(getNodeA(), getNodeB()));
   }
 
-  public int getNoOfParallelDevices() {
-    return noOfParallelDevices;
+  public int getParallelDevices() {
+    return parallelDevices;
   }
 
   @Override
@@ -86,14 +86,14 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ConnectorInput that = (ConnectorInput) o;
-    return noOfParallelDevices == that.noOfParallelDevices
+    return parallelDevices == that.parallelDevices
         && nodeA.equals(that.nodeA)
         && nodeB.equals(that.nodeB);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), nodeA, nodeB, noOfParallelDevices);
+    return Objects.hash(super.hashCode(), nodeA, nodeB, parallelDevices);
   }
 
   @Override
@@ -104,7 +104,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
         + ", nodeB="
         + nodeB
         + ", noOfParallelDevices="
-        + noOfParallelDevices
+        + parallelDevices
         + '}';
   }
 }

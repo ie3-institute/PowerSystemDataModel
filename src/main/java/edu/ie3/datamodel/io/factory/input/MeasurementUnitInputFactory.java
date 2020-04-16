@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.UUID;
 
 public class MeasurementUnitInputFactory
-    extends AssetInputEntityFactory<MeasurementUnitInput, MeasurementUnitInputEntityData> {
+    extends AssetInputEntityFactory<MeasurementUnitInput, NodeAssetInputEntityData> {
   private static final String V_MAG = "vmag";
   private static final String V_ANG = "vang";
   private static final String P = "p";
@@ -29,7 +29,7 @@ public class MeasurementUnitInputFactory
 
   @Override
   protected MeasurementUnitInput buildModel(
-      MeasurementUnitInputEntityData data,
+      NodeAssetInputEntityData data,
       UUID uuid,
       String id,
       OperatorInput operator,

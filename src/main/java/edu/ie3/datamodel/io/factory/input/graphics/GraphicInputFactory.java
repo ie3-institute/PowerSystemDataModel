@@ -60,7 +60,7 @@ public abstract class GraphicInputFactory<T extends GraphicInput, D extends Enti
     UUID uuid = data.getUUID(UUID);
 
     final String graphicLayer = data.getField(GRAPHIC_LAYER);
-    final LineString pathLineString =
+    final LineString path =
         data.getLineString(PATH_LINE_STRING)
             .orElse(
                 new GeometryFactory()
@@ -69,7 +69,7 @@ public abstract class GraphicInputFactory<T extends GraphicInput, D extends Enti
                             NodeInput.DEFAULT_GEO_POSITION.getCoordinates(),
                             NodeInput.DEFAULT_GEO_POSITION.getCoordinates())));
 
-    return buildModel(data, uuid, graphicLayer, pathLineString);
+    return buildModel(data, uuid, graphicLayer, path);
   }
 
   /**
@@ -79,6 +79,5 @@ public abstract class GraphicInputFactory<T extends GraphicInput, D extends Enti
    * @param uuid UUID of the input entity
    * @return newly created asset object
    */
-  protected abstract T buildModel(
-      D data, UUID uuid, String graphicLayer, LineString pathLineString);
+  protected abstract T buildModel(D data, UUID uuid, String graphicLayer, LineString path);
 }

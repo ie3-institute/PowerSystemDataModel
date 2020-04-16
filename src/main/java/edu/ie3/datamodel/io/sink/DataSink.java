@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.sink;
 import edu.ie3.datamodel.io.connectors.DataConnector;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
@@ -20,8 +21,11 @@ import java.util.Collection;
  */
 public interface DataSink {
 
-  /** @return the connector of this sink */
-  DataConnector getDataConnector();
+  /**
+   * Shutdown this sink and do all cleanup operations (e.g. closing of the {@link DataConnector}
+   * here
+   */
+  void shutdown();
 
   /**
    * Should implement the entry point of a data sink to persist an entity. By default this method
@@ -40,8 +44,8 @@ public interface DataSink {
    * Should implement the entry point of a data sink to persist multiple entities in a collection.
    * By default this method should take care about the extraction process of nested entities (if
    * any) and use {@link edu.ie3.datamodel.io.extractor.Extractor} accordingly. For a faster method
-   * that neglects the nested objects persistence use {@link
-   * DataSink#persistIgnoreNested(UniqueEntity)}
+   * that neglects the nested objects persistence and only persists the uuid of the nested * objects
+   * (if any), instead of the object itself use {@link DataSink#persistIgnoreNested(UniqueEntity)}
    *
    * @param entities a collection of entities that should be persisted
    * @param <C> bounded to be all unique entities. Handling of specific entities is normally then
@@ -92,4 +96,11 @@ public interface DataSink {
    */
   <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries);
+
+  /**
+   * Should implement the entry point of a data sink to persist a whole {@link JointGridContainer}
+   *
+   * @param jointGridContainer the {@link JointGridContainer} that should be persisted
+   */
+  void persistJointGrid(JointGridContainer jointGridContainer);
 }

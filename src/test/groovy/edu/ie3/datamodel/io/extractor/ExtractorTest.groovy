@@ -6,6 +6,9 @@
 package edu.ie3.datamodel.io.extractor
 
 import edu.ie3.datamodel.exceptions.ExtractorException
+import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
+import edu.ie3.datamodel.models.input.system.FixedFeedInInput
 import edu.ie3.test.common.GridTestData as gtd
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 import edu.ie3.test.common.ThermalUnitInputTestData as tutd
@@ -26,7 +29,7 @@ class ExtractorTest extends Specification {
 	def "An Extractor should be able to extract an entity with nested elements correctly"() {
 
 		expect:
-		Extractor.extractElements(nestedEntity) == expectedExtractedEntities
+		Extractor.extractElements(nestedEntity) as Set == expectedExtractedEntities as Set
 
 		where:
 		nestedEntity               || expectedExtractedEntities
@@ -41,7 +44,8 @@ class ExtractorTest extends Specification {
 			gtd.transformerAtoBtoC.nodeB,
 			gtd.transformerAtoBtoC.nodeC,
 			gtd.transformerAtoBtoC.type,
-			gtd.transformerAtoBtoC.operator
+			gtd.transformerAtoBtoC.operator,
+			gtd.transformerAtoBtoC.nodeA.operator
 		]
 		gtd.transformerCtoG        || [
 			gtd.transformerCtoG.nodeA,
@@ -52,64 +56,92 @@ class ExtractorTest extends Specification {
 		gtd.switchAtoB             || [
 			gtd.switchAtoB.nodeA,
 			gtd.switchAtoB.nodeB,
+			gtd.switchAtoB.nodeA.operator,
 			gtd.switchAtoB.operator
 		]
 		sptd.fixedFeedInInput      || [
 			sptd.fixedFeedInInput.node,
-			sptd.fixedFeedInInput.operator
+			sptd.fixedFeedInInput.operator,
+			sptd.fixedFeedInInput.node.operator
 		]
 		sptd.wecInput              || [
 			sptd.wecInput.node,
 			sptd.wecInput.type,
-			sptd.wecInput.operator
+			sptd.wecInput.operator,
+			sptd.wecInput.node.operator
 		]
 		sptd.chpInput              || [
 			sptd.chpInput.node,
+			sptd.chpInput.node.operator,
 			sptd.chpInput.type,
-			sptd.chpInput.operator
+			sptd.chpInput.thermalBus,
+			sptd.chpInput.thermalStorage,
+			sptd.chpInput.thermalStorage.thermalBus,
+			sptd.chpInput.thermalStorage.thermalBus.operator
 		]
 		sptd.bmInput               || [
 			sptd.bmInput.node,
 			sptd.bmInput.type,
-			sptd.bmInput.operator
+			sptd.bmInput.operator,
+			sptd.bmInput.node.operator
 		]
 		sptd.evInput               || [
 			sptd.evInput.node,
 			sptd.evInput.type,
-			sptd.evInput.operator
+			sptd.evInput.operator,
+			sptd.evInput.node.operator
 		]
 		sptd.storageInput          || [
 			sptd.storageInput.node,
 			sptd.storageInput.type,
-			sptd.storageInput.operator
+			sptd.storageInput.operator,
+			sptd.storageInput.node.operator
 		]
 		sptd.hpInput               || [
 			sptd.hpInput.node,
 			sptd.hpInput.type,
-			sptd.hpInput.operator
+			sptd.hpInput.operator,
+			sptd.hpInput.thermalBus,
+			sptd.hpInput.thermalBus.operator,
+			sptd.hpInput.node.operator
 		]
 
-		gtd.lineGraphicCtoD        || [gtd.lineGraphicCtoD.line]
+		gtd.lineGraphicCtoD        || [
+			gtd.lineGraphicCtoD.line,
+			gtd.lineGraphicCtoD.line.nodeB,
+			gtd.lineGraphicCtoD.line.nodeA,
+			gtd.lineGraphicCtoD.line.type,
+			gtd.lineGraphicCtoD.line.operator
+		]
 
 		gtd.nodeGraphicC           || [gtd.nodeGraphicC.node]
+		new NodeGraphicInput(
+				gtd.nodeGraphicC.uuid,
+				gtd.nodeGraphicC.graphicLayer,
+				gtd.nodeGraphicC.path,
+				null,
+				gtd.nodeGraphicC.point
+				)          || [null]
 
 		gtd.measurementUnitInput   || [
 			gtd.measurementUnitInput.node,
 			gtd.measurementUnitInput.operator
 		]
 
-		tutd.thermalBusInput       || [
-			tutd.thermalBusInput.operator
+		tutd.thermalBus       || [
+			tutd.thermalBus.operator
 		]
 
 		tutd.cylindricStorageInput || [
 			tutd.cylindricStorageInput.operator,
-			tutd.cylindricStorageInput.bus
+			tutd.cylindricStorageInput.thermalBus,
+			tutd.cylindricStorageInput.thermalBus.operator
 		]
 
 		tutd.thermalHouseInput     || [
 			tutd.thermalHouseInput.operator,
-			tutd.thermalHouseInput.bus
+			tutd.thermalHouseInput.thermalBus,
+			tutd.thermalHouseInput.thermalBus.operator
 		]
 	}
 
@@ -121,5 +153,25 @@ class ExtractorTest extends Specification {
 		ExtractorException ex = thrown()
 		ex.message == "Unable to extract entity of class 'InvalidNestedExtensionClass'. " +
 				"Does this class implements NestedEntity and one of its sub-interfaces correctly?"
+	}
+
+	def "An Extractor should not extract an operator that is marked as not assigned"() {
+		given:
+		def sampleFixedFeedInput = new FixedFeedInInput(UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a"), "test_fixedFeedInInput",
+				OperatorInput.NO_OPERATOR_ASSIGNED,
+				sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics,
+				sptd.fixedFeedInInput.sRated,sptd.fixedFeedInInput.cosphiRated)
+		expect:
+		Extractor.extractElements(sampleFixedFeedInput) as Set == [
+			sptd.fixedFeedInInput.node,
+			sptd.fixedFeedInInput.node.operator] as Set
+	}
+
+	def "An Extractor should not extract an operator that is marked as not assigned and not throw an exception if the resulting list empty"() {
+		given:
+		def sampleNodeInput = gtd.nodeB
+
+		expect:
+		Extractor.extractElements(sampleNodeInput) == [] as Set
 	}
 }

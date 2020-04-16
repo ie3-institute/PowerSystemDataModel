@@ -43,7 +43,7 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
 		def typeInput = Mock(Transformer2WTypeInput)
 
 		when:
-		Optional<Transformer2WInput> input = inputFactory.getEntity(new Transformer2WInputEntityData(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<Transformer2WInput> input = inputFactory.getEntity(new TypedConnectorInputEntityData<Transformer2WTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present
@@ -58,7 +58,7 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
 			assert nodeA == nodeInputA
 			assert nodeB == nodeInputB
 			assert type == typeInput
-			assert noOfParallelDevices == Integer.parseInt(parameter["paralleldevices"])
+			assert parallelDevices == Integer.parseInt(parameter["paralleldevices"])
 			assert tapPos == Integer.parseInt(parameter["tappos"])
 			assert autoTap
 		}

@@ -28,7 +28,7 @@ public class SystemParticipantTypeInputFactory
   private static final String CAP_EX = "capex";
   private static final String OP_EX = "opex";
   private static final String S_RATED = "srated";
-  private static final String COS_PHI = "cosphi";
+  private static final String COS_PHI_RATED = "cosphirated";
 
   // required in multiple types
   private static final String ETA_CONV = "etaconv";
@@ -73,7 +73,7 @@ public class SystemParticipantTypeInputFactory
   @Override
   protected List<Set<String>> getFields(SimpleEntityData data) {
     Set<String> standardConstructorParams =
-        newSet(ENTITY_UUID, ENTITY_ID, CAP_EX, OP_EX, S_RATED, COS_PHI);
+        newSet(ENTITY_UUID, ENTITY_ID, CAP_EX, OP_EX, S_RATED, COS_PHI_RATED);
 
     Set<String> constructorParameters = null;
     if (data.getEntityClass().equals(EvTypeInput.class)) {
@@ -111,7 +111,7 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<Currency> capEx = data.getQuantity(CAP_EX, StandardUnits.CAPEX);
     ComparableQuantity<EnergyPrice> opEx = data.getQuantity(OP_EX, StandardUnits.ENERGY_PRICE);
     ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
-    double cosPhi = data.getDouble(COS_PHI);
+    double cosPhi = data.getDouble(COS_PHI_RATED);
 
     if (data.getEntityClass().equals(EvTypeInput.class))
       return buildEvTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);

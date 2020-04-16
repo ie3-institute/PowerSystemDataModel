@@ -46,7 +46,7 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
 			assert operationTime == OperationTime.notLimited()
 			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
 			assert id == parameter["id"]
-			assert bus == thermalBusInput
+			assert thermalBus == thermalBusInput
 			assert ethLosses == getQuant(parameter["ethlosses"], StandardUnits.THERMAL_TRANSMISSION)
 			assert ethCapa == getQuant(parameter["ethcapa"], StandardUnits.HEAT_CAPACITY)
 		}

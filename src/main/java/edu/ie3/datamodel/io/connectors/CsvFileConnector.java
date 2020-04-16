@@ -13,8 +13,10 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
+import java.io.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +37,8 @@ public class CsvFileConnector implements DataConnector {
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
   private final FileNamingStrategy fileNamingStrategy;
   private final String baseFolderName;
+
+  private static final String FILE_ENDING = ".csv";
 
   public CsvFileConnector(String baseFolderName, FileNamingStrategy fileNamingStrategy) {
     this.baseFolderName = baseFolderName;
@@ -84,21 +88,68 @@ public class CsvFileConnector implements DataConnector {
   /**
    * Initializes a writer with the given base folder and file definition
    *
-   * @param baseFolderName Base folder, where the file hierarchy should start
+   * @param baseFolder Base folder, where the file hierarchy should start
    * @param fileDefinition Definition of the files shape
    * @return an initialized buffered writer
    * @throws ConnectorException If the base folder is a file
    * @throws IOException If the writer cannot be initialized correctly
    */
-  private BufferedCsvWriter initWriter(String baseFolderName, CsvFileDefinition fileDefinition)
+  private BufferedCsvWriter initWriter(String baseFolder, CsvFileDefinition fileDefinition)
       throws ConnectorException, IOException {
-    File basePathDir = new File(baseFolderName);
+    File basePathDir = new File(baseFolder);
     if (basePathDir.isFile())
       throw new ConnectorException(
-          "Base path dir '" + baseFolderName + "' already exists and is a file!");
+          "Base path dir '" + baseFolder + "' already exists and is a file!");
     if (!basePathDir.exists()) basePathDir.mkdirs();
 
-    return new BufferedCsvWriter(baseFolderName, fileDefinition);
+    String fullPathToFile = baseFolder + File.separator + fileDefinition.getFilePath();
+
+    File pathFile = new File(fullPathToFile);
+    if (!pathFile.exists()) {
+      return new BufferedCsvWriter(baseFolder, fileDefinition, false, true);
+    }
+    log.warn(
+        "File '{}.csv' already exist. Will append new content WITHOUT new header! Full path: {}",
+        fileDefinition.getFileName(),
+        pathFile.getAbsolutePath());
+    return new BufferedCsvWriter(baseFolder, fileDefinition, false, false);
+  }
+
+  /**
+   * Initializes a file reader for the given class that should be read in. The expected file name is
+   * determined based on {@link FileNamingStrategy} of the this {@link CsvFileConnector} instance
+   *
+   * @param clz the class of the entity that should be read
+   * @return the reader that contains information about the file to be read in
+   * @throws FileNotFoundException
+   */
+  public BufferedReader initReader(Class<? extends UniqueEntity> clz) throws FileNotFoundException {
+
+    BufferedReader newReader;
+
+    String fileName = null;
+    try {
+      fileName =
+          fileNamingStrategy
+              .getFileName(clz)
+              .orElseThrow(
+                  () ->
+                      new ConnectorException(
+                          "Cannot find a naming strategy for class '"
+                              + clz.getSimpleName()
+                              + "'."));
+    } catch (ConnectorException e) {
+      log.error(
+          "Cannot get reader for entity '{}' as no file naming strategy for this file exists. Exception:{}",
+          clz::getSimpleName,
+          () -> e);
+    }
+    File filePath = new File(baseFolderName + File.separator + fileName + FILE_ENDING);
+    newReader =
+        new BufferedReader(
+            new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8), 16384);
+
+    return newReader;
   }
 
   /**

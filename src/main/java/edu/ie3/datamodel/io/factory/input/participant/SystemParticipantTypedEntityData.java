@@ -5,11 +5,13 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Data used for those classes of {@link
@@ -19,8 +21,8 @@ import java.util.Map;
  * @param <T> Subclass of {@link SystemParticipantTypeInput} that is required for the construction
  *     of the SystemParticipantInput
  */
-class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
-    extends SystemParticipantEntityData {
+public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
+    extends NodeAssetInputEntityData {
 
   private final T typeInput;
 
@@ -60,6 +62,36 @@ class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInput>
       T typeInput) {
     super(fieldsToAttributes, entityClass, operator, node);
     this.typeInput = typeInput;
+  }
+
+  @Override
+  public String toString() {
+    return "SystemParticipantTypedEntityData{"
+        + "typeInput="
+        + typeInput
+        + ", node="
+        + getNode()
+        + ", operatorInput="
+        + getOperatorInput()
+        + ", fieldsToValues="
+        + getFieldsToValues()
+        + ", entityClass="
+        + getEntityClass()
+        + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    SystemParticipantTypedEntityData<?> that = (SystemParticipantTypedEntityData<?>) o;
+    return getTypeInput().equals(that.getTypeInput());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getTypeInput());
   }
 
   public T getTypeInput() {

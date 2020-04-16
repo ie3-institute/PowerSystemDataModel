@@ -12,10 +12,11 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.system.StorageStrategy;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
-import edu.ie3.util.TimeUtil;
 import java.beans.Introspector;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -57,18 +58,7 @@ public abstract class Processor<T> {
   private static final String VOLT_LVL = NodeInputFactory.VOLT_LVL;
   private static final String V_RATED = NodeInputFactory.V_RATED;
 
-  /**
-   * Comparator to sort a Map of field name to getter method, so that the first entry is the uuid
-   * and the rest is sorted alphabetically.
-   */
-  private static class UuidFirstComparator implements Comparator<String> {
-    @Override
-    public int compare(String a, String b) {
-      if (a.equalsIgnoreCase(UniqueEntity.UUID_FIELD_NAME)) return -1;
-      else if (b.equalsIgnoreCase(UniqueEntity.UUID_FIELD_NAME)) return 1;
-      else return a.compareTo(b);
-    }
-  }
+  private static final String PARALLEL_DEVICES = "parallelDevices";
 
   /**
    * Instantiates a Processor for a foreseen class
@@ -88,6 +78,19 @@ public abstract class Processor<T> {
                   .collect(Collectors.joining(", ")));
 
     this.registeredClass = foreSeenClass;
+  }
+
+  /**
+   * Comparator to sort a Map of field name to getter method, so that the first entry is the uuid
+   * and the rest is sorted alphabetically.
+   */
+  private static class UuidFirstComparator implements Comparator<String> {
+    @Override
+    public int compare(String a, String b) {
+      if (a.equalsIgnoreCase(UniqueEntity.UUID_FIELD_NAME)) return -1;
+      else if (b.equalsIgnoreCase(UniqueEntity.UUID_FIELD_NAME)) return 1;
+      else return a.compareTo(b);
+    }
   }
 
   /**
@@ -115,6 +118,12 @@ public abstract class Processor<T> {
           // filter out properties with setters only
           .filter(pd -> Objects.nonNull(pd.getReadMethod()))
           .filter(pd -> !ignoreFields.contains(pd.getName()))
+          .filter(
+              pd ->
+                  // switches can never be parallel but have this field due to inheritance -> filter
+                  // it out as it cannot be passed into the constructor
+                  !(registeredClass.equals(SwitchInput.class)
+                      && pd.getName().equalsIgnoreCase(PARALLEL_DEVICES)))
           .forEach(
               pd -> {
                 String fieldName = pd.getName();
@@ -246,7 +255,6 @@ public abstract class Processor<T> {
       case "LineTypeInput":
       case "LineInput":
       case "NodeInput":
-      case "OperatorInput":
       case "StorageTypeInput":
       case "SystemParticipantInput":
       case "ThermalBusInput":
@@ -256,6 +264,12 @@ public abstract class Processor<T> {
       case "Transformer3WTypeInput":
       case "WecTypeInput":
         resultStringBuilder.append(((UniqueEntity) methodReturnObject).getUuid());
+        break;
+      case "OperatorInput":
+        resultStringBuilder.append(
+            ((OperatorInput) methodReturnObject).getId().equalsIgnoreCase("NO_OPERATOR_ASSIGNED")
+                ? ""
+                : ((OperatorInput) methodReturnObject).getUuid());
         break;
       case "EvCharacteristicInput":
       case "OlmCharacteristicInput":
@@ -359,7 +373,7 @@ public abstract class Processor<T> {
    * @return string representation of the ZonedDateTime
    */
   protected String processZonedDateTime(ZonedDateTime zonedDateTime) {
-    return TimeUtil.withDefaults.toString(zonedDateTime);
+    return zonedDateTime.toString();
   }
 
   /**

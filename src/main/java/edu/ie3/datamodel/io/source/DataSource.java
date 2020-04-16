@@ -5,11 +5,10 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.io.connectors.DataConnector;
-
-/** Describes a class that fetches data from a persistence location */
-public interface DataSource {
-
-  /** @return the connector of this source */
-  DataConnector getDataConnector();
-}
+/**
+ * General interface that is implemented by all specific data sources for different types of data
+ * structures that are persisted in different locations. Note: This interface is still under
+ * development and should be considered more as an internal API. It might change or even will be
+ * removed in the future!
+ */
+public interface DataSource {}

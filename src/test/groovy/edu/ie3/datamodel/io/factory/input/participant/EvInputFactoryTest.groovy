@@ -46,7 +46,7 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
 
 		when:
 		Optional<EvInput> input = inputFactory.getEntity(
-				new SystemParticipantTypedEntityData<EvTypeInput>(parameter, inputClass,operatorInput, nodeInput, typeInput))
+				new SystemParticipantTypedEntityData<EvTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
 		then:
 		input.present

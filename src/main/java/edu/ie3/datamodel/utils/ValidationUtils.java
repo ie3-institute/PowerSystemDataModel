@@ -24,6 +24,8 @@ import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
@@ -414,15 +416,9 @@ public class ValidationUtils {
         new Quantity<?>[] {trafoType.getgM(), trafoType.getbM(), trafoType.getdPhi()}, trafoType);
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {
-          trafoType.getsRatedA(),
-          trafoType.getsRatedB(),
-          trafoType.getsRatedC(),
-          trafoType.getvRatedA(),
-          trafoType.getvRatedB(),
-          trafoType.getvRatedC(),
-          trafoType.getxScA(),
-          trafoType.getxScB(),
-          trafoType.getxScC(),
+          trafoType.getsRatedA(), trafoType.getsRatedB(), trafoType.getsRatedC(),
+          trafoType.getvRatedA(), trafoType.getvRatedB(), trafoType.getvRatedC(),
+          trafoType.getxScA(), trafoType.getxScB(), trafoType.getxScC(),
           trafoType.getdV()
         },
         trafoType);
@@ -517,5 +513,67 @@ public class ValidationUtils {
     if (!malformedQuantities.isEmpty()) {
       throw new UnsafeEntityException(msg + ": " + malformedQuantities, entity);
     }
+  }
+
+  /**
+   * Determines if the provided set only contains elements with distinct UUIDs
+   *
+   * @param entities the set that should be checked
+   * @return true if all UUIDs of the provided entities are unique, false otherwise
+   */
+  public static boolean distinctUuids(Set<? extends UniqueEntity> entities) {
+    return entities.stream()
+            .filter(distinctByKey(UniqueEntity::getUuid))
+            .collect(Collectors.toSet())
+            .size()
+        == entities.size();
+  }
+
+  /**
+   * Predicate that can be used to filter elements based on a given Function
+   *
+   * @param keyExtractor the function that should be used for the filter operations
+   * @param <T> the type of the returning predicate
+   * @return the filter predicate that filters based on the provided function
+   */
+  public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+    Set<Object> seen = ConcurrentHashMap.newKeySet();
+    return t -> seen.add(keyExtractor.apply(t));
+  }
+
+  /**
+   * Checks if the provided set of unique entities only contains elements with distinct UUIDs and
+   * either returns a string with duplicated UUIDs or an empty optional otherwise.
+   *
+   * @param entities the entities that should be checkd for UUID uniqueness
+   * @return either a string wrapped in an optional with duplicate UUIDs or an empty optional
+   */
+  public static Optional<String> checkForDuplicateUuids(Set<UniqueEntity> entities) {
+    if (distinctUuids(entities)) {
+      return Optional.empty();
+    }
+    String duplicationsString =
+        entities.stream()
+            .collect(Collectors.groupingBy(UniqueEntity::getUuid, Collectors.counting()))
+            .entrySet()
+            .stream()
+            .filter(entry -> entry.getValue() > 1)
+            .map(
+                entry -> {
+                  String duplicateEntitiesString =
+                      entities.stream()
+                          .filter(entity -> entity.getUuid().equals(entry.getKey()))
+                          .map(UniqueEntity::toString)
+                          .collect(Collectors.joining("\n - "));
+
+                  return entry.getKey()
+                      + ": "
+                      + entry.getValue()
+                      + "\n - "
+                      + duplicateEntitiesString;
+                })
+            .collect(Collectors.joining("\n\n"));
+
+    return Optional.of(duplicationsString);
   }
 }

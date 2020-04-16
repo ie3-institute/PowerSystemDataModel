@@ -31,7 +31,8 @@ public class BufferedCsvWriter extends BufferedWriter {
    * @param quoted True, if the entries may be quoted
    * @throws IOException If the FileOutputStream cannot be established.
    */
-  public BufferedCsvWriter(String baseFolder, CsvFileDefinition fileDefinition, boolean quoted)
+  public BufferedCsvWriter(
+      String baseFolder, CsvFileDefinition fileDefinition, boolean quoted, boolean writeHeader)
       throws IOException {
     super(
         new OutputStreamWriter(
@@ -39,7 +40,7 @@ public class BufferedCsvWriter extends BufferedWriter {
             StandardCharsets.UTF_8));
     this.fileDefinition = fileDefinition;
     this.quoted = quoted;
-    writeFileHeader();
+    if (writeHeader) writeFileHeader(fileDefinition.headLineElements);
   }
 
   /**
@@ -49,8 +50,9 @@ public class BufferedCsvWriter extends BufferedWriter {
    * @param fileDefinition The foreseen shape of the file
    * @throws IOException If the FileOutputStream cannot be established.
    */
-  public BufferedCsvWriter(String baseFolder, CsvFileDefinition fileDefinition) throws IOException {
-    this(baseFolder, fileDefinition, true);
+  public BufferedCsvWriter(String baseFolder, CsvFileDefinition fileDefinition, boolean writeHeader)
+      throws IOException {
+    this(baseFolder, fileDefinition, false, writeHeader);
   }
 
   /**
@@ -58,7 +60,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    *
    * @param entityFieldData a mapping of an entity instance fields to their values
    */
-  public void write(Map<String, String> entityFieldData) throws IOException {
+  public void write(Map<String, String> entityFieldData) throws IOException, SinkException {
     /* Check against eligible head line elements */
     String[] eligibleHeadLineElements = fileDefinition.getHeadLineElements();
     if (entityFieldData.size() != eligibleHeadLineElements.length
@@ -77,11 +79,8 @@ public class BufferedCsvWriter extends BufferedWriter {
    *
    * @throws IOException If something is messed up
    */
-  private void writeFileHeader() throws IOException {
-    writeOneLine(
-        quoted
-            ? StringUtils.quote(StringUtils.camelCaseToSnakeCase(fileDefinition.headLineElements))
-            : StringUtils.camelCaseToSnakeCase(fileDefinition.headLineElements));
+  private void writeFileHeader(String[] headLineElements) throws IOException {
+    writeOneLine(StringUtils.quote(StringUtils.camelCaseToSnakeCase(headLineElements)));
   }
 
   /**

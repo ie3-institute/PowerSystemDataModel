@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
+import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -44,6 +45,18 @@ public class RawGridElements implements InputContainer {
     this.transformer3Ws = transformer3Ws;
     this.switches = switches;
     this.measurementUnits = measurementUnits;
+
+    // sanity check to ensure distinct UUIDs
+    Optional<String> exceptionString =
+        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
+    if (exceptionString.isPresent()) {
+      throw new InvalidGridException(
+          "The provided entities in '"
+              + this.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
+    }
   }
 
   /**

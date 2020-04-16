@@ -14,7 +14,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
  * @version 0.1
  * @since 31.03.20
  */
-public interface HasBus extends NestedEntity {
+public interface HasThermalBus extends NestedEntity {
 
-  ThermalBusInput getBus();
+  ThermalBusInput getThermalBus();
 }

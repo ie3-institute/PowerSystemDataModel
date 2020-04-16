@@ -54,7 +54,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(LineTypeInput)
 
 		when:
-		Optional<LineInput> input = inputFactory.getEntity(new LineInputEntityData(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<LineInput> input = inputFactory.getEntity(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present
@@ -69,7 +69,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert nodeA == nodeInputA
 			assert nodeB == nodeInputB
 			assert type == typeInput
-			assert noOfParallelDevices == Integer.parseInt(parameter["paralleldevices"])
+			assert parallelDevices == Integer.parseInt(parameter["paralleldevices"])
 			assert length == getQuant(parameter["length"], StandardUnits.LINE_LENGTH)
 			assert geoPosition == getGeometry(parameter["geoposition"])
 			olmCharacteristic.with {
@@ -105,7 +105,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(LineTypeInput)
 
 		when:
-		Optional<LineInput> input = inputFactory.getEntity(new LineInputEntityData(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<LineInput> input = inputFactory.getEntity(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present
@@ -120,7 +120,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert nodeA == nodeInputA
 			assert nodeB == nodeInputB
 			assert type == typeInput
-			assert noOfParallelDevices == Integer.parseInt(parameter["paralleldevices"])
+			assert parallelDevices == Integer.parseInt(parameter["paralleldevices"])
 			assert length == getQuant(parameter["length"], StandardUnits.LINE_LENGTH)
 			assert geoPosition == getGeometry(parameter["geoposition"])
 			olmCharacteristic.with {

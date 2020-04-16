@@ -52,6 +52,15 @@ public class CylindricalStorageInputFactory
     final ComparableQuantity<SpecificHeatCapacity> c =
         data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
     return new CylindricalStorageInput(
-        uuid, id, bus, storageVolumeLvl, storageVolumeLvlMin, inletTemp, returnTemp, c);
+        uuid,
+        id,
+        operator,
+        operationTime,
+        bus,
+        storageVolumeLvl,
+        storageVolumeLvlMin,
+        inletTemp,
+        returnTemp,
+        c);
   }
 }

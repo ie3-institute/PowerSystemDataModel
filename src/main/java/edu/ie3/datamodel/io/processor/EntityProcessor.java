@@ -26,6 +26,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
   protected final String[] headerElements;
   private final SortedMap<String, Method> fieldNameToMethod;
 
+  private static final String NODE_INTERNAL = "nodeInternal";
+
   /**
    * Create a new EntityProcessor
    *
@@ -33,7 +35,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
    */
   public EntityProcessor(Class<? extends T> registeredClass) {
     super(registeredClass);
-    this.fieldNameToMethod = mapFieldNameToGetter(registeredClass);
+    this.fieldNameToMethod =
+        mapFieldNameToGetter(registeredClass, Collections.singleton(NODE_INTERNAL));
     this.headerElements = fieldNameToMethod.keySet().toArray(new String[0]);
   }
 

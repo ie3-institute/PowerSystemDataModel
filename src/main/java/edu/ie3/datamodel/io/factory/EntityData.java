@@ -12,10 +12,7 @@ import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.ElectricPotential;
@@ -285,5 +282,29 @@ public abstract class EntityData {
 
   public Class<? extends UniqueEntity> getEntityClass() {
     return entityClass;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    EntityData that = (EntityData) o;
+    return fieldsToAttributes.equals(that.fieldsToAttributes)
+        && entityClass.equals(that.entityClass);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(fieldsToAttributes, entityClass);
+  }
+
+  @Override
+  public String toString() {
+    return "EntityData{"
+        + "fieldsToAttributes="
+        + fieldsToAttributes
+        + ", entityClass="
+        + entityClass
+        + '}';
   }
 }

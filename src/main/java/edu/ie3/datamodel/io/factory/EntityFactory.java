@@ -71,7 +71,10 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
   private void isValidClass(Class<? extends UniqueEntity> entityClass) {
     if (!classes.contains(entityClass))
       throw new FactoryException(
-          "Cannot process " + entityClass.getSimpleName() + ".class with this factory!");
+          "Cannot process "
+              + entityClass.getSimpleName()
+              + ".class with this factory!\nThis factory can only process the following classes:\n - "
+              + classes.stream().map(Class::getSimpleName).collect(Collectors.joining("\n - ")));
   }
 
   /**
@@ -158,7 +161,7 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
       String providedFieldMapString =
           fieldsToValues.keySet().stream()
               .map(key -> key + " -> " + fieldsToValues.get(key))
-              .collect(Collectors.joining(","));
+              .collect(Collectors.joining(",\n"));
 
       String providedKeysString = "[" + String.join(", ", fieldsToValues.keySet()) + "]";
 
@@ -167,14 +170,14 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
       throw new FactoryException(
           "The provided fields "
               + providedKeysString
-              + " with data {"
+              + " with data \n{"
               + providedFieldMapString
               + "}"
               + " are invalid for instance of "
               + data.getEntityClass().getSimpleName()
-              + ". \nThe following fields to be passed to a constructor of "
+              + ". \nThe following fields to be passed to a constructor of '"
               + data.getEntityClass().getSimpleName()
-              + " are possible:\n"
+              + "' are possible (NOT case-sensitive!):\n"
               + possibleOptions);
     }
   }

@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.thermal;
 
-import edu.ie3.datamodel.io.extractor.HasBus;
+import edu.ie3.datamodel.io.extractor.HasThermalBus;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -13,18 +13,18 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Abstract class for grouping all common properties to thermal models. */
-public abstract class ThermalUnitInput extends AssetInput implements HasBus {
+public abstract class ThermalUnitInput extends AssetInput implements HasThermalBus {
   /** The thermal bus, a thermal unit is connected to. */
-  private final ThermalBusInput bus;
+  private final ThermalBusInput thermalBus;
 
   /**
    * @param uuid Unique identifier of a certain thermal input
    * @param id Identifier of the thermal unit
-   * @param bus hermal bus, a thermal unit is connected to
+   * @param thermalBus hermal bus, a thermal unit is connected to
    */
-  ThermalUnitInput(UUID uuid, String id, ThermalBusInput bus) {
+  ThermalUnitInput(UUID uuid, String id, ThermalBusInput thermalBus) {
     super(uuid, id);
-    this.bus = bus;
+    this.thermalBus = thermalBus;
   }
 
   /**
@@ -32,21 +32,21 @@ public abstract class ThermalUnitInput extends AssetInput implements HasBus {
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
    * @param operationTime operation time of the asset
-   * @param bus thermal bus, a thermal unit is connected to
+   * @param thermalBus thermal bus, a thermal unit is connected to
    */
   ThermalUnitInput(
       UUID uuid,
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      ThermalBusInput bus) {
+      ThermalBusInput thermalBus) {
     super(uuid, id, operator, operationTime);
-    this.bus = bus;
+    this.thermalBus = thermalBus;
   }
 
   @Override
-  public ThermalBusInput getBus() {
-    return bus;
+  public ThermalBusInput getThermalBus() {
+    return thermalBus;
   }
 
   @Override
@@ -55,16 +55,16 @@ public abstract class ThermalUnitInput extends AssetInput implements HasBus {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ThermalUnitInput that = (ThermalUnitInput) o;
-    return bus.equals(that.bus);
+    return thermalBus.equals(that.thermalBus);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), bus);
+    return Objects.hash(super.hashCode(), thermalBus);
   }
 
   @Override
   public String toString() {
-    return "ThermalUnitInput{" + "bus=" + bus + '}';
+    return "ThermalUnitInput{" + "bus=" + thermalBus + '}';
   }
 }
