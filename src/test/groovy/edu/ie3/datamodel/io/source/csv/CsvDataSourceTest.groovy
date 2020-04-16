@@ -262,7 +262,8 @@ class CsvDataSourceTest extends Specification {
 	def "A CsvDataSource should return a given collection of csv row mappings as distinct rows collection correctly"() {
 
 		given:
-		def nodeInputRow = ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
+		def nodeInputRow = [
+		        "uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
 			"geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"id"            : "node_a",
 			"operates_until": "2020-03-25T15:11:31Z[UTC]",
@@ -272,7 +273,8 @@ class CsvDataSourceTest extends Specification {
 			"subnet"        : "1",
 			"v_target"      : "1.0",
 			"volt_lvl"      : "Höchstspannung",
-			"v_rated"       : "380"]
+			"v_rated"       : "380"
+		]
 
 		when:
 		def allRows = [nodeInputRow]* noOfEntities
