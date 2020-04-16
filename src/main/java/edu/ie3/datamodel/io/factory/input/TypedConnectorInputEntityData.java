@@ -51,6 +51,7 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
    *
    * @param fieldsToAttributes attribute map: field name -> value
    * @param entityClass class of the entity to be created with this data
+   * @param operator specific operator to use
    * @param nodeA input nodeA
    * @param nodeB input nodeB
    * @param type type input
