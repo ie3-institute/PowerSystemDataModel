@@ -112,7 +112,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
    *
    * <p>If the set of {@link NodeInput} entities is not exhaustive for all available {@link
    * NodeGraphicInput} entities or if an error during the building process occurs, all entities that
-   * has been able to be built are returned.
+   * has been able to be built are returned and the not-built ones are ignored (= filtered out).
    */
   @Override
   public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) {
@@ -136,7 +136,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
    *
    * <p>If the set of {@link LineInput} entities is not exhaustive for all available {@link
    * LineGraphicInput} entities or if an error during the building process occurs, all entities that
-   * has been able to be built are returned.
+   * has been able to be built are returned and the not-built ones are ignored (= filtered out).
    */
   @Override
   public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) {

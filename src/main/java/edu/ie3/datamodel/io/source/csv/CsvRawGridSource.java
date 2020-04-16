@@ -27,13 +27,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * //ToDo: Class Description Nothing is buffered -> for performance one might consider reading
- * nodes, operators etc. first and then passing in all required collections, otherwise reading is
- * done in a hierarchical cascading way to get all elements needed TODO description needs hint that
- * Set does NOT mean uuid uniqueness
+ * Source that provides the capability to build entities that are hold by a {@link RawGridElements}
+ * as well as the {@link RawGridElements} container as well from .csv files.
  *
- * <p>// todo performance improvements in all sources to make as as less possible recursive stream
- * calls on files
+ * <p>This source is <b>not buffered</b> which means each call on a getter method always tries to
+ * read all data is necessary to return the requested objects in a hierarchical cascading way.
+ *
+ * <p>If performance is an issue, it is recommended to read the data cascading starting with reading
+ * nodes and then using the getters with arguments to avoid reading the same data multiple times.
+ *
+ * <p>The resulting sets are always unique on object <b>and</b> UUID base (with distinct UUIDs).
  *
  * @version 0.1
  * @since 03.04.20
@@ -68,6 +71,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     this.measurementUnitInputFactory = new MeasurementUnitInputFactory();
   }
 
+  /** {@inheritDoc} */
   @Override
   public Optional<RawGridElements> getGridData() {
 
@@ -141,24 +145,45 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         : Optional.of(gridElements);
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<NodeInput> getNodes() {
     return getNodes(typeSource.getOperators());
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
-  public Set<NodeInput> getNodes(Collection<OperatorInput> operators) {
+  public Set<NodeInput> getNodes(Set<OperatorInput> operators) {
     return filterEmptyOptionals(
             assetInputEntityDataStream(NodeInput.class, operators).map(nodeInputFactory::getEntity))
         .collect(Collectors.toSet());
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<LineInput> getLines() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getLines(getNodes(operators), typeSource.getLineTypes(), operators);
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If one of the sets of {@link NodeInput} or {@link LineTypeInput} entities is not exhaustive
+   * for all available {@link LineInput} entities (e.g. a {@link NodeInput} or {@link LineTypeInput}
+   * entity is missed) or if an error during the building process occurs, the entity that misses
+   * something will be skipped (which can be seen as a filtering functionality) but all entities
+   * that are able to be built will be returned anyway and the elements that couldn't have been
+   * built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<LineInput> getLines(
       Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators) {
@@ -167,12 +192,26 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         .collect(Collectors.toSet());
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<Transformer2WInput> get2WTransformers() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return get2WTransformers(getNodes(operators), typeSource.getTransformer2WTypes(), operators);
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If one of the sets of {@link NodeInput} or {@link Transformer2WTypeInput} entities is not
+   * exhaustive for all available {@link Transformer2WInput} entities (e.g. a {@link NodeInput} or
+   * {@link Transformer2WTypeInput} entity is missed) or if an error during the building process
+   * occurs, the entity that misses something will be skipped (which can be seen as a filtering
+   * functionality) but all entities that are able to be built will be returned anyway and the
+   * elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<Transformer2WInput> get2WTransformers(
       Set<NodeInput> nodes,
@@ -188,12 +227,26 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         .collect(Collectors.toSet());
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<Transformer3WInput> get3WTransformers() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return get3WTransformers(getNodes(operators), typeSource.getTransformer3WTypes(), operators);
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If one of the sets of {@link NodeInput} or {@link Transformer3WTypeInput} entities is not
+   * exhaustive for all available {@link Transformer3WInput} entities (e.g. a {@link NodeInput} or
+   * {@link Transformer3WTypeInput} entity is missed) or if an error during the building process
+   * occurs, the entity that misses something will be skipped (which can be seen as a filtering
+   * functionality) but all entities that are able to be built will be returned anyway and the
+   * elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<Transformer3WInput> get3WTransformers(
       Set<NodeInput> nodes,
@@ -219,12 +272,25 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         .map(dataOpt -> dataOpt.flatMap(transformer3WInputFactory::getEntity));
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<SwitchInput> getSwitches() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getSwitches(getNodes(operators), operators);
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If one of the sets of {@link NodeInput} entities is not exhaustive for all available {@link
+   * SwitchInput} entities (e.g. a {@link NodeInput} entity is missed) or if an error during the
+   * building process occurs, the entity that misses something will be skipped (which can be seen as
+   * a filtering functionality) but all entities that are able to be built will be returned anyway
+   * and the elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators) {
 
@@ -245,12 +311,25 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
   }
 
+  /** {@inheritDoc} */
   @Override
   public Set<MeasurementUnitInput> getMeasurementUnits() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getMeasurementUnits(getNodes(operators), operators);
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If one of the sets of {@link NodeInput} entities is not exhaustive for all available {@link
+   * MeasurementUnitInput} entities (e.g. a {@link NodeInput} entity is missed) or if an error
+   * during the building process occurs, the entity that misses something will be skipped (which can
+   * be seen as a filtering functionality) but all entities that are able to be built will be
+   * returned anyway and the elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
   @Override
   public Set<MeasurementUnitInput> getMeasurementUnits(
       Set<NodeInput> nodes, Set<OperatorInput> operators) {
