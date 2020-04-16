@@ -24,7 +24,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * //ToDo: Class Description // todo hint that set does NOT check for uuid uniqueness!
+ * Source that provides the capability to build entities of type {@link SystemParticipantTypeInput}
+ * and {@link OperatorInput} from .csv files
  *
  * @version 0.1
  * @since 05.04.20

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Source that provides the capability to uild thermal {@link
+ * Source that provides the capability to build thermal {@link
  * edu.ie3.datamodel.models.input.AssetInput} entities from .csv files
  *
  * <p>This source is <b>not buffered</b> which means each call on a getter method always tries to
