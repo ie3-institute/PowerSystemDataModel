@@ -119,15 +119,17 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		where:
 		thermalBuses || resultIsPresent || expectedThermalUnitInputEntityData
 		[]|| false           || null  // thermal buses are not present -> method should return an empty optional -> do not check for thermal unit entity data
-		[new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermal_bus")]|| true            ||
-				new ThermalUnitInputEntityData(["uuid": "717af017-cc69-406f-b452-e022d7fb516a",
-												"id": "test_thermal_unit",
-												"operator": "8f9682df-0744-4b58-a122-f0dc730f6510",
-												"operatesFrom": "2020-03-24 15:11:31",
-												"operatesUntil": "2020-03-25 15:11:31"],
-				ThermalUnitInput,
-				new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "testOperator"),
-				new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermal_bus"))
+		[
+			new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermal_bus")
+		]|| true            ||
+		new ThermalUnitInputEntityData(["uuid": "717af017-cc69-406f-b452-e022d7fb516a",
+			"id": "test_thermal_unit",
+			"operator": "8f9682df-0744-4b58-a122-f0dc730f6510",
+			"operatesFrom": "2020-03-24 15:11:31",
+			"operatesUntil": "2020-03-25 15:11:31"],
+		ThermalUnitInput,
+		new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "testOperator"),
+		new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermal_bus"))
 
 	}
 
@@ -146,9 +148,10 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		resultingThermalHouseWoOperator.size() == 1
 		resultingThermalHouseWoOperator.first().uuid == ThermalUnitInputTestData.thermalHouseInput.uuid
 		resultingThermalHouseWoOperator.first().id == ThermalUnitInputTestData.thermalHouseInput.id
-		resultingThermalHouseWoOperator.first().operator == ThermalUnitInputTestData.thermalHouseInput.operator
-		resultingThermalHouseWoOperator.first().operationTime == ThermalUnitInputTestData.thermalHouseInput.operationTime
-		resultingThermalHouseWoOperator.first().thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
+		if (resultingThermalHouseWoOperator.first().operator.id == "NO_OPERATOR_ASSIGNED") {
+			!resultingThermalHouseWoOperator.first().operationTime.limited
+			resultingThermalHouseWoOperator.first().thermalBus == new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermalBusInput")
+		}
 		resultingThermalHouseWoOperator.first().ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
 		resultingThermalHouseWoOperator.first().ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
 
@@ -160,9 +163,10 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		resultingThermalHouse.size() == 1
 		resultingThermalHouse.first().uuid == ThermalUnitInputTestData.thermalHouseInput.uuid
 		resultingThermalHouse.first().id == ThermalUnitInputTestData.thermalHouseInput.id
-		resultingThermalHouse.first().operator == ThermalUnitInputTestData.thermalHouseInput.operator
-		resultingThermalHouse.first().operationTime == ThermalUnitInputTestData.thermalHouseInput.operationTime
-		resultingThermalHouse.first().thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
+		if (resultingThermalHouseWoOperator.first().operator.id == "NO_OPERATOR_ASSIGNED") {
+			!resultingThermalHouseWoOperator.first().operationTime.limited
+			resultingThermalHouseWoOperator.first().thermalBus == new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermalBusInput")
+		}
 		resultingThermalHouse.first().ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
 		resultingThermalHouse.first().ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
 
