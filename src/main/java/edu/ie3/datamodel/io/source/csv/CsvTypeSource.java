@@ -50,52 +50,52 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
     transformer3WTypeInputFactory = new Transformer3WTypeInputFactory();
     systemParticipantTypeInputFactory = new SystemParticipantTypeInputFactory();
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<Transformer2WTypeInput> getTransformer2WTypes() {
     return readSimpleEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory);
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<OperatorInput> getOperators() {
     return readSimpleEntities(OperatorInput.class, operatorInputFactory);
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<LineTypeInput> getLineTypes() {
     return readSimpleEntities(LineTypeInput.class, lineTypeInputFactory);
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<Transformer3WTypeInput> getTransformer3WTypes() {
     return readSimpleEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory);
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<BmTypeInput> getBmTypes() {
     return readSimpleEntities(BmTypeInput.class, systemParticipantTypeInputFactory);
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<ChpTypeInput> getChpTypes() {
     return readSimpleEntities(ChpTypeInput.class, systemParticipantTypeInputFactory);
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<HpTypeInput> getHpTypes() {
     return readSimpleEntities(HpTypeInput.class, systemParticipantTypeInputFactory);
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<StorageTypeInput> getStorageTypes() {
     return readSimpleEntities(StorageTypeInput.class, systemParticipantTypeInputFactory);
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<WecTypeInput> getWecTypes() {
     return readSimpleEntities(WecTypeInput.class, systemParticipantTypeInputFactory);
   }
-
+  /** {@inheritDoc} */
   @Override
   public Set<EvTypeInput> getEvTypes() {
     return readSimpleEntities(EvTypeInput.class, systemParticipantTypeInputFactory);
