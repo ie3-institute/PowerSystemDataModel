@@ -29,10 +29,10 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
 		then:
 		graphicElementsOpt.present
-		graphicElementsOpt.ifPresent({ graphicElements ->
-			assert (graphicElements.allEntitiesAsList().size() == 3)
-			assert (graphicElements.nodeGraphics.size() == 2)
-			assert (graphicElements.lineGraphics.size() == 1)
+		graphicElementsOpt.ifPresent({
+			assert (it.allEntitiesAsList().size() == 3)
+			assert (it.nodeGraphics.size() == 2)
+			assert (it.lineGraphics.size() == 1)
 		})
 	}
 
