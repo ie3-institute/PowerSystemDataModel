@@ -89,7 +89,7 @@ inputAccumulator --> thermal_source
 
 projName_model.conf --> config_source
 
-projName_simulation.conf --> Simulation
+config_source --> Simulation
 
 inputAccumulator --> Simulation
 
