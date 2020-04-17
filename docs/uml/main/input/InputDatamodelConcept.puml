@@ -31,17 +31,6 @@ package io.extractor {
 }
 
 package models {
-    interface StandardLoadProfile {
-        + getKey: String
-        + enum DefaultLoadProfiles
-        + {static} parse(String): StandardLoadProfile
-    }
-
-    enum BdewLoadProfile {
-        - key: String
-        + {static} get(String): BdewLoadProfile
-    }
-    BdewLoadProfile ..|> StandardLoadProfile
 
     abstract class UniqueEntity {
         + {static} UUID_FIELD_NAME: String
@@ -76,6 +65,7 @@ package models {
     childNote .. connector
     childNote .. graphics
     childNote .. thermal
+    childNote .. system
 
     package voltagelevels {
         class VoltageLevel {
@@ -173,147 +163,7 @@ package models {
 
         package connector {}
 
-        package system {
-            package characteristic {}
-
-            package type {
-                abstract class SystemParticipantTypeInput {
-                    - capex: ComparableQuantity<Currency> [€]
-                    - opex: ComparableQuantity<EnergyPrice> [€/MWh]
-                    - sRated: ComparableQuantity<Power> [kVA]
-                    - cosphiRated: Double
-                }
-                SystemParticipantTypeInput --|> AssetTypeInput
-
-                class BmTypeInput {
-                    - etaConv: ComparableQuantity<Dimensionless> [%]
-                    - activePowerGradient: ComparableQuantity<DimensionlessRate> [%/h]
-                }
-                BmTypeInput --|> SystemParticipantTypeInput
-
-                class ChpTypeInput {
-                    - etaEl: ComparableQuantity<Dimensionless> [%]
-                    - etaTh: ComparableQuantity<Dimensionless> [%]
-                    - pThermal: ComparableQuantity<Power> [kW]
-                    - pOwn: ComparableQuantity<Power> [kW]
-                }
-                ChpTypeInput --|> SystemParticipantTypeInput
-
-                class EvTypeInput {
-                    - eStorage: ComparableQuantity<Energy> [kWh]
-                    - eCons: ComparableQuantity<SpecificEnergy> [kWh/km]
-                }
-                EvTypeInput --|> SystemParticipantTypeInput
-
-                class HpTypeInput {
-                    - pThermal: ComparableQuantity<Power> [kW]
-                }
-                HpTypeInput --|> SystemParticipantTypeInput
-
-                class StorageTypeInput {
-                    - eStorage: ComparableQuantity<Energy> [kWh]
-                    - pMax: ComparableQuantity<Power> [kW]
-                    - activePowerGradient: ComparableQuantity<DimensionlessRate> [%/h]
-                    - eta: ComparableQuantity<Dimensionless> [%]
-                    - dod: ComparableQuantity<Dimensionless> [%]
-                    - lifeTime: ComparableQuantity<Time> [h]
-                    - lifeCycle: int
-                }
-                StorageTypeInput --|> SystemParticipantTypeInput
-
-                class WecTypeInput {
-                    - cpCharacteristic: WecCharacteristicInput
-                    - etaConv: ComparableQuantity<Dimensionless> [%]
-                    - rotorArea: ComparableQuantity<Area> [m²]
-                    - hubHeight: ComparableQuantity<Length> [m]
-                }
-                WecTypeInput --|> SystemParticipantTypeInput
-            }
-
-            abstract class SystemParticipantInput {
-                - node: NodeInput
-                - qCharacteristics: ReactivePowerCharacteristicInput
-            }
-            SystemParticipantInput --|> AssetInput
-            SystemParticipantInput ..|> HasNodes
-
-            class BmInput {
-                - type: BmTypeInput
-                - marketReaction: Boolean
-                - costControlled: Boolean
-                - feedInTariff: ComparableQuantity<SpecificCurrency> [€/MWh]
-            }
-            BmInput --|> SystemParticipantInput
-            BmInput ..|> HasType
-
-            class ChpInput {
-                - thermalBus: ThermalBusInput
-                - type: ChpTypeInput
-                - thermalStorage: ThermalStorageInput
-                - marketReaction: Boolean
-            }
-            ChpInput --|> SystemParticipantInput
-            ChpInput ..|> HasThermalBus
-            ChpInput ..|> HasType
-            ChpInput ..|> HasThermalStorage
-
-            class EvInput {
-                - type: EvTypeInput
-            }
-            EvInput --|> SystemParticipantInput
-            EvInput ..|> HasType
-
-            class FixedFeedInInput {
-                - sRated: ComparableQuantity<Power> [kVA]
-                - cosphiRated: double
-            }
-            FixedFeedInInput --|> SystemParticipantInput
-
-            class HpInput {
-                - type: HpTypeInput
-                - thermalBus: ThermalBusInput
-            }
-            HpInput --|> SystemParticipantInput
-            HpInput ..|> HasType
-            HpInput ..|> HasThermalBus
-
-            class LoadInput {
-                - standardLoadProfile: StandardLoadProfile
-                - dsm: Boolean
-                - sRated: ComparableQuantity<Power> [kVA]
-                - eConsAnnual: ComparableQuantity<Energy> [kWh]
-                - cosPhiRated: double
-            }
-            LoadInput --|> SystemParticipantInput
-            LoadInput *-- StandardLoadProfile
-
-            class PvInput {
-                - albedo: Double
-                - azimuth: ComparableQuantity<Angle> [°]
-                - etaConv: ComparableQuantity<Dimensionless> [%]
-                - height: ComparableQuantity<Angle> [°]
-                - kG: Double
-                - kT: Double
-                - marketReaction: Boolean
-                - sRated: ComparableQuantity<Power> [kVA]
-                - cosPhiRated: double
-            }
-            PvInput --|> SystemParticipantInput
-
-            class StorageInput {
-                - type: StorageTypeInput
-                - behaviour: StorageStrategy
-            }
-            StorageInput --|> SystemParticipantInput
-            StorageInput ..|> HasType
-
-            class WecInput{
-                - type: WecTypeInput
-                - marketReaction: boolean
-            }
-            WecInput --|> SystemParticipantInput
-            WecInput ..|> HasType
-        }
+        package system {}
 
         package thermal {}
     }
