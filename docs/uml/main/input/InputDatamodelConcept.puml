@@ -1,8 +1,6 @@
 @startuml
 note "For better readability no getters are shown in the classes. Also the final attributes are not marked especially." as generalNote
 
-interface Comparable<T>
-
 package io.extractor {
     interface NestedEntity
 
@@ -176,64 +174,7 @@ package models {
         package connector {}
 
         package system {
-            package characteristic {
-                class CharacteristicPoint <A extends Quantity<A>, O extends Quantity<O>> {
-                    + {static} REQUIRED_FORMAT: String
-                    - x: ComparableQuantity<A>
-                    - y: ComparableQuantity<O>
-                    + deSerialize(int): String
-                    - {static} buildExceptionMessage(String): String
-                    - {static} buildExceptionMessage(String, String): String
-                }
-                CharacteristicPoint ..|> Comparable: <<bind>>:CharacteristicPoint<A, O>
-
-                abstract class CharacteristicInput <A extends Quantity<A>, O extends Quantity<O>> {
-                    # characteristicPrefix: String
-                    # decimalPlaces: int
-                    # points: SortedSet<CharacteristicPoint<A,O>>
-                    + deSerialize(): String
-                    + {static} buildStartingRegex(String): String
-                    - extractCoordinateList(String): String
-                    - buildCoordinatesFromString(String, Unit<A>, Unit<O>): SortedSet<CharacteristicPoint<A, O>>
-                }
-                CharacteristicInput "1" *-- "n" CharacteristicPoint
-
-                class OlmCharacteristicInput {
-                    + {static} CONSTANT_CHARACTERISTIC: OlmCharacteristicInput
-                    - {static} buildConstantCharacteristic(): OlmCharacteristicInput
-                }
-                OlmCharacteristicInput --|> CharacteristicInput: <<bind>>A::Speed,O::Dimensionless
-
-                class WecCharacteristicInput
-                WecCharacteristicInput --|> CharacteristicInput: <<bind>>A::Power,O::Dimensionless
-
-                class EvCharacteristicInput
-                EvCharacteristicInput --|> CharacteristicInput: <<bind>>A::Speed,O::Dimensionless
-
-                abstract class ReactivePowerCharacteristic {
-                    + {static} parse(String): ReactivePowerCharacteristic
-                }
-                ReactivePowerCharacteristic --|> CharacteristicInput: <<bind>>A::Dimensionless,O::Dimensionless
-
-                class CosPhiFixed {
-                    + {static} PREFIX: String
-                    + {static} STARTING_REGEX: String
-                    + {static} CONSTANT_CHARACTERISTIC: CosPhiFixed
-                }
-                CosPhiFixed --|> ReactivePowerCharacteristic
-
-                class CosPhiP {
-                    + {static} PREFIX: String
-                    + {static} STARTING_REGEX: String
-                }
-                CosPhiP --|> ReactivePowerCharacteristic
-
-                class QV {
-                    + {static} PREFIX: String
-                    + {static} STARTING_REGEX: String
-                }
-                QV --|> ReactivePowerCharacteristic: <<bind>>A::Power
-            }
+            package characteristic {}
 
             package type {
                 abstract class SystemParticipantTypeInput {
