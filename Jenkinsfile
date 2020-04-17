@@ -59,9 +59,6 @@ def mainProjectGradleTasks = "jacocoTestReport jacocoTestCoverageVerification" /
 // NOTE: artifactory task with credentials will be added below
 def deployGradleTasks = ""
 
-/// prepare debugging info about deployed artifacts
-String deployedArtifacts = "none"
-
 /// commit hash
 def commitHash = ""
 
@@ -70,22 +67,26 @@ if (env.BRANCH_NAME == "master") {
     // setup
     getMasterBranchProps()
 
-    // release deployment
-    if (params.release == "true") {
-
-        // notify rocket chat about the release deployment
-        rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
-                message: "deploying release to oss sonatype. pls remember to stag and release afterwards!\n"
-        rawMessage: true
+    // pure deployment
+    if (params.deploy == "true") {
 
         node {
             ansiColor('xterm') {
+                // get the deployment version
+                def projectVersion =  sh(returnStdout: true, script: "cd ${projects.get(0)}; set +x; ./gradlew -q printVersion")
+
                 try {
+
+                    // notify rocket chat about the deployment
+                    rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
+                            message: "deploying v"+projectVersion+" to oss sonatype. if this is a release deployment pls remember to stag and release afterwards!\n"
+                    rawMessage: true
+
                     // set java version
                     setJavaVersion(javaVersionId)
 
                     // set build display name
-                    currentBuild.displayName = "release deployment" + " (" + currentBuild.displayName + ")"
+                    currentBuild.displayName = "deployment v"+projectVersion +" (" + currentBuild.displayName + ")"
 
                     // checkout from scm
                     stage('checkout from scm') {
@@ -121,7 +122,7 @@ if (env.BRANCH_NAME == "master") {
                         }
                     }
 
-                    // publish report und coverage 
+                    // publish report und coverage
                     stage('publish reports + coverage') {
                         // publish reports
                         publishReports()
@@ -135,22 +136,20 @@ if (env.BRANCH_NAME == "master") {
                     }
 
                     // deploy snapshot version to oss sonatype
-                    stage('deploy release') {
+                    stage('deploy') {
                         // get the sonatype credentials stored in the jenkins secure keychain
                         withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
                                          file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
                                          usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
                             deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
 
-                            gradle("${deployGradleTasks} -Prelease")
-
-                            deployedArtifacts = "${projects.get(0)}, "
+                            gradle("${deployGradleTasks}")
 
                         }
 
                         // notify rocket chat
                         rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
-                                message: "release deployment successful. pls remember visiting https://oss.sonatype.org" +
+                                message: "deployment v"+projectVersion+" successful. If this was a release deployment pls remember visiting https://oss.sonatype.org " +
                                         "too stag and release the artifact!" +
                                         "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
                                         "*branch:* master \n"
@@ -170,7 +169,7 @@ if (env.BRANCH_NAME == "master") {
 
                     // notify rocket chat
                     rocketSend channel: rocketChatChannel, emoji: ':jenkins_explode:',
-                            message: "release deployment failed!\n" +
+                            message: "deployment v"+projectVersion+" failed!\n" +
                                     "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
                                     "*branch:* master\n"
                     rawMessage: true
@@ -266,8 +265,6 @@ if (env.BRANCH_NAME == "master") {
                             deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
 
                             gradle("${deployGradleTasks}")
-
-                            deployedArtifacts = "${projects.get(0)}, "
 
                         }
 
@@ -368,7 +365,8 @@ if (env.BRANCH_NAME == "master") {
                 // execute sonarqube code analysis
                 stage('SonarQube analysis') {
                     withSonarQubeEnv() { // Will pick the global server connection from jenkins for sonarqube
-                         // do we have a PR?
+
+                        // do we have a PR?
                         String gradleCommand = "sonarqube -Dsonar.projectKey=$sonarqubeProjectKey"
 
                         if (env.CHANGE_ID != null) {
@@ -377,7 +375,6 @@ if (env.BRANCH_NAME == "master") {
                             gradleCommand = gradleCommand + " -Dsonar.branch.name=$featureBranchName"
                         }
                         gradle(gradleCommand)
-
                     }
                 }
 
@@ -445,7 +442,7 @@ def getFeatureBranchProps() {
 
 def getMasterBranchProps() {
     properties([parameters(
-            [string(defaultValue: '', description: '', name: 'release', trim: true)]),
+            [string(defaultValue: '', description: '', name: 'deploy', trim: true)]),
                 [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
                 [$class: 'ThrottleJobProperty', categories: [], limitOneJobWithMatchingParams: false, maxConcurrentPerNode: 0, maxConcurrentTotal: 0, paramsToUseForLimit: '', throttleEnabled: true, throttleOption: 'project']
     ])
