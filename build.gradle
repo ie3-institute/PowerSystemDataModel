@@ -23,7 +23,7 @@ ext {
 
 group = 'com.github.ie3-institute'
 description = 'PowerSystemDataModel'
-version = '0.1-SNAPSHOT'
+version = '1.0'
 sourceCompatibility = javaVersion
 targetCompatibility = javaVersion
 
@@ -40,19 +40,11 @@ repositories {
 	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
 	maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
 
-	// sonatype snapshots repo // todo remove
-	maven { url 'https://oss.sonatype.org/service/local/repositories/snapshots/content' }
-
 }
 
 dependencies {
-	// ie³ internal repository for units
-	//	compile 'com.github.ie3-institute:PowerSystemUtils:1.3' // todo enable again
-
-	// todo remove snapshot again
-	compile('com.github.ie3-institute:PowerSystemUtils:1.3-SNAPSHOT') {
-		exclude group: 'org.slf4j', module: 'slf4j-api'
-	}
+	//	 ie³ power system utils
+	compile 'com.github.ie3-institute:PowerSystemUtils:1.3.1'
 
 	compile "tec.uom:uom-se:$unitsOfMeasurementVersion"
 
