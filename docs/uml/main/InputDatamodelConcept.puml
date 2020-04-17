@@ -60,18 +60,49 @@ package models {
         + includes(ZonedDateTime): boolean
     }
 
-    package result {
-        abstract class ResultEntity
-        UniqueEntity <|-- ResultEntity
-    }
-    note left of result : cf. separate UML diagram
-
     interface Operable {
         + getOperationTime(): OperationTime
         + getOperator(): OperatorInput
         + inOperationOn(ZonedDateTime): boolean
     }
     Operable --|> NestedEntity
+
+    package result {}
+    package timeseries {}
+    package value {}
+    note "Has also children in these packages.\ncf. separate uml diagrams" as childNote
+    UniqueEntity .. childNote
+    childNote .. result
+    childNote .. timeseries
+    childNote .. value
+
+    package voltagelevels {
+        class VoltageLevel {
+            # id: String
+            # nominalVoltage: ComparableQuantity<ElectricPotential> [kV]
+        }
+
+        class CommonVoltageLevel {
+            # synonymousIds: Set<String>
+            # voltageRange: RightOpenInterval<ComparableQuantity<ElectricPotential>>
+            + covers(ComparableQuantity<ElectricPotential>): boolean
+            + covers(String, ComparableQuantity<ElectricPotential>): boolean
+        }
+        CommonVoltageLevel --|> VoltageLevel
+
+        class GermanVoltageLevelUtils {
+            + {static} LV: CommonVoltageLevel
+            + {static} MV_10KV: CommonVoltageLevel
+            + {static} MV_20KV: CommonVoltageLevel
+            + {static} MV_30KV: CommonVoltageLevel
+            + {static} HV: CommonVoltageLevel
+            + {static} EHV_220KV: CommonVoltageLevel
+            + {static} EHV_380KV: CommonVoltageLevel
+            - {static} germanVoltageLevels: Set<CommonVoltageLevel>
+            + {static} parse(ComparableQuantity<ElectricPotential>): CommonVoltageLevel
+            + {static} parse(String, ComparableQuantity<ElectricPotential>): CommonVoltageLevel
+        }
+    }
 
     package input {
         abstract class InputEntity
@@ -109,6 +140,7 @@ package models {
         }
         AssetInput --|> InputEntity
         AssetInput ..|> Operable
+        AssetInput *-- OperationTime
 
         class EvcsInput {
             ???
@@ -123,6 +155,7 @@ package models {
             - subnet: int
         }
         NodeInput --|> AssetInput
+        NodeInput *-- VoltageLevel
 
         class MeasurementUnitInput {
             - node: NodeInput
@@ -475,6 +508,7 @@ package models {
                 - cosPhiRated: double
             }
             LoadInput --|> SystemParticipantInput
+            LoadInput *-- StandardLoadProfile
 
             class PvInput {
                 - albedo: Double
@@ -535,146 +569,6 @@ package models {
             }
             CylindricalStorageInput --|> ThermalStorageInput
         }
-    }
-
-    package value {
-        interface Value
-
-        class EnergyPriceValue {
-            - price: ComparableQuantity<SpecificCurrency> [€/MWh]
-        }
-        EnergyPriceValue ..|> Value
-
-        class HeatDemandValue {
-            - heatDemand : ComparableQuantity<Power> [kW]
-        }
-        HeatDemandValue ..|> Value
-
-        class PValue {
-            - p: ComparableQuantity<Power> [kW]
-        }
-        PValue ..|> Value
-
-        class HeatAndPValue {
-            - heatDemand: ComparableQuantity<Power> [kW]
-        }
-        HeatAndPValue --|> PValue
-
-        class SValue {
-            - q: ComparableQuantity<Power> [kVAr]
-        }
-        SValue --|> PValue
-
-        class HeatAndSValue {
-            - heatDemand: ComparableQuantity<Power> [kW]
-        }
-        HeatAndSValue --|> SValue
-
-        class IrradiationValue {
-          - directIrradiation: ComparableQuantity<Irradiation> [kWh/m²]
-          - diffuseIrradiation: ComparableQuantity<Irradiation> [kWh/m²]
-        }
-        IrradiationValue ..|> Value
-
-        class TemperatureValue {
-          - temperature: ComparableQuantity<Temperature> [°C]
-        }
-        TemperatureValue ..|> Value
-
-        class WindValue {
-          - direction: ComparableQuantity<Angle> [°]
-          - velocity: ComparableQuantity<Speed> [m/s]
-        }
-        WindValue ..|> Value
-
-        class WeatherValue {
-          - coordinate: Point
-          - irradiation: IrradiationValue
-          - temperature: TemperatureValue
-          - wind: WindValue
-        }
-        WeatherValue ..|> Value
-        WeatherValue *-- IrradiationValue
-        WeatherValue *-- TemperatureValue
-        WeatherValue *-- WindValue
-    }
-
-    package voltagelevels {
-        class VoltageLevel {
-            # id: String
-            # nominalVoltage: ComparableQuantity<ElectricPotential> [kV]
-        }
-
-        class CommonVoltageLevel {
-            # synonymousIds: Set<String>
-            # voltageRange: RightOpenInterval<ComparableQuantity<ElectricPotential>>
-            + covers(ComparableQuantity<ElectricPotential>): boolean
-            + covers(String, ComparableQuantity<ElectricPotential>): boolean
-        }
-        CommonVoltageLevel --|> VoltageLevel
-
-        class GermanVoltageLevelUtils {
-            + {static} LV: CommonVoltageLevel
-            + {static} MV_10KV: CommonVoltageLevel
-            + {static} MV_20KV: CommonVoltageLevel
-            + {static} MV_30KV: CommonVoltageLevel
-            + {static} HV: CommonVoltageLevel
-            + {static} EHV_220KV: CommonVoltageLevel
-            + {static} EHV_380KV: CommonVoltageLevel
-            - {static} germanVoltageLevels: Set<CommonVoltageLevel>
-            + {static} parse(ComparableQuantity<ElectricPotential>): CommonVoltageLevel
-            + {static} parse(String, ComparableQuantity<ElectricPotential>): CommonVoltageLevel
-        }
-    }
-
-    package timeseries {
-        abstract class TimeSeries<E extends Entry<V>, V extends Value> {
-            # entries: Set<E>
-            + Optional<TimeBasedValue<V>> getTimeBasedValue(ZonedDateTime)
-            + Optional<V> getValue(ZonedDateTime)
-            + Set<E> getEntries()
-            + Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime)
-            + Optional<TimeBasedValue<V>> getNextTimeBasedValue(ZonedDateTime)
-            # Optional<ZonedDateTime> getPreviousDateTime()
-            # Optional<ZonedDateTime> getNextDateTime()
-        }
-        TimeSeries --|> UniqueEntity
-        TimeSeries "1" *-- "n" TimeSeriesEntry
-
-        class IndividualTimeSeries<V extends Value> {
-            - Map<ZonedDateTime, TimeBasedValue<V>> timeToValue
-        }
-        IndividualTimeSeries --|> TimeSeries: <<bind>>:TimeBasedValue<V>
-
-        abstract class RepetitiveTimeSeries<E extends TimeSeriesEntry<V>, V extends Value> {
-            # calc(ZonedDateTime): T
-        }
-        RepetitiveTimeSeries --|> TimeSeries
-
-        class LoadProfileInput {
-            - type: StandardLoadProfile
-            - dayOfWeekToHourlyValues: Map<DayOfWeek, Map<Integer, PValue>>
-        }
-        LoadProfileInput --|> RepetitiveTimeSeries
-        LoadProfileInput *-- StandardLoadProfile
-
-        abstract class TimeSeriesEntry <V extends Value> {
-            # value: V
-        }
-        TimeSeriesEntry --|> UniqueEntity
-        TimeSeriesEntry *-- Value
-
-        abstract class TimeBasedValue<V extends Value>{
-            - time: ZonedDateTime
-        }
-        TimeBasedValue --|> TimeSeriesEntry
-        TimeBasedValue ..|> Comparable: <<bind>>:<TimeBasedValue>
-
-        class LoadProfileEntry {
-            - dayOfWeek: DayOfWeek
-            - quarterHourOfDay: int
-        }
-        LoadProfileEntry --|> TimeSeriesEntry: <<bind>>:PValue
     }
 }
 
