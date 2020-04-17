@@ -37,13 +37,7 @@ package models {
     }
 
     class OperationTime {
-        - startDate: ZonedDateTime
-        - endDate: ZonedDateTime
-        - isLimited: boolean
-        + {static} notLimited(): OperationTime
-        + {static} builder(): OperationTimeBuilder
-        + getOperationLimit(): Optional<ClosedInterval<ZonedDateTime>>
-        + includes(ZonedDateTime): boolean
+        cf. other uml diagram for details
     }
 
     interface Operable {
@@ -64,41 +58,12 @@ package models {
     childNote .. system
     childNote .. thermal
 
-    package voltagelevels {
-        class VoltageLevel {
-            # id: String
-            # nominalVoltage: ComparableQuantity<ElectricPotential> [kV]
-        }
-
-        class CommonVoltageLevel {
-            # synonymousIds: Set<String>
-            # voltageRange: RightOpenInterval<ComparableQuantity<ElectricPotential>>
-            + covers(ComparableQuantity<ElectricPotential>): boolean
-            + covers(String, ComparableQuantity<ElectricPotential>): boolean
-        }
-        CommonVoltageLevel --|> VoltageLevel
-
-        class GermanVoltageLevelUtils {
-            + {static} LV: CommonVoltageLevel
-            + {static} MV_10KV: CommonVoltageLevel
-            + {static} MV_20KV: CommonVoltageLevel
-            + {static} MV_30KV: CommonVoltageLevel
-            + {static} HV: CommonVoltageLevel
-            + {static} EHV_220KV: CommonVoltageLevel
-            + {static} EHV_380KV: CommonVoltageLevel
-            - {static} germanVoltageLevels: Set<CommonVoltageLevel>
-            + {static} parse(ComparableQuantity<ElectricPotential>): CommonVoltageLevel
-            + {static} parse(String, ComparableQuantity<ElectricPotential>): CommonVoltageLevel
-        }
-    }
-
     package input {
         abstract class InputEntity
         InputEntity --|> UniqueEntity
 
         class OperatorInput {
-            + {static} NO_OPERATOR_ASSIGNED: OperatorInput
-            - name: String
+            cf. other uml diagram for details
         }
         OperatorInput --|> InputEntity
 
@@ -113,14 +78,8 @@ package models {
         AssetInput *-- OperatorInput
 
         class NodeInput {
-            - vTarget: ComparableQuantity<Dimensionless> [pU]
-            - slack: Boolean
-            - geoPosition: Point
-            - voltLvl: VoltageLevel
-            - subnet: int
+            cf. other uml diagram for details
         }
-        NodeInput --|> AssetInput
-        NodeInput *-- VoltageLevel
 
         abstract class AssetTypeInput {
             - id: String

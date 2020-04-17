@@ -76,6 +76,7 @@ package models {
     childNote .. timeseries
     childNote .. value
     childNote .. connector
+    childNote .. graphics
 
     package voltagelevels {
         class VoltageLevel {
@@ -115,26 +116,7 @@ package models {
         }
         OperatorInput --|> InputEntity
 
-        package graphics {
-            abstract class GraphicInput {
-                - graphicLayer: String
-                - path: LineString
-            }
-            GraphicInput --|> InputEntity
-
-            class NodeGraphicInput {
-                - node: NodeInput
-                - point: Point
-            }
-            NodeGraphicInput --|> GraphicInput
-            NodeGraphicInput ..|> HasNodesC
-
-            class LineGraphicInput {
-                - line: LineInput
-            }
-            LineGraphicInput --|> GraphicInput
-            LineGraphicInput ..|> HasLine
-        }
+        package graphics {}
 
         abstract class AssetInput {
             - id: String

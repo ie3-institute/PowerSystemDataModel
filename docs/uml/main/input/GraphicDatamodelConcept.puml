@@ -1,0 +1,102 @@
+@startuml
+note "For better readability no getters are shown in the classes. Also the final attributes are not marked especially." as generalNote
+
+package io.extractor {
+    interface NestedEntity
+
+    interface HasNodes {
+        + allNodes(): List<NodeInput>
+    }
+    HasNodes --|> NestedEntity
+
+    interface HasThermalBus {
+        + getThermalBus(): ThermalBusInput
+    }
+    HasThermalBus --|> NestedEntity
+
+    interface HasThermalStorage {
+        + getThermalStorage(): ThermalStorageInput
+    }
+    HasThermalStorage --|> NestedEntity
+
+    interface HasType {
+        + getType(): AssetTypeInput
+    }
+    HasType --|> NestedEntity
+
+    interface HasLine {
+        + getLine(): LineInput
+    }
+    HasLine --|> NestedEntity
+}
+
+package models {
+
+    abstract class UniqueEntity {
+        + {static} UUID_FIELD_NAME: String
+        - uuid: UUID
+    }
+
+    interface Operable {
+        + getOperationTime(): OperationTime
+        + getOperator(): OperatorInput
+        + inOperationOn(ZonedDateTime): boolean
+    }
+    Operable --|> NestedEntity
+
+    package result {}
+    package timeseries {}
+    package value {}
+    note "Has also children in these packages.\ncf. separate uml diagrams" as childNote
+    UniqueEntity .. childNote
+    childNote .. result
+    childNote .. timeseries
+    childNote .. value
+    childNote .. connector
+    childNote .. system
+    childNote .. thermal
+
+    package input {
+        abstract class InputEntity
+        InputEntity --|> UniqueEntity
+
+        class NodeInput {
+            cf. other uml diagram for details
+        }
+
+        package connector {
+            class LineInput {
+                cf. other uml diagram for details
+            }
+        }
+
+        package graphics {
+            abstract class GraphicInput {
+                - graphicLayer: String
+                - path: LineString
+            }
+            GraphicInput --|> InputEntity
+
+            class NodeGraphicInput {
+                - node: NodeInput
+                - point: Point
+            }
+            NodeGraphicInput --|> GraphicInput
+            NodeGraphicInput ..|> HasNodes
+            NodeGraphicInput *-- NodeInput
+
+            class LineGraphicInput {
+                - line: LineInput
+            }
+            LineGraphicInput --|> GraphicInput
+            LineGraphicInput ..|> HasLine
+            LineGraphicInput *-- LineInput
+        }
+
+        package system {}
+
+        package thermal {}
+    }
+}
+
+@enduml
