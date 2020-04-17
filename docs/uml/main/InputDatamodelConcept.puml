@@ -1,18 +1,154 @@
 @startuml
+note "For better readability no getters are shown in the classes. Also the final attributes are not marked especially." as generalNote
 
-abstract Class UniqueEntity {
+interface Comparable<T>
+
+interface StandardLoadProfile {
+    + getKey: String
+    + enum DefaultLoadProfiles
+    + {static} parse(String): StandardLoadProfile
+}
+
+enum BdewLoadProfile {
+    - key: String
+    + {static} get(String): BdewLoadProfile
+}
+BdewLoadProfile ..|> StandardLoadProfile
+
+abstract class UniqueEntity {
+    + {static} UUID_FIELD_NAME: String
     + uuid: UUID
 }
 
-abstract Class InputEntity
-InputEntity --|> UniqueEntity
+package result {
+    abstract class ResultEntity
+    UniqueEntity <|-- ResultEntity
+}
+note left of result : cf. separate UML diagram
 
-Interface Operable {
+package input {
+    abstract class InputEntity
+    InputEntity --|> UniqueEntity
+}
+
+package value {
+    interface Value
+
+    class EnergyPriceValue {
+        - price: ComparableQuantity<SpecificCurrency> [€/MWh]
+    }
+    EnergyPriceValue ..|> Value
+
+    class HeatDemandValue {
+        - heatDemand : ComparableQuantity<Power> [kW]
+    }
+    HeatDemandValue ..|> Value
+
+    class PValue {
+        - p: ComparableQuantity<Power> [kW]
+    }
+    PValue ..|> Value
+
+    class HeatAndPValue {
+        - heatDemand: ComparableQuantity<Power> [kW]
+    }
+    HeatAndPValue --|> PValue
+
+    class SValue {
+        - q: ComparableQuantity<Power> [kVAr]
+    }
+    SValue --|> PValue
+
+    class HeatAndSValue {
+        - heatDemand: ComparableQuantity<Power> [kW]
+    }
+    HeatAndSValue --|> SValue
+
+    class IrradiationValue {
+      - directIrradiation: ComparableQuantity<Irradiation> [kWh/m²]
+      - diffuseIrradiation: ComparableQuantity<Irradiation> [kWh/m²]
+    }
+    IrradiationValue ..|> Value
+
+    class TemperatureValue {
+      - temperature: ComparableQuantity<Temperature> [°C]
+    }
+    TemperatureValue ..|> Value
+
+    class WindValue {
+      - direction: ComparableQuantity<Angle> [°]
+      - velocity: ComparableQuantity<Speed> [m/s]
+    }
+    WindValue ..|> Value
+
+    class WeatherValue {
+      - coordinate: Point
+      - irradiation: IrradiationValue
+      - temperature: TemperatureValue
+      - wind: WindValue
+    }
+    WeatherValue ..|> Value
+    WeatherValue *-- IrradiationValue
+    WeatherValue *-- TemperatureValue
+    WeatherValue *-- WindValue
+}
+
+package timeseries {
+    abstract class TimeSeries<E extends Entry<V>, V extends Value> {
+        - entries: Set<E>
+        + Optional<TimeBasedValue<V>> getTimeBasedValue(ZonedDateTime)
+        + Optional<V> getValue(ZonedDateTime)
+        + Set<E> getEntries()
+        + Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime)
+        + Optional<TimeBasedValue<V>> getNextTimeBasedValue(ZonedDateTime)
+        - Optional<ZonedDateTime> getPreviousDateTime()
+        - Optional<ZonedDateTime> getNextDateTime()
+    }
+    TimeSeries --|> UniqueEntity
+    TimeSeries "1" *-- "n" Entry
+    
+    class IndividualTimeSeries<V extends Value> {
+        - Map<ZonedDateTime, TimeBasedValue<V>> timeToValue
+    }
+    IndividualTimeSeries --|> TimeSeries: <<bind>>:TimeBasedValue<V>
+    
+    abstract class RepetitiveTimeSeries<E extends TimeSeriesEntry<V>, V extends Value> {
+        - calc(ZonedDateTime): T
+    }
+    RepetitiveTimeSeries --|> TimeSeries
+    
+    class LoadProfileInput {
+        - type: StandardLoadProfile
+        - dayOfWeekToHourlyValues: Map<DayOfWeek, Map<Integer, PValue>>
+    }
+    LoadProfileInput --|> RepetitiveTimeSeries
+    LoadProfileInput *-- StandardLoadProfile
+
+    abstract class TimeSeriesEntry <V extends Value> {
+        - value: V
+    }
+    TimeSeriesEntry --|> UniqueEntity
+    TimeSeriesEntry *-- Value
+
+    abstract class TimeBasedValue<V extends Value>{
+        - time: ZonedDateTime
+    }
+    TimeBasedValue --|> TimeSeriesEntry
+    TimeBasedValue ..|> Comparable: <<bind>>:<TimeBasedValue>
+
+    class LoadProfileEntry {
+        - dayOfWeek: DayOfWeek
+        - quarterHourOfDay: int
+    }
+    LoadProfileEntry --|> TimeSeriesEntry: <<bind>>:PValue
+}
+
+interface Operable {
     + inOperation: Boolean
 }
 Operable --|> NestedEntity
 
-abstract Class AssetInput {
+abstract class AssetInput {
     - id: String
     - operationTime: OperationTime
     - operator: OperatorInput
@@ -20,19 +156,19 @@ abstract Class AssetInput {
 AssetInput --|> InputEntity
 AssetInput ..|> Operable
 
-abstract Class SystemParticipantInput {
+abstract class SystemParticipantInput {
     - node: NodeInput
     - qCharacteristics: ReactivePowerCharacteristicInput
 }
 SystemParticipantInput --|> AssetInput
 SystemParticipantInput ..|> HasNodes
 
-Class OperatorInput {
+class OperatorInput {
     + name: String
 }
 OperatorInput --|> InputEntity
 
-abstract Class ConnectorInput {
+abstract class ConnectorInput {
     + nodeA: NodeInput
     + nodeB: NodeInput
     + parallelDevices: Integer
@@ -40,65 +176,63 @@ abstract Class ConnectorInput {
 ConnectorInput --|> AssetInput
 ConnectorInput ..|> HasNodes
 
-Interface Comparable
-
-Class CharacteristicCoordinate <A extends Quantity<A>, O extends Quantity<O>> {
+class CharacteristicCoordinate <A extends Quantity<A>, O extends Quantity<O>> {
     - x: ComparableQuantity<A>
     - y: ComparableQuantity<O>
     + deSerialize(Int): String
 }
 CharacteristicCoordinate ..|> Comparable
 
-abstract Class CharacteristicInput <A extends Quantity<A>, O extends Quantity<O>> {
+abstract class CharacteristicInput <A extends Quantity<A>, O extends Quantity<O>> {
     - characteristicPrefix: String
     - decimalPlaces: int
     - points: SortedSet<CharacteristicCoordinate>
     + deSerialize(): String
-    + <<static>> buildStartingRegex(String): String
+    + {static} buildStartingRegex(String): String
     - extractCoordinateList(String): String
     - buildCoordinatesFromString(String, Unit<A>, Unit<O>): SortedSet<CharacteristicCoordinate<A, O>>
 }
-CharacteristicInput "1" --* "n" CharacteristicCoordinate
+CharacteristicInput "1" *-- "n" CharacteristicCoordinate
 
-Class WecCharacteristicInput {
+class WecCharacteristicInput {
 }
 WecCharacteristicInput --|> CharacteristicInput: <<bind>>A::Power,O::Dimensionless
 
-Class EvCharacteristicInput {
+class EvCharacteristicInput {
 }
 EvCharacteristicInput --|> CharacteristicInput: <<bind>>A::Speed,O::Dimensionless
 
-Class OlmCharacteristicInput {
-    + <<static>> CONSTANT_CHARACTERISTIC: OlmCharacteristicInput
+class OlmCharacteristicInput {
+    + {static} CONSTANT_CHARACTERISTIC: OlmCharacteristicInput
 }
 OlmCharacteristicInput --|> CharacteristicInput: <<bind>>A::Speed,O::Dimensionless
 
-abstract Class ReactivePowerCharacteristic {
-    + <<static>> parse(String): ReactivePowerCharacteristic
+abstract class ReactivePowerCharacteristic {
+    + {static} parse(String): ReactivePowerCharacteristic
 }
 ReactivePowerCharacteristic --|> CharacteristicInput: <<bind>>A::Dimensionless,O::Dimensionless
 
-Class CosPhiFixed {
-    + <<static>> CONSTANT_CHARACTERISTIC: CosPhiFixed
+class CosPhiFixed {
+    + {static} CONSTANT_CHARACTERISTIC: CosPhiFixed
 }
 CosPhiFixed --|> ReactivePowerCharacteristic
 
-Class CosPhiP {
-    + <<static>> CONSTANT_CHARACTERISTIC: CosPhiP
+class CosPhiP {
+    + {static} CONSTANT_CHARACTERISTIC: CosPhiP
 }
 CosPhiP --|> ReactivePowerCharacteristic
 
-Class QV {
-    + <<static>> CONSTANT_CHARACTERISTIC: QV
+class QV {
+    + {static} CONSTANT_CHARACTERISTIC: QV
 }
 QV --|> ReactivePowerCharacteristic: <<bind>>A::Power
 
-abstract Class AssetTypeInput {
+abstract class AssetTypeInput {
     + id: String
 }
 AssetTypeInput --|> InputEntity
 
-abstract Class SystemParticipantTypeInput {
+abstract class SystemParticipantTypeInput {
     - capex: ComparableQuantity<Currency> [€]
     - opex: ComparableQuantity<EnergyPrice> [€/MWh]
     - sRated: ComparableQuantity<Power> [kVA]
@@ -108,7 +242,7 @@ SystemParticipantTypeInput --|> AssetTypeInput
 
 
 
-Class BmTypeInput {
+class BmTypeInput {
    - capex: ComparableQuantity<Currency> [€]
    - opex: ComparableQuantity<EnergyPrice> [€/MWh]
    - cosphiRated: double
@@ -118,7 +252,7 @@ Class BmTypeInput {
 }
 BmTypeInput --|> SystemParticipantTypeInput
 
-Class ChpTypeInput {
+class ChpTypeInput {
     - capex: ComparableQuantity<Currency> [€]
     - opex: ComparableQuantity<EnergyPrice> [€/MWh]
     - cosphiRated: double
@@ -130,7 +264,7 @@ Class ChpTypeInput {
  }
 ChpTypeInput --|> SystemParticipantTypeInput
 
-Class EvTypeInput {
+class EvTypeInput {
     - capex: ComparableQuantity<Currency> [€]
     - opex: ComparableQuantity<EnergyPrice> [€/MWh]
     - cosphiRated: double
@@ -141,7 +275,7 @@ Class EvTypeInput {
 EvTypeInput --|> SystemParticipantTypeInput
 
 
-Class HpTypeInput {
+class HpTypeInput {
     - capex: ComparableQuantity<Currency> [€]
     - opex: ComparableQuantity<EnergyPrice> [€/MWh]
     - cosphiRated: double
@@ -151,7 +285,7 @@ Class HpTypeInput {
 HpTypeInput --|> SystemParticipantTypeInput
 
 
-Class StorageTypeInput {
+class StorageTypeInput {
     - capex: ComparableQuantity<Currency> [€]
 - opex: ComparableQuantity<EnergyPrice> [€/MWh]
 - cosphiRated: double
@@ -166,7 +300,7 @@ Class StorageTypeInput {
 }
 StorageTypeInput --|> SystemParticipantTypeInput
 
-Class WecTypeInput {
+class WecTypeInput {
     - rotorArea: ComparableQuantity<Area> [m²]
     - hubHeight: ComparableQuantity<Length> [m]
     - etaConv: ComparableQuantity<Dimensionless> [%]
@@ -175,7 +309,7 @@ Class WecTypeInput {
 WecTypeInput --|> SystemParticipantTypeInput
 
 
-Class LineTypeInput {
+class LineTypeInput {
     + r: ComparableQuantity<SpecificResistance> (Ohm/km)
     + x: ComparableQuantity<SpecificResistance> (Ohm/km)
     + g: ComparableQuantity<SpecificConductance> (µS/km)
@@ -186,7 +320,7 @@ Class LineTypeInput {
 }
 LineTypeInput --|> AssetTypeInput
 
-Class Transformer2WTypeInput {
+class Transformer2WTypeInput {
     + sRated: ComparableQuantity<Power> (MVA)
     + vRatedA: ComparableQuantity<ElectricPotential> (kV)
     + vRatedB: ComparableQuantity<ElectricPotential> (kV)
@@ -203,7 +337,7 @@ Class Transformer2WTypeInput {
 }
 Transformer2WTypeInput --|> AssetTypeInput
 
-Class Transformer3WTypeInput {
+class Transformer3WTypeInput {
     + vRatedA: ComparableQuantity<ElectricPotential> (kV)
     + vRatedB: ComparableQuantity<ElectricPotential> (kV)
     + vRatedC: ComparableQuantity<ElectricPotential> (kV)
@@ -226,7 +360,7 @@ Class Transformer3WTypeInput {
 }
 Transformer3WTypeInput --|> AssetTypeInput
 
-Class RandomLoadParameter {
+class RandomLoadParameter {
     + quarterHour: Integer
     + kWd: Double
     + kSa: Double
@@ -256,13 +390,13 @@ HasLine --|> NestedEntity
 interface HasBus
 HasBus --|> NestedEntity
 
-Class FixedFeedInInput {
+class FixedFeedInInput {
     - sRated: ComparableQuantity<Power> [kVA]
     - cosphiRated: double
 }
 FixedFeedInInput --|> SystemParticipantInput
 
-Class PvInput {
+class PvInput {
     - sRated: ComparableQuantity<Power> [kVA]
     - cosphiRated: double
     - azimuth: ComparableQuantity<Angle> [Degrees]
@@ -275,21 +409,21 @@ Class PvInput {
 }
 PvInput --|> SystemParticipantInput
 
-Class WecInput{
+class WecInput{
     - type: WecTypeInput
     - marketReaction: Boolean
 }
 WecInput --|> SystemParticipantInput
 WecInput ..|> HasType
 
-Class ChpInput {
+class ChpInput {
     - type: ChpTypeInput
     - marketReaction: Boolean
 }
 ChpInput --|> SystemParticipantInput
 ChpInput ..|> HasType
 
-Class BmInput {
+class BmInput {
     - type: BmTypeInput
     - sRated: ComparableQuantity<Power> [KW]
     - feedInTariff: ComparableQuantity<SpecificCurrency> [€/kWh]
@@ -299,13 +433,13 @@ Class BmInput {
 BmInput --|> SystemParticipantInput
 BmInput ..|> HasType
 
-Class EvInput {
+class EvInput {
     - type: EvTypeInput
 }
 EvInput --|> SystemParticipantInput
 EvInput ..|> HasType
 
-Class LoadInput {
+class LoadInput {
     - scenario: String
     - sRated: ComparableQuantity<Power> [kVA]
     - eConsAnnual: ComparableQuantity<Energy> [kWh]
@@ -313,45 +447,45 @@ Class LoadInput {
 }
 LoadInput --|> SystemParticipantInput
 
-Class StorageInput {
+class StorageInput {
     - type: StorageTypeInput
     - behaviour: String
 }
 StorageInput --|> SystemParticipantInput
 StorageInput ..|> HasType
 
-Class HpInput {
+class HpInput {
     - type: HpTypeInput
 }
 HpInput --|> SystemParticipantInput
 HpInput ..|> HasType
 
-Abstract Class ThermalUnitInput {
+abstract class ThermalUnitInput {
  - uuid: UUID
  - bus: ThermalBusInput
 }
 ThermalUnitInput --|> AssetInput
-ThermalUnitInput --|> HasBus
+ThermalUnitInput ..|> HasBus
 
-Class ThermalBusInput {
+class ThermalBusInput {
 }
 ThermalBusInput --|> AssetInput
 
-Abstract Class ThermalSinkInput {
+abstract class ThermalSinkInput {
 }
 ThermalSinkInput --|> ThermalUnitInput
 
-Class ThermalHouseInput {
+class ThermalHouseInput {
  - ethCapa: ComparableQuantity<HeatCapacity> [kWh / K]
  - ethLosses: ComparableQuantity<ThermalConductance> [kW / K]
 }
 ThermalHouseInput --|> ThermalSinkInput
 
-Abstract Class ThermalStorageInput {
+abstract class ThermalStorageInput {
 }
 ThermalStorageInput --|> ThermalUnitInput
 
-Class CylindricalStorageInput {
+class CylindricalStorageInput {
   - storageVolumeLvl: ComparableQuantity<Volume>
   - storageVolumeLvlMin: ComparableQuantity<Volume>
   - inletTemp: ComparableQuantity<Temperature>
@@ -360,7 +494,7 @@ Class CylindricalStorageInput {
 }
 CylindricalStorageInput --|> ThermalStorageInput
 
-Class MeasurementUnitInput {
+class MeasurementUnitInput {
     + node: NodeInput
     + vMag: Boolean [default f]
     + vAng: Boolean [default f]
@@ -368,9 +502,9 @@ Class MeasurementUnitInput {
     + q: Boolean [default f]
 }
 MeasurementUnitInput --|> AssetInput
-MeasurementUnitInput --|> HasNodes
+MeasurementUnitInput ..|> HasNodes
 
-Class NodeInput {
+class NodeInput {
     + vTarget: ComparableQuantity<Dimensionless> (pU)
     + vRated: ComparableQuantity<ElectricPotential> (kV)
     + slack: Boolean
@@ -380,12 +514,12 @@ Class NodeInput {
 }
 NodeInput --|> AssetInput
 
-Class EvcsInput {
+class EvcsInput {
 ???
 }
 EvcsInput --|> AssetInput
 
-Class LineInput {
+class LineInput {
     - type: LineTypeInput
     - length: ComparableQuantity<Length> (km)
     - amount: Integer
@@ -395,7 +529,7 @@ Class LineInput {
 LineInput --|> ConnectorInput
 LineInput ..|> HasType
 
-Class SwitchInput {
+class SwitchInput {
     + closed: Boolean
 }
 SwitchInput --|> ConnectorInput
@@ -407,126 +541,39 @@ abstract TransformerInput {
 }
 TransformerInput --|> ConnectorInput
 
-Class Transformer2WInput {
+class Transformer2WInput {
     + type: Transformer2WTypeInput
 }
 Transformer2WInput --|> TransformerInput
 Transformer2WInput ..|> HasType
 
-Class Transformer3WInput {
+class Transformer3WInput {
     + nodeC: NodeInput
     + type: Transformer3WTypeInput
 }
 Transformer3WInput --|> TransformerInput
 Transformer3WInput ..|> HasType
 
-abstract Class GraphicInput {
+abstract class GraphicInput {
     + graphicLayer: String
     + path: LineString
 }
 GraphicInput --|> InputEntity
 
-Class NodeGraphicInput {
+class NodeGraphicInput {
     + node: NodeInput
     + point: Point
 }
 NodeGraphicInput --|> GraphicInput
-NodeGraphicInput --|> HasNodes
+NodeGraphicInput ..|> HasNodes
 
-Class LineGraphicInput {
+class LineGraphicInput {
     + line: LineInput
 }
 LineGraphicInput --|> GraphicInput
-LineGraphicInput --|> HasLine
+LineGraphicInput ..|> HasLine
 
-Abstract Class Entry <V extends Value> {
-    - value: V
-}
-Entry --|> UniqueEntity
-Entry --* Value
-
-Class LoadProfileEntry {
-    - dayOfWeek: DayOfWeek
-    - quarterHourOfDay: int
-}
-LoadProfileEntry --|> Entry: <<bind>>:PValue
-
-abstract Class TimeBasedValue<V extends Value>{
-    - time: ZonedDateTime
-}
-TimeBasedValue --|> Entry: <<bind>>:V
-
-Interface Value
-
-Class EnergyPriceValue {
-    - price: ComparableQuantity<SpecificCurrency> [€/MWh]
-}
-EnergyPriceValue ..|> Value
-
-Class HeatDemandValue {
-    - heatDemand : ComparableQuantity<Power>
-}
-HeatDemandValue ..|> Value
-
-Class PValue {
-    - p: ComparableQuantity<Power>
-}
-PValue ..|> Value
-
-Class HeatAndPValue {
-    - heatDemand: ComparableQuantity<Power>
-}
-HeatAndPValue --|> PValue
-
-Class SValue {
-    - q: ComparableQuantity<Power>
-}
-SValue --|> PValue
-
-Class HeatAndSValue {
-    - heatDemand: ComparableQuantity<Power>
-}
-HeatAndSValue --|> SValue
-
-Class IrradiationValue {
-  - directIrradiation: ComparableQuantity<Irradiation>
-  - diffuseIrradiation: ComparableQuantity<Irradiation>
-}
-IrradiationValue ..|> Value
-
-Class TemperatureValue {
-  - temperature: ComparableQuantity<Temperature>
-}
-TemperatureValue ..|> Value
-
-Class WindValue {
-  - direction: ComparableQuantity<Angle>
-  - velocity: ComparableQuantity<Speed>
-}
-WindValue ..|> Value
-
-class WeatherValue {
-  - coordinate: Point
-  - irradiation: IrradiationValue
-  - temperature: TemperatureValue
-  - wind: WindValue
-}
-WeatherValue ..|> Value
-WeatherValue --* IrradiationValue
-WeatherValue --* TemperatureValue
-WeatherValue --* WindValue
-
-Interface LoadProfileType
-
-enum PowerSystemLoadProfileType {
-    BL_H
-    G0_A
-    G0_M
-    ...
-}
-PowerSystemLoadProfileType --|> LoadProfileType
-
-Interface VoltageLevel
+interface VoltageLevel
 
 enum GermanVoltageLevel {
     HoeS,
@@ -535,32 +582,5 @@ enum GermanVoltageLevel {
     NS
 }
 GermanVoltageLevel ..|> VoltageLevel
-
-Abstract Class TimeSeries<E extends Entry<V>, V extends Value> {
-    - entries: Set<E>
-    + TimeBasedValue<T> getTimeBasedValue(ZonedDateTime)
-    + T getValue(ZonedDateTime)
-    + Set<E> getEntries()
-    - ZonedDateTime getPreviousDateTime()
-    - ZonedDateTime getNextDateTime()
-}
-TimeSeries --|> UniqueEntity
-TimeSeries "1" --* "n" Entry
-
-Class IndividualTimeSeries<V extends Value> {
-    - Map<ZonedDateTime, TimeBasedValue<V>> timeToValue
-}
-IndividualTimeSeries --|> TimeSeries: <<bind>>:TimeBasedValue<V>
-
-Abstract Class RepetitiveTimeSeries<T extends Value> {
-    - calc(ZonedDateTime): T
-}
-RepetitiveTimeSeries --|> TimeSeries
-
-Class LoadProfileInput {
-    + profile: LoadProfileType
-}
-LoadProfileInput --|> RepetitiveTimeSeries
-LoadProfileInput --* LoadProfileType
 
 @enduml
