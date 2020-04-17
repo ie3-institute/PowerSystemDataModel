@@ -249,6 +249,63 @@ package models {
             Transformer3WInput ..|> HasType
         }
 
+        package container {
+            interface InputContainer {
+                + allEntitiesAsList(): List<UniqueEntity>
+                + validate(): void
+            }
+
+            class GraphicElements {
+                - nodeGraphics: Set<NodeGraphicInput>
+                - lineGraphics: Set<LineGraphicInput>
+            }
+            GraphicElements ..|> InputContainer
+
+            class RawGridElements {
+                - nodes: Set<NodeInput>
+                - lines: Set<LineInput>
+                - transformer2Ws: Set<Transformer2WInput>
+                - transformer3Ws: Set<Transformer3WInput>
+                - switches: Set<SwitchInput>
+                - measurementUnits: Set<MeasurementUnitInput>
+            }
+            RawGridElements ..|> InputContainer
+
+            class SystemParticipants {
+                - bmPlants: Set<BmInput>
+                - chpPlants: Set<ChpInput>
+                - evCS: Set<EvcsInput>
+                - evs: Set<EvInput>
+                - fixedFeedIns: Set<FixedFeedInInput>
+                - heatPumps: Set<HpInput>
+                - loads: Set<LoadInput>
+                - pvPlants: Set<PvInput>
+                - storages: Set<StorageInput>
+                - wecPlants: Set<WecInput>
+            }
+            SystemParticipants ..|> InputContainer
+
+            abstract class GridContainer {
+                # gridName: String
+                # rawGrid: RawGridElements
+                # systemParticipants: SystemParticipants
+                # graphics: GraphicElements
+            }
+            GridContainer ..|> InputContainer
+
+            class JointGridContainer {
+                - subGridTopologyGraph: SubGridTopologyGraph
+                - checkSubGridTopologyGraph(): SubGridTopologyGraph
+            }
+            JointGridContainer --|> GridContainer
+
+            class SubGridContainer {
+                - subnet: int
+                - predominantVoltageLevel: VoltageLevel
+            }
+            SubGridContainer --|> GridContainer
+        }
+
         package system {
             package characteristic {
                 class CharacteristicPoint <A extends Quantity<A>, O extends Quantity<O>> {
