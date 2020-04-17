@@ -176,7 +176,7 @@ class InputEntityProcessorTest extends Specification {
 		modelClass       | modelInstance                              || expectedResult
 		FixedFeedInInput | SystemParticipantTestData.fixedFeedInInput || [
 			"uuid"            : SystemParticipantTestData.fixedFeedInInput.uuid.toString(),
-			"cosphiRated"     : SystemParticipantTestData.fixedFeedInInput.cosphiRated.toString(),
+			"cosPhiRated"     : SystemParticipantTestData.fixedFeedInInput.cosPhiRated.toString(),
 			"id"              : SystemParticipantTestData.fixedFeedInInput.id,
 			"node"            : SystemParticipantTestData.fixedFeedInInput.node.uuid.toString(),
 			"operatesUntil"   : SystemParticipantTestData.fixedFeedInInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
@@ -189,7 +189,7 @@ class InputEntityProcessorTest extends Specification {
 			"uuid"            : SystemParticipantTestData.pvInput.uuid.toString(),
 			"albedo"          : SystemParticipantTestData.pvInput.albedo.toString(),
 			"azimuth"         : SystemParticipantTestData.pvInput.azimuth.to(StandardUnits.AZIMUTH).getValue().doubleValue().toString(),
-			"cosphiRated"     : SystemParticipantTestData.pvInput.cosphiRated.toString(),
+			"cosPhiRated"     : SystemParticipantTestData.pvInput.cosPhiRated.toString(),
 			"etaConv"         : SystemParticipantTestData.pvInput.etaConv.getValue().doubleValue().toString(),
 			"height"          : SystemParticipantTestData.pvInput.height.getValue().doubleValue().toString(),
 			"id"              : SystemParticipantTestData.pvInput.id,
@@ -253,7 +253,7 @@ class InputEntityProcessorTest extends Specification {
 
 		LoadInput        | SystemParticipantTestData.loadInput        || [
 			"uuid"               : SystemParticipantTestData.loadInput.uuid.toString(),
-			"cosphiRated"        : SystemParticipantTestData.loadInput.cosphiRated.toString(),
+			"cosPhiRated"        : SystemParticipantTestData.loadInput.cosPhiRated.toString(),
 			"dsm"                : SystemParticipantTestData.loadInput.dsm.toString(),
 			"eConsAnnual"        : SystemParticipantTestData.loadInput.eConsAnnual.getValue().doubleValue().toString(),
 			"id"                 : SystemParticipantTestData.loadInput.id,

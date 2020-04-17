@@ -68,7 +68,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 				] as TreeSet)
 			}
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-			assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
+			assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
 		}
 	}
 

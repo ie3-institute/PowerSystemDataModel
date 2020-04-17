@@ -20,7 +20,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
   /** Rated apparent power (typically in kVA) */
   private final ComparableQuantity<Power> sRated;
   /** Rated power factor */
-  private final double cosphiRated;
+  private final double cosPhiRated;
 
   /**
    * Constructor for an operated feed in
@@ -32,7 +32,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param sRated Rated apparent power
-   * @param cosphiRated Power factor
+   * @param cosPhiRated Power factor
    */
   public FixedFeedInInput(
       UUID uuid,
@@ -42,10 +42,10 @@ public class FixedFeedInInput extends SystemParticipantInput {
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       ComparableQuantity<Power> sRated,
-      double cosphiRated) {
+      double cosPhiRated) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.sRated = sRated.to(StandardUnits.S_RATED);
-    this.cosphiRated = cosphiRated;
+    this.cosPhiRated = cosPhiRated;
   }
 
   /**
@@ -56,7 +56,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param sRated Rated apparent power
-   * @param cosphiRated Power factor
+   * @param cosPhiRated Power factor
    */
   public FixedFeedInInput(
       UUID uuid,
@@ -64,18 +64,18 @@ public class FixedFeedInInput extends SystemParticipantInput {
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       ComparableQuantity<Power> sRated,
-      double cosphiRated) {
+      double cosPhiRated) {
     super(uuid, id, node, qCharacteristics);
     this.sRated = sRated.to(StandardUnits.S_RATED);
-    this.cosphiRated = cosphiRated;
+    this.cosPhiRated = cosPhiRated;
   }
 
   public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 
-  public double getCosphiRated() {
-    return cosphiRated;
+  public double getCosPhiRated() {
+    return cosPhiRated;
   }
 
   @Override
@@ -94,6 +94,6 @@ public class FixedFeedInInput extends SystemParticipantInput {
 
   @Override
   public String toString() {
-    return "FixedFeedInInput{" + "sRated=" + sRated + ", cosphiRated=" + cosphiRated + '}';
+    return "FixedFeedInInput{" + "sRated=" + sRated + ", cosphiRated=" + cosPhiRated + '}';
   }
 }

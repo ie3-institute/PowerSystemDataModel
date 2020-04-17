@@ -70,7 +70,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert dsm
 			assert eConsAnnual == getQuant(parameter["econsannual"], StandardUnits.ENERGY_IN)
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-			assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
+			assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
 		}
 	}
 }
