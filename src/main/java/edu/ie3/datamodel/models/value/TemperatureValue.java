@@ -13,7 +13,7 @@ import tec.uom.se.ComparableQuantity;
 /** Describes a temperature value */
 public class TemperatureValue implements Value {
   /** Temperature (typically in K) */
-  private ComparableQuantity<Temperature> temperature;
+  private final ComparableQuantity<Temperature> temperature;
 
   /** @param temperature (typically in K) */
   public TemperatureValue(ComparableQuantity<Temperature> temperature) {
@@ -22,10 +22,6 @@ public class TemperatureValue implements Value {
 
   public ComparableQuantity<Temperature> getTemperature() {
     return temperature;
-  }
-
-  public void setTemperature(ComparableQuantity<Temperature> temperature) {
-    this.temperature = temperature.to(StandardUnits.TEMPERATURE);
   }
 
   @Override

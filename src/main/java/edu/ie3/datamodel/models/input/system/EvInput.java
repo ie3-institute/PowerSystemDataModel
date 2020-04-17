@@ -26,7 +26,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
    * @param operator of the asset
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
-   * @param qCharacteristics
+   * @param qCharacteristics Description of a reactive power characteristic
    * @param type of EV
    */
   public EvInput(
@@ -47,7 +47,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
    * @param uuid of the input entity
    * @param id of the asset
    * @param node the asset is connected to
-   * @param qCharacteristics
+   * @param qCharacteristics Description of a reactive power characteristic
    * @param type of EV
    */
   public EvInput(

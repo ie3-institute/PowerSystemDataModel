@@ -14,7 +14,7 @@ import tec.uom.se.ComparableQuantity;
 public class SValue extends PValue {
 
   /** Reactive power */
-  private ComparableQuantity<Power> q;
+  private final ComparableQuantity<Power> q;
 
   /** @param q Reactive power */
   public SValue(ComparableQuantity<Power> p, ComparableQuantity<Power> q) {
@@ -24,10 +24,6 @@ public class SValue extends PValue {
 
   public ComparableQuantity<Power> getQ() {
     return q;
-  }
-
-  public void setQ(ComparableQuantity<Power> q) {
-    this.q = q.to(StandardUnits.REACTIVE_POWER_IN);
   }
 
   @Override

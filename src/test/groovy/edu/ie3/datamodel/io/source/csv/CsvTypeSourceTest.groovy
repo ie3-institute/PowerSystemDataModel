@@ -110,7 +110,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		bmTypes.first().id == sptd.bmTypeInput.id
 		bmTypes.first().capex == sptd.bmTypeInput.capex
 		bmTypes.first().opex == sptd.bmTypeInput.opex
-		bmTypes.first().cosphiRated == sptd.bmTypeInput.cosphiRated
+		bmTypes.first().cosPhiRated == sptd.bmTypeInput.cosPhiRated
 		bmTypes.first().activePowerGradient == sptd.bmTypeInput.activePowerGradient
 		bmTypes.first().etaConv == sptd.bmTypeInput.etaConv
 	}
@@ -143,7 +143,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		hpTypes.first().capex == sptd.hpTypeInput.capex
 		hpTypes.first().opex == sptd.hpTypeInput.opex
 		hpTypes.first().sRated == sptd.hpTypeInput.sRated
-		hpTypes.first().cosphiRated == sptd.hpTypeInput.cosphiRated
+		hpTypes.first().cosPhiRated == sptd.hpTypeInput.cosPhiRated
 		hpTypes.first().pThermal == sptd.hpTypeInput.pThermal
 	}
 
@@ -159,7 +159,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		storageTypes.first().opex == sptd.storageTypeInput.opex
 		storageTypes.first().eStorage == sptd.storageTypeInput.eStorage
 		storageTypes.first().sRated == sptd.storageTypeInput.sRated
-		storageTypes.first().cosphiRated == sptd.storageTypeInput.cosphiRated
+		storageTypes.first().cosPhiRated == sptd.storageTypeInput.cosPhiRated
 		storageTypes.first().pMax == sptd.storageTypeInput.pMax
 		storageTypes.first().activePowerGradient == sptd.storageTypeInput.activePowerGradient
 		storageTypes.first().eta == sptd.storageTypeInput.eta
@@ -178,7 +178,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		wecTypes.first().id == sptd.wecType.id
 		wecTypes.first().capex == sptd.wecType.capex
 		wecTypes.first().opex == sptd.wecType.opex
-		wecTypes.first().cosphiRated == sptd.wecType.cosphiRated
+		wecTypes.first().cosPhiRated == sptd.wecType.cosPhiRated
 		wecTypes.first().etaConv == sptd.wecType.etaConv
 		wecTypes.first().sRated == sptd.wecType.sRated
 		wecTypes.first().rotorArea == sptd.wecType.rotorArea
@@ -203,6 +203,6 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 		evTypes.first().eStorage == sptd.evTypeInput.eStorage
 		evTypes.first().eCons == sptd.evTypeInput.eCons
 		evTypes.first().sRated == sptd.evTypeInput.sRated
-		evTypes.first().cosphiRated == sptd.evTypeInput.cosphiRated
+		evTypes.first().cosPhiRated == sptd.evTypeInput.cosPhiRated
 	}
 }

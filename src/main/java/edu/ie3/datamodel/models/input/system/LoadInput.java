@@ -36,7 +36,7 @@ public class LoadInput extends SystemParticipantInput {
   /** Active Power (typically in kVA) */
   private final ComparableQuantity<Power> sRated;
   /** Rated power factor */
-  private final double cosphiRated;
+  private final double cosPhiRated;
 
   /**
    * Constructor for an operated load
@@ -51,7 +51,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
-   * @param cosphiRated Rated power factor
+   * @param cosPhiRated Rated power factor
    */
   public LoadInput(
       UUID uuid,
@@ -64,13 +64,13 @@ public class LoadInput extends SystemParticipantInput {
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
-      double cosphiRated) {
+      double cosPhiRated) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.standardLoadProfile = standardLoadProfile;
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
-    this.cosphiRated = cosphiRated;
+    this.cosPhiRated = cosPhiRated;
   }
 
   /**
@@ -87,7 +87,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
-   * @param cosphiRated Rated power factor
+   * @param cosPhiRated Rated power factor
    */
   public LoadInput(
       UUID uuid,
@@ -100,7 +100,7 @@ public class LoadInput extends SystemParticipantInput {
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
-      double cosphiRated) {
+      double cosPhiRated) {
     this(
         uuid,
         id,
@@ -112,7 +112,7 @@ public class LoadInput extends SystemParticipantInput {
         dsm,
         eConsAnnual,
         sRated,
-        cosphiRated);
+        cosPhiRated);
   }
 
   /**
@@ -136,13 +136,13 @@ public class LoadInput extends SystemParticipantInput {
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
-      double cosphiRated) {
+      double cosPhiRated) {
     super(uuid, id, node, qCharacteristics);
     this.standardLoadProfile = standardLoadProfile;
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
-    this.cosphiRated = cosphiRated;
+    this.cosPhiRated = cosPhiRated;
   }
 
   /**
@@ -167,7 +167,7 @@ public class LoadInput extends SystemParticipantInput {
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
-      double cosphiRated) {
+      double cosPhiRated) {
     this(
         uuid,
         id,
@@ -177,7 +177,7 @@ public class LoadInput extends SystemParticipantInput {
         dsm,
         eConsAnnual,
         sRated,
-        cosphiRated);
+        cosPhiRated);
   }
 
   public StandardLoadProfile getStandardLoadProfile() {
@@ -196,8 +196,8 @@ public class LoadInput extends SystemParticipantInput {
     return sRated;
   }
 
-  public double getCosphiRated() {
-    return cosphiRated;
+  public double getCosPhiRated() {
+    return cosPhiRated;
   }
 
   @Override
@@ -207,14 +207,14 @@ public class LoadInput extends SystemParticipantInput {
     if (!super.equals(o)) return false;
     LoadInput loadInput = (LoadInput) o;
     return dsm == loadInput.dsm
-        && Double.compare(loadInput.cosphiRated, cosphiRated) == 0
+        && Double.compare(loadInput.cosPhiRated, cosPhiRated) == 0
         && eConsAnnual.equals(loadInput.eConsAnnual)
         && sRated.equals(loadInput.sRated);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), dsm, eConsAnnual, sRated, cosphiRated);
+    return Objects.hash(super.hashCode(), dsm, eConsAnnual, sRated, cosPhiRated);
   }
 
   @Override
@@ -227,7 +227,7 @@ public class LoadInput extends SystemParticipantInput {
         + ", sRated="
         + sRated
         + ", cosphiRated="
-        + cosphiRated
+        + cosPhiRated
         + '}';
   }
 }

@@ -23,8 +23,8 @@ public class SwitchInput extends ConnectorInput {
    * @param id of the asset
    * @param operator of the asset
    * @param operationTime Time for which the entity is operated
-   * @param nodeA
-   * @param nodeB
+   * @param nodeA Grid node at one side of the switch
+   * @param nodeB Grid node at the other side of the switch
    * @param closed Is the switching state 'closed'?
    */
   public SwitchInput(
@@ -44,8 +44,8 @@ public class SwitchInput extends ConnectorInput {
    *
    * @param uuid of the input entity
    * @param id of the asset
-   * @param nodeA
-   * @param nodeB
+   * @param nodeA Grid node at one side of the switch
+   * @param nodeB Grid node at the other side of the switch
    * @param closed Is the switching state 'closed'?
    */
   public SwitchInput(UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, boolean closed) {
