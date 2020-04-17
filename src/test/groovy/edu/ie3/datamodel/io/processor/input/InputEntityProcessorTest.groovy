@@ -412,7 +412,7 @@ class InputEntityProcessorTest extends Specification {
 			"id"              : "Test wec type",
 			"capex"           : "100.0",
 			"opex"            : "101.0",
-			"cosphiRated"     : "0.95",
+			"cosPhiRated"     : "0.95",
 			"cpCharacteristic": "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",
 			"etaConv"         : "90.0",
 			"sRated"          : "2500.0",
@@ -529,7 +529,7 @@ class InputEntityProcessorTest extends Specification {
 			"eStorage"   : "100.0",
 			"eCons"      : "23.0",
 			"sRated"     : "22.0",
-			"cosphiRated": "0.9"
+			"cosPhiRated": "0.9"
 		]
 
 		when:
@@ -552,7 +552,7 @@ class InputEntityProcessorTest extends Specification {
 			"etaEl"      : "95.0",
 			"etaThermal" : "90.0",
 			"sRated"     : "58.0",
-			"cosphiRated": "0.98",
+			"cosPhiRated": "0.98",
 			"pThermal"   : "49.59",
 			"pOwn"       : "5.0"
 		]
@@ -575,7 +575,7 @@ class InputEntityProcessorTest extends Specification {
 			"capex"      : "100.0",
 			"opex"       : "101.0",
 			"sRated"     : "45.0",
-			"cosphiRated": "0.975",
+			"cosPhiRated": "0.975",
 			"pThermal"   : "26.3"
 		]
 
@@ -598,7 +598,7 @@ class InputEntityProcessorTest extends Specification {
 			"opex"               : "101.0",
 			"activePowerGradient": "5.0",
 			"sRated"             : "800.0",
-			"cosphiRated"        : "0.965",
+			"cosPhiRated"        : "0.965",
 			"etaConv"            : "89.0"
 		]
 
@@ -621,7 +621,7 @@ class InputEntityProcessorTest extends Specification {
 			"opex"               : "101.0",
 			"eStorage"           : "200.0",
 			"sRated"             : "13.0",
-			"cosphiRated"        : "0.997",
+			"cosPhiRated"        : "0.997",
 			"pMax"               : "12.961",
 			"activePowerGradient": "3.0",
 			"eta"                : "92.0",

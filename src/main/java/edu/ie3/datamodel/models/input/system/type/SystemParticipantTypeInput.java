@@ -17,19 +17,19 @@ import tec.uom.se.ComparableQuantity;
 public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   /** Capital expense for this type of system participant (typically in €) */
   private final ComparableQuantity<Currency> capex;
-  /** Operating expense for this type of system participant (typically in €) */
+  /** Operating expense for this type of system participant (typically in €/MWh) */
   private final ComparableQuantity<EnergyPrice> opex;
   /** Rated apparent power of the type (in kVA) */
   private final ComparableQuantity<Power> sRated;
   /** Power factor for this type of system participant */
-  private final double cosphiRated;
+  private final double cosPhiRated;
 
   /**
    * @param uuid of the input entity
    * @param id of this type of system participant
    * @param capex Captial expense for this type of system participant (typically in €)
-   * @param opex Operating expense for this type of system participant (typically in €)
-   * @param cosphiRated Power factor for this type of system participant
+   * @param opex Operating expense for this type of system participant (typically in €/MWh)
+   * @param cosPhiRated Power factor for this type of system participant
    */
   public SystemParticipantTypeInput(
       UUID uuid,
@@ -37,12 +37,12 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
       ComparableQuantity<Currency> capex,
       ComparableQuantity<EnergyPrice> opex,
       ComparableQuantity<Power> sRated,
-      double cosphiRated) {
+      double cosPhiRated) {
     super(uuid, id);
     this.capex = capex;
     this.opex = opex;
     this.sRated = sRated;
-    this.cosphiRated = cosphiRated;
+    this.cosPhiRated = cosPhiRated;
   }
 
   public ComparableQuantity<Currency> getCapex() {
@@ -57,8 +57,8 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     return sRated;
   }
 
-  public double getCosphiRated() {
-    return cosphiRated;
+  public double getCosPhiRated() {
+    return cosPhiRated;
   }
 
   @Override
@@ -67,7 +67,7 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     SystemParticipantTypeInput that = (SystemParticipantTypeInput) o;
-    return Double.compare(that.cosphiRated, cosphiRated) == 0
+    return Double.compare(that.cosPhiRated, cosPhiRated) == 0
         && capex.equals(that.capex)
         && opex.equals(that.opex)
         && sRated.equals(that.sRated);
@@ -75,7 +75,7 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), capex, opex, sRated, cosphiRated);
+    return Objects.hash(super.hashCode(), capex, opex, sRated, cosPhiRated);
   }
 
   @Override
@@ -88,7 +88,7 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
         + ", sRated="
         + sRated
         + ", cosphiRated="
-        + cosphiRated
+        + cosPhiRated
         + '}';
   }
 }
