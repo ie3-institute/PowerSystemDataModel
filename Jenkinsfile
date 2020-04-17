@@ -143,7 +143,9 @@ if (env.BRANCH_NAME == "master") {
                                          usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
                             deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
 
-                            gradle("${deployGradleTasks}")
+                            // see https://docs.gradle.org/6.0.1/release-notes.html "Publication of SHA256 and SHA512 checksums"
+                            def preventSHACheckSums = "-Dorg.gradle.internal.publish.checksums.insecure=true"
+                            gradle("${deployGradleTasks} $preventSHACheckSums")
 
                         }
 
