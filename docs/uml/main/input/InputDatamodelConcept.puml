@@ -1,0 +1,172 @@
+@startuml
+note "For better readability no getters are shown in the classes. Also the final attributes are not marked especially." as generalNote
+
+package io.extractor {
+    interface NestedEntity
+
+    interface HasNodes {
+        + allNodes(): List<NodeInput>
+    }
+    HasNodes --|> NestedEntity
+
+    interface HasThermalBus {
+        + getThermalBus(): ThermalBusInput
+    }
+    HasThermalBus --|> NestedEntity
+
+    interface HasThermalStorage {
+        + getThermalStorage(): ThermalStorageInput
+    }
+    HasThermalStorage --|> NestedEntity
+
+    interface HasType {
+        + getType(): AssetTypeInput
+    }
+    HasType --|> NestedEntity
+
+    interface HasLine {
+        + getLine(): LineInput
+    }
+    HasLine --|> NestedEntity
+}
+
+package models {
+
+    abstract class UniqueEntity {
+        + {static} UUID_FIELD_NAME: String
+        - uuid: UUID
+    }
+
+    class OperationTime {
+        - startDate: ZonedDateTime
+        - endDate: ZonedDateTime
+        - isLimited: boolean
+        + {static} notLimited(): OperationTime
+        + {static} builder(): OperationTimeBuilder
+        + getOperationLimit(): Optional<ClosedInterval<ZonedDateTime>>
+        + includes(ZonedDateTime): boolean
+    }
+
+    interface Operable {
+        + getOperationTime(): OperationTime
+        + getOperator(): OperatorInput
+        + inOperationOn(ZonedDateTime): boolean
+    }
+    Operable --|> NestedEntity
+
+    package result {}
+    package timeseries {}
+    package value {}
+    note "Has also children in these packages.\ncf. separate uml diagrams" as childNote
+    UniqueEntity .. childNote
+    childNote .. result
+    childNote .. timeseries
+    childNote .. value
+    childNote .. connector
+    childNote .. graphics
+    childNote .. thermal
+    childNote .. system
+
+    package voltagelevels {
+        class VoltageLevel {
+            # id: String
+            # nominalVoltage: ComparableQuantity<ElectricPotential> [kV]
+        }
+
+        class CommonVoltageLevel {
+            # synonymousIds: Set<String>
+            # voltageRange: RightOpenInterval<ComparableQuantity<ElectricPotential>>
+            + covers(ComparableQuantity<ElectricPotential>): boolean
+            + covers(String, ComparableQuantity<ElectricPotential>): boolean
+        }
+        CommonVoltageLevel --|> VoltageLevel
+
+        class GermanVoltageLevelUtils {
+            + {static} LV: CommonVoltageLevel
+            + {static} MV_10KV: CommonVoltageLevel
+            + {static} MV_20KV: CommonVoltageLevel
+            + {static} MV_30KV: CommonVoltageLevel
+            + {static} HV: CommonVoltageLevel
+            + {static} EHV_220KV: CommonVoltageLevel
+            + {static} EHV_380KV: CommonVoltageLevel
+            - {static} germanVoltageLevels: Set<CommonVoltageLevel>
+            + {static} parse(ComparableQuantity<ElectricPotential>): CommonVoltageLevel
+            + {static} parse(String, ComparableQuantity<ElectricPotential>): CommonVoltageLevel
+        }
+    }
+
+    package input {
+        abstract class InputEntity
+        InputEntity --|> UniqueEntity
+
+        class OperatorInput {
+            + {static} NO_OPERATOR_ASSIGNED: OperatorInput
+            - name: String
+        }
+        OperatorInput --|> InputEntity
+
+        package graphics {}
+
+        abstract class AssetInput {
+            - id: String
+            - operationTime: OperationTime
+            - operator: OperatorInput
+        }
+        AssetInput --|> InputEntity
+        AssetInput ..|> Operable
+        AssetInput *-- OperationTime
+        AssetInput *-- OperatorInput
+
+        class EvcsInput {
+            ???
+        }
+        EvcsInput --|> AssetInput
+
+        class NodeInput {
+            - vTarget: ComparableQuantity<Dimensionless> [pU]
+            - slack: Boolean
+            - geoPosition: Point
+            - voltLvl: VoltageLevel
+            - subnet: int
+        }
+        NodeInput --|> AssetInput
+        NodeInput *-- VoltageLevel
+
+        class MeasurementUnitInput {
+            - node: NodeInput
+            - vMag: Boolean [default f]
+            - vAng: Boolean [default f]
+            - p: Boolean [default f]
+            - q: Boolean [default f]
+        }
+        MeasurementUnitInput --|> AssetInput
+        MeasurementUnitInput ..|> HasNodes
+
+        class RandomLoadParameter {
+            - quarterHour: int
+            - kWd: Double
+            - kSa: Double
+            - kSu: Double
+            - myWd: Double
+            - mySa: Double
+            - mySu: Double
+            - sigmaWd: Double
+            - sigmaSa: Double
+            - sigmaSu: Double
+        }
+        RandomLoadParameter --|> InputEntity
+
+        abstract class AssetTypeInput {
+            - id: String
+        }
+        AssetTypeInput --|> InputEntity
+
+        package connector {}
+
+        package system {}
+
+        package thermal {}
+    }
+}
+
+@enduml

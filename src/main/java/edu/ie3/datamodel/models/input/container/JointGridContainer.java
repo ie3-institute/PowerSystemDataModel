@@ -26,7 +26,7 @@ public class JointGridContainer extends GridContainer {
     this.subGridTopologyGraph =
         ContainerUtils.buildSubGridTopologyGraph(
             this.gridName, this.rawGrid, this.systemParticipants, this.graphics);
-    checkSubGridDependencyGraph(subGridTopologyGraph);
+    checkSubGridTopologyGraph(subGridTopologyGraph);
   }
 
   public JointGridContainer(
@@ -37,15 +37,15 @@ public class JointGridContainer extends GridContainer {
       SubGridTopologyGraph subGridTopologyGraph) {
     super(gridName, rawGrid, systemParticipants, graphics);
     this.subGridTopologyGraph = subGridTopologyGraph;
-    checkSubGridDependencyGraph(this.subGridTopologyGraph);
+    checkSubGridTopologyGraph(this.subGridTopologyGraph);
   }
 
   /**
-   * Checks, if the sub grid dependency graph has only one node.
+   * Checks, if the sub grid topology graph has only one node.
    *
    * @param subGridTopologyGraph The graph to check
    */
-  private void checkSubGridDependencyGraph(SubGridTopologyGraph subGridTopologyGraph) {
+  private void checkSubGridTopologyGraph(SubGridTopologyGraph subGridTopologyGraph) {
     if (subGridTopologyGraph.vertexSet().size() == 1)
       throw new InvalidGridException(
           "This joint grid model only contains one single grid. Consider using SubGridContainer.");

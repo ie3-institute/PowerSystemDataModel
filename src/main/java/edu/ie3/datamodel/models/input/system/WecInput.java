@@ -29,7 +29,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
    * @param operator of the asset
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
-   * @param qCharacteristics
+   * @param qCharacteristics Description of a reactive power characteristic
    * @param type of this WEC
    * @param marketReaction Is this asset market oriented?
    */
@@ -53,7 +53,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
    * @param uuid of the input entity
    * @param id of the asset
    * @param node the asset is connected to
-   * @param qCharacteristics
+   * @param qCharacteristics Description of a reactive power characteristic
    * @param type of this WEC
    * @param marketReaction Is this asset market oriented?
    */

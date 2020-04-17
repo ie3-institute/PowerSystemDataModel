@@ -83,7 +83,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert kT == Double.parseDouble(parameter["kt"])
 			assert marketReaction
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-			assert cosphiRated == Double.parseDouble(parameter["cosphirated"])
+			assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
 		}
 	}
 }
