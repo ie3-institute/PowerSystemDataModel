@@ -1,120 +1,124 @@
 @startuml
 
-abstract Class UniqueEntity{
-    + UUID:  uuid
+abstract class UniqueEntity {
+    + {static} UUID_FIELD_NAME: String
+    + uuid: UUID
 }
 
-abstract Class ResultEntity{
-    + ZonedDateTime:  timestamp
-    + UUID:  inputModel
+package result {
+    abstract Class ResultEntity{
+        + ZonedDateTime:  timestamp
+        + UUID:  inputModel
+    }
+    UniqueEntity <|-- ResultEntity
 }
 
-abstract Class SystemParticipantResult{
-    + p: ComparableQuantity<Power>
-    + q: ComparableQuantity<Power>
+package system {
+
+    abstract Class SystemParticipantResult{
+        + p: ComparableQuantity<Power>
+        + q: ComparableQuantity<Power>
+    }
+    ResultEntity  <|-- SystemParticipantResult
+
+    Class LoadResult
+    SystemParticipantResult <|-- LoadResult
+
+    Class FixedFeedInResult {
+        + sRated: ComparableQuantity<Power>
+        + cosphiRated: Double
+    }
+    SystemParticipantResult <|-- FixedFeedInResult
+
+    Class BmResult
+    SystemParticipantResult <|-- BmResult
+
+    Class PvResult
+    SystemParticipantResult  <|-- PvResult
+
+    Class ChpResult
+    SystemParticipantResult <|-- ChpResult
+
+    Class WecResult
+    SystemParticipantResult <|-- WecResult
+
+    Class EvcsResult
+    SystemParticipantResult <|-- EvcsResult
+
+    Class EvResult{
+        + soc: double
+    }
+    SystemParticipantResult <|-- EvResult
+
+    Class StorageResult{
+        + soc: double
+    }
+    SystemParticipantResult <|-- StorageResult
 }
 
-abstract Class ConnectorResult{
-    + iAMag: ComparableQuantity<ElectricCurrent>
-    + iAAng: ComparableQuantity<Angle>
-    + iBMag: ComparableQuantity<ElectricCurrent>
-    + iBAng: ComparableQuantity<Angle>
-}
+package connector {
 
-abstract Class TransformerResult{
-    + tapPos: int
+    abstract Class ConnectorResult{
+        + iAMag: ComparableQuantity<ElectricCurrent>
+        + iAAng: ComparableQuantity<Angle>
+        + iBMag: ComparableQuantity<ElectricCurrent>
+        + iBAng: ComparableQuantity<Angle>
+    }
+    ResultEntity <|-- ConnectorResult
+
+    abstract Class TransformerResult{
+        + tapPos: int
+    }
+    ConnectorResult <|-- TransformerResult
+
+    Class LineResult
+    ConnectorResult <|-- LineResult
+
+    Class Transformer2wResult
+    TransformerResult <|-- Transformer2wResult
+
+    Class Transformer3wResult{
+        + iCMag: ComparableQuantity<ElectricCurrent>
+        + iCAng: ComparableQuantity<Angle>
+    }
+    TransformerResult <|-- Transformer3wResult
+
+    Class SwitchResult{
+        + closed: boolean
+    }
+    ConnectorResult <|-- SwitchResult
 }
 
 Class NodeResult{
     + vMag: ComparableQuantity<ElectricCurrent>
     + vAng: ComparableQuantity<Angle>
 }
-
-Class LineResult{
-
-}
-
-Class TransformerResult2wResult{
-}
-
-Class Transformer3wResult{
-    + iCMag: ComparableQuantity<ElectricCurrent>
-    + iCAng: ComparableQuantity<Angle>
-}
-
-Class LoadResult
-
-Class FixedFeedInResult
-
-
-Class BmResult
-
-
-Class PvResult
-
-
-Class ChpResult
-
-
-Class WecResult
-
-Abstract Class ThermalUnitResult {
-    - qDot: ComparableQuantity<Power> [MW]
-}
-
-Class ThermalHouseResult {
-    - indoorTemperature: ComparableQuantity<Temperature> [°C]
-}
-
-Abstract Class ThermalStorageResult {
-    - energy: ComparableQuantity<Energy> [MWh]
-}
-
-Class CylindricalStorageResult {
-  - fillLevel: ComparableQuantity<Dimensionless> [%]
-}
-
-Class EvcsResult
-
-
-Class EvResult{
-    + soc: double
-    + systemUuid: UUID
-    + id: String
-}
-
-Class StorageResult{
-    + soc: double
-}
-
-Class SwitchResult{
-    + closed: boolean
-}
-
-UniqueEntity <|-- ResultEntity
-ResultEntity <|-- ConnectorResult
-ResultEntity <|-- SystemParticipantResult
 ResultEntity <|-- NodeResult
-ResultEntity <|-- EvResult
-ResultEntity <|-- ThermalUnitResult
-SystemParticipantResult <|-- FixedFeedInResult
-SystemParticipantResult <|-- BmResult
-SystemParticipantResult <|-- PvResult
-SystemParticipantResult <|-- ChpResult
-SystemParticipantResult <|-- WecResult
-SystemParticipantResult <|-- EvcsResult
-SystemParticipantResult <|-- StorageResult
-SystemParticipantResult <|-- LoadResult
-ThermalUnitResult <|-- ThermalSinkResult
-ThermalUnitResult <|-- ThermalStorageResult
-ThermalSinkResult <|-- ThermalHouseResult
-ThermalStorageResult <|-- CylindricalStorageResult
-ConnectorResult <|-- SwitchResult
-EvResult --> "uuid" EvcsResult
 
-ConnectorResult <|-- LineResult
-ConnectorResult <|-- TransformerResult
-TransformerResult <|-- TransformerResult2wResult
-TransformerResult <|-- TransformerResult3wResult
+package thermal {
+
+    Abstract Class ThermalUnitResult {
+        - qDot: ComparableQuantity<Power> [MW]
+    }
+    ResultEntity <|-- ThermalUnitResult
+
+    Abstract Class ThermalSinkResult
+    ThermalUnitResult <|-- ThermalSinkResult
+
+    Class ThermalHouseResult {
+        - indoorTemperature: ComparableQuantity<Temperature> [°C]
+    }
+    ThermalSinkResult <|-- ThermalHouseResult
+
+    Abstract Class ThermalStorageResult {
+        - energy: ComparableQuantity<Energy> [MWh]
+    }
+    ThermalUnitResult <|-- ThermalStorageResult
+
+    Class CylindricalStorageResult {
+    - fillLevel: ComparableQuantity<Dimensionless> [%]
+    }
+    ThermalStorageResult <|-- CylindricalStorageResult
+}
 
 @enduml
