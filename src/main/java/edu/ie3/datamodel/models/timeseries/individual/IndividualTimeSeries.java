@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 /** Describes a TimeSeries with individual values per time step */
 public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedValue<V>, V> {
   /** Maps a time to its respective value to retrieve faster */
-  private Map<ZonedDateTime, TimeBasedValue<V>> timeToValue;
+  private final Map<ZonedDateTime, TimeBasedValue<V>> timeToValue;
 
   public IndividualTimeSeries(UUID uuid, Set<TimeBasedValue<V>> values) {
     super(uuid, values);

@@ -24,7 +24,7 @@ public abstract class RepetitiveTimeSeries<E extends TimeSeriesEntry<V>, V exten
     super(uuid, entries);
   }
 
-  /** Calculate the value at the given timestep based on a pattern */
+  /** Calculate the value at the given time step based on a pattern */
   protected abstract V calc(ZonedDateTime time);
 
   @Override

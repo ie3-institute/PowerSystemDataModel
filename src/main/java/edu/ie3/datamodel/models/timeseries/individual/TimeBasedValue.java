@@ -17,8 +17,8 @@ import java.util.UUID;
  * @param <T> type of value
  */
 public class TimeBasedValue<T extends Value> extends TimeSeriesEntry<T>
-    implements Comparable<TimeBasedValue> {
-  private ZonedDateTime time;
+    implements Comparable<TimeBasedValue<? extends Value>> {
+  private final ZonedDateTime time;
 
   public TimeBasedValue(UUID uuid, ZonedDateTime time, T value) {
     super(uuid, value);
@@ -53,7 +53,7 @@ public class TimeBasedValue<T extends Value> extends TimeSeriesEntry<T>
   }
 
   @Override
-  public int compareTo(TimeBasedValue timeBasedValue) {
+  public int compareTo(TimeBasedValue<? extends Value> timeBasedValue) {
     return time.compareTo(timeBasedValue.time);
   }
 }

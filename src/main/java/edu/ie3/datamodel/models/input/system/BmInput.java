@@ -27,7 +27,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
    * Does this plant increase the output power if the revenues exceed the energy generation costs?
    */
   private final boolean costControlled;
-  /** Granted feed in tariff (typically in €/kWh) */
+  /** Granted feed in tariff (typically in €/MWh) */
   private final ComparableQuantity<EnergyPrice> feedInTariff;
 
   /**
@@ -38,7 +38,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
    * @param operator of the asset
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
-   * @param qCharacteristics
+   * @param qCharacteristics Description of a reactive power characteristic
    * @param type of BM
    * @param marketReaction Is this asset market oriented?
    * @param costControlled Does this plant increase the output power if the revenues exceed the
@@ -69,7 +69,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
    * @param uuid of the input entity
    * @param id of the asset
    * @param node the asset is connected to
-   * @param qCharacteristics
+   * @param qCharacteristics Description of a reactive power characteristic
    * @param type of BM
    * @param marketReaction Is this asset market oriented?
    * @param costControlled Does this plant increase the output power if the revenues exceed the

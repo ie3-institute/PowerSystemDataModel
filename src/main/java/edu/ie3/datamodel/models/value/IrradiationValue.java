@@ -12,14 +12,14 @@ import tec.uom.se.ComparableQuantity;
 
 /** Describes an irradiation value as a pair of diffuse and direct radiation */
 public class IrradiationValue implements Value {
-  /** Direct sun radiation (typically in W/m²) */
-  private ComparableQuantity<Irradiation> directIrradiation;
-  /** Diffuse sun radiation (typically in W/m²) */
-  private ComparableQuantity<Irradiation> diffuseIrradiation;
+  /** Direct sun radiation (typically in kWh/m²) */
+  private final ComparableQuantity<Irradiation> directIrradiation;
+  /** Diffuse sun radiation (typically in kWh/m²) */
+  private final ComparableQuantity<Irradiation> diffuseIrradiation;
 
   /**
-   * @param directIrradiation Direct sun radiation (typically in W/m²)
-   * @param diffuseIrradiation Diffuse sun radiation (typically in W/m²)
+   * @param directIrradiation Direct sun radiation (typically in kWh/m²)
+   * @param diffuseIrradiation Diffuse sun radiation (typically in kWh/m²)
    */
   public IrradiationValue(
       ComparableQuantity<Irradiation> directIrradiation,
@@ -32,16 +32,8 @@ public class IrradiationValue implements Value {
     return diffuseIrradiation;
   }
 
-  public void setDiffuseIrradiation(ComparableQuantity<Irradiation> diffuseIrradiation) {
-    this.diffuseIrradiation = diffuseIrradiation.to(StandardUnits.IRRADIATION);
-  }
-
   public ComparableQuantity<Irradiation> getDirectIrradiation() {
     return directIrradiation;
-  }
-
-  public void setDirectIrradiation(ComparableQuantity<Irradiation> directIrradiation) {
-    this.directIrradiation = directIrradiation.to(StandardUnits.IRRADIATION);
   }
 
   @Override

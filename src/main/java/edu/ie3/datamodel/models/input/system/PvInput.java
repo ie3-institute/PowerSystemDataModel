@@ -37,7 +37,7 @@ public class PvInput extends SystemParticipantInput {
   /** Rated apparent power (typically in kVA) */
   private final ComparableQuantity<Power> sRated;
   /** Rated power factor */
-  private final double cosphiRated;
+  private final double cosPhiRated;
   /**
    * Constructor for an operated photovoltaic plant
    *
@@ -55,7 +55,7 @@ public class PvInput extends SystemParticipantInput {
    * @param kT Generator correction factor merging different technical influences
    * @param marketReaction Is this asset market oriented?
    * @param sRated Rated apparent power (typically in kVA)
-   * @param cosphiRated Power factor
+   * @param cosPhiRated Power factor
    */
   public PvInput(
       UUID uuid,
@@ -72,7 +72,7 @@ public class PvInput extends SystemParticipantInput {
       double kT,
       boolean marketReaction,
       ComparableQuantity<Power> sRated,
-      double cosphiRated) {
+      double cosPhiRated) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
@@ -82,7 +82,7 @@ public class PvInput extends SystemParticipantInput {
     this.kT = kT;
     this.marketReaction = marketReaction;
     this.sRated = sRated.to(StandardUnits.S_RATED);
-    this.cosphiRated = cosphiRated;
+    this.cosPhiRated = cosPhiRated;
   }
 
   /**
@@ -100,7 +100,7 @@ public class PvInput extends SystemParticipantInput {
    * @param kT Generator correction factor merging different technical influences
    * @param marketReaction Is this asset market oriented?
    * @param sRated Rated apparent power (typically in kVA)
-   * @param cosphiRated Power factor
+   * @param cosPhiRated Power factor
    */
   public PvInput(
       UUID uuid,
@@ -115,7 +115,7 @@ public class PvInput extends SystemParticipantInput {
       double kT,
       boolean marketReaction,
       ComparableQuantity<Power> sRated,
-      double cosphiRated) {
+      double cosPhiRated) {
     super(uuid, id, node, qCharacteristics);
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
@@ -125,7 +125,7 @@ public class PvInput extends SystemParticipantInput {
     this.kT = kT;
     this.marketReaction = marketReaction;
     this.sRated = sRated.to(StandardUnits.S_RATED);
-    this.cosphiRated = cosphiRated;
+    this.cosPhiRated = cosPhiRated;
   }
 
   public double getAlbedo() {
@@ -148,8 +148,8 @@ public class PvInput extends SystemParticipantInput {
     return marketReaction;
   }
 
-  public double getCosphiRated() {
-    return cosphiRated;
+  public double getCosPhiRated() {
+    return cosPhiRated;
   }
 
   public double getkG() {
@@ -174,7 +174,7 @@ public class PvInput extends SystemParticipantInput {
         && Double.compare(pvInput.kG, kG) == 0
         && Double.compare(pvInput.kT, kT) == 0
         && marketReaction == pvInput.marketReaction
-        && Double.compare(pvInput.cosphiRated, cosphiRated) == 0
+        && Double.compare(pvInput.cosPhiRated, cosPhiRated) == 0
         && azimuth.equals(pvInput.azimuth)
         && etaConv.equals(pvInput.etaConv)
         && height.equals(pvInput.height)
@@ -193,7 +193,7 @@ public class PvInput extends SystemParticipantInput {
         kT,
         marketReaction,
         sRated,
-        cosphiRated);
+        cosPhiRated);
   }
 
   @Override
@@ -216,7 +216,7 @@ public class PvInput extends SystemParticipantInput {
         + ", sRated="
         + sRated
         + ", cosphiRated="
-        + cosphiRated
+        + cosPhiRated
         + '}';
   }
 }
