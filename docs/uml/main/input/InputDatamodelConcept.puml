@@ -77,6 +77,7 @@ package models {
     childNote .. value
     childNote .. connector
     childNote .. graphics
+    childNote .. thermal
 
     package voltagelevels {
         class VoltageLevel {
@@ -373,37 +374,7 @@ package models {
             WecInput ..|> HasType
         }
 
-        package thermal {
-            class ThermalBusInput
-            ThermalBusInput --|> AssetInput
-
-            abstract class ThermalUnitInput {
-                - thermalBus: ThermalBusInput
-            }
-            ThermalUnitInput --|> AssetInput
-            ThermalUnitInput ..|> HasThermalBus
-
-            abstract class ThermalSinkInput
-            ThermalSinkInput --|> ThermalUnitInput
-
-            class ThermalHouseInput {
-                - ethCapa: ComparableQuantity<HeatCapacity> [kWh/K]
-                - ethLosses: ComparableQuantity<ThermalConductance> [kW/K]
-            }
-            ThermalHouseInput --|> ThermalSinkInput
-
-            abstract class ThermalStorageInput
-            ThermalStorageInput --|> ThermalUnitInput
-
-            class CylindricalStorageInput {
-                - storageVolumeLvl: ComparableQuantity<Volume> [m³]
-                - storageVolumeLvlMin: ComparableQuantity<Volume> [m³]
-                - inletTemp: ComparableQuantity<Temperature> [°C]
-                - returnTemp: ComparableQuantity<Temperature> [°C]
-                - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
-            }
-            CylindricalStorageInput --|> ThermalStorageInput
-        }
+        package thermal {}
     }
 }
 
