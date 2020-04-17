@@ -5,15 +5,57 @@ abstract class UniqueEntity {
     + uuid: UUID
 }
 
-package result {
+package Result {
     abstract Class ResultEntity{
-        + ZonedDateTime:  timestamp
-        + UUID:  inputModel
+        + timestamp: ZonedDateTime
+        + inputModel: UUID
     }
     UniqueEntity <|-- ResultEntity
 }
 
-package system {
+package GridElements {
+
+    package Connectors {
+
+        abstract Class ConnectorResult{
+            + iAMag: ComparableQuantity<ElectricCurrent>
+            + iAAng: ComparableQuantity<Angle>
+            + iBMag: ComparableQuantity<ElectricCurrent>
+            + iBAng: ComparableQuantity<Angle>
+        }
+        ResultEntity <|-- ConnectorResult
+
+        abstract Class TransformerResult{
+            + tapPos: int
+        }
+        ConnectorResult <|-- TransformerResult
+
+        Class Transformer2wResult
+        TransformerResult <|-- Transformer2wResult
+
+        Class Transformer3wResult{
+            + iCMag: ComparableQuantity<ElectricCurrent>
+            + iCAng: ComparableQuantity<Angle>
+        }
+        TransformerResult <|-- Transformer3wResult
+
+        Class LineResult
+        ConnectorResult <|-- LineResult
+
+        Class SwitchResult{
+            + closed: boolean
+        }
+        ConnectorResult <|-- SwitchResult
+    }
+
+    Class NodeResult{
+        + vMag: ComparableQuantity<Dimensionless>
+        + vAng: ComparableQuantity<Angle>
+    }
+    ResultEntity <|-- NodeResult
+}
+
+package SystemParticipants {
 
     abstract Class SystemParticipantResult{
         + p: ComparableQuantity<Power>
@@ -24,10 +66,7 @@ package system {
     Class LoadResult
     SystemParticipantResult <|-- LoadResult
 
-    Class FixedFeedInResult {
-        + sRated: ComparableQuantity<Power>
-        + cosphiRated: Double
-    }
+    Class FixedFeedInResult
     SystemParticipantResult <|-- FixedFeedInResult
 
     Class BmResult
@@ -46,56 +85,17 @@ package system {
     SystemParticipantResult <|-- EvcsResult
 
     Class EvResult{
-        + soc: double
+        + soc: ComparableQuantity<Dimensionless>
     }
     SystemParticipantResult <|-- EvResult
 
     Class StorageResult{
-        + soc: double
+        + soc: ComparableQuantity<Dimensionless>
     }
     SystemParticipantResult <|-- StorageResult
 }
 
-package connector {
-
-    abstract Class ConnectorResult{
-        + iAMag: ComparableQuantity<ElectricCurrent>
-        + iAAng: ComparableQuantity<Angle>
-        + iBMag: ComparableQuantity<ElectricCurrent>
-        + iBAng: ComparableQuantity<Angle>
-    }
-    ResultEntity <|-- ConnectorResult
-
-    abstract Class TransformerResult{
-        + tapPos: int
-    }
-    ConnectorResult <|-- TransformerResult
-
-    Class LineResult
-    ConnectorResult <|-- LineResult
-
-    Class Transformer2wResult
-    TransformerResult <|-- Transformer2wResult
-
-    Class Transformer3wResult{
-        + iCMag: ComparableQuantity<ElectricCurrent>
-        + iCAng: ComparableQuantity<Angle>
-    }
-    TransformerResult <|-- Transformer3wResult
-
-    Class SwitchResult{
-        + closed: boolean
-    }
-    ConnectorResult <|-- SwitchResult
-}
-
-Class NodeResult{
-    + vMag: ComparableQuantity<ElectricCurrent>
-    + vAng: ComparableQuantity<Angle>
-}
-ResultEntity <|-- NodeResult
-
-package thermal {
+package ThermalUnits {
 
     Abstract Class ThermalUnitResult {
         - qDot: ComparableQuantity<Power> [MW]
