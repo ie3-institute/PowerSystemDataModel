@@ -17,7 +17,7 @@ BdewLoadProfile ..|> StandardLoadProfile
 
 abstract class UniqueEntity {
     + {static} UUID_FIELD_NAME: String
-    + uuid: UUID
+    - uuid: UUID
 }
 
 package result {
@@ -26,12 +26,280 @@ package result {
 }
 note left of result : cf. separate UML diagram
 
-package input {
-    abstract class InputEntity
-    InputEntity --|> UniqueEntity
+package io.extractor {
+    interface NestedEntity
+
+    interface HasNodes {
+        + allNodes(): List<NodeInput>
+    }
+    HasNodes --|> NestedEntity
+
+    interface HasThermalBus {
+        + getThermalBus(): ThermalBusInput
+    }
+    HasThermalBus --|> NestedEntity
+
+    interface HasThermalStorage {
+        + getThermalStorage(): ThermalStorageInput
+    }
+    HasThermalBus --|> NestedEntity
+
+    interface HasType {
+        + getType(): AssetTypeInput
+    }
+    HasType --|> NestedEntity
+
+    interface HasLine {
+        + getLine(): LineInput
+    }
+    HasLine --|> NestedEntity
 }
 
-package value {
+interface Operable {
+    + getOperationTime(): OperationTime
+    + getOperator(): OperatorInput
+    + inOperationOn(ZonedDateTime): boolean
+}
+Operable --|> NestedEntity
+
+package models.input {
+    abstract class InputEntity
+    InputEntity --|> UniqueEntity
+
+    class OperatorInput {
+        + {static} NO_OPERATOR_ASSIGNED: OperatorInput
+        - name: String
+    }
+    OperatorInput --|> InputEntity
+
+    abstract class GraphicInput {
+        - graphicLayer: String
+        - path: LineString
+    }
+    GraphicInput --|> InputEntity
+
+    class NodeGraphicInput {
+        - node: NodeInput
+        - point: Point
+    }
+    NodeGraphicInput --|> GraphicInput
+    NodeGraphicInput ..|> HasNodes
+
+    class LineGraphicInput {
+        - line: LineInput
+    }
+    LineGraphicInput --|> GraphicInput
+    LineGraphicInput ..|> HasLine
+
+    abstract class AssetInput {
+        - id: String
+        - operationTime: OperationTime
+        - operator: OperatorInput
+    }
+    AssetInput --|> InputEntity
+    AssetInput ..|> Operable
+
+    class EvcsInput {
+        ???
+    }
+    EvcsInput --|> AssetInput
+
+    class NodeInput {
+        - vTarget: ComparableQuantity<Dimensionless> [pU]
+        - slack: Boolean
+        - geoPosition: Point
+        - voltLvl: VoltageLevel
+        - subnet: Integer
+    }
+    NodeInput --|> AssetInput
+
+    class MeasurementUnitInput {
+        - node: NodeInput
+        - vMag: Boolean [default f]
+        - vAng: Boolean [default f]
+        - p: Boolean [default f]
+        - q: Boolean [default f]
+    }
+    MeasurementUnitInput --|> AssetInput
+    MeasurementUnitInput ..|> HasNodes
+
+    class RandomLoadParameter {
+        - quarterHour: Integer
+        - kWd: Double
+        - kSa: Double
+        - kSu: Double
+        - myWd: Double
+        - mySa: Double
+        - mySu: Double
+        - sigmaWd: Double
+        - sigmaSa: Double
+        - sigmaSu: Double
+    }
+    RandomLoadParameter --|> InputEntity
+
+    package connector {
+        abstract class ConnectorInput {
+            - nodeA: NodeInput
+            - nodeB: NodeInput
+            - parallelDevices: Integer
+        }
+        ConnectorInput --|> AssetInput
+        ConnectorInput ..|> HasNodes
+
+        class SwitchInput {
+            - closed: Boolean
+        }
+        SwitchInput --|> ConnectorInput
+
+        class LineInput {
+            - type: LineTypeInput
+            - length: ComparableQuantity<Length> [km]
+            - olm: OlmCharacteristicInput
+            - geoPosition: LineString
+        }
+        LineInput --|> ConnectorInput
+        LineInput ..|> HasType
+
+        abstract TransformerInput {
+            - tapPos: Integer
+            - autoTap: Boolean
+        }
+        TransformerInput --|> ConnectorInput
+
+        class Transformer2WInput {
+            - type: Transformer2WTypeInput
+        }
+        Transformer2WInput --|> TransformerInput
+        Transformer2WInput ..|> HasType
+
+        class Transformer3WInput {
+            - nodeC: NodeInput
+            - nodeInternal: NodeInput
+            - type: Transformer3WTypeInput
+        }
+        Transformer3WInput --|> TransformerInput
+        Transformer3WInput ..|> HasType
+    }
+
+    package system {
+        abstract class SystemParticipantInput {
+            - node: NodeInput
+            - qCharacteristics: ReactivePowerCharacteristicInput
+        }
+        SystemParticipantInput --|> AssetInput
+        SystemParticipantInput ..|> HasNodes
+
+        class BmInput {
+            - type: BmTypeInput
+            - marketReaction: Boolean
+            - costControlled: Boolean
+            - feedInTariff: ComparableQuantity<SpecificCurrency> [€/MWh]
+        }
+        BmInput --|> SystemParticipantInput
+        BmInput ..|> HasType
+
+        class ChpInput {
+            - thermalBus: ThermalBusInput
+            - type: ChpTypeInput
+            - thermalStorage: ThermalStorageInput
+            - marketReaction: Boolean
+        }
+        ChpInput --|> SystemParticipantInput
+        ChpInput ..|> HasThermalBus
+        ChpInput ..|> HasType
+        ChpInput ..|> HasThermalStorage
+
+        class EvInput {
+            - type: EvTypeInput
+        }
+        EvInput --|> SystemParticipantInput
+        EvInput ..|> HasType
+
+        class FixedFeedInInput {
+            - sRated: ComparableQuantity<Power> [kVA]
+            - cosphiRated: double
+        }
+        FixedFeedInInput --|> SystemParticipantInput
+
+        class HpInput {
+            - type: HpTypeInput
+            - thermalBus: ThermalBusInput
+        }
+        HpInput --|> SystemParticipantInput
+        HpInput ..|> HasType
+        HpInput ..|> HasThermalBus
+
+        class LoadInput {
+            - standardLoadProfile: StandardLoadProfile
+            - dsm: Boolean
+            - sRated: ComparableQuantity<Power> [kVA]
+            - eConsAnnual: ComparableQuantity<Energy> [kWh]
+            - cosPhiRated: double
+        }
+        LoadInput --|> SystemParticipantInput
+
+        class PvInput {
+            - albedo: Double
+            - azimuth: ComparableQuantity<Angle> [°]
+            - etaConv: ComparableQuantity<Dimensionless> [%]
+            - height: ComparableQuantity<Angle> [°]
+            - kG: Double
+            - kT: Double
+            - marketReaction: Boolean
+            - sRated: ComparableQuantity<Power> [kVA]
+            - cosPhiRated: double
+        }
+        PvInput --|> SystemParticipantInput
+
+        class StorageInput {
+            - type: StorageTypeInput
+            - behaviour: StorageStrategy
+        }
+        StorageInput --|> SystemParticipantInput
+        StorageInput ..|> HasType
+
+        class WecInput{
+            - type: WecTypeInput
+            - marketReaction: boolean
+        }
+        WecInput --|> SystemParticipantInput
+        WecInput ..|> HasType
+    }
+
+    package thermal {
+        class ThermalBusInput
+        ThermalBusInput --|> AssetInput
+
+        abstract class ThermalUnitInput {
+            - thermalBus: ThermalBusInput
+        }
+        ThermalUnitInput --|> AssetInput
+        ThermalUnitInput ..|> HasThermalBus
+
+        abstract class ThermalSinkInput
+        ThermalSinkInput --|> ThermalUnitInput
+
+        class ThermalHouseInput {
+            - ethCapa: ComparableQuantity<HeatCapacity> [kWh/K]
+            - ethLosses: ComparableQuantity<ThermalConductance> [kW/K]
+        }
+        ThermalHouseInput --|> ThermalSinkInput
+
+        abstract class ThermalStorageInput
+        ThermalStorageInput --|> ThermalUnitInput
+
+        class CylindricalStorageInput {
+            - storageVolumeLvl: ComparableQuantity<Volume> [m³]
+            - storageVolumeLvlMin: ComparableQuantity<Volume> [m³]
+            - inletTemp: ComparableQuantity<Temperature> [°C]
+            - returnTemp: ComparableQuantity<Temperature> [°C]
+            - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
+        }
+        CylindricalStorageInput --|> ThermalStorageInput
+    }
+}
+
+package models.value {
     interface Value
 
     class EnergyPriceValue {
@@ -93,7 +361,7 @@ package value {
     WeatherValue *-- WindValue
 }
 
-package timeseries {
+package models.timeseries {
     abstract class TimeSeries<E extends Entry<V>, V extends Value> {
         - entries: Set<E>
         + Optional<TimeBasedValue<V>> getTimeBasedValue(ZonedDateTime)
@@ -105,7 +373,7 @@ package timeseries {
         - Optional<ZonedDateTime> getNextDateTime()
     }
     TimeSeries --|> UniqueEntity
-    TimeSeries "1" *-- "n" Entry
+    TimeSeries "1" *-- "n" TimeSeriesEntry
     
     class IndividualTimeSeries<V extends Value> {
         - Map<ZonedDateTime, TimeBasedValue<V>> timeToValue
@@ -142,39 +410,6 @@ package timeseries {
     }
     LoadProfileEntry --|> TimeSeriesEntry: <<bind>>:PValue
 }
-
-interface Operable {
-    + inOperation: Boolean
-}
-Operable --|> NestedEntity
-
-abstract class AssetInput {
-    - id: String
-    - operationTime: OperationTime
-    - operator: OperatorInput
-}
-AssetInput --|> InputEntity
-AssetInput ..|> Operable
-
-abstract class SystemParticipantInput {
-    - node: NodeInput
-    - qCharacteristics: ReactivePowerCharacteristicInput
-}
-SystemParticipantInput --|> AssetInput
-SystemParticipantInput ..|> HasNodes
-
-class OperatorInput {
-    + name: String
-}
-OperatorInput --|> InputEntity
-
-abstract class ConnectorInput {
-    + nodeA: NodeInput
-    + nodeB: NodeInput
-    + parallelDevices: Integer
-}
-ConnectorInput --|> AssetInput
-ConnectorInput ..|> HasNodes
 
 class CharacteristicCoordinate <A extends Quantity<A>, O extends Quantity<O>> {
     - x: ComparableQuantity<A>
@@ -359,219 +594,6 @@ class Transformer3WTypeInput {
     + tapMax: Integer
 }
 Transformer3WTypeInput --|> AssetTypeInput
-
-class RandomLoadParameter {
-    + quarterHour: Integer
-    + kWd: Double
-    + kSa: Double
-    + kSu: Double
-    + myWd: Double
-    + mySa: Double
-    + mySu: Double
-    + sigmaWd: Double
-    + sigmaSa: Double
-    + sigmaSu: Double
-}
-RandomLoadParameter --|> InputEntity
-
-'extractor interface information
-
-interface NestedEntity
-
-interface HasNodes
-HasNodes --|> NestedEntity
-
-interface HasType
-HasType --|> NestedEntity
-
-interface HasLine
-HasLine --|> NestedEntity
-
-interface HasBus
-HasBus --|> NestedEntity
-
-class FixedFeedInInput {
-    - sRated: ComparableQuantity<Power> [kVA]
-    - cosphiRated: double
-}
-FixedFeedInInput --|> SystemParticipantInput
-
-class PvInput {
-    - sRated: ComparableQuantity<Power> [kVA]
-    - cosphiRated: double
-    - azimuth: ComparableQuantity<Angle> [Degrees]
-    - solarHeight: ComparableQuantity<Angle> [Degrees]
-    - etaConv: ComparableQuantity<Dimensionless> [%]
-    - albedo: Double
-    - kG: Double
-    - kT: Double
-    - marketReaction: Boolean
-}
-PvInput --|> SystemParticipantInput
-
-class WecInput{
-    - type: WecTypeInput
-    - marketReaction: Boolean
-}
-WecInput --|> SystemParticipantInput
-WecInput ..|> HasType
-
-class ChpInput {
-    - type: ChpTypeInput
-    - marketReaction: Boolean
-}
-ChpInput --|> SystemParticipantInput
-ChpInput ..|> HasType
-
-class BmInput {
-    - type: BmTypeInput
-    - sRated: ComparableQuantity<Power> [KW]
-    - feedInTariff: ComparableQuantity<SpecificCurrency> [€/kWh]
-    - marketReaction: Boolean
-    - costControlled: Boolean
-}
-BmInput --|> SystemParticipantInput
-BmInput ..|> HasType
-
-class EvInput {
-    - type: EvTypeInput
-}
-EvInput --|> SystemParticipantInput
-EvInput ..|> HasType
-
-class LoadInput {
-    - scenario: String
-    - sRated: ComparableQuantity<Power> [kVA]
-    - eConsAnnual: ComparableQuantity<Energy> [kWh]
-    - dsm: Boolean
-}
-LoadInput --|> SystemParticipantInput
-
-class StorageInput {
-    - type: StorageTypeInput
-    - behaviour: String
-}
-StorageInput --|> SystemParticipantInput
-StorageInput ..|> HasType
-
-class HpInput {
-    - type: HpTypeInput
-}
-HpInput --|> SystemParticipantInput
-HpInput ..|> HasType
-
-abstract class ThermalUnitInput {
- - uuid: UUID
- - bus: ThermalBusInput
-}
-ThermalUnitInput --|> AssetInput
-ThermalUnitInput ..|> HasBus
-
-class ThermalBusInput {
-}
-ThermalBusInput --|> AssetInput
-
-abstract class ThermalSinkInput {
-}
-ThermalSinkInput --|> ThermalUnitInput
-
-class ThermalHouseInput {
- - ethCapa: ComparableQuantity<HeatCapacity> [kWh / K]
- - ethLosses: ComparableQuantity<ThermalConductance> [kW / K]
-}
-ThermalHouseInput --|> ThermalSinkInput
-
-abstract class ThermalStorageInput {
-}
-ThermalStorageInput --|> ThermalUnitInput
-
-class CylindricalStorageInput {
-  - storageVolumeLvl: ComparableQuantity<Volume>
-  - storageVolumeLvlMin: ComparableQuantity<Volume>
-  - inletTemp: ComparableQuantity<Temperature>
-  - returnTemp: ComparableQuantity<Temperature>
-  - c: ComparableQuantity<SpecificHeatCapacity>
-}
-CylindricalStorageInput --|> ThermalStorageInput
-
-class MeasurementUnitInput {
-    + node: NodeInput
-    + vMag: Boolean [default f]
-    + vAng: Boolean [default f]
-    + p: Boolean [default f]
-    + q: Boolean [default f]
-}
-MeasurementUnitInput --|> AssetInput
-MeasurementUnitInput ..|> HasNodes
-
-class NodeInput {
-    + vTarget: ComparableQuantity<Dimensionless> (pU)
-    + vRated: ComparableQuantity<ElectricPotential> (kV)
-    + slack: Boolean
-    + geoPosition: Point
-    + voltLvl: VoltageLevel
-    + subnet: Integer
-}
-NodeInput --|> AssetInput
-
-class EvcsInput {
-???
-}
-EvcsInput --|> AssetInput
-
-class LineInput {
-    - type: LineTypeInput
-    - length: ComparableQuantity<Length> (km)
-    - amount: Integer
-    - olm: OlmCharacteristicInput
-    - geoPosition: LineString
-}
-LineInput --|> ConnectorInput
-LineInput ..|> HasType
-
-class SwitchInput {
-    + closed: Boolean
-}
-SwitchInput --|> ConnectorInput
-
-abstract TransformerInput {
-    + tapPos: Integer
-    + amount: Integer
-    + autoTap: Boolean
-}
-TransformerInput --|> ConnectorInput
-
-class Transformer2WInput {
-    + type: Transformer2WTypeInput
-}
-Transformer2WInput --|> TransformerInput
-Transformer2WInput ..|> HasType
-
-class Transformer3WInput {
-    + nodeC: NodeInput
-    + type: Transformer3WTypeInput
-}
-Transformer3WInput --|> TransformerInput
-Transformer3WInput ..|> HasType
-
-abstract class GraphicInput {
-    + graphicLayer: String
-    + path: LineString
-}
-GraphicInput --|> InputEntity
-
-class NodeGraphicInput {
-    + node: NodeInput
-    + point: Point
-}
-NodeGraphicInput --|> GraphicInput
-NodeGraphicInput ..|> HasNodes
-
-class LineGraphicInput {
-    + line: LineInput
-}
-LineGraphicInput --|> GraphicInput
-LineGraphicInput ..|> HasLine
 
 interface VoltageLevel
 
