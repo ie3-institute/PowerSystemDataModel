@@ -321,7 +321,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 		nodes                 | operators                 || resultingSize || resultingSet
 		[sptd.loadInput.node]| [sptd.loadInput.operator]|| 1             || [sptd.loadInput]
 		[sptd.loadInput.node]| []|| 1             || [
-			new LoadInput(sptd.loadInput.uuid, sptd.loadInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.loadInput.operationTime, sptd.loadInput.node, sptd.loadInput.qCharacteristics, sptd.loadInput.standardLoadProfile, sptd.loadInput.dsm, sptd.loadInput.eConsAnnual, sptd.loadInput.sRated, sptd.loadInput.cosphiRated)
+			new LoadInput(sptd.loadInput.uuid, sptd.loadInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.loadInput.operationTime, sptd.loadInput.node, sptd.loadInput.qCharacteristics, sptd.loadInput.standardLoadProfile, sptd.loadInput.dsm, sptd.loadInput.eConsAnnual, sptd.loadInput.sRated, sptd.loadInput.cosPhiRated)
 		]
 		[]| [sptd.loadInput.operator]|| 0             || []
 		[]| []|| 0             || []
@@ -341,7 +341,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 		nodes               | operators               || resultingSize || resultingSet
 		[sptd.pvInput.node]| [sptd.pvInput.operator]|| 1             || [sptd.pvInput]
 		[sptd.pvInput.node]| []|| 1             || [
-			new PvInput(sptd.pvInput.uuid, sptd.pvInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.pvInput.operationTime, sptd.pvInput.node, sptd.pvInput.qCharacteristics, sptd.pvInput.albedo, sptd.pvInput.azimuth, sptd.pvInput.etaConv, sptd.pvInput.height, sptd.pvInput.kG, sptd.pvInput.kT, sptd.pvInput.marketReaction, sptd.pvInput.sRated, sptd.pvInput.cosphiRated)
+			new PvInput(sptd.pvInput.uuid, sptd.pvInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.pvInput.operationTime, sptd.pvInput.node, sptd.pvInput.qCharacteristics, sptd.pvInput.albedo, sptd.pvInput.azimuth, sptd.pvInput.etaConv, sptd.pvInput.height, sptd.pvInput.kG, sptd.pvInput.kT, sptd.pvInput.marketReaction, sptd.pvInput.sRated, sptd.pvInput.cosPhiRated)
 		]
 		[]| [sptd.pvInput.operator]|| 0             || []
 		[]| []|| 0             || []
@@ -362,7 +362,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 		[sptd.fixedFeedInInput.node]| [
 			sptd.fixedFeedInInput.operator] as List || 1             || [sptd.fixedFeedInInput]
 		[sptd.fixedFeedInInput.node]| [] as List                               || 1             || [
-			new FixedFeedInInput(sptd.fixedFeedInInput.uuid, sptd.fixedFeedInInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics, sptd.fixedFeedInInput.sRated, sptd.fixedFeedInInput.cosphiRated)
+			new FixedFeedInInput(sptd.fixedFeedInInput.uuid, sptd.fixedFeedInInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics, sptd.fixedFeedInInput.sRated, sptd.fixedFeedInInput.cosPhiRated)
 		]
 		[]| [
 			sptd.fixedFeedInInput.operator] as List || 0             || []

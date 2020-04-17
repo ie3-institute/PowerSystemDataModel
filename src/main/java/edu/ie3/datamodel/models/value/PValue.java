@@ -14,7 +14,7 @@ import tec.uom.se.ComparableQuantity;
 public class PValue implements Value {
 
   /** Active power */
-  private ComparableQuantity<Power> p;
+  private final ComparableQuantity<Power> p;
 
   /** @param p Active power */
   public PValue(ComparableQuantity<Power> p) {
@@ -23,10 +23,6 @@ public class PValue implements Value {
 
   public ComparableQuantity<Power> getP() {
     return p;
-  }
-
-  public void setP(ComparableQuantity<Power> p) {
-    this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
   @Override

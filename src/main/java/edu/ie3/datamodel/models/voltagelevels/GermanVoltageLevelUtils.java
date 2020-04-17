@@ -72,7 +72,7 @@ public class GermanVoltageLevelUtils {
           new RightOpenInterval<>(
               Quantities.getQuantity(380d, KILOVOLT), Quantities.getQuantity(560d, KILOVOLT)));
 
-  private static Set<CommonVoltageLevel> germanVoltageLevels =
+  private static final Set<CommonVoltageLevel> germanVoltageLevels =
       Collections.unmodifiableSet(
           new HashSet<>(Arrays.asList(LV, MV_10KV, MV_20KV, MV_30KV, HV, EHV_220KV, EHV_380KV)));
 

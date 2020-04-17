@@ -13,7 +13,7 @@ import tec.uom.se.ComparableQuantity;
 /** Describes a triple based on active and reactive electrical power, as well as heat power */
 public class HeatAndSValue extends SValue {
   /** Heat demand as power */
-  private ComparableQuantity<Power> heatDemand;
+  private final ComparableQuantity<Power> heatDemand;
 
   /**
    * @param p Active power
@@ -30,10 +30,6 @@ public class HeatAndSValue extends SValue {
 
   public ComparableQuantity<Power> getHeatDemand() {
     return heatDemand;
-  }
-
-  public void setHeatDemand(ComparableQuantity<Power> heatDemand) {
-    this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
   @Override

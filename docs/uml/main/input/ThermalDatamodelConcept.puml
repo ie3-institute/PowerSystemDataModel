@@ -1,0 +1,122 @@
+@startuml
+note "For better readability no getters are shown in the classes. Also the final attributes are not marked especially." as generalNote
+
+package io.extractor {
+    interface NestedEntity
+
+    interface HasNodes {
+        + allNodes(): List<NodeInput>
+    }
+    HasNodes --|> NestedEntity
+
+    interface HasThermalBus {
+        + getThermalBus(): ThermalBusInput
+    }
+    HasThermalBus --|> NestedEntity
+
+    interface HasThermalStorage {
+        + getThermalStorage(): ThermalStorageInput
+    }
+    HasThermalStorage --|> NestedEntity
+
+    interface HasType {
+        + getType(): AssetTypeInput
+    }
+    HasType --|> NestedEntity
+
+    interface HasLine {
+        + getLine(): LineInput
+    }
+    HasLine --|> NestedEntity
+}
+
+package models {
+    abstract class UniqueEntity {
+        + {static} UUID_FIELD_NAME: String
+        - uuid: UUID
+    }
+
+    class OperationTime {
+        cf. other uml diagram for details
+    }
+
+    interface Operable {
+        + getOperationTime(): OperationTime
+        + getOperator(): OperatorInput
+        + inOperationOn(ZonedDateTime): boolean
+    }
+    Operable --|> NestedEntity
+
+    package result {}
+    package timeseries {}
+    package value {}
+    note "Has also children in these packages.\ncf. separate uml diagrams" as childNote
+    UniqueEntity .. childNote
+    childNote .. result
+    childNote .. timeseries
+    childNote .. value
+    childNote .. connector
+    childNote .. graphics
+    childNote .. system
+
+    package input {
+        abstract class InputEntity
+        InputEntity --|> UniqueEntity
+
+        class OperatorInput {
+            + {static} NO_OPERATOR_ASSIGNED: OperatorInput
+            - name: String
+        }
+        OperatorInput --|> InputEntity
+
+        package graphics {}
+
+        abstract class AssetInput {
+            - id: String
+            - operationTime: OperationTime
+            - operator: OperatorInput
+        }
+        AssetInput --|> InputEntity
+        AssetInput ..|> Operable
+        AssetInput *-- OperationTime
+        AssetInput *-- OperatorInput
+
+        package connector {}
+
+        package system {}
+
+        package thermal {
+            class ThermalBusInput
+            ThermalBusInput --|> AssetInput
+
+            abstract class ThermalUnitInput {
+                - thermalBus: ThermalBusInput
+            }
+            ThermalUnitInput --|> AssetInput
+            ThermalUnitInput ..|> HasThermalBus
+
+            abstract class ThermalSinkInput
+            ThermalSinkInput --|> ThermalUnitInput
+
+            class ThermalHouseInput {
+                - ethCapa: ComparableQuantity<HeatCapacity> [kWh/K]
+                - ethLosses: ComparableQuantity<ThermalConductance> [kW/K]
+            }
+            ThermalHouseInput --|> ThermalSinkInput
+
+            abstract class ThermalStorageInput
+            ThermalStorageInput --|> ThermalUnitInput
+
+            class CylindricalStorageInput {
+                - storageVolumeLvl: ComparableQuantity<Volume> [m³]
+                - storageVolumeLvlMin: ComparableQuantity<Volume> [m³]
+                - inletTemp: ComparableQuantity<Temperature> [°C]
+                - returnTemp: ComparableQuantity<Temperature> [°C]
+                - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
+            }
+            CylindricalStorageInput --|> ThermalStorageInput
+        }
+    }
+}
+
+@enduml

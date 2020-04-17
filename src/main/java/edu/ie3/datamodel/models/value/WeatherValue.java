@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.util.quantities.interfaces.Irradiation;
+import java.util.Objects;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
@@ -76,6 +77,22 @@ public class WeatherValue implements Value {
 
   public WindValue getWind() {
     return wind;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    WeatherValue that = (WeatherValue) o;
+    return coordinate.equals(that.coordinate)
+        && irradiation.equals(that.irradiation)
+        && temperature.equals(that.temperature)
+        && wind.equals(that.wind);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(coordinate, irradiation, temperature, wind);
   }
 
   @Override

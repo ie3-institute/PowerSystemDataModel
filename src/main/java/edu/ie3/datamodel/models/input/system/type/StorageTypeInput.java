@@ -29,7 +29,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   private final ComparableQuantity<Dimensionless> eta;
   /** Minimum permissible depth of discharge (typically in %) */
   private final ComparableQuantity<Dimensionless> dod;
-  /** Maximum life time of the storage (typically in ms) */
+  /** Maximum life time of the storage (typically in h) */
   private final ComparableQuantity<Time> lifeTime;
   /** Maximum amount of full charging cycles */
   private final int lifeCycle;
