@@ -268,7 +268,6 @@ public class CsvFileSink implements DataSink {
             types,
             operators)
         .flatMap(Collection::stream)
-        .parallel()
         .forEach(this::persistIgnoreNested);
   }
 
