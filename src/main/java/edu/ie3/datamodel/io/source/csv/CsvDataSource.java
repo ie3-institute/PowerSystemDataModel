@@ -187,15 +187,22 @@ public abstract class CsvDataSource {
    *     OperatorInput#NO_OPERATOR_ASSIGNED}
    */
   private OperatorInput getFirstOrDefaultOperator(
-      Collection<OperatorInput> operators, String operatorUuid) {
-    return findFirstEntityByUuid(operatorUuid, operators)
-        .orElseGet(
-            () -> {
-              log.debug(
-                  "Cannot find operator for node with uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
-                  operatorUuid);
-              return OperatorInput.NO_OPERATOR_ASSIGNED;
-            });
+      Collection<OperatorInput> operators,
+      String operatorUuid,
+      String entityClassName,
+      String requestEntityUuid) {
+    return operatorUuid.trim().isEmpty()
+        ? OperatorInput.NO_OPERATOR_ASSIGNED
+        : findFirstEntityByUuid(operatorUuid, operators)
+            .orElseGet(
+                () -> {
+                  log.debug(
+                      "Cannot find operator with uuid '{}' for element '{}' and uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
+                      operatorUuid,
+                      entityClassName,
+                      requestEntityUuid);
+                  return OperatorInput.NO_OPERATOR_ASSIGNED;
+                });
   }
 
   /**
@@ -290,7 +297,15 @@ public abstract class CsvDataSource {
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
     try (BufferedReader reader = connector.initReader(entityClass)) {
-      String[] headline = reader.readLine().replaceAll("\"", "").split(csvSep);
+      String[] headline = reader.readLine().replaceAll("\"", "").toLowerCase().split(csvSep);
+
+      // sanity check for headline
+      if (!Arrays.asList(headline).contains("uuid")) {
+        throw new SourceException(
+            "The first line does not contain a field named 'uuid'. Is the headline valid?\nProvided headline: "
+                + String.join(", ", headline));
+      }
+
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
@@ -307,6 +322,9 @@ public abstract class CsvDataSource {
 
     } catch (IOException e) {
       log.warn(
+          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+    } catch (SourceException e) {
+      log.error(
           "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
 
@@ -421,7 +439,12 @@ public abstract class CsvDataSource {
 
     // get the operator of the entity
     String operatorUuid = fieldsToAttributes.get(OPERATOR);
-    OperatorInput operator = getFirstOrDefaultOperator(operators, operatorUuid);
+    OperatorInput operator =
+        getFirstOrDefaultOperator(
+            operators,
+            operatorUuid,
+            entityClass.getSimpleName(),
+            saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP));
 
     // remove fields that are passed as objects to constructor
     fieldsToAttributes.keySet().removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
