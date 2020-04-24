@@ -164,7 +164,11 @@ public class ValidationUtils {
             graphic -> {
               if (!nodes.contains(graphic.getNode()))
                 throw new InvalidEntityException(
-                    "The node graphic refers to a node, that is not among the provided ones.",
+                    "The node graphic with uuid '"
+                        + graphic.getUuid()
+                        + "' refers to node with uuid '"
+                        + graphic.getNode().getUuid()
+                        + "', that is not among the provided ones.",
                     graphic);
             });
 
@@ -174,7 +178,11 @@ public class ValidationUtils {
             graphic -> {
               if (!lines.contains(graphic.getLine()))
                 throw new InvalidEntityException(
-                    "The line graphic refers to a line, that is not among the provided ones.",
+                    "The line graphic with uuid '"
+                        + graphic.getUuid()
+                        + "' refers to line with uuid '"
+                        + graphic.getLine().getUuid()
+                        + "', that is not among the provided ones.",
                     graphic);
             });
   }
