@@ -124,7 +124,7 @@ public abstract class CsvDataSource {
   private String[] fieldVals(String csvSep, String csvRow) {
 
     /*geo json support*/
-    final String geoJsonRegex = "[\\{].+\\}\\}\\}";
+    final String geoJsonRegex = "[\\{].+?\\}\\}\\}";
     final String geoReplacement = "geoJSON";
 
     /*characteristic input support */
