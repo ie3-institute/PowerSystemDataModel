@@ -122,13 +122,13 @@ public class LineInput extends ConnectorInput implements HasType {
     LineInput lineInput = (LineInput) o;
     return type.equals(lineInput.type)
         && length.equals(lineInput.length)
-        && geoPosition.equals(lineInput.geoPosition)
+        && geoPosition.toString().equals(lineInput.geoPosition.toString())
         && olmCharacteristic.equals(lineInput.olmCharacteristic);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), type, length, geoPosition, olmCharacteristic);
+    return Objects.hash(super.hashCode(), type, length, geoPosition.toString(), olmCharacteristic);
   }
 
   @Override
