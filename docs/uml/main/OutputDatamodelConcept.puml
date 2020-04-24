@@ -1,0 +1,133 @@
+@startuml
+
+package models {
+
+    abstract class UniqueEntity {
+        + {static} UUID_FIELD_NAME: String
+        + uuid: UUID
+    }
+
+    package timeseries {}
+    package value {}
+    package input {}
+    note "Has also children in these packages.\ncf. separate uml diagrams" as childNote
+    UniqueEntity .. childNote
+    childNote .. input
+    childNote .. timeseries
+    childNote .. value
+
+    package result {
+        abstract class ResultEntity{
+            + timestamp: ZonedDateTime
+            + inputModel: UUID
+        }
+        UniqueEntity <|-- ResultEntity
+
+        class NodeResult{
+            + vMag: ComparableQuantity<Dimensionless>
+            + vAng: ComparableQuantity<Angle>
+        }
+        ResultEntity <|-- NodeResult
+        
+        package connector {
+
+            abstract class ConnectorResult{
+                + iAMag: ComparableQuantity<ElectricCurrent>
+                + iAAng: ComparableQuantity<Angle>
+                + iBMag: ComparableQuantity<ElectricCurrent>
+                + iBAng: ComparableQuantity<Angle>
+            }
+            ResultEntity <|-- ConnectorResult
+
+            abstract class TransformerResult{
+                + tapPos: int
+            }
+            ConnectorResult <|-- TransformerResult
+
+            class Transformer2wResult
+            TransformerResult <|-- Transformer2wResult
+
+            class Transformer3wResult{
+                + iCMag: ComparableQuantity<ElectricCurrent>
+                + iCAng: ComparableQuantity<Angle>
+            }
+            TransformerResult <|-- Transformer3wResult
+
+            class LineResult
+            ConnectorResult <|-- LineResult
+
+            class SwitchResult{
+                + closed: boolean
+            }
+            ConnectorResult <|-- SwitchResult
+        }
+
+        package system {
+
+            abstract class SystemParticipantResult{
+                + p: ComparableQuantity<Power>
+                + q: ComparableQuantity<Power>
+            }
+            ResultEntity  <|-- SystemParticipantResult
+
+            class LoadResult
+            SystemParticipantResult <|-- LoadResult
+
+            class FixedFeedInResult
+            SystemParticipantResult <|-- FixedFeedInResult
+
+            class BmResult
+            SystemParticipantResult <|-- BmResult
+
+            class PvResult
+            SystemParticipantResult  <|-- PvResult
+
+            class ChpResult
+            SystemParticipantResult <|-- ChpResult
+
+            class WecResult
+            SystemParticipantResult <|-- WecResult
+
+            class EvcsResult
+            SystemParticipantResult <|-- EvcsResult
+
+            class EvResult{
+                + soc: ComparableQuantity<Dimensionless>
+            }
+            SystemParticipantResult <|-- EvResult
+
+            class StorageResult{
+                + soc: ComparableQuantity<Dimensionless>
+            }
+            SystemParticipantResult <|-- StorageResult
+        }
+
+        package thermal {
+
+            Abstract class ThermalUnitResult {
+                - qDot: ComparableQuantity<Power> [MW]
+            }
+            ResultEntity <|-- ThermalUnitResult
+
+            Abstract class ThermalSinkResult
+            ThermalUnitResult <|-- ThermalSinkResult
+
+            class ThermalHouseResult {
+                - indoorTemperature: ComparableQuantity<Temperature> [°C]
+            }
+            ThermalSinkResult <|-- ThermalHouseResult
+
+            Abstract class ThermalStorageResult {
+                - energy: ComparableQuantity<Energy> [MWh]
+            }
+            ThermalUnitResult <|-- ThermalStorageResult
+
+            class CylindricalStorageResult {
+            - fillLevel: ComparableQuantity<Dimensionless> [%]
+            }
+            ThermalStorageResult <|-- CylindricalStorageResult
+        }
+    }
+}
+
+@enduml

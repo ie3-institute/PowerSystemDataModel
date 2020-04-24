@@ -226,3 +226,7 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+
+# Self-created test files and helpers
+/test
+src/test/resources/uuids.txt

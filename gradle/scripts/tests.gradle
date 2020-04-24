@@ -5,7 +5,7 @@ test {
 	}
 	useJUnitPlatform()
 	testLogging {
-		events "passed", "skipped", "failed"
+		events "skipped", "failed"
 	}
 }
 
@@ -24,12 +24,12 @@ task allTests(type: Test) {
 
 	useJUnitPlatform()
 	testLogging {
-		events "passed", "skipped", "failed"
+		events "skipped", "failed"
 	}
 
 	filter {
-//		includeTestsMatching '*Test*.*'
-//		includeTestsMatching '*IT'
+		//		includeTestsMatching '*Test*.*'
+		//		includeTestsMatching '*IT'
 	}
 	mustRunAfter test
 }
