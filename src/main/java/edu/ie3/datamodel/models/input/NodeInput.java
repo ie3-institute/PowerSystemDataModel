@@ -126,13 +126,13 @@ public class NodeInput extends AssetInput {
     return slack == nodeInput.slack
         && subnet == nodeInput.subnet
         && Objects.equals(vTarget, nodeInput.vTarget)
-        && nodeInput.geoPosition.toString().equals(geoPosition.toString())
+        && Objects.equals(geoPosition, nodeInput.geoPosition)
         && Objects.equals(voltLvl, nodeInput.voltLvl);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), vTarget, slack, geoPosition.toString(), voltLvl, subnet);
+    return Objects.hash(super.hashCode(), vTarget, slack, geoPosition, voltLvl, subnet);
   }
 
   @Override
