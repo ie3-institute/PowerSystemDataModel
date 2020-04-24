@@ -29,14 +29,21 @@ public class BufferedCsvWriter extends BufferedWriter {
    * @param baseFolder Base folder, from where the file hierarchy should start
    * @param fileDefinition The foreseen shape of the file
    * @param quoted True, if the entries may be quoted
+   * @param append true to append to an existing file, false to overwrite an existing file (if any),
+   *     if no file exists, a new one will be created in both cases
    * @throws IOException If the FileOutputStream cannot be established.
    */
   public BufferedCsvWriter(
-      String baseFolder, CsvFileDefinition fileDefinition, boolean quoted, boolean writeHeader)
+      String baseFolder,
+      CsvFileDefinition fileDefinition,
+      boolean quoted,
+      boolean writeHeader,
+      boolean append)
       throws IOException {
     super(
         new OutputStreamWriter(
-            new FileOutputStream(baseFolder + File.separator + fileDefinition.getFilePath(), false),
+            new FileOutputStream(
+                baseFolder + File.separator + fileDefinition.getFilePath(), append),
             StandardCharsets.UTF_8));
     this.fileDefinition = fileDefinition;
     this.quoted = quoted;
@@ -48,11 +55,14 @@ public class BufferedCsvWriter extends BufferedWriter {
    *
    * @param baseFolder Base folder, from where the file hierarchy should start
    * @param fileDefinition The foreseen shape of the file
+   * @param append true to append to an existing file, false to overwrite an existing file (if any),
+   *     if no file exists, a new one will be created in both cases
    * @throws IOException If the FileOutputStream cannot be established.
    */
-  public BufferedCsvWriter(String baseFolder, CsvFileDefinition fileDefinition, boolean writeHeader)
+  public BufferedCsvWriter(
+      String baseFolder, CsvFileDefinition fileDefinition, boolean writeHeader, boolean append)
       throws IOException {
-    this(baseFolder, fileDefinition, false, writeHeader);
+    this(baseFolder, fileDefinition, false, writeHeader, append);
   }
 
   /**
