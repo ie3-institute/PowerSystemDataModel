@@ -27,6 +27,8 @@ public class DistanceWeightedEdge extends DefaultWeightedEdge {
 
   private double distance;
 
+  public DistanceWeightedEdge() {}
+
   public DistanceWeightedEdge(ComparableQuantity<Length> weightQuantity) {
     this.distance = weightQuantity.to(DEFAULT_UNIT).getValue().doubleValue();
   }
