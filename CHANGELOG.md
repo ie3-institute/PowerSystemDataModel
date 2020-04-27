@@ -8,11 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Headline in csv files is now mandatory. CsvDataSource checks for existing field `uuid` in first row of .csv file
-- Minor logging improvements 
+- Minor logging improvements
 
-### Changed 
+### Changed
 - Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
 
-### Fixed 
+### Fixed
 - CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 - CsvDataSource now parsing multiple geoJson strings correctly

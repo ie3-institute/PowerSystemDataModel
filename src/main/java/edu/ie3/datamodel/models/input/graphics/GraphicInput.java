@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.graphics;
 
 import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import java.util.Objects;
 import java.util.UUID;
 import org.locationtech.jts.geom.LineString;
@@ -25,7 +26,10 @@ public abstract class GraphicInput extends InputEntity {
   public GraphicInput(UUID uuid, String graphicLayer, LineString path) {
     super(uuid);
     this.graphicLayer = graphicLayer;
-    this.path = path;
+    this.path =
+        path == null
+            ? null // can be null for NodeGraphicInput entities
+            : GridAndGeoUtils.buildSafeLineString(path);
   }
 
   public String getGraphicLayer() {
@@ -42,12 +46,12 @@ public abstract class GraphicInput extends InputEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     GraphicInput that = (GraphicInput) o;
-    return Objects.equals(graphicLayer, that.graphicLayer) && Objects.equals(path, that.path);
+    return getGraphicLayer().equals(that.getGraphicLayer()) && getPath().equals(that.getPath());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), graphicLayer, path);
+    return Objects.hash(super.hashCode(), getGraphicLayer(), getPath());
   }
 
   @Override
