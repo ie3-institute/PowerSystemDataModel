@@ -7,14 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
-- Headline in csv files is now mandatory. CsvDataSource checks for existing field `uuid` in first row of .csv file
-- Minor logging improvements
+-  Headline in csv files is now mandatory. CsvDataSource checks for existing field `uuid` in first row of .csv file
+-  Minor logging improvements
 
 ### Changed
-- Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
-- Modifications in `LineInput` and `GraphicInput` constructors to make `LineStrings` with two exactly equal coordinates or multiple exactly equal coordinates possible
-- Extended functionality of `GridAndGeoUtils`
+-  Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
+-  Modifications in `LineInput` and `GraphicInput` constructors to make `LineStrings` with two exactly equal coordinates or multiple exactly equal coordinates possible
+-  Extended functionality of `GridAndGeoUtils`
 
 ### Fixed
-- CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
-- CsvDataSource now parsing multiple geoJson strings correctly
+-  CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
+-  CsvDataSource now parsing multiple geoJson strings correctly
