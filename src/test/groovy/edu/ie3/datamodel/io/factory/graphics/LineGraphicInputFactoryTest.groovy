@@ -9,7 +9,9 @@ import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
+import edu.ie3.datamodel.utils.GridAndGeoUtils
 import edu.ie3.test.helper.FactoryTestHelper
+import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
 
 class LineGraphicInputFactoryTest extends Specification implements FactoryTestHelper {
@@ -23,7 +25,7 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
 		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
 	}
 
-	def "A LineGraphicInputFactory should parse a valid NodeGraphicInput correctly"() {
+	def "A LineGraphicInputFactory should parse a valid LineGraphicInput correctly"() {
 		given:
 		def inputFactory = new LineGraphicInputFactory()
 		Map<String, String> parameter = [
@@ -48,5 +50,34 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
 			assert graphicLayer == parameter["graphiclayer"]
 			assert line == lineInput
 		}
+	}
+	def "A LineGraphicInputFactory should parse a valid LineGraphicInput with different geoPosition strings correctly"() {
+		given:
+		def inputFactory = new LineGraphicInputFactory()
+		Map<String, String> parameter = [
+			"uuid"          : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"path": geoLineString,
+			"graphiclayer"  : "test_graphic_layer"
+		]
+
+		def inputClass = LineGraphicInput
+		def lineInput = Mock(LineInput)
+
+		when:
+		Optional<LineGraphicInput> input = inputFactory.getEntity(
+				new LineGraphicInputEntityData(parameter, lineInput))
+
+		then:
+		input.present
+		input.get().getClass() == inputClass
+		((LineGraphicInput) input.get()).with {
+			assert path == GridAndGeoUtils.buildSafeLineString(getGeometry(parameter["path"]) as LineString)
+		}
+
+		where:
+		geoLineString                                                                                                                         | _
+		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228]]}"                                           | _
+		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228]]}" | _
+		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.311111, 51.49228],[7.511111, 51.49228]]}" | _
 	}
 }

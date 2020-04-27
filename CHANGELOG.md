@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
-- Modifications in `LineInput` and `GraphicInput` constructors to make `LineStrings` with two exactly equal coordinates or multiple exactly equal coordinates possible 
+- Modifications in `LineInput` and `GraphicInput` constructors to make `LineStrings` with two exactly equal coordinates or multiple exactly equal coordinates possible
 - Extended functionality of `GridAndGeoUtils`
 
 ### Fixed
