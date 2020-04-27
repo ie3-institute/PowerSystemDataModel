@@ -10,8 +10,9 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
-import com.vividsolutions.jts.geom.Point;
-import edu.ie3.utils.CoordinateUtils;
+import edu.ie3.util.geo.GeoUtils;
+import org.locationtech.jts.geom.Point;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,7 +45,7 @@ public class CsvCoordinateSource { // TODO replace with real Csv Reader
       while ((nextLine = reader.readNext()) != null) {
         idToCoordinate.put(
             Integer.parseInt(nextLine[idIndex]),
-            CoordinateUtils.xyCoordToPoint(
+            GeoUtils.xyToPoint(
                 Double.parseDouble(nextLine[latIndex]), Double.parseDouble(nextLine[lonIndex])));
       }
     } catch (IOException | CsvValidationException e) {

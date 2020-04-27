@@ -5,33 +5,33 @@
 */
 package edu.ie3.models.neo4j;
 
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Point;
 import edu.ie3.dataconnection.source.csv.CsvTypeSource;
+import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.connector.LineInput;
+import edu.ie3.datamodel.models.input.connector.SwitchInput;
+import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.models.GermanVoltageLevel;
-import edu.ie3.models.OperationTime;
-import edu.ie3.models.StandardUnits;
-import edu.ie3.models.VoltageLevel;
-import edu.ie3.models.input.NodeInput;
-import edu.ie3.models.input.connector.LineInput;
-import edu.ie3.models.input.connector.SwitchInput;
-import edu.ie3.models.input.connector.Transformer2WInput;
-import edu.ie3.models.input.connector.Transformer3WInput;
-import edu.ie3.models.input.connector.type.LineTypeInput;
-import edu.ie3.models.input.connector.type.Transformer2WTypeInput;
-import edu.ie3.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.util.geo.GeoUtils;
 import edu.ie3.util.quantities.PowerSystemUnits;
-import edu.ie3.utils.CoordinateUtils;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import org.locationtech.jts.geom.Point;
+import tec.uom.se.ComparableQuantity;
+import tec.uom.se.quantity.Quantities;
+
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricPotential;
 import javax.measure.quantity.Length;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.quantity.Quantities;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 public class Neo4JMapper {
 
@@ -40,12 +40,12 @@ public class Neo4JMapper {
     Integer subnet = neo4JNode.getSubnet();
     Point coordinate =
         (neo4JNode.getX_coord() != null && neo4JNode.getY_coord() != null)
-            ? CoordinateUtils.xyCoordToPoint(neo4JNode.getX_coord(), neo4JNode.getY_coord())
+            ? GeoUtils.xyToPoint(neo4JNode.getX_coord(), neo4JNode.getY_coord())
             : null;
     Quantity<Dimensionless> vTarget =
-        Quantities.getQuantity(neo4JNode.getV_target(), StandardUnits.TARGET_VOLTAGE);
+        Quantities.getQuantity(neo4JNode.getV_target(), StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     ComparableQuantity<ElectricPotential> vRated =
-        Quantities.getQuantity(neo4JNode.getV_rated(), StandardUnits.V_RATED);
+        Quantities.getQuantity(neo4JNode.getV_rated(), StandardUnits.RATED_VOLTAGE_MAGNITUDE);
 
     ZonedDateTime operatesFrom =
         neo4JNode.getOperates_from() != null

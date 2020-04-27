@@ -5,13 +5,15 @@
 */
 package edu.ie3.models;
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
-import static edu.ie3.util.quantities.PowerSystemUnits.VOLT;
-
+import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.interval.ClosedInterval;
-import javax.measure.quantity.ElectricPotential;
 import tec.uom.se.ComparableQuantity;
 import tec.uom.se.quantity.Quantities;
+
+import javax.measure.quantity.ElectricPotential;
+
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
+import static edu.ie3.util.quantities.PowerSystemUnits.VOLT;
 
 public enum GermanVoltageLevel implements VoltageLevel {
   LV(

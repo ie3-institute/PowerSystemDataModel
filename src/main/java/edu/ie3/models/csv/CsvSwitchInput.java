@@ -7,9 +7,10 @@ package edu.ie3.models.csv;
 
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
-import edu.ie3.models.OperationTime;
-import edu.ie3.models.input.NodeInput;
-import edu.ie3.models.input.connector.SwitchInput;
+import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.connector.SwitchInput;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -71,9 +72,9 @@ public class CsvSwitchInput {
     SwitchInput switchInput =
         new SwitchInput(
             uuid,
-            operationTime,
-            null,
             id,
+                null,
+            operationTime,
             tidToNode.get(node_a),
             tidToNode.get(node_b),
             closedBool);

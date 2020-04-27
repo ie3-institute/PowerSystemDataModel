@@ -5,26 +5,27 @@
 */
 package edu.ie3.models.influxdb.input.weather;
 
-import com.vividsolutions.jts.geom.Point;
 import edu.ie3.dataconnection.source.csv.CsvCoordinateSource;
-import edu.ie3.models.StandardUnits;
+import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
+import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.models.influxdb.InfluxDbEntity;
-import edu.ie3.models.value.TimeBasedValue;
-import edu.ie3.models.value.WeatherValues;
 import edu.ie3.util.quantities.interfaces.Irradiation;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import javax.measure.Quantity;
+import org.influxdb.annotation.Column;
+import org.influxdb.annotation.Measurement;
+import org.locationtech.jts.geom.Point;
+import tec.uom.se.ComparableQuantity;
+import tec.uom.se.quantity.Quantities;
+
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
-import org.influxdb.annotation.Column;
-import org.influxdb.annotation.Measurement;
-import tec.uom.se.quantity.Quantities;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Measurement(name = "weather")
-public class InfluxDbWeatherInput extends InfluxDbEntity<TimeBasedValue<WeatherValues>> {
+public class InfluxDbWeatherInput extends InfluxDbEntity<TimeBasedValue<WeatherValue>> {
 
   @Column(name = "koordinatenid", tag = true)
   String
@@ -65,39 +66,39 @@ public class InfluxDbWeatherInput extends InfluxDbEntity<TimeBasedValue<WeatherV
     this.windgeschwindigkeit = windgeschwindigkeit;
   }
 
-  public InfluxDbWeatherInput(TimeBasedValue<WeatherValues> weather) {
+  public InfluxDbWeatherInput(TimeBasedValue<WeatherValue> weather) {
     this.time = weather.getTime().toInstant();
-    WeatherValues values = weather.getValue();
+    WeatherValue values = weather.getValue();
     this.koordinatenId = CsvCoordinateSource.getId(values.getCoordinate()).toString();
-    Quantity<Irradiation> diffuseIrradiation =
+    ComparableQuantity<Irradiation> diffuseIrradiation =
         weather.getValue().getIrradiation().getDiffuseIrradiation();
     this.diffusstrahlung = diffuseIrradiation.getValue().doubleValue();
-    Quantity<Irradiation> directIrradiation =
+    ComparableQuantity<Irradiation> directIrradiation =
         weather.getValue().getIrradiation().getDirectIrradiation();
     this.direktstrahlung = directIrradiation.getValue().doubleValue();
-    Quantity<Temperature> temperature = values.getTemperature().getTemperature();
+    ComparableQuantity<Temperature> temperature = values.getTemperature().getTemperature();
     this.temperatur = temperature.getValue().doubleValue();
-    Quantity<Angle> direction = values.getWind().getDirection();
+    ComparableQuantity<Angle> direction = values.getWind().getDirection();
     this.windrichtung = direction.getValue().doubleValue();
-    Quantity<Speed> velocity = values.getWind().getVelocity();
+    ComparableQuantity<Speed> velocity = values.getWind().getVelocity();
     this.windgeschwindigkeit = velocity.getValue().doubleValue();
   }
 
-  public TimeBasedValue<WeatherValues> toTimeBasedWeatherValues() {
+  public TimeBasedValue<WeatherValue> toTimeBasedWeatherValue() {
     ZonedDateTime dateTime = time.atZone(ZoneId.of("UTC"));
     Point geometry = CsvCoordinateSource.getCoordinate(Integer.parseInt(koordinatenId));
-    Quantity<Irradiation> diffuseIrradiation =
+    ComparableQuantity<Irradiation> diffuseIrradiation =
         Quantities.getQuantity(diffusstrahlung, StandardUnits.IRRADIATION);
-    Quantity<Irradiation> directIrradiation =
+    ComparableQuantity<Irradiation> directIrradiation =
         Quantities.getQuantity(direktstrahlung, StandardUnits.IRRADIATION);
-    Quantity<Temperature> temperature =
+    ComparableQuantity<Temperature> temperature =
         Quantities.getQuantity(temperatur, StandardUnits.TEMPERATURE);
-    Quantity<Angle> direction = Quantities.getQuantity(windrichtung, StandardUnits.WIND_DIRECTION);
-    Quantity<Speed> velocity =
+    ComparableQuantity<Angle> direction = Quantities.getQuantity(windrichtung, StandardUnits.WIND_DIRECTION);
+    ComparableQuantity<Speed> velocity =
         Quantities.getQuantity(windgeschwindigkeit, StandardUnits.WIND_VELOCITY);
     return new TimeBasedValue<>(
         dateTime,
-        new WeatherValues(
+        new WeatherValue(
             geometry, diffuseIrradiation, directIrradiation, temperature, direction, velocity));
   }
 }

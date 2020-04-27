@@ -7,21 +7,22 @@ package edu.ie3.models.csv;
 
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
-import com.vividsolutions.jts.geom.Point;
+import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.models.GermanVoltageLevel;
-import edu.ie3.models.OperationTime;
-import edu.ie3.models.StandardUnits;
-import edu.ie3.models.VoltageLevel;
-import edu.ie3.models.input.NodeInput;
-import edu.ie3.utils.CoordinateUtils;
+import edu.ie3.util.geo.GeoUtils;
+import org.locationtech.jts.geom.Point;
+import tec.uom.se.ComparableQuantity;
+import tec.uom.se.quantity.Quantities;
+
+import javax.measure.quantity.Dimensionless;
+import javax.measure.quantity.ElectricPotential;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
-import javax.measure.quantity.Dimensionless;
-import javax.measure.quantity.ElectricPotential;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.quantity.Quantities;
 
 public class CsvNodeInput {
   // id;in_operation;is_slack;operates_from;operates_until;scenario;subnet;v_rated;v_target;volt_lvl
@@ -75,12 +76,12 @@ public class CsvNodeInput {
   }
 
   public NodeInput toNodeInput() {
-    Point coordinate = CoordinateUtils.xyCoordToPoint(x_coord, y_coord);
+    Point coordinate = GeoUtils.xyToPoint(x_coord, y_coord);
     UUID uuid = UUID.fromString(getUuid());
     ComparableQuantity<ElectricPotential> vRatedQuantity =
-        Quantities.getQuantity(v_rated, StandardUnits.V_RATED);
+        Quantities.getQuantity(v_rated, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     ComparableQuantity<Dimensionless> vTargetQuantity =
-        Quantities.getQuantity(v_target, StandardUnits.TARGET_VOLTAGE);
+        Quantities.getQuantity(v_target, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     ZonedDateTime startDate =
         operates_from != null ? ZonedDateTime.of(operates_from, ZoneId.of("UTC")) : null;
     ZonedDateTime endDate =

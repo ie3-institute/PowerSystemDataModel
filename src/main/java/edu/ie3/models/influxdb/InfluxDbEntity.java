@@ -5,10 +5,11 @@
 */
 package edu.ie3.models.influxdb;
 
-import edu.ie3.models.UniqueEntity;
-import java.time.Instant;
+import edu.ie3.datamodel.models.UniqueEntity;
 import org.influxdb.annotation.Column;
 import org.influxdb.annotation.TimeColumn;
+
+import java.time.Instant;
 
 public abstract class InfluxDbEntity<E extends UniqueEntity> {
 

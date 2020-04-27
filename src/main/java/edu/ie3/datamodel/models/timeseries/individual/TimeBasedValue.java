@@ -25,12 +25,6 @@ public class TimeBasedValue<T extends Value> extends TimeSeriesEntry<T>
     this.time = time;
   }
 
-  public TimeBasedValue(UUID uuid, ZonedDateTime time, T value) {
-    super(uuid);
-    this.value = value;
-    this.time = time;
-  }
-
   public TimeBasedValue(ZonedDateTime time, T value) {
     this(UUID.randomUUID(), time, value);
   }

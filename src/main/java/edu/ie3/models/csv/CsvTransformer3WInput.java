@@ -8,10 +8,11 @@ package edu.ie3.models.csv;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
 import edu.ie3.dataconnection.source.csv.CsvTypeSource;
-import edu.ie3.models.OperationTime;
-import edu.ie3.models.input.NodeInput;
-import edu.ie3.models.input.connector.Transformer3WInput;
-import edu.ie3.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

@@ -9,18 +9,23 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.geo.GeoUtils;
-import java.util.Objects;
-import java.util.UUID;
-import javax.measure.quantity.Dimensionless;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import tec.uom.se.ComparableQuantity;
 
+import javax.measure.quantity.Dimensionless;
+import java.util.Objects;
+import java.util.UUID;
+
 /** Describes an electrical grid node, that other assets can connect to */
 public class NodeInput extends AssetInput {
-  /** Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.) */
+  /**
+   * Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.)
+   */
   private final ComparableQuantity<Dimensionless> vTarget;
-  /** Is this node a slack node? */
+  /**
+   * Is this node a slack node?
+   */
   private final boolean slack;
   /**
    * The coordinates of this node, especially relevant for geo-dependant systems, that are connected
@@ -28,39 +33,45 @@ public class NodeInput extends AssetInput {
    */
   private final Point geoPosition;
 
-  /** Use this default value if geoPosition is unknown */
+  /**
+   * Use this default value if geoPosition is unknown
+   */
   public static final Point DEFAULT_GEO_POSITION =
-      GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281));
+          GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281));
 
-  /** Voltage level of this node */
+  /**
+   * Voltage level of this node
+   */
   private final VoltageLevel voltLvl;
-  /** Subnet of this node */
+  /**
+   * Subnet of this node
+   */
   private final int subnet;
 
   /**
    * Constructor for an operated node
    *
-   * @param uuid of the input entity
-   * @param id of the asset
-   * @param operator of the asset
+   * @param uuid          of the input entity
+   * @param id            of the asset
+   * @param operator      of the asset
    * @param operationTime Time for which the entity is operated
-   * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
-   * @param slack Is this node a slack node?
-   * @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
-   *     that are connected to this node
-   * @param voltLvl Voltage level of this node
-   * @param subnet of this node
+   * @param vTarget       Target voltage magnitude of the node with regard to its rated voltage
+   * @param slack         Is this node a slack node?
+   * @param geoPosition   Coordinates of this node, especially relevant for geo-dependant systems,
+   *                      that are connected to this node
+   * @param voltLvl       Voltage level of this node
+   * @param subnet        of this node
    */
   public NodeInput(
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime,
-      ComparableQuantity<Dimensionless> vTarget,
-      boolean slack,
-      Point geoPosition,
-      VoltageLevel voltLvl,
-      int subnet) {
+          UUID uuid,
+          String id,
+          OperatorInput operator,
+          OperationTime operationTime,
+          ComparableQuantity<Dimensionless> vTarget,
+          boolean slack,
+          Point geoPosition,
+          VoltageLevel voltLvl,
+          int subnet) {
     super(uuid, id, operator, operationTime);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     this.slack = slack;
@@ -72,23 +83,23 @@ public class NodeInput extends AssetInput {
   /**
    * Constructor for an operated, always on asset
    *
-   * @param uuid of the input entity
-   * @param id of the asset
-   * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
-   * @param slack Is this node a slack node?
+   * @param uuid        of the input entity
+   * @param id          of the asset
+   * @param vTarget     Target voltage magnitude of the node with regard to its rated voltage
+   * @param slack       Is this node a slack node?
    * @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
-   *     that are connected to this node
-   * @param voltLvl Voltage level of this node
-   * @param subnet of this node
+   *                    that are connected to this node
+   * @param voltLvl     Voltage level of this node
+   * @param subnet      of this node
    */
   public NodeInput(
-      UUID uuid,
-      String id,
-      ComparableQuantity<Dimensionless> vTarget,
-      boolean slack,
-      Point geoPosition,
-      VoltageLevel voltLvl,
-      int subnet) {
+          UUID uuid,
+          String id,
+          ComparableQuantity<Dimensionless> vTarget,
+          boolean slack,
+          Point geoPosition,
+          VoltageLevel voltLvl,
+          int subnet) {
     super(uuid, id);
     this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     this.slack = slack;
@@ -127,11 +138,10 @@ public class NodeInput extends AssetInput {
       if (nodeInput.geoPosition != null) return false;
     } else if (!geoPosition.equalsExact(nodeInput.geoPosition, 100)) return false;
     return slack == nodeInput.slack
-        && subnet == nodeInput.subnet
-        && Objects.equals(vTarget, nodeInput.vTarget)
-        && Objects.equals(vRated, nodeInput.vRated)
-        && Objects.equals(geoPosition, nodeInput.geoPosition)
-        && Objects.equals(voltLvl, nodeInput.voltLvl);
+            && subnet == nodeInput.subnet
+            && Objects.equals(vTarget, nodeInput.vTarget)
+            && Objects.equals(geoPosition, nodeInput.geoPosition)
+            && Objects.equals(voltLvl, nodeInput.voltLvl);
   }
 
   @Override
@@ -142,44 +152,25 @@ public class NodeInput extends AssetInput {
   @Override
   public String toString() {
     return "NodeInput{"
-        + "uuid="
-        + getUuid()
-        + ", id='"
-        + getId()
-        + '\''
-        + ", operator="
-        + getOperator()
-        + ", operationTime="
-        + getOperationTime()
-        + ", vTarget="
-        + vTarget
-        + ", slack="
-        + slack
-        + ", geoPosition="
-        + geoPosition
-        + ", voltLvl="
-        + voltLvl
-        + ", subnet="
-        + subnet
-        + '}';
-  }
-
-  @Override
-  public String toString() {
-    return "NodeInput{"
-        + "vTarget="
-        + vTarget
-        + ", vRated="
-        + vRated
-        + ", slack="
-        + slack
-        + ", geoPosition="
-        + geoPosition
-        + ", voltLvl="
-        + voltLvl
-        + ", subnet="
-        + subnet
-        + "} "
-        + super.toString();
+            + "uuid="
+            + getUuid()
+            + ", id='"
+            + getId()
+            + '\''
+            + ", operator="
+            + getOperator()
+            + ", operationTime="
+            + getOperationTime()
+            + ", vTarget="
+            + vTarget
+            + ", slack="
+            + slack
+            + ", geoPosition="
+            + geoPosition
+            + ", voltLvl="
+            + voltLvl
+            + ", subnet="
+            + subnet
+            + '}';
   }
 }

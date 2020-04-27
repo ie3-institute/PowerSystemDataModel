@@ -6,13 +6,13 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.util.quantities.interfaces.Irradiation;
-import java.util.Objects;
-import java.util.Objects;
+import org.locationtech.jts.geom.Point;
+import tec.uom.se.ComparableQuantity;
+
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
-import org.locationtech.jts.geom.Point;
-import tec.uom.se.ComparableQuantity;
+import java.util.Objects;
 
 /** Describes weather as a combination of irradiation, temperature and wind values */
 public class WeatherValue implements Value {
@@ -44,22 +44,22 @@ public class WeatherValue implements Value {
 
   /**
    * @param coordinate of this weather value set
-   * @param directirradiation Direct sun irradiation for this coordinate (typically in W/m²)
-   * @param diffuseirradiation Diffuse sun irradiation for this coordinate (typically in W/m²)
+   * @param directIrradiation Direct sun irradiation for this coordinate (typically in W/m²)
+   * @param diffuseIrradiation Diffuse sun irradiation for this coordinate (typically in W/m²)
    * @param temperature for this coordinate (typically in K)
    * @param direction Wind direction as an angle from north for this coordinate (typically in rad)
    * @param velocity Wind velocity for this coordinate (typically in m/s)
    */
   public WeatherValue(
       Point coordinate,
-      ComparableQuantity<Irradiation> directirradiation,
-      ComparableQuantity<Irradiation> diffuseirradiation,
+      ComparableQuantity<Irradiation> directIrradiation,
+      ComparableQuantity<Irradiation> diffuseIrradiation,
       ComparableQuantity<Temperature> temperature,
       ComparableQuantity<Angle> direction,
       ComparableQuantity<Speed> velocity) {
     this(
         coordinate,
-        new IrradiationValue(directirradiation, diffuseirradiation),
+        new IrradiationValue(directIrradiation, diffuseIrradiation),
         new TemperatureValue(temperature),
         new WindValue(direction, velocity));
   }
@@ -70,10 +70,6 @@ public class WeatherValue implements Value {
 
   public IrradiationValue getIrradiation() {
     return irradiation;
-  }
-
-  public void setIrradiation(IrradiationValue irradiation) {
-    this.irradiation = irradiation;
   }
 
   public TemperatureValue getTemperature() {
@@ -112,21 +108,5 @@ public class WeatherValue implements Value {
         + ", wind="
         + wind
         + '}';
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof WeatherValues)) return false;
-    WeatherValues that = (WeatherValues) o;
-    return Objects.equals(coordinate, that.coordinate)
-        && irradiation.equals(that.irradiation)
-        && temperature.equals(that.temperature)
-        && wind.equals(that.wind);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(coordinate, irradiation, temperature, wind);
   }
 }
