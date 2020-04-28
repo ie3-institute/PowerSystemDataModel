@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.graphics;
 
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.utils.GridAndGeoUtils;
-
 import java.util.Objects;
 import java.util.UUID;
 import org.locationtech.jts.geom.LineString;
@@ -43,12 +42,9 @@ public abstract class GraphicInput extends InputEntity {
 
   @Override
   public boolean equals(Object o) {
-    if(this == o)
-      return true;
-    if(o == null || getClass() != o.getClass())
-      return false;
-    if(!super.equals(o))
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
     GraphicInput that = (GraphicInput) o;
     return graphicLayer.equals(that.graphicLayer) && Objects.equals(path, that.path);
   }
