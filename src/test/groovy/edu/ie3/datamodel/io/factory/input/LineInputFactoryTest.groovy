@@ -138,7 +138,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 	}
 
 	def "A LineInputFactory should parse a valid LineInput with different geoPosition strings correctly"() {
-		given: "a system participant input type factory and model data"
+		given: "a line input factory and model data"
 		def inputFactory = new LineInputFactory()
 		Map<String, String> parameter = [
 			"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
