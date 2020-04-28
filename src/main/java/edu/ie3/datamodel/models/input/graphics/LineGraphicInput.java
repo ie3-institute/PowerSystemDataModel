@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.graphics;
 
 import edu.ie3.datamodel.io.extractor.HasLine;
 import edu.ie3.datamodel.models.input.connector.LineInput;
+
 import java.util.Objects;
 import java.util.UUID;
 import org.locationtech.jts.geom.LineString;
@@ -37,16 +38,19 @@ public class LineGraphicInput extends GraphicInput implements HasLine {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
+    if(this == o)
+      return true;
+    if(o == null || getClass() != o.getClass())
+      return false;
+    if(!super.equals(o))
+      return false;
     LineGraphicInput that = (LineGraphicInput) o;
-    return getLine().equals(that.getLine());
+    return line.equals(that.line);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getLine());
+    return Objects.hash(super.hashCode(), line);
   }
 
   @Override
