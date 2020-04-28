@@ -418,4 +418,235 @@ public class ContainerUtils {
     return new JointGridContainer(
         gridName, rawGrid, systemParticipants, graphicElements, subGridTopologyGraph);
   }
+
+  /**
+   * Modifies a given {@link SubGridContainer} to make it computable for power flow calculations
+   * based on its structure. This means, that the grid is modified in a way that slack nodes are
+   * added for transformers based on assumptions about the grid, as well as all other affect
+   * entities of the grid are accordingly.
+   *
+   * <p>The following modifications are made:
+   *
+   * <ul>
+   *   <li>2 winding transformer handling
+   *       <ul>
+   *         <li>high voltage nodes are marked as slack nodes
+   *         <li>high voltage nodes in the {@link RawGridElements#getNodes()} set are replaced with
+   *             the new slack marked high voltage nodes
+   *         <li>high voltage nodes as part of {@link GraphicElements#getNodeGraphics()} are
+   *             replaced with the new slack marked high voltage nodes
+   *       </ul>
+   *   <li>3 winding transformer handling
+   *       <ul>
+   *         <li>if node a is located in this grid, no changes on 3 winding transformer nodes are
+   *             made
+   *         <li>if node b or c is located in this grid, the transformers internal node is marked as
+   *             slack node and if node a is marked as slack node, this node is unmarked as slack
+   *             node
+   *         <li>if node a got unmarked as slack, the {@link RawGridElements#getNodes()} gets
+   *             adapted accordingly
+   *         <li>in any case the internal node of the transformer is added to the {@link
+   *             RawGridElements#getNodes()} set
+   *         <li>the resulting 3 winding transformer allows for either a full calculation of this
+   *             transformer model (just ignore the internal node) or a transfer to a
+   *             'close-to-T-equivalent' model that allows for a simplified calculation of the
+   *             transformer power flows
+   *       </ul>
+   * </ul>
+   *
+   * @param subGridContainer the subgrid container that should be modified
+   * @return a modified, power flow computable subgrid container
+   */
+  public static SubGridContainer computableSubGrid(final SubGridContainer subGridContainer) {
+
+    // transformer 3w
+    Map<NodeInput, NodeInput> oldToNewTrafo3WNodes = new HashMap<>();
+    Map<Transformer3WInput, NodeInput> newTrafos3w =
+        subGridContainer.getRawGrid().getTransformer3Ws().stream()
+            .map(
+                oldTrafo3w -> {
+                  AbstractMap.SimpleEntry<Transformer3WInput, NodeInput> resTrafo3wToInternal;
+                  if (oldTrafo3w.getNodeA().getSubnet() == subGridContainer.getSubnet()) {
+                    // node A is part of this subgrid -> no slack needed
+                    // internal node is needed for node admittance matrix and will be added
+
+                    // add the same transformer again to the new transformer set as nothing has
+                    // changed for this transformer
+                    resTrafo3wToInternal =
+                        new AbstractMap.SimpleEntry<>(oldTrafo3w, oldTrafo3w.getNodeInternal());
+
+                  } else {
+                    // node B or C is part of this subgrid -> internal node becomes the new slack
+
+                    // if node A is marked as slack, unmark it as slack
+                    NodeInput newNodeA =
+                        oldTrafo3w.getNodeA().isSlack()
+                            ? copyNode(oldTrafo3w.getNodeA(), false)
+                            : oldTrafo3w.getNodeA();
+
+                    // we need to take care for this node in our node sets afterwards
+                    oldToNewTrafo3WNodes.put(oldTrafo3w.getNodeA(), newNodeA);
+
+                    // create an update version of this transformer with internal node as slack and
+                    // add it to the newTrafos3w set
+                    Transformer3WInput newTrafo3w =
+                        copyTrafo3WWithInternalSlack(oldTrafo3w, newNodeA);
+
+                    // add the slack
+                    resTrafo3wToInternal =
+                        new AbstractMap.SimpleEntry<>(newTrafo3w, newTrafo3w.getNodeInternal());
+                  }
+                  return resTrafo3wToInternal;
+                })
+            .collect(
+                Collectors.toMap(
+                    AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+
+    // get old transformer2w high voltage nodes (nodeA)
+    Map<NodeInput, NodeInput> oldToNewTrafo2WNodes =
+        subGridContainer.getRawGrid().getTransformer2Ws().stream()
+            .map(
+                oldTrafo2w -> {
+                  NodeInput oldNodeA = oldTrafo2w.getNodeA();
+                  NodeInput newNodeA = copyNode(oldNodeA, true);
+
+                  return new AbstractMap.SimpleEntry<>(oldNodeA, newNodeA);
+                })
+            .distinct()
+            .collect(
+                Collectors.toMap(
+                    AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+
+    // build the updated 2w transformer with nodeA as slack and add it to our new set
+    Set<Transformer2WInput> newTrafos2w =
+        subGridContainer.getRawGrid().getTransformer2Ws().stream()
+            .map(
+                oldTrafo2w ->
+                    copyTrafo2WUpdateNodeA(
+                        oldTrafo2w, oldToNewTrafo2WNodes.get(oldTrafo2w.getNodeA())))
+            .collect(Collectors.toSet());
+
+    // update node input graphics (2 winding transformers only)
+    /// map old to new
+    Map<NodeGraphicInput, NodeGraphicInput> oldToNewNodeGraphics =
+        subGridContainer.getGraphics().getNodeGraphics().stream()
+            .filter(nodeGraphic -> oldToNewTrafo2WNodes.containsKey(nodeGraphic.getNode()))
+            .map(
+                oldNodeGraphic ->
+                    new AbstractMap.SimpleEntry<>(
+                        oldNodeGraphic,
+                        copyNodeGraphic(
+                            oldNodeGraphic, oldToNewTrafo2WNodes.get(oldNodeGraphic.getNode()))))
+            .collect(
+                Collectors.toMap(
+                    AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+
+    /// remove old node graphics, add new ones
+    Set<NodeGraphicInput> newNodeGraphics =
+        Stream.concat(
+                // filter old ones
+                subGridContainer.getGraphics().getNodeGraphics().stream()
+                    .filter(nodeGraphic -> !oldToNewNodeGraphics.containsKey(nodeGraphic)),
+                // add the new trafo2w ones
+                oldToNewNodeGraphics.values().stream())
+            .collect(Collectors.toSet());
+
+    // update nodes in raw grid by removing the old 2 winding transformer nodes and add all new ones
+    Set<NodeInput> newNodes =
+        Stream.concat(
+                // filter the old ones (trafo2w, trafo3wToBeRemoved)
+                subGridContainer.getRawGrid().getNodes().stream()
+                    .filter(node -> !oldToNewTrafo2WNodes.containsKey(node))
+                    .filter(node -> !oldToNewTrafo3WNodes.containsKey(node)),
+                // add the new ones (trafo2w, trafo3w and updated trafo3w nodeA (previous slacks))
+                Stream.concat(
+                    oldToNewTrafo2WNodes.values().stream(),
+                    Stream.concat(
+                        newTrafos3w.values().stream(), oldToNewTrafo3WNodes.values().stream())))
+            .collect(Collectors.toSet());
+
+    return new SubGridContainer(
+        subGridContainer.getGridName(),
+        subGridContainer.getSubnet(),
+        rawGridCopy4Slacks(
+            subGridContainer.getRawGrid(), newNodes, newTrafos2w, newTrafos3w.keySet()),
+        subGridContainer.getSystemParticipants(),
+        graphicsCopy4Slacks(subGridContainer.getGraphics(), newNodeGraphics));
+  }
+
+  private static Transformer3WInput copyTrafo3WWithInternalSlack(
+      Transformer3WInput oldTrafo3w, NodeInput newNodeA) {
+
+    return new Transformer3WInput(
+        oldTrafo3w.getUuid(),
+        oldTrafo3w.getId(),
+        oldTrafo3w.getOperator(),
+        oldTrafo3w.getOperationTime(),
+        newNodeA,
+        oldTrafo3w.getNodeB(),
+        oldTrafo3w.getNodeC(),
+        oldTrafo3w.getParallelDevices(),
+        oldTrafo3w.getType(),
+        oldTrafo3w.getTapPos(),
+        oldTrafo3w.isAutoTap(),
+        true);
+  }
+
+  private static NodeGraphicInput copyNodeGraphic(
+      NodeGraphicInput oldNodeGraphic, NodeInput newNodeInput) {
+    return new NodeGraphicInput(
+        oldNodeGraphic.getUuid(),
+        oldNodeGraphic.getGraphicLayer(),
+        oldNodeGraphic.getPath(),
+        newNodeInput,
+        oldNodeGraphic.getPoint());
+  }
+
+  private static RawGridElements rawGridCopy4Slacks(
+      RawGridElements rawGridElements,
+      Set<NodeInput> newNodes,
+      Set<Transformer2WInput> newTrafos2w,
+      Set<Transformer3WInput> newTrafos3w) {
+
+    return new RawGridElements(
+        newNodes,
+        rawGridElements.getLines(),
+        newTrafos2w,
+        newTrafos3w,
+        rawGridElements.getSwitches(),
+        rawGridElements.getMeasurementUnits());
+  }
+
+  private static GraphicElements graphicsCopy4Slacks(
+      GraphicElements graphicElements, Set<NodeGraphicInput> newNodeGraphics) {
+    return new GraphicElements(newNodeGraphics, graphicElements.getLineGraphics());
+  }
+
+  private static Transformer2WInput copyTrafo2WUpdateNodeA(
+      Transformer2WInput trafo2wInput, NodeInput newNodeA) {
+    return new Transformer2WInput(
+        trafo2wInput.getUuid(),
+        trafo2wInput.getId(),
+        trafo2wInput.getOperator(),
+        trafo2wInput.getOperationTime(),
+        newNodeA,
+        trafo2wInput.getNodeB(),
+        trafo2wInput.getParallelDevices(),
+        trafo2wInput.getType(),
+        trafo2wInput.getTapPos(),
+        trafo2wInput.isAutoTap());
+  }
+
+  private static NodeInput copyNode(NodeInput nodeInput, boolean isSlack) {
+    return new NodeInput(
+        nodeInput.getUuid(),
+        nodeInput.getId(),
+        nodeInput.getOperator(),
+        nodeInput.getOperationTime(),
+        nodeInput.getvTarget(),
+        isSlack,
+        nodeInput.getGeoPosition(),
+        nodeInput.getVoltLvl(),
+        nodeInput.getSubnet());
+  }
 }

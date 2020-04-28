@@ -7,11 +7,7 @@ package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.FileNamingStrategy
 
-/**
- * //ToDo: Class Description
- *
- * @version 0.1* @since 13.04.20
- */
+
 trait CsvTestDataMeta {
 
 	String testBaseFolderPath = new File(getClass().getResource('/testGridFiles').toURI()).absolutePath
