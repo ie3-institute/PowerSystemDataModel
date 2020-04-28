@@ -9,9 +9,8 @@ import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
+import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import java.util.*;
-import org.apache.commons.lang3.ArrayUtils;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 
 /**
@@ -63,11 +62,9 @@ public abstract class GraphicInputFactory<T extends GraphicInput, D extends Enti
     final LineString path =
         data.getLineString(PATH_LINE_STRING)
             .orElse(
-                new GeometryFactory()
-                    .createLineString(
-                        ArrayUtils.addAll(
-                            NodeInput.DEFAULT_GEO_POSITION.getCoordinates(),
-                            NodeInput.DEFAULT_GEO_POSITION.getCoordinates())));
+                GridAndGeoUtils.buildSafeLineStringBetweenCoords(
+                    NodeInput.DEFAULT_GEO_POSITION.getCoordinate(),
+                    NodeInput.DEFAULT_GEO_POSITION.getCoordinate()));
 
     return buildModel(data, uuid, graphicLayer, path);
   }

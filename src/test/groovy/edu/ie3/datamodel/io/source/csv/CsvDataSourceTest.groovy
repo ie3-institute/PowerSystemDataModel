@@ -37,8 +37,8 @@ class CsvDataSourceTest extends Specification {
 		}
 
 		OperatorInput getFirstOrDefaultOperator(
-				Collection<OperatorInput> operators, String operatorUuid) {
-			return super.getFirstOrDefaultOperator(operators, operatorUuid)
+				Collection<OperatorInput> operators, String operatorUuid, String entityClassName, String requestEntityUuid) {
+			return super.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid)
 		}
 
 		def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
@@ -50,7 +50,6 @@ class CsvDataSourceTest extends Specification {
 				String csvSep, String csvRow) {
 			return super.fieldVals(csvSep, csvRow)
 		}
-
 	}
 
 	@Shared
@@ -167,6 +166,15 @@ class CsvDataSourceTest extends Specification {
 			"olm:{(0.00,1.00)}",
 			"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
 		]
+		","    | "66275bfd-978b-4974-9f73-f270165a6351,Standard,f18a5a9b-6d45-4843-be12-be6d12de0e6b,{\"type\":\"LineString\",\"coordinates\":[[7.4116482,51.4843281],[7.4116482,51.4843281]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}},{\"type\":\"Point\",\"coordinates\":[0.25423729,0.75409836],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:0\"}}}\""                                  || [
+			"66275bfd-978b-4974-9f73-f270165a6351",
+			"Standard",
+			"f18a5a9b-6d45-4843-be12-be6d12de0e6b",
+			"{\"type\":\"LineString\",\"coordinates\":[[7.4116482,51.4843281],[7.4116482,51.4843281]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"{\"type\":\"Point\",\"coordinates\":[0.25423729,0.75409836],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:0\"}}}"
+		]
+
+
 	}
 
 
@@ -227,13 +235,13 @@ class CsvDataSourceTest extends Specification {
 	def "A CsvDataSource should always return an operator. Either the found one (if any) or OperatorInput.NO_OPERATOR_ASSIGNED"() {
 
 		expect:
-		dummyCsvSource.getFirstOrDefaultOperator(operators, operatorUuid) == expectedOperator
+		dummyCsvSource.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid) == expectedOperator
 
 		where:
-		operatorUuid                           | operators               || expectedOperator
-		"8f9682df-0744-4b58-a122-f0dc730f6510" | [sptd.hpInput.operator]|| sptd.hpInput.operator
-		"8f9682df-0744-4b58-a122-f0dc730f6520" | [sptd.hpInput.operator]|| OperatorInput.NO_OPERATOR_ASSIGNED
-		"8f9682df-0744-4b58-a122-f0dc730f6510" | []|| OperatorInput.NO_OPERATOR_ASSIGNED
+		operatorUuid                           | operators      | entityClassName | requestEntityUuid         || expectedOperator
+		"8f9682df-0744-4b58-a122-f0dc730f6510" | [sptd.hpInput.operator]| "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || sptd.hpInput.operator
+		"8f9682df-0744-4b58-a122-f0dc730f6520" | [sptd.hpInput.operator]| "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
+		"8f9682df-0744-4b58-a122-f0dc730f6510" | []| "TestEntityClass"|"8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
 
 	}
 
@@ -332,7 +340,7 @@ class CsvDataSourceTest extends Specification {
 		]
 
 		when:
-		def allRows = [nodeInputRow1, nodeInputRow2]* 10
+		def allRows = [nodeInputRow1, nodeInputRow2]*10
 		def distinctRows = dummyCsvSource.distinctRowsWithLog(NodeInput, allRows)
 
 		then:

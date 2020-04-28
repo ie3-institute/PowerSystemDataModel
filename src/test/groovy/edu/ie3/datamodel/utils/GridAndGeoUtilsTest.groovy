@@ -1,0 +1,70 @@
+/*
+ * © 2020. TU Dortmund University,
+ * Institute of Energy Systems, Energy Efficiency and Energy Economics,
+ * Research group Distribution grid planning and operation
+ */
+package edu.ie3.datamodel.utils
+
+import edu.ie3.test.common.GridTestData
+import edu.ie3.util.geo.GeoUtils
+import org.apache.commons.lang3.ArrayUtils
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.LineString
+import spock.lang.Specification
+
+import java.lang.reflect.Array
+
+class GridAndGeoUtilsTest extends Specification {
+
+
+	def "The GridAndGeoUtils should build a line string with two exact equal geo coordinates correctly avoiding the known bug in jts geometry"() {
+		given:
+		def line = GridTestData.geoJsonReader.read(lineString) as LineString
+
+		expect:
+		def safeLineString = GridAndGeoUtils.buildSafeLineString(line)
+		safeLineString.getCoordinates() as List == coordinates
+
+		where:
+		lineString                                                                                                                            | coordinates
+		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228]]}"                                           | [
+			new Coordinate(7.4111110000001, 51.4922800000001),
+			new Coordinate(7.411111, 51.49228)
+		]
+		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228]]}" | [
+			new Coordinate(7.4111110000001, 51.4922800000001),
+			new Coordinate(7.411111, 51.49228)
+		]
+		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.311111, 51.49228],[7.511111, 51.49228]]}" | [
+			new Coordinate(7.311111, 51.49228),
+			new Coordinate(7.411111, 51.49228),
+			new Coordinate(7.511111, 51.49228)
+		]
+	}
+
+	def "The GridAndGeoUtils should only modify a provided Coordinate as least as possible"() {
+		given:
+		def coord = new Coordinate(1, 1, 0)
+
+		expect:
+		GridAndGeoUtils.buildSafeCoord(coord) == new Coordinate(1.0000000000001, 1.0000000000001, 1.0E-13)
+	}
+
+	def "The GridAndGeoUtils should build a safe instance of a LineString between two provided coordinates correctly"() {
+
+		expect:
+		GridAndGeoUtils.buildSafeLineStringBetweenCoords(coordA, coordB) == resLineString
+		// do not change or remove the following line, it is NOT equal to the line above in this case!
+		GridAndGeoUtils.buildSafeLineStringBetweenCoords(coordA, coordB).equals(resLineString)
+
+		where:
+		coordA                  | coordB                  || resLineString
+		new Coordinate(1, 1, 0) | new Coordinate(1, 1, 0) || GeoUtils.DEFAULT_GEOMETRY_FACTORY.createLineString([
+			new Coordinate(1.0000000000001, 1.0000000000001, 1.0E-13),
+			new Coordinate(1, 1, 0)] as Coordinate[])
+		new Coordinate(1, 1, 0) | new Coordinate(2, 2, 0) || GeoUtils.DEFAULT_GEOMETRY_FACTORY.createLineString([
+			new Coordinate(1, 1, 0),
+			new Coordinate(2, 2, 0)] as Coordinate[])
+
+	}
+}
