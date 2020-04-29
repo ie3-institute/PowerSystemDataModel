@@ -420,10 +420,15 @@ public class ContainerUtils {
   }
 
   /**
-   * Modifies a given {@link SubGridContainer} to make it computable for power flow calculations
-   * based on its structure. This means, that the grid is modified in a way that slack nodes are
-   * added for transformers based on assumptions about the grid, as well as all other affect
+   * Returns a copy {@link SubGridContainer} based on the provided subgrid with a certain set of
+   * nodes marked as slack nodes. In general, the grid is modified in a way that slack nodes are
+   * added at transformer nodes based on assumptions about the grid, as well as all other affect
    * entities of the grid are accordingly.
+   *
+   * <p>This step is necessary for power flow calculations, as by default, when the container is
+   * derived from {@link JointGridContainer}, only the original slack nodes are incorporated in the
+   * different sub containers. Thereby, most of the standard power flow calculations cannot be
+   * carried out right away.
    *
    * <p>The following modifications are made:
    *
@@ -438,7 +443,7 @@ public class ContainerUtils {
    *       </ul>
    *   <li>3 winding transformer handling
    *       <ul>
-   *         <li>if node a is located in this grid, no changes on 3 winding transformer nodes are
+   *         <li>if node a is located in this subgrid, no changes on 3 winding transformer nodes are
    *             made
    *         <li>if node b or c is located in this grid, the transformers internal node is marked as
    *             slack node and if node a is marked as slack node, this node is unmarked as slack
@@ -447,21 +452,18 @@ public class ContainerUtils {
    *             adapted accordingly
    *         <li>in any case the internal node of the transformer is added to the {@link
    *             RawGridElements#getNodes()} set
-   *         <li>the resulting 3 winding transformer allows for either a full calculation of this
-   *             transformer model (just ignore the internal node) or a transfer to a
-   *             'close-to-T-equivalent' model that allows for a simplified calculation of the
-   *             transformer power flows
    *       </ul>
    * </ul>
    *
-   * @param subGridContainer the subgrid container that should be modified
-   * @return a modified, power flow computable subgrid container
+   * @param subGridContainer the subgrid container to be altered
+   * @return a copy of the given {@link SubGridContainer} with transformer nodes marked as slack
    */
-  public static SubGridContainer computableSubGrid(final SubGridContainer subGridContainer) {
+  public static SubGridContainer withTransformerNodeAsSlack(
+      final SubGridContainer subGridContainer) {
 
     // transformer 3w
-    Map<NodeInput, NodeInput> oldToNewTrafo3WNodes = new HashMap<>();
-    Map<Transformer3WInput, NodeInput> newTrafos3w =
+    Map<NodeInput, NodeInput> oldToNewTrafo3WANodes = new HashMap<>();
+    Map<Transformer3WInput, NodeInput> newTrafos3wToInternalNode =
         subGridContainer.getRawGrid().getTransformer3Ws().stream()
             .map(
                 oldTrafo3w -> {
@@ -486,12 +488,12 @@ public class ContainerUtils {
 
                     // we need to take care for this node in our node sets afterwards
                     // (needs to be replaced by the new nodeA which might have been a slack before)
-                    oldToNewTrafo3WNodes.put(oldTrafo3w.getNodeA(), newNodeA);
+                    oldToNewTrafo3WANodes.put(oldTrafo3w.getNodeA(), newNodeA);
 
                     // create an update version of this transformer with internal node as slack and
-                    // add it to the newTrafos3w set
+                    // add it to the newTrafos3wToInternalNode set
                     Transformer3WInput newTrafo3w =
-                        copyTrafo3WWithInternalSlack(oldTrafo3w, newNodeA);
+                        copyTransformer3WInputWithInternalSlack(oldTrafo3w, newNodeA);
 
                     // add the slack
                     resTrafo3wToInternal =
@@ -504,7 +506,7 @@ public class ContainerUtils {
                     AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
 
     // get old transformer2w high voltage nodes (nodeA)
-    Map<NodeInput, NodeInput> oldToNewTrafo2WNodes =
+    Map<NodeInput, NodeInput> oldToNewTrafo2WANodes =
         subGridContainer.getRawGrid().getTransformer2Ws().stream()
             .map(
                 oldTrafo2w -> {
@@ -524,20 +526,25 @@ public class ContainerUtils {
             .map(
                 oldTrafo2w ->
                     copyTrafo2WUpdateNodeA(
-                        oldTrafo2w, oldToNewTrafo2WNodes.get(oldTrafo2w.getNodeA())))
+                        oldTrafo2w, oldToNewTrafo2WANodes.get(oldTrafo2w.getNodeA())))
             .collect(Collectors.toSet());
 
-    // update node input graphics (2 winding transformers only)
+    // update node input graphics (2 winding transformers and 3 winding transformers)
     /// map old to new
     Map<NodeGraphicInput, NodeGraphicInput> oldToNewNodeGraphics =
         subGridContainer.getGraphics().getNodeGraphics().stream()
-            .filter(nodeGraphic -> oldToNewTrafo2WNodes.containsKey(nodeGraphic.getNode()))
+            .filter(nodeGraphic -> oldToNewTrafo2WANodes.containsKey(nodeGraphic.getNode()))
+            .filter(nodeGraphic -> oldToNewTrafo3WANodes.containsKey(nodeGraphic.getNode()))
             .map(
-                oldNodeGraphic ->
-                    new AbstractMap.SimpleEntry<>(
-                        oldNodeGraphic,
-                        copyNodeGraphic(
-                            oldNodeGraphic, oldToNewTrafo2WNodes.get(oldNodeGraphic.getNode()))))
+                oldNodeGraphic -> {
+                  NodeInput newNode =
+                      oldToNewTrafo2WANodes.containsKey(oldNodeGraphic.getNode())
+                          ? oldToNewTrafo2WANodes.get(oldNodeGraphic.getNode())
+                          : oldToNewTrafo3WANodes.get(oldNodeGraphic.getNode());
+
+                  return new AbstractMap.SimpleEntry<>(
+                      oldNodeGraphic, copyNodeGraphic(oldNodeGraphic, newNode));
+                })
             .collect(
                 Collectors.toMap(
                     AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
@@ -552,30 +559,44 @@ public class ContainerUtils {
                 oldToNewNodeGraphics.values().stream())
             .collect(Collectors.toSet());
 
-    // update nodes in raw grid by removing the old 2 winding transformer nodes and add all new ones
+    // update nodes in raw grid by removing the old transformer nodes and add all new ones
     Set<NodeInput> newNodes =
         Stream.concat(
                 // filter the old ones (trafo2w, trafo3wToBeRemoved)
                 subGridContainer.getRawGrid().getNodes().stream()
-                    .filter(node -> !oldToNewTrafo2WNodes.containsKey(node))
-                    .filter(node -> !oldToNewTrafo3WNodes.containsKey(node)),
-                // add the new ones (trafo2w, trafo3w and updated trafo3w nodeA (previous slacks))
+                    .filter(node -> !oldToNewTrafo2WANodes.containsKey(node))
+                    .filter(node -> !oldToNewTrafo3WANodes.containsKey(node)),
+                // add the new ones (trafo2w, trafo3w internal and updated trafo3w nodeA (previous
+                // slacks))
                 Stream.concat(
-                    oldToNewTrafo2WNodes.values().stream(),
+                    oldToNewTrafo2WANodes.values().stream(),
                     Stream.concat(
-                        newTrafos3w.values().stream(), oldToNewTrafo3WNodes.values().stream())))
+                        newTrafos3wToInternalNode.values().stream(),
+                        oldToNewTrafo3WANodes.values().stream())))
             .collect(Collectors.toSet());
 
     return new SubGridContainer(
         subGridContainer.getGridName(),
         subGridContainer.getSubnet(),
         rawGridCopy4Slacks(
-            subGridContainer.getRawGrid(), newNodes, newTrafos2w, newTrafos3w.keySet()),
+            subGridContainer.getRawGrid(),
+            newNodes,
+            newTrafos2w,
+            newTrafos3wToInternalNode.keySet()),
         subGridContainer.getSystemParticipants(),
         graphicsCopy4Slacks(subGridContainer.getGraphics(), newNodeGraphics));
   }
 
-  private static Transformer3WInput copyTrafo3WWithInternalSlack(
+  /**
+   * Make a copy of the provided {@link Transformer3WInput} with an altered nodeA and the internal
+   * node marked as slack
+   *
+   * @param oldTrafo3w the transformer that should be altered
+   * @param newNodeA node that should be new node a of the altered transformer
+   * @return copy of the provided transformer with the provided nodeA and the internal node marked
+   *     as slack
+   */
+  private static Transformer3WInput copyTransformer3WInputWithInternalSlack(
       Transformer3WInput oldTrafo3w, NodeInput newNodeA) {
 
     return new Transformer3WInput(
@@ -593,6 +614,13 @@ public class ContainerUtils {
         true);
   }
 
+  /**
+   * Make a copy of the provided {@link NodeGraphicInput} with altered node
+   *
+   * @param oldNodeGraphic node graphic that should be altered
+   * @param newNodeInput new node of the altered node graphic
+   * @return copy of the provided node graphic with the provided node as field value
+   */
   private static NodeGraphicInput copyNodeGraphic(
       NodeGraphicInput oldNodeGraphic, NodeInput newNodeInput) {
     return new NodeGraphicInput(
@@ -603,6 +631,15 @@ public class ContainerUtils {
         oldNodeGraphic.getPoint());
   }
 
+  /**
+   * Make a copy of the provided {@link RawGridElements} with altered nodes, 2w and 3w-transformers
+   *
+   * @param rawGridElements the raw grid elements that should be altered
+   * @param newNodes the exhaustive new set of nodes
+   * @param newTrafos2w the exhaustive new set of 2 winding transformers
+   * @param newTrafos3w the exhaustive new set of 3 winding transoformers
+   * @return copy of the provided rawGridElements with altered nodes, 2w- and 3w-transformers
+   */
   private static RawGridElements rawGridCopy4Slacks(
       RawGridElements rawGridElements,
       Set<NodeInput> newNodes,
@@ -618,11 +655,25 @@ public class ContainerUtils {
         rawGridElements.getMeasurementUnits());
   }
 
+  /**
+   * Make a copy of the provided {@link GraphicElements} with altered node graphics
+   *
+   * @param graphicElements the graphic elements that should be altered
+   * @param newNodeGraphics the exhaustive set of new node graphics
+   * @return copy of the provided graphic elements with altered nodes
+   */
   private static GraphicElements graphicsCopy4Slacks(
       GraphicElements graphicElements, Set<NodeGraphicInput> newNodeGraphics) {
     return new GraphicElements(newNodeGraphics, graphicElements.getLineGraphics());
   }
 
+  /**
+   * Make a copy of the provided {@link Transformer2WInput} with altered nodeA
+   *
+   * @param trafo2wInput the 2w transformer that should be altered
+   * @param newNodeA the node that should become the transformers new nodeA
+   * @return copy of the provided transformer with altered nodeA
+   */
   private static Transformer2WInput copyTrafo2WUpdateNodeA(
       Transformer2WInput trafo2wInput, NodeInput newNodeA) {
     return new Transformer2WInput(
@@ -638,6 +689,13 @@ public class ContainerUtils {
         trafo2wInput.isAutoTap());
   }
 
+  /**
+   * Make a copy of the provided {@link NodeInput} and mark or unmark it as slack
+   *
+   * @param nodeInput the node that should be marked as slack
+   * @param isSlack whether the new node should be marked as slack or not
+   * @return copy of the provided node either marked as slack or not
+   */
   private static NodeInput copyNode(NodeInput nodeInput, boolean isSlack) {
     return new NodeInput(
         nodeInput.getUuid(),

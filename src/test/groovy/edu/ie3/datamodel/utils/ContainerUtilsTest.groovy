@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.utils
 
-import jdk.internal.util.xml.impl.Input
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
@@ -171,7 +170,7 @@ class ContainerUtilsTest extends Specification {
 		}
 	}
 
-	def "The container util modifies provided subgrids to make them computable as expected"() {
+	def "The container util returns copy of provided subgrids with slack nodes marked as expected"() {
 		given:
 		String gridName = ComplexTopology.grid.gridName
 		Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
@@ -189,7 +188,7 @@ class ContainerUtilsTest extends Specification {
 				graphicsInput)
 
 		when:
-		def computableSubgrids = subgrids.collectEntries {[(it.key): ContainerUtils.computableSubGrid(it.value)]} as HashMap<Integer, SubGridContainer>
+		def computableSubgrids = subgrids.collectEntries {[(it.key): ContainerUtils.withTransformerNodeAsSlack(it.value)]} as HashMap<Integer, SubGridContainer>
 
 		then:
 		computableSubgrids.size() == 6
@@ -215,12 +214,12 @@ class ContainerUtilsTest extends Specification {
 				// 3 winding transformer slack nodes must be mapped correctly
 				rawGrid.transformer3Ws.each {
 					def trafo3w = it
-					if(trafo3w.nodeA.subnet == subnet){
+					if(trafo3w.nodeA.subnet == subnet) {
 						// subnet 1 is highest grid in test set + trafo 3w -> nodeA must be slack
 						assert subnet == 1 ? trafo3w.nodeA.slack : !trafo3w.nodeA.slack
 						assert !trafo3w.nodeInternal.slack
 						assert rawGrid.nodes.contains(trafo3w.nodeInternal)
-					}else{
+					} else {
 						assert trafo3w.nodeInternal.slack
 						assert !trafo3w.nodeA.slack
 						assert !trafo3w.nodeB.slack
