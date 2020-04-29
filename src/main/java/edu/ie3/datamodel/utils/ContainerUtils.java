@@ -458,8 +458,7 @@ public class ContainerUtils {
    * @param subGridContainer the subgrid container to be altered
    * @return a copy of the given {@link SubGridContainer} with transformer nodes marked as slack
    */
-  public static SubGridContainer withTransformerNodeAsSlack(
-      final SubGridContainer subGridContainer) {
+  public static SubGridContainer withTrafoNodeAsSlack(final SubGridContainer subGridContainer) {
 
     // transformer 3w
     Map<NodeInput, NodeInput> oldToNewTrafo3WANodes = new HashMap<>();

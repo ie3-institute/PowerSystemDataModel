@@ -188,7 +188,7 @@ class ContainerUtilsTest extends Specification {
 				graphicsInput)
 
 		when:
-		def computableSubgrids = subgrids.collectEntries {[(it.key): ContainerUtils.withTransformerNodeAsSlack(it.value)]} as HashMap<Integer, SubGridContainer>
+		def computableSubgrids = subgrids.collectEntries {[(it.key): ContainerUtils.withTrafoNodeAsSlack(it.value)]} as HashMap<Integer, SubGridContainer>
 
 		then:
 		computableSubgrids.size() == 6
