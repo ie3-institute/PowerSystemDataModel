@@ -296,15 +296,15 @@ public abstract class CsvDataSource {
    *     mapping (fieldName -> fieldValue)
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-          Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
+      Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
     try (BufferedReader reader = connector.initReader(entityClass)) {
       String[] headline = reader.readLine().replaceAll("\"", "").toLowerCase().split(csvSep);
 
       // sanity check for headline
       if (!Arrays.asList(headline).contains("uuid")) {
         throw new SourceException(
-                "The first line does not contain a field named 'uuid'. Is the headline valid?\nProvided headline: "
-                        + String.join(", ", headline));
+            "The first line does not contain a field named 'uuid'. Is the headline valid?\nProvided headline: "
+                + String.join(", ", headline));
       }
 
       // by default try-with-resources closes the reader directly when we leave this method (which
@@ -312,21 +312,21 @@ public abstract class CsvDataSource {
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
       Collection<Map<String, String>> allRows =
-              reader
-                      .lines()
-                      .parallel()
-                      .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-                      .filter(map -> !map.isEmpty())
-                      .collect(Collectors.toList());
+          reader
+              .lines()
+              .parallel()
+              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
+              .filter(map -> !map.isEmpty())
+              .collect(Collectors.toList());
 
       return distinctRowsWithLog(entityClass, allRows).parallelStream();
 
     } catch (IOException e) {
       log.warn(
-              "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     } catch (SourceException e) {
       log.error(
-              "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
 
     return Stream.empty();

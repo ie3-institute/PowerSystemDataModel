@@ -215,7 +215,6 @@ public class FileNamingStrategy {
     return Optional.of(addPrefixAndSuffix("coordinates"));
   }
 
-
   private String buildResultEntityString(Class<? extends ResultEntity> resultEntityClass) {
     String resultEntityString =
         resultEntityClass.getSimpleName().replace("Result", "").toLowerCase();
