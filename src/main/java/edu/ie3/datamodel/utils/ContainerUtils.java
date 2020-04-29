@@ -485,6 +485,7 @@ public class ContainerUtils {
                             : oldTrafo3w.getNodeA();
 
                     // we need to take care for this node in our node sets afterwards
+                    // (needs to be replaced by the new nodeA which might have been a slack before)
                     oldToNewTrafo3WNodes.put(oldTrafo3w.getNodeA(), newNodeA);
 
                     // create an update version of this transformer with internal node as slack and
