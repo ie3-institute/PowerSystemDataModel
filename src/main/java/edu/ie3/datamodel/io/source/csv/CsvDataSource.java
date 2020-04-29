@@ -18,6 +18,9 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import edu.ie3.util.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
@@ -30,8 +33,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Parent class of all .csv file related sources containing methods and fields consumed by allmost
@@ -45,7 +46,7 @@ public abstract class CsvDataSource {
   protected static final Logger log = LogManager.getLogger(CsvDataSource.class);
 
   // general fields
-  private final String csvSep;
+  protected final String csvSep;
   protected final CsvFileConnector connector;
 
   // field names
@@ -72,7 +73,7 @@ public abstract class CsvDataSource {
    * @return a map containing the mapping of (fieldName -> fieldValue) or an empty map if an error
    *     occurred
    */
-  private Map<String, String> buildFieldsToAttributes(
+  protected Map<String, String> buildFieldsToAttributes(
       final String csvRow, final String[] headline) {
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
@@ -295,15 +296,15 @@ public abstract class CsvDataSource {
    *     mapping (fieldName -> fieldValue)
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
-      Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
+          Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
     try (BufferedReader reader = connector.initReader(entityClass)) {
       String[] headline = reader.readLine().replaceAll("\"", "").toLowerCase().split(csvSep);
 
       // sanity check for headline
       if (!Arrays.asList(headline).contains("uuid")) {
         throw new SourceException(
-            "The first line does not contain a field named 'uuid'. Is the headline valid?\nProvided headline: "
-                + String.join(", ", headline));
+                "The first line does not contain a field named 'uuid'. Is the headline valid?\nProvided headline: "
+                        + String.join(", ", headline));
       }
 
       // by default try-with-resources closes the reader directly when we leave this method (which
@@ -311,21 +312,21 @@ public abstract class CsvDataSource {
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
       Collection<Map<String, String>> allRows =
-          reader
-              .lines()
-              .parallel()
-              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-              .filter(map -> !map.isEmpty())
-              .collect(Collectors.toList());
+              reader
+                      .lines()
+                      .parallel()
+                      .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
+                      .filter(map -> !map.isEmpty())
+                      .collect(Collectors.toList());
 
       return distinctRowsWithLog(entityClass, allRows).parallelStream();
 
     } catch (IOException e) {
       log.warn(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+              "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     } catch (SourceException e) {
       log.error(
-          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+              "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
 
     return Stream.empty();
