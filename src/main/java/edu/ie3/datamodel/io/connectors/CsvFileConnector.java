@@ -152,8 +152,8 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
-   * Initializes a file reader for the given file name. Use {@link CsvFileConnector#initReader(Class)}
-   * for files that actually correspond to concrete entities.
+   * Initializes a file reader for the given file name. Use {@link
+   * CsvFileConnector#initReader(Class)} for files that actually correspond to concrete entities.
    *
    * @param fileName the name of the file that should be read
    * @return the reader that contains information about the file to be read in

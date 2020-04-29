@@ -19,10 +19,9 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Optional;
 
 /**
  * Provides an easy to use standard way to name files based on the class that should be processed
@@ -214,7 +213,6 @@ public class FileNamingStrategy {
   public Optional<String> getCoordinateFileName() {
     return Optional.of(addPrefixAndSuffix("coordinates"));
   }
-
 
   private String buildResultEntityString(Class<? extends ResultEntity> resultEntityClass) {
     String resultEntityString =

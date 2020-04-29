@@ -9,12 +9,11 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.interval.ClosedInterval;
-import org.locationtech.jts.geom.Point;
-
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import org.locationtech.jts.geom.Point;
 
 /** Describes a data source for weather data */
 public interface WeatherSource extends DataSource {
