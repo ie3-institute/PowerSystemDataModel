@@ -48,11 +48,12 @@ public interface SystemParticipantSource extends DataSource {
   Optional<SystemParticipants> getSystemParticipants();
 
   /**
-   * Returns a unique set of {@link FixedFeedInInput instances.
+   * Returns a unique set of {@link FixedFeedInInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link FixedFeedInInput} which has to be checked manually,
-   * as {@link FixedFeedInInput#equals(Object)} is NOT restricted on the uuid of {@link FixedFeedInInput}.
+   * java.util.UUID} uniqueness of the provided {@link FixedFeedInInput} which has to be checked
+   * manually, as {@link FixedFeedInInput#equals(Object)} is NOT restricted on the uuid of {@link
+   * FixedFeedInInput}.
    *
    * @return a set of object and uuid unique {@link FixedFeedInInput} entities
    */
@@ -64,9 +65,9 @@ public interface SystemParticipantSource extends DataSource {
    * {@link FixedFeedInInput} which has to be checked manually, as {@link
    * FixedFeedInInput#equals(Object)} is NOT restricted on the uuid of {@link FixedFeedInInput}.
    *
-   * <p>In contrast to {@link this#getFixedFeedIns()} ()} this interface provides the ability to
-   * pass in an already existing set of {@link NodeInput} and {@link OperatorInput} entities, the
-   * {@link FixedFeedInInput} instances depend on. Doing so, already loaded nodes can be recycled to
+   * <p>In contrast to {@link #getFixedFeedIns()} this interface provides the ability to pass in an
+   * already existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
+   * FixedFeedInInput} instances depend on. Doing so, already loaded nodes can be recycled to
    * improve performance and prevent unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
@@ -80,11 +81,11 @@ public interface SystemParticipantSource extends DataSource {
   Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput> nodes, Set<OperatorInput> operators);
 
   /**
-   * Returns a unique set of {@link PvInput instances.
+   * Returns a unique set of {@link PvInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link PvInput} which has to be checked manually,
-   * as {@link PvInput#equals(Object)} is NOT restricted on the uuid of {@link PvInput}.
+   * java.util.UUID} uniqueness of the provided {@link PvInput} which has to be checked manually, as
+   * {@link PvInput#equals(Object)} is NOT restricted on the uuid of {@link PvInput}.
    *
    * @return a set of object and uuid unique {@link PvInput} entities
    */
@@ -96,9 +97,9 @@ public interface SystemParticipantSource extends DataSource {
    * PvInput} which has to be checked manually, as {@link PvInput#equals(Object)} is NOT restricted
    * on the uuid of {@link PvInput}.
    *
-   * <p>In contrast to {@link this#getPvPlants()} ()} ()} this interface provides the ability to
-   * pass in an already existing set of {@link NodeInput} and {@link OperatorInput} entities, the
-   * {@link PvInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
+   * <p>In contrast to {@link #getPvPlants()} this interface provides the ability to pass in an
+   * already existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
+   * PvInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
    * performance and prevent unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
@@ -112,7 +113,7 @@ public interface SystemParticipantSource extends DataSource {
   Set<PvInput> getPvPlants(Set<NodeInput> nodes, Set<OperatorInput> operators);
 
   /**
-   * Returns a unique set of {@link LoadInput instances.
+   * Returns a unique set of {@link LoadInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
    * java.util.UUID} uniqueness of the provided {@link LoadInput} which has to be checked manually,
@@ -128,10 +129,10 @@ public interface SystemParticipantSource extends DataSource {
    * LoadInput} which has to be checked manually, as {@link LoadInput#equals(Object)} is NOT
    * restricted on the uuid of {@link LoadInput}.
    *
-   * <p>In contrast to {@link this#getLoads()} ()} this interface provides the ability to pass in an
-   * already existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
-   * LoadInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
-   * performance and prevent unnecessary loading operations.
+   * <p>In contrast to {@link #getLoads()} this interface provides the ability to pass in an already
+   * existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link LoadInput}
+   * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
+   * prevent unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
@@ -144,7 +145,7 @@ public interface SystemParticipantSource extends DataSource {
   Set<LoadInput> getLoads(Set<NodeInput> nodes, Set<OperatorInput> operators);
 
   /**
-   * Returns a unique set of {@link EvcsInput instances.
+   * Returns a unique set of {@link EvcsInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
    * java.util.UUID} uniqueness of the provided {@link EvcsInput} which has to be checked manually,
@@ -160,10 +161,10 @@ public interface SystemParticipantSource extends DataSource {
    * EvcsInput} which has to be checked manually, as {@link EvcsInput#equals(Object)} is NOT
    * restricted on the uuid of {@link EvcsInput}.
    *
-   * <p>In contrast to {@link this#getEvCS()} ()} this interface provides the ability to pass in an
-   * already existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
-   * EvcsInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
-   * performance and prevent unnecessary loading operations.
+   * <p>In contrast to {@link #getEvCS()} this interface provides the ability to pass in an already
+   * existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link EvcsInput}
+   * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
+   * prevent unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
@@ -176,11 +177,11 @@ public interface SystemParticipantSource extends DataSource {
   Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators);
 
   /**
-   * Returns a unique set of {@link BmInput instances.
+   * Returns a unique set of {@link BmInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link BmInput} which has to be checked manually,
-   * as {@link BmInput#equals(Object)} is NOT restricted on the uuid of {@link BmInput}.
+   * java.util.UUID} uniqueness of the provided {@link BmInput} which has to be checked manually, as
+   * {@link BmInput#equals(Object)} is NOT restricted on the uuid of {@link BmInput}.
    *
    * @return a set of object and uuid unique {@link BmInput} entities
    */
@@ -192,8 +193,8 @@ public interface SystemParticipantSource extends DataSource {
    * BmInput} which has to be checked manually, as {@link BmInput#equals(Object)} is NOT restricted
    * on the uuid of {@link BmInput}.
    *
-   * <p>In contrast to {@link this#getBmPlants()} ()} this interface provides the ability to pass in
-   * an already existing set of {@link NodeInput}, {@link BmTypeInput} and {@link OperatorInput}
+   * <p>In contrast to {@link #getBmPlants()} this interface provides the ability to pass in an
+   * already existing set of {@link NodeInput}, {@link BmTypeInput} and {@link OperatorInput}
    * entities, the {@link BmInput} instances depend on. Doing so, already loaded nodes can be
    * recycled to improve performance and prevent unnecessary loading operations.
    *
@@ -210,11 +211,12 @@ public interface SystemParticipantSource extends DataSource {
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<BmTypeInput> types);
 
   /**
-   * Returns a unique set of {@link StorageInput instances.
+   * Returns a unique set of {@link StorageInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link StorageInput} which has to be checked manually,
-   * as {@link StorageInput#equals(Object)} is NOT restricted on the uuid of {@link StorageInput}.
+   * java.util.UUID} uniqueness of the provided {@link StorageInput} which has to be checked
+   * manually, as {@link StorageInput#equals(Object)} is NOT restricted on the uuid of {@link
+   * StorageInput}.
    *
    * @return a set of object and uuid unique {@link StorageInput} entities
    */
@@ -226,10 +228,10 @@ public interface SystemParticipantSource extends DataSource {
    * {@link StorageInput} which has to be checked manually, as {@link StorageInput#equals(Object)}
    * is NOT restricted on the uuid of {@link StorageInput}.
    *
-   * <p>In contrast to {@link this#getStorages()} ()} this interface provides the ability to pass in
-   * an already existing set of {@link NodeInput}, {@link StorageTypeInput} and {@link
-   * OperatorInput} entities, the {@link StorageInput} instances depend on. Doing so, already loaded
-   * nodes can be recycled to improve performance and prevent unnecessary loading operations.
+   * <p>In contrast to {@link #getStorages()} this interface provides the ability to pass in an
+   * already existing set of {@link NodeInput}, {@link StorageTypeInput} and {@link OperatorInput}
+   * entities, the {@link StorageInput} instances depend on. Doing so, already loaded nodes can be
+   * recycled to improve performance and prevent unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
@@ -244,7 +246,7 @@ public interface SystemParticipantSource extends DataSource {
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<StorageTypeInput> types);
 
   /**
-   * Returns a unique set of {@link WecInput instances.
+   * Returns a unique set of {@link WecInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
    * java.util.UUID} uniqueness of the provided {@link WecInput} which has to be checked manually,
@@ -260,8 +262,8 @@ public interface SystemParticipantSource extends DataSource {
    * WecInput} which has to be checked manually, as {@link WecInput#equals(Object)} is NOT
    * restricted on the uuid of {@link WecInput}.
    *
-   * <p>In contrast to {@link this#getWecPlants()} ()} this interface provides the ability to pass
-   * in an already existing set of {@link NodeInput}, {@link WecTypeInput} and {@link OperatorInput}
+   * <p>In contrast to {@link #getWecPlants()} this interface provides the ability to pass in an
+   * already existing set of {@link NodeInput}, {@link WecTypeInput} and {@link OperatorInput}
    * entities, the {@link WecInput} instances depend on. Doing so, already loaded nodes can be
    * recycled to improve performance and prevent unnecessary loading operations.
    *
@@ -278,11 +280,11 @@ public interface SystemParticipantSource extends DataSource {
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types);
 
   /**
-   * Returns a unique set of {@link EvInput instances.
+   * Returns a unique set of {@link EvInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EvInput} which has to be checked manually,
-   * as {@link EvInput#equals(Object)} is NOT restricted on the uuid of {@link EvInput}.
+   * java.util.UUID} uniqueness of the provided {@link EvInput} which has to be checked manually, as
+   * {@link EvInput#equals(Object)} is NOT restricted on the uuid of {@link EvInput}.
    *
    * @return a set of object and uuid unique {@link EvInput} entities
    */
@@ -294,10 +296,10 @@ public interface SystemParticipantSource extends DataSource {
    * EvInput} which has to be checked manually, as {@link EvInput#equals(Object)} is NOT restricted
    * on the uuid of {@link EvInput}.
    *
-   * <p>In contrast to {@link this#getEvs()} this interface provides the ability to pass in an
-   * already existing set of {@link NodeInput}, {@link EvTypeInput} and {@link OperatorInput}
-   * entities, the {@link EvInput} instances depend on. Doing so, already loaded nodes can be
-   * recycled to improve performance and prevent unnecessary loading operations.
+   * <p>In contrast to {@link #getEvs()} this interface provides the ability to pass in an already
+   * existing set of {@link NodeInput}, {@link EvTypeInput} and {@link OperatorInput} entities, the
+   * {@link EvInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
+   * performance and prevent unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
@@ -311,7 +313,7 @@ public interface SystemParticipantSource extends DataSource {
   Set<EvInput> getEvs(Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types);
 
   /**
-   * Returns a unique set of {@link ChpInput instances.
+   * Returns a unique set of {@link ChpInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
    * java.util.UUID} uniqueness of the provided {@link ChpInput} which has to be checked manually,
@@ -327,7 +329,7 @@ public interface SystemParticipantSource extends DataSource {
    * ChpInput} which has to be checked manually, as {@link ChpInput#equals(Object)} is NOT
    * restricted on the uuid of {@link ChpInput}.
    *
-   * <p>In contrast to {@link this#getChpPlants()} this interface provides the ability to pass in an
+   * <p>In contrast to {@link #getChpPlants()} this interface provides the ability to pass in an
    * already existing set of {@link NodeInput}, {@link ChpTypeInput}, {@link ThermalBusInput},
    * {@link ThermalStorageInput} and {@link OperatorInput} entities, the {@link ChpInput} instances
    * depend on. Doing so, already loaded nodes can be recycled to improve performance and prevent
@@ -352,11 +354,11 @@ public interface SystemParticipantSource extends DataSource {
       Set<ThermalStorageInput> thermalStorages);
 
   /**
-   * Returns a unique set of {@link HpInput instances.
+   * Returns a unique set of {@link HpInput} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link HpInput} which has to be checked manually,
-   * as {@link HpInput#equals(Object)} is NOT restricted on the uuid of {@link HpInput}.
+   * java.util.UUID} uniqueness of the provided {@link HpInput} which has to be checked manually, as
+   * {@link HpInput#equals(Object)} is NOT restricted on the uuid of {@link HpInput}.
    *
    * @return a set of object and uuid unique {@link HpInput} entities
    */
@@ -368,10 +370,10 @@ public interface SystemParticipantSource extends DataSource {
    * HpInput} which has to be checked manually, as {@link HpInput#equals(Object)} is NOT restricted
    * on the uuid of {@link HpInput}.
    *
-   * <p>In contrast to {@link this#getHeatPumps()} ()} this interface provides the ability to pass
-   * in an already existing set of {@link NodeInput}, {@link HpTypeInput}, {@link ThermalBusInput},
-   * {@link ThermalStorageInput} and {@link OperatorInput} entities, the {@link HpInput} instances
-   * depend on. Doing so, already loaded nodes can be recycled to improve performance and prevent
+   * <p>In contrast to {@link #getHeatPumps()} this interface provides the ability to pass in an
+   * already existing set of {@link NodeInput}, {@link HpTypeInput}, {@link ThermalBusInput}, {@link
+   * ThermalStorageInput} and {@link OperatorInput} entities, the {@link HpInput} instances depend
+   * on. Doing so, already loaded nodes can be recycled to improve performance and prevent
    * unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an

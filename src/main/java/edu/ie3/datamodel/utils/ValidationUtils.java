@@ -192,6 +192,8 @@ public class ValidationUtils {
    * - it is not null <br>
    * - subnet is not null <br>
    * - vRated and vTarget are neither null nor 0
+   *
+   * @param node Node to validate
    */
   public static void checkNode(NodeInput node) {
     if (node == null) throw new NullPointerException("Expected a node, but got nothing. :-(");
@@ -228,6 +230,8 @@ public class ValidationUtils {
    * Validates a connector if: <br>
    * - it is not null <br>
    * - both of its nodes are not null
+   *
+   * @param connector Connector to validate
    */
   public static void checkConnector(ConnectorInput connector) {
     if (connector == null)
@@ -293,6 +297,8 @@ public class ValidationUtils {
    * - {@link ValidationUtils#checkLineType(LineTypeInput)} and {@link
    * ValidationUtils#checkConnector(ConnectorInput)} confirm a valid type and valid connector
    * properties
+   *
+   * @param line Line to validate
    */
   public static void checkLine(LineInput line) {
     if (line == null) throw new NullPointerException("Expected a line, but got nothing. :-(");
@@ -308,6 +314,8 @@ public class ValidationUtils {
    * Validates a line type if: <br>
    * - it is not null <br>
    * - none of its values are null or 0 <br>
+   *
+   * @param lineType Line type to validate
    */
   public static void checkLineType(LineTypeInput lineType) {
     if (lineType == null)
@@ -335,6 +343,8 @@ public class ValidationUtils {
    * - {@link ValidationUtils#checkTransformer2WType(Transformer2WTypeInput)} and {@link
    * ValidationUtils#checkConnector(ConnectorInput)} confirm a valid type and valid connector
    * properties
+   *
+   * @param trafo Transformer to validate
    */
   public static void checkTransformer2W(Transformer2WInput trafo) {
     if (trafo == null)
@@ -347,6 +357,8 @@ public class ValidationUtils {
    * Validates a transformer type if: <br>
    * - it is not null <br>
    * - none of its values are null or 0 <br>
+   *
+   * @param trafoType Transformer type to validate
    */
   public static void checkTransformer2WType(Transformer2WTypeInput trafoType) {
     if (trafoType == null)
@@ -383,6 +395,8 @@ public class ValidationUtils {
    * - {@link ValidationUtils#checkTransformer3WType(Transformer3WTypeInput)} and {@link
    * ValidationUtils#checkConnector(ConnectorInput)} confirm a valid type and valid connector
    * properties
+   *
+   * @param trafo Transformer to validate
    */
   public static void checkTransformer3W(Transformer3WInput trafo) {
     if (trafo == null)
@@ -397,6 +411,8 @@ public class ValidationUtils {
    * Validates a transformer type if: <br>
    * - it is not null <br>
    * - none of its values are null or 0 <br>
+   *
+   * @param trafoType Transformer type to validate
    */
   public static void checkTransformer3WType(Transformer3WTypeInput trafoType) {
     if (trafoType == null)
@@ -436,6 +452,8 @@ public class ValidationUtils {
    * Validates a measurement unit if: <br>
    * - it is not null <br>
    * - its node is not nul
+   *
+   * @param measurementUnit Measurement unit to validate
    */
   public static void checkMeasurementUnit(MeasurementUnitInput measurementUnit) {
     if (measurementUnit == null)
@@ -448,6 +466,8 @@ public class ValidationUtils {
    * Validates a measurement unit if: <br>
    * - it is not null <br>
    * - its node is not nul
+   *
+   * @param switchInput Switch to validate
    */
   public static void checkSwitch(SwitchInput switchInput) {
     if (switchInput == null)

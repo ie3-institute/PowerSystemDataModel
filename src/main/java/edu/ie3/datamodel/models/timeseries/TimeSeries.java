@@ -31,7 +31,12 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
     this.entries = Collections.unmodifiableSet(entries);
   }
 
-  /** @return the value at the given time step as a TimeBasedValue */
+  /**
+   * Get the time based value for the queried time
+   *
+   * @param time Reference in time
+   * @return the value at the given time step as a TimeBasedValue
+   */
   public Optional<TimeBasedValue<V>> getTimeBasedValue(ZonedDateTime time) {
     V content = getValue(time).orElse(null);
 
@@ -46,6 +51,7 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
    * If you prefer to keep the time with the value, please use {@link TimeSeries#getTimeBasedValue}
    * instead
    *
+   * @param time Queried time
    * @return An option on the raw value at the given time step
    */
   public abstract Optional<V> getValue(ZonedDateTime time);
@@ -67,13 +73,21 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
   protected abstract Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time);
 
   /**
+   * Get the most recent available value before or at the given time step as a TimeBasedValue
+   *
+   * @param time Reference in time
    * @return the most recent available value before or at the given time step as a TimeBasedValue
    */
   public Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time) {
     return getPreviousDateTime(time).map(this::getTimeBasedValue).map(Optional::get);
   }
 
-  /** @return the next available value after or at the given time step as a TimeBasedValue */
+  /**
+   * Get the next available value after or at the given time step as a TimeBasedValue
+   *
+   * @param time Reference in time
+   * @return the next available value after or at the given time step as a TimeBasedValue
+   */
   public Optional<TimeBasedValue<V>> getNextTimeBasedValue(ZonedDateTime time) {
     return getNextDateTime(time).map(this::getTimeBasedValue).map(Optional::get);
   }

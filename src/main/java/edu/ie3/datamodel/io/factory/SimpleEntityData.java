@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * Data used by {@link SimpleEntityFactory} to create an instance of an entity than can be created
- * based only on a mapping of fieldName -> value. This class can be used whenever no additional data
+ * based only on a mapping of fieldName to value. This class can be used whenever no additional data
  * is needed, but should not be used as parent class for extensions. Use {@link EntityData} for
  * extensions instead.
  *

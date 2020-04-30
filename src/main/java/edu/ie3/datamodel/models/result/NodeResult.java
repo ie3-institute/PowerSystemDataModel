@@ -46,6 +46,8 @@ public class NodeResult extends ResultEntity {
    *     above
    * @param timestamp date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
+   * @param vMag Dimensionless voltage magnitude
+   * @param vAng Voltage angle in degrees
    */
   public NodeResult(
       UUID uuid,

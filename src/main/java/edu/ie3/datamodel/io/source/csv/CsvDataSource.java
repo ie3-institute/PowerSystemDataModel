@@ -69,7 +69,7 @@ public abstract class CsvDataSource {
    *
    * @param csvRow the csv row string that contains the data
    * @param headline the headline fields of the csv file
-   * @return a map containing the mapping of (fieldName -> fieldValue) or an empty map if an error
+   * @return a map containing the mapping of (fieldName to fieldValue) or an empty map if an error
    *     occurred
    */
   private Map<String, String> buildFieldsToAttributes(
@@ -209,7 +209,12 @@ public abstract class CsvDataSource {
    * Returns a predicate that can be used to filter optionals of {@link UniqueEntity}s and keep
    * track on the number of elements that have been empty optionals. This filter let only pass
    * optionals that are non-empty. Example usage:
+   *
+   * <pre>{@code
    * Collection.stream().filter(isPresentCollectIfNot(NodeInput.class, new ConcurrentHashMap<>()))
+   *
+   * }</pre>
+   *
    * ...
    *
    * @param entityClass entity class that should be used as they key in the provided counter map
@@ -285,14 +290,14 @@ public abstract class CsvDataSource {
   /**
    * Tries to open a file reader from the connector based on the provided entity class, reads the
    * first line (considered to be the headline with headline fields) and returns a stream of
-   * (fieldName -> fieldValue) mapping where each map represents one row of the .csv file. Since the
+   * (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since the
    * returning stream is a parallel stream, the order of the elements cannot be guaranteed.
    *
    * @param entityClass the entity class that should be build and that is used to get the
    *     corresponding reader
    * @param connector the connector that should be used to get the reader from
    * @return a parallel stream of maps, where each map represents one row of the csv file with the
-   *     mapping (fieldName -> fieldValue)
+   *     mapping (fieldName to fieldValue)
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
@@ -340,7 +345,7 @@ public abstract class CsvDataSource {
    * the error is logged. For case a), only the duplicates are filtered out an a set with unique
    * rows is returned.
    *
-   * @param entityClass the entity class that should be built based on the provided (fieldName ->
+   * @param entityClass the entity class that should be built based on the provided (fieldName to
    *     fieldValue) collection
    * @param allRows collection of rows of a csv file an entity should be built from
    * @param <T> type of the entity
@@ -383,12 +388,12 @@ public abstract class CsvDataSource {
   /**
    * Checks if the requested type of an asset can be found in the provided collection of types based
    * on the provided fields to values mapping. The provided fields to values mapping needs to have
-   * one and only one field with key {@link this#TYPE} and a corresponding UUID value. If the type
-   * can be found in the provided collection based on the UUID it is returned wrapped in an
-   * optional. Otherwise an empty optional is returned and a warning is logged.
+   * one and only one field with key {@link #TYPE} and a corresponding UUID value. If the type can
+   * be found in the provided collection based on the UUID it is returned wrapped in an optional.
+   * Otherwise an empty optional is returned and a warning is logged.
    *
    * @param types a collection of types that should be used for searching
-   * @param fieldsToAttributes the field name to value mapping incl. the key {@link this#TYPE}
+   * @param fieldsToAttributes the field name to value mapping incl. the key {@link #TYPE}
    * @param skippedClassString debug string of the class that will be skipping
    * @param <T> the type of the resulting type instance
    * @return either an optional containing the type or an empty optional if the type cannot be found

@@ -26,7 +26,7 @@ public class CylindricalStorageResult extends ThermalStorageResult {
    * @param timestamp date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param energy Currently stored energy
-   * @param qDot Heat power flowing into (> 0) or coming from (< 0) the storage
+   * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
    * @param fillLevel Fill level of the storage
    */
   public CylindricalStorageResult(
@@ -47,7 +47,7 @@ public class CylindricalStorageResult extends ThermalStorageResult {
    * @param timestamp date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param energy Currently stored energy
-   * @param qDot Heat power flowing into (> 0) or coming from (< 0) the storage
+   * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
    * @param fillLevel Fill level of the storage
    */
   public CylindricalStorageResult(

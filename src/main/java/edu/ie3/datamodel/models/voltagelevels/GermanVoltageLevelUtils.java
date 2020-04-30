@@ -90,6 +90,8 @@ public class GermanVoltageLevelUtils {
    *
    * @param vRated Rated voltage to examine
    * @return A suitable voltage level
+   * @throws VoltageLevelException If the given rated voltage is not covered by any of the known
+   *     voltage levels
    */
   public static CommonVoltageLevel parse(ComparableQuantity<ElectricPotential> vRated)
       throws VoltageLevelException {
@@ -108,8 +110,11 @@ public class GermanVoltageLevelUtils {
    * Parses the given id and rated voltage and returns a suitable german voltage level, unless it is
    * not covered by any of the given. Then a {@link VoltageLevelException} is thrown.
    *
+   * @param id Identifier of the voltage level
    * @param vRated Rated voltage to examine
    * @return A suitable voltage level
+   * @throws VoltageLevelException If the given rated voltage is not covered by any of the known
+   *     voltage levels
    */
   public static CommonVoltageLevel parse(String id, ComparableQuantity<ElectricPotential> vRated)
       throws VoltageLevelException {
