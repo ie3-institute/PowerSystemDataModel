@@ -7,24 +7,25 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.value.Value;
 import java.util.Map;
+import org.locationtech.jts.geom.Point;
 
-public class TimeBasedEntryData<V extends Value> extends EntityData {
-  private final Class<V> valueClass;
+public class TimeBasedWeatherValueData extends EntityData {
+
+  private final Point coordinate;
 
   /**
    * Creates a new TimeBasedEntryData object
    *
    * @param fieldsToAttributes attribute map: field name -> value
-   * @param valueClass class of the value of the TimeBasedValue to be created with this data
+   * @param coordinate coordinate for this WeatherValue
    */
-  public TimeBasedEntryData(Map<String, String> fieldsToAttributes, Class<V> valueClass) {
+  public TimeBasedWeatherValueData(Map<String, String> fieldsToAttributes, Point coordinate) {
     super(fieldsToAttributes, TimeBasedValue.class);
-    this.valueClass = valueClass;
+    this.coordinate = coordinate;
   }
 
-  public Class<? extends Value> getValueClass() {
-    return valueClass;
+  public Point getCoordinate() {
+    return coordinate;
   }
 }

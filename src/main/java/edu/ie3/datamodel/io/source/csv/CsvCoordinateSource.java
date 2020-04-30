@@ -35,13 +35,9 @@ public class CsvCoordinateSource extends CsvDataSource implements CoordinateSour
   }
 
   public void setupCoordinateMaps() {
-    Optional<String> fileName = fileNamingStrategy.getCoordinateFileName();
-    if (!fileName.isPresent()) {
-      log.error("Cannot read coordinates as I could not get a valid file name");
-      return;
-    }
+    String fileName = fileNamingStrategy.getCoordinateFileName();
     Stream<Map<String, String>> fieldsToAttributes =
-        buildStreamWithFieldsToAttributesMap(fileName.get(), connector);
+        buildStreamWithFieldsToAttributesMap(fileName, connector);
     idToCoordinate = buildIdToCoordinateMap(fieldsToAttributes);
     coordinateToId = new HashMap<>();
     idToCoordinate.forEach((k, v) -> coordinateToId.put(v, k));

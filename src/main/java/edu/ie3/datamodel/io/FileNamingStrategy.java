@@ -210,8 +210,8 @@ public class FileNamingStrategy {
    *
    * @return the filename string
    */
-  public Optional<String> getCoordinateFileName() {
-    return Optional.of(addPrefixAndSuffix("coordinates"));
+  public String getCoordinateFileName() {
+    return addPrefixAndSuffix("coordinates");
   }
 
   private String buildResultEntityString(Class<? extends ResultEntity> resultEntityClass) {

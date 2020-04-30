@@ -6,8 +6,8 @@
 package edu.ie3.datamodel.io.source.influxdb;
 
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
-import edu.ie3.datamodel.io.factory.timeseries.TimeBasedEntryData;
-import edu.ie3.datamodel.io.factory.timeseries.TimeBasedEntryFactory;
+import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
+import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.source.CoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -24,14 +24,15 @@ import org.influxdb.dto.QueryResult;
 import org.locationtech.jts.geom.Point;
 
 public class InfluxDbWeatherSource implements WeatherSource {
+  private static final String COORDINATE_ID = "coordinate";
   private final InfluxDbConnector connector;
   private final CoordinateSource coordinateSource;
-  private final TimeBasedEntryFactory timeBasedEntryFactory;
+  private final TimeBasedWeatherValueFactory weatherValueFactory;
 
   public InfluxDbWeatherSource(InfluxDbConnector connector, CoordinateSource coordinateSource) {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
-    this.timeBasedEntryFactory = new TimeBasedEntryFactory(coordinateSource);
+    this.weatherValueFactory = new TimeBasedWeatherValueFactory();
   }
 
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
@@ -75,13 +76,14 @@ public class InfluxDbWeatherSource implements WeatherSource {
     return coordinateToTimeSeries;
   }
 
-  public List<TimeBasedValue> getWeatherForCoordinate(
+  public IndividualTimeSeries<WeatherValue> getWeatherForCoordinate(
       ClosedInterval<ZonedDateTime> timeInterval, Point coordinate) {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinate);
       QueryResult queryResult = session.query(new Query(query));
       Stream<Optional<TimeBasedValue>> optValues = optTimeBasedValueStream(queryResult);
-      return filterEmptyOptionals(optValues).collect(Collectors.toList());
+      return new IndividualTimeSeries<>(
+          null, filterEmptyOptionals(optValues).collect(Collectors.toSet()));
     }
   }
 
@@ -98,8 +100,12 @@ public class InfluxDbWeatherSource implements WeatherSource {
     Map<String, Set<Map<String, String>>> measurementsMap =
         InfluxDbConnector.parseQueryResult(queryResult, "weather");
     return measurementsMap.get("weather").stream()
-        .map(fields -> new TimeBasedEntryData(fields, WeatherValue.class))
-        .map(timeBasedEntryFactory::getEntity);
+        .map(
+            fields ->
+                new TimeBasedWeatherValueData(
+                    fields,
+                    coordinateSource.getCoordinate(Integer.valueOf(fields.remove(COORDINATE_ID)))))
+        .map(weatherValueFactory::getEntity);
   }
 
   public String createQueryStringForIntervalAndCoordinate(
