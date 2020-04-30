@@ -1,0 +1,7 @@
+task genJavadocs(type: Javadoc) {
+	source = sourceSets.main.allJava
+	destinationDir = file(
+			project.projectDir.toString() + File.separator + project.docsDirName + File.separator + 'javadoc'
+	)
+	classpath = project.sourceSets.main.compileClasspath
+}
