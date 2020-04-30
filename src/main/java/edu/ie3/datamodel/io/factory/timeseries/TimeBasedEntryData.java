@@ -10,8 +10,8 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import java.util.Map;
 
-public class TimeBasedEntryData extends EntityData {
-  private final Class<? extends Value> valueClass;
+public class TimeBasedEntryData<V extends Value> extends EntityData {
+  private final Class<V> valueClass;
 
   /**
    * Creates a new TimeBasedEntryData object
@@ -19,8 +19,7 @@ public class TimeBasedEntryData extends EntityData {
    * @param fieldsToAttributes attribute map: field name -> value
    * @param valueClass class of the value of the TimeBasedValue to be created with this data
    */
-  public TimeBasedEntryData(
-      Map<String, String> fieldsToAttributes, Class<? extends Value> valueClass) {
+  public TimeBasedEntryData(Map<String, String> fieldsToAttributes, Class<V> valueClass) {
     super(fieldsToAttributes, TimeBasedValue.class);
     this.valueClass = valueClass;
   }

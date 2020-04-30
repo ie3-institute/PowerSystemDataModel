@@ -5,24 +5,22 @@
  */
 package edu.ie3.datamodel.io.source.influxdb
 
-import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
-import edu.ie3.datamodel.io.factory.timeseries.TimeBasedEntryData
-import edu.ie3.datamodel.io.factory.timeseries.TimeBasedEntryFactory
-import edu.ie3.datamodel.io.source.CoordinateSource
-import edu.ie3.datamodel.io.source.csv.CsvCoordinateSource
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
-import org.influxdb.dto.Query
+import edu.ie3.test.common.WeatherTestData
+import edu.ie3.test.helper.WeatherSourceTestHelper
+import edu.ie3.util.interval.ClosedInterval
+import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
 
-import java.util.stream.Collectors
-
 @Testcontainers
-class InfluxDbWeatherSourceTest extends Specification {
+class InfluxDbWeatherSourceTest extends Specification implements WeatherSourceTestHelper {
 
 	@Shared
 	InfluxDBContainer influxDbContainer = new InfluxDBContainer()
@@ -33,39 +31,82 @@ class InfluxDbWeatherSourceTest extends Specification {
 	@Shared
 	InfluxDbWeatherSource source
 
-	@Shared
-	CoordinateSource coordinateSource
-
 	def setupSpec() {
 		MountableFile influxWeatherImportFile = MountableFile.forClasspathResource("/testcontainersFiles/influxDb/weather.txt");
 		influxDbContainer.copyFileToContainer(influxWeatherImportFile, "/home/weather.txt")
 		def execResult = influxDbContainer.execInContainer("influx", "-import", "-path=/home/weather.txt", "-precision=ms")
-		String coordinateFileFolder = new File(getClass().getResource('/testGridFiles/coordinates').toURI()).absolutePath
-		coordinateSource = new CsvCoordinateSource(",", coordinateFileFolder, new FileNamingStrategy())
+		println "Command \"influx -import -path=/home/weather.txt -precision=ms\" returned:"
+		if(!execResult.stderr.isEmpty()) println execResult.getStderr()
+		if(!execResult.stdout.isEmpty()) println execResult.getStdout()
 
 		def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
-		source = new InfluxDbWeatherSource(connector, coordinateSource)
+		source = new InfluxDbWeatherSource(connector, WeatherTestData.coordinateSource)
 	}
 
 
 	def "The test container can establish a valid connection"() {
 		when:
-		def pingSuccess = influxDbContainer.newInfluxDB.ping().good
+		def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
 		then:
-		pingSuccess
+		connector.connectionValid
 	}
 
-	def "Does some magic with it's values"() {
+	def "An InfluxDbWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
+		given:
+		def expectedTimeBasedValue = new TimeBasedValue(WeatherTestData.time_15h, WeatherTestData.weatherVal_coordinate_193186_15h);
 		when:
-		def pingSuccess = influxDbContainer.newInfluxDB.ping().good
-		def query = influxDbContainer.newInfluxDB.query(new Query("Select * from weather;"))
-		def result = InfluxDbConnector.parseQueryResult(query)
-		TimeBasedEntryFactory factory = new TimeBasedEntryFactory();
-		def weather = result.get("weather").stream()
-				.map({ map -> new TimeBasedEntryData(map, WeatherValue) })
-				.map({data -> factory.getEntity(data)})
-				.collect(Collectors.toList())
+		def optTimeBasedValue = source.getWeather(WeatherTestData.time_15h, WeatherTestData.coordinate_193186)
 		then:
-		weather.size() == 4 //because coordinates are not parsed yet
+		optTimeBasedValue.isPresent()
+		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
+	}
+
+	def "An InfluxDbWeatherSource can read multiple timeseries values for multiple coordinates"() {
+		given:
+		def coordinates = [
+			WeatherTestData.coordinate_193186,
+			WeatherTestData.coordinate_193187
+		]
+		def timeInterval = new ClosedInterval(WeatherTestData.time_16h, WeatherTestData.time_17h);
+		def timeseries_193186 = new IndividualTimeSeries(null,
+				[
+					new TimeBasedValue(WeatherTestData.time_16h, WeatherTestData.weatherVal_coordinate_193186_16h),
+					new TimeBasedValue(WeatherTestData.time_17h, WeatherTestData.weatherVal_coordinate_193186_17h)]
+				as Set<TimeBasedValue>)
+		def timeseries_193187 = new IndividualTimeSeries(null,
+				[
+					new TimeBasedValue(WeatherTestData.time_16h, WeatherTestData.weatherVal_coordinate_193187_16h)] as Set<TimeBasedValue>)
+		when:
+		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
+		then:
+		coordinateToTimeSeries.keySet().size() == 2
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193186), timeseries_193186)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193187), timeseries_193187)
+	}
+
+
+
+	def "An InfluxDbWeatherSource can read all weather data in a given time interval"() {
+		given:
+		def timeInterval = new ClosedInterval(WeatherTestData.time_15h, WeatherTestData.time_17h);
+		def timeseries_193186 = new IndividualTimeSeries(null,
+				[
+					new TimeBasedValue(WeatherTestData.time_15h,WeatherTestData.weatherVal_coordinate_193186_15h),
+					new TimeBasedValue(WeatherTestData.time_16h,WeatherTestData.weatherVal_coordinate_193186_16h),
+					new TimeBasedValue(WeatherTestData.time_17h,WeatherTestData.weatherVal_coordinate_193186_17h)] as Set<TimeBasedValue>)
+		def timeseries_193187 = new IndividualTimeSeries(null,
+				[
+					new TimeBasedValue(WeatherTestData.time_15h,WeatherTestData.weatherVal_coordinate_193187_15h),
+					new TimeBasedValue(WeatherTestData.time_16h,WeatherTestData.weatherVal_coordinate_193187_16h)] as Set<TimeBasedValue>)
+		def timeseries_193188 = new IndividualTimeSeries(null,
+				[
+					new TimeBasedValue(WeatherTestData.time_15h,WeatherTestData.weatherVal_coordinate_193188_15h)] as Set<TimeBasedValue>)
+		when:
+		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
+		then:
+		coordinateToTimeSeries.keySet().size() == 3
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193186).getEntries(), timeseries_193186.getEntries())
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193187).getEntries(), timeseries_193187.getEntries())
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193188).getEntries(), timeseries_193188.getEntries())
 	}
 }

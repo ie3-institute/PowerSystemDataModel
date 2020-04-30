@@ -14,6 +14,7 @@ public interface CoordinateSource extends DataSource {
 
   Collection<Point> getCoordinates(Integer... ids);
 
+  // TODO Remove after Projektarbeit
   Collection<Point> getCoordinatesBetween(Integer fromId, Integer toId);
 
   Integer getId(Point coordinate);

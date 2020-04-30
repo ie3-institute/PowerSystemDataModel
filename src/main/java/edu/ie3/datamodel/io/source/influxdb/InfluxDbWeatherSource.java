@@ -26,11 +26,12 @@ import org.locationtech.jts.geom.Point;
 public class InfluxDbWeatherSource implements WeatherSource {
   private final InfluxDbConnector connector;
   private final CoordinateSource coordinateSource;
-  private final TimeBasedEntryFactory timeBasedEntryFactory = new TimeBasedEntryFactory();
+  private final TimeBasedEntryFactory timeBasedEntryFactory;
 
   public InfluxDbWeatherSource(InfluxDbConnector connector, CoordinateSource coordinateSource) {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
+    this.timeBasedEntryFactory = new TimeBasedEntryFactory(coordinateSource);
   }
 
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
@@ -85,7 +86,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   @Override
-  public Optional<TimeBasedValue> getWeather(ZonedDateTime date, Point coordinate) {
+  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForDateAndCoordinate(date, coordinate);
       QueryResult queryResult = session.query(new Query(query));
@@ -133,11 +134,11 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   public String createCoordinateConstraintString(Point coordinate) {
-    return "koordinatenid='" + coordinateSource.getId(coordinate) + "'";
+    return "coordinate='" + coordinateSource.getId(coordinate) + "'";
   }
 
-  protected <T extends TimeBasedValue> Stream<T> filterEmptyOptionals(
-      Stream<Optional<T>> elements) {
-    return elements.filter(Optional::isPresent).map(Optional::get);
+  protected Stream<TimeBasedValue<WeatherValue>> filterEmptyOptionals(
+      Stream<Optional<TimeBasedValue>> elements) {
+    return elements.filter(Optional::isPresent).map(Optional::get).map(TimeBasedValue.class::cast);
   }
 }

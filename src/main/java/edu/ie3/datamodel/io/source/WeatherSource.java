@@ -27,5 +27,5 @@ public interface WeatherSource extends DataSource {
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates);
 
   /** @return weather data for the specified time and coordinate */
-  Optional<TimeBasedValue> getWeather(ZonedDateTime date, Point coordinate);
+  Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate);
 }

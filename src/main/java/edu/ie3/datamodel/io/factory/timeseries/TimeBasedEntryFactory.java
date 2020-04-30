@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.source.CoordinateSource;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
@@ -39,8 +40,11 @@ public class TimeBasedEntryFactory extends EntityFactory<TimeBasedValue, TimeBas
   private static final String WIND_DIRECTION = "wind_direction";
   private static final String WIND_VELOCITY = "wind_velocity";
 
-  public TimeBasedEntryFactory() {
+  private final CoordinateSource coordinateSource;
+
+  public TimeBasedEntryFactory(CoordinateSource coordinateSource) {
     super(TimeBasedValue.class);
+    this.coordinateSource = coordinateSource;
   }
 
   @Override
@@ -66,7 +70,7 @@ public class TimeBasedEntryFactory extends EntityFactory<TimeBasedValue, TimeBas
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     final Class<? extends Value> valueClass = data.getValueClass();
     if (valueClass.equals(WeatherValue.class)) {
-      Point coordinate = null; // TODO How do I introduce this properly?
+      Point coordinate = coordinateSource.getCoordinate(data.getInt(COORDINATE));
       ComparableQuantity<Irradiation> directIrradiation =
           data.getQuantity(DIRECT_IRRADIATION, StandardUnits.IRRADIATION);
       ComparableQuantity<Irradiation> diffuseIrradiation =
@@ -85,7 +89,7 @@ public class TimeBasedEntryFactory extends EntityFactory<TimeBasedValue, TimeBas
               temperature,
               windDirection,
               windVelocity);
-      return new TimeBasedValue<>(time, weatherValue);
+      return new TimeBasedValue<WeatherValue>(time, weatherValue);
     } else throw new FactoryException("Cannot process " + valueClass.getSimpleName() + ".class.");
   }
 }

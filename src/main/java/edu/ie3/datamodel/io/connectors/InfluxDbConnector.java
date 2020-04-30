@@ -65,7 +65,7 @@ public class InfluxDbConnector implements DataConnector {
 
   public InfluxDB getSession() {
     InfluxDB session;
-    session = InfluxDBFactory.connect(INFLUXDB_URL);
+    session = InfluxDBFactory.connect(url);
     session.setDatabase(databaseName);
     session.query(new Query("CREATE DATABASE " + databaseName, databaseName));
     session.setLogLevel(InfluxDB.LogLevel.NONE);
