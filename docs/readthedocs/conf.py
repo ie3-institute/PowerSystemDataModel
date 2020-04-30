@@ -22,11 +22,13 @@ copyright = '2020, Institute of Energy Systems, Energy Efficiency and Energy Eco
 author = 'Johannes Hiry, Debopama Sen Sarma, Chris Kittl'
 
 # The full version, including alpha/beta/rc tags
+version = '1.0'
 release = '1.0.1-SNAPSHOT'
 
+# Will point sphinx to use 'index.rst' as the master document
+master_doc = 'index'
 
 # -- General configuration ---------------------------------------------------
-
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
