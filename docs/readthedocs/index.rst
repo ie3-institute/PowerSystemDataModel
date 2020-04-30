@@ -1,10 +1,10 @@
-.. PowerSystemDataModel documentation master file, created by
-   sphinx-quickstart on Thu Apr 30 17:01:19 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Documentation of the PowerSystemDataModel
+=========================================
 
-Welcome to PowerSystemDataModel's documentation!
-================================================
+Welcome to the documentation of the PowerSystemDataModel.
+It provides an extensive data model capable of modelling energy systems with high granularity e.g. for bottom-up simulations.
+Additionally, useful functions to process, augment and furnish model i/o information is provided.
+Effective handling of geographic information related to power grids is also possible.
 
 .. toctree::
    :maxdepth: 2
