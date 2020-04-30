@@ -42,6 +42,7 @@ public class StorageResult extends SystemParticipantResult {
   /**
    * Standard constructor with automatic uuid generation.
    *
+   * @param uuid Unique identifier
    * @param timestamp date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW

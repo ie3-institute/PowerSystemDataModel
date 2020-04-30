@@ -29,6 +29,7 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
    * @param id of this type of system participant
    * @param capex Captial expense for this type of system participant (typically in €)
    * @param opex Operating expense for this type of system participant (typically in €/MWh)
+   * @param sRated Rated apparent power
    * @param cosPhiRated Power factor for this type of system participant
    */
   public SystemParticipantTypeInput(

@@ -25,7 +25,13 @@ public class OperationTime {
   /** Is the operation time frame limited? */
   private boolean isLimited;
 
-  /** Constructor for builder only */
+  /**
+   * Constructor for builder only
+   *
+   * @param startDate Beginning of the operation period
+   * @param endDate End of the operation period
+   * @param isLimited true, if operation is timely bound
+   */
   protected OperationTime(ZonedDateTime startDate, ZonedDateTime endDate, boolean isLimited) {
     this.startDate = startDate;
     this.endDate = endDate;
@@ -76,6 +82,7 @@ public class OperationTime {
   /**
    * Check if given date is included in the operation time frame
    *
+   * @param date Questioned date
    * @return true, if the date is included or there are no operation time limitations, else false
    */
   public boolean includes(ZonedDateTime date) {
@@ -122,19 +129,34 @@ public class OperationTime {
     private ZonedDateTime startDate;
     private ZonedDateTime endDate;
 
-    /** Set the date of operation start */
+    /**
+     * Set the date of operation start
+     *
+     * @param startDate Beginning of the operation period
+     * @return Reference to the same builder with adjusted start date
+     */
     public OperationTimeBuilder withStart(ZonedDateTime startDate) {
       this.startDate = startDate;
       return this;
     }
 
-    /** Set the date of operation end */
+    /**
+     * Set the date of operation end
+     *
+     * @param endDate End of the operation period
+     * @return Reference to the same builder with adjusted end date
+     */
     public OperationTimeBuilder withEnd(ZonedDateTime endDate) {
       this.endDate = endDate;
       return this;
     }
 
-    /** Set dates of operation start and end from interval */
+    /**
+     * Set dates of operation start and end from interval
+     *
+     * @param timeInterval Foreseen operation time interval
+     * @return Reference to the same builder with adjusted start and end date
+     */
     public OperationTimeBuilder withOperationTime(ClosedInterval<ZonedDateTime> timeInterval) {
       this.startDate = timeInterval.getLower();
       this.endDate = timeInterval.getUpper();
@@ -146,6 +168,8 @@ public class OperationTime {
      * <br>
      * If both time frame bounds, start and end date, are not set, the OperationTime is regarded not
      * limited
+     *
+     * @return A ready to use operation time
      */
     public OperationTime build() {
       boolean isLimited = (startDate != null || endDate != null);

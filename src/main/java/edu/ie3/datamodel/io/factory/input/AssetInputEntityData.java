@@ -22,7 +22,7 @@ public class AssetInputEntityData extends EntityData {
   /**
    * Creates a new AssetInputEntityData object without operator.
    *
-   * @param fieldsToAttributes attribute map: field name -> value
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    */
   public AssetInputEntityData(
@@ -33,7 +33,7 @@ public class AssetInputEntityData extends EntityData {
   /**
    * Creates a new AssetInputEntityData object with operator.
    *
-   * @param fieldsToAttributes attribute map: field name -> value
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    * @param operator operator input
    */

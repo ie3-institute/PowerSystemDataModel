@@ -9,7 +9,13 @@ import java.util.UUID;
 
 public class EvcsInput extends AssetInput {
 
-  /** @deprecated only added to remove compile error. Please implement a real constructor */
+  /**
+   * Dummy constructor
+   *
+   * @param uuid Unique identifier
+   * @param id Human readable identifier
+   * @deprecated only added to remove compile error. Please implement a real constructor
+   */
   @Deprecated
   public EvcsInput(UUID uuid, String id) {
     super(uuid, id);

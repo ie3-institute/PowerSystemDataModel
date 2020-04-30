@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Wrapper providing the class specific processor to convert an instance of a {@link UniqueEntity}
- * into a mapping of <attribute,value> which can be used to write data e.g. into .csv files. This
+ * into a mapping from attribute to value which can be used to write data e.g. into .csv files. This
  * wrapper can always be used if it's not clear which specific instance of a subclass of {@link
  * UniqueEntity} is received in the implementation. It can either be used for specific entity
  * processors only or as a general provider for all known entity processors.
@@ -55,7 +55,9 @@ public class ProcessorProvider {
   /**
    * Get an instance of this class based on the provided collection of processors
    *
-   * @param entityProcessors the processors that should be known by this provider
+   * @param entityProcessors the processors for entities that should be known by this provider
+   * @param timeSeriesProcessors the processors for time series that should be known by this
+   *     provider
    */
   public ProcessorProvider(
       Collection<EntityProcessor<? extends UniqueEntity>> entityProcessors,

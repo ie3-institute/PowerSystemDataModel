@@ -380,8 +380,9 @@ public abstract class Processor<T> {
    * This method should handle all quantities that are model processor specific e.g. we need to
    * handle active power p different for {@link edu.ie3.datamodel.models.result.ResultEntity}s and
    * {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}s Hence from the
-   * generalized method {@link this.handleQuantity()}, this allows for the specific handling of
-   * child implementations. See the implementation @ {@link ResultEntityProcessor} for details.
+   * generalized method {@link #handleQuantity(Quantity, String)}, this allows for the specific
+   * handling of child implementations. See the implementation @ {@link ResultEntityProcessor} for
+   * details.
    *
    * @param quantity the quantity that should be processed
    * @param fieldName the field name the quantity is set to

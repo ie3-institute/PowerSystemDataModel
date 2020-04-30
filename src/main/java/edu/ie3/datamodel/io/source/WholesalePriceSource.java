@@ -12,10 +12,20 @@ import java.time.ZonedDateTime;
 
 /** Describes a data source for wholesale prices */
 public interface WholesalePriceSource extends DataSource {
-  /** @return wholesale price data for the specified time range as a TimeSeries */
+  /**
+   * Return the whole sale price for the given time interval
+   *
+   * @param timeInterval Queried time interval
+   * @return wholesale price data for the specified time range as a TimeSeries
+   */
   IndividualTimeSeries<EnergyPriceValue> getWholesalePrice(
       ClosedInterval<ZonedDateTime> timeInterval);
 
-  /** @return wholesale data for the specified tim */
+  /**
+   * Return the whole sale price for the given time
+   *
+   * @param time Queried time
+   * @return wholesale data for the specified time
+   */
   IndividualTimeSeries<EnergyPriceValue> getWeather(ZonedDateTime time);
 }
