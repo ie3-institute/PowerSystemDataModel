@@ -29,7 +29,7 @@ class CsvCoordinateSourceTest extends Specification implements CsvTestDataMeta {
 				["id": "193188", "lat": "48.031231", "lon": "14.57985"])
 		def connector = new CsvFileConnector(coordinatesFolderPath, fileNamingStrategy)
 		when:
-		def actualStream = source.buildStreamWithFieldsToAttributesMap(fileNamingStrategy.coordinateFileName.get(), connector);
+		def actualStream = source.buildStreamWithFieldsToAttributesMap(fileNamingStrategy.coordinateFileName, connector)
 		then:
 		actualStream.collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))
 	}
@@ -41,7 +41,7 @@ class CsvCoordinateSourceTest extends Specification implements CsvTestDataMeta {
 			"lon"		    : "19.95"])
 		def expectedMap = [42 : GeoUtils.xyToPoint(3.07,19.95)]
 		when:
-		def actualMap = source.buildIdToCoordinateMap(validStream);
+		def actualMap = source.buildIdToCoordinateMap(validStream)
 		then:
 		actualMap == expectedMap
 	}
