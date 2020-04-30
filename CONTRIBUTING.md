@@ -1,4 +1,4 @@
-#Contributing to PowerSystemDatamodel
+# Contributing to PowerSystemDatamodel
 Welcome dear fellow of sophisticated power system modelling! :wave:
 And thank you for considering your contribution to this project!
 With this document we would like to give you some orientation on how you can contribute.
@@ -14,8 +14,8 @@ With this document we would like to give you some orientation on how you can con
  * [For any doubts](#for-any-doubts)
 
 ## Testing and reporting bugs
-We really appreciate you usage of this project.
-Whenever you find a bug, it would be nice to check, if this isn't a feature to us. :joy:
+We really appreciate your usage of this project.
+Whenever you find a bug, it would be nice to check, if this isn't a feature to us. :wink:
 You may find extended information about the intended behaviour in the projects [wiki](https://github.com/ie3-institute/PowerSystemDataModel/wiki) or within the [javadoc](https://ie3-institute.github.io/powersystemdatamodel/javadoc).
 If you still think it's a bug, please raise an [issue](https://guides.github.com/features/issues/) for us.
 Considering the following aspects in your inquire, assists us in helping you:
