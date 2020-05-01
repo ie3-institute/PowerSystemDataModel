@@ -9,10 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 -  Headline in csv files is now mandatory. CsvDataSource checks for existing field `uuid` in first row of .csv file
 -  Minor logging improvements
+-  New constructor in ``Transformer3WInput`` that allows the internal node to be marked as slack
+-  Method in ``ContainerUtils`` to modify a provided ``SubGridContainer`` with slack nodes and make it usable for
+most of the commonly known power flow calculations
+-  Gradle task to create JavaDoc HTML files in the folder 'docs/javadoc'
 
 ### Changed
 -  Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
--  Modifications in `LineInput` and `GraphicInput` constructors to make `LineStrings` with two exactly equal coordinates or multiple exactly equal coordinates possible
+-  Modifications in `LineInput` and `GraphicInput` constructors to make `LineStrings` with two exactly equal
+coordinates or multiple exactly equal coordinates possible
 -  Extended functionality of `GridAndGeoUtils`
 
 ### Fixed

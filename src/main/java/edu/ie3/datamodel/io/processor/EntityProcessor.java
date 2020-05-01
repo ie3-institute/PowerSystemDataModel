@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Internal API Interface for EntityProcessors. Main purpose is to 'de-serialize' models into a
- * fieldName -> value representation to allow for an easy processing into a database or file sink
+ * fieldName to value representation to allow for an easy processing into a database or file sink
  * e.g. .csv
  *
  * @version 0.1
@@ -43,8 +43,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
   /**
    * Standard call to handle an entity
    *
-   * @param entity the entity that should be 'de-serialized' into a map of fieldName -> fieldValue
-   * @return an optional Map with fieldName -> fieldValue or an empty optional if an error occurred
+   * @param entity the entity that should be 'de-serialized' into a map of fieldName to fieldValue
+   * @return an optional Map with fieldName to fieldValue or an empty optional if an error occurred
    *     during processing
    */
   public Optional<LinkedHashMap<String, String>> handleEntity(T entity) {

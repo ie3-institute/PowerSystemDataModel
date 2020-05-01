@@ -28,6 +28,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    *
    * @param baseFolder Base folder, from where the file hierarchy should start
    * @param fileDefinition The foreseen shape of the file
+   * @param writeHeader Toggles, if the head line is written or not
    * @param quoted True, if the entries may be quoted
    * @param append true to append to an existing file, false to overwrite an existing file (if any),
    *     if no file exists, a new one will be created in both cases
@@ -55,6 +56,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    *
    * @param baseFolder Base folder, from where the file hierarchy should start
    * @param fileDefinition The foreseen shape of the file
+   * @param writeHeader Toggles, if the head line is written or not
    * @param append true to append to an existing file, false to overwrite an existing file (if any),
    *     if no file exists, a new one will be created in both cases
    * @throws IOException If the FileOutputStream cannot be established.
@@ -69,6 +71,8 @@ public class BufferedCsvWriter extends BufferedWriter {
    * Actually persisting the provided entity field data
    *
    * @param entityFieldData a mapping of an entity instance fields to their values
+   * @throws IOException If writing has failed
+   * @throws SinkException If the data does not meet the pre-defined head line
    */
   public void write(Map<String, String> entityFieldData) throws IOException, SinkException {
     /* Check against eligible head line elements */

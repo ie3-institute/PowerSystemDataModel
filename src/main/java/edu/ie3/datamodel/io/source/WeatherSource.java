@@ -18,14 +18,31 @@ import org.locationtech.jts.geom.Point;
 /** Describes a data source for weather data */
 public interface WeatherSource extends DataSource {
 
-  /** @return weather data for the specified time range, sorted by coordinate */
+  /**
+   * Return the weather for the given time interval
+   *
+   * @param timeInterval Queried time interval
+   * @return weather data for the specified time range, sorted by coordinate
+   */
   Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval);
 
-  /** @return weather data for the specified time range and coordinates, sorted by coordinate */
+  /**
+   * Return the weather for the given time interval AND coordinates
+   *
+   * @param timeInterval Queried time interval
+   * @param coordinates Queried coordinates
+   * @return weather data for the specified time range and coordinates, sorted by coordinate
+   */
   Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates);
 
-  /** @return weather data for the specified time and coordinate */
+  /**
+   * Return the weather for the given time date AND coordinate
+   *
+   * @param date Queried date time
+   * @param coordinate Queried coordinate
+   * @return weather data for the specified time and coordinate
+   */
   Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate);
 }

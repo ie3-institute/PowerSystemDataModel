@@ -85,7 +85,7 @@ public class CsvFileSink implements DataSink {
    * {@link ProcessorProvider} because if you're not 100% sure that it knows about all entities
    * you're going to process exceptions might occur. Therefore it is strongly advised to either use
    * a constructor without providing the {@link ProcessorProvider} or provide a general {@link
-   * ProcessorProvider} by calling {@link ProcessorProvider()}
+   * ProcessorProvider} by calling {@link ProcessorProvider#ProcessorProvider()}
    *
    * @param baseFolderPath the base folder path where the files should be put into
    * @param processorProvider the processor provided that should be used for entity de-serialization

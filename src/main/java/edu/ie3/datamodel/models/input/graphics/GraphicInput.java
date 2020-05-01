@@ -46,12 +46,12 @@ public abstract class GraphicInput extends InputEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     GraphicInput that = (GraphicInput) o;
-    return getGraphicLayer().equals(that.getGraphicLayer()) && getPath().equals(that.getPath());
+    return graphicLayer.equals(that.graphicLayer) && Objects.equals(path, that.path);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getGraphicLayer(), getPath());
+    return Objects.hash(super.hashCode(), graphicLayer, path);
   }
 
   @Override

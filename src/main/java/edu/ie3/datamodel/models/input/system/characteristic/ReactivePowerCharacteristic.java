@@ -36,6 +36,8 @@ public abstract class ReactivePowerCharacteristic
    *
    * @param input String to parse
    * @return Matching reactive power characteristic
+   * @throws ParsingException If the given input cannot be mapped onto one of the known
+   *     characteristics
    */
   public static ReactivePowerCharacteristic parse(String input) throws ParsingException {
     if (input.startsWith(CosPhiFixed.PREFIX + ":{")) return new CosPhiFixed(input);

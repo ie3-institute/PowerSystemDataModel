@@ -54,6 +54,56 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       Transformer3WTypeInput type,
       int tapPos,
       boolean autoTap) {
+    this(
+        uuid,
+        id,
+        operator,
+        operationTime,
+        nodeA,
+        nodeB,
+        nodeC,
+        parallelDevices,
+        type,
+        tapPos,
+        autoTap,
+        false);
+  }
+
+  /**
+   * Constructor for an operated three winding transformer that allows setting the internal node as
+   * slack node. This is normally needed if a larger grid is split up into subgrids and the three
+   * winding transformer is located in a subgrid that does not hold the highest voltage side of the
+   * transformer (here: that not holds node A in its grid).
+   *
+   * <p>Then, the internal node becomes a virtual representation of a slack node for the grid and
+   * allows for power flow calculations based on it's 'close-to-T-equivalent' representation
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param nodeA The higher voltage node
+   * @param nodeB The middle voltage node
+   * @param nodeC The lower voltage node
+   * @param parallelDevices Amount of singular transformers
+   * @param type of 3W transformer
+   * @param tapPos Tap Position of this transformer
+   * @param autoTap true, if there is an automated regulation activated for this transformer
+   * @param internalNodeAsSlack true, if the internal node is a slack node, false otherwise
+   */
+  public Transformer3WInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      NodeInput nodeC,
+      int parallelDevices,
+      Transformer3WTypeInput type,
+      int tapPos,
+      boolean autoTap,
+      boolean internalNodeAsSlack) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
     this.nodeC = nodeC;
@@ -64,7 +114,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
             operator,
             operationTime,
             Quantities.getQuantity(1d, PU),
-            false,
+            internalNodeAsSlack,
             null,
             nodeA.getVoltLvl(),
             nodeA.getSubnet());

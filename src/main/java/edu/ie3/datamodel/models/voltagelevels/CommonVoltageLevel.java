@@ -24,6 +24,8 @@ public class CommonVoltageLevel extends VoltageLevel {
    *
    * @param id Identifier
    * @param nominalVoltage nominal voltage of the voltage level
+   * @param synonymousIds Synonymously used identifiers
+   * @param voltageRange Range of nominal voltage that is covered by this common voltage level
    */
   public CommonVoltageLevel(
       String id,
@@ -55,6 +57,7 @@ public class CommonVoltageLevel extends VoltageLevel {
    * @param id Identifier
    * @param vRated Rated voltage of a node to test
    * @return true, if it is covered
+   * @throws VoltageLevelException If the input is ambiguous
    */
   public boolean covers(String id, ComparableQuantity<ElectricPotential> vRated)
       throws VoltageLevelException {

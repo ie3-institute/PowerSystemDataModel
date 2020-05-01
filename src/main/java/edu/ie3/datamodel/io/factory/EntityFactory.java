@@ -138,7 +138,7 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
    * proceed. Otherwise a detailed exception message is thrown.
    *
    * @param data the entity containing at least the entity class as well a mapping of the provided
-   *     field name strings to its value (e.g. a headline of a csv -> column values)
+   *     field name strings to its value (e.g. a headline of a csv to column values)
    * @param fieldSets a set containing all available constructor combinations as field names
    * @return the index of the set in the fieldSets array that fits the provided entity data
    */

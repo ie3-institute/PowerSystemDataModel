@@ -122,7 +122,7 @@ public class CsvFileConnector implements DataConnector {
    *
    * @param clz the class of the entity that should be read
    * @return the reader that contains information about the file to be read in
-   * @throws FileNotFoundException
+   * @throws FileNotFoundException If the matching file cannot be found
    */
   public BufferedReader initReader(Class<? extends UniqueEntity> clz) throws FileNotFoundException {
 

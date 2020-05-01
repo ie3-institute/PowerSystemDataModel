@@ -16,7 +16,12 @@ public class SValue extends PValue {
   /** Reactive power */
   private final ComparableQuantity<Power> q;
 
-  /** @param q Reactive power */
+  /**
+   * Creates a new value representing apparent power
+   *
+   * @param p Active power
+   * @param q Reactive power
+   */
   public SValue(ComparableQuantity<Power> p, ComparableQuantity<Power> q) {
     super(p);
     this.q = q.to(StandardUnits.REACTIVE_POWER_IN);

@@ -42,7 +42,7 @@ class GridAndGeoUtilsTest extends Specification {
 		]
 	}
 
-	def "The GridAndGeoUtils should only modify a provided Coordinate at least as possible"() {
+	def "The GridAndGeoUtils should only modify a provided Coordinate as least as possible"() {
 		given:
 		def coord = new Coordinate(1, 1, 0)
 

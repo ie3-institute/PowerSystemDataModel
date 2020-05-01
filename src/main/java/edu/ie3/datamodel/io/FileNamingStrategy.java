@@ -108,6 +108,9 @@ public class FileNamingStrategy {
   /**
    * Builds a file name of the given information.
    *
+   * @param <T> Type of the time series
+   * @param <E> Type of the entry in the time series
+   * @param <V> Type of the value, that is carried by the time series entry
    * @param timeSeries Time series to derive naming information from
    * @return A file name for this particular time series
    */
