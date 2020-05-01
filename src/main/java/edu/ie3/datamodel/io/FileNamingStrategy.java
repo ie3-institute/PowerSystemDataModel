@@ -210,7 +210,7 @@ public class FileNamingStrategy {
    *
    * @return the filename string
    */
-  public String getCoordinateFileName() {
+  public String getIdCoordinateFileName() {
     return addPrefixAndSuffix("coordinates");
   }
 

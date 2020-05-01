@@ -18,32 +18,36 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
 
-public class CsvCoordinateSource extends CsvDataSource implements CoordinateSource {
+public class CsvIdCoordinateSource extends CsvDataSource implements CoordinateSource {
 
   private static final String LATITUDE_HEADER = "lat";
   private static final String LONGITUDE_HEADER = "lon";
   private static final String ID_HEADER = "id";
 
-  private HashMap<Integer, Point> idToCoordinate;
-  private HashMap<Point, Integer> coordinateToId;
-  private final FileNamingStrategy fileNamingStrategy;
+  private final Map<Integer, Point> idToCoordinate;
+  private final Map<Point, Integer>
+      coordinateToId; // requires maps to to be unique in both ways -> keys and values
 
-  public CsvCoordinateSource(
+  public CsvIdCoordinateSource(
       String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     super(csvSep, folderPath, fileNamingStrategy);
-    this.fileNamingStrategy = fileNamingStrategy;
 
     /* setup the coordinate id to lat/long mapping */
-    setupCoordinateMaps(); // todo remove side effects
+    idToCoordinate = setupIdToCoordinateMap(fileNamingStrategy.getIdCoordinateFileName());
+    coordinateToId = invert(idToCoordinate);
   }
 
-  private void setupCoordinateMaps() {
-    String fileName = fileNamingStrategy.getCoordinateFileName();
+  private Map<Integer, Point> setupIdToCoordinateMap(String idCoordinateFileName) {
     Stream<Map<String, String>> fieldsToAttributes =
-        buildStreamWithFieldsToAttributesMap(fileName, connector);
-    idToCoordinate = buildIdToCoordinateMap(fieldsToAttributes);
-    coordinateToId = new HashMap<>();
-    idToCoordinate.forEach((k, v) -> coordinateToId.put(v, k));
+        buildStreamWithFieldsToAttributesMap(idCoordinateFileName, connector);
+
+    return buildIdToCoordinateMap(fieldsToAttributes);
+  }
+
+  private <V, K> Map<V, K> invert(Map<K, V> map) {
+    Map<V, K> inv = new HashMap<>();
+    for (Map.Entry<K, V> entry : map.entrySet()) inv.put(entry.getValue(), entry.getKey());
+    return inv;
   }
 
   public Point getCoordinate(Integer id) {
@@ -52,7 +56,7 @@ public class CsvCoordinateSource extends CsvDataSource implements CoordinateSour
 
   @Override
   public Collection<Point> getCoordinates(Integer... ids) {
-    return null;
+    return null; // todo Mia Krause
   }
 
   public Collection<Point> getCoordinates(int... ids) {
@@ -71,23 +75,32 @@ public class CsvCoordinateSource extends CsvDataSource implements CoordinateSour
     return idToCoordinate.keySet().size();
   }
 
-  private HashMap<Integer, Point> buildIdToCoordinateMap(
+  private Map<Integer, Point> buildIdToCoordinateMap(
       Stream<Map<String, String>> fieldsToAttributes) {
-    HashMap<Integer, Point> coordinateMap = new HashMap<>();
 
-    fieldsToAttributes.forEach(
-        map -> {
-          try {
-            double lat = Double.parseDouble(map.get(LATITUDE_HEADER));
-            double lon = Double.parseDouble(map.get(LONGITUDE_HEADER));
-            Integer id = Integer.valueOf(map.get(ID_HEADER));
-            Point coordinate = GeoUtils.xyToPoint(lat, lon);
-            coordinateMap.put(id, coordinate);
-          } catch (NumberFormatException e) {
-            log.warn("Could not build coordinate from given values: {}", map);
-          }
-        });
-    return coordinateMap;
+    return fieldsToAttributes
+        .map(
+            map -> {
+              Optional<AbstractMap.SimpleEntry<Integer, Point>> res = Optional.empty();
+              try {
+                double lat = Double.parseDouble(map.get(LATITUDE_HEADER));
+                double lon = Double.parseDouble(map.get(LONGITUDE_HEADER));
+                int id = Integer.parseInt(map.get(ID_HEADER));
+                Point coordinate = GeoUtils.xyToPoint(lat, lon);
+                res = Optional.of(new AbstractMap.SimpleEntry<>(id, coordinate));
+              } catch (NumberFormatException e) {
+                log.warn(
+                    "Could not build coordinate from given values: {}",
+                    map.entrySet().stream()
+                        .map(entry -> "(" + entry.getKey() + ":" + entry.getValue() + ")")
+                        .collect(Collectors.joining("\n")));
+              }
+              return res;
+            })
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(
+            Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
   }
 
   /**
@@ -103,6 +116,10 @@ public class CsvCoordinateSource extends CsvDataSource implements CoordinateSour
    */
   private Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       String filename, CsvFileConnector connector) {
+    // by default try-with-resources closes the reader directly when we leave this method (which
+    // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
+    // As we still want to consume the data at other places, we start a new stream instead of
+    // returning the original one
     try (BufferedReader reader = connector.initReader(filename)) {
       final String[] headline = parseCsvHeadline(reader.readLine(), csvSep);
 
@@ -115,17 +132,13 @@ public class CsvCoordinateSource extends CsvDataSource implements CoordinateSour
                 + String.join(", ", headline));
       }
 
-      // by default try-with-resources closes the reader directly when we leave this method (which
-      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
-      // As we still want to consume the data at other places, we start a new stream instead of
-      // returning the original one
       Collection<Map<String, String>> allRows =
           new HashSet<>(csvRowFieldValueMapping(reader, headline));
 
       return allRows.parallelStream();
 
     } catch (IOException e) {
-      log.error("Cannot read file with name '{}': {}", filename, e.getMessage());
+      log.warn("Cannot read file with name '{}': {}", filename, e.getMessage());
     } catch (SourceException e) {
       log.error("Cannot read file with name '{}': {}", filename, e.getMessage());
     }

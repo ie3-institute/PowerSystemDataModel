@@ -16,10 +16,10 @@ import java.util.stream.Stream
 class CsvCoordinateSourceTest extends Specification implements CsvTestDataMeta {
 
 	@Shared
-	CsvCoordinateSource source
+	CsvIdCoordinateSource source
 
 	def setupSpec() {
-		source = new CsvCoordinateSource(csvSep, coordinatesFolderPath, fileNamingStrategy)
+		source = new CsvIdCoordinateSource(csvSep, coordinatesFolderPath, fileNamingStrategy)
 	}
 
 	def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {
@@ -29,7 +29,7 @@ class CsvCoordinateSourceTest extends Specification implements CsvTestDataMeta {
 				["id": "193188", "lat": "48.031231", "lon": "14.57985"])
 		def connector = new CsvFileConnector(coordinatesFolderPath, fileNamingStrategy)
 		when:
-		def actualStream = source.buildStreamWithFieldsToAttributesMap(fileNamingStrategy.coordinateFileName, connector)
+		def actualStream = source.buildStreamWithFieldsToAttributesMap(fileNamingStrategy.idCoordinateFileName, connector)
 		then:
 		actualStream.collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))
 	}
