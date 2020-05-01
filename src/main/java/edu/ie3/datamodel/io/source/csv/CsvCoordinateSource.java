@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.source.CoordinateSource;
@@ -19,9 +20,9 @@ import org.locationtech.jts.geom.Point;
 
 public class CsvCoordinateSource extends CsvDataSource implements CoordinateSource {
 
-  private static final String latitudeHeader = "lat";
-  private static final String longitudeHeader = "lon";
-  private static final String idHeader = "id";
+  private static final String LATITUDE_HEADER = "lat";
+  private static final String LONGITUDE_HEADER = "lon";
+  private static final String ID_HEADER = "id";
 
   private HashMap<Integer, Point> idToCoordinate;
   private HashMap<Point, Integer> coordinateToId;
@@ -31,10 +32,12 @@ public class CsvCoordinateSource extends CsvDataSource implements CoordinateSour
       String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     super(csvSep, folderPath, fileNamingStrategy);
     this.fileNamingStrategy = fileNamingStrategy;
-    setupCoordinateMaps();
+
+    /* setup the coordinate id to lat/long mapping */
+    setupCoordinateMaps(); // todo remove side effects
   }
 
-  public void setupCoordinateMaps() {
+  private void setupCoordinateMaps() {
     String fileName = fileNamingStrategy.getCoordinateFileName();
     Stream<Map<String, String>> fieldsToAttributes =
         buildStreamWithFieldsToAttributesMap(fileName, connector);
@@ -75,9 +78,9 @@ public class CsvCoordinateSource extends CsvDataSource implements CoordinateSour
     fieldsToAttributes.forEach(
         map -> {
           try {
-            double lat = Double.parseDouble(map.get(latitudeHeader));
-            double lon = Double.parseDouble(map.get(longitudeHeader));
-            Integer id = Integer.valueOf(map.get(idHeader));
+            double lat = Double.parseDouble(map.get(LATITUDE_HEADER));
+            double lon = Double.parseDouble(map.get(LONGITUDE_HEADER));
+            Integer id = Integer.valueOf(map.get(ID_HEADER));
             Point coordinate = GeoUtils.xyToPoint(lat, lon);
             coordinateMap.put(id, coordinate);
           } catch (NumberFormatException e) {
@@ -101,23 +104,29 @@ public class CsvCoordinateSource extends CsvDataSource implements CoordinateSour
   private Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       String filename, CsvFileConnector connector) {
     try (BufferedReader reader = connector.initReader(filename)) {
-      String[] headline = reader.readLine().replaceAll("\"", "").toLowerCase().split(csvSep);
+      final String[] headline = parseCsvHeadline(reader.readLine(), csvSep);
+
+      if (!Arrays.asList(headline).containsAll(Arrays.asList("id", "lat", "lon"))) {
+        throw new SourceException(
+            "The first line of coordinateId to coordinates file '"
+                + filename
+                + "' does not contain the required fields 'id', 'lat', 'lon'. "
+                + "Is the headline valid?\nProvided headline: "
+                + String.join(", ", headline));
+      }
 
       // by default try-with-resources closes the reader directly when we leave this method (which
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
       Collection<Map<String, String>> allRows =
-          reader
-              .lines()
-              .parallel()
-              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-              .filter(map -> !map.isEmpty())
-              .collect(Collectors.toSet());
+          new HashSet<>(csvRowFieldValueMapping(reader, headline));
 
       return allRows.parallelStream();
 
     } catch (IOException e) {
+      log.error("Cannot read file with name '{}': {}", filename, e.getMessage());
+    } catch (SourceException e) {
       log.error("Cannot read file with name '{}': {}", filename, e.getMessage());
     }
 

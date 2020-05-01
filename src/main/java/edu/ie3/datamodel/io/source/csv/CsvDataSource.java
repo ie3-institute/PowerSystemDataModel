@@ -72,7 +72,7 @@ public abstract class CsvDataSource {
    * @return a map containing the mapping of (fieldName -> fieldValue) or an empty map if an error
    *     occurred
    */
-  protected Map<String, String> buildFieldsToAttributes(
+  private Map<String, String> buildFieldsToAttributes(
       final String csvRow, final String[] headline) {
 
     TreeMap<String, String> insensitiveFieldsToAttributes =
@@ -296,8 +296,9 @@ public abstract class CsvDataSource {
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
+
     try (BufferedReader reader = connector.initReader(entityClass)) {
-      String[] headline = reader.readLine().replaceAll("\"", "").toLowerCase().split(csvSep);
+      final String[] headline = parseCsvHeadline(reader.readLine(), csvSep);
 
       // sanity check for headline
       if (!Arrays.asList(headline).contains("uuid")) {
@@ -310,13 +311,7 @@ public abstract class CsvDataSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<Map<String, String>> allRows =
-          reader
-              .lines()
-              .parallel()
-              .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-              .filter(map -> !map.isEmpty())
-              .collect(Collectors.toList());
+      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
       return distinctRowsWithLog(entityClass, allRows).parallelStream();
 
@@ -329,6 +324,20 @@ public abstract class CsvDataSource {
     }
 
     return Stream.empty();
+  }
+
+  protected List<Map<String, String>> csvRowFieldValueMapping(
+      BufferedReader reader, String[] headline) {
+    return reader
+        .lines()
+        .parallel()
+        .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
+        .filter(map -> !map.isEmpty())
+        .collect(Collectors.toList());
+  }
+
+  protected String[] parseCsvHeadline(String csvHeadline, String csvSep) {
+    return csvHeadline.replaceAll("\"", "").toLowerCase().split(csvSep);
   }
 
   /**
