@@ -18,13 +18,15 @@
 # -- Project information -----------------------------------------------------
 
 project = 'PowerSystemDataModel'
-copyright = '2020, Institute of Energy Systems, Energy Efficiency and Energy Economics'
+copyright = u'2020. TU Dortmund University, Institute of Energy Systems, Energy Efficiency and Energy Economics, Research group Distribution grid planning and operation '
 author = 'Johannes Hiry, Debopama Sen Sarma, Chris Kittl'
 
 # The full version, including alpha/beta/rc tags
 version = '1.0'
 release = '1.0.1-SNAPSHOT'
 
+pygments_style = 'tango'
+add_function_parentheses = True
 # Will point sphinx to use 'index.rst' as the master document
 master_doc = 'index'
 
@@ -44,13 +46,17 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'venv']
 
+source_encoding = 'utf-8-sig'
 
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-html_theme = 'default'
+html_theme = 'sphinx_rtd_theme'
+html_short_title = "SIMONA"
+htmlhelp_basename = 'SIMONA-doc'
+html_use_index = True
+html_show_sourcelink = False
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
