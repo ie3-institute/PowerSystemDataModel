@@ -23,7 +23,8 @@ public class LineGraphicInputEntityData extends EntityData {
   /**
    * Creates a new EntityData object
    *
-   * @param fieldsToAttributes attribute map: field name -> value
+   * @param fieldsToAttributes attribute map: field name to value
+   * @param line Referenced electrical line
    */
   public LineGraphicInputEntityData(Map<String, String> fieldsToAttributes, LineInput line) {
     super(fieldsToAttributes, LineGraphicInput.class);

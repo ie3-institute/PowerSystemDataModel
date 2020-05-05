@@ -26,6 +26,7 @@ public class Transformer2WResult extends TransformerResult {
    * @param iAAng electric current angle @ Port A in degree
    * @param iBMag electric current magnitude @ port B, normally provided in Ampere
    * @param iBAng electric current angle @ Port B in degree
+   * @param tapPos Current position of the tap changer
    */
   public Transformer2WResult(
       ZonedDateTime timestamp,
@@ -49,6 +50,7 @@ public class Transformer2WResult extends TransformerResult {
    * @param iAAng electric current angle @ Port A in degree
    * @param iBMag electric current magnitude @ port B, normally provided in Ampere
    * @param iBAng electric current angle @ Port B in degree
+   * @param tapPos Current position of the tap changer
    */
   public Transformer2WResult(
       UUID uuid,

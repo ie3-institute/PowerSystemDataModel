@@ -26,7 +26,12 @@ public class DistanceWeightedGraph<V> extends SimpleWeightedGraph<V, DistanceWei
     super(vertexSupplier, edgeSupplier);
   }
 
-  /** Assigns a {@link Quantity} of type {@link Length} to an edge. */
+  /**
+   * Assigns a {@link Quantity} of type {@link Length} to an edge.
+   *
+   * @param edge Edge to alter
+   * @param weight Weight of the edge
+   */
   public void setWeightQuantity(DistanceWeightedEdge edge, ComparableQuantity<Length> weight) {
     double weightDouble = weight.to(DistanceWeightedEdge.DEFAULT_UNIT).getValue().doubleValue();
     super.setEdgeWeight(edge, weightDouble);

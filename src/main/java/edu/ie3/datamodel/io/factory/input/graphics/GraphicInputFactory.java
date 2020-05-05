@@ -74,6 +74,8 @@ public abstract class GraphicInputFactory<T extends GraphicInput, D extends Enti
    *
    * @param data entity data
    * @param uuid UUID of the input entity
+   * @param graphicLayer Identifier of the graphic layer to place the object on
+   * @param path Line string of the drawing
    * @return newly created asset object
    */
   protected abstract T buildModel(D data, UUID uuid, String graphicLayer, LineString path);

@@ -40,10 +40,10 @@ public interface ThermalSource extends DataSource {
    * {@link ThermalBusInput} which has to be checked manually, as {@link
    * ThermalBusInput#equals(Object)} is NOT restricted on the uuid of {@link ThermalBusInput}.
    *
-   * <p>In contrast to {@link this#getThermalBuses())} this interface provides the ability to pass
-   * in an already existing set of {@link OperatorInput} entities, the {@link ThermalBusInput}
-   * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
-   * prevent unnecessary loading operations.
+   * <p>In contrast to {@link #getThermalBuses()} this interface provides the ability to pass in an
+   * already existing set of {@link OperatorInput} entities, the {@link ThermalBusInput} instances
+   * depend on. Doing so, already loaded nodes can be recycled to improve performance and prevent
+   * unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
@@ -74,10 +74,10 @@ public interface ThermalSource extends DataSource {
    * has to be checked manually, as {@link ThermalStorageInput#equals(Object)} is NOT restricted on
    * the uuid of {@link ThermalStorageInput}.
    *
-   * <p>In contrast to {@link this#getThermalStorages())} this interface provides the ability to
-   * pass in an already existing set of {@link OperatorInput} entities, the {@link
-   * ThermalStorageInput} instances depend on. Doing so, already loaded nodes can be recycled to
-   * improve performance and prevent unnecessary loading operations.
+   * <p>In contrast to {@link #getThermalStorages()} this interface provides the ability to pass in
+   * an already existing set of {@link OperatorInput} entities, the {@link ThermalStorageInput}
+   * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
+   * prevent unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
@@ -109,10 +109,10 @@ public interface ThermalSource extends DataSource {
    * {@link ThermalHouseInput} which has to be checked manually, as {@link
    * ThermalHouseInput#equals(Object)} is NOT restricted on the uuid of {@link ThermalHouseInput}.
    *
-   * <p>In contrast to {@link this#getThermalHouses()} this interface provides the ability to pass
-   * in an already existing set of {@link OperatorInput} entities, the {@link ThermalHouseInput}
-   * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
-   * prevent unnecessary loading operations.
+   * <p>In contrast to {@link #getThermalHouses()} this interface provides the ability to pass in an
+   * already existing set of {@link OperatorInput} entities, the {@link ThermalHouseInput} instances
+   * depend on. Doing so, already loaded nodes can be recycled to improve performance and prevent
+   * unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
@@ -145,8 +145,8 @@ public interface ThermalSource extends DataSource {
    * CylindricalStorageInput#equals(Object)} is NOT restricted on the uuid of {@link
    * CylindricalStorageInput}.
    *
-   * <p>In contrast to {@link this#getCylindricStorages()} this interface provides the ability to
-   * pass in an already existing set of {@link OperatorInput} entities, the {@link
+   * <p>In contrast to {@link #getCylindricStorages()} this interface provides the ability to pass
+   * in an already existing set of {@link OperatorInput} entities, the {@link
    * CylindricalStorageInput} instances depend on. Doing so, already loaded nodes can be recycled to
    * improve performance and prevent unnecessary loading operations.
    *

@@ -58,10 +58,10 @@ public interface GraphicSource extends DataSource {
    * {@link NodeGraphicInput} which has to be checked manually, as {@link
    * NodeGraphicInput#equals(Object)} is NOT restricted on the uuid of {@link NodeGraphicInput}.
    *
-   * <p>In contrast to {@link this#getNodeGraphicInput()} this interface provides the ability to
-   * pass in an already existing set of {@link NodeInput} entities, the {@link NodeGraphicInput}
-   * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
-   * prevent unnecessary loading operations.
+   * <p>In contrast to {@link #getNodeGraphicInput} this interface provides the ability to pass in
+   * an already existing set of {@link NodeInput} entities, the {@link NodeGraphicInput} instances
+   * depend on. Doing so, already loaded nodes can be recycled to improve performance and prevent
+   * unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.
@@ -88,10 +88,10 @@ public interface GraphicSource extends DataSource {
    * {@link LineGraphicInput} which has to be checked manually, as {@link
    * LineGraphicInput#equals(Object)} is NOT restricted on the uuid of {@link LineGraphicInput}.
    *
-   * <p>In contrast to {@link this#getLineGraphicInput()} this interface provides the ability to
-   * pass in an already existing set of {@link LineInput} entities, the {@link LineGraphicInput}
-   * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
-   * prevent unnecessary loading operations.
+   * <p>In contrast to {@link #getLineGraphicInput} this interface provides the ability to pass in
+   * an already existing set of {@link LineInput} entities, the {@link LineGraphicInput} instances
+   * depend on. Doing so, already loaded nodes can be recycled to improve performance and prevent
+   * unnecessary loading operations.
    *
    * <p>If something fails during the creation process it's up to the concrete implementation of an
    * empty set or a set with all entities that has been able to be build is returned.

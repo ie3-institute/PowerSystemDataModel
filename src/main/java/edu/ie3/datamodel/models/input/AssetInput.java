@@ -19,7 +19,14 @@ public abstract class AssetInput extends InputEntity implements Operable {
   /** Name or ID of the asset */
   private final String id;
 
-  /** Constructor for an operated asset */
+  /**
+   * Constructor for an asset with timely limited operation and specific operator
+   *
+   * @param uuid Unique identifier
+   * @param id Human readable identifier
+   * @param operator Operator of the asset
+   * @param operationTime Operation time limitation
+   */
   public AssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
     super(uuid);
     this.operationTime = operationTime;
@@ -27,7 +34,12 @@ public abstract class AssetInput extends InputEntity implements Operable {
     this.id = id;
   }
 
-  /** Constructor for an operated, always on asset */
+  /**
+   * Constructor for an asset with timely unlimited operation and unassigned operator
+   *
+   * @param uuid Unique identifier
+   * @param id Human readable identifier
+   */
   public AssetInput(UUID uuid, String id) {
     this(uuid, id, OperatorInput.NO_OPERATOR_ASSIGNED, OperationTime.notLimited());
   }

@@ -26,7 +26,7 @@ public class GridAndGeoUtils extends GeoUtils {
    * @param a Starting point of the line string
    * @param b Ending point of the line string
    * @return The equivalent straight line string
-   * @deprecated Use {@link this#buildSafeLineStringBetweenNodes(NodeInput, NodeInput)} instead
+   * @deprecated Use {@link #buildSafeLineStringBetweenNodes(NodeInput, NodeInput)} instead
    */
   @Deprecated
   public static LineString buildLineStringBetweenNodes(NodeInput a, NodeInput b) {
@@ -48,8 +48,8 @@ public class GridAndGeoUtils extends GeoUtils {
   /**
    * Build an instance of {@link LineString} between two points that is safe to be compared even if
    * the provided two points consist of exactly the same coordinates. This is done by increasing the
-   * coordinate of the provided Point {@param p1} by a small amount to make it different from Point
-   * {@param p2}. For details on the bug inside {@link LineString} that is addressed here, see
+   * coordinate of the provided Point {@code p1} by a small amount to make it different from Point
+   * {@code p2}. For details on the bug inside {@link LineString} that is addressed here, see
    * https://github.com/locationtech/jts/issues/531
    *
    * @param p1 start point of the linestring
@@ -65,13 +65,13 @@ public class GridAndGeoUtils extends GeoUtils {
   /**
    * Build an instance of {@link LineString} between two coordinates that is safe to be compared
    * even if the provided two coordinates are exactly the same coordinates. This is done by
-   * increasing the coordinate of the provided Point {@param c1} by a small amount to make it
-   * different from Point {@param c2}. For details on the bug inside {@link LineString} that is
+   * increasing the coordinate of the provided Point {@code c1} by a small amount to make it
+   * different from Point {@code c2}. For details on the bug inside {@link LineString} that is
    * addressed here, see https://github.com/locationtech/jts/issues/531
    *
    * @param c1 start coordinate of the linestring
    * @param c2 end coordinate of the linestring
-   * @return
+   * @return A safely build line string
    */
   public static LineString buildSafeLineStringBetweenCoords(
       final Coordinate c1, final Coordinate c2) {
@@ -121,8 +121,8 @@ public class GridAndGeoUtils extends GeoUtils {
   }
 
   /**
-   * Adapt the provided point as described in {@link this#buildSafeCoord(Coordinate)} and return a
-   * new, adapted instance of {@link Point}
+   * Adapt the provided point as described in {@link #buildSafeCoord(Coordinate)} and return a new,
+   * adapted instance of {@link Point}
    *
    * @param p1 the point that should be adapted
    * @return the adapted point with a slightly changed coordinate

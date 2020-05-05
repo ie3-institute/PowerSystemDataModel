@@ -39,6 +39,7 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
    * @param input Input string to parse
    * @param abscissaUnit Unit to use on the abscissa
    * @param ordinateUnit Unit to use on the ordinate
+   * @throws ParsingException If the input is malformed
    */
   public CharacteristicPoint(String input, Unit<A> abscissaUnit, Unit<O> ordinateUnit)
       throws ParsingException {

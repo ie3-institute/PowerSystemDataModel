@@ -17,7 +17,12 @@ public class OperatorInput extends InputEntity {
   /** The id (=name) of this operator */
   private final String id;
 
-  /** @param id of this operator */
+  /**
+   * Constructor for an Operator
+   *
+   * @param uuid Unique identifier
+   * @param id Human readable identifier
+   */
   public OperatorInput(UUID uuid, String id) {
     super(uuid);
     this.id = id;

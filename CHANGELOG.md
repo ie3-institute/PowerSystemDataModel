@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -  New constructor in ``Transformer3WInput`` that allows the internal node to be marked as slack
 -  Method in ``ContainerUtils`` to modify a provided ``SubGridContainer`` with slack nodes and make it usable for
 most of the commonly known power flow calculations
+-  Gradle task to create JavaDoc HTML files in the folder 'docs/javadoc'
 
 ### Changed
 -  Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues

@@ -126,6 +126,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
+   * @param cosPhiRated Rated power factor
    */
   public LoadInput(
       UUID uuid,
@@ -157,6 +158,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
+   * @param cosPhiRated Rated power factor
    */
   public LoadInput(
       UUID uuid,

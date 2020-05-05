@@ -42,7 +42,7 @@ public abstract class EntityData {
   /**
    * Creates a new EntityData object
    *
-   * @param fieldsToAttributes attribute map: field name -> value
+   * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    */
   public EntityData(
@@ -231,7 +231,8 @@ public abstract class EntityData {
    * Parses and returns a voltage level from field value of given field name. Throws {@link
    * FactoryException} if field does not exist or parsing fails.
    *
-   * @param voltLvlField field name
+   * @param voltLvlField name of the field containing the voltage level
+   * @param ratedVoltField name of the field containing the rated voltage
    * @return Voltage level
    */
   public VoltageLevel getVoltageLvl(String voltLvlField, String ratedVoltField) {
