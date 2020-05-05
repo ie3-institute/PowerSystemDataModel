@@ -10,7 +10,7 @@ Effective handling of geographic information related to power grids is also poss
    :maxdepth: 2
    :caption: Contents:
 
-
+   models/models
 
 Indices and tables
 ==================
