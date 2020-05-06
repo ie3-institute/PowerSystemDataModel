@@ -2,31 +2,86 @@
 
 Grid Container
 --------------
-Whoops!
-Seems, you found a construction site...
-Sorry, that we cannot provide you with this information at the moment.
-But we are very happy to help you, please just contact us!
+The grid container groups all entities that are able to form a full grid model.
+Two types of grid containers are available:
 
-.. _line_graphic_example:
+JointGridContainer
+   This one is able to hold a grid model spanning several voltage levels.
+   On instantiation, a sub grid topology graph is built.
+   This graph holds :code:`SubGridContainers` as vertices and transformer models as edges.
+   Thereby, you are able to discover the topology of galvanically separated sub grids and access those sub models
+   directly.
 
-Application example
-^^^^^^^^^^^^^^^^^^^
-.. code-block:: java
-  :linenos:
+and
 
-  NodeInput node = new NodeInput(
-      UUID.fromString("4ca90220-74c2-4369-9afa-a18bf068840d"),
-      "node_a",
-      profBroccoli,
-      defaultOperationTime,
-      Quantities.getQuantity(1d, PU),
-      true,
-      geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }") as Point,
-      GermanVoltageLevelUtils.EHV_380KV,
-      1
-    )
+SubGridContainer
+   This one is meant to hold all models, that form a galvanically separated sub grid.
+   In contrast to the :code:`JointGridContainer` it only covers one voltage level and therefore has an additional field
+   for the predominant voltage level apparent in the container.
+   Why predominant?
+   As of convention, the :code:`SubGridContainers` hold also reference to the transformers leading to higher sub grids
+   and their higher voltage coupling point.
 
-.. _line_graphic_caveats:
+A synoptic overview of both classes attributes is given here:
+
+.. _grid_container_attributes:
+
+Attributes, Units and Hints
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
++-------------------------+------+---------------------------------------------------------+
+| Attribute               | Unit | Hints                                                   |
++=========================+======+=========================================================+
+| gridName                | --   | Human readable identifier                               |
++-------------------------+------+---------------------------------------------------------+
+| rawGrid                 | --   | see below                                               |
++-------------------------+------+---------------------------------------------------------+
+| systemParticipants      | --   | see below                                               |
++-------------------------+------+---------------------------------------------------------+
+| graphics                | --   | see below                                               |
++-------------------------+------+---------------------------------------------------------+
+| subGridTopologyGraph    | --   | topology of sub grids - only :code:`JointGridContainer` |
++-------------------------+------+---------------------------------------------------------+
+| predominantVoltageLevel | --   | main voltage level - only :code:`SubGridContainer`      |
++-------------------------+------+---------------------------------------------------------+
+| subnet                  | --   | sub grid number - only :code:`SubGridContainer`         |
++-------------------------+------+---------------------------------------------------------+
+
+RawGridElements
+"""""""""""""""
+This sub container simply holds:
+
+   * :ref:`nodes<node_model>`
+   * :ref:`lines<line_model>`
+   * :ref:`switches<switch_model>`
+   * :ref:`two winding transformers<transformer2w_model>`
+   * :ref:`three winding transformers<transformer3w_model>`
+   * :ref:`measurement units<measurement_unit_model>`
+
+SystemParticipants
+""""""""""""""""""
+This sub container simply holds:
+
+   * :ref:`biomass plants<bm_model>`
+   * :ref:`combined heat and power plants<chp_model>`
+   * :ref:`electric vehicles<ev_model>`
+   * :ref:`electric vehicle charging stations<evcs_model>`
+   * :ref:`fixed feed in facilities<fixed_feed_in_model>`
+   * :ref:`heat pumps<hp_model>`
+   * :ref:`loads<load_model>`
+   * :ref:`photovoltaic power plants<pv_model>`
+   * :ref:`electrical energy storages<storage_model>`
+   * :ref:`wind energy converters<wec_model>`
+
+and the needed nested thermal models.
+
+Graphics
+""""""""
+This sub container simply holds:
+
+   * :ref:`schematic node graphics<node_graphic_model>`
+   * :ref:`schematic line graphics<line_graphic_model>`
+
+.. _grid_container_caveats:
 
 Caveats
 ^^^^^^^

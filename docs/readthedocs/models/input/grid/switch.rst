@@ -1,7 +1,7 @@
 .. _switch_model:
 
-switch
-----
+Switch
+------
 Whoops!
 Seems, you found a construction site...
 Sorry, that we cannot provide you with this information at the moment.

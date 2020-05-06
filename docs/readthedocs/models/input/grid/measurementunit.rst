@@ -2,39 +2,35 @@
 
 Measurement Unit
 ----------------
-Whoops!
-Seems, you found a construction site...
-Sorry, that we cannot provide you with this information at the moment.
-But we are very happy to help you, please just contact us!
+Representation of a measurement unit placed at a node.
+It can be used to mark restrictive access to simulation results to e.g. control algorithms.
+The measured information are indicated by boolean fields.
 
 .. _measurement_unit_attributes:
 
 Attributes, Units and Hints
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+-----------+------+-------+
-| Attribute | Unit | Hints |
-+-----------+------+-------+
-| uuid      | --   |       |
-+-----------+------+-------+
-
-.. _measurement_unit_example:
-
-Application example
-^^^^^^^^^^^^^^^^^^^
-.. code-block:: java
-  :linenos:
-
-  NodeInput node = new NodeInput(
-      UUID.fromString("4ca90220-74c2-4369-9afa-a18bf068840d"),
-      "node_a",
-      profBroccoli,
-      defaultOperationTime,
-      Quantities.getQuantity(1d, PU),
-      true,
-      geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }") as Point,
-      GermanVoltageLevelUtils.EHV_380KV,
-      1
-    )
++---------------+------+----------------------------------------------+
+| Attribute     | Unit | Hints                                        |
++===============+======+==============================================+
+| uuid          | --   |                                              |
++---------------+------+----------------------------------------------+
+| id            | --   | Human readable identifier                    |
++---------------+------+----------------------------------------------+
+| operator      | --   |                                              |
++---------------+------+----------------------------------------------+
+| operationTime | --   | Timely restriction of operation              |
++---------------+------+----------------------------------------------+
+| node          | --   |                                              |
++---------------+------+----------------------------------------------+
+| vMag          | --   | Voltage magnitude measurements are available |
++---------------+------+----------------------------------------------+
+| vAng          | --   | Voltage angle measurements are available     |
++---------------+------+----------------------------------------------+
+| p             | --   | Active power measurements are available      |
++---------------+------+----------------------------------------------+
+| q             | --   | Reactive power measurements are available    |
++---------------+------+----------------------------------------------+
 
 .. _measurement_caveats:
 
