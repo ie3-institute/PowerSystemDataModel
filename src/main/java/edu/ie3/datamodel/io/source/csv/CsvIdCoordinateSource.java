@@ -56,7 +56,7 @@ public class CsvIdCoordinateSource extends CsvDataSource implements CoordinateSo
 
   @Override
   public Collection<Point> getCoordinates(Integer... ids) {
-    return null; // todo Mia Krause
+    return Stream.of(ids).map(this::getCoordinate).collect(Collectors.toList());
   }
 
   public Collection<Point> getCoordinates(int... ids) {
