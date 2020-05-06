@@ -62,9 +62,7 @@ public class CommonVoltageLevel extends VoltageLevel {
         synonymousIds.stream().anyMatch(string -> string.equalsIgnoreCase(id.toLowerCase()));
     boolean voltageCovered = covers(vRated);
 
-    if (idCovered ^ voltageCovered) return false;
-    else
-      return idCovered; /* voltage covered is always true, otherwise the exception would have been thrown. */
+    return idCovered == voltageCovered;
   }
 
   @Override
