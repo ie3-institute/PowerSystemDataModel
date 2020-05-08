@@ -106,7 +106,7 @@ Entity Model
 
 Caveats
 ^^^^^^^
-Noting - at least not known.
+Nothing - at least not known.
 If you found something, please contact us!
 
 .. [Gremmel1999] Gremmel, H., Ed., Schaltanlagen. Cornelsen Verlag, 1999, Vol. 10, isbn: 3-464-48235-9.

@@ -2,60 +2,49 @@
 
 Photovoltaic Power Plant
 ------------------------
-Whoops!
-Seems, you found a construction site...
-Sorry, that we cannot provide you with this information at the moment.
-But we are very happy to help you, please just contact us!
+Detailed model of a photovoltaic power plant.
 
 .. _pv_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _pv_type_attributes:
-
-Type Model
-""""""""""
-
-+-----------+------+-------+
-| Attribute | Unit | Hints |
-+-----------+------+-------+
-| uuid      | --   |       |
-+-----------+------+-------+
-
-.. _pv_entity_attributes:
-
-Entity Model
-""""""""""""
-
-+-----------+------+-------+
-| Attribute | Unit | Hints |
-+-----------+------+-------+
-| uuid      | --   |       |
-+-----------+------+-------+
-
-.. _pv_example:
-
-Application example
-^^^^^^^^^^^^^^^^^^^
-.. code-block:: java
-  :linenos:
-
-  NodeInput node = new NodeInput(
-      UUID.fromString("4ca90220-74c2-4369-9afa-a18bf068840d"),
-      "node_a",
-      profBroccoli,
-      defaultOperationTime,
-      Quantities.getQuantity(1d, PU),
-      true,
-      geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }") as Point,
-      GermanVoltageLevelUtils.EHV_380KV,
-      1
-    )
++------------------+---------+--------------------------------------------------------------------------------------+
+| Attribute        | Unit    | Hints                                                                                |
++==================+=========+======================================================================================+
+| uuid             | --      |                                                                                      |
++------------------+---------+--------------------------------------------------------------------------------------+
+| id               | --      | Human readable identifier                                                            |
++------------------+---------+--------------------------------------------------------------------------------------+
+| operator         | --      |                                                                                      |
++------------------+---------+--------------------------------------------------------------------------------------+
+| operationTime    | --      | Timely restriction of operation                                                      |
++------------------+---------+--------------------------------------------------------------------------------------+
+| node             | --      |                                                                                      |
++------------------+---------+--------------------------------------------------------------------------------------+
+| qCharacteristics | --      | :ref:`Reactive power characteristic<participant_general_q_characteristic>` to follow |
++------------------+---------+--------------------------------------------------------------------------------------+
+| albedo           | --      | `Albedo <https://en.wikipedia.org/wiki/Albedo>`_ of the plant's surrounding          |
++------------------+---------+--------------------------------------------------------------------------------------+
+| azimuth          | °       | | Inclination in a compass direction                                                 |
+|                  |         | | South = 0°, West = 90°, East = -90°                                                |
++------------------+---------+--------------------------------------------------------------------------------------+
+| etaConv          | %       | Efficiency of the assets inverter                                                    |
++------------------+---------+--------------------------------------------------------------------------------------+
+| height           | °       | Tilted inclination from horizontal [0°, 90°]                                         |
++------------------+---------+--------------------------------------------------------------------------------------+
+| kG               | --      | Generator correction factor merging technical influences                             |
++------------------+---------+--------------------------------------------------------------------------------------+
+| kT               | --      | Temperature correction factor merging thermal influences                             |
++------------------+---------+--------------------------------------------------------------------------------------+
+| marketReaction   | --      | | Whether to adapt output based on (volatile)                                        |
+|                  |         | | market price or not                                                                |
++------------------+---------+--------------------------------------------------------------------------------------+
+| sRated           | kVA     | Rated apparent power                                                                 |
++------------------+---------+--------------------------------------------------------------------------------------+
+| cosphiRated      | --      | Rated power factor                                                                   |
++------------------+---------+--------------------------------------------------------------------------------------+
 
 .. _pv_caveats:
 
 Caveats
 ^^^^^^^
-Noting - at least not known.
+Nothing - at least not known.
 If you found something, please contact us!

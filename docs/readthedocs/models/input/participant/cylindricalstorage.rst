@@ -2,43 +2,39 @@
 
 Cylindrical Thermal Storage
 --------------------------------
-Whoops!
-Seems, you found a construction site...
-Sorry, that we cannot provide you with this information at the moment.
-But we are very happy to help you, please just contact us!
+Model of a cylindrical thermal storage using a fluent to store thermal energy.
 
 .. _cylindricalstorage_attributes:
 
 Attributes, Units and Hints
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+-----------+------+-------+
-| Attribute | Unit | Hints |
-+-----------+------+-------+
-| uuid      | --   |       |
-+-----------+------+-------+
-
-.. _cylindricalstorage_example:
-
-Application example
-^^^^^^^^^^^^^^^^^^^
-.. code-block:: java
-  :linenos:
-
-  NodeInput node = new NodeInput(
-      UUID.fromString("4ca90220-74c2-4369-9afa-a18bf068840d"),
-      "node_a",
-      profBroccoli,
-      defaultOperationTime,
-      Quantities.getQuantity(1d, PU),
-      true,
-      geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }") as Point,
-      GermanVoltageLevelUtils.EHV_380KV,
-      1
-    )
++---------------------+----------------------------+----------------------------------------------+
+| Attribute           | Unit                       | Hints                                        |
++=====================+============================+==============================================+
+| uuid                | --                         |                                              |
++---------------------+----------------------------+----------------------------------------------+
+| id                  | --                         | Human readable identifier                    |
++---------------------+----------------------------+----------------------------------------------+
+| operator            | --                         |                                              |
++---------------------+----------------------------+----------------------------------------------+
+| operationTime       | --                         | Timely restriction of operation              |
++---------------------+----------------------------+----------------------------------------------+
+| thermalBus          | --                         | Connection point to the thermal system       |
++---------------------+----------------------------+----------------------------------------------+
+| storageVolumeLvl    | m³                         | Overall available storage volume             |
++---------------------+----------------------------+----------------------------------------------+
+| storageVolumeLvlMin | m³                         | Minimum permissible storage volume           |
++---------------------+----------------------------+----------------------------------------------+
+| inletTemp           | °C                         | Temperature of the inlet                     |
++---------------------+----------------------------+----------------------------------------------+
+| returnTemp          | °C                         | Temperature of the outlet                    |
++---------------------+----------------------------+----------------------------------------------+
+| c                   | kWh / (K :math:`\cdot` m³) | Specific heat capacity of the storage medium |
++---------------------+----------------------------+----------------------------------------------+
 
 .. _cylindricalstorage_caveats:
 
 Caveats
 ^^^^^^^
-Noting - at least not known.
+Nothing - at least not known.
 If you found something, please contact us!

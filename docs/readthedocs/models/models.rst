@@ -67,6 +67,7 @@ Participant Related Models
 .. toctree::
    :maxdepth: 1
 
+   input/participant/general
    input/participant/bm
    input/participant/chp
    input/participant/ev
