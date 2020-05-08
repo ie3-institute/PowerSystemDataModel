@@ -1,5 +1,3 @@
-.. _grid_container_model:
-
 Grid Container
 --------------
 The grid container groups all entities that are able to form a full grid model.
@@ -23,8 +21,6 @@ SubGridContainer
    and their higher voltage coupling point.
 
 A synoptic overview of both classes attributes is given here:
-
-.. _grid_container_attributes:
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -80,8 +76,6 @@ This sub container simply holds:
 
    * :ref:`schematic node graphics<node_graphic_model>`
    * :ref:`schematic line graphics<line_graphic_model>`
-
-.. _grid_container_caveats:
 
 Caveats
 ^^^^^^^

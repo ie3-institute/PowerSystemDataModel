@@ -1,11 +1,7 @@
-.. _operator_model:
-
 Operator
 --------
 This is a simple identifier object, representing a natural or legal person that is the owner or responsible person
 having control over one or more physical entitites.
-
-.. _operator_attributes:
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -28,8 +24,6 @@ Application example
 	  UUID.fromString("f15105c4-a2de-4ab8-a621-4bc98e372d92"),
 	  "Univ.-Prof. Dr. rer. hort. Klaus-Dieter Brokkoli"
 	)
-
-.. _operator_caveats:
 
 Caveats
 ^^^^^^^

@@ -5,8 +5,6 @@ Thermal House Model
 Model for the thermal behaviour of a building.
 This reflects a simple shoe box with transmission losses
 
-.. _thermal_house_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +---------------+---------+---------------------------------+
@@ -24,8 +22,6 @@ Attributes, Units and Remarks
 +---------------+---------+---------------------------------+
 | ethCapa       | kWh / K | Thermal capacity                |
 +---------------+---------+---------------------------------+
-
-.. _thermal_house_caveats:
 
 Caveats
 ^^^^^^^

@@ -4,8 +4,6 @@ Schematic Line Graphic
 ----------------------
 Schematic drawing information for a line model.
 
-.. _line_graphic_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +--------------+------+-----------------------------------------------------------+
@@ -20,8 +18,6 @@ Attributes, Units and Remarks
 +--------------+------+-----------------------------------------------------------+
 | line         | --   | Reference to the physical line model                      |
 +--------------+------+-----------------------------------------------------------+
-
-.. _line_graphic_caveats:
 
 Caveats
 ^^^^^^^

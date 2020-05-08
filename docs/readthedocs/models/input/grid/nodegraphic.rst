@@ -4,8 +4,6 @@ Schematic Node Graphic
 ----------------------
 Schematic drawing information for a line model.
 
-.. _node_graphic_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +--------------+------+----------------------------------------------------------------------+
@@ -22,8 +20,6 @@ Attributes, Units and Remarks
 +--------------+------+----------------------------------------------------------------------+
 | node         | --   | Reference to the physical node model                                 |
 +--------------+------+----------------------------------------------------------------------+
-
-.. _node_graphic_caveats:
 
 Caveats
 ^^^^^^^

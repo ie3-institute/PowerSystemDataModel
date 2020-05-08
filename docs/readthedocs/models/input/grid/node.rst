@@ -4,8 +4,6 @@ Node
 ----
 Representation of an electrical node, with no further distinction into bus bar, auxiliary node or others.
 
-.. _node_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +---------------+------+--------------------------------------------------------------------+
@@ -30,8 +28,6 @@ Attributes, Units and Remarks
 +---------------+------+--------------------------------------------------------------------+
 | subnet        | --   | Sub grid number                                                    |
 +---------------+------+--------------------------------------------------------------------+
-
-.. _node_caveats:
 
 Caveats
 ^^^^^^^

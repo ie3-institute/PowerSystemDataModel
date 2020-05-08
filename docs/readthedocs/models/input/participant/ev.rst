@@ -4,12 +4,8 @@ Electric Vehicle
 -----------------------------
 Model of an electric vehicle, that is occasionally connected to the grid via an :ref:`electric vehicle charging system<evcs_model>`.
 
-.. _ev_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _ev_type_attributes:
 
 Type Model
 """"""""""
@@ -34,8 +30,6 @@ Type Model
 | cosphiRated | --       | Rated power factor                                      |
 +-------------+----------+---------------------------------------------------------+
 
-.. _ev_entity_attributes:
-
 Entity Model
 """"""""""""
 
@@ -54,8 +48,6 @@ Entity Model
 +------------------+---------+---------------------------------+
 | type             | --      |                                 |
 +------------------+---------+---------------------------------+
-
-.. _ev_caveats:
 
 Caveats
 ^^^^^^^

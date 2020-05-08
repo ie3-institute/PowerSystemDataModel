@@ -7,8 +7,6 @@ Seems, you found a construction site...
 Sorry, that we cannot provide you with this information at the moment.
 But we are very happy to help you, please just contact us!
 
-.. _switch_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +-----------+------+-------+
@@ -35,8 +33,6 @@ Application example
       GermanVoltageLevelUtils.EHV_380KV,
       1
     )
-
-.. _switch_caveats:
 
 Caveats
 ^^^^^^^

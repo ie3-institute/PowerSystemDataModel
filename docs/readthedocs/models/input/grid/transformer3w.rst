@@ -14,12 +14,8 @@ central phase-to-ground admittance, cf. following picture.
 
    "Star like" T-equivalent circuit diagram of a three winding transformer
 
-.. _transformer3w_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _transformer3w_type_attributes:
 
 Type Model
 """"""""""
@@ -71,8 +67,6 @@ All impedances and admittances are given with respect to the higher voltage side
 | tapMax    |      | Maximum tap position                                    |
 +-----------+------+---------------------------------------------------------+
 
-.. _transformer3w_entity_attributes:
-
 Entity Model
 """"""""""""
 
@@ -101,8 +95,6 @@ Entity Model
 +-----------------+------+--------------------------------------------------------+
 | autoTap         | --   | true, if there is a tap regulation apparent and active |
 +-----------------+------+--------------------------------------------------------+
-
-.. _transformer3w_caveats:
 
 Caveats
 ^^^^^^^

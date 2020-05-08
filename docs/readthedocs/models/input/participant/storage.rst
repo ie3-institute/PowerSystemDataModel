@@ -7,12 +7,8 @@ Seems, you found a construction site...
 Sorry, that we cannot provide you with this information at the moment.
 But we are very happy to help you, please just contact us!
 
-.. _storage_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _storage_type_attributes:
 
 Type Model
 """"""""""
@@ -50,8 +46,6 @@ Type Model
 | lifeCycle           | --      | Permissible amount of full cycles                       |
 +---------------------+---------+---------------------------------------------------------+
 
-.. _storage_entity_attributes:
-
 Entity Model
 """"""""""""
 
@@ -76,8 +70,6 @@ Entity Model
 |                  |         | | Eligible input: *"market"*, *"grid"*, *"self"*                                     |
 +------------------+---------+--------------------------------------------------------------------------------------+
 
-
-.. _storage_caveats:
 
 Caveats
 ^^^^^^^

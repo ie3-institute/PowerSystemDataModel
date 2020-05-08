@@ -4,12 +4,8 @@ Combined Heat and Power Plant
 -----------------------------
 Combined heat and power plant.
 
-.. _chp_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _chp_type_attributes:
 
 Type Model
 """"""""""
@@ -39,8 +35,6 @@ Type Model
 | pOwn        | kW      | Needed self-consumption                                 |
 +-------------+---------+---------------------------------------------------------+
 
-.. _chp_entity_attributes:
-
 Entity Model
 """"""""""""
 
@@ -68,8 +62,6 @@ Entity Model
 | marketReaction   | --      | | Whether to adapt output based on (volatile)                                        |
 |                  |         | | market price or not                                                                |
 +------------------+---------+--------------------------------------------------------------------------------------+
-
-.. _chp_caveats:
 
 Caveats
 ^^^^^^^

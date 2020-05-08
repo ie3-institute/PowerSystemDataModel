@@ -5,12 +5,8 @@ Two Winding Transformer
 Model of a two winding transformer.
 It is assumed, that node A is the node with higher voltage.
 
-.. _transformer2w_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _transformer2w_type_attributes:
 
 Type Model
 """"""""""
@@ -51,8 +47,6 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
 | tapMax    |      | Maximum tap position                                    |
 +-----------+------+---------------------------------------------------------+
 
-.. _transformer2w_entity_attributes:
-
 Entity Model
 """"""""""""
 
@@ -79,8 +73,6 @@ Entity Model
 +-----------------+------+--------------------------------------------------------+
 | autoTap         | --   | true, if there is a tap regulation apparent and active |
 +-----------------+------+--------------------------------------------------------+
-
-.. _transformer2w_caveats:
 
 Caveats
 ^^^^^^^

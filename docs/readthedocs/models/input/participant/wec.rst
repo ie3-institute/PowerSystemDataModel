@@ -7,12 +7,8 @@ Seems, you found a construction site...
 Sorry, that we cannot provide you with this information at the moment.
 But we are very happy to help you, please just contact us!
 
-.. _wec_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _wec_type_attributes:
 
 Type Model
 """"""""""
@@ -42,8 +38,6 @@ Type Model
 | hubHeight        | m       | Height of the rotor hub                                              |
 +------------------+---------+----------------------------------------------------------------------+
 
-.. _wec_entity_attributes:
-
 Entity Model
 """"""""""""
 
@@ -67,8 +61,6 @@ Entity Model
 | marketReaction   | --      | | Whether to adapt output based on (volatile)                                        |
 |                  |         | | market price or not                                                                |
 +------------------+---------+--------------------------------------------------------------------------------------+
-
-.. _wec_caveats:
 
 Caveats
 ^^^^^^^

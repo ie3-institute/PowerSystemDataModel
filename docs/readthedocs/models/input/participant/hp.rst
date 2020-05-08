@@ -4,12 +4,8 @@ Heat Pump
 ---------
 Model of a heat pump.
 
-.. _hp_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _hp_type_attributes:
 
 Type Model
 """"""""""
@@ -32,8 +28,6 @@ Type Model
 +-------------+---------+---------------------------------------------------------+
 | pThermal    | kW      | Rated thermal power (at rated electrical power)         |
 +-------------+---------+---------------------------------------------------------+
-
-.. _hp_entity_attributes:
 
 Entity Model
 """"""""""""
@@ -58,8 +52,6 @@ Entity Model
 | type             | --      |                                                                                      |
 +------------------+---------+--------------------------------------------------------------------------------------+
 
-
-.. _hp_caveats:
 
 Caveats
 ^^^^^^^

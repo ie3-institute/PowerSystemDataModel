@@ -6,8 +6,6 @@ Representation of a measurement unit placed at a node.
 It can be used to mark restrictive access to simulation results to e.g. control algorithms.
 The measured information are indicated by boolean fields.
 
-.. _measurement_unit_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +---------------+------+----------------------------------------------+
@@ -31,8 +29,6 @@ Attributes, Units and Remarks
 +---------------+------+----------------------------------------------+
 | q             | --   | Reactive power measurements are available    |
 +---------------+------+----------------------------------------------+
-
-.. _measurement_caveats:
 
 Caveats
 ^^^^^^^

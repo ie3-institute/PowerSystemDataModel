@@ -5,8 +5,6 @@ Fixed Feed In Facility
 Model of a facility, that provides constant power feed in, as no further information about the actual behaviour of the
 model can be derived.
 
-.. _fixed_feed_in_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -29,8 +27,6 @@ Attributes, Units and Remarks
 +------------------+---------+--------------------------------------------------------------------------------------+
 | cosphiRated      | --      | Rated power factor                                                                   |
 +------------------+---------+--------------------------------------------------------------------------------------+
-
-.. _fixed_feed_in_caveats:
 
 Caveats
 ^^^^^^^

@@ -4,12 +4,8 @@ Line
 ----
 Representation of an AC line.
 
-.. _line_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _line_type_attributes:
 
 Type Model
 """"""""""
@@ -33,8 +29,6 @@ Type Model
 +-----------+---------+---------------------------------------------+
 | vRated    | kV      | Rated voltage                               |
 +-----------+---------+---------------------------------------------+
-
-.. _line_entity_attributes:
 
 Entity Model
 """"""""""""
@@ -63,8 +57,6 @@ Entity Model
 | geoPosition     | --   | | Line string of geographical locations describing the |
 |                 |      | | position of the line                                 |
 +-----------------+------+--------------------------------------------------------+
-
-.. _line_caveats:
 
 Caveats
 ^^^^^^^

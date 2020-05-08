@@ -4,8 +4,6 @@ Thermal Bus
 -----------
 A coupling point to thermal system - equivalent to :ref:`electrical node <node_model>`.
 
-.. _thermal_bus_attributes:
-
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +---------------+------+----------------------------------------+
@@ -21,8 +19,6 @@ Attributes, Units and Remarks
 +---------------+------+----------------------------------------+
 | bus           | --   | Connection point to the thermal system |
 +---------------+------+----------------------------------------+
-
-.. _thermal_bus_caveats:
 
 Caveats
 ^^^^^^^
