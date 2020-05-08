@@ -1,10 +1,8 @@
-.. _transformer_model:
+.. _transformer_result:
 
 Transformer
 -----------
 Representation of transformers.
-
-.. _transformer_attributes:
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -26,8 +24,6 @@ Attributes, Units and Remarks
 +---------------+----------------+----------------------------------------------------------+
 | tapPos        | --             |                                                          |
 +---------------+----------------+----------------------------------------------------------+
-
-.. _transformer_caveats:
 
 Caveats
 ^^^^^^^

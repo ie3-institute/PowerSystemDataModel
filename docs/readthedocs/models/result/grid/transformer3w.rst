@@ -1,10 +1,8 @@
-.. _transformer3W_model:
+.. _transformer3W_result:
 
-Transformer3W
--------------
+Three Winding Transformer
+-------------------------
 Representation of three winding transformers.
-
-.. _transformer3W_attributes:
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -30,8 +28,6 @@ Attributes, Units and Remarks
 +---------------+----------------+----------------------------------------------------------+
 | tapPos        | --             |                                                          |
 +---------------+----------------+----------------------------------------------------------+
-
-.. _transformer3W_caveats:
 
 Caveats
 ^^^^^^^

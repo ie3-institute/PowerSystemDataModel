@@ -87,9 +87,6 @@ Result
 ******
 Model classes you can use to describe the outcome of a power system simulation.
 
-.. toctree::
-   :maxdepth: 1
-
 Grid Related Models
 ===================
 .. toctree::

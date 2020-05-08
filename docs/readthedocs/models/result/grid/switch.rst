@@ -1,10 +1,8 @@
-.. _switch_model:
+.. _switch_result:
 
 Switch
 ------
 Representation of electrical switches.
-
-.. _switch_attributes:
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -26,8 +24,6 @@ Attributes, Units and Remarks
 +---------------+----------------+----------------------------------------------------------+
 | closed        | boolean        |   status of the switching device                         |
 +---------------+----------------+----------------------------------------------------------+
-
-.. _switch_caveats:
 
 Caveats
 ^^^^^^^

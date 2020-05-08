@@ -1,10 +1,8 @@
-.. _connector_model:
+.. _connector_result:
 
 Connector
 ---------
 Representation of all kinds of connectors.
-
-.. _connector_attributes:
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -24,8 +22,6 @@ Attributes, Units and Remarks
 +---------------+----------------+----------------------------------------------------------+
 | iBAng         | degree         |                                                          |
 +---------------+----------------+----------------------------------------------------------+
-
-.. _connector_caveats:
 
 Caveats
 ^^^^^^^
