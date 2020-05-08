@@ -119,6 +119,7 @@ Participant Related Models
    result/participant/thermalunit
    result/participant/thermalhouse
    result/participant/cylindricalstorage
+   result/participant/systemparticipant
 
 ***********
 Time Series
