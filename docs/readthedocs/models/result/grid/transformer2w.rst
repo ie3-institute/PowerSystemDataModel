@@ -1,10 +1,8 @@
-.. _transformer2W_model:
+.. _transformer2W_result:
 
-Transformer2W
--------------
+Two Winding Transformer
+-----------------------
 Representation of two winding transformers.
-
-.. _transformer2W_attributes:
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -26,8 +24,6 @@ Attributes, Units and Remarks
 +---------------+----------------+----------------------------------------------------------+
 | tapPos        | --             |                                                          |
 +---------------+----------------+----------------------------------------------------------+
-
-.. _transformer2W_caveats:
 
 Caveats
 ^^^^^^^

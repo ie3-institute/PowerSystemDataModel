@@ -1,10 +1,8 @@
-.. _line_model:
+.. _line_result:
 
 Line
 ----
 Representation of an AC line.
-
-.. _line_attributes:
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -24,8 +22,6 @@ Attributes, Units and Remarks
 +---------------+----------------+----------------------------------------------------------+
 | iBAng         | degree         |                                                          |
 +---------------+----------------+----------------------------------------------------------+
-
-.. _line_caveats:
 
 Caveats
 ^^^^^^^

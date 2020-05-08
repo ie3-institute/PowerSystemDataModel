@@ -1,10 +1,8 @@
-.. _node_model:
+.. _node_result:
 
 Node
 ----
 Representation of an electrical node, with no further distinction into bus bar, auxiliary node or others.
-
-.. _node_attributes:
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -20,8 +18,6 @@ Attributes, Units and Remarks
 +---------------+----------------+----------------------------------------------------------+
 | vAng          | degree         |                                                          |
 +---------------+----------------+----------------------------------------------------------+
-
-.. _node_caveats:
 
 Caveats
 ^^^^^^^
