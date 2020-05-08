@@ -235,3 +235,9 @@ src/test/resources/uuids.txt
 # Don't commit the virtual environment of python
 **/venv
 docs/readthedocs/_build
+
+# (La)TeX stuff (source files are allowed)
+**/*.aux
+**/*.pdf
+**/*.synctex.gz
+**/*.synctex(busy)
