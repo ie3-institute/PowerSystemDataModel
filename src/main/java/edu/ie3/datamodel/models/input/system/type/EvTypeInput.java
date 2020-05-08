@@ -42,8 +42,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Power> sRated,
       double cosphiRated) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);
-    this.eStorage = eStorage;
-    this.eCons = eCons;
+    this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
+    this.eCons = eCons.to(StandardUnits.ENERGY_PER_DISTANCE);
   }
 
   public ComparableQuantity<Energy> geteStorage() {

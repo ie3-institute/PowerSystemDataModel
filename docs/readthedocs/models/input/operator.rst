@@ -1,16 +1,12 @@
-.. _operator_model:
-
 Operator
 --------
 This is a simple identifier object, representing a natural or legal person that is the owner or responsible person
 having control over one or more physical entitites.
 
-.. _operator_attributes:
-
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +-----------+------+---------------------------+
-| Attribute | Unit | Hints                     |
+| Attribute | Unit | Remarks                   |
 +===========+======+===========================+
 | uuid      | --   |                           |
 +-----------+------+---------------------------+
@@ -29,9 +25,7 @@ Application example
 	  "Univ.-Prof. Dr. rer. hort. Klaus-Dieter Brokkoli"
 	)
 
-.. _operator_caveats:
-
 Caveats
 ^^^^^^^
-Noting - at least not known.
+Nothing - at least not known.
 If you found something, please contact us!

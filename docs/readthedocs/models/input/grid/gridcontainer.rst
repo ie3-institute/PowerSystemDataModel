@@ -1,5 +1,3 @@
-.. _grid_container_model:
-
 Grid Container
 --------------
 The grid container groups all entities that are able to form a full grid model.
@@ -24,12 +22,10 @@ SubGridContainer
 
 A synoptic overview of both classes attributes is given here:
 
-.. _grid_container_attributes:
-
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +-------------------------+------+---------------------------------------------------------+
-| Attribute               | Unit | Hints                                                   |
+| Attribute               | Unit | Remarks                                                 |
 +=========================+======+=========================================================+
 | gridName                | --   | Human readable identifier                               |
 +-------------------------+------+---------------------------------------------------------+
@@ -81,9 +77,7 @@ This sub container simply holds:
    * :ref:`schematic node graphics<node_graphic_model>`
    * :ref:`schematic line graphics<line_graphic_model>`
 
-.. _grid_container_caveats:
-
 Caveats
 ^^^^^^^
-Noting - at least not known.
+Nothing - at least not known.
 If you found something, please contact us!

@@ -4,12 +4,10 @@ Schematic Line Graphic
 ----------------------
 Schematic drawing information for a line model.
 
-.. _line_graphic_attributes:
-
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +--------------+------+-----------------------------------------------------------+
-| Attribute    | Unit | Hints                                                     |
+| Attribute    | Unit | Remarks                                                   |
 +==============+======+===========================================================+
 | uuid         | --   |                                                           |
 +--------------+------+-----------------------------------------------------------+
@@ -21,9 +19,7 @@ Attributes, Units and Hints
 | line         | --   | Reference to the physical line model                      |
 +--------------+------+-----------------------------------------------------------+
 
-.. _line_graphic_caveats:
-
 Caveats
 ^^^^^^^
-Noting - at least not known.
+Nothing - at least not known.
 If you found something, please contact us!

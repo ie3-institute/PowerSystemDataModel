@@ -7,55 +7,71 @@ Seems, you found a construction site...
 Sorry, that we cannot provide you with this information at the moment.
 But we are very happy to help you, please just contact us!
 
-.. _storage_attributes:
-
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _storage_type_attributes:
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Type Model
 """"""""""
 
-+-----------+------+-------+
-| Attribute | Unit | Hints |
-+-----------+------+-------+
-| uuid      | --   |       |
-+-----------+------+-------+
-
-.. _storage_entity_attributes:
++---------------------+---------+---------------------------------------------------------+
+| Attribute           | Unit    | Remarks                                                 |
++=====================+=========+=========================================================+
+| uuid                | --      |                                                         |
++---------------------+---------+---------------------------------------------------------+
+| id                  | --      | Human readable identifier                               |
++---------------------+---------+---------------------------------------------------------+
+| capex               | €       | Capital expenditure to purchase one entity of this type |
++---------------------+---------+---------------------------------------------------------+
+| opex                | € / MWh | | Operational expenditure to operate one entity of      |
+|                     |         | | this type                                             |
++---------------------+---------+---------------------------------------------------------+
+| eStorage            | kWh     | Battery capacity                                        |
++---------------------+---------+---------------------------------------------------------+
+| sRated              | kVA     | Rated apparent power                                    |
++---------------------+---------+---------------------------------------------------------+
+| cosphiRated         | --      | Rated power factor                                      |
++---------------------+---------+---------------------------------------------------------+
+| pMax                | kW      | | Maximum permissible active power                      |
+|                     |         | | infeed or consumption                                 |
++---------------------+---------+---------------------------------------------------------+
+| activePowerGradient | % / h   | Maximum permissible rate of change of power             |
++---------------------+---------+---------------------------------------------------------+
+| eta                 | %       | Efficiency of the electrical inverter                   |
++---------------------+---------+---------------------------------------------------------+
+| dod                 | %       | | Maximum permissible depth of discharge. 80 % dod      |
+|                     |         | | is equivalent to a state of charge of 20 %.           |
++---------------------+---------+---------------------------------------------------------+
+| lifeTime            | h       | Permissible hours of full use                           |
++---------------------+---------+---------------------------------------------------------+
+| lifeCycle           | --      | Permissible amount of full cycles                       |
++---------------------+---------+---------------------------------------------------------+
 
 Entity Model
 """"""""""""
 
-+-----------+------+-------+
-| Attribute | Unit | Hints |
-+-----------+------+-------+
-| uuid      | --   |       |
-+-----------+------+-------+
++------------------+---------+--------------------------------------------------------------------------------------+
+| Attribute        | Unit    | Remarks                                                                              |
++==================+=========+======================================================================================+
+| uuid             | --      |                                                                                      |
++------------------+---------+--------------------------------------------------------------------------------------+
+| id               | --      | Human readable identifier                                                            |
++------------------+---------+--------------------------------------------------------------------------------------+
+| operator         | --      |                                                                                      |
++------------------+---------+--------------------------------------------------------------------------------------+
+| operationTime    | --      | Timely restriction of operation                                                      |
++------------------+---------+--------------------------------------------------------------------------------------+
+| node             | --      |                                                                                      |
++------------------+---------+--------------------------------------------------------------------------------------+
+| qCharacteristics | --      | :ref:`Reactive power characteristic<participant_general_q_characteristic>` to follow |
++------------------+---------+--------------------------------------------------------------------------------------+
+| type             | --      |                                                                                      |
++------------------+---------+--------------------------------------------------------------------------------------+
+| behaviour        | --      | | Foreseen operation strategy of the storage.                                        |
+|                  |         | | Eligible input: *"market"*, *"grid"*, *"self"*                                     |
++------------------+---------+--------------------------------------------------------------------------------------+
 
-.. _storage_example:
-
-Application example
-^^^^^^^^^^^^^^^^^^^
-.. code-block:: java
-  :linenos:
-
-  NodeInput node = new NodeInput(
-      UUID.fromString("4ca90220-74c2-4369-9afa-a18bf068840d"),
-      "node_a",
-      profBroccoli,
-      defaultOperationTime,
-      Quantities.getQuantity(1d, PU),
-      true,
-      geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }") as Point,
-      GermanVoltageLevelUtils.EHV_380KV,
-      1
-    )
-
-.. _storage_caveats:
 
 Caveats
 ^^^^^^^
-Noting - at least not known.
-If you found something, please contact us!
+The field :code:`behaviour` will be removed in version 1.x, as this is an information, that is only important to a
+smaller sub set of simulation applications.

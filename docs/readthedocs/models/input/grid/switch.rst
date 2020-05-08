@@ -7,10 +7,8 @@ Seems, you found a construction site...
 Sorry, that we cannot provide you with this information at the moment.
 But we are very happy to help you, please just contact us!
 
-.. _switch_attributes:
-
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +-----------+------+-------+
 | Attribute | Unit | Hints |
 +-----------+------+-------+
@@ -36,9 +34,7 @@ Application example
       1
     )
 
-.. _switch_caveats:
-
 Caveats
 ^^^^^^^
-Noting - at least not known.
+Nothing - at least not known.
 If you found something, please contact us!
