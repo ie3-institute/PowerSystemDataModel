@@ -1,6 +1,6 @@
 .. _transformer3W_model:
 
-transformer3W
+Transformer3W
 -------------
 Representation of three winding transformers.
 

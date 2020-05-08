@@ -1,6 +1,6 @@
 .. _transformer_model:
 
-transformer
+Transformer
 -----------
 Representation of transformers.
 

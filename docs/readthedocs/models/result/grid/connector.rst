@@ -1,6 +1,6 @@
 .. _connector_model:
 
-connector
+Connector
 ---------
 Representation of all kinds of connectors.
 

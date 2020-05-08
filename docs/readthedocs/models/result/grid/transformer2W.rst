@@ -1,6 +1,6 @@
 .. _transformer2W_model:
 
-transformer2W
+Transformer2W
 -------------
 Representation of two winding transformers.
 
