@@ -4,18 +4,14 @@ Line
 ----
 Representation of an AC line.
 
-.. _line_attributes:
-
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _line_type_attributes:
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Type Model
 """"""""""
 
 +-----------+---------+---------------------------------------------+
-| Attribute | Unit    | Hints                                       |
+| Attribute | Unit    | Remarks                                     |
 +===========+=========+=============================================+
 | uuid      | --      |                                             |
 +-----------+---------+---------------------------------------------+
@@ -34,13 +30,11 @@ Type Model
 | vRated    | kV      | Rated voltage                               |
 +-----------+---------+---------------------------------------------+
 
-.. _line_entity_attributes:
-
 Entity Model
 """"""""""""
 
 +-----------------+------+--------------------------------------------------------+
-| Attribute       | Unit | Hints                                                  |
+| Attribute       | Unit | Remarks                                                |
 +=================+======+========================================================+
 | uuid            | --   |                                                        |
 +-----------------+------+--------------------------------------------------------+
@@ -64,9 +58,7 @@ Entity Model
 |                 |      | | position of the line                                 |
 +-----------------+------+--------------------------------------------------------+
 
-.. _line_caveats:
-
 Caveats
 ^^^^^^^
-Noting - at least not known.
+Nothing - at least not known.
 If you found something, please contact us!

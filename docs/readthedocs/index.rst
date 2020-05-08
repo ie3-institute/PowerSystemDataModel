@@ -10,7 +10,18 @@ Effective handling of geographic information related to power grids is also poss
    :maxdepth: 2
    :caption: Contents:
 
+   gettingstarted
    models/models
+
+Contact the (Main) Maintainers
+------------------------------
+If you feel, something this missing, wrong or misleading, please contact one of our main contributors:
+
+   * `@sensarmad <https://github.com/sensarmad>`_
+   * `@johanneshiry <https://github.com/johanneshiry>`_
+   * `@ckittl <https://github.com/ckittl>`_
+
+Hat tip to all other contributors!
 
 Indices and tables
 ==================

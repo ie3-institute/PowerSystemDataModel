@@ -2,60 +2,54 @@
 
 Electric Vehicle
 -----------------------------
-Whoops!
-Seems, you found a construction site...
-Sorry, that we cannot provide you with this information at the moment.
-But we are very happy to help you, please just contact us!
+Model of an electric vehicle, that is occasionally connected to the grid via an :ref:`electric vehicle charging system<evcs_model>`.
 
-.. _ev_attributes:
-
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _ev_type_attributes:
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Type Model
 """"""""""
-
-+-----------+------+-------+
-| Attribute | Unit | Hints |
-+-----------+------+-------+
-| uuid      | --   |       |
-+-----------+------+-------+
-
-.. _ev_entity_attributes:
++-------------+----------+---------------------------------------------------------+
+| Attribute   | Unit     | Remarks                                                 |
++=============+==========+=========================================================+
+| uuid        | --       |                                                         |
++-------------+----------+---------------------------------------------------------+
+| id          | --       | Human readable identifier                               |
++-------------+----------+---------------------------------------------------------+
+| capex       | €        | Capital expenditure to purchase one entity of this type |
++-------------+----------+---------------------------------------------------------+
+| opex        | € / MWh  | | Operational expenditure to operate one entity of      |
+|             |          | | this type                                             |
++-------------+----------+---------------------------------------------------------+
+| eStorage    | kWh      | Available battery capacity                              |
++-------------+----------+---------------------------------------------------------+
+| eCons       | kWh / km | Energy consumption per driven kilometre                 |
++-------------+----------+---------------------------------------------------------+
+| sRated      | kVA      | Rated apparent power                                    |
++-------------+----------+---------------------------------------------------------+
+| cosphiRated | --       | Rated power factor                                      |
++-------------+----------+---------------------------------------------------------+
 
 Entity Model
 """"""""""""
 
-+-----------+------+-------+
-| Attribute | Unit | Hints |
-+-----------+------+-------+
-| uuid      | --   |       |
-+-----------+------+-------+
-
-.. _ev_example:
-
-Application example
-^^^^^^^^^^^^^^^^^^^
-.. code-block:: java
-  :linenos:
-
-  NodeInput node = new NodeInput(
-      UUID.fromString("4ca90220-74c2-4369-9afa-a18bf068840d"),
-      "node_a",
-      profBroccoli,
-      defaultOperationTime,
-      Quantities.getQuantity(1d, PU),
-      true,
-      geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }") as Point,
-      GermanVoltageLevelUtils.EHV_380KV,
-      1
-    )
-
-.. _ev_caveats:
++------------------+---------+---------------------------------+
+| Attribute        | Unit    | Remarks                         |
++==================+=========+=================================+
+| uuid             | --      |                                 |
++------------------+---------+---------------------------------+
+| id               | --      | Human readable identifier       |
++------------------+---------+---------------------------------+
+| operator         | --      |                                 |
++------------------+---------+---------------------------------+
+| operationTime    | --      | Timely restriction of operation |
++------------------+---------+---------------------------------+
+| node             | --      |                                 |
++------------------+---------+---------------------------------+
+| type             | --      |                                 |
++------------------+---------+---------------------------------+
 
 Caveats
 ^^^^^^^
-Noting - at least not known.
-If you found something, please contact us!
+The :code:`node` attribute only marks the vehicles home connection point.
+The actual connection to the grid is always given through :code:`EvcsInput`'s relation.

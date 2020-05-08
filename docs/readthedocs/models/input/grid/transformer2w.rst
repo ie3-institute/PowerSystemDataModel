@@ -5,12 +5,8 @@ Two Winding Transformer
 Model of a two winding transformer.
 It is assumed, that node A is the node with higher voltage.
 
-.. _transformer2w_attributes:
-
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _transformer2w_type_attributes:
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Type Model
 """"""""""
@@ -18,7 +14,7 @@ All impedances and admittances are given with respect to the higher voltage side
 As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit representations.
 
 +-----------+------+---------------------------------------------------------+
-| Attribute | Unit | Hints                                                   |
+| Attribute | Unit | Remarks                                                 |
 +===========+======+=========================================================+
 | uuid      |      |                                                         |
 +-----------+------+---------------------------------------------------------+
@@ -51,13 +47,11 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
 | tapMax    |      | Maximum tap position                                    |
 +-----------+------+---------------------------------------------------------+
 
-.. _transformer2w_entity_attributes:
-
 Entity Model
 """"""""""""
 
 +-----------------+------+--------------------------------------------------------+
-| Attribute       | Unit | Hints                                                  |
+| Attribute       | Unit | Remarks                                                |
 +=================+======+========================================================+
 | uuid            | --   |                                                        |
 +-----------------+------+--------------------------------------------------------+
@@ -80,9 +74,7 @@ Entity Model
 | autoTap         | --   | true, if there is a tap regulation apparent and active |
 +-----------------+------+--------------------------------------------------------+
 
-.. _transformer2w_caveats:
-
 Caveats
 ^^^^^^^
-Noting - at least not known.
+Nothing - at least not known.
 If you found something, please contact us!

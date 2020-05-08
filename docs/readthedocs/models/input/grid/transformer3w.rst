@@ -14,19 +14,15 @@ central phase-to-ground admittance, cf. following picture.
 
    "Star like" T-equivalent circuit diagram of a three winding transformer
 
-.. _transformer3w_attributes:
-
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. _transformer3w_type_attributes:
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Type Model
 """"""""""
 All impedances and admittances are given with respect to the higher voltage side.
 
 +-----------+------+---------------------------------------------------------+
-| Attribute | Unit | Hints                                                   |
+| Attribute | Unit | Remarks                                                 |
 +===========+======+=========================================================+
 | uuid      |      |                                                         |
 +-----------+------+---------------------------------------------------------+
@@ -71,13 +67,11 @@ All impedances and admittances are given with respect to the higher voltage side
 | tapMax    |      | Maximum tap position                                    |
 +-----------+------+---------------------------------------------------------+
 
-.. _transformer3w_entity_attributes:
-
 Entity Model
 """"""""""""
 
 +-----------------+------+--------------------------------------------------------+
-| Attribute       | Unit | Hints                                                  |
+| Attribute       | Unit | Remarks                                                |
 +=================+======+========================================================+
 | uuid            | --   |                                                        |
 +-----------------+------+--------------------------------------------------------+
@@ -102,11 +96,9 @@ Entity Model
 | autoTap         | --   | true, if there is a tap regulation apparent and active |
 +-----------------+------+--------------------------------------------------------+
 
-.. _transformer3w_caveats:
-
 Caveats
 ^^^^^^^
-Noting - at least not known.
+Nothing - at least not known.
 If you found something, please contact us!
 
 .. [Gremmel1999] Gremmel, H., Ed., Schaltanlagen. Cornelsen Verlag, 1999, Vol. 10, isbn: 3-464-48235-9.

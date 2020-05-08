@@ -6,12 +6,10 @@ Representation of a measurement unit placed at a node.
 It can be used to mark restrictive access to simulation results to e.g. control algorithms.
 The measured information are indicated by boolean fields.
 
-.. _measurement_unit_attributes:
-
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +---------------+------+----------------------------------------------+
-| Attribute     | Unit | Hints                                        |
+| Attribute     | Unit | Remarks                                      |
 +===============+======+==============================================+
 | uuid          | --   |                                              |
 +---------------+------+----------------------------------------------+
@@ -32,9 +30,7 @@ Attributes, Units and Hints
 | q             | --   | Reactive power measurements are available    |
 +---------------+------+----------------------------------------------+
 
-.. _measurement_caveats:
-
 Caveats
 ^^^^^^^
-Noting - at least not known.
+Nothing - at least not known.
 If you found something, please contact us!
