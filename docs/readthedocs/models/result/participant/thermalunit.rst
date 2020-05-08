@@ -1,7 +1,7 @@
 .. _thermal_unit_model:
 
-Thermal Storage
----------------
+Thermal Unit
+------------
 Model of a thermal unit.
 
 Attributes, Units and Remarks
