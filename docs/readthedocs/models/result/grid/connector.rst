@@ -14,7 +14,7 @@ Attributes, Units and Remarks
 +---------------+----------------+----------------------------------------------------------+
 | timeStamp     | ZonedDateTime  |   date and time for the produced result                  |
 +---------------+----------------+----------------------------------------------------------+
-| inputModel    | --             |   uuid for the input model                               |
+| inputModel    | --             |   uuid for the associated input model                    |
 +---------------+----------------+----------------------------------------------------------+
 | iAMag         | ampere         |   A stands for sending node                              |
 +---------------+----------------+----------------------------------------------------------+

@@ -1,8 +1,8 @@
-.. _pv_result:
+.. _system_participant_result:
 
-Photovoltaic Power Plant
-------------------------
-Result of a photovoltaic power plant.
+System Participant
+------------------
+Groups together all system participants such as PV, Storage etc.
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -20,6 +20,7 @@ Attributes, Units and Remarks
 +---------------+---------+--------------------------------------------------------------+
 | q             | MVAr    |                                                              |
 +---------------+---------+--------------------------------------------------------------+
+
 
 Caveats
 ^^^^^^^
