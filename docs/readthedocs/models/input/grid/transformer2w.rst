@@ -7,8 +7,8 @@ It is assumed, that node A is the node with higher voltage.
 
 .. _transformer2w_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. _transformer2w_type_attributes:
 
@@ -18,7 +18,7 @@ All impedances and admittances are given with respect to the higher voltage side
 As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit representations.
 
 +-----------+------+---------------------------------------------------------+
-| Attribute | Unit | Hints                                                   |
+| Attribute | Unit | Remarks                                                 |
 +===========+======+=========================================================+
 | uuid      |      |                                                         |
 +-----------+------+---------------------------------------------------------+
@@ -57,7 +57,7 @@ Entity Model
 """"""""""""
 
 +-----------------+------+--------------------------------------------------------+
-| Attribute       | Unit | Hints                                                  |
+| Attribute       | Unit | Remarks                                                |
 +=================+======+========================================================+
 | uuid            | --   |                                                        |
 +-----------------+------+--------------------------------------------------------+

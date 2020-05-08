@@ -26,10 +26,10 @@ A synoptic overview of both classes attributes is given here:
 
 .. _grid_container_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +-------------------------+------+---------------------------------------------------------+
-| Attribute               | Unit | Hints                                                   |
+| Attribute               | Unit | Remarks                                                 |
 +=========================+======+=========================================================+
 | gridName                | --   | Human readable identifier                               |
 +-------------------------+------+---------------------------------------------------------+

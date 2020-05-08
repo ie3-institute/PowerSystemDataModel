@@ -8,10 +8,10 @@ The measured information are indicated by boolean fields.
 
 .. _measurement_unit_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +---------------+------+----------------------------------------------+
-| Attribute     | Unit | Hints                                        |
+| Attribute     | Unit | Remarks                                      |
 +===============+======+==============================================+
 | uuid          | --   |                                              |
 +---------------+------+----------------------------------------------+

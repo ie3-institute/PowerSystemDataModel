@@ -7,10 +7,10 @@ This reflects a simple shoe box with transmission losses
 
 .. _thermal_house_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +---------------+---------+---------------------------------+
-| Attribute     | Unit    | Hints                           |
+| Attribute     | Unit    | Remarks                         |
 +===============+=========+=================================+
 | uuid          | --      |                                 |
 +---------------+---------+---------------------------------+

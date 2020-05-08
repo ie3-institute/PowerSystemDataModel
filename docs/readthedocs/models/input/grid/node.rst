@@ -6,10 +6,10 @@ Representation of an electrical node, with no further distinction into bus bar, 
 
 .. _node_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +---------------+------+--------------------------------------------------------------------+
-| Attribute     | Unit | Hints                                                              |
+| Attribute     | Unit | Remarks                                                            |
 +===============+======+====================================================================+
 | uuid          | --   |                                                                    |
 +---------------+------+--------------------------------------------------------------------+

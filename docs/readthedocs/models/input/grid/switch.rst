@@ -9,8 +9,8 @@ But we are very happy to help you, please just contact us!
 
 .. _switch_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +-----------+------+-------+
 | Attribute | Unit | Hints |
 +-----------+------+-------+

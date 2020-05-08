@@ -6,10 +6,10 @@ A coupling point to thermal system - equivalent to :ref:`electrical node <node_m
 
 .. _thermal_bus_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +---------------+------+----------------------------------------+
-| Attribute     | Unit | Hints                                  |
+| Attribute     | Unit | Remarks                                |
 +===============+======+========================================+
 | uuid          | --   |                                        |
 +---------------+------+----------------------------------------+

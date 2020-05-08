@@ -16,8 +16,8 @@ central phase-to-ground admittance, cf. following picture.
 
 .. _transformer3w_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. _transformer3w_type_attributes:
 
@@ -26,7 +26,7 @@ Type Model
 All impedances and admittances are given with respect to the higher voltage side.
 
 +-----------+------+---------------------------------------------------------+
-| Attribute | Unit | Hints                                                   |
+| Attribute | Unit | Remarks                                                 |
 +===========+======+=========================================================+
 | uuid      |      |                                                         |
 +-----------+------+---------------------------------------------------------+
@@ -77,7 +77,7 @@ Entity Model
 """"""""""""
 
 +-----------------+------+--------------------------------------------------------+
-| Attribute       | Unit | Hints                                                  |
+| Attribute       | Unit | Remarks                                                |
 +=================+======+========================================================+
 | uuid            | --   |                                                        |
 +-----------------+------+--------------------------------------------------------+

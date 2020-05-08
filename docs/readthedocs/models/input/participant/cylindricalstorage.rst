@@ -6,10 +6,10 @@ Model of a cylindrical thermal storage using a fluent to store thermal energy.
 
 .. _cylindricalstorage_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 +---------------------+----------------------------+----------------------------------------------+
-| Attribute           | Unit                       | Hints                                        |
+| Attribute           | Unit                       | Remarks                                      |
 +=====================+============================+==============================================+
 | uuid                | --                         |                                              |
 +---------------------+----------------------------+----------------------------------------------+
