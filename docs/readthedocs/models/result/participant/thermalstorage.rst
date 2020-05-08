@@ -1,8 +1,8 @@
-.. _thermal_sink_model:
+.. _thermal_storage_model:
 
-Thermal Sink
------------
-Model of a thermal sink.
+Thermal Storage
+---------------
+Model of a thermal storage.
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -13,6 +13,8 @@ Attributes, Units and Remarks
 | timeStamp        | --      | date and time for the produced result                                                |
 +------------------+---------+--------------------------------------------------------------------------------------+
 | uuid             | --      | uuid for the associated input model                                                  |
++------------------+---------+--------------------------------------------------------------------------------------+
+| energy           | MWh     |                                                                                      |
 +------------------+---------+--------------------------------------------------------------------------------------+
 | qDot             | MW      | heat demand of the sink                                                              |
 +------------------+---------+--------------------------------------------------------------------------------------+

@@ -1,8 +1,8 @@
-.. _thermal_sink_model:
+.. _system_participant_model:
 
-Thermal Sink
------------
-Model of a thermal sink.
+System Participant
+------------------
+Groups together all system participants such as PV, Storage etc.
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -14,7 +14,9 @@ Attributes, Units and Remarks
 +------------------+---------+--------------------------------------------------------------------------------------+
 | uuid             | --      | uuid for the associated input model                                                  |
 +------------------+---------+--------------------------------------------------------------------------------------+
-| qDot             | MW      | heat demand of the sink                                                              |
+| p                | MW      |                                                                                      |
++------------------+---------+--------------------------------------------------------------------------------------+
+| q                | MVAr    |                                                                                      |
 +------------------+---------+--------------------------------------------------------------------------------------+
 
 Caveats
