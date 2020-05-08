@@ -38,7 +38,8 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
         WecResult.class,
         StorageResult.class,
         EvcsResult.class,
-        EvResult.class);
+        EvResult.class,
+        HpResult.class);
   }
 
   @Override
@@ -96,6 +97,10 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
       return uuidOpt
           .map(uuid -> new WecResult(uuid, zdtTimestamp, inputModelUuid, p, q))
           .orElseGet(() -> new WecResult(zdtTimestamp, inputModelUuid, p, q));
+    } else if (entityClass.equals(HpResult.class)) {
+      return uuidOpt
+          .map(uuid -> new HpResult(uuid, zdtTimestamp, inputModelUuid, p, q))
+          .orElseGet(() -> new HpResult(zdtTimestamp, inputModelUuid, p, q));
     } else if (entityClass.equals(EvResult.class)) {
       ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, Units.PERCENT);
 

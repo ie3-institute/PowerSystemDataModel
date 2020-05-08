@@ -5,12 +5,10 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
-import tec.uom.se.ComparableQuantity;
-
-import javax.measure.quantity.Power;
 import java.time.ZonedDateTime;
 import java.util.UUID;
-
+import javax.measure.quantity.Power;
+import tec.uom.se.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpResult extends SystemParticipantResult {

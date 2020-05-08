@@ -64,6 +64,13 @@ class ResultEntityProcessorTest extends Specification {
 		soc       : '50.0',
 		timestamp : '2020-01-30T17:26:44Z[UTC]']
 
+	@Shared
+	def expectedHpResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+		p         : '0.01',
+		q         : '0.01',
+		timestamp : '2020-01-30T17:26:44Z[UTC]']
+
 
 	def "A ResultEntityProcessor should de-serialize a provided SystemParticipantResult correctly"() {
 		given:
@@ -89,6 +96,7 @@ class ResultEntityProcessorTest extends Specification {
 		ChpResult         | new ChpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
 		WecResult         | new WecResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
 		StorageResult     | new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, soc) || expectedSocResults
+		HpResult          | new HpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)           || expectedHpResults
 
 	}
 
@@ -282,7 +290,7 @@ class ResultEntityProcessorTest extends Specification {
 
 	def "The list of eligible entity classes for a ResultEntityProcessor should be valid"() {
 		given:
-		int noOfElements = 16 // number of all currently implemented entity results
+		int noOfElements = 17 // number of all currently implemented entity results
 
 		expect:
 		ResultEntityProcessor.eligibleEntityClasses.size() == noOfElements
