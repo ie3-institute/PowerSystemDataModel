@@ -6,8 +6,8 @@ Representation of all kinds of connectors.
 
 .. _connector_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 +---------------+----------------+----------------------------------------------------------+
 | Attribute     | Unit           | Remarks                                                  |

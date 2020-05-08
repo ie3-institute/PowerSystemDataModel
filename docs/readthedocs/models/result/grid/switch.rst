@@ -6,8 +6,8 @@ Representation of electrical switches.
 
 .. _switch_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 +---------------+----------------+----------------------------------------------------------+
 | Attribute     | Unit           | Remarks                                                  |

@@ -6,8 +6,8 @@ Representation of transformers.
 
 .. _transformer_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 +---------------+----------------+----------------------------------------------------------+
 | Attribute     | Unit           | Remarks                                                  |

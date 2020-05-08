@@ -2,12 +2,12 @@
 
 transformer2W
 -------------
-Representation of  2W transformers.
+Representation of two winding transformers.
 
 .. _transformer2W_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 +---------------+----------------+----------------------------------------------------------+
 | Attribute     | Unit           | Remarks                                                  |
@@ -31,4 +31,4 @@ Attributes, Units and Hints
 
 Caveats
 ^^^^^^^
-Assumption: Node A is the node at higher voltage
+Assumption: Node A is the node at higher voltage.

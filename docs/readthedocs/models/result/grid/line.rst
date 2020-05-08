@@ -6,8 +6,8 @@ Representation of an AC line.
 
 .. _line_attributes:
 
-Attributes, Units and Hints
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Attributes, Units and Remarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 +---------------+----------------+----------------------------------------------------------+
 | Attribute     | Unit           | Remarks                                                  |
