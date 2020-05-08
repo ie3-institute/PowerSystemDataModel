@@ -48,4 +48,13 @@ class CommonVoltageLevelTest extends Specification {
 		expect:
 		!dut.covers("HS", Quantities.getQuantity(110d, KILOVOLT))   // May be false
 	}
+
+	def "A common voltage level should thrown an exception, if an inconsistent id / rated voltage combination is checked"() {
+		when:
+		dut.covers("HS", Quantities.getQuantity(500d, VOLT))   // May be true
+
+		then:
+		VoltageLevelException ex = thrown()
+		ex.message == "The provided id \"HS\" and rated voltage \"500.0 V\" could possibly meet the voltage level \"Niederspannung\" (Interval [0.0 kV, 10.0 kV)), but are inconsistent."
+	}
 }

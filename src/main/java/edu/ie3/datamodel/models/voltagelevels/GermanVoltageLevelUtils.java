@@ -119,7 +119,14 @@ public class GermanVoltageLevelUtils {
   public static CommonVoltageLevel parse(String id, ComparableQuantity<ElectricPotential> vRated)
       throws VoltageLevelException {
     return germanVoltageLevels.stream()
-        .filter(voltLvl -> voltLvl.covers(id, vRated))
+        .filter(
+            voltLvl -> {
+              try {
+                return voltLvl.covers(id, vRated);
+              } catch (VoltageLevelException e) {
+                return false;
+              }
+            })
         .findFirst()
         .orElseThrow(
             () ->

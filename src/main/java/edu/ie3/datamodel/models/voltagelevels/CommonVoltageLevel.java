@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.voltagelevels;
 
+import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.util.interval.RightOpenInterval;
 import java.util.Collections;
 import java.util.Set;
@@ -56,13 +57,26 @@ public class CommonVoltageLevel extends VoltageLevel {
    * @param id Identifier
    * @param vRated Rated voltage of a node to test
    * @return true, if it is covered
+   * @throws VoltageLevelException If the input is ambiguous
    */
-  public boolean covers(String id, ComparableQuantity<ElectricPotential> vRated) {
+  public boolean covers(String id, ComparableQuantity<ElectricPotential> vRated)
+      throws VoltageLevelException {
     boolean idCovered =
         synonymousIds.stream().anyMatch(string -> string.equalsIgnoreCase(id.toLowerCase()));
     boolean voltageCovered = covers(vRated);
 
-    return idCovered == voltageCovered;
+    if (idCovered ^ voltageCovered)
+      throw new VoltageLevelException(
+          "The provided id \""
+              + id
+              + "\" and rated voltage \""
+              + vRated
+              + "\" could possibly meet the voltage level \""
+              + this.id
+              + "\" ("
+              + voltageRange
+              + "), but are inconsistent.");
+    return idCovered; /* voltage covered is always true, otherwise the exception would have been thrown. */
   }
 
   @Override
