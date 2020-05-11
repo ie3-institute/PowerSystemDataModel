@@ -107,7 +107,7 @@ if (env.BRANCH_NAME == "master") {
                     // execute sonarqube code analysis
                     stage('SonarQube analysis') {
                         withSonarQubeEnv() { // Will pick the global server connection from jenkins for sonarqube
-                            gradle("sonarqube -Dsonar.branch.name=master -Dsonar.projectKey=$sonarqubeProjectKey ")
+                            gradle("sonarqube -Dsonar.branch.name=master -Dsonar.projectKey=$sonarqubeProjectKey -Dsonar.exclusions=docs/")
                         }
                     }
 
