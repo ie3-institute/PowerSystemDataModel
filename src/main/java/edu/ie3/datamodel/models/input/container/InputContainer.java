@@ -10,10 +10,10 @@ import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.List;
 
 /** Represents an aggregation of different entities */
-public interface InputContainer {
+public interface InputContainer<T extends UniqueEntity> {
 
   /** @return unmodifiable List of all entities */
-  List<UniqueEntity> allEntitiesAsList();
+  List<T> allEntitiesAsList();
 
   /** checks all values using {@link ValidationUtils} */
   void validate();
