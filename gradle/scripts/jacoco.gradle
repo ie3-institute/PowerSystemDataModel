@@ -1,23 +1,11 @@
 // see https://docs.gradle.org/current/userguide/jacoco_plugin.html for details
 // and http://vgaidarji.me/blog/2017/12/20/how-to-configure-jacoco-for-kotlin-and-java-project/ for exclude explanation
 
-//ext {
-//    // jacoco java code coverage source dir
-//    coverageSourceDirs = 'src/test/java'
-//}
-
 // general configuration
 jacoco {
 	toolVersion = "0.8.4"
 	reportsDir = file("$buildDir/reports/jacoco")
 }
-
-//test {
-//    jacoco {
-//        enabled = true
-//
-//    }
-//}
 
 jacocoTestReport {
 	reports {
@@ -52,7 +40,7 @@ jacocoTestCoverageVerification {
 	violationRules {
 		rule {
 			limit {
-				minimum = 0.00 // increase if we make progress on this
+				minimum = 0.68
 			}
 		}
 

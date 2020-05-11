@@ -85,6 +85,9 @@ package models {
             class ChpResult
             SystemParticipantResult <|-- ChpResult
 
+            class HpResult
+            SystemParticipantResult <|-- HpResult
+
             class WecResult
             SystemParticipantResult <|-- WecResult
 

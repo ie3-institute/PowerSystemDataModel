@@ -46,6 +46,7 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
               StorageResult.class,
               EvcsResult.class,
               EvResult.class,
+              HpResult.class,
               Transformer2WResult.class,
               Transformer3WResult.class,
               LineResult.class,

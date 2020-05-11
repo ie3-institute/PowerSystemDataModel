@@ -56,6 +56,7 @@ import edu.ie3.datamodel.models.result.system.ChpResult
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.EvcsResult
 import edu.ie3.datamodel.models.result.system.FixedFeedInResult
+import edu.ie3.datamodel.models.result.system.HpResult
 import edu.ie3.datamodel.models.result.system.LoadResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.StorageResult
@@ -134,6 +135,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 			WecTypeInput,
 			/* ResultEntity */
 			FixedFeedInResult,
+			HpResult,
 			BmResult,
 			PvResult,
 			ChpResult,
