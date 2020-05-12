@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.EvcsInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.utils.ValidationUtils;
@@ -113,8 +113,8 @@ public class SystemParticipants implements InputContainer {
   }
 
   @Override
-  public List<UniqueEntity> allEntitiesAsList() {
-    List<UniqueEntity> allEntities = new ArrayList<>();
+  public List<AssetInput> allEntitiesAsList() {
+    List<AssetInput> allEntities = new ArrayList<>();
     allEntities.addAll(bmPlants);
     allEntities.addAll(chpPlants);
     allEntities.addAll(evCS);

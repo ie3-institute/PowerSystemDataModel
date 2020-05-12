@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 
@@ -34,8 +34,8 @@ public abstract class GridContainer implements InputContainer {
   }
 
   @Override
-  public List<UniqueEntity> allEntitiesAsList() {
-    List<UniqueEntity> allEntities = new LinkedList<>();
+  public List<InputEntity> allEntitiesAsList() {
+    List<InputEntity> allEntities = new LinkedList<>();
     allEntities.addAll(rawGrid.allEntitiesAsList());
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(graphics.allEntitiesAsList());

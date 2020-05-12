@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.utils.ValidationUtils;
@@ -53,8 +53,8 @@ public class GraphicElements implements InputContainer {
   }
 
   @Override
-  public List<UniqueEntity> allEntitiesAsList() {
-    List<UniqueEntity> allEntities = new LinkedList<>();
+  public List<GraphicInput> allEntitiesAsList() {
+    List<GraphicInput> allEntities = new LinkedList<>();
     allEntities.addAll(nodeGraphics);
     allEntities.addAll(lineGraphics);
     return Collections.unmodifiableList(allEntities);
