@@ -5,7 +5,7 @@
  */
 package edu.ie3.test.common
 
-import edu.ie3.datamodel.io.source.CoordinateSource
+import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.util.geo.GeoUtils
@@ -15,12 +15,11 @@ import tec.uom.se.quantity.Quantities
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.stream.Collectors
-import java.util.stream.IntStream
 import java.util.stream.Stream
 
 class WeatherTestData {
 
-	private static final class DummyCoordinateSource implements CoordinateSource {
+	private static final class DummyIdCoordinateSource implements IdCoordinateSource {
 		@Override
 		Point getCoordinate(Integer id) {
 			switch (id) {
@@ -35,10 +34,6 @@ class WeatherTestData {
 			return Stream.of(ids).map(this.&getCoordinate).filter({ c -> c != null }).collect(Collectors.toSet())
 		}
 		@Override
-		Collection<Point> getCoordinatesBetween(Integer fromId, Integer toId) {
-			getCoordinates(IntStream.rangeClosed(fromId, toId).toArray())
-		}
-		@Override
 		Integer getId(Point coordinate) {
 			if(coordinate.x == 49 && coordinate.y == 7) return 193186
 			if(coordinate.x == 49 && coordinate.y == 8) return 193187
@@ -47,7 +42,7 @@ class WeatherTestData {
 		}
 	}
 
-	public static final CoordinateSource coordinateSource = new DummyCoordinateSource();
+	public static final IdCoordinateSource coordinateSource = new DummyIdCoordinateSource()
 
 	public static final coordinate_193186 = coordinateSource.getCoordinate(193186)
 	public static final coordinate_193187 = coordinateSource.getCoordinate(193187)

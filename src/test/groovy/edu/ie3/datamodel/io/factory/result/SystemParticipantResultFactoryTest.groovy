@@ -28,7 +28,8 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 			WecResult,
 			StorageResult,
 			EvcsResult,
-			EvResult
+			EvResult,
+			HpResult
 		]
 
 		expect:
@@ -45,8 +46,12 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 			"q":            "2"
 		]
 
-		if (modelClass == EvResult) {
+		if (modelClass == EvResult || modelClass == StorageResult) {
 			parameter["soc"] = "10"
+		}
+
+		if(modelClass == HpResult){
+			parameter["qDot"] = "1"
 		}
 
 		when:
@@ -65,6 +70,12 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		if (modelClass == EvResult) {
 			assert (((EvResult) result.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
 		}
+		if(modelClass ==StorageResult){
+			assert (((StorageResult) result.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
+		}
+		if(modelClass == HpResult){
+			assert(((HpResult)result.get()).qDot == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
+		}
 
 		where:
 		modelClass        || resultingModelClass
@@ -76,6 +87,8 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		EvcsResult        || EvcsResult
 		ChpResult         || ChpResult
 		WecResult         || WecResult
+		HpResult || HpResult
+		StorageResult || StorageResult
 	}
 
 	def "A SystemParticipantResultFactory should parse a StorageResult correctly"() {

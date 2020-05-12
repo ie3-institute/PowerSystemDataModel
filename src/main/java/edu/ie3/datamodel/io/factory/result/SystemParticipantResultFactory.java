@@ -27,6 +27,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   private static final String POWER = "p";
   private static final String REACTIVE_POWER = "q";
   private static final String SOC = "soc";
+  private static final String Q_DOT = "qdot";
 
   public SystemParticipantResultFactory() {
     super(
@@ -38,7 +39,8 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
         WecResult.class,
         StorageResult.class,
         EvcsResult.class,
-        EvResult.class);
+        EvResult.class,
+        HpResult.class);
   }
 
   @Override
@@ -50,6 +52,11 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
     if (data.getEntityClass().equals(StorageResult.class)
         || data.getEntityClass().equals(EvResult.class)) {
       minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, POWER, REACTIVE_POWER, SOC);
+      optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
+    }
+
+    if (data.getEntityClass().equals(HpResult.class)) {
+      minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, POWER, REACTIVE_POWER, Q_DOT);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
@@ -96,6 +103,11 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
       return uuidOpt
           .map(uuid -> new WecResult(uuid, zdtTimestamp, inputModelUuid, p, q))
           .orElseGet(() -> new WecResult(zdtTimestamp, inputModelUuid, p, q));
+    } else if (entityClass.equals(HpResult.class)) {
+      ComparableQuantity<Power> qDotQuantity = data.getQuantity(Q_DOT, StandardUnits.Q_DOT_RESULT);
+      return uuidOpt
+          .map(uuid -> new HpResult(uuid, zdtTimestamp, inputModelUuid, p, q, qDotQuantity))
+          .orElseGet(() -> new HpResult(zdtTimestamp, inputModelUuid, p, q, qDotQuantity));
     } else if (entityClass.equals(EvResult.class)) {
       ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, Units.PERCENT);
 

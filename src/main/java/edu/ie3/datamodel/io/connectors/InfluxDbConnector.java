@@ -17,7 +17,7 @@ import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 
 public class InfluxDbConnector implements DataConnector {
-  /** Merges two sets with (fieldName -> fieldValue) maps */
+  /** Merges two sets of (fieldName -> fieldValue) maps */
   private static final BinaryOperator<Set<Map<String, String>>> mergeSets =
       (maps, maps2) -> {
         maps.addAll(maps2);
@@ -25,6 +25,7 @@ public class InfluxDbConnector implements DataConnector {
       };
 
   private static final String INFLUXDB_URL = "http://localhost:8086/";
+  private static final String INFLUXDB_DATABASE_NAME = "ie3_in";
   private final String databaseName;
   private final String scenarioName;
   private final String url;
@@ -35,34 +36,51 @@ public class InfluxDbConnector implements DataConnector {
     this.scenarioName = scenarioName;
   }
 
+  /**
+   * Initializes a new InfluxDbConnector with the given url and databaseName and no scenario name.
+   * Consider using a scenario name if you plan to persist results using this connector.
+   *
+   * @param url the connection url for the influxDB database
+   * @param databaseName the name of the database to which the connection should be established
+   */
   public InfluxDbConnector(String url, String databaseName) {
     this(url, databaseName, null);
   }
 
+  /**
+   * Initializes a new InfluxDbConnector with the default URL {@value #INFLUXDB_URL}, database name
+   * {@value #INFLUXDB_DATABASE_NAME} and no scenario name
+   */
   public InfluxDbConnector() {
-    this(INFLUXDB_URL, "ie3_in");
+    this(INFLUXDB_URL, INFLUXDB_DATABASE_NAME);
   }
 
+  /**
+   * Checks if the given connection parameters are valid, so that a connection can be established
+   */
   public Boolean isConnectionValid() {
     InfluxDB session = getSession();
     if (session == null) return false;
     Pong response = session.ping();
     session.close();
-    if (response.getVersion().equalsIgnoreCase("unknown")) {
-      return false;
-    }
-    return true;
+    return !response.getVersion().equalsIgnoreCase("unknown");
   }
 
   @Override
   public void shutdown() {
-    if (databaseName.endsWith("out")) deleteOutput();
+    // no cleanup actions necessary
   }
 
   public String getDatabaseName() {
     return databaseName;
   }
 
+  /**
+   * Creates a session using the given connection parameters. If no database with the given name
+   * exists, one is created.
+   *
+   * @return autocloseable InfluxDB session
+   */
   public InfluxDB getSession() {
     InfluxDB session;
     session = InfluxDBFactory.connect(url);
@@ -73,16 +91,27 @@ public class InfluxDbConnector implements DataConnector {
     return session;
   }
 
-  private void deleteOutput() {
-    try (InfluxDB session = getSession()) {
-      session.query(new Query("DELETE FROM line_result", databaseName));
-    }
-  }
-
   public String getScenarioName() {
     return scenarioName;
   }
 
+  /**
+   * Parses the result of an influxQL query for all measurements (e.g. weather)
+   *
+   * @return a map of (measurement name -> Set of maps of (field name -> field value) for each
+   *     result entity)
+   */
+  public static Map<String, Set<Map<String, String>>> parseQueryResult(QueryResult queryResult) {
+    return parseQueryResult(queryResult, new String[0]);
+  }
+
+  /**
+   * Parses the result of one or multiple influxQL queries for the given measurements (e.g.
+   * weather). If no measurement names are given, all results are parsed and returned
+   *
+   * @return a map of (measurement name -> Set of maps of (field name -> field value) for each
+   *     result entity)
+   */
   public static Map<String, Set<Map<String, String>>> parseQueryResult(
       QueryResult queryResult, String... measurementNames) {
     HashMap<String, Set<Map<String, String>>> measurementToFields = new HashMap<>();
@@ -96,13 +125,21 @@ public class InfluxDbConnector implements DataConnector {
                   measurementToFields
                       .get(measurementEntry.getKey())
                       .addAll(measurementEntry.getValue());
-                } else
+                } else {
                   measurementToFields.put(measurementEntry.getKey(), measurementEntry.getValue());
+                }
               }
             });
     return measurementToFields;
   }
 
+  /**
+   * Parses the result of one influxQL query for the given measurements (e.g. weather). If no
+   * measurement names are given, all results are parsed and returned
+   *
+   * @return a map of (measurement name -> Set of maps of (field name -> field value) for each
+   *     result entity)
+   */
   public static Map<String, Set<Map<String, String>>> parseResult(
       QueryResult.Result result, String... measurementNames) {
     Stream<QueryResult.Series> seriesStream = result.getSeries().stream();
@@ -114,6 +151,11 @@ public class InfluxDbConnector implements DataConnector {
         Collectors.toMap(QueryResult.Series::getName, InfluxDbConnector::parseSeries, mergeSets));
   }
 
+  /**
+   * Parses the results for a single measurement series
+   *
+   * @return Set of maps of (field name -> field value) for each result entity
+   */
   public static Set<Map<String, String>> parseSeries(QueryResult.Series series) {
     String[] columns = series.getColumns().toArray(new String[0]);
     return series.getValues().stream()
@@ -121,7 +163,12 @@ public class InfluxDbConnector implements DataConnector {
         .collect(Collectors.toSet());
   }
 
-  public static Map<String, String> parseValueList(List valueList, String[] columns) {
+  /**
+   * Parses a listt of values and maps them to field names using the given column name and order
+   *
+   * @return Map of (field name -> field value) for one result entity
+   */
+  public static Map<String, String> parseValueList(List<?> valueList, String[] columns) {
     Map<String, String> attributeMap = new HashMap<>();
     Object[] valueArr = valueList.toArray();
     for (int i = 0; i < columns.length; i++) {
