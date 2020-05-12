@@ -20,7 +20,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class InfluxDbWeatherSourceTest extends Specification implements WeatherSourceTestHelper {
+class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTestHelper {
 
 	@Shared
 	InfluxDBContainer influxDbContainer = new InfluxDBContainer()

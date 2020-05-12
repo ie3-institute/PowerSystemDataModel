@@ -35,8 +35,10 @@ public class InfluxDbWeatherSource implements WeatherSource {
 
   /**
    * Initalizes a new InfluxDbWeatherSource
+   *
    * @param connector needed for database connection
-   * @param coordinateSource needed to map coordinates to ID as InfluxDB does not support spatial types
+   * @param coordinateSource needed to map coordinates to ID as InfluxDB does not support spatial
+   *     types
    */
   public InfluxDbWeatherSource(InfluxDbConnector connector, IdCoordinateSource coordinateSource) {
     this.connector = connector;
@@ -114,8 +116,9 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   /**
-   * Parses an influxQL QueryResult and then transforms them into a Stream of optional TimeBasedValue&lt;WeatherValue&gt;,
-   * with a present Optional value, if the transformation was successful and an empty optional otherwise.
+   * Parses an influxQL QueryResult and then transforms them into a Stream of optional
+   * TimeBasedValue&lt;WeatherValue&gt;, with a present Optional value, if the transformation was
+   * successful and an empty optional otherwise.
    */
   private Stream<Optional<TimeBasedValue>> optTimeBasedValueStream(QueryResult queryResult) {
     Map<String, Set<Map<String, String>>> measurementsMap =
@@ -125,7 +128,8 @@ public class InfluxDbWeatherSource implements WeatherSource {
             fields ->
                 new TimeBasedWeatherValueData(
                     fields,
-                    coordinateSource.getCoordinate(Integer.valueOf(fields.remove(COORDINATE_ID_COLUMN_NAME)))))
+                    coordinateSource.getCoordinate(
+                        Integer.valueOf(fields.remove(COORDINATE_ID_COLUMN_NAME)))))
         .map(weatherValueFactory::getEntity);
   }
 

@@ -36,7 +36,8 @@ public class InfluxDbConnector implements DataConnector {
     this.scenarioName = scenarioName;
   }
 
-  /** Initializes a new InfluxDbConnector with the given url and databaseName and no scenario name.
+  /**
+   * Initializes a new InfluxDbConnector with the given url and databaseName and no scenario name.
    * Consider using a scenario name if you plan to persist results using this connector.
    *
    * @param url the connection url for the influxDB database
@@ -47,8 +48,8 @@ public class InfluxDbConnector implements DataConnector {
   }
 
   /**
-   * Initializes a new InfluxDbConnector with the default URL {@value #INFLUXDB_URL},
-   * database name {@value #INFLUXDB_DATABASE_NAME} and no scenario name
+   * Initializes a new InfluxDbConnector with the default URL {@value #INFLUXDB_URL}, database name
+   * {@value #INFLUXDB_DATABASE_NAME} and no scenario name
    */
   public InfluxDbConnector() {
     this(INFLUXDB_URL, INFLUXDB_DATABASE_NAME);
@@ -75,7 +76,9 @@ public class InfluxDbConnector implements DataConnector {
   }
 
   /**
-   * Creates a session using the given connection parameters. If no database with the given name exists, one is created.
+   * Creates a session using the given connection parameters. If no database with the given name
+   * exists, one is created.
+   *
    * @return autocloseable InfluxDB session
    */
   public InfluxDB getSession() {
@@ -94,16 +97,20 @@ public class InfluxDbConnector implements DataConnector {
 
   /**
    * Parses the result of an influxQL query for all measurements (e.g. weather)
-   * @return a map of (measurement name -> Set of maps of (field name -> field value) for each result entity)
+   *
+   * @return a map of (measurement name -> Set of maps of (field name -> field value) for each
+   *     result entity)
    */
   public static Map<String, Set<Map<String, String>>> parseQueryResult(QueryResult queryResult) {
-    return  parseQueryResult(queryResult, new String[0]);
+    return parseQueryResult(queryResult, new String[0]);
   }
 
   /**
-   * Parses the result of one or multiple influxQL queries for the given measurements (e.g. weather). If no measurement names are given,
-   * all results are parsed and returned
-   * @return a map of (measurement name -> Set of maps of (field name -> field value) for each result entity)
+   * Parses the result of one or multiple influxQL queries for the given measurements (e.g.
+   * weather). If no measurement names are given, all results are parsed and returned
+   *
+   * @return a map of (measurement name -> Set of maps of (field name -> field value) for each
+   *     result entity)
    */
   public static Map<String, Set<Map<String, String>>> parseQueryResult(
       QueryResult queryResult, String... measurementNames) {
@@ -127,9 +134,11 @@ public class InfluxDbConnector implements DataConnector {
   }
 
   /**
-   * Parses the result of one influxQL query for the given measurements (e.g. weather). If no measurement names are given,
-   * all results are parsed and returned
-   * @return a map of (measurement name -> Set of maps of (field name -> field value) for each result entity)
+   * Parses the result of one influxQL query for the given measurements (e.g. weather). If no
+   * measurement names are given, all results are parsed and returned
+   *
+   * @return a map of (measurement name -> Set of maps of (field name -> field value) for each
+   *     result entity)
    */
   public static Map<String, Set<Map<String, String>>> parseResult(
       QueryResult.Result result, String... measurementNames) {
@@ -144,6 +153,7 @@ public class InfluxDbConnector implements DataConnector {
 
   /**
    * Parses the results for a single measurement series
+   *
    * @return Set of maps of (field name -> field value) for each result entity
    */
   public static Set<Map<String, String>> parseSeries(QueryResult.Series series) {
@@ -155,6 +165,7 @@ public class InfluxDbConnector implements DataConnector {
 
   /**
    * Parses a listt of values and maps them to field names using the given column name and order
+   *
    * @return Map of (field name -> field value) for one result entity
    */
   public static Map<String, String> parseValueList(List<?> valueList, String[] columns) {
