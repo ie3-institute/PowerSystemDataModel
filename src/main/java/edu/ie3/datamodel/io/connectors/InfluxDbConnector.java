@@ -48,10 +48,7 @@ public class InfluxDbConnector implements DataConnector {
     if (session == null) return false;
     Pong response = session.ping();
     session.close();
-    if (response.getVersion().equalsIgnoreCase("unknown")) {
-      return false;
-    }
-    return true;
+    return !response.getVersion().equalsIgnoreCase("unknown");
   }
 
   @Override
@@ -96,8 +93,9 @@ public class InfluxDbConnector implements DataConnector {
                   measurementToFields
                       .get(measurementEntry.getKey())
                       .addAll(measurementEntry.getValue());
-                } else
+                } else {
                   measurementToFields.put(measurementEntry.getKey(), measurementEntry.getValue());
+                }
               }
             });
     return measurementToFields;
@@ -121,7 +119,7 @@ public class InfluxDbConnector implements DataConnector {
         .collect(Collectors.toSet());
   }
 
-  public static Map<String, String> parseValueList(List valueList, String[] columns) {
+  public static Map<String, String> parseValueList(List<?> valueList, String[] columns) {
     Map<String, String> attributeMap = new HashMap<>();
     Object[] valueArr = valueList.toArray();
     for (int i = 0; i < columns.length; i++) {

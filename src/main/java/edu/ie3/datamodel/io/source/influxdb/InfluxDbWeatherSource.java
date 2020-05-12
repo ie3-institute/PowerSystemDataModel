@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.source.influxdb;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
-import edu.ie3.datamodel.io.source.CoordinateSource;
+import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
@@ -24,12 +24,13 @@ import org.influxdb.dto.QueryResult;
 import org.locationtech.jts.geom.Point;
 
 public class InfluxDbWeatherSource implements WeatherSource {
+  private static final String BASIC_QUERY_STRING = "Select * from weather";
   private static final String COORDINATE_ID = "coordinate";
   private final InfluxDbConnector connector;
-  private final CoordinateSource coordinateSource;
+  private final IdCoordinateSource coordinateSource;
   private final TimeBasedWeatherValueFactory weatherValueFactory;
 
-  public InfluxDbWeatherSource(InfluxDbConnector connector, CoordinateSource coordinateSource) {
+  public InfluxDbWeatherSource(InfluxDbConnector connector, IdCoordinateSource coordinateSource) {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
     this.weatherValueFactory = new TimeBasedWeatherValueFactory();
@@ -120,23 +121,17 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   public String createQueryStringForInterval(ClosedInterval<ZonedDateTime> timeInterval) {
-    String basicQuery = createBasicQueryString();
     String timeConstraint =
         "time >= "
             + timeInterval.getLower().toInstant().toEpochMilli() * 1000000
             + " and time <= "
             + timeInterval.getUpper().toInstant().toEpochMilli() * 1000000;
-    return basicQuery + " where " + timeConstraint;
+    return BASIC_QUERY_STRING + " where " + timeConstraint;
   }
 
   public String createQueryStringForDate(ZonedDateTime date) {
-    String basicQuery = createBasicQueryString();
     String timeConstraint = "time=" + date.toInstant().toEpochMilli() * 1000000;
-    return basicQuery + " where " + timeConstraint;
-  }
-
-  public String createBasicQueryString() {
-    return "Select * from weather";
+    return BASIC_QUERY_STRING + " where " + timeConstraint;
   }
 
   public String createCoordinateConstraintString(Point coordinate) {

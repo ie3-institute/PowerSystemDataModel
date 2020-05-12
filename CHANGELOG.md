@@ -13,12 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -  Method in ``ContainerUtils`` to modify a provided ``SubGridContainer`` with slack nodes and make it usable for
 most of the commonly known power flow calculations
 -  Gradle task to create JavaDoc HTML files in the folder 'docs/javadoc'
+-  Implementation of ``DataConnector`` and  ``WeatherSource`` for InfluxDB
+-  Introduction of a ``IdCoordinateSource`` and implementation of  corresponding csv source for ID to coordinate mapping
+-  Factory for ``TimeBasedValues<WeatherValue>``
 
 ### Changed
 -  Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
 -  Modifications in `LineInput` and `GraphicInput` constructors to make `LineStrings` with two exactly equal
 coordinates or multiple exactly equal coordinates possible
 -  Extended functionality of `GridAndGeoUtils`
+- `CsvFileConnector` is now set up to process either UniqueEntities or only by file name
 
 ### Fixed
 -  CsvDataSource now stops trying to get an operator for empty operator uuid field in entities

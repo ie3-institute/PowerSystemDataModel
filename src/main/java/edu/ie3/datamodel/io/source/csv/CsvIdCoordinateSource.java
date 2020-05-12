@@ -8,17 +8,16 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.source.CoordinateSource;
+import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.util.geo.GeoUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
 
-public class CsvIdCoordinateSource extends CsvDataSource implements CoordinateSource {
+public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinateSource {
 
   private static final String LATITUDE_HEADER = "lat";
   private static final String LONGITUDE_HEADER = "lon";
@@ -61,10 +60,6 @@ public class CsvIdCoordinateSource extends CsvDataSource implements CoordinateSo
 
   public Collection<Point> getCoordinates(int... ids) {
     return Arrays.stream(ids).mapToObj(this::getCoordinate).collect(Collectors.toSet());
-  }
-
-  public Collection<Point> getCoordinatesBetween(Integer fromId, Integer toId) {
-    return getCoordinates(IntStream.rangeClosed(fromId, toId).toArray());
   }
 
   public Integer getId(Point coordinate) {
