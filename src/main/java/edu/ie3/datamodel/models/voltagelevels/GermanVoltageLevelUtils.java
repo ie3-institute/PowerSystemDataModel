@@ -124,9 +124,6 @@ public class GermanVoltageLevelUtils {
               try {
                 return voltLvl.covers(id, vRated);
               } catch (VoltageLevelException e) {
-                logger.debug(
-                    "Found some potentially inconsistent voltage level information: {}",
-                    e.getMessage());
                 return false;
               }
             })
