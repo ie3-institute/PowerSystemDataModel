@@ -6,11 +6,13 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import org.locationtech.jts.geom.Point;
 
 /** Describes a data source for weather data */
@@ -42,5 +44,5 @@ public interface WeatherSource extends DataSource {
    * @param coordinate Queried coordinate
    * @return weather data for the specified time and coordinate
    */
-  WeatherValue getWeather(ZonedDateTime date, Point coordinate);
+  Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate);
 }

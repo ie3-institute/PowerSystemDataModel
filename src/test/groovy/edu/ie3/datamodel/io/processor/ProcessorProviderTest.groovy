@@ -6,12 +6,10 @@
 package edu.ie3.datamodel.io.processor
 
 import edu.ie3.datamodel.exceptions.ProcessorProviderException
-import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.EvcsInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -35,8 +33,6 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
-import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
-import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
@@ -82,7 +78,7 @@ import edu.ie3.datamodel.models.value.Value
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.datamodel.models.value.WindValue
 import edu.ie3.test.common.TimeSeriesTestData
-import edu.ie3.util.TimeTools
+import edu.ie3.util.TimeUtil
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
@@ -251,7 +247,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 		UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
 		Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
 		Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-		PvResult pvResult = new PvResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+		PvResult pvResult = new PvResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
 
 		and:
 		Optional processorResult = provider.handleEntity(pvResult)
@@ -263,7 +259,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 		resultMap == expectedMap
 
 		when:
-		Optional result = provider.handleEntity(new WecResult(uuid, TimeTools.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q))
+		Optional result = provider.handleEntity(new WecResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q))
 
 		then:
 		!result.present

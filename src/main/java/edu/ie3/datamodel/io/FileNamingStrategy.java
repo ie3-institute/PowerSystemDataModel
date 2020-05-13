@@ -208,6 +208,15 @@ public class FileNamingStrategy {
     return Optional.of(buildResultEntityString(resultEntityClass));
   }
 
+  /**
+   * Get the the file name for coordinates
+   *
+   * @return the filename string
+   */
+  public String getIdCoordinateFileName() {
+    return addPrefixAndSuffix("coordinates");
+  }
+
   private String buildResultEntityString(Class<? extends ResultEntity> resultEntityClass) {
     String resultEntityString =
         resultEntityClass.getSimpleName().replace("Result", "").toLowerCase();
