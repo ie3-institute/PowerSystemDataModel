@@ -87,6 +87,40 @@ Result
 ******
 Model classes you can use to describe the outcome of a power system simulation.
 
+Grid Related Models
+===================
+.. toctree::
+   :maxdepth: 1
+
+   result/grid/node
+   result/grid/connector
+   result/grid/line
+   result/grid/switch
+   result/grid/transformer
+   result/grid/transformer2w
+   result/grid/transformer3w
+
+Participant Related Models
+==========================
+.. toctree::
+   :maxdepth: 1
+
+   result/participant/bm
+   result/participant/chp
+   result/participant/ev
+   result/participant/evcs
+   result/participant/fixedfeedin
+   result/participant/load
+   result/participant/pv
+   result/participant/storage
+   result/participant/wec
+   result/participant/thermalsink
+   result/participant/thermalstorage
+   result/participant/thermalunit
+   result/participant/thermalhouse
+   result/participant/cylindricalstorage
+   result/participant/systemparticipant
+
 ***********
 Time Series
 ***********
