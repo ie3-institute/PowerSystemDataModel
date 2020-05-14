@@ -172,7 +172,7 @@ public class InfluxDbConnector implements DataConnector {
     Map<String, String> attributeMap = new HashMap<>();
     Object[] valueArr = valueList.toArray();
     for (int i = 0; i < columns.length; i++) {
-      attributeMap.put(columns[i], valueArr[i].toString());
+      attributeMap.put(columns[i], String.valueOf(valueArr[i]));
     }
     return attributeMap;
   }

@@ -37,7 +37,7 @@ public class TimeBasedWeatherValueFactory
   private final TimeUtil timeUtil;
 
   public TimeBasedWeatherValueFactory() {
-    this("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    this("yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'");
   }
 
   public TimeBasedWeatherValueFactory(String timestampPattern) {

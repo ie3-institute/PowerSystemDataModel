@@ -5,16 +5,13 @@
  */
 package edu.ie3.datamodel.io.sink;
 
-import edu.ie3.datamodel.exceptions.ExtractorException;
 import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
-import edu.ie3.datamodel.io.extractor.Extractor;
 import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
@@ -36,8 +33,8 @@ public class InfluxDbSink implements DataSink {
     private static final Logger log = LogManager.getLogger(InfluxDbSink.class);
     private final ProcessorProvider processorProvider;
 
-    private static final String timestampFieldName = "timestamp";
-    private static final String inputModelFieldName = "inputModel";
+    private static final String FIELD_NAME_TIMESTAMP = "timestamp";
+    private static final String FIELD_NAME_INPUT = "inputModel";
 
     InfluxDbConnector connector;
     private final FileNamingStrategy fileNamingStrategy;
@@ -66,7 +63,6 @@ public class InfluxDbSink implements DataSink {
     @Override
     public <C extends UniqueEntity> void persistAll(Collection<C> entities) {
         Set<Point> points = new HashSet<>();
-        /* Distinguish between result models and time series */
         for (C entity : entities) {
             points.addAll(extractPoints(entity));
         }
@@ -139,10 +135,10 @@ public class InfluxDbSink implements DataSink {
                                                             .map(Class::getSimpleName)
                                                             .collect(Collectors.joining(","))
                                                             + "]"));
-            entityFieldData.remove(timestampFieldName); //MIA delete after time is fixed
+            entityFieldData.remove(FIELD_NAME_TIMESTAMP); //MIA delete after time is fixed
             return Optional.of(Point.measurement(measurementName)
-                    .time(((ResultEntity) entity).getTimestamp().toInstant().toEpochMilli(), TimeUnit.MILLISECONDS) //MIA replace with entityFieldData.remove
-                    .tag("input_model", entityFieldData.remove(inputModelFieldName))
+                    .time((entity).getTimestamp().toInstant().toEpochMilli(), TimeUnit.MILLISECONDS) //MIA replace with entityFieldData.remove
+                    .tag("input_model", entityFieldData.remove(FIELD_NAME_INPUT))
                     .tag("scenario", connector.getScenarioName())
                     .fields(Collections.unmodifiableMap(entityFieldData))
                     .build());
@@ -187,7 +183,7 @@ public class InfluxDbSink implements DataSink {
                                                             + "]"));
 
             for (LinkedHashMap<String, String> dataMapping : entityFieldData) {
-                String timeString = dataMapping.remove(timestampFieldName);//MIA delete after time is fixed
+                String timeString = dataMapping.remove(FIELD_NAME_TIMESTAMP);//MIA delete after time is fixed
                 long timeMillis = ZonedDateTime.parse(timeString).toInstant().toEpochMilli();
                 Point point = Point.measurement(measurementName)
                         .time(timeMillis, TimeUnit.MILLISECONDS) //MIA replace with entityFieldData.remove
@@ -214,16 +210,8 @@ public class InfluxDbSink implements DataSink {
             try {
                 points.add(transformToPoint((ResultEntity) entity).orElseThrow(() -> new SinkException("Could not transform entity")));
                 if (entity instanceof NestedEntity) {
-                    for (InputEntity ent : Extractor.extractElements((NestedEntity) entity)) {
-                        points.add(transformToPoint((ResultEntity) entity).orElseThrow(() -> new SinkException("Could not transform entity")));
-                    }
+                    log.info("Nested elements will not be persisted, as they are not of ResultEntity or TimeBasedValue type");
                 }
-            } catch (ExtractorException e) {
-                log.error(
-                        "An error occurred during extraction of nested entity'"
-                                + entity.getClass().getSimpleName()
-                                + "': ",
-                        e);
             } catch (SinkException e) {
                 log.error(
                         "Cannot persist provided entity '{}'. Exception: {}",
@@ -232,7 +220,7 @@ public class InfluxDbSink implements DataSink {
             }
         } else if (entity instanceof TimeSeries) {
             TimeSeries<?, ?> timeSeries = (TimeSeries<?, ?>) entity;
-            persistTimeSeries(timeSeries);
+            points.addAll(transformToPoints(timeSeries));
         } else {
             log.error(
                     "I don't know how to handle an entity of class {}", entity.getClass().getSimpleName());
