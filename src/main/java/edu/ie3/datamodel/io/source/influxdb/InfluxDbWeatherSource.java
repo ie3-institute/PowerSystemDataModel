@@ -34,7 +34,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   private final TimeBasedWeatherValueFactory weatherValueFactory;
 
   /**
-   * Initalizes a new InfluxDbWeatherSource
+   * Initializes a new InfluxDbWeatherSource
    *
    * @param connector needed for database connection
    * @param coordinateSource needed to map coordinates to ID as InfluxDB does not support spatial

@@ -1,58 +1,65 @@
 @startuml
+scale 2048 width
+scale 768 height
 
 note "Assuming all classes to implement \nthe abstract methods of their interfaces\n\n" as generalNotes
-
-interface Publisher
 
 interface DataConnector {
 {static}{abstract}DataConnector buildConnector(String json)
 {abstract}Boolean validateConnection()
 }
 
-interface Neo4JDataConnector {
-- neo4jDriver driver
-+ Session getSession()
-+ Object runStatement(String query)
-}
-Neo4JDataConnector 	--|> DataConnector
+'Not yet implemented
+'interface Neo4JDataConnector {
+'- neo4jDriver driver
+'+ Session getSession()
+'+ Object runStatement(String query)
+'}
+'Neo4JDataConnector 	--|> DataConnector
+'interface JDBCDataConnector {
+'- DriverManager driverManager
+'+ Connection getConnection()
+'+ ResultSet runStatement(String query)
+'}
+'JDBCDataConnector 	--|> DataConnector
 
-interface JDBCDataConnector {
-- DriverManager driverManager
-+ Connection getConnection()
-+ ResultSet runStatement(String query)
-}
-JDBCDataConnector 	--|> DataConnector
-
-interface CSVDataConnector {
+interface CSVFileConnector {
 - Path path
 }
-CSVDataConnector 	--|> DataConnector
+CSVFileConnector 	--|> DataConnector
+
+interface InfluxDbConnector {
+- url
+- databaseName
+- scenarioName
++ InfluxDB getSession()
+}
+InfluxDbConnector --|> DataConnector
 
 interface DataSource {
 - DataConnector connector
 }
 
 interface GridDataSource {
-{abstract}Future<GridData> fetchGridData()
-{abstract}Future<List<NodeModel>> fetchNodes()
-{abstract}Future<List<LineModel>> fetchLines()
+{abstract}GridData fetchGridData()
+{abstract}List<NodeModel> fetchNodes()
+{abstract}List<LineModel> fetchLines()
 }
 GridDataSource 	--|> DataSource
 
-class Neo4JGridDataSource {
-}
-Neo4JGridDataSource --|> GridDataSource
-Neo4JGridDataSource -->  Neo4JDataConnector
-
-class JDBCGridDataSource {
-}
-JDBCGridDataSource --|> GridDataSource
-JDBCGridDataSource -->  JDBCDataConnector
+'Not yet implemented
+'class Neo4JGridDataSource {
+'}
+'Neo4JGridDataSource --|> GridDataSource
+'Neo4JGridDataSource -->  Neo4JDataConnector
+'class JDBCGridDataSource {
+'}
+'JDBCGridDataSource --|> GridDataSource
 
 class CSVGridDataSource {
 }
 CSVGridDataSource ..|> GridDataSource
-CSVGridDataSource ..|> CSVDataConnector
+CSVGridDataSource ..|> CSVFileConnector
 
 interface AssetDataSource {
 {abstract}Set<EVModel> fetchEvs()
@@ -65,37 +72,41 @@ interface ThermalSource
 ThermalSource ..|> DataSource
 
 interface TypeDataSource {
-{abstract}Future<TypeData> fetchTypeData()
-{abstract}Future<List<EVTypeModel>> fetchEvTypes()
-{abstract}Future<List<...>> fetch...()
+{abstract}TypeData fetchTypeData()
+{abstract}List<EVTypeModel> fetchEvTypes()
+{abstract}List<...> fetch...()
 }
 TypeDataSource 	..|> DataSource
 
 interface GraphicDataSource {
-{abstract}Future<GraphicData> fetchGraphicData()
-{abstract}Future<List<...>> fetch...()
+{abstract}GraphicData> fetchGraphicData()
+{abstract}List<...> fetch...()
 }
 GraphicDataSource 	..|> DataSource
 
-interface WeatherDataSource {
-{abstract}Future<WeatherData> fetchWeatherData()
-{abstract}Future<WeatherModel> getWeather(Date, Coordinate)
-{abstract}Boolean subscribeToWeatherEvents(ActorRef)
+interface WeatherSource {
+{abstract} + Map<Point, IndividualTimeSeries<WeatherValue>> getWeather\n(ClosedInterval<ZonedDateTime> timeInterval)
+{abstract} + Map<Point, IndividualTimeSeries<WeatherValue>> getWeather\n(ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+{abstract} + Optional<TimeBasedValue<WeatherValue>> getWeather\n(ZonedDateTime date, Point coordinate)
 }
-WeatherDataSource 	--|> DataSource
-WeatherDataSource 	--|> Publisher
+WeatherSource 	--|> DataSource
+
+class InfluxDbWeatherSource {
+
+}
+InfluxDbWeatherSource --|> WeatherSource
+InfluxDbWeatherSource --> InfluxDbConnector
 
 interface WholesaleDataSource {
-{abstract}Future<WholesaleData> fetchWholesaleData()
-{abstract}Future<Double> getWholesale(Date)
+{abstract}WholesaleData fetchWholesaleData()
+{abstract}Double getWholesale(Date)
 {abstract}Boolean subscribeToWholesaleEvents(ActorRef)
 }
 WholesaleDataSource 	--|> DataSource
-WholesaleDataSource 	--|> Publisher
 
 Class InputAccumulator {
 + InputAccumulator InputAccumulator(SimulationModelConfig)
-+ Future<SimulationModel> importSimulationModel()
++ SimulationModel> importSimulationModel()
 + SimulationModel getSimulationModel()
 }
 InputAccumulator --> GridDataSource

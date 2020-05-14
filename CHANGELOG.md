@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 most of the commonly known power flow calculations
 -  gradle task to create JavaDoc HTML files in the folder 'docs/javadoc'
 -  added missing ``HpResult`` model
--  Implementation of ``DataConnector`` and  ``WeatherSource`` for InfluxDB
+-  Implementation of ``DataConnector``, ``WeatherSource`` and ``DataSink`` for InfluxDB
 -  Introduction of a ``IdCoordinateSource`` and implementation of  corresponding csv source for ID to coordinate mapping
 -  Factory for ``TimeBasedValues<WeatherValue>``
 
