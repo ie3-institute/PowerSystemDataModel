@@ -14,10 +14,11 @@ import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
 import java.io.*;
-import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -144,11 +145,25 @@ public class CsvFileConnector implements DataConnector {
           clz::getSimpleName,
           () -> e);
     }
+    newReader = initReader(fileName);
+
+    return newReader;
+  }
+
+  /**
+   * Initializes a file reader for the given file name. Use {@link
+   * CsvFileConnector#initReader(Class)} for files that actually correspond to concrete entities.
+   *
+   * @param fileName the name of the file that should be read
+   * @return the reader that contains information about the file to be read in
+   * @throws FileNotFoundException
+   */
+  public BufferedReader initReader(String fileName) throws FileNotFoundException {
+    BufferedReader newReader;
     File filePath = new File(baseFolderName + File.separator + fileName + FILE_ENDING);
     newReader =
         new BufferedReader(
             new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8), 16384);
-
     return newReader;
   }
 
