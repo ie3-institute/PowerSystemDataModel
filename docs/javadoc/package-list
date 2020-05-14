@@ -1,3 +1,5 @@
+edu.ie3.dataconnection.dataconnectors
+edu.ie3.dataconnection.source
 edu.ie3.datamodel.exceptions
 edu.ie3.datamodel.graph
 edu.ie3.datamodel.io
@@ -9,6 +11,7 @@ edu.ie3.datamodel.io.factory.input
 edu.ie3.datamodel.io.factory.input.graphics
 edu.ie3.datamodel.io.factory.input.participant
 edu.ie3.datamodel.io.factory.result
+edu.ie3.datamodel.io.factory.timeseries
 edu.ie3.datamodel.io.factory.typeinput
 edu.ie3.datamodel.io.processor
 edu.ie3.datamodel.io.processor.input
@@ -17,6 +20,7 @@ edu.ie3.datamodel.io.processor.timeseries
 edu.ie3.datamodel.io.sink
 edu.ie3.datamodel.io.source
 edu.ie3.datamodel.io.source.csv
+edu.ie3.datamodel.io.source.influxdb
 edu.ie3.datamodel.models
 edu.ie3.datamodel.models.input
 edu.ie3.datamodel.models.input.connector
