@@ -57,6 +57,7 @@ public class InfluxDbConnector implements DataConnector {
 
   /**
    * Checks if the given connection parameters are valid, so that a connection can be established
+   *
    * @return true, if the database returned the ping
    */
   public Boolean isConnectionValid() {
@@ -100,8 +101,8 @@ public class InfluxDbConnector implements DataConnector {
    * Parses the result of an influxQL query for all measurements (e.g. weather)
    *
    * @param queryResult Result of an influxDB query
-   * @return Map of (measurement name : Set of maps of (field name : field value)) for each
-   *     result entity)
+   * @return Map of (measurement name : Set of maps of (field name : field value)) for each result
+   *     entity)
    */
   public static Map<String, Set<Map<String, String>>> parseQueryResult(QueryResult queryResult) {
     return parseQueryResult(queryResult, new String[0]);
@@ -112,9 +113,10 @@ public class InfluxDbConnector implements DataConnector {
    * weather). If no measurement names are given, all results are parsed and returned
    *
    * @param queryResult Result of an influxDB query
-   * @param measurementNames Names of measurements that should be parsed. If none are given, all measurements will be parsed
-   * @return Map of (measurement name : Set of maps of (field name : field value) for each
-   *     result entity)
+   * @param measurementNames Names of measurements that should be parsed. If none are given, all
+   *     measurements will be parsed
+   * @return Map of (measurement name : Set of maps of (field name : field value) for each result
+   *     entity)
    */
   public static Map<String, Set<Map<String, String>>> parseQueryResult(
       QueryResult queryResult, String... measurementNames) {
@@ -141,11 +143,11 @@ public class InfluxDbConnector implements DataConnector {
    * Parses the result of one influxQL query for the given measurements (e.g. weather). If no
    * measurement names are given, all results are parsed and returned
    *
-   *
    * @param result Specific result of an influxDB query
-   * @param measurementNames Names of measurements that should be parsed. If none are given, all measurements will be parsed
-   * @return Map of (measurement name : Set of maps of (field name : field value) for each
-   *     result entity)
+   * @param measurementNames Names of measurements that should be parsed. If none are given, all
+   *     measurements will be parsed
+   * @return Map of (measurement name : Set of maps of (field name : field value) for each result
+   *     entity)
    */
   public static Map<String, Set<Map<String, String>>> parseResult(
       QueryResult.Result result, String... measurementNames) {

@@ -1,5 +1,3 @@
-edu.ie3.dataconnection.dataconnectors
-edu.ie3.dataconnection.source
 edu.ie3.datamodel.exceptions
 edu.ie3.datamodel.graph
 edu.ie3.datamodel.io

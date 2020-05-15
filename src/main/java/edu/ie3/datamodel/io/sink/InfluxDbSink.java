@@ -279,7 +279,9 @@ public class InfluxDbSink implements DataSink {
     return points;
   }
 
-  /** Writes the point to the database
+  /**
+   * Writes the point to the database
+   *
    * @param point point to write
    */
   public void write(Point point) {
@@ -289,7 +291,9 @@ public class InfluxDbSink implements DataSink {
     }
   }
 
-  /** Writes all points as a batch to the database
+  /**
+   * Writes all points as a batch to the database
+   *
    * @param points points to write
    */
   public void writeAll(Collection<Point> points) {

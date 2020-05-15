@@ -162,7 +162,8 @@ public class InfluxDbWeatherSource implements WeatherSource {
     return "coordinate='" + coordinateSource.getId(coordinate) + "'";
   }
 
-  /** Removes empty Optionals
+  /**
+   * Removes empty Optionals
    *
    * @param elements stream to filter
    * @return filtered elements Stream
