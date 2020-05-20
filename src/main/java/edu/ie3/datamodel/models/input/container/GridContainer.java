@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 
-public abstract class GridContainer implements InputContainer {
+public abstract class GridContainer implements InputContainer<InputEntity> {
   /** Name of this grid */
   protected final String gridName;
   /** Accumulated raw grid elements (lines, nodes, transformers, switches) */

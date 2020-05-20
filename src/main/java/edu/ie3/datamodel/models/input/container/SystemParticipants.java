@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * Represents the accumulation of system participant elements (BM plants, CHP plants, EVCS, fixed
  * feed ins, heat pumps, loads, PV plants, storages, WECs)
  */
-public class SystemParticipants implements InputContainer {
+public class SystemParticipants implements InputContainer<AssetInput> {
   private final Set<BmInput> bmPlants;
   private final Set<ChpInput> chpPlants;
   private final Set<EvcsInput> evCS;

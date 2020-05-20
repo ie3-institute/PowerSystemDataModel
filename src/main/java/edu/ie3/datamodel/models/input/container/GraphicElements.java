@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /** Represents the accumulation of graphic data elements (node graphics, line graphics) */
-public class GraphicElements implements InputContainer {
+public class GraphicElements implements InputContainer<GraphicInput> {
 
   private final Set<NodeGraphicInput> nodeGraphics;
   private final Set<LineGraphicInput> lineGraphics;

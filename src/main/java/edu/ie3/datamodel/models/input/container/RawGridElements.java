@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /** Represents the aggregation of raw grid elements (nodes, lines, transformers, switches) */
-public class RawGridElements implements InputContainer {
+public class RawGridElements implements InputContainer<AssetInput> {
   /** Set of nodes in this grid */
   private final Set<NodeInput> nodes;
   /** Set of lines in this grid */
