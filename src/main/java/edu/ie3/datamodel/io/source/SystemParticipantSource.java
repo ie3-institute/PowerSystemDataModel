@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.models.input.EvcsInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;

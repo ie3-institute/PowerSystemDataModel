@@ -6,19 +6,16 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.SwitchInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /** Represents the aggregation of raw grid elements (nodes, lines, transformers, switches) */
-public class RawGridElements implements InputContainer {
+public class RawGridElements implements InputContainer<AssetInput> {
   /** Set of nodes in this grid */
   private final Set<NodeInput> nodes;
   /** Set of lines in this grid */
@@ -92,8 +89,8 @@ public class RawGridElements implements InputContainer {
   }
 
   @Override
-  public List<UniqueEntity> allEntitiesAsList() {
-    List<UniqueEntity> allEntities = new ArrayList<>();
+  public List<AssetInput> allEntitiesAsList() {
+    List<AssetInput> allEntities = new ArrayList<>();
     allEntities.addAll(nodes);
     allEntities.addAll(lines);
     allEntities.addAll(transformer2Ws);
