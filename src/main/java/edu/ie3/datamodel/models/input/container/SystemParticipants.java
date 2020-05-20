@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.EvcsInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
  * Represents the accumulation of system participant elements (BM plants, CHP plants, EVCS, fixed
  * feed ins, heat pumps, loads, PV plants, storages, WECs)
  */
-public class SystemParticipants implements InputContainer<AssetInput> {
+public class SystemParticipants implements InputContainer<SystemParticipantInput> {
   private final Set<BmInput> bmPlants;
   private final Set<ChpInput> chpPlants;
   private final Set<EvcsInput> evCS;
@@ -113,8 +112,8 @@ public class SystemParticipants implements InputContainer<AssetInput> {
   }
 
   @Override
-  public List<AssetInput> allEntitiesAsList() {
-    List<AssetInput> allEntities = new ArrayList<>();
+  public List<SystemParticipantInput> allEntitiesAsList() {
+    List<SystemParticipantInput> allEntities = new ArrayList<>();
     allEntities.addAll(bmPlants);
     allEntities.addAll(chpPlants);
     allEntities.addAll(evCS);
