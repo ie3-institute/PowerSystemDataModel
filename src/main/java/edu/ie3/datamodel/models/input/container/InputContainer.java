@@ -5,12 +5,12 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.List;
 
 /** Represents an aggregation of different entities */
-public interface InputContainer<T extends UniqueEntity> {
+public interface InputContainer<T extends InputEntity> {
 
   /** @return unmodifiable List of all entities */
   List<T> allEntitiesAsList();
