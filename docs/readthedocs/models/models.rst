@@ -110,6 +110,7 @@ Participant Related Models
    result/participant/ev
    result/participant/evcs
    result/participant/fixedfeedin
+   result/participant/hp
    result/participant/load
    result/participant/pv
    result/participant/storage
@@ -140,7 +141,7 @@ Repetitive Time Series
    Those time series do have repetitive values, e.g. each day or at any other period.
    Therefore, they can be applied to any time frame, as the mapping from time instant to value is made by information
    reduction.
-   Despite the actual data, also a mapping function has to be known.
+   In addition to actual data, a mapping function has to be known.
 
 To be as flexible, as possible, the actual content of the time series is given as children of the :code:`Value` class.
 The following different values are available:

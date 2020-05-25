@@ -2,10 +2,7 @@
 
 Electrical Energy Storage
 -------------------------
-Whoops!
-Seems, you found a construction site...
-Sorry, that we cannot provide you with this information at the moment.
-But we are very happy to help you, please just contact us!
+Model of an ideal electrical battery energy storage.
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

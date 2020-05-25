@@ -22,7 +22,7 @@ SubGridContainer
    As of convention, the :code:`SubGridContainers` hold also reference to the transformers leading to higher sub grids
    and their higher voltage coupling point.
 
-A synoptic overview of both classes attributes is given here:
+A synoptic overview of both classes' attributes is given here:
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -45,6 +45,7 @@ Attributes, Units and Remarks
 +-------------------------+------+---------------------------------------------------------+
 
 .. _grid_container_raw_grid_elements:
+
 RawGridElements
 """""""""""""""
 This sub container simply holds:
@@ -57,6 +58,7 @@ This sub container simply holds:
    * :ref:`measurement units<measurement_unit_model>`
 
 .. _grid_container_system_participants:
+
 SystemParticipants
 """"""""""""""""""
 This sub container simply holds:
@@ -75,6 +77,7 @@ This sub container simply holds:
 and the needed nested thermal models.
 
 .. _grid_container_graphics:
+
 Graphics
 """"""""
 This sub container simply holds:

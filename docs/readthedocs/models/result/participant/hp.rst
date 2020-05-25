@@ -1,8 +1,8 @@
-.. _ev_result:
+.. _hp_result:
 
-Electric Vehicle
-----------------
-Result of an electric vehicle, that is occasionally connected to the grid via an :ref:`electric vehicle charging station<evcs_model>`.
+Load
+----
+Result of a heat pump.
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -20,7 +20,7 @@ Attributes, Units and Remarks
 +---------------+---------+--------------------------------------------------------------+
 | q             | MVAr    |                                                              |
 +---------------+---------+--------------------------------------------------------------+
-| soc           | --      |                                                              |
+| qDot          | MW      | Thermal power                                                |
 +---------------+---------+--------------------------------------------------------------+
 
 Caveats

@@ -16,9 +16,9 @@ With this document we would like to give you some orientation on how you can con
 ## Testing and reporting bugs
 We really appreciate your usage of this project.
 Whenever you find a bug, it would be nice to check, if this isn't a feature to us. :wink:
-You may find extended information about the intended behaviour when you [Read the Docs](https://powersystemdatamodel.readthedocs.io/en/latest/) or within the [javadoc](https://ie3-institute.github.io/PowerSystemDataModel/javadoc/).
+You may find extensive information about the intended behaviour when you [Read the Docs](https://powersystemdatamodel.readthedocs.io/en/latest/) or within the [javadoc](https://ie3-institute.github.io/PowerSystemDataModel/javadoc/).
 If you still think it's a bug, please raise an [issue](https://guides.github.com/features/issues/) for us.
-Considering the following aspects in your inquire, assists us in helping you:
+Considering the following aspects in your inquiry, assists us in helping you:
 
 * **Is there already an issue addressing your problem?**
 * Try to **locate the error** as precise as possible.

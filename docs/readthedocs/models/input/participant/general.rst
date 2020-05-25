@@ -13,7 +13,7 @@ Currently three different characteristics are implemented:
 
 Fixed Power Factor
 """"""""""""""""""
-Active and reactive power are coupled by a timely independent power factor.
+Active and reactive power are coupled by a time-independent power factor.
 It can be parsed from :code:`cosPhiFixed:{(0.0, 0.95)}` (exemplary).
 
 Active Power Dependent Power Factor

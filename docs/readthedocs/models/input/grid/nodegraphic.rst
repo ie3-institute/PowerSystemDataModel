@@ -2,7 +2,7 @@
 
 Schematic Node Graphic
 ----------------------
-Schematic drawing information for a line model.
+Schematic drawing information for a node model.
 
 Attributes, Units and Remarks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
