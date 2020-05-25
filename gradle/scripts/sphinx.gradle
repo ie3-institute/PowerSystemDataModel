@@ -2,8 +2,8 @@
 // Documentation generation and configuration
 //////////////////////////////////////////////////////////////////////
 sphinx {
-    sourceDirectory = "${projectDir}/docs/readthedocs"
-    outputDirectory = "${project.buildDir}/docs/readthedocs"
+	sourceDirectory = "${projectDir}/docs/readthedocs"
+	outputDirectory = "${project.buildDir}/docs/readthedocs"
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -12,23 +12,24 @@ sphinx {
 // being able to execute this task! -> https://graphviz.org
 //////////////////////////////////////////////////////////////////////
 task genDocs(dependsOn: sphinx) {
-    doLast {
-        def pumlJarFile = project.file("${project.buildDir}/plantuml.jar")
-        if (!pumlJarFile.exists() || !pumlJarFile.isFile()) {
-            download {
-                src 'https://downloads.sourceforge.net/project/plantuml/plantuml.jar'
-                dest buildDir
-            }
-        }
-        javaexec {
-            main = "-jar"
-            args = [
-                    "build/plantuml.jar",
-                    "-psvg",
-                    "-o", "${projectDir}/docs/readthedocs/_static/figures/uml/",
-                    "docs/uml/**/*.puml"
-            ]
-        }
+	doLast {
+		def pumlJarFile = project.file("${project.buildDir}/plantuml.jar")
+		if (!pumlJarFile.exists() || !pumlJarFile.isFile()) {
+			download {
+				src 'https://downloads.sourceforge.net/project/plantuml/plantuml.jar'
+				dest buildDir
+			}
+		}
+		javaexec {
+			main = "-jar"
+			args = [
+				"build/plantuml.jar",
+				"-psvg",
+				"-o",
+				"${projectDir}/docs/readthedocs/_static/figures/uml/",
+				"docs/uml/**/*.puml"
+			]
+		}
 
-    }
+	}
 }
