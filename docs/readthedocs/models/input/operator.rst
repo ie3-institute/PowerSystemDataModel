@@ -1,3 +1,5 @@
+.. _operator_model:
+
 Operator
 --------
 This is a simple identifier object, representing a natural or legal person that is the owner or responsible person

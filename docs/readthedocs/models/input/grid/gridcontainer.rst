@@ -1,3 +1,5 @@
+.. _grid_container_model:
+
 Grid Container
 --------------
 The grid container groups all entities that are able to form a full grid model.
@@ -42,6 +44,7 @@ Attributes, Units and Remarks
 | subnet                  | --   | sub grid number - only :code:`SubGridContainer`         |
 +-------------------------+------+---------------------------------------------------------+
 
+.. _grid_container_raw_grid_elements:
 RawGridElements
 """""""""""""""
 This sub container simply holds:
@@ -53,6 +56,7 @@ This sub container simply holds:
    * :ref:`three winding transformers<transformer3w_model>`
    * :ref:`measurement units<measurement_unit_model>`
 
+.. _grid_container_system_participants:
 SystemParticipants
 """"""""""""""""""
 This sub container simply holds:
@@ -70,6 +74,7 @@ This sub container simply holds:
 
 and the needed nested thermal models.
 
+.. _grid_container_graphics:
 Graphics
 """"""""
 This sub container simply holds:

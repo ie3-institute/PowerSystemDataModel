@@ -128,9 +128,13 @@ Time series are meant to represent a timely ordered series of values.
 Those can either be electrical or non-electrical depending on what one may need for power system simulations.
 Our time series models are divided into two subtypes:
 
+.. _individual_time_series:
+
 Individual Time Series
    Each time instance in this time series has its own value (random duplicates may occur obviously).
    They are only applicable for the time frame that is defined by the content of the time series.
+
+.. _repetitive_time_series:
 
 Repetitive Time Series
    Those time series do have repetitive values, e.g. each day or at any other period.
