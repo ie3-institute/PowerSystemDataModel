@@ -45,10 +45,10 @@ public class WecTypeInput extends SystemParticipantTypeInput {
       String id,
       ComparableQuantity<Currency> capex,
       ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Power> sRated,
       double cosphiRated,
       WecCharacteristicInput cpCharacteristic,
       ComparableQuantity<Dimensionless> etaConv,
-      ComparableQuantity<Power> sRated,
       ComparableQuantity<Area> rotorArea,
       ComparableQuantity<Length> hubHeight) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosphiRated);

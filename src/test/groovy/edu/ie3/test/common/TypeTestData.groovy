@@ -99,10 +99,10 @@ class TypeTestData extends GridTestData {
 	"Test wec type",
 	Quantities.getQuantity(100d, EURO),
 	Quantities.getQuantity(101d, EURO_PER_MEGAWATTHOUR),
+	Quantities.getQuantity(2.5d, MEGAVOLTAMPERE),
 	0.95,
 	wecCharacteristicInput,
 	Quantities.getQuantity(0.9, PU),
-	Quantities.getQuantity(2.5d, MEGAVOLTAMPERE),
 	Quantities.getQuantity(2000d, SQUARE_METRE),
 	Quantities.getQuantity(130d, METRE)
 	)

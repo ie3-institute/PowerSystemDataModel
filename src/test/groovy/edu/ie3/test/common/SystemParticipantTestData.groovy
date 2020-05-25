@@ -127,10 +127,10 @@ class SystemParticipantTestData {
 	"test_wecType",
 	capex,
 	opex,
+	sRated,
 	cosPhiRated,
 	wecCharacteristic,
 	etaConv,
-	sRated,
 	rotorArea,
 	hubHeight
 	)
