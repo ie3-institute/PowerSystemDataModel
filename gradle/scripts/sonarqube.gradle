@@ -1,9 +1,9 @@
 sonarqube {
 	properties {
 		// general stuff
-		property 'sonar.projectName', 'utils' // project name
-		property 'sonar.projectKey', 'edu.ie3:utils' // project key
-		property 'sonar.verbose', 'true' // verbose mode
+		property 'sonar.projectName', 'PowerSystemDataModel'
+		property 'sonar.projectKey', 'edu.ie3:PowerSystemDataModel'
+		property 'sonar.verbose', 'false' // WARNING: There is the potential for this setting to expose sensitive information such as passwords if they are stored as server-side environment variables.
 		property 'sonar.sourceEncoding', 'UTF-8' // encoding
 		property 'sonar.sources', [
 			'src/main/resources',
@@ -31,6 +31,10 @@ sonarqube {
 		/// integration tests reports dir (if any)
 		property 'sonar.groovy.jacoco.itReportPath', 'build/jacoco/allTests.exec'
 		property 'sonar.groovy.binaries', 'build/classes/groovy' // groovy binaries
+
+		// exclusions
+		property 'sonar.exclusions', ['docs/**']
+
 
 	}
 }

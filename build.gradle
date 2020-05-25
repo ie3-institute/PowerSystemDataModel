@@ -19,6 +19,7 @@ ext {
 	javaVersion = JavaVersion.VERSION_1_8
 	unitsOfMeasurementVersion = '1.0.10'
 	tscfgVersion = '0.9.9'
+	testcontainersVersion = '1.14.1'
 
 	scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -39,6 +40,7 @@ apply from: scriptsLocation + 'sphinx.gradle'
 apply from: scriptsLocation + 'jacoco.gradle' // jacoco java code coverage
 apply from: scriptsLocation + 'mavenCentralPublish.gradle'
 apply from: scriptsLocation + 'javadoc.gradle'
+apply from: scriptsLocation + 'sonarqube.gradle'
 
 repositories {
 	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
@@ -64,10 +66,18 @@ dependencies {
 	testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
 	testCompile 'org.objenesis:objenesis:3.1' // Mock creation with constructor parameters
 
+	// Testcontainers (Docker Framework for testing)
+	testCompile "org.testcontainers:testcontainers:$testcontainersVersion"
+	testCompile "org.testcontainers:spock:$testcontainersVersion"
+	testCompile "org.testcontainers:influxdb:$testcontainersVersion"
+
 	// logging
 	compile 'org.apache.logging.log4j:log4j-api:+' // log4j
 	compile 'org.apache.logging.log4j:log4j-core:+' // log4j
 	compile 'org.apache.logging.log4j:log4j-slf4j-impl:+' // log4j -> slf4j
+
+	//InfluxDb
+	compile 'org.influxdb:influxdb-java:2.17'
 }
 
 wrapper {

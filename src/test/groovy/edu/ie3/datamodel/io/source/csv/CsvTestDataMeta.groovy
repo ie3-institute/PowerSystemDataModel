@@ -18,6 +18,7 @@ trait CsvTestDataMeta {
 	String gridFolderPath = testBaseFolderPath.concat(File.separator).concat("grid")
 	String participantsFolderPath =  testBaseFolderPath.concat(File.separator).concat("participants")
 	String thermalFolderPath = testBaseFolderPath.concat(File.separator).concat("thermal")
+	String coordinatesFolderPath = testBaseFolderPath.concat(File.separator).concat("coordinates")
 
 	String csvSep = ","
 	FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
