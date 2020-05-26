@@ -18,3 +18,5 @@ Provides an extensive data model capable of modelling energy systems with high g
 **Supported simulation data:**
 
 	Load profiles, weather data etc.
+
+For more information visit [ReadTheDocs](https://powersystemdatamodel.readthedocs.io/en/latest/) or the [API docs](https://ie3-institute.github.io/PowerSystemDataModel/javadoc/).
