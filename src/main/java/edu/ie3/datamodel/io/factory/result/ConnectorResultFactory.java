@@ -28,8 +28,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   private static final String TAPPOS = "tappos";
 
   public ConnectorResultFactory() {
-    super(
-        LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
+    super(LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
   }
 
   @Override
@@ -39,7 +38,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     final Class<? extends UniqueEntity> entityClass = simpleEntityData.getEntityClass();
-     if (entityClass.equals(Transformer2WResult.class)) {
+    if (entityClass.equals(Transformer2WResult.class)) {
       minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, TAPPOS);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     } else if (entityClass.equals(Transformer3WResult.class)) {
