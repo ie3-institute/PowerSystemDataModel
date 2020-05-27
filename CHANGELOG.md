@@ -17,7 +17,7 @@ most of the commonly known power flow calculations
 -  Implementation of ``DataConnector`` and  ``WeatherSource`` for InfluxDB
 -  Introduction of a ``IdCoordinateSource`` and implementation of  corresponding csv source for ID to coordinate mapping
 -  Factory for ``TimeBasedValues<WeatherValue>``
--  Documentation with Sphinx / ReadTheDocs: https://powersystemdatamodel.readthedocs.io/en/latest/
+-  Documentation with Sphinx / ReadTheDocs: [https://powersystemdatamodel.readthedocs.io/en/latest/](https://powersystemdatamodel.readthedocs.io/en/latest/)
 
 ### Changed
 -  Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
