@@ -5,17 +5,15 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.quantity.Angle;
-import javax.measure.quantity.ElectricCurrent;
-import tec.uom.se.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link edu.ie3.datamodel.models.input.connector.SwitchInput}
  */
-public class SwitchResult extends ConnectorResult {
+public class SwitchResult extends ResultEntity {
 
   /** is the switching state 'closed'? */
   private boolean closed;
@@ -25,21 +23,10 @@ public class SwitchResult extends ConnectorResult {
    *
    * @param timestamp date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
-   * @param iAMag electric current magnitude @ port A, normally provided in Ampere
-   * @param iAAng electric current angle @ Port A in degree
-   * @param iBMag electric current magnitude @ port B, normally provided in Ampere
-   * @param iBAng electric current angle @ Port B in degree
    * @param closed true if switch is closed, false if switch is open
    */
-  public SwitchResult(
-      ZonedDateTime timestamp,
-      UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag,
-      ComparableQuantity<Angle> iAAng,
-      ComparableQuantity<ElectricCurrent> iBMag,
-      ComparableQuantity<Angle> iBAng,
-      boolean closed) {
-    super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
+  public SwitchResult(ZonedDateTime timestamp, UUID inputModel, boolean closed) {
+    super(timestamp, inputModel);
     this.closed = closed;
   }
 
@@ -50,22 +37,10 @@ public class SwitchResult extends ConnectorResult {
    *     above
    * @param timestamp date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
-   * @param iAMag electric current magnitude @ port A, normally provided in Ampere
-   * @param iAAng electric current angle @ Port A in degree
-   * @param iBMag electric current magnitude @ port B, normally provided in Ampere
-   * @param iBAng electric current angle @ Port B in degree
    * @param closed true if switch is closed, false if switch is open
    */
-  public SwitchResult(
-      UUID uuid,
-      ZonedDateTime timestamp,
-      UUID inputModel,
-      ComparableQuantity<ElectricCurrent> iAMag,
-      ComparableQuantity<Angle> iAAng,
-      ComparableQuantity<ElectricCurrent> iBMag,
-      ComparableQuantity<Angle> iBAng,
-      boolean closed) {
-    super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
+  public SwitchResult(UUID uuid, ZonedDateTime timestamp, UUID inputModel, boolean closed) {
+    super(uuid, timestamp, inputModel);
     this.closed = closed;
   }
 
