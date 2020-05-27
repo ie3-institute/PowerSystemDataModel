@@ -56,7 +56,6 @@ String featureBranchName = ""
 def gradleTasks = "--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain spotbugsTest allTests" // the gradle tasks that are executed on ALL projects
 def mainProjectGradleTasks = "jacocoTestReport jacocoTestCoverageVerification" // additional tasks that are only executed on project 0 (== main project)
 // if you need additional tasks for deployment add them here
-// NOTE: artifactory task with credentials will be added below
 def deployGradleTasks = ""
 
 /// commit hash

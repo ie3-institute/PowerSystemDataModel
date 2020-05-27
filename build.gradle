@@ -1,5 +1,4 @@
 plugins {
-	id "com.jfrog.artifactory" version "4.9.7"
 	id 'java' //java support
 	id 'groovy' // groovy support
 	id 'maven-publish'
