@@ -198,10 +198,6 @@ class ResultEntityProcessorTest extends Specification {
 	@Shared
 	def expectedSwitchResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-		iAMag     : '100.0',
-		iAAng     : '45.0',
-		iBMag     : '150.0',
-		iBAng     : '30.0',
 		closed    : 'true',
 		timestamp : '2020-01-30T17:26:44Z[UTC]']
 
@@ -241,7 +237,7 @@ class ResultEntityProcessorTest extends Specification {
 		where:
 		modelClass          | validConnectorResult                                                                                                                          || expectedResults
 		LineResult          | new LineResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, iAMag, iAAng, iBMag, iBAng)                                || expectedLineResults
-		SwitchResult        | new SwitchResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, iAMag, iAAng, iBMag, iBAng, closed)                      || expectedSwitchResults
+		SwitchResult        | new SwitchResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, closed)                    								|| expectedSwitchResults
 		Transformer2WResult | new Transformer2WResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, iAMag, iAAng, iBMag, iBAng, tapPos)               || expectedTrafo2WResults
 		Transformer3WResult | new Transformer3WResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos) || expectedTrafo3WResults
 	}

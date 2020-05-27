@@ -18,6 +18,7 @@ most of the commonly known power flow calculations
 -  Introduction of a ``IdCoordinateSource`` and implementation of  corresponding csv source for ID to coordinate mapping
 -  Factory for ``TimeBasedValues<WeatherValue>``
 -  Documentation with Sphinx / ReadTheDocs: [https://powersystemdatamodel.readthedocs.io/en/latest/](https://powersystemdatamodel.readthedocs.io/en/latest/)
+-  Introduction of``SwitchResultFactory`` to build adapted ``SwitchResult`` entities
 
 ### Changed
 -  Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
