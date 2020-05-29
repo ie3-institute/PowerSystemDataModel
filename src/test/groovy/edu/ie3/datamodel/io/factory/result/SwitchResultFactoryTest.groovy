@@ -18,7 +18,7 @@ class SwitchResultFactoryTest extends Specification implements FactoryTestHelper
 	def "A SwitchResultFactory should contain all expected classes for parsing"() {
 		given:
 		def resultFactory = new SwitchResultFactory()
-		def expectedClasses = [SwitchResult,]
+		def expectedClasses = [SwitchResult]
 
 		expect:
 		resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
