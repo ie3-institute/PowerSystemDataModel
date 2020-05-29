@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.utils
 
+import edu.ie3.datamodel.exceptions.InvalidEntityException
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
+
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
@@ -79,5 +82,22 @@ class ValidationUtilsTest extends Specification {
 			GridTestData.nodeD,
 			GridTestData.nodeE] as Set || Optional.empty()
 		[] as Set                          || Optional.empty()
+	}
+
+	def "The validation utils should thrown an null pointer exception if the provided type is null"() {
+		when:
+		ValidationUtils.checkLineType(null)
+
+		then:
+		NullPointerException ex = thrown()
+		ex.message == "Expected a line type, but got nothing. :-("
+	}
+
+	def "A LineType should throw a NullPointerException if the provided field values are null"() {
+		when:
+		new LineTypeInput(null, null, null,null,null,null,null,null)
+
+		then:
+		NullPointerException ex = thrown()
 	}
 }
