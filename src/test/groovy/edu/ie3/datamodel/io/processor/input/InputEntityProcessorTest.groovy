@@ -65,7 +65,7 @@ class InputEntityProcessorTest extends Specification {
 
 		Map expectedResults = [
 			"uuid"         : "4ca90220-74c2-4369-9afa-a18bf068840d",
-			"geoPosition"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"geoPosition"  : "'{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}'",
 			"id"           : "node_a",
 			"operatesUntil": "2020-03-25T15:11:31Z[UTC]",
 			"operatesFrom" : "2020-03-24T15:11:31Z[UTC]",
@@ -142,13 +142,13 @@ class InputEntityProcessorTest extends Specification {
 
 		LineInput          | GridTestData.lineCtoD           || [
 			"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"geoPosition"      : "{\"type\":\"LineString\",\"coordinates\":[[7.411111,51.492528],[7.414116,51.484136]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"geoPosition"      : "'{\"type\":\"LineString\",\"coordinates\":[[7.411111,51.492528],[7.414116,51.484136]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}'",
 			"id"               : "test_line_CtoD",
 			"length"           : "0.003",
 			"parallelDevices"  : "2",
 			"nodeA"            : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
 			"nodeB"            : "6e0980e0-10f2-4e18-862b-eb2b7c90509b",
-			"olmCharacteristic": "olm:{(0.00,1.00)}",
+			"olmCharacteristic": "'olm:{(0.00,1.00)}'",
 			"operatesUntil"    : "2020-03-25T15:11:31Z[UTC]",
 			"operatesFrom"     : "2020-03-24T15:11:31Z[UTC]",
 			"operator"         : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
@@ -297,7 +297,7 @@ class InputEntityProcessorTest extends Specification {
 			"uuid"        : "09aec636-791b-45aa-b981-b14edf171c4c",
 			"graphicLayer": "main",
 			"path"        : "",
-			"point"       : "{\"type\":\"Point\",\"coordinates\":[0.0,10],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"point"       : "'{\"type\":\"Point\",\"coordinates\":[0.0,10],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}'",
 			"node"        : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2"
 		]
 
@@ -316,7 +316,7 @@ class InputEntityProcessorTest extends Specification {
 		Map expected = [
 			"uuid"        : "9ecad435-bd16-4797-a732-762c09d4af25",
 			"graphicLayer": "main",
-			"path"        : "{\"type\":\"LineString\",\"coordinates\":[[-1,0.0],[1,0.0]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"path"        : "'{\"type\":\"LineString\",\"coordinates\":[[-1,0.0],[1,0.0]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}'",
 			"point"       : "",
 			"node"        : "6e0980e0-10f2-4e18-862b-eb2b7c90509b"
 		]
@@ -336,7 +336,7 @@ class InputEntityProcessorTest extends Specification {
 		Map expected = [
 			"uuid"        : "ece86139-3238-4a35-9361-457ecb4258b0",
 			"graphicLayer": "main",
-			"path"        : "{\"type\":\"LineString\",\"coordinates\":[[0.0,0.0],[0.0,10]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"path"        : "'{\"type\":\"LineString\",\"coordinates\":[[0.0,0.0],[0.0,10]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}'",
 			"line"        : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
 		]
 
@@ -413,7 +413,7 @@ class InputEntityProcessorTest extends Specification {
 			"capex"           : "100.0",
 			"opex"            : "101.0",
 			"cosPhiRated"     : "0.95",
-			"cpCharacteristic": "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",
+			"cpCharacteristic": "'cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}'",
 			"etaConv"         : "90.0",
 			"sRated"          : "2500.0",
 			"rotorArea"       : "2000.0",

@@ -239,7 +239,10 @@ public abstract class Processor<T> {
         break;
       case "Point":
       case "LineString":
-        resultStringBuilder.append(geoJsonWriter.write((Geometry) methodReturnObject));
+        resultStringBuilder
+            .append("'")
+            .append(geoJsonWriter.write((Geometry) methodReturnObject))
+            .append("'");
         break;
       case "StandardLoadProfile":
         resultStringBuilder.append(((StandardLoadProfile) methodReturnObject).getKey());
@@ -279,7 +282,10 @@ public abstract class Processor<T> {
       case "QV":
       case "ReactivePowerCharacteristic":
       case "CharacteristicInput":
-        resultStringBuilder.append(((CharacteristicInput<?, ?>) methodReturnObject).deSerialize());
+        resultStringBuilder
+            .append("'")
+            .append(((CharacteristicInput<?, ?>) methodReturnObject).deSerialize())
+            .append("'");
         break;
       default:
         throw new EntityProcessorException(

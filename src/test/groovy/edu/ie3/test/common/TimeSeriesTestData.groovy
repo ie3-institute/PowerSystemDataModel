@@ -243,7 +243,7 @@ trait TimeSeriesTestData {
 	Set<LinkedHashMap<String, String>>  individualWeatherTimeSeriesProcessed = [
 		[
 			"uuid" 					: "edb872a0-7421-4283-b072-91b9a729dabf",
-			"coordinate"			: "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"coordinate"			: "'{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}'",
 			"diffuseIrradiation"	: "10.0",
 			"directIrradiation"		: "5.0",
 			"direction"				: "5.0",
@@ -253,7 +253,7 @@ trait TimeSeriesTestData {
 		] as LinkedHashMap,
 		[
 			"uuid" 					: "b264057c-bc38-4f49-ab27-c7dc5dd51b4c",
-			"coordinate"			: "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"coordinate"			: "'{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}'",
 			"diffuseIrradiation"	: "20.0",
 			"directIrradiation"		: "15.0",
 			"direction"				: "15.0",
@@ -263,7 +263,7 @@ trait TimeSeriesTestData {
 		] as LinkedHashMap,
 		[
 			"uuid" 					: "79eff66e-a910-4ba8-b2c6-ac622bef55b3",
-			"coordinate"			: "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"coordinate"			: "'{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}'",
 			"diffuseIrradiation"	: "15.0",
 			"directIrradiation"		: "10.0",
 			"direction"				: "10.0",
