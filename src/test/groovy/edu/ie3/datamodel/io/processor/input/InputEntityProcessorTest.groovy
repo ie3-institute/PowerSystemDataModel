@@ -52,7 +52,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
  *
  * @version 0.1
  * @since 24.03.20
- * TODO Sample TExt to trigger deployment
  */
 class InputEntityProcessorTest extends Specification {
 	static {
