@@ -30,8 +30,8 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
 		def inputFactory = new NodeGraphicInputFactory()
 		Map<String, String> parameter = [
 			"uuid"        : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"point"       : "{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }",
-			"path"        : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+			"point"       : "'{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }'",
+			"path"        : "'{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}'",
 			"graphiclayer": "test_graphic_layer"
 		]
 
@@ -59,7 +59,7 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
 		def inputFactory = new NodeGraphicInputFactory()
 		Map<String, String> parameter = [
 			"uuid"        : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"point"       : "{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }",
+			"point"       : "'{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }'",
 			"path"        : geoLineString,
 			"graphiclayer": "test_graphic_layer"
 		]
@@ -78,9 +78,9 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
 			assert path == GridAndGeoUtils.buildSafeLineString(getGeometry(parameter["path"]) as LineString)
 		}
 		where:
-		geoLineString                                                                                                                         | _
-		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228]]}"                                           | _
-		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228]]}" | _
-		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.311111, 51.49228],[7.511111, 51.49228]]}" | _
+		geoLineString                                                                                                                           | _
+		"'{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228]]}'"                                           | _
+		"'{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228]]}'" | _
+		"'{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.311111, 51.49228],[7.511111, 51.49228]]}'" | _
 	}
 }

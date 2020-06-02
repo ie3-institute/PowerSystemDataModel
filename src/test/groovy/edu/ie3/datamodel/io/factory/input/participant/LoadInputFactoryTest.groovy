@@ -37,7 +37,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 		Map<String, String> parameter = [
 			"uuid"               : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
 			"id"                 : "TestID",
-			"qcharacteristics"   : "cosPhiFixed:{(0.0,1.0)}",
+			"qcharacteristics"   : "'cosPhiFixed:{(0.0,1.0)}'",
 			"standardloadprofile": "G-4",
 			"dsm"                : "true",
 			"econsannual"        : "3",

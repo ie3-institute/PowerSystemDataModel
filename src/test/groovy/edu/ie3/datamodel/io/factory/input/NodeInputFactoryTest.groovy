@@ -37,7 +37,7 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
 			"vtarget"      : "2",
 			"vrated"       : "3",
 			"slack"        : "true",
-			"geoposition"  : "{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }",
+			"geoposition"  : "'{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }'",
 			"voltlvl"      : "lv",
 			"subnet"       : "7"
 		]

@@ -50,7 +50,8 @@ abstract class SystemParticipantInputEntityFactory<
     NodeInput node = data.getNode();
     ReactivePowerCharacteristic qCharacteristics;
     try {
-      qCharacteristics = ReactivePowerCharacteristic.parse(data.getField(Q_CHARACTERISTICS));
+      qCharacteristics =
+          ReactivePowerCharacteristic.parse((data.getField(Q_CHARACTERISTICS)).replaceAll("'", ""));
     } catch (ParsingException e) {
       throw new FactoryException(
           "Cannot parse the following reactive power characteristic: '"

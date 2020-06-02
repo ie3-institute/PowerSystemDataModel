@@ -39,7 +39,7 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
 			"operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
 			"operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
 			"id"              : "TestID",
-			"qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
+			"qcharacteristics": "'cosPhiFixed:{(0.0,1.0)}'",
 			"marketreaction"  : "true"
 		]
 		def inputClass = ChpInput

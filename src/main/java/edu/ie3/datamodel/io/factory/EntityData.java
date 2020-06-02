@@ -176,7 +176,7 @@ public abstract class EntityData {
    * @return Geometry if field value is not empty, empty Optional otherwise
    */
   private Optional<Geometry> getGeometry(String field) {
-    String value = getField(field);
+    String value = getField(field).replaceAll("'", "");
     try {
       if (value.trim().isEmpty()) return Optional.empty();
       else return Optional.of(geoJsonReader.read(value));
