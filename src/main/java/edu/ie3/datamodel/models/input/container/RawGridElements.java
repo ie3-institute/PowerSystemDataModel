@@ -5,13 +5,11 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
-import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -99,33 +97,42 @@ public class RawGridElements implements InputContainer<AssetInput> {
   public RawGridElements(List<AssetInput> rawGridElements) {
 
     /* init sets */
-    this.nodes = new HashSet<>();
-    this.lines = new HashSet<>();
-    this.transformer2Ws = new HashSet<>();
-    this.transformer3Ws = new HashSet<>();
-    this.switches = new HashSet<>();
-    this.measurementUnits = new HashSet<>();
-
-    /* fill the sets */
-    rawGridElements.forEach(
-        systemParticipantInput -> {
-          if (systemParticipantInput instanceof NodeInput) {
-            nodes.add((NodeInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof LineInput) {
-            lines.add((LineInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof Transformer2WInput) {
-            transformer2Ws.add((Transformer2WInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof Transformer3WInput) {
-            transformer3Ws.add((Transformer3WInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof SwitchInput) {
-            switches.add((SwitchInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof MeasurementUnitInput) {
-            measurementUnits.add((MeasurementUnitInput) systemParticipantInput);
-          } else {
-            throw new InvalidEntityException(
-                "Provided entity is not included in RawGridElements.", systemParticipantInput);
-          }
-        });
+    this.nodes =
+        rawGridElements
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof NodeInput)
+            .map(nodeInput -> (NodeInput) nodeInput)
+            .collect(Collectors.toSet());
+    this.lines =
+        rawGridElements
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof LineInput)
+            .map(lineInput -> (LineInput) lineInput)
+            .collect(Collectors.toSet());
+    this.transformer2Ws =
+        rawGridElements
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof Transformer2WInput)
+            .map(trafo2wInput -> (Transformer2WInput) trafo2wInput)
+            .collect(Collectors.toSet());
+    this.transformer3Ws =
+        rawGridElements
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof Transformer3WInput)
+            .map(trafo3wInput -> (Transformer3WInput) trafo3wInput)
+            .collect(Collectors.toSet());
+    this.switches =
+        rawGridElements
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof SwitchInput)
+            .map(switchInput -> (SwitchInput) switchInput)
+            .collect(Collectors.toSet());
+    this.measurementUnits =
+        rawGridElements
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof MeasurementUnitInput)
+            .map(measurementUnitInput -> (MeasurementUnitInput) measurementUnitInput)
+            .collect(Collectors.toSet());
 
     // sanity check to ensure distinct UUIDs
     Optional<String> exceptionString =

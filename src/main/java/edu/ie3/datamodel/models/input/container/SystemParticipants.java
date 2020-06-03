@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.utils.ValidationUtils;
@@ -120,45 +119,66 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   public SystemParticipants(List<SystemParticipantInput> systemParticipants) {
 
     /* init sets */
-    this.bmPlants = new HashSet<>();
-    this.chpPlants = new HashSet<>();
-    this.evCS = new HashSet<>();
-    this.evs = new HashSet<>();
-    this.fixedFeedIns = new HashSet<>();
-    this.heatPumps = new HashSet<>();
-    this.loads = new HashSet<>();
-    this.pvPlants = new HashSet<>();
-    this.storages = new HashSet<>();
-    this.wecPlants = new HashSet<>();
-
-    /* fill the sets */
-    systemParticipants.forEach(
-        systemParticipantInput -> {
-          if (systemParticipantInput instanceof BmInput) {
-            bmPlants.add((BmInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof ChpInput) {
-            chpPlants.add((ChpInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof EvcsInput) {
-            evCS.add((EvcsInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof EvInput) {
-            evs.add((EvInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof FixedFeedInInput) {
-            fixedFeedIns.add((FixedFeedInInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof HpInput) {
-            heatPumps.add((HpInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof LoadInput) {
-            loads.add((LoadInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof PvInput) {
-            pvPlants.add((PvInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof StorageInput) {
-            storages.add((StorageInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof WecInput) {
-            wecPlants.add((WecInput) systemParticipantInput);
-          } else {
-            throw new InvalidEntityException(
-                "Provided entity is not included in SystemParticipants.", systemParticipantInput);
-          }
-        });
+    this.bmPlants =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof BmInput)
+            .map(bmInput -> (BmInput) bmInput)
+            .collect(Collectors.toSet());
+    this.chpPlants =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof ChpInput)
+            .map(chpInput -> (ChpInput) chpInput)
+            .collect(Collectors.toSet());
+    this.evCS =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof EvcsInput)
+            .map(evcsInput -> (EvcsInput) evcsInput)
+            .collect(Collectors.toSet());
+    this.evs =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof EvInput)
+            .map(evInput -> (EvInput) evInput)
+            .collect(Collectors.toSet());
+    this.fixedFeedIns =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof FixedFeedInInput)
+            .map(fixedFeedInInpu -> (FixedFeedInInput) fixedFeedInInpu)
+            .collect(Collectors.toSet());
+    this.heatPumps =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof HpInput)
+            .map(hpInput -> (HpInput) hpInput)
+            .collect(Collectors.toSet());
+    this.loads =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof LoadInput)
+            .map(loadInput -> (LoadInput) loadInput)
+            .collect(Collectors.toSet());
+    this.pvPlants =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof PvInput)
+            .map(pvInput -> (PvInput) pvInput)
+            .collect(Collectors.toSet());
+    this.storages =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof StorageInput)
+            .map(storageInput -> (StorageInput) storageInput)
+            .collect(Collectors.toSet());
+    this.wecPlants =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof WecInput)
+            .map(wecInput -> (WecInput) wecInput)
+            .collect(Collectors.toSet());
 
     // sanity check for distinct uuids
     Optional<String> exceptionString =
