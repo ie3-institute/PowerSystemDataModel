@@ -174,7 +174,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   }
 
   @Override
-  public List<SystemParticipantInput> allEntitiesAsList() {
+  public final List<SystemParticipantInput> allEntitiesAsList() {
     List<SystemParticipantInput> allEntities = new ArrayList<>();
     allEntities.addAll(bmPlants);
     allEntities.addAll(chpPlants);

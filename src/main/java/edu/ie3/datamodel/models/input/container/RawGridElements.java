@@ -141,7 +141,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
   }
 
   @Override
-  public List<AssetInput> allEntitiesAsList() {
+  public final List<AssetInput> allEntitiesAsList() {
     List<AssetInput> allEntities = new ArrayList<>();
     allEntities.addAll(nodes);
     allEntities.addAll(lines);
