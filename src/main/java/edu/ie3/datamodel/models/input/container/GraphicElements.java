@@ -62,21 +62,18 @@ public class GraphicElements implements InputContainer<GraphicInput> {
   public GraphicElements(List<GraphicInput> graphics) {
 
     /* init sets */
-    this.nodeGraphics = new HashSet<>();
-    this.lineGraphics = new HashSet<>();
-
-    /* fill the sets */
-    graphics.forEach(
-        systemParticipantInput -> {
-          if (systemParticipantInput instanceof NodeGraphicInput) {
-            nodeGraphics.add((NodeGraphicInput) systemParticipantInput);
-          } else if (systemParticipantInput instanceof LineGraphicInput) {
-            lineGraphics.add((LineGraphicInput) systemParticipantInput);
-          } else {
-            throw new InvalidEntityException(
-                "Provided entity is not included in GraphicElements.", systemParticipantInput);
-          }
-        });
+    this.nodeGraphics =
+        graphics
+            .parallelStream()
+            .filter(graphic -> graphic instanceof NodeGraphicInput)
+            .map(graphic -> (NodeGraphicInput) graphic)
+            .collect(Collectors.toSet());
+    this.lineGraphics =
+        graphics
+            .parallelStream()
+            .filter(graphic -> graphic instanceof LineGraphicInput)
+            .map(graphic -> (LineGraphicInput) graphic)
+            .collect(Collectors.toSet());
 
     // sanity check for distinct uuids
     Optional<String> exceptionString =
