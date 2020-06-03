@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
+import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.utils.ValidationUtils;
@@ -65,7 +66,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   /**
    * Combine different already existing containers
    *
-   * @param systemParticipants Already existing containers
+   * @param systemParticipants already existing containers
    */
   public SystemParticipants(Collection<SystemParticipants> systemParticipants) {
     this.bmPlants =
@@ -108,6 +109,68 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
         systemParticipants.stream()
             .flatMap(participants -> participants.wecPlants.stream())
             .collect(Collectors.toSet());
+  }
+
+  /**
+   * Create an instance based on a list of {@link SystemParticipantInput} entities
+   *
+   * @param systemParticipants list of system participants this container instance should created
+   *     from
+   */
+  public SystemParticipants(List<SystemParticipantInput> systemParticipants) {
+
+    /* init sets */
+    this.bmPlants = new HashSet<>();
+    this.chpPlants = new HashSet<>();
+    this.evCS = new HashSet<>();
+    this.evs = new HashSet<>();
+    this.fixedFeedIns = new HashSet<>();
+    this.heatPumps = new HashSet<>();
+    this.loads = new HashSet<>();
+    this.pvPlants = new HashSet<>();
+    this.storages = new HashSet<>();
+    this.wecPlants = new HashSet<>();
+
+    /* fill the sets */
+    systemParticipants.forEach(
+        systemParticipantInput -> {
+          if (systemParticipantInput instanceof BmInput) {
+            bmPlants.add((BmInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof ChpInput) {
+            chpPlants.add((ChpInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof EvcsInput) {
+            evCS.add((EvcsInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof EvInput) {
+            evs.add((EvInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof FixedFeedInInput) {
+            fixedFeedIns.add((FixedFeedInInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof HpInput) {
+            heatPumps.add((HpInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof LoadInput) {
+            loads.add((LoadInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof PvInput) {
+            pvPlants.add((PvInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof StorageInput) {
+            storages.add((StorageInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof WecInput) {
+            wecPlants.add((WecInput) systemParticipantInput);
+          } else {
+            throw new InvalidEntityException(
+                "Provided entity is not included in SystemParticipants.", systemParticipantInput);
+          }
+        });
+
+    // sanity check for distinct uuids
+    Optional<String> exceptionString =
+        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
+    if (exceptionString.isPresent()) {
+      throw new InvalidGridException(
+          "The provided entities in '"
+              + this.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
+    }
   }
 
   @Override

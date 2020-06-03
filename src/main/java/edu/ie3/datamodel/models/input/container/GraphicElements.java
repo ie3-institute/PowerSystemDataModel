@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
+import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
@@ -38,6 +39,44 @@ public class GraphicElements implements InputContainer<GraphicInput> {
         graphicElements.stream()
             .flatMap(graphics -> graphics.lineGraphics.stream())
             .collect(Collectors.toSet());
+
+    // sanity check for distinct uuids
+    Optional<String> exceptionString =
+        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
+    if (exceptionString.isPresent()) {
+      throw new InvalidGridException(
+          "The provided entities in '"
+              + this.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
+    }
+  }
+
+  /**
+   * Create an instance based on a list of {@link GraphicInput} entities that are included in {@link
+   * GraphicElements}
+   *
+   * @param graphics list of grid elements this container instance should created from
+   */
+  public GraphicElements(List<GraphicInput> graphics) {
+
+    /* init sets */
+    this.nodeGraphics = new HashSet<>();
+    this.lineGraphics = new HashSet<>();
+
+    /* fill the sets */
+    graphics.forEach(
+        systemParticipantInput -> {
+          if (systemParticipantInput instanceof NodeGraphicInput) {
+            nodeGraphics.add((NodeGraphicInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof LineGraphicInput) {
+            lineGraphics.add((LineGraphicInput) systemParticipantInput);
+          } else {
+            throw new InvalidEntityException(
+                "Provided entity is not included in GraphicElements.", systemParticipantInput);
+          }
+        });
 
     // sanity check for distinct uuids
     Optional<String> exceptionString =

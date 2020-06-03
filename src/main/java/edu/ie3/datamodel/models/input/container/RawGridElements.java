@@ -5,11 +5,13 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
+import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -86,6 +88,56 @@ public class RawGridElements implements InputContainer<AssetInput> {
         rawGridElements.stream()
             .flatMap(rawElements -> rawElements.getMeasurementUnits().stream())
             .collect(Collectors.toSet());
+  }
+
+  /**
+   * Create an instance based on a list of {@link AssetInput} entities that are included in {@link
+   * RawGridElements}
+   *
+   * @param rawGridElements list of grid elements this container instance should created from
+   */
+  public RawGridElements(List<AssetInput> rawGridElements) {
+
+    /* init sets */
+    this.nodes = new HashSet<>();
+    this.lines = new HashSet<>();
+    this.transformer2Ws = new HashSet<>();
+    this.transformer3Ws = new HashSet<>();
+    this.switches = new HashSet<>();
+    this.measurementUnits = new HashSet<>();
+
+    /* fill the sets */
+    rawGridElements.forEach(
+        systemParticipantInput -> {
+          if (systemParticipantInput instanceof NodeInput) {
+            nodes.add((NodeInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof LineInput) {
+            lines.add((LineInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof Transformer2WInput) {
+            transformer2Ws.add((Transformer2WInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof Transformer3WInput) {
+            transformer3Ws.add((Transformer3WInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof SwitchInput) {
+            switches.add((SwitchInput) systemParticipantInput);
+          } else if (systemParticipantInput instanceof MeasurementUnitInput) {
+            measurementUnits.add((MeasurementUnitInput) systemParticipantInput);
+          } else {
+            throw new InvalidEntityException(
+                "Provided entity is not included in RawGridElements.", systemParticipantInput);
+          }
+        });
+
+    // sanity check to ensure distinct UUIDs
+    Optional<String> exceptionString =
+        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
+    if (exceptionString.isPresent()) {
+      throw new InvalidGridException(
+          "The provided entities in '"
+              + this.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
+    }
   }
 
   @Override
