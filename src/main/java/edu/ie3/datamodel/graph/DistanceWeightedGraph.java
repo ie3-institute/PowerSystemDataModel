@@ -33,7 +33,7 @@ public class DistanceWeightedGraph extends SimpleWeightedGraph<NodeInput, Distan
    * @param edge edge whose weight should be altered
    * @param weight the weight of the {@link DistanceWeightedEdge}
    */
-  public void setWeightQuantity(DistanceWeightedEdge edge, ComparableQuantity<Length> weight) {
+  public void setEdgeWeight(DistanceWeightedEdge edge, ComparableQuantity<Length> weight) {
     double weightDouble =
         weight.to(DistanceWeightedEdge.DEFAULT_DISTANCE_UNIT).getValue().doubleValue();
     super.setEdgeWeight(edge, weightDouble);

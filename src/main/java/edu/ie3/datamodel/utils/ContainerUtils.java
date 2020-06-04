@@ -6,8 +6,7 @@
 package edu.ie3.datamodel.utils;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
-import edu.ie3.datamodel.graph.SubGridGate;
-import edu.ie3.datamodel.graph.SubGridTopologyGraph;
+import edu.ie3.datamodel.graph.*;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
@@ -16,16 +15,96 @@ import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jgrapht.graph.DirectedMultigraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Offers functionality useful for grouping different models together */
 public class ContainerUtils {
+
+  private static final Logger log = LoggerFactory.getLogger(ContainerUtils.class);
+
   private ContainerUtils() {
     throw new IllegalStateException("Utility classes cannot be instantiated");
+  }
+
+  public static Optional<DistanceWeightedGraph> getDistanceTopologyGraph(GridContainer grid) {
+    return getDistanceTopologyGraph(grid.getRawGrid());
+  }
+
+  public static Optional<DistanceWeightedGraph> getDistanceTopologyGraph(
+      RawGridElements rawGridElements) {
+
+    DistanceWeightedGraph graph = new DistanceWeightedGraph();
+
+    try {
+      rawGridElements.getNodes().forEach(graph::addVertex);
+    } catch (NullPointerException ex) {
+      log.error("At least one node entity of provided RawGridElements is null. ", ex);
+      return Optional.empty();
+    }
+
+    try {
+      rawGridElements
+          .getLines()
+          .forEach(line -> addDistanceGraphEdge(graph, line.getNodeA(), line.getNodeB()));
+    } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
+      log.error("Error adding line edges to graph: ", ex);
+      return Optional.empty();
+    }
+
+    try {
+      rawGridElements
+          .getSwitches()
+          .forEach(
+              switchInput ->
+                  addDistanceGraphEdge(graph, switchInput.getNodeA(), switchInput.getNodeB()));
+    } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
+      log.error("Error adding switch edges to graph: ", ex);
+      return Optional.empty();
+    }
+
+    try {
+      rawGridElements
+          .getTransformer2Ws()
+          .forEach(trafo2w -> addDistanceGraphEdge(graph, trafo2w.getNodeA(), trafo2w.getNodeB()));
+    } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
+      log.error("Error adding 2 winding transformer edges to graph: ", ex);
+      return Optional.empty();
+    }
+
+    try {
+      rawGridElements
+          .getTransformer3Ws()
+          .forEach(
+              trafo3w -> {
+                addDistanceGraphEdge(graph, trafo3w.getNodeA(), trafo3w.getNodeB());
+                addDistanceGraphEdge(graph, trafo3w.getNodeA(), trafo3w.getNodeC());
+              });
+    } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
+      log.error("Error adding 3 winding transformer edges to graph: ", ex);
+      return Optional.empty();
+    }
+
+    // if we reached this point, we can safely return a valid graph
+    return Optional.of(graph);
+  }
+
+  private static void addDistanceGraphEdge(
+      DistanceWeightedGraph graph, NodeInput nodeA, NodeInput nodeB) {
+    graph.addEdge(nodeA, nodeB);
+    graph.setEdgeWeight(
+        graph.getEdge(nodeA, nodeB),
+        GeoUtils.haversine(
+            nodeA.getGeoPosition().getY(),
+            nodeA.getGeoPosition().getX(),
+            nodeB.getGeoPosition().getY(),
+            nodeB.getGeoPosition().getX()));
   }
 
   /**
