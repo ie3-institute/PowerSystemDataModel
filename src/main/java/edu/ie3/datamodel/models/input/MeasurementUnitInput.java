@@ -98,6 +98,10 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
     return q;
   }
 
+  public MeasurementUnitInputCopyBuilder copy() {
+    return new MeasurementUnitInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
