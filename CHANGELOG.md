@@ -19,6 +19,7 @@ most of the commonly known power flow calculations
 -  Factory for ``TimeBasedValues<WeatherValue>``
 -  Documentation with Sphinx / ReadTheDocs: [https://powersystemdatamodel.readthedocs.io/en/latest/](https://powersystemdatamodel.readthedocs.io/en/latest/)
 -  Introduction of``SwitchResultFactory`` to build adapted ``SwitchResult`` entities
+-  Additional constructors based on lists of entities in ``RawGridElements``, ``SystemParticipants`` and ``GraphicElements``
 -  Added ``DistanceWeightedGraph`` + corresponding utility method to generate a graph topology whose vertices are `NodeInput` entities and its edges are weighted with the distance between the vertices in meter
 
 ### Changed
