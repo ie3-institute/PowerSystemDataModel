@@ -5,7 +5,10 @@
  */
 package edu.ie3.datamodel.utils
 
+import edu.ie3.datamodel.graph.DistanceWeightedEdge
 import edu.ie3.datamodel.graph.DistanceWeightedGraph
+import edu.ie3.test.common.GridTestData
+import org.locationtech.jts.algorithm.Distance
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
@@ -308,6 +311,28 @@ class ContainerUtilsTest extends Specification {
 		resultingGraph.vertexSet() == ComplexTopology.grid.getRawGrid().getNodes()
 
 		resultingGraph.edgeSet().size() == 7
+	}
+
+	def "The container utils build a valid istance of DistanceWeightedEdge during graph generation"(){
+		given:
+		DistanceWeightedGraph graph = new DistanceWeightedGraph()
+		NodeInput nodeA = GridTestData.nodeA
+		NodeInput nodeB = GridTestData.nodeB
+
+		when:
+		graph.addVertex(nodeA)
+		graph.addVertex(nodeB)
+
+		and:
+		ContainerUtils.addDistanceGraphEdge(graph, nodeA, nodeB)
+
+		then:
+		graph.getEdge(nodeA, nodeB).with {
+			assert weight == 913.5678707610981d
+			assert source == nodeA
+			assert target == nodeB
+		}
+
 
 	}
 

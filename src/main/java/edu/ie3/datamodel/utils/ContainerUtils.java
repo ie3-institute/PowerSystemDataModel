@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
-import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -32,17 +31,6 @@ public class ContainerUtils {
   private ContainerUtils() {
     throw new IllegalStateException("Utility classes cannot be instantiated");
   }
-
-  /**
-   * Disassembles this grid model into sub grid models and returns a topology of the sub grids as a
-   * directed, immutable graph. The direction points from higher to lower voltage level.
-   *
-   * @param gridName Name of the grid
-   * @param rawGrid Container model of raw grid elements
-   * @param systemParticipants Container model of system participants
-   * @param graphics Container element of graphic elements
-   * @return An immutable, directed graph of sub grid topologies.
-   */
 
   /**
    * Returns the topology of the provided grid container as a {@link DistanceWeightedGraph} if the
@@ -122,16 +110,19 @@ public class ContainerUtils {
     return Optional.of(graph);
   }
 
+  /**
+   * Adds an {@link DistanceWeightedEdge} to the provided graph between the provided nodes a and b.
+   * By implementation of jGraphT this side effect cannot be removed. :(
+   *
+   * @param graph the graph to be altered
+   * @param nodeA start node of the new edge
+   * @param nodeB end node of the new edge
+   */
   private static void addDistanceGraphEdge(
       DistanceWeightedGraph graph, NodeInput nodeA, NodeInput nodeB) {
     graph.addEdge(nodeA, nodeB);
     graph.setEdgeWeight(
-        graph.getEdge(nodeA, nodeB),
-        GeoUtils.haversine(
-            nodeA.getGeoPosition().getY(),
-            nodeA.getGeoPosition().getX(),
-            nodeB.getGeoPosition().getY(),
-            nodeB.getGeoPosition().getX()));
+        graph.getEdge(nodeA, nodeB), GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB));
   }
 
   /**
