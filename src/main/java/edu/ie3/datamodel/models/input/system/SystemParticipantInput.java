@@ -117,12 +117,12 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       this.qCharacteristics = entity.getqCharacteristics();
     }
 
-    protected T node(NodeInput node) {
+    public T node(NodeInput node) {
       this.node = node;
       return childInstance();
     }
 
-    protected T qCharacteristics(ReactivePowerCharacteristic qCharacteristics) {
+    public T qCharacteristics(ReactivePowerCharacteristic qCharacteristics) {
       this.qCharacteristics = qCharacteristics;
       return childInstance();
     }
