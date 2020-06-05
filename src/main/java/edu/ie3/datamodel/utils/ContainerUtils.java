@@ -524,11 +524,10 @@ public class ContainerUtils {
     Set<Transformer2WInput> newTrafos2w =
         subGridContainer.getRawGrid().getTransformer2Ws().stream()
             .map(
-                oldTrafo2w ->
-                    oldTrafo2w
-                        .copy()
-                        .nodeA(oldToNewTrafo2WANodes.get(oldTrafo2w.getNodeA()))
-                        .build())
+                oldTrafo2w -> {
+                  NodeInput newNodeA = oldToNewTrafo2WANodes.get(oldTrafo2w.getNodeA());
+                  return oldTrafo2w.copy().nodeA(newNodeA).build();
+                })
             .collect(Collectors.toSet());
 
     // update node input graphics (2 winding transformers and 3 winding transformers)

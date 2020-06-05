@@ -269,7 +269,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
 
     private Transformer3WTypeInput type;
     private NodeInput nodeC;
-    private boolean intSlack;
+    private boolean internSlack;
     private final NodeInput internalNode;
 
     private Transformer3WInputCopyBuilder(Transformer3WInput entity) {
@@ -277,7 +277,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       this.type = entity.getType();
       this.nodeC = entity.getNodeC();
       this.internalNode = entity.getNodeInternal();
-      this.intSlack = entity.getNodeInternal().isSlack();
+      this.internSlack = entity.getNodeInternal().isSlack();
     }
 
     @Override
@@ -294,7 +294,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
           type,
           getTapPos(),
           isAutoTap(),
-          internalNode.copy().slack(intSlack).build());
+          internalNode.copy().slack(internSlack).build());
     }
 
     public Transformer3WInputCopyBuilder type(Transformer3WTypeInput type) {
@@ -308,7 +308,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
     }
 
     public Transformer3WInputCopyBuilder internalSlack(boolean internalNodeIsSlack) {
-      this.intSlack = internalNodeIsSlack;
+      this.internSlack = internalNodeIsSlack;
       return this;
     }
 
