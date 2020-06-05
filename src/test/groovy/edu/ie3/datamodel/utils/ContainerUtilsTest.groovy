@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.utils
 
+import edu.ie3.datamodel.graph.DistanceWeightedGraph
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
@@ -291,6 +292,23 @@ class ContainerUtilsTest extends Specification {
 
 		then:
 		actual == expected
+	}
+
+	def "The container utils build a valid distance weighted graph model correctly"(){
+		given:
+		JointGridContainer grid = ComplexTopology.grid
+
+		when:
+		Optional<DistanceWeightedGraph> resultingGraphOpt = ContainerUtils.getDistanceTopologyGraph(grid)
+
+		then:
+		resultingGraphOpt.isPresent()
+		DistanceWeightedGraph resultingGraph = resultingGraphOpt.get()
+
+		resultingGraph.vertexSet() == ComplexTopology.grid.getRawGrid().getNodes()
+
+		resultingGraph.edgeSet().size() == 7
+
 	}
 
 	/* TODO: Extend testing data so that,

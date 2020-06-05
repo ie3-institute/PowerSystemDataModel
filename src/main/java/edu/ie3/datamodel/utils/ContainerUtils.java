@@ -33,10 +33,37 @@ public class ContainerUtils {
     throw new IllegalStateException("Utility classes cannot be instantiated");
   }
 
+  /**
+   * Disassembles this grid model into sub grid models and returns a topology of the sub grids as a
+   * directed, immutable graph. The direction points from higher to lower voltage level.
+   *
+   * @param gridName Name of the grid
+   * @param rawGrid Container model of raw grid elements
+   * @param systemParticipants Container model of system participants
+   * @param graphics Container element of graphic elements
+   * @return An immutable, directed graph of sub grid topologies.
+   */
+
+  /**
+   * Returns the topology of the provided grid container as a {@link DistanceWeightedGraph} if the
+   * provided grid container's {@link RawGridElements} allows the creation of a valid topology graph
+   * or an empty optional otherwise.
+   *
+   * @param grid the grid container that should be converted into topology graph
+   * @return either an optional holding the distance topology graph instance or an empty optional
+   */
   public static Optional<DistanceWeightedGraph> getDistanceTopologyGraph(GridContainer grid) {
     return getDistanceTopologyGraph(grid.getRawGrid());
   }
 
+  /**
+   * Returns the topology of the provided {@link RawGridElements} as a {@link
+   * DistanceWeightedGraph}, if they allow the creation of a valid topology graph or an empty
+   * optional otherwise.
+   *
+   * @param rawGridElements raw grids elements as base of the distance weighted topology graph
+   * @return either an optional holding the distance topology graph instance or an empty optional
+   */
   public static Optional<DistanceWeightedGraph> getDistanceTopologyGraph(
       RawGridElements rawGridElements) {
 
