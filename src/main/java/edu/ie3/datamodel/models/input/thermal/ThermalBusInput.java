@@ -34,4 +34,9 @@ public class ThermalBusInput extends AssetInput {
   public ThermalBusInput(UUID uuid, String id) {
     super(uuid, id);
   }
+
+  @Override
+  public UniqueEntityBuilder copy() {
+    return null; // todo JH
+  }
 }

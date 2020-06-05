@@ -73,6 +73,9 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
   }
 
   @Override
+  public abstract SystemParticipantInputCopyBuilder<?> copy();
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
@@ -105,7 +108,8 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
    * @version 0.1
    * @since 05.06.20
    */
-  protected abstract static class SystemParticipantInputCopyBuilder<T extends UniqueEntityBuilder>
+  public abstract static class SystemParticipantInputCopyBuilder<
+          T extends SystemParticipantInputCopyBuilder<T>>
       extends AssetInputCopyBuilder<T> {
 
     private NodeInput node;
@@ -135,6 +139,10 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       return qCharacteristics;
     }
 
+    @Override
+    public abstract SystemParticipantInput build();
+
+    @Override
     protected abstract T childInstance();
   }
 }

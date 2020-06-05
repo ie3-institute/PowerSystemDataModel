@@ -270,6 +270,11 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		TestAssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
 			super(uuid, id, operator, operationTime)
 		}
+
+		@Override
+		UniqueEntityBuilder copy() {
+			return null // todo JH
+		}
 	}
 
 	private class TestAssetInputFactory extends AssetInputEntityFactory<TestAssetInput, AssetInputEntityData> {

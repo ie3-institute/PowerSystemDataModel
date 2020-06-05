@@ -65,7 +65,7 @@ public abstract class GraphicInput extends InputEntity {
    * @version 0.1
    * @since 05.06.20
    */
-  protected abstract static class GraphicInputCopyBuilder<T extends UniqueEntityBuilder>
+  protected abstract static class GraphicInputCopyBuilder<T extends GraphicInputCopyBuilder<T>>
       extends UniqueEntityCopyBuilder<T> {
 
     private String graphicLayer;
@@ -95,6 +95,10 @@ public abstract class GraphicInput extends InputEntity {
       return path;
     }
 
+    @Override
+    public abstract GraphicInput build();
+
+    @Override
     protected abstract T childInstance();
   }
 }

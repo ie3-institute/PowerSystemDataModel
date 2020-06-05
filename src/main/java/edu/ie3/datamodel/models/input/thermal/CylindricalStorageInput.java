@@ -107,6 +107,11 @@ public class CylindricalStorageInput extends ThermalStorageInput {
   }
 
   @Override
+  public UniqueEntityBuilder copy() {
+    return null; // todo JH
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
