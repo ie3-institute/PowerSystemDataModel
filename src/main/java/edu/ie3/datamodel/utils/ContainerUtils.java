@@ -544,7 +544,7 @@ public class ContainerUtils {
                           : oldToNewTrafo3WANodes.get(oldNodeGraphic.getNode());
 
                   return new AbstractMap.SimpleEntry<>(
-                      oldNodeGraphic, copyNodeGraphic(oldNodeGraphic, newNode));
+                      oldNodeGraphic, oldNodeGraphic.copy().node(newNode).build());
                 })
             .collect(
                 Collectors.toMap(
@@ -588,22 +588,5 @@ public class ContainerUtils {
             subGridContainer.getRawGrid().getMeasurementUnits()),
         subGridContainer.getSystemParticipants(),
         new GraphicElements(newNodeGraphics, subGridContainer.getGraphics().getLineGraphics()));
-  }
-
-  /**
-   * Make a copy of the provided {@link NodeGraphicInput} with altered node
-   *
-   * @param oldNodeGraphic node graphic that should be altered
-   * @param newNodeInput new node of the altered node graphic
-   * @return copy of the provided node graphic with the provided node as field value
-   */
-  private static NodeGraphicInput copyNodeGraphic(
-      NodeGraphicInput oldNodeGraphic, NodeInput newNodeInput) {
-    return new NodeGraphicInput(
-        oldNodeGraphic.getUuid(),
-        oldNodeGraphic.getGraphicLayer(),
-        oldNodeGraphic.getPath(),
-        newNodeInput,
-        oldNodeGraphic.getPoint());
   }
 }
