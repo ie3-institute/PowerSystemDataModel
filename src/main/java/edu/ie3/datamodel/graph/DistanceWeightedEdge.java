@@ -23,10 +23,6 @@ public class DistanceWeightedEdge extends DefaultWeightedEdge {
 
   protected static final Unit<Length> DEFAULT_DISTANCE_UNIT = METRE;
 
-  public DistanceWeightedEdge() {
-    super();
-  }
-
   public Quantity<Length> getDistance() {
     return Quantities.getQuantity(getWeight(), DEFAULT_DISTANCE_UNIT);
   }
