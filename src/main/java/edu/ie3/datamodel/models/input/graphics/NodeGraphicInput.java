@@ -40,6 +40,10 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
     return point;
   }
 
+  public NodeGraphicInputCopyBuilder copy() {
+    return new NodeGraphicInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -62,5 +66,46 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
   @Override
   public List<NodeInput> allNodes() {
     return Collections.singletonList(node);
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link NodeGraphicInput} entities with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * NodeGraphicInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class NodeGraphicInputCopyBuilder
+      extends GraphicInputCopyBuilder<NodeGraphicInputCopyBuilder> {
+
+    private Point point;
+    private NodeInput node;
+
+    private NodeGraphicInputCopyBuilder(NodeGraphicInput entity) {
+      super(entity);
+      this.node = entity.getNode();
+      this.point = entity.getPoint();
+    }
+
+    public NodeGraphicInputCopyBuilder point(Point point) {
+      this.point = point;
+      return this;
+    }
+
+    public NodeGraphicInputCopyBuilder node(NodeInput node) {
+      this.node = node;
+      return this;
+    }
+
+    @Override
+    protected NodeGraphicInputCopyBuilder childInstance() {
+      return this;
+    }
+
+    @Override
+    public NodeGraphicInput build() {
+      return new NodeGraphicInput(getUuid(), getGraphicLayer(), getPath(), node, point);
+    }
   }
 }
