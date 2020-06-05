@@ -136,4 +136,67 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
   public List<NodeInput> allNodes() {
     return Collections.singletonList(node);
   }
+
+  /**
+   * A builder pattern based approach to create copies of {@link MeasurementUnitInput} entities with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * MeasurementUnitInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class MeasurementUnitInputCopyBuilder
+      extends AssetInputCopyBuilder<MeasurementUnitInputCopyBuilder> {
+
+    private NodeInput node;
+    private boolean vMag;
+    private boolean vAng;
+    private boolean p;
+    private boolean q;
+
+    private MeasurementUnitInputCopyBuilder(MeasurementUnitInput entity) {
+      super(entity);
+      this.node = entity.getNode();
+      this.vAng = entity.getVAng();
+      this.vMag = entity.getVMag();
+      this.p = entity.getP();
+      this.q = entity.getQ();
+    }
+
+    @Override
+    public MeasurementUnitInput build() {
+      return new MeasurementUnitInput(
+          getUuid(), getId(), getOperator(), getOperationTime(), node, vMag, vAng, p, q);
+    }
+
+    public MeasurementUnitInputCopyBuilder node(NodeInput node) {
+      this.node = node;
+      return this;
+    }
+
+    public MeasurementUnitInputCopyBuilder vMag(boolean vMag) {
+      this.vMag = vMag;
+      return this;
+    }
+
+    public MeasurementUnitInputCopyBuilder vAng(boolean vAng) {
+      this.vAng = vAng;
+      return this;
+    }
+
+    public MeasurementUnitInputCopyBuilder p(boolean p) {
+      this.p = p;
+      return this;
+    }
+
+    public MeasurementUnitInputCopyBuilder q(boolean q) {
+      this.q = q;
+      return this;
+    }
+
+    @Override
+    protected MeasurementUnitInputCopyBuilder childInstance() {
+      return this;
+    }
+  }
 }

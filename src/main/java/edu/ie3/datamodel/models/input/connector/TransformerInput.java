@@ -96,4 +96,44 @@ public abstract class TransformerInput extends ConnectorInput {
   public String toString() {
     return "TransformerInput{" + "tapPos=" + tapPos + ", autoTap=" + autoTap + '}';
   }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link
+   * TransformerInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  abstract static class TransformerInputCopyBuilder<T extends UniqueEntityBuilder>
+      extends ConnectorInputCopyBuilder<T> {
+
+    private int tapPos;
+    private boolean autoTap;
+
+    protected TransformerInputCopyBuilder(TransformerInput entity) {
+      super(entity);
+      this.tapPos = entity.getTapPos();
+      this.autoTap = entity.isAutoTap();
+    }
+
+    public T tapPos(int tapPos) {
+      this.tapPos = tapPos;
+      return childInstance();
+    }
+
+    public T autoTap(boolean autoTap) {
+      this.autoTap = autoTap;
+      return childInstance();
+    }
+
+    protected int getTapPos() {
+      return tapPos;
+    }
+
+    protected boolean isAutoTap() {
+      return autoTap;
+    }
+
+    protected abstract T childInstance();
+  }
 }

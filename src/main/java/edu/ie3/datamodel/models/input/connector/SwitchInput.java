@@ -57,6 +57,10 @@ public class SwitchInput extends ConnectorInput {
     return closed;
   }
 
+  public SwitchInputCopyBuilder copy() {
+    return new SwitchInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -74,5 +78,39 @@ public class SwitchInput extends ConnectorInput {
   @Override
   public String toString() {
     return "SwitchInput{" + "closed=" + closed + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link LineInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link LineInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class SwitchInputCopyBuilder
+      extends ConnectorInputCopyBuilder<SwitchInputCopyBuilder> {
+
+    private boolean closed;
+
+    private SwitchInputCopyBuilder(SwitchInput entity) {
+      super(entity);
+      this.closed = entity.isClosed();
+    }
+
+    @Override
+    public SwitchInput build() {
+      return new SwitchInput(
+          getUuid(), getId(), getOperator(), getOperationTime(), getNodeA(), getNodeB(), closed);
+    }
+
+    public SwitchInputCopyBuilder closed(boolean closed) {
+      this.closed = closed;
+      return this;
+    }
+
+    @Override
+    protected SwitchInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }
