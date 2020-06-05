@@ -19,6 +19,8 @@ most of the commonly known power flow calculations
 -  Factory for ``TimeBasedValues<WeatherValue>``
 -  Documentation with Sphinx / ReadTheDocs: [https://powersystemdatamodel.readthedocs.io/en/latest/](https://powersystemdatamodel.readthedocs.io/en/latest/)
 -  Introduction of``SwitchResultFactory`` to build adapted ``SwitchResult`` entities
+-  Copy method for all `RawGridElements` and `SystemParticipants` input entities which allow an easy to use entity copy with altered field values
+-  ``distanceBetweenNodes(NodeInput nodeA, NodeInput nodeB)`` in ``GridAndGeoUtils``
 
 ### Changed
 -  Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
