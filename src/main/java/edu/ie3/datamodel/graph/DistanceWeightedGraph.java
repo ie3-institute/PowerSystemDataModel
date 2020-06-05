@@ -48,7 +48,7 @@ public class DistanceWeightedGraph extends SimpleWeightedGraph<NodeInput, Distan
    * @param distanceInMeters the weight of the {@link DistanceWeightedEdge} in meters
    */
   @Override
-  public void setEdgeWeight(DistanceWeightedEdge edge, double distanceInMeters) {
+  public final void setEdgeWeight(DistanceWeightedEdge edge, double distanceInMeters) {
     super.setEdgeWeight(edge, distanceInMeters);
   }
 }
