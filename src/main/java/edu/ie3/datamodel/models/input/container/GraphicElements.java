@@ -52,8 +52,43 @@ public class GraphicElements implements InputContainer<GraphicInput> {
     }
   }
 
+  /**
+   * Create an instance based on a list of {@link GraphicInput} entities that are included in {@link
+   * GraphicElements}
+   *
+   * @param graphics list of grid elements this container instance should created from
+   */
+  public GraphicElements(List<GraphicInput> graphics) {
+
+    /* init sets */
+    this.nodeGraphics =
+        graphics
+            .parallelStream()
+            .filter(graphic -> graphic instanceof NodeGraphicInput)
+            .map(graphic -> (NodeGraphicInput) graphic)
+            .collect(Collectors.toSet());
+    this.lineGraphics =
+        graphics
+            .parallelStream()
+            .filter(graphic -> graphic instanceof LineGraphicInput)
+            .map(graphic -> (LineGraphicInput) graphic)
+            .collect(Collectors.toSet());
+
+    // sanity check for distinct uuids
+    Optional<String> exceptionString =
+        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
+    if (exceptionString.isPresent()) {
+      throw new InvalidGridException(
+          "The provided entities in '"
+              + this.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
+    }
+  }
+
   @Override
-  public List<GraphicInput> allEntitiesAsList() {
+  public final List<GraphicInput> allEntitiesAsList() {
     List<GraphicInput> allEntities = new LinkedList<>();
     allEntities.addAll(nodeGraphics);
     allEntities.addAll(lineGraphics);

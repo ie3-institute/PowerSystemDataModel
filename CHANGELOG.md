@@ -19,6 +19,7 @@ most of the commonly known power flow calculations
 -  Factory for ``TimeBasedValues<WeatherValue>``
 -  Documentation with Sphinx / ReadTheDocs: [https://powersystemdatamodel.readthedocs.io/en/latest/](https://powersystemdatamodel.readthedocs.io/en/latest/)
 -  Introduction of``SwitchResultFactory`` to build adapted ``SwitchResult`` entities
+-  Additional constructors based on lists of entities in ``RawGridElements``, ``SystemParticipants`` and ``GraphicElements``
 
 ### Changed
 -  Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
