@@ -78,6 +78,10 @@ public class FixedFeedInInput extends SystemParticipantInput {
     return cosPhiRated;
   }
 
+  public FixedFeedInInputCopyBuilder copy() {
+    return new FixedFeedInInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -95,5 +99,54 @@ public class FixedFeedInInput extends SystemParticipantInput {
   @Override
   public String toString() {
     return "FixedFeedInInput{" + "sRated=" + sRated + ", cosphiRated=" + cosPhiRated + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link FixedFeedInInput} entities with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * FixedFeedInInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class FixedFeedInInputCopyBuilder
+      extends SystemParticipantInputCopyBuilder<FixedFeedInInputCopyBuilder> {
+
+    private ComparableQuantity<Power> sRated;
+    private double cosPhiRated;
+
+    private FixedFeedInInputCopyBuilder(FixedFeedInInput entity) {
+      super(entity);
+      this.sRated = entity.getsRated();
+      this.cosPhiRated = entity.getCosPhiRated();
+    }
+
+    @Override
+    public FixedFeedInInput build() {
+      return new FixedFeedInInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNode(),
+          getqCharacteristics(),
+          sRated,
+          cosPhiRated);
+    }
+
+    public FixedFeedInInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
+      this.sRated = sRated;
+      return this;
+    }
+
+    public FixedFeedInInputCopyBuilder cosPhiRated(double cosPhiRated) {
+      this.cosPhiRated = cosPhiRated;
+      return this;
+    }
+
+    @Override
+    protected FixedFeedInInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

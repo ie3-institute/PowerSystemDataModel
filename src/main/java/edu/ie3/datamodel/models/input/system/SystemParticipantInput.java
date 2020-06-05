@@ -97,4 +97,44 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
         + '\''
         + '}';
   }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link
+   * SystemParticipantInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  protected abstract static class SystemParticipantInputCopyBuilder<T extends UniqueEntityBuilder>
+      extends AssetInputCopyBuilder<T> {
+
+    private NodeInput node;
+    private ReactivePowerCharacteristic qCharacteristics;
+
+    protected SystemParticipantInputCopyBuilder(SystemParticipantInput entity) {
+      super(entity);
+      this.node = entity.getNode();
+      this.qCharacteristics = entity.getqCharacteristics();
+    }
+
+    protected T node(NodeInput node) {
+      this.node = node;
+      return childInstance();
+    }
+
+    protected T qCharacteristics(ReactivePowerCharacteristic qCharacteristics) {
+      this.qCharacteristics = qCharacteristics;
+      return childInstance();
+    }
+
+    protected NodeInput getNode() {
+      return node;
+    }
+
+    protected ReactivePowerCharacteristic getqCharacteristics() {
+      return qCharacteristics;
+    }
+
+    protected abstract T childInstance();
+  }
 }

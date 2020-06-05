@@ -79,6 +79,10 @@ public class StorageInput extends SystemParticipantInput implements HasType {
     return behaviour;
   }
 
+  public StorageInputCopyBuilder copy() {
+    return new StorageInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -96,5 +100,53 @@ public class StorageInput extends SystemParticipantInput implements HasType {
   @Override
   public String toString() {
     return "StorageInput{" + "type=" + type + ", behaviour=" + behaviour + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link StorageInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link StorageInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class StorageInputCopyBuilder
+      extends SystemParticipantInputCopyBuilder<StorageInputCopyBuilder> {
+
+    private StorageTypeInput type;
+    private StorageStrategy behaviour;
+
+    private StorageInputCopyBuilder(StorageInput entity) {
+      super(entity);
+      this.type = entity.getType();
+      this.behaviour = entity.getBehaviour();
+    }
+
+    @Override
+    public StorageInput build() {
+      return new StorageInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNode(),
+          getqCharacteristics(),
+          type,
+          behaviour.token);
+    }
+
+    public StorageInputCopyBuilder type(StorageTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    public StorageInputCopyBuilder behaviour(StorageStrategy behaviour) {
+      this.behaviour = behaviour;
+      return this;
+    }
+
+    @Override
+    protected StorageInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

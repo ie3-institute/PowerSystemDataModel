@@ -81,6 +81,10 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
     return thermalBus;
   }
 
+  public HpInputCopyBuilder copy() {
+    return new HpInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -98,5 +102,53 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
   @Override
   public String toString() {
     return "HpInput{" + "type=" + type + ", thermalBus=" + thermalBus + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link HpInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link HpInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class HpInputCopyBuilder
+      extends SystemParticipantInputCopyBuilder<HpInputCopyBuilder> {
+
+    private HpTypeInput type;
+    private ThermalBusInput thermalBus;
+
+    private HpInputCopyBuilder(HpInput entity) {
+      super(entity);
+      this.type = entity.getType();
+      this.thermalBus = entity.getThermalBus();
+    }
+
+    @Override
+    public HpInput build() {
+      return new HpInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNode(),
+          thermalBus,
+          getqCharacteristics(),
+          type);
+    }
+
+    public HpInputCopyBuilder type(HpTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    public HpInputCopyBuilder thermalBus(ThermalBusInput thermalBus) {
+      this.thermalBus = thermalBus;
+      return this;
+    }
+
+    @Override
+    protected HpInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

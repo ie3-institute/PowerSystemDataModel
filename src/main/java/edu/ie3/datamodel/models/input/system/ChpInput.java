@@ -111,6 +111,10 @@ public class ChpInput extends SystemParticipantInput
     return marketReaction;
   }
 
+  public ChpInputCopyBuilder copy() {
+    return new ChpInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -139,5 +143,69 @@ public class ChpInput extends SystemParticipantInput
         + ", marketReaction="
         + marketReaction
         + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link ChpInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link ChpInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class ChpInputCopyBuilder
+      extends SystemParticipantInputCopyBuilder<ChpInputCopyBuilder> {
+
+    private ChpTypeInput type;
+    private ThermalBusInput thermalBus;
+    private ThermalStorageInput thermalStorage;
+    private boolean marketReaction;
+
+    private ChpInputCopyBuilder(ChpInput entity) {
+      super(entity);
+      this.type = entity.getType();
+      this.thermalBus = entity.getThermalBus();
+      this.marketReaction = entity.isMarketReaction();
+      this.thermalStorage = entity.getThermalStorage();
+    }
+
+    @Override
+    public ChpInput build() {
+      return new ChpInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNode(),
+          thermalBus,
+          getqCharacteristics(),
+          type,
+          thermalStorage,
+          marketReaction);
+    }
+
+    public ChpInputCopyBuilder type(ChpTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    public ChpInputCopyBuilder thermalBus(ThermalBusInput thermalBus) {
+      this.thermalBus = thermalBus;
+      return this;
+    }
+
+    public ChpInputCopyBuilder thermalStorage(ThermalStorageInput thermalStorage) {
+      this.thermalStorage = thermalStorage;
+      return this;
+    }
+
+    public ChpInputCopyBuilder marketReaction(boolean marketReaction) {
+      this.marketReaction = marketReaction;
+      return this;
+    }
+
+    @Override
+    protected ChpInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }
