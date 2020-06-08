@@ -21,6 +21,17 @@ Immutability
   objects.
   Thereby you can be sure, that your models are *thread-safe* and no unwanted or unobserved changes are made.
 
+Copyable
+  With the general design principle of immutability, entity modifications (e.g. updates of field values) can become
+  hard and annoying. To avoid generating methods to update each field value, we provide an adapted version of the
+  `builder pattern <https://en.wikipedia.org/wiki/Builder_pattern/>`_ to make entity modifications as easy as possible.
+  Each entity holds it's on copy builder class, which follows the same inheritance as the entity class itself. With a
+  call of `.copy()` on an entity instance a builder instance is returned, that allows for modification of fields and
+  can be terminated with `.build()` which will return an instance of the entity with modified field values as required.
+  For the moment, this pattern is only implemented for a small amount of `AssetInput` entities (all entities hold by a
+  `GridContainer` except thermal units to be precise), but we plan to extend this capability to all inpu entities in the
+  future.
+
 Single Point of Truth
   Throughout all models you can be sure, that no information is given twice, reducing the possibility to have ambiguous
   information in your simulation set up.
