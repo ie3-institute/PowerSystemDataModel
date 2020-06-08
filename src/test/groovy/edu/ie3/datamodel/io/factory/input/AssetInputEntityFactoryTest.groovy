@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.AssetInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.test.helper.FactoryTestHelper
+import org.apache.commons.lang3.NotImplementedException
 import spock.lang.Specification
 
 import java.time.ZonedDateTime
@@ -273,7 +274,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
 		@Override
 		UniqueEntityBuilder copy() {
-			return null // todo JH
+			throw new NotImplementedException(
+			"Copying of " + this.getClass().getSimpleName() + " entities is not supported yet!")
 		}
 	}
 

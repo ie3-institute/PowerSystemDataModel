@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.UUID;
+import org.apache.commons.lang3.NotImplementedException;
 
 /** A thermal bus, to which different {@link ThermalUnitInput} units may be connected */
 public class ThermalBusInput extends AssetInput {
@@ -37,6 +38,7 @@ public class ThermalBusInput extends AssetInput {
 
   @Override
   public UniqueEntityBuilder copy() {
-    return null; // todo JH
+    throw new NotImplementedException(
+        "Copying of " + this.getClass().getSimpleName() + " entities is not supported yet!");
   }
 }

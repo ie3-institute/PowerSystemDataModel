@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
+import org.apache.commons.lang3.NotImplementedException;
 import tec.uom.se.ComparableQuantity;
 
 /** Thermal storage with cylindrical shape */
@@ -108,7 +109,8 @@ public class CylindricalStorageInput extends ThermalStorageInput {
 
   @Override
   public UniqueEntityBuilder copy() {
-    return null; // todo JH
+    throw new NotImplementedException(
+        "Copying of " + this.getClass().getSimpleName() + " entities is not supported yet!");
   }
 
   @Override
