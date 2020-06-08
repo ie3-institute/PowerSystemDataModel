@@ -315,7 +315,7 @@ public class ContainerNodeUpdateUtil {
     /* 2. define the winning geoPosition, this value is set when at least one transformer received an update
      * of at least one of its nodes (not necessarily the geoPosition)*/
     Optional<Point> leadGeoPos = Optional.empty();
-    if (oldAffectedTrafoNodes.size() != 0) {
+    if (!oldAffectedTrafoNodes.isEmpty()) {
       if (oldToNewNodes.size() == 1) {
         // only one node got an update -> leading geoPosition comes from this node (enables updates
         // of inferior nodes
