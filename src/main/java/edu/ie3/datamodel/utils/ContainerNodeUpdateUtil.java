@@ -23,6 +23,35 @@ public class ContainerNodeUpdateUtil {
   }
 
   /**
+   * Updates the provided {@link GridContainer} with the provided mapping of old to new {@link
+   * NodeInput} entities.
+   *
+   * @param grid the grid that should be updated
+   * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
+   * @return a copy of the provided grid with updated nodes as provided
+   */
+  public static GridContainer updateGridWithNodes(
+      GridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) {
+    UpdatedEntities updatedEntities =
+        updateEntities(
+            grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes);
+    if (grid instanceof JointGridContainer) {
+      return new JointGridContainer(
+          grid.getGridName(),
+          updatedEntities.rawGridElements,
+          updatedEntities.systemParticipants,
+          updatedEntities.graphicElements);
+    } else {
+      return new SubGridContainer(
+          grid.getGridName(),
+          ((SubGridContainer) grid).getSubnet(),
+          updatedEntities.rawGridElements,
+          updatedEntities.systemParticipants,
+          updatedEntities.graphicElements);
+    }
+  }
+
+  /**
    * Updates the provided {@link JointGridContainer} with the provided mapping of old to new {@link
    * NodeInput} entities. When used, one carefully has to check that the mapping is valid. No
    * further sanity checks are provided and if an invalid mapping is passed in, unexpected behavior
