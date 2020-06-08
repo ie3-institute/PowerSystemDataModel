@@ -218,33 +218,7 @@ public class ContainerNodeUpdateUtil {
             .collect(Collectors.toSet());
 
     /* update lines */
-    Set<LineInput> updatedLines =
-        rawGridElements.getLines().stream()
-            .map(
-                line -> {
-                  NodeInput oldNodeA = line.getNodeA();
-                  NodeInput oldNodeB = line.getNodeB();
-
-                  NodeInput updatedNodeA = updatedOldToNewNodes.getOrDefault(oldNodeA, oldNodeA);
-                  NodeInput updatedNodeB = updatedOldToNewNodes.getOrDefault(oldNodeB, oldNodeB);
-
-                  if (oldNodeA.equals(updatedNodeA) && oldNodeB.equals(updatedNodeB)) {
-                    return line;
-                  } else {
-                    // even if only nodeA or only nodeB have changed, we just create an updated
-                    // line model with both nodes updated
-
-                    return line.copy()
-                        .nodeA(updatedNodeA)
-                        .nodeB(updatedNodeB)
-                        .length(GridAndGeoUtils.distanceBetweenNodes(updatedNodeA, updatedNodeB))
-                        .geoPosition(
-                            GridAndGeoUtils.buildSafeLineStringBetweenNodes(
-                                updatedNodeA, updatedNodeB))
-                        .build();
-                  }
-                })
-            .collect(Collectors.toSet());
+    Set<LineInput> updatedLines = updateLines(rawGridElements.getLines(), updatedOldToNewNodes);
 
     /* update switches */
     Set<SwitchInput> updatedSwitches =
@@ -291,6 +265,43 @@ public class ContainerNodeUpdateUtil {
             updatedSwitches,
             updatedMeasurementUnits),
         updatedOldToNewNodes);
+  }
+
+  /**
+   * Update the provided set of {@link LineInput} with the provided oldToNew nodes mapping if
+   * affected
+   *
+   * @param lines the lines to be updated
+   * @param updatedOldToNewNodes mapping of old nodes to their corresponding new or updated nodes
+   * @return copy of the provided line set with updated nodes if affected
+   */
+  private static Set<LineInput> updateLines(
+      Set<LineInput> lines, Map<NodeInput, NodeInput> updatedOldToNewNodes) {
+    return lines.stream()
+        .map(
+            line -> {
+              NodeInput oldNodeA = line.getNodeA();
+              NodeInput oldNodeB = line.getNodeB();
+
+              NodeInput updatedNodeA = updatedOldToNewNodes.getOrDefault(oldNodeA, oldNodeA);
+              NodeInput updatedNodeB = updatedOldToNewNodes.getOrDefault(oldNodeB, oldNodeB);
+
+              if (oldNodeA.equals(updatedNodeA) && oldNodeB.equals(updatedNodeB)) {
+                return line;
+              } else {
+                // even if only nodeA or only nodeB have changed, we just create an updated
+                // line model with both nodes updated
+
+                return line.copy()
+                    .nodeA(updatedNodeA)
+                    .nodeB(updatedNodeB)
+                    .length(GridAndGeoUtils.distanceBetweenNodes(updatedNodeA, updatedNodeB))
+                    .geoPosition(
+                        GridAndGeoUtils.buildSafeLineStringBetweenNodes(updatedNodeA, updatedNodeB))
+                    .build();
+              }
+            })
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -357,86 +368,14 @@ public class ContainerNodeUpdateUtil {
         leadGeoPos
             .map(
                 leadGeoPosition ->
-                    transformer2Ws.stream()
-                        .map(
-                            trafo2w -> {
-                              NodeInput oldNodeA = trafo2w.getNodeA();
-                              NodeInput oldNodeB = trafo2w.getNodeB();
-
-                              NodeInput updatedNodeA =
-                                  updatedOldToNewNodes.getOrDefault(oldNodeA, oldNodeA);
-                              NodeInput updatedNodeB =
-                                  updatedOldToNewNodes.getOrDefault(oldNodeB, oldNodeB);
-
-                              // oldNodes == newNodes -> no need to update anything
-                              if (oldNodeA.equals(updatedNodeA) && oldNodeB.equals(updatedNodeB)) {
-                                return trafo2w;
-                              } else {
-                                // even if only nodeA or only nodeB have changed, we just create an
-                                // updated
-                                // transformer model with both nodes updated
-
-                                // geoPosition is always set to the lead geoPosition for all nodes
-                                NodeInput updatedNodeALeadGeoPos =
-                                    updatedNodeA.copy().geoPosition(leadGeoPosition).build();
-                                NodeInput updatedNodeBLeadGeoPos =
-                                    updatedNodeB.copy().geoPosition(leadGeoPosition).build();
-
-                                return trafo2w
-                                    .copy()
-                                    .nodeA(updatedNodeALeadGeoPos)
-                                    .nodeB(updatedNodeBLeadGeoPos)
-                                    .build();
-                              }
-                            })
-                        .collect(Collectors.toSet()))
+                    update2wTransformers(transformer2Ws, updatedOldToNewNodes, leadGeoPosition))
             .orElse(transformer2Ws);
     /* go on with the 3w transformers */
     Set<Transformer3WInput> updated3wTransformers =
         leadGeoPos
             .map(
                 leadGeoPosition ->
-                    transformer3Ws.stream()
-                        .map(
-                            trafo3w -> {
-                              NodeInput oldNodeA = trafo3w.getNodeA();
-                              NodeInput oldNodeB = trafo3w.getNodeB();
-                              NodeInput oldNodeC = trafo3w.getNodeC();
-
-                              NodeInput updatedNodeA =
-                                  updatedOldToNewNodes.getOrDefault(oldNodeA, oldNodeA);
-                              NodeInput updatedNodeB =
-                                  updatedOldToNewNodes.getOrDefault(oldNodeB, oldNodeB);
-                              NodeInput updatedNodeC =
-                                  updatedOldToNewNodes.getOrDefault(oldNodeC, oldNodeC);
-
-                              // oldNodes == newNodes -> no need to update anything
-                              if (oldNodeA.equals(updatedNodeA)
-                                  && oldNodeB.equals(updatedNodeB)
-                                  && oldNodeC.equals(updatedNodeC)) {
-                                return trafo3w;
-                              } else {
-                                // even if only nodeA or only nodeB or only nodeC have changed, we
-                                // just create
-                                // an updated transformer model with all three nodes updated
-
-                                // geoPosition is always set to the lead geoPosition for all nodes
-                                NodeInput updatedNodeALeadGeoPos =
-                                    updatedNodeA.copy().geoPosition(leadGeoPosition).build();
-                                NodeInput updatedNodeBLeadGeoPos =
-                                    updatedNodeB.copy().geoPosition(leadGeoPosition).build();
-                                NodeInput updatedNodeCLeadGeoPos =
-                                    updatedNodeC.copy().geoPosition(leadGeoPosition).build();
-
-                                return trafo3w
-                                    .copy()
-                                    .nodeA(updatedNodeALeadGeoPos)
-                                    .nodeB(updatedNodeBLeadGeoPos)
-                                    .nodeC(updatedNodeCLeadGeoPos)
-                                    .build();
-                              }
-                            })
-                        .collect(Collectors.toSet()))
+                    update3wTransformers(transformer3Ws, updatedOldToNewNodes, leadGeoPosition))
             .orElse(transformer3Ws);
 
     // put all oldNode -> newNode in the resulting map
@@ -445,6 +384,106 @@ public class ContainerNodeUpdateUtil {
 
     return new TransformerNodeUpdateResult(
         updated2wTransformers, updated3wTransformers, updatedTransformerNodes);
+  }
+
+  /**
+   * Update the provided set of {@link Transformer2WInput} with the provided oldToNew nodes mapping
+   * if affected
+   *
+   * @param transformer2Ws the transformers to be updated
+   * @param oldToNewNodes mapping of old nodes to their corresponding new or updated nodes
+   * @param leadGeoPosition the leading geoPosition that should be set to all transformer nodes
+   * @return copy of the provided transformer set with updated nodes if affected
+   */
+  private static Set<Transformer2WInput> update2wTransformers(
+      Set<Transformer2WInput> transformer2Ws,
+      Map<NodeInput, NodeInput> oldToNewNodes,
+      Point leadGeoPosition) {
+    return transformer2Ws.stream()
+        .map(
+            trafo2w -> {
+              NodeInput oldNodeA = trafo2w.getNodeA();
+              NodeInput oldNodeB = trafo2w.getNodeB();
+
+              NodeInput updatedNodeA = oldToNewNodes.getOrDefault(oldNodeA, oldNodeA);
+              NodeInput updatedNodeB = oldToNewNodes.getOrDefault(oldNodeB, oldNodeB);
+
+              // oldNodes == newNodes -> no need to update anything
+              if (oldNodeA.equals(updatedNodeA) && oldNodeB.equals(updatedNodeB)) {
+                return trafo2w;
+              } else {
+                // even if only nodeA or only nodeB have changed, we just create an
+                // updated
+                // transformer model with both nodes updated
+
+                // geoPosition is always set to the lead geoPosition for all nodes
+                NodeInput updatedNodeALeadGeoPos =
+                    updatedNodeA.copy().geoPosition(leadGeoPosition).build();
+                NodeInput updatedNodeBLeadGeoPos =
+                    updatedNodeB.copy().geoPosition(leadGeoPosition).build();
+
+                return trafo2w
+                    .copy()
+                    .nodeA(updatedNodeALeadGeoPos)
+                    .nodeB(updatedNodeBLeadGeoPos)
+                    .build();
+              }
+            })
+        .collect(Collectors.toSet());
+  }
+
+  /**
+   * Update the provided set of {@link Transformer3WInput} with the provided oldToNew nodes mapping
+   * if affected
+   *
+   * @param transformer3Ws the transformers to be updated
+   * @param oldToNewNodes mapping of old nodes to their corresponding new or updated nodes
+   * @param leadGeoPosition the leading geoPosition that should be set to all transformer nodes
+   * @return copy of the provided transformer set with updated nodes if affected
+   */
+  private static Set<Transformer3WInput> update3wTransformers(
+      Set<Transformer3WInput> transformer3Ws,
+      Map<NodeInput, NodeInput> oldToNewNodes,
+      Point leadGeoPosition) {
+
+    return transformer3Ws.stream()
+        .map(
+            trafo3w -> {
+              NodeInput oldNodeA = trafo3w.getNodeA();
+              NodeInput oldNodeB = trafo3w.getNodeB();
+              NodeInput oldNodeC = trafo3w.getNodeC();
+
+              NodeInput updatedNodeA = oldToNewNodes.getOrDefault(oldNodeA, oldNodeA);
+              NodeInput updatedNodeB = oldToNewNodes.getOrDefault(oldNodeB, oldNodeB);
+              NodeInput updatedNodeC = oldToNewNodes.getOrDefault(oldNodeC, oldNodeC);
+
+              // oldNodes == newNodes -> no need to update anything
+              if (oldNodeA.equals(updatedNodeA)
+                  && oldNodeB.equals(updatedNodeB)
+                  && oldNodeC.equals(updatedNodeC)) {
+                return trafo3w;
+              } else {
+                // even if only nodeA or only nodeB or only nodeC have changed, we
+                // just create
+                // an updated transformer model with all three nodes updated
+
+                // geoPosition is always set to the lead geoPosition for all nodes
+                NodeInput updatedNodeALeadGeoPos =
+                    updatedNodeA.copy().geoPosition(leadGeoPosition).build();
+                NodeInput updatedNodeBLeadGeoPos =
+                    updatedNodeB.copy().geoPosition(leadGeoPosition).build();
+                NodeInput updatedNodeCLeadGeoPos =
+                    updatedNodeC.copy().geoPosition(leadGeoPosition).build();
+
+                return trafo3w
+                    .copy()
+                    .nodeA(updatedNodeALeadGeoPos)
+                    .nodeB(updatedNodeBLeadGeoPos)
+                    .nodeC(updatedNodeCLeadGeoPos)
+                    .build();
+              }
+            })
+        .collect(Collectors.toSet());
   }
 
   /**
