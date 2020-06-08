@@ -139,6 +139,7 @@ public class StorageInput extends SystemParticipantInput implements HasType {
       return this;
     }
 
+    @Deprecated
     public StorageInputCopyBuilder behaviour(StorageStrategy behaviour) {
       this.behaviour = behaviour;
       return this;
