@@ -6,8 +6,7 @@
 package edu.ie3.datamodel.utils;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
-import edu.ie3.datamodel.graph.SubGridGate;
-import edu.ie3.datamodel.graph.SubGridTopologyGraph;
+import edu.ie3.datamodel.graph.*;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
@@ -21,11 +20,109 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jgrapht.graph.DirectedMultigraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Offers functionality useful for grouping different models together */
 public class ContainerUtils {
+
+  private static final Logger log = LoggerFactory.getLogger(ContainerUtils.class);
+
   private ContainerUtils() {
     throw new IllegalStateException("Utility classes cannot be instantiated");
+  }
+
+  /**
+   * Returns the topology of the provided grid container as a {@link DistanceWeightedGraph} if the
+   * provided grid container's {@link RawGridElements} allows the creation of a valid topology graph
+   * or an empty optional otherwise.
+   *
+   * @param grid the grid container that should be converted into topology graph
+   * @return either an optional holding the distance topology graph instance or an empty optional
+   */
+  public static Optional<DistanceWeightedGraph> getDistanceTopologyGraph(GridContainer grid) {
+    return getDistanceTopologyGraph(grid.getRawGrid());
+  }
+
+  /**
+   * Returns the topology of the provided {@link RawGridElements} as a {@link
+   * DistanceWeightedGraph}, if they allow the creation of a valid topology graph or an empty
+   * optional otherwise.
+   *
+   * @param rawGridElements raw grids elements as base of the distance weighted topology graph
+   * @return either an optional holding the distance topology graph instance or an empty optional
+   */
+  public static Optional<DistanceWeightedGraph> getDistanceTopologyGraph(
+      RawGridElements rawGridElements) {
+
+    DistanceWeightedGraph graph = new DistanceWeightedGraph();
+
+    try {
+      rawGridElements.getNodes().forEach(graph::addVertex);
+    } catch (NullPointerException ex) {
+      log.error("At least one node entity of provided RawGridElements is null. ", ex);
+      return Optional.empty();
+    }
+
+    try {
+      rawGridElements
+          .getLines()
+          .forEach(line -> addDistanceGraphEdge(graph, line.getNodeA(), line.getNodeB()));
+    } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
+      log.error("Error adding line edges to graph: ", ex);
+      return Optional.empty();
+    }
+
+    try {
+      rawGridElements
+          .getSwitches()
+          .forEach(
+              switchInput ->
+                  addDistanceGraphEdge(graph, switchInput.getNodeA(), switchInput.getNodeB()));
+    } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
+      log.error("Error adding switch edges to graph: ", ex);
+      return Optional.empty();
+    }
+
+    try {
+      rawGridElements
+          .getTransformer2Ws()
+          .forEach(trafo2w -> addDistanceGraphEdge(graph, trafo2w.getNodeA(), trafo2w.getNodeB()));
+    } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
+      log.error("Error adding 2 winding transformer edges to graph: ", ex);
+      return Optional.empty();
+    }
+
+    try {
+      rawGridElements
+          .getTransformer3Ws()
+          .forEach(
+              trafo3w -> {
+                addDistanceGraphEdge(graph, trafo3w.getNodeA(), trafo3w.getNodeB());
+                addDistanceGraphEdge(graph, trafo3w.getNodeA(), trafo3w.getNodeC());
+              });
+    } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
+      log.error("Error adding 3 winding transformer edges to graph: ", ex);
+      return Optional.empty();
+    }
+
+    // if we reached this point, we can safely return a valid graph
+    return Optional.of(graph);
+  }
+
+  /**
+   * Adds an {@link DistanceWeightedEdge} to the provided graph between the provided nodes a and b.
+   * By implementation of jGraphT this side effect cannot be removed. :(
+   *
+   * @param graph the graph to be altered
+   * @param nodeA start node of the new edge
+   * @param nodeB end node of the new edge
+   */
+  private static void addDistanceGraphEdge(
+      DistanceWeightedGraph graph, NodeInput nodeA, NodeInput nodeB) {
+    graph.addEdge(nodeA, nodeB);
+    graph.setEdgeWeight(
+        graph.getEdge(nodeA, nodeB), GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB));
   }
 
   /**
