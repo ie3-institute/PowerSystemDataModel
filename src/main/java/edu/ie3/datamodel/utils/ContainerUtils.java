@@ -577,9 +577,10 @@ public class ContainerUtils {
                     // node B or C is part of this subgrid -> internal node becomes the new slack
 
                     // if node A is marked as slack, unmark it as slack
+                    NodeInput oldTrafo3wNodeA = oldTrafo3w.getNodeA();
                     NodeInput newNodeA =
-                        oldTrafo3w.getNodeA().isSlack()
-                            ? copyNode(oldTrafo3w.getNodeA(), false)
+                        oldTrafo3wNodeA.isSlack()
+                            ? oldTrafo3wNodeA.copy().slack(false).build()
                             : oldTrafo3w.getNodeA();
 
                     // we need to take care for this node in our node sets afterwards
@@ -589,7 +590,7 @@ public class ContainerUtils {
                     // create an update version of this transformer with internal node as slack and
                     // add it to the newTrafos3wToInternalNode set
                     Transformer3WInput newTrafo3w =
-                        copyTransformer3WInputWithInternalSlack(oldTrafo3w, newNodeA);
+                        oldTrafo3w.copy().nodeA(newNodeA).internalSlack(true).build();
 
                     // add the slack
                     resTrafo3wToInternal =
@@ -607,7 +608,7 @@ public class ContainerUtils {
             .map(
                 oldTrafo2w -> {
                   NodeInput oldNodeA = oldTrafo2w.getNodeA();
-                  NodeInput newNodeA = copyNode(oldNodeA, true);
+                  NodeInput newNodeA = oldNodeA.copy().slack(true).build();
 
                   return new AbstractMap.SimpleEntry<>(oldNodeA, newNodeA);
                 })
@@ -620,9 +621,10 @@ public class ContainerUtils {
     Set<Transformer2WInput> newTrafos2w =
         subGridContainer.getRawGrid().getTransformer2Ws().stream()
             .map(
-                oldTrafo2w ->
-                    copyTrafo2WUpdateNodeA(
-                        oldTrafo2w, oldToNewTrafo2WANodes.get(oldTrafo2w.getNodeA())))
+                oldTrafo2w -> {
+                  NodeInput newNodeA = oldToNewTrafo2WANodes.get(oldTrafo2w.getNodeA());
+                  return oldTrafo2w.copy().nodeA(newNodeA).build();
+                })
             .collect(Collectors.toSet());
 
     // update node input graphics (2 winding transformers and 3 winding transformers)
@@ -639,7 +641,7 @@ public class ContainerUtils {
                           : oldToNewTrafo3WANodes.get(oldNodeGraphic.getNode());
 
                   return new AbstractMap.SimpleEntry<>(
-                      oldNodeGraphic, copyNodeGraphic(oldNodeGraphic, newNode));
+                      oldNodeGraphic, oldNodeGraphic.copy().node(newNode).build());
                 })
             .collect(
                 Collectors.toMap(
@@ -674,134 +676,14 @@ public class ContainerUtils {
     return new SubGridContainer(
         subGridContainer.getGridName(),
         subGridContainer.getSubnet(),
-        rawGridCopy4Slacks(
-            subGridContainer.getRawGrid(),
+        new RawGridElements(
             newNodes,
+            subGridContainer.getRawGrid().getLines(),
             newTrafos2w,
-            newTrafos3wToInternalNode.keySet()),
+            newTrafos3wToInternalNode.keySet(),
+            subGridContainer.getRawGrid().getSwitches(),
+            subGridContainer.getRawGrid().getMeasurementUnits()),
         subGridContainer.getSystemParticipants(),
-        graphicsCopy4Slacks(subGridContainer.getGraphics(), newNodeGraphics));
-  }
-
-  /**
-   * Make a copy of the provided {@link Transformer3WInput} with an altered nodeA and the internal
-   * node marked as slack
-   *
-   * @param oldTrafo3w the transformer that should be altered
-   * @param newNodeA node that should be new node a of the altered transformer
-   * @return copy of the provided transformer with the provided nodeA and the internal node marked
-   *     as slack
-   */
-  private static Transformer3WInput copyTransformer3WInputWithInternalSlack(
-      Transformer3WInput oldTrafo3w, NodeInput newNodeA) {
-
-    return new Transformer3WInput(
-        oldTrafo3w.getUuid(),
-        oldTrafo3w.getId(),
-        oldTrafo3w.getOperator(),
-        oldTrafo3w.getOperationTime(),
-        newNodeA,
-        oldTrafo3w.getNodeB(),
-        oldTrafo3w.getNodeC(),
-        oldTrafo3w.getParallelDevices(),
-        oldTrafo3w.getType(),
-        oldTrafo3w.getTapPos(),
-        oldTrafo3w.isAutoTap(),
-        true);
-  }
-
-  /**
-   * Make a copy of the provided {@link NodeGraphicInput} with altered node
-   *
-   * @param oldNodeGraphic node graphic that should be altered
-   * @param newNodeInput new node of the altered node graphic
-   * @return copy of the provided node graphic with the provided node as field value
-   */
-  private static NodeGraphicInput copyNodeGraphic(
-      NodeGraphicInput oldNodeGraphic, NodeInput newNodeInput) {
-    return new NodeGraphicInput(
-        oldNodeGraphic.getUuid(),
-        oldNodeGraphic.getGraphicLayer(),
-        oldNodeGraphic.getPath(),
-        newNodeInput,
-        oldNodeGraphic.getPoint());
-  }
-
-  /**
-   * Make a copy of the provided {@link RawGridElements} with altered nodes, 2w and 3w-transformers
-   *
-   * @param rawGridElements the raw grid elements that should be altered
-   * @param newNodes the exhaustive new set of nodes
-   * @param newTrafos2w the exhaustive new set of 2 winding transformers
-   * @param newTrafos3w the exhaustive new set of 3 winding transoformers
-   * @return copy of the provided rawGridElements with altered nodes, 2w- and 3w-transformers
-   */
-  private static RawGridElements rawGridCopy4Slacks(
-      RawGridElements rawGridElements,
-      Set<NodeInput> newNodes,
-      Set<Transformer2WInput> newTrafos2w,
-      Set<Transformer3WInput> newTrafos3w) {
-
-    return new RawGridElements(
-        newNodes,
-        rawGridElements.getLines(),
-        newTrafos2w,
-        newTrafos3w,
-        rawGridElements.getSwitches(),
-        rawGridElements.getMeasurementUnits());
-  }
-
-  /**
-   * Make a copy of the provided {@link GraphicElements} with altered node graphics
-   *
-   * @param graphicElements the graphic elements that should be altered
-   * @param newNodeGraphics the exhaustive set of new node graphics
-   * @return copy of the provided graphic elements with altered nodes
-   */
-  private static GraphicElements graphicsCopy4Slacks(
-      GraphicElements graphicElements, Set<NodeGraphicInput> newNodeGraphics) {
-    return new GraphicElements(newNodeGraphics, graphicElements.getLineGraphics());
-  }
-
-  /**
-   * Make a copy of the provided {@link Transformer2WInput} with altered nodeA
-   *
-   * @param trafo2wInput the 2w transformer that should be altered
-   * @param newNodeA the node that should become the transformers new nodeA
-   * @return copy of the provided transformer with altered nodeA
-   */
-  private static Transformer2WInput copyTrafo2WUpdateNodeA(
-      Transformer2WInput trafo2wInput, NodeInput newNodeA) {
-    return new Transformer2WInput(
-        trafo2wInput.getUuid(),
-        trafo2wInput.getId(),
-        trafo2wInput.getOperator(),
-        trafo2wInput.getOperationTime(),
-        newNodeA,
-        trafo2wInput.getNodeB(),
-        trafo2wInput.getParallelDevices(),
-        trafo2wInput.getType(),
-        trafo2wInput.getTapPos(),
-        trafo2wInput.isAutoTap());
-  }
-
-  /**
-   * Make a copy of the provided {@link NodeInput} and mark or unmark it as slack
-   *
-   * @param nodeInput the node that should be marked as slack
-   * @param isSlack whether the new node should be marked as slack or not
-   * @return copy of the provided node either marked as slack or not
-   */
-  private static NodeInput copyNode(NodeInput nodeInput, boolean isSlack) {
-    return new NodeInput(
-        nodeInput.getUuid(),
-        nodeInput.getId(),
-        nodeInput.getOperator(),
-        nodeInput.getOperationTime(),
-        nodeInput.getvTarget(),
-        isSlack,
-        nodeInput.getGeoPosition(),
-        nodeInput.getVoltLvl(),
-        nodeInput.getSubnet());
+        new GraphicElements(newNodeGraphics, subGridContainer.getGraphics().getLineGraphics()));
   }
 }

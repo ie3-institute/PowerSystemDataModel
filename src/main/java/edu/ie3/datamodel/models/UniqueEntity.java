@@ -44,4 +44,36 @@ public abstract class UniqueEntity {
   public String toString() {
     return "UniqueEntity{" + "uuid=" + uuid + '}';
   }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link UniqueEntity}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  protected abstract static class UniqueEntityCopyBuilder<T extends UniqueEntityBuilder>
+      implements UniqueEntityBuilder {
+
+    private UUID uuid;
+
+    protected UniqueEntityCopyBuilder(UniqueEntity entity) {
+      this.uuid = entity.getUuid();
+    }
+
+    public T uuid(UUID uuid) {
+      this.uuid = uuid;
+      return childInstance();
+    }
+
+    protected UUID getUuid() {
+      return uuid;
+    }
+
+    protected abstract T childInstance();
+  }
+
+  protected interface UniqueEntityBuilder {
+
+    UniqueEntity build();
+  }
 }

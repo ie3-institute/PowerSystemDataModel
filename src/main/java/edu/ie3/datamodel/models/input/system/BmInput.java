@@ -109,6 +109,10 @@ public class BmInput extends SystemParticipantInput implements HasType {
     return feedInTariff;
   }
 
+  public BmInputCopyBuilder copy() {
+    return new BmInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -138,5 +142,69 @@ public class BmInput extends SystemParticipantInput implements HasType {
         + ", feedInTariff="
         + feedInTariff
         + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link BmInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link BmInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class BmInputCopyBuilder
+      extends SystemParticipantInputCopyBuilder<BmInputCopyBuilder> {
+
+    private BmTypeInput type;
+    private boolean marketReaction;
+    private boolean costControlled;
+    private ComparableQuantity<EnergyPrice> feedInTariff;
+
+    private BmInputCopyBuilder(BmInput entity) {
+      super(entity);
+      this.type = entity.getType();
+      this.marketReaction = entity.isMarketReaction();
+      this.costControlled = entity.isCostControlled();
+      this.feedInTariff = entity.getFeedInTariff();
+    }
+
+    public BmInputCopyBuilder type(BmTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    public BmInputCopyBuilder marketReaction(boolean marketReaction) {
+      this.marketReaction = marketReaction;
+      return this;
+    }
+
+    public BmInputCopyBuilder costControlled(boolean costControlled) {
+      this.costControlled = costControlled;
+      return this;
+    }
+
+    public BmInputCopyBuilder feedInTariff(ComparableQuantity<EnergyPrice> feedInTariff) {
+      this.feedInTariff = feedInTariff;
+      return this;
+    }
+
+    @Override
+    public BmInput build() {
+      return new BmInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNode(),
+          getqCharacteristics(),
+          type,
+          marketReaction,
+          costControlled,
+          feedInTariff);
+    }
+
+    @Override
+    protected BmInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

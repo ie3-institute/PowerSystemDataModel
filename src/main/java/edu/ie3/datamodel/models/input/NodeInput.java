@@ -117,6 +117,10 @@ public class NodeInput extends AssetInput {
     return subnet;
   }
 
+  public NodeInputCopyBuilder copy() {
+    return new NodeInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -158,5 +162,75 @@ public class NodeInput extends AssetInput {
         + ", subnet="
         + subnet
         + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link NodeInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link NodeInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class NodeInputCopyBuilder extends AssetInputCopyBuilder<NodeInputCopyBuilder> {
+
+    private ComparableQuantity<Dimensionless> vTarget;
+    private boolean slack;
+    private Point geoPosition;
+    private VoltageLevel voltLvl;
+    private int subnet;
+
+    private NodeInputCopyBuilder(NodeInput entity) {
+      super(entity);
+
+      this.vTarget = entity.getvTarget();
+      this.slack = entity.isSlack();
+      this.geoPosition = entity.getGeoPosition();
+      this.voltLvl = entity.getVoltLvl();
+      this.subnet = entity.getSubnet();
+    }
+
+    @Override
+    public NodeInput build() {
+      return new NodeInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          vTarget,
+          slack,
+          geoPosition,
+          voltLvl,
+          subnet);
+    }
+
+    public NodeInputCopyBuilder vTarget(ComparableQuantity<Dimensionless> vTarget) {
+      this.vTarget = vTarget;
+      return this;
+    }
+
+    public NodeInputCopyBuilder slack(boolean isSlack) {
+      this.slack = isSlack;
+      return this;
+    }
+
+    public NodeInputCopyBuilder geoPosition(Point geoPosition) {
+      this.geoPosition = geoPosition;
+      return this;
+    }
+
+    public NodeInputCopyBuilder voltLvl(VoltageLevel voltLvl) {
+      this.voltLvl = voltLvl;
+      return this;
+    }
+
+    public NodeInputCopyBuilder subnet(int subnet) {
+      this.subnet = subnet;
+      return this;
+    }
+
+    @Override
+    protected NodeInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }
