@@ -107,4 +107,55 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
         + parallelDevices
         + '}';
   }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link
+   * ConnectorInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  abstract static class ConnectorInputCopyBuilder<T extends UniqueEntityBuilder>
+      extends AssetInputCopyBuilder<T> {
+
+    private NodeInput nodeA;
+    private NodeInput nodeB;
+    private int parallelDevices;
+
+    protected ConnectorInputCopyBuilder(ConnectorInput entity) {
+      super(entity);
+      this.nodeA = entity.getNodeA();
+      this.nodeB = entity.getNodeB();
+      this.parallelDevices = entity.getParallelDevices();
+    }
+
+    public T nodeA(NodeInput nodeA) {
+      this.nodeA = nodeA;
+      return childInstance();
+    }
+
+    public T nodeB(NodeInput nodeB) {
+      this.nodeB = nodeB;
+      return childInstance();
+    }
+
+    public T parallelDevices(int parallelDevices) {
+      this.parallelDevices = parallelDevices;
+      return childInstance();
+    }
+
+    protected NodeInput getNodeA() {
+      return nodeA;
+    }
+
+    protected NodeInput getNodeB() {
+      return nodeB;
+    }
+
+    protected int getParallelDevices() {
+      return parallelDevices;
+    }
+
+    protected abstract T childInstance();
+  }
 }

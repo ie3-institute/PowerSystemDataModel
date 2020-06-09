@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.connector
 
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
+import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.io.geojson.GeoJsonReader
@@ -57,5 +58,26 @@ class LineInputTest extends Specification {
 		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228]]}" | _
 		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.311111, 51.49228],[7.511111, 51.49228]]}" | _
 
+	}
+
+	def "A LineInput copy method should work as expected"() {
+		given:
+		def line = GridTestData.lineAtoB
+
+		when:
+		def alteredUnit = line.copy().id("line_A_C").nodeA(GridTestData.nodeA)
+				.nodeB(GridTestData.nodeC).type(GridTestData.lineTypeInputCtoD).length(Quantities.getQuantity(10, Units.METRE))
+				.build()
+
+		then:
+		alteredUnit.with {
+			assert uuid == line.uuid
+			assert operationTime == line.operationTime
+			assert operator == GridTestData.profBroccoli
+			assert id == "line_A_C"
+			assert nodeA == GridTestData.nodeA
+			assert nodeB == GridTestData.nodeC
+			assert length == Quantities.getQuantity(10, Units.METRE)
+		}
 	}
 }

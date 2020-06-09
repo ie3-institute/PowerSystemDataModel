@@ -58,4 +58,43 @@ public abstract class GraphicInput extends InputEntity {
   public String toString() {
     return "GraphicInput{" + "graphicLayer='" + graphicLayer + '\'' + ", path=" + path + '}';
   }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link GraphicInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  protected abstract static class GraphicInputCopyBuilder<T extends UniqueEntityBuilder>
+      extends UniqueEntityCopyBuilder<T> {
+
+    private String graphicLayer;
+    private LineString path;
+
+    protected GraphicInputCopyBuilder(GraphicInput entity) {
+      super(entity);
+      this.graphicLayer = entity.getGraphicLayer();
+      this.path = entity.getPath();
+    }
+
+    public T graphicLayer(String graphicLayer) {
+      this.graphicLayer = graphicLayer;
+      return childInstance();
+    }
+
+    public T path(LineString path) {
+      this.path = path;
+      return childInstance();
+    }
+
+    protected String getGraphicLayer() {
+      return graphicLayer;
+    }
+
+    protected LineString getPath() {
+      return path;
+    }
+
+    protected abstract T childInstance();
+  }
 }

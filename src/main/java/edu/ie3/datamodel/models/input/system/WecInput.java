@@ -21,6 +21,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
   private final WecTypeInput type;
   /** Is this asset market oriented? */
   private final boolean marketReaction;
+
   /**
    * Constructor for an operated wind energy converter
    *
@@ -78,6 +79,10 @@ public class WecInput extends SystemParticipantInput implements HasType {
     return type;
   }
 
+  public WecInputCopyBuilder copy() {
+    return new WecInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -96,5 +101,53 @@ public class WecInput extends SystemParticipantInput implements HasType {
   @Override
   public String toString() {
     return "WecInput{" + "type=" + type + ", marketReaction=" + marketReaction + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link WecInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link WecInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class WecInputCopyBuilder
+      extends SystemParticipantInputCopyBuilder<WecInputCopyBuilder> {
+
+    private boolean marketReaction;
+    private WecTypeInput type;
+
+    private WecInputCopyBuilder(WecInput entity) {
+      super(entity);
+      this.type = entity.getType();
+      this.marketReaction = entity.isMarketReaction();
+    }
+
+    @Override
+    public WecInput build() {
+      return new WecInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNode(),
+          getqCharacteristics(),
+          type,
+          marketReaction);
+    }
+
+    public WecInputCopyBuilder type(WecTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    public WecInputCopyBuilder marketReaction(boolean marketReaction) {
+      this.marketReaction = marketReaction;
+      return this;
+    }
+
+    @Override
+    protected WecInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

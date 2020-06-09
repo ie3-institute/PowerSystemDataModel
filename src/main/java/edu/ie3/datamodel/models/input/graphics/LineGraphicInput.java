@@ -35,6 +35,10 @@ public class LineGraphicInput extends GraphicInput implements HasLine {
     return line;
   }
 
+  public LineGraphicInputCopyBuilder copy() {
+    return new LineGraphicInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -52,5 +56,39 @@ public class LineGraphicInput extends GraphicInput implements HasLine {
   @Override
   public String toString() {
     return "LineGraphicInput{" + "line=" + line + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link LineGraphicInput} entities with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * LineGraphicInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class LineGraphicInputCopyBuilder
+      extends GraphicInputCopyBuilder<LineGraphicInputCopyBuilder> {
+
+    private LineInput line;
+
+    private LineGraphicInputCopyBuilder(LineGraphicInput entity) {
+      super(entity);
+      this.line = entity.getLine();
+    }
+
+    @Override
+    protected LineGraphicInputCopyBuilder childInstance() {
+      return this;
+    }
+
+    @Override
+    public LineGraphicInput build() {
+      return new LineGraphicInput(getUuid(), getGraphicLayer(), getPath(), line);
+    }
+
+    public LineGraphicInputCopyBuilder line(LineInput line) {
+      this.line = line;
+      return this;
+    }
   }
 }

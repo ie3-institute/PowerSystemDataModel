@@ -32,6 +32,10 @@ public class OperatorInput extends InputEntity {
     return id;
   }
 
+  public OperatorInputCopyBuilder copy() {
+    return new OperatorInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -49,5 +53,39 @@ public class OperatorInput extends InputEntity {
   @Override
   public String toString() {
     return "OperatorInput{" + "uuid=" + getUuid() + ", id='" + id + '\'' + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link OperatorInput} entities with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * OperatorInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class OperatorInputCopyBuilder
+      extends UniqueEntityCopyBuilder<OperatorInputCopyBuilder> {
+
+    private String id;
+
+    private OperatorInputCopyBuilder(OperatorInput entity) {
+      super(entity);
+      this.id = entity.getId();
+    }
+
+    @Override
+    public OperatorInput build() {
+      return new OperatorInput(getUuid(), id);
+    }
+
+    public OperatorInputCopyBuilder id(String id) {
+      this.id = id;
+      return this;
+    }
+
+    @Override
+    protected OperatorInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

@@ -75,6 +75,10 @@ public class Transformer2WInput extends TransformerInput implements HasType {
     this.type = type;
   }
 
+  public Transformer2WInputCopyBuilder copy() {
+    return new Transformer2WInputCopyBuilder(this);
+  }
+
   @Override
   public Transformer2WTypeInput getType() {
     return type;
@@ -97,5 +101,49 @@ public class Transformer2WInput extends TransformerInput implements HasType {
   @Override
   public String toString() {
     return "Transformer2WInput{" + "type=" + type + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link Transformer2WInput} entities with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * Transformer2WInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class Transformer2WInputCopyBuilder
+      extends TransformerInputCopyBuilder<Transformer2WInputCopyBuilder> {
+
+    private Transformer2WTypeInput type;
+
+    private Transformer2WInputCopyBuilder(Transformer2WInput entity) {
+      super(entity);
+      this.type = entity.getType();
+    }
+
+    @Override
+    public Transformer2WInput build() {
+      return new Transformer2WInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNodeA(),
+          getNodeB(),
+          getParallelDevices(),
+          type,
+          getTapPos(),
+          isAutoTap());
+    }
+
+    public Transformer2WInputCopyBuilder type(Transformer2WTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    @Override
+    protected Transformer2WInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

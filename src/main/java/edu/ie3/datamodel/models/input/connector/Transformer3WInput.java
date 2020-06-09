@@ -104,10 +104,18 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       int tapPos,
       boolean autoTap,
       boolean internalNodeAsSlack) {
-    super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    this.type = type;
-    this.nodeC = nodeC;
-    this.nodeInternal =
+    this(
+        uuid,
+        id,
+        operator,
+        operationTime,
+        nodeA,
+        nodeB,
+        nodeC,
+        parallelDevices,
+        type,
+        tapPos,
+        autoTap,
         new NodeInput(
             UUID.randomUUID(),
             "internal_node_" + id,
@@ -117,7 +125,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
             internalNodeAsSlack,
             null,
             nodeA.getVoltLvl(),
-            nodeA.getSubnet());
+            nodeA.getSubnet()));
   }
 
   /**
@@ -159,6 +167,40 @@ public class Transformer3WInput extends TransformerInput implements HasType {
             nodeA.getSubnet());
   }
 
+  /**
+   * Private constructor to be used for create copies using {@link Transformer3WInputCopyBuilder}
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param nodeA The higher voltage node
+   * @param nodeB The middle voltage node
+   * @param nodeC The lower voltage node
+   * @param parallelDevices Amount of singular transformers
+   * @param type of 3W transformer
+   * @param tapPos Tap Position of this transformer
+   * @param autoTap true, if there is an automated regulation activated for this transformer
+   */
+  private Transformer3WInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      NodeInput nodeC,
+      int parallelDevices,
+      Transformer3WTypeInput type,
+      int tapPos,
+      boolean autoTap,
+      NodeInput internalNode) {
+    super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
+    this.type = type;
+    this.nodeC = nodeC;
+    this.nodeInternal = internalNode;
+  }
+
   @Override
   public Transformer3WTypeInput getType() {
     return type;
@@ -186,6 +228,10 @@ public class Transformer3WInput extends TransformerInput implements HasType {
     return nodeInternal;
   }
 
+  public Transformer3WInputCopyBuilder copy() {
+    return new Transformer3WInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -208,5 +254,67 @@ public class Transformer3WInput extends TransformerInput implements HasType {
   @Override
   public List<NodeInput> allNodes() {
     return Collections.unmodifiableList(Arrays.asList(getNodeA(), getNodeB(), nodeC));
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link Transformer3WInput} entities with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * Transformer3WInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class Transformer3WInputCopyBuilder
+      extends TransformerInputCopyBuilder<Transformer3WInputCopyBuilder> {
+
+    private Transformer3WTypeInput type;
+    private NodeInput nodeC;
+    private boolean internSlack;
+    private final NodeInput internalNode;
+
+    private Transformer3WInputCopyBuilder(Transformer3WInput entity) {
+      super(entity);
+      this.type = entity.getType();
+      this.nodeC = entity.getNodeC();
+      this.internalNode = entity.getNodeInternal();
+      this.internSlack = entity.getNodeInternal().isSlack();
+    }
+
+    @Override
+    public Transformer3WInput build() {
+      return new Transformer3WInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          super.getNodeA(),
+          super.getNodeB(),
+          nodeC,
+          getParallelDevices(),
+          type,
+          getTapPos(),
+          isAutoTap(),
+          internalNode.copy().slack(internSlack).build());
+    }
+
+    public Transformer3WInputCopyBuilder type(Transformer3WTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    public Transformer3WInputCopyBuilder nodeC(NodeInput nodeC) {
+      this.nodeC = nodeC;
+      return this;
+    }
+
+    public Transformer3WInputCopyBuilder internalSlack(boolean internalNodeIsSlack) {
+      this.internSlack = internalNodeIsSlack;
+      return this;
+    }
+
+    @Override
+    protected Transformer3WInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

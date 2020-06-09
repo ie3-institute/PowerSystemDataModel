@@ -202,6 +202,10 @@ public class LoadInput extends SystemParticipantInput {
     return cosPhiRated;
   }
 
+  public LoadInputCopyBuilder copy() {
+    return new LoadInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -231,5 +235,77 @@ public class LoadInput extends SystemParticipantInput {
         + ", cosphiRated="
         + cosPhiRated
         + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link LoadInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link LoadInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class LoadInputCopyBuilder
+      extends SystemParticipantInputCopyBuilder<LoadInputCopyBuilder> {
+
+    private StandardLoadProfile standardLoadProfile;
+    private boolean dsm;
+    private ComparableQuantity<Energy> eConsAnnual;
+    private ComparableQuantity<Power> sRated;
+    private double cosPhiRated;
+
+    private LoadInputCopyBuilder(LoadInput entity) {
+      super(entity);
+      this.standardLoadProfile = entity.getStandardLoadProfile();
+      this.dsm = entity.isDsm();
+      this.eConsAnnual = entity.geteConsAnnual();
+      this.sRated = entity.getsRated();
+      this.cosPhiRated = entity.getCosPhiRated();
+    }
+
+    public LoadInputCopyBuilder standardLoadProfile(StandardLoadProfile standardLoadProfile) {
+      this.standardLoadProfile = standardLoadProfile;
+      return this;
+    }
+
+    public LoadInputCopyBuilder dsm(boolean dsm) {
+      this.dsm = dsm;
+      return this;
+    }
+
+    public LoadInputCopyBuilder eConsAnnual(ComparableQuantity<Energy> eConsAnnual) {
+      this.eConsAnnual = eConsAnnual;
+      return this;
+    }
+
+    public LoadInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
+      this.sRated = sRated;
+      return this;
+    }
+
+    public LoadInputCopyBuilder cosPhiRated(double cosPhiRated) {
+      this.cosPhiRated = cosPhiRated;
+      return this;
+    }
+
+    @Override
+    public LoadInput build() {
+      return new LoadInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNode(),
+          getqCharacteristics(),
+          standardLoadProfile,
+          dsm,
+          eConsAnnual,
+          sRated,
+          cosPhiRated);
+    }
+
+    @Override
+    protected LoadInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

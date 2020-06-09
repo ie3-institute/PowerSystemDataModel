@@ -115,6 +115,10 @@ public class LineInput extends ConnectorInput implements HasType {
     return olmCharacteristic;
   }
 
+  public LineInputCopyBuilder copy() {
+    return new LineInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -144,5 +148,68 @@ public class LineInput extends ConnectorInput implements HasType {
         + ", olmCharacteristic="
         + olmCharacteristic
         + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link LineInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link LineInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class LineInputCopyBuilder extends ConnectorInputCopyBuilder<LineInputCopyBuilder> {
+    private LineTypeInput type;
+    private ComparableQuantity<Length> length;
+    private LineString geoPosition;
+    private OlmCharacteristicInput olmCharacteristic;
+
+    private LineInputCopyBuilder(LineInput entity) {
+      super(entity);
+      this.type = entity.getType();
+      this.length = entity.getLength();
+      this.geoPosition = entity.getGeoPosition();
+      this.olmCharacteristic = entity.getOlmCharacteristic();
+    }
+
+    @Override
+    public LineInput build() {
+      return new LineInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNodeA(),
+          getNodeB(),
+          getParallelDevices(),
+          type,
+          length,
+          geoPosition,
+          olmCharacteristic);
+    }
+
+    public LineInputCopyBuilder geoPosition(LineString geoPosition) {
+      this.geoPosition = geoPosition;
+      return this;
+    }
+
+    public LineInputCopyBuilder type(LineTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    public LineInputCopyBuilder length(ComparableQuantity<Length> length) {
+      this.length = length;
+      return this;
+    }
+
+    public LineInputCopyBuilder olmCharacteristic(OlmCharacteristicInput olmCharacteristic) {
+      this.olmCharacteristic = olmCharacteristic;
+      return this;
+    }
+
+    @Override
+    protected LineInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }
