@@ -21,7 +21,7 @@ public class BufferedCsvWriter extends BufferedWriter {
   /** Information on the shape of the file */
   private final CsvFileDefinition fileDefinition;
   /** True, if every entry should be quoted */
-  private final boolean quoted = true;
+  private final boolean quoted;
 
   /**
    * Build a new CsvBufferedWriter
@@ -47,6 +47,7 @@ public class BufferedCsvWriter extends BufferedWriter {
                 baseFolder + File.separator + fileDefinition.getFilePath(), append),
             StandardCharsets.UTF_8));
     this.fileDefinition = fileDefinition;
+    this.quoted = true;
     if (writeHeader) writeFileHeader(fileDefinition.headLineElements);
   }
 
@@ -63,7 +64,7 @@ public class BufferedCsvWriter extends BufferedWriter {
   public BufferedCsvWriter(
       String baseFolder, CsvFileDefinition fileDefinition, boolean writeHeader, boolean append)
       throws IOException {
-    this(baseFolder, fileDefinition, false, writeHeader, append);
+    this(baseFolder, fileDefinition, true, writeHeader, append);
   }
 
   /**

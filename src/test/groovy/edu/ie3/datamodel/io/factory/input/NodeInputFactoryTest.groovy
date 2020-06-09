@@ -69,16 +69,16 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
 		given: "a system participant input type factory and model data"
 		def inputFactory = new NodeInputFactory()
 		Map<String, String> parameter = [
-				"uuid"         : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-				"operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-				"operatesuntil": "",
-				"id"           : "TestID",
-				"vtarget"      : "2",
-				"vrated"       : "3",
-				"slack"        : "true",
-				"geoposition"  : "{ \"\"type\"\": \"\"Point\"\", \"\"coordinates\"\": [7.411111, 51.492528] }",
-				"voltlvl"      : "lv",
-				"subnet"       : "7"
+			"uuid"         : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+			"operatesuntil": "",
+			"id"           : "TestID",
+			"vtarget"      : "2",
+			"vrated"       : "3",
+			"slack"        : "true",
+			"geoposition"  : "{ \"\"type\"\": \"\"Point\"\", \"\"coordinates\"\": [7.411111, 51.492528] }",
+			"voltlvl"      : "lv",
+			"subnet"       : "7"
 		]
 		def inputClass = NodeInput
 		def operatorInput = Mock(OperatorInput)

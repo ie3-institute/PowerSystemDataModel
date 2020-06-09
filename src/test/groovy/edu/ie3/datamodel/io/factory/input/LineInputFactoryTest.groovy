@@ -179,14 +179,14 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		given: "a line input factory and model data"
 		def inputFactory = new LineInputFactory()
 		Map<String, String> parameter = [
-				"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-				"operatesfrom"     : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-				"operatesuntil"    : "",
-				"id"               : "TestID",
-				"paralleldevices"  : "2",
-				"length"           : "3",
-				"geoposition"      : geoLineString,
-				"olmcharacteristic": "olm:{(0.0,1.0)}"
+			"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"operatesfrom"     : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+			"operatesuntil"    : "",
+			"id"               : "TestID",
+			"paralleldevices"  : "2",
+			"length"           : "3",
+			"geoposition"      : geoLineString,
+			"olmcharacteristic": "olm:{(0.0,1.0)}"
 		]
 		def inputClass = LineInput
 		def operatorInput = Mock(OperatorInput)
