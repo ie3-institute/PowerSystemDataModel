@@ -174,4 +174,42 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228]]}" | _
 		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.311111, 51.49228],[7.511111, 51.49228]]}" | _
 	}
+
+	def "A LineInputFactory should parse a valid LineInput with different double double quoted geoPosition strings correctly"() {
+		given: "a line input factory and model data"
+		def inputFactory = new LineInputFactory()
+		Map<String, String> parameter = [
+				"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+				"operatesfrom"     : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+				"operatesuntil"    : "",
+				"id"               : "TestID",
+				"paralleldevices"  : "2",
+				"length"           : "3",
+				"geoposition"      : geoLineString,
+				"olmcharacteristic": "olm:{(0.0,1.0)}"
+		]
+		def inputClass = LineInput
+		def operatorInput = Mock(OperatorInput)
+		def nodeInputA = Mock(NodeInput)
+		nodeInputA.getGeoPosition() >> NodeInput.DEFAULT_GEO_POSITION
+		def nodeInputB = Mock(NodeInput)
+		nodeInputB.getGeoPosition() >> NodeInput.DEFAULT_GEO_POSITION
+		def typeInput = Mock(LineTypeInput)
+
+		when:
+		Optional<LineInput> input = inputFactory.getEntity(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+
+		then:
+		input.present
+		input.get().getClass() == inputClass
+		((LineInput) input.get()).with {
+			assert geoPosition == GridAndGeoUtils.buildSafeLineString(getGeometry(parameter["geoposition"]) as LineString)
+		}
+
+		where:
+		geoLineString                                                                                                                         | _
+		"{ \"\"type\"\": \"\"LineString\"\", \"\"coordinates\"\": [[7.411111, 51.49228],[7.411111, 51.49228]]}"                                           | _
+		"{ \"\"type\"\": \"\"LineString\"\", \"\"coordinates\"\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228]]}" | _
+		"{ \"\"type\"\": \"\"LineString\"\", \"\"coordinates\"\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.311111, 51.49228],[7.511111, 51.49228]]}" | _
+	}
 }

@@ -80,7 +80,7 @@ public abstract class EntityData {
     if (!fieldsToAttributes.containsKey(field))
       throw new FactoryException(String.format("Field \"%s\" not found in EntityData", field));
 
-    return fieldsToAttributes.get(field);
+    return fieldsToAttributes.get(field).replaceAll("\"\"", "\"");
   }
 
   /**
@@ -92,7 +92,7 @@ public abstract class EntityData {
   public Optional<String> getFieldOptional(String field) {
     if (!fieldsToAttributes.containsKey(field)) return Optional.empty();
 
-    return Optional.of(fieldsToAttributes.get(field));
+    return Optional.of(fieldsToAttributes.get(field).replaceAll("\"\"", "\""));
   }
 
   /**
