@@ -25,11 +25,11 @@ Copyable
   With the general design principle of immutability, entity modifications (e.g. updates of field values) can become
   hard and annoying. To avoid generating methods to update each field value, we provide an adapted version of the
   `builder pattern <https://en.wikipedia.org/wiki/Builder_pattern/>`_ to make entity modifications as easy as possible.
-  Each entity holds it's on copy builder class, which follows the same inheritance as the entity class itself. With a
+  Each entity holds it's own copy builder class, which follows the same inheritance as the entity class itself. With a
   call of `.copy()` on an entity instance a builder instance is returned, that allows for modification of fields and
   can be terminated with `.build()` which will return an instance of the entity with modified field values as required.
-  For the moment, this pattern is only implemented for a small amount of `AssetInput` entities (all entities hold by a
-  `GridContainer` except thermal units to be precise), but we plan to extend this capability to all inpu entities in the
+  For the moment, this pattern is only implemented for a small amount of `AssetInput` entities (all entities held by a
+  `GridContainer` except thermal units to be precise), but we plan to extend this capability to all input entities in the
   future.
 
 Single Point of Truth
