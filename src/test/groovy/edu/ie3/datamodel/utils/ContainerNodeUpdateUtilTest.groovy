@@ -92,7 +92,7 @@ class ContainerNodeUpdateUtilTest extends Specification {
 		then:
 		trafoNodeUpdateResult.with {
 			assert updatedOldToNewNodes.size() == 3
-			// nodeA and nodeD are set to geoPosition of nodeA of leading transformer (= nodeG geoPosition)
+			// nodeA and nodeD are set to geoPosition of high voltage node of leading transformer (= nodeG geoPosition)
 			assert updatedOldToNewNodes.get(oldNodeA) == newNodeA.copy().geoPosition(oldNodeG.geoPosition).build()
 			assert updatedOldToNewNodes.get(oldNodeD) == newNodeD.copy().geoPosition(oldNodeG.geoPosition).build()
 			assert updatedOldToNewNodes.get(oldNodeG) == oldNodeG

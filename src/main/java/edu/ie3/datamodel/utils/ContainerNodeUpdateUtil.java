@@ -24,7 +24,16 @@ public class ContainerNodeUpdateUtil {
 
   /**
    * Updates the provided {@link GridContainer} with the provided mapping of old to new {@link
-   * NodeInput} entities.
+   * NodeInput} entities. When used, one carefully has to check that the mapping is valid. No
+   * further sanity checks are provided and if an invalid mapping is passed in, unexpected behavior
+   * might occur. All entities holding reference to the old nodes are updates with this method.
+   *
+   * <p>If the geoPosition of one transformer node is altered, all other transformer nodes
+   * geoPositions are updated as well based on the update definition defined in {@link
+   * #updateTransformers(Set, Set, Map)} as by convention transformer nodes always needs to have the
+   * same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
+   * trafoDtoG - nodeG all affected transformer nodes geoPosition is set to the same location as
+   * defined by the update rule defined in {@link #updateTransformers(Set, Set, Map)}
    *
    * @param grid the grid that should be updated
    * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
@@ -32,22 +41,10 @@ public class ContainerNodeUpdateUtil {
    */
   public static GridContainer updateGridWithNodes(
       GridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) {
-    UpdatedEntities updatedEntities =
-        updateEntities(
-            grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes);
     if (grid instanceof JointGridContainer) {
-      return new JointGridContainer(
-          grid.getGridName(),
-          updatedEntities.rawGridElements,
-          updatedEntities.systemParticipants,
-          updatedEntities.graphicElements);
+      return updateGridWithNodes((JointGridContainer) grid, oldToNewNodes);
     } else {
-      return new SubGridContainer(
-          grid.getGridName(),
-          ((SubGridContainer) grid).getSubnet(),
-          updatedEntities.rawGridElements,
-          updatedEntities.systemParticipants,
-          updatedEntities.graphicElements);
+      return updateGridWithNodes((SubGridContainer) grid, oldToNewNodes);
     }
   }
 
@@ -55,7 +52,14 @@ public class ContainerNodeUpdateUtil {
    * Updates the provided {@link JointGridContainer} with the provided mapping of old to new {@link
    * NodeInput} entities. When used, one carefully has to check that the mapping is valid. No
    * further sanity checks are provided and if an invalid mapping is passed in, unexpected behavior
-   * might occur.
+   * might occur. All entities holding reference to the old nodes are updates with this method.
+   *
+   * <p>If the geoPosition of one transformer node is altered, all other transformer nodes
+   * geoPositions are updated as well based on the update definition defined in {@link
+   * #updateTransformers(Set, Set, Map)} as by convention transformer nodes always needs to have the
+   * same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
+   * trafoDtoG - nodeG all affected transformer nodes geoPosition is set to the same location as
+   * defined by the update rule defined in {@link #updateTransformers(Set, Set, Map)}
    *
    * @param grid the grid that should be updated
    * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
@@ -82,6 +86,13 @@ public class ContainerNodeUpdateUtil {
    * it is highly advised NOT to update a single subgrid, but the whole joint grid, because in case
    * of transformer node updates on a single subgrid, inconsistency of the overall joint grid might
    * occur. To update the whole joint grid use {@link #updateGridWithNodes(JointGridContainer, Map)}
+   *
+   * <p>If the geoPosition of one transformer node is altered, all other transformer nodes
+   * geoPositions are updated as well based on the update definition defined in {@link
+   * #updateTransformers(Set, Set, Map)} as by convention transformer nodes always needs to have the
+   * same geoPosition. If a chain of transformers is present e.g. nodeA - trafoAtoD - nodeD -
+   * trafoDtoG - nodeG all affected transformer nodes geoPosition is set to the same location as
+   * defined by the update rule defined in {@link #updateTransformers(Set, Set, Map)}
    *
    * @param grid the grid that should be updated
    * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
@@ -336,6 +347,13 @@ public class ContainerNodeUpdateUtil {
   /**
    * Update the provided sets of {@link Transformer3WInput} and {@link Transformer2WInput} with the
    * provided old to new nodes mapping.
+   *
+   * <p>As transformers always needs to hold the same geoPosition the following update rule applied
+   * when a geoPosition of a transformer is altered:
+   *
+   * <p>if oldToNewNodes.size() == 1, the leading geoPosition that is applied to all chained
+   * transformers comes from the provided node if oldToNewNodes.size() > 1, the leading geoPosition
+   * is applied from the highest transformer nodeA (the node @ the highest voltage level)
    *
    * @param transformer2Ws set of 2 winding transformers that should be considered for an update
    * @param transformer3Ws set of 3 winding transformers that should be considered for an update
