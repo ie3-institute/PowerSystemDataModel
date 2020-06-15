@@ -12,6 +12,7 @@ import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalConductance;
 import java.util.Objects;
 import java.util.UUID;
+import org.apache.commons.lang3.NotImplementedException;
 import tec.uom.se.ComparableQuantity;
 
 /** Quite simple thermal model of a house to serve as a heat sink */
@@ -67,6 +68,12 @@ public class ThermalHouseInput extends ThermalSinkInput {
 
   public ComparableQuantity<HeatCapacity> getEthCapa() {
     return ethCapa;
+  }
+
+  @Override
+  public UniqueEntityBuilder copy() {
+    throw new NotImplementedException(
+        "Copying of " + this.getClass().getSimpleName() + " entities is not supported yet!");
   }
 
   @Override
