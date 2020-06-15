@@ -79,6 +79,9 @@ public abstract class TransformerInput extends ConnectorInput {
   }
 
   @Override
+  public abstract TransformerInputCopyBuilder<?> copy();
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
@@ -104,7 +107,7 @@ public abstract class TransformerInput extends ConnectorInput {
    * @version 0.1
    * @since 05.06.20
    */
-  abstract static class TransformerInputCopyBuilder<T extends UniqueEntityBuilder>
+  abstract static class TransformerInputCopyBuilder<T extends TransformerInputCopyBuilder<T>>
       extends ConnectorInputCopyBuilder<T> {
 
     private int tapPos;
@@ -134,6 +137,10 @@ public abstract class TransformerInput extends ConnectorInput {
       return autoTap;
     }
 
+    @Override
+    public abstract TransformerInput build();
+
+    @Override
     protected abstract T childInstance();
   }
 }
