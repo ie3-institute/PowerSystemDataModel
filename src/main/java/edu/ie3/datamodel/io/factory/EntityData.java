@@ -92,7 +92,7 @@ public abstract class EntityData {
   public Optional<String> getFieldOptional(String field) {
     if (!fieldsToAttributes.containsKey(field)) return Optional.empty();
 
-    return Optional.of(fieldsToAttributes.get(field).replaceAll("\"\"", "\""));
+    return Optional.of(fieldsToAttributes.get(field));
   }
 
   /**
