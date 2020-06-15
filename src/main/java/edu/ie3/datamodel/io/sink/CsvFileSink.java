@@ -166,7 +166,8 @@ public class CsvFileSink implements DataSink {
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
       BufferedCsvWriter writer =
           connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
-      LinkedHashMap<String, String> quotedEntityFieldData = quoteCSVStrings(entityFieldData);
+      LinkedHashMap<String, String> quotedEntityFieldData =
+          quoteCSVStrings(entityFieldData, csvSep);
       writer.write(quotedEntityFieldData);
     } catch (ProcessorProviderException e) {
       log.error(
@@ -192,11 +193,15 @@ public class CsvFileSink implements DataSink {
    * @return LinkedHashMap containing all entityData with the relevant data quoted
    */
   private LinkedHashMap<String, String> quoteCSVStrings(
-      LinkedHashMap<String, String> entityFieldData) {
+      LinkedHashMap<String, String> entityFieldData, String csvSep) {
     for (Map.Entry<String, String> entry : entityFieldData.entrySet()) {
       String key = entry.getKey();
       String value = entry.getValue();
-      if (value.matches("(?:.*)\\{(?:.*)}")) {
+      if (value.matches("(?:.*)\\{(?:.*)}")
+          || value.contains(csvSep)
+          || value.contains(",")
+          || value.contains("\"")
+          || value.contains("\n")) {
         entityFieldData.put(
             key,
             value
