@@ -18,6 +18,7 @@ import java.util.UUID;
 public class EvInput extends SystemParticipantInput implements HasType {
   /** Type of this EV, containing default values for EVs of this kind */
   private final EvTypeInput type;
+
   /**
    * Constructor for an operated electric vehicle
    *
@@ -65,6 +66,10 @@ public class EvInput extends SystemParticipantInput implements HasType {
     return type;
   }
 
+  public EvInputCopyBuilder copy() {
+    return new EvInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -82,5 +87,45 @@ public class EvInput extends SystemParticipantInput implements HasType {
   @Override
   public String toString() {
     return "EvInput{" + "type=" + type + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link EvInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link EvInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class EvInputCopyBuilder
+      extends SystemParticipantInputCopyBuilder<EvInputCopyBuilder> {
+
+    private EvTypeInput type;
+
+    private EvInputCopyBuilder(EvInput entity) {
+      super(entity);
+      this.type = entity.getType();
+    }
+
+    @Override
+    public EvInput build() {
+      return new EvInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNode(),
+          getqCharacteristics(),
+          type);
+    }
+
+    public EvInputCopyBuilder type(EvTypeInput type) {
+      this.type = type;
+      return this;
+    }
+
+    @Override
+    protected EvInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

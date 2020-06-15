@@ -8,9 +8,11 @@ package edu.ie3.datamodel.utils;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
+import javax.measure.quantity.Length;
 import org.apache.commons.lang3.ArrayUtils;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.impl.CoordinateArraySequence;
+import tec.uom.se.ComparableQuantity;
 
 /** This class offers some useful methods for handling geographical problems related to grids */
 public class GridAndGeoUtils extends GeoUtils {
@@ -133,5 +135,20 @@ public class GridAndGeoUtils extends GeoUtils {
     CoordinateArraySequence safeCoordSeq = new CoordinateArraySequence(safeCoord);
 
     return new Point(safeCoordSeq, p1.getFactory());
+  }
+
+  /**
+   * Calculates the distance between two {@link NodeInput} entities using {@link #haversine}
+   *
+   * @param nodeA start node
+   * @param nodeB end node
+   * @return distancen between start node and end node
+   */
+  public static ComparableQuantity<Length> distanceBetweenNodes(NodeInput nodeA, NodeInput nodeB) {
+    return haversine(
+        nodeA.getGeoPosition().getY(),
+        nodeA.getGeoPosition().getX(),
+        nodeB.getGeoPosition().getY(),
+        nodeB.getGeoPosition().getX());
   }
 }

@@ -6,19 +6,16 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.SwitchInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /** Represents the aggregation of raw grid elements (nodes, lines, transformers, switches) */
-public class RawGridElements implements InputContainer {
+public class RawGridElements implements InputContainer<AssetInput> {
   /** Set of nodes in this grid */
   private final Set<NodeInput> nodes;
   /** Set of lines in this grid */
@@ -91,9 +88,68 @@ public class RawGridElements implements InputContainer {
             .collect(Collectors.toSet());
   }
 
+  /**
+   * Create an instance based on a list of {@link AssetInput} entities that are included in {@link
+   * RawGridElements}
+   *
+   * @param rawGridElements list of grid elements this container instance should created from
+   */
+  public RawGridElements(List<AssetInput> rawGridElements) {
+
+    /* init sets */
+    this.nodes =
+        rawGridElements
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof NodeInput)
+            .map(nodeInput -> (NodeInput) nodeInput)
+            .collect(Collectors.toSet());
+    this.lines =
+        rawGridElements
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof LineInput)
+            .map(lineInput -> (LineInput) lineInput)
+            .collect(Collectors.toSet());
+    this.transformer2Ws =
+        rawGridElements
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof Transformer2WInput)
+            .map(trafo2wInput -> (Transformer2WInput) trafo2wInput)
+            .collect(Collectors.toSet());
+    this.transformer3Ws =
+        rawGridElements
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof Transformer3WInput)
+            .map(trafo3wInput -> (Transformer3WInput) trafo3wInput)
+            .collect(Collectors.toSet());
+    this.switches =
+        rawGridElements
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof SwitchInput)
+            .map(switchInput -> (SwitchInput) switchInput)
+            .collect(Collectors.toSet());
+    this.measurementUnits =
+        rawGridElements
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof MeasurementUnitInput)
+            .map(measurementUnitInput -> (MeasurementUnitInput) measurementUnitInput)
+            .collect(Collectors.toSet());
+
+    // sanity check to ensure distinct UUIDs
+    Optional<String> exceptionString =
+        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
+    if (exceptionString.isPresent()) {
+      throw new InvalidGridException(
+          "The provided entities in '"
+              + this.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
+    }
+  }
+
   @Override
-  public List<UniqueEntity> allEntitiesAsList() {
-    List<UniqueEntity> allEntities = new ArrayList<>();
+  public final List<AssetInput> allEntitiesAsList() {
+    List<AssetInput> allEntities = new ArrayList<>();
     allEntities.addAll(nodes);
     allEntities.addAll(lines);
     allEntities.addAll(transformer2Ws);

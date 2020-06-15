@@ -320,13 +320,6 @@ public class ValidationUtils {
   public static void checkLineType(LineTypeInput lineType) {
     if (lineType == null)
       throw new NullPointerException("Expected a line type, but got nothing. :-(");
-    if (lineType.getvRated() == null
-        || lineType.getiMax() == null
-        || lineType.getB() == null
-        || lineType.getX() == null
-        || lineType.getR() == null
-        || lineType.getG() == null)
-      throw new InvalidEntityException("at least one value of line type is null", lineType);
 
     detectNegativeQuantities(new Quantity<?>[] {lineType.getB(), lineType.getG()}, lineType);
     detectZeroOrNegativeQuantities(

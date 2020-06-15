@@ -203,7 +203,7 @@ public class SystemParticipantTypeInputFactory
     }
 
     return new WecTypeInput(
-        uuid, id, capEx, opEx, cosPhi, cpCharacteristic, etaConv, sRated, rotorArea, hubHeight);
+        uuid, id, capEx, opEx, sRated, cosPhi, cpCharacteristic, etaConv, rotorArea, hubHeight);
   }
 
   private SystemParticipantTypeInput buildChpTypeInput(

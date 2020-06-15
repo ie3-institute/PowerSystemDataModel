@@ -18,7 +18,7 @@ public class TimeBasedWeatherValueData extends EntityData {
   /**
    * Creates a new TimeBasedEntryData object
    *
-   * @param fieldsToAttributes attribute map with (field name : value) mapping
+   * @param fieldsToAttributes attribute map: field name to value
    * @param coordinate coordinate for this WeatherValue
    */
   public TimeBasedWeatherValueData(Map<String, String> fieldsToAttributes, Point coordinate) {

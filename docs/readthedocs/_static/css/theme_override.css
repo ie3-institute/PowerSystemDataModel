@@ -1,0 +1,13 @@
+/* Suppress spacing after multi-line entries in tables
+ * Inspired by this issue: https://github.com/readthedocs/sphinx_rtd_theme/issues/117 */
+.wy-table-responsive table td div.line-block {
+    margin-bottom: 0;
+    font-size: 90%;
+}
+.wy-table-responsive table th div.line-block {
+    margin-bottom: 0;
+    font-size: 90%;
+}
+.wy-table-responsive table th p {
+    margin-bottom: 0;
+}

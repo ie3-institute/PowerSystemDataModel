@@ -1,13 +1,14 @@
 plugins {
-	id "com.jfrog.artifactory" version "4.9.7"
 	id 'java' //java support
 	id 'groovy' // groovy support
 	id 'maven-publish'
 	id 'signing'
 	id 'pmd' // code check, working on source code
-	id 'com.github.spotbugs' version '2.0.0' // code check, working on byte code
+	id 'com.github.spotbugs' version '4.3.0' // code check, working on byte code
 	id 'com.diffplug.gradle.spotless' version '3.27.1'//code format
 	id 'com.github.onslip.gradle-one-jar' version '1.0.5' // pack a self contained jar
+	id 'de.undercouch.download' version '4.0.4'
+	id 'kr.motd.sphinx' version '2.9.0' // documentation generation
 	id 'jacoco' // java code coverage plugin
 	id "org.sonarqube" version "2.8" // sonarqube
 }
@@ -34,6 +35,7 @@ apply from: scriptsLocation + 'spotbugs.gradle'
 apply from: scriptsLocation + 'spotless.gradle'
 apply from: scriptsLocation + 'checkJavaVersion.gradle'
 apply from: scriptsLocation + 'selfContainedJar.gradle'
+apply from: scriptsLocation + 'sphinx.gradle'
 apply from: scriptsLocation + 'jacoco.gradle' // jacoco java code coverage
 apply from: scriptsLocation + 'mavenCentralPublish.gradle'
 apply from: scriptsLocation + 'javadoc.gradle'

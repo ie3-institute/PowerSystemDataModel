@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.input.EvcsInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -27,6 +26,7 @@ import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.BmInput
 import edu.ie3.datamodel.models.input.system.ChpInput
 import edu.ie3.datamodel.models.input.system.EvInput
+import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput
 import edu.ie3.datamodel.models.input.system.HpInput
 import edu.ie3.datamodel.models.input.system.LoadInput
@@ -101,12 +101,12 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 			Transformer3WInput,
 			SwitchInput,
 			MeasurementUnitInput,
-			EvcsInput,
 			ThermalBusInput,
 			/* -- SystemParticipantInput */
 			ChpInput,
 			BmInput,
 			EvInput,
+			EvcsInput,
 			FixedFeedInInput,
 			HpInput,
 			LoadInput,

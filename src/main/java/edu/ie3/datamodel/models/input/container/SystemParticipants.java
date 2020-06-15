@@ -6,8 +6,6 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
-import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.EvcsInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
@@ -17,7 +15,7 @@ import java.util.stream.Collectors;
  * Represents the accumulation of system participant elements (BM plants, CHP plants, EVCS, fixed
  * feed ins, heat pumps, loads, PV plants, storages, WECs)
  */
-public class SystemParticipants implements InputContainer {
+public class SystemParticipants implements InputContainer<SystemParticipantInput> {
   private final Set<BmInput> bmPlants;
   private final Set<ChpInput> chpPlants;
   private final Set<EvcsInput> evCS;
@@ -67,7 +65,7 @@ public class SystemParticipants implements InputContainer {
   /**
    * Combine different already existing containers
    *
-   * @param systemParticipants Already existing containers
+   * @param systemParticipants already existing containers
    */
   public SystemParticipants(Collection<SystemParticipants> systemParticipants) {
     this.bmPlants =
@@ -112,9 +110,92 @@ public class SystemParticipants implements InputContainer {
             .collect(Collectors.toSet());
   }
 
+  /**
+   * Create an instance based on a list of {@link SystemParticipantInput} entities
+   *
+   * @param systemParticipants list of system participants this container instance should created
+   *     from
+   */
+  public SystemParticipants(List<SystemParticipantInput> systemParticipants) {
+
+    /* init sets */
+    this.bmPlants =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof BmInput)
+            .map(bmInput -> (BmInput) bmInput)
+            .collect(Collectors.toSet());
+    this.chpPlants =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof ChpInput)
+            .map(chpInput -> (ChpInput) chpInput)
+            .collect(Collectors.toSet());
+    this.evCS =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof EvcsInput)
+            .map(evcsInput -> (EvcsInput) evcsInput)
+            .collect(Collectors.toSet());
+    this.evs =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof EvInput)
+            .map(evInput -> (EvInput) evInput)
+            .collect(Collectors.toSet());
+    this.fixedFeedIns =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof FixedFeedInInput)
+            .map(fixedFeedInInpu -> (FixedFeedInInput) fixedFeedInInpu)
+            .collect(Collectors.toSet());
+    this.heatPumps =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof HpInput)
+            .map(hpInput -> (HpInput) hpInput)
+            .collect(Collectors.toSet());
+    this.loads =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof LoadInput)
+            .map(loadInput -> (LoadInput) loadInput)
+            .collect(Collectors.toSet());
+    this.pvPlants =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof PvInput)
+            .map(pvInput -> (PvInput) pvInput)
+            .collect(Collectors.toSet());
+    this.storages =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof StorageInput)
+            .map(storageInput -> (StorageInput) storageInput)
+            .collect(Collectors.toSet());
+    this.wecPlants =
+        systemParticipants
+            .parallelStream()
+            .filter(gridElement -> gridElement instanceof WecInput)
+            .map(wecInput -> (WecInput) wecInput)
+            .collect(Collectors.toSet());
+
+    // sanity check for distinct uuids
+    Optional<String> exceptionString =
+        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
+    if (exceptionString.isPresent()) {
+      throw new InvalidGridException(
+          "The provided entities in '"
+              + this.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
+    }
+  }
+
   @Override
-  public List<UniqueEntity> allEntitiesAsList() {
-    List<UniqueEntity> allEntities = new ArrayList<>();
+  public final List<SystemParticipantInput> allEntitiesAsList() {
+    List<SystemParticipantInput> allEntities = new ArrayList<>();
     allEntities.addAll(bmPlants);
     allEntities.addAll(chpPlants);
     allEntities.addAll(evCS);

@@ -58,6 +58,8 @@ public abstract class AssetInput extends InputEntity implements Operable {
     return id;
   }
 
+  public abstract UniqueEntityBuilder copy();
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -85,5 +87,59 @@ public abstract class AssetInput extends InputEntity implements Operable {
         + id
         + '\''
         + '}';
+  }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link AssetInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  protected abstract static class AssetInputCopyBuilder<T extends AssetInputCopyBuilder<T>>
+      extends UniqueEntityCopyBuilder<T> {
+
+    private String id;
+    private OperatorInput operator;
+    private OperationTime operationTime;
+
+    protected AssetInputCopyBuilder(AssetInput entity) {
+      super(entity);
+      this.id = entity.getId();
+      this.operator = entity.getOperator();
+      this.operationTime = entity.getOperationTime();
+    }
+
+    public T id(String id) {
+      this.id = id;
+      return childInstance();
+    }
+
+    public T operator(OperatorInput operator) {
+      this.operator = operator;
+      return childInstance();
+    }
+
+    public T operationTime(OperationTime operationTime) {
+      this.operationTime = operationTime;
+      return childInstance();
+    }
+
+    protected String getId() {
+      return id;
+    }
+
+    protected OperatorInput getOperator() {
+      return operator;
+    }
+
+    protected OperationTime getOperationTime() {
+      return operationTime;
+    }
+
+    @Override
+    public abstract AssetInput build();
+
+    @Override
+    protected abstract T childInstance();
   }
 }

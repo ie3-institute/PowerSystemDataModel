@@ -73,6 +73,9 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
   }
 
   @Override
+  public abstract SystemParticipantInputCopyBuilder<?> copy();
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
@@ -96,5 +99,50 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
         + qCharacteristics
         + '\''
         + '}';
+  }
+
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link
+   * SystemParticipantInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public abstract static class SystemParticipantInputCopyBuilder<
+          T extends SystemParticipantInputCopyBuilder<T>>
+      extends AssetInputCopyBuilder<T> {
+
+    private NodeInput node;
+    private ReactivePowerCharacteristic qCharacteristics;
+
+    protected SystemParticipantInputCopyBuilder(SystemParticipantInput entity) {
+      super(entity);
+      this.node = entity.getNode();
+      this.qCharacteristics = entity.getqCharacteristics();
+    }
+
+    public T node(NodeInput node) {
+      this.node = node;
+      return childInstance();
+    }
+
+    public T qCharacteristics(ReactivePowerCharacteristic qCharacteristics) {
+      this.qCharacteristics = qCharacteristics;
+      return childInstance();
+    }
+
+    protected NodeInput getNode() {
+      return node;
+    }
+
+    protected ReactivePowerCharacteristic getqCharacteristics() {
+      return qCharacteristics;
+    }
+
+    @Override
+    public abstract SystemParticipantInput build();
+
+    @Override
+    protected abstract T childInstance();
   }
 }

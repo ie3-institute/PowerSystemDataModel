@@ -230,3 +230,14 @@ gradle-app.setting
 # Self-created test files and helpers
 /test
 src/test/resources/uuids.txt
+
+# Read the docs integration
+# Don't commit the virtual environment of python
+**/venv
+docs/readthedocs/_build
+
+# (La)TeX stuff (source files are allowed)
+**/*.aux
+**/*.pdf
+**/*.synctex.gz
+**/*.synctex(busy)

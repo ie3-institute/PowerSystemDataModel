@@ -10,7 +10,7 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tec.uom.se.ComparableQuantity;
 
-/** Represents calculation results of a {@link edu.ie3.datamodel.models.input.EvcsInput} */
+/** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvcsInput} */
 public class EvcsResult extends SystemParticipantResult {
   /**
    * Standard constructor with automatic uuid generation.

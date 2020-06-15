@@ -27,5 +27,5 @@ public interface WholesalePriceSource extends DataSource {
    * @param time Queried time
    * @return wholesale data for the specified time
    */
-  IndividualTimeSeries<EnergyPriceValue> getWeather(ZonedDateTime time);
+  IndividualTimeSeries<EnergyPriceValue> getWholesalePrice(ZonedDateTime time);
 }

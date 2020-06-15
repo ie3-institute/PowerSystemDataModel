@@ -101,7 +101,7 @@ public class InfluxDbConnector implements DataConnector {
    * Parses the result of an influxQL query for all measurements (e.g. weather)
    *
    * @param queryResult Result of an influxDB query
-   * @return Map of (measurement name : Set of maps of (field name : field value)) for each result
+   * @return Map of (measurement name to Set of maps of (field name : field value)) for each result
    *     entity)
    */
   public static Map<String, Set<Map<String, String>>> parseQueryResult(QueryResult queryResult) {
@@ -115,7 +115,7 @@ public class InfluxDbConnector implements DataConnector {
    * @param queryResult Result of an influxDB query
    * @param measurementNames Names of measurements that should be parsed. If none are given, all
    *     measurements will be parsed
-   * @return Map of (measurement name : Set of maps of (field name : field value) for each result
+   * @return Map of (measurement name to Set of maps of (field name : field value) for each result
    *     entity)
    */
   public static Map<String, Set<Map<String, String>>> parseQueryResult(
@@ -146,7 +146,7 @@ public class InfluxDbConnector implements DataConnector {
    * @param result Specific result of an influxDB query
    * @param measurementNames Names of measurements that should be parsed. If none are given, all
    *     measurements will be parsed
-   * @return Map of (measurement name : Set of maps of (field name : field value) for each result
+   * @return Map of (measurement name to Set of maps of (field name : field value) for each result
    *     entity)
    */
   public static Map<String, Set<Map<String, String>>> parseResult(
@@ -164,7 +164,7 @@ public class InfluxDbConnector implements DataConnector {
    * Parses the results for a single measurement series
    *
    * @param series A measurement series of an influxDB query result
-   * @return Set of maps of (field name : field value) for each result entity
+   * @return Set of maps of (field name to field value) for each result entity
    */
   public static Set<Map<String, String>> parseSeries(QueryResult.Series series) {
     String[] columns = series.getColumns().toArray(new String[0]);
@@ -178,7 +178,7 @@ public class InfluxDbConnector implements DataConnector {
    *
    * @param valueList List of values, sorted by column in columns
    * @param columns Array of column names
-   * @return Map of (field name : field value) for one result entity
+   * @return Map of (field name to field value) for one result entity
    */
   public static Map<String, String> parseValueList(List<?> valueList, String[] columns) {
     Map<String, String> attributeMap = new HashMap<>();

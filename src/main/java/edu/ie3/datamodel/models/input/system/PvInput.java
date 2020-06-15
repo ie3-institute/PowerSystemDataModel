@@ -38,6 +38,7 @@ public class PvInput extends SystemParticipantInput {
   private final ComparableQuantity<Power> sRated;
   /** Rated power factor */
   private final double cosPhiRated;
+
   /**
    * Constructor for an operated photovoltaic plant
    *
@@ -164,6 +165,10 @@ public class PvInput extends SystemParticipantInput {
     return sRated;
   }
 
+  public PvInputCopyBuilder copy() {
+    return new PvInputCopyBuilder(this);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -218,5 +223,109 @@ public class PvInput extends SystemParticipantInput {
         + ", cosphiRated="
         + cosPhiRated
         + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link PvInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link PvInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class PvInputCopyBuilder
+      extends SystemParticipantInputCopyBuilder<PvInputCopyBuilder> {
+
+    private double albedo;
+    private ComparableQuantity<Angle> azimuth;
+    private ComparableQuantity<Dimensionless> etaConv;
+    private ComparableQuantity<Angle> height;
+    private double kG;
+    private double kT;
+    private boolean marketReaction;
+    private ComparableQuantity<Power> sRated;
+    private double cosPhiRated;
+
+    public PvInputCopyBuilder(PvInput entity) {
+      super(entity);
+      this.albedo = entity.getAlbedo();
+      this.azimuth = entity.getAzimuth();
+      this.etaConv = entity.getEtaConv();
+      this.height = entity.getHeight();
+      this.kG = entity.getkG();
+      this.kT = entity.getkT();
+      this.marketReaction = entity.isMarketReaction();
+      this.sRated = entity.getsRated();
+      this.cosPhiRated = entity.getCosPhiRated();
+    }
+
+    public PvInputCopyBuilder albedo(double albedo) {
+      this.albedo = albedo;
+      return this;
+    }
+
+    public PvInputCopyBuilder azimuth(ComparableQuantity<Angle> azimuth) {
+      this.azimuth = azimuth;
+      return this;
+    }
+
+    public PvInputCopyBuilder etaConv(ComparableQuantity<Dimensionless> etaConv) {
+      this.etaConv = etaConv;
+      return this;
+    }
+
+    public PvInputCopyBuilder height(ComparableQuantity<Angle> height) {
+      this.height = height;
+      return this;
+    }
+
+    public PvInputCopyBuilder kG(double kG) {
+      this.kG = kG;
+      return this;
+    }
+
+    public PvInputCopyBuilder kT(double kT) {
+      this.kT = kT;
+      return this;
+    }
+
+    public PvInputCopyBuilder marketReaction(boolean marketReaction) {
+      this.marketReaction = marketReaction;
+      return this;
+    }
+
+    public PvInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
+      this.sRated = sRated;
+      return this;
+    }
+
+    public PvInputCopyBuilder cosPhiRated(double cosPhiRated) {
+      this.cosPhiRated = cosPhiRated;
+      return this;
+    }
+
+    @Override
+    public PvInput build() {
+      return new PvInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNode(),
+          getqCharacteristics(),
+          albedo,
+          azimuth,
+          etaConv,
+          height,
+          kG,
+          kT,
+          marketReaction,
+          sRated,
+          cosPhiRated);
+    }
+
+    @Override
+    protected PvInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

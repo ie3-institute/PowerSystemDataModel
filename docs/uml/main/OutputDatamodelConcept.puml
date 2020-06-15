@@ -59,7 +59,7 @@ package models {
             class SwitchResult{
                 + closed: boolean
             }
-            ConnectorResult <|-- SwitchResult
+            ResultEntity <|-- SwitchResult
         }
 
         package system {

@@ -17,6 +17,13 @@ most of the commonly known power flow calculations
 -  Implementation of ``DataConnector``, ``WeatherSource`` and ``DataSink`` for InfluxDB
 -  Introduction of a ``IdCoordinateSource`` and implementation of  corresponding csv source for ID to coordinate mapping
 -  Factory for ``TimeBasedValues<WeatherValue>``
+-  Documentation with Sphinx / ReadTheDocs: [https://powersystemdatamodel.readthedocs.io/en/latest/](https://powersystemdatamodel.readthedocs.io/en/latest/)
+-  Introduction of``SwitchResultFactory`` to build adapted ``SwitchResult`` entities
+-  Copy method for all `RawGridElements` and `SystemParticipants` input entities which allow an easy to use entity copy with altered field values
+-  ``distanceBetweenNodes(NodeInput nodeA, NodeInput nodeB)`` in ``GridAndGeoUtils``
+-  Additional constructors based on lists of entities in ``RawGridElements``, ``SystemParticipants`` and ``GraphicElements``
+-  Added ``DistanceWeightedGraph`` + corresponding utility method to generate a graph topology whose vertices are `NodeInput` entities and its edges are weighted with the distance between the vertices in meter
+-  Added ``ContainerNodeUpdateUtil`` to support updating nested nodes in ``GridContainer`` instances
 
 ### Changed
 -  Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
@@ -24,6 +31,7 @@ most of the commonly known power flow calculations
 coordinates or multiple exactly equal coordinates possible
 -  Extended functionality of `GridAndGeoUtils`
 - `CsvFileConnector` is now set up to process either UniqueEntities or only by file name
+- `SwitchResult` superclass changed from `ConnectorResult` to `ResultEntity`
 
 ### Fixed
 -  CsvDataSource now stops trying to get an operator for empty operator uuid field in entities

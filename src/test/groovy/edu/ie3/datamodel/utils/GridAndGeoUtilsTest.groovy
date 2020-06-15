@@ -7,10 +7,13 @@ package edu.ie3.datamodel.utils
 
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.geo.GeoUtils
+import edu.ie3.util.quantities.PowerSystemUnits
 import org.apache.commons.lang3.ArrayUtils
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
+import tec.uom.se.quantity.Quantities
+import tec.uom.se.unit.Units
 
 import java.lang.reflect.Array
 
@@ -66,5 +69,15 @@ class GridAndGeoUtilsTest extends Specification {
 			new Coordinate(1, 1, 0),
 			new Coordinate(2, 2, 0)] as Coordinate[])
 
+	}
+
+	def "The GridAndGeoUtils should calculate distance between two nodes correctly"() {
+
+		given:
+		def nodeA = GridTestData.nodeA
+		def nodeB = GridTestData.nodeB
+
+		expect:
+		GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB) == Quantities.getQuantity(0.9135678707610981, PowerSystemUnits.KILOMETRE)
 	}
 }
