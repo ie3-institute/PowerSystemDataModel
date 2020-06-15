@@ -20,39 +20,8 @@ import java.util.Objects;
 public class BufferedCsvWriter extends BufferedWriter {
   /** Information on the shape of the file */
   private final CsvFileDefinition fileDefinition;
-  /** True, if every entry should be quoted */
-  private final boolean quoted;
-
   /**
    * Build a new CsvBufferedWriter
-   *
-   * @param baseFolder Base folder, from where the file hierarchy should start
-   * @param fileDefinition The foreseen shape of the file
-   * @param writeHeader Toggles, if the head line is written or not
-   * @param quoted True, if the entries may be quoted
-   * @param append true to append to an existing file, false to overwrite an existing file (if any),
-   *     if no file exists, a new one will be created in both cases
-   * @throws IOException If the FileOutputStream cannot be established.
-   */
-  public BufferedCsvWriter(
-      String baseFolder,
-      CsvFileDefinition fileDefinition,
-      boolean quoted,
-      boolean writeHeader,
-      boolean append)
-      throws IOException {
-    super(
-        new OutputStreamWriter(
-            new FileOutputStream(
-                baseFolder + File.separator + fileDefinition.getFilePath(), append),
-            StandardCharsets.UTF_8));
-    this.fileDefinition = fileDefinition;
-    this.quoted = true;
-    if (writeHeader) writeFileHeader(fileDefinition.headLineElements);
-  }
-
-  /**
-   * Build a new CsvBufferedWriter. All entries are quoted
    *
    * @param baseFolder Base folder, from where the file hierarchy should start
    * @param fileDefinition The foreseen shape of the file
@@ -64,7 +33,13 @@ public class BufferedCsvWriter extends BufferedWriter {
   public BufferedCsvWriter(
       String baseFolder, CsvFileDefinition fileDefinition, boolean writeHeader, boolean append)
       throws IOException {
-    this(baseFolder, fileDefinition, true, writeHeader, append);
+    super(
+        new OutputStreamWriter(
+            new FileOutputStream(
+                baseFolder + File.separator + fileDefinition.getFilePath(), append),
+            StandardCharsets.UTF_8));
+    this.fileDefinition = fileDefinition;
+    if (writeHeader) writeFileHeader(fileDefinition.headLineElements);
   }
 
   /**
@@ -85,7 +60,7 @@ public class BufferedCsvWriter extends BufferedWriter {
               + "'.");
 
     String[] entries = entityFieldData.values().toArray(new String[0]);
-    writeOneLine(quoted ? StringUtils.quote(entries) : entries);
+    writeOneLine(entries);
   }
 
   /**
@@ -106,11 +81,6 @@ public class BufferedCsvWriter extends BufferedWriter {
   private void writeOneLine(String[] entries) throws IOException {
     for (int i = 0; i < entries.length; i++) {
       String attribute = entries[i];
-      if (attribute.matches("^\"\\{(?:.*)\\}\"$")) {
-        attribute = attribute.replaceAll("\"", "\"\"");
-        attribute = attribute.substring(1, attribute.length() - 1);
-      }
-      System.out.println(attribute);
       super.append(attribute);
       if (i + 1 < entries.length) {
         super.append(fileDefinition.csvSep);

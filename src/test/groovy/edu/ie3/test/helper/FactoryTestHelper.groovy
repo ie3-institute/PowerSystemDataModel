@@ -18,7 +18,6 @@ trait FactoryTestHelper {
 	}
 
 	static getGeometry(String value) {
-		value = value.replaceAll("\"\"", "\"")
 		return GEOJSON_READER.read(value)
 	}
 }

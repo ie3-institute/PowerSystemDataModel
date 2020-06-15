@@ -147,7 +147,7 @@ public class CsvFileSink implements DataSink {
 
   @Override
   public <C extends UniqueEntity> void persistIgnoreNested(C entity) {
-    LinkedHashMap<String, String> entityFieldData = new LinkedHashMap<>();
+    LinkedHashMap<String, String> entityFieldData;
     try {
       entityFieldData =
           processorProvider
@@ -166,7 +166,8 @@ public class CsvFileSink implements DataSink {
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
       BufferedCsvWriter writer =
           connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
-      writer.write(entityFieldData);
+      LinkedHashMap<String, String> quotedEntityFieldData = quoteCSVStrings(entityFieldData);
+      writer.write(quotedEntityFieldData);
     } catch (ProcessorProviderException e) {
       log.error(
           "Exception occurred during receiving of header elements. Cannot write this element.", e);
@@ -180,6 +181,31 @@ public class CsvFileSink implements DataSink {
           () -> entity.getClass().getSimpleName(),
           () -> e);
     }
+  }
+
+  /**
+   * Quotes all fields that contain special characters to comply with the CSV specification RFC 4180
+   * (https://tools.ietf.org/html/rfc4180) The " contained in the JSON strings are escaped with the
+   * same character to make the CSV data readable later
+   *
+   * @param entityFieldData LinkedHashMap containing all entityData
+   * @return LinkedHashMap containing all entityData with the relevant data quoted
+   */
+  private LinkedHashMap<String, String> quoteCSVStrings(
+      LinkedHashMap<String, String> entityFieldData) {
+    for (Map.Entry<String, String> entry : entityFieldData.entrySet()) {
+      String key = entry.getKey();
+      String value = entry.getValue();
+      if (value.matches("(?:.*)\\{(?:.*)}")) {
+        entityFieldData.put(
+            key,
+            value
+                .replaceAll("\"", "\"\"")
+                .replaceAll("^([^\"])", "\"$1")
+                .replaceAll("([^\"])$", "$1\""));
+      }
+    }
+    return entityFieldData;
   }
 
   @Override
@@ -229,9 +255,7 @@ public class CsvFileSink implements DataSink {
                 wecPlants)
             .flatMap(Collection::stream)
             .map(
-                entityWithType ->
-                    Extractor.extractType(
-                        entityWithType)) // due to a bug in java 8 this *cannot* be replaced with
+                    Extractor::extractType) // due to a bug in java 8 this *cannot* be replaced with
             // method reference!
             .collect(Collectors.toSet());
 

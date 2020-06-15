@@ -107,13 +107,13 @@ public class CsvFileConnector implements DataConnector {
 
     File pathFile = new File(fullPathToFile);
     if (!pathFile.exists()) {
-      return new BufferedCsvWriter(baseFolder, fileDefinition, false, true, false);
+      return new BufferedCsvWriter(baseFolder, fileDefinition, true, false);
     }
     log.warn(
         "File '{}.csv' already exist. Will append new content WITHOUT new header! Full path: {}",
         fileDefinition.getFileName(),
         pathFile.getAbsolutePath());
-    return new BufferedCsvWriter(baseFolder, fileDefinition, false, false, true);
+    return new BufferedCsvWriter(baseFolder, fileDefinition, false, true);
   }
 
   /**
