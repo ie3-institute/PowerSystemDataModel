@@ -63,7 +63,9 @@ Before marking the pull request as 'ready to review', take these precautionary a
 
 * Are all tests passing? Run `gradle test`
 * Is your code properly formatted? Run `gradle spotlessApply`
-* Update the javadoc pages. Run `gradle genJavadoc`
+* Update the javadoc pages. Run `gradle javadoc`
+
+`gradle finalizePR` summarizes all of these steps .
 
 ## For any doubts
 ... please contact
