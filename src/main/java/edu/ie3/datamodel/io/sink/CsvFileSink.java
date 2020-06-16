@@ -163,7 +163,7 @@ public class CsvFileSink implements DataSink {
                                   .collect(Collectors.joining(","))
                               + "]"));
 
-      String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
+      String[] headerElements = quoteHeaderElements(processorProvider.getHeaderElements(entity.getClass()), csvSep);
       BufferedCsvWriter writer =
           connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
       LinkedHashMap<String, String> quotedEntityFieldData =
@@ -185,28 +185,54 @@ public class CsvFileSink implements DataSink {
   }
 
   /**
+   * Quotes header elements to predefine a valid CsvFileDefinition
+   *
+   * @param headerElements Array of csv header elements
+   * @param csvSep Csv separator to check if it appears within the header element
+   * @return Quoted header elements
+   */
+
+  private String[] quoteHeaderElements(
+          String[] headerElements, String csvSep) {
+    for (int index = 0; index <= headerElements.length - 1; index ++) {
+      if (headerElements[index].matches("(?:.*)\\{(?:.*)}")
+              || headerElements[index].contains(csvSep)
+              || headerElements[index].contains(",")
+              || headerElements[index].contains("\"")
+              || headerElements[index].contains("\n")) {
+        headerElements[index] = headerElements[index].replaceAll("\"", "\"\"")
+                .replaceAll("^([^\"])", "\"$1")
+                .replaceAll("([^\"])$", "$1\"");
+      }
+    }
+    return headerElements;
+  }
+
+  /**
    * Quotes all fields that contain special characters to comply with the CSV specification RFC 4180
    * (https://tools.ietf.org/html/rfc4180) The " contained in the JSON strings are escaped with the
    * same character to make the CSV data readable later
    *
    * @param entityFieldData LinkedHashMap containing all entityData
+   * @param csvSep Csv separator to check if it appears within the data
    * @return LinkedHashMap containing all entityData with the relevant data quoted
    */
+
   private LinkedHashMap<String, String> quoteCSVStrings(
       LinkedHashMap<String, String> entityFieldData, String csvSep) {
     LinkedHashMap<String, String> quotedEntityFieldData = new LinkedHashMap<>();
     for (Map.Entry<String, String> entry : entityFieldData.entrySet()) {
       String key = entry.getKey();
       String value = entry.getValue();
-/*      if (key.matches("(?:.*)\\{(?:.*)}")
+      if (key.matches("(?:.*)\\{(?:.*)}")
               || key.contains(csvSep)
-              || key.contains("uuid")
+              || key.contains(",")
               || key.contains("\"")
               || key.contains("\n")) {
         key = key.replaceAll("\"", "\"\"")
                 .replaceAll("^([^\"])", "\"$1")
                 .replaceAll("([^\"])$", "$1\"");
-      }*/
+      }
       if (value.matches("(?:.*)\\{(?:.*)}")
               || value.contains(csvSep)
               || value.contains(",")
