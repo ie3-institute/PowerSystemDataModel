@@ -163,7 +163,8 @@ public class CsvFileSink implements DataSink {
                                   .collect(Collectors.joining(","))
                               + "]"));
 
-      String[] headerElements = quoteHeaderElements(processorProvider.getHeaderElements(entity.getClass()), csvSep);
+      String[] headerElements =
+          quoteHeaderElements(processorProvider.getHeaderElements(entity.getClass()), csvSep);
       BufferedCsvWriter writer =
           connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
       LinkedHashMap<String, String> quotedEntityFieldData =
@@ -191,16 +192,16 @@ public class CsvFileSink implements DataSink {
    * @param csvSep Csv separator to check if it appears within the header element
    * @return Quoted header elements
    */
-
-  private String[] quoteHeaderElements(
-          String[] headerElements, String csvSep) {
-    for (int index = 0; index <= headerElements.length - 1; index ++) {
+  private String[] quoteHeaderElements(String[] headerElements, String csvSep) {
+    for (int index = 0; index <= headerElements.length - 1; index++) {
       if (headerElements[index].matches("(?:.*)\\{(?:.*)}")
-              || headerElements[index].contains(csvSep)
-              || headerElements[index].contains(",")
-              || headerElements[index].contains("\"")
-              || headerElements[index].contains("\n")) {
-        headerElements[index] = headerElements[index].replaceAll("\"", "\"\"")
+          || headerElements[index].contains(csvSep)
+          || headerElements[index].contains(",")
+          || headerElements[index].contains("\"")
+          || headerElements[index].contains("\n")) {
+        headerElements[index] =
+            headerElements[index]
+                .replaceAll("\"", "\"\"")
                 .replaceAll("^([^\"])", "\"$1")
                 .replaceAll("([^\"])$", "$1\"");
       }
@@ -217,7 +218,6 @@ public class CsvFileSink implements DataSink {
    * @param csvSep Csv separator to check if it appears within the data
    * @return LinkedHashMap containing all entityData with the relevant data quoted
    */
-
   private LinkedHashMap<String, String> quoteCSVStrings(
       LinkedHashMap<String, String> entityFieldData, String csvSep) {
     LinkedHashMap<String, String> quotedEntityFieldData = new LinkedHashMap<>();
@@ -225,26 +225,27 @@ public class CsvFileSink implements DataSink {
       String key = entry.getKey();
       String value = entry.getValue();
       if (key.matches("(?:.*)\\{(?:.*)}")
-              || key.contains(csvSep)
-              || key.contains(",")
-              || key.contains("\"")
-              || key.contains("\n")) {
-        key = key.replaceAll("\"", "\"\"")
+          || key.contains(csvSep)
+          || key.contains(",")
+          || key.contains("\"")
+          || key.contains("\n")) {
+        key =
+            key.replaceAll("\"", "\"\"")
                 .replaceAll("^([^\"])", "\"$1")
                 .replaceAll("([^\"])$", "$1\"");
       }
       if (value.matches("(?:.*)\\{(?:.*)}")
-              || value.contains(csvSep)
-              || value.contains(",")
-              || value.contains("\"")
-              || value.contains("\n")) {
-        value = value.replaceAll("\"", "\"\"")
+          || value.contains(csvSep)
+          || value.contains(",")
+          || value.contains("\"")
+          || value.contains("\n")) {
+        value =
+            value
+                .replaceAll("\"", "\"\"")
                 .replaceAll("^([^\"])", "\"$1")
                 .replaceAll("([^\"])$", "$1\"");
       }
-      quotedEntityFieldData.put(
-              key,
-              value);
+      quotedEntityFieldData.put(key, value);
     }
     return quotedEntityFieldData;
   }
