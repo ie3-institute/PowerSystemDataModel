@@ -194,8 +194,7 @@ public class CsvFileSink implements DataSink {
    */
   private String[] quoteHeaderElements(String[] headerElements, String csvSep) {
     for (int index = 0; index <= headerElements.length - 1; index++) {
-      if (headerElements[index].matches("(?:.*)\\{(?:.*)}")
-          || headerElements[index].contains(csvSep)
+      if (headerElements[index].contains(csvSep)
           || headerElements[index].contains(",")
           || headerElements[index].contains("\"")
           || headerElements[index].contains("\n")) {
@@ -224,18 +223,13 @@ public class CsvFileSink implements DataSink {
     for (Map.Entry<String, String> entry : entityFieldData.entrySet()) {
       String key = entry.getKey();
       String value = entry.getValue();
-      if (key.matches("(?:.*)\\{(?:.*)}")
-          || key.contains(csvSep)
-          || key.contains(",")
-          || key.contains("\"")
-          || key.contains("\n")) {
+      if (key.contains(csvSep) || key.contains(",") || key.contains("\"") || key.contains("\n")) {
         key =
             key.replaceAll("\"", "\"\"")
                 .replaceAll("^([^\"])", "\"$1")
                 .replaceAll("([^\"])$", "$1\"");
       }
-      if (value.matches("(?:.*)\\{(?:.*)}")
-          || value.contains(csvSep)
+      if (value.contains(csvSep)
           || value.contains(",")
           || value.contains("\"")
           || value.contains("\n")) {
