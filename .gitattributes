@@ -1,0 +1,2 @@
+# Fix line endings for InfluxDB test data
+src/test/resources/testcontainersFiles/influxDb/weather.txt text eol=lf
