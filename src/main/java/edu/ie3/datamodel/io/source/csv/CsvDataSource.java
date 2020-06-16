@@ -78,7 +78,9 @@ public abstract class CsvDataSource {
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
+
     final String[] fieldVals = fieldVals(csvSep, csvRow);
+
 
     try {
       insensitiveFieldsToAttributes.putAll(
@@ -131,14 +133,20 @@ public abstract class CsvDataSource {
     final String charInputRegex = "(cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.+?\\}";
     final String charReplacement = "charRepl";
 
-    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow);
-    List<String> charList = extractMatchingStrings(charInputRegex, csvRow);
+    /*removes double double quotes*/
+    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow.replaceAll("\"\"", "\""));
+    List<String> charList = extractMatchingStrings(charInputRegex, csvRow.replaceAll("\"\"", "\""));
 
     AtomicInteger geoCounter = new AtomicInteger(0);
     AtomicInteger charCounter = new AtomicInteger(0);
 
+    System.out.println(geoList);
+
+
     return Arrays.stream(
             csvRow
+                /*removes double double quotes not covered by json or geo strings*/
+                .replaceAll("\"\"", "\"")
                 .replaceAll(charInputRegex, charReplacement)
                 .replaceAll(geoJsonRegex, geoReplacement)
                 .replaceAll("\"", "")
