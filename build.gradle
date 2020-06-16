@@ -39,6 +39,7 @@ apply from: scriptsLocation + 'documentation.gradle'
 apply from: scriptsLocation + 'jacoco.gradle' // jacoco java code coverage
 apply from: scriptsLocation + 'mavenCentralPublish.gradle'
 apply from: scriptsLocation + 'sonarqube.gradle'
+apply from: scriptsLocation + 'vcs.gradle'
 
 repositories {
 	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
