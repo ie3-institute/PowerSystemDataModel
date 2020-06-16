@@ -67,7 +67,12 @@ public class ContainerUtils {
     try {
       rawGridElements
           .getLines()
-          .forEach(line -> addDistanceGraphEdge(graph, line.getNodeA(), line.getNodeB()));
+          .forEach(
+              line -> {
+                graph.addEdge(line.getNodeA(), line.getNodeB());
+                graph.setEdgeWeight(
+                    graph.getEdge(line.getNodeA(), line.getNodeB()), line.getLength());
+              });
     } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
       log.error("Error adding line edges to graph: ", ex);
       return Optional.empty();

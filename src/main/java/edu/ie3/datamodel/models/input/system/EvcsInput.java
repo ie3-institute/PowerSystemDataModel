@@ -33,4 +33,33 @@ public class EvcsInput extends SystemParticipantInput {
 
   // TODO please fill the void inside me :'(
 
+  public EvcsInputCopyBuilder copy() {
+    return new EvcsInputCopyBuilder(this);
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link EvcsInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link EvcsInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public static class EvcsInputCopyBuilder
+      extends SystemParticipantInputCopyBuilder<EvcsInputCopyBuilder> {
+
+    private EvcsInputCopyBuilder(EvcsInput entity) {
+      super(entity);
+    }
+
+    @Override
+    public EvcsInput build() {
+      return new EvcsInput(
+          getUuid(), getId(), getOperator(), getOperationTime(), getNode(), getqCharacteristics());
+    }
+
+    @Override
+    protected EvcsInputCopyBuilder childInstance() {
+      return this;
+    }
+  }
 }

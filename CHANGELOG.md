@@ -23,6 +23,7 @@ most of the commonly known power flow calculations
 -  ``distanceBetweenNodes(NodeInput nodeA, NodeInput nodeB)`` in ``GridAndGeoUtils``
 -  Additional constructors based on lists of entities in ``RawGridElements``, ``SystemParticipants`` and ``GraphicElements``
 -  Added ``DistanceWeightedGraph`` + corresponding utility method to generate a graph topology whose vertices are `NodeInput` entities and its edges are weighted with the distance between the vertices in meter
+-  Added ``ContainerNodeUpdateUtil`` to support updating nested nodes in ``GridContainer`` instances
 
 ### Changed
 -  Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
