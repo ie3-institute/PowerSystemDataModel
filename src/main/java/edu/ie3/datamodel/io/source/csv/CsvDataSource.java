@@ -78,9 +78,7 @@ public abstract class CsvDataSource {
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-
     final String[] fieldVals = fieldVals(csvSep, csvRow);
-
 
     try {
       insensitiveFieldsToAttributes.putAll(
@@ -139,9 +137,6 @@ public abstract class CsvDataSource {
 
     AtomicInteger geoCounter = new AtomicInteger(0);
     AtomicInteger charCounter = new AtomicInteger(0);
-
-    System.out.println(geoList);
-
 
     return Arrays.stream(
             csvRow
