@@ -69,7 +69,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    * @throws IOException If something is messed up
    */
   private void writeFileHeader(String[] headLineElements) throws IOException {
-    writeOneLine(StringUtils.quote(StringUtils.camelCaseToSnakeCase(headLineElements)));
+    writeOneLine(StringUtils.camelCaseToSnakeCase(headLineElements));
   }
 
   /**

@@ -194,23 +194,33 @@ public class CsvFileSink implements DataSink {
    */
   private LinkedHashMap<String, String> quoteCSVStrings(
       LinkedHashMap<String, String> entityFieldData, String csvSep) {
+    LinkedHashMap<String, String> quotedEntityFieldData = new LinkedHashMap<>();
     for (Map.Entry<String, String> entry : entityFieldData.entrySet()) {
       String key = entry.getKey();
       String value = entry.getValue();
-      if (value.matches("(?:.*)\\{(?:.*)}")
-          || value.contains(csvSep)
-          || value.contains(",")
-          || value.contains("\"")
-          || value.contains("\n")) {
-        entityFieldData.put(
-            key,
-            value
-                .replaceAll("\"", "\"\"")
+/*      if (key.matches("(?:.*)\\{(?:.*)}")
+              || key.contains(csvSep)
+              || key.contains("uuid")
+              || key.contains("\"")
+              || key.contains("\n")) {
+        key = key.replaceAll("\"", "\"\"")
                 .replaceAll("^([^\"])", "\"$1")
-                .replaceAll("([^\"])$", "$1\""));
+                .replaceAll("([^\"])$", "$1\"");
+      }*/
+      if (value.matches("(?:.*)\\{(?:.*)}")
+              || value.contains(csvSep)
+              || value.contains(",")
+              || value.contains("\"")
+              || value.contains("\n")) {
+        value = value.replaceAll("\"", "\"\"")
+                .replaceAll("^([^\"])", "\"$1")
+                .replaceAll("([^\"])$", "$1\"");
       }
+      quotedEntityFieldData.put(
+              key,
+              value);
     }
-    return entityFieldData;
+    return quotedEntityFieldData;
   }
 
   @Override
