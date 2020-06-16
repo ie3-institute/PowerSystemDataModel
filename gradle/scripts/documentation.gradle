@@ -9,6 +9,9 @@ def docBaseDirPath = project.projectDir.toString() + File.separator + project.do
  * Configuring the sphinx plugin
  */
 sphinx {
+	description 'Generate high level HTML documentation output.'
+	group 'Documentation'
+
 	sourceDirectory = "${docBaseDirPath}/readthedocs"
 	outputDirectory = "${project.buildDir}/docs/readthedocs"
 }
@@ -16,7 +19,10 @@ sphinx {
 /**
  * Task to generate the JavaDoc
  */
-task genJavadoc(type: Javadoc) {
+javadoc() {
+	description 'Generates java API doc at the correct place.'
+	group 'Documentation'
+
 	source = sourceSets.main.allJava
 	destinationDir = file( docBaseDirPath + 'javadoc' )
 	classpath = project.sourceSets.main.compileClasspath
@@ -28,7 +34,8 @@ task genJavadoc(type: Javadoc) {
  * Important Note: you have to install GraphViz Manually before being able to execute this task! -> https://graphviz.org
  */
 task puml2png() {
-	description 'Converts plantUML diagrams to png files'
+	description 'Converts plantUML diagrams to png files.'
+	group 'Documentation'
 
 	doLast {
 		/* Get the PlantUML-jar or download it, if it is not available */

@@ -41,8 +41,9 @@ public class DistanceWeightedGraph extends SimpleWeightedGraph<NodeInput, Distan
 
   /**
    * The only purpose for overriding this method is to provide a better indication of the unit that
-   * is expected to be passed in. It is highly advised to use the {@link this.setWeightQuantity()}
-   * for safety purposes that the provided edge weight is correct.
+   * is expected to be passed in. It is highly advised to use the
+   * {@link #setEdgeWeight(DistanceWeightedEdge, ComparableQuantity)} for safety purposes that the
+   * provided edge weight is correct.
    *
    * @param edge the edge whose weight should be altered
    * @param distanceInMeters the weight of the {@link DistanceWeightedEdge} in meters
