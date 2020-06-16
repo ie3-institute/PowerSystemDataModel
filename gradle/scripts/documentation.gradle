@@ -1,21 +1,21 @@
 def docBaseDirPath = project.projectDir.toString() + File.separator + project.docsDirName.toString() + File.separator
 
 /*
-* Additional tasks, that are defined by default:
-*   - sphinx -> Generate HTML output of *.rst files in <projectDir>/docs/readthedocs
-*/
+ * Additional tasks, that are defined by default:
+ *   - sphinx -> Generate HTML output of *.rst files in <projectDir>/docs/readthedocs
+ */
 
 /**
-* Configuring the sphinx plugin
-*/
+ * Configuring the sphinx plugin
+ */
 sphinx {
 	sourceDirectory = "${docBaseDirPath}/readthedocs"
 	outputDirectory = "${project.buildDir}/docs/readthedocs"
 }
 
 /**
-* Task to generate the JavaDoc
-*/
+ * Task to generate the JavaDoc
+ */
 task genJavadoc(type: Javadoc) {
 	source = sourceSets.main.allJava
 	destinationDir = file( docBaseDirPath + 'javadoc' )
@@ -23,10 +23,10 @@ task genJavadoc(type: Javadoc) {
 }
 
 /**
-* Converts the PlantUML diagrams to a png file, so that those can be used in sphinx documentation
-*
-* Important Note: you have to install GraphViz Manually before being able to execute this task! -> https://graphviz.org
-*/
+ * Converts the PlantUML diagrams to a png file, so that those can be used in sphinx documentation
+ *
+ * Important Note: you have to install GraphViz Manually before being able to execute this task! -> https://graphviz.org
+ */
 task puml2png() {
 	description 'Converts plantUML diagrams to png files'
 
