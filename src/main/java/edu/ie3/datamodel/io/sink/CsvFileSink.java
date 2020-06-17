@@ -28,6 +28,7 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.util.StringUtils;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -146,22 +147,24 @@ public class CsvFileSink implements DataSink {
   }
 
   /**
-   * TODO JH
+   * Transforms a provided array of strings to valid csv formatted strings (according to csv
+   * specification RFC 4180)
    *
-   * @param headerElements
-   * @return
+   * @param strings array of strings that should be processed
+   * @return a new array with valid csv formatted strings
    */
-  private String[] csvHeaderElements(String[] headerElements) {
-    return Arrays.stream(headerElements)
-        .map(inputElement -> csvString(inputElement, csvSep))
+  private String[] csvHeaderElements(String[] strings) {
+    return Arrays.stream(strings)
+        .map(inputElement -> StringUtils.csvString(inputElement, csvSep))
         .toArray(String[]::new);
   }
 
   /**
-   * // todo JH
+   * Transforms a provided map of string to string to valid csv formatted strings (according to csv
+   * specification RFC 4180)
    *
-   * @param entityFieldData
-   * @return
+   * @param entityFieldData a string to string map that should be processed
+   * @return a new map with valid csv formatted keys and values strings
    */
   private LinkedHashMap<String, String> csvEntityFieldData(
       LinkedHashMap<String, String> entityFieldData) {
@@ -170,7 +173,8 @@ public class CsvFileSink implements DataSink {
         .map(
             mapEntry ->
                 new AbstractMap.SimpleEntry<>(
-                    csvString(mapEntry.getKey(), ","), csvString(mapEntry.getValue(), ",")))
+                    StringUtils.csvString(mapEntry.getKey(), ","),
+                    StringUtils.csvString(mapEntry.getValue(), ",")))
         .collect(
             Collectors.toMap(
                 AbstractMap.SimpleEntry::getKey,
@@ -223,62 +227,6 @@ public class CsvFileSink implements DataSink {
           () -> entity.getClass().getSimpleName(),
           () -> e);
     }
-  }
-
-  /**
-   * Adds quotation marks at the beginning and end of the input, if they are not apparent, yet.
-   *
-   * @param input String to quote
-   * @return Quoted String
-   */
-  public static String quote(String input) {
-    return quoteEnd(quoteStart(input));
-  }
-
-  private static String quoteStart(String input) {
-    return input.replaceAll("^([^\"])", "\"$1");
-  }
-
-  private static String quoteEnd(String input) {
-    return input.replaceAll("([^\"])$", "$1\"");
-  }
-
-  /**
-   * Quotes a given string that contains special characters to comply with the csv specification RFC
-   * 4180 (https://tools.ietf.org/html/rfc4180). Double quotes in JSON strings are escaped with the
-   * same character to make the csv data readable later.
-   *
-   * @param inputString string that should be converted to a valid rfc 4180 string
-   * @param csvSep separator of the csv file
-   * @return a csv string that is valid according to rfc 4180
-   */
-  public static String csvString(String inputString, String csvSep) {
-    if (needsCsvRFC4180Quote(inputString, csvSep)) {
-      /* clean the string by first quoting start and end of the string and then replace all double quotes
-       * that are followed by one or more double quotes with single double quotes */
-      String quotedStartEndString = quote(inputString).replaceAll("\"\"*", "\"");
-      /* get everything in between the start and end quotes and replace single quotes with double quotes */
-      String stringWOStartEndQuotes =
-          quotedStartEndString
-              .substring(1, quotedStartEndString.length() - 1)
-              .replaceAll("\"", "\"\"");
-      /* finally add quotes to the strings start and end again */
-      return quote(stringWOStartEndQuotes);
-    } else return inputString;
-  }
-
-  /**
-   * Check if the provided string needs to be quoted according to the csv specification RFC 4180
-   *
-   * @param inputString the string that should be checked
-   * @param csvSep separator of the csv file
-   * @return true of the string needs to be quoted, false otherwise
-   */
-  private static boolean needsCsvRFC4180Quote(String inputString, String csvSep) {
-    return inputString.contains(csvSep)
-        || inputString.contains(",")
-        || inputString.contains("\"")
-        || inputString.contains("\n");
   }
 
   @Override
