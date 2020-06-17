@@ -146,49 +146,6 @@ public class CsvFileSink implements DataSink {
     }
   }
 
-  /**
-   * Transforms a provided array of strings to valid csv formatted strings (according to csv
-   * specification RFC 4180)
-   *
-   * @param strings array of strings that should be processed
-   * @return a new array with valid csv formatted strings
-   */
-  private String[] csvHeaderElements(String[] strings) {
-    return Arrays.stream(strings)
-        .map(inputElement -> StringUtils.csvString(inputElement, csvSep))
-        .toArray(String[]::new);
-  }
-
-  /**
-   * Transforms a provided map of string to string to valid csv formatted strings (according to csv
-   * specification RFC 4180)
-   *
-   * @param entityFieldData a string to string map that should be processed
-   * @return a new map with valid csv formatted keys and values strings
-   */
-  private LinkedHashMap<String, String> csvEntityFieldData(
-      LinkedHashMap<String, String> entityFieldData) {
-
-    return entityFieldData.entrySet().stream()
-        .map(
-            mapEntry ->
-                new AbstractMap.SimpleEntry<>(
-                    StringUtils.csvString(mapEntry.getKey(), ","),
-                    StringUtils.csvString(mapEntry.getValue(), ",")))
-        .collect(
-            Collectors.toMap(
-                AbstractMap.SimpleEntry::getKey,
-                AbstractMap.SimpleEntry::getValue,
-                (v1, v2) -> {
-                  throw new IllegalStateException(
-                      "Duplicate keys in entityFieldData are not allowed!"
-                          + entityFieldData.entrySet().stream()
-                              .map(entry -> entry.getKey() + " = " + entry.getValue())
-                              .collect(Collectors.joining(",\n")));
-                },
-                LinkedHashMap::new));
-  }
-
   @Override
   public <C extends UniqueEntity> void persistIgnoreNested(C entity) {
     LinkedHashMap<String, String> entityFieldData;
@@ -401,5 +358,48 @@ public class CsvFileSink implements DataSink {
                     e);
               }
             });
+  }
+
+  /**
+   * Transforms a provided array of strings to valid csv formatted strings (according to csv
+   * specification RFC 4180)
+   *
+   * @param strings array of strings that should be processed
+   * @return a new array with valid csv formatted strings
+   */
+  private String[] csvHeaderElements(String[] strings) {
+    return Arrays.stream(strings)
+        .map(inputElement -> StringUtils.csvString(inputElement, csvSep))
+        .toArray(String[]::new);
+  }
+
+  /**
+   * Transforms a provided map of string to string to valid csv formatted strings (according to csv
+   * specification RFC 4180)
+   *
+   * @param entityFieldData a string to string map that should be processed
+   * @return a new map with valid csv formatted keys and values strings
+   */
+  private LinkedHashMap<String, String> csvEntityFieldData(
+      LinkedHashMap<String, String> entityFieldData) {
+
+    return entityFieldData.entrySet().stream()
+        .map(
+            mapEntry ->
+                new AbstractMap.SimpleEntry<>(
+                    StringUtils.csvString(mapEntry.getKey(), ","),
+                    StringUtils.csvString(mapEntry.getValue(), ",")))
+        .collect(
+            Collectors.toMap(
+                AbstractMap.SimpleEntry::getKey,
+                AbstractMap.SimpleEntry::getValue,
+                (v1, v2) -> {
+                  throw new IllegalStateException(
+                      "Duplicate keys in entityFieldData are not allowed!"
+                          + entityFieldData.entrySet().stream()
+                              .map(entry -> entry.getKey() + " = " + entry.getValue())
+                              .collect(Collectors.joining(",\n")));
+                },
+                LinkedHashMap::new));
   }
 }
