@@ -188,8 +188,6 @@ class CsvDataSourceTest extends Specification {
 			"olm:{(0.00,1.00)}",
 			"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
 		]
-
-
 	}
 
 

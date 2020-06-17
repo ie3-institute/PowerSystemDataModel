@@ -140,11 +140,9 @@ public abstract class CsvDataSource {
 
     return Arrays.stream(
             csvRow
-                /*removes double double quotes not covered by json or geo strings*/
-                .replaceAll("\"\"", "\"")
                 .replaceAll(charInputRegex, charReplacement)
                 .replaceAll(geoJsonRegex, geoReplacement)
-                .replaceAll("\"", "")
+                .replaceAll("\"*", "") // remove all quotes from
                 .split(csvSep, -1))
         .map(
             fieldVal -> {
