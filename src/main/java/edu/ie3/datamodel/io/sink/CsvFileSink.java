@@ -145,6 +145,46 @@ public class CsvFileSink implements DataSink {
     }
   }
 
+  /**
+   * TODO JH
+   *
+   * @param headerElements
+   * @return
+   */
+  private String[] csvHeaderElements(String[] headerElements) {
+    return Arrays.stream(headerElements)
+        .map(inputElement -> csvString(inputElement, csvSep))
+        .toArray(String[]::new);
+  }
+
+  /**
+   * // todo JH
+   *
+   * @param entityFieldData
+   * @return
+   */
+  private LinkedHashMap<String, String> csvEntityFieldData(
+      LinkedHashMap<String, String> entityFieldData) {
+
+    return entityFieldData.entrySet().stream()
+        .map(
+            mapEntry ->
+                new AbstractMap.SimpleEntry<>(
+                    csvString(mapEntry.getKey(), ","), csvString(mapEntry.getValue(), ",")))
+        .collect(
+            Collectors.toMap(
+                AbstractMap.SimpleEntry::getKey,
+                AbstractMap.SimpleEntry::getValue,
+                (v1, v2) -> {
+                  throw new IllegalStateException(
+                      "Duplicate keys in entityFieldData are not allowed!"
+                          + entityFieldData.entrySet().stream()
+                              .map(entry -> entry.getKey() + " = " + entry.getValue())
+                              .collect(Collectors.joining(",\n")));
+                },
+                LinkedHashMap::new));
+  }
+
   @Override
   public <C extends UniqueEntity> void persistIgnoreNested(C entity) {
     LinkedHashMap<String, String> entityFieldData;
@@ -163,29 +203,13 @@ public class CsvFileSink implements DataSink {
                                   .collect(Collectors.joining(","))
                               + "]"));
 
-      String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
-      String[] headerElementsQuoted =
-          Arrays.stream(headerElements)
-              .map(inputElement -> csvString(inputElement, ","))
-              .toArray(String[]::new);
+      String[] headerElements =
+          csvHeaderElements(processorProvider.getHeaderElements(entity.getClass()));
 
       BufferedCsvWriter writer =
-          connector.getOrInitWriter(entity.getClass(), headerElementsQuoted, csvSep);
-      LinkedHashMap<String, String> quotedEntityFieldData =
-          entityFieldData.entrySet().stream()
-              .map(
-                  mapEntry ->
-                      new AbstractMap.SimpleEntry<>(
-                          csvString(mapEntry.getKey(), ","), csvString(mapEntry.getValue(), ",")))
-              .collect(
-                  Collectors.toMap(
-                      AbstractMap.SimpleEntry::getKey,
-                      AbstractMap.SimpleEntry::getValue,
-                      (v1, v2) -> {
-                        throw new IllegalStateException();
-                      },
-                      LinkedHashMap::new));
-      writer.write(quotedEntityFieldData);
+          connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
+
+      writer.write(csvEntityFieldData(entityFieldData));
     } catch (ProcessorProviderException e) {
       log.error(
           "Exception occurred during receiving of header elements. Cannot write this element.", e);
@@ -372,12 +396,12 @@ public class CsvFileSink implements DataSink {
                                   .collect(Collectors.joining(","))
                               + "]"));
 
-      String[] headerElements = processorProvider.getHeaderElements(key);
+      String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
       BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
       entityFieldData.forEach(
           data -> {
             try {
-              writer.write(data);
+              writer.write(csvEntityFieldData(data));
             } catch (IOException e) {
               log.error(
                   "Cannot write the following entity data: '{}'. Exception: {}",
@@ -413,7 +437,9 @@ public class CsvFileSink implements DataSink {
         .forEach(
             clz -> {
               try {
-                String[] headerElements = processorProvider.getHeaderElements(clz);
+                String[] headerElements =
+                    csvHeaderElements(processorProvider.getHeaderElements(clz));
+
                 connector.getOrInitWriter(clz, headerElements, csvSep);
               } catch (ProcessorProviderException e) {
                 log.error(
