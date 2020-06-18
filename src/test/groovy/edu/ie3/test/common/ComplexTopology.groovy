@@ -17,7 +17,7 @@ import org.jgrapht.graph.DirectedMultigraph
 import org.jgrapht.graph.SimpleDirectedGraph
 
 class ComplexTopology extends GridTestData {
-	public static gridName = "complex_topology"
+	public static final gridName = "complex_topology"
 
 	private static final RawGridElements rawGrid = new RawGridElements(
 	[
@@ -39,7 +39,7 @@ class ComplexTopology extends GridTestData {
 	[] as Set,
 	[] as Set)
 
-	public static grid = new JointGridContainer(
+	public static final grid = new JointGridContainer(
 	gridName,
 	rawGrid,
 	new SystemParticipants(
@@ -57,9 +57,9 @@ class ComplexTopology extends GridTestData {
 	[] as Set,
 	[] as Set))
 
-	public static HashMap<Integer, SubGridContainer> expectedSubGrids = new HashMap<>()
+	public static final HashMap<Integer, SubGridContainer> expectedSubGrids = new HashMap<>()
 
-	public static SubGridTopologyGraph expectedSubGridTopology
+	public static final SubGridTopologyGraph expectedSubGridTopology
 
 	static {
 		expectedSubGrids.put(1, new SubGridContainer(
