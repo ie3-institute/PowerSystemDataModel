@@ -9,11 +9,14 @@ import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData
 import edu.ie3.datamodel.io.source.RawGridSource
 import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.test.common.GridTestData as gtd
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
 import spock.lang.Specification
+
+import java.util.stream.Collectors
 
 class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
@@ -39,17 +42,18 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 	def "A CsvGraphicSource should process invalid input data as expected when requested to provide an instance of GraphicElements"() {
 		given:
 		def typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-		def rawGridSource = Spy(CsvRawGridSource, constructorArgs: [
-			csvSep,
-			gridFolderPath,
-			fileNamingStrategy,
-			typeSource
-		]) {
-			// partly fake the return method of the csv raw grid source to always return empty node sets
-			// -> elements to build NodeGraphicInputs are missing
-			getNodes() >> new HashSet<NodeInput>()
-			getNodes(_) >> new HashSet<NodeInput>()
-		} as RawGridSource
+		def rawGridSource =
+				new CsvRawGridSource(csvSep, gridFolderPath, fileNamingStrategy, typeSource) {
+					@Override
+					Set<NodeInput> getNodes() {
+						return Collections.emptySet()
+					}
+
+					@Override
+					Set<NodeInput> getNodes(Set<OperatorInput> operators) {
+						return Collections.emptySet()
+					}
+				}
 
 		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, typeSource, rawGridSource)
 
