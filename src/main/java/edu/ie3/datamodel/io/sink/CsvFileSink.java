@@ -386,8 +386,8 @@ public class CsvFileSink implements DataSink {
         .map(
             mapEntry ->
                 new AbstractMap.SimpleEntry<>(
-                    StringUtils.csvString(mapEntry.getKey(), ","),
-                    StringUtils.csvString(mapEntry.getValue(), ",")))
+                    StringUtils.csvString(mapEntry.getKey(), csvSep),
+                    StringUtils.csvString(mapEntry.getValue(), csvSep)))
         .collect(
             Collectors.toMap(
                 AbstractMap.SimpleEntry::getKey,
