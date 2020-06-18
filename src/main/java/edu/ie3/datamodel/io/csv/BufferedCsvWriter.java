@@ -68,7 +68,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    *
    * @throws IOException If something is messed up
    */
-  private void writeFileHeader(String[] headLineElements) throws IOException {
+  protected final void writeFileHeader(String[] headLineElements) throws IOException {
     writeOneLine(StringUtils.camelCaseToSnakeCase(headLineElements));
   }
 
@@ -78,7 +78,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    * @param entries Entries to write to the line of the file
    * @throws IOException If writing is not possible
    */
-  private void writeOneLine(String[] entries) throws IOException {
+  protected final void writeOneLine(String[] entries) throws IOException {
     for (int i = 0; i < entries.length; i++) {
       String attribute = entries[i];
       super.append(attribute);
