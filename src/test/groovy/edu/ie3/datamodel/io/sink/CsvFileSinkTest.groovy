@@ -48,6 +48,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 	@Shared
 	String testBaseFolderPath = "test"
 
+	// called automatically by spock (see http://spockframework.org/spock/docs/1.0/spock_primer.html - Fixture Methods)
 	def cleanup() {
 		// delete files after each test if they exist
 		if (new File(testBaseFolderPath).exists()) {
