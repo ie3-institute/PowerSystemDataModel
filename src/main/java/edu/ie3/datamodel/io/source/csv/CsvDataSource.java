@@ -80,7 +80,7 @@ public abstract class CsvDataSource {
 
     // when replacing deprecated workaround add final modifier before parseCsvRow as well as remove
     // 'finalFieldVals' below!
-    String[] fieldVals = parseCsvRow(csvSep, csvRow);
+    String[] fieldVals = parseCsvRow(csvRow, csvSep);
 
     // start workaround for deprecated data model processing
     if (fieldVals.length != headline.length) {
@@ -133,11 +133,11 @@ public abstract class CsvDataSource {
   /**
    * Parse a given row of a valid RFC 4180 formatted csv row
    *
-   * @param csvSep separator of the csv file
    * @param csvRow the valid row
+   * @param csvSep separator of the csv file
    * @return an array with the csv field values as strings
    */
-  protected String[] parseCsvRow(String csvSep, String csvRow) {
+  protected String[] parseCsvRow(String csvRow, String csvSep) {
     return Arrays.stream(csvRow.split(csvSep + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1))
         .map(
             maybeStartEndQuotedString ->

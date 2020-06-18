@@ -47,8 +47,8 @@ class CsvDataSourceTest extends Specification {
 		}
 
 		String[] parseCsvRow(
-				String csvSep, String csvRow) {
-			return super.parseCsvRow(csvSep, csvRow)
+				String csvRow,String csvSep) {
+			return super.parseCsvRow(csvRow, csvSep)
 		}
 
 		String[] oldFieldVals(
@@ -197,7 +197,7 @@ class CsvDataSourceTest extends Specification {
 
 	def "A CsvDataSource should be able to handle a variety of different csvRows correctly"() {
 		expect:
-		dummyCsvSource.parseCsvRow(csvSep, csvRow) as List == resultingArray
+		dummyCsvSource.parseCsvRow(csvRow, csvSep) as List == resultingArray
 
 		where:
 		csvSep | csvRow                                                                                                                                                                                                                                                                                                                                                                                                              || resultingArray
