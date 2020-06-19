@@ -31,7 +31,7 @@ javadoc() {
 /**
  * Converts the PlantUML diagrams to a png file, so that those can be used in sphinx documentation
  *
- * Important Note: you have to install GraphViz Manually before being able to execute this task! -> https://graphviz.org
+ * Important note: you have to install GraphViz Manually before being able to execute this task! -> https://graphviz.org
  */
 task puml2png() {
 	description 'Converts plantUML diagrams to png files.'
