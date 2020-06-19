@@ -32,6 +32,7 @@ import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.test.common.ThermalUnitInputTestData
+import edu.ie3.util.StringUtils
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
@@ -40,12 +41,14 @@ import tec.uom.se.quantity.Quantities
 
 import javax.measure.Quantity
 import javax.measure.quantity.Power
+import java.util.stream.Collectors
 
 class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
 	@Shared
 	String testBaseFolderPath = "test"
 
+	// called automatically by spock (see http://spockframework.org/spock/docs/1.0/spock_primer.html - Fixture Methods)
 	def cleanup() {
 		// delete files after each test if they exist
 		if (new File(testBaseFolderPath).exists()) {

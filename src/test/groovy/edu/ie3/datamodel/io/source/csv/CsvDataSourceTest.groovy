@@ -46,9 +46,14 @@ class CsvDataSourceTest extends Specification {
 			return super.distinctRowsWithLog(entityClass, allRows)
 		}
 
-		String[] fieldVals(
+		String[] parseCsvRow(
+				String csvRow,String csvSep) {
+			return super.parseCsvRow(csvRow, csvSep)
+		}
+
+		String[] oldFieldVals(
 				String csvSep, String csvRow) {
-			return super.fieldVals(csvSep, csvRow)
+			return super.oldFieldVals(csvSep, csvRow)
 		}
 	}
 
@@ -99,9 +104,9 @@ class CsvDataSourceTest extends Specification {
 
 	}
 
-	def "A CsvDataSource should be able to handle a variety of different csvRows correctly"() {
+	def "A CsvDataSource should be able to handle deprecated invalid csvRows correctly"() {
 		expect:
-		dummyCsvSource.fieldVals(csvSep, csvRow) as List == resultingArray
+		dummyCsvSource.oldFieldVals(csvSep, csvRow) as List == resultingArray
 
 		where:
 		csvSep | csvRow                                                                                                                                                                                                                                                                                                                                                                                                              || resultingArray
@@ -173,8 +178,128 @@ class CsvDataSourceTest extends Specification {
 			"{\"type\":\"LineString\",\"coordinates\":[[7.4116482,51.4843281],[7.4116482,51.4843281]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"{\"type\":\"Point\",\"coordinates\":[0.25423729,0.75409836],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:0\"}}}"
 		]
+		","    | "4ca90220-74c2-4369-9afa-a18bf068840d,{\"\"type\"\":\"\"Point\"\",\"\"coordinates\"\":[7.411111,51.492528],\"\"crs\"\":{\"\"type\"\":\"\"name\"\",\"\"properties\"\":{\"\"name\"\":\"\"EPSG:4326\"\"}}},node_a,2020-03-25T15:11:31Z[UTC],2020-03-24T15:11:31Z[UTC],8f9682df-0744-4b58-a122-f0dc730f6510,true,1,1.0,Höchstspannung,380.0,\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\""         || [
+			"4ca90220-74c2-4369-9afa-a18bf068840d",
+			"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"node_a",
+			"2020-03-25T15:11:31Z[UTC]",
+			"2020-03-24T15:11:31Z[UTC]",
+			"8f9682df-0744-4b58-a122-f0dc730f6510",
+			"true",
+			"1",
+			"1.0",
+			"Höchstspannung",
+			"380.0",
+			"olm:{(0.00,1.00)}",
+			"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+		]
+	}
 
+	def "A CsvDataSource should be able to handle a variety of different csvRows correctly"() {
+		expect:
+		dummyCsvSource.parseCsvRow(csvRow, csvSep) as List == resultingArray
 
+		where:
+		csvSep | csvRow                                                                                                                                                                                                                                                                                                                                                                                                              || resultingArray
+		","    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\",\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\",\"node_a\",\"2020-03-25T15:11:31Z[UTC]\",\"2020-03-24T15:11:31Z[UTC]\",\"8f9682df-0744-4b58-a122-f0dc730f6510\",\"true\",\"1\",\"1.0\",\"Höchstspannung\",\"380.0\",\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+			"4ca90220-74c2-4369-9afa-a18bf068840d",
+			"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"node_a",
+			"2020-03-25T15:11:31Z[UTC]",
+			"2020-03-24T15:11:31Z[UTC]",
+			"8f9682df-0744-4b58-a122-f0dc730f6510",
+			"true",
+			"1",
+			"1.0",
+			"Höchstspannung",
+			"380.0",
+			"olm:{(0.00,1.00)}",
+			"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+		]
+		";"    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\";\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\";\"node_a\";\"2020-03-25T15:11:31Z[UTC]\";\"2020-03-24T15:11:31Z[UTC]\";\"8f9682df-0744-4b58-a122-f0dc730f6510\";\"true\";\"1\";\"1.0\";\"Höchstspannung\";\"380.0\";\"olm:{(0.00,1.00)}\";\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+			"4ca90220-74c2-4369-9afa-a18bf068840d",
+			"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"node_a",
+			"2020-03-25T15:11:31Z[UTC]",
+			"2020-03-24T15:11:31Z[UTC]",
+			"8f9682df-0744-4b58-a122-f0dc730f6510",
+			"true",
+			"1",
+			"1.0",
+			"Höchstspannung",
+			"380.0",
+			"olm:{(0.00,1.00)}",
+			"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+		]
+		","    | "1,abc,def,\"He said \"\"run, run\"\"\", 6.0, \"thats \"\"good\"\"\""                                                                                                                                                                                                                                                                                                                                               || [
+			"1",
+			"abc",
+			"def",
+			"He said \"run, run\"",
+			"6.0",
+			"thats \"good\""
+		]
+		";"    | "1;abc;def;\"He said \"\"run, run\"\"\"; 6.0; \"thats \"\"good\"\"\""                                                                                                                                                                                                                                                                                                                                               || [
+			"1",
+			"abc",
+			"def",
+			"He said \"run, run\"",
+			"6.0",
+			"thats \"good\""
+		]
+		";"    | "1;abc;def;\"He said \"\"run; run\"\"\"; 6.0; \"thats \"\"good\"\"\""                                                                                                                                                                                                                                                                                                                                               || [
+			"1",
+			"abc",
+			"def",
+			"He said \"run; run\"",
+			"6.0",
+			"thats \"good\""
+		]
+		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0"                                                                                                                                                                                                                                                                                                                                               || [
+			"1",
+			"abc",
+			"def",
+			"He said \"test, test\" and was happy",
+			"5.0"
+		]
+		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\",\"obviously, yet.\", 5.0"                                                                                                                                                                                                                                                                                                                                               || [
+			"1",
+			"abc",
+			"def",
+			"He said \"test, test\" and was happy",
+			"obviously, yet.",
+			"5.0"
+		]
+		","    | "1,abc,def,\"He said \"\"test, test\"\"\", 5.0"                                                                                                                                                                                                                                                                                                                                               || [
+			"1",
+			"abc",
+			"def",
+			"He said \"test, test\"",
+			"5.0"
+		]
+		","    | "1,abc,def,\"He said \"\"test, test\"\"\""                                                                                                                                                                                                                                                                                                                                               || [
+			"1",
+			"abc",
+			"def",
+			"He said \"test, test\""
+		]
+		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\""                                                                                                                                                                                                                                                                                                                                               || [
+			"1",
+			"abc",
+			"def",
+			"He said \"test, test\" and was happy",
+			"5.0",
+			"... and felt like a \"genius\" with this."
+		]
+		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\","                                                                                                                                                                                                                                                                                                                                               || [
+			"1",
+			"abc",
+			"def",
+			"He said \"test, test\" and was happy",
+			"5.0",
+			"... and felt like a \"genius\" with this.",
+			""
+		]
 	}
 
 
@@ -191,7 +316,7 @@ class CsvDataSourceTest extends Specification {
 			"s_rated",
 			"olmcharacteristic",
 			"cosPhiFixed"] as String[]
-		def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,olm:{(0.0,1.0)},"
+		def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,\"olm:{(0.0,1.0)}\","
 
 		expect:
 		dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
@@ -238,10 +363,10 @@ class CsvDataSourceTest extends Specification {
 		dummyCsvSource.getFirstOrDefaultOperator(operators, operatorUuid, entityClassName, requestEntityUuid) == expectedOperator
 
 		where:
-		operatorUuid                           | operators      | entityClassName | requestEntityUuid         || expectedOperator
+		operatorUuid                           | operators               | entityClassName   | requestEntityUuid                      || expectedOperator
 		"8f9682df-0744-4b58-a122-f0dc730f6510" | [sptd.hpInput.operator]| "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || sptd.hpInput.operator
 		"8f9682df-0744-4b58-a122-f0dc730f6520" | [sptd.hpInput.operator]| "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
-		"8f9682df-0744-4b58-a122-f0dc730f6510" | []| "TestEntityClass"|"8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
+		"8f9682df-0744-4b58-a122-f0dc730f6510" | []| "TestEntityClass" | "8f9682df-0744-4b58-a122-f0dc730f6511" || OperatorInput.NO_OPERATOR_ASSIGNED
 
 	}
 

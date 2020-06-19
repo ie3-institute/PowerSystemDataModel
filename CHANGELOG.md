@@ -33,6 +33,7 @@ coordinates or multiple exactly equal coordinates possible
 -  Extended functionality of `GridAndGeoUtils`
 - `CsvFileConnector` is now set up to process either UniqueEntities or only by file name
 - `SwitchResult` superclass changed from `ConnectorResult` to `ResultEntity`
+- ``CsvDataSource`` now parses valid RFC 4180 rows correctly (invalid, old syntax is still supported but deprecated!)
 -  Consolidate test tasks. `gradle allTests` is now replaced by `gradle test`. Only unit tests can be run with `gradle unitTest`.
 
 ### Fixed

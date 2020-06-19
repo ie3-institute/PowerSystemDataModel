@@ -1,3 +1,3 @@
-"uuid","graphic_layer","node","path","point"
-09aec636-791b-45aa-b981-b14edf171c4c,main,bd837a25-58f3-44ac-aa90-c6b6e3cd91b2,,{"type":"Point","coordinates":[0.0,10],"crs":{"type":"name","properties":{"name":"EPSG:4326"}}}
-9ecad435-bd16-4797-a732-762c09d4af25,main,6e0980e0-10f2-4e18-862b-eb2b7c90509b,{"type":"LineString","coordinates":[[-1,0.0],[1,0.0]],"crs":{"type":"name","properties":{"name":"EPSG:4326"}}},
+uuid,graphic_layer,node,path,point
+09aec636-791b-45aa-b981-b14edf171c4c,main,bd837a25-58f3-44ac-aa90-c6b6e3cd91b2,,"{""type"":""Point"",""coordinates"":[0.0,10],""crs"":{""type"":""name"",""properties"":{""name"":""EPSG:4326""}}}"
+9ecad435-bd16-4797-a732-762c09d4af25,main,6e0980e0-10f2-4e18-862b-eb2b7c90509b,"{""type"":""LineString"",""coordinates"":[[-1,0.0],[1,0.0]],""crs"":{""type"":""name"",""properties"":{""name"":""EPSG:4326""}}}",

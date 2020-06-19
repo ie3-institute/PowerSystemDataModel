@@ -210,22 +210,22 @@ class InputEntityProcessorTest extends Specification {
 			"node"            : SystemParticipantTestData.wecInput.node.uuid.toString(),
 			"operatesUntil"   : SystemParticipantTestData.wecInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
 			"operatesFrom"    : SystemParticipantTestData.wecInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
-			"operator"        : SystemParticipantTestData.wecInput.operator.getUuid().toString(),
+			"operator"        : SystemParticipantTestData.wecInput.operator.uuid.toString(),
 			"qCharacteristics": SystemParticipantTestData.cosPhiPDeSerialized,
-			"type"            : SystemParticipantTestData.wecInput.type.getUuid().toString()
+			"type"            : SystemParticipantTestData.wecInput.type.uuid.toString()
 		]
 		ChpInput         | SystemParticipantTestData.chpInput         || [
 			"uuid"            : SystemParticipantTestData.chpInput.uuid.toString(),
 			"id"              : SystemParticipantTestData.chpInput.id,
 			"marketReaction"  : SystemParticipantTestData.chpInput.marketReaction.toString(),
-			"node"            : SystemParticipantTestData.chpInput.node.getUuid().toString(),
+			"node"            : SystemParticipantTestData.chpInput.node.uuid.toString(),
 			"operatesUntil"   : SystemParticipantTestData.chpInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
 			"operatesFrom"    : SystemParticipantTestData.chpInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
-			"operator"        : SystemParticipantTestData.chpInput.operator.getUuid().toString(),
+			"operator"        : SystemParticipantTestData.chpInput.operator.uuid.toString(),
 			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
-			"thermalBus"      : SystemParticipantTestData.chpInput.thermalBus.getUuid().toString(),
-			"thermalStorage"  : SystemParticipantTestData.chpInput.thermalStorage.getUuid().toString(),
-			"type"            : SystemParticipantTestData.chpInput.type.getUuid().toString(),
+			"thermalBus"      : SystemParticipantTestData.chpInput.thermalBus.uuid.toString(),
+			"thermalStorage"  : SystemParticipantTestData.chpInput.thermalStorage.uuid.toString(),
+			"type"            : SystemParticipantTestData.chpInput.type.uuid.toString(),
 		]
 		BmInput          | SystemParticipantTestData.bmInput          || [
 			"uuid"            : SystemParticipantTestData.bmInput.uuid.toString(),
@@ -236,9 +236,9 @@ class InputEntityProcessorTest extends Specification {
 			"node"            : SystemParticipantTestData.bmInput.node.uuid.toString(),
 			"operatesUntil"   : SystemParticipantTestData.bmInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
 			"operatesFrom"    : SystemParticipantTestData.bmInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
-			"operator"        : SystemParticipantTestData.bmInput.operator.getUuid().toString(),
+			"operator"        : SystemParticipantTestData.bmInput.operator.uuid.toString(),
 			"qCharacteristics": SystemParticipantTestData.qVDeSerialized,
-			"type"            : SystemParticipantTestData.bmInput.type.getUuid().toString()
+			"type"            : SystemParticipantTestData.bmInput.type.uuid.toString()
 		]
 		EvInput          | SystemParticipantTestData.evInput          || [
 			"uuid"            : SystemParticipantTestData.evInput.uuid.toString(),
@@ -260,7 +260,7 @@ class InputEntityProcessorTest extends Specification {
 			"node"               : SystemParticipantTestData.loadInput.node.uuid.toString(),
 			"operatesUntil"      : SystemParticipantTestData.loadInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
 			"operatesFrom"       : SystemParticipantTestData.loadInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
-			"operator"           : SystemParticipantTestData.loadInput.operator.getUuid().toString(),
+			"operator"           : SystemParticipantTestData.loadInput.operator.uuid.toString(),
 			"qCharacteristics"   : SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"sRated"             : SystemParticipantTestData.loadInput.sRated.getValue().doubleValue().toString(),
 			"standardLoadProfile": SystemParticipantTestData.loadInput.standardLoadProfile.key
@@ -272,9 +272,9 @@ class InputEntityProcessorTest extends Specification {
 			"node"            : SystemParticipantTestData.storageInput.node.uuid.toString(),
 			"operatesUntil"   : SystemParticipantTestData.storageInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
 			"operatesFrom"    : SystemParticipantTestData.storageInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
-			"operator"        : SystemParticipantTestData.storageInput.operator.getUuid().toString(),
+			"operator"        : SystemParticipantTestData.storageInput.operator.uuid.toString(),
 			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
-			"type"            : SystemParticipantTestData.storageInput.type.getUuid().toString()
+			"type"            : SystemParticipantTestData.storageInput.type.uuid.toString()
 		]
 		HpInput          | SystemParticipantTestData.hpInput          || [
 			"uuid"            : SystemParticipantTestData.hpInput.uuid.toString(),
@@ -282,10 +282,10 @@ class InputEntityProcessorTest extends Specification {
 			"node"            : SystemParticipantTestData.hpInput.node.uuid.toString(),
 			"operatesUntil"   : SystemParticipantTestData.hpInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
 			"operatesFrom"    : SystemParticipantTestData.hpInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
-			"operator"        : SystemParticipantTestData.hpInput.operator.getUuid().toString(),
+			"operator"        : SystemParticipantTestData.hpInput.operator.uuid.toString(),
 			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"thermalBus"      : SystemParticipantTestData.hpInput.thermalBus.uuid.toString(),
-			"type"            : SystemParticipantTestData.hpInput.type.getUuid().toString()
+			"type"            : SystemParticipantTestData.hpInput.type.uuid.toString()
 		]
 	}
 

@@ -299,7 +299,7 @@ class GridTestData {
 	true
 	)
 
-	public static Transformer3WInput transformerAtoBtoC = new Transformer3WInput(
+	public static final Transformer3WInput transformerAtoBtoC = new Transformer3WInput(
 	UUID.fromString("cc327469-7d56-472b-a0df-edbb64f90e8f"),
 	"3w_test",
 	profBroccoli,
