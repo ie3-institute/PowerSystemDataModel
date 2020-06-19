@@ -1,2 +1,2 @@
-"uuid","capex","cosphi_rated","eta_el","eta_thermal","id","opex","p_own","p_thermal","s_rated"
+uuid,capex,cosphi_rated,eta_el,eta_thermal,id,opex,p_own,p_thermal,s_rated
 5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,100.0,0.95,19.0,76.0,test_chpType,50.0,0.0,9.0,25.0

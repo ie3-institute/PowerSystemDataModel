@@ -1,4 +1,4 @@
-"uuid","auto_tap","id","node_a","node_b","operates_from","operates_until","operator","parallel_devices","tap_pos","type"
+uuid,auto_tap,id,node_a,node_b,operates_from,operates_until,operator,parallel_devices,tap_pos,type
 58247de7-e297-4d9b-a5e4-b662c058c655,true,2w_single_test,47d29df0-ba2d-4d23-8e75-c82229c5c758,6e0980e0-10f2-4e18-862b-eb2b7c90509b,,,,1,0,202069a7-bcf8-422c-837c-273575220c8a
 8542bfa5-dc34-4367-b549-e9f515e6cced,true,2w_v_1,47d29df0-ba2d-4d23-8e75-c82229c5c758,98a3e7fa-c456-455b-a5ea-bb19e7cbeb63,,,,1,0,ac30443b-29e7-4635-b399-1062cfb3ffda
 0c03391d-47e1-49b3-9c9c-1616258e78a7,true,2w_v_2,bd837a25-58f3-44ac-aa90-c6b6e3cd91b2,98a3e7fa-c456-455b-a5ea-bb19e7cbeb63,,,,1,0,8441dd78-c528-4e63-830d-52d341131432

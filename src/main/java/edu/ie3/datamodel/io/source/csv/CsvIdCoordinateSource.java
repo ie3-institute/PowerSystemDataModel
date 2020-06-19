@@ -116,7 +116,7 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
     // As we still want to consume the data at other places, we start a new stream instead of
     // returning the original one
     try (BufferedReader reader = connector.initReader(filename)) {
-      final String[] headline = parseCsvHeadline(reader.readLine(), csvSep);
+      final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
       if (!Arrays.asList(headline).containsAll(Arrays.asList("id", "lat", "lon"))) {
         throw new SourceException(
