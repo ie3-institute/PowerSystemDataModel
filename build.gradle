@@ -35,11 +35,11 @@ apply from: scriptsLocation + 'spotbugs.gradle'
 apply from: scriptsLocation + 'spotless.gradle'
 apply from: scriptsLocation + 'checkJavaVersion.gradle'
 apply from: scriptsLocation + 'selfContainedJar.gradle'
-apply from: scriptsLocation + 'sphinx.gradle'
+apply from: scriptsLocation + 'documentation.gradle'
 apply from: scriptsLocation + 'jacoco.gradle' // jacoco java code coverage
 apply from: scriptsLocation + 'mavenCentralPublish.gradle'
-apply from: scriptsLocation + 'javadoc.gradle'
 apply from: scriptsLocation + 'sonarqube.gradle'
+apply from: scriptsLocation + 'vcs.gradle'
 
 repositories {
 	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central

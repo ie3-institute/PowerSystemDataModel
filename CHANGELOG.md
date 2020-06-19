@@ -24,6 +24,7 @@ most of the commonly known power flow calculations
 -  Additional constructors based on lists of entities in ``RawGridElements``, ``SystemParticipants`` and ``GraphicElements``
 -  Added ``DistanceWeightedGraph`` + corresponding utility method to generate a graph topology whose vertices are `NodeInput` entities and its edges are weighted with the distance between the vertices in meter
 -  Added ``ContainerNodeUpdateUtil`` to support updating nested nodes in ``GridContainer`` instances
+-  Gradle task `gradle finalizePR` to format and test the code as well as generate JavaDoc
 
 ### Changed
 -  Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues
@@ -33,6 +34,7 @@ coordinates or multiple exactly equal coordinates possible
 - `CsvFileConnector` is now set up to process either UniqueEntities or only by file name
 - `SwitchResult` superclass changed from `ConnectorResult` to `ResultEntity`
 - ``CsvDataSource`` now parses valid RFC 4180 rows correctly (invalid, old syntax is still supported but deprecated!)
+-  Consolidate test tasks. `gradle allTests` is now replaced by `gradle test`. Only unit tests can be run with `gradle unitTest`.
 
 ### Fixed
 -  CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
