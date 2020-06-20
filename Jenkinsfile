@@ -53,7 +53,7 @@ void setJavaVersion(javaVersionId) {
 String featureBranchName = ""
 
 //// gradle tasks that are executed
-def gradleTasks = "--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain spotbugsTest allTests" // the gradle tasks that are executed on ALL projects
+def gradleTasks = "--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain spotbugsTest test" // the gradle tasks that are executed on ALL projects
 def mainProjectGradleTasks = "jacocoTestReport jacocoTestCoverageVerification" // additional tasks that are only executed on project 0 (== main project)
 // if you need additional tasks for deployment add them here
 def deployGradleTasks = ""
@@ -98,7 +98,7 @@ if (env.BRANCH_NAME == "master") {
                     }
 
                     // test the project
-                    stage("gradle allTests ${projects.get(0)}") {
+                    stage("gradle test ${projects.get(0)}") {
                         // build and test the project
                         gradle("${gradleTasks} ${mainProjectGradleTasks}")
                     }
@@ -140,7 +140,7 @@ if (env.BRANCH_NAME == "master") {
                         withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
                                          file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
                                          usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
-                            deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
+                            deployGradleTasks = "--refresh-dependencies clean test " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
 
                             // see https://docs.gradle.org/6.0.1/release-notes.html "Publication of SHA256 and SHA512 checksums"
                             def preventSHACheckSums = "-Dorg.gradle.internal.publish.checksums.insecure=true"
@@ -219,7 +219,7 @@ if (env.BRANCH_NAME == "master") {
 
 
                     // test the project
-                    stage("gradle allTests ${projects.get(0)}") {
+                    stage("gradle test ${projects.get(0)}") {
                         // build and test the project
                         gradle("${gradleTasks} ${mainProjectGradleTasks}")
                     }
@@ -263,7 +263,7 @@ if (env.BRANCH_NAME == "master") {
                         withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
                                          file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
                                          usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
-                            deployGradleTasks = "--refresh-dependencies clean allTests " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
+                            deployGradleTasks = "--refresh-dependencies clean test " + deployGradleTasks + "publish -Puser=${env.mavencentral_username} -Ppassword=${env.mavencentral_password} -Psigning.keyId=${env.signingKeyId} -Psigning.password=${env.signingPassword} -Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}"
 
                             gradle("${deployGradleTasks}")
 
@@ -357,7 +357,7 @@ if (env.BRANCH_NAME == "master") {
                 }
 
                 // test the project
-                stage("gradle allTests ${projects.get(0)}") {
+                stage("gradle test ${projects.get(0)}") {
 
                     // build and test the project
                     gradle("${gradleTasks} ${mainProjectGradleTasks}")

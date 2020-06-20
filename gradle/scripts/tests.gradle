@@ -1,6 +1,16 @@
 test {
-	// by default we don't want to run integration tests
+	useJUnitPlatform()
+	testLogging {
+		events "skipped", "failed"
+	}
+}
+
+task unitTest(type: Test) {
+	description 'Run only unit tests.'
+	group 'Verification'
+
 	filter {
+		includeTestsMatching '*Test*.*'
 		excludeTestsMatching '*IT'
 	}
 	useJUnitPlatform()
@@ -10,27 +20,16 @@ test {
 }
 
 task integrationTest(type: Test) {
-	description 'executes only the integration tests'
+	description 'Run only the integration tests.'
+	group 'Verification'
+
 	filter {
 		excludeTestsMatching '*Test*.*'
 		includeTestsMatching '*IT'
 	}
-	mustRunAfter test
-}
-integrationTest.dependsOn(test)
-
-task allTests(type: Test) {
-	description 'executes all tests'
-
-	useJUnitPlatform()
 	testLogging {
 		events "skipped", "failed"
 	}
 
-	filter {
-		//		includeTestsMatching '*Test*.*'
-		//		includeTestsMatching '*IT'
-	}
-	mustRunAfter test
+	mustRunAfter unitTest
 }
-allTests.dependsOn(test)

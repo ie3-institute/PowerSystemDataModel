@@ -33,7 +33,7 @@ jacocoTestReport {
 			))
 
 	//	sourceSets sourceSets.main
-	executionData allTests // include integration tests in jacoco reports
+	executionData check // include integration tests in jacoco reports
 }
 
 jacocoTestCoverageVerification {

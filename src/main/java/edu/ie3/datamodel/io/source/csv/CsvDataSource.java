@@ -56,6 +56,8 @@ public abstract class CsvDataSource {
   protected static final String TYPE = "type";
   protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
 
+  @Deprecated private boolean notYetLoggedWarning = true;
+
   public CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
@@ -78,15 +80,35 @@ public abstract class CsvDataSource {
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    final String[] fieldVals = fieldVals(csvSep, csvRow);
+    // todo when replacing deprecated workaround code below add final modifier before parseCsvRow as
+    // well as remove
+    //  'finalFieldVals' and notYetLoggedWarning below!
+    String[] fieldVals = parseCsvRow(csvRow, csvSep);
+
+    // start workaround for deprecated data model processing
+    if (fieldVals.length != headline.length) {
+      // try to parse old structure
+      fieldVals = oldFieldVals(csvSep, csvRow);
+      // if this works log a warning to inform the user that this will not work much longer,
+      // otherwise parsing will fail regularly as expected below
+      if (fieldVals.length == headline.length && notYetLoggedWarning) {
+        notYetLoggedWarning = false;
+        log.warn(
+            "You are using an outdated version of the data "
+                + "model with invalid formatted csv rows. This is okay for now, but please updated your files, as the "
+                + "support for the old model will be removed soon.");
+      }
+    }
+    // end workaround for deprecated data model processing
 
     try {
+      String[] finalFieldVals = fieldVals;
       insensitiveFieldsToAttributes.putAll(
           IntStream.range(0, fieldVals.length)
               .boxed()
               .collect(
                   Collectors.toMap(
-                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> fieldVals[v])));
+                      k -> StringUtils.snakeCaseToCamelCase(headline[k]), v -> finalFieldVals[v])));
 
       if (insensitiveFieldsToAttributes.size() != headline.length) {
         Set<String> fieldsToAttributesKeySet = insensitiveFieldsToAttributes.keySet();
@@ -113,6 +135,23 @@ public abstract class CsvDataSource {
   }
 
   /**
+   * Parse a given row of a valid RFC 4180 formatted csv row
+   *
+   * @param csvRow the valid row
+   * @param csvSep separator of the csv file
+   * @return an array with the csv field values as strings
+   */
+  protected String[] parseCsvRow(String csvRow, String csvSep) {
+    return Arrays.stream(csvRow.split(csvSep + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1))
+        .map(
+            maybeStartEndQuotedString ->
+                StringUtils.unquoteStartEnd(maybeStartEndQuotedString.trim())
+                    .replaceAll("\"{2}", "\"")
+                    .trim())
+        .toArray(String[]::new);
+  }
+
+  /**
    * Build an array of from the provided csv row string considering special cases where geoJson or
    * {@link edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput} are provided
    * in the csv row string.
@@ -120,8 +159,10 @@ public abstract class CsvDataSource {
    * @param csvSep the column separator of the csv row string
    * @param csvRow the csv row string
    * @return an array with one entry per column of the provided csv row string
+   * @deprecated only left for downward compatibility. Will be removed in a major release
    */
-  private String[] fieldVals(String csvSep, String csvRow) {
+  @Deprecated
+  private String[] oldFieldVals(String csvSep, String csvRow) {
 
     /*geo json support*/
     final String geoJsonRegex = "[\\{].+?\\}\\}\\}";
@@ -131,8 +172,9 @@ public abstract class CsvDataSource {
     final String charInputRegex = "(cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.+?\\}";
     final String charReplacement = "charRepl";
 
-    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow);
-    List<String> charList = extractMatchingStrings(charInputRegex, csvRow);
+    /*removes double double quotes*/
+    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow.replaceAll("\"\"", "\""));
+    List<String> charList = extractMatchingStrings(charInputRegex, csvRow.replaceAll("\"\"", "\""));
 
     AtomicInteger geoCounter = new AtomicInteger(0);
     AtomicInteger charCounter = new AtomicInteger(0);
@@ -141,7 +183,7 @@ public abstract class CsvDataSource {
             csvRow
                 .replaceAll(charInputRegex, charReplacement)
                 .replaceAll(geoJsonRegex, geoReplacement)
-                .replaceAll("\"", "")
+                .replaceAll("\"*", "") // remove all quotes from
                 .split(csvSep, -1))
         .map(
             fieldVal -> {
@@ -303,7 +345,7 @@ public abstract class CsvDataSource {
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
 
     try (BufferedReader reader = connector.initReader(entityClass)) {
-      final String[] headline = parseCsvHeadline(reader.readLine(), csvSep);
+      final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
       // sanity check for headline
       if (!Arrays.asList(headline).contains("uuid")) {
@@ -339,10 +381,6 @@ public abstract class CsvDataSource {
         .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
         .filter(map -> !map.isEmpty())
         .collect(Collectors.toList());
-  }
-
-  protected String[] parseCsvHeadline(String csvHeadline, String csvSep) {
-    return csvHeadline.replaceAll("\"", "").toLowerCase().split(csvSep);
   }
 
   /**

@@ -28,6 +28,7 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.util.StringUtils;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -273,12 +274,12 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                                   .collect(Collectors.joining(","))
                               + "]"));
 
-      String[] headerElements = processorProvider.getHeaderElements(key);
+      String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
       BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
       entityFieldData.forEach(
           data -> {
             try {
-              writer.write(data);
+              writer.write(csvEntityFieldData(data));
             } catch (IOException e) {
               log.error(
                   "Cannot write the following entity data: '{}'. Exception: {}",
@@ -357,7 +358,9 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
         .forEach(
             clz -> {
               try {
-                String[] headerElements = processorProvider.getHeaderElements(clz);
+                String[] headerElements =
+                    csvHeaderElements(processorProvider.getHeaderElements(clz));
+
                 connector.getOrInitWriter(clz, headerElements, csvSep);
               } catch (ProcessorProviderException e) {
                 log.error(
@@ -371,5 +374,48 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                     e);
               }
             });
+  }
+
+  /**
+   * Transforms a provided array of strings to valid csv formatted strings (according to csv
+   * specification RFC 4180)
+   *
+   * @param strings array of strings that should be processed
+   * @return a new array with valid csv formatted strings
+   */
+  private String[] csvHeaderElements(String[] strings) {
+    return Arrays.stream(strings)
+        .map(inputElement -> StringUtils.csvString(inputElement, csvSep))
+        .toArray(String[]::new);
+  }
+
+  /**
+   * Transforms a provided map of string to string to valid csv formatted strings (according to csv
+   * specification RFC 4180)
+   *
+   * @param entityFieldData a string to string map that should be processed
+   * @return a new map with valid csv formatted keys and values strings
+   */
+  private LinkedHashMap<String, String> csvEntityFieldData(
+      LinkedHashMap<String, String> entityFieldData) {
+
+    return entityFieldData.entrySet().stream()
+        .map(
+            mapEntry ->
+                new AbstractMap.SimpleEntry<>(
+                    StringUtils.csvString(mapEntry.getKey(), csvSep),
+                    StringUtils.csvString(mapEntry.getValue(), csvSep)))
+        .collect(
+            Collectors.toMap(
+                AbstractMap.SimpleEntry::getKey,
+                AbstractMap.SimpleEntry::getValue,
+                (v1, v2) -> {
+                  throw new IllegalStateException(
+                      "Duplicate keys in entityFieldData are not allowed!"
+                          + entityFieldData.entrySet().stream()
+                              .map(entry -> entry.getKey() + " = " + entry.getValue())
+                              .collect(Collectors.joining(",\n")));
+                },
+                LinkedHashMap::new));
   }
 }

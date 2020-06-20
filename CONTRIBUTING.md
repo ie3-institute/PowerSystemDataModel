@@ -61,9 +61,11 @@ We have good experiences using [Spock](http://spockframework.org/) as a testing 
 Some automated checks assist us in delivering a pretty fair quality of software.
 Before marking the pull request as 'ready to review', take these precautionary actions:
 
-* Are all tests passing? Run `gradle allTests`
+* Are all tests passing? Run `gradle test`
 * Is your code properly formatted? Run `gradle spotlessApply`
-* Update the javadoc pages. Run `gradle genJavadoc`
+* Update the javadoc pages. Run `gradle javadoc`
+
+`gradle finalizePR` summarizes all of these steps .
 
 ## For any doubts
 ... please contact

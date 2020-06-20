@@ -35,21 +35,24 @@ apply from: scriptsLocation + 'spotbugs.gradle'
 apply from: scriptsLocation + 'spotless.gradle'
 apply from: scriptsLocation + 'checkJavaVersion.gradle'
 apply from: scriptsLocation + 'selfContainedJar.gradle'
-apply from: scriptsLocation + 'sphinx.gradle'
+apply from: scriptsLocation + 'documentation.gradle'
 apply from: scriptsLocation + 'jacoco.gradle' // jacoco java code coverage
 apply from: scriptsLocation + 'mavenCentralPublish.gradle'
-apply from: scriptsLocation + 'javadoc.gradle'
 apply from: scriptsLocation + 'sonarqube.gradle'
+apply from: scriptsLocation + 'vcs.gradle'
 
 repositories {
 	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
 	maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
 
+	// sonatype snapshot repo
+	maven { url 'http://oss.sonatype.org/content/repositories/snapshots' }
+
 }
 
 dependencies {
 	//	 ie³ power system utils
-	compile 'com.github.ie3-institute:PowerSystemUtils:1.3.1'
+	compile 'com.github.ie3-institute:PowerSystemUtils:1.3.2-SNAPSHOT'
 
 	compile "tec.uom:uom-se:$unitsOfMeasurementVersion"
 
@@ -62,7 +65,7 @@ dependencies {
 
 	// testing
 	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
-	testCompile 'org.spockframework:spock-core:2.0-M1-groovy-2.5'
+	testCompile 'org.spockframework:spock-core:2.0-M3-groovy-3.0'
 	testCompile 'org.objenesis:objenesis:3.1' // Mock creation with constructor parameters
 
 	// Testcontainers (Docker Framework for testing)
