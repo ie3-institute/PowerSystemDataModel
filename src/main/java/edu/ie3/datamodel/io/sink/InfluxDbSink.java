@@ -92,9 +92,11 @@ public class InfluxDbSink implements OutputDataSink {
 
   /**
    * Transforms a ResultEntity to an influxDB data point. <br>
-   * The influxDB measurement point will be named equivalent to a relational table using the given
-   * FileNamingStrategy if possible, or the class name otherwise. All special characters in the
-   * measurement name will be replaced by underscores.
+   * As the equivalent to a relational table, the influxDB measurement point will be named using the
+   * given FileNamingStrategy if possible, or the class name otherwise. All special characters in
+   * the measurement name will be replaced by underscores.
+   *
+   * @param entity the entity to transform
    */
   private Optional<Point> transformToPoint(ResultEntity entity) {
     Optional<String> measurementName =
@@ -109,6 +111,9 @@ public class InfluxDbSink implements OutputDataSink {
   /**
    * Transforms a ResultEntity to an influxDB data point. <br>
    * All special characters in the measurement name will be replaced by underscores.
+   *
+   * @param entity the entity to transform
+   * @param measurementName equivalent to the name of a relational table
    */
   private Optional<Point> transformToPoint(ResultEntity entity, String measurementName) {
     LinkedHashMap<String, String> entityFieldData;
@@ -145,8 +150,11 @@ public class InfluxDbSink implements OutputDataSink {
 
   /**
    * Transforms a timeSeries to influxDB data points, one point for each value. <br>
-   * The measurement points will be named by the given FileNamingStrategy if possible, or the class
-   * name otherwise. All special characters in the measurement name will be replaced by underscores.
+   * As the equivalent to a relational table, the influxDB measurement point will be named using the
+   * given FileNamingStrategy if possible, or the class name otherwise. All special characters in
+   * the measurement name will be replaced by underscores.
+   *
+   * @param timeSeries the time series to transform
    */
   private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
       TimeSeries<E, V> timeSeries) {
@@ -166,6 +174,9 @@ public class InfluxDbSink implements OutputDataSink {
   /**
    * Transforms a timeSeries to influxDB data points, one point for each value. <br>
    * All special characters in the measurement name will be replaced by underscores.
+   *
+   * @param timeSeries the time series to transform
+   * @param measurementName equivalent to the name of a relational table
    */
   private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
       TimeSeries<E, V> timeSeries, String measurementName) {
@@ -207,6 +218,10 @@ public class InfluxDbSink implements OutputDataSink {
    * Transforms an entity to an influxDB data point. <br>
    * The measurement point will be named by the given FileNamingStrategy if possible, or the class
    * name otherwise. All special characters in the measurement name will be replaced by underscores.
+   *
+   * @param entity the entity of which influxDB points will be extracted
+   * @param <C> bounded to be all unique entities, but logs an error and returns an empty Set if it
+   *     does not extend {@link ResultEntity} or {@link TimeSeries}
    */
   private <C extends UniqueEntity> Set<Point> extractPoints(C entity) {
     Set<Point> points = new HashSet<>();
@@ -257,7 +272,11 @@ public class InfluxDbSink implements OutputDataSink {
     }
   }
 
-  /** Remove leading and trailing whitespace and replace all special characters with underscores */
+  /**
+   * Remove leading and trailing whitespace and replace all special characters with underscores
+   *
+   * @param filename the file name to transform
+   */
   private static String transformToMeasurementName(String filename) {
     return filename.trim().replaceAll("\\W", "_");
   }

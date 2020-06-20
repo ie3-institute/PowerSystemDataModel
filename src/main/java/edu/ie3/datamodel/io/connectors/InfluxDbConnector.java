@@ -16,8 +16,15 @@ import org.influxdb.dto.Pong;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 
+/**
+ * Implements a DataConnector for InfluxDB InfluxDB is a time series database and as such, it can
+ * only handle time based data. <br>
+ * Entities will be persisted as <i>measurement points</i>, which consist of a time, one or more
+ * tags, one or more values and a measurement name. In contrast to values, tags should only contain
+ * metadata. A measurement name is the equivalent of the name of a table in relational data models.
+ */
 public class InfluxDbConnector implements DataConnector {
-  /** Merges two sets of (fieldName -> fieldValue) maps */
+  /** Merges two sets of (fieldName to fieldValue) maps */
   private static final BinaryOperator<Set<Map<String, String>>> mergeSets =
       (maps, maps2) -> {
         maps.addAll(maps2);
@@ -30,6 +37,14 @@ public class InfluxDbConnector implements DataConnector {
   private final String scenarioName;
   private final String url;
 
+  /**
+   * Initializes a new InfluxDbConnector with the given url, databaseName and scenario name.
+   *
+   * @param url the connection url for the influxDB database
+   * @param databaseName the name of the database to which the connection should be established
+   * @param scenarioName the name of the simulation scenario which will be used in influxDB
+   *     measurement names
+   */
   public InfluxDbConnector(String url, String databaseName, String scenarioName) {
     this.url = url;
     this.databaseName = databaseName;
