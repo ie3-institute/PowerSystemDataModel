@@ -8,11 +8,9 @@ package edu.ie3.datamodel.io.sink;
 import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
-import edu.ie3.datamodel.io.extractor.NestedEntity;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -28,7 +26,7 @@ import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 
 /** InfluxDB Sink for result and time series data */
-public class InfluxDbSink implements DataSink {
+public class InfluxDbSink implements OutputDataSink {
   private static final Logger log = LogManager.getLogger(InfluxDbSink.class);
   /** Field name for timestamp field in result entities */
   private static final String FIELD_NAME_TIMESTAMP = "timestamp";
@@ -86,57 +84,17 @@ public class InfluxDbSink implements DataSink {
   }
 
   @Override
-  public <C extends UniqueEntity> void persistIgnoreNested(C entity) {
-    try {
-      if (!(entity instanceof ResultEntity))
-        throw new SinkException("Cannot handle entities that are not ResultEntities");
-      Optional<Point> influxPoint = transformToPoint((ResultEntity) entity);
-      write(influxPoint.orElseThrow(() -> new SinkException("Could not transform entity")));
-    } catch (SinkException e) {
-      log.error(
-          "Cannot persist provided entity '{}'. Exception: {}",
-          () -> entity.getClass().getSimpleName(),
-          () -> e);
-    }
-  }
-
-  @Override
-  public <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities) {
-    Set<Point> points = new HashSet<>();
-    /* Distinguish between result models and time series */
-    for (C entity : entities) {
-      try {
-        if (!(entity instanceof ResultEntity))
-          throw new SinkException("Cannot handle entities that are not ResultEntities");
-        points.add(
-            transformToPoint((ResultEntity) entity)
-                .orElseThrow(() -> new SinkException("Could not transform entity")));
-      } catch (SinkException e) {
-        log.error(
-            "Cannot persist provided entity '{}'. Exception: {}",
-            () -> entity.getClass().getSimpleName(),
-            () -> e);
-      }
-    }
-    writeAll(points);
-  }
-
-  @Override
   public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries) {
     Set<Point> points = transformToPoints(timeSeries);
     writeAll(points);
   }
 
-  @Override
-  public void persistJointGrid(JointGridContainer jointGridContainer) {
-    log.error("Cannot persist grids");
-  }
-
   /**
    * Transforms a ResultEntity to an influxDB data point. <br>
-   * The measurement point will be named by the given FileNamingStrategy if possible, or the class
-   * name otherwise. All special characters in the measurement name will be replaced by underscores.
+   * The influxDB measurement point will be named equivalent to a relational table using the given
+   * FileNamingStrategy if possible, or the class name otherwise. All special characters in the
+   * measurement name will be replaced by underscores.
    */
   private Optional<Point> transformToPoint(ResultEntity entity) {
     Optional<String> measurementName =
@@ -254,15 +212,10 @@ public class InfluxDbSink implements DataSink {
     Set<Point> points = new HashSet<>();
     /* Distinguish between result models and time series */
     if (entity instanceof ResultEntity) {
-      /* This this a nested object or not? */
       try {
         points.add(
             transformToPoint((ResultEntity) entity)
                 .orElseThrow(() -> new SinkException("Could not transform entity")));
-        if (entity instanceof NestedEntity) {
-          log.info(
-              "Nested elements will not be persisted, as they are not of ResultEntity or TimeBasedValue type");
-        }
       } catch (SinkException e) {
         log.error(
             "Cannot persist provided entity '{}'. Exception: {}",
