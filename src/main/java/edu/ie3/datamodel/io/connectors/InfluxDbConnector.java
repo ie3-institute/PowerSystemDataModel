@@ -17,7 +17,7 @@ import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 
 /**
- * Implements a DataConnector for InfluxDB InfluxDB is a time series database and as such, it can
+ * Implements a DataConnector for InfluxDB. InfluxDB is a time series database and as such, it can
  * only handle time based data. <br>
  * Entities will be persisted as <i>measurement points</i>, which consist of a time, one or more
  * tags, one or more values and a measurement name. In contrast to values, tags should only contain
