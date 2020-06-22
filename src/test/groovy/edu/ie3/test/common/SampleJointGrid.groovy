@@ -126,8 +126,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 				SystemParticipantTestData.operationTime,
 				participantNode,
 				SystemParticipantTestData.cosPhiFixed,
-				storageTypeInput,
-				"market")
+				storageTypeInput)
 
 		return new SystemParticipants(
 				Collections.emptySet(),
