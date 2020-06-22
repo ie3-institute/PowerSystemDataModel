@@ -14,7 +14,6 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
-import edu.ie3.datamodel.models.input.system.StorageStrategy;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.beans.Introspector;
@@ -243,9 +242,6 @@ public abstract class Processor<T> {
         break;
       case "StandardLoadProfile":
         resultStringBuilder.append(((StandardLoadProfile) methodReturnObject).getKey());
-        break;
-      case "StorageStrategy":
-        resultStringBuilder.append(((StorageStrategy) methodReturnObject).getToken());
         break;
       case "AssetTypeInput":
       case "BmTypeInput":
