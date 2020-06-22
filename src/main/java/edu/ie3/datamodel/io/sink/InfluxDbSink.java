@@ -71,7 +71,9 @@ public class InfluxDbSink implements OutputDataSink {
   @Override
   public <C extends UniqueEntity> void persist(C entity) {
     Set<Point> points = extractPoints(entity);
-    writeAll(points);
+    // writes only the exact one point instead of unnecessarily wrapping it in BatchPoints
+    if (points.size() == 1) write(points.iterator().next());
+    else writeAll(points);
   }
 
   @Override
@@ -252,7 +254,7 @@ public class InfluxDbSink implements OutputDataSink {
    *
    * @param point point to write
    */
-  public void write(Point point) {
+  private void write(Point point) {
     if (point == null) return;
     try (InfluxDB session = connector.getSession()) {
       session.write(point);
@@ -264,7 +266,7 @@ public class InfluxDbSink implements OutputDataSink {
    *
    * @param points points to write
    */
-  public void writeAll(Collection<Point> points) {
+  private void writeAll(Collection<Point> points) {
     if (points.isEmpty()) return;
     BatchPoints batchPoints = BatchPoints.builder().points(points).build();
     try (InfluxDB session = connector.getSession()) {

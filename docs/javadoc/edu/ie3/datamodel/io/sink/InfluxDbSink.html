@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -183,18 +183,6 @@ implements <a href="../../../../../edu/ie3/datamodel/io/sink/OutputDataSink.html
  here</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ie3/datamodel/io/sink/InfluxDbSink.html#write-org.influxdb.dto.Point-">write</a></span>(org.influxdb.dto.Point&nbsp;point)</code>
-<div class="block">Writes the point to the database</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ie3/datamodel/io/sink/InfluxDbSink.html#writeAll-java.util.Collection-">writeAll</a></span>(java.util.Collection&lt;org.influxdb.dto.Point&gt;&nbsp;points)</code>
-<div class="block">Writes all points as a batch to the database</div>
-</td>
-</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -324,7 +312,7 @@ implements <a href="../../../../../edu/ie3/datamodel/io/sink/OutputDataSink.html
 <a name="persistTimeSeries-edu.ie3.datamodel.models.timeseries.TimeSeries-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>persistTimeSeries</h4>
 <pre>public&nbsp;&lt;E extends <a href="../../../../../edu/ie3/datamodel/models/timeseries/TimeSeriesEntry.html" title="class in edu.ie3.datamodel.models.timeseries">TimeSeriesEntry</a>&lt;V&gt;,V extends <a href="../../../../../edu/ie3/datamodel/models/value/Value.html" title="interface in edu.ie3.datamodel.models.value">Value</a>&gt;&nbsp;void&nbsp;persistTimeSeries(<a href="../../../../../edu/ie3/datamodel/models/timeseries/TimeSeries.html" title="class in edu.ie3.datamodel.models.timeseries">TimeSeries</a>&lt;E,V&gt;&nbsp;timeSeries)</pre>
@@ -339,34 +327,6 @@ implements <a href="../../../../../edu/ie3/datamodel/io/sink/OutputDataSink.html
 <dd><code>V</code> - Type of actual value, that is inside the entry</dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>timeSeries</code> - Time series to persist</dd>
-</dl>
-</li>
-</ul>
-<a name="write-org.influxdb.dto.Point-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>write</h4>
-<pre>public&nbsp;void&nbsp;write(org.influxdb.dto.Point&nbsp;point)</pre>
-<div class="block">Writes the point to the database</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>point</code> - point to write</dd>
-</dl>
-</li>
-</ul>
-<a name="writeAll-java.util.Collection-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>writeAll</h4>
-<pre>public&nbsp;void&nbsp;writeAll(java.util.Collection&lt;org.influxdb.dto.Point&gt;&nbsp;points)</pre>
-<div class="block">Writes all points as a batch to the database</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>points</code> - points to write</dd>
 </dl>
 </li>
 </ul>

@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.system.ChpResult
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -47,8 +48,8 @@ class InfluxDbSinkIT extends Specification {
 
 	def setupSpec() {
 		connector = new InfluxDbConnector(influxDbContainer.url,"test_out", "test_scenario")
-		fileNamingStrategy = new FileNamingStrategy();
-		sink = new InfluxDbSink(connector, fileNamingStrategy)
+		sink = new InfluxDbSink(connector)
+		fileNamingStrategy = new FileNamingStrategy()
 	}
 
 
@@ -146,7 +147,7 @@ class InfluxDbSinkIT extends Specification {
 				new PValue(Quantities.getQuantity(-5d, StandardUnits.ACTIVE_POWER_IN)))
 		IndividualTimeSeries<PValue> timeSeries = new IndividualTimeSeries(UUID.randomUUID(), [p1, p2, p3] as Set<TimeBasedValue>)
 		when:
-		sink.persist(timeSeries)
+		sink.persistTimeSeries(timeSeries)
 		def key = fileNamingStrategy.getFileName(timeSeries).get().trim().replaceAll("\\W", "_");
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
@@ -157,6 +158,29 @@ class InfluxDbSinkIT extends Specification {
 		pValuesMap.any{mapMatchesTimeBasedValue(it, p1)}
 		pValuesMap.any{mapMatchesTimeBasedValue(it, p2)}
 		pValuesMap.any{mapMatchesTimeBasedValue(it, p3)}
+		cleanup:
+		connector.getSession().query(new Query("DELETE FROM " + key))
+	}
+
+	def "An InfluxDbSink will use the class name if the NamingStrategy is failing"() {
+		given:
+		def lineResult1 = new LineResult(ZonedDateTime.of(2020, 5, 3, 14, 18, 0, 0, ZoneId.of("UTC")),
+				UUID.randomUUID(),
+				Quantities.getQuantity(1.13d, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
+				Quantities.getQuantity(1.23d, StandardUnits.ELECTRIC_CURRENT_ANGLE),
+				Quantities.getQuantity(20.13d, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
+				null)
+		def sinkWithEmptyNamingStrategy = new InfluxDbSink(connector, new EmptyFileNamingStrategy());
+		when:
+		sinkWithEmptyNamingStrategy.persist(lineResult1)
+		def key = lineResult1.getClass().getSimpleName();
+		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
+		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
+		def fieldMap = parsedResults.get(key).first()
+		then:
+		parsedResults.size() == 1
+		parsedResults.get(key).size() == 1
+		mapMatchesLineResultEntity(fieldMap, lineResult1)
 		cleanup:
 		connector.getSession().query(new Query("DELETE FROM " + key))
 	}
@@ -214,5 +238,13 @@ class InfluxDbSinkIT extends Specification {
 		def pStr = fieldMap.get("p")
 		if(pStr== null || pStr.empty) pVal.getValue().getP() == null
 		else Double.parseDouble(pStr) == pVal.getValue().getP().getValue()
+	}
+
+	//Always return an empty Optional for results
+	class EmptyFileNamingStrategy extends FileNamingStrategy {
+		@Override
+		public Optional<String> getResultEntityFileName(Class<? extends ResultEntity> resultEntityClass) {
+			return Optional.empty();
+		}
 	}
 }
