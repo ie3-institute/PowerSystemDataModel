@@ -12,9 +12,12 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.system.ChpResult
+import edu.ie3.datamodel.models.timeseries.TimeSeries
+import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.PValue
+import edu.ie3.datamodel.models.value.Value
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.util.TimeUtil
 import org.influxdb.dto.Query
@@ -170,19 +173,31 @@ class InfluxDbSinkIT extends Specification {
 				Quantities.getQuantity(1.23d, StandardUnits.ELECTRIC_CURRENT_ANGLE),
 				Quantities.getQuantity(20.13d, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE),
 				null)
+		TimeBasedValue<PValue> p1 = new TimeBasedValue(ZonedDateTime.of(2020, 5, 3, 14, 18, 0, 0, ZoneId.of("UTC")),
+				new PValue(Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)))
+		IndividualTimeSeries<PValue> timeSeries = new IndividualTimeSeries(UUID.randomUUID(), [p1] as Set<TimeBasedValue>)
+
 		def sinkWithEmptyNamingStrategy = new InfluxDbSink(connector, new EmptyFileNamingStrategy());
 		when:
 		sinkWithEmptyNamingStrategy.persist(lineResult1)
-		def key = lineResult1.getClass().getSimpleName();
-		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
-		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
-		def fieldMap = parsedResults.get(key).first()
+		sinkWithEmptyNamingStrategy.persist(timeSeries)
+		def key_lineresult = lineResult1.getClass().getSimpleName();
+		def key_timeseries = timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName()
+		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key_lineresult))
+		def parsedResults_lineresult = InfluxDbConnector.parseQueryResult(queryResult)
+		def fieldMap_lineresult = parsedResults_lineresult.get(key_lineresult).first()
+		queryResult = connector.getSession().query(new Query("SELECT * FROM " + key_timeseries))
+		def parsedResults_timeseries = InfluxDbConnector.parseQueryResult(queryResult)
+		def fieldMap_timeseries = parsedResults_timeseries.get(key_timeseries)
 		then:
-		parsedResults.size() == 1
-		parsedResults.get(key).size() == 1
-		mapMatchesLineResultEntity(fieldMap, lineResult1)
+		parsedResults_lineresult.size() == 1
+		parsedResults_lineresult.get(key_lineresult).size() == 1
+		mapMatchesLineResultEntity(fieldMap_lineresult, lineResult1)
+		parsedResults_timeseries.size() == 1
+		parsedResults_timeseries.get(key_timeseries).size() == 1
+		fieldMap_timeseries.any{mapMatchesTimeBasedValue(it, p1)}
 		cleanup:
-		connector.getSession().query(new Query("DELETE FROM " + key))
+		connector.getSession().query(new Query("DELETE FROM " + key_timeseries + ", " + key_lineresult))
 	}
 
 	def "An InfluxDbSink will not try to persist a InputEntity"() {
@@ -230,7 +245,6 @@ class InfluxDbSinkIT extends Specification {
 		else Double.parseDouble(qStr) == chpResult.getQ().getValue()
 	}
 
-
 	static def mapMatchesTimeBasedValue(Map<String, String> fieldMap, TimeBasedValue<PValue> pVal) {
 		def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
 		timeUtil.toZonedDateTime(fieldMap.get("time")) == pVal.getTime()
@@ -243,7 +257,12 @@ class InfluxDbSinkIT extends Specification {
 	//Always return an empty Optional for results
 	class EmptyFileNamingStrategy extends FileNamingStrategy {
 		@Override
-		public Optional<String> getResultEntityFileName(Class<? extends ResultEntity> resultEntityClass) {
+		Optional<String> getResultEntityFileName(Class<? extends ResultEntity> resultEntityClass) {
+			return Optional.empty();
+		}
+
+		@Override
+		<T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value> Optional<String> getFileName(T timeSeries) {
 			return Optional.empty();
 		}
 	}

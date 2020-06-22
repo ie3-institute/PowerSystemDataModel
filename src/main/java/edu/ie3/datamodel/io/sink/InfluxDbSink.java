@@ -166,7 +166,7 @@ public class InfluxDbSink implements OutputDataSink {
       String valueClassName =
           timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName();
       log.warn(
-          "I could not get a measurement name for TimeSeries value class {}. I am using its simple name instead.",
+          "I could not get a measurement name for TimeSeries value class {}. I am using it's value's simple name instead.",
           valueClassName);
       return transformToPoints(timeSeries, valueClassName);
     }
