@@ -34,7 +34,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   private final TimeBasedWeatherValueFactory weatherValueFactory;
 
   /**
-   * Initalizes a new InfluxDbWeatherSource
+   * Initializes a new InfluxDbWeatherSource
    *
    * @param connector needed for database connection
    * @param coordinateSource needed to map coordinates to ID as InfluxDB does not support spatial
@@ -162,7 +162,12 @@ public class InfluxDbWeatherSource implements WeatherSource {
     return "coordinate='" + coordinateSource.getId(coordinate) + "'";
   }
 
-  /** Removes empty Optionals */
+  /**
+   * Removes empty Optionals
+   *
+   * @param elements stream to filter
+   * @return filtered elements Stream
+   */
   protected Stream<TimeBasedValue<WeatherValue>> filterEmptyOptionals(
       Stream<Optional<TimeBasedValue>> elements) {
     return elements.filter(Optional::isPresent).map(Optional::get).map(TimeBasedValue.class::cast);

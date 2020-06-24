@@ -46,7 +46,7 @@ import org.apache.logging.log4j.Logger;
  * @version 0.1
  * @since 19.03.20
  */
-public class CsvFileSink implements DataSink {
+public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   private static final Logger log = LogManager.getLogger(CsvFileSink.class);
 
@@ -119,24 +119,10 @@ public class CsvFileSink implements DataSink {
   @Override
   public <T extends UniqueEntity> void persist(T entity) {
     /* Distinguish between "regular" input / result models and time series */
-    if (entity instanceof InputEntity || entity instanceof ResultEntity) {
-      /* This this a nested object or not? */
-      if (entity instanceof NestedEntity) {
-        try {
-          persistIgnoreNested(entity);
-          for (InputEntity ent : Extractor.extractElements((NestedEntity) entity)) {
-            persistIgnoreNested(ent);
-          }
-        } catch (ExtractorException e) {
-          log.error(
-              "An error occurred during extraction of nested entity'"
-                  + entity.getClass().getSimpleName()
-                  + "': ",
-              e);
-        }
-      } else {
-        persistIgnoreNested(entity);
-      }
+    if (entity instanceof InputEntity) {
+      persistIncludeNested((InputEntity) entity);
+    } else if (entity instanceof ResultEntity) {
+      write(entity);
     } else if (entity instanceof TimeSeries) {
       TimeSeries<?, ?> timeSeries = (TimeSeries<?, ?>) entity;
       persistTimeSeries(timeSeries);
@@ -147,47 +133,38 @@ public class CsvFileSink implements DataSink {
   }
 
   @Override
-  public <C extends UniqueEntity> void persistIgnoreNested(C entity) {
-    try {
-      LinkedHashMap<String, String> entityFieldData =
-          processorProvider
-              .handleEntity(entity)
-              .orElseThrow(
-                  () ->
-                      new SinkException(
-                          "Cannot persist entity of type '"
-                              + entity.getClass().getSimpleName()
-                              + "'. This sink can only process the following entities: ["
-                              + processorProvider.getRegisteredClasses().stream()
-                                  .map(Class::getSimpleName)
-                                  .collect(Collectors.joining(","))
-                              + "]"));
+  public <C extends InputEntity> void persistIgnoreNested(C entity) {
+    write(entity);
+  }
 
-      String[] headerElements =
-          csvHeaderElements(processorProvider.getHeaderElements(entity.getClass()));
+  @Override
+  public <C extends InputEntity> void persistAllIgnoreNested(Collection<C> entities) {
+    entities.parallelStream().forEach(this::persistIgnoreNested);
+  }
 
-      BufferedCsvWriter writer =
-          connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
-
-      writer.write(csvEntityFieldData(entityFieldData));
-    } catch (ProcessorProviderException e) {
-      log.error(
-          "Exception occurred during receiving of header elements. Cannot write this element.", e);
-    } catch (ConnectorException e) {
-      log.error("Exception occurred during retrieval of writer. Cannot write this element.", e);
-    } catch (IOException e) {
-      log.error("Exception occurred during writing of this element. Cannot write this element.", e);
-    } catch (SinkException e) {
-      log.error(
-          "Cannot persist provided entity '{}'. Exception: {}",
-          () -> entity.getClass().getSimpleName(),
-          () -> e);
+  @Override
+  public <C extends InputEntity> void persistIncludeNested(C entity) {
+    if (entity instanceof NestedEntity) {
+      try {
+        write(entity);
+        for (InputEntity ent : Extractor.extractElements((NestedEntity) entity)) {
+          write(ent);
+        }
+      } catch (ExtractorException e) {
+        log.error(
+            String.format(
+                "An error occurred during extraction of nested entity'%s': ",
+                entity.getClass().getSimpleName()),
+            e);
+      }
+    } else {
+      write(entity);
     }
   }
 
   @Override
-  public <C extends UniqueEntity> void persistAllIgnoreNested(Collection<C> entities) {
-    entities.parallelStream().forEach(this::persistIgnoreNested);
+  public <C extends InputEntity> void persistAllIncludeNested(Collection<C> entities) {
+    entities.parallelStream().forEach(this::persistIncludeNested);
   }
 
   @Override
@@ -231,10 +208,7 @@ public class CsvFileSink implements DataSink {
                 storages,
                 wecPlants)
             .flatMap(Collection::stream)
-            .map(
-                entityWithType ->
-                    Extractor.extractType(
-                        entityWithType)) // due to a bug in java 8 this *cannot* be replaced with
+            .map(Extractor::extractType) // due to a bug in java 8 this *cannot* be replaced with
             // method reference!
             .collect(Collectors.toSet());
 
@@ -326,6 +300,49 @@ public class CsvFileSink implements DataSink {
   }
 
   /**
+   * Writes a entity into the corresponding CSV file. Does <b>not</b> include any nested entities.
+   * The header names for the fields will be determined by the given {@link ProcessorProvider}.
+   *
+   * @param entity the entity to write
+   * @param <C> bounded to be all unique entities
+   */
+  private <C extends UniqueEntity> void write(C entity) {
+    LinkedHashMap<String, String> entityFieldData;
+    try {
+      entityFieldData =
+          processorProvider
+              .handleEntity(entity)
+              .orElseThrow(
+                  () ->
+                      new SinkException(
+                          "Cannot persist entity of type '"
+                              + entity.getClass().getSimpleName()
+                              + "'. This sink can only process the following entities: ["
+                              + processorProvider.getRegisteredClasses().stream()
+                                  .map(Class::getSimpleName)
+                                  .collect(Collectors.joining(","))
+                              + "]"));
+
+      String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
+      BufferedCsvWriter writer =
+          connector.getOrInitWriter(entity.getClass(), headerElements, csvSep);
+      writer.write(entityFieldData);
+    } catch (ProcessorProviderException e) {
+      log.error(
+          "Exception occurred during receiving of header elements. Cannot write this element.", e);
+    } catch (ConnectorException e) {
+      log.error("Exception occurred during retrieval of writer. Cannot write this element.", e);
+    } catch (IOException e) {
+      log.error("Exception occurred during writing of this element. Cannot write this element.", e);
+    } catch (SinkException e) {
+      log.error(
+          "Cannot persist provided entity '{}'. Exception: {}",
+          () -> entity.getClass().getSimpleName(),
+          () -> e);
+    }
+  }
+
+  /**
    * Initialize files, hence create a file for each expected class that will be processed in the
    * future. Please note, that files for time series can only be create on presence of a concrete
    * time series, as their file name depends on the individual uuid of the time series.
@@ -394,10 +411,10 @@ public class CsvFileSink implements DataSink {
                 AbstractMap.SimpleEntry::getValue,
                 (v1, v2) -> {
                   throw new IllegalStateException(
-                      "Duplicate keys in entityFieldData are not allowed!"
+                      "Converting entity data to RFC 4180 compliant strings has lead to duplicate keys. Initial input:\n\t"
                           + entityFieldData.entrySet().stream()
                               .map(entry -> entry.getKey() + " = " + entry.getValue())
-                              .collect(Collectors.joining(",\n")));
+                              .collect(Collectors.joining(",\n\t")));
                 },
                 LinkedHashMap::new));
   }

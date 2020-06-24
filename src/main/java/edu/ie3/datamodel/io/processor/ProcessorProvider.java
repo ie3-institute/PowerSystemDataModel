@@ -235,20 +235,36 @@ public class ProcessorProvider {
    *
    * @return a collection of all existing processors
    */
-  private Collection<EntityProcessor<? extends UniqueEntity>> allEntityProcessors() {
-
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allEntityProcessors() {
     Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
+    resultingProcessors.addAll(allInputEntityProcessors());
+    resultingProcessors.addAll(allResultEntityProcessors());
+    return resultingProcessors;
+  }
 
-    // Input Entity Processor
+  /**
+   * Build a collection of all input processors
+   *
+   * @return a collection of all input processors
+   */
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allInputEntityProcessors() {
+    Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
     for (Class<? extends InputEntity> cls : InputEntityProcessor.eligibleEntityClasses) {
       resultingProcessors.add(new InputEntityProcessor(cls));
     }
+    return resultingProcessors;
+  }
 
-    // Result Entity Processor
+  /**
+   * Build a collection of all result processors
+   *
+   * @return a collection of all result processors
+   */
+  public static Collection<EntityProcessor<? extends UniqueEntity>> allResultEntityProcessors() {
+    Collection<EntityProcessor<? extends UniqueEntity>> resultingProcessors = new ArrayList<>();
     for (Class<? extends ResultEntity> cls : ResultEntityProcessor.eligibleEntityClasses) {
       resultingProcessors.add(new ResultEntityProcessor(cls));
     }
-
     return resultingProcessors;
   }
 
@@ -257,7 +273,7 @@ public class ProcessorProvider {
    *
    * @return A mapping from eligible combinations to processors
    */
-  private Map<
+  public static Map<
           TimeSeriesProcessorKey,
           TimeSeriesProcessor<
               TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>
