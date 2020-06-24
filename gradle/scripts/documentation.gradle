@@ -52,8 +52,8 @@ task puml2png() {
 				"build/plantuml.jar",
 				"-psvg",
 				"-o",
-				"${docBaseDirPath}/readthedocs/_static/figures/uml/",
-				"${docBaseDirPath}/uml/**/*.puml"
+				"${docBaseDirPath}readthedocs/_static/figures/uml/",
+				"${docBaseDirPath}uml/**/*.puml"
 			]
 		}
 	}
