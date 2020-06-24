@@ -5,13 +5,18 @@
  */
 package edu.ie3.datamodel.io.sink
 
+import edu.ie3.datamodel.exceptions.ProcessorProviderException
+import edu.ie3.datamodel.exceptions.SinkException
 import edu.ie3.datamodel.io.FileNamingStrategy
+import edu.ie3.datamodel.io.FileNamingStrategyTest
+import edu.ie3.datamodel.io.processor.EntityProcessor
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -26,9 +31,12 @@ import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.WecResult
+import edu.ie3.datamodel.models.timeseries.TimeSeries
+import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
+import edu.ie3.datamodel.models.value.Value
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.test.common.ThermalUnitInputTestData
@@ -229,5 +237,27 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		new File(testBaseFolderPath + File.separator + "individual_time_series_90da7b7d-2148-4510-a730-31f01a554ace.csv").exists()
 		new File(testBaseFolderPath + File.separator + "individual_time_series_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").exists()
 		new File(testBaseFolderPath + File.separator + "load_profile_time_series_g2_b56853fe-b800-4c18-b324-db1878b22a28.csv").exists()
+	}
+
+	def "A valid CsvFileSink refuses to persist an entity, if no processor can be found for a specific input"() {
+		given:
+		/* A csv file sink, that is NOT able to handle time series */
+		def csvFileSink = new CsvFileSink(
+				testBaseFolderPath,
+				new ProcessorProvider(
+						ProcessorProvider.allEntityProcessors(),
+						new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>()),
+				new FileNamingStrategy(),
+				false,
+				",")
+
+		when:
+		csvFileSink.persist(individualEnergyPriceTimeSeries)
+
+		then:
+		!(new File(testBaseFolderPath + File.separator + "individual_time_series_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").exists())
+
+		cleanup:
+		csvFileSink.shutdown()
 	}
 }
