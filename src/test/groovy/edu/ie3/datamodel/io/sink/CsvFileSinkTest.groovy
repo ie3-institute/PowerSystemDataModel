@@ -245,8 +245,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		def csvFileSink = new CsvFileSink(
 				testBaseFolderPath,
 				new ProcessorProvider(
-						ProcessorProvider.allEntityProcessors(),
-						new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>()),
+				ProcessorProvider.allEntityProcessors(),
+				new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>()),
 				new FileNamingStrategy(),
 				false,
 				",")
