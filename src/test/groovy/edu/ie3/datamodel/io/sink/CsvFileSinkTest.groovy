@@ -5,18 +5,14 @@
  */
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.exceptions.ProcessorProviderException
-import edu.ie3.datamodel.exceptions.SinkException
 import edu.ie3.datamodel.io.FileNamingStrategy
-import edu.ie3.datamodel.io.FileNamingStrategyTest
-import edu.ie3.datamodel.io.processor.EntityProcessor
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
+import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -25,6 +21,8 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
+import edu.ie3.datamodel.models.input.system.PvInput
+import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
@@ -40,7 +38,6 @@ import edu.ie3.datamodel.models.value.Value
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.test.common.ThermalUnitInputTestData
-import edu.ie3.util.StringUtils
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
@@ -49,7 +46,10 @@ import tec.uom.se.quantity.Quantities
 
 import javax.measure.Quantity
 import javax.measure.quantity.Power
-import java.util.stream.Collectors
+
+import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
+import static edu.ie3.util.quantities.PowerSystemUnits.PERCENT
 
 class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
@@ -237,6 +237,39 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		new File(testBaseFolderPath + File.separator + "individual_time_series_90da7b7d-2148-4510-a730-31f01a554ace.csv").exists()
 		new File(testBaseFolderPath + File.separator + "individual_time_series_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").exists()
 		new File(testBaseFolderPath + File.separator + "load_profile_time_series_g2_b56853fe-b800-4c18-b324-db1878b22a28.csv").exists()
+	}
+
+	def "A valid CsvFileSink is able to persist an InputEntity without persisting the nested elements"() {
+		given:
+		def csvFileSink = new CsvFileSink(testBaseFolderPath)
+		def nestedInput = new PvInput(
+				UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
+				"test_pvInput",
+				OperatorInput.NO_OPERATOR_ASSIGNED,
+				OperationTime.notLimited(),
+				Mock(NodeInput),
+				new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}"),
+				0.2,
+				Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM),
+				Quantities.getQuantity(95d, PERCENT),
+				Quantities.getQuantity(41.01871871948242, DEGREE_GEOM),
+				0.8999999761581421,
+				1,
+				false,
+				Quantities.getQuantity(25d, KILOVOLTAMPERE),
+				0.95
+				)
+
+		when:
+		csvFileSink.persistIgnoreNested(nestedInput)
+
+		then:
+		new File(testBaseFolderPath).exists()
+		new File(testBaseFolderPath + File.separator + "pv_input.csv").exists()
+		!(new File(testBaseFolderPath + File.separator + "node_input.csv").exists())
+
+		cleanup:
+		csvFileSink.shutdown()
 	}
 
 	def "A valid CsvFileSink refuses to persist an entity, if no processor can be found for a specific input"() {
