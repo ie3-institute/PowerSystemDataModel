@@ -84,6 +84,47 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
 	}
 
+	def "A valid CsvFileSink is able to convert an entity data map correctly to RFC 4180 compliant strings"() {
+		given:
+		def csvFileSink = new CsvFileSink(testBaseFolderPath)
+		def input = [
+			"hello, whats up?": "nothing",
+			"okay": "that's fine"
+		]
+
+		when:
+		def actual = csvFileSink.csvEntityFieldData(input)
+
+		then:
+		actual == [
+			"\"hello, whats up?\"": "nothing",
+			"okay": "that's fine"
+		]
+
+		cleanup:
+		csvFileSink.shutdown()
+	}
+
+	def "A valid CsvFileSink throws an IllegalStateException, if processing entity data map to RFC 4180 compliant strings generates duplicated keys"() {
+		given:
+		def csvFileSink = new CsvFileSink(testBaseFolderPath)
+		def input = [
+			"what is \"this\"?": "nothing",
+			"\"what is \"this\"?\"": "something"
+		]
+
+		when:
+		def bla = csvFileSink.csvEntityFieldData(input)
+		println(bla)
+
+		then:
+		def exception = thrown(IllegalStateException)
+		exception.message == "Converting entity data to RFC 4180 compliant strings has lead to duplicate keys. Initial input:\n\twhat is \"this\"? = nothing,\n\t\"what is \"this\"?\" = something"
+
+		cleanup:
+		csvFileSink.shutdown()
+	}
+
 	def "A valid CsvFileSink without 'initFiles' should only persist provided elements correctly but not all files"() {
 		given:
 		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,

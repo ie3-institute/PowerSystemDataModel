@@ -411,10 +411,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 AbstractMap.SimpleEntry::getValue,
                 (v1, v2) -> {
                   throw new IllegalStateException(
-                      "Duplicate keys in entityFieldData are not allowed!"
+                      "Converting entity data to RFC 4180 compliant strings has lead to duplicate keys. Initial input:\n\t"
                           + entityFieldData.entrySet().stream()
                               .map(entry -> entry.getKey() + " = " + entry.getValue())
-                              .collect(Collectors.joining(",\n")));
+                              .collect(Collectors.joining(",\n\t")));
                 },
                 LinkedHashMap::new));
   }
