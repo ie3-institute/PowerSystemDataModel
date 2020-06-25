@@ -1,4 +1,7 @@
 @startuml
+scale 2048 width
+scale 1538 height
+
 note "For better readability no getters are shown in the classes. Also the final attributes are not marked especially." as generalNote
 
 interface Comparable<T>

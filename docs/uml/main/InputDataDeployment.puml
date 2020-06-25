@@ -1,4 +1,7 @@
 @startuml
+scale 2048 width
+scale 1538 height
+
 database psql [
     <b> PostgreSQL
     ==
@@ -14,13 +17,22 @@ database psql [
     __
     time series
 ]
-database neo4j [
-    <b> Neo4J
+database influxdb [
+    <b> InfluxDB
     ==
-    grid
+    weather
     --
-    assets
+    time series
 ]
+
+'Not yet implemented
+'database neo4j [
+'    <b> Neo4J
+'    ==
+'    grid
+'    --
+'    assets
+']
 folder projName.tar.gz {
 folder assets {
 file ev.csv
@@ -39,11 +51,12 @@ file load_parameter
 file load_profiles
 file wholesale_prices
 }
-cloud streams [
-streams
-==
-weather
-]
+'Not yet implemented
+'cloud streams [
+'streams
+'==
+'weather
+']
 interface grid_source
 interface assets_source
 interface types_source
@@ -56,7 +69,6 @@ agent inputAccumulator
 node "Simulation"
 
 grid_source --> psql
-grid_source --> neo4j
 grid_source --> grid
 
 assets_source --> psql
@@ -72,10 +84,10 @@ graphics_source --> psql
 graphics_source --> graphics
 
 weather_source --> psql
-weather_source --> streams
+weather_source --> influxdb
 
 time_series_source --> psql
-time_series_source --> streams
+time_series_source --> influxdb
 
 config_source --> inputAccumulator
 

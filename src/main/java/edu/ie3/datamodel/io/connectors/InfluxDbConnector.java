@@ -16,8 +16,15 @@ import org.influxdb.dto.Pong;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 
+/**
+ * Implements a DataConnector for InfluxDB. InfluxDB is a time series database and as such, it can
+ * only handle time based data. <br>
+ * Entities will be persisted as <i>measurement points</i>, which consist of a time, one or more
+ * tags, one or more values and a measurement name. In contrast to values, tags should only contain
+ * metadata. A measurement name is the equivalent of the name of a table in relational data models.
+ */
 public class InfluxDbConnector implements DataConnector {
-  /** Merges two sets of (fieldName -> fieldValue) maps */
+  /** Merges two sets of (fieldName to fieldValue) maps */
   private static final BinaryOperator<Set<Map<String, String>>> mergeSets =
       (maps, maps2) -> {
         maps.addAll(maps2);
@@ -30,6 +37,14 @@ public class InfluxDbConnector implements DataConnector {
   private final String scenarioName;
   private final String url;
 
+  /**
+   * Initializes a new InfluxDbConnector with the given url, databaseName and scenario name.
+   *
+   * @param url the connection url for the influxDB database
+   * @param databaseName the name of the database to which the connection should be established
+   * @param scenarioName the name of the simulation scenario which will be used in influxDB
+   *     measurement names
+   */
   public InfluxDbConnector(String url, String databaseName, String scenarioName) {
     this.url = url;
     this.databaseName = databaseName;
@@ -57,6 +72,8 @@ public class InfluxDbConnector implements DataConnector {
 
   /**
    * Checks if the given connection parameters are valid, so that a connection can be established
+   *
+   * @return true, if the database returned the ping
    */
   public Boolean isConnectionValid() {
     InfluxDB session = getSession();
@@ -79,7 +96,7 @@ public class InfluxDbConnector implements DataConnector {
    * Creates a session using the given connection parameters. If no database with the given name
    * exists, one is created.
    *
-   * @return autocloseable InfluxDB session
+   * @return Autocloseable InfluxDB session
    */
   public InfluxDB getSession() {
     InfluxDB session;
@@ -98,8 +115,9 @@ public class InfluxDbConnector implements DataConnector {
   /**
    * Parses the result of an influxQL query for all measurements (e.g. weather)
    *
-   * @return a map of (measurement name to Set of maps of (field name to field value) for each
-   *     result entity)
+   * @param queryResult Result of an influxDB query
+   * @return Map of (measurement name to Set of maps of (field name : field value)) for each result
+   *     entity)
    */
   public static Map<String, Set<Map<String, String>>> parseQueryResult(QueryResult queryResult) {
     return parseQueryResult(queryResult, new String[0]);
@@ -109,8 +127,11 @@ public class InfluxDbConnector implements DataConnector {
    * Parses the result of one or multiple influxQL queries for the given measurements (e.g.
    * weather). If no measurement names are given, all results are parsed and returned
    *
-   * @return a map of (measurement name to Set of maps of (field name to field value) for each
-   *     result entity)
+   * @param queryResult Result of an influxDB query
+   * @param measurementNames Names of measurements that should be parsed. If none are given, all
+   *     measurements will be parsed
+   * @return Map of (measurement name to Set of maps of (field name : field value) for each result
+   *     entity)
    */
   public static Map<String, Set<Map<String, String>>> parseQueryResult(
       QueryResult queryResult, String... measurementNames) {
@@ -137,8 +158,11 @@ public class InfluxDbConnector implements DataConnector {
    * Parses the result of one influxQL query for the given measurements (e.g. weather). If no
    * measurement names are given, all results are parsed and returned
    *
-   * @return a map of (measurement name to Set of maps of (field name to field value) for each
-   *     result entity)
+   * @param result Specific result of an influxDB query
+   * @param measurementNames Names of measurements that should be parsed. If none are given, all
+   *     measurements will be parsed
+   * @return Map of (measurement name to Set of maps of (field name : field value) for each result
+   *     entity)
    */
   public static Map<String, Set<Map<String, String>>> parseResult(
       QueryResult.Result result, String... measurementNames) {
@@ -154,6 +178,7 @@ public class InfluxDbConnector implements DataConnector {
   /**
    * Parses the results for a single measurement series
    *
+   * @param series A measurement series of an influxDB query result
    * @return Set of maps of (field name to field value) for each result entity
    */
   public static Set<Map<String, String>> parseSeries(QueryResult.Series series) {
@@ -164,15 +189,17 @@ public class InfluxDbConnector implements DataConnector {
   }
 
   /**
-   * Parses a listt of values and maps them to field names using the given column name and order
+   * Parses a list of values and maps them to field names using the given column name and order
    *
+   * @param valueList List of values, sorted by column in columns
+   * @param columns Array of column names
    * @return Map of (field name to field value) for one result entity
    */
   public static Map<String, String> parseValueList(List<?> valueList, String[] columns) {
     Map<String, String> attributeMap = new HashMap<>();
     Object[] valueArr = valueList.toArray();
     for (int i = 0; i < columns.length; i++) {
-      attributeMap.put(columns[i], valueArr[i].toString());
+      attributeMap.put(columns[i], String.valueOf(valueArr[i]));
     }
     return attributeMap;
   }

@@ -24,9 +24,10 @@ task integrationTest(type: Test) {
 	group 'Verification'
 
 	filter {
+		includeTestsMatching '*IT.*'
 		excludeTestsMatching '*Test*.*'
-		includeTestsMatching '*IT'
 	}
+	useJUnitPlatform()
 	testLogging {
 		events "skipped", "failed"
 	}
