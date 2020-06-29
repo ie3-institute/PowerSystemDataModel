@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../edu/ie3/datamodel/io/sink/CsvFileSink.html" title="class in edu.ie3.datamodel.io.sink"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li>Next&nbsp;Class</li>
+<li><a href="../../../../../edu/ie3/datamodel/io/sink/InfluxDbSink.html" title="class in edu.ie3.datamodel.io.sink"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?edu/ie3/datamodel/io/sink/DataSink.html" target="_top">Frames</a></li>
@@ -98,8 +98,12 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <dl>
+<dt>All Known Subinterfaces:</dt>
+<dd><a href="../../../../../edu/ie3/datamodel/io/sink/InputDataSink.html" title="interface in edu.ie3.datamodel.io.sink">InputDataSink</a>, <a href="../../../../../edu/ie3/datamodel/io/sink/OutputDataSink.html" title="interface in edu.ie3.datamodel.io.sink">OutputDataSink</a></dd>
+</dl>
+<dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../../edu/ie3/datamodel/io/sink/CsvFileSink.html" title="class in edu.ie3.datamodel.io.sink">CsvFileSink</a></dd>
+<dd><a href="../../../../../edu/ie3/datamodel/io/sink/CsvFileSink.html" title="class in edu.ie3.datamodel.io.sink">CsvFileSink</a>, <a href="../../../../../edu/ie3/datamodel/io/sink/InfluxDbSink.html" title="class in edu.ie3.datamodel.io.sink">InfluxDbSink</a></dd>
 </dl>
 <hr>
 <br>
@@ -138,33 +142,15 @@ var activeTableTab = "activeTableTab";
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>&lt;C extends <a href="../../../../../edu/ie3/datamodel/models/UniqueEntity.html" title="class in edu.ie3.datamodel.models">UniqueEntity</a>&gt;<br>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ie3/datamodel/io/sink/DataSink.html#persistAllIgnoreNested-java.util.Collection-">persistAllIgnoreNested</a></span>(java.util.Collection&lt;C&gt;&nbsp;entities)</code>
-<div class="block">Should implement the entry point of a data sink to persist multiple entities in a collection.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>&lt;C extends <a href="../../../../../edu/ie3/datamodel/models/UniqueEntity.html" title="class in edu.ie3.datamodel.models">UniqueEntity</a>&gt;<br>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ie3/datamodel/io/sink/DataSink.html#persistIgnoreNested-C-">persistIgnoreNested</a></span>(C&nbsp;entity)</code>
-<div class="block">Should implement the entry point of a data sink to persist an entity.</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ie3/datamodel/io/sink/DataSink.html#persistJointGrid-edu.ie3.datamodel.models.input.container.JointGridContainer-">persistJointGrid</a></span>(<a href="../../../../../edu/ie3/datamodel/models/input/container/JointGridContainer.html" title="class in edu.ie3.datamodel.models.input.container">JointGridContainer</a>&nbsp;jointGridContainer)</code>
-<div class="block">Should implement the entry point of a data sink to persist a whole <a href="../../../../../edu/ie3/datamodel/models/input/container/JointGridContainer.html" title="class in edu.ie3.datamodel.models.input.container"><code>JointGridContainer</code></a></div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
 <td class="colFirst"><code>&lt;E extends <a href="../../../../../edu/ie3/datamodel/models/timeseries/TimeSeriesEntry.html" title="class in edu.ie3.datamodel.models.timeseries">TimeSeriesEntry</a>&lt;V&gt;,V extends <a href="../../../../../edu/ie3/datamodel/models/value/Value.html" title="interface in edu.ie3.datamodel.models.value">Value</a>&gt;<br>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ie3/datamodel/io/sink/DataSink.html#persistTimeSeries-edu.ie3.datamodel.models.timeseries.TimeSeries-">persistTimeSeries</a></span>(<a href="../../../../../edu/ie3/datamodel/models/timeseries/TimeSeries.html" title="class in edu.ie3.datamodel.models.timeseries">TimeSeries</a>&lt;E,V&gt;&nbsp;timeSeries)</code>
 <div class="block">Should implement the handling of a whole time series.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ie3/datamodel/io/sink/DataSink.html#shutdown--">shutdown</a></span>()</code>
-<div class="block">Shutdown this sink and do all cleanup operations (e.g. closing of the <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector.html" title="interface in edu.ie3.datamodel.io.connectors"><code>DataConnector</code></a>
+<div class="block">Shutdown this sink and do all cleanup operations (e.g. closing of the <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector.html" title="interface in edu.ie3.datamodel.io.connectors"><code>DataConnector</code></a>)
  here</div>
 </td>
 </tr>
@@ -190,7 +176,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <h4>shutdown</h4>
 <pre>void&nbsp;shutdown()</pre>
-<div class="block">Shutdown this sink and do all cleanup operations (e.g. closing of the <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector.html" title="interface in edu.ie3.datamodel.io.connectors"><code>DataConnector</code></a>
+<div class="block">Shutdown this sink and do all cleanup operations (e.g. closing of the <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector.html" title="interface in edu.ie3.datamodel.io.connectors"><code>DataConnector</code></a>)
  here</div>
 </li>
 </ul>
@@ -204,9 +190,10 @@ var activeTableTab = "activeTableTab";
 <h4>persist</h4>
 <pre>&lt;C extends <a href="../../../../../edu/ie3/datamodel/models/UniqueEntity.html" title="class in edu.ie3.datamodel.models">UniqueEntity</a>&gt;&nbsp;void&nbsp;persist(C&nbsp;entity)</pre>
 <div class="block">Should implement the entry point of a data sink to persist an entity. By default this method
- should take care about the extraction process of nested entities (if any) and use <a href="../../../../../edu/ie3/datamodel/io/extractor/Extractor.html" title="class in edu.ie3.datamodel.io.extractor"><code>Extractor</code></a> accordingly. For an faster method e.g. that neglects
- the nested objects persistence and only persists the uuid of the nested objects (if any),
- instead of the object itself use <a href="../../../../../edu/ie3/datamodel/io/sink/DataSink.html#persistIgnoreNested-C-"><code>persistIgnoreNested(UniqueEntity)</code></a></div>
+ should take care about the extraction process of nested entities (if any) of input entities and
+ use <a href="../../../../../edu/ie3/datamodel/io/extractor/Extractor.html" title="class in edu.ie3.datamodel.io.extractor"><code>Extractor</code></a> accordingly. For an faster method e.g.
+ that neglects the nested objects persistence and only persists the uuid of the nested objects
+ (if any), instead of the object itself use <a href="../../../../../edu/ie3/datamodel/io/sink/InputDataSink.html#persistIgnoreNested-C-"><code>InputDataSink.persistIgnoreNested(C)</code></a></div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>C</code> - bounded to be all unique entities. Handling of specific entities is normally then
@@ -225,9 +212,9 @@ var activeTableTab = "activeTableTab";
 <pre>&lt;C extends <a href="../../../../../edu/ie3/datamodel/models/UniqueEntity.html" title="class in edu.ie3.datamodel.models">UniqueEntity</a>&gt;&nbsp;void&nbsp;persistAll(java.util.Collection&lt;C&gt;&nbsp;entities)</pre>
 <div class="block">Should implement the entry point of a data sink to persist multiple entities in a collection.
  By default this method should take care about the extraction process of nested entities (if
- any) and use <a href="../../../../../edu/ie3/datamodel/io/extractor/Extractor.html" title="class in edu.ie3.datamodel.io.extractor"><code>Extractor</code></a> accordingly. For a faster method
- that neglects the nested objects persistence and only persists the uuid of the nested * objects
- (if any), instead of the object itself use <a href="../../../../../edu/ie3/datamodel/io/sink/DataSink.html#persistIgnoreNested-C-"><code>persistIgnoreNested(UniqueEntity)</code></a></div>
+ any) of input entities and use <a href="../../../../../edu/ie3/datamodel/io/extractor/Extractor.html" title="class in edu.ie3.datamodel.io.extractor"><code>Extractor</code></a> accordingly.
+ For a faster method that neglects the nested objects persistence and only persists the uuid of
+ the nested * objects (if any), instead of the object itself use <a href="../../../../../edu/ie3/datamodel/io/sink/InputDataSink.html#persistAllIgnoreNested-java.util.Collection-"><code>InputDataSink.persistAllIgnoreNested(java.util.Collection&lt;C&gt;)</code></a></div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>C</code> - bounded to be all unique entities. Handling of specific entities is normally then
@@ -237,59 +224,10 @@ var activeTableTab = "activeTableTab";
 </dl>
 </li>
 </ul>
-<a name="persistIgnoreNested-edu.ie3.datamodel.models.UniqueEntity-">
-<!--   -->
-</a><a name="persistIgnoreNested-C-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>persistIgnoreNested</h4>
-<pre>&lt;C extends <a href="../../../../../edu/ie3/datamodel/models/UniqueEntity.html" title="class in edu.ie3.datamodel.models">UniqueEntity</a>&gt;&nbsp;void&nbsp;persistIgnoreNested(C&nbsp;entity)</pre>
-<div class="block">Should implement the entry point of a data sink to persist an entity. In contrast to <a href="../../../../../edu/ie3/datamodel/io/sink/DataSink.html#persist-C-"><code>persist(C)</code></a>, this method should <b>not</b> take care about the extraction process of
- nested entities (if any) but only persist the uuid of the nested entity. This <b>might</b>
- speed up things a little bit because of missing if-/else-clauses but can also lead to missing
- persisted data that should be persisted, but is not e.g. nested types that are not available
- anymore afterwards. It might be useful especially for all entities without nested entities. For
- all doubts about if the provided entity contains needed nested data or not <a href="../../../../../edu/ie3/datamodel/io/sink/DataSink.html#persist-C-"><code>persist(UniqueEntity)</code></a> is the recommended method to be used.</div>
-<dl>
-<dt><span class="paramLabel">Type Parameters:</span></dt>
-<dd><code>C</code> - bounded to be all unique entities. Handling of specific entities is normally then
-     executed by a specific <a href="../../../../../edu/ie3/datamodel/io/processor/EntityProcessor.html" title="class in edu.ie3.datamodel.io.processor"><code>EntityProcessor</code></a></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>entity</code> - the entity that should be persisted</dd>
-</dl>
-</li>
-</ul>
-<a name="persistAllIgnoreNested-java.util.Collection-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>persistAllIgnoreNested</h4>
-<pre>&lt;C extends <a href="../../../../../edu/ie3/datamodel/models/UniqueEntity.html" title="class in edu.ie3.datamodel.models">UniqueEntity</a>&gt;&nbsp;void&nbsp;persistAllIgnoreNested(java.util.Collection&lt;C&gt;&nbsp;entities)</pre>
-<div class="block">Should implement the entry point of a data sink to persist multiple entities in a collection.
- In contrast to <a href="../../../../../edu/ie3/datamodel/io/sink/DataSink.html#persistAll-java.util.Collection-"><code>persistAll(Collection)</code></a>, this method should <b>not</b> take care
- about the extraction process of nested entities (if any) but only persist the uuid of the
- nested entity. This <b>might</b> speed up things a little bit because of missing
- if-/else-clauses but but can also lead to missing persisted data that should be persisted, but
- is not e.g. nested types that are not available anymore afterwards. It might be useful
- especially for all entities without nested entities. For all doubts about if the provided
- entity contains needed nested data or not <a href="../../../../../edu/ie3/datamodel/io/sink/DataSink.html#persistAll-java.util.Collection-"><code>persistAll(Collection)</code></a> is the
- recommended method to be used.</div>
-<dl>
-<dt><span class="paramLabel">Type Parameters:</span></dt>
-<dd><code>C</code> - bounded to be all unique entities. Handling of specific entities is normally then
-     executed by a specific <a href="../../../../../edu/ie3/datamodel/io/processor/EntityProcessor.html" title="class in edu.ie3.datamodel.io.processor"><code>EntityProcessor</code></a></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>entities</code> - the entities that should be persisted</dd>
-</dl>
-</li>
-</ul>
 <a name="persistTimeSeries-edu.ie3.datamodel.models.timeseries.TimeSeries-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>persistTimeSeries</h4>
 <pre>&lt;E extends <a href="../../../../../edu/ie3/datamodel/models/timeseries/TimeSeriesEntry.html" title="class in edu.ie3.datamodel.models.timeseries">TimeSeriesEntry</a>&lt;V&gt;,V extends <a href="../../../../../edu/ie3/datamodel/models/value/Value.html" title="interface in edu.ie3.datamodel.models.value">Value</a>&gt;&nbsp;void&nbsp;persistTimeSeries(<a href="../../../../../edu/ie3/datamodel/models/timeseries/TimeSeries.html" title="class in edu.ie3.datamodel.models.timeseries">TimeSeries</a>&lt;E,V&gt;&nbsp;timeSeries)</pre>
@@ -301,20 +239,6 @@ var activeTableTab = "activeTableTab";
 <dd><code>V</code> - Type of actual value, that is inside the entry</dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>timeSeries</code> - Time series to persist</dd>
-</dl>
-</li>
-</ul>
-<a name="persistJointGrid-edu.ie3.datamodel.models.input.container.JointGridContainer-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>persistJointGrid</h4>
-<pre>void&nbsp;persistJointGrid(<a href="../../../../../edu/ie3/datamodel/models/input/container/JointGridContainer.html" title="class in edu.ie3.datamodel.models.input.container">JointGridContainer</a>&nbsp;jointGridContainer)</pre>
-<div class="block">Should implement the entry point of a data sink to persist a whole <a href="../../../../../edu/ie3/datamodel/models/input/container/JointGridContainer.html" title="class in edu.ie3.datamodel.models.input.container"><code>JointGridContainer</code></a></div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>jointGridContainer</code> - the <a href="../../../../../edu/ie3/datamodel/models/input/container/JointGridContainer.html" title="class in edu.ie3.datamodel.models.input.container"><code>JointGridContainer</code></a> that should be persisted</dd>
 </dl>
 </li>
 </ul>
@@ -346,7 +270,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../edu/ie3/datamodel/io/sink/CsvFileSink.html" title="class in edu.ie3.datamodel.io.sink"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li>Next&nbsp;Class</li>
+<li><a href="../../../../../edu/ie3/datamodel/io/sink/InfluxDbSink.html" title="class in edu.ie3.datamodel.io.sink"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?edu/ie3/datamodel/io/sink/DataSink.html" target="_top">Frames</a></li>
