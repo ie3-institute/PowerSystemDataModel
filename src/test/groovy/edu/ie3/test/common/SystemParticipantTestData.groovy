@@ -296,8 +296,7 @@ class SystemParticipantTestData {
 	,
 	participantNode,
 	cosPhiFixed,
-	storageTypeInput,
-	"market"
+	storageTypeInput
 	)
 
 	// HP

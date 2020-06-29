@@ -24,7 +24,6 @@ class StorageInputTest extends Specification {
 			assert operationTime == storageInput.operationTime
 			assert operator == storageInput.operator
 			assert id == storageInput.id
-			assert behaviour == storageInput.behaviour
 			assert qCharacteristics == storageInput.qCharacteristics
 			assert type == SystemParticipantTestData.storageTypeInput
 		}

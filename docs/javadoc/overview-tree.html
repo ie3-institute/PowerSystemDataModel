@@ -174,7 +174,7 @@
 </li>
 <li type="circle">edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/CsvFileConnector.html" title="class in edu.ie3.datamodel.io.connectors"><span class="typeNameLink">CsvFileConnector</span></a> (implements edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/DataConnector.html" title="interface in edu.ie3.datamodel.io.connectors">DataConnector</a>)</li>
 <li type="circle">edu.ie3.datamodel.io.csv.<a href="edu/ie3/datamodel/io/csv/CsvFileDefinition.html" title="class in edu.ie3.datamodel.io.csv"><span class="typeNameLink">CsvFileDefinition</span></a></li>
-<li type="circle">edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/CsvFileSink.html" title="class in edu.ie3.datamodel.io.sink"><span class="typeNameLink">CsvFileSink</span></a> (implements edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/DataSink.html" title="interface in edu.ie3.datamodel.io.sink">DataSink</a>)</li>
+<li type="circle">edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/CsvFileSink.html" title="class in edu.ie3.datamodel.io.sink"><span class="typeNameLink">CsvFileSink</span></a> (implements edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/InputDataSink.html" title="interface in edu.ie3.datamodel.io.sink">InputDataSink</a>, edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/OutputDataSink.html" title="interface in edu.ie3.datamodel.io.sink">OutputDataSink</a>)</li>
 <li type="circle">org.jgrapht.graph.DefaultWeightedEdge
 <ul>
 <li type="circle">edu.ie3.datamodel.graph.<a href="edu/ie3/datamodel/graph/DistanceWeightedEdge.html" title="class in edu.ie3.datamodel.graph"><span class="typeNameLink">DistanceWeightedEdge</span></a></li>
@@ -278,6 +278,7 @@
 </li>
 <li type="circle">edu.ie3.datamodel.models.value.<a href="edu/ie3/datamodel/models/value/HeatDemandValue.html" title="class in edu.ie3.datamodel.models.value"><span class="typeNameLink">HeatDemandValue</span></a> (implements edu.ie3.datamodel.models.value.<a href="edu/ie3/datamodel/models/value/Value.html" title="interface in edu.ie3.datamodel.models.value">Value</a>)</li>
 <li type="circle">edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/InfluxDbConnector.html" title="class in edu.ie3.datamodel.io.connectors"><span class="typeNameLink">InfluxDbConnector</span></a> (implements edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/DataConnector.html" title="interface in edu.ie3.datamodel.io.connectors">DataConnector</a>)</li>
+<li type="circle">edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/InfluxDbSink.html" title="class in edu.ie3.datamodel.io.sink"><span class="typeNameLink">InfluxDbSink</span></a> (implements edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/OutputDataSink.html" title="interface in edu.ie3.datamodel.io.sink">OutputDataSink</a>)</li>
 <li type="circle">edu.ie3.datamodel.io.source.influxdb.<a href="edu/ie3/datamodel/io/source/influxdb/InfluxDbWeatherSource.html" title="class in edu.ie3.datamodel.io.source.influxdb"><span class="typeNameLink">InfluxDbWeatherSource</span></a> (implements edu.ie3.datamodel.io.source.<a href="edu/ie3/datamodel/io/source/WeatherSource.html" title="interface in edu.ie3.datamodel.io.source">WeatherSource</a>)</li>
 <li type="circle">edu.ie3.datamodel.models.value.<a href="edu/ie3/datamodel/models/value/IrradiationValue.html" title="class in edu.ie3.datamodel.models.value"><span class="typeNameLink">IrradiationValue</span></a> (implements edu.ie3.datamodel.models.value.<a href="edu/ie3/datamodel/models/value/Value.html" title="interface in edu.ie3.datamodel.models.value">Value</a>)</li>
 <li type="circle">edu.ie3.datamodel.models.<a href="edu/ie3/datamodel/models/OperationTime.html" title="class in edu.ie3.datamodel.models"><span class="typeNameLink">OperationTime</span></a></li>
@@ -533,7 +534,12 @@
 <h2 title="Interface Hierarchy">Interface Hierarchy</h2>
 <ul>
 <li type="circle">edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/DataConnector.html" title="interface in edu.ie3.datamodel.io.connectors"><span class="typeNameLink">DataConnector</span></a></li>
-<li type="circle">edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/DataSink.html" title="interface in edu.ie3.datamodel.io.sink"><span class="typeNameLink">DataSink</span></a></li>
+<li type="circle">edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/DataSink.html" title="interface in edu.ie3.datamodel.io.sink"><span class="typeNameLink">DataSink</span></a>
+<ul>
+<li type="circle">edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/InputDataSink.html" title="interface in edu.ie3.datamodel.io.sink"><span class="typeNameLink">InputDataSink</span></a></li>
+<li type="circle">edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/OutputDataSink.html" title="interface in edu.ie3.datamodel.io.sink"><span class="typeNameLink">OutputDataSink</span></a></li>
+</ul>
+</li>
 <li type="circle">edu.ie3.datamodel.io.source.<a href="edu/ie3/datamodel/io/source/DataSource.html" title="interface in edu.ie3.datamodel.io.source"><span class="typeNameLink">DataSource</span></a>
 <ul>
 <li type="circle">edu.ie3.datamodel.io.source.<a href="edu/ie3/datamodel/io/source/GraphicSource.html" title="interface in edu.ie3.datamodel.io.source"><span class="typeNameLink">GraphicSource</span></a></li>
@@ -567,11 +573,10 @@
 <ul>
 <li type="circle">java.lang.Enum&lt;E&gt; (implements java.lang.Comparable&lt;T&gt;, java.io.Serializable)
 <ul>
+<li type="circle">edu.ie3.datamodel.io.processor.timeseries.<a href="edu/ie3/datamodel/io/processor/timeseries/FieldSourceToMethod.FieldSource.html" title="enum in edu.ie3.datamodel.io.processor.timeseries"><span class="typeNameLink">FieldSourceToMethod.FieldSource</span></a></li>
 <li type="circle">edu.ie3.datamodel.models.<a href="edu/ie3/datamodel/models/BdewLoadProfile.html" title="enum in edu.ie3.datamodel.models"><span class="typeNameLink">BdewLoadProfile</span></a> (implements edu.ie3.datamodel.models.<a href="edu/ie3/datamodel/models/StandardLoadProfile.html" title="interface in edu.ie3.datamodel.models">StandardLoadProfile</a>)</li>
 <li type="circle">edu.ie3.datamodel.models.input.connector.<a href="edu/ie3/datamodel/models/input/connector/ConnectorPort.html" title="enum in edu.ie3.datamodel.models.input.connector"><span class="typeNameLink">ConnectorPort</span></a></li>
-<li type="circle">edu.ie3.datamodel.io.processor.timeseries.<a href="edu/ie3/datamodel/io/processor/timeseries/FieldSourceToMethod.FieldSource.html" title="enum in edu.ie3.datamodel.io.processor.timeseries"><span class="typeNameLink">FieldSourceToMethod.FieldSource</span></a></li>
 <li type="circle">edu.ie3.datamodel.models.<a href="edu/ie3/datamodel/models/StandardLoadProfile.DefaultLoadProfiles.html" title="enum in edu.ie3.datamodel.models"><span class="typeNameLink">StandardLoadProfile.DefaultLoadProfiles</span></a> (implements edu.ie3.datamodel.models.<a href="edu/ie3/datamodel/models/StandardLoadProfile.html" title="interface in edu.ie3.datamodel.models">StandardLoadProfile</a>)</li>
-<li type="circle">edu.ie3.datamodel.models.input.system.<a href="edu/ie3/datamodel/models/input/system/StorageStrategy.html" title="enum in edu.ie3.datamodel.models.input.system"><span class="typeNameLink">StorageStrategy</span></a></li>
 </ul>
 </li>
 </ul>
