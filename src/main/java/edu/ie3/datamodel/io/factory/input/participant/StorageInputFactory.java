@@ -23,7 +23,7 @@ public class StorageInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {};
+    return new String[0];
   }
 
   @Override
