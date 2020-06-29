@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -15,6 +16,11 @@ import tec.uom.se.ComparableQuantity;
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpResult extends SystemParticipantResult {
 
+  /**
+   * Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power
+   * flowing from unit)
+   */
+  @FieldName("q_dot")
   private final Quantity<Power> qDot;
 
   /**
@@ -24,6 +30,7 @@ public class HpResult extends SystemParticipantResult {
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
+   * @param qDot Average thermal power exchanged with the unit
    */
   public HpResult(
       ZonedDateTime timestamp,
@@ -44,6 +51,7 @@ public class HpResult extends SystemParticipantResult {
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
+   * @param qDot Average thermal power exchanged with the unit
    */
   public HpResult(
       UUID uuid,

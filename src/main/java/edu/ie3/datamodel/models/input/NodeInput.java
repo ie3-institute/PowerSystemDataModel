@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
@@ -19,13 +20,16 @@ import tec.uom.se.ComparableQuantity;
 /** Describes an electrical grid node, that other assets can connect to */
 public class NodeInput extends AssetInput {
   /** Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.) */
+  @FieldName("v_target")
   private final ComparableQuantity<Dimensionless> vTarget;
   /** Is this node a slack node? */
+  @FieldName("slack")
   private final boolean slack;
   /**
    * The coordinates of this node, especially relevant for geo-dependant systems, that are connected
    * to this node
    */
+  @FieldName("geo_position")
   private final Point geoPosition;
 
   /** Use this default value if geoPosition is unknown */

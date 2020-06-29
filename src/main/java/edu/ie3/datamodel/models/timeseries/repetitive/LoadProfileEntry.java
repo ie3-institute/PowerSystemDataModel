@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
@@ -13,7 +14,10 @@ import java.util.UUID;
 
 /** Unique entry to a {@link LoadProfileInput} */
 public class LoadProfileEntry extends TimeSeriesEntry<PValue> {
+  @FieldName("day_of_week")
   private final DayOfWeek dayOfWeek;
+
+  @FieldName("quarter_hour_of_day")
   private final int quarterHourOfDay;
 
   public LoadProfileEntry(UUID uuid, PValue value, DayOfWeek dayOfWeek, int quarterHourOfDay) {

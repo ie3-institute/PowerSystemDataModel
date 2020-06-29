@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.graphics;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.input.NodeInput;
 import java.util.*;
@@ -14,8 +15,10 @@ import org.locationtech.jts.geom.Point;
 /** Describes the graphic data belonging to a {@link NodeInput} */
 public class NodeGraphicInput extends GraphicInput implements HasNodes {
   /** The NodeInput to this graphic data */
+  @FieldName("node")
   private final NodeInput node;
   /** The geometric point of this node */
+  @FieldName("point")
   private final Point point;
 
   /**

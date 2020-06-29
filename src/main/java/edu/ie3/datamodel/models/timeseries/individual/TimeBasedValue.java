@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.timeseries.individual;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
@@ -18,6 +19,7 @@ import java.util.UUID;
  */
 public class TimeBasedValue<T extends Value> extends TimeSeriesEntry<T>
     implements Comparable<TimeBasedValue<? extends Value>> {
+  @FieldName("time")
   private final ZonedDateTime time;
 
   public TimeBasedValue(UUID uuid, ZonedDateTime time, T value) {

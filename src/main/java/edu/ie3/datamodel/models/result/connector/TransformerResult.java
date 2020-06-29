@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import tec.uom.se.ComparableQuantity;
 public abstract class TransformerResult extends ConnectorResult {
 
   /** Current tapping position if a transformer has a tap changer */
+  @FieldName("tap_pos")
   private int tapPos;
 
   /**

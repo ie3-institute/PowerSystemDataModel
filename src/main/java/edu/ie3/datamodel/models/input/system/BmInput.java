@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -20,14 +21,18 @@ import tec.uom.se.ComparableQuantity;
 /** Describes a biomass plant */
 public class BmInput extends SystemParticipantInput implements HasType {
   /** Type of this BM plant, containing default values for BM plants of this kind */
+  @FieldName("type")
   private final BmTypeInput type;
   /** Is this asset market oriented? */
+  @FieldName("market_reaction")
   private final boolean marketReaction;
   /**
    * Does this plant increase the output power if the revenues exceed the energy generation costs?
    */
+  @FieldName("cost_controlled")
   private final boolean costControlled;
   /** Granted feed in tariff (typically in €/MWh) */
+  @FieldName("feed_in_tariff")
   private final ComparableQuantity<EnergyPrice> feedInTariff;
 
   /**

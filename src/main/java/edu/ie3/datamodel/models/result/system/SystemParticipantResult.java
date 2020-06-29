@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -15,13 +16,13 @@ import tec.uom.se.ComparableQuantity;
 /** Abstract class that holds values common to all other result entities */
 public abstract class SystemParticipantResult extends ResultEntity {
 
-  /**
-   * @param p active power output normally provided in MW
-   * @param q reactive power output normally provided in MVAr
-   */
-  private ComparableQuantity<Power> p;
-
+  /** active power output normally provided in MW */
+  @FieldName("q")
   private ComparableQuantity<Power> q;
+
+  /** reactive power output normally provided in MVAr */
+  @FieldName("p")
+  private ComparableQuantity<Power> p;
 
   /**
    * @param timestamp date and time when the result is produced

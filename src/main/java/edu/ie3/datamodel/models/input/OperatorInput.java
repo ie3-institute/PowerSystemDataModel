@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ public class OperatorInput extends InputEntity {
       new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED");
 
   /** The id (=name) of this operator */
+  @FieldName("id")
   private final String id;
 
   /**

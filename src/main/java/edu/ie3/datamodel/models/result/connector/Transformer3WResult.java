@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -15,9 +16,11 @@ import tec.uom.se.ComparableQuantity;
 public class Transformer3WResult extends TransformerResult {
 
   /** Electric current magnitude @ port C, normally provided in Ampere */
+  @FieldName("i_c_mag")
   private ComparableQuantity<ElectricCurrent> iCMag;
 
   /** Electric current angle @ Port C in degree ° */
+  @FieldName("i_c_ang")
   private ComparableQuantity<Angle> iCAng;
 
   /**

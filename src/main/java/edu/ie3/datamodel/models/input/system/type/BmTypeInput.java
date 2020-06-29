@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
@@ -19,8 +20,10 @@ import tec.uom.se.ComparableQuantity;
 public class BmTypeInput extends SystemParticipantTypeInput {
 
   /** Permissible load gradient (typically in %/h) */
+  @FieldName("active_power_gradient")
   private final ComparableQuantity<DimensionlessRate> activePowerGradient;
   /** Efficiency of converter for this type of BM (typically in %) */
+  @FieldName("eta_conv")
   private final ComparableQuantity<Dimensionless> etaConv;
 
   /**

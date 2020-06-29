@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
@@ -17,9 +18,11 @@ import java.util.*;
 public abstract class SystemParticipantInput extends AssetInput implements HasNodes {
 
   /** The node that the asset is connected to */
+  @FieldName("node")
   private final NodeInput node;
 
   /** Description of a reactive power characteristic. For details see further documentation */
+  @FieldName("q_characteristics")
   private final ReactivePowerCharacteristic qCharacteristics;
 
   /**

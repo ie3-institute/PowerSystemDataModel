@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.connector;
 
 import static edu.ie3.util.quantities.PowerSystemUnits.PU;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -21,10 +22,13 @@ import tec.uom.se.quantity.Quantities;
  */
 public class Transformer3WInput extends TransformerInput implements HasType {
   /** Type of this 3W transformer, containing default values for transformers of this kind */
+  @FieldName("type")
   private final Transformer3WTypeInput type;
   /** The lower voltage node */
+  @FieldName("node_c")
   private final NodeInput nodeC;
   /** Internal node of the transformers T equivalent circuit */
+  @FieldName("node_internal")
   private final NodeInput nodeInternal;
 
   /**

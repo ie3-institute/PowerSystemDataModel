@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import java.util.Objects;
@@ -15,30 +16,43 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput} */
 public class Transformer2WTypeInput extends AssetTypeInput {
   /** Short circuit resistance (typically in Ohm) */
+  @FieldName("r_sc")
   private final ComparableQuantity<ElectricResistance> rSc;
   /** Short circuit reactance (typically in Ohm) */
+  @FieldName("x_sc")
   private final ComparableQuantity<ElectricResistance> xSc;
   /** Rated apparent power (typically in MVA) */
+  @FieldName("s_rated")
   private final ComparableQuantity<Power> sRated;
   /** Rated voltage of the high voltage winding (typically in kV) */
+  @FieldName("v_rated_a")
   private final ComparableQuantity<ElectricPotential> vRatedA;
   /** Rated voltage of the low voltage winding (typically in kV) */
+  @FieldName("v_rated_b")
   private final ComparableQuantity<ElectricPotential> vRatedB;
   /** Phase-to-ground conductance (typically in nS) */
+  @FieldName("g_m")
   private final ComparableQuantity<ElectricConductance> gM;
   /** Phase-to-ground susceptance (typically in nS) */
+  @FieldName("b_m")
   private final ComparableQuantity<ElectricConductance> bM;
   /** Voltage magnitude deviation per tap position (typically in %) */
+  @FieldName("d_v")
   private final ComparableQuantity<Dimensionless> dV;
   /** Voltage angle deviation per tap position (typically in °) */
+  @FieldName("d_phi")
   private final ComparableQuantity<Angle> dPhi;
   /** Selection of winding, where the tap changer is installed. Low voltage, if true */
+  @FieldName("tap_side")
   private final boolean tapSide;
   /** Neutral tap position */
+  @FieldName("tap_neutr")
   private final int tapNeutr;
   /** Minimum available tap position */
+  @FieldName("tap_min")
   private final int tapMin;
   /** Maximum available tap position */
+  @FieldName("tap_max")
   private final int tapMax;
 
   /**

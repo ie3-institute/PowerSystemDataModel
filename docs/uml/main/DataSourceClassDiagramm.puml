@@ -1,5 +1,4 @@
 @startuml
-
 note "Assuming all classes to implement \nthe abstract methods of their interfaces\n\n" as generalNotes
 
 interface DataSource

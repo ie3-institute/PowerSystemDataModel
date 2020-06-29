@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -18,8 +19,10 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput} */
 public class EvTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity of the storage (typically in kWh) */
+  @FieldName("e_storage")
   private final ComparableQuantity<Energy> eStorage;
   /** Consumed electric energy per driven distance (typically in kWh/km) */
+  @FieldName("e_cons")
   private final ComparableQuantity<SpecificEnergy> eCons;
 
   /**

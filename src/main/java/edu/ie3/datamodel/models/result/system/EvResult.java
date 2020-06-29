@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -15,6 +16,8 @@ import tec.uom.se.ComparableQuantity;
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvInput} */
 public class EvResult extends SystemParticipantResult {
 
+  /** Current state of charge of the electric vehicle in % */
+  @FieldName("soc")
   private ComparableQuantity<Dimensionless> soc;
 
   /**
@@ -24,7 +27,7 @@ public class EvResult extends SystemParticipantResult {
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
-   * @param soc the current state of charge of the electric vehicle
+   * @param soc the current state of charge of the electric vehicle in %
    */
   public EvResult(
       ZonedDateTime timestamp,

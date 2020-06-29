@@ -5,14 +5,14 @@
 */
 package edu.ie3.datamodel.models;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Supplies every subclass with a generated UUID, making it unique */
 public abstract class UniqueEntity {
-  /** Field name of {@link UniqueEntity} uuid */
-  public static final String UUID_FIELD_NAME = "uuid";
 
+  @FieldName("uuid")
   private final UUID uuid;
 
   public UniqueEntity() {

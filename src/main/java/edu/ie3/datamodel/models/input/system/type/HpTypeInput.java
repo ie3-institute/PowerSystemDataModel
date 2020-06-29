@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -16,6 +17,7 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpTypeInput extends SystemParticipantTypeInput {
   /** Thermal output of the heat pump (typically in kW), when sRated * cosphi_rated is consumed */
+  @FieldName("p_thermal")
   private final ComparableQuantity<Power> pThermal;
 
   /**

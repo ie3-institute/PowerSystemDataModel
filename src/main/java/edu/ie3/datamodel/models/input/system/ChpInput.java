@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.io.extractor.HasThermalBus;
 import edu.ie3.datamodel.io.extractor.HasThermalStorage;
 import edu.ie3.datamodel.io.extractor.HasType;
@@ -22,12 +23,15 @@ import java.util.UUID;
 public class ChpInput extends SystemParticipantInput
     implements HasType, HasThermalBus, HasThermalStorage {
   /** The thermal bus, this model is connected to */
+  @FieldName("thermal_bus")
   private final ThermalBusInput thermalBus;
   /** Type of this CHP plant, containing default values for CHP plants of this kind */
+  @FieldName("type")
   private final ChpTypeInput type;
   /** Thermal storage model */
   private final ThermalStorageInput thermalStorage;
   /** Is this asset market oriented? */
+  @FieldName("market_reaction")
   private final boolean marketReaction;
 
   /**

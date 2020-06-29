@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.util.quantities.interfaces.Irradiation;
 import java.util.Objects;
 import javax.measure.quantity.Angle;
@@ -16,12 +17,16 @@ import tec.uom.se.ComparableQuantity;
 /** Describes weather as a combination of irradiation, temperature and wind values */
 public class WeatherValue implements Value {
   /** The coordinate of this weather value set */
+  @FieldName("coordinate")
   private final Point coordinate;
   /** irradiation values for this coordinate */
+  @FieldName("irradiation")
   private final IrradiationValue irradiation;
   /** Temperature value for this coordinate */
+  @FieldName("temperature")
   private final TemperatureValue temperature;
   /** Wind values for this coordinate */
+  @FieldName("wind")
   private final WindValue wind;
 
   /**

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
@@ -20,18 +21,25 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput} */
 public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity (typically in kWh) */
+  @FieldName("e_storage")
   private final ComparableQuantity<Energy> eStorage;
   /** Maximum permissible active power (typically in kW) */
+  @FieldName("p_max")
   private final ComparableQuantity<Power> pMax;
   /** Maximum permissible gradient of active power change (typically % / h) */
+  @FieldName("active_power_gradient")
   private final ComparableQuantity<DimensionlessRate> activePowerGradient;
   /** Efficiency of the charging and discharging process (typically in %) */
+  @FieldName("eta")
   private final ComparableQuantity<Dimensionless> eta;
   /** Minimum permissible depth of discharge (typically in %) */
+  @FieldName("dod")
   private final ComparableQuantity<Dimensionless> dod;
   /** Maximum life time of the storage (typically in h) */
+  @FieldName("life_time")
   private final ComparableQuantity<Time> lifeTime;
   /** Maximum amount of full charging cycles */
+  @FieldName("life_cycle")
   private final int lifeCycle;
 
   /**

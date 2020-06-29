@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class SwitchResult extends ResultEntity {
 
   /** is the switching state 'closed'? */
+  @FieldName("closed")
   private boolean closed;
 
   /**

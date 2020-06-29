@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.graphics;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.io.extractor.HasLine;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import java.util.Objects;
@@ -17,6 +18,7 @@ import org.locationtech.jts.geom.LineString;
  */
 public class LineGraphicInput extends GraphicInput implements HasLine {
   /** The LineInput to this graphic data */
+  @FieldName("line")
   private final LineInput line;
 
   /**

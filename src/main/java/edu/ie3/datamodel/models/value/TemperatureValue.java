@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
 import javax.measure.quantity.Temperature;
@@ -13,6 +14,7 @@ import tec.uom.se.ComparableQuantity;
 /** Describes a temperature value */
 public class TemperatureValue implements Value {
   /** Temperature (typically in K) */
+  @FieldName("temperature")
   private final ComparableQuantity<Temperature> temperature;
 
   /** @param temperature (typically in K) */

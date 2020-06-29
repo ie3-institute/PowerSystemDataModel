@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.Operable;
 import edu.ie3.datamodel.models.OperationTime;
 import java.util.Objects;
@@ -15,8 +16,10 @@ public abstract class AssetInput extends InputEntity implements Operable {
   /** Time for which the entity is operated */
   private final OperationTime operationTime;
   /** The operator of this asset */
+  @FieldName("operator")
   private final OperatorInput operator;
   /** Name or ID of the asset */
+  @FieldName("id")
   private final String id;
 
   /**

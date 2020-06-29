@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -17,9 +18,11 @@ import java.util.UUID;
 /** Describes a battery storage */
 public class StorageInput extends SystemParticipantInput implements HasType {
   /** Type of this storage, containing default values for storages of this kind */
+  @FieldName("type")
   private final StorageTypeInput type;
 
   /** Selection of predefined behaviour of the storage */
+  @FieldName("behaviour")
   private final StorageStrategy behaviour;
 
   /**

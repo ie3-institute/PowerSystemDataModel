@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,33 +18,43 @@ import java.util.UUID;
 public class RandomLoadParameters extends InputEntity {
 
   /** The respective quarter hour of the day */
+  @FieldName("quarter_hour")
   private final int quarterHour;
 
   /** Shape parameter for a working day */
+  @FieldName("k_wd")
   private final double kWd;
 
   /** Shape parameter for a Saturday */
+  @FieldName("k_sa")
   private final double kSa;
 
   /** Shape parameter for a Sunday */
+  @FieldName("k_su")
   private final double kSu;
 
   /** Location parameter for a working day */
+  @FieldName("my_wd")
   private final double myWd;
 
   /** Location parameter for a Saturday */
+  @FieldName("my_sa")
   private final double mySa;
 
   /** Location parameter for a Sunday */
+  @FieldName("my_su")
   private final double mySu;
 
   /** Scale parameter for a working day */
+  @FieldName("sigma_wd")
   private final double sigmaWd;
 
   /** Scale parameter for a Saturday */
+  @FieldName("sigma_sa")
   private final double sigmaSa;
 
   /** Scale parameter for a Sunday */
+  @FieldName("sigma_su")
   private final double sigmaSu;
 
   /**

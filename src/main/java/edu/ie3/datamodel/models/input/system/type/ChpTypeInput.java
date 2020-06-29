@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -17,12 +18,16 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput} */
 public class ChpTypeInput extends SystemParticipantTypeInput {
   /** Electrical efficiency (typically in %) */
+  @FieldName("eta_el")
   private final ComparableQuantity<Dimensionless> etaEl;
   /** Thermal efficiency (typically in %) */
+  @FieldName("eta_thermal")
   private final ComparableQuantity<Dimensionless> etaThermal;
   /** Rated thermal power (typically in kW) */
+  @FieldName("p_thermal")
   private final ComparableQuantity<Power> pThermal;
   /** Internal consumption (typically in kW) */
+  @FieldName("p_own")
   private final ComparableQuantity<Power> pOwn;
 
   /**

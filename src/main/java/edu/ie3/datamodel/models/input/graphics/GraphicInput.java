@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.graphics;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import java.util.Objects;
@@ -14,8 +15,10 @@ import org.locationtech.jts.geom.LineString;
 /** Describes the graphic data belonging to grid assets */
 public abstract class GraphicInput extends InputEntity {
   /** Description of the graphic layer, this graphic is located on */
+  @FieldName("graphicLayer")
   private final String graphicLayer;
   /** A graphic representation as path */
+  @FieldName("path")
   private final LineString path;
 
   /**

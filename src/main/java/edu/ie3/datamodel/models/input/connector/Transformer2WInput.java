@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -19,6 +20,7 @@ import java.util.UUID;
  */
 public class Transformer2WInput extends TransformerInput implements HasType {
   /** Type of this 2W transformer, containing default values for transformers of this kind */
+  @FieldName("type")
   private final Transformer2WTypeInput type;
 
   /**

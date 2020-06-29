@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
@@ -15,10 +16,13 @@ import java.util.*;
 /** Describes an asset that connects two {@link NodeInput}s */
 public abstract class ConnectorInput extends AssetInput implements HasNodes {
   /** Grid node at one side of the connector */
+  @FieldName("node_a")
   private final NodeInput nodeA;
   /** Grid node at the other side of the connector */
+  @FieldName("nodeB")
   private final NodeInput nodeB;
   /** Amount of parallelDevices */
+  @FieldName("parallel_Devices")
   private final int parallelDevices;
 
   /**

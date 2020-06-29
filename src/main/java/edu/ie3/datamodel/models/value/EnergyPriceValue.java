@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
@@ -13,6 +14,7 @@ import tec.uom.se.ComparableQuantity;
 /** Describes a price for energy */
 public class EnergyPriceValue implements Value {
   /** Price of energy (typically in €/MWh) */
+  @FieldName("value")
   private final ComparableQuantity<EnergyPrice> price;
 
   /** @param price per MWh */

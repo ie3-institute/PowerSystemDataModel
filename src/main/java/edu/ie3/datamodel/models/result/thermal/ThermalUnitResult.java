@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.thermal;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
@@ -20,6 +21,7 @@ public abstract class ThermalUnitResult extends ResultEntity {
    * Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power
    * flowing from unit)
    */
+  @FieldName("q_dot")
   private ComparableQuantity<Power> qDot;
 
   /**

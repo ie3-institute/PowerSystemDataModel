@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -17,15 +18,19 @@ import tec.uom.se.ComparableQuantity;
 public abstract class ConnectorResult extends ResultEntity {
 
   /** Electric current magnitude @ port A, normally provided in Ampere */
+  @FieldName("i_a_mag")
   private ComparableQuantity<ElectricCurrent> iAMag;
 
   /** Electric current angle @ Port A in degree ° */
+  @FieldName("i_a_ang")
   private ComparableQuantity<Angle> iAAng;
 
   /** Electric current magnitude @ port B, normally provided in Ampere */
+  @FieldName("i_b_mag")
   private ComparableQuantity<ElectricCurrent> iBMag;
 
   /** Electric current angle @ Port B in degree ° */
+  @FieldName("i_b_ang")
   private ComparableQuantity<Angle> iBAng;
 
   /**

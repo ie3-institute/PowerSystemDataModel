@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import java.util.Objects;
@@ -15,42 +16,61 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput} */
 public class Transformer3WTypeInput extends AssetTypeInput {
   /** Rated apparent power of the high voltage winding (typically in MVA) */
+  @FieldName("s_rated_a")
   private final ComparableQuantity<Power> sRatedA; // Hv
   /** Rated apparent power of the medium voltage winding (typically in MVA) */
+  @FieldName("s_rated_b")
   private final ComparableQuantity<Power> sRatedB; // Mv
   /** Rated apparent power of the low voltage windings (typically in MVA) */
+  @FieldName("s_rated_c")
   private final ComparableQuantity<Power> sRatedC; // Lv
   /** Rated voltage magnitude of the high voltage winding (typically in kV) */
+  @FieldName("v_rated_a")
   private final ComparableQuantity<ElectricPotential> vRatedA; // Hv
   /** Rated voltage magnitude of the medium voltage winding (typically in kV) */
+  @FieldName("v_rated_b")
   private final ComparableQuantity<ElectricPotential> vRatedB; // Mv
   /** Rated voltage magnitude of the low voltage winding (typically in kV) */
+  @FieldName("v_rated_c")
   private final ComparableQuantity<ElectricPotential> vRatedC; // Lv
   /** Short-circuit resistance of the high voltage winding (typically in Ohm) */
+  @FieldName("r_sc_a")
   private final ComparableQuantity<ElectricResistance> rScA; // Hv
   /** Short-circuit resistance of the medium voltage winding (typically in Ohm) */
+  @FieldName("r_sc_b")
   private final ComparableQuantity<ElectricResistance> rScB; // Mv
   /** Short-circuit resistance of the low voltage winding (typically in Ohm) */
+  @FieldName("r_sc_b")
   private final ComparableQuantity<ElectricResistance> rScC; // Lv
   /** Short-circuit reactance of the high voltage winding (typically in Ohm) */
+  @FieldName("x_sc_a")
   private final ComparableQuantity<ElectricResistance> xScA; // Hv
   /** Short-circuit reactance of the medium voltage winding (typically in Ohm) */
+  @FieldName("x_sc_b")
   private final ComparableQuantity<ElectricResistance> xScB; // Mv
   /** Short-circuit reactance of the low voltage winding (typically in Ohm) */
+  @FieldName("x_sc_c")
   private final ComparableQuantity<ElectricResistance> xScC; // Lv
   /** Phase-to-ground conductance (typically in nS) */
+  @FieldName("g_m")
   private final ComparableQuantity<ElectricConductance> gM;
   /** Phase-to-ground susceptance (typically in nS) */
+  @FieldName("b_m")
   private final ComparableQuantity<ElectricConductance> bM;
   /** Voltage magnitude deviation per tap position (typically in %) */
+  @FieldName("d_v")
   private final ComparableQuantity<Dimensionless> dV;
   /** Voltage angle deviation per tap position (typically in °) */
+  @FieldName("d_phi")
   private final ComparableQuantity<Angle> dPhi;
   /** Neutral tap position */
+  @FieldName("tap_neutr")
   private final int tapNeutr;
   /** Minimum available tap position */
+  @FieldName("tap_min")
   private final int tapMin;
   /** Maximum available tap position */
+  @FieldName("tap_max")
   private final int tapMax;
 
   /**

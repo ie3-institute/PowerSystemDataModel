@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.thermal;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import java.time.ZonedDateTime;
@@ -18,6 +19,7 @@ import tec.uom.se.ComparableQuantity;
 /** Respresents the results of {@link CylindricalStorageInput} */
 public class CylindricalStorageResult extends ThermalStorageResult {
   /** Fill level of the storage */
+  @FieldName("fill_level")
   private ComparableQuantity<Dimensionless> fillLevel;
 
   /**

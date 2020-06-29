@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Irradiation;
 import java.util.Objects;
@@ -13,8 +14,10 @@ import tec.uom.se.ComparableQuantity;
 /** Describes an irradiation value as a pair of diffuse and direct radiation */
 public class IrradiationValue implements Value {
   /** Direct sun radiation (typically in kWh/m²) */
+  @FieldName("direct_irradiation")
   private final ComparableQuantity<Irradiation> directIrradiation;
   /** Diffuse sun radiation (typically in kWh/m²) */
+  @FieldName("diffuse_irradiation")
   private final ComparableQuantity<Irradiation> diffuseIrradiation;
 
   /**

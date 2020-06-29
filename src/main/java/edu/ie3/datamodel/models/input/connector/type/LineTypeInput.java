@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
@@ -18,16 +19,22 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.LineInput} */
 public class LineTypeInput extends AssetTypeInput {
   /** Specific phase-to-ground susceptance for this type of line (typically in µS/km) */
+  @FieldName("b")
   private final ComparableQuantity<SpecificConductance> b;
   /** Specific phase-to-ground conductance for this type of line (typically in µS/km) */
+  @FieldName("g")
   private final ComparableQuantity<SpecificConductance> g;
   /** Specific resistance for this type of line (typically in Ohm/km) */
+  @FieldName("r")
   private final ComparableQuantity<SpecificResistance> r;
   /** Specific reactance for this type of line (typically in Ohm/km) */
+  @FieldName("x")
   private final ComparableQuantity<SpecificResistance> x;
   /** Maximum thermal current for this type of line (typically in A) */
+  @FieldName("i_max")
   private final ComparableQuantity<ElectricCurrent> iMax;
   /** Rated voltage for this type of line (typically in V) */
+  @FieldName("v_rated")
   private final ComparableQuantity<ElectricPotential> vRated;
 
   /**

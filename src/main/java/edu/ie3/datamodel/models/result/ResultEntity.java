@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -14,8 +15,10 @@ import java.util.UUID;
 public abstract class ResultEntity extends UniqueEntity {
 
   /** date and time of the produced result */
+  @FieldName("timestamp")
   private ZonedDateTime timestamp;
   /** uuid of the input model that produces the result */
+  @FieldName("input_model")
   private UUID inputModel;
 
   /**

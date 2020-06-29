@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
 import java.util.*;
@@ -12,18 +13,23 @@ import java.util.*;
 /** Model of a measuring unit attached to a certain {@link NodeInput}. */
 public class MeasurementUnitInput extends AssetInput implements HasNodes {
   /** Grid node, the asset is attached to */
+  @FieldName("node")
   private final NodeInput node;
 
   /** True, if the voltage magnitude is measured */
+  @FieldName("v_mag")
   private final boolean vMag;
 
   /** True, if the voltage angle is measured */
+  @FieldName("v_ang")
   private final boolean vAng;
 
   /** True, if the nodal residual active power is measured */
+  @FieldName("p")
   private final boolean p;
 
   /** True, if the reactive power is measured */
+  @FieldName("q")
   private final boolean q;
 
   /**

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -18,8 +19,10 @@ import tec.uom.se.ComparableQuantity;
 /** Dummy class to represent a constant feed in regardless of its type */
 public class FixedFeedInInput extends SystemParticipantInput {
   /** Rated apparent power (typically in kVA) */
+  @FieldName("s_rated")
   private final ComparableQuantity<Power> sRated;
   /** Rated power factor */
+  @FieldName("cosphi_rated")
   private final double cosPhiRated;
 
   /**

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -18,8 +19,10 @@ import java.util.UUID;
 public class WecInput extends SystemParticipantInput implements HasType {
 
   /** Type of this WEC, containing default values for WEC assets of this kind */
+  @FieldName("type")
   private final WecTypeInput type;
   /** Is this asset market oriented? */
+  @FieldName("market_reaction")
   private final boolean marketReaction;
 
   /**

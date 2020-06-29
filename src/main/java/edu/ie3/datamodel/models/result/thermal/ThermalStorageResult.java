@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.thermal;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -19,6 +20,7 @@ import tec.uom.se.ComparableQuantity;
  */
 public abstract class ThermalStorageResult extends ThermalUnitResult {
   /** Currently stored energy */
+  @FieldName("energy")
   private ComparableQuantity<Energy> energy;
 
   /**

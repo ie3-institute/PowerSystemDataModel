@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -26,12 +27,16 @@ import tec.uom.se.ComparableQuantity;
 public class LineInput extends ConnectorInput implements HasType {
 
   /** Type of this line, containing default values for lines of this kind */
+  @FieldName("type")
   private final LineTypeInput type;
   /** Length of this line */
+  @FieldName("length")
   private final ComparableQuantity<Length> length;
   /** Coordinates of this line */
+  @FieldName("geo_position")
   private final LineString geoPosition;
   /** Description of an optional weather dependent operation curve */
+  @FieldName("olm_characteristic")
   private final OlmCharacteristicInput olmCharacteristic;
 
   /**

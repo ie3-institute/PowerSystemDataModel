@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.thermal;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -18,8 +19,10 @@ import tec.uom.se.ComparableQuantity;
 /** Quite simple thermal model of a house to serve as a heat sink */
 public class ThermalHouseInput extends ThermalSinkInput {
   /** Thermal, transitional losses of the included thermal house model (typically in kW/K) */
+  @FieldName("eth_losses")
   private final ComparableQuantity<ThermalConductance> ethLosses;
   /** Thermal capacity of the included thermal house model (typically in kWh/K) */
+  @FieldName("eth_capa")
   private final ComparableQuantity<HeatCapacity> ethCapa;
 
   /**

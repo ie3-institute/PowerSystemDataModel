@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -16,12 +17,16 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput} */
 public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   /** Capital expense for this type of system participant (typically in €) */
+  @FieldName("capex")
   private final ComparableQuantity<Currency> capex;
   /** Operating expense for this type of system participant (typically in €/MWh) */
+  @FieldName("opex")
   private final ComparableQuantity<EnergyPrice> opex;
   /** Rated apparent power of the type (in kVA) */
+  @FieldName("s_rated")
   private final ComparableQuantity<Power> sRated;
   /** Power factor for this type of system participant */
+  @FieldName("cosphi_rated")
   private final double cosPhiRated;
 
   /**

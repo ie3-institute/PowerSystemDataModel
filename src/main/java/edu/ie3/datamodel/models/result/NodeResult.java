@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -16,9 +17,11 @@ import tec.uom.se.ComparableQuantity;
 public class NodeResult extends ResultEntity {
 
   /** Voltage magnitude @ this node in p.u. */
+  @FieldName("v_mag")
   private ComparableQuantity<Dimensionless> vMag;
 
   /** Voltage angle @ this node in degree */
+  @FieldName("v_ang")
   private ComparableQuantity<Angle> vAng;
 
   /**

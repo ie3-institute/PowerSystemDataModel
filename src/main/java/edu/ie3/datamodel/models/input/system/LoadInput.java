@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.BdewLoadProfile;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardLoadProfile;
@@ -28,14 +29,19 @@ public class LoadInput extends SystemParticipantInput {
    * via an external mapping (e.g. by providing a global time series for a specific load profile) to
    * this model
    */
+  @FieldName("standard_load_profile")
   private final StandardLoadProfile standardLoadProfile;
   /** True, if demand side management is activated for this load */
+  @FieldName("dsm")
   private final boolean dsm;
   /** Annually consumed energy (typically in kWh) */
+  @FieldName("e_cons_annual")
   private final ComparableQuantity<Energy> eConsAnnual;
   /** Active Power (typically in kVA) */
+  @FieldName("s_rated")
   private final ComparableQuantity<Power> sRated;
   /** Rated power factor */
+  @FieldName("cosphi_rated")
   private final double cosPhiRated;
 
   /**

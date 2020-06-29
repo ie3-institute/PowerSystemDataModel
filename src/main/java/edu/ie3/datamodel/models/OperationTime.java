@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -19,8 +20,10 @@ import java.util.Optional;
 public class OperationTime {
 
   /** Date of operation start */
+  @FieldName("operates_from")
   private ZonedDateTime startDate;
   /** Date of operation end */
+  @FieldName("operates_until")
   private ZonedDateTime endDate;
   /** Is the operation time frame limited? */
   private boolean isLimited;

@@ -5,12 +5,14 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Describes the type of an {@link edu.ie3.datamodel.models.input.AssetInput} */
 public abstract class AssetTypeInput extends InputEntity {
   /** Name or ID of the asset */
+  @FieldName("id")
   private final String id;
 
   /**

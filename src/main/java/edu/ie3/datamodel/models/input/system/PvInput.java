@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -21,22 +22,31 @@ import tec.uom.se.ComparableQuantity;
 public class PvInput extends SystemParticipantInput {
 
   /** Albedo value (typically a value between 0 and 1) */
+  @FieldName("albedo")
   private final double albedo;
   /** Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦) */
+  @FieldName("azimuth")
   private final ComparableQuantity<Angle> azimuth;
   /** Efficiency of converter (typically in %) */
+  @FieldName("eta_conv")
   private final ComparableQuantity<Dimensionless> etaConv;
   /** Tilted inclination from horizontal (typically in °) */
+  @FieldName("height")
   private final ComparableQuantity<Angle> height;
   /** Generator correction factor merging different technical influences */
+  @FieldName("k_g")
   private final double kG;
   /** Temperature correction factor */
+  @FieldName("k_t")
   private final double kT;
   /** Is this asset market oriented? */
+  @FieldName("market_reaction")
   private final boolean marketReaction;
   /** Rated apparent power (typically in kVA) */
+  @FieldName("s_rated")
   private final ComparableQuantity<Power> sRated;
   /** Rated power factor */
+  @FieldName("cosphi_rated")
   private final double cosPhiRated;
 
   /**

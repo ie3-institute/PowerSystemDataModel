@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.thermal;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import tec.uom.se.ComparableQuantity;
 /** Represents the results of {@link edu.ie3.datamodel.models.input.thermal.ThermalHouseInput} */
 public class ThermalHouseResult extends ThermalSinkResult {
   /** Indoor room temperature of the house */
+  @FieldName("indoor_temperature")
   private ComparableQuantity<Temperature> indoorTemperature;
 
   /**

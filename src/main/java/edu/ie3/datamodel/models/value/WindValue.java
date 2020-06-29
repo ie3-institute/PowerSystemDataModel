@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
 import javax.measure.quantity.Angle;
@@ -14,8 +15,10 @@ import tec.uom.se.ComparableQuantity;
 /** Describes wind as a pair of direction and velocity */
 public class WindValue implements Value {
   /** Wind direction as an angle from north (typically in rad) */
+  @FieldName("wind_direction")
   private final ComparableQuantity<Angle> direction;
   /** Wind velocity (typically in m/s) */
+  @FieldName("wind_velocity")
   private final ComparableQuantity<Speed> velocity;
 
   /**

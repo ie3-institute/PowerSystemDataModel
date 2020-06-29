@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.type;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.util.quantities.interfaces.Currency;
@@ -20,12 +21,16 @@ import tec.uom.se.ComparableQuantity;
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput} */
 public class WecTypeInput extends SystemParticipantTypeInput {
   /** Betz curve of this type */
+  @FieldName("cp_characteristic")
   private final WecCharacteristicInput cpCharacteristic;
   /** Efficiency of converter for this type of WEC (typically in %) */
+  @FieldName("eta_conv")
   private final ComparableQuantity<Dimensionless> etaConv;
   /** Swept Area of blades for this type of WEC (typically in m²) */
+  @FieldName("rotor_area")
   private final ComparableQuantity<Area> rotorArea;
   /** Height from ground to center of rotor for this type of WEC (typically in m) */
+  @FieldName("hub_height")
   private final ComparableQuantity<Length> hubHeight;
 
   /**

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -14,8 +15,10 @@ import java.util.UUID;
 /** Describes an electrical grid transformer, is "located" in the inferior subnet */
 public abstract class TransformerInput extends ConnectorInput {
   /** Tap position of this transformer */
+  @FieldName("tap_pos")
   private final int tapPos;
   /** True, if the tap position of the transformer is adapted automatically */
+  @FieldName("auto_tap")
   private final boolean autoTap;
 
   /**
