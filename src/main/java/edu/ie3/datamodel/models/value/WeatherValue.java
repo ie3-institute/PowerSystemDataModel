@@ -11,7 +11,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes weather as a combination of irradiation, temperature and wind values */
 public class WeatherValue implements Value {

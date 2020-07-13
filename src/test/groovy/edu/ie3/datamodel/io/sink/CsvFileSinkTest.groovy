@@ -42,7 +42,7 @@ import edu.ie3.util.TimeUtil
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.Quantity
 import javax.measure.quantity.Power

@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeInput> {
   private static final String B = "b";

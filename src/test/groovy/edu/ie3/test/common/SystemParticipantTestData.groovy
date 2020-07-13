@@ -38,8 +38,8 @@ import edu.ie3.util.quantities.interfaces.DimensionlessRate
 import edu.ie3.util.quantities.interfaces.EnergyPrice
 import edu.ie3.util.quantities.interfaces.SpecificEnergy
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
-import tec.uom.se.ComparableQuantity
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.ComparableQuantity
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.Quantity
 import javax.measure.quantity.Angle

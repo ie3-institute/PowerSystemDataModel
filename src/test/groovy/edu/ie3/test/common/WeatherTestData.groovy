@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Point
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
 import java.time.ZonedDateTime

@@ -8,7 +8,7 @@ package edu.ie3.datamodel.models.value;
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes a actove power value as active power */
 public class PValue implements Value {

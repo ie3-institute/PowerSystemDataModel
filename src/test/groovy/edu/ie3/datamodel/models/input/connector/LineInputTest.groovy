@@ -12,8 +12,8 @@ import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.io.geojson.GeoJsonReader
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
-import tec.uom.se.unit.Units
+import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
 
 class LineInputTest extends Specification {
 

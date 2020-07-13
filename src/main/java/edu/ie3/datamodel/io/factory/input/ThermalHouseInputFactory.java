@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalConductance;
 import java.util.UUID;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class ThermalHouseInputFactory
     extends AssetInputEntityFactory<ThermalHouseInput, ThermalUnitInputEntityData> {

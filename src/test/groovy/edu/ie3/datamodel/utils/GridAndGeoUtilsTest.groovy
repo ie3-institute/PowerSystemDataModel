@@ -12,8 +12,8 @@ import org.apache.commons.lang3.ArrayUtils
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
-import tec.uom.se.unit.Units
+import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
 
 import java.lang.reflect.Array
 

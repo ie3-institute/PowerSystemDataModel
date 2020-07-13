@@ -13,7 +13,7 @@ import org.locationtech.jts.geom.Point
 import org.locationtech.jts.io.geojson.GeoJsonReader
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import java.util.function.Function
 import java.util.stream.Collectors

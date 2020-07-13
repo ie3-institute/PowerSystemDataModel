@@ -25,17 +25,18 @@ import edu.ie3.util.quantities.PowerSystemUnits
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.io.geojson.GeoJsonReader
-import tec.uom.se.quantity.Quantities
-import tec.uom.se.unit.MetricPrefix
-import tec.uom.se.unit.Units
+import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
+
+import javax.measure.MetricPrefix
 
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
-import static tec.uom.se.unit.Units.OHM
-import static tec.uom.se.unit.Units.PERCENT
-import static tec.uom.se.unit.Units.SIEMENS
+import static tech.units.indriya.unit.Units.OHM
+import static tech.units.indriya.unit.Units.PERCENT
+import static tech.units.indriya.unit.Units.SIEMENS
 
 /**
  * This class contains a collection of different model instances that can be used for testing purposes.

@@ -15,7 +15,7 @@ import javax.measure.quantity.Area;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput} */
 public class WecTypeInput extends SystemParticipantTypeInput {

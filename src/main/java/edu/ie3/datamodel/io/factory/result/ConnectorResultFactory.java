@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult> {
 

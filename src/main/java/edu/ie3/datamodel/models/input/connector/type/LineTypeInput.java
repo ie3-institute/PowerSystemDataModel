@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.LineInput} */
 public class LineTypeInput extends AssetTypeInput {

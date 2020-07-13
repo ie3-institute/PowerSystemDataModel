@@ -8,9 +8,9 @@ package edu.ie3.datamodel.models;
 import static edu.ie3.util.quantities.PowerSystemUnits.*;
 
 import edu.ie3.util.quantities.interfaces.*;
+import javax.measure.MetricPrefix;
 import javax.measure.Unit;
 import javax.measure.quantity.*;
-import tec.uom.se.unit.MetricPrefix;
 
 /** A collection of Units that fit to the different input and output models by convention */
 public class StandardUnits {

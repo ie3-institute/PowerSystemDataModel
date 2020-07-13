@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents calculation results of {@link

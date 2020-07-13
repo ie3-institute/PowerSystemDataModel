@@ -15,7 +15,7 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.system.type.*
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Speed

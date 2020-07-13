@@ -14,7 +14,7 @@ import java.util.UUID;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import org.apache.commons.lang3.NotImplementedException;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Thermal storage with cylindrical shape */
 public class CylindricalStorageInput extends ThermalStorageInput {

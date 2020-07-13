@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.measure.quantity.Dimensionless;
-import tec.uom.se.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 /**
  * Characteristic denoting a power factor, that is dependent on the current power consumption or

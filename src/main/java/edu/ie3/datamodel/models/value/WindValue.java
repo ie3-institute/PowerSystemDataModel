@@ -9,7 +9,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes wind as a pair of direction and velocity */
 public class WindValue implements Value {

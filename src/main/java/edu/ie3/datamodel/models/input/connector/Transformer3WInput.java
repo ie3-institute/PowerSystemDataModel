@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import java.util.*;
-import tec.uom.se.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 /**
  * Describes a three winding transformer, that is connected to three {@link

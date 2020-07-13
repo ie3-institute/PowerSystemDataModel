@@ -40,7 +40,7 @@ import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.TypeTestData
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
 import java.time.ZonedDateTime

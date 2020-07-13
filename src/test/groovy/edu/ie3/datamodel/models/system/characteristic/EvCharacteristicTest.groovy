@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Power

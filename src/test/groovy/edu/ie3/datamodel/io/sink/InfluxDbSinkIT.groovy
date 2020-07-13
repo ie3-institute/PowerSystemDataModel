@@ -25,7 +25,7 @@ import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.spock.Testcontainers
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import java.time.LocalDateTime
 import java.time.ZoneId

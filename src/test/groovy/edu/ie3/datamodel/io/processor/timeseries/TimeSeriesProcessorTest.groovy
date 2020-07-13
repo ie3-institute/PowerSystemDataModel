@@ -16,7 +16,7 @@ import edu.ie3.datamodel.models.value.SValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.datamodel.models.value.WindValue
 
-import static tec.uom.se.unit.Units.METRE
+import static tech.units.indriya.unit.Units.METRE
 
 import java.lang.reflect.Method
 import edu.ie3.datamodel.exceptions.EntityProcessorException
@@ -28,7 +28,7 @@ import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.test.common.TimeSeriesTestData
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestData {
 	def "A TimeSeriesProcessor is instantiated correctly"() {

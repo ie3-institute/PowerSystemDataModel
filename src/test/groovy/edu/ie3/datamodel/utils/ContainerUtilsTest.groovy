@@ -26,7 +26,7 @@ import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SubGridContainer
 import edu.ie3.datamodel.models.input.container.SystemParticipants
 import edu.ie3.util.TimeTools
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
 

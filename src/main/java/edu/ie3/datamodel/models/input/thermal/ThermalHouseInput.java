@@ -13,7 +13,7 @@ import edu.ie3.util.quantities.interfaces.ThermalConductance;
 import java.util.Objects;
 import java.util.UUID;
 import org.apache.commons.lang3.NotImplementedException;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Quite simple thermal model of a house to serve as a heat sink */
 public class ThermalHouseInput extends ThermalSinkInput {

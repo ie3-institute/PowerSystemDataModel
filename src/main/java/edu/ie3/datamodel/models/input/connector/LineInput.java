@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Describes an electrical grid line that connects two {@link

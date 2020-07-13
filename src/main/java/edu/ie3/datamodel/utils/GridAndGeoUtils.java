@@ -12,7 +12,7 @@ import javax.measure.quantity.Length;
 import org.apache.commons.lang3.ArrayUtils;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.geom.impl.CoordinateArraySequence;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** This class offers some useful methods for handling geographical problems related to grids */
 public class GridAndGeoUtils extends GeoUtils {
@@ -145,10 +145,11 @@ public class GridAndGeoUtils extends GeoUtils {
    * @return distancen between start node and end node
    */
   public static ComparableQuantity<Length> distanceBetweenNodes(NodeInput nodeA, NodeInput nodeB) {
-    return haversine(
-        nodeA.getGeoPosition().getY(),
-        nodeA.getGeoPosition().getX(),
-        nodeB.getGeoPosition().getY(),
-        nodeB.getGeoPosition().getX());
+    return (ComparableQuantity<Length>)
+        haversine(
+            nodeA.getGeoPosition().getY(),
+            nodeA.getGeoPosition().getX(),
+            nodeB.getGeoPosition().getY(),
+            nodeB.getGeoPosition().getX());
   }
 }

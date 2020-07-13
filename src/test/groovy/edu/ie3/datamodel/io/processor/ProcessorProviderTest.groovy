@@ -80,7 +80,7 @@ import edu.ie3.datamodel.models.value.WindValue
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.util.TimeUtil
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.Quantity
 import javax.measure.quantity.Power

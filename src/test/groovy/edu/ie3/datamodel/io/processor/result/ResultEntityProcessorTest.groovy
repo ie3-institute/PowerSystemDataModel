@@ -19,8 +19,8 @@ import edu.ie3.util.TimeTools
 import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
-import tec.uom.se.unit.Units
+import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
 
 import javax.measure.Quantity
 import javax.measure.quantity.Angle

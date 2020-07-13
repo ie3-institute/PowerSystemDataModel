@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class FixedFeedInInputFactory
     extends SystemParticipantInputEntityFactory<FixedFeedInInput, NodeAssetInputEntityData> {

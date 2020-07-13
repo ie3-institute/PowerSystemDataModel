@@ -15,7 +15,7 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Time;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput} */
 public class StorageTypeInput extends SystemParticipantTypeInput {

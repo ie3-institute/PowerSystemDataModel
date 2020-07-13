@@ -21,7 +21,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class TimeBasedWeatherValueFactory
     extends EntityFactory<TimeBasedValue, TimeBasedWeatherValueData> {

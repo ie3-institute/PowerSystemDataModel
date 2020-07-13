@@ -14,7 +14,7 @@ import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import java.util.UUID;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class CylindricalStorageInputFactory
     extends AssetInputEntityFactory<CylindricalStorageInput, ThermalUnitInputEntityData> {

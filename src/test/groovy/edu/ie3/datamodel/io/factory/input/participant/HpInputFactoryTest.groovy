@@ -15,7 +15,7 @@ import edu.ie3.datamodel.models.input.system.type.HpTypeInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime

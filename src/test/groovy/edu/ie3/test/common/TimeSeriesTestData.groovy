@@ -26,7 +26,7 @@ import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.geom.PrecisionModel
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import java.time.DayOfWeek
 import java.time.ZoneId
@@ -36,8 +36,8 @@ import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR_PER_SQUAREMETRE
-import static tec.uom.se.unit.Units.CELSIUS
-import static tec.uom.se.unit.Units.METRE_PER_SECOND
+import static tech.units.indriya.unit.Units.CELSIUS
+import static tech.units.indriya.unit.Units.METRE_PER_SECOND
 
 trait TimeSeriesTestData {
 	GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326)

@@ -16,8 +16,8 @@ import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.HeatCapacity
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
 import edu.ie3.util.quantities.interfaces.ThermalConductance
-import tec.uom.se.ComparableQuantity
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.ComparableQuantity
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.Quantity
 import javax.measure.quantity.Temperature

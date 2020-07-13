@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class that holds values common to all other result entities */
 public abstract class SystemParticipantResult extends ResultEntity {

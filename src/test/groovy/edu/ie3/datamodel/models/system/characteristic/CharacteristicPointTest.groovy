@@ -10,7 +10,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.*
 import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Power

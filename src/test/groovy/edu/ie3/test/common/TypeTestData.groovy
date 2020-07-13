@@ -16,10 +16,10 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
 import static edu.ie3.util.quantities.PowerSystemUnits.MEGAVOLTAMPERE
 import static edu.ie3.util.quantities.PowerSystemUnits.PU_PER_HOUR
-import static tec.uom.se.unit.Units.HOUR
-import static tec.uom.se.unit.Units.PERCENT
-import static tec.uom.se.unit.Units.SQUARE_METRE
-import static tec.uom.se.unit.Units.METRE
+import static tech.units.indriya.unit.Units.HOUR
+import static tech.units.indriya.unit.Units.PERCENT
+import static tech.units.indriya.unit.Units.SQUARE_METRE
+import static tech.units.indriya.unit.Units.METRE
 
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
@@ -28,7 +28,7 @@ import edu.ie3.datamodel.models.input.system.type.HpTypeInput
 import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
 
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 class TypeTestData extends GridTestData {
 	public static final BmTypeInput bmType = new BmTypeInput(

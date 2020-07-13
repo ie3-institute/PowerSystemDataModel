@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Abstract class that adds a tap changer position attribute to the {@link ConnectorResult} which

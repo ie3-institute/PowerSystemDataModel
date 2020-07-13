@@ -15,8 +15,8 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.unit.Units;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.unit.Units;
 
 /**
  * Factory class for creating {@link SystemParticipantResult} entities from provided {@link
