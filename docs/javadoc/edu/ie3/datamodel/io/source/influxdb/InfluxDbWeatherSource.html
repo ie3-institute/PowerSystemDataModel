@@ -135,7 +135,7 @@ implements <a href="../../../../../../edu/ie3/datamodel/io/source/WeatherSource.
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../../edu/ie3/datamodel/io/source/influxdb/InfluxDbWeatherSource.html#InfluxDbWeatherSource-edu.ie3.datamodel.io.connectors.InfluxDbConnector-edu.ie3.datamodel.io.source.IdCoordinateSource-">InfluxDbWeatherSource</a></span>(<a href="../../../../../../edu/ie3/datamodel/io/connectors/InfluxDbConnector.html" title="class in edu.ie3.datamodel.io.connectors">InfluxDbConnector</a>&nbsp;connector,
                      <a href="../../../../../../edu/ie3/datamodel/io/source/IdCoordinateSource.html" title="interface in edu.ie3.datamodel.io.source">IdCoordinateSource</a>&nbsp;coordinateSource)</code>
-<div class="block">Initalizes a new InfluxDbWeatherSource</div>
+<div class="block">Initializes a new InfluxDbWeatherSource</div>
 </td>
 </tr>
 </table>
@@ -216,7 +216,7 @@ implements <a href="../../../../../../edu/ie3/datamodel/io/source/WeatherSource.
 <h4>InfluxDbWeatherSource</h4>
 <pre>public&nbsp;InfluxDbWeatherSource(<a href="../../../../../../edu/ie3/datamodel/io/connectors/InfluxDbConnector.html" title="class in edu.ie3.datamodel.io.connectors">InfluxDbConnector</a>&nbsp;connector,
                              <a href="../../../../../../edu/ie3/datamodel/io/source/IdCoordinateSource.html" title="interface in edu.ie3.datamodel.io.source">IdCoordinateSource</a>&nbsp;coordinateSource)</pre>
-<div class="block">Initalizes a new InfluxDbWeatherSource</div>
+<div class="block">Initializes a new InfluxDbWeatherSource</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>connector</code> - needed for database connection</dd>
@@ -320,6 +320,12 @@ implements <a href="../../../../../../edu/ie3/datamodel/io/source/WeatherSource.
 <h4>filterEmptyOptionals</h4>
 <pre>protected&nbsp;java.util.stream.Stream&lt;<a href="../../../../../../edu/ie3/datamodel/models/timeseries/individual/TimeBasedValue.html" title="class in edu.ie3.datamodel.models.timeseries.individual">TimeBasedValue</a>&lt;<a href="../../../../../../edu/ie3/datamodel/models/value/WeatherValue.html" title="class in edu.ie3.datamodel.models.value">WeatherValue</a>&gt;&gt;&nbsp;filterEmptyOptionals(java.util.stream.Stream&lt;java.util.Optional&lt;<a href="../../../../../../edu/ie3/datamodel/models/timeseries/individual/TimeBasedValue.html" title="class in edu.ie3.datamodel.models.timeseries.individual">TimeBasedValue</a>&gt;&gt;&nbsp;elements)</pre>
 <div class="block">Removes empty Optionals</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>elements</code> - stream to filter</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>filtered elements Stream</dd>
+</dl>
 </li>
 </ul>
 </li>

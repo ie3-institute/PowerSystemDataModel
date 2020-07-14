@@ -267,7 +267,6 @@ class InputEntityProcessorTest extends Specification {
 		]
 		StorageInput     | SystemParticipantTestData.storageInput     || [
 			"uuid"            : SystemParticipantTestData.storageInput.uuid.toString(),
-			"behaviour"       : SystemParticipantTestData.storageInput.behaviour.token,
 			"id"              : SystemParticipantTestData.storageInput.id,
 			"node"            : SystemParticipantTestData.storageInput.node.uuid.toString(),
 			"operatesUntil"   : SystemParticipantTestData.storageInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),

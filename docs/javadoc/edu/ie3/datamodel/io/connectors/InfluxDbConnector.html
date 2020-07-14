@@ -114,6 +114,11 @@ var activeTableTab = "activeTableTab";
 <pre>public class <span class="typeNameLabel">InfluxDbConnector</span>
 extends java.lang.Object
 implements <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector.html" title="interface in edu.ie3.datamodel.io.connectors">DataConnector</a></pre>
+<div class="block">Implements a DataConnector for InfluxDB. InfluxDB is a time series database and as such, it can
+ only handle time based data. <br>
+ Entities will be persisted as <i>measurement points</i>, which consist of a time, one or more
+ tags, one or more values and a measurement name. In contrast to values, tags should only contain
+ metadata. A measurement name is the equivalent of the name of a table in relational data models.</div>
 </li>
 </ul>
 </div>
@@ -146,7 +151,9 @@ implements <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../edu/ie3/datamodel/io/connectors/InfluxDbConnector.html#InfluxDbConnector-java.lang.String-java.lang.String-java.lang.String-">InfluxDbConnector</a></span>(java.lang.String&nbsp;url,
                  java.lang.String&nbsp;databaseName,
-                 java.lang.String&nbsp;scenarioName)</code>&nbsp;</td>
+                 java.lang.String&nbsp;scenarioName)</code>
+<div class="block">Initializes a new InfluxDbConnector with the given url, databaseName and scenario name.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -213,7 +220,7 @@ implements <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector
 <td class="colFirst"><code>static java.util.Map&lt;java.lang.String,java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ie3/datamodel/io/connectors/InfluxDbConnector.html#parseValueList-java.util.List-java.lang.String:A-">parseValueList</a></span>(java.util.List&lt;?&gt;&nbsp;valueList,
               java.lang.String[]&nbsp;columns)</code>
-<div class="block">Parses a listt of values and maps them to field names using the given column name and order</div>
+<div class="block">Parses a list of values and maps them to field names using the given column name and order</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
@@ -251,6 +258,14 @@ implements <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector
 <pre>public&nbsp;InfluxDbConnector(java.lang.String&nbsp;url,
                          java.lang.String&nbsp;databaseName,
                          java.lang.String&nbsp;scenarioName)</pre>
+<div class="block">Initializes a new InfluxDbConnector with the given url, databaseName and scenario name.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>url</code> - the connection url for the influxDB database</dd>
+<dd><code>databaseName</code> - the name of the database to which the connection should be established</dd>
+<dd><code>scenarioName</code> - the name of the simulation scenario which will be used in influxDB
+     measurement names</dd>
+</dl>
 </li>
 </ul>
 <a name="InfluxDbConnector-java.lang.String-java.lang.String-">
@@ -297,6 +312,10 @@ implements <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector
 <h4>isConnectionValid</h4>
 <pre>public&nbsp;java.lang.Boolean&nbsp;isConnectionValid()</pre>
 <div class="block">Checks if the given connection parameters are valid, so that a connection can be established</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true, if the database returned the ping</dd>
+</dl>
 </li>
 </ul>
 <a name="shutdown--">
@@ -332,7 +351,7 @@ implements <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector
  exists, one is created.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>autocloseable InfluxDB session</dd>
+<dd>Autocloseable InfluxDB session</dd>
 </dl>
 </li>
 </ul>
@@ -354,9 +373,11 @@ implements <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector
 <pre>public static&nbsp;java.util.Map&lt;java.lang.String,java.util.Set&lt;java.util.Map&lt;java.lang.String,java.lang.String&gt;&gt;&gt;&nbsp;parseQueryResult(org.influxdb.dto.QueryResult&nbsp;queryResult)</pre>
 <div class="block">Parses the result of an influxQL query for all measurements (e.g. weather)</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>queryResult</code> - Result of an influxDB query</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a map of (measurement name to Set of maps of (field name to field value) for each
-     result entity)</dd>
+<dd>Map of (measurement name to Set of maps of (field name : field value)) for each result
+     entity)</dd>
 </dl>
 </li>
 </ul>
@@ -371,9 +392,13 @@ implements <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector
 <div class="block">Parses the result of one or multiple influxQL queries for the given measurements (e.g.
  weather). If no measurement names are given, all results are parsed and returned</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>queryResult</code> - Result of an influxDB query</dd>
+<dd><code>measurementNames</code> - Names of measurements that should be parsed. If none are given, all
+     measurements will be parsed</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a map of (measurement name to Set of maps of (field name to field value) for each
-     result entity)</dd>
+<dd>Map of (measurement name to Set of maps of (field name : field value) for each result
+     entity)</dd>
 </dl>
 </li>
 </ul>
@@ -388,9 +413,13 @@ implements <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector
 <div class="block">Parses the result of one influxQL query for the given measurements (e.g. weather). If no
  measurement names are given, all results are parsed and returned</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>result</code> - Specific result of an influxDB query</dd>
+<dd><code>measurementNames</code> - Names of measurements that should be parsed. If none are given, all
+     measurements will be parsed</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>a map of (measurement name to Set of maps of (field name to field value) for each
-     result entity)</dd>
+<dd>Map of (measurement name to Set of maps of (field name : field value) for each result
+     entity)</dd>
 </dl>
 </li>
 </ul>
@@ -403,6 +432,8 @@ implements <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector
 <pre>public static&nbsp;java.util.Set&lt;java.util.Map&lt;java.lang.String,java.lang.String&gt;&gt;&nbsp;parseSeries(org.influxdb.dto.QueryResult.Series&nbsp;series)</pre>
 <div class="block">Parses the results for a single measurement series</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>series</code> - A measurement series of an influxDB query result</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Set of maps of (field name to field value) for each result entity</dd>
 </dl>
@@ -416,8 +447,11 @@ implements <a href="../../../../../edu/ie3/datamodel/io/connectors/DataConnector
 <h4>parseValueList</h4>
 <pre>public static&nbsp;java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;parseValueList(java.util.List&lt;?&gt;&nbsp;valueList,
                                                                               java.lang.String[]&nbsp;columns)</pre>
-<div class="block">Parses a listt of values and maps them to field names using the given column name and order</div>
+<div class="block">Parses a list of values and maps them to field names using the given column name and order</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>valueList</code> - List of values, sorted by column in columns</dd>
+<dd><code>columns</code> - Array of column names</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Map of (field name to field value) for one result entity</dd>
 </dl>

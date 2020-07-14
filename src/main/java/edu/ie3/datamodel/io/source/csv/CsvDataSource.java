@@ -56,6 +56,10 @@ public abstract class CsvDataSource {
   protected static final String TYPE = "type";
   protected static final String FIELDS_TO_VALUES_MAP = "fieldsToValuesMap";
 
+  /**
+   * @deprecated ensures downward compatibility with old csv data format. Can be removed when
+   *     support for old csv format is removed. *
+   */
   @Deprecated private boolean notYetLoggedWarning = true;
 
   public CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {

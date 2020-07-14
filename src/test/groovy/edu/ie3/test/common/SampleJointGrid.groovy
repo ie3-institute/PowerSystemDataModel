@@ -44,7 +44,7 @@ import static tech.units.indriya.unit.Units.SIEMENS
  *
  * @version 0.1* @since 08.06.20
  */
-class SampleJointGrid extends SystemParticipantTestData{
+class SampleJointGrid extends SystemParticipantTestData {
 
 	static JointGridContainer grid() throws ParseException, ParsingException {
 
@@ -66,7 +66,6 @@ class SampleJointGrid extends SystemParticipantTestData{
 				.filter({ node -> node.getId().equalsIgnoreCase("nodeA") })
 				.collect(Collectors.toList())
 				.get(0)
-
 
 
 		// general participant data
@@ -126,8 +125,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 				SystemParticipantTestData.operationTime,
 				participantNode,
 				SystemParticipantTestData.cosPhiFixed,
-				storageTypeInput,
-				"market")
+				storageTypeInput)
 
 		return new SystemParticipants(
 				Collections.emptySet(),
@@ -156,7 +154,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	private static final GeoJsonReader geoJsonReader = new GeoJsonReader()
 
 	// LV
-	public static NodeInput nodeA =
+	public static final NodeInput nodeA =
 	new NodeInput(
 	UUID.fromString("4ca90220-74c2-4369-9afa-a18bf068840d"),
 	"nodeA",
@@ -170,7 +168,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	GermanVoltageLevelUtils.LV,
 	1)
 
-	public static NodeInput nodeB =
+	public static final NodeInput nodeB =
 	new NodeInput(
 	UUID.fromString("47d29df0-ba2d-4d23-8e75-c82229c5c758"),
 	"nodeB",
@@ -184,7 +182,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	GermanVoltageLevelUtils.LV,
 	1)
 
-	public static NodeInput nodeC =
+	public static final NodeInput nodeC =
 	new NodeInput(
 	UUID.fromString("bd837a25-58f3-44ac-aa90-c6b6e3cd91b2"),
 	"nodeC",
@@ -198,7 +196,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	GermanVoltageLevelUtils.LV,
 	1)
 
-	public static LineTypeInput lv_lineType =
+	public static final LineTypeInput lv_lineType =
 	new LineTypeInput(
 	UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
 	"lineType_AtoB",
@@ -209,7 +207,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	Quantities.getQuantity(265, PowerSystemUnits.AMPERE),
 	Quantities.getQuantity(0.4, KILOVOLT))
 
-	public static LineInput lineAB =
+	public static final LineInput lineAB =
 	new LineInput(
 	UUID.fromString("92ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
 	"lineAtoB",
@@ -223,7 +221,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	GridAndGeoUtils.buildSafeLineStringBetweenNodes(nodeA, nodeB),
 	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC)
 
-	public static LineInput lineAC =
+	public static final LineInput lineAC =
 	new LineInput(
 	UUID.fromString("93ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
 	"lineAtoC",
@@ -237,7 +235,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	GridAndGeoUtils.buildSafeLineStringBetweenNodes(nodeA, nodeC),
 	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC)
 
-	public static LineInput lineBC =
+	public static final LineInput lineBC =
 	new LineInput(
 	UUID.fromString("94ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
 	"lineBtoC",
@@ -252,7 +250,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC)
 
 	// MV
-	public static NodeInput nodeD =
+	public static final NodeInput nodeD =
 	new NodeInput(
 	UUID.fromString("09aec636-791b-45aa-b981-b14edf171c4c"),
 	"nodeD",
@@ -266,7 +264,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	GermanVoltageLevelUtils.MV_10KV,
 	2)
 
-	public static NodeInput nodeE =
+	public static final NodeInput nodeE =
 	new NodeInput(
 	UUID.fromString("10aec636-791b-45aa-b981-b14edf171c4c"),
 	"nodeE",
@@ -280,7 +278,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	GermanVoltageLevelUtils.MV_10KV,
 	2)
 
-	public static NodeInput nodeF =
+	public static final NodeInput nodeF =
 	new NodeInput(
 	UUID.fromString("11aec636-791b-45aa-b981-b14edf171c4c"),
 	"nodeF",
@@ -295,7 +293,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	2)
 
 	// HV
-	public static NodeInput nodeG =
+	public static final NodeInput nodeG =
 	new NodeInput(
 	UUID.fromString("11aec637-791b-45aa-b981-b14edf171c4c"),
 	"nodeG",
@@ -309,7 +307,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	GermanVoltageLevelUtils.HV,
 	4)
 
-	public static LineTypeInput mv_lineType =
+	public static final LineTypeInput mv_lineType =
 	new LineTypeInput(
 	UUID.fromString("4bed3eb3-9790-4874-89b5-a5434d408088"),
 	"lineType_AtoB",
@@ -320,7 +318,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	Quantities.getQuantity(300, PowerSystemUnits.AMPERE),
 	Quantities.getQuantity(10, KILOVOLT))
 
-	public static LineInput lineDE =
+	public static final LineInput lineDE =
 	new LineInput(
 	UUID.fromString("99ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
 	"lineDtoE",
@@ -334,7 +332,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	GridAndGeoUtils.buildSafeLineStringBetweenNodes(nodeD, nodeE),
 	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC)
 
-	public static LineInput lineEF =
+	public static final LineInput lineEF =
 	new LineInput(
 	UUID.fromString("99fc3bcf-1777-4d38-af67-0bf7c9fa73c7"),
 	"lineEtoF",
@@ -348,7 +346,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	GridAndGeoUtils.buildSafeLineStringBetweenNodes(nodeE, nodeF),
 	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC)
 
-	public static LineInput lineDF =
+	public static final LineInput lineDF =
 	new LineInput(
 	UUID.fromString("60ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
 	"lineDtoF",
@@ -363,7 +361,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC)
 
 	// transformers
-	public static Transformer2WTypeInput transformerType_LV_MV_10KV =
+	public static final Transformer2WTypeInput transformerType_LV_MV_10KV =
 	new Transformer2WTypeInput(
 	UUID.fromString("08559390-d7c0-4427-a2dc-97ba312ae0ac"),
 	"MS-NS_1",
@@ -381,7 +379,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	-10,
 	10)
 
-	public static Transformer2WInput transformerDtoA =
+	public static final Transformer2WInput transformerDtoA =
 	new Transformer2WInput(
 	UUID.fromString("58247de7-e297-4d9b-a5e4-b662c058c655"),
 	"transformerAtoD",
@@ -394,7 +392,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	0,
 	false)
 
-	public static Transformer2WTypeInput transformerType_MV_HV_110KV =
+	public static final Transformer2WTypeInput transformerType_MV_HV_110KV =
 	new Transformer2WTypeInput(
 	UUID.fromString("08559390-d7c0-4427-a2dc-97ba312ae0ac"),
 	"MS-NS_1",
@@ -412,7 +410,7 @@ class SampleJointGrid extends SystemParticipantTestData{
 	-10,
 	10)
 
-	public static Transformer2WInput transformerGtoD =
+	public static final Transformer2WInput transformerGtoD =
 	new Transformer2WInput(
 	UUID.fromString("58257de7-e297-4d9b-a5e4-b662c058c655"),
 	"transformerGtoD",

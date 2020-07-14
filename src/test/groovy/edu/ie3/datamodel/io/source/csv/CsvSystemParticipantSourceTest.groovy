@@ -266,7 +266,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 		nodes                    | operators                    | types                    || resultingSize || resultingSet
 		[sptd.storageInput.node]| [sptd.storageInput.operator]| [sptd.storageInput.type]|| 1             || [sptd.storageInput]
 		[sptd.storageInput.node]| []| [sptd.storageInput.type]|| 1             || [
-			new StorageInput(sptd.storageInput.uuid, sptd.storageInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.storageInput.operationTime, sptd.storageInput.node, sptd.storageInput.qCharacteristics, sptd.storageInput.type, sptd.storageInput.behaviour.token)
+			new StorageInput(sptd.storageInput.uuid, sptd.storageInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.storageInput.operationTime, sptd.storageInput.node, sptd.storageInput.qCharacteristics, sptd.storageInput.type)
 		]
 		[sptd.storageInput.node]| [sptd.storageInput.operator]| []|| 0             || []
 		[sptd.storageInput.node]| []| []|| 0             || []
