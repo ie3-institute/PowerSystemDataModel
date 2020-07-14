@@ -213,7 +213,7 @@ class SystemParticipantTestData {
 	etaConv
 	)
 
-	private static final ComparableQuantity<EnergyPrice> feedInTarif = Quantities.getQuantity(10, EURO_PER_MEGAWATTHOUR)
+	private static final ComparableQuantity<EnergyPrice> feedInTarif = Quantities.getQuantity(10d, EURO_PER_MEGAWATTHOUR)
 	public static final BmInput bmInput = new BmInput(
 	UUID.fromString("d06e5bb7-a3c7-4749-bdd1-4581ff2f6f4d"),
 	"test_bmInput",
@@ -250,7 +250,7 @@ class SystemParticipantTestData {
 	)
 
 	// Load
-	private static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, KILOWATTHOUR)
+	private static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000d, KILOWATTHOUR)
 	private static final StandardLoadProfile standardLoadProfile = BdewLoadProfile.H0
 	public static final LoadInput loadInput = new LoadInput(
 	UUID.fromString("eaf77f7e-9001-479f-94ca-7fb657766f5f"),
