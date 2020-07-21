@@ -22,7 +22,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
   @FieldName("nodeB")
   private final NodeInput nodeB;
   /** Amount of parallelDevices */
-  @FieldName("parallel_Devices")
+  @FieldName("parallel_devices")
   private final int parallelDevices;
 
   /**

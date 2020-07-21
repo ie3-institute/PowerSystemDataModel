@@ -50,6 +50,8 @@ public abstract class Processor<T> {
 
   private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
 
+  private static final String UUID_FIELD_NAME = "uuid";
+
   private static final String OPERATION_TIME_FIELD_NAME = OperationTime.class.getSimpleName();
   private static final String OPERATES_FROM = "operatesFrom";
   private static final String OPERATES_UNTIL = "operatesUntil";
@@ -87,8 +89,8 @@ public abstract class Processor<T> {
   private static class UuidFirstComparator implements Comparator<String> {
     @Override
     public int compare(String a, String b) {
-      if (a.equalsIgnoreCase(UniqueEntity.UUID_FIELD_NAME)) return -1;
-      else if (b.equalsIgnoreCase(UniqueEntity.UUID_FIELD_NAME)) return 1;
+      if (a.equalsIgnoreCase(UUID_FIELD_NAME)) return -1;
+      else if (b.equalsIgnoreCase(UUID_FIELD_NAME)) return 1;
       else return a.compareTo(b);
     }
   }

@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.models.voltagelevels;
 
 import javax.measure.quantity.ElectricPotential;
+
+import edu.ie3.datamodel.annotations.FieldName;
 import tec.uom.se.ComparableQuantity;
 
 /**
@@ -14,7 +16,9 @@ import tec.uom.se.ComparableQuantity;
  * levels.
  */
 public class VoltageLevel {
+  @FieldName("volt_lvl")
   protected final String id;
+  @FieldName("v_rated")
   protected final ComparableQuantity<ElectricPotential> nominalVoltage;
 
   /**

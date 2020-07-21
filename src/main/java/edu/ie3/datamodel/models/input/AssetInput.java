@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.annotations.FieldName;
+import edu.ie3.datamodel.annotations.NestedFields;
 import edu.ie3.datamodel.models.Operable;
 import edu.ie3.datamodel.models.OperationTime;
 import java.util.Objects;
@@ -14,9 +15,10 @@ import java.util.UUID;
 /** Describes a grid asset under the assumption that every asset could be operable */
 public abstract class AssetInput extends InputEntity implements Operable {
   /** Time for which the entity is operated */
+  @NestedFields
   private final OperationTime operationTime;
   /** The operator of this asset */
-  @FieldName("operator")
+  @NestedFields(prefix = "operator_")
   private final OperatorInput operator;
   /** Name or ID of the asset */
   @FieldName("id")
