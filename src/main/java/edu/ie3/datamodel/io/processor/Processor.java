@@ -210,6 +210,7 @@ public abstract class Processor<T> {
       case "double":
       case "String":
       case "DayOfWeek":
+      case "ChargingPointType":
         resultStringBuilder.append(methodReturnObject.toString());
         break;
       case "Quantity":
