@@ -18,7 +18,7 @@ class CsInputTest extends Specification {
 		when:
 		def alteredEntity = csInput.copy()
 				.type(ChargingPointTypeUtils.TeslaSuperChargerV3)
-				.cosPhiRated(0.7d).noChargingPoints(1).build()
+				.cosPhiRated(0.7d).chargingPoints(1).build()
 
 		then:
 		alteredEntity.with {
@@ -29,7 +29,7 @@ class CsInputTest extends Specification {
 			assert qCharacteristics == csInput.qCharacteristics
 			assert type == ChargingPointTypeUtils.TeslaSuperChargerV3
 			assert cosPhiRated == 0.7d
-			assert noChargingPoints == 1
+			assert chargingPoints == 1
 		}
 	}
 }

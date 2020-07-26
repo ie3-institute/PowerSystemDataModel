@@ -22,7 +22,7 @@ import java.util.UUID;
 public class CsInput extends SystemParticipantInput {
 
   private final ChargingPointType type;
-  private final int noChargingPoints;
+  private final int chargingPoints;
 
   /** Rated power factor */
   private final double cosPhiRated;
@@ -35,11 +35,11 @@ public class CsInput extends SystemParticipantInput {
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       ChargingPointType type,
-      int noChargingPoints,
+      int chargingPoints,
       double cosPhiRated) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.type = type;
-    this.noChargingPoints = noChargingPoints;
+    this.chargingPoints = chargingPoints;
     this.cosPhiRated = cosPhiRated;
   }
 
@@ -61,11 +61,11 @@ public class CsInput extends SystemParticipantInput {
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       ChargingPointType type,
-      int noChargingPoints,
+      int chargingPoints,
       double cosPhiRated) {
     super(uuid, id, node, qCharacteristics);
     this.type = type;
-    this.noChargingPoints = noChargingPoints;
+    this.chargingPoints = chargingPoints;
     this.cosPhiRated = cosPhiRated;
   }
 
@@ -83,8 +83,8 @@ public class CsInput extends SystemParticipantInput {
     return type;
   }
 
-  public int getNoChargingPoints() {
-    return noChargingPoints;
+  public int getChargingPoints() {
+    return chargingPoints;
   }
 
   public double getCosPhiRated() {
@@ -102,14 +102,14 @@ public class CsInput extends SystemParticipantInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     CsInput csInput = (CsInput) o;
-    return noChargingPoints == csInput.noChargingPoints
+    return chargingPoints == csInput.chargingPoints
         && Double.compare(csInput.cosPhiRated, cosPhiRated) == 0
         && type.equals(csInput.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), type, noChargingPoints, cosPhiRated);
+    return Objects.hash(super.hashCode(), type, chargingPoints, cosPhiRated);
   }
 
   @Override
@@ -123,7 +123,7 @@ public class CsInput extends SystemParticipantInput {
         + "type="
         + type
         + ", noOfConnectionPoints="
-        + noChargingPoints
+        + chargingPoints
         + ", cosPhiRated="
         + cosPhiRated
         + "} "
@@ -134,13 +134,13 @@ public class CsInput extends SystemParticipantInput {
       extends SystemParticipantInputCopyBuilder<CsInputCopyBuilder> {
 
     private ChargingPointType type;
-    private int noChargingPoints;
+    private int chargingPoints;
     private double cosPhiRated;
 
     public CsInputCopyBuilder(CsInput entity) {
       super(entity);
       this.type = entity.type;
-      this.noChargingPoints = entity.noChargingPoints;
+      this.chargingPoints = entity.chargingPoints;
       this.cosPhiRated = entity.cosPhiRated;
     }
 
@@ -149,8 +149,8 @@ public class CsInput extends SystemParticipantInput {
       return this;
     }
 
-    public CsInputCopyBuilder noChargingPoints(int noChargingPoints) {
-      this.noChargingPoints = noChargingPoints;
+    public CsInputCopyBuilder chargingPoints(int noChargingPoints) {
+      this.chargingPoints = noChargingPoints;
       return this;
     }
 
@@ -169,7 +169,7 @@ public class CsInput extends SystemParticipantInput {
           getNode(),
           getqCharacteristics(),
           type,
-          noChargingPoints,
+          chargingPoints,
           cosPhiRated);
     }
 
