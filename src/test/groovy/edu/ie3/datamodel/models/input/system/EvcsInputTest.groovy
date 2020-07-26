@@ -13,20 +13,20 @@ class EvcsInputTest extends Specification {
 
 	def "A EvCsInput copy method should work as expected"() {
 		given:
-		def csInput = SystemParticipantTestData.evcsInput
+		def evcsInput = SystemParticipantTestData.evcsInput
 
 		when:
-		def alteredEntity = EvcsInput.copy()
+		def alteredEntity = evcsInput.copy()
 				.type(ChargingPointTypeUtils.TeslaSuperChargerV3)
 				.cosPhiRated(0.7d).chargingPoints(1).build()
 
 		then:
 		alteredEntity.with {
-			assert uuid == csInput.uuid
-			assert operationTime == csInput.operationTime
-			assert operator == csInput.operator
-			assert id == csInput.id
-			assert qCharacteristics == csInput.qCharacteristics
+			assert uuid == evcsInput.uuid
+			assert operationTime == evcsInput.operationTime
+			assert operator == evcsInput.operator
+			assert id == evcsInput.id
+			assert qCharacteristics == evcsInput.qCharacteristics
 			assert type == ChargingPointTypeUtils.TeslaSuperChargerV3
 			assert cosPhiRated == 0.7d
 			assert chargingPoints == 1
