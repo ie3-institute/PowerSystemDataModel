@@ -9,14 +9,14 @@ import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTyp
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 
-class CsInputTest extends Specification {
+class EvcsInputTest extends Specification {
 
-	def "A CsInput copy method should work as expected"() {
+	def "A EvCsInput copy method should work as expected"() {
 		given:
-		def csInput = SystemParticipantTestData.csInput
+		def csInput = SystemParticipantTestData.evcsInput
 
 		when:
-		def alteredEntity = csInput.copy()
+		def alteredEntity = EvcsInput.copy()
 				.type(ChargingPointTypeUtils.TeslaSuperChargerV3)
 				.cosPhiRated(0.7d).chargingPoints(1).build()
 

@@ -175,7 +175,7 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
               + "}"
               + " are invalid for instance of "
               + data.getEntityClass().getSimpleName()
-              + ". \nThe following fields to be passed to a constructor of '"
+              + ". \nThe following fields (without complex objects e.g. nodes) to be passed to a constructor of '"
               + data.getEntityClass().getSimpleName()
               + "' are possible (NOT case-sensitive!):\n"
               + possibleOptions);

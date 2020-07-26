@@ -12,8 +12,8 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.BmInput
 import edu.ie3.datamodel.models.input.system.ChpInput
-import edu.ie3.datamodel.models.input.system.CsInput
 import edu.ie3.datamodel.models.input.system.EvInput
+import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput
 import edu.ie3.datamodel.models.input.system.HpInput
 import edu.ie3.datamodel.models.input.system.LoadInput
@@ -324,7 +324,7 @@ class SystemParticipantTestData {
 	)
 
 	// charging station
-	public static final csInput = new CsInput(
+	public static final evcsInput = new EvcsInput(
 	UUID.fromString("798028b5-caff-4da7-bcd9-1750fdd8742c"),
 	"test_csInput",
 	operator,

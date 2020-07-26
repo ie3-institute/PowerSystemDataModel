@@ -21,8 +21,8 @@ import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.BmInput
 import edu.ie3.datamodel.models.input.system.ChpInput
-import edu.ie3.datamodel.models.input.system.CsInput
 import edu.ie3.datamodel.models.input.system.EvInput
+import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput
 import edu.ie3.datamodel.models.input.system.HpInput
 import edu.ie3.datamodel.models.input.system.LoadInput
@@ -276,7 +276,7 @@ class InputEntityProcessorTest extends Specification {
 			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"type"            : SystemParticipantTestData.storageInput.type.uuid.toString()
 		]
-		HpInput | SystemParticipantTestData.hpInput || [
+		HpInput | SystemParticipantTestData.hpInput   || [
 			"uuid"            : SystemParticipantTestData.hpInput.uuid.toString(),
 			"id"              : SystemParticipantTestData.hpInput.id,
 			"node"            : SystemParticipantTestData.hpInput.node.uuid.toString(),
@@ -287,17 +287,17 @@ class InputEntityProcessorTest extends Specification {
 			"thermalBus"      : SystemParticipantTestData.hpInput.thermalBus.uuid.toString(),
 			"type"            : SystemParticipantTestData.hpInput.type.uuid.toString()
 		]
-		CsInput | SystemParticipantTestData.csInput || [
-			"uuid"            : SystemParticipantTestData.csInput.uuid.toString(),
-			"id"              : SystemParticipantTestData.csInput.id,
-			"node"            : SystemParticipantTestData.csInput.node.uuid.toString(),
-			"operatesUntil"   : SystemParticipantTestData.csInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
-			"operatesFrom"    : SystemParticipantTestData.csInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
-			"operator"        : SystemParticipantTestData.csInput.operator.uuid.toString(),
+		EvcsInput | SystemParticipantTestData.evcsInput || [
+			"uuid"            : SystemParticipantTestData.evcsInput.uuid.toString(),
+			"id"              : SystemParticipantTestData.evcsInput.id,
+			"node"            : SystemParticipantTestData.evcsInput.node.uuid.toString(),
+			"operatesUntil"   : SystemParticipantTestData.evcsInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+			"operatesFrom"    : SystemParticipantTestData.evcsInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+			"operator"        : SystemParticipantTestData.evcsInput.operator.uuid.toString(),
 			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
-			"type"            : SystemParticipantTestData.csInput.type.toString(),
-			"cosPhiRated"     : SystemParticipantTestData.csInput.cosPhiRated.toString(),
-			"chargingPoints"     : SystemParticipantTestData.csInput.chargingPoints.toString()
+			"type"            : SystemParticipantTestData.evcsInput.type.toString(),
+			"cosPhiRated"     : SystemParticipantTestData.evcsInput.cosPhiRated.toString(),
+			"chargingPoints"     : SystemParticipantTestData.evcsInput.chargingPoints.toString()
 		]
 	}
 

@@ -11,7 +11,7 @@ import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.CsInput;
+import edu.ie3.datamodel.models.input.system.EvcsInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType;
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils;
@@ -22,15 +22,15 @@ import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTyp
  * @version 0.1
  * @since 26.07.20
  */
-public class CsInputFactory
-    extends SystemParticipantInputEntityFactory<CsInput, NodeAssetInputEntityData> {
+public class EvcsInputFactory
+    extends SystemParticipantInputEntityFactory<EvcsInput, NodeAssetInputEntityData> {
 
   private static final String TYPE = "type";
   private static final String CHARGING_POINTS = "chargingpoints";
   private static final String COS_PHI_RATED = "cosphirated";
 
-  public CsInputFactory() {
-    super(CsInput.class);
+  public EvcsInputFactory() {
+    super(EvcsInput.class);
   }
 
   @Override
@@ -39,7 +39,7 @@ public class CsInputFactory
   }
 
   @Override
-  protected CsInput buildModel(
+  protected EvcsInput buildModel(
       NodeAssetInputEntityData data,
       java.util.UUID uuid,
       String id,
@@ -61,7 +61,7 @@ public class CsInputFactory
     final int chargingPoints = data.getInt(CHARGING_POINTS);
     final double cosPhi = data.getDouble(COS_PHI_RATED);
 
-    return new CsInput(
+    return new EvcsInput(
         uuid, id, operator, operationTime, node, qCharacteristics, type, chargingPoints, cosPhi);
   }
 }

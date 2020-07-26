@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.commons.lang3.NotImplementedException;
 
 /**
  * Source that provides the capability to build entities of type {@link SystemParticipantInput} as
@@ -62,6 +61,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   private final PvInputFactory pvInputFactory;
   private final StorageInputFactory storageInputFactory;
   private final WecInputFactory wecInputFactory;
+  private final EvcsInputFactory evcsInputFactory;
 
   public CsvSystemParticipantSource(
       String csvSep,
@@ -85,6 +85,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     this.pvInputFactory = new PvInputFactory();
     this.storageInputFactory = new StorageInputFactory();
     this.wecInputFactory = new WecInputFactory();
+    this.evcsInputFactory = new EvcsInputFactory();
   }
 
   /** {@inheritDoc} */
@@ -263,7 +264,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   /** {@inheritDoc} */
   @Override
   public Set<EvcsInput> getEvCS() {
-    throw new NotImplementedException("Ev Charging Stations are not implemented yet!");
+    Set<OperatorInput> operators = typeSource.getOperators();
+    return getEvCS(rawGridSource.getNodes(operators), operators);
   }
 
   /**
@@ -280,8 +282,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    throw new NotImplementedException("Ev Charging Stations are not implemented yet!");
+    return filterEmptyOptionals(
+            nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators))
+        .collect(Collectors.toSet());
   }
+
   /** {@inheritDoc} */
   @Override
   public Set<BmInput> getBmPlants() {
