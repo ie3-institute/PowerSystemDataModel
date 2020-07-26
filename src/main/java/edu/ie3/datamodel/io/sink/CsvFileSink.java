@@ -208,8 +208,11 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 storages,
                 wecPlants)
             .flatMap(Collection::stream)
-            .map(Extractor::extractType) // due to a bug in java 8 this *cannot* be replaced with
-            // method reference!
+            .map(
+                entityWithType ->
+                    Extractor.extractType(
+                        entityWithType)) // DON'T TOUCH THIS! due to a bug in java 8 this *cannot*
+            // be replaced with method reference!
             .collect(Collectors.toSet());
 
     // extract operators
