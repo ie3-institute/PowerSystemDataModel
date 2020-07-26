@@ -21,12 +21,14 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
+import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.system.EvResult
+import edu.ie3.datamodel.models.result.system.EvcsResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.WecResult
 import edu.ie3.datamodel.models.timeseries.TimeSeries
@@ -36,6 +38,7 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
 import edu.ie3.test.common.GridTestData
+import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.test.common.ThermalUnitInputTestData
 import edu.ie3.util.TimeUtil
@@ -97,7 +100,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		def csvFileSink = new CsvFileSink(testBaseFolderPath)
 		def input = [
 			"hello, whats up?": "nothing",
-			"okay": "that's fine"
+			"okay"            : "that's fine"
 		]
 
 		when:
@@ -106,7 +109,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		then:
 		actual == [
 			"\"hello, whats up?\"": "nothing",
-			"okay": "that's fine"
+			"okay"                : "that's fine"
 		]
 
 		cleanup:
@@ -117,7 +120,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		given:
 		def csvFileSink = new CsvFileSink(testBaseFolderPath)
 		def input = [
-			"what is \"this\"?": "nothing",
+			"what is \"this\"?"    : "nothing",
 			"\"what is \"this\"?\"": "something"
 		]
 
@@ -133,15 +136,17 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		csvFileSink.shutdown()
 	}
 
-	def "A valid CsvFileSink without 'initFiles' should only persist provided elements correctly but not all files"() {
+	def "A valid CsvFileSink without 'initFiles' should only persist provided elements correctly but not init all files"() {
 		given:
 		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
 				new ProcessorProvider([
 					new ResultEntityProcessor(PvResult),
 					new ResultEntityProcessor(WecResult),
 					new ResultEntityProcessor(EvResult),
+					new ResultEntityProcessor(EvcsResult),
 					new InputEntityProcessor(Transformer2WInput),
 					new InputEntityProcessor(NodeInput),
+					new InputEntityProcessor(EvcsInput),
 					new InputEntityProcessor(Transformer2WTypeInput),
 					new InputEntityProcessor(LineGraphicInput),
 					new InputEntityProcessor(NodeGraphicInput),
@@ -162,16 +167,19 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
 		PvResult pvResult = new PvResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
 		WecResult wecResult = new WecResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+		EvcsResult evcsResult = new EvcsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
 
 		when:
 		csvFileSink.persistAll([
 			pvResult,
 			wecResult,
+			evcsResult,
 			GridTestData.transformerCtoG,
 			GridTestData.lineGraphicCtoD,
 			GridTestData.nodeGraphicC,
 			ThermalUnitInputTestData.cylindricStorageInput,
-			ThermalUnitInputTestData.thermalHouseInput
+			ThermalUnitInputTestData.thermalHouseInput,
+			SystemParticipantTestData.evcsInput
 		])
 		csvFileSink.shutdown()
 
@@ -179,6 +187,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		new File(testBaseFolderPath).exists()
 		new File(testBaseFolderPath + File.separator + "wec_res.csv").exists()
 		new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
+		new File(testBaseFolderPath + File.separator + "evcs_res.csv").exists()
 		new File(testBaseFolderPath + File.separator + "transformer2w_type_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "node_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "transformer2w_input.csv").exists()
