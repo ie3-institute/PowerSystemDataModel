@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.UUID;
 
+@Deprecated
 public class EvcsInput extends SystemParticipantInput {
 
   /**

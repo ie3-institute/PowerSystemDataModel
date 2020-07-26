@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.BmInput
 import edu.ie3.datamodel.models.input.system.ChpInput
+import edu.ie3.datamodel.models.input.system.CsInput
 import edu.ie3.datamodel.models.input.system.EvInput
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput
 import edu.ie3.datamodel.models.input.system.HpInput
@@ -29,6 +30,7 @@ import edu.ie3.datamodel.models.input.system.type.EvTypeInput
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput
 import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
+import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
@@ -319,6 +321,19 @@ class SystemParticipantTestData {
 	thermalBus,
 	cosPhiFixed,
 	hpTypeInput
+	)
+
+	// charging station
+	public static final csInput = new CsInput(
+	UUID.fromString("798028b5-caff-4da7-bcd9-1750fdd8742c"),
+	"test_csInput",
+	operator,
+	operationTime,
+	participantNode,
+	cosPhiFixed,
+	ChargingPointTypeUtils.HouseholdSocket,
+	4,
+	cosPhiRated
 	)
 
 
