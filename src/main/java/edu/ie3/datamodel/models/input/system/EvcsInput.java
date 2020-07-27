@@ -15,7 +15,10 @@ import java.util.UUID;
 
 public class EvcsInput extends SystemParticipantInput {
 
+  /** type of all installed charging points */
   private final ChargingPointType type;
+
+  /** no of installed charging points */
   private final int chargingPoints;
 
   /** Rated power factor */
