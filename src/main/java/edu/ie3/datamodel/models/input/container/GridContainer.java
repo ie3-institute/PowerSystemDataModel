@@ -6,9 +6,15 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
+import edu.ie3.datamodel.io.extractor.HasThermalBus;
+import edu.ie3.datamodel.io.extractor.HasThermalStorage;
+import edu.ie3.datamodel.io.extractor.HasType;
+import edu.ie3.datamodel.models.Operable;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class GridContainer implements InputContainer<InputEntity> {
   /** Name of this grid */
@@ -40,6 +46,51 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(graphics.allEntitiesAsList());
     return Collections.unmodifiableList(allEntities);
+  }
+
+  /**
+   * Flattens the nested structure of the container taking care of avoiding duplicates
+   *
+   * @return A List of {@link InputEntity}s as a flattened representation of the containers nested
+   *     structure
+   */
+  public List<InputEntity> flatten() {
+    List<InputEntity> allEntities = allEntitiesAsList();
+
+    /* Only types, thermal busses and storages as well as operators have to be extracted */
+    List<InputEntity> operators =
+        allEntities.stream()
+            .filter(entity -> Operable.class.isAssignableFrom(entity.getClass()))
+            .map(operable -> ((Operable) operable).getOperator())
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
+    List<InputEntity> types =
+        allEntities.stream()
+            .filter(entity -> HasType.class.isAssignableFrom(entity.getClass()))
+            .map(hasType -> ((HasType) hasType).getType())
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
+    List<InputEntity> thermalBusses =
+        allEntities.stream()
+            .filter(entity -> HasThermalBus.class.isAssignableFrom(entity.getClass()))
+            .map(hasThermalBus -> ((HasThermalBus) hasThermalBus).getThermalBus())
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
+    List<InputEntity> thermalStorages =
+        allEntities.stream()
+            .filter(entity -> HasThermalStorage.class.isAssignableFrom(entity.getClass()))
+            .map(hasThermalStorage -> ((HasThermalStorage) hasThermalStorage).getThermalStorage())
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
+
+    /* Put everything together */
+    return Stream.of(types, operators, thermalBusses, thermalStorages, allEntities)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList());
   }
 
   @Override
