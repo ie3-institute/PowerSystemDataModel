@@ -27,14 +27,14 @@ class FieldNameUtilTest extends Specification{
 
     def "FieldNameUtil can extract all Fields of a class, including superclass fields, excluding nested fields" () {
         when:
-        def extractedFields = FieldNameUtil.getAllFields(nodeInputClass)
+        def extractedFields = FieldNameUtil.getAllFields(nodeInputClass, Object.class)
         then:
         extractedFields == nodeInputFields
     }
 
     def "FieldNameUtil can map all fields with @FieldName to their name, excluding nested fields" () {
         when:
-        def returnedFieldNames = FieldNameUtil.mapFieldToFieldName(nodeInputClass)
+        def returnedFieldNames = FieldNameUtil.mapFieldToFieldName(nodeInputClass, Object.class)
         then:
         returnedFieldNames.values().containsAll(nodeInputFieldNames)
         returnedFieldNames.keySet() == nodeInputFields.findAll(field -> ((Field)field).isAnnotationPresent(FieldName.class))
@@ -65,7 +65,7 @@ class FieldNameUtilTest extends Specification{
         composedFunction.apply(node).get() == vRated
     }
 
-    def "FieldNameUtil produces a map of FieldNames to GetterFunctions, including nested Fields for a class" () {
+    def "FieldNameUtil produces a map of FieldNames to GetterFunctions, including nested Fields for a regular entity class" () {
         given:
         NodeInput node = GridTestData.nodeA
         when:
@@ -85,5 +85,25 @@ class FieldNameUtilTest extends Specification{
         fieldNameToFunction.get("v_rated").apply(node).get() == node.getVoltLvl().getNominalVoltage()
         fieldNameToFunction.get("volt_lvl").apply(node).get() == node.getVoltLvl().getId()
     }
+
+//    def "FieldNameUtil allows for a highest level class to be set, after with no classes upward are considered" () {
+//        given:
+//        NodeInput node = GridTestData.nodeA
+//        when:
+//        Map<String, Function<NodeInput, Optional<Object>>> fieldNameToFunction = FieldNameUtil.mapFieldNameToFunction(nodeInputClass, NodeInput.class)
+//        then:
+//        !fieldNameToFunction.containsKey("uuid")
+//        !fieldNameToFunction.containsKey("id")
+//        !fieldNameToFunction.containsKey("operator_id")
+//        !fieldNameToFunction.containsKey("operator_uuid")
+//        !fieldNameToFunction.containsKey("operates_from")
+//        !fieldNameToFunction.containsKey("operates_until")
+//        fieldNameToFunction.get("v_target").apply(node).get() == node.getvTarget()
+//        fieldNameToFunction.get("slack").apply(node).get() == node.isSlack()
+//        fieldNameToFunction.get("geo_position").apply(node).get() == node.getGeoPosition()
+//        fieldNameToFunction.get("subnet").apply(node).get() == node.getSubnet()
+//        fieldNameToFunction.get("v_rated").apply(node).get() == node.getVoltLvl().getNominalVoltage()
+//        fieldNameToFunction.get("volt_lvl").apply(node).get() == node.getVoltLvl().getId()
+//    }
 
 }

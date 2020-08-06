@@ -147,21 +147,21 @@ trait TimeSeriesTestData {
 	Set<LinkedHashMap<String, String>>  individualWindTimeSeriesProcessed = [
 		[
 			"uuid" 		: "3453d88d-50f6-4124-b2d0-807a9b7dbf54",
-			"direction"	: "5.0",
+			"wind_direction"	: "5.0",
 			"time"		: "2020-04-02T10:00Z[UTC]",
-			"velocity"	: "10.0"
+			"wind_velocity"	: "10.0"
 		] as LinkedHashMap,
 		[
 			"uuid" 		: "870e8e22-5667-4681-96ad-5ab6ac9cf25b",
-			"direction"	: "15.0",
+			"wind_direction"	: "15.0",
 			"time"		: "2020-04-02T10:15Z[UTC]",
-			"velocity"	: "20.0"
+			"wind_velocity"	: "20.0"
 		] as LinkedHashMap,
 		[
 			"uuid" 		: "cb7da21b-59af-4579-9352-2aa6b3020627",
-			"direction"	: "10.0",
+			"wind_direction"	: "10.0",
 			"time"		: "2020-04-02T10:30Z[UTC]",
-			"velocity"	: "15.0"
+			"wind_velocity"	: "15.0"
 		] as LinkedHashMap
 	] as Set
 
@@ -186,20 +186,20 @@ trait TimeSeriesTestData {
 	Set<LinkedHashMap<String, String>>  individualIrradiationTimeSeriesProcessed = [
 		[
 			"uuid" 					: "e397cf20-43ae-4601-a6cd-0ee85c63cec3",
-			"directIrradiation"		: "5.0",
-			"diffuseIrradiation"	: "10.0",
+			"direct_irradiation"		: "5.0",
+			"diffuse_irradiation"	: "10.0",
 			"time"					: "2020-04-02T10:00Z[UTC]"
 		] as LinkedHashMap,
 		[
 			"uuid" 					: "94400577-83ac-4dd5-818d-8d62edcd4ee2",
-			"directIrradiation"		: "15.0",
-			"diffuseIrradiation"	: "20.0",
+			"direct_irradiation"		: "15.0",
+			"diffuse_irradiation"	: "20.0",
 			"time"					: "2020-04-02T10:15Z[UTC]"
 		] as LinkedHashMap,
 		[
 			"uuid" 					: "d7523ef9-f8d7-449f-834f-7b92bf51fd9e",
-			"directIrradiation"		: "10.0",
-			"diffuseIrradiation"	: "15.0",
+			"direct_irradiation"		: "10.0",
+			"diffuse_irradiation"	: "15.0",
 			"time"					: "2020-04-02T10:30Z[UTC]"
 		] as LinkedHashMap
 	] as Set
@@ -244,32 +244,32 @@ trait TimeSeriesTestData {
 		[
 			"uuid" 					: "edb872a0-7421-4283-b072-91b9a729dabf",
 			"coordinate"			: "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-			"diffuseIrradiation"	: "10.0",
-			"directIrradiation"		: "5.0",
-			"direction"				: "5.0",
+			"diffuse_irradiation"	: "10.0",
+			"direct_irradiation"		: "5.0",
+			"wind_direction"				: "5.0",
 			"temperature"			: "5.0",
 			"time"					: "2020-04-02T10:00Z[UTC]",
-			"velocity"				: "10.0"
+			"wind_velocity"				: "10.0"
 		] as LinkedHashMap,
 		[
 			"uuid" 					: "b264057c-bc38-4f49-ab27-c7dc5dd51b4c",
 			"coordinate"			: "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-			"diffuseIrradiation"	: "20.0",
-			"directIrradiation"		: "15.0",
-			"direction"				: "15.0",
+			"diffuse_irradiation"	: "20.0",
+			"direct_irradiation"		: "15.0",
+			"wind_direction"				: "15.0",
 			"temperature"			: "15.0",
 			"time"					: "2020-04-02T10:15Z[UTC]",
-			"velocity"				: "20.0"
+			"wind_velocity"				: "20.0"
 		] as LinkedHashMap,
 		[
 			"uuid" 					: "79eff66e-a910-4ba8-b2c6-ac622bef55b3",
 			"coordinate"			: "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-			"diffuseIrradiation"	: "15.0",
-			"directIrradiation"		: "10.0",
-			"direction"				: "10.0",
+			"diffuse_irradiation"	: "15.0",
+			"direct_irradiation"		: "10.0",
+			"wind_direction"				: "10.0",
 			"temperature"			: "10.0",
 			"time"					: "2020-04-02T10:30Z[UTC]",
-			"velocity"				: "15.0"
+			"wind_velocity"				: "15.0"
 		] as LinkedHashMap
 	] as Set
 
@@ -294,17 +294,17 @@ trait TimeSeriesTestData {
 	Set<LinkedHashMap<String, String>>  individualHeatDemandTimeSeriesProcessed = [
 		[
 			"uuid" 			: "89ae0ccd-04fd-47a7-a49f-a882cab66784",
-			"heatDemand"	: "5.0",
+			"heat_demand"	: "5.0",
 			"time"			: "2020-04-02T10:00Z[UTC]"
 		] as LinkedHashMap,
 		[
 			"uuid" 			: "56e4295b-740a-45dd-9a0d-f5ec8b3bec13",
-			"heatDemand"	: "15.0",
+			"heat_demand"	: "15.0",
 			"time"			: "2020-04-02T10:15Z[UTC]"
 		] as LinkedHashMap,
 		[
 			"uuid" 			: "996a0ffa-548b-4f5e-825a-25b1452bc9c0",
-			"heatDemand"	: "10.0",
+			"heat_demand"	: "10.0",
 			"time"			: "2020-04-02T10:30Z[UTC]"
 		] as LinkedHashMap
 	] as Set
@@ -366,19 +366,19 @@ trait TimeSeriesTestData {
 	Set<LinkedHashMap<String, String>>  individualHeatAndPTimeSeriesProcessed = [
 		[
 			"uuid" 			: "d0dd9b16-6561-45cd-989f-2f9f2d623285",
-			"heatDemand"	: "10.0",
+			"heat_demand"	: "10.0",
 			"p"				: "5.0",
 			"time"			: "2020-04-02T10:00Z[UTC]"
 		] as LinkedHashMap,
 		[
 			"uuid" 			: "76cdb572-db19-4731-a51d-f88d60ac23bf",
-			"heatDemand"	: "20.0",
+			"heat_demand"	: "20.0",
 			"p"				: "15.0",
 			"time"			: "2020-04-02T10:15Z[UTC]"
 		] as LinkedHashMap,
 		[
 			"uuid" 			: "85d34be8-9672-4382-bb28-6c526e061979",
-			"heatDemand"	: "15.0",
+			"heat_demand"	: "15.0",
 			"p"				: "10.0",
 			"time"			: "2020-04-02T10:30Z[UTC]"
 		] as LinkedHashMap
@@ -444,21 +444,21 @@ trait TimeSeriesTestData {
 	Set<LinkedHashMap<String, String>>  individualHeatAndSTimeSeriesProcessed = [
 		[
 			"uuid"			: "79a9e03e-2645-410b-9de4-def4795e7d77",
-			"heatDemand"	: "15.0",
+			"heat_demand"	: "15.0",
 			"p"				: "5.0",
 			"q"				: "10.0",
 			"time"			: "2020-04-02T10:00Z[UTC]"
 		] as LinkedHashMap,
 		[
 			"uuid" 			: "adb6a248-c57f-4ca5-9feb-d0ca3296f0c7",
-			"heatDemand"	: "25.0",
+			"heat_demand"	: "25.0",
 			"p"				: "15.0",
 			"q"				: "20.0",
 			"time"			: "2020-04-02T10:15Z[UTC]"
 		] as LinkedHashMap,
 		[
 			"uuid" 			: "07feb8fa-1ee0-4a40-bca0-cf831db0b745",
-			"heatDemand"	: "20.0",
+			"heat_demand"	: "20.0",
 			"p"				: "10.0",
 			"q"				: "15.0",
 			"time"			: "2020-04-02T10:30Z[UTC]"
@@ -493,21 +493,21 @@ trait TimeSeriesTestData {
 	Set<LinkedHashMap<String, String>> loadProfileInputProcessed = [
 		[
 			"uuid"				: "587b71d8-84ac-4dc1-a30a-aff82d4d6d25",
-			"dayOfWeek"			: "MONDAY",
+			"day_of_week"			: "MONDAY",
 			"p"					: "5.0",
-			"quarterHourOfDay"	: "0"
+			"quarter_hour_of_day"	: "0"
 		] as LinkedHashMap,
 		[
 			"uuid"				: "90403b41-bfe9-4264-9fe9-2bf9ed7b9e61",
-			"dayOfWeek"			: "MONDAY",
+			"day_of_week"			: "MONDAY",
 			"p"					: "15.0",
-			"quarterHourOfDay"	: "1"
+			"quarter_hour_of_day"	: "1"
 		] as LinkedHashMap,
 		[
 			"uuid"				: "2c8fdecd-7527-40f2-a64e-08944f1ff568",
-			"dayOfWeek"			: "MONDAY",
+			"day_of_week"			: "MONDAY",
 			"p"					: "10.0",
-			"quarterHourOfDay"	: "2"
+			"quarter_hour_of_day"	: "2"
 		] as LinkedHashMap
 	] as Set
 

@@ -40,7 +40,7 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   @FieldName("r_sc_b")
   private final ComparableQuantity<ElectricResistance> rScB; // Mv
   /** Short-circuit resistance of the low voltage winding (typically in Ohm) */
-  @FieldName("r_sc_b")
+  @FieldName("r_sc_c")
   private final ComparableQuantity<ElectricResistance> rScC; // Lv
   /** Short-circuit reactance of the high voltage winding (typically in Ohm) */
   @FieldName("x_sc_a")

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.timeseries.individual;
 
+import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;

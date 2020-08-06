@@ -65,16 +65,16 @@ class InputEntityProcessorTest extends Specification {
 
 		Map expectedResults = [
 			"uuid"         : "4ca90220-74c2-4369-9afa-a18bf068840d",
-			"geoPosition"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"id"           : "node_a",
-			"operatesUntil": "2020-03-25T15:11:31Z[UTC]",
-			"operatesFrom" : "2020-03-24T15:11:31Z[UTC]",
+			"operates_until": "2020-03-25T15:11:31Z[UTC]",
+			"operates_from" : "2020-03-24T15:11:31Z[UTC]",
 			"operator"     : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
 			"slack"        : "true",
 			"subnet"       : "1",
-			"vTarget"      : "1.0",
-			"voltLvl"      : "Höchstspannung",
-			"vRated"       : "380.0"
+			"v_target"      : "1.0",
+			"volt_lvl"      : "Höchstspannung",
+			"v_rated"       : "380.0"
 		]
 
 		when: "the entity is passed to the processor"
@@ -103,29 +103,29 @@ class InputEntityProcessorTest extends Specification {
 		modelClass         | modelInstance                   || expectedResult
 		Transformer3WInput | GridTestData.transformerAtoBtoC || [
 			"uuid"           : "cc327469-7d56-472b-a0df-edbb64f90e8f",
-			"autoTap"        : "true",
+			"auto_tap"        : "true",
 			"id"             : "3w_test",
-			"parallelDevices": "1",
-			"nodeA"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
-			"nodeB"          : "47d29df0-ba2d-4d23-8e75-c82229c5c758",
-			"nodeC"          : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
-			"operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
-			"operatesFrom"   : "2020-03-24T15:11:31Z[UTC]",
+			"parallel_devices": "1",
+			"node_a"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
+			"node_b"          : "47d29df0-ba2d-4d23-8e75-c82229c5c758",
+			"node_c"          : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
+			"operates_until"  : "2020-03-25T15:11:31Z[UTC]",
+			"operates_from"   : "2020-03-24T15:11:31Z[UTC]",
 			"operator"       : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
-			"tapPos"         : "0",
+			"tap_pos"         : "0",
 			"type"           : "5b0ee546-21fb-4a7f-a801-5dbd3d7bb356"
 		]
 		Transformer2WInput | GridTestData.transformerCtoG    || [
 			"uuid"           : "5dc88077-aeb6-4711-9142-db57292640b1",
-			"autoTap"        : "true",
+			"auto_tap"        : "true",
 			"id"             : "2w_parallel_2",
-			"parallelDevices": "1",
-			"nodeA"          : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
-			"nodeB"          : "aaa74c1a-d07e-4615-99a5-e991f1d81cc4",
-			"operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
-			"operatesFrom"   : "2020-03-24T15:11:31Z[UTC]",
+			"parallel_devices": "1",
+			"node_a"          : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
+			"node_b"          : "aaa74c1a-d07e-4615-99a5-e991f1d81cc4",
+			"operates_until"  : "2020-03-25T15:11:31Z[UTC]",
+			"operates_from"   : "2020-03-24T15:11:31Z[UTC]",
 			"operator"       : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
-			"tapPos"         : "0",
+			"tap_pos"         : "0",
 			"type"           : "08559390-d7c0-4427-a2dc-97ba312ae0ac"
 		]
 
@@ -133,24 +133,24 @@ class InputEntityProcessorTest extends Specification {
 			"uuid"         : "5dc88077-aeb6-4711-9142-db57287640b1",
 			"closed"       : "true",
 			"id"           : "test_switch_AtoB",
-			"nodeA"        : "4ca90220-74c2-4369-9afa-a18bf068840d",
-			"nodeB"        : "47d29df0-ba2d-4d23-8e75-c82229c5c758",
-			"operatesUntil": "2020-03-25T15:11:31Z[UTC]",
-			"operatesFrom" : "2020-03-24T15:11:31Z[UTC]",
+			"node_a"        : "4ca90220-74c2-4369-9afa-a18bf068840d",
+			"node_b"        : "47d29df0-ba2d-4d23-8e75-c82229c5c758",
+			"operates_until": "2020-03-25T15:11:31Z[UTC]",
+			"operates_from" : "2020-03-24T15:11:31Z[UTC]",
 			"operator"     : "f15105c4-a2de-4ab8-a621-4bc98e372d92"
 		]
 
 		LineInput          | GridTestData.lineCtoD           || [
 			"uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"geoPosition"      : "{\"type\":\"LineString\",\"coordinates\":[[7.411111,51.492528],[7.414116,51.484136]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+			"geo_position"      : "{\"type\":\"LineString\",\"coordinates\":[[7.411111,51.492528],[7.414116,51.484136]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"id"               : "test_line_CtoD",
 			"length"           : "0.003",
-			"parallelDevices"  : "2",
-			"nodeA"            : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
-			"nodeB"            : "6e0980e0-10f2-4e18-862b-eb2b7c90509b",
-			"olmCharacteristic": "olm:{(0.00,1.00)}",
-			"operatesUntil"    : "2020-03-25T15:11:31Z[UTC]",
-			"operatesFrom"     : "2020-03-24T15:11:31Z[UTC]",
+			"parallel_devices"  : "2",
+			"node_a"            : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
+			"node_b"            : "6e0980e0-10f2-4e18-862b-eb2b7c90509b",
+			"olm_characteristic": "olm:{(0.00,1.00)}",
+			"operates_until"    : "2020-03-25T15:11:31Z[UTC]",
+			"operates_from"     : "2020-03-24T15:11:31Z[UTC]",
 			"operator"         : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
 			"type"             : "3bed3eb3-9790-4874-89b5-a5434d408088"
 		]
@@ -176,115 +176,115 @@ class InputEntityProcessorTest extends Specification {
 		modelClass       | modelInstance                              || expectedResult
 		FixedFeedInInput | SystemParticipantTestData.fixedFeedInInput || [
 			"uuid"            : SystemParticipantTestData.fixedFeedInInput.uuid.toString(),
-			"cosPhiRated"     : SystemParticipantTestData.fixedFeedInInput.cosPhiRated.toString(),
+			"cosphi_rated"     : SystemParticipantTestData.fixedFeedInInput.cosPhiRated.toString(),
 			"id"              : SystemParticipantTestData.fixedFeedInInput.id,
 			"node"            : SystemParticipantTestData.fixedFeedInInput.node.uuid.toString(),
-			"operatesUntil"   : SystemParticipantTestData.fixedFeedInInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
-			"operatesFrom"    : SystemParticipantTestData.fixedFeedInInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_until"   : SystemParticipantTestData.fixedFeedInInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_from"    : SystemParticipantTestData.fixedFeedInInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
 			"operator"        : SystemParticipantTestData.fixedFeedInInput.operator.getUuid().toString(),
-			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
-			"sRated"          : SystemParticipantTestData.fixedFeedInInput.sRated.to(StandardUnits.S_RATED).getValue().doubleValue().toString()
+			"q_characteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+			"s_rated"          : SystemParticipantTestData.fixedFeedInInput.sRated.to(StandardUnits.S_RATED).getValue().doubleValue().toString()
 		]
 		PvInput          | SystemParticipantTestData.pvInput          || [
 			"uuid"            : SystemParticipantTestData.pvInput.uuid.toString(),
 			"albedo"          : SystemParticipantTestData.pvInput.albedo.toString(),
 			"azimuth"         : SystemParticipantTestData.pvInput.azimuth.to(StandardUnits.AZIMUTH).getValue().doubleValue().toString(),
-			"cosPhiRated"     : SystemParticipantTestData.pvInput.cosPhiRated.toString(),
-			"etaConv"         : SystemParticipantTestData.pvInput.etaConv.getValue().doubleValue().toString(),
+			"cosphi_rated"     : SystemParticipantTestData.pvInput.cosPhiRated.toString(),
+			"eta_conv"         : SystemParticipantTestData.pvInput.etaConv.getValue().doubleValue().toString(),
 			"height"          : SystemParticipantTestData.pvInput.height.getValue().doubleValue().toString(),
 			"id"              : SystemParticipantTestData.pvInput.id,
-			"kG"              : SystemParticipantTestData.pvInput.kG.toString(),
-			"kT"              : SystemParticipantTestData.pvInput.kT.toString(),
-			"marketReaction"  : SystemParticipantTestData.pvInput.marketReaction.toString(),
+			"k_g"              : SystemParticipantTestData.pvInput.kG.toString(),
+			"k_t"              : SystemParticipantTestData.pvInput.kT.toString(),
+			"market_reaction"  : SystemParticipantTestData.pvInput.marketReaction.toString(),
 			"node"            : SystemParticipantTestData.pvInput.node.uuid.toString(),
-			"operatesUntil"   : SystemParticipantTestData.pvInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
-			"operatesFrom"    : SystemParticipantTestData.pvInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_until"   : SystemParticipantTestData.pvInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_from"    : SystemParticipantTestData.pvInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
 			"operator"        : SystemParticipantTestData.pvInput.operator.getUuid().toString(),
-			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
-			"sRated"          : SystemParticipantTestData.pvInput.sRated.to(StandardUnits.S_RATED).getValue().doubleValue().toString()
+			"q_characteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+			"s_rated"          : SystemParticipantTestData.pvInput.sRated.to(StandardUnits.S_RATED).getValue().doubleValue().toString()
 		]
 		WecInput         | SystemParticipantTestData.wecInput         || [
 			"uuid"            : SystemParticipantTestData.wecInput.uuid.toString(),
 			"id"              : SystemParticipantTestData.wecInput.id,
-			"marketReaction"  : SystemParticipantTestData.wecInput.marketReaction.toString(),
+			"market_reaction"  : SystemParticipantTestData.wecInput.marketReaction.toString(),
 			"node"            : SystemParticipantTestData.wecInput.node.uuid.toString(),
-			"operatesUntil"   : SystemParticipantTestData.wecInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
-			"operatesFrom"    : SystemParticipantTestData.wecInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_until"   : SystemParticipantTestData.wecInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_from"    : SystemParticipantTestData.wecInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
 			"operator"        : SystemParticipantTestData.wecInput.operator.uuid.toString(),
-			"qCharacteristics": SystemParticipantTestData.cosPhiPDeSerialized,
+			"q_characteristics": SystemParticipantTestData.cosPhiPDeSerialized,
 			"type"            : SystemParticipantTestData.wecInput.type.uuid.toString()
 		]
 		ChpInput         | SystemParticipantTestData.chpInput         || [
 			"uuid"            : SystemParticipantTestData.chpInput.uuid.toString(),
 			"id"              : SystemParticipantTestData.chpInput.id,
-			"marketReaction"  : SystemParticipantTestData.chpInput.marketReaction.toString(),
+			"market_reaction"  : SystemParticipantTestData.chpInput.marketReaction.toString(),
 			"node"            : SystemParticipantTestData.chpInput.node.uuid.toString(),
-			"operatesUntil"   : SystemParticipantTestData.chpInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
-			"operatesFrom"    : SystemParticipantTestData.chpInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_until"   : SystemParticipantTestData.chpInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_from"    : SystemParticipantTestData.chpInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
 			"operator"        : SystemParticipantTestData.chpInput.operator.uuid.toString(),
-			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
-			"thermalBus"      : SystemParticipantTestData.chpInput.thermalBus.uuid.toString(),
-			"thermalStorage"  : SystemParticipantTestData.chpInput.thermalStorage.uuid.toString(),
+			"q_characteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+			"thermal_bus"      : SystemParticipantTestData.chpInput.thermalBus.uuid.toString(),
+			"thermal_storage"  : SystemParticipantTestData.chpInput.thermalStorage.uuid.toString(),
 			"type"            : SystemParticipantTestData.chpInput.type.uuid.toString(),
 		]
 		BmInput          | SystemParticipantTestData.bmInput          || [
 			"uuid"            : SystemParticipantTestData.bmInput.uuid.toString(),
-			"costControlled"  : SystemParticipantTestData.bmInput.costControlled.toString(),
-			"feedInTariff"    : SystemParticipantTestData.bmInput.feedInTariff.to(StandardUnits.ENERGY_PRICE).getValue().doubleValue().toString(),
+			"cost_controlled"  : SystemParticipantTestData.bmInput.costControlled.toString(),
+			"feed_in_tariff"    : SystemParticipantTestData.bmInput.feedInTariff.to(StandardUnits.ENERGY_PRICE).getValue().doubleValue().toString(),
 			"id"              : SystemParticipantTestData.bmInput.id,
-			"marketReaction"  : SystemParticipantTestData.bmInput.marketReaction.toString(),
+			"market_reaction"  : SystemParticipantTestData.bmInput.marketReaction.toString(),
 			"node"            : SystemParticipantTestData.bmInput.node.uuid.toString(),
-			"operatesUntil"   : SystemParticipantTestData.bmInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
-			"operatesFrom"    : SystemParticipantTestData.bmInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_until"   : SystemParticipantTestData.bmInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_from"    : SystemParticipantTestData.bmInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
 			"operator"        : SystemParticipantTestData.bmInput.operator.uuid.toString(),
-			"qCharacteristics": SystemParticipantTestData.qVDeSerialized,
+			"q_characteristics": SystemParticipantTestData.qVDeSerialized,
 			"type"            : SystemParticipantTestData.bmInput.type.uuid.toString()
 		]
 		EvInput          | SystemParticipantTestData.evInput          || [
 			"uuid"            : SystemParticipantTestData.evInput.uuid.toString(),
 			"id"              : SystemParticipantTestData.evInput.id,
 			"node"            : SystemParticipantTestData.evInput.node.uuid.toString(),
-			"operatesUntil"   : SystemParticipantTestData.evInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
-			"operatesFrom"    : SystemParticipantTestData.evInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_until"   : SystemParticipantTestData.evInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_from"    : SystemParticipantTestData.evInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
 			"operator"        : SystemParticipantTestData.evInput.operator.getUuid().toString(),
-			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+			"q_characteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"type"            : SystemParticipantTestData.evInput.type.getUuid().toString()
 		]
 
 		LoadInput        | SystemParticipantTestData.loadInput        || [
 			"uuid"               : SystemParticipantTestData.loadInput.uuid.toString(),
-			"cosPhiRated"        : SystemParticipantTestData.loadInput.cosPhiRated.toString(),
+			"cosphi_rated"        : SystemParticipantTestData.loadInput.cosPhiRated.toString(),
 			"dsm"                : SystemParticipantTestData.loadInput.dsm.toString(),
-			"eConsAnnual"        : SystemParticipantTestData.loadInput.eConsAnnual.getValue().doubleValue().toString(),
+			"e_cons_annual"        : SystemParticipantTestData.loadInput.eConsAnnual.getValue().doubleValue().toString(),
 			"id"                 : SystemParticipantTestData.loadInput.id,
 			"node"               : SystemParticipantTestData.loadInput.node.uuid.toString(),
-			"operatesUntil"      : SystemParticipantTestData.loadInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
-			"operatesFrom"       : SystemParticipantTestData.loadInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_until"      : SystemParticipantTestData.loadInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_from"       : SystemParticipantTestData.loadInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
 			"operator"           : SystemParticipantTestData.loadInput.operator.uuid.toString(),
-			"qCharacteristics"   : SystemParticipantTestData.cosPhiFixedDeSerialized,
-			"sRated"             : SystemParticipantTestData.loadInput.sRated.getValue().doubleValue().toString(),
-			"standardLoadProfile": SystemParticipantTestData.loadInput.standardLoadProfile.key
+			"q_characteristics"   : SystemParticipantTestData.cosPhiFixedDeSerialized,
+			"s_rated"             : SystemParticipantTestData.loadInput.sRated.getValue().doubleValue().toString(),
+			"standard_load_profile": SystemParticipantTestData.loadInput.standardLoadProfile.key
 		]
 		StorageInput     | SystemParticipantTestData.storageInput     || [
 			"uuid"            : SystemParticipantTestData.storageInput.uuid.toString(),
 			"behaviour"       : SystemParticipantTestData.storageInput.behaviour.token,
 			"id"              : SystemParticipantTestData.storageInput.id,
 			"node"            : SystemParticipantTestData.storageInput.node.uuid.toString(),
-			"operatesUntil"   : SystemParticipantTestData.storageInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
-			"operatesFrom"    : SystemParticipantTestData.storageInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_until"   : SystemParticipantTestData.storageInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_from"    : SystemParticipantTestData.storageInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
 			"operator"        : SystemParticipantTestData.storageInput.operator.uuid.toString(),
-			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+			"q_characteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"type"            : SystemParticipantTestData.storageInput.type.uuid.toString()
 		]
 		HpInput          | SystemParticipantTestData.hpInput          || [
 			"uuid"            : SystemParticipantTestData.hpInput.uuid.toString(),
 			"id"              : SystemParticipantTestData.hpInput.id,
 			"node"            : SystemParticipantTestData.hpInput.node.uuid.toString(),
-			"operatesUntil"   : SystemParticipantTestData.hpInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
-			"operatesFrom"    : SystemParticipantTestData.hpInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_until"   : SystemParticipantTestData.hpInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+			"operates_from"    : SystemParticipantTestData.hpInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
 			"operator"        : SystemParticipantTestData.hpInput.operator.uuid.toString(),
-			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
-			"thermalBus"      : SystemParticipantTestData.hpInput.thermalBus.uuid.toString(),
+			"q_characteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+			"thermal_bus"      : SystemParticipantTestData.hpInput.thermalBus.uuid.toString(),
 			"type"            : SystemParticipantTestData.hpInput.type.uuid.toString()
 		]
 	}
@@ -295,7 +295,7 @@ class InputEntityProcessorTest extends Specification {
 		NodeGraphicInput validNode = GridTestData.nodeGraphicC
 		Map expected = [
 			"uuid"        : "09aec636-791b-45aa-b981-b14edf171c4c",
-			"graphicLayer": "main",
+			"graphic_layer": "main",
 			"path"        : "",
 			"point"       : "{\"type\":\"Point\",\"coordinates\":[0.0,10],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"node"        : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2"
@@ -315,7 +315,7 @@ class InputEntityProcessorTest extends Specification {
 		NodeGraphicInput validNode = GridTestData.nodeGraphicD
 		Map expected = [
 			"uuid"        : "9ecad435-bd16-4797-a732-762c09d4af25",
-			"graphicLayer": "main",
+			"graphic_layer": "main",
 			"path"        : "{\"type\":\"LineString\",\"coordinates\":[[-1,0.0],[1,0.0]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"point"       : "",
 			"node"        : "6e0980e0-10f2-4e18-862b-eb2b7c90509b"
@@ -335,7 +335,7 @@ class InputEntityProcessorTest extends Specification {
 		LineGraphicInput validNode = GridTestData.lineGraphicCtoD
 		Map expected = [
 			"uuid"        : "ece86139-3238-4a35-9361-457ecb4258b0",
-			"graphicLayer": "main",
+			"graphic_layer": "main",
 			"path"        : "{\"type\":\"LineString\",\"coordinates\":[[0.0,0.0],[0.0,10]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"line"        : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
 		]
@@ -383,16 +383,16 @@ class InputEntityProcessorTest extends Specification {
 				)
 		Map expected = [
 			"uuid"       : "a5b0f432-27b5-4b3e-b87a-61867b9edd79",
-			"quarterHour": "4",
-			"kWd"        : "1.2",
-			"kSa"        : "2.3",
-			"kSu"        : "3.4",
-			"myWd"       : "4.5",
-			"mySa"       : "5.6",
-			"mySu"       : "6.7",
-			"sigmaWd"    : "7.8",
-			"sigmaSa"    : "8.9",
-			"sigmaSu"    : "9.1"
+			"quarter_hour": "4",
+			"k_wd"        : "1.2",
+			"k_sa"        : "2.3",
+			"k_su"        : "3.4",
+			"my_wd"       : "4.5",
+			"my_sa"       : "5.6",
+			"my_su"       : "6.7",
+			"sigma_wd"    : "7.8",
+			"sigma_sa"    : "8.9",
+			"sigma_su"    : "9.1"
 		]
 
 		when:
@@ -412,12 +412,12 @@ class InputEntityProcessorTest extends Specification {
 			"id"              : "Test wec type",
 			"capex"           : "100.0",
 			"opex"            : "101.0",
-			"cosPhiRated"     : "0.95",
-			"cpCharacteristic": "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",
-			"etaConv"         : "90.0",
-			"sRated"          : "2500.0",
-			"rotorArea"       : "2000.0",
-			"hubHeight"       : "130.0"
+			"cosphi_rated"     : "0.95",
+			"cp_characteristic": "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",
+			"eta_conv"         : "90.0",
+			"s_rated"          : "2500.0",
+			"rotor_area"       : "2000.0",
+			"hub_height"       : "130.0"
 		]
 
 		when:
@@ -435,19 +435,19 @@ class InputEntityProcessorTest extends Specification {
 		Map expected = [
 			"uuid"    : "202069a7-bcf8-422c-837c-273575220c8a",
 			"id"      : "HS-MS_1",
-			"rSc"     : "45.375",
-			"xSc"     : "102.759",
-			"gM"      : "0.0",
-			"bM"      : "0.0",
-			"sRated"  : "20000.0",
-			"vRatedA" : "110.0",
-			"vRatedB" : "20.0",
-			"dV"      : "1.5",
-			"dPhi"    : "0.0",
-			"tapSide" : "false",
-			"tapNeutr": "0",
-			"tapMax"  : "10",
-			"tapMin"  : "-10"
+			"r_sc"     : "45.375",
+			"x_sc"     : "102.759",
+			"g_m"      : "0.0",
+			"b_m"      : "0.0",
+			"s_rated"  : "20000.0",
+			"v_rated_a" : "110.0",
+			"v_rated_b" : "20.0",
+			"d_v"      : "1.5",
+			"d_phi"    : "0.0",
+			"tap_side" : "false",
+			"tap_neutr": "0",
+			"tap_max"  : "10",
+			"tap_min"  : "-10"
 		]
 
 		when:
@@ -465,25 +465,25 @@ class InputEntityProcessorTest extends Specification {
 		Map expected = [
 			"uuid"    : "5b0ee546-21fb-4a7f-a801-5dbd3d7bb356",
 			"id"      : "HöS-HS-MS_1",
-			"sRatedA" : "120000.0",
-			"sRatedB" : "60000.0",
-			"sRatedC" : "40000.0",
-			"vRatedA" : "380.0",
-			"vRatedB" : "110.0",
-			"vRatedC" : "20.0",
-			"rScA"    : "0.3",
-			"rScB"    : "0.025",
-			"rScC"    : "8.0E-4",
-			"xScA"    : "1.0",
-			"xScB"    : "0.08",
-			"xScC"    : "0.003",
-			"gM"      : "40000.0",
-			"bM"      : "1000.0",
-			"dV"      : "1.5",
-			"dPhi"    : "0.0",
-			"tapNeutr": "0",
-			"tapMin"  : "-10",
-			"tapMax"  : "10"
+			"s_rated_a" : "120000.0",
+			"s_rated_b" : "60000.0",
+			"s_rated_c" : "40000.0",
+			"v_rated_a" : "380.0",
+			"v_rated_b" : "110.0",
+			"v_rated_c" : "20.0",
+			"r_sc_a"    : "0.3",
+			"r_sc_b"    : "0.025",
+			"r_sc_c"    : "8.0E-4",
+			"x_sc_a"    : "1.0",
+			"x_sc_b"    : "0.08",
+			"x_sc_c"    : "0.003",
+			"g_m"      : "40000.0",
+			"b_m"      : "1000.0",
+			"d_v"      : "1.5",
+			"d_phi"    : "0.0",
+			"tap_neutr": "0",
+			"tap_min"  : "-10",
+			"tap_max"  : "10"
 		]
 
 		when:
@@ -505,8 +505,8 @@ class InputEntityProcessorTest extends Specification {
 			"g"     : "0.0",
 			"r"     : "0.437",
 			"x"     : "0.356",
-			"iMax"  : "300.0",
-			"vRated": "20.0"
+			"i_max"  : "300.0",
+			"v_rated": "20.0"
 		]
 
 		when:
@@ -526,10 +526,10 @@ class InputEntityProcessorTest extends Specification {
 			"id"         : "ev type",
 			"capex"      : "100.0",
 			"opex"       : "101.0",
-			"eStorage"   : "100.0",
-			"eCons"      : "23.0",
-			"sRated"     : "22.0",
-			"cosPhiRated": "0.9"
+			"e_storage"   : "100.0",
+			"e_cons"      : "23.0",
+			"s_rated"     : "22.0",
+			"cosphi_rated": "0.9"
 		]
 
 		when:
@@ -549,12 +549,12 @@ class InputEntityProcessorTest extends Specification {
 			"id"         : "chp type",
 			"capex"      : "100.0",
 			"opex"       : "101.0",
-			"etaEl"      : "95.0",
-			"etaThermal" : "90.0",
-			"sRated"     : "58.0",
-			"cosPhiRated": "0.98",
-			"pThermal"   : "49.59",
-			"pOwn"       : "5.0"
+			"eta_el"      : "95.0",
+			"eta_thermal" : "90.0",
+			"s_rated"     : "58.0",
+			"cosphi_rated": "0.98",
+			"p_thermal"   : "49.59",
+			"p_own"       : "5.0"
 		]
 
 		when:
@@ -574,9 +574,9 @@ class InputEntityProcessorTest extends Specification {
 			"id"         : "hp type",
 			"capex"      : "100.0",
 			"opex"       : "101.0",
-			"sRated"     : "45.0",
-			"cosPhiRated": "0.975",
-			"pThermal"   : "26.3"
+			"s_rated"     : "45.0",
+			"cosphi_rated": "0.975",
+			"p_thermal"   : "26.3"
 		]
 
 		when:
@@ -596,10 +596,10 @@ class InputEntityProcessorTest extends Specification {
 			"id"                 : "bm type",
 			"capex"              : "100.0",
 			"opex"               : "101.0",
-			"activePowerGradient": "5.0",
-			"sRated"             : "800.0",
-			"cosPhiRated"        : "0.965",
-			"etaConv"            : "89.0"
+			"active_power_gradient": "5.0",
+			"s_rated"             : "800.0",
+			"cosphi_rated"        : "0.965",
+			"eta_conv"            : "89.0"
 		]
 
 		when:
@@ -619,15 +619,15 @@ class InputEntityProcessorTest extends Specification {
 			"id"                 : "storage type",
 			"capex"              : "100.0",
 			"opex"               : "101.0",
-			"eStorage"           : "200.0",
-			"sRated"             : "13.0",
-			"cosPhiRated"        : "0.997",
-			"pMax"               : "12.961",
-			"activePowerGradient": "3.0",
+			"e_storage"           : "200.0",
+			"s_rated"             : "13.0",
+			"cosphi_rated"        : "0.997",
+			"p_max"               : "12.961",
+			"active_power_gradient": "3.0",
 			"eta"                : "92.0",
 			"dod"                : "20.0",
-			"lifeTime"           : "43800.0",
-			"lifeCycle"          : "100000"
+			"life_time"           : "43800.0",
+			"life_cycle"          : "100000"
 		]
 
 		when:
@@ -652,17 +652,17 @@ class InputEntityProcessorTest extends Specification {
 				4)
 
 		Map expected = [
-			"geoPosition"  : "",
+			"geo_position"  : "",
 			"id"           : "node_d",
-			"operatesFrom" : "",
-			"operatesUntil": "",
+			"operates_from" : "",
+			"operates_until": "",
 			"operator"     : "",
 			"slack"        : "false",
 			"subnet"       : "4",
 			"uuid"         : "6e0980e0-10f2-4e18-862b-eb2b7c90509b",
-			"vRated"       : "20.0",
-			"vTarget"      : "1.0",
-			"voltLvl"      : "Mittelspannung"
+			"v_rated"       : "20.0",
+			"v_target"      : "1.0",
+			"volt_lvl"      : "Mittelspannung"
 		]
 
 		when:

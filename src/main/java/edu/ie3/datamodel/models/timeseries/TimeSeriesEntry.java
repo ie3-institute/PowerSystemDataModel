@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.timeseries;
 
+import edu.ie3.datamodel.annotations.NestedFields;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.value.Value;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import java.util.UUID;
  * @param <V> Type of the contained value
  */
 public abstract class TimeSeriesEntry<V extends Value> extends UniqueEntity {
+  @NestedFields
   protected final V value;
 
   public TimeSeriesEntry(UUID uuid, V value) {

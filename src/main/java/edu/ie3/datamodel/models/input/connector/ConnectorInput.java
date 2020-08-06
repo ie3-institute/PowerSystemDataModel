@@ -19,7 +19,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
   @FieldName("node_a")
   private final NodeInput nodeA;
   /** Grid node at the other side of the connector */
-  @FieldName("nodeB")
+  @FieldName("node_b")
   private final NodeInput nodeB;
   /** Amount of parallelDevices */
   @FieldName("parallel_devices")

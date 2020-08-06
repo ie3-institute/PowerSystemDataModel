@@ -13,7 +13,7 @@ import java.util.UUID;
 public class OperatorInput extends InputEntity {
 
   public static final OperatorInput NO_OPERATOR_ASSIGNED =
-      new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED");
+      new OperatorInput(UUID.fromString("00000000-0000-0000-0000-000000000000"), "NO_OPERATOR_ASSIGNED");
 
   /** The id (=name) of this operator */
   @FieldName("id")

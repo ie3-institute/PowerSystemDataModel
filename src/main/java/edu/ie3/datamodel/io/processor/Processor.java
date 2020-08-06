@@ -13,21 +13,19 @@ import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.system.StorageStrategy;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
-import java.beans.Introspector;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.measure.Quantity;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.geojson.GeoJsonWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.measure.Quantity;
+import java.time.ZonedDateTime;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Basic sketch and skeleton for a processors including all functions that apply for all needed
@@ -37,6 +35,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class Processor<T> {
   protected static final Logger logger = LoggerFactory.getLogger(Processor.class);
+
+  protected static UUID emptyUuid = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
   protected final Class<? extends T> registeredClass;
 
@@ -96,61 +96,6 @@ public abstract class Processor<T> {
   }
 
   /**
-   * Maps the foreseen table fields to the objects getters
-   *
-   * @param cls class to use for mapping
-   * @return an array of strings of all field values of the class
-   */
-  protected SortedMap<String, Method> mapFieldNameToGetter(Class<?> cls) {
-    return mapFieldNameToGetter(cls, Collections.emptyList());
-  }
-
-  /**
-   * Maps the foreseen table fields to the objects getters and ignores the specified fields
-   *
-   * @param cls class to use for mapping
-   * @param ignoreFields A collection of all field names to ignore during process
-   * @return an array of strings of all field values of the class
-   */
-  protected SortedMap<String, Method> mapFieldNameToGetter(
-      Class<?> cls, Collection<String> ignoreFields) {
-    try {
-      final LinkedHashMap<String, Method> resFieldNameToMethod = new LinkedHashMap<>();
-      Arrays.stream(Introspector.getBeanInfo(cls, Object.class).getPropertyDescriptors())
-          // filter out properties with setters only
-          .filter(pd -> Objects.nonNull(pd.getReadMethod()))
-          .filter(pd -> !ignoreFields.contains(pd.getName()))
-          .filter(
-              pd ->
-                  // switches can never be parallel but have this field due to inheritance -> filter
-                  // it out as it cannot be passed into the constructor
-                  !(registeredClass.equals(SwitchInput.class)
-                      && pd.getName().equalsIgnoreCase(PARALLEL_DEVICES)))
-          .forEach(
-              pd -> {
-                String fieldName = pd.getName();
-                // OperationTime needs to be replaced by operatesFrom and operatesUntil
-                if (fieldName.equalsIgnoreCase(OPERATION_TIME_FIELD_NAME)) {
-                  fieldName = OPERATES_FROM;
-                  resFieldNameToMethod.put(OPERATES_UNTIL, pd.getReadMethod());
-                }
-
-                // VoltageLevel needs to be replaced by id and nominalVoltage
-                if (fieldName.equalsIgnoreCase(VOLT_LVL_FIELD_NAME)) {
-                  fieldName = V_RATED;
-                  resFieldNameToMethod.put(VOLT_LVL, pd.getReadMethod());
-                }
-                resFieldNameToMethod.put(fieldName, pd.getReadMethod());
-              });
-
-      return putUuidFirst(resFieldNameToMethod);
-    } catch (Exception e) {
-      throw new EntityProcessorException(
-          "Error during EntityProcessor class registration process.", e);
-    }
-  }
-
-  /**
    * Ensure, that the uuid field is put first. All other fields are sorted alphabetically.
    * Additionally, the map is immutable
    *
@@ -172,50 +117,55 @@ public abstract class Processor<T> {
    * @return Mapping from field name to value as String representation
    */
   protected LinkedHashMap<String, String> processObject(
-      Object object, Map<String, Method> fieldNameToGetter) {
-    try {
-      LinkedHashMap<String, String> resultMap = new LinkedHashMap<>();
-      for (Map.Entry<String, Method> entry : fieldNameToGetter.entrySet()) {
-        String fieldName = entry.getKey();
-        Method getter = entry.getValue();
-        Optional<Object> methodReturnObjectOpt = Optional.ofNullable(getter.invoke(object));
+      Object object, Map<String, Function<Object, Optional<Object>>> fieldNameToGetter) {
+    LinkedHashMap<String, String> resultMap = new LinkedHashMap<>();
+    for (Map.Entry<String, Function<Object, Optional<Object>>> entry : fieldNameToGetter.entrySet()) {
+      String fieldName = entry.getKey();
+      Function<Object, Optional<Object>> getterFunction = entry.getValue();
+      Optional<Object> methodReturnObjectOpt = getterFunction.apply(object);
 
-        if (methodReturnObjectOpt.isPresent()) {
-          resultMap.put(
-              fieldName, processMethodResult(methodReturnObjectOpt.get(), getter, fieldName));
-        } else {
-          resultMap.put(fieldName, "");
-        }
+      if (methodReturnObjectOpt.isPresent()) {
+        resultMap.put(
+            fieldName, processMethodResult(methodReturnObjectOpt.get(), fieldName));
+      } else {
+        resultMap.put(fieldName, "");
       }
-      return resultMap;
-    } catch (IllegalAccessException | InvocationTargetException e) {
-      throw new EntityProcessorException("Processing of object " + object + "failed.", e);
     }
+    return resultMap;
   }
 
   /**
    * Processes the returned object to String by taking care of different conventions.
    *
    * @param methodReturnObject Return object to process
-   * @param method The method, that is invoked
    * @param fieldName Name of the foreseen field
    * @return A String representation of the result
    */
-  protected String processMethodResult(Object methodReturnObject, Method method, String fieldName) {
-
+  protected String processMethodResult(Object methodReturnObject, String fieldName) {
+    if(methodReturnObject == null) return "";
     StringBuilder resultStringBuilder = new StringBuilder();
-
-    switch (method.getReturnType().getSimpleName()) {
-        // primitives (Boolean, Character, Byte, Short, Integer, Long, Float, Double, String,
+    switch (methodReturnObject.getClass().getSimpleName()) {
       case "UUID":
+        resultStringBuilder.append(emptyUuid.equals(methodReturnObject)
+                        ? ""
+                        : methodReturnObject.toString());
+        break;
+      // primitives (Boolean, Character, Byte, Short, Integer, Long, Float, Double, String)
       case "boolean":
+      case "Boolean":
       case "int":
+      case "Integer":
       case "double":
+      case "Double":
       case "String":
       case "DayOfWeek":
         resultStringBuilder.append(methodReturnObject.toString());
         break;
+        // Quantities
       case "Quantity":
+      case "DoubleQuantity":
+      case "DecimalQuantity":
+      case "NumberQuantity":
       case "ComparableQuantity":
         resultStringBuilder.append(
             handleQuantity((Quantity<?>) methodReturnObject, fieldName)
@@ -227,6 +177,9 @@ public abstract class Processor<T> {
                                 + "' in result entity "
                                 + getRegisteredClass().getSimpleName()
                                 + ".class.")));
+        break;
+      case "Optional":
+        resultStringBuilder.append(processMethodResult(((Optional) methodReturnObject).orElse(null), fieldName));
         break;
       case "ZonedDateTime":
         resultStringBuilder.append(processZonedDateTime((ZonedDateTime) methodReturnObject));
@@ -244,6 +197,7 @@ public abstract class Processor<T> {
         resultStringBuilder.append(geoJsonWriter.write((Geometry) methodReturnObject));
         break;
       case "StandardLoadProfile":
+      case "BdewLoadProfile":
         resultStringBuilder.append(((StandardLoadProfile) methodReturnObject).getKey());
         break;
       case "StorageStrategy":
@@ -288,9 +242,7 @@ public abstract class Processor<T> {
             "Unable to process value for attribute/field '"
                 + fieldName
                 + "' and method return type '"
-                + method.getReturnType().getSimpleName()
-                + "' for method with name '"
-                + method.getName()
+                + methodReturnObject.getClass().getSimpleName()
                 + "' in in entity model "
                 + getRegisteredClass().getSimpleName()
                 + ".class.");

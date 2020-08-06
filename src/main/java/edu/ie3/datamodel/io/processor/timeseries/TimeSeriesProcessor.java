@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.io.processor.timeseries;
 
-import static edu.ie3.datamodel.io.processor.timeseries.FieldSourceToMethod.FieldSource.*;
-
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -17,13 +15,17 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.*;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static edu.ie3.datamodel.io.processor.timeseries.FieldSourceToMethod.FieldSource.*;
 
 public class TimeSeriesProcessor<
         T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
@@ -58,17 +60,16 @@ public class TimeSeriesProcessor<
               new TimeSeriesProcessorKey(
                   LoadProfileInput.class, LoadProfileEntry.class, PValue.class)));
 
+
   /**
    * Specific combination of time series class, entry class and value class, this processor is
    * foreseen to handle.
    */
   private final TimeSeriesProcessorKey registeredKey;
 
-  /**
-   * Mapping from field name to the source, where to find the information and which getter method to
-   * invoke
-   */
-  private final SortedMap<String, FieldSourceToMethod> fieldToSource;
+  private final Map<String, Function<Object, Optional<Object>>> entryFieldNamesToMethod;
+
+  private final Map<String, Function<Object, Optional<Object>>> valueFieldNamesToMethod;
 
   private final String[] flattenedHeaderElements;
 
@@ -90,92 +91,13 @@ public class TimeSeriesProcessor<
                   .collect(Collectors.joining(", ")));
     this.registeredKey = timeSeriesKey;
 
-    /* Register, where to get which information from */
-    this.fieldToSource = buildFieldToSource(timeSeriesClass, entryClass, valueClass);
+    //MIA
+    entryFieldNamesToMethod = buildFunctionMap(entryClass);
+
+    valueFieldNamesToMethod = buildFunctionMap(valueClass);
 
     /* Collect all header elements */
-    this.flattenedHeaderElements = fieldToSource.keySet().toArray(new String[0]);
-  }
-
-  /**
-   * Collects the mapping, where to find which information and how to get them (in terms of getter
-   * method).
-   *
-   * @param timeSeriesClass Class of the time series
-   * @param entryClass Class of the entry in the time series for the "outer" fields
-   * @param valueClass Class of the actual value in the entries for the "inner" fields
-   * @return A mapping from field name to a tuple of source information and equivalent getter method
-   */
-  private SortedMap<String, FieldSourceToMethod> buildFieldToSource(
-      Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass) {
-    /* Get the mapping from field name to getter method ignoring the getter for returning all entries */
-    Map<String, FieldSourceToMethod> timeSeriesMapping =
-        mapFieldNameToGetter(timeSeriesClass, Arrays.asList("entries", "uuid", "type")).entrySet()
-            .stream()
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    entry -> new FieldSourceToMethod(TIMESERIES, entry.getValue())));
-    /* Get the mapping from field name to getter method for the entry, but ignoring the getter for the value */
-    Map<String, FieldSourceToMethod> entryMapping =
-        mapFieldNameToGetter(entryClass, Collections.singletonList("value")).entrySet().stream()
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey, entry -> new FieldSourceToMethod(ENTRY, entry.getValue())));
-    Map<String, FieldSourceToMethod> valueMapping;
-    if (!valueClass.equals(WeatherValue.class)) {
-      valueMapping =
-          mapFieldNameToGetter(valueClass).entrySet().stream()
-              .collect(
-                  Collectors.toMap(
-                      Map.Entry::getKey,
-                      entry -> new FieldSourceToMethod(VALUE, entry.getValue())));
-    } else {
-      /* Treat the nested weather values specially. */
-      /* Flatten the nested structure of Weather value */
-      valueMapping =
-          Stream.concat(
-                  Stream.concat(
-                      Stream.concat(
-                          mapFieldNameToGetter(
-                                  valueClass, Arrays.asList("irradiation", "temperature", "wind"))
-                              .entrySet().stream()
-                              .map(
-                                  entry ->
-                                      new AbstractMap.SimpleEntry<>(
-                                          entry.getKey(),
-                                          new FieldSourceToMethod(VALUE, entry.getValue()))),
-                          mapFieldNameToGetter(IrradiationValue.class).entrySet().stream()
-                              .map(
-                                  entry ->
-                                      new AbstractMap.SimpleEntry<>(
-                                          entry.getKey(),
-                                          new FieldSourceToMethod(
-                                              WEATHER_IRRADIATION, entry.getValue())))),
-                      mapFieldNameToGetter(TemperatureValue.class).entrySet().stream()
-                          .map(
-                              entry ->
-                                  new AbstractMap.SimpleEntry<>(
-                                      entry.getKey(),
-                                      new FieldSourceToMethod(
-                                          WEATHER_TEMPERATURE, entry.getValue())))),
-                  mapFieldNameToGetter(WindValue.class).entrySet().stream()
-                      .map(
-                          entry ->
-                              new AbstractMap.SimpleEntry<>(
-                                  entry.getKey(),
-                                  new FieldSourceToMethod(WEATHER_WIND, entry.getValue()))))
-              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    /* Put everything together */
-    HashMap<String, FieldSourceToMethod> jointMapping = new HashMap<>();
-    jointMapping.putAll(timeSeriesMapping);
-    jointMapping.putAll(entryMapping);
-    jointMapping.putAll(valueMapping);
-
-    /* Let uuid be the first entry */
-    return Collections.unmodifiableSortedMap(putUuidFirst(jointMapping));
+    this.flattenedHeaderElements = Stream.of(fieldNameToFunction.keySet(), entryFieldNamesToMethod.keySet(), valueFieldNamesToMethod.keySet()).flatMap(Collection::stream).toArray(String[]::new);
   }
 
   @Override
@@ -224,80 +146,52 @@ public class TimeSeriesProcessor<
    */
   private Map<String, String> handleEntry(T timeSeries, E entry) {
     /* Handle the information in the time series */
-    Map<String, Method> timeSeriesFieldToMethod = extractFieldToMethod(TIMESERIES);
-    LinkedHashMap<String, String> timeSeriesResults =
-        processObject(timeSeries, timeSeriesFieldToMethod);
+    LinkedHashMap<String, String> timeSeriesResults = processObject(timeSeries, fieldNameToFunction);
 
     /* Handle the information in the entry */
-    Map<String, Method> entryFieldToMethod = extractFieldToMethod(ENTRY);
-    LinkedHashMap<String, String> entryResults = processObject(entry, entryFieldToMethod);
+    LinkedHashMap<String, String> entryResults = processObject(entry, entryFieldNamesToMethod);
 
-    /* Handle the information in the value */
-    Map<String, Method> valueFieldToMethod = extractFieldToMethod(VALUE);
-    LinkedHashMap<String, String> valueResult = processObject(entry.getValue(), valueFieldToMethod);
-    /* Treat WeatherValues specially, as they are nested ones */
-    if (entry.getValue() instanceof WeatherValue) {
-      WeatherValue weatherValue = (WeatherValue) entry.getValue();
-
-      Map<String, Method> irradiationFieldToMethod = extractFieldToMethod(WEATHER_IRRADIATION);
-      valueResult.putAll(processObject(weatherValue.getIrradiation(), irradiationFieldToMethod));
-
-      Map<String, Method> temperatureFieldToMethod = extractFieldToMethod(WEATHER_TEMPERATURE);
-      valueResult.putAll(processObject(weatherValue.getTemperature(), temperatureFieldToMethod));
-
-      Map<String, Method> windFieldToMethod = extractFieldToMethod(WEATHER_WIND);
-      valueResult.putAll(processObject(weatherValue.getWind(), windFieldToMethod));
-    }
+//    /* Handle the information in the value */
+    LinkedHashMap<String, String> valueResults = processObject(entry.getValue(), valueFieldNamesToMethod);
 
     /* Join all information and sort them */
     Map<String, String> combinedResult = new HashMap<>();
     combinedResult.putAll(timeSeriesResults);
     combinedResult.putAll(entryResults);
-    combinedResult.putAll(valueResult);
+    combinedResult.putAll(valueResults);
     return putUuidFirst(combinedResult);
   }
 
-  /**
-   * Extracts the field name to method map for the specific source
-   *
-   * @param source Source to extract field name to methods for
-   * @return Field name to methods for the desired source
-   */
-  private Map<String, Method> extractFieldToMethod(FieldSourceToMethod.FieldSource source) {
-    return fieldToSource.entrySet().stream()
-        .filter(entry -> entry.getValue().getSource().equals(source))
-        .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getMethod()));
-  }
-
+  //TODO: develop a strategy to get rid of these hard coded fieldNames
   @Override
   protected Optional<String> handleProcessorSpecificQuantity(
-      Quantity<?> quantity, String fieldName) {
+          Quantity<?> quantity, String fieldName) {
     Optional<String> normalizedQuantityValue = Optional.empty();
     switch (fieldName) {
       case "energy":
-      case "eConsAnnual":
-      case "eStorage":
+      case "e_cons_annual":
+      case "e_storage":
         normalizedQuantityValue =
-            quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
+                quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
         break;
       case "q":
         normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
+                quantityValToOptionalString(
+                        quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
         break;
       case "p":
-      case "pMax":
-      case "pOwn":
-      case "pThermal":
+      case "p_max":
+      case "p_own":
+      case "p_thermal":
         normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
+                quantityValToOptionalString(
+                        quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
         break;
       default:
         log.error(
-            "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
-            quantity,
-            fieldName);
+                "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
+                quantity,
+                fieldName);
         break;
     }
     return normalizedQuantityValue;

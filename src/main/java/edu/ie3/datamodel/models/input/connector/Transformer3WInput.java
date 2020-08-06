@@ -28,7 +28,6 @@ public class Transformer3WInput extends TransformerInput implements HasType {
   @FieldName("node_c")
   private final NodeInput nodeC;
   /** Internal node of the transformers T equivalent circuit */
-  @FieldName("node_internal")//MIA ?
   private final NodeInput nodeInternal;
 
   /**

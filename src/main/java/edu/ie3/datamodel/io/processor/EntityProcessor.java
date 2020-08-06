@@ -7,8 +7,13 @@ package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.models.UniqueEntity;
-import java.lang.reflect.Method;
+
+import java.beans.IntrospectionException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import edu.ie3.datamodel.utils.FieldNameUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,9 +29,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
 
   public final Logger log = LogManager.getLogger(this.getClass());
   protected final String[] headerElements;
-  private final SortedMap<String, Method> fieldNameToMethod;
-
-  private static final String NODE_INTERNAL = "nodeInternal";
+  protected final Map<String, Function<Object, Optional<Object>>> fieldNameToFunction;
 
   /**
    * Create a new EntityProcessor
@@ -35,9 +38,8 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
    */
   public EntityProcessor(Class<? extends T> registeredClass) {
     super(registeredClass);
-    this.fieldNameToMethod =
-        mapFieldNameToGetter(registeredClass, Collections.singleton(NODE_INTERNAL));
-    this.headerElements = fieldNameToMethod.keySet().toArray(new String[0]);
+    fieldNameToFunction = putUuidFirst(buildFunctionMap(registeredClass));
+    this.headerElements = fieldNameToFunction.keySet().toArray(new String[0]);
   }
 
   /**
@@ -59,11 +61,22 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
               + ".class!");
 
     try {
-      return Optional.of(processObject(entity, fieldNameToMethod));
+      return Optional.of(processObject(entity, fieldNameToFunction));
     } catch (EntityProcessorException e) {
       logger.error("Cannot process the entity{}.", entity, e);
       return Optional.empty();
     }
+  }
+
+  protected <U> Map<String, Function<U, Optional<Object>>> buildFunctionMap(Class<? extends U> registeredClass) {
+    Map<String, Function<U, Optional<Object>>> tempFieldNameToFunction;
+    try {
+      tempFieldNameToFunction = FieldNameUtil.mapFieldNameToFunctionWithExclusions(registeredClass).entrySet().stream()
+              .collect(Collectors.toMap(Map.Entry::getKey, entry -> ((Function<U, Optional<Object>>) entry.getValue())));
+    } catch (IntrospectionException e) {
+      tempFieldNameToFunction = Collections.emptyMap();
+    }
+    return tempFieldNameToFunction;
   }
 
   @Override

@@ -15,7 +15,7 @@ import org.locationtech.jts.geom.LineString;
 /** Describes the graphic data belonging to grid assets */
 public abstract class GraphicInput extends InputEntity {
   /** Description of the graphic layer, this graphic is located on */
-  @FieldName("graphicLayer")
+  @FieldName("graphic_layer")
   private final String graphicLayer;
   /** A graphic representation as path */
   @FieldName("path")

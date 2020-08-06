@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.annotations.FieldName;
+import edu.ie3.datamodel.annotations.NestedFields;
 import edu.ie3.util.quantities.interfaces.Irradiation;
 import java.util.Objects;
 import javax.measure.quantity.Angle;
@@ -20,13 +21,13 @@ public class WeatherValue implements Value {
   @FieldName("coordinate")
   private final Point coordinate;
   /** irradiation values for this coordinate */
-  @FieldName("irradiation")
+  @NestedFields
   private final IrradiationValue irradiation;
   /** Temperature value for this coordinate */
-  @FieldName("temperature")
+  @NestedFields
   private final TemperatureValue temperature;
   /** Wind values for this coordinate */
-  @FieldName("wind")
+  @NestedFields
   private final WindValue wind;
 
   /**

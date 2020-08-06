@@ -14,7 +14,7 @@ import tec.uom.se.ComparableQuantity;
 /** Describes a price for energy */
 public class EnergyPriceValue implements Value {
   /** Price of energy (typically in €/MWh) */
-  @FieldName("value")
+  @FieldName("price")
   private final ComparableQuantity<EnergyPrice> price;
 
   /** @param price per MWh */
