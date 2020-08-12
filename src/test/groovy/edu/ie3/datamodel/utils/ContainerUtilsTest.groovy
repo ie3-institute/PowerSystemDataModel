@@ -5,10 +5,10 @@
  */
 package edu.ie3.datamodel.utils
 
-import edu.ie3.datamodel.graph.DistanceWeightedEdge
+import edu.ie3.datamodel.exceptions.ExtractorException
 import edu.ie3.datamodel.graph.DistanceWeightedGraph
+import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.test.common.GridTestData
-import org.locationtech.jts.algorithm.Distance
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
@@ -339,4 +339,173 @@ class ContainerUtilsTest extends Specification {
 	/* TODO: Extend testing data so that,
 	 *   - filtering of system participants can be tested
 	 *   - filtering of graphic elements can be tested */
+
+	def "Traversing along a simple switch chain returns the correct list of traveled nodes"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		def nodeB = Mock(NodeInput)
+		def nodeC = Mock(NodeInput)
+		def nodeD = Mock(NodeInput)
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getNodeA() >> nodeA
+		switchAB.getNodeB() >> nodeB
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		def switchBC = Mock(SwitchInput)
+		switchBC.getNodeA() >> nodeB
+		switchBC.getNodeB() >> nodeC
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		def switchCD = Mock(SwitchInput)
+		switchCD.getNodeA() >> nodeC
+		switchCD.getNodeB() >> nodeD
+		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+
+		def switches = new HashSet<SwitchInput>()
+		switches.add(switchAB)
+		switches.add(switchBC)
+		switches.add(switchCD)
+
+		def possibleJunctions = new HashSet<NodeInput>()
+
+		def expected = new LinkedList<NodeInput>()
+		expected.addFirst(nodeA)
+		expected.addLast(nodeB)
+		expected.addLast(nodeC)
+		expected.addLast(nodeD)
+
+		when:
+		def actual = ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
+
+		then:
+		actual == expected
+	}
+
+	def "Traversing along a switch chain with intermediate junction returns the correct list of traveled nodes"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		def nodeB = Mock(NodeInput)
+		def nodeC = Mock(NodeInput)
+		def nodeD = Mock(NodeInput)
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getNodeA() >> nodeA
+		switchAB.getNodeB() >> nodeB
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		def switchBC = Mock(SwitchInput)
+		switchBC.getNodeA() >> nodeB
+		switchBC.getNodeB() >> nodeC
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		def switchCD = Mock(SwitchInput)
+		switchCD.getNodeA() >> nodeC
+		switchCD.getNodeB() >> nodeD
+		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+
+		def switches = new HashSet<SwitchInput>()
+		switches.add(switchAB)
+		switches.add(switchBC)
+		switches.add(switchCD)
+
+		def possibleJunctions = new HashSet<NodeInput>()
+		possibleJunctions.add(nodeC)
+
+		def expected = new LinkedList<NodeInput>()
+		expected.addFirst(nodeA)
+		expected.addLast(nodeB)
+		expected.addLast(nodeC)
+
+		when:
+		def actual = ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
+
+		then:
+		actual == expected
+	}
+
+	def "Traversing along a non existing switch chain returns the correct list of traveled nodes"() {
+		given:
+		def nodeA = Mock(NodeInput)
+
+		def switches = new HashSet<SwitchInput>()
+
+		def possibleJunctions = new HashSet<NodeInput>()
+
+		def expected = new LinkedList<NodeInput>()
+		expected.addFirst(nodeA)
+
+		when:
+		def actual = ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
+
+		then:
+		actual == expected
+	}
+
+	def "Traversing along a cyclic switch chain throws an exception"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		def nodeB = Mock(NodeInput)
+		def nodeC = Mock(NodeInput)
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getNodeA() >> nodeA
+		switchAB.getNodeB() >> nodeB
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		def switchBC = Mock(SwitchInput)
+		switchBC.getNodeA() >> nodeB
+		switchBC.getNodeB() >> nodeC
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		def switchCA = Mock(SwitchInput)
+		switchCA.getNodeA() >> nodeC
+		switchCA.getNodeB() >> nodeA
+		switchCA.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeA))
+
+		def switches = new HashSet<SwitchInput>()
+		switches.add(switchAB)
+		switches.add(switchBC)
+		switches.add(switchCA)
+
+		def possibleJunctions = new HashSet<NodeInput>()
+
+		when:
+		ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
+
+		then:
+		IllegalArgumentException ex = thrown()
+		ex.message == "Cannot traverse along switch chain, as there is a junction included at node Mock for type " +
+				"'NodeInput' named 'nodeA'"
+	}
+
+	def "Traversing along a switch chain with switch junction throws an exception"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		def nodeB = Mock(NodeInput)
+		def nodeC = Mock(NodeInput)
+		def nodeD = Mock(NodeInput)
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getNodeA() >> nodeA
+		switchAB.getNodeB() >> nodeB
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		def switchBC = Mock(SwitchInput)
+		switchBC.getNodeA() >> nodeB
+		switchBC.getNodeB() >> nodeC
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		def switchBD = Mock(SwitchInput)
+		switchBD.getNodeA() >> nodeB
+		switchBD.getNodeB() >> nodeD
+		switchBD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeD))
+
+		def switches = new HashSet<SwitchInput>()
+		switches.add(switchAB)
+		switches.add(switchBC)
+		switches.add(switchBD)
+
+		def possibleJunctions = new HashSet<NodeInput>()
+
+		when:
+		def actual = ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
+
+		then:
+		IllegalArgumentException ex = thrown()
+		ex.message == "Cannot traverse along switch chain, as there is a junction included at node Mock for type " +
+				"'NodeInput' named 'nodeB'"
+	}
 }

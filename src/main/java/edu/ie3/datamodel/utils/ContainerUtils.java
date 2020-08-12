@@ -438,6 +438,7 @@ public class ContainerUtils {
    * @param subGrids A mapping from sub grid number to sub grid model
    * @return The queried sub grid container
    */
+  @Deprecated
   private static SubGridContainer getSubGridContainer(
       ConnectorInput connector, ConnectorPort port, Map<Integer, SubGridContainer> subGrids) {
     int subGrid;
@@ -473,6 +474,114 @@ public class ContainerUtils {
               + subGrid
               + " cannot be found");
     else return container;
+  }
+
+  /** Private utility class to be able to return multiple {@link SubGridContainer}s */
+  private static class TransformerSubGridContainers {
+    private final SubGridContainer containerA;
+    private final SubGridContainer containerB;
+    private final Optional<SubGridContainer> maybeContainerC;
+
+    public TransformerSubGridContainers(SubGridContainer containerA, SubGridContainer containerB) {
+      this.containerA = containerA;
+      this.containerB = containerB;
+      this.maybeContainerC = Optional.empty();
+    }
+
+    public TransformerSubGridContainers(
+        SubGridContainer containerA,
+        SubGridContainer maybeContainerC,
+        SubGridContainer containerB) {
+      this.containerA = containerA;
+      this.containerB = containerB;
+      this.maybeContainerC = Optional.ofNullable(maybeContainerC);
+    }
+
+    public SubGridContainer getContainerA() {
+      return containerA;
+    }
+
+    public SubGridContainer getContainerB() {
+      return containerB;
+    }
+
+    public Optional<SubGridContainer> getMaybeContainerC() {
+      return maybeContainerC;
+    }
+  }
+
+  //  private static TransformerSubGridContainers getSubGridContainers(
+  //      TransformerInput transformer,
+  //      RawGridElements rawGridElements,
+  //      Map<Integer, SubGridContainer> subGrids) {
+  //    /* Get the sub grid container at port A - travel upstream as long as nodes are connected
+  // _only_ by switches */
+  //    // Exclude all nodes, that are start or end of any other connector, except switches
+  //    Set<NodeInput> nodesToExclude =
+  //        Stream.concat(
+  //                Stream.concat(
+  //                    rawGridElements.getLines().parallelStream(),
+  //                    rawGridElements.getTransformer2Ws().parallelStream()),
+  //                rawGridElements.getTransformer3Ws().parallelStream())
+  //            .flatMap(connector -> ((ConnectorInput) connector).allNodes().parallelStream())
+  //            .collect(Collectors.toSet());
+  //    /* Get the sub grid container at port B */
+  //    /* Get the sub grid container at port C, if this is a three winding transformer */
+  //  }
+
+  /**
+   * Traversing along a chain of switches and return the traveled nodes. The end thereby is defined
+   * by a node, that either is a dead end or is connected to any other type of connector (e.g.
+   * lines, transformers) and therefore leads to other parts of a "real" grid. If the starting node
+   * is not part of any switch, the starting node is returned.
+   *
+   * @param startNode Node that is meant to be the start of the switch chain
+   * @param switches Set of available switches
+   * @param possibleJunctions Set of nodes that denote possible junctions to "real" grid
+   * @return The end node of the switch chain
+   */
+  private static LinkedList<NodeInput> traverseAlongSwitchChain(
+      NodeInput startNode, Set<SwitchInput> switches, Set<NodeInput> possibleJunctions) {
+    LinkedList<NodeInput> traveledNodes = new LinkedList<>();
+    traveledNodes.addFirst(startNode);
+
+    /* Get the switch, that is connected to the starting node and determine the next node */
+    List<SwitchInput> nextSwitches =
+        switches.stream()
+            .filter(switcher -> switcher.allNodes().contains(startNode))
+            .collect(Collectors.toList());
+    switch (nextSwitches.size()) {
+      case 0:
+        /* No further switch found -> Return the starting node */
+        break;
+      case 1:
+        /* One next switch has been found -> Travel in this direction */
+        SwitchInput nextSwitch = nextSwitches.get(0);
+        Optional<NodeInput> candidateNodes =
+            nextSwitch.allNodes().stream().filter(node -> node != startNode).findFirst();
+        NodeInput nextNode =
+            candidateNodes.orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "There is no further node available at switch " + nextSwitch));
+        if (possibleJunctions.contains(nextNode)) {
+          /* This is a junction, leading to another Connector than a switch */
+          traveledNodes.addLast(nextNode);
+        } else {
+          /* Add the traveled nodes to the nodes to be excluded, to avoid endless loops in cyclic switch topologies */
+          HashSet<NodeInput> newNodesToExclude = new HashSet<>(possibleJunctions);
+          newNodesToExclude.add(nextNode);
+          HashSet<SwitchInput> newSwitches = new HashSet<>(switches);
+          newSwitches.remove(nextSwitch);
+          traveledNodes.addAll(traverseAlongSwitchChain(nextNode, newSwitches, newNodesToExclude));
+        }
+        break;
+      default:
+        throw new IllegalArgumentException(
+            "Cannot traverse along switch chain, as there is a junction included at node "
+                + startNode);
+    }
+    return traveledNodes;
   }
 
   /**
