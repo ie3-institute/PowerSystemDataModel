@@ -7,6 +7,8 @@ package edu.ie3.datamodel.utils
 
 import edu.ie3.datamodel.graph.DistanceWeightedGraph
 import edu.ie3.datamodel.models.input.connector.SwitchInput
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
@@ -86,7 +88,7 @@ class ContainerUtilsTest extends Specification {
 			ComplexTopology.transformerCtoG] as Set                 || [] as Set
 	}
 
-	def "The container utils are able to derive the predominant voltage level"() {
+	def "The container utils are able to derive the predominant voltage level in a setup w/o switchgear"() {
 		given:
 		RawGridElements rawGrid = ContainerUtils.filterForSubnet(complexTopology.rawGrid, subnet)
 
@@ -106,7 +108,149 @@ class ContainerUtilsTest extends Specification {
 		6      || LV
 	}
 
-	def "The container utils throw an exception, when there is an ambiguous voltage level in the grid"() {
+	def "The container utils are able to derive the predominant voltage level in a simple setup w/ switchgear"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		nodeA.getUuid() >> UUID.fromString("0f2db57e-371d-4685-b92c-908ba6ca83d7")
+		nodeA.getSubnet() >> 1
+		nodeA.getVoltLvl() >> HV
+
+		def nodeB = Mock(NodeInput)
+		nodeB.getUuid() >> UUID.fromString("bca6d245-bf5f-4173-be53-a8d90afba072")
+		nodeB.getSubnet() >> 1
+		nodeB.getVoltLvl() >> HV
+
+		def nodeC = Mock(NodeInput)
+		nodeC.getUuid() >> UUID.fromString("a9c5e9d7-9f1d-48ab-93c5-b1d5d70c7913")
+		nodeC.getSubnet() >> 1
+		nodeC.getVoltLvl() >> HV
+
+		def nodeD = Mock(NodeInput)
+		nodeD.getUuid() >> UUID.fromString("440ea785-de2a-4822-99c1-7cea553a4e0b")
+		nodeD.getSubnet() >> 1
+		nodeD.getVoltLvl() >> HV
+
+		def nodeE = Mock(NodeInput)
+		nodeE.getUuid() >> UUID.fromString("df9fd3f4-95bd-4ca8-b7ef-bfc750a512bc")
+		nodeE.getSubnet() >> 2
+		nodeE.getVoltLvl() >> MV_10KV
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getUuid() >> UUID.fromString("f076f7b5-3d17-401a-a11e-7b310f866649")
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+
+		def switchBC = Mock(SwitchInput)
+		switchBC.getUuid() >> UUID.fromString("1bfd0c52-7122-4677-a075-6c97a691d4b4")
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+
+		def switchCD = Mock(SwitchInput)
+		switchCD.getUuid() >> UUID.fromString("01e6828b-8b7c-4d21-85cd-20891b64d530")
+		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+
+		def transformerDE = Mock(Transformer2WInput)
+		transformerDE.getUuid() >> UUID.fromString("8ec5667a-437e-43ac-b6f4-948810c785be")
+		transformerDE.getNodeA() >> nodeD
+		transformerDE.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeD, nodeE))
+
+		def rawGridElements = new RawGridElements([
+			nodeA,
+			nodeB,
+			nodeC,
+			nodeD,
+			nodeE,
+			switchAB,
+			switchBC,
+			switchCD,
+			transformerDE
+		])
+
+		def expected = MV_10KV
+
+		when:
+		def actual = ContainerUtils.determinePredominantVoltLvl(rawGridElements, 2)
+
+		then:
+		actual == expected
+	}
+
+	def "The container utils are able to derive the predominant voltage level in a simple three winding setup w/ switchgear"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		nodeA.getUuid() >> UUID.fromString("0f2db57e-371d-4685-b92c-908ba6ca83d7")
+		nodeA.getSubnet() >> 1
+		nodeA.getVoltLvl() >> HV
+
+		def nodeB = Mock(NodeInput)
+		nodeB.getUuid() >> UUID.fromString("bca6d245-bf5f-4173-be53-a8d90afba072")
+		nodeB.getSubnet() >> 1
+		nodeB.getVoltLvl() >> HV
+
+		def nodeC = Mock(NodeInput)
+		nodeC.getUuid() >> UUID.fromString("a9c5e9d7-9f1d-48ab-93c5-b1d5d70c7913")
+		nodeC.getSubnet() >> 1
+		nodeC.getVoltLvl() >> HV
+
+		def nodeD = Mock(NodeInput)
+		nodeD.getUuid() >> UUID.fromString("440ea785-de2a-4822-99c1-7cea553a4e0b")
+		nodeD.getSubnet() >> 1
+		nodeD.getVoltLvl() >> HV
+
+		def nodeE = Mock(NodeInput)
+		nodeE.getUuid() >> UUID.fromString("df9fd3f4-95bd-4ca8-b7ef-bfc750a512bc")
+		nodeE.getSubnet() >> 2
+		nodeE.getVoltLvl() >> MV_10KV
+
+		def nodeF = Mock(NodeInput)
+		nodeF.getUuid() >> UUID.fromString("d301d524-5638-4ee2-888a-f865c90ade71")
+		nodeF.getSubnet() >> 3
+		nodeF.getVoltLvl() >> LV
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getUuid() >> UUID.fromString("f076f7b5-3d17-401a-a11e-7b310f866649")
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+
+		def switchBC = Mock(SwitchInput)
+		switchBC.getUuid() >> UUID.fromString("1bfd0c52-7122-4677-a075-6c97a691d4b4")
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+
+		def switchCD = Mock(SwitchInput)
+		switchCD.getUuid() >> UUID.fromString("01e6828b-8b7c-4d21-85cd-20891b64d530")
+		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+
+		def transformerDEF = Mock(Transformer3WInput)
+		transformerDEF.getUuid() >> UUID.fromString("8ec5667a-437e-43ac-b6f4-948810c785be")
+		transformerDEF.getNodeA() >> nodeD
+		transformerDEF.getNodeB() >> nodeE
+		transformerDEF.getNodeC() >> nodeF
+		transformerDEF.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeD, nodeE, nodeF))
+
+		def rawGridElements = new RawGridElements([
+			nodeA,
+			nodeB,
+			nodeC,
+			nodeD,
+			nodeE,
+			nodeF,
+			switchAB,
+			switchBC,
+			switchCD,
+			transformerDEF
+		])
+
+		when:
+		def actual = ContainerUtils.determinePredominantVoltLvl(rawGridElements, 2)
+
+		then:
+		actual == MV_10KV
+
+		when:
+		def actual1 = ContainerUtils.determinePredominantVoltLvl(rawGridElements, 3)
+
+		then:
+		actual1 == LV
+	}
+
+	def "The container utils throw an exception, when there is an ambiguous voltage level in the grid w/o switchgear"() {
 		given:
 		RawGridElements rawGrid = ContainerUtils.filterForSubnet(complexTopology.rawGrid, 4)
 

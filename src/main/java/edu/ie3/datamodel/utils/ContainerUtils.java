@@ -270,8 +270,13 @@ public class ContainerUtils {
     /* Exclude all nodes, that are at the high voltage side of the transformer */
     Set<NodeInput> gridNodes = new HashSet<>(rawGrid.getNodes());
     gridNodes.removeAll(
+        /* Remove all nodes, that are upstream of transformers, this comprises all those, that are connected by
+         * switches */
         rawGrid.getTransformer2Ws().stream()
-            .map(ConnectorInput::getNodeA)
+            .flatMap(
+                transformer ->
+                    ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGrid)
+                        .stream())
             .collect(Collectors.toSet()));
     gridNodes.removeAll(
         rawGrid.getTransformer3Ws().stream()
@@ -280,15 +285,15 @@ public class ContainerUtils {
                   if (transformer.getNodeA().getSubnet() == subnet)
                     return Stream.of(transformer.getNodeB(), transformer.getNodeC());
                   else if (transformer.getNodeB().getSubnet() == subnet)
-                    return Stream.of(
-                        transformer.getNodeA(),
-                        transformer.getNodeC(),
-                        transformer.getNodeInternal());
+                    return Stream.concat(
+                        ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGrid)
+                            .stream(),
+                        Stream.of(transformer.getNodeC(), transformer.getNodeInternal()));
                   else
-                    return Stream.of(
-                        transformer.getNodeA(),
-                        transformer.getNodeB(),
-                        transformer.getNodeInternal());
+                    return Stream.concat(
+                        ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGrid)
+                            .stream(),
+                        Stream.of(transformer.getNodeB(), transformer.getNodeInternal()));
                 })
             .collect(Collectors.toSet()));
 
@@ -478,18 +483,6 @@ public class ContainerUtils {
       this.maybeContainerC = Optional.ofNullable(containerC);
     }
 
-    public SubGridContainer getContainerA() {
-      return containerA;
-    }
-
-    public SubGridContainer getContainerB() {
-      return containerB;
-    }
-
-    public Optional<SubGridContainer> getMaybeContainerC() {
-      return maybeContainerC;
-    }
-
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
@@ -525,21 +518,7 @@ public class ContainerUtils {
       throws TopologyException {
     /* Get the sub grid container at port A - travel upstream as long as nodes are connected
      * _only_ by switches */
-    // All nodes, that are part of any Connector (except Switches) are candidates to the next actual
-    // grid nodes
-    Set<NodeInput> possibleTerminatingNodes =
-        Stream.concat(
-                Stream.concat(
-                    rawGridElements.getLines().parallelStream(),
-                    rawGridElements.getTransformer2Ws().parallelStream()),
-                rawGridElements.getTransformer3Ws().parallelStream())
-            .flatMap(connector -> ((ConnectorInput) connector).allNodes().parallelStream())
-            .collect(Collectors.toSet());
-
-    NodeInput topNode =
-        traverseAlongSwitchChain(
-                transformer.getNodeA(), rawGridElements.getSwitches(), possibleTerminatingNodes)
-            .getLast();
+    NodeInput topNode = traverseAlongSwitchChain(transformer.getNodeA(), rawGridElements).getLast();
     if (Objects.isNull(topNode))
       throw new TopologyException(
           "Cannot find most upstream node of transformer '" + transformer + "'");
@@ -562,6 +541,28 @@ public class ContainerUtils {
    * by a node, that either is a dead end or is connected to any other type of connector (e.g.
    * lines, transformers) and therefore leads to other parts of a "real" grid. If the starting node
    * is not part of any switch, the starting node is returned.
+   *
+   * @param startNode Node that is meant to be the start of the switch chain
+   * @param rawGridElements Elements of the pure grid structure.
+   * @return The end node of the switch chain
+   */
+  private static LinkedList<NodeInput> traverseAlongSwitchChain(
+      NodeInput startNode, RawGridElements rawGridElements) {
+    Set<NodeInput> possibleJunctions =
+        Stream.concat(
+                Stream.concat(
+                    rawGridElements.getLines().parallelStream(),
+                    rawGridElements.getTransformer2Ws().parallelStream()),
+                rawGridElements.getTransformer3Ws().parallelStream())
+            .flatMap(connector -> ((ConnectorInput) connector).allNodes().parallelStream())
+            .collect(Collectors.toSet());
+    return traverseAlongSwitchChain(startNode, rawGridElements.getSwitches(), possibleJunctions);
+  }
+
+  /**
+   * Traversing along a chain of switches and return the traveled nodes. The end thereby is defined
+   * by a node, that either is a dead end or part of the provided node set. If the starting node is
+   * not part of any switch, the starting node is returned.
    *
    * @param startNode Node that is meant to be the start of the switch chain
    * @param switches Set of available switches
