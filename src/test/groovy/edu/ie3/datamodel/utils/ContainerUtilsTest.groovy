@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.utils
 
-import edu.ie3.datamodel.exceptions.ExtractorException
 import edu.ie3.datamodel.graph.DistanceWeightedGraph
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.test.common.GridTestData
@@ -18,7 +17,6 @@ import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.container.GraphicElements
 import edu.ie3.datamodel.models.input.container.GridContainer
 import edu.ie3.datamodel.models.input.container.JointGridContainer
@@ -252,15 +250,12 @@ class ContainerUtilsTest extends Specification {
 				rawGrid,
 				systemParticipants,
 				graphics)
-		Set<Transformer2WInput> transformer2ws = ComplexTopology.grid.rawGrid.transformer2Ws
-		Set<Transformer3WInput> transformer3ws = ComplexTopology.grid.rawGrid.transformer3Ws
 		SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
 		when:
 		SubGridTopologyGraph actual = ContainerUtils.buildSubGridTopologyGraph(
 				subgrids,
-				transformer2ws,
-				transformer3ws)
+				ComplexTopology.grid.rawGrid)
 
 		then:
 		actual == expectedSubGridTopology
@@ -507,5 +502,100 @@ class ContainerUtilsTest extends Specification {
 		IllegalArgumentException ex = thrown()
 		ex.message == "Cannot traverse along switch chain, as there is a junction included at node Mock for type " +
 				"'NodeInput' named 'nodeB'"
+	}
+
+	def "Determining the surrounding sub grid containers of a two winding transformer w/o switchgear works fine"() {
+		given:
+		def nodeD = Mock(NodeInput)
+		nodeD.getUuid() >> UUID.fromString("ae4869d5-3551-4cce-a101-d61629716c4f")
+		nodeD.getSubnet() >> 1
+		def nodeE = Mock(NodeInput)
+		nodeE.getUuid() >> UUID.fromString("5d4107b2-385b-40fe-a668-19414bf45d9d")
+		nodeE.getSubnet() >> 2
+
+		def transformer = Mock(Transformer2WInput)
+		transformer.getUuid() >> UUID.fromString("ddcdd72a-5f97-4bef-913b-d32d31216e27")
+		transformer.getNodeA() >> nodeD
+		transformer.getNodeB() >> nodeE
+		transformer.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeD, nodeE))
+
+		def rawGridElements = new RawGridElements([nodeD, nodeE, transformer])
+
+		def subGrid1 = Mock(SubGridContainer)
+		def subGrid2 = Mock(SubGridContainer)
+		def subGridMapping = [
+			1: subGrid1,
+			2: subGrid2
+		]
+
+		def expected = new ContainerUtils.TransformerSubGridContainers(subGrid1, subGrid2)
+
+		when:
+		def actual = ContainerUtils.getSubGridContainers(transformer, rawGridElements, subGridMapping)
+
+		then:
+		actual == expected
+	}
+
+	def "Determining the surrounding sub grid containers of a two winding transformer w/ switchgear works fine"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		nodeA.getUuid() >> UUID.fromString("a37b2501-70c5-479f-92f9-d5b0e4628b2b")
+		nodeA.getSubnet() >> 1
+		def nodeB = Mock(NodeInput)
+		nodeB.getUuid() >> UUID.fromString("8361b082-9d4c-4c54-97d0-2df9ac35333c")
+		nodeB.getSubnet() >> 2
+		def nodeC = Mock(NodeInput)
+		nodeC.getUuid() >> UUID.fromString("b9e4f16b-0317-4794-9f53-339db45a2092")
+		nodeC.getSubnet() >> 2
+		def nodeD = Mock(NodeInput)
+		nodeD.getUuid() >> UUID.fromString("ae4869d5-3551-4cce-a101-d61629716c4f")
+		nodeD.getSubnet() >> 2
+		def nodeE = Mock(NodeInput)
+		nodeE.getUuid() >> UUID.fromString("5d4107b2-385b-40fe-a668-19414bf45d9d")
+		nodeE.getSubnet() >> 2
+
+		def transformer = Mock(Transformer2WInput)
+		transformer.getUuid() >> UUID.fromString("ddcdd72a-5f97-4bef-913b-d32d31216e27")
+		transformer.getNodeA() >> nodeD
+		transformer.getNodeB() >> nodeE
+		transformer.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeD, nodeE))
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getUuid() >> UUID.fromString("5fcb8705-1436-4fbe-97b3-d2dcaf6a783b")
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		def switchBC = Mock(SwitchInput)
+		switchBC.getUuid() >> UUID.fromString("4ca81b0b-e06d-408e-a991-de140f4e229b")
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		def switchCD = Mock(SwitchInput)
+		switchCD.getUuid() >> UUID.fromString("92ce075e-9e3b-4ee6-89b6-19e6372fba01")
+		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+
+		def rawGridElements = new RawGridElements([
+			nodeA,
+			nodeB,
+			nodeC,
+			nodeD,
+			nodeE,
+			transformer,
+			switchAB,
+			switchBC,
+			switchCD
+		])
+
+		def subGrid1 = Mock(SubGridContainer)
+		def subGrid2 = Mock(SubGridContainer)
+		def subGridMapping = [
+			1: subGrid1,
+			2: subGrid2
+		]
+
+		def expected = new ContainerUtils.TransformerSubGridContainers(subGrid1, subGrid2)
+
+		when:
+		def actual = ContainerUtils.getSubGridContainers(transformer, rawGridElements, subGridMapping)
+
+		then:
+		actual == expected
 	}
 }
