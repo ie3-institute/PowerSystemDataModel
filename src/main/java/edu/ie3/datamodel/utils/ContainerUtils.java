@@ -546,7 +546,7 @@ public class ContainerUtils {
    * @param rawGridElements Elements of the pure grid structure.
    * @return The end node of the switch chain
    */
-  private static LinkedList<NodeInput> traverseAlongSwitchChain(
+  public static LinkedList<NodeInput> traverseAlongSwitchChain(
       NodeInput startNode, RawGridElements rawGridElements) {
     Set<NodeInput> possibleJunctions =
         Stream.concat(
