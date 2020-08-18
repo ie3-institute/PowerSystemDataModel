@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.voltagelevels;
 
 import javax.measure.quantity.ElectricPotential;
 
+import edu.ie3.datamodel.annotations.ConstructorFields;
 import edu.ie3.datamodel.annotations.FieldName;
 import tec.uom.se.ComparableQuantity;
 
@@ -27,6 +28,7 @@ public class VoltageLevel {
    * @param id Identifier
    * @param nominalVoltage nominal voltage of the voltage level
    */
+  @ConstructorFields({"volt_lvl", "v_rated"})
   public VoltageLevel(String id, ComparableQuantity<ElectricPotential> nominalVoltage) {
     this.id = id;
     this.nominalVoltage = nominalVoltage;

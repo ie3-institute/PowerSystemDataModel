@@ -27,7 +27,7 @@ class FieldNameUtilTest extends Specification{
 
     def "FieldNameUtil can extract all Fields of a class, including superclass fields, excluding nested fields" () {
         when:
-        def extractedFields = FieldNameUtil.getAllFields(nodeInputClass, Object.class)
+        def extractedFields = FieldNameUtil.getFields(nodeInputClass, Object.class)
         then:
         extractedFields == nodeInputFields
     }

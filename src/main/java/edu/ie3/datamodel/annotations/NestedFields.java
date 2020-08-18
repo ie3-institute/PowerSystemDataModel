@@ -7,6 +7,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 public @interface NestedFields {
 
+    String referenceName();
     String prefix() default "";
 
 }

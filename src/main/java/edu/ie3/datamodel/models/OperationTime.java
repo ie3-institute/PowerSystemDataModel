@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models;
 
+import edu.ie3.datamodel.annotations.ConstructorFields;
 import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.LocalDateTime;
@@ -35,6 +36,7 @@ public class OperationTime {
    * @param endDate End of the operation period
    * @param isLimited true, if operation is timely bound
    */
+  @ConstructorFields({"operates_from", "operates_until", "is_limited"})
   protected OperationTime(ZonedDateTime startDate, ZonedDateTime endDate, boolean isLimited) {
     this.startDate = startDate;
     this.endDate = endDate;

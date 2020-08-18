@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.annotations.ConstructorFields;
 import edu.ie3.datamodel.annotations.FieldName;
 import java.util.Objects;
 import java.util.UUID;
@@ -25,6 +26,7 @@ public class OperatorInput extends InputEntity {
    * @param uuid Unique identifier
    * @param id Human readable identifier
    */
+  @ConstructorFields({"uuid", "id"})
   public OperatorInput(UUID uuid, String id) {
     super(uuid);
     this.id = id;

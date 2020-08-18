@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.annotations.ConstructorFields;
 import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.annotations.NestedFields;
 import edu.ie3.datamodel.models.OperationTime;
@@ -38,7 +39,7 @@ public class NodeInput extends AssetInput {
       GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281));
 
   /** Voltage level of this node */
-  @NestedFields
+  @NestedFields(referenceName = "volt_lvl")
   private final VoltageLevel voltLvl;
   /** Subnet of this node */
   @FieldName("subnet")
@@ -58,6 +59,7 @@ public class NodeInput extends AssetInput {
    * @param voltLvl Voltage level of this node
    * @param subnet of this node
    */
+  @ConstructorFields({"uuid", "id", "operator", "operation_time", "v_target", "slack", "geo_position", "volt_lvl", "subnet"})
   public NodeInput(
       UUID uuid,
       String id,

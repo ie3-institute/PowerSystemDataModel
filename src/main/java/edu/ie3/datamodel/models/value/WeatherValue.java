@@ -21,13 +21,13 @@ public class WeatherValue implements Value {
   @FieldName("coordinate")
   private final Point coordinate;
   /** irradiation values for this coordinate */
-  @NestedFields
+  @NestedFields(referenceName = "irradiation_value")
   private final IrradiationValue irradiation;
   /** Temperature value for this coordinate */
-  @NestedFields
+  @NestedFields(referenceName = "temperature_value")
   private final TemperatureValue temperature;
   /** Wind values for this coordinate */
-  @NestedFields
+  @NestedFields(referenceName = "wind_value")
   private final WindValue wind;
 
   /**

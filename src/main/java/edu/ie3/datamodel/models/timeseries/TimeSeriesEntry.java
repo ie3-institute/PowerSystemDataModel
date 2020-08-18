@@ -17,7 +17,7 @@ import java.util.UUID;
  * @param <V> Type of the contained value
  */
 public abstract class TimeSeriesEntry<V extends Value> extends UniqueEntity {
-  @NestedFields
+  @NestedFields(referenceName = "value")
   protected final V value;
 
   public TimeSeriesEntry(UUID uuid, V value) {

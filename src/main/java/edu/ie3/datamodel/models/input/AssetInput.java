@@ -15,10 +15,10 @@ import java.util.UUID;
 /** Describes a grid asset under the assumption that every asset could be operable */
 public abstract class AssetInput extends InputEntity implements Operable {
   /** Time for which the entity is operated */
-  @NestedFields
+  @NestedFields(referenceName = "operation_time")
   private final OperationTime operationTime;
   /** The operator of this asset */
-  @NestedFields(prefix = "operator_")
+  @NestedFields(referenceName = "operator", prefix = "operator_")
   private final OperatorInput operator;
   /** Name or ID of the asset */
   @FieldName("id")

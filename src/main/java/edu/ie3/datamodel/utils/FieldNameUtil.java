@@ -1,5 +1,6 @@
 package edu.ie3.datamodel.utils;
 
+import edu.ie3.datamodel.annotations.ConstructorFields;
 import edu.ie3.datamodel.annotations.FieldName;
 import edu.ie3.datamodel.annotations.NestedFields;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
@@ -9,6 +10,7 @@ import java.beans.FeatureDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -24,7 +26,8 @@ public class FieldNameUtil {
             throw new IllegalStateException("Utility classes cannot be instantiated");
     }
 
-    public static Collection<Field> getAllFields(Class<?> cls, Class<?> highestClassLvl){
+    //MIA unterschiede erklären
+    public static Collection<Field> getFields(Class<?> cls, Class<?> highestClassLvl){
             List<Field> fields = new ArrayList<>();
 
             for (Class<?> c = cls; c != null; c = c.getSuperclass()) {
@@ -35,7 +38,8 @@ public class FieldNameUtil {
             return fields.stream().filter(f -> !f.isSynthetic()).collect(Collectors.toSet());
         }
 
-    public static Collection<Field> getAllFields(Class<?> cls){
+        //only non-nested fields
+    public static Collection<Field> getFields(Class<?> cls){
         List<Field> fields = new ArrayList<>(Arrays.asList(cls.getDeclaredFields()));
             //exclude synthetic fields, like jacoco fields
             return fields.stream().filter(f -> !f.isSynthetic()).collect(Collectors.toSet());
@@ -43,14 +47,14 @@ public class FieldNameUtil {
 
     //no nested names, but superclass names
     public static Map<Field, String> mapFieldToFieldName(Class<?> cls, Class<?> highestClassLvl){
-        Collection<Field> fields = getAllFields(cls, highestClassLvl);
+        Collection<Field> fields = getFields(cls, highestClassLvl);
         return fields.stream().filter(field -> field.isAnnotationPresent(FieldName.class))
                 .collect(Collectors.toMap(field -> field, field -> field.getAnnotation(FieldName.class).value()));
     }
 
     //no nested names, but superclass names
     public static Map<Field, String> mapFieldToFieldName(Class<?> cls){
-        Collection<Field> fields = getAllFields(cls);
+        Collection<Field> fields = getFields(cls);
         return fields.stream().filter(field -> field.isAnnotationPresent(FieldName.class))
                 .collect(Collectors.toMap(field -> field, field -> field.getAnnotation(FieldName.class).value()));
     }
@@ -157,13 +161,28 @@ public class FieldNameUtil {
     }
 
     public static Collection<Field> getNestedFields(Class<?> cls, Class<?> highestClassLvl) {
-        Collection<Field> fields = getAllFields(cls, highestClassLvl);
+        Collection<Field> fields = getFields(cls, highestClassLvl);
         return fields.stream().filter(field -> field.isAnnotationPresent(NestedFields.class)).collect(Collectors.toSet());
     }
 
     public static Collection<Field> getNestedFields(Class<?> cls) {
-        Collection<Field> fields = getAllFields(cls);
+        Collection<Field> fields = getFields(cls);
         return fields.stream().filter(field -> field.isAnnotationPresent(NestedFields.class)).collect(Collectors.toSet());
+    }
+
+    public static Map<Field, String> mapNestedFieldsToReferenceName(Class<?> cls) {
+        Collection<Field> fields = getNestedFields(cls, Object.class);
+        return fields.stream()
+                .collect(Collectors.toMap(field -> field, field -> field.getAnnotation(NestedFields.class).referenceName()));
+    }
+
+    public static Map<Field, Collection<String>> getInnerFieldNamesForNestedFields(Class<?> cls) {
+        Collection<Field> fields = getNestedFields(cls, Object.class);
+        return fields.stream().collect(Collectors.toMap(field -> field,
+                field -> mapFieldNames(field.getType()).values().stream()
+                        .map(name -> field.getAnnotation(NestedFields.class).prefix().isEmpty() ?
+                                name : field.getAnnotation(NestedFields.class).prefix() + "_" + name)
+                        .collect(Collectors.toSet())));
     }
 
 
@@ -189,6 +208,24 @@ public class FieldNameUtil {
         } catch (IntrospectionException e) {
             return Optional.empty();
         }
+    }
+
+    public static Map<String, Field> getFieldNameToField(Class<?> cls) {
+        String[] constructorFields = getConstructorFields(cls);
+        // inverse map to get field names a key
+        Map<String, Field> fieldNameToField = mapFieldToFieldName(cls, Object.class).entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        return Arrays.stream(constructorFields).collect(Collectors.toMap(constructorField -> constructorField, fieldNameToField::get));
+    }
+
+    public static String[] getConstructorFields(Class<?> cls) {
+        Optional<Constructor<?>> constructorWithAnnotation = getAnnotatedConstructor(cls);
+        //MIA better exception
+        return constructorWithAnnotation.orElseThrow(() -> new IllegalArgumentException("Could not find ConstructorFields annotation on class " + cls.getSimpleName())).getAnnotation(ConstructorFields.class).value();
+    }
+
+    public static Optional<Constructor<?>> getAnnotatedConstructor(Class<?> cls) {
+        return Arrays.stream(cls.getDeclaredConstructors()).filter(constructor -> constructor.isAnnotationPresent(ConstructorFields.class)).findFirst();
     }
 
 }
