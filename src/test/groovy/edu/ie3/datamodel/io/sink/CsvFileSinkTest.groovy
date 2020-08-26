@@ -48,9 +48,9 @@ import tec.uom.se.quantity.Quantities
 import javax.measure.Quantity
 import javax.measure.quantity.Power
 
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
-import static edu.ie3.util.quantities.PowerSystemUnits.PERCENT
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.DEGREE_GEOM
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PERCENT
 
 class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 

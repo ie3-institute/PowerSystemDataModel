@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
