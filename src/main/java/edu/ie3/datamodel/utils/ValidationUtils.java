@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.measure.Quantity;
 
 /** Basic Sanity validation tools for entities */
@@ -95,12 +96,26 @@ public class ValidationUtils {
               checkTransformer3W(transformer);
             });
 
-    /* Checking switches */
+    /* Checking switches
+     * Because of the fact, that a transformer with switch gear in "upstream" direction has it's corresponding node in
+     * upper grid connected to a switch, instead of to the transformer directly: Collect all nodes at the end of the
+     * upstream switch chain and add them to the set of allowed nodes */
+    HashSet<NodeInput> validSwitchNodes = new HashSet<>(nodes);
+    validSwitchNodes.addAll(
+        Stream.of(rawGridElements.getTransformer2Ws(), rawGridElements.getTransformer2Ws())
+            .flatMap(Set::stream)
+            .parallel()
+            .map(
+                transformer ->
+                    ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGridElements)
+                        .getLast())
+            .collect(Collectors.toList()));
+
     rawGridElements
         .getSwitches()
         .forEach(
             switcher -> {
-              checkNodeAvailability(switcher, nodes);
+              checkNodeAvailability(switcher, validSwitchNodes);
               checkSwitch(switcher);
             });
 
@@ -466,11 +481,12 @@ public class ValidationUtils {
     if (switchInput == null)
       throw new NullPointerException("Expected a switch, but got nothing. :-(");
     checkConnector(switchInput);
-    if (switchInput.getNodeA().getSubnet() != switchInput.getNodeB().getSubnet())
-      throw new InvalidEntityException("the switch {} connects to different subnets", switchInput);
     if (switchInput.getNodeA().getVoltLvl() != switchInput.getNodeB().getVoltLvl())
       throw new InvalidEntityException(
           "the switch {} connects to different voltage levels", switchInput);
+    /* Remark: Connecting two different "subnets" is fine, because as of our definition regarding a switchgear in
+     * "upstream" direction of a transformer, all the nodes, that hare within the switch chain, belong to the lower
+     * grid, whilst the "real" upper node is within the upper grid */
   }
 
   /**
