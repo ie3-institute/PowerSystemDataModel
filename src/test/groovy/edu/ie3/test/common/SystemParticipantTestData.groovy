@@ -33,11 +33,11 @@ import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
 import edu.ie3.util.TimeUtil
-import edu.ie3.util.quantities.interfaces.Currency
-import edu.ie3.util.quantities.interfaces.DimensionlessRate
-import edu.ie3.util.quantities.interfaces.EnergyPrice
-import edu.ie3.util.quantities.interfaces.SpecificEnergy
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
+import edu.ie3.util.quantities.dep.interfaces.Currency
+import edu.ie3.util.quantities.dep.interfaces.DimensionlessRate
+import edu.ie3.util.quantities.dep.interfaces.EnergyPrice
+import edu.ie3.util.quantities.dep.interfaces.SpecificEnergy
+import edu.ie3.util.quantities.dep.interfaces.SpecificHeatCapacity
 import tec.uom.se.ComparableQuantity
 import tec.uom.se.quantity.Quantities
 
@@ -53,7 +53,7 @@ import javax.measure.quantity.Time
 import javax.measure.quantity.Volume
 import java.time.ZoneId
 
-import static edu.ie3.util.quantities.PowerSystemUnits.*
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.*
 
 
 class SystemParticipantTestData {

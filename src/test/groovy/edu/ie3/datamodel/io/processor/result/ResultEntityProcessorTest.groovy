@@ -16,7 +16,7 @@ import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.util.TimeTools
-import edu.ie3.util.quantities.PowerSystemUnits
+import edu.ie3.util.quantities.dep.PowerSystemUnits
 import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities

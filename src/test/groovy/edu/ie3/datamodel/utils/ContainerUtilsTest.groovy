@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.datamodel.models.OperationTime

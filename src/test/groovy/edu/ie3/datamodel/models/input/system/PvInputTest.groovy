@@ -9,8 +9,8 @@ import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.DEGREE_GEOM
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
 import static tec.uom.se.unit.Units.PERCENT
 
 

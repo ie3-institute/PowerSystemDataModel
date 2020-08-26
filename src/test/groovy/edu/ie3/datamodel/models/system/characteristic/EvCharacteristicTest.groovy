@@ -5,8 +5,8 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOWATT
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint

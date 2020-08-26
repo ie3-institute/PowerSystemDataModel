@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
-import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import edu.ie3.util.quantities.dep.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
 import tec.uom.se.ComparableQuantity;

@@ -8,8 +8,8 @@ package edu.ie3.datamodel.io.factory.input
 import edu.ie3.datamodel.utils.GridAndGeoUtils
 import org.locationtech.jts.geom.LineString
 
-import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.METRE_PER_SECOND
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput

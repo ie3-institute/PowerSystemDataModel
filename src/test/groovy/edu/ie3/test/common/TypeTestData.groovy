@@ -7,15 +7,15 @@ package edu.ie3.test.common
 
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 
-import static edu.ie3.util.quantities.PowerSystemUnits.EURO
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR_PER_KILOMETRE
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
-import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
-import static edu.ie3.util.quantities.PowerSystemUnits.MEGAVOLTAMPERE
-import static edu.ie3.util.quantities.PowerSystemUnits.PU_PER_HOUR
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.EURO
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOWATT
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOWATTHOUR
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOWATTHOUR_PER_KILOMETRE
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.MEGAVOLTAMPERE
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU_PER_HOUR
 import static tec.uom.se.unit.Units.HOUR
 import static tec.uom.se.unit.Units.PERCENT
 import static tec.uom.se.unit.Units.SQUARE_METRE

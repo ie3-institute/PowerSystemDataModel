@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
-import static edu.ie3.util.quantities.PowerSystemUnits.PU;
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU;
 
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;

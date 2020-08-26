@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
-import edu.ie3.util.quantities.interfaces.Irradiation;
+import edu.ie3.util.quantities.dep.interfaces.Irradiation;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collections;
