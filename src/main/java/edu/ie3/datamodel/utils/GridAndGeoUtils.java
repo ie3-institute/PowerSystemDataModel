@@ -145,11 +145,10 @@ public class GridAndGeoUtils extends GeoUtils {
    * @return distancen between start node and end node
    */
   public static ComparableQuantity<Length> distanceBetweenNodes(NodeInput nodeA, NodeInput nodeB) {
-    return (ComparableQuantity<Length>)
-        haversine(
-            nodeA.getGeoPosition().getY(),
-            nodeA.getGeoPosition().getX(),
-            nodeB.getGeoPosition().getY(),
-            nodeB.getGeoPosition().getX());
+    return calcHaversine(
+        nodeA.getGeoPosition().getY(),
+        nodeA.getGeoPosition().getX(),
+        nodeB.getGeoPosition().getY(),
+        nodeB.getGeoPosition().getX());
   }
 }
