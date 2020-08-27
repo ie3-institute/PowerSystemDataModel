@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.Map;
+import java.util.Objects;
 
 public class ThermalUnitInputEntityData extends AssetInputEntityData {
   private final ThermalBusInput busInput;
@@ -32,5 +33,19 @@ public class ThermalUnitInputEntityData extends AssetInputEntityData {
 
   public ThermalBusInput getBusInput() {
     return busInput;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ThermalUnitInputEntityData)) return false;
+    if (!super.equals(o)) return false;
+    ThermalUnitInputEntityData that = (ThermalUnitInputEntityData) o;
+    return busInput.equals(that.busInput);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), busInput);
   }
 }
