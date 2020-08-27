@@ -7,8 +7,8 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.util.quantities.interfaces.SpecificConductance;
-import edu.ie3.util.quantities.interfaces.SpecificResistance;
+import edu.ie3.util.quantities.dep.interfaces.SpecificConductance;
+import edu.ie3.util.quantities.dep.interfaces.SpecificResistance;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.ElectricCurrent;

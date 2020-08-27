@@ -8,7 +8,7 @@ package edu.ie3.datamodel.utils
 
 import edu.ie3.test.common.ComplexTopology
 import edu.ie3.test.common.SampleJointGrid
-import edu.ie3.util.quantities.PowerSystemUnits
+import edu.ie3.util.quantities.dep.PowerSystemUnits
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.io.geojson.GeoJsonReader
 import spock.lang.Shared

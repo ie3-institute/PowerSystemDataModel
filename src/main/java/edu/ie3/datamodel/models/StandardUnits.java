@@ -5,9 +5,9 @@
 */
 package edu.ie3.datamodel.models;
 
-import static edu.ie3.util.quantities.PowerSystemUnits.*;
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.*;
 
-import edu.ie3.util.quantities.interfaces.*;
+import edu.ie3.util.quantities.dep.interfaces.*;
 import javax.measure.Unit;
 import javax.measure.quantity.*;
 import tec.uom.se.unit.MetricPrefix;

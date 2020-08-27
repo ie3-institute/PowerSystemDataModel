@@ -7,7 +7,7 @@ package edu.ie3.datamodel.utils
 
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.geo.GeoUtils
-import edu.ie3.util.quantities.PowerSystemUnits
+import edu.ie3.util.quantities.dep.PowerSystemUnits
 import org.apache.commons.lang3.ArrayUtils
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.LineString

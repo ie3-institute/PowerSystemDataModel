@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.input.system
 
 import edu.ie3.test.common.SystemParticipantTestData
-import edu.ie3.util.quantities.PowerSystemUnits
+import edu.ie3.util.quantities.dep.PowerSystemUnits
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 

@@ -13,9 +13,9 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.util.TimeTools
 import edu.ie3.util.TimeUtil
-import edu.ie3.util.quantities.interfaces.HeatCapacity
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
-import edu.ie3.util.quantities.interfaces.ThermalConductance
+import edu.ie3.util.quantities.dep.interfaces.HeatCapacity
+import edu.ie3.util.quantities.dep.interfaces.SpecificHeatCapacity
+import edu.ie3.util.quantities.dep.interfaces.ThermalConductance
 import tec.uom.se.ComparableQuantity
 import tec.uom.se.quantity.Quantities
 

@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.models
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLT
 import static tec.uom.se.unit.Units.VOLT
 
 import edu.ie3.datamodel.exceptions.VoltageLevelException
