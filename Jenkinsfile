@@ -61,7 +61,8 @@ def deployGradleTasks = ""
 /// commit hash
 def commitHash = ""
 
-if (env.BRANCH_NAME == "master") {
+def branchName = env.BRANCH_NAME
+if (isDeployBranch(branchName)) {
 
     // setup
     getMasterBranchProps()
@@ -91,7 +92,7 @@ if (env.BRANCH_NAME == "master") {
                     stage('checkout from scm') {
                         try {
                             // merged mode
-                            commitHash = gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId).GIT_COMMIT
+                            commitHash = gitCheckout(projects.get(0), urls.get(0), 'refs/heads/' + branchName, sshCredentialsId).GIT_COMMIT
                         } catch (exc) {
                             sh 'exit 1' // failure due to not found master branch
                         }
@@ -106,7 +107,7 @@ if (env.BRANCH_NAME == "master") {
                     // execute sonarqube code analysis
                     stage('SonarQube analysis') {
                         withSonarQubeEnv() { // Will pick the global server connection from jenkins for sonarqube
-                            gradle("sonarqube -Dsonar.branch.name=master -Dsonar.projectKey=$sonarqubeProjectKey -Dsonar.exclusions=docs/")
+                            gradle("sonarqube -Dsonar.branch.name=" + branchName+  " -Dsonar.projectKey=$sonarqubeProjectKey -Dsonar.exclusions=docs/")
                         }
                     }
 
@@ -153,7 +154,7 @@ if (env.BRANCH_NAME == "master") {
                                 message: "deployment v"+projectVersion+" successful. If this was a release deployment pls remember visiting https://oss.sonatype.org " +
                                         "too stag and release the artifact!" +
                                         "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                        "*branch:* master \n"
+                                        "*branch:* " + branchName + " \n"
                         rawMessage: true
                     }
 
@@ -172,7 +173,7 @@ if (env.BRANCH_NAME == "master") {
                     rocketSend channel: rocketChatChannel, emoji: ':jenkins_explode:',
                             message: "deployment v"+projectVersion+" failed!\n" +
                                     "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                    "*branch:* master\n"
+                                    "*branch:* " + branchName + "\n"
                     rawMessage: true
                 }
 
@@ -194,7 +195,7 @@ if (env.BRANCH_NAME == "master") {
                     stage('checkout from scm') {
                         try {
                             // merged mode
-                            commitHash = gitCheckout(projects.get(0), urls.get(0), 'refs/heads/master', sshCredentialsId).GIT_COMMIT
+                            commitHash = gitCheckout(projects.get(0), urls.get(0), 'refs/heads/' + branchName, sshCredentialsId).GIT_COMMIT
                         } catch (exc) {
                             sh 'exit 1' // failure due to not found master branch
                         }
@@ -205,8 +206,8 @@ if (env.BRANCH_NAME == "master") {
                     featureBranchName = splitStringToBranchName(jsonObject.commit.message)
 
                     def message = (featureBranchName?.trim()) ?
-                            "master branch build triggered (incl. snapshot deploy) by merging pr from feature branch '${featureBranchName}'"
-                            : "master branch build triggered (incl. snapshot deploy) for commit with message '${jsonObject.commit.message}'"
+                            branchName + " branch build triggered (incl. snapshot deploy) by merging pr from feature branch '${featureBranchName}'"
+                            : branchName + " branch build triggered (incl. snapshot deploy) for commit with message '${jsonObject.commit.message}'"
 
                     // notify rocket chat about the started feature branch run
                     rocketSend channel: rocketChatChannel, emoji: ':jenkins_triggered:',
@@ -227,7 +228,7 @@ if (env.BRANCH_NAME == "master") {
                     // execute sonarqube code analysis
                     stage('SonarQube analysis') {
                         withSonarQubeEnv() { // Will pick the global server connection from jenkins for sonarqube
-                            gradle("sonarqube -Dsonar.branch.name=master -Dsonar.projectKey=$sonarqubeProjectKey ")
+                            gradle("sonarqube -Dsonar.branch.name=" + branchName + " -Dsonar.projectKey=$sonarqubeProjectKey ")
                         }
                     }
 
@@ -271,12 +272,12 @@ if (env.BRANCH_NAME == "master") {
 
                         // notify rocket chat
                         message = (featureBranchName?.trim()) ?
-                                "master branch build successful! Merged pr from feature branch '${featureBranchName}'"
-                                : "master branch build successful! Build commit with message is '${jsonObject.commit.message}'"
+                                branchName + " branch build successful! Merged pr from feature branch '${featureBranchName}'"
+                                : branchName + " branch build successful! Build commit with message is '${jsonObject.commit.message}'"
                         rocketSend channel: rocketChatChannel, emoji: ':jenkins_party:',
                                 message: message + "\n" +
                                         "*repo:* ${urls.get(0)}/${projects.get(0)}\n" +
-                                        "*branch:* master \n"
+                                        "*branch:* " + branchName + " \n"
                         rawMessage: true
 
                     }
@@ -295,7 +296,7 @@ if (env.BRANCH_NAME == "master") {
 
                     // notify rocket chat
                     rocketSend channel: rocketChatChannel, emoji: ':jenkins_explode:',
-                            message: "merge feature into master failed!\n" +
+                            message: "merge feature into " + branchName + " failed!\n" +
                                     "*repo:* ${urls.get(0)}/${projects.get(0)}\n"
                     rawMessage: true
                 }
@@ -440,6 +441,9 @@ def getFeatureBranchProps() {
 
 }
 
+def isDeployBranch(String branchName) {
+    return branchName == "master" || branchName.startsWith("dev_")
+}
 
 def getMasterBranchProps() {
     properties([parameters(
