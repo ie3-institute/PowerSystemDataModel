@@ -49,7 +49,7 @@ public class LineInputFactory
     final ComparableQuantity<Length> length = data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH);
     final LineString geoPosition =
         data.getLineString(GEO_POSITION)
-            .orElse(GridAndGeoUtils.buildLineStringBetweenNodes(nodeA, nodeB));
+            .orElse(GridAndGeoUtils.buildSafeLineStringBetweenNodes(nodeA, nodeB));
     final OlmCharacteristicInput olmCharacteristic;
     try {
       olmCharacteristic =
