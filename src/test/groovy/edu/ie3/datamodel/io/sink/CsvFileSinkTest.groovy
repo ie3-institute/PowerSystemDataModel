@@ -5,6 +5,10 @@
  */
 package edu.ie3.datamodel.io.sink
 
+import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
+import static edu.ie3.util.quantities.PowerSystemUnits.PERCENT
+
 import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
@@ -47,10 +51,6 @@ import tech.units.indriya.quantity.Quantities
 
 import javax.measure.Quantity
 import javax.measure.quantity.Power
-
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
-import static edu.ie3.util.quantities.PowerSystemUnits.PERCENT
 
 class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
