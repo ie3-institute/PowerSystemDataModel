@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.processor.input;
 
 import edu.ie3.datamodel.io.processor.EntityProcessor;
-import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
@@ -22,8 +21,6 @@ import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import javax.measure.Quantity;
 import javax.measure.quantity.*;
 
 /**
@@ -79,40 +76,6 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
 
   public InputEntityProcessor(Class<? extends InputEntity> registeredClass) {
     super(registeredClass);
-  }
-
-  @Override
-  protected Optional<String> handleProcessorSpecificQuantity(
-      Quantity<?> quantity, String fieldName) {
-    Optional<String> normalizedQuantityValue = Optional.empty();
-    switch (fieldName) {
-      case "energy":
-      case "eConsAnnual":
-      case "eStorage":
-        normalizedQuantityValue =
-            quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
-        break;
-      case "q":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
-        break;
-      case "p":
-      case "pMax":
-      case "pOwn":
-      case "pThermal":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
-        break;
-      default:
-        log.error(
-            "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
-            quantity,
-            fieldName);
-        break;
-    }
-    return normalizedQuantityValue;
   }
 
   @Override
