@@ -328,12 +328,12 @@ class GridTestData {
 	public static final LineTypeInput lineTypeInputCtoD = new LineTypeInput(
 	UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
 	"lineType_AtoB",
-	Quantities.getQuantity(0.00000000322, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
-	Quantities.getQuantity(0, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
-	Quantities.getQuantity(0.437, PowerSystemUnits.OHM_PER_KILOMETRE),
-	Quantities.getQuantity(0.356, PowerSystemUnits.OHM_PER_KILOMETRE),
-	Quantities.getQuantity(300, PowerSystemUnits.AMPERE),
-	Quantities.getQuantity(20, KILOVOLT)
+	Quantities.getQuantity(0.00000000322d, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
+	Quantities.getQuantity(0d, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
+	Quantities.getQuantity(0.437d, PowerSystemUnits.OHM_PER_KILOMETRE),
+	Quantities.getQuantity(0.356d, PowerSystemUnits.OHM_PER_KILOMETRE),
+	Quantities.getQuantity(300d, PowerSystemUnits.AMPERE),
+	Quantities.getQuantity(20d, KILOVOLT)
 
 	)
 
