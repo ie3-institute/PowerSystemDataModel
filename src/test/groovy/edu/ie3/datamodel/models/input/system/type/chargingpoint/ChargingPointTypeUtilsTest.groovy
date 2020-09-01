@@ -7,9 +7,8 @@ package edu.ie3.datamodel.models.input.system.type.chargingpoint
 
 import edu.ie3.datamodel.exceptions.ChargingPointTypeException
 import edu.ie3.datamodel.models.ElectricCurrentType
-import edu.ie3.util.quantities.PowerSystemUnits
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
 import static edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils.*
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
@@ -36,6 +35,7 @@ class ChargingPointTypeUtilsTest extends Specification {
 		ChargingPointType actual = parse(parsableString)
 
 		expect:
+		new ChargingPointType("FastCharger", Quantities.getQuantity(50, KILOVOLTAMPERE), ElectricCurrentType.DC).toString()
 		actual == expectedObj
 		actual.toString() == expectedString
 

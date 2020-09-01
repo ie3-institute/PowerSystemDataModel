@@ -18,7 +18,7 @@ import tec.uom.se.quantity.Quantities
 import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
 
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 
 /**
  * //ToDo: Class Description
