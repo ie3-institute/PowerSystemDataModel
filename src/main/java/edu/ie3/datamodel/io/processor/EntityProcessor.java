@@ -6,9 +6,13 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.lang.reflect.Method;
 import java.util.*;
+import javax.measure.Quantity;
+import javax.measure.quantity.Energy;
+import javax.measure.quantity.Power;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<T> {
 
-  public final Logger log = LogManager.getLogger(this.getClass());
+  public static final Logger log = LogManager.getLogger(EntityProcessor.class);
   protected final String[] headerElements;
   private final SortedMap<String, Method> fieldNameToMethod;
 
@@ -64,6 +68,40 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
       logger.error("Cannot process the entity{}.", entity, e);
       return Optional.empty();
     }
+  }
+
+  @Override
+  protected Optional<String> handleProcessorSpecificQuantity(
+      Quantity<?> quantity, String fieldName) {
+    Optional<String> normalizedQuantityValue = Optional.empty();
+    switch (fieldName) {
+      case "energy":
+      case "eConsAnnual":
+      case "eStorage":
+        normalizedQuantityValue =
+            quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
+        break;
+      case "q":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
+        break;
+      case "p":
+      case "pMax":
+      case "pOwn":
+      case "pThermal":
+        normalizedQuantityValue =
+            quantityValToOptionalString(
+                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
+        break;
+      default:
+        log.error(
+            "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
+            quantity,
+            fieldName);
+        break;
+    }
+    return normalizedQuantityValue;
   }
 
   @Override

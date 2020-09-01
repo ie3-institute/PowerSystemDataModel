@@ -9,7 +9,6 @@ import static edu.ie3.datamodel.io.processor.timeseries.FieldSourceToMethod.Fiel
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
-import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -21,9 +20,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.measure.Quantity;
-import javax.measure.quantity.Energy;
-import javax.measure.quantity.Power;
 
 public class TimeSeriesProcessor<
         T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
@@ -267,40 +263,6 @@ public class TimeSeriesProcessor<
     return fieldToSource.entrySet().stream()
         .filter(entry -> entry.getValue().getSource().equals(source))
         .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getMethod()));
-  }
-
-  @Override
-  protected Optional<String> handleProcessorSpecificQuantity(
-      Quantity<?> quantity, String fieldName) {
-    Optional<String> normalizedQuantityValue = Optional.empty();
-    switch (fieldName) {
-      case "energy":
-      case "eConsAnnual":
-      case "eStorage":
-        normalizedQuantityValue =
-            quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
-        break;
-      case "q":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
-        break;
-      case "p":
-      case "pMax":
-      case "pOwn":
-      case "pThermal":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
-        break;
-      default:
-        log.error(
-            "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
-            quantity,
-            fieldName);
-        break;
-    }
-    return normalizedQuantityValue;
   }
 
   @Override

@@ -5,6 +5,10 @@
  */
 package edu.ie3.datamodel.io.sink
 
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.DEGREE_GEOM
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PERCENT
+
 import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
@@ -39,6 +43,7 @@ import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
+import edu.ie3.test.common.SampleJointGrid
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.test.common.ThermalUnitInputTestData
 import edu.ie3.util.TimeUtil
@@ -49,10 +54,6 @@ import tec.uom.se.quantity.Quantities
 
 import javax.measure.Quantity
 import javax.measure.quantity.Power
-
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
-import static edu.ie3.util.quantities.PowerSystemUnits.PERCENT
 
 class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
@@ -298,6 +299,35 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
 		then:
 		!(new File(testBaseFolderPath + File.separator + "individual_time_series_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").exists())
+
+		cleanup:
+		csvFileSink.shutdown()
+	}
+
+	def "A valid CsvFileSink should persist a valid joint grid container correctly"() {
+		given:
+		/* A csv file sink, that is NOT able to handle time series */
+		def csvFileSink = new CsvFileSink(
+				testBaseFolderPath,
+				new ProcessorProvider(),
+				new FileNamingStrategy(),
+				false,
+				",")
+
+		when:
+		csvFileSink.persistJointGrid(SampleJointGrid.grid())
+
+		then:
+		new File(testBaseFolderPath + File.separator + "line_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "line_type_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "load_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "node_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "operator_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "pv_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "storage_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "storage_type_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "transformer2w_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "transformer2w_type_input.csv").exists()
 
 		cleanup:
 		csvFileSink.shutdown()

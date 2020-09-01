@@ -5,20 +5,20 @@
  */
 package edu.ie3.datamodel.utils
 
-import edu.ie3.datamodel.graph.DistanceWeightedEdge
 import edu.ie3.datamodel.graph.DistanceWeightedGraph
+import edu.ie3.datamodel.models.input.connector.SwitchInput
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
-import org.locationtech.jts.algorithm.Distance
 
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.container.GraphicElements
 import edu.ie3.datamodel.models.input.container.GridContainer
 import edu.ie3.datamodel.models.input.container.JointGridContainer
@@ -88,7 +88,7 @@ class ContainerUtilsTest extends Specification {
 			ComplexTopology.transformerCtoG] as Set                 || [] as Set
 	}
 
-	def "The container utils are able to derive the predominant voltage level"() {
+	def "The container utils are able to derive the predominant voltage level in a setup w/o switchgear"() {
 		given:
 		RawGridElements rawGrid = ContainerUtils.filterForSubnet(complexTopology.rawGrid, subnet)
 
@@ -108,7 +108,149 @@ class ContainerUtilsTest extends Specification {
 		6      || LV
 	}
 
-	def "The container utils throw an exception, when there is an ambiguous voltage level in the grid"() {
+	def "The container utils are able to derive the predominant voltage level in a simple setup w/ switchgear"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		nodeA.getUuid() >> UUID.fromString("0f2db57e-371d-4685-b92c-908ba6ca83d7")
+		nodeA.getSubnet() >> 1
+		nodeA.getVoltLvl() >> HV
+
+		def nodeB = Mock(NodeInput)
+		nodeB.getUuid() >> UUID.fromString("bca6d245-bf5f-4173-be53-a8d90afba072")
+		nodeB.getSubnet() >> 1
+		nodeB.getVoltLvl() >> HV
+
+		def nodeC = Mock(NodeInput)
+		nodeC.getUuid() >> UUID.fromString("a9c5e9d7-9f1d-48ab-93c5-b1d5d70c7913")
+		nodeC.getSubnet() >> 1
+		nodeC.getVoltLvl() >> HV
+
+		def nodeD = Mock(NodeInput)
+		nodeD.getUuid() >> UUID.fromString("440ea785-de2a-4822-99c1-7cea553a4e0b")
+		nodeD.getSubnet() >> 1
+		nodeD.getVoltLvl() >> HV
+
+		def nodeE = Mock(NodeInput)
+		nodeE.getUuid() >> UUID.fromString("df9fd3f4-95bd-4ca8-b7ef-bfc750a512bc")
+		nodeE.getSubnet() >> 2
+		nodeE.getVoltLvl() >> MV_10KV
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getUuid() >> UUID.fromString("f076f7b5-3d17-401a-a11e-7b310f866649")
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+
+		def switchBC = Mock(SwitchInput)
+		switchBC.getUuid() >> UUID.fromString("1bfd0c52-7122-4677-a075-6c97a691d4b4")
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+
+		def switchCD = Mock(SwitchInput)
+		switchCD.getUuid() >> UUID.fromString("01e6828b-8b7c-4d21-85cd-20891b64d530")
+		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+
+		def transformerDE = Mock(Transformer2WInput)
+		transformerDE.getUuid() >> UUID.fromString("8ec5667a-437e-43ac-b6f4-948810c785be")
+		transformerDE.getNodeA() >> nodeD
+		transformerDE.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeD, nodeE))
+
+		def rawGridElements = new RawGridElements([
+			nodeA,
+			nodeB,
+			nodeC,
+			nodeD,
+			nodeE,
+			switchAB,
+			switchBC,
+			switchCD,
+			transformerDE
+		])
+
+		def expected = MV_10KV
+
+		when:
+		def actual = ContainerUtils.determinePredominantVoltLvl(rawGridElements, 2)
+
+		then:
+		actual == expected
+	}
+
+	def "The container utils are able to derive the predominant voltage level in a simple three winding setup w/ switchgear"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		nodeA.getUuid() >> UUID.fromString("0f2db57e-371d-4685-b92c-908ba6ca83d7")
+		nodeA.getSubnet() >> 1
+		nodeA.getVoltLvl() >> HV
+
+		def nodeB = Mock(NodeInput)
+		nodeB.getUuid() >> UUID.fromString("bca6d245-bf5f-4173-be53-a8d90afba072")
+		nodeB.getSubnet() >> 1
+		nodeB.getVoltLvl() >> HV
+
+		def nodeC = Mock(NodeInput)
+		nodeC.getUuid() >> UUID.fromString("a9c5e9d7-9f1d-48ab-93c5-b1d5d70c7913")
+		nodeC.getSubnet() >> 1
+		nodeC.getVoltLvl() >> HV
+
+		def nodeD = Mock(NodeInput)
+		nodeD.getUuid() >> UUID.fromString("440ea785-de2a-4822-99c1-7cea553a4e0b")
+		nodeD.getSubnet() >> 1
+		nodeD.getVoltLvl() >> HV
+
+		def nodeE = Mock(NodeInput)
+		nodeE.getUuid() >> UUID.fromString("df9fd3f4-95bd-4ca8-b7ef-bfc750a512bc")
+		nodeE.getSubnet() >> 2
+		nodeE.getVoltLvl() >> MV_10KV
+
+		def nodeF = Mock(NodeInput)
+		nodeF.getUuid() >> UUID.fromString("d301d524-5638-4ee2-888a-f865c90ade71")
+		nodeF.getSubnet() >> 3
+		nodeF.getVoltLvl() >> LV
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getUuid() >> UUID.fromString("f076f7b5-3d17-401a-a11e-7b310f866649")
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+
+		def switchBC = Mock(SwitchInput)
+		switchBC.getUuid() >> UUID.fromString("1bfd0c52-7122-4677-a075-6c97a691d4b4")
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+
+		def switchCD = Mock(SwitchInput)
+		switchCD.getUuid() >> UUID.fromString("01e6828b-8b7c-4d21-85cd-20891b64d530")
+		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+
+		def transformerDEF = Mock(Transformer3WInput)
+		transformerDEF.getUuid() >> UUID.fromString("8ec5667a-437e-43ac-b6f4-948810c785be")
+		transformerDEF.getNodeA() >> nodeD
+		transformerDEF.getNodeB() >> nodeE
+		transformerDEF.getNodeC() >> nodeF
+		transformerDEF.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeD, nodeE, nodeF))
+
+		def rawGridElements = new RawGridElements([
+			nodeA,
+			nodeB,
+			nodeC,
+			nodeD,
+			nodeE,
+			nodeF,
+			switchAB,
+			switchBC,
+			switchCD,
+			transformerDEF
+		])
+
+		when:
+		def actual = ContainerUtils.determinePredominantVoltLvl(rawGridElements, 2)
+
+		then:
+		actual == MV_10KV
+
+		when:
+		def actual1 = ContainerUtils.determinePredominantVoltLvl(rawGridElements, 3)
+
+		then:
+		actual1 == LV
+	}
+
+	def "The container utils throw an exception, when there is an ambiguous voltage level in the grid w/o switchgear"() {
 		given:
 		RawGridElements rawGrid = ContainerUtils.filterForSubnet(complexTopology.rawGrid, 4)
 
@@ -252,15 +394,12 @@ class ContainerUtilsTest extends Specification {
 				rawGrid,
 				systemParticipants,
 				graphics)
-		Set<Transformer2WInput> transformer2ws = ComplexTopology.grid.rawGrid.transformer2Ws
-		Set<Transformer3WInput> transformer3ws = ComplexTopology.grid.rawGrid.transformer3Ws
 		SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
 		when:
 		SubGridTopologyGraph actual = ContainerUtils.buildSubGridTopologyGraph(
 				subgrids,
-				transformer2ws,
-				transformer3ws)
+				ComplexTopology.grid.rawGrid)
 
 		then:
 		actual == expectedSubGridTopology
@@ -339,4 +478,268 @@ class ContainerUtilsTest extends Specification {
 	/* TODO: Extend testing data so that,
 	 *   - filtering of system participants can be tested
 	 *   - filtering of graphic elements can be tested */
+
+	def "Traversing along a simple switch chain returns the correct list of traveled nodes"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		def nodeB = Mock(NodeInput)
+		def nodeC = Mock(NodeInput)
+		def nodeD = Mock(NodeInput)
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getNodeA() >> nodeA
+		switchAB.getNodeB() >> nodeB
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		def switchBC = Mock(SwitchInput)
+		switchBC.getNodeA() >> nodeB
+		switchBC.getNodeB() >> nodeC
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		def switchCD = Mock(SwitchInput)
+		switchCD.getNodeA() >> nodeC
+		switchCD.getNodeB() >> nodeD
+		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+
+		def switches = new HashSet<SwitchInput>()
+		switches.add(switchAB)
+		switches.add(switchBC)
+		switches.add(switchCD)
+
+		def possibleJunctions = new HashSet<NodeInput>()
+
+		def expected = new LinkedList<NodeInput>()
+		expected.addFirst(nodeA)
+		expected.addLast(nodeB)
+		expected.addLast(nodeC)
+		expected.addLast(nodeD)
+
+		when:
+		def actual = ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
+
+		then:
+		actual == expected
+	}
+
+	def "Traversing along a switch chain with intermediate junction returns the correct list of traveled nodes"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		def nodeB = Mock(NodeInput)
+		def nodeC = Mock(NodeInput)
+		def nodeD = Mock(NodeInput)
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getNodeA() >> nodeA
+		switchAB.getNodeB() >> nodeB
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		def switchBC = Mock(SwitchInput)
+		switchBC.getNodeA() >> nodeB
+		switchBC.getNodeB() >> nodeC
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		def switchCD = Mock(SwitchInput)
+		switchCD.getNodeA() >> nodeC
+		switchCD.getNodeB() >> nodeD
+		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+
+		def switches = new HashSet<SwitchInput>()
+		switches.add(switchAB)
+		switches.add(switchBC)
+		switches.add(switchCD)
+
+		def possibleJunctions = new HashSet<NodeInput>()
+		possibleJunctions.add(nodeC)
+
+		def expected = new LinkedList<NodeInput>()
+		expected.addFirst(nodeA)
+		expected.addLast(nodeB)
+		expected.addLast(nodeC)
+
+		when:
+		def actual = ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
+
+		then:
+		actual == expected
+	}
+
+	def "Traversing along a non existing switch chain returns the correct list of traveled nodes"() {
+		given:
+		def nodeA = Mock(NodeInput)
+
+		def switches = new HashSet<SwitchInput>()
+
+		def possibleJunctions = new HashSet<NodeInput>()
+
+		def expected = new LinkedList<NodeInput>()
+		expected.addFirst(nodeA)
+
+		when:
+		def actual = ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
+
+		then:
+		actual == expected
+	}
+
+	def "Traversing along a cyclic switch chain throws an exception"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		def nodeB = Mock(NodeInput)
+		def nodeC = Mock(NodeInput)
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getNodeA() >> nodeA
+		switchAB.getNodeB() >> nodeB
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		def switchBC = Mock(SwitchInput)
+		switchBC.getNodeA() >> nodeB
+		switchBC.getNodeB() >> nodeC
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		def switchCA = Mock(SwitchInput)
+		switchCA.getNodeA() >> nodeC
+		switchCA.getNodeB() >> nodeA
+		switchCA.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeA))
+
+		def switches = new HashSet<SwitchInput>()
+		switches.add(switchAB)
+		switches.add(switchBC)
+		switches.add(switchCA)
+
+		def possibleJunctions = new HashSet<NodeInput>()
+
+		when:
+		ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
+
+		then:
+		IllegalArgumentException ex = thrown()
+		ex.message == "Cannot traverse along switch chain, as there is a junction included at node Mock for type " +
+				"'NodeInput' named 'nodeA'"
+	}
+
+	def "Traversing along a switch chain with switch junction throws an exception"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		def nodeB = Mock(NodeInput)
+		def nodeC = Mock(NodeInput)
+		def nodeD = Mock(NodeInput)
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getNodeA() >> nodeA
+		switchAB.getNodeB() >> nodeB
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		def switchBC = Mock(SwitchInput)
+		switchBC.getNodeA() >> nodeB
+		switchBC.getNodeB() >> nodeC
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		def switchBD = Mock(SwitchInput)
+		switchBD.getNodeA() >> nodeB
+		switchBD.getNodeB() >> nodeD
+		switchBD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeD))
+
+		def switches = new HashSet<SwitchInput>()
+		switches.add(switchAB)
+		switches.add(switchBC)
+		switches.add(switchBD)
+
+		def possibleJunctions = new HashSet<NodeInput>()
+
+		when:
+		def actual = ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
+
+		then:
+		IllegalArgumentException ex = thrown()
+		ex.message == "Cannot traverse along switch chain, as there is a junction included at node Mock for type " +
+				"'NodeInput' named 'nodeB'"
+	}
+
+	def "Determining the surrounding sub grid containers of a two winding transformer w/o switchgear works fine"() {
+		given:
+		def nodeD = Mock(NodeInput)
+		nodeD.getUuid() >> UUID.fromString("ae4869d5-3551-4cce-a101-d61629716c4f")
+		nodeD.getSubnet() >> 1
+		def nodeE = Mock(NodeInput)
+		nodeE.getUuid() >> UUID.fromString("5d4107b2-385b-40fe-a668-19414bf45d9d")
+		nodeE.getSubnet() >> 2
+
+		def transformer = Mock(Transformer2WInput)
+		transformer.getUuid() >> UUID.fromString("ddcdd72a-5f97-4bef-913b-d32d31216e27")
+		transformer.getNodeA() >> nodeD
+		transformer.getNodeB() >> nodeE
+		transformer.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeD, nodeE))
+
+		def rawGridElements = new RawGridElements([nodeD, nodeE, transformer])
+
+		def subGrid1 = Mock(SubGridContainer)
+		def subGrid2 = Mock(SubGridContainer)
+		def subGridMapping = [
+			1: subGrid1,
+			2: subGrid2
+		]
+
+		def expected = new ContainerUtils.TransformerSubGridContainers(subGrid1, subGrid2)
+
+		when:
+		def actual = ContainerUtils.getSubGridContainers(transformer, rawGridElements, subGridMapping)
+
+		then:
+		actual == expected
+	}
+
+	def "Determining the surrounding sub grid containers of a two winding transformer w/ switchgear works fine"() {
+		given:
+		def nodeA = Mock(NodeInput)
+		nodeA.getUuid() >> UUID.fromString("a37b2501-70c5-479f-92f9-d5b0e4628b2b")
+		nodeA.getSubnet() >> 1
+		def nodeB = Mock(NodeInput)
+		nodeB.getUuid() >> UUID.fromString("8361b082-9d4c-4c54-97d0-2df9ac35333c")
+		nodeB.getSubnet() >> 2
+		def nodeC = Mock(NodeInput)
+		nodeC.getUuid() >> UUID.fromString("b9e4f16b-0317-4794-9f53-339db45a2092")
+		nodeC.getSubnet() >> 2
+		def nodeD = Mock(NodeInput)
+		nodeD.getUuid() >> UUID.fromString("ae4869d5-3551-4cce-a101-d61629716c4f")
+		nodeD.getSubnet() >> 2
+		def nodeE = Mock(NodeInput)
+		nodeE.getUuid() >> UUID.fromString("5d4107b2-385b-40fe-a668-19414bf45d9d")
+		nodeE.getSubnet() >> 2
+
+		def transformer = Mock(Transformer2WInput)
+		transformer.getUuid() >> UUID.fromString("ddcdd72a-5f97-4bef-913b-d32d31216e27")
+		transformer.getNodeA() >> nodeD
+		transformer.getNodeB() >> nodeE
+		transformer.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeD, nodeE))
+
+		def switchAB = Mock(SwitchInput)
+		switchAB.getUuid() >> UUID.fromString("5fcb8705-1436-4fbe-97b3-d2dcaf6a783b")
+		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		def switchBC = Mock(SwitchInput)
+		switchBC.getUuid() >> UUID.fromString("4ca81b0b-e06d-408e-a991-de140f4e229b")
+		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		def switchCD = Mock(SwitchInput)
+		switchCD.getUuid() >> UUID.fromString("92ce075e-9e3b-4ee6-89b6-19e6372fba01")
+		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+
+		def rawGridElements = new RawGridElements([
+			nodeA,
+			nodeB,
+			nodeC,
+			nodeD,
+			nodeE,
+			transformer,
+			switchAB,
+			switchBC,
+			switchCD
+		])
+
+		def subGrid1 = Mock(SubGridContainer)
+		def subGrid2 = Mock(SubGridContainer)
+		def subGridMapping = [
+			1: subGrid1,
+			2: subGrid2
+		]
+
+		def expected = new ContainerUtils.TransformerSubGridContainers(subGrid1, subGrid2)
+
+		when:
+		def actual = ContainerUtils.getSubGridContainers(transformer, rawGridElements, subGridMapping)
+
+		then:
+		actual == expected
+	}
 }

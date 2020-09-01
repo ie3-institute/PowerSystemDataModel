@@ -46,7 +46,7 @@ import tec.uom.se.quantity.Quantities
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 
 /**
  * Testing the function of processors

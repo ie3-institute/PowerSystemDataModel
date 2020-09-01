@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.utils;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
+import edu.ie3.datamodel.exceptions.TopologyException;
 import edu.ie3.datamodel.graph.*;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -269,8 +270,13 @@ public class ContainerUtils {
     /* Exclude all nodes, that are at the high voltage side of the transformer */
     Set<NodeInput> gridNodes = new HashSet<>(rawGrid.getNodes());
     gridNodes.removeAll(
+        /* Remove all nodes, that are upstream of transformers, this comprises all those, that are connected by
+         * switches */
         rawGrid.getTransformer2Ws().stream()
-            .map(ConnectorInput::getNodeA)
+            .flatMap(
+                transformer ->
+                    ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGrid)
+                        .stream())
             .collect(Collectors.toSet()));
     gridNodes.removeAll(
         rawGrid.getTransformer3Ws().stream()
@@ -279,15 +285,15 @@ public class ContainerUtils {
                   if (transformer.getNodeA().getSubnet() == subnet)
                     return Stream.of(transformer.getNodeB(), transformer.getNodeC());
                   else if (transformer.getNodeB().getSubnet() == subnet)
-                    return Stream.of(
-                        transformer.getNodeA(),
-                        transformer.getNodeC(),
-                        transformer.getNodeInternal());
+                    return Stream.concat(
+                        ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGrid)
+                            .stream(),
+                        Stream.of(transformer.getNodeC(), transformer.getNodeInternal()));
                   else
-                    return Stream.of(
-                        transformer.getNodeA(),
-                        transformer.getNodeB(),
-                        transformer.getNodeInternal());
+                    return Stream.concat(
+                        ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGrid)
+                            .stream(),
+                        Stream.of(transformer.getNodeB(), transformer.getNodeInternal()));
                 })
             .collect(Collectors.toSet()));
 
@@ -346,8 +352,7 @@ public class ContainerUtils {
         buildSubGridContainers(gridName, subnetNumbers, rawGrid, systemParticipants, graphics);
 
     /* Build the graph structure denoting the topology of the grid */
-    return buildSubGridTopologyGraph(
-        subgrids, rawGrid.getTransformer2Ws(), rawGrid.getTransformer3Ws());
+    return buildSubGridTopologyGraph(subgrids, rawGrid);
   }
 
   /**
@@ -364,7 +369,7 @@ public class ContainerUtils {
    * Build a mapping from sub net number to actual {@link SubGridContainer}
    *
    * @param gridName Name of the grid
-   * @param subnetNumbers Set of available subne numbers
+   * @param subnetNumbers Set of available subnet numbers
    * @param rawGrid Container model with all raw grid elements
    * @param systemParticipants Container model with all system participant inputs
    * @param graphics Container model with all graphic elements
@@ -394,85 +399,218 @@ public class ContainerUtils {
   /**
    * Build an immutable graph of the galvanically separated sub grid topology
    *
-   * @param subgrids Mapping from sub net number to container model
-   * @param transformer2ws Set of two winding transformers
-   * @param transformer3ws Set of three winding transformers
+   * @param subGrids Mapping from sub net number to container model
+   * @param rawGridElements Collection of all grid elements
    * @return An immutable graph of the sub grid topology
    */
   private static SubGridTopologyGraph buildSubGridTopologyGraph(
-      Map<Integer, SubGridContainer> subgrids,
-      Set<Transformer2WInput> transformer2ws,
-      Set<Transformer3WInput> transformer3ws) {
+      Map<Integer, SubGridContainer> subGrids, RawGridElements rawGridElements) {
     /* Building a mutable graph, that is boxed as immutable later */
     DirectedMultigraph<SubGridContainer, SubGridGate> mutableGraph =
         new DirectedMultigraph<>(SubGridGate.class);
 
     /* Add all edges */
-    subgrids.values().forEach(mutableGraph::addVertex);
+    subGrids.values().forEach(mutableGraph::addVertex);
 
     /* Add connections of two winding transformers */
-    for (Transformer2WInput transformer : transformer2ws) {
-      SubGridContainer from = getSubGridContainer(transformer, ConnectorPort.A, subgrids);
-      SubGridContainer to = getSubGridContainer(transformer, ConnectorPort.B, subgrids);
-      mutableGraph.addEdge(from, to, new SubGridGate(transformer));
+    for (Transformer2WInput transformer : rawGridElements.getTransformer2Ws()) {
+      try {
+        TransformerSubGridContainers subGridContainers =
+            getSubGridContainers(transformer, rawGridElements, subGrids);
+        mutableGraph.addEdge(
+            subGridContainers.containerA,
+            subGridContainers.containerB,
+            new SubGridGate(transformer));
+      } catch (TopologyException e) {
+        throw new InvalidGridException(
+            "Cannot build sub grid topology graph, as the sub grids, that are connected by transformer '"
+                + transformer.getId()
+                + "' ("
+                + transformer.getUuid()
+                + ") cannot be determined.");
+      }
     }
 
     /* Add connections of three winding transformers */
-    for (Transformer3WInput transformer : transformer3ws) {
-      SubGridContainer from = getSubGridContainer(transformer, ConnectorPort.A, subgrids);
-      SubGridContainer toB = getSubGridContainer(transformer, ConnectorPort.B, subgrids);
-      SubGridContainer toC = getSubGridContainer(transformer, ConnectorPort.C, subgrids);
-      mutableGraph.addEdge(from, toB, new SubGridGate(transformer, ConnectorPort.B));
-      mutableGraph.addEdge(from, toC, new SubGridGate(transformer, ConnectorPort.C));
+    for (Transformer3WInput transformer : rawGridElements.getTransformer3Ws()) {
+      try {
+        TransformerSubGridContainers subGridContainers =
+            getSubGridContainers(transformer, rawGridElements, subGrids);
+        mutableGraph.addEdge(
+            subGridContainers.containerA,
+            subGridContainers.containerB,
+            new SubGridGate(transformer, ConnectorPort.B));
+        mutableGraph.addEdge(
+            subGridContainers.containerA,
+            subGridContainers.maybeContainerC.orElseThrow(
+                () ->
+                    new InvalidGridException(
+                        "Cannot build sub grid topology graph, as the sub grid, that is connected to port C of transformer '"
+                            + transformer.getId()
+                            + "' ("
+                            + transformer.getUuid()
+                            + ") cannot be determined.")),
+            new SubGridGate(transformer, ConnectorPort.C));
+      } catch (TopologyException e) {
+        throw new InvalidGridException(
+            "Cannot build sub grid topology graph, as the sub grids, that are connected by transformer '"
+                + transformer.getId()
+                + "' ("
+                + transformer.getUuid()
+                + ") cannot be determined.");
+      }
     }
 
     return new SubGridTopologyGraph(mutableGraph);
   }
 
+  /** Private utility class to be able to return multiple {@link SubGridContainer}s */
+  private static class TransformerSubGridContainers {
+    private final SubGridContainer containerA;
+    private final SubGridContainer containerB;
+    private final Optional<SubGridContainer> maybeContainerC;
+
+    public TransformerSubGridContainers(SubGridContainer containerA, SubGridContainer containerB) {
+      this.containerA = containerA;
+      this.containerB = containerB;
+      this.maybeContainerC = Optional.empty();
+    }
+
+    public TransformerSubGridContainers(
+        SubGridContainer containerA, SubGridContainer containerB, SubGridContainer containerC) {
+      this.containerA = containerA;
+      this.containerB = containerB;
+      this.maybeContainerC = Optional.ofNullable(containerC);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof TransformerSubGridContainers)) return false;
+      TransformerSubGridContainers that = (TransformerSubGridContainers) o;
+      return containerA.equals(that.containerA)
+          && containerB.equals(that.containerB)
+          && maybeContainerC.equals(that.maybeContainerC);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(containerA, containerB, maybeContainerC);
+    }
+  }
+
   /**
-   * Extracts the {@link SubGridContainer} of the map from sub grid number to sub grid model and
-   * checks for its availability.
+   * Transformers' purpose is to couple different sub grids. This method is meant to determine the
+   * {@link SubGridContainer}s a specific {@link TransformerInput} connects. Therefore, surrounding
+   * switch gears are reflected as well.
    *
-   * @param connector The connector to use
-   * @param port The port of the connector, that is referred to
-   * @param subGrids A mapping from sub grid number to sub grid model
-   * @return The queried sub grid container
+   * @param transformer Specific transformer to determine sub grid containers for
+   * @param rawGridElements Collection of all grid elements
+   * @param subGrids Mapping from sub grid number to sub grid container
+   * @return All surrounding sub grid containers
+   * @throws TopologyException If the most upstream node (considering switchgear) cannot be
+   *     determined
    */
-  private static SubGridContainer getSubGridContainer(
-      ConnectorInput connector, ConnectorPort port, Map<Integer, SubGridContainer> subGrids) {
-    int subGrid;
-    switch (port) {
-      case A:
-        subGrid = connector.getNodeA().getSubnet();
+  private static TransformerSubGridContainers getSubGridContainers(
+      TransformerInput transformer,
+      RawGridElements rawGridElements,
+      Map<Integer, SubGridContainer> subGrids)
+      throws TopologyException {
+    /* Get the sub grid container at port A - travel upstream as long as nodes are connected
+     * _only_ by switches */
+    NodeInput topNode = traverseAlongSwitchChain(transformer.getNodeA(), rawGridElements).getLast();
+    if (Objects.isNull(topNode))
+      throw new TopologyException(
+          "Cannot find most upstream node of transformer '" + transformer + "'");
+
+    SubGridContainer containerA = subGrids.get(topNode.getSubnet());
+
+    /* Get the sub grid container at port B */
+    SubGridContainer containerB = subGrids.get(transformer.getNodeB().getSubnet());
+
+    /* Get the sub grid container at port C, if this is a three winding transformer */
+    if (transformer instanceof Transformer3WInput) {
+      SubGridContainer containerC =
+          subGrids.get(((Transformer3WInput) transformer).getNodeC().getSubnet());
+      return new TransformerSubGridContainers(containerA, containerB, containerC);
+    } else return new TransformerSubGridContainers(containerA, containerB);
+  }
+
+  /**
+   * Traversing along a chain of switches and return the traveled nodes. The end thereby is defined
+   * by a node, that either is a dead end or is connected to any other type of connector (e.g.
+   * lines, transformers) and therefore leads to other parts of a "real" grid. If the starting node
+   * is not part of any switch, the starting node is returned.
+   *
+   * @param startNode Node that is meant to be the start of the switch chain
+   * @param rawGridElements Elements of the pure grid structure.
+   * @return The end node of the switch chain
+   */
+  public static LinkedList<NodeInput> traverseAlongSwitchChain(
+      NodeInput startNode, RawGridElements rawGridElements) {
+    Set<NodeInput> possibleJunctions =
+        Stream.concat(
+                Stream.concat(
+                    rawGridElements.getLines().parallelStream(),
+                    rawGridElements.getTransformer2Ws().parallelStream()),
+                rawGridElements.getTransformer3Ws().parallelStream())
+            .flatMap(connector -> ((ConnectorInput) connector).allNodes().parallelStream())
+            .collect(Collectors.toSet());
+    return traverseAlongSwitchChain(startNode, rawGridElements.getSwitches(), possibleJunctions);
+  }
+
+  /**
+   * Traversing along a chain of switches and return the traveled nodes. The end thereby is defined
+   * by a node, that either is a dead end or part of the provided node set. If the starting node is
+   * not part of any switch, the starting node is returned.
+   *
+   * @param startNode Node that is meant to be the start of the switch chain
+   * @param switches Set of available switches
+   * @param possibleJunctions Set of nodes that denote possible junctions to "real" grid
+   * @return The end node of the switch chain
+   */
+  private static LinkedList<NodeInput> traverseAlongSwitchChain(
+      NodeInput startNode, Set<SwitchInput> switches, Set<NodeInput> possibleJunctions) {
+    LinkedList<NodeInput> traveledNodes = new LinkedList<>();
+    traveledNodes.addFirst(startNode);
+
+    /* Get the switch, that is connected to the starting node and determine the next node */
+    List<SwitchInput> nextSwitches =
+        switches.stream()
+            .filter(switcher -> switcher.allNodes().contains(startNode))
+            .collect(Collectors.toList());
+    switch (nextSwitches.size()) {
+      case 0:
+        /* No further switch found -> Return the starting node */
         break;
-      case B:
-        subGrid = connector.getNodeB().getSubnet();
-        break;
-      case C:
-        if (connector instanceof Transformer3WInput)
-          subGrid = ((Transformer3WInput) connector).getNodeC().getSubnet();
-        else
-          throw new IllegalArgumentException(
-              "The connector " + connector + " has no port " + port + ".");
+      case 1:
+        /* One next switch has been found -> Travel in this direction */
+        SwitchInput nextSwitch = nextSwitches.get(0);
+        Optional<NodeInput> candidateNodes =
+            nextSwitch.allNodes().stream().filter(node -> node != startNode).findFirst();
+        NodeInput nextNode =
+            candidateNodes.orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "There is no further node available at switch " + nextSwitch));
+        if (possibleJunctions.contains(nextNode)) {
+          /* This is a junction, leading to another Connector than a switch */
+          traveledNodes.addLast(nextNode);
+        } else {
+          /* Add the traveled nodes to the nodes to be excluded, to avoid endless loops in cyclic switch topologies */
+          HashSet<NodeInput> newNodesToExclude = new HashSet<>(possibleJunctions);
+          newNodesToExclude.add(nextNode);
+          HashSet<SwitchInput> newSwitches = new HashSet<>(switches);
+          newSwitches.remove(nextSwitch);
+          traveledNodes.addAll(traverseAlongSwitchChain(nextNode, newSwitches, newNodesToExclude));
+        }
         break;
       default:
         throw new IllegalArgumentException(
-            "Cannot determine the sub grid number of connector "
-                + connector
-                + " at port "
-                + port
-                + ".");
+            "Cannot traverse along switch chain, as there is a junction included at node "
+                + startNode);
     }
-
-    SubGridContainer container = subGrids.get(subGrid);
-    if (container == null)
-      throw new InvalidGridException(
-          "Transformer "
-              + connector
-              + " connects two sub grids, but the sub grid model "
-              + subGrid
-              + " cannot be found");
-    else return container;
+    return traveledNodes;
   }
 
   /**
@@ -513,9 +651,7 @@ public class ContainerUtils {
         subGridContainers.stream()
             .collect(Collectors.toMap(SubGridContainer::getSubnet, Function.identity()));
 
-    SubGridTopologyGraph subGridTopologyGraph =
-        buildSubGridTopologyGraph(
-            subGridMapping, rawGrid.getTransformer2Ws(), rawGrid.getTransformer3Ws());
+    SubGridTopologyGraph subGridTopologyGraph = buildSubGridTopologyGraph(subGridMapping, rawGrid);
 
     return new JointGridContainer(
         gridName, rawGrid, systemParticipants, graphicElements, subGridTopologyGraph);
