@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory;
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLT;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;

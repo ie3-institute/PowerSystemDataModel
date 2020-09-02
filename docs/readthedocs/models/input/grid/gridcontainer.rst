@@ -22,6 +22,21 @@ SubGridContainer
    As of convention, the :code:`SubGridContainers` hold also reference to the transformers leading to higher sub grids
    and their higher voltage coupling point.
 
+   .. figure:: ../../../_static/figures/transformerWithSwitchGear.png
+      :align: center
+      :alt: Sub grid boundary definition for transformers with upstream switchgear
+
+   Let's shed a more detailed light on the boundaries of a sub grid as of our definition.
+   This especially is important, if the switchgear of the transformer is modeled in detail.
+   We defined, that all nodes in upstream direction of the transformer, that are connected by switches *only* (therefore
+   are within the switchgear) are counted towards the inferior sub grid structure (here "2"), although they belong to a
+   different voltage level.
+   This decision is taken, because we assume, that the interest to operate on the given switchgear will most likely be
+   placed in the inferior grid structure.
+
+   The "real" coupling node A is not comprised in the sub grids node collection, but obviously has reference through the
+   switch between nodes A and B.
+
 A synoptic overview of both classes' attributes is given here:
 
 Attributes, Units and Remarks

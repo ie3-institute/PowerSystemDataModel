@@ -10,8 +10,8 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
-import edu.ie3.util.quantities.interfaces.HeatCapacity;
-import edu.ie3.util.quantities.interfaces.ThermalConductance;
+import edu.ie3.util.quantities.dep.interfaces.HeatCapacity;
+import edu.ie3.util.quantities.dep.interfaces.ThermalConductance;
 import java.util.UUID;
 import tec.uom.se.ComparableQuantity;
 

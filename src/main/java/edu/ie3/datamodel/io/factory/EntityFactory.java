@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
  * @since 28.01.20
  */
 public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData> {
-  public final Logger log = LogManager.getLogger(this.getClass());
+  public static final Logger log = LogManager.getLogger(EntityFactory.class);
 
   protected final List<Class<? extends T>> classes;
 

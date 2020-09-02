@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
-import static edu.ie3.util.quantities.PowerSystemUnits.PU;
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU;
 import static java.util.Collections.unmodifiableSortedSet;
 import static tec.uom.se.unit.Units.METRE_PER_SECOND;
 

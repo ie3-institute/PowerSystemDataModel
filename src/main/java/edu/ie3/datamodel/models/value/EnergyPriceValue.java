@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import edu.ie3.util.quantities.dep.interfaces.EnergyPrice;
 import java.util.Objects;
 import tec.uom.se.ComparableQuantity;
 

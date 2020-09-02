@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
+import edu.ie3.util.quantities.dep.interfaces.SpecificHeatCapacity;
 import java.util.UUID;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;

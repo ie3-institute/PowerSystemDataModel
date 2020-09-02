@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.voltagelevels;
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLT;
 
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.util.interval.RightOpenInterval;

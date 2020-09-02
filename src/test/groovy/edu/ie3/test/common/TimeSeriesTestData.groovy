@@ -32,10 +32,10 @@ import java.time.DayOfWeek
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR_PER_SQUAREMETRE
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.DEGREE_GEOM
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOWATT
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOWATTHOUR_PER_SQUAREMETRE
 import static tec.uom.se.unit.Units.CELSIUS
 import static tec.uom.se.unit.Units.METRE_PER_SECOND
 
