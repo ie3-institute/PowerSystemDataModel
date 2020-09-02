@@ -54,7 +54,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     /* Checking nodes */
     Set<NodeInput> nodes = rawGridElements.getNodes();
-    nodes.forEach(ValidationUtils::checkNode);
+    nodes.forEach(NodeValidationUtils::check);
 
     /* Checking lines */
     rawGridElements

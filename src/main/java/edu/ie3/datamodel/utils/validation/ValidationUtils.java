@@ -14,7 +14,6 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.GridContainer;
-import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -35,11 +34,15 @@ public class ValidationUtils {
    * fulfill the checking task, based on the class of the given object. If an not yet know class is
    * handed in, a {@link ValidationException} is thrown.
    *
+   * TODO @ Niklas: Fill with other method calls, as collection of validation utils increases
+   *
    * @param obj Object to check
    */
   public static void check(Object obj) {
     if (GridContainer.class.isAssignableFrom(obj.getClass())) {
       GridContainerValidationUtils.check((GridContainer) obj);
+    } else if (NodeInput.class.isAssignableFrom(obj.getClass())) {
+      NodeValidationUtils.check((NodeInput) obj);
     } else {
       throw new ValidationException(
           "Cannot validate object of class '"
@@ -58,44 +61,6 @@ public class ValidationUtils {
     if (obj == null)
       throw new ValidationException(
           "Expected " + expectedDescription + ", but got nothing. :-(", new NullPointerException());
-  }
-
-  /**
-   * Validates a node if: <br>
-   * - it is not null <br>
-   * - subnet is not null <br>
-   * - vRated and vTarget are neither null nor 0
-   *
-   * @param node Node to validate
-   */
-  public static void checkNode(NodeInput node) {
-    checkNonNull(node, "a node");
-    try {
-      checkVoltageLevel(node.getVoltLvl());
-    } catch (VoltageLevelException e) {
-      throw new InvalidEntityException("Element has invalid voltage level", node);
-    }
-
-    if (node.getvTarget() == null)
-      throw new InvalidEntityException("vRated or vTarget is null", node);
-    if (node.getvTarget().getValue().doubleValue() <= 0d)
-      throw new UnsafeEntityException("vTarget is not a positive value", node);
-  }
-
-  /**
-   * Validates a voltage level
-   *
-   * @param voltageLevel Element to validate
-   * @throws VoltageLevelException If nominal voltage is not apparent or not a positive value
-   */
-  private static void checkVoltageLevel(VoltageLevel voltageLevel) throws VoltageLevelException {
-    checkNonNull(voltageLevel, "a voltage level");
-    if (voltageLevel.getNominalVoltage() == null)
-      throw new VoltageLevelException(
-          "The nominal voltage of voltage level " + voltageLevel + " is null");
-    if (voltageLevel.getNominalVoltage().getValue().doubleValue() <= 0d)
-      throw new VoltageLevelException(
-          "The nominal voltage of voltage level " + voltageLevel + " must be positive!");
   }
 
   /**
