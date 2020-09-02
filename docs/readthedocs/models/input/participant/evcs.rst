@@ -51,7 +51,7 @@ The actual model definition for charging point types looks as follows:
 +------------------------+---+-----+--------------------------------------------------------------------------------+
 | sRated                 | kVA     | Rated apparent power                                                           |
 +------------------------+---+-----+--------------------------------------------------------------------------------+
-| electricCurrentType    | --      | Timely restriction of operation                                                |
+| electricCurrentType    | --      | Electric current type                                                          |
 +------------------------+---+-----+--------------------------------------------------------------------------------+
 |synonymousIds           | --      | Set of alternative human readable identifiers                                  |
 +------------------------+---------+--------------------------------------------------------------------------------+
