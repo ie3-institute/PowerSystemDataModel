@@ -17,7 +17,8 @@ import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTyp
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils;
 
 /**
- * //ToDo: Class Description // todo test
+ * Factory to create instances of {@link EvcsInput}s based on {@link NodeAssetInputEntityData} and
+ * additional fields.
  *
  * @version 0.1
  * @since 26.07.20

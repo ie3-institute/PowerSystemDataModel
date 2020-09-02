@@ -9,7 +9,8 @@ import edu.ie3.util.StringUtils;
 import java.util.Optional;
 
 /**
- * //ToDo: Class Description
+ * Generic electric current type implementation. Main purpose is to indicate the current type that
+ * is provided by a specific asset e.g. {@link edu.ie3.datamodel.models.input.system.EvcsInput}
  *
  * @version 0.1
  * @since 25.07.20

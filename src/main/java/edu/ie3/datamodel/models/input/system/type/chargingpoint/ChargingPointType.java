@@ -12,7 +12,9 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Power;
 
 /**
- * //ToDo: Class Description
+ * The actual implementation {@link edu.ie3.datamodel.models.input.system.EvcsInput} types. Default
+ * type implementations as well as methods to parse a type from a string can be found in {@link
+ * ChargingPointTypeUtils}
  *
  * @version 0.1
  * @since 25.07.20
