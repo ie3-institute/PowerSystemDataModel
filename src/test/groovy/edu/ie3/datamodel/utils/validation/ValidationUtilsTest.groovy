@@ -3,9 +3,9 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.utils
+package edu.ie3.datamodel.utils.validation
 
-import edu.ie3.datamodel.exceptions.InvalidEntityException
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 
 import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
@@ -89,7 +89,7 @@ class ValidationUtilsTest extends Specification {
 		ValidationUtils.checkLineType(null)
 
 		then:
-		NullPointerException ex = thrown()
+		ValidationException ex = thrown()
 		ex.message == "Expected a line type, but got nothing. :-("
 	}
 
@@ -99,5 +99,6 @@ class ValidationUtilsTest extends Specification {
 
 		then:
 		NullPointerException ex = thrown()
+		/* TODO @ Niklas: This test doesn't do anything. Please add a test logic. */
 	}
 }

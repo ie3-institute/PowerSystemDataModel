@@ -3,204 +3,61 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.utils;
+package edu.ie3.datamodel.utils.validation;
 
-import edu.ie3.datamodel.exceptions.InvalidEntityException;
-import edu.ie3.datamodel.exceptions.InvalidGridException;
-import edu.ie3.datamodel.exceptions.UnsafeEntityException;
-import edu.ie3.datamodel.exceptions.VoltageLevelException;
+import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.GridContainer;
-import edu.ie3.datamodel.models.input.container.RawGridElements;
-import edu.ie3.datamodel.models.input.container.SystemParticipants;
-import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.measure.Quantity;
-
 
 /** Basic Sanity validation tools for entities */
 public class ValidationUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */
-  private ValidationUtils() {
+  protected ValidationUtils() {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
   /**
-   * Checks a complete grid data container
+   * This is a "distribution" method, that forwards the check request to specific implementations to
+   * fulfill the checking task, based on the class of the given object. If an not yet know class is
+   * handed in, a {@link ValidationException} is thrown.
    *
-   * @param gridContainer Grid model to check
+   * @param obj Object to check
    */
-  public static void checkGrid(GridContainer gridContainer) {
-    checkRawGridElements(gridContainer.getRawGrid());
-    checkSystemParticipants(
-        gridContainer.getSystemParticipants(), gridContainer.getRawGrid().getNodes());
-    checkGraphicElements(
-        gridContainer.getGraphics(),
-        gridContainer.getRawGrid().getNodes(),
-        gridContainer.getRawGrid().getLines());
+  public static void check(Object obj) {
+    if (GridContainer.class.isAssignableFrom(obj.getClass())) {
+      GridContainerValidationUtils.check((GridContainer) obj);
+    } else {
+      throw new ValidationException(
+          "Cannot validate object of class '"
+              + obj.getClass().getSimpleName()
+              + "', as no routine is implemented.");
+    }
   }
 
   /**
-   * Checks the validity of given {@link RawGridElements}. The single elements are checked as well
-   * as the fact, that none of the assets is connected to a node, that is not in the set of nodes.
+   * Checks, if the given object is null. If so, an {@link InvalidEntityException} is thrown.
    *
-   * @param rawGridElements Raw grid elements
-   * @throws InvalidGridException If something is wrong
+   * @param obj Object to check
+   * @param expectedDescription Further description, of what has been expected.
    */
-  public static void checkRawGridElements(RawGridElements rawGridElements) {
-    if (rawGridElements == null)
-      throw new NullPointerException("Expected raw grid elements, but got nothing. :-(");
-
-    /* Checking nodes */
-    Set<NodeInput> nodes = rawGridElements.getNodes();
-    nodes.forEach(ValidationUtils::checkNode);
-
-    /* Checking lines */
-    rawGridElements
-        .getLines()
-        .forEach(
-            line -> {
-              checkNodeAvailability(line, nodes);
-              checkLine(line);
-            });
-
-    /* Checking two winding transformers */
-    rawGridElements
-        .getTransformer2Ws()
-        .forEach(
-            transformer -> {
-              checkNodeAvailability(transformer, nodes);
-              checkTransformer2W(transformer);
-            });
-
-    /* Checking three winding transformers */
-    rawGridElements
-        .getTransformer3Ws()
-        .forEach(
-            transformer -> {
-              checkNodeAvailability(transformer, nodes);
-              checkTransformer3W(transformer);
-            });
-
-    /* Checking switches
-     * Because of the fact, that a transformer with switch gear in "upstream" direction has it's corresponding node in
-     * upper grid connected to a switch, instead of to the transformer directly: Collect all nodes at the end of the
-     * upstream switch chain and add them to the set of allowed nodes */
-    HashSet<NodeInput> validSwitchNodes = new HashSet<>(nodes);
-    validSwitchNodes.addAll(
-        Stream.of(rawGridElements.getTransformer2Ws(), rawGridElements.getTransformer2Ws())
-            .flatMap(Set::stream)
-            .parallel()
-            .map(
-                transformer ->
-                    ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGridElements)
-                        .getLast())
-            .collect(Collectors.toList()));
-
-    rawGridElements
-        .getSwitches()
-        .forEach(
-            switcher -> {
-              checkNodeAvailability(switcher, validSwitchNodes);
-              checkSwitch(switcher);
-            });
-
-    /* Checking measurement units */
-    rawGridElements
-        .getMeasurementUnits()
-        .forEach(
-            measurement -> {
-              checkNodeAvailability(measurement, nodes);
-              checkMeasurementUnit(measurement);
-            });
-  }
-
-  /**
-   * Checks the validity of each and every system participant. Moreover, it checks, if the systems
-   * are connected to an node that is not in the provided set
-   *
-   * @param systemParticipants The system participants
-   * @param nodes Set of already known nodes
-   */
-  public static void checkSystemParticipants(
-      SystemParticipants systemParticipants, Set<NodeInput> nodes) {
-    if (systemParticipants == null)
-      throw new NullPointerException("Expected system participants, but got nothing. :-(");
-
-    systemParticipants.getBmPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
-
-    systemParticipants.getChpPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
-
-    /* TODO: Electric vehicle charging systems are currently only dummy implementation. if this has changed, the whole
-     *   method can be aggregated */
-
-    systemParticipants.getFixedFeedIns().forEach(entity -> checkNodeAvailability(entity, nodes));
-
-    systemParticipants.getHeatPumps().forEach(entity -> checkNodeAvailability(entity, nodes));
-
-    systemParticipants.getLoads().forEach(entity -> checkNodeAvailability(entity, nodes));
-
-    systemParticipants.getPvPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
-
-    systemParticipants.getStorages().forEach(entity -> checkNodeAvailability(entity, nodes));
-
-    systemParticipants.getWecPlants().forEach(entity -> checkNodeAvailability(entity, nodes));
-  }
-
-  /**
-   * Checks the given graphic elements for validity
-   *
-   * @param graphicElements Elements to check
-   * @param nodes Already known and checked nodes
-   * @param lines Already known and checked lines
-   */
-  public static void checkGraphicElements(
-      GraphicElements graphicElements, Set<NodeInput> nodes, Set<LineInput> lines) {
-    if (graphicElements == null)
-      throw new NullPointerException("Expected graphic elements, but got nothing. :-(");
-
-    graphicElements
-        .getNodeGraphics()
-        .forEach(
-            graphic -> {
-              if (!nodes.contains(graphic.getNode()))
-                throw new InvalidEntityException(
-                    "The node graphic with uuid '"
-                        + graphic.getUuid()
-                        + "' refers to node with uuid '"
-                        + graphic.getNode().getUuid()
-                        + "', that is not among the provided ones.",
-                    graphic);
-            });
-
-    graphicElements
-        .getLineGraphics()
-        .forEach(
-            graphic -> {
-              if (!lines.contains(graphic.getLine()))
-                throw new InvalidEntityException(
-                    "The line graphic with uuid '"
-                        + graphic.getUuid()
-                        + "' refers to line with uuid '"
-                        + graphic.getLine().getUuid()
-                        + "', that is not among the provided ones.",
-                    graphic);
-            });
+  protected static void checkNonNull(Object obj, String expectedDescription) {
+    if (obj == null)
+      throw new ValidationException(
+          "Expected " + expectedDescription + ", but got nothing. :-(", new NullPointerException());
   }
 
   /**
@@ -212,7 +69,7 @@ public class ValidationUtils {
    * @param node Node to validate
    */
   public static void checkNode(NodeInput node) {
-    if (node == null) throw new NullPointerException("Expected a node, but got nothing. :-(");
+    checkNonNull(node, "a node");
     try {
       checkVoltageLevel(node.getVoltLvl());
     } catch (VoltageLevelException e) {
@@ -232,8 +89,7 @@ public class ValidationUtils {
    * @throws VoltageLevelException If nominal voltage is not apparent or not a positive value
    */
   private static void checkVoltageLevel(VoltageLevel voltageLevel) throws VoltageLevelException {
-    if (voltageLevel == null)
-      throw new NullPointerException("Expected a voltage level, but got nothing. :-(");
+    checkNonNull(voltageLevel, "a voltage level");
     if (voltageLevel.getNominalVoltage() == null)
       throw new VoltageLevelException(
           "The nominal voltage of voltage level " + voltageLevel + " is null");
@@ -250,60 +106,9 @@ public class ValidationUtils {
    * @param connector Connector to validate
    */
   public static void checkConnector(ConnectorInput connector) {
-    if (connector == null)
-      throw new NullPointerException("Expected a connector, but got nothing. :-(");
+    checkNonNull(connector, "a connector");
     if (connector.getNodeA() == null || connector.getNodeB() == null)
       throw new InvalidEntityException("at least one node of this connector is null ", connector);
-  }
-
-  /**
-   * Checks, if the nodes of the {@link ConnectorInput} are in the collection of provided, already
-   * determined nodes
-   *
-   * @param connector Connector to examine
-   * @param nodes Permissible, already known nodes
-   */
-  private static void checkNodeAvailability(ConnectorInput connector, Collection<NodeInput> nodes) {
-    if (!nodes.contains(connector.getNodeA()) || !nodes.contains(connector.getNodeB()))
-      throw getMissingNodeException(connector);
-  }
-
-  /**
-   * Checks, if the nodes of the {@link Transformer3WInput} are in the collection of provided,
-   * already determined nodes
-   *
-   * @param transformer Transformer to examine
-   * @param nodes Permissible, already known nodes
-   */
-  private static void checkNodeAvailability(
-      Transformer3WInput transformer, Collection<NodeInput> nodes) {
-    if (!nodes.contains(transformer.getNodeA())
-        || !nodes.contains(transformer.getNodeB())
-        || !nodes.contains(transformer.getNodeC())) throw getMissingNodeException(transformer);
-  }
-
-  /**
-   * Checks, if the node of the {@link SystemParticipantInput} are in the collection of provided,
-   * already determined nodes
-   *
-   * @param participant Connector to examine
-   * @param nodes Permissible, already known nodes
-   */
-  private static void checkNodeAvailability(
-      SystemParticipantInput participant, Collection<NodeInput> nodes) {
-    if (!nodes.contains(participant.getNode())) throw getMissingNodeException(participant);
-  }
-
-  /**
-   * Checks, if the node of the {@link MeasurementUnitInput} are in the collection of provided,
-   * already determined nodes
-   *
-   * @param measurementUnit Connector to examine
-   * @param nodes Permissible, already known nodes
-   */
-  private static void checkNodeAvailability(
-      MeasurementUnitInput measurementUnit, Collection<NodeInput> nodes) {
-    if (!nodes.contains(measurementUnit.getNode())) throw getMissingNodeException(measurementUnit);
   }
 
   /**
@@ -317,7 +122,7 @@ public class ValidationUtils {
    * @param line Line to validate
    */
   public static void checkLine(LineInput line) {
-    if (line == null) throw new NullPointerException("Expected a line, but got nothing. :-(");
+    checkNonNull(line, "a line");
     checkConnector(line);
     checkLineType(line.getType());
     if (line.getNodeA().getSubnet() != line.getNodeB().getSubnet())
@@ -334,8 +139,7 @@ public class ValidationUtils {
    * @param lineType Line type to validate
    */
   public static void checkLineType(LineTypeInput lineType) {
-    if (lineType == null)
-      throw new NullPointerException("Expected a line type, but got nothing. :-(");
+    checkNonNull(lineType, "a line type");
 
     detectNegativeQuantities(new Quantity<?>[] {lineType.getB(), lineType.getG()}, lineType);
     detectZeroOrNegativeQuantities(
@@ -356,8 +160,7 @@ public class ValidationUtils {
    * @param trafo Transformer to validate
    */
   public static void checkTransformer2W(Transformer2WInput trafo) {
-    if (trafo == null)
-      throw new NullPointerException("Expected a two winding transformer, but got nothing. :-(");
+    checkNonNull(trafo, "a two winding transformer");
     checkConnector(trafo);
     checkTransformer2WType(trafo.getType());
   }
@@ -370,9 +173,7 @@ public class ValidationUtils {
    * @param trafoType Transformer type to validate
    */
   public static void checkTransformer2WType(Transformer2WTypeInput trafoType) {
-    if (trafoType == null)
-      throw new NullPointerException(
-          "Expected a two winding transformer type, but got nothing. :-(");
+    checkNonNull(trafoType, "a two winding transformer type");
     if ((trafoType.getsRated() == null)
         || (trafoType.getvRatedA() == null)
         || (trafoType.getvRatedB() == null)
@@ -408,8 +209,7 @@ public class ValidationUtils {
    * @param trafo Transformer to validate
    */
   public static void checkTransformer3W(Transformer3WInput trafo) {
-    if (trafo == null)
-      throw new NullPointerException("Expected a three winding transformer, but got nothing. :-(");
+    checkNonNull(trafo, "a three winding transformer");
     checkConnector(trafo);
     if (trafo.getNodeC() == null)
       throw new InvalidEntityException("at least one node of this connector is null", trafo);
@@ -424,9 +224,7 @@ public class ValidationUtils {
    * @param trafoType Transformer type to validate
    */
   public static void checkTransformer3WType(Transformer3WTypeInput trafoType) {
-    if (trafoType == null)
-      throw new NullPointerException(
-          "Expected a three winding transformer type, but got nothing. :-(");
+    checkNonNull(trafoType, "a three winding transformer type");
     if ((trafoType.getsRatedA() == null)
         || (trafoType.getsRatedB() == null)
         || (trafoType.getsRatedC() == null)
@@ -465,8 +263,7 @@ public class ValidationUtils {
    * @param measurementUnit Measurement unit to validate
    */
   public static void checkMeasurementUnit(MeasurementUnitInput measurementUnit) {
-    if (measurementUnit == null)
-      throw new NullPointerException("Expected a measurement unit, but got nothing. :-(");
+    checkNonNull(measurementUnit, "a measurement unit");
     if (measurementUnit.getNode() == null)
       throw new InvalidEntityException("node is null", measurementUnit);
   }
@@ -479,8 +276,7 @@ public class ValidationUtils {
    * @param switchInput Switch to validate
    */
   public static void checkSwitch(SwitchInput switchInput) {
-    if (switchInput == null)
-      throw new NullPointerException("Expected a switch, but got nothing. :-(");
+    checkNonNull(switchInput, "a switch");
     checkConnector(switchInput);
     if (switchInput.getNodeA().getVoltLvl() != switchInput.getNodeB().getVoltLvl())
       throw new InvalidEntityException(
@@ -488,21 +284,6 @@ public class ValidationUtils {
     /* Remark: Connecting two different "subnets" is fine, because as of our definition regarding a switchgear in
      * "upstream" direction of a transformer, all the nodes, that hare within the switch chain, belong to the lower
      * grid, whilst the "real" upper node is within the upper grid */
-  }
-
-  /**
-   * Builds an exception, that announces, that the given input is connected to a node, that is not
-   * in the set of nodes provided.
-   *
-   * @param input Input model
-   * @return Exception for a missing node
-   */
-  private static InvalidGridException getMissingNodeException(AssetInput input) {
-    return new InvalidGridException(
-        input.getClass().getSimpleName()
-            + " "
-            + input
-            + " is connected to a node, that is not in the set of nodes.");
   }
 
   /**

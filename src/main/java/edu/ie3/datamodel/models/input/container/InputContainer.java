@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.input.InputEntity;
-import edu.ie3.datamodel.utils.ValidationUtils;
+import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import java.util.List;
 
 /** Represents an aggregation of different entities */

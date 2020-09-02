@@ -9,7 +9,7 @@ import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
-import edu.ie3.datamodel.utils.ValidationUtils;
+import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
