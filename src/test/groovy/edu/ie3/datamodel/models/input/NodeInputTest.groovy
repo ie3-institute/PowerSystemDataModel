@@ -31,5 +31,26 @@ class NodeInputTest extends Specification {
 			assert subnet == 1
 			assert voltLvl == GermanVoltageLevelUtils.EHV_220KV
 		}
+		//TEST VON NSTEFFAN TODO: Test löschen
+		System.out.println(node.equals(alteredUnit))
+		System.out.println(node.getGeoPosition())
+		System.out.println(node.getVoltLvl())
+		System.out.println(node.getvTarget())
 	}
+
+	/*
+	def "Validation of values when creating an instance of NodeInput should work as expected"() {
+		given:
+		def node = GridTestData.nodeB.copy().subnet(1)
+				.build()
+
+		when:
+		node.validate()
+
+		then:
+		InvalidEntityException name = thrown()
+		System.out.println()
+	}
+	*/
+
 }

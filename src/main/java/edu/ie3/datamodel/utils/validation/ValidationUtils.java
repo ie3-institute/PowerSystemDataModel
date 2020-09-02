@@ -40,6 +40,8 @@ public class ValidationUtils {
       GridContainerValidationUtils.check((GridContainer) obj);
     } else if (NodeInput.class.isAssignableFrom(obj.getClass())) {
       NodeValidationUtils.check((NodeInput) obj);
+    } else if (ConnectorInput.class.isAssignableFrom(obj.getClass())) {
+      ConnectorValidationUtils.check((ConnectorInput) obj);
     } else {
       throw new ValidationException(
           "Cannot validate object of class '"

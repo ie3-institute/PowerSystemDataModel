@@ -12,6 +12,12 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 
 public class NodeValidationUtils extends ValidationUtils {
+
+  /** Private Constructor as this class is not meant to be instantiated */
+  private NodeValidationUtils() {
+    throw new IllegalStateException("Don't try and instantiate a Utility class.");
+  }
+
   /**
    * Validates a node if: <br>
    * - it is not null <br>
@@ -21,6 +27,9 @@ public class NodeValidationUtils extends ValidationUtils {
    * @param node Node to validate
    */
   public static void check(NodeInput node) {
+
+    // if (node == null) throw new NullPointerException("Expected a node, but got nothing. :-(");
+
     checkNonNull(node, "a node");
     try {
       checkVoltageLevel(node.getVoltLvl());
@@ -32,6 +41,11 @@ public class NodeValidationUtils extends ValidationUtils {
       throw new InvalidEntityException("vRated or vTarget is null", node);
     if (node.getvTarget().getValue().doubleValue() <= 0d)
       throw new UnsafeEntityException("vTarget is not a positive value", node);
+
+    if (node.getSubnet() <= 0)
+      throw new InvalidEntityException("Subnet can't be zero or negative", node);
+
+
   }
 
   /**
