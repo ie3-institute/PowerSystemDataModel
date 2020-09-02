@@ -10,9 +10,6 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
-import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
-import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.GridContainer;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +31,7 @@ public class ValidationUtils {
    * fulfill the checking task, based on the class of the given object. If an not yet know class is
    * handed in, a {@link ValidationException} is thrown.
    *
-   * TODO @ Niklas: Fill with other method calls, as collection of validation utils increases
+   * <p>TODO @ Niklas: Fill with other method calls, as collection of validation utils increases
    *
    * @param obj Object to check
    */
@@ -64,163 +61,6 @@ public class ValidationUtils {
   }
 
   /**
-   * Validates a connector if: <br>
-   * - it is not null <br>
-   * - both of its nodes are not null
-   *
-   * @param connector Connector to validate
-   */
-  public static void checkConnector(ConnectorInput connector) {
-    checkNonNull(connector, "a connector");
-    if (connector.getNodeA() == null || connector.getNodeB() == null)
-      throw new InvalidEntityException("at least one node of this connector is null ", connector);
-  }
-
-  /**
-   * Validates a line if: <br>
-   * - it is not null <br>
-   * - line type is not null <br>
-   * - {@link ValidationUtils#checkLineType(LineTypeInput)} and {@link
-   * ValidationUtils#checkConnector(ConnectorInput)} confirm a valid type and valid connector
-   * properties
-   *
-   * @param line Line to validate
-   */
-  public static void checkLine(LineInput line) {
-    checkNonNull(line, "a line");
-    checkConnector(line);
-    checkLineType(line.getType());
-    if (line.getNodeA().getSubnet() != line.getNodeB().getSubnet())
-      throw new InvalidEntityException("the line {} connects to different subnets", line);
-    if (line.getNodeA().getVoltLvl() != line.getNodeB().getVoltLvl())
-      throw new InvalidEntityException("the line {} connects to different voltage levels", line);
-  }
-
-  /**
-   * Validates a line type if: <br>
-   * - it is not null <br>
-   * - none of its values are null or 0 <br>
-   *
-   * @param lineType Line type to validate
-   */
-  public static void checkLineType(LineTypeInput lineType) {
-    checkNonNull(lineType, "a line type");
-
-    detectNegativeQuantities(new Quantity<?>[] {lineType.getB(), lineType.getG()}, lineType);
-    detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {
-          lineType.getvRated(), lineType.getiMax(), lineType.getX(), lineType.getR()
-        },
-        lineType);
-  }
-
-  /**
-   * Validates a transformer if: <br>
-   * - it is not null <br>
-   * - transformer type is not null <br>
-   * - {@link ValidationUtils#checkTransformer2WType(Transformer2WTypeInput)} and {@link
-   * ValidationUtils#checkConnector(ConnectorInput)} confirm a valid type and valid connector
-   * properties
-   *
-   * @param trafo Transformer to validate
-   */
-  public static void checkTransformer2W(Transformer2WInput trafo) {
-    checkNonNull(trafo, "a two winding transformer");
-    checkConnector(trafo);
-    checkTransformer2WType(trafo.getType());
-  }
-
-  /**
-   * Validates a transformer type if: <br>
-   * - it is not null <br>
-   * - none of its values are null or 0 <br>
-   *
-   * @param trafoType Transformer type to validate
-   */
-  public static void checkTransformer2WType(Transformer2WTypeInput trafoType) {
-    checkNonNull(trafoType, "a two winding transformer type");
-    if ((trafoType.getsRated() == null)
-        || (trafoType.getvRatedA() == null)
-        || (trafoType.getvRatedB() == null)
-        || (trafoType.getrSc() == null)
-        || (trafoType.getxSc() == null)
-        || (trafoType.getgM() == null)
-        || (trafoType.getbM() == null)
-        || (trafoType.getdV() == null)
-        || (trafoType.getdPhi() == null))
-      throw new InvalidEntityException("at least one value of trafo2w type is null", trafoType);
-
-    detectNegativeQuantities(
-        new Quantity<?>[] {trafoType.getgM(), trafoType.getbM(), trafoType.getdPhi()}, trafoType);
-    detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {
-          trafoType.getsRated(),
-          trafoType.getvRatedA(),
-          trafoType.getvRatedB(),
-          trafoType.getxSc(),
-          trafoType.getdV()
-        },
-        trafoType);
-  }
-
-  /**
-   * Validates a transformer if: <br>
-   * - it is not null <br>
-   * - transformer type is not null <br>
-   * - {@link ValidationUtils#checkTransformer3WType(Transformer3WTypeInput)} and {@link
-   * ValidationUtils#checkConnector(ConnectorInput)} confirm a valid type and valid connector
-   * properties
-   *
-   * @param trafo Transformer to validate
-   */
-  public static void checkTransformer3W(Transformer3WInput trafo) {
-    checkNonNull(trafo, "a three winding transformer");
-    checkConnector(trafo);
-    if (trafo.getNodeC() == null)
-      throw new InvalidEntityException("at least one node of this connector is null", trafo);
-    checkTransformer3WType(trafo.getType());
-  }
-
-  /**
-   * Validates a transformer type if: <br>
-   * - it is not null <br>
-   * - none of its values are null or 0 <br>
-   *
-   * @param trafoType Transformer type to validate
-   */
-  public static void checkTransformer3WType(Transformer3WTypeInput trafoType) {
-    checkNonNull(trafoType, "a three winding transformer type");
-    if ((trafoType.getsRatedA() == null)
-        || (trafoType.getsRatedB() == null)
-        || (trafoType.getsRatedC() == null)
-        || (trafoType.getvRatedA() == null)
-        || (trafoType.getvRatedB() == null)
-        || (trafoType.getvRatedC() == null)
-        || (trafoType.getrScA() == null)
-        || (trafoType.getrScB() == null)
-        || (trafoType.getrScC() == null)
-        || (trafoType.getxScA() == null)
-        || (trafoType.getxScB() == null)
-        || (trafoType.getxScC() == null)
-        || (trafoType.getgM() == null)
-        || (trafoType.getbM() == null)
-        || (trafoType.getdV() == null)
-        || (trafoType.getdPhi() == null))
-      throw new InvalidEntityException("at least one value of trafo3w type is null", trafoType);
-
-    detectNegativeQuantities(
-        new Quantity<?>[] {trafoType.getgM(), trafoType.getbM(), trafoType.getdPhi()}, trafoType);
-    detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {
-          trafoType.getsRatedA(), trafoType.getsRatedB(), trafoType.getsRatedC(),
-          trafoType.getvRatedA(), trafoType.getvRatedB(), trafoType.getvRatedC(),
-          trafoType.getxScA(), trafoType.getxScB(), trafoType.getxScC(),
-          trafoType.getdV()
-        },
-        trafoType);
-  }
-
-  /**
    * Validates a measurement unit if: <br>
    * - it is not null <br>
    * - its node is not nul
@@ -234,31 +74,13 @@ public class ValidationUtils {
   }
 
   /**
-   * Validates a measurement unit if: <br>
-   * - it is not null <br>
-   * - its node is not nul
-   *
-   * @param switchInput Switch to validate
-   */
-  public static void checkSwitch(SwitchInput switchInput) {
-    checkNonNull(switchInput, "a switch");
-    checkConnector(switchInput);
-    if (switchInput.getNodeA().getVoltLvl() != switchInput.getNodeB().getVoltLvl())
-      throw new InvalidEntityException(
-          "the switch {} connects to different voltage levels", switchInput);
-    /* Remark: Connecting two different "subnets" is fine, because as of our definition regarding a switchgear in
-     * "upstream" direction of a transformer, all the nodes, that hare within the switch chain, belong to the lower
-     * grid, whilst the "real" upper node is within the upper grid */
-  }
-
-  /**
    * Goes through the provided quantities and reports those, that have negative value via synoptic
    * {@link UnsafeEntityException}
    *
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
    */
-  private static void detectNegativeQuantities(Quantity<?>[] quantities, UniqueEntity entity) {
+  protected static void detectNegativeQuantities(Quantity<?>[] quantities, UniqueEntity entity) {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() < 0;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be zero or positive");
@@ -271,7 +93,7 @@ public class ValidationUtils {
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
    */
-  private static void detectZeroOrNegativeQuantities(
+  protected static void detectZeroOrNegativeQuantities(
       Quantity<?>[] quantities, UniqueEntity entity) {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() <= 0;
     detectMalformedQuantities(
@@ -287,7 +109,7 @@ public class ValidationUtils {
    * @param predicate Predicate to detect the malformed quantities
    * @param msg Message prefix to use for the exception message: [msg]: [malformedQuantities]
    */
-  private static void detectMalformedQuantities(
+  protected static void detectMalformedQuantities(
       Quantity<?>[] quantities, UniqueEntity entity, Predicate<Quantity<?>> predicate, String msg) {
     String malformedQuantities =
         Arrays.stream(quantities)

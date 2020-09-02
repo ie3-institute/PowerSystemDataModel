@@ -62,7 +62,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .forEach(
             line -> {
               checkNodeAvailability(line, nodes);
-              checkLine(line);
+              ConnectorValidationUtils.check(line);
             });
 
     /* Checking two winding transformers */
@@ -71,7 +71,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .forEach(
             transformer -> {
               checkNodeAvailability(transformer, nodes);
-              checkTransformer2W(transformer);
+              ConnectorValidationUtils.check(transformer);
             });
 
     /* Checking three winding transformers */
@@ -80,7 +80,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .forEach(
             transformer -> {
               checkNodeAvailability(transformer, nodes);
-              checkTransformer3W(transformer);
+              ConnectorValidationUtils.check(transformer);
             });
 
     /* Checking switches
@@ -103,7 +103,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .forEach(
             switcher -> {
               checkNodeAvailability(switcher, validSwitchNodes);
-              checkSwitch(switcher);
+              ConnectorValidationUtils.check(switcher);
             });
 
     /* Checking measurement units */

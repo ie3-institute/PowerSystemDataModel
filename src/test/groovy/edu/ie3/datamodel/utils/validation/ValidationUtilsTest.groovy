@@ -86,7 +86,7 @@ class ValidationUtilsTest extends Specification {
 
 	def "The validation utils should thrown an null pointer exception if the provided type is null"() {
 		when:
-		ValidationUtils.checkLineType(null)
+		ConnectorValidationUtils.checkLineType(null)
 
 		then:
 		ValidationException ex = thrown()
