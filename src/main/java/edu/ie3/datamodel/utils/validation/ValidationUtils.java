@@ -11,6 +11,10 @@ import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.GridContainer;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
+import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
+import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -42,6 +46,15 @@ public class ValidationUtils {
       NodeValidationUtils.check((NodeInput) obj);
     } else if (ConnectorInput.class.isAssignableFrom(obj.getClass())) {
       ConnectorValidationUtils.check((ConnectorInput) obj);
+    } else if (MeasurementUnitInput.class.isAssignableFrom(obj.getClass())) {
+      MeasurementUnitValidationUtils.check((MeasurementUnitInput) obj);
+    } else if (GraphicInput.class.isAssignableFrom(obj.getClass())) {
+      GraphicValidationUtils.check((GraphicInput) obj);
+    } else if (SystemParticipantInput.class.isAssignableFrom(obj.getClass())) {
+      SystemParticipantValidationUtils.check((SystemParticipantInput) obj);
+    } else if (ThermalUnitInput.class.isAssignableFrom(obj.getClass())) {
+      ThermalUnitValidationUtils.check((ThermalUnitInput) obj);
+      //TODO NSteffan: Missing objects to check? -> OperatorInput, ...TypeInputs?
     } else {
       throw new ValidationException(
           "Cannot validate object of class '"
@@ -60,19 +73,6 @@ public class ValidationUtils {
     if (obj == null)
       throw new ValidationException(
           "Expected " + expectedDescription + ", but got nothing. :-(", new NullPointerException());
-  }
-
-  /**
-   * Validates a measurement unit if: <br>
-   * - it is not null <br>
-   * - its node is not nul
-   *
-   * @param measurementUnit Measurement unit to validate
-   */
-  public static void checkMeasurementUnit(MeasurementUnitInput measurementUnit) {
-    checkNonNull(measurementUnit, "a measurement unit");
-    if (measurementUnit.getNode() == null)
-      throw new InvalidEntityException("node is null", measurementUnit);
   }
 
   /**
