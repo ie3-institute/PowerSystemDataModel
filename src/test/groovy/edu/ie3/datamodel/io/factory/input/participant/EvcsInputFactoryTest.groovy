@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -17,8 +19,6 @@ import tec.uom.se.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
-
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 
 /**
  * //ToDo: Class Description

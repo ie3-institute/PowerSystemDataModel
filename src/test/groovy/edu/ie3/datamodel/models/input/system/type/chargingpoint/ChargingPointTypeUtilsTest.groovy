@@ -5,14 +5,14 @@
  */
 package edu.ie3.datamodel.models.input.system.type.chargingpoint
 
+import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
+import static edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils.*
+
 import edu.ie3.datamodel.exceptions.ChargingPointTypeException
 import edu.ie3.datamodel.models.ElectricCurrentType
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
-import static edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils.*
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
-
 
 /**
  * //ToDo: Class Description
