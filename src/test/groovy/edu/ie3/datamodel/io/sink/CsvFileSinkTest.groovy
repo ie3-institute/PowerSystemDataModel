@@ -126,8 +126,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		]
 
 		when:
-		def bla = csvFileSink.csvEntityFieldData(input)
-		println(bla)
+		csvFileSink.csvEntityFieldData(input)
 
 		then:
 		def exception = thrown(IllegalStateException)
