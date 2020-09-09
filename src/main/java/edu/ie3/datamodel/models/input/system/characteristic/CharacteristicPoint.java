@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.util.Locale;
 import java.util.Objects;
 import javax.measure.Quantity;
@@ -111,7 +112,7 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     CharacteristicPoint<?, ?> that = (CharacteristicPoint<?, ?>) o;
-    return Objects.equals(x, that.x) && Objects.equals(y, that.y);
+    return QuantityUtil.equals(x, that.x) && QuantityUtil.equals(y, that.y);
   }
 
   @Override

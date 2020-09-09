@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Objects;
 import java.util.UUID;
@@ -129,7 +130,7 @@ public class NodeInput extends AssetInput {
     NodeInput nodeInput = (NodeInput) o;
     return slack == nodeInput.slack
         && subnet == nodeInput.subnet
-        && Objects.equals(vTarget, nodeInput.vTarget)
+        && QuantityUtil.equals(vTarget, nodeInput.vTarget)
         && Objects.equals(geoPosition, nodeInput.geoPosition)
         && Objects.equals(voltLvl, nodeInput.voltLvl);
   }

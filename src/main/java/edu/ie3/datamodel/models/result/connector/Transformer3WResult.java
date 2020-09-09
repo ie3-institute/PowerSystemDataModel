@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -97,7 +98,7 @@ public class Transformer3WResult extends TransformerResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     Transformer3WResult that = (Transformer3WResult) o;
-    return iCMag.equals(that.iCMag) && iCAng.equals(that.iCAng);
+    return QuantityUtil.equals(iCMag, that.iCMag) && QuantityUtil.equals(iCAng, that.iCAng);
   }
 
   @Override

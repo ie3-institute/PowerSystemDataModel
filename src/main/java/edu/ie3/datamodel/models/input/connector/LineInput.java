@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
 import edu.ie3.datamodel.utils.GridAndGeoUtils;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Length;
@@ -126,7 +127,7 @@ public class LineInput extends ConnectorInput implements HasType {
     if (!super.equals(o)) return false;
     LineInput lineInput = (LineInput) o;
     return type.equals(lineInput.type)
-        && length.equals(lineInput.length)
+        && QuantityUtil.equals(length, lineInput.length)
         && geoPosition.equals(lineInput.geoPosition)
         && olmCharacteristic.equals(lineInput.olmCharacteristic);
   }

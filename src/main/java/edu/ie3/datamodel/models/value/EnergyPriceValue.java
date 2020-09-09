@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import tech.units.indriya.ComparableQuantity;
@@ -29,7 +30,7 @@ public class EnergyPriceValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     EnergyPriceValue that = (EnergyPriceValue) o;
-    return price.equals(that.price);
+    return QuantityUtil.equals(price, that.price);
   }
 
   @Override

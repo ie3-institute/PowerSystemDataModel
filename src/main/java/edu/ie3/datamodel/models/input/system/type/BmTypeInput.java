@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -61,7 +62,8 @@ public class BmTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     BmTypeInput that = (BmTypeInput) o;
-    return activePowerGradient.equals(that.activePowerGradient) && etaConv.equals(that.etaConv);
+    return QuantityUtil.equals(activePowerGradient, that.activePowerGradient)
+        && QuantityUtil.equals(etaConv, that.etaConv);
   }
 
   @Override

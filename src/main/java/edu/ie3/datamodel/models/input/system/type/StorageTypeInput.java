@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -108,12 +109,12 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     if (!super.equals(o)) return false;
     StorageTypeInput that = (StorageTypeInput) o;
     return lifeCycle == that.lifeCycle
-        && eStorage.equals(that.eStorage)
-        && pMax.equals(that.pMax)
-        && activePowerGradient.equals(that.activePowerGradient)
-        && eta.equals(that.eta)
-        && dod.equals(that.dod)
-        && lifeTime.equals(that.lifeTime);
+        && QuantityUtil.equals(eStorage, that.eStorage)
+        && QuantityUtil.equals(pMax, that.pMax)
+        && QuantityUtil.equals(activePowerGradient, that.activePowerGradient)
+        && QuantityUtil.equals(eta, that.eta)
+        && QuantityUtil.equals(dod, that.dod)
+        && QuantityUtil.equals(lifeTime, that.lifeTime);
   }
 
   @Override

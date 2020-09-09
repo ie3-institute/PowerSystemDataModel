@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.*;
@@ -152,15 +153,15 @@ public class Transformer2WTypeInput extends AssetTypeInput {
         && tapNeutr == that.tapNeutr
         && tapMin == that.tapMin
         && tapMax == that.tapMax
-        && rSc.equals(that.rSc)
-        && xSc.equals(that.xSc)
-        && sRated.equals(that.sRated)
-        && vRatedA.equals(that.vRatedA)
-        && vRatedB.equals(that.vRatedB)
-        && gM.equals(that.gM)
-        && bM.equals(that.bM)
-        && dV.equals(that.dV)
-        && dPhi.equals(that.dPhi);
+        && QuantityUtil.equals(rSc, that.rSc)
+        && QuantityUtil.equals(xSc, that.xSc)
+        && QuantityUtil.equals(sRated, that.sRated)
+        && QuantityUtil.equals(vRatedA, that.vRatedA)
+        && QuantityUtil.equals(vRatedB, that.vRatedB)
+        && QuantityUtil.equals(gM, that.gM)
+        && QuantityUtil.equals(bM, that.bM)
+        && QuantityUtil.equals(dV, that.dV)
+        && QuantityUtil.equals(dPhi, that.dPhi);
   }
 
   @Override

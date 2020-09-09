@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
@@ -122,7 +123,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
     return marketReaction == bmInput.marketReaction
         && costControlled == bmInput.costControlled
         && type.equals(bmInput.type)
-        && feedInTariff.equals(bmInput.feedInTariff);
+        && QuantityUtil.equals(feedInTariff, bmInput.feedInTariff);
   }
 
   @Override

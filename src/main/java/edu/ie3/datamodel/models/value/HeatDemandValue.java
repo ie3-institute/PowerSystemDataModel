@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.util.Objects;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -27,7 +28,7 @@ public class HeatDemandValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     HeatDemandValue that = (HeatDemandValue) o;
-    return heatDemand.equals(that.heatDemand);
+    return QuantityUtil.equals(heatDemand, that.heatDemand);
   }
 
   @Override

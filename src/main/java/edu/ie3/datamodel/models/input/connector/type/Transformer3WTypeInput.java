@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.*;
@@ -205,22 +206,22 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     return tapNeutr == that.tapNeutr
         && tapMin == that.tapMin
         && tapMax == that.tapMax
-        && sRatedA.equals(that.sRatedA)
-        && sRatedB.equals(that.sRatedB)
-        && sRatedC.equals(that.sRatedC)
-        && vRatedA.equals(that.vRatedA)
-        && vRatedB.equals(that.vRatedB)
-        && vRatedC.equals(that.vRatedC)
-        && rScA.equals(that.rScA)
-        && rScB.equals(that.rScB)
-        && rScC.equals(that.rScC)
-        && xScA.equals(that.xScA)
-        && xScB.equals(that.xScB)
-        && xScC.equals(that.xScC)
-        && gM.equals(that.gM)
-        && bM.equals(that.bM)
-        && dV.equals(that.dV)
-        && dPhi.equals(that.dPhi);
+        && QuantityUtil.equals(sRatedA, that.sRatedA)
+        && QuantityUtil.equals(sRatedB, that.sRatedB)
+        && QuantityUtil.equals(sRatedC, that.sRatedC)
+        && QuantityUtil.equals(vRatedA, that.vRatedA)
+        && QuantityUtil.equals(vRatedB, that.vRatedB)
+        && QuantityUtil.equals(vRatedC, that.vRatedC)
+        && QuantityUtil.equals(rScA, that.rScA)
+        && QuantityUtil.equals(rScB, that.rScB)
+        && QuantityUtil.equals(rScC, that.rScC)
+        && QuantityUtil.equals(xScA, that.xScA)
+        && QuantityUtil.equals(xScB, that.xScB)
+        && QuantityUtil.equals(xScC, that.xScC)
+        && QuantityUtil.equals(gM, that.gM)
+        && QuantityUtil.equals(bM, that.bM)
+        && QuantityUtil.equals(dV, that.dV)
+        && QuantityUtil.equals(dPhi, that.dPhi);
   }
 
   @Override

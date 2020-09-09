@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.result.connector;
 
 import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -116,10 +117,10 @@ public abstract class ConnectorResult extends ResultEntity {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ConnectorResult that = (ConnectorResult) o;
-    return iAMag.equals(that.iAMag)
-        && iAAng.equals(that.iAAng)
-        && iBMag.equals(that.iBMag)
-        && iBAng.equals(that.iBAng);
+    return QuantityUtil.equals(iAMag, that.iAMag)
+        && QuantityUtil.equals(iAAng, that.iAAng)
+        && QuantityUtil.equals(iBMag, that.iBMag)
+        && QuantityUtil.equals(iBAng, that.iBAng);
   }
 
   @Override

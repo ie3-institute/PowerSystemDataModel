@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
@@ -180,10 +181,10 @@ public class PvInput extends SystemParticipantInput {
         && Double.compare(pvInput.kT, kT) == 0
         && marketReaction == pvInput.marketReaction
         && Double.compare(pvInput.cosPhiRated, cosPhiRated) == 0
-        && azimuth.equals(pvInput.azimuth)
-        && etaConv.equals(pvInput.etaConv)
-        && height.equals(pvInput.height)
-        && sRated.equals(pvInput.sRated);
+        && QuantityUtil.equals(azimuth, pvInput.azimuth)
+        && QuantityUtil.equals(etaConv, pvInput.etaConv)
+        && QuantityUtil.equals(height, pvInput.height)
+        && QuantityUtil.equals(sRated, pvInput.sRated);
   }
 
   @Override

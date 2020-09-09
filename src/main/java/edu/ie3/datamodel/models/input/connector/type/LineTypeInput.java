@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
 import java.util.Objects;
@@ -88,12 +89,12 @@ public class LineTypeInput extends AssetTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     LineTypeInput that = (LineTypeInput) o;
-    return b.equals(that.b)
-        && g.equals(that.g)
-        && r.equals(that.r)
-        && x.equals(that.x)
-        && iMax.equals(that.iMax)
-        && vRated.equals(that.vRated);
+    return QuantityUtil.equals(b, that.b)
+        && QuantityUtil.equals(g, that.g)
+        && QuantityUtil.equals(r, that.r)
+        && QuantityUtil.equals(x, that.x)
+        && QuantityUtil.equals(iMax, that.iMax)
+        && QuantityUtil.equals(vRated, that.vRated);
   }
 
   @Override

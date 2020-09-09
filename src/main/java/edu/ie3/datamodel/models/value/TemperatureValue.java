@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.util.Objects;
 import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
@@ -29,7 +30,7 @@ public class TemperatureValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     TemperatureValue that = (TemperatureValue) o;
-    return temperature.equals(that.temperature);
+    return QuantityUtil.equals(temperature, that.temperature);
   }
 
   @Override

@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.result.system;
 
 import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -92,7 +93,7 @@ public abstract class SystemParticipantResult extends ResultEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     SystemParticipantResult that = (SystemParticipantResult) o;
-    return p.equals(that.p) && q.equals(that.q);
+    return QuantityUtil.equals(p, that.p) && QuantityUtil.equals(q, that.q);
   }
 
   @Override

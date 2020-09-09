@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
@@ -214,8 +215,8 @@ public class LoadInput extends SystemParticipantInput {
     LoadInput loadInput = (LoadInput) o;
     return dsm == loadInput.dsm
         && Double.compare(loadInput.cosPhiRated, cosPhiRated) == 0
-        && eConsAnnual.equals(loadInput.eConsAnnual)
-        && sRated.equals(loadInput.sRated);
+        && QuantityUtil.equals(eConsAnnual, loadInput.eConsAnnual)
+        && QuantityUtil.equals(sRated, loadInput.sRated);
   }
 
   @Override

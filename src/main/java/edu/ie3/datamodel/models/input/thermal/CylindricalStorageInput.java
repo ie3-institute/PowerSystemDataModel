@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.thermal;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import java.util.Objects;
 import java.util.UUID;
@@ -119,11 +120,11 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     CylindricalStorageInput that = (CylindricalStorageInput) o;
-    return storageVolumeLvl.equals(that.storageVolumeLvl)
-        && storageVolumeLvlMin.equals(that.storageVolumeLvlMin)
-        && inletTemp.equals(that.inletTemp)
-        && returnTemp.equals(that.returnTemp)
-        && c.equals(that.c);
+    return QuantityUtil.equals(storageVolumeLvl, that.storageVolumeLvl)
+        && QuantityUtil.equals(storageVolumeLvlMin, that.storageVolumeLvlMin)
+        && QuantityUtil.equals(inletTemp, that.inletTemp)
+        && QuantityUtil.equals(returnTemp, that.returnTemp)
+        && QuantityUtil.equals(c, that.c);
   }
 
   @Override

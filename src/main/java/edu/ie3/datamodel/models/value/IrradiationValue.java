@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.Irradiation;
 import java.util.Objects;
 import tech.units.indriya.ComparableQuantity;
@@ -41,8 +42,8 @@ public class IrradiationValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     IrradiationValue that = (IrradiationValue) o;
-    return directIrradiation.equals(that.directIrradiation)
-        && diffuseIrradiation.equals(that.diffuseIrradiation);
+    return QuantityUtil.equals(directIrradiation, that.directIrradiation)
+        && QuantityUtil.equals(diffuseIrradiation, that.diffuseIrradiation);
   }
 
   @Override

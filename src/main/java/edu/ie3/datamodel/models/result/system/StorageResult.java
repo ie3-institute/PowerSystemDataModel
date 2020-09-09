@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -74,7 +75,7 @@ public class StorageResult extends SystemParticipantResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     StorageResult that = (StorageResult) o;
-    return soc.equals(that.soc);
+    return QuantityUtil.equals(soc, that.soc);
   }
 
   @Override

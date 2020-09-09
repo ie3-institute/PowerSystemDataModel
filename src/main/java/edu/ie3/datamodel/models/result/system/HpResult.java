@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import tech.units.indriya.ComparableQuantity;
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpResult extends SystemParticipantResult {
 
-  private final Quantity<Power> qDot;
+  private final ComparableQuantity<Power> qDot;
 
   /**
    * Standard constructor with automatic uuid generation.
@@ -30,7 +31,7 @@ public class HpResult extends SystemParticipantResult {
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q,
-      Quantity<Power> qDot) {
+      ComparableQuantity<Power> qDot) {
     super(timestamp, inputModel, p, q);
     this.qDot = qDot;
   }
@@ -51,7 +52,7 @@ public class HpResult extends SystemParticipantResult {
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q,
-      Quantity<Power> qDot) {
+      ComparableQuantity<Power> qDot) {
     super(uuid, timestamp, inputModel, p, q);
     this.qDot = qDot;
   }
@@ -66,7 +67,7 @@ public class HpResult extends SystemParticipantResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HpResult hpResult = (HpResult) o;
-    return qDot.equals(hpResult.qDot);
+    return QuantityUtil.equals(qDot, hpResult.qDot);
   }
 
   @Override

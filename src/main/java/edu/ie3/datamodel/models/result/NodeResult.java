@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.result;
 
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -82,7 +83,7 @@ public class NodeResult extends ResultEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     NodeResult that = (NodeResult) o;
-    return vMag.equals(that.vMag) && vAng.equals(that.vAng);
+    return QuantityUtil.equals(vMag, that.vMag) && QuantityUtil.equals(vAng, that.vAng);
   }
 
   @Override

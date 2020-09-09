@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
@@ -81,9 +82,9 @@ public class WecTypeInput extends SystemParticipantTypeInput {
     if (!super.equals(o)) return false;
     WecTypeInput that = (WecTypeInput) o;
     return cpCharacteristic.equals(that.cpCharacteristic)
-        && etaConv.equals(that.etaConv)
-        && rotorArea.equals(that.rotorArea)
-        && hubHeight.equals(that.hubHeight);
+        && QuantityUtil.equals(etaConv, that.etaConv)
+        && QuantityUtil.equals(rotorArea, that.rotorArea)
+        && QuantityUtil.equals(hubHeight, that.hubHeight);
   }
 
   @Override

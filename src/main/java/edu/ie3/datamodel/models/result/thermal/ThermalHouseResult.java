@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.result.thermal;
 
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.utils.QuantityUtil;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -69,7 +70,7 @@ public class ThermalHouseResult extends ThermalSinkResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ThermalHouseResult that = (ThermalHouseResult) o;
-    return indoorTemperature.equals(that.indoorTemperature);
+    return QuantityUtil.equals(indoorTemperature, that.indoorTemperature);
   }
 
   @Override
