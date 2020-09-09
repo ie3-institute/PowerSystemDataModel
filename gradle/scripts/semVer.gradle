@@ -1,19 +1,7 @@
 // tasks for semantic versioning using semver-gradle https://github.com/ethauvin/semver-gradle
 
-task currentMajor {
-	doFirst {
-		println semver.major
-	}
-}
-
-task currentMinor {
-	doFirst {
-		println semver.minor
-	}
-}
-
-task currentPatch {
-	doFirst {
-		println semver.patch
+task currentVersion {
+	doFirst{
+		println semver.semver
 	}
 }
