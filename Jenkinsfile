@@ -125,6 +125,10 @@ node {
             // deploy stage only if branch is main or dev
             if (env.BRANCH_NAME == "main" || env.BRANCH_NAME == "dev") {
                 stage('deploy') {
+                    // determine project version
+                    String projectVersion = sh(returnStdout: true, script: "set +x && cd ${projectName}; ./gradlew -q " +
+                            "${(env.BRANCH_NAME == "dev") ? "devVersion" : "currentVersion"}").toString().trim()
+
                     // get the sonatype credentials stored in the jenkins secure keychain
                     withCredentials([usernamePassword(credentialsId: mavenCentralCredentialsId, usernameVariable: 'mavencentral_username', passwordVariable: 'mavencentral_password'),
                                      file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
@@ -135,7 +139,8 @@ node {
                                 "-Ppassword=${env.mavencentral_password} " +
                                 "-Psigning.keyId=${env.signingKeyId} " +
                                 "-Psigning.password=${env.signingPassword} " +
-                                "-Psigning.secretKeyRingFile=${env.mavenCentralKeyFile} ${(env.BRANCH_NAME == "dev") ? " -Psnapshot" : ""}"
+                                "-Psigning.secretKeyRingFile=${env.mavenCentralKeyFile} " +
+                                "-PdeployVersion='$projectVersion'"
 
                         // see https://docs.gradle.org/6.0.1/release-notes.html "Publication of SHA256 and SHA512 checksums"
                         def preventSHACheckSums = "-Dorg.gradle.internal.publish.checksums.insecure=true"
@@ -150,9 +155,6 @@ node {
                     }
 
                     // notify rocket chat
-                    String projectVersion =
-                            sh(returnStdout: true, script: "set +x && cd ${projectName}; ./gradlew -q printVersion")
-                    projectVersion = "${projectVersion.trim()}${(env.BRANCH_NAME == "dev") ? "-SNAPSHOT" : ""}"
                     String successMsg = "deployment of version $projectVersion from branch '$currentBranchName' to sonatype " +
                             "successful. If this is a deployment from 'main' pls remember visiting https://oss.sonatype.org to " +
                             "stag and release artifact!\n" +

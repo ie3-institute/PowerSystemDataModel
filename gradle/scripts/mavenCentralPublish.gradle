@@ -9,10 +9,11 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 	from javadoc.destinationDir
 }
 
-if (project.hasProperty('user') && project.hasProperty('password')) {
+
+if (project.hasProperty('user') && project.hasProperty('password') && project.hasProperty('deployVersion')) {
 
 	// snapshot version differs from normal version
-	String versionString = project.hasProperty('snapshot') ? "${semver.major}.${semver.minor}-SNAPSHOT" : this.version.toString()
+	String versionString = project.getProperty('deployVersion')
 
 	signing {
 		required { !versionString.endsWith('SNAPSHOT') }
