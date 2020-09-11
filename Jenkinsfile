@@ -135,8 +135,7 @@ node {
                                 "-Ppassword=${env.mavencentral_password} " +
                                 "-Psigning.keyId=${env.signingKeyId} " +
                                 "-Psigning.password=${env.signingPassword} " +
-                                "-Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}" +
-                                { (env.BRANCH_NAME == "dev") ? " -Psnapshot" : "" }
+                                "-Psigning.secretKeyRingFile=${env.mavenCentralKeyFile} ${(env.BRANCH_NAME == "dev") ? " -Psnapshot" : ""}"
 
                         // see https://docs.gradle.org/6.0.1/release-notes.html "Publication of SHA256 and SHA512 checksums"
                         def preventSHACheckSums = "-Dorg.gradle.internal.publish.checksums.insecure=true"
@@ -442,7 +441,7 @@ def getGithubCommitJsonObj(String commit_sha, String orgName, String repoName) {
 
 def curlByCSHA(String commit_sha, String orgName, String repoName) {
 
-    def curlUrl = "curl https://api.github.com/repos/" + orgName + "/" + repoName + "/commits/" + commit_sha
+    def curlUrl = "curl -s https://api.github.com/repos/" + orgName + "/" + repoName + "/commits/" + commit_sha
     String jsonResponseString = sh(script: curlUrl, returnStdout: true)
 
     return jsonResponseString
