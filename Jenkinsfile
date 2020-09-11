@@ -136,7 +136,7 @@ node {
                                 "-Psigning.keyId=${env.signingKeyId} " +
                                 "-Psigning.password=${env.signingPassword} " +
                                 "-Psigning.secretKeyRingFile=${env.mavenCentralKeyFile}" +
-                                (env.BRANCH_NAME == "dev") ? " -Psnapshot" : ""
+                                { (env.BRANCH_NAME == "dev") ? " -Psnapshot" : "" }
 
                         // see https://docs.gradle.org/6.0.1/release-notes.html "Publication of SHA256 and SHA512 checksums"
                         def preventSHACheckSums = "-Dorg.gradle.internal.publish.checksums.insecure=true"
