@@ -10,6 +10,10 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 if (project.hasProperty('user') && project.hasProperty('password')) {
+
+	// snapshot version differs from normal version
+	def version = project.hasProperty('snapshot') ? "${semver.major}.${semver.minor}-SNAPSHOT" : this.version
+
 	signing {
 		required { !version.endsWith('SNAPSHOT') }
 		if (required)
