@@ -63,7 +63,7 @@ Charging Point Types
 Available Standard Types
 """"""""""""""""""""""""
 To simplify the application of electric vehicle charging stations, some common standard types are available out-of-the-box.
-They can either by used code vise or directly from database or file input by referencing their id or one of their
+They can either by used code wise or directly from database or file input by referencing their id or one of their
 synonymous ids. All standard types can be found in :code:`edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils`.
 
 +-------------------------------+-----------------------------------------------+---------------+-----------------------+
