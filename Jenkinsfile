@@ -338,7 +338,7 @@ def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String orgName, Stri
             return "sonarqube -Dsonar.branch.name=main -Dsonar.projectKey=$sonarqubeProjectKey"
             break
         case "dev":
-            return "sonarqube -Dsonar.branch.name=main -Dsonar.projectKey=$sonarqubeProjectKey"
+            return "sonarqube -Dsonar.projectKey=$sonarqubeProjectKey"
             break
         default:
             String gradleCommand = "sonarqube -Dsonar.projectKey=$sonarqubeProjectKey"
