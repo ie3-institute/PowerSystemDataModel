@@ -105,7 +105,7 @@ node {
 
             // sonarqube analysis
             stage('sonarqube analysis') {
-                String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, orgName, projectName)
+                String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, orgName, projectName, projectName)
                 withSonarQubeEnv() { // will pick the global server connection from jenkins for sonarqube
                     gradle(sonarqubeCmd, projectName)
                 }
@@ -329,16 +329,20 @@ def gradle(String command, String relativeProjectDir) {
     env.JENKINS_NODE_COOKIE = 'dontKillMe' // this is necessary for the Gradle daemon to be kept alive
 
     // switch directory to be able to use gradle wrapper
-    sh(script: """cd $relativeProjectDir""" + ''' set +x; ./gradlew ''' + """$command""", returnStdout: true)
+    sh(script: """set +x && cd $relativeProjectDir""" + ''' set +x; ./gradlew ''' + """$command""", returnStdout: true)
 }
 
-def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String orgName, String projectName) {
+def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String orgName, String projectName, String relativeGitDir) {
     switch (env.BRANCH_NAME) {
         case "main":
             return "sonarqube -Dsonar.branch.name=main -Dsonar.projectKey=$sonarqubeProjectKey"
             break
         case "dev":
-            return "sonarqube -Dsonar.branch.name=main -Dsonar.projectKey=$sonarqubeProjectKey"
+            String[] branchVersion = gradle("-q currentVersion", relativeGitDir).toString().split('\\.')
+            Integer major = branchVersion[0].toInteger()
+            Integer minor = branchVersion[1].toInteger()
+            String projectVersion = "${major}.${minor}-SNAPSHOT"
+            return "sonarqube -Dsonar.projectVersion=${projectVersion} -Dsonar.projectKey=$sonarqubeProjectKey"
             break
         default:
             String gradleCommand = "sonarqube -Dsonar.projectKey=$sonarqubeProjectKey"
@@ -584,7 +588,7 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
                 }
             } else {
                 // invalid target branch type for release merge
-                println "Merging release branch into branch type '$targetBranchType' is not supported! Realeas branches" +
+                println "Merging release branch into branch type '$targetBranchType' is not supported! Realease branches" +
                         "can only be merged into main or dev branch!"
                 return -1
             }
@@ -601,7 +605,7 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
                 Integer sourceMinor = sourceBranchVersion[1].toInteger()
 
                 boolean validCheck1 = targetMajor == sourceMajor && targetMinor + 1 == sourceMinor
-                boolean validCheck2 = targetMajor + 1 == sourceMajor && targetMinor == sourceMinor
+                boolean validCheck2 = targetMajor + 1 == sourceMajor
 
                 // patch version always needs to be 0
                 boolean patchValid = sourceBranchVersion[2].toInteger() == 0
@@ -609,7 +613,7 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
                 if ((validCheck1 || validCheck2) && patchValid) {
                     return 0
                 } else {
-                    println "Dev branch versioning does not fit to main branch versioning!\n" +
+                    println "Dev branch versioning does not fit to main branch versioning! Must increase either major or minor version!\n" +
                             "devVersion: ${sourceBranchVersion[0]}.${sourceBranchVersion[1]}.${sourceBranchVersion[2]}\n" +
                             "mainVersion: ${targetBranchVersion[0]}.${targetBranchVersion[1]}.${targetBranchVersion[2]}"
                     return -1
