@@ -584,7 +584,7 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
                 }
             } else {
                 // invalid target branch type for release merge
-                println "Merging release branch into branch type '$targetBranchType' is not supported! Realeas branches" +
+                println "Merging release branch into branch type '$targetBranchType' is not supported! Realease branches" +
                         "can only be merged into main or dev branch!"
                 return -1
             }
@@ -601,7 +601,7 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
                 Integer sourceMinor = sourceBranchVersion[1].toInteger()
 
                 boolean validCheck1 = targetMajor == sourceMajor && targetMinor + 1 == sourceMinor
-                boolean validCheck2 = targetMajor + 1 == sourceMajor && targetMinor == sourceMinor
+                boolean validCheck2 = targetMajor + 1 == sourceMajor
 
                 // patch version always needs to be 0
                 boolean patchValid = sourceBranchVersion[2].toInteger() == 0
@@ -609,7 +609,7 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
                 if ((validCheck1 || validCheck2) && patchValid) {
                     return 0
                 } else {
-                    println "Dev branch versioning does not fit to main branch versioning!\n" +
+                    println "Dev branch versioning does not fit to main branch versioning! Must increase either major or minor version!\n" +
                             "devVersion: ${sourceBranchVersion[0]}.${sourceBranchVersion[1]}.${sourceBranchVersion[2]}\n" +
                             "mainVersion: ${targetBranchVersion[0]}.${targetBranchVersion[1]}.${targetBranchVersion[2]}"
                     return -1
