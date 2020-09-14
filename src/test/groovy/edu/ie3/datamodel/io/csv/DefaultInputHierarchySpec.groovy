@@ -62,15 +62,12 @@ class DefaultInputHierarchySpec extends Specification {
         then:
         Files.exists(basePath)
         Files.isDirectory(basePath)
-        dfh.subDirectories.entrySet().forEach(entry ->{
-            def path = entry.getKey()
-            def isMandatory = entry.getValue()
-            
+        dfh.subDirectories.each{path, isMandatory ->
             assert Files.exists(path) == isMandatory
             if(isMandatory)
                 assert Files.isDirectory(path)
-        })
-        Files.list(basePath).forEach(path -> {assert dfh.subDirectories.containsKey(path)})
+        }
+        Files.list(basePath).each {path -> assert dfh.subDirectories.containsKey(path)}
     }
 
     def "A DefaultFileHierarchy is able to create a correct hierarchy of mandatory and optional directories"() {
@@ -85,13 +82,11 @@ class DefaultInputHierarchySpec extends Specification {
         then:
         Files.exists(basePath)
         Files.isDirectory(basePath)
-        dfh.subDirectories.entrySet().forEach(entry -> {
-            def path = entry.getKey()
-
+        dfh.subDirectories.each {path, isMandatory ->
             assert Files.exists(path)
             assert Files.isDirectory(path)
-        })
-        Files.list(basePath).forEach(path -> {assert dfh.subDirectories.containsKey(path)})
+        }
+        Files.list(basePath).forEach {path -> assert dfh.subDirectories.containsKey(path)}
     }
 
     def "A DefaultFileHierarchy is able to validate a correct hierarchy of mandatory and optional directories"() {
