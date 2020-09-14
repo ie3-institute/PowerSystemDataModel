@@ -339,8 +339,8 @@ def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String orgName, Stri
             break
         case "dev":
             String[] branchVersion = gradle("-q currentVersion", relativeGitDir).toString().split('\\.')
-            boolean major = branchVersion[0].toInteger()
-            boolean minor = branchVersion[1].toInteger()
+            Integer major = branchVersion[0].toInteger()
+            Integer minor = branchVersion[1].toInteger()
             String projectVersion = "${major}.${minor}-SNAPSHOT"
             return "sonarqube -Dsonar.projectVersion=${projectVersion} -Dsonar.projectKey=$sonarqubeProjectKey"
             break
