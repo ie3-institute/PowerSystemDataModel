@@ -121,6 +121,7 @@ public class ChargingPointTypeUtils {
           DC,
           new HashSet<>(Arrays.asList("tesla3", "teslav3", "supercharger3")));
 
+  /** all common charging point types accessible mapped on their id and all synonymous ids */
   protected static final Map<String, ChargingPointType> commonChargingPointTypes =
       Collections.unmodifiableMap(
           Stream.of(
