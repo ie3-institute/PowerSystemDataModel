@@ -18,14 +18,14 @@ management:
 
 Stable releases
 ===============
-On `Maven central <https://search.maven.org/artifact/com.github.ie3-institute/PowerSystemUtils>`_:
+On `Maven central <https://search.maven.org/artifact/com.github.ie3-institute/PowerSystemDataModel>`_:
 
 .. code-block:: xml
 
    <dependency>
      <groupId>com.github.ie3-institute</groupId>
-     <artifactId>PowerSystemUtils</artifactId>
-     <version>1.3.1</version>
+     <artifactId>PowerSystemDataModel</artifactId>
+     <version>1.1.0</version>
    </dependency>
 
 Snapshot releases
@@ -45,6 +45,6 @@ and add the dependency:
 
    <dependency>
      <groupId>com.github.ie3-institute</groupId>
-     <artifactId>PowerSystemUtils</artifactId>
-     <version>1.3.2-SNAPSHOT</version>
+     <artifactId>PowerSystemDataModel</artifactId>
+     <version>2.0-SNAPSHOT</version>
    </dependency>

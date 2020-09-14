@@ -9,9 +9,14 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 	from javadoc.destinationDir
 }
 
-if (project.hasProperty('user') && project.hasProperty('password')) {
+
+if (project.hasProperty('user') && project.hasProperty('password') && project.hasProperty('deployVersion')) {
+
+	// snapshot version differs from normal version
+	String versionString = project.getProperty('deployVersion')
+
 	signing {
-		required { !version.endsWith('SNAPSHOT') }
+		required { !versionString.endsWith('SNAPSHOT') }
 		if (required)
 			sign(publishing.publications)
 	}
@@ -76,7 +81,7 @@ if (project.hasProperty('user') && project.hasProperty('password')) {
 				removeTestDependenciesFromPom(pom)
 				groupId group
 				artifactId 'PowerSystemDataModel'
-				version version
+				version versionString
 
 				from components.java
 				artifact sourcesJar
@@ -88,7 +93,7 @@ if (project.hasProperty('user') && project.hasProperty('password')) {
 			maven {
 				def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 				def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-				url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+				url = versionString.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 				credentials {
 					username project.getProperty('user')
 					password project.getProperty('password')

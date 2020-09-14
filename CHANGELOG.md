@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- added electric vehicle charging station implementation ``EvcsInput``
+
+## [1.1.0] - 2020-09-15
+
+### Added
 -  Headline in csv files is now mandatory. CsvDataSource checks for existing field `uuid` in first row of .csv file
 -  Minor logging improvements
 -  New constructor in ``Transformer3WInput`` that allows the internal node to be marked as slack
