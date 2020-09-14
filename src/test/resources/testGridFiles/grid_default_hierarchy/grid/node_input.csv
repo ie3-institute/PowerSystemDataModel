@@ -1,0 +1,8 @@
+uuid,geo_position,id,operates_from,operates_until,operator,slack,subnet,v_rated,v_target,volt_lvl
+4ca90220-74c2-4369-9afa-a18bf068840d,"{""type"":""Point"",""coordinates"":[7.411111,51.492528],""crs"":{""type"":""name"",""properties"":{""name"":""EPSG:4326""}}}",node_a,2020-03-24T15:11:31Z[UTC],2020-03-25T15:11:31Z[UTC],f15105c4-a2de-4ab8-a621-4bc98e372d92,true,1,380.0,1.0,Höchstspannung
+47d29df0-ba2d-4d23-8e75-c82229c5c758,,node_b,,,,false,2,110.0,1.0,Hochspannung
+bd837a25-58f3-44ac-aa90-c6b6e3cd91b2,,node_c,,,,false,3,20.0,1.0,Mittelspannung
+6e0980e0-10f2-4e18-862b-eb2b7c90509b,,node_d,,,,false,4,20.0,1.0,Mittelspannung
+98a3e7fa-c456-455b-a5ea-bb19e7cbeb63,,node_e,,,,false,5,10.0,1.0,Mittelspannung
+9e37ce48-9650-44ec-b888-c2fd182aff01,,node_f,,,,false,6,0.4,1.0,Niederspannung
+aaa74c1a-d07e-4615-99a5-e991f1d81cc4,,node_g,,,,false,6,0.4,1.0,Niederspannung
