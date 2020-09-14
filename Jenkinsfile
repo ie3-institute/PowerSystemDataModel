@@ -105,7 +105,7 @@ node {
 
             // sonarqube analysis
             stage('sonarqube analysis') {
-                String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, orgName, projectName)
+                String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, orgName, projectName, projectName)
                 withSonarQubeEnv() { // will pick the global server connection from jenkins for sonarqube
                     gradle(sonarqubeCmd, projectName)
                 }
@@ -329,16 +329,20 @@ def gradle(String command, String relativeProjectDir) {
     env.JENKINS_NODE_COOKIE = 'dontKillMe' // this is necessary for the Gradle daemon to be kept alive
 
     // switch directory to be able to use gradle wrapper
-    sh(script: """cd $relativeProjectDir""" + ''' set +x; ./gradlew ''' + """$command""", returnStdout: true)
+    sh(script: """set +x && cd $relativeProjectDir""" + ''' set +x; ./gradlew ''' + """$command""", returnStdout: true)
 }
 
-def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String orgName, String projectName) {
+def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String orgName, String projectName, String relativeGitDir) {
     switch (env.BRANCH_NAME) {
         case "main":
             return "sonarqube -Dsonar.branch.name=main -Dsonar.projectKey=$sonarqubeProjectKey"
             break
         case "dev":
-            return "sonarqube -Dsonar.projectKey=$sonarqubeProjectKey"
+            String[] branchVersion = gradle("-q currentVersion", relativeGitDir).toString().split('\\.')
+            boolean major = branchVersion[0].toInteger()
+            boolean minor = branchVersion[1].toInteger()
+            String projectVersion = "${major}.${minor}-SNAPSHOT"
+            return "sonarqube -Dsonar.projectVersion=${projectVersion} -Dsonar.projectKey=$sonarqubeProjectKey"
             break
         default:
             String gradleCommand = "sonarqube -Dsonar.projectKey=$sonarqubeProjectKey"
