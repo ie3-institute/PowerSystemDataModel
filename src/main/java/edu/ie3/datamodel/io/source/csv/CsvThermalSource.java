@@ -5,12 +5,15 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.FileNamingStrategy;
+import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.io.source.ThermalSource;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.thermal.*;
+import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
+import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
+import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
+import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

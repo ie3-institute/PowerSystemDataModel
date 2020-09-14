@@ -6,12 +6,34 @@
 package edu.ie3.datamodel.io.csv;
 
 import edu.ie3.datamodel.exceptions.FileException;
+import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.MeasurementUnitInput;
+import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.RandomLoadParameters;
+import edu.ie3.datamodel.models.input.connector.LineInput;
+import edu.ie3.datamodel.models.input.connector.SwitchInput;
+import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
+import edu.ie3.datamodel.models.input.system.*;
+import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput;
+import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
+import edu.ie3.datamodel.models.input.system.type.*;
+import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
+import edu.ie3.datamodel.models.timeseries.TimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.io.FilenameUtils;
@@ -19,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Default directory hierarchy for input models */
-public class DefaultInputHierarchy {
+public class DefaultInputHierarchy implements FileHierarchy {
   private static final Logger logger = LoggerFactory.getLogger(DefaultInputHierarchy.class);
 
   /** Use the unix file separator here. */
@@ -140,15 +162,93 @@ public class DefaultInputHierarchy {
     }
   }
 
+  /**
+   * Gives the correct sub directory (w.r.t. {@link this#baseDirectory}) for the provided class.
+   *
+   * @param cls Class to define the sub directory for
+   * @param fileSeparator The file separator to use
+   * @return An Option to the regarding sub directory as a string
+   */
+  @Override
+  public Optional<String> getSubDirectory(Class<? extends UniqueEntity> cls, String fileSeparator) {
+    /* Go through all sub directories and check, if the given class belongs to one of the classes mapped to the sub directories. */
+    Optional<SubDirectories> maybeSubDirectory =
+        Arrays.stream(SubDirectories.values())
+            .filter(
+                subDirectory ->
+                    subDirectory.getRelevantClasses().stream()
+                        .anyMatch(definedClass -> definedClass.isAssignableFrom(cls)))
+            .findFirst();
+
+    if (!maybeSubDirectory.isPresent()) {
+      logger.debug("Don't know a fitting sub directory for class '{}'.", cls.getSimpleName());
+      return Optional.empty();
+    } else {
+      return Optional.of(maybeSubDirectory.get().getRelPath());
+    }
+  }
+
   private enum SubDirectories {
-    GRID("grid" + FILE_SEPARATOR, true),
-    GLOBAL("global" + FILE_SEPARATOR, true),
-    PARTICIPANTS("participants" + FILE_SEPARATOR, true),
-    TIME_SERIES(PARTICIPANTS.relPath + "time_series" + FILE_SEPARATOR, false),
-    THERMAL("thermal" + FILE_SEPARATOR, false),
-    GRAPHICS("graphics" + FILE_SEPARATOR, false);
-    public final String relPath;
-    public final boolean mandatory;
+    GRID(
+        "grid" + FILE_SEPARATOR,
+        true,
+        Stream.of(
+                LineInput.class,
+                SwitchInput.class,
+                Transformer2WInput.class,
+                Transformer3WInput.class,
+                MeasurementUnitInput.class,
+                NodeInput.class)
+            .collect(Collectors.toSet())),
+    GLOBAL(
+        "global" + FILE_SEPARATOR,
+        true,
+        Stream.of(
+                LineTypeInput.class,
+                Transformer2WTypeInput.class,
+                Transformer3WTypeInput.class,
+                BmTypeInput.class,
+                ChpTypeInput.class,
+                EvTypeInput.class,
+                HpTypeInput.class,
+                StorageTypeInput.class,
+                WecTypeInput.class,
+                OperatorInput.class,
+                WecCharacteristicInput.class,
+                EvCharacteristicInput.class,
+                RandomLoadParameters.class,
+                LoadProfileInput.class)
+            .collect(Collectors.toSet())),
+    PARTICIPANTS(
+        "participants" + FILE_SEPARATOR,
+        true,
+        Stream.of(
+                BmInput.class,
+                ChpInput.class,
+                EvInput.class,
+                EvcsInput.class,
+                FixedFeedInInput.class,
+                HpInput.class,
+                LoadInput.class,
+                PvInput.class,
+                StorageInput.class,
+                WecInput.class)
+            .collect(Collectors.toSet())),
+    TIME_SERIES(
+        PARTICIPANTS.relPath + "time_series" + FILE_SEPARATOR,
+        false,
+        Stream.of(TimeSeries.class).collect(Collectors.toSet())),
+    THERMAL(
+        "thermal" + FILE_SEPARATOR,
+        false,
+        Stream.of(ThermalUnitInput.class).collect(Collectors.toSet())),
+    GRAPHICS(
+        "graphics" + FILE_SEPARATOR,
+        false,
+        Stream.of(GraphicInput.class).collect(Collectors.toSet()));
+    private final String relPath;
+    private final boolean mandatory;
+    private final Set<Class<?>> relevantClasses;
 
     public String getRelPath() {
       return relPath;
@@ -158,9 +258,14 @@ public class DefaultInputHierarchy {
       return mandatory;
     }
 
-    SubDirectories(String relPath, boolean mandatory) {
+    public Set<Class<?>> getRelevantClasses() {
+      return relevantClasses;
+    }
+
+    SubDirectories(String relPath, boolean mandatory, Set<Class<?>> relevantClasses) {
       this.relPath = relPath;
       this.mandatory = mandatory;
+      this.relevantClasses = relevantClasses;
     }
   }
 }

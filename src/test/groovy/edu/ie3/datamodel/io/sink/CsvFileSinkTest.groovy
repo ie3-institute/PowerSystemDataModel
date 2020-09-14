@@ -9,7 +9,7 @@ import static edu.ie3.util.quantities.dep.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
 import static edu.ie3.util.quantities.dep.PowerSystemUnits.PERCENT
 
-import edu.ie3.datamodel.io.FileNamingStrategy
+import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
