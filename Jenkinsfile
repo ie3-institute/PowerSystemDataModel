@@ -568,7 +568,7 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
                 Integer sourceMinor = sourceBranchVersion[1].toInteger()
 
                 boolean validCheck1 = targetMajor == sourceMajor && targetMinor + 1 == sourceMinor
-                boolean validCheck2 = targetMajor + 1 == sourceMajor && targetMinor == sourceMinor
+                boolean validCheck2 = targetMajor + 1 == sourceMajor
 
                 // patch version always needs to be 0
                 boolean patchValid = sourceBranchVersion[2].toInteger() == 0
