@@ -38,7 +38,7 @@ class TarballUtilsSpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The target archive path has to end with '.tar.gz'. You provided: '"+ tmpDirectory +"/test.bli.blubb'."
+		ex.message == "The target archive path has to end with '.tar.gz'. You provided: '"+ tmpDirectory +"/test.bli.blubb'."
 	}
 
 	def "The tarball utils throws an exception, if the target file already exists"() {
@@ -52,7 +52,7 @@ class TarballUtilsSpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The target archive '"+ tmpDirectory +"/test.tar.gz' already exists."
+		ex.message == "The target archive '"+ tmpDirectory +"/test.tar.gz' already exists."
 	}
 
 	def "The tarball utils is able to zip one single file to .tar.gz"() {
@@ -107,7 +107,7 @@ class TarballUtilsSpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "There is no archive '" + tmpDirectory + "/noFile.tar.gz' apparent."
+		ex.message == "There is no archive '" + tmpDirectory + "/noFile.tar.gz' apparent."
 	}
 
 	def  "The tarball utils throws an exception, if the archive to extract, is a directory"() {
@@ -120,7 +120,7 @@ class TarballUtilsSpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "Archive '" + tmpDirectory + "' is not a file."
+		ex.message == "Archive '" + tmpDirectory + "' is not a file."
 	}
 
 	def  "The tarball utils throws an exception, if the archive to extract, does not end on '.tar.gz'"() {
@@ -134,7 +134,7 @@ class TarballUtilsSpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "Archive '" + tmpDirectory + "/someFile.txt' does not end with '.tar.gz'."
+		ex.message == "Archive '" + tmpDirectory + "/someFile.txt' does not end with '.tar.gz'."
 	}
 
 	def  "The tarball utils throws an exception, if the target folder already is available and overriding is deactivated"() {
@@ -148,7 +148,7 @@ class TarballUtilsSpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The target path '" + tmpDirectory + "/extract/default_directory_hierarchy' already exists."
+		ex.message == "The target path '" + tmpDirectory + "/extract/default_directory_hierarchy' already exists."
 	}
 
 	def  "The tarball utils throws an exception, if the target folder already is available, a file and overriding is activated"() {
@@ -165,14 +165,14 @@ class TarballUtilsSpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "You intend to extract content of '" + archiveFile + "' to '" + targetDirectory + "/default_directory_hierarchy.txt', which is a regular file."
+		ex.message == "You intend to extract content of '" + archiveFile + "' to '" + targetDirectory + "/default_directory_hierarchy.txt', which is a regular file."
 	}
 
 	def  "The tarball utils throws no exception, if the target folder already is available, filled and overriding is activated"() {
 		given:
 		def archiveFile = Paths.get(getClass().getResource('/default_directory_hierarchy.tar.gz').toURI())
 		def targetDirectory = Paths.get(FilenameUtils.concat(tmpDirectory.toString(), "extract"))
-		def nestedTargetFolder = Paths.get(FilenameUtils.concat(FilenameUtils.concat(tmpDirectory.toString(), "extract"),"default_directory_hierarchy"))
+		def nestedTargetFolder = Paths.get(FilenameUtils.concat(FilenameUtils.concat(tmpDirectory.toString(), "extract"), "default_directory_hierarchy"))
 		Files.createDirectories(nestedTargetFolder)
 		def oneFile = Paths.get(FilenameUtils.concat(nestedTargetFolder.toString(), "someFile.txt"))
 		Files.createFile(oneFile)
@@ -195,20 +195,20 @@ class TarballUtilsSpec extends Specification {
 		then:
 		noExceptionThrown()
 		Files.exists(targetDirectory)
-		Files.list(targetDirectory).map {it.toString()}.sorted().collect(Collectors.toList()) == [
+		Files.list(targetDirectory).map { it.toString() }.sorted().collect(Collectors.toList()) == [
 			tmpDirectory.toString() + "/extract/default_directory_hierarchy"
 		]
 
 		def nestedTargetDirectoryPath = Paths.get(FilenameUtils.concat(targetDirectory.toString(), "default_directory_hierarchy"))
 		Files.exists(nestedTargetDirectoryPath)
-		Files.list(nestedTargetDirectoryPath).map {it.toString()}.sorted().collect(Collectors.toList()) == [
+		Files.list(nestedTargetDirectoryPath).map { it.toString() }.sorted().collect(Collectors.toList()) == [
 			tmpDirectory.toString() + "/extract/default_directory_hierarchy/grid",
 			tmpDirectory.toString() + "/extract/default_directory_hierarchy/participants"
 		]
 
-		def gridPath = Paths.get(FilenameUtils.concat(nestedTargetDirectoryPath.toString(),"grid"))
+		def gridPath = Paths.get(FilenameUtils.concat(nestedTargetDirectoryPath.toString(), "grid"))
 		Files.exists(gridPath)
-		Files.list(gridPath).map {it.toString()}.sorted().collect(Collectors.toList()) == [
+		Files.list(gridPath).map { it.toString() }.sorted().collect(Collectors.toList()) == [
 			tmpDirectory.toString() + "/extract/default_directory_hierarchy/grid/line_input.csv",
 			tmpDirectory.toString() + "/extract/default_directory_hierarchy/grid/measurement_unit_input.csv",
 			tmpDirectory.toString() + "/extract/default_directory_hierarchy/grid/node_input.csv",
@@ -217,9 +217,9 @@ class TarballUtilsSpec extends Specification {
 			tmpDirectory.toString() + "/extract/default_directory_hierarchy/grid/transformer3w_input.csv"
 		]
 
-		def participantsPath = Paths.get(FilenameUtils.concat(FilenameUtils.concat(targetDirectory.toString(), "default_directory_hierarchy"),"participants"))
+		def participantsPath = Paths.get(FilenameUtils.concat(FilenameUtils.concat(targetDirectory.toString(), "default_directory_hierarchy"), "participants"))
 		Files.exists(participantsPath)
-		Files.list(participantsPath).map {it.toString()}.sorted().collect(Collectors.toList()) == [
+		Files.list(participantsPath).map { it.toString() }.sorted().collect(Collectors.toList()) == [
 			tmpDirectory.toString() + "/extract/default_directory_hierarchy/participants/ev_input.csv"
 		]
 	}

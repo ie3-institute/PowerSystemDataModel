@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.csv
 
-import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -286,7 +285,7 @@ class FileNamingStrategyTest extends Specification {
 		given:
 		FileNamingStrategy strategy = new FileNamingStrategy()
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
-		timeSeries.getUuid() >> uuid
+		timeSeries.uuid >> uuid
 
 		when:
 		Optional<String> actual = strategy.getFileName(timeSeries)
@@ -304,7 +303,7 @@ class FileNamingStrategyTest extends Specification {
 		given:
 		FileNamingStrategy strategy = new FileNamingStrategy("aa", "zz")
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
-		timeSeries.getUuid() >> uuid
+		timeSeries.uuid >> uuid
 
 		when:
 		Optional<String> actual = strategy.getFileName(timeSeries)
@@ -322,7 +321,7 @@ class FileNamingStrategyTest extends Specification {
 		given:
 		FileNamingStrategy strategy = new FileNamingStrategy()
 		LoadProfileInput timeSeries = Mock(LoadProfileInput)
-		timeSeries.getUuid() >> uuid
+		timeSeries.uuid >> uuid
 		timeSeries.getType() >> type
 
 		when:

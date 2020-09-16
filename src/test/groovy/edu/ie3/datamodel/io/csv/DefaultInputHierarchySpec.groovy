@@ -69,10 +69,11 @@ class DefaultInputHierarchySpec extends Specification {
 		Files.isDirectory(basePath)
 		dfh.subDirectories.each{path, isMandatory ->
 			assert Files.exists(path) == isMandatory
-			if(isMandatory)
+			if (isMandatory) {
 				assert Files.isDirectory(path)
+			}
 		}
-		Files.list(basePath).each {path -> assert dfh.subDirectories.containsKey(path)}
+		Files.list(basePath).each { path -> assert dfh.subDirectories.containsKey(path) }
 	}
 
 	def "A DefaultFileHierarchy is able to create a correct hierarchy of mandatory and optional directories"() {
@@ -91,7 +92,7 @@ class DefaultInputHierarchySpec extends Specification {
 			assert Files.exists(path)
 			assert Files.isDirectory(path)
 		}
-		Files.list(basePath).forEach {path -> assert dfh.subDirectories.containsKey(path)}
+		Files.list(basePath).forEach { path -> assert dfh.subDirectories.containsKey(path) }
 	}
 
 	def "A DefaultFileHierarchy is able to validate a correct hierarchy of mandatory and optional directories"() {
@@ -118,7 +119,7 @@ class DefaultInputHierarchySpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The path '"+basePath+"' does not exist."
+		ex.getMessage() == "The path '" + basePath + "' does not exist."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a file instead of a hierarchy"() {
@@ -133,7 +134,7 @@ class DefaultInputHierarchySpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The path '"+basePath+"' has to be a directory."
+		ex.getMessage() == "The path '" + basePath +"' has to be a directory."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a hierarchy with missing mandatory directory"() {
@@ -142,7 +143,7 @@ class DefaultInputHierarchySpec extends Specification {
 		def basePath = Paths.get(basePathString(gridName))
 		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
 		dfh.createDirs()
-		def globalDirectory = dfh.subDirectories.entrySet().find {entry -> entry.getKey().toString().endsWith("global")}.getKey()
+		def globalDirectory = dfh.subDirectories.entrySet().find { entry -> entry.key.toString().endsWith("global") }.key
 		Files.delete(globalDirectory)
 
 		when:
@@ -150,7 +151,7 @@ class DefaultInputHierarchySpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The mandatory directory '"+basePath+"/global' does not exist."
+		ex.getMessage() == "The mandatory directory '" + basePath + "/global' does not exist."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a hierarchy with file instead of mandatory directory"() {
@@ -159,7 +160,7 @@ class DefaultInputHierarchySpec extends Specification {
 		def basePath = Paths.get(basePathString(gridName))
 		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
 		dfh.createDirs()
-		def globalDirectory = dfh.subDirectories.entrySet().find {entry -> entry.getKey().toString().endsWith("global")}.getKey()
+		def globalDirectory = dfh.subDirectories.entrySet().find { entry -> entry.key.toString().endsWith("global") }.key
 		Files.delete(globalDirectory)
 		Files.createFile(globalDirectory)
 
@@ -168,7 +169,7 @@ class DefaultInputHierarchySpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The mandatory directory '"+basePath+"/global' is not a directory."
+		ex.getMessage() == "The mandatory directory '" + basePath + "/global' is not a directory."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a hierarchy with file instead of optional directory"() {
@@ -177,7 +178,7 @@ class DefaultInputHierarchySpec extends Specification {
 		def basePath = Paths.get(basePathString(gridName))
 		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
 		dfh.createDirs(true)
-		def globalDirectory = dfh.subDirectories.entrySet().find {entry -> entry.getKey().toString().endsWith("thermal")}.getKey()
+		def globalDirectory = dfh.subDirectories.entrySet().find { entry -> entry.key.toString().endsWith("thermal") }.key
 		Files.delete(globalDirectory)
 		Files.createFile(globalDirectory)
 
@@ -186,7 +187,7 @@ class DefaultInputHierarchySpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The optional directory '"+basePath+"/thermal' is not a directory."
+		ex.getMessage() == "The optional directory '" + basePath + "/thermal' is not a directory."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a hierarchy with unsupported extra directory"() {

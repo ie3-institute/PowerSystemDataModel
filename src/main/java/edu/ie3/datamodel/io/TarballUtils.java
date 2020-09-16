@@ -120,6 +120,43 @@ public class TarballUtils {
    *     requirements or the archive tries to impose harm by exploiting zip slip vulnerability
    */
   public static Path extract(Path archive, Path target, boolean override) throws FileException {
+    /* Pre-flight checks and assembly of the target path */
+    Path targetDirectory = determineTargetDirectory(archive, target, override);
+
+    /* Create the target folder */
+    try {
+      Files.createDirectories(targetDirectory);
+    } catch (IOException e) {
+      throw new FileException("Cannot create target directory '" + targetDirectory + "'.", e);
+    }
+
+    try (InputStream fileInputStream = Files.newInputStream(archive);
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+        GzipCompressorInputStream gzipInputStream =
+            new GzipCompressorInputStream(bufferedInputStream);
+        TarArchiveInputStream tarInputStream = new TarArchiveInputStream(gzipInputStream); ) {
+      ArchiveEntry archiveEntry;
+      while ((archiveEntry = tarInputStream.getNextEntry()) != null) {
+        treatZipEntry(archiveEntry, targetDirectory, tarInputStream);
+      }
+    } catch (IOException ex) {
+      throw new FileException("Unable to extract from '" + archive + "'.", ex);
+    }
+
+    return targetDirectory;
+  }
+
+  /**
+   * Runs some pre-flight checks and assembles the target directory
+   *
+   * @param archive Compressed tarball archive to extract
+   * @param target Path to the target folder
+   * @param override true, if already existing files may be overridden.
+   * @return Path to the folder, where the content is meant to be extracted to
+   * @throws FileException If the pre-flight checks fail
+   */
+  private static Path determineTargetDirectory(Path archive, Path target, boolean override)
+      throws FileException {
     /* Pre-flight checks */
     if (Files.notExists(archive))
       throw new FileException("There is no archive '" + archive + "' apparent.");
@@ -145,41 +182,35 @@ public class TarballUtils {
       else throw new FileException("The target path '" + targetDirectory + "' already exists.");
     }
 
-    /* Create the target folder */
-    try {
-      Files.createDirectories(targetDirectory);
-    } catch (IOException e) {
-      throw new FileException("Cannot create target directory '" + targetDirectory + "'.", e);
-    }
-
-    try (InputStream fileInputStream = Files.newInputStream(archive);
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-        GzipCompressorInputStream gzipInputStream =
-            new GzipCompressorInputStream(bufferedInputStream);
-        TarArchiveInputStream tarInputStream = new TarArchiveInputStream(gzipInputStream); ) {
-      ArchiveEntry archiveEntry;
-      while ((archiveEntry = tarInputStream.getNextEntry()) != null) {
-        /* Check against zip slip vulnerability and return normalized path w.r.t. the target path */
-        Path targetEntryPath = zipSlipProtect(archiveEntry, targetDirectory);
-
-        if (archiveEntry.isDirectory()) {
-          Files.createDirectories(targetEntryPath);
-        } else {
-          /* Check, if parent folder is apparent, otherwise create it */
-          Path parentDirectoryPath = targetEntryPath.getParent();
-          if (parentDirectoryPath != null && Files.notExists(parentDirectoryPath)) {
-            Files.createDirectories(parentDirectoryPath);
-          }
-
-          /* Copy content to new path */
-          Files.copy(tarInputStream, targetEntryPath, StandardCopyOption.REPLACE_EXISTING);
-        }
-      }
-    } catch (IOException ex) {
-      throw new FileException("Unable to extract from '" + archive + "'.", ex);
-    }
-
     return targetDirectory;
+  }
+
+  /**
+   * Handles the "copying" of the zip entry's content to actual files on the hard drive.
+   *
+   * @param archiveEntry Entry to be treated
+   * @param targetDirectory Path to the target folder
+   * @param tarInputStream Input stream
+   * @throws IOException Whenever something toes not work
+   */
+  private static void treatZipEntry(
+      ArchiveEntry archiveEntry, Path targetDirectory, TarArchiveInputStream tarInputStream)
+      throws IOException {
+    /* Check against zip slip vulnerability and return normalized path w.r.t. the target path */
+    Path targetEntryPath = zipSlipProtect(archiveEntry, targetDirectory);
+
+    if (archiveEntry.isDirectory()) {
+      Files.createDirectories(targetEntryPath);
+    } else {
+      /* Check, if parent folder is apparent, otherwise create it */
+      Path parentDirectoryPath = targetEntryPath.getParent();
+      if (parentDirectoryPath != null && Files.notExists(parentDirectoryPath)) {
+        Files.createDirectories(parentDirectoryPath);
+      }
+
+      /* Copy content to new path */
+      Files.copy(tarInputStream, targetEntryPath, StandardCopyOption.REPLACE_EXISTING);
+    }
   }
 
   /**
