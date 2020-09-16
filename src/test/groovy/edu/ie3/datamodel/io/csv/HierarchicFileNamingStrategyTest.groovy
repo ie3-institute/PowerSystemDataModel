@@ -24,6 +24,22 @@ import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInp
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
+import edu.ie3.datamodel.models.result.NodeResult
+import edu.ie3.datamodel.models.result.connector.LineResult
+import edu.ie3.datamodel.models.result.connector.SwitchResult
+import edu.ie3.datamodel.models.result.connector.Transformer2WResult
+import edu.ie3.datamodel.models.result.connector.Transformer3WResult
+import edu.ie3.datamodel.models.result.system.BmResult
+import edu.ie3.datamodel.models.result.system.ChpResult
+import edu.ie3.datamodel.models.result.system.EvResult
+import edu.ie3.datamodel.models.result.system.EvcsResult
+import edu.ie3.datamodel.models.result.system.FixedFeedInResult
+import edu.ie3.datamodel.models.result.system.LoadResult
+import edu.ie3.datamodel.models.result.system.PvResult
+import edu.ie3.datamodel.models.result.system.StorageResult
+import edu.ie3.datamodel.models.result.system.WecResult
+import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
+import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
@@ -52,62 +68,65 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		!res.present
 	}
 
-	/*
-	 TODO: Include result files in default hierarchy
-	 def "A FileNamingStrategy without pre- or suffixes should return valid strings for all result models"() {
-	 given: "a file naming strategy without pre- or suffixes"
-	 FileNamingStrategy strategy = new FileNamingStrategy()
-	 when:
-	 Optional<String> res = strategy.getFileName(modelClass)
-	 then:
-	 res.present
-	 res.get() == expectedString
-	 where:
-	 modelClass               || expectedString
-	 LoadResult               || "load_res"
-	 FixedFeedInResult        || "fixedfeedin_res"
-	 BmResult                 || "bm_res"
-	 PvResult                 || "pv_res"
-	 ChpResult                || "chp_res"
-	 WecResult                || "wec_res"
-	 StorageResult            || "storage_res"
-	 EvcsResult               || "evcs_res"
-	 EvResult                 || "ev_res"
-	 Transformer2WResult      || "transformer2w_res"
-	 Transformer3WResult      || "transformer3w_res"
-	 LineResult               || "line_res"
-	 SwitchResult             || "switch_res"
-	 NodeResult               || "node_res"
-	 CylindricalStorageResult || "cylindricalstorage_res"
-	 ThermalHouseResult       || "thermalhouse_res"
-	 }
-	 def "A FileNamingStrategy with pre- and suffixes should return valid strings for all result models"() {
-	 given: "a file naming strategy with pre- or suffixes"
-	 FileNamingStrategy strategy = new FileNamingStrategy("prefix", "suffix")
-	 when:
-	 Optional<String> res = strategy.getFileName(modelClass)
-	 then:
-	 res.present
-	 res.get() == expectedString
-	 where:
-	 modelClass               || expectedString
-	 LoadResult               || "prefix_load_res_suffix"
-	 FixedFeedInResult        || "prefix_fixedfeedin_res_suffix"
-	 BmResult                 || "prefix_bm_res_suffix"
-	 PvResult                 || "prefix_pv_res_suffix"
-	 ChpResult                || "prefix_chp_res_suffix"
-	 WecResult                || "prefix_wec_res_suffix"
-	 StorageResult            || "prefix_storage_res_suffix"
-	 EvcsResult               || "prefix_evcs_res_suffix"
-	 EvResult                 || "prefix_ev_res_suffix"
-	 Transformer2WResult      || "prefix_transformer2w_res_suffix"
-	 Transformer3WResult      || "prefix_transformer3w_res_suffix"
-	 LineResult               || "prefix_line_res_suffix"
-	 SwitchResult             || "prefix_switch_res_suffix"
-	 NodeResult               || "prefix_node_res_suffix"
-	 CylindricalStorageResult || "prefix_cylindricalstorage_res_suffix"
-	 ThermalHouseResult       || "prefix_thermalhouse_res_suffix"
-	 }*/
+	def "A FileNamingStrategy without pre- or suffixes should return empty optionals for all result models"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+
+		when:
+		def res = strategy.getFileName(modelClass)
+
+		then:
+		res.isEmpty()
+
+		where:
+		modelClass               || expectedString
+		LoadResult               || ""
+		FixedFeedInResult        || ""
+		BmResult                 || ""
+		PvResult                 || ""
+		ChpResult                || ""
+		WecResult                || ""
+		StorageResult            || ""
+		EvcsResult               || ""
+		EvResult                 || ""
+		Transformer2WResult      || ""
+		Transformer3WResult      || ""
+		LineResult               || ""
+		SwitchResult             || ""
+		NodeResult               || ""
+		CylindricalStorageResult || ""
+		ThermalHouseResult       || ""
+	}
+
+	def "A FileNamingStrategy with pre- and suffixes should return empty optionals for all result models"() {
+		given: "a file naming strategy with pre- or suffixes"
+		def strategy = new HierarchicFileNamingStrategy("prefix", "suffix", defaultHierarchy)
+
+		when:
+		def res = strategy.getFileName(modelClass)
+
+		then:
+		res.isEmpty()
+
+		where:
+		modelClass               || expectedString
+		LoadResult               || ""
+		FixedFeedInResult        || ""
+		BmResult                 || ""
+		PvResult                 || ""
+		ChpResult                || ""
+		WecResult                || ""
+		StorageResult            || ""
+		EvcsResult               || ""
+		EvResult                 || ""
+		Transformer2WResult      || ""
+		Transformer3WResult      || ""
+		LineResult               || ""
+		SwitchResult             || ""
+		NodeResult               || ""
+		CylindricalStorageResult || ""
+		ThermalHouseResult       || ""
+	}
 
 	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all input assets models"() {
 		given: "a file naming strategy without pre- or suffixes"
