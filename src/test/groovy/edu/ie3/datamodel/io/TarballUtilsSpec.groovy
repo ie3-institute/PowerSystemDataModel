@@ -38,7 +38,7 @@ class TarballUtilsSpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.message == "The target archive path has to end with '.tar.gz'. You provided: '"+ tmpDirectory +"/test.bli.blubb'."
+		ex.message == "The target archive path has to end with '.tar.gz'. You provided: '" + tmpDirectory + "/test.bli.blubb'."
 	}
 
 	def "The tarball utils throws an exception, if the target file already exists"() {
@@ -52,7 +52,7 @@ class TarballUtilsSpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.message == "The target archive '"+ tmpDirectory +"/test.tar.gz' already exists."
+		ex.message == "The target archive '" + tmpDirectory + "/test.tar.gz' already exists."
 	}
 
 	def "The tarball utils is able to zip one single file to .tar.gz"() {
@@ -141,7 +141,7 @@ class TarballUtilsSpec extends Specification {
 		given:
 		def archiveFile = Paths.get(getClass().getResource('/default_directory_hierarchy.tar.gz').toURI())
 		def targetDirectory = Paths.get(FilenameUtils.concat(tmpDirectory.toString(), "extract"))
-		Files.createDirectories(Paths.get(FilenameUtils.concat(FilenameUtils.concat(tmpDirectory.toString(), "extract"),"default_directory_hierarchy")))
+		Files.createDirectories(Paths.get(FilenameUtils.concat(FilenameUtils.concat(tmpDirectory.toString(), "extract"), "default_directory_hierarchy")))
 
 		when:
 		TarballUtils.extract(archiveFile, targetDirectory, false)
@@ -156,7 +156,7 @@ class TarballUtilsSpec extends Specification {
 		def archiveFile = Paths.get(FilenameUtils.concat(tmpDirectory.toString(), "default_directory_hierarchy.txt.tar.gz"))
 		Files.createFile(archiveFile)
 		def targetDirectory = Paths.get(FilenameUtils.concat(tmpDirectory.toString(), "extract"))
-		def nestedTargetFolder = Paths.get(FilenameUtils.concat(FilenameUtils.concat(tmpDirectory.toString(), "extract"),"default_directory_hierarchy.txt"))
+		def nestedTargetFolder = Paths.get(FilenameUtils.concat(FilenameUtils.concat(tmpDirectory.toString(), "extract"), "default_directory_hierarchy.txt"))
 		Files.createDirectories(targetDirectory)
 		Files.createFile(nestedTargetFolder)
 

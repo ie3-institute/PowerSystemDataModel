@@ -67,7 +67,7 @@ class DefaultInputHierarchySpec extends Specification {
 		then:
 		Files.exists(basePath)
 		Files.isDirectory(basePath)
-		dfh.subDirectories.each{path, isMandatory ->
+		dfh.subDirectories.each { path, isMandatory ->
 			assert Files.exists(path) == isMandatory
 			if (isMandatory) {
 				assert Files.isDirectory(path)
@@ -88,7 +88,7 @@ class DefaultInputHierarchySpec extends Specification {
 		then:
 		Files.exists(basePath)
 		Files.isDirectory(basePath)
-		dfh.subDirectories.each {path, isMandatory ->
+		dfh.subDirectories.each { path, isMandatory ->
 			assert Files.exists(path)
 			assert Files.isDirectory(path)
 		}
