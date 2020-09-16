@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.input.system.type.ChpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import java.util.Map;
+import java.util.Objects;
 
 public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpTypeInput> {
   private final ThermalBusInput thermalBusInput;
@@ -46,5 +47,20 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
 
   public ThermalStorageInput getThermalStorageInput() {
     return thermalStorageInput;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ChpInputEntityData)) return false;
+    if (!super.equals(o)) return false;
+    ChpInputEntityData that = (ChpInputEntityData) o;
+    return thermalBusInput.equals(that.thermalBusInput)
+        && thermalStorageInput.equals(that.thermalStorageInput);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), thermalBusInput, thermalStorageInput);
   }
 }
