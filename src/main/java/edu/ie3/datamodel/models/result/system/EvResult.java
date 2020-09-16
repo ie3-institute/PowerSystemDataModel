@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
-import edu.ie3.datamodel.utils.QuantityUtil;
+import edu.ie3.util.quantities.QuantityUtil;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -72,7 +72,10 @@ public class EvResult extends SystemParticipantResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     EvResult evResult = (EvResult) o;
-    return QuantityUtil.equals(soc, evResult.soc);
+    if (!QuantityUtil.quantityIsEmpty(soc)) {
+      if (QuantityUtil.quantityIsEmpty(evResult.soc)) return false;
+      return soc.isEquivalentTo(evResult.soc);
+    } else return QuantityUtil.quantityIsEmpty(evResult.soc);
   }
 
   @Override

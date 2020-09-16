@@ -7,7 +7,7 @@ package edu.ie3.datamodel.models.result.thermal;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
-import edu.ie3.datamodel.utils.QuantityUtil;
+import edu.ie3.util.quantities.QuantityUtil;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -76,7 +76,10 @@ public class CylindricalStorageResult extends ThermalStorageResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     CylindricalStorageResult that = (CylindricalStorageResult) o;
-    return QuantityUtil.equals(fillLevel, that.fillLevel);
+    if (!QuantityUtil.quantityIsEmpty(fillLevel)) {
+      if (QuantityUtil.quantityIsEmpty(that.fillLevel)) return false;
+      return fillLevel.isEquivalentTo(that.fillLevel);
+    } else return QuantityUtil.quantityIsEmpty(that.fillLevel);
   }
 
   @Override

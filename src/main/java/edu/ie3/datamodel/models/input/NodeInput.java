@@ -8,8 +8,8 @@ package edu.ie3.datamodel.models.input;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
-import edu.ie3.datamodel.utils.QuantityUtil;
 import edu.ie3.util.geo.GeoUtils;
+import edu.ie3.util.quantities.QuantityUtil;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
@@ -122,15 +122,17 @@ public class NodeInput extends AssetInput {
     return new NodeInputCopyBuilder(this);
   }
 
-  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     NodeInput nodeInput = (NodeInput) o;
+    if (!QuantityUtil.quantityIsEmpty(vTarget)) {
+      if (QuantityUtil.quantityIsEmpty(nodeInput.vTarget)) return false;
+      if (!vTarget.isEquivalentTo(nodeInput.vTarget)) return false;
+    } else if (!QuantityUtil.quantityIsEmpty(nodeInput.vTarget)) return false;
     return slack == nodeInput.slack
         && subnet == nodeInput.subnet
-        && QuantityUtil.equals(vTarget, nodeInput.vTarget)
         && Objects.equals(geoPosition, nodeInput.geoPosition)
         && Objects.equals(voltLvl, nodeInput.voltLvl);
   }

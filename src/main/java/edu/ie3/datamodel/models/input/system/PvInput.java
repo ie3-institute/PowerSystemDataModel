@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
-import edu.ie3.datamodel.utils.QuantityUtil;
+import edu.ie3.util.quantities.QuantityUtil;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
@@ -176,15 +176,32 @@ public class PvInput extends SystemParticipantInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     PvInput pvInput = (PvInput) o;
+
+    if (!QuantityUtil.quantityIsEmpty(azimuth)) {
+      if (QuantityUtil.quantityIsEmpty(pvInput.azimuth)) return false;
+      if (!azimuth.isEquivalentTo(pvInput.azimuth)) return false;
+    } else if (!QuantityUtil.quantityIsEmpty(pvInput.azimuth)) return false;
+
+    if (!QuantityUtil.quantityIsEmpty(etaConv)) {
+      if (QuantityUtil.quantityIsEmpty(pvInput.etaConv)) return false;
+      if (!etaConv.isEquivalentTo(pvInput.etaConv)) return false;
+    } else if (!QuantityUtil.quantityIsEmpty(pvInput.etaConv)) return false;
+
+    if (!QuantityUtil.quantityIsEmpty(height)) {
+      if (QuantityUtil.quantityIsEmpty(pvInput.height)) return false;
+      if (!height.isEquivalentTo(pvInput.height)) return false;
+    } else if (!QuantityUtil.quantityIsEmpty(pvInput.height)) return false;
+
+    if (!QuantityUtil.quantityIsEmpty(sRated)) {
+      if (QuantityUtil.quantityIsEmpty(pvInput.sRated)) return false;
+      if (!sRated.isEquivalentTo(pvInput.sRated)) return false;
+    } else if (!QuantityUtil.quantityIsEmpty(pvInput.sRated)) return false;
+
     return Double.compare(pvInput.albedo, albedo) == 0
         && Double.compare(pvInput.kG, kG) == 0
         && Double.compare(pvInput.kT, kT) == 0
         && marketReaction == pvInput.marketReaction
-        && Double.compare(pvInput.cosPhiRated, cosPhiRated) == 0
-        && QuantityUtil.equals(azimuth, pvInput.azimuth)
-        && QuantityUtil.equals(etaConv, pvInput.etaConv)
-        && QuantityUtil.equals(height, pvInput.height)
-        && QuantityUtil.equals(sRated, pvInput.sRated);
+        && Double.compare(pvInput.cosPhiRated, cosPhiRated) == 0;
   }
 
   @Override

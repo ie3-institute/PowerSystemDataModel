@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
-import edu.ie3.datamodel.utils.QuantityUtil;
+import edu.ie3.util.quantities.QuantityUtil;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -67,7 +67,10 @@ public class HpResult extends SystemParticipantResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HpResult hpResult = (HpResult) o;
-    return QuantityUtil.equals(qDot, hpResult.qDot);
+    if (!QuantityUtil.quantityIsEmpty(qDot)) {
+      if (QuantityUtil.quantityIsEmpty(hpResult.qDot)) return false;
+      return qDot.isEquivalentTo(hpResult.qDot);
+    } else return QuantityUtil.quantityIsEmpty(hpResult.qDot);
   }
 
   @Override

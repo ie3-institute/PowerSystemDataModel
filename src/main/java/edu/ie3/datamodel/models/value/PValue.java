@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.utils.QuantityUtil;
+import edu.ie3.util.quantities.QuantityUtil;
 import java.util.Objects;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -31,7 +31,10 @@ public class PValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     PValue that = (PValue) o;
-    return QuantityUtil.equals(p, that.p);
+    if (!QuantityUtil.quantityIsEmpty(p)) {
+      if (QuantityUtil.quantityIsEmpty(that.p)) return false;
+      return p.isEquivalentTo(that.p);
+    } else return QuantityUtil.quantityIsEmpty(that.p);
   }
 
   @Override

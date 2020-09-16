@@ -14,7 +14,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries;
-import edu.ie3.datamodel.utils.QuantityUtil;
+import edu.ie3.util.quantities.QuantityUtil;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
@@ -213,10 +213,18 @@ public class LoadInput extends SystemParticipantInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     LoadInput loadInput = (LoadInput) o;
-    return dsm == loadInput.dsm
-        && Double.compare(loadInput.cosPhiRated, cosPhiRated) == 0
-        && QuantityUtil.equals(eConsAnnual, loadInput.eConsAnnual)
-        && QuantityUtil.equals(sRated, loadInput.sRated);
+
+    if (!QuantityUtil.quantityIsEmpty(eConsAnnual)) {
+      if (QuantityUtil.quantityIsEmpty(loadInput.eConsAnnual)) return false;
+      if (!eConsAnnual.isEquivalentTo(loadInput.eConsAnnual)) return false;
+    } else if (!QuantityUtil.quantityIsEmpty(loadInput.eConsAnnual)) return false;
+
+    if (!QuantityUtil.quantityIsEmpty(sRated)) {
+      if (QuantityUtil.quantityIsEmpty(loadInput.sRated)) return false;
+      if (!sRated.isEquivalentTo(loadInput.sRated)) return false;
+    } else if (!QuantityUtil.quantityIsEmpty(loadInput.sRated)) return false;
+
+    return dsm == loadInput.dsm && Double.compare(loadInput.cosPhiRated, cosPhiRated) == 0;
   }
 
   @Override

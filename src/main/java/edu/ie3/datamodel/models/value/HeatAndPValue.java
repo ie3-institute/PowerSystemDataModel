@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.utils.QuantityUtil;
+import edu.ie3.util.quantities.QuantityUtil;
 import java.util.Objects;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -35,7 +35,10 @@ public class HeatAndPValue extends PValue {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HeatAndPValue that = (HeatAndPValue) o;
-    return QuantityUtil.equals(heatDemand, that.heatDemand);
+    if (!QuantityUtil.quantityIsEmpty(heatDemand)) {
+      if (QuantityUtil.quantityIsEmpty(that.heatDemand)) return false;
+      return heatDemand.isEquivalentTo(that.heatDemand);
+    } else return QuantityUtil.quantityIsEmpty(that.heatDemand);
   }
 
   @Override

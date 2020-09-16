@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.result.connector;
 
 import edu.ie3.datamodel.models.result.ResultEntity;
-import edu.ie3.datamodel.utils.QuantityUtil;
+import edu.ie3.util.quantities.QuantityUtil;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -117,10 +117,26 @@ public abstract class ConnectorResult extends ResultEntity {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ConnectorResult that = (ConnectorResult) o;
-    return QuantityUtil.equals(iAMag, that.iAMag)
-        && QuantityUtil.equals(iAAng, that.iAAng)
-        && QuantityUtil.equals(iBMag, that.iBMag)
-        && QuantityUtil.equals(iBAng, that.iBAng);
+
+    if (!QuantityUtil.quantityIsEmpty(iAMag)) {
+      if (QuantityUtil.quantityIsEmpty(that.iAMag)) return false;
+      if (!iAMag.isEquivalentTo(that.iAMag)) return false;
+    } else if (!QuantityUtil.quantityIsEmpty(that.iAMag)) return false;
+
+    if (!QuantityUtil.quantityIsEmpty(iAAng)) {
+      if (QuantityUtil.quantityIsEmpty(that.iAAng)) return false;
+      if (!iAAng.isEquivalentTo(that.iAAng)) return false;
+    } else if (!QuantityUtil.quantityIsEmpty(that.iAAng)) return false;
+
+    if (!QuantityUtil.quantityIsEmpty(iBMag)) {
+      if (QuantityUtil.quantityIsEmpty(that.iBMag)) return false;
+      if (!iBMag.isEquivalentTo(that.iBMag)) return false;
+    } else if (!QuantityUtil.quantityIsEmpty(that.iBMag)) return false;
+
+    if (!QuantityUtil.quantityIsEmpty(iBAng)) {
+      if (QuantityUtil.quantityIsEmpty(that.iBAng)) return false;
+      return iBAng.isEquivalentTo(that.iBAng);
+    } else return QuantityUtil.quantityIsEmpty(that.iBAng);
   }
 
   @Override

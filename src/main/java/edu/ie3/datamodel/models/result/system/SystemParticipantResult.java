@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.result.system;
 
 import edu.ie3.datamodel.models.result.ResultEntity;
-import edu.ie3.datamodel.utils.QuantityUtil;
+import edu.ie3.util.quantities.QuantityUtil;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -93,7 +93,16 @@ public abstract class SystemParticipantResult extends ResultEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     SystemParticipantResult that = (SystemParticipantResult) o;
-    return QuantityUtil.equals(p, that.p) && QuantityUtil.equals(q, that.q);
+
+    if (!QuantityUtil.quantityIsEmpty(p)) {
+      if (QuantityUtil.quantityIsEmpty(that.p)) return false;
+      if (!p.isEquivalentTo(that.p)) return false;
+    } else if (!QuantityUtil.quantityIsEmpty(that.p)) return false;
+
+    if (!QuantityUtil.quantityIsEmpty(q)) {
+      if (QuantityUtil.quantityIsEmpty(that.q)) return false;
+      return q.isEquivalentTo(that.q);
+    } else return QuantityUtil.quantityIsEmpty(that.q);
   }
 
   @Override

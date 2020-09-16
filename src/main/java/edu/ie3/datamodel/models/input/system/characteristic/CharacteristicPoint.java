@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.utils.QuantityUtil;
+import edu.ie3.util.quantities.QuantityUtil;
 import java.util.Locale;
 import java.util.Objects;
 import javax.measure.Quantity;
@@ -112,7 +112,14 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     CharacteristicPoint<?, ?> that = (CharacteristicPoint<?, ?>) o;
-    return QuantityUtil.equals(x, that.x) && QuantityUtil.equals(y, that.y);
+    if (!QuantityUtil.quantityIsEmpty(x)) {
+      if (QuantityUtil.quantityIsEmpty(that.x)) return false;
+      if (!x.isEquivalentTo((Quantity<A>) that.x)) return false;
+    } else if (!QuantityUtil.quantityIsEmpty(that.x)) return false;
+    if (!QuantityUtil.quantityIsEmpty(y)) {
+      if (QuantityUtil.quantityIsEmpty(that.y)) return false;
+      return y.isEquivalentTo((Quantity<O>) that.y);
+    } else return QuantityUtil.quantityIsEmpty(that.y);
   }
 
   @Override
