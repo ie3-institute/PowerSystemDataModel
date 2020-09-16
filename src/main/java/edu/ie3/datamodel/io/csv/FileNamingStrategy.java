@@ -118,18 +118,12 @@ public class FileNamingStrategy {
       Optional<String> getFileName(T timeSeries) {
     if (timeSeries instanceof IndividualTimeSeries) {
       return Optional.of(
-          prefix
-              .concat("individual")
-              .concat("_time_series")
-              .concat("_")
-              .concat(timeSeries.getUuid().toString())
-              .concat(suffix));
+          prefix.concat("its").concat("_").concat(timeSeries.getUuid().toString()).concat(suffix));
     } else if (timeSeries instanceof LoadProfileInput) {
       LoadProfileInput loadProfileInput = (LoadProfileInput) timeSeries;
       return Optional.of(
           prefix
-              .concat("load_profile")
-              .concat("_time_series")
+              .concat("lpts")
               .concat("_")
               .concat(loadProfileInput.getType().getKey())
               .concat("_")

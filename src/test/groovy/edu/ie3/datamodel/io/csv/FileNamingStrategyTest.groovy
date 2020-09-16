@@ -296,7 +296,7 @@ class FileNamingStrategyTest extends Specification {
 
 		where:
 		clazz                || uuid 													|| expectedFileName
-		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "individual_time_series_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
+		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "its_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 	}
 
 	def "A FileNamingStrategy with pre- or suffix should return valid file name for individual time series" () {
@@ -314,7 +314,7 @@ class FileNamingStrategyTest extends Specification {
 
 		where:
 		clazz                || uuid 													|| expectedFileName
-		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_individual_time_series_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
+		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_its_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
 	}
 
 	def "A FileNamingStrategy without pre- or suffix should return valid file name for load profile input" () {
@@ -333,7 +333,7 @@ class FileNamingStrategyTest extends Specification {
 
 		where:
 		clazz                || uuid 													|| type 				|| expectedFileName
-		LoadProfileInput     || UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") || BdewLoadProfile.G3 	|| "load_profile_time_series_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
+		LoadProfileInput     || UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") || BdewLoadProfile.G3 	|| "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
 	def "A FileNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {
