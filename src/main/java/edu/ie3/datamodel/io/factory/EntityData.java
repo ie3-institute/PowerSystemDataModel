@@ -12,6 +12,7 @@ import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.util.quantities.EmptyQuantity;
 import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -269,16 +270,21 @@ public abstract class EntityData {
   }
 
   /**
-   * Parses and returns a Quantity from field value of given field name. Throws {@link
-   * FactoryException} if field does not exist or parsing fails.
+   * Parses and returns a Quantity from field value of given field name. Returns an {@link
+   * EmptyQuantity} if field does not exist or throws a {@link FactoryException} when parsing fails.
    *
    * @param field field name
    * @param unit unit of Quantity
    * @param <Q> unit type parameter
-   * @return Quantity of given field with given unit
+   * @return Quantity of given field with given unit or EmptyQuantity if field does not exist
    */
   public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit) {
-    return Quantities.getQuantity(getDouble(field), unit);
+    String fieldVal = getField(field).trim();
+    if (!fieldVal.isEmpty()) {
+      return Quantities.getQuantity(getDouble(field), unit);
+    } else {
+      return EmptyQuantity.of(unit);
+    }
   }
 
   public Class<? extends UniqueEntity> getEntityClass() {

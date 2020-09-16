@@ -60,8 +60,7 @@ class ValidationUtilsTest extends Specification {
 		[
 			new NodeInput(
 			UUID.fromString("9e37ce48-9650-44ec-b888-c2fd182aff01"), "node_f", GridTestData.profBroccoli,
-			OperationTime.notLimited()
-			,
+			OperationTime.notLimited(),
 			Quantities.getQuantity(1d, PU),
 			false,
 			null,
@@ -76,8 +75,8 @@ class ValidationUtilsTest extends Specification {
 			null,
 			GermanVoltageLevelUtils.LV,
 			6)] as Set         || Optional.of("9e37ce48-9650-44ec-b888-c2fd182aff01: 2\n" +
-		" - NodeInput{uuid=9e37ce48-9650-44ec-b888-c2fd182aff01, id='node_f', operator=OperatorInput{uuid=f15105c4-a2de-4ab8-a621-4bc98e372d92, id='Univ.-Prof. Dr. rer. hort. Klaus-Dieter Brokkoli'}, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=1.0 PU, slack=false, geoPosition=null, voltLvl=CommonVoltageLevel{id='Niederspannung', nominalVoltage=0.4 kV, synonymousIds=[Niederspannung, lv, ns], voltageRange=Interval [0.0 kV, 10.0 kV)}, subnet=6}\n" +
-		" - NodeInput{uuid=9e37ce48-9650-44ec-b888-c2fd182aff01, id='node_g', operator=OperatorInput{uuid=f15105c4-a2de-4ab8-a621-4bc98e372d92, id='Univ.-Prof. Dr. rer. hort. Klaus-Dieter Brokkoli'}, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=1.0 PU, slack=false, geoPosition=null, voltLvl=CommonVoltageLevel{id='Niederspannung', nominalVoltage=0.4 kV, synonymousIds=[Niederspannung, lv, ns], voltageRange=Interval [0.0 kV, 10.0 kV)}, subnet=6}")
+		" - NodeInput{uuid=9e37ce48-9650-44ec-b888-c2fd182aff01, id='node_f', operator=OperatorInput{uuid=f15105c4-a2de-4ab8-a621-4bc98e372d92, id='Univ.-Prof. Dr. rer. hort. Klaus-Dieter Brokkoli'}, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=1 PU, slack=false, geoPosition=null, voltLvl=CommonVoltageLevel{id='Niederspannung', nominalVoltage=0.4 kV, synonymousIds=[Niederspannung, lv, ns], voltageRange=Interval [0 kV, 10 kV)}, subnet=6}\n" +
+		" - NodeInput{uuid=9e37ce48-9650-44ec-b888-c2fd182aff01, id='node_g', operator=OperatorInput{uuid=f15105c4-a2de-4ab8-a621-4bc98e372d92, id='Univ.-Prof. Dr. rer. hort. Klaus-Dieter Brokkoli'}, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=1 PU, slack=false, geoPosition=null, voltLvl=CommonVoltageLevel{id='Niederspannung', nominalVoltage=0.4 kV, synonymousIds=[Niederspannung, lv, ns], voltageRange=Interval [0 kV, 10 kV)}, subnet=6}")
 		[
 			GridTestData.nodeD,
 			GridTestData.nodeE] as Set || Optional.empty()
