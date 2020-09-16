@@ -76,7 +76,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def res = strategy.getFileName(modelClass)
 
 		then:
-		res.isEmpty()
+		!res.present
 
 		where:
 		modelClass               || expectedString
@@ -106,7 +106,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def res = strategy.getFileName(modelClass)
 
 		then:
-		res.isEmpty()
+		!res.present
 
 		where:
 		modelClass               || expectedString
