@@ -2,11 +2,26 @@
 csv files
 *********
 
+Naming of files
+===============
+A naming strategy provides a mapping between model classes and the file names, in which the serialized representation of
+several objects of this class can be found.
+Currently we offer two different, pre-defined file naming strategies, which you might extend to fit your needs:
+
+1. **FileNamingStrategy**:
+   A basic file naming strategy that is able to add prefix and suffix to the file names. A flat folder structure is
+   considered. For more details see `Default naming strategy`_.
+2. **HierarchicFileNamingStrategy**:
+   An extended version of the FileNamingStrategy. Additionally, the `Default directory hierarchy`_ is taken into
+   account. Please not, that this directory hierarchy is only meant to be used in conjunction with input models.
+
+However, you can control the behaviour of serialization and de-serialization of models by injecting the desired naming
+strategy you like into :code:`CsvDataSource` and :code:`CsvFileSink`.
 
 Default naming strategy
 =======================
-There is a default mapping from model class to file naming in the case you would like to use csv files for (de)
-serialization of models.
+There is a default mapping from model class to file naming in the case you would like to use csv files for
+(de)serialization of models.
 You may extend / alter the naming with pre- or suffix by calling :code:`new FileNamingStrategy("prefix", "suffix")`.
 
 Input
@@ -63,6 +78,17 @@ Input
 | :ref:`schematic line graphic<line_graphic_model>`      | *prefix_*\ line_graphic_input\ *_suffix*         |
 +--------------------------------------------------------+--------------------------------------------------+
 
+Time Series
+-----------
+
++-------------------------------------------------------+-------------------------------------------+
+| Model                                                 | File Name                                 |
++=======================================================+===========================================+
+| :ref:`individual time series<individual_time_series>` | *prefix_*\ its\ *_UUID_suffix*            |
++-------------------------------------------------------+-------------------------------------------+
+| :ref:`load profile input<repetitive_time_series>`     | *prefix_*\ rts\ *_profileKey_UUID_suffix* |
++-------------------------------------------------------+-------------------------------------------+
+
 Results
 -------
 
@@ -104,17 +130,6 @@ Results
 | :ref:`cylindrical thermal storage<cylindricalstorage_result>` | *prefix_*\ cylindrical_storage_res\ *_suffix* |
 +---------------------------------------------------------------+-----------------------------------------------+
 
-Time Series
------------
-
-+-------------------------------------------------------+----------------------------------------------------------------+
-| Model                                                 | File Name                                                      |
-+=======================================================+================================================================+
-| :ref:`individual time series<individual_time_series>` | *prefix_*\ individual_time_series\ *_UUID_suffix*              |
-+-------------------------------------------------------+----------------------------------------------------------------+
-| :ref:`load profile input<repetitive_time_series>`     | *prefix_*\ load_profile_time_series\ *_profileKey_UUID_suffix* |
-+-------------------------------------------------------+----------------------------------------------------------------+
-
 Default directory hierarchy
 ===========================
 Although there is no fixed structure of files mandatory, there is something, we consider to be a good idea of
@@ -132,6 +147,7 @@ easier.
 
 The italic parts are optional and therefore the others are mandatory.
 As you see, this still is a pretty flexible approach, as you only need to provide, what you really need.
+However, note that this hierarchy is only meant to be used in conjunction with input models, yet.
 
 The class :code:`DefaultInputHierarchy` offers some helpful methods to validate and create a default input file
 hierarchy.
