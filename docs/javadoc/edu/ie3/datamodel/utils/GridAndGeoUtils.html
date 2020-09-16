@@ -147,7 +147,7 @@ extends edu.ie3.util.geo.GeoUtils</pre>
 <!--   -->
 </a>
 <h3>Fields inherited from class&nbsp;edu.ie3.util.geo.GeoUtils</h3>
-<code>DEFAULT_GEOMETRY_FACTORY, EARTH_RADIUS</code></li>
+<code>DEFAULT_GEOMETRY_FACTORY, EARTH_RADIUS, EARTH_RADIUS_OLD</code></li>
 </ul>
 </li>
 </ul>
@@ -208,7 +208,7 @@ extends edu.ie3.util.geo.GeoUtils</pre>
 <td class="colFirst"><code>static tech.units.indriya.ComparableQuantity&lt;javax.measure.quantity.Length&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../edu/ie3/datamodel/utils/GridAndGeoUtils.html#distanceBetweenNodes-edu.ie3.datamodel.models.input.NodeInput-edu.ie3.datamodel.models.input.NodeInput-">distanceBetweenNodes</a></span>(<a href="../../../../edu/ie3/datamodel/models/input/NodeInput.html" title="class in edu.ie3.datamodel.models.input">NodeInput</a>&nbsp;nodeA,
                     <a href="../../../../edu/ie3/datamodel/models/input/NodeInput.html" title="class in edu.ie3.datamodel.models.input">NodeInput</a>&nbsp;nodeB)</code>
-<div class="block">Calculates the distance between two <a href="../../../../edu/ie3/datamodel/models/input/NodeInput.html" title="class in edu.ie3.datamodel.models.input"><code>NodeInput</code></a> entities using <code>GeoUtils.haversine(double, double, double, double)</code></div>
+<div class="block">Calculates the distance between two <a href="../../../../edu/ie3/datamodel/models/input/NodeInput.html" title="class in edu.ie3.datamodel.models.input"><code>NodeInput</code></a> entities using <code>#haversine</code></div>
 </td>
 </tr>
 </table>
@@ -217,7 +217,7 @@ extends edu.ie3.util.geo.GeoUtils</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;edu.ie3.util.geo.GeoUtils</h3>
-<code>buildClosedWays, buildConvexHull, calcGeo2qm, calculateBuildingArea, getArea, getArea, getIntersection, haversine, isBetween, isInsideLanduse, latlonToPoint, radiusWithCircle, radiusWithCircleAsPolygon, rayCasting, wayFromWays, xyToPoint</code></li>
+<code>buildClosedWays, buildConvexHull, calcArea, calcArea, calcGeo2qmNew, calcHaversine, calculateBuildingArea, getIntersection, isBetween, isInsideLanduse, latlonToPoint, radiusWithCircle, radiusWithCircleAsPolygon, rayCasting, wayFromWays, xyToPoint</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -248,7 +248,7 @@ extends edu.ie3.util.geo.GeoUtils</pre>
 <h4>buildLineStringBetweenNodes</h4>
 <pre>@Deprecated
 public static&nbsp;org.locationtech.jts.geom.LineString&nbsp;buildLineStringBetweenNodes(<a href="../../../../edu/ie3/datamodel/models/input/NodeInput.html" title="class in edu.ie3.datamodel.models.input">NodeInput</a>&nbsp;a,
-                                                                                            <a href="../../../../edu/ie3/datamodel/models/input/NodeInput.html" title="class in edu.ie3.datamodel.models.input">NodeInput</a>&nbsp;b)</pre>
+                                                                                           <a href="../../../../edu/ie3/datamodel/models/input/NodeInput.html" title="class in edu.ie3.datamodel.models.input">NodeInput</a>&nbsp;b)</pre>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../edu/ie3/datamodel/utils/GridAndGeoUtils.html#buildSafeLineStringBetweenNodes-edu.ie3.datamodel.models.input.NodeInput-edu.ie3.datamodel.models.input.NodeInput-"><code>buildSafeLineStringBetweenNodes(NodeInput, NodeInput)</code></a> instead</span></div>
 <div class="block">Builds a straight line string between the both nodes</div>
 <dl>
@@ -350,8 +350,8 @@ public static&nbsp;org.locationtech.jts.geom.LineString&nbsp;buildLineStringBetw
 <li class="blockList">
 <h4>distanceBetweenNodes</h4>
 <pre>public static&nbsp;tech.units.indriya.ComparableQuantity&lt;javax.measure.quantity.Length&gt;&nbsp;distanceBetweenNodes(<a href="../../../../edu/ie3/datamodel/models/input/NodeInput.html" title="class in edu.ie3.datamodel.models.input">NodeInput</a>&nbsp;nodeA,
-                                                                                                <a href="../../../../edu/ie3/datamodel/models/input/NodeInput.html" title="class in edu.ie3.datamodel.models.input">NodeInput</a>&nbsp;nodeB)</pre>
-<div class="block">Calculates the distance between two <a href="../../../../edu/ie3/datamodel/models/input/NodeInput.html" title="class in edu.ie3.datamodel.models.input"><code>NodeInput</code></a> entities using <code>GeoUtils.haversine(double, double, double, double)</code></div>
+                                                                                                        <a href="../../../../edu/ie3/datamodel/models/input/NodeInput.html" title="class in edu.ie3.datamodel.models.input">NodeInput</a>&nbsp;nodeB)</pre>
+<div class="block">Calculates the distance between two <a href="../../../../edu/ie3/datamodel/models/input/NodeInput.html" title="class in edu.ie3.datamodel.models.input"><code>NodeInput</code></a> entities using <code>#haversine</code></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>nodeA</code> - start node</dd>

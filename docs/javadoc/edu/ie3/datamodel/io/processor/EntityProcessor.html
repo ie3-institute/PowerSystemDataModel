@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
+var methods = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -148,7 +148,7 @@ extends <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html" t
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ie3/datamodel/io/processor/EntityProcessor.html#headerElements">headerElements</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>org.apache.logging.log4j.Logger</code></td>
+<td class="colFirst"><code>static org.apache.logging.log4j.Logger</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ie3/datamodel/io/processor/EntityProcessor.html#log">log</a></span></code>&nbsp;</td>
 </tr>
 </table>
@@ -204,13 +204,24 @@ extends <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html" t
 <div class="block">Standard call to handle an entity</div>
 </td>
 </tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>protected java.util.Optional&lt;java.lang.String&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../edu/ie3/datamodel/io/processor/EntityProcessor.html#handleProcessorSpecificQuantity-javax.measure.Quantity-java.lang.String-">handleProcessorSpecificQuantity</a></span>(javax.measure.Quantity&lt;?&gt;&nbsp;quantity,
+                               java.lang.String&nbsp;fieldName)</code>
+<div class="block">This method should handle all quantities that are model processor specific e.g. we need to
+ handle active power p different for <a href="../../../../../edu/ie3/datamodel/models/result/ResultEntity.html" title="class in edu.ie3.datamodel.models.result"><code>ResultEntity</code></a>s and
+ <a href="../../../../../edu/ie3/datamodel/models/input/system/SystemParticipantInput.html" title="class in edu.ie3.datamodel.models.input.system"><code>SystemParticipantInput</code></a>s Hence from the
+ generalized method <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#handleQuantity-javax.measure.Quantity-java.lang.String-"><code>Processor.handleQuantity(Quantity, String)</code></a>, this allows for the specific
+ handling of child implementations.</div>
+</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.edu.ie3.datamodel.io.processor.Processor">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;edu.ie3.datamodel.io.processor.<a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html" title="class in edu.ie3.datamodel.io.processor">Processor</a></h3>
-<code><a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#getEligibleEntityClasses--">getEligibleEntityClasses</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#getRegisteredClass--">getRegisteredClass</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#handleProcessorSpecificQuantity-javax.measure.Quantity-java.lang.String-">handleProcessorSpecificQuantity</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#handleQuantity-javax.measure.Quantity-java.lang.String-">handleQuantity</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#mapFieldNameToGetter-java.lang.Class-">mapFieldNameToGetter</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#mapFieldNameToGetter-java.lang.Class-java.util.Collection-">mapFieldNameToGetter</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#processMethodResult-java.lang.Object-java.lang.reflect.Method-java.lang.String-">processMethodResult</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#processObject-java.lang.Object-java.util.Map-">processObject</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#processOperationTime-edu.ie3.datamodel.models.OperationTime-java.lang.String-">processOperationTime</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#processVoltageLevel-edu.ie3.datamodel.models.voltagelevels.VoltageLevel-java.lang.String-">processVoltageLevel</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#processZonedDateTime-java.time.ZonedDateTime-">processZonedDateTime</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#putUuidFirst-java.util.Map-">putUuidFirst</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#quantityValToOptionalString-javax.measure.Quantity-">quantityValToOptionalString</a></code></li>
+<code><a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#getEligibleEntityClasses--">getEligibleEntityClasses</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#getRegisteredClass--">getRegisteredClass</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#handleQuantity-javax.measure.Quantity-java.lang.String-">handleQuantity</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#mapFieldNameToGetter-java.lang.Class-">mapFieldNameToGetter</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#mapFieldNameToGetter-java.lang.Class-java.util.Collection-">mapFieldNameToGetter</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#processMethodResult-java.lang.Object-java.lang.reflect.Method-java.lang.String-">processMethodResult</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#processObject-java.lang.Object-java.util.Map-">processObject</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#processOperationTime-edu.ie3.datamodel.models.OperationTime-java.lang.String-">processOperationTime</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#processVoltageLevel-edu.ie3.datamodel.models.voltagelevels.VoltageLevel-java.lang.String-">processVoltageLevel</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#processZonedDateTime-java.time.ZonedDateTime-">processZonedDateTime</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#putUuidFirst-java.util.Map-">putUuidFirst</a>, <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#quantityValToOptionalString-javax.measure.Quantity-">quantityValToOptionalString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -239,7 +250,7 @@ extends <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>log</h4>
-<pre>public final&nbsp;org.apache.logging.log4j.Logger log</pre>
+<pre>public static final&nbsp;org.apache.logging.log4j.Logger log</pre>
 </li>
 </ul>
 <a name="headerElements">
@@ -297,6 +308,33 @@ extends <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html" t
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>an optional Map with fieldName to fieldValue or an empty optional if an error occurred
      during processing</dd>
+</dl>
+</li>
+</ul>
+<a name="handleProcessorSpecificQuantity-javax.measure.Quantity-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>handleProcessorSpecificQuantity</h4>
+<pre>protected&nbsp;java.util.Optional&lt;java.lang.String&gt;&nbsp;handleProcessorSpecificQuantity(javax.measure.Quantity&lt;?&gt;&nbsp;quantity,
+                                                                               java.lang.String&nbsp;fieldName)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#handleProcessorSpecificQuantity-javax.measure.Quantity-java.lang.String-">Processor</a></code></span></div>
+<div class="block">This method should handle all quantities that are model processor specific e.g. we need to
+ handle active power p different for <a href="../../../../../edu/ie3/datamodel/models/result/ResultEntity.html" title="class in edu.ie3.datamodel.models.result"><code>ResultEntity</code></a>s and
+ <a href="../../../../../edu/ie3/datamodel/models/input/system/SystemParticipantInput.html" title="class in edu.ie3.datamodel.models.input.system"><code>SystemParticipantInput</code></a>s Hence from the
+ generalized method <a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#handleQuantity-javax.measure.Quantity-java.lang.String-"><code>Processor.handleQuantity(Quantity, String)</code></a>, this allows for the specific
+ handling of child implementations. See the implementation @ <a href="../../../../../edu/ie3/datamodel/io/processor/result/ResultEntityProcessor.html" title="class in edu.ie3.datamodel.io.processor.result"><code>ResultEntityProcessor</code></a> for
+ details.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html#handleProcessorSpecificQuantity-javax.measure.Quantity-java.lang.String-">handleProcessorSpecificQuantity</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../edu/ie3/datamodel/io/processor/Processor.html" title="class in edu.ie3.datamodel.io.processor">Processor</a>&lt;<a href="../../../../../edu/ie3/datamodel/io/processor/EntityProcessor.html" title="type parameter in EntityProcessor">T</a> extends <a href="../../../../../edu/ie3/datamodel/models/UniqueEntity.html" title="class in edu.ie3.datamodel.models">UniqueEntity</a>&gt;</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>quantity</code> - the quantity that should be processed</dd>
+<dd><code>fieldName</code> - the field name the quantity is set to</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>an optional string with the normalized to <a href="../../../../../edu/ie3/datamodel/models/StandardUnits.html" title="class in edu.ie3.datamodel.models"><code>StandardUnits</code></a> value of the quantity
+     or empty if an error occurred during processing</dd>
 </dl>
 </li>
 </ul>

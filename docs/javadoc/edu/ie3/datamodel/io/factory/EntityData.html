@@ -473,8 +473,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getQuantity</h4>
 <pre>public&nbsp;&lt;Q extends javax.measure.Quantity&lt;Q&gt;&gt;&nbsp;tech.units.indriya.ComparableQuantity&lt;Q&gt;&nbsp;getQuantity(java.lang.String&nbsp;field,
-                                                                                          javax.measure.Unit&lt;Q&gt;&nbsp;unit)</pre>
-<div class="block">Parses and returns a Quantity from field value of given field name. Throws <a href="../../../../../edu/ie3/datamodel/exceptions/FactoryException.html" title="class in edu.ie3.datamodel.exceptions"><code>FactoryException</code></a> if field does not exist or parsing fails.</div>
+                                                                                                  javax.measure.Unit&lt;Q&gt;&nbsp;unit)</pre>
+<div class="block">Parses and returns a Quantity from field value of given field name. Returns an <code>EmptyQuantity</code> if field does not exist or throws a <a href="../../../../../edu/ie3/datamodel/exceptions/FactoryException.html" title="class in edu.ie3.datamodel.exceptions"><code>FactoryException</code></a> when parsing fails.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>Q</code> - unit type parameter</dd>
@@ -482,7 +482,7 @@ extends java.lang.Object</pre>
 <dd><code>field</code> - field name</dd>
 <dd><code>unit</code> - unit of Quantity</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>Quantity of given field with given unit</dd>
+<dd>Quantity of given field with given unit or EmptyQuantity if field does not exist</dd>
 </dl>
 </li>
 </ul>
