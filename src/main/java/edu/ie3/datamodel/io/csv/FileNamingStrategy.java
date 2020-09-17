@@ -19,7 +19,12 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
+import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,6 +38,22 @@ import org.apache.logging.log4j.Logger;
 public class FileNamingStrategy {
 
   protected static final Logger logger = LogManager.getLogger(FileNamingStrategy.class);
+
+  private static final String UUID_STRING =
+      "[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}";
+  /**
+   * Regex to match the naming convention of a file for an individual time series. The time series'
+   * UUID is accessible by the named capturing group "uuid"
+   */
+  private static final Pattern INDIVIDUAL_TIME_SERIES_PATTERN =
+      Pattern.compile("its_(?<uuid>" + UUID_STRING + ")");
+
+  /**
+   * Regex to match the naming convention of a file for a repetitive load profile time series. The
+   * profile is accessible via the named capturing group "profile", the uuid by the group "uuid"
+   */
+  private static final Pattern LOAD_PROFILE_TIME_SERIES =
+      Pattern.compile("lpts_(?<profile>[^_]+)_(?<uuid>" + UUID_STRING + ")");
 
   private static final String RES_ENTITY_SUFFIX = "_res";
 
@@ -133,6 +154,61 @@ public class FileNamingStrategy {
       logger.error("There is no naming strategy defined for {}", timeSeries);
       return Optional.empty();
     }
+  }
+
+  /**
+   * Extracts meta information from a file name, of a time series.
+   *
+   * @param path Path to the file
+   * @return The meeting meta information
+   */
+  public static FileNameMetaInformation extractTimeSeriesMetaInformation(Path path) {
+    /* Extract file name from possibly fully qualified path */
+    Path filePath = path.getFileName();
+    if (filePath == null)
+      throw new IllegalArgumentException("Unable to extract file name from path '" + path + "'.");
+    String fileName = filePath.toString().replaceAll("(?:\\.[^\\\\/\\s]+){1,2}$", "");
+
+    if (INDIVIDUAL_TIME_SERIES_PATTERN.matcher(fileName).matches())
+      return extractIndividualTimesSeriesMetaInformation(fileName);
+    else if (LOAD_PROFILE_TIME_SERIES.matcher(fileName).matches())
+      return extractLoadProfileTimesSeriesMetaInformation(fileName);
+    else
+      throw new IllegalArgumentException(
+          "Unknown format of '" + fileName + "'. Cannot extract meta information.");
+  }
+
+  /**
+   * Extracts meta information from a valid file name for a individual time series
+   *
+   * @param fileName File name to extract information from
+   * @return Meta information form individual time series file name
+   */
+  private static IndividualTimeSeriesMetaInformation extractIndividualTimesSeriesMetaInformation(
+      String fileName) {
+    Matcher matcher = INDIVIDUAL_TIME_SERIES_PATTERN.matcher(fileName);
+    if (!matcher.matches())
+      throw new IllegalArgumentException(
+          "Cannot extract meta information on individual time series from '" + fileName + "'.");
+
+    return new IndividualTimeSeriesMetaInformation(UUID.fromString(matcher.group("uuid")));
+  }
+
+  /**
+   * Extracts meta information from a valid file name for a load profile time series
+   *
+   * @param fileName File name to extract information from
+   * @return Meta information form load profile time series file name
+   */
+  private static LoadProfileTimeSeriesMetaInformation extractLoadProfileTimesSeriesMetaInformation(
+      String fileName) {
+    Matcher matcher = LOAD_PROFILE_TIME_SERIES.matcher(fileName);
+    if (!matcher.matches())
+      throw new IllegalArgumentException(
+          "Cannot extract meta information on load profile time series from '" + fileName + "'.");
+
+    return new LoadProfileTimeSeriesMetaInformation(
+        UUID.fromString(matcher.group("uuid")), matcher.group("profile"));
   }
 
   /**
@@ -242,5 +318,63 @@ public class FileNamingStrategy {
    */
   private String addPrefixAndSuffix(String s) {
     return prefix.concat(s).concat(suffix);
+  }
+
+  public interface FileNameMetaInformation {}
+
+  public static class IndividualTimeSeriesMetaInformation implements FileNameMetaInformation {
+    private final UUID uuid;
+
+    public IndividualTimeSeriesMetaInformation(UUID uuid) {
+      this.uuid = uuid;
+    }
+
+    public UUID getUuid() {
+      return uuid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof IndividualTimeSeriesMetaInformation)) return false;
+      IndividualTimeSeriesMetaInformation that = (IndividualTimeSeriesMetaInformation) o;
+      return uuid.equals(that.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(uuid);
+    }
+  }
+
+  public static class LoadProfileTimeSeriesMetaInformation implements FileNameMetaInformation {
+    private final UUID uuid;
+    private final String profile;
+
+    public LoadProfileTimeSeriesMetaInformation(UUID uuid, String profile) {
+      this.uuid = uuid;
+      this.profile = profile;
+    }
+
+    public UUID getUuid() {
+      return uuid;
+    }
+
+    public String getProfile() {
+      return profile;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof LoadProfileTimeSeriesMetaInformation)) return false;
+      LoadProfileTimeSeriesMetaInformation that = (LoadProfileTimeSeriesMetaInformation) o;
+      return uuid.equals(that.uuid) && profile.equals(that.profile);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(uuid, profile);
+    }
   }
 }

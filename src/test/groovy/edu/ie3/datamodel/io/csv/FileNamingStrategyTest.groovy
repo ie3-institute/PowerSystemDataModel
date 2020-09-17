@@ -37,7 +37,97 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import spock.lang.Specification
 
+import java.nio.file.Paths
+import java.util.regex.Pattern
+
 class FileNamingStrategyTest extends Specification {
+
+	def "The uuid pattern actually matches a valid uuid"() {
+		given:
+		def pattern = Pattern.compile(FileNamingStrategy.UUID_STRING)
+		def uuidString = UUID.randomUUID().toString()
+
+		when:
+		def matcher = pattern.matcher(uuidString)
+
+		then:
+		matcher.matches()
+	}
+
+	def "The pattern for an individual time series file name actually matches a valid file name and extracts the correct groups"() {
+		given:
+		def validFileName = "its_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
+
+		when:
+		def matcher = FileNamingStrategy.INDIVIDUAL_TIME_SERIES_PATTERN.matcher(validFileName)
+
+		then: "the pattern matches"
+		matcher.matches()
+
+		then: "it also has correct capturing groups"
+		matcher.groupCount() == 1
+		matcher.group(1) == "4881fda2-bcee-4f4f-a5bb-6a09bf785276"
+		matcher.group("uuid") == "4881fda2-bcee-4f4f-a5bb-6a09bf785276"
+	}
+
+	def "The pattern for a repetitive load profile time series file name actually matches a valid file name and extracts the correct groups"() {
+		given:
+		def validFileName = "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
+
+		when:
+		def matcher = FileNamingStrategy.LOAD_PROFILE_TIME_SERIES.matcher(validFileName)
+
+		then: "the pattern matches"
+		matcher.matches()
+
+		then: "it also has correct capturing groups"
+		matcher.groupCount() == 2
+		matcher.group(1) == "g3"
+		matcher.group(2) == "bee0a8b6-4788-4f18-bf72-be52035f7304"
+		matcher.group("profile") == "g3"
+		matcher.group("uuid") == "bee0a8b6-4788-4f18-bf72-be52035f7304"
+	}
+
+	def "The FileNamingStrategy throws an Exception, if it is provided a malformed string"() {
+		given:
+		def path = Paths.get("/bla/foo")
+
+		when:
+		FileNamingStrategy.extractTimeSeriesMetaInformation(path)
+
+		then:
+		def ex = thrown(IllegalArgumentException)
+		ex.message == "Unknown format of 'foo'. Cannot extract meta information."
+	}
+
+	def "The FileNamingStrategy extracts correct meta information from a valid individual time series file name"() {
+		given:
+		def path = Paths.get("/bla/foo/its_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv")
+
+		when:
+		def metaInformation = FileNamingStrategy.extractTimeSeriesMetaInformation(path)
+
+		then:
+		FileNamingStrategy.IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as FileNamingStrategy.IndividualTimeSeriesMetaInformation).with {
+			assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
+		}
+	}
+
+	def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name"() {
+		given:
+		def path = Paths.get("/bla/foo/lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304.csv")
+
+		when:
+		def metaInformation = FileNamingStrategy.extractTimeSeriesMetaInformation(path)
+
+		then:
+		FileNamingStrategy.LoadProfileTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as FileNamingStrategy.LoadProfileTimeSeriesMetaInformation).with {
+			assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
+			assert profile == "g3"
+		}
+	}
 
 	def "The FileNamingStrategy is able to prepare the prefix properly"() {
 		when:
