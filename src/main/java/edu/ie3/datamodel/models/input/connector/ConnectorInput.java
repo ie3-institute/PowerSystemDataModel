@@ -102,10 +102,19 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
   @Override
   public String toString() {
     return "ConnectorInput{"
-        + "nodeA="
-        + nodeA
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operationTime="
+        + getOperationTime()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", nodeA="
+        + nodeA.getUuid()
         + ", nodeB="
-        + nodeB
+        + nodeB.getUuid()
         + ", noOfParallelDevices="
         + parallelDevices
         + '}';

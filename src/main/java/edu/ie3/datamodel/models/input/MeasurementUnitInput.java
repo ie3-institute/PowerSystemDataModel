@@ -123,8 +123,17 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
   @Override
   public String toString() {
     return "MeasurementUnitInput{"
-        + "node="
-        + node
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + node.getUuid()
         + ", vMag="
         + vMag
         + ", vAng="

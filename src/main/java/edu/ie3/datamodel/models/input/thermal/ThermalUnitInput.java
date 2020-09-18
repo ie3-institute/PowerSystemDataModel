@@ -65,6 +65,18 @@ public abstract class ThermalUnitInput extends AssetInput implements HasThermalB
 
   @Override
   public String toString() {
-    return "ThermalUnitInput{" + "bus=" + thermalBus + '}';
+    return "ThermalUnitInput{"
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", bus="
+        + thermalBus.getUuid()
+        + '}';
   }
 }

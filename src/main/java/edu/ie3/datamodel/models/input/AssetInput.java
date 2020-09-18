@@ -81,13 +81,13 @@ public abstract class AssetInput extends InputEntity implements Operable {
     return "AssetInput{"
         + "uuid="
         + getUuid()
-        + ", operationTime="
-        + operationTime
-        + ", operator="
-        + operator.getUuid()
         + ", id='"
         + id
         + '\''
+        + ", operator="
+        + operator.getUuid()
+        + ", operationTime="
+        + operationTime
         + '}';
   }
 

@@ -135,7 +135,18 @@ public class CylindricalStorageInput extends ThermalStorageInput {
   @Override
   public String toString() {
     return "CylindricalStorageInput{"
-        + "storageVolumeLvl="
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", bus="
+        + getThermalBus().getUuid()
+        + ", storageVolumeLvl="
         + storageVolumeLvl
         + ", storageVolumeLvlMin="
         + storageVolumeLvlMin

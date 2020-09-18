@@ -133,8 +133,22 @@ public class BmInput extends SystemParticipantInput implements HasType {
   @Override
   public String toString() {
     return "BmInput{"
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + getNode().getUuid()
+        + ", qCharacteristics='"
+        + getqCharacteristics()
+        + '\''
         + "type="
-        + type
+        + type.getUuid()
         + ", marketReaction="
         + marketReaction
         + ", costControlled="

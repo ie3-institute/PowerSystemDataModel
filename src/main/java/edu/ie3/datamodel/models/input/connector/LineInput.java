@@ -139,14 +139,29 @@ public class LineInput extends ConnectorInput implements HasType {
   @Override
   public String toString() {
     return "LineInput{"
-        + "type="
-        + type
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", type="
+        + type.getUuid()
         + ", length="
         + length
         + ", geoPosition="
         + geoPosition
         + ", olmCharacteristic="
         + olmCharacteristic
+        + ", nodeA="
+        + getNodeA().getUuid()
+        + ", nodeB="
+        + getNodeB().getUuid()
+        + ", noOfParallelDevices="
+        + getParallelDevices()
         + '}';
   }
 

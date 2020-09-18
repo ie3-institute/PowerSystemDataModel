@@ -98,7 +98,26 @@ public class FixedFeedInInput extends SystemParticipantInput {
 
   @Override
   public String toString() {
-    return "FixedFeedInInput{" + "sRated=" + sRated + ", cosphiRated=" + cosPhiRated + '}';
+    return "FixedFeedInInput{"
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + getNode().getUuid()
+        + ", qCharacteristics='"
+        + getqCharacteristics()
+        + '\''
+        + ", sRated="
+        + sRated
+        + ", cosphiRated="
+        + cosPhiRated
+        + '}';
   }
 
   /**

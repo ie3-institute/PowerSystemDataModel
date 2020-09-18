@@ -77,7 +77,25 @@ public class SwitchInput extends ConnectorInput {
 
   @Override
   public String toString() {
-    return "SwitchInput{" + "closed=" + closed + '}';
+    return "SwitchInput{"
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", closed="
+        + closed
+        + ", nodeA="
+        + getNodeA().getUuid()
+        + ", nodeB="
+        + getNodeB().getUuid()
+        + ", noOfParallelDevices="
+        + getParallelDevices()
+        + '}';
   }
 
   /**

@@ -204,7 +204,21 @@ public class PvInput extends SystemParticipantInput {
   @Override
   public String toString() {
     return "PvInput{"
-        + "albedo="
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + getNode().getUuid()
+        + ", qCharacteristics='"
+        + getqCharacteristics()
+        + '\''
+        + ", albedo="
         + albedo
         + ", azimuth="
         + azimuth

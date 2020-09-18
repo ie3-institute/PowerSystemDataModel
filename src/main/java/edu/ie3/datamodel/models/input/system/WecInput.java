@@ -100,7 +100,26 @@ public class WecInput extends SystemParticipantInput implements HasType {
 
   @Override
   public String toString() {
-    return "WecInput{" + "type=" + type + ", marketReaction=" + marketReaction + '}';
+    return "WecInput{"
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + getNode().getUuid()
+        + ", qCharacteristics='"
+        + getqCharacteristics()
+        + '\''
+        + ", type="
+        + type.getUuid()
+        + ", marketReaction="
+        + marketReaction
+        + '}';
   }
 
   /**

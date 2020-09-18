@@ -70,6 +70,24 @@ public class EvTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public String toString() {
-    return "EvTypeInput{" + "eStorage=" + eStorage + ", eCons=" + eCons + '}';
+    return "EvTypeInput{"
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + "capex="
+        + getCapex()
+        + ", opex="
+        + getOpex()
+        + ", sRated="
+        + getsRated()
+        + ", cosphiRated="
+        + getCosPhiRated()
+        + "eStorage="
+        + eStorage
+        + ", eCons="
+        + eCons
+        + '}';
   }
 }

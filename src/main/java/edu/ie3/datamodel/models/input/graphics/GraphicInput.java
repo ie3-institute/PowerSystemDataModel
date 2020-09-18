@@ -56,7 +56,15 @@ public abstract class GraphicInput extends InputEntity {
 
   @Override
   public String toString() {
-    return "GraphicInput{" + "graphicLayer='" + graphicLayer + '\'' + ", path=" + path + '}';
+    return "GraphicInput{"
+        + "uuid="
+        + getUuid()
+        + ", graphicLayer='"
+        + graphicLayer
+        + '\''
+        + ", path="
+        + path
+        + '}';
   }
 
   /**

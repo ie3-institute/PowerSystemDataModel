@@ -97,7 +97,27 @@ public abstract class TransformerInput extends ConnectorInput {
 
   @Override
   public String toString() {
-    return "TransformerInput{" + "tapPos=" + tapPos + ", autoTap=" + autoTap + '}';
+    return "TransformerInput{"
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + '\''
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", nodeA="
+        + getNodeA().getUuid()
+        + ", nodeB="
+        + getNodeB().getUuid()
+        + ", noOfParallelDevices="
+        + getParallelDevices()
+        + ", tapPos="
+        + tapPos
+        + ", autoTap="
+        + autoTap
+        + '}';
   }
 
   /**
