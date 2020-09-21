@@ -107,6 +107,27 @@ public class Transformer3WResult extends TransformerResult {
 
   @Override
   public String toString() {
-    return "Transformer3WResult{" + "iCMag=" + iCMag + ", iCAng=" + iCAng + '}';
+    return "Transformer3WResult{"
+            + "uuid="
+            + getUuid()
+            + ", timestamp="
+            + getTimestamp()
+            + ", inputModel="
+            + getInputModel()
+            + ", iAMag="
+            + getiAMag()
+            + ", iAAng="
+            + getiAAng()
+            + ", iBMag="
+            + getiBMag()
+            + ", iBAng="
+            + getiBAng()
+            + ", tapPos="
+            + getTapPos()
+            + ", iCMag="
+            + iCMag
+            + ", iCAng="
+            + iCAng
+            + '}';
   }
 }

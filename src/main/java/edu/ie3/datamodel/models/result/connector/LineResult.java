@@ -57,4 +57,24 @@ public class LineResult extends ConnectorResult {
       ComparableQuantity<Angle> iBAng) {
     super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
   }
+
+  @Override
+  public String toString() {
+    return "LineResult{"
+            + "uuid="
+            + getUuid()
+            + ", timestamp="
+            + getTimestamp()
+            + ", inputModel="
+            + getInputModel()
+            + ", iAMag="
+            + getiAMag()
+            + ", iAAng="
+            + getiAAng()
+            + ", iBMag="
+            + getiBMag()
+            + ", iBAng="
+            + getiBAng()
+            + '}';
+  }
 }

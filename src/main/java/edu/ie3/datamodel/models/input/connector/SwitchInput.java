@@ -87,15 +87,15 @@ public class SwitchInput extends ConnectorInput {
         + getOperator().getUuid()
         + ", operationTime="
         + getOperationTime()
-        + ", closed="
-        + closed
         + ", nodeA="
-        + getNodeA().getUuid()
-        + ", nodeB="
-        + getNodeB().getUuid()
-        + ", noOfParallelDevices="
-        + getParallelDevices()
-        + '}';
+            + getNodeA().getUuid()
+            + ", nodeB="
+            + getNodeB().getUuid()
+            + ", noOfParallelDevices="
+            + getParallelDevices()
+            + ", closed="
+            + closed
+            + '}';
   }
 
   /**

@@ -107,10 +107,10 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
         + ", id='"
         + getId()
         + '\''
-        + ", operationTime="
-        + getOperationTime()
-        + ", operator="
-        + getOperator().getUuid()
+            + ", operator="
+            + getOperator().getUuid()
+            + ", operationTime="
+            + getOperationTime()
         + ", nodeA="
         + nodeA.getUuid()
         + ", nodeB="

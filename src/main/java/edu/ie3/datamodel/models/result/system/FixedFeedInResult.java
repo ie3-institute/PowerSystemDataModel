@@ -50,4 +50,20 @@ public class FixedFeedInResult extends SystemParticipantResult {
       ComparableQuantity<Power> q) {
     super(uuid, timestamp, inputModel, p, q);
   }
+
+  @Override
+  public String toString() {
+    return "FixedFeedInResult{"
+            + "uuid="
+            + getUuid()
+            + ", timestamp="
+            + getTimestamp()
+            + ", inputModel="
+            + getInputModel()
+            + ", p="
+            + getP()
+            + ", q="
+            + getQ()
+            + '}';
+  }
 }

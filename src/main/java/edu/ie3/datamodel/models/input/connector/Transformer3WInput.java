@@ -258,17 +258,17 @@ public class Transformer3WInput extends TransformerInput implements HasType {
         + getOperationTime()
         + ", operator="
         + getOperator().getUuid()
-        + ", type="
-        + type.getUuid()
-        + ", nodeA="
-        + getNodeA().getUuid()
-        + ", nodeB="
-        + getNodeB().getUuid()
-        + ", nodeC="
-        + nodeC.getUuid()
-        + ", noOfParallelDevices="
-        + getParallelDevices()
-        + '}';
+            + ", noOfParallelDevices="
+            + getParallelDevices()
+            + ", nodeA="
+            + getNodeA().getUuid()
+            + ", nodeB="
+            + getNodeB().getUuid()
+            + ", nodeC="
+            + nodeC.getUuid()
+            + ", type="
+            + type.getUuid()
+            + '}';
   }
 
   @Override

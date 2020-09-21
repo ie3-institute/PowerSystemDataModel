@@ -102,6 +102,15 @@ public abstract class SystemParticipantResult extends ResultEntity {
 
   @Override
   public String toString() {
-    return "SystemParticipantResult{" + "p=" + p + ", q=" + q + '}';
+    return "SystemParticipantResult{"
+            + "uuid="
+            + getUuid()
+            + ", timestamp="
+            + getTimestamp()
+            + ", inputModel="
+            + getInputModel()
+            + ", p=" + p
+            + ", q=" + q
+            + '}';
   }
 }
