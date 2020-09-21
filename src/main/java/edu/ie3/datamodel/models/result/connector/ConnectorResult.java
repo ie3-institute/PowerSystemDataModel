@@ -130,12 +130,12 @@ public abstract class ConnectorResult extends ResultEntity {
   @Override
   public String toString() {
     return "ConnectorResult{"
-            + "uuid="
-            + getUuid()
-            + ", timestamp="
-            + getTimestamp()
-            + ", inputModel="
-            + getInputModel()
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
         + ", iAMag="
         + iAMag
         + ", iAAng="

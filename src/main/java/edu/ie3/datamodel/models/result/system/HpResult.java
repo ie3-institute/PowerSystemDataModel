@@ -77,18 +77,18 @@ public class HpResult extends SystemParticipantResult {
   @Override
   public String toString() {
     return "HpResult{"
-            + "uuid="
-            + getUuid()
-            + ", timestamp="
-            + getTimestamp()
-            + ", inputModel="
-            + getInputModel()
-            + ", p="
-            + getP()
-            + ", q="
-            + getQ()
-            + ", qDot="
-            + qDot
-            + '}';
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + ", qDot="
+        + qDot
+        + '}';
   }
 }

@@ -50,16 +50,16 @@ public class EvcsResult extends SystemParticipantResult {
   @Override
   public String toString() {
     return "EvcsResult{"
-            + "uuid="
-            + getUuid()
-            + ", timestamp="
-            + getTimestamp()
-            + ", inputModel="
-            + getInputModel()
-            + ", p="
-            + getP()
-            + ", q="
-            + getQ()
-            + '}';
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + '}';
   }
 }

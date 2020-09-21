@@ -86,18 +86,18 @@ public class CylindricalStorageResult extends ThermalStorageResult {
   @Override
   public String toString() {
     return "CylindricalStorageResult{"
-            + "uuid="
-            + getUuid()
-            + ", timestamp="
-            + getTimestamp()
-            + ", inputModel="
-            + getInputModel()
-            + ", qDot="
-            + getqDot()
-            + ", energy="
-            + getEnergy()
-            + ", fillLevel="
-            + fillLevel
-            + '}';
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", qDot="
+        + getqDot()
+        + ", energy="
+        + getEnergy()
+        + ", fillLevel="
+        + fillLevel
+        + '}';
   }
 }

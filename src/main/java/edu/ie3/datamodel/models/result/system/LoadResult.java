@@ -51,16 +51,16 @@ public class LoadResult extends SystemParticipantResult {
   @Override
   public String toString() {
     return "LoadResult{"
-            + "uuid="
-            + getUuid()
-            + ", timestamp="
-            + getTimestamp()
-            + ", inputModel="
-            + getInputModel()
-            + ", p="
-            + getP()
-            + ", q="
-            + getQ()
-            + '}';
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + '}';
   }
 }

@@ -51,16 +51,16 @@ public class BmResult extends SystemParticipantResult {
   @Override
   public String toString() {
     return "BmResult{"
-            + "uuid="
-            + getUuid()
-            + ", timestamp="
-            + getTimestamp()
-            + ", inputModel="
-            + getInputModel()
-            + ", p="
-            + getP()
-            + ", q="
-            + getQ()
-            + '}';
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + '}';
   }
 }

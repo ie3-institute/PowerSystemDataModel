@@ -80,16 +80,16 @@ public class ThermalHouseResult extends ThermalSinkResult {
   @Override
   public String toString() {
     return "ThermalHouseResult{"
-            + "uuid="
-            + getUuid()
-            + ", timestamp="
-            + getTimestamp()
-            + ", inputModel="
-            + getInputModel()
-            + ", qDot="
-            + getqDot()
-            + ", indoorTemperature="
-            + indoorTemperature
-            + '}';
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", qDot="
+        + getqDot()
+        + ", indoorTemperature="
+        + indoorTemperature
+        + '}';
   }
 }

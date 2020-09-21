@@ -67,22 +67,22 @@ public class Transformer2WResult extends TransformerResult {
   @Override
   public String toString() {
     return "Transformer2WResult{"
-            + "uuid="
-            + getUuid()
-            + ", timestamp="
-            + getTimestamp()
-            + ", inputModel="
-            + getInputModel()
-            + ", iAMag="
-            + getiAMag()
-            + ", iAAng="
-            + getiAAng()
-            + ", iBMag="
-            + getiBMag()
-            + ", iBAng="
-            + getiBAng()
-            + ", tapPos="
-            + getTapPos()
-            + '}';
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", iAMag="
+        + getiAMag()
+        + ", iAAng="
+        + getiAAng()
+        + ", iBMag="
+        + getiBMag()
+        + ", iBAng="
+        + getiBAng()
+        + ", tapPos="
+        + getTapPos()
+        + '}';
   }
 }

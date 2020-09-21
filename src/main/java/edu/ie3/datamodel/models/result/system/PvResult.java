@@ -51,16 +51,16 @@ public class PvResult extends SystemParticipantResult {
   @Override
   public String toString() {
     return "PvResult{"
-            + "uuid="
-            + getUuid()
-            + ", timestamp="
-            + getTimestamp()
-            + ", inputModel="
-            + getInputModel()
-            + ", p="
-            + getP()
-            + ", q="
-            + getQ()
-            + '}';
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + '}';
   }
 }

@@ -149,20 +149,20 @@ public class LineInput extends ConnectorInput implements HasType {
         + ", operationTime="
         + getOperationTime()
         + ", nodeA="
-            + getNodeA().getUuid()
-            + ", nodeB="
-            + getNodeB().getUuid()
-            + ", noOfParallelDevices="
-            + getParallelDevices()
-            + ", type="
-            + type.getUuid()
-            + ", length="
-            + length
-            + ", geoPosition="
-            + geoPosition
-            + ", olmCharacteristic="
-            + olmCharacteristic
-            + '}';
+        + getNodeA().getUuid()
+        + ", nodeB="
+        + getNodeB().getUuid()
+        + ", noOfParallelDevices="
+        + getParallelDevices()
+        + ", type="
+        + type.getUuid()
+        + ", length="
+        + length
+        + ", geoPosition="
+        + geoPosition
+        + ", olmCharacteristic="
+        + olmCharacteristic
+        + '}';
   }
 
   /**

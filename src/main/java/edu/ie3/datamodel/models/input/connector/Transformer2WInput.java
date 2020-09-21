@@ -111,14 +111,14 @@ public class Transformer2WInput extends TransformerInput implements HasType {
         + ", operationTime="
         + getOperationTime()
         + ", nodeA="
-            + getNodeA().getUuid()
-            + ", nodeB="
-            + getNodeB().getUuid()
-            + ", noOfParallelDevices="
-            + getParallelDevices()
-            + ", type="
-            + type.getUuid()
-            + '}';
+        + getNodeA().getUuid()
+        + ", nodeB="
+        + getNodeB().getUuid()
+        + ", noOfParallelDevices="
+        + getParallelDevices()
+        + ", type="
+        + type.getUuid()
+        + '}';
   }
 
   /**

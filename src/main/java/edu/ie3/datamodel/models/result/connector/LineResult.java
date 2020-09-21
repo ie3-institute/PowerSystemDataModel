@@ -61,20 +61,20 @@ public class LineResult extends ConnectorResult {
   @Override
   public String toString() {
     return "LineResult{"
-            + "uuid="
-            + getUuid()
-            + ", timestamp="
-            + getTimestamp()
-            + ", inputModel="
-            + getInputModel()
-            + ", iAMag="
-            + getiAMag()
-            + ", iAAng="
-            + getiAAng()
-            + ", iBMag="
-            + getiBMag()
-            + ", iBAng="
-            + getiBAng()
-            + '}';
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", iAMag="
+        + getiAMag()
+        + ", iAAng="
+        + getiAAng()
+        + ", iBMag="
+        + getiBMag()
+        + ", iBAng="
+        + getiBAng()
+        + '}';
   }
 }

@@ -76,8 +76,8 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
   @Override
   public String toString() {
     return "LoadProfileInput{"
-            + "uuid="
-            + getUuid()
+        + "uuid="
+        + getUuid()
         + ", type="
         + type
         + ", dayOfWeekToHourlyValues="

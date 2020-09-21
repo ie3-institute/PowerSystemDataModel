@@ -82,18 +82,18 @@ public class EvResult extends SystemParticipantResult {
   @Override
   public String toString() {
     return "EvResult{"
-            + "uuid="
-            + getUuid()
-            + ", timestamp="
-            + getTimestamp()
-            + ", inputModel="
-            + getInputModel()
-            + ", p="
-            + getP()
-            + ", q="
-            + getQ()
-            + ", soc="
-            + soc
-            + '}';
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + ", soc="
+        + soc
+        + '}';
   }
 }
