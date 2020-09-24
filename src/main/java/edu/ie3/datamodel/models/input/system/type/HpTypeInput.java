@@ -63,9 +63,8 @@ public class HpTypeInput extends SystemParticipantTypeInput {
     return "HpTypeInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + "capex="
         + getCapex()
         + ", opex="
