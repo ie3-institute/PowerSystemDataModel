@@ -206,9 +206,8 @@ public class PvInput extends SystemParticipantInput {
     return "PvInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
