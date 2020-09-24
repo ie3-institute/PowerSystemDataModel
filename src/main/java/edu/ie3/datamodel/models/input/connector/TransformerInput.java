@@ -100,9 +100,8 @@ public abstract class TransformerInput extends ConnectorInput {
     return "TransformerInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
