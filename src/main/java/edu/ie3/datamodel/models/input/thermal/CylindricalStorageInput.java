@@ -137,9 +137,8 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     return "CylindricalStorageInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
