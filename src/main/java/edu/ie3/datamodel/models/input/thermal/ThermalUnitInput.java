@@ -68,9 +68,8 @@ public abstract class ThermalUnitInput extends AssetInput implements HasThermalB
     return "ThermalUnitInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
