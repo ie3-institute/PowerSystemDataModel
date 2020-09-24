@@ -74,10 +74,9 @@ public class BmTypeInput extends SystemParticipantTypeInput {
     return "BmTypeInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
-        + "capex="
+        + ", capex="
         + getCapex()
         + ", opex="
         + getOpex()
