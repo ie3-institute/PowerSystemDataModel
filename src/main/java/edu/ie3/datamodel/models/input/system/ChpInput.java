@@ -136,9 +136,8 @@ public class ChpInput extends SystemParticipantInput
     return "ChpInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
