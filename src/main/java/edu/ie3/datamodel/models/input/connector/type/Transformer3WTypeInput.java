@@ -253,9 +253,8 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     return "Transformer3WTypeInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", sRatedA="
         + sRatedA
         + ", sRatedB="
