@@ -103,9 +103,8 @@ public class Transformer2WInput extends TransformerInput implements HasType {
     return "Transformer2WInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
