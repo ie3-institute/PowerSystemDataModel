@@ -55,7 +55,7 @@ public class LineGraphicInput extends GraphicInput implements HasLine {
 
   @Override
   public String toString() {
-    return "LineGraphicInput{" + "line=" + line + '}';
+    return "LineGraphicInput{" + "uuid=" + getUuid() + ", line=" + line.getUuid() + '}';
   }
 
   /**

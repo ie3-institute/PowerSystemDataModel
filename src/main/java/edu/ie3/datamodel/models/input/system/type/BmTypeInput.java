@@ -71,6 +71,23 @@ public class BmTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public String toString() {
-    return "BmTypeInput{" + "loadGradient=" + activePowerGradient + ", etaConv=" + etaConv + '}';
+    return "BmTypeInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", capex="
+        + getCapex()
+        + ", opex="
+        + getOpex()
+        + ", sRated="
+        + getsRated()
+        + ", cosphiRated="
+        + getCosPhiRated()
+        + "loadGradient="
+        + activePowerGradient
+        + ", etaConv="
+        + etaConv
+        + '}';
   }
 }

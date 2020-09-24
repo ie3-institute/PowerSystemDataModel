@@ -39,7 +39,7 @@ public class NodeGraphicInputEntityData extends EntityData {
   public String toString() {
     return "NodeGraphicInputEntityData{"
         + "node="
-        + node
+        + node.getUuid()
         + ", fieldsToValues="
         + getFieldsToValues()
         + ", entityClass="

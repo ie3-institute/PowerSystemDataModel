@@ -93,8 +93,16 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
   @Override
   public String toString() {
     return "SystemParticipantInput{"
-        + "node="
-        + node
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + node.getUuid()
         + ", qCharacteristics='"
         + qCharacteristics
         + '\''

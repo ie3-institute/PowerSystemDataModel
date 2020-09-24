@@ -37,6 +37,7 @@ coordinates or multiple exactly equal coordinates possible
 - `SwitchResult` superclass changed from `ConnectorResult` to `ResultEntity`
 - ``CsvDataSource`` now parses valid RFC 4180 rows correctly (invalid, old syntax is still supported but deprecated!)
 -  Consolidate test tasks. `gradle allTests` is now replaced by `gradle test`. Only unit tests can be run with `gradle unitTest`.
+- Changed projects toString() methods for readability/completeness
 
 ### Fixed
 -  CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
