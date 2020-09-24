@@ -73,9 +73,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     return "EvTypeInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + "capex="
         + getCapex()
         + ", opex="
