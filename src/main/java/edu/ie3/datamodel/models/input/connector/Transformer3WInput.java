@@ -251,9 +251,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
     return "Transformer3WInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operationTime="
         + getOperationTime()
         + ", operator="
