@@ -95,9 +95,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
     return "ThermalHouseInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
