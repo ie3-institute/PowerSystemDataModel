@@ -187,9 +187,8 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     return "Transformer2WTypeInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", rSc="
         + rSc
         + ", xSc="
