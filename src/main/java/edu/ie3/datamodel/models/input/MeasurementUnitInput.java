@@ -125,9 +125,8 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
     return "MeasurementUnitInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
