@@ -89,9 +89,8 @@ public class EvInput extends SystemParticipantInput implements HasType {
     return "EvInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
