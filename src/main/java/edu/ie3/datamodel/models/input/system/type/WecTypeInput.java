@@ -96,9 +96,8 @@ public class WecTypeInput extends SystemParticipantTypeInput {
     return "WecTypeInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + "capex="
         + getCapex()
         + ", opex="
