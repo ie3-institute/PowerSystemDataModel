@@ -95,9 +95,8 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     return "SystemParticipantInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
