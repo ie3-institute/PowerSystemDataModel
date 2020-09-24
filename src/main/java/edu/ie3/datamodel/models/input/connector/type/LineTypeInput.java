@@ -106,9 +106,8 @@ public class LineTypeInput extends AssetTypeInput {
     return "LineTypeInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", b="
         + b
         + ", g="
