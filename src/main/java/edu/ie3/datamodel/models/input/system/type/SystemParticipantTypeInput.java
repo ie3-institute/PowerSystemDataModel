@@ -84,9 +84,8 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     return "SystemParticipantTypeInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + "capex="
         + capex
         + ", opex="
