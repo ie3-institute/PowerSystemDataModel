@@ -89,9 +89,8 @@ public class StorageInput extends SystemParticipantInput implements HasType {
     return "StorageInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
