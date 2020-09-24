@@ -135,9 +135,8 @@ public class BmInput extends SystemParticipantInput implements HasType {
     return "BmInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
