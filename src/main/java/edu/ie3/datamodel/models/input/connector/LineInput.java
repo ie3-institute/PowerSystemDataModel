@@ -141,9 +141,8 @@ public class LineInput extends ConnectorInput implements HasType {
     return "LineInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
