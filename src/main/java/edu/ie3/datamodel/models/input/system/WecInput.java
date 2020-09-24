@@ -103,9 +103,8 @@ public class WecInput extends SystemParticipantInput implements HasType {
     return "WecInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
