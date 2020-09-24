@@ -59,9 +59,8 @@ public abstract class GraphicInput extends InputEntity {
     return "GraphicInput{"
         + "uuid="
         + getUuid()
-        + ", graphicLayer='"
+        + ", graphicLayer="
         + graphicLayer
-        + '\''
         + ", path="
         + path
         + '}';
