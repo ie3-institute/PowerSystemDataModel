@@ -127,9 +127,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     return "StorageTypeInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + "capex="
         + getCapex()
         + ", opex="
