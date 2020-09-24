@@ -104,9 +104,8 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
     return "HpInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
