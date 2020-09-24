@@ -101,9 +101,8 @@ public class FixedFeedInInput extends SystemParticipantInput {
     return "FixedFeedInInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
