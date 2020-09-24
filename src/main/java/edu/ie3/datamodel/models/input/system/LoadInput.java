@@ -230,7 +230,6 @@ public class LoadInput extends SystemParticipantInput {
         + getUuid()
         + ", id='"
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
