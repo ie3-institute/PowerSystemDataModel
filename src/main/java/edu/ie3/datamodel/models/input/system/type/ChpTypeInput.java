@@ -93,9 +93,8 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     return "ChpTypeInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + "capex="
         + getCapex()
         + ", opex="
