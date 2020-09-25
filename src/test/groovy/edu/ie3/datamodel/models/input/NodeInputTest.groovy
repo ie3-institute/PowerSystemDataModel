@@ -43,7 +43,7 @@ class NodeInputTest extends Specification {
 		nodeB
 
 		then:
-		nodeA.equals(nodeB) == expectedResult
+		(nodeA == (nodeB)) == expectedResult
 
 		where:
 		nodeA                                                                            | nodeB                                                                                            || expectedResult

@@ -5,6 +5,14 @@
  */
 package edu.ie3.test.common
 
+import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+import static tech.units.indriya.unit.Units.OHM
+import static tech.units.indriya.unit.Units.PERCENT
+import static tech.units.indriya.unit.Units.SIEMENS
+
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -29,14 +37,6 @@ import tech.units.indriya.quantity.Quantities
 import tech.units.indriya.unit.Units
 
 import javax.measure.MetricPrefix
-
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
-import static tech.units.indriya.unit.Units.OHM
-import static tech.units.indriya.unit.Units.PERCENT
-import static tech.units.indriya.unit.Units.SIEMENS
 
 /**
  * This class contains a collection of different model instances that can be used for testing purposes.

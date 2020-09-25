@@ -31,13 +31,10 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 
 	def setupSpec() {
 		// Copy sql import script into docker
-		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/nativeSql/weather.sql")
+		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/weather.sql")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather.sql")
 		// Execute import script
 		def execResult = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
-		println "Command \"psql -U test -f /home/weather.sql\" returned:"
-		if(!execResult.stderr.isEmpty()) println execResult.getStderr()
-		if(!execResult.stdout.isEmpty()) println execResult.getStdout()
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
 		source = new SqlWeatherSource(connector, WeatherTestData.coordinateSource)
@@ -49,7 +46,7 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 		when:
 		def optTimeBasedValue = source.getWeather(WeatherTestData.time_15h, WeatherTestData.coordinate_193186)
 		then:
-		optTimeBasedValue.isPresent()
+		optTimeBasedValue.present
 		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
 	}
 
@@ -83,16 +80,16 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 		def timeInterval = new ClosedInterval(WeatherTestData.time_15h, WeatherTestData.time_17h)
 		def timeseries_193186 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.time_15h,WeatherTestData.weatherVal_coordinate_193186_15h),
-					new TimeBasedValue(WeatherTestData.time_16h,WeatherTestData.weatherVal_coordinate_193186_16h),
-					new TimeBasedValue(WeatherTestData.time_17h,WeatherTestData.weatherVal_coordinate_193186_17h)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.time_15h, WeatherTestData.weatherVal_coordinate_193186_15h),
+					new TimeBasedValue(WeatherTestData.time_16h, WeatherTestData.weatherVal_coordinate_193186_16h),
+					new TimeBasedValue(WeatherTestData.time_17h, WeatherTestData.weatherVal_coordinate_193186_17h)] as Set<TimeBasedValue>)
 		def timeseries_193187 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.time_15h,WeatherTestData.weatherVal_coordinate_193187_15h),
-					new TimeBasedValue(WeatherTestData.time_16h,WeatherTestData.weatherVal_coordinate_193187_16h)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.time_15h, WeatherTestData.weatherVal_coordinate_193187_15h),
+					new TimeBasedValue(WeatherTestData.time_16h, WeatherTestData.weatherVal_coordinate_193187_16h)] as Set<TimeBasedValue>)
 		def timeseries_193188 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.time_15h,WeatherTestData.weatherVal_coordinate_193188_15h)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.time_15h, WeatherTestData.weatherVal_coordinate_193188_15h)] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
 		then:
