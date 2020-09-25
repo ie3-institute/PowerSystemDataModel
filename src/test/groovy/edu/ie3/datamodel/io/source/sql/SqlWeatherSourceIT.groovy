@@ -34,7 +34,7 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/weather.sql")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather.sql")
 		// Execute import script
-		def execResult = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
+		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
 		source = new SqlWeatherSource(connector, WeatherTestData.coordinateSource)
@@ -94,8 +94,8 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
 		then:
 		coordinateToTimeSeries.keySet().size() == 3
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193186).getEntries(), timeseries_193186.getEntries())
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193187).getEntries(), timeseries_193187.getEntries())
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193188).getEntries(), timeseries_193188.getEntries())
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193186).entries, timeseries_193186.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193187).entries, timeseries_193187.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193188).entries, timeseries_193188.entries)
 	}
 }
