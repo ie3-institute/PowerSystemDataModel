@@ -53,9 +53,6 @@ dependencies {
 	//	 ie³ power system utils
 	compile 'com.github.ie3-institute:PowerSystemUtils:1.4-SNAPSHOT'
 
-	compile group: 'tech.units', name: 'indriya', version: '2.0'
-
-
 	// JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
 	compile 'org.locationtech.jts:jts-core:1.16.1'
 	compile 'org.locationtech.jts.io:jts-io-common:1.16.1'
@@ -72,6 +69,7 @@ dependencies {
 	testCompile "org.testcontainers:testcontainers:$testcontainersVersion"
 	testCompile "org.testcontainers:spock:$testcontainersVersion"
 	testCompile "org.testcontainers:influxdb:$testcontainersVersion"
+	testCompile "org.testcontainers:postgresql:$testcontainersVersion"
 
 	// logging
 	compile 'org.apache.logging.log4j:log4j-api:+' // log4j

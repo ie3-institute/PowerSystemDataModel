@@ -1062,6 +1062,8 @@
 <dd>&nbsp;</dd>
 <dt><a href="edu/ie3/datamodel/io/source/influxdb/package-summary.html">edu.ie3.datamodel.io.source.influxdb</a> - package edu.ie3.datamodel.io.source.influxdb</dt>
 <dd>&nbsp;</dd>
+<dt><a href="edu/ie3/datamodel/io/source/sql/package-summary.html">edu.ie3.datamodel.io.source.sql</a> - package edu.ie3.datamodel.io.source.sql</dt>
+<dd>&nbsp;</dd>
 <dt><a href="edu/ie3/datamodel/models/package-summary.html">edu.ie3.datamodel.models</a> - package edu.ie3.datamodel.models</dt>
 <dd>&nbsp;</dd>
 <dt><a href="edu/ie3/datamodel/models/input/package-summary.html">edu.ie3.datamodel.models.input</a> - package edu.ie3.datamodel.models.input</dt>
@@ -1479,12 +1481,28 @@
 </dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/models/input/system/type/EvTypeInput.html#EvTypeInput-java.util.UUID-java.lang.String-tech.units.indriya.ComparableQuantity-tech.units.indriya.ComparableQuantity-tech.units.indriya.ComparableQuantity-tech.units.indriya.ComparableQuantity-tech.units.indriya.ComparableQuantity-double-">EvTypeInput(UUID, String, ComparableQuantity&lt;Currency&gt;, ComparableQuantity&lt;EnergyPrice&gt;, ComparableQuantity&lt;Energy&gt;, ComparableQuantity&lt;SpecificEnergy&gt;, ComparableQuantity&lt;Power&gt;, double)</a></span> - Constructor for class edu.ie3.datamodel.models.input.system.type.<a href="edu/ie3/datamodel/models/input/system/type/EvTypeInput.html" title="class in edu.ie3.datamodel.models.input.system.type">EvTypeInput</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/connectors/SqlConnector.html#executeQuery-java.sql.Statement-java.lang.String-">executeQuery(Statement, String)</a></span> - Method in class edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/SqlConnector.html" title="class in edu.ie3.datamodel.io.connectors">SqlConnector</a></dt>
+<dd>
+<div class="block">Executes the given query.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/connectors/SqlConnector.html#executeUpdate-java.lang.String-">executeUpdate(String)</a></span> - Method in class edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/SqlConnector.html" title="class in edu.ie3.datamodel.io.connectors">SqlConnector</a></dt>
+<dd>
+<div class="block">Executes an update query</div>
+</dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/factory/EntityFactory.html#expandSet-java.util.Set-java.lang.String...-">expandSet(Set&lt;String&gt;, String...)</a></span> - Method in class edu.ie3.datamodel.io.factory.<a href="edu/ie3/datamodel/io/factory/EntityFactory.html" title="class in edu.ie3.datamodel.io.factory">EntityFactory</a></dt>
 <dd>
 <div class="block">Expands a set of attributes with further attributes.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/extractor/Extractor.html#extractElements-edu.ie3.datamodel.io.extractor.NestedEntity-">extractElements(NestedEntity)</a></span> - Static method in class edu.ie3.datamodel.io.extractor.<a href="edu/ie3/datamodel/io/extractor/Extractor.html" title="class in edu.ie3.datamodel.io.extractor">Extractor</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/connectors/SqlConnector.html#extractFieldMap-java.sql.ResultSet-">extractFieldMap(ResultSet)</a></span> - Static method in class edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/SqlConnector.html" title="class in edu.ie3.datamodel.io.connectors">SqlConnector</a></dt>
+<dd>
+<div class="block">Extracts only the current row of the ResultSet into a field to value map</div>
+</dd>
+<dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/connectors/SqlConnector.html#extractFieldMaps-java.sql.ResultSet-">extractFieldMaps(ResultSet)</a></span> - Static method in class edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/SqlConnector.html" title="class in edu.ie3.datamodel.io.connectors">SqlConnector</a></dt>
+<dd>
+<div class="block">Extracts all field to value maps from the ResultSet, one for each row</div>
+</dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/extractor/Extractor.html#extractOperator-edu.ie3.datamodel.models.Operable-">extractOperator(Operable)</a></span> - Static method in class edu.ie3.datamodel.io.extractor.<a href="edu/ie3/datamodel/io/extractor/Extractor.html" title="class in edu.ie3.datamodel.io.extractor">Extractor</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="edu/ie3/datamodel/io/extractor/Extractor.html" title="class in edu.ie3.datamodel.io.extractor"><span class="typeNameLink">Extractor</span></a> - Class in <a href="edu/ie3/datamodel/io/extractor/package-summary.html">edu.ie3.datamodel.io.extractor</a></dt>
@@ -1804,6 +1822,10 @@
 </dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/models/result/connector/SwitchResult.html#getClosed--">getClosed()</a></span> - Method in class edu.ie3.datamodel.models.result.connector.<a href="edu/ie3/datamodel/models/result/connector/SwitchResult.html" title="class in edu.ie3.datamodel.models.result.connector">SwitchResult</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/connectors/SqlConnector.html#getConnection--">getConnection()</a></span> - Method in class edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/SqlConnector.html" title="class in edu.ie3.datamodel.io.connectors">SqlConnector</a></dt>
+<dd>
+<div class="block">Establishes and returns a database connection</div>
+</dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/factory/timeseries/TimeBasedWeatherValueData.html#getCoordinate--">getCoordinate()</a></span> - Method in class edu.ie3.datamodel.io.factory.timeseries.<a href="edu/ie3/datamodel/io/factory/timeseries/TimeBasedWeatherValueData.html" title="class in edu.ie3.datamodel.io.factory.timeseries">TimeBasedWeatherValueData</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/source/csv/CsvIdCoordinateSource.html#getCoordinate-java.lang.Integer-">getCoordinate(Integer)</a></span> - Method in class edu.ie3.datamodel.io.source.csv.<a href="edu/ie3/datamodel/io/source/csv/CsvIdCoordinateSource.html" title="class in edu.ie3.datamodel.io.source.csv">CsvIdCoordinateSource</a></dt>
@@ -2884,6 +2906,12 @@
 <div class="block">Return the weather for the given time interval AND coordinate</div>
 </dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/source/influxdb/InfluxDbWeatherSource.html#getWeather-java.time.ZonedDateTime-org.locationtech.jts.geom.Point-">getWeather(ZonedDateTime, Point)</a></span> - Method in class edu.ie3.datamodel.io.source.influxdb.<a href="edu/ie3/datamodel/io/source/influxdb/InfluxDbWeatherSource.html" title="class in edu.ie3.datamodel.io.source.influxdb">InfluxDbWeatherSource</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/source/sql/SqlWeatherSource.html#getWeather-edu.ie3.util.interval.ClosedInterval-">getWeather(ClosedInterval&lt;ZonedDateTime&gt;)</a></span> - Method in class edu.ie3.datamodel.io.source.sql.<a href="edu/ie3/datamodel/io/source/sql/SqlWeatherSource.html" title="class in edu.ie3.datamodel.io.source.sql">SqlWeatherSource</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/source/sql/SqlWeatherSource.html#getWeather-edu.ie3.util.interval.ClosedInterval-java.util.Collection-">getWeather(ClosedInterval&lt;ZonedDateTime&gt;, Collection&lt;Point&gt;)</a></span> - Method in class edu.ie3.datamodel.io.source.sql.<a href="edu/ie3/datamodel/io/source/sql/SqlWeatherSource.html" title="class in edu.ie3.datamodel.io.source.sql">SqlWeatherSource</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/source/sql/SqlWeatherSource.html#getWeather-java.time.ZonedDateTime-org.locationtech.jts.geom.Point-">getWeather(ZonedDateTime, Point)</a></span> - Method in class edu.ie3.datamodel.io.source.sql.<a href="edu/ie3/datamodel/io/source/sql/SqlWeatherSource.html" title="class in edu.ie3.datamodel.io.source.sql">SqlWeatherSource</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/source/WeatherSource.html#getWeather-edu.ie3.util.interval.ClosedInterval-">getWeather(ClosedInterval&lt;ZonedDateTime&gt;)</a></span> - Method in interface edu.ie3.datamodel.io.source.<a href="edu/ie3/datamodel/io/source/WeatherSource.html" title="interface in edu.ie3.datamodel.io.source">WeatherSource</a></dt>
 <dd>
@@ -4340,6 +4368,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/connectors/InfluxDbConnector.html#shutdown--">shutdown()</a></span> - Method in class edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/InfluxDbConnector.html" title="class in edu.ie3.datamodel.io.connectors">InfluxDbConnector</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/connectors/SqlConnector.html#shutdown--">shutdown()</a></span> - Method in class edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/SqlConnector.html" title="class in edu.ie3.datamodel.io.connectors">SqlConnector</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/sink/CsvFileSink.html#shutdown--">shutdown()</a></span> - Method in class edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/CsvFileSink.html" title="class in edu.ie3.datamodel.io.sink">CsvFileSink</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/sink/DataSink.html#shutdown--">shutdown()</a></span> - Method in interface edu.ie3.datamodel.io.sink.<a href="edu/ie3/datamodel/io/sink/DataSink.html" title="interface in edu.ie3.datamodel.io.sink">DataSink</a></dt>
@@ -4392,6 +4422,29 @@
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/models/StandardUnits.html#SPECIFIC_HEAT_CAPACITY">SPECIFIC_HEAT_CAPACITY</a></span> - Static variable in class edu.ie3.datamodel.models.<a href="edu/ie3/datamodel/models/StandardUnits.html" title="class in edu.ie3.datamodel.models">StandardUnits</a></dt>
 <dd>
 <div class="block">Thermal capacity per mass</div>
+</dd>
+<dt><a href="edu/ie3/datamodel/io/connectors/SqlConnector.html" title="class in edu.ie3.datamodel.io.connectors"><span class="typeNameLink">SqlConnector</span></a> - Class in <a href="edu/ie3/datamodel/io/connectors/package-summary.html">edu.ie3.datamodel.io.connectors</a></dt>
+<dd>
+<div class="block">Implements a DataConnector for a native SQL connection to a relational database.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/connectors/SqlConnector.html#SqlConnector-java.lang.String-java.lang.String-java.lang.String-">SqlConnector(String, String, String)</a></span> - Constructor for class edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/SqlConnector.html" title="class in edu.ie3.datamodel.io.connectors">SqlConnector</a></dt>
+<dd>
+<div class="block">Initializes a SqlConnector with the given JDBC url, username and password</div>
+</dd>
+<dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/connectors/SqlConnector.html#SqlConnector--">SqlConnector()</a></span> - Constructor for class edu.ie3.datamodel.io.connectors.<a href="edu/ie3/datamodel/io/connectors/SqlConnector.html" title="class in edu.ie3.datamodel.io.connectors">SqlConnector</a></dt>
+<dd>
+<div class="block">Initializes a SqlConnector with default parameters: <br>
+ jdbcUrl = jdbc:postgresql://localhost:5432/simona <br>
+ username = postgres <br>
+ password = root <br></div>
+</dd>
+<dt><a href="edu/ie3/datamodel/io/source/sql/SqlWeatherSource.html" title="class in edu.ie3.datamodel.io.source.sql"><span class="typeNameLink">SqlWeatherSource</span></a> - Class in <a href="edu/ie3/datamodel/io/source/sql/package-summary.html">edu.ie3.datamodel.io.source.sql</a></dt>
+<dd>
+<div class="block">SQL source for weather data</div>
+</dd>
+<dt><span class="memberNameLink"><a href="edu/ie3/datamodel/io/source/sql/SqlWeatherSource.html#SqlWeatherSource-edu.ie3.datamodel.io.connectors.SqlConnector-edu.ie3.datamodel.io.source.IdCoordinateSource-">SqlWeatherSource(SqlConnector, IdCoordinateSource)</a></span> - Constructor for class edu.ie3.datamodel.io.source.sql.<a href="edu/ie3/datamodel/io/source/sql/SqlWeatherSource.html" title="class in edu.ie3.datamodel.io.source.sql">SqlWeatherSource</a></dt>
+<dd>
+<div class="block">Initializes a new SqlWeatherSource</div>
 </dd>
 <dt><span class="memberNameLink"><a href="edu/ie3/datamodel/models/input/system/FixedFeedInInput.FixedFeedInInputCopyBuilder.html#sRated-tech.units.indriya.ComparableQuantity-">sRated(ComparableQuantity&lt;Power&gt;)</a></span> - Method in class edu.ie3.datamodel.models.input.system.<a href="edu/ie3/datamodel/models/input/system/FixedFeedInInput.FixedFeedInInputCopyBuilder.html" title="class in edu.ie3.datamodel.models.input.system">FixedFeedInInput.FixedFeedInInputCopyBuilder</a></dt>
 <dd>&nbsp;</dd>

@@ -19,6 +19,7 @@ edu.ie3.datamodel.io.sink
 edu.ie3.datamodel.io.source
 edu.ie3.datamodel.io.source.csv
 edu.ie3.datamodel.io.source.influxdb
+edu.ie3.datamodel.io.source.sql
 edu.ie3.datamodel.models
 edu.ie3.datamodel.models.input
 edu.ie3.datamodel.models.input.connector
