@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.exceptions;
 
 /**
- * Exception that should be used whenevery something invalid happens in a implementation of a {@link
+ * Exception that should be used whenever something invalid happens in a implementation of a {@link
  * edu.ie3.datamodel.io.connectors.DataConnector}
  *
  * @version 0.1

@@ -11,7 +11,7 @@ import java.util.Objects;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes a actove power value as active power */
+/** Describes a active power value as active power */
 public class PValue implements Value {
 
   /** Active power */

@@ -86,6 +86,17 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
 
   @Override
   public String toString() {
-    return "ThermalStorageResult{" + "energy=" + energy + '}';
+    return "ThermalStorageResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", qDot="
+        + getqDot()
+        + ", energy="
+        + energy
+        + '}';
   }
 }

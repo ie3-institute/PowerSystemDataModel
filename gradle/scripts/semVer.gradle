@@ -5,3 +5,9 @@ task currentVersion {
 		println semver.semver
 	}
 }
+
+task devVersion {
+	doFirst{
+		println "${semver.major}.${semver.minor}-SNAPSHOT"
+	}
+}

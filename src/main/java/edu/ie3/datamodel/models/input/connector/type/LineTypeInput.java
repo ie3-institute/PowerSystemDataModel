@@ -124,7 +124,11 @@ public class LineTypeInput extends AssetTypeInput {
   @Override
   public String toString() {
     return "LineTypeInput{"
-        + "b="
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", b="
         + b
         + ", g="
         + g

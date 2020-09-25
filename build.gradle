@@ -45,7 +45,7 @@ repositories {
 	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
 	maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
 
-	// sonatype snapshot repo
+	// sonartype snapshot repo
 	maven { url 'http://oss.sonatype.org/content/repositories/snapshots' }
 
 }

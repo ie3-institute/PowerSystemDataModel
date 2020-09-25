@@ -151,6 +151,18 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   @Override
   public String toString() {
     return "StorageTypeInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + "capex="
+        + getCapex()
+        + ", opex="
+        + getOpex()
+        + ", sRated="
+        + getsRated()
+        + ", cosphiRated="
+        + getCosPhiRated()
         + "eStorage="
         + eStorage
         + ", pMax="

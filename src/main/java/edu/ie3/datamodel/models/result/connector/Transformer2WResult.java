@@ -63,4 +63,26 @@ public class Transformer2WResult extends TransformerResult {
       int tapPos) {
     super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
   }
+
+  @Override
+  public String toString() {
+    return "Transformer2WResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", iAMag="
+        + getiAMag()
+        + ", iAAng="
+        + getiAAng()
+        + ", iBMag="
+        + getiBMag()
+        + ", iBAng="
+        + getiBAng()
+        + ", tapPos="
+        + getTapPos()
+        + '}';
+  }
 }
