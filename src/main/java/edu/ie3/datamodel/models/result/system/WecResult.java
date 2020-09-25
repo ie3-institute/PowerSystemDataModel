@@ -47,4 +47,20 @@ public class WecResult extends SystemParticipantResult {
       ComparableQuantity<Power> q) {
     super(uuid, timestamp, inputModel, p, q);
   }
+
+  @Override
+  public String toString() {
+    return "WecResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + '}';
+  }
 }

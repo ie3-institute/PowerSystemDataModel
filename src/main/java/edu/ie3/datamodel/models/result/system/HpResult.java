@@ -77,4 +77,22 @@ public class HpResult extends SystemParticipantResult {
   public int hashCode() {
     return Objects.hash(super.hashCode(), qDot);
   }
+
+  @Override
+  public String toString() {
+    return "HpResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + ", qDot="
+        + qDot
+        + '}';
+  }
 }

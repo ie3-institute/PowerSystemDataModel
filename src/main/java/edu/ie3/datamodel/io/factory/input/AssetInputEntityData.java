@@ -71,7 +71,7 @@ public class AssetInputEntityData extends EntityData {
         + ", entityClass="
         + getEntityClass()
         + ", operatorInput="
-        + operator
-        + "} ";
+        + operator.getUuid()
+        + '}';
   }
 }

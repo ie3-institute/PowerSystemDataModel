@@ -223,7 +223,11 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   @Override
   public String toString() {
     return "Transformer2WTypeInput{"
-        + "rSc="
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", rSc="
         + rSc
         + ", xSc="
         + xSc

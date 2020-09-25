@@ -52,6 +52,6 @@ public class HeatAndSValue extends SValue {
 
   @Override
   public String toString() {
-    return "HeatAndSValue{" + "heatDemand=" + heatDemand + '}';
+    return "HeatAndSValue{" + "p=" + getP() + ", q=" + getQ() + ", heatDemand=" + heatDemand + '}';
   }
 }

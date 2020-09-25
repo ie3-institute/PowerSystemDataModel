@@ -79,13 +79,14 @@ public abstract class AssetInput extends InputEntity implements Operable {
   @Override
   public String toString() {
     return "AssetInput{"
-        + "operationTime="
-        + operationTime
-        + ", operator="
-        + operator
-        + ", id='"
+        + "uuid="
+        + getUuid()
+        + ", id="
         + id
-        + '\''
+        + ", operator="
+        + operator.getUuid()
+        + ", operationTime="
+        + operationTime
         + '}';
   }
 

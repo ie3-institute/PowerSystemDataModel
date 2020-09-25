@@ -110,6 +110,16 @@ public class WecTypeInput extends SystemParticipantTypeInput {
     return "WecTypeInput{"
         + "uuid="
         + getUuid()
+        + ", id="
+        + getId()
+        + "capex="
+        + getCapex()
+        + ", opex="
+        + getOpex()
+        + ", sRated="
+        + getsRated()
+        + ", cosphiRated="
+        + getCosPhiRated()
         + ", cpCharacteristic="
         + cpCharacteristic
         + ", etaConv="

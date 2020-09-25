@@ -100,7 +100,24 @@ public class Transformer2WInput extends TransformerInput implements HasType {
 
   @Override
   public String toString() {
-    return "Transformer2WInput{" + "type=" + type + '}';
+    return "Transformer2WInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", nodeA="
+        + getNodeA().getUuid()
+        + ", nodeB="
+        + getNodeB().getUuid()
+        + ", noOfParallelDevices="
+        + getParallelDevices()
+        + ", type="
+        + type.getUuid()
+        + '}';
   }
 
   /**
