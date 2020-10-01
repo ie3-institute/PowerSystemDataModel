@@ -33,6 +33,16 @@ class WeatherTestData {
 		Collection<Point> getCoordinates(Integer... ids) {
 			return Stream.of(ids).map(this.&getCoordinate).filter({ c -> c != null }).collect(Collectors.toSet())
 		}
+
+		@Override
+		Collection<Point> getAllValidCoordinates() {
+			return [
+				GeoUtils.xyToPoint(49d, 7d),
+				GeoUtils.xyToPoint(49d, 8d),
+				GeoUtils.xyToPoint(50d, 7d)
+			]
+		}
+
 		@Override
 		Integer getId(Point coordinate) {
 			if(coordinate.x == 49 && coordinate.y == 7) return 193186

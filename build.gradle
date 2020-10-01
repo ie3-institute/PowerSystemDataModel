@@ -73,14 +73,16 @@ dependencies {
 	testCompile "org.testcontainers:testcontainers:$testcontainersVersion"
 	testCompile "org.testcontainers:spock:$testcontainersVersion"
 	testCompile "org.testcontainers:influxdb:$testcontainersVersion"
+	testCompile "org.testcontainers:couchbase:$testcontainersVersion"
 
 	// logging
 	compile 'org.apache.logging.log4j:log4j-api:+' // log4j
 	compile 'org.apache.logging.log4j:log4j-core:+' // log4j
 	compile 'org.apache.logging.log4j:log4j-slf4j-impl:+' // log4j -> slf4j
 
-	//InfluxDb
+	// Databases
 	compile 'org.influxdb:influxdb-java:2.17'
+	compile 'com.couchbase.client:java-client:3.0.0'
 }
 
 wrapper {

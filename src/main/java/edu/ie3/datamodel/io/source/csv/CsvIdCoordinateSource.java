@@ -58,6 +58,11 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
     return Stream.of(ids).map(this::getCoordinate).collect(Collectors.toList());
   }
 
+  @Override
+  public Collection<Point> getAllValidCoordinates() {
+    return coordinateToId.keySet();
+  }
+
   public Collection<Point> getCoordinates(int... ids) {
     return Arrays.stream(ids).mapToObj(this::getCoordinate).collect(Collectors.toSet());
   }

@@ -14,5 +14,7 @@ public interface IdCoordinateSource extends DataSource {
 
   Collection<Point> getCoordinates(Integer... ids);
 
+  Collection<Point> getAllValidCoordinates();
+
   Integer getId(Point coordinate);
 }
