@@ -45,7 +45,6 @@ public class NodeValidationUtils extends ValidationUtils {
     if (node.getSubnet() <= 0)
       throw new InvalidEntityException("Subnet can't be zero or negative", node);
 
-
   }
 
   /**
