@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
@@ -122,6 +123,7 @@ public class FileNamingStrategy {
       return getGraphicsInputFileName(cls.asSubclass(GraphicInput.class));
     if (OperatorInput.class.isAssignableFrom(cls))
       return getOperatorInputFileName(cls.asSubclass(OperatorInput.class));
+    if (TimeSeriesMapping.Entry.class.isAssignableFrom(cls)) return getTimeSeriesMappingFileName();
     logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
     return Optional.empty();
   }
@@ -209,6 +211,15 @@ public class FileNamingStrategy {
 
     return new LoadProfileTimeSeriesMetaInformation(
         UUID.fromString(matcher.group("uuid")), matcher.group("profile"));
+  }
+
+  /**
+   * Get the file name for time series mapping
+   *
+   * @return The file name string
+   */
+  public Optional<String> getTimeSeriesMappingFileName() {
+    return Optional.of(addPrefixAndSuffix("time_series_mapping"));
   }
 
   /**

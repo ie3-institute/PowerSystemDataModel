@@ -41,6 +41,7 @@ import edu.ie3.datamodel.models.result.system.WecResult
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
+import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import spock.lang.Shared
@@ -301,5 +302,29 @@ class HierarchicFileNamingStrategyTest extends Specification {
 
 		then:
 		!fileName.present
+	}
+
+	def "A FileNamingStrategy without pre- or suffixes should return valid strings for time series mapping"() {
+		given: "a file naming strategy without pre- or suffixes"
+		FileNamingStrategy strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+
+		when:
+		Optional<String> res = strategy.getFileName(TimeSeriesMapping.Entry.class)
+
+		then:
+		res.present
+		res.get() == "participants/time_series/time_series_mapping"
+	}
+
+	def "A FileNamingStrategy with pre- and suffix should return valid strings for time series mapping"() {
+		given: "a file naming strategy without pre- or suffixes"
+		FileNamingStrategy strategy = new HierarchicFileNamingStrategy("prefix", "suffix", defaultHierarchy)
+
+		when:
+		Optional<String> res = strategy.getFileName(TimeSeriesMapping.Entry.class)
+
+		then:
+		res.present
+		res.get() == "participants/time_series/prefix_time_series_mapping_suffix"
 	}
 }

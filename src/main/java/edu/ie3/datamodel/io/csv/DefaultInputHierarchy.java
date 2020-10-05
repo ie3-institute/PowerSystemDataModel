@@ -25,6 +25,7 @@ import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInp
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
+import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -237,7 +238,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
     TIME_SERIES(
         PARTICIPANTS.relPath + "time_series" + FILE_SEPARATOR,
         false,
-        Stream.of(TimeSeries.class).collect(Collectors.toSet())),
+        Stream.of(TimeSeries.class, TimeSeriesMapping.Entry.class).collect(Collectors.toSet())),
     THERMAL(
         "thermal" + FILE_SEPARATOR,
         false,
