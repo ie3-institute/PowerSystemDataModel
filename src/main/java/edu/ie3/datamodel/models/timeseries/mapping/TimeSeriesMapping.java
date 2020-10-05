@@ -5,15 +5,77 @@
 */
 package edu.ie3.datamodel.models.timeseries.mapping;
 
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.InputEntity;
-import java.util.Objects;
-import java.util.UUID;
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-/**
- * Model class to denote a single mapping between a participant (represented by it's UUID) and the
- * corresponding time series (represented with a UUID as well).
- */
 public class TimeSeriesMapping {
+  private final Map<UUID, IndividualTimeSeries<?>> mapping;
+
+  public TimeSeriesMapping(Map<UUID, IndividualTimeSeries<?>> mapping) {
+    this.mapping = mapping;
+  }
+
+  /**
+   * Builds the mapping from given entries (e.g. from a file) and available time series. If a
+   * referred time series is not available, an {@link IllegalArgumentException} is thrown.
+   *
+   * @param entries Collection of mapping entries
+   * @param timeSeries Available time series
+   */
+  public TimeSeriesMapping(
+      Collection<Entry> entries, Collection<IndividualTimeSeries<?>> timeSeries) {
+    /* Map time series from their uuid to themselves */
+    Map<UUID, IndividualTimeSeries<?>> timeSeriesMap =
+        timeSeries.stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()));
+
+    /* Map from participant UUID to time series */
+    mapping =
+        entries.stream()
+            .collect(
+                Collectors.toMap(
+                    entry -> entry.participant,
+                    entry -> {
+                      UUID tsUuid = entry.timeSeries;
+                      if (timeSeriesMap.containsKey(tsUuid)) return timeSeriesMap.get(tsUuid);
+                      else
+                        throw new IllegalArgumentException(
+                            "Cannot find referenced time series with uuid '" + tsUuid + "'.");
+                    }));
+  }
+
+  /**
+   * Try to get a matching time series for the given participant uuid.
+   *
+   * @param participantUuid UUID of the questioned participant
+   * @return Optional time series, if it is available, empty Optional otherwise
+   */
+  public Optional<IndividualTimeSeries<?>> get(UUID participantUuid) {
+    return Optional.ofNullable(mapping.get(participantUuid));
+  }
+
+  /**
+   * Builds the mapping entries from the given mapping
+   *
+   * @return A List of {@link Entry}s
+   */
+  public List<Entry> buildEntries() {
+    return mapping
+        .entrySet()
+        .parallelStream()
+        .map(
+            mapEntry ->
+                new Entry(UUID.randomUUID(), mapEntry.getKey(), mapEntry.getValue().getUuid()))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Model class to denote a single mapping between a participant (represented by it's UUID) and the
+   * corresponding time series (represented with a UUID as well).
+   */
   public static class Entry extends InputEntity {
 
     private final UUID participant;
@@ -57,8 +119,7 @@ public class TimeSeriesMapping {
           + participant
           + ", timeSeries="
           + timeSeries
-          + "} "
-          + super.toString();
+          + "} ";
     }
   }
 }
