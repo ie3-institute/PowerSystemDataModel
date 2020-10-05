@@ -91,6 +91,18 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
   @Override
   public String toString() {
     return "ChpTypeInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + "capex="
+        + getCapex()
+        + ", opex="
+        + getOpex()
+        + ", sRated="
+        + getsRated()
+        + ", cosphiRated="
+        + getCosPhiRated()
         + "etaEl="
         + etaEl
         + ", etaThermal="

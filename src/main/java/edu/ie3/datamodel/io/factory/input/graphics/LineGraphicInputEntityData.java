@@ -39,7 +39,7 @@ public class LineGraphicInputEntityData extends EntityData {
   public String toString() {
     return "LineGraphicInputEntityData{"
         + "line="
-        + line
+        + line.getUuid()
         + ", fieldsToValues="
         + getFieldsToValues()
         + ", entityClass="

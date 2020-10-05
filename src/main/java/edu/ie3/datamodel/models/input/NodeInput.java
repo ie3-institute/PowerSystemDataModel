@@ -148,7 +148,7 @@ public class NodeInput extends AssetInput {
         + getId()
         + '\''
         + ", operator="
-        + getOperator()
+        + getOperator().getUuid()
         + ", operationTime="
         + getOperationTime()
         + ", vTarget="
