@@ -82,6 +82,10 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   @Override
   public String toString() {
     return "SystemParticipantTypeInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
         + "capex="
         + capex
         + ", opex="

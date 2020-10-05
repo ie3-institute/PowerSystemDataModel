@@ -101,7 +101,25 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
 
   @Override
   public String toString() {
-    return "HpInput{" + "type=" + type + ", thermalBus=" + thermalBus + '}';
+    return "HpInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + getNode().getUuid()
+        + ", qCharacteristics='"
+        + getqCharacteristics()
+        + '\''
+        + ", type="
+        + type.getUuid()
+        + ", thermalBus="
+        + thermalBus.getUuid()
+        + '}';
   }
 
   /**

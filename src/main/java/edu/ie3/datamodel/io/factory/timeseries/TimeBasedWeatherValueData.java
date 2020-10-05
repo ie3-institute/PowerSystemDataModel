@@ -46,4 +46,16 @@ public class TimeBasedWeatherValueData extends EntityData {
     result = 31 * result + (coordinate != null ? coordinate.hashCode() : 0);
     return result;
   }
+
+  @Override
+  public String toString() {
+    return "TimeBasedWeatherValueData{"
+        + "fieldsToAttributes="
+        + getFieldsToValues()
+        + ", entityClass="
+        + getEntityClass()
+        + ", coordinate="
+        + coordinate
+        + '}';
+  }
 }
