@@ -18,6 +18,7 @@ public class NodeValidationUtils extends ValidationUtils {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
+
   /**
    * Validates a node if: <br>
    * - it is not null <br>
