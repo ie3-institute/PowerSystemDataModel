@@ -8,8 +8,11 @@ package edu.ie3.datamodel.io.csv;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
 
 /** A file naming strategy, that takes hierarchic order of sub folders into account. */
@@ -28,6 +31,24 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
   public HierarchicFileNamingStrategy(String prefix, FileHierarchy hierarchy) {
     super(prefix);
     this.hierarchy = hierarchy;
+  }
+
+  @Override
+  public Pattern getIndividualTimeSeriesPattern() {
+    String subDirectory = hierarchy.getSubDirectory(IndividualTimeSeries.class).orElse("");
+    return subDirectory.isEmpty()
+        ? super.getIndividualTimeSeriesPattern()
+        : Pattern.compile(
+            FilenameUtils.concat(subDirectory, super.getIndividualTimeSeriesPattern().pattern()));
+  }
+
+  @Override
+  public Pattern getLoadProfileTimeSeriesPattern() {
+    String subDirectory = hierarchy.getSubDirectory(LoadProfileInput.class).orElse("");
+    return subDirectory.isEmpty()
+        ? super.getLoadProfileTimeSeriesPattern()
+        : Pattern.compile(
+            FilenameUtils.concat(subDirectory, super.getLoadProfileTimeSeriesPattern().pattern()));
   }
 
   /**

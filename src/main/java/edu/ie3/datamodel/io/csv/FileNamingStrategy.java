@@ -50,11 +50,23 @@ public class FileNamingStrategy {
       Pattern.compile("its_(?<uuid>" + UUID_STRING + ")");
 
   /**
+   * Pattern to identify individual time series in this instance of the naming strategy (takes care
+   * of prefix and suffix)
+   */
+  protected final Pattern individualTimeSeriesPattern;
+
+  /**
    * Regex to match the naming convention of a file for a repetitive load profile time series. The
    * profile is accessible via the named capturing group "profile", the uuid by the group "uuid"
    */
   private static final Pattern LOAD_PROFILE_TIME_SERIES =
       Pattern.compile("lpts_(?<profile>[^_]+)_(?<uuid>" + UUID_STRING + ")");
+
+  /**
+   * Pattern to identify load profile time series in this instance of the naming strategy (takes
+   * care of prefix and suffix)
+   */
+  protected final Pattern loadProfileTimeSeriesPattern;
 
   private static final String RES_ENTITY_SUFFIX = "_res";
 
@@ -70,6 +82,21 @@ public class FileNamingStrategy {
   public FileNamingStrategy(String prefix, String suffix) {
     this.prefix = preparePrefix(prefix);
     this.suffix = prepareSuffix(suffix);
+
+    this.individualTimeSeriesPattern =
+        Pattern.compile(
+            prefix
+                + (prefix.isEmpty() ? "" : "_")
+                + INDIVIDUAL_TIME_SERIES_PATTERN.pattern()
+                + (suffix.isEmpty() ? "" : "_")
+                + suffix);
+    this.loadProfileTimeSeriesPattern =
+        Pattern.compile(
+            prefix
+                + (prefix.isEmpty() ? "" : "_")
+                + LOAD_PROFILE_TIME_SERIES.pattern()
+                + (suffix.isEmpty() ? "" : "_")
+                + suffix);
   }
 
   /** Constructor for building the file names without provided files with prefix and suffix */
@@ -104,6 +131,14 @@ public class FileNamingStrategy {
    */
   private static String prepareSuffix(String suffix) {
     return StringUtils.cleanString(suffix).replaceAll("^([^_])", "_$1").toLowerCase();
+  }
+
+  public Pattern getIndividualTimeSeriesPattern() {
+    return individualTimeSeriesPattern;
+  }
+
+  public Pattern getLoadProfileTimeSeriesPattern() {
+    return loadProfileTimeSeriesPattern;
   }
 
   public Optional<String> getFileName(Class<? extends UniqueEntity> cls) {
@@ -164,16 +199,16 @@ public class FileNamingStrategy {
    * @param path Path to the file
    * @return The meeting meta information
    */
-  public static FileNameMetaInformation extractTimeSeriesMetaInformation(Path path) {
+  public FileNameMetaInformation extractTimeSeriesMetaInformation(Path path) {
     /* Extract file name from possibly fully qualified path */
     Path filePath = path.getFileName();
     if (filePath == null)
       throw new IllegalArgumentException("Unable to extract file name from path '" + path + "'.");
     String fileName = filePath.toString().replaceAll("(?:\\.[^\\\\/\\s]+){1,2}$", "");
 
-    if (INDIVIDUAL_TIME_SERIES_PATTERN.matcher(fileName).matches())
+    if (getIndividualTimeSeriesPattern().matcher(fileName).matches())
       return extractIndividualTimesSeriesMetaInformation(fileName);
-    else if (LOAD_PROFILE_TIME_SERIES.matcher(fileName).matches())
+    else if (getLoadProfileTimeSeriesPattern().matcher(fileName).matches())
       return extractLoadProfileTimesSeriesMetaInformation(fileName);
     else
       throw new IllegalArgumentException(
@@ -186,9 +221,9 @@ public class FileNamingStrategy {
    * @param fileName File name to extract information from
    * @return Meta information form individual time series file name
    */
-  private static IndividualTimeSeriesMetaInformation extractIndividualTimesSeriesMetaInformation(
+  private IndividualTimeSeriesMetaInformation extractIndividualTimesSeriesMetaInformation(
       String fileName) {
-    Matcher matcher = INDIVIDUAL_TIME_SERIES_PATTERN.matcher(fileName);
+    Matcher matcher = getIndividualTimeSeriesPattern().matcher(fileName);
     if (!matcher.matches())
       throw new IllegalArgumentException(
           "Cannot extract meta information on individual time series from '" + fileName + "'.");
@@ -202,9 +237,9 @@ public class FileNamingStrategy {
    * @param fileName File name to extract information from
    * @return Meta information form load profile time series file name
    */
-  private static LoadProfileTimeSeriesMetaInformation extractLoadProfileTimesSeriesMetaInformation(
+  private LoadProfileTimeSeriesMetaInformation extractLoadProfileTimesSeriesMetaInformation(
       String fileName) {
-    Matcher matcher = LOAD_PROFILE_TIME_SERIES.matcher(fileName);
+    Matcher matcher = getLoadProfileTimeSeriesPattern().matcher(fileName);
     if (!matcher.matches())
       throw new IllegalArgumentException(
           "Cannot extract meta information on load profile time series from '" + fileName + "'.");

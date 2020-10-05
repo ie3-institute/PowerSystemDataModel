@@ -57,10 +57,11 @@ class FileNamingStrategyTest extends Specification {
 
 	def "The pattern for an individual time series file name actually matches a valid file name and extracts the correct groups"() {
 		given:
+		def fns = new FileNamingStrategy()
 		def validFileName = "its_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 
 		when:
-		def matcher = FileNamingStrategy.INDIVIDUAL_TIME_SERIES_PATTERN.matcher(validFileName)
+		def matcher = fns.individualTimeSeriesPattern.matcher(validFileName)
 
 		then: "the pattern matches"
 		matcher.matches()
@@ -73,10 +74,11 @@ class FileNamingStrategyTest extends Specification {
 
 	def "The pattern for a repetitive load profile time series file name actually matches a valid file name and extracts the correct groups"() {
 		given:
+		def fns = new FileNamingStrategy()
 		def validFileName = "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 
 		when:
-		def matcher = FileNamingStrategy.LOAD_PROFILE_TIME_SERIES.matcher(validFileName)
+		def matcher = fns.loadProfileTimeSeriesPattern.matcher(validFileName)
 
 		then: "the pattern matches"
 		matcher.matches()
@@ -91,10 +93,11 @@ class FileNamingStrategyTest extends Specification {
 
 	def "The FileNamingStrategy throws an Exception, if it is provided a malformed string"() {
 		given:
+		def fns = new FileNamingStrategy()
 		def path = Paths.get("/bla/foo")
 
 		when:
-		FileNamingStrategy.extractTimeSeriesMetaInformation(path)
+		fns.extractTimeSeriesMetaInformation(path)
 
 		then:
 		def ex = thrown(IllegalArgumentException)
@@ -103,10 +106,26 @@ class FileNamingStrategyTest extends Specification {
 
 	def "The FileNamingStrategy extracts correct meta information from a valid individual time series file name"() {
 		given:
+		def fns = new FileNamingStrategy()
 		def path = Paths.get("/bla/foo/its_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv")
 
 		when:
-		def metaInformation = FileNamingStrategy.extractTimeSeriesMetaInformation(path)
+		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
+
+		then:
+		FileNamingStrategy.IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as FileNamingStrategy.IndividualTimeSeriesMetaInformation).with {
+			assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
+		}
+	}
+
+	def "The FileNamingStrategy extracts correct meta information from a valid individual time series file name with pre- and suffix"() {
+		given:
+		def fns = new FileNamingStrategy("prefix", "suffix")
+		def path = Paths.get("/bla/foo/prefix_its_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv")
+
+		when:
+		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
 
 		then:
 		FileNamingStrategy.IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())
@@ -117,10 +136,27 @@ class FileNamingStrategyTest extends Specification {
 
 	def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name"() {
 		given:
+		def fns = new FileNamingStrategy()
 		def path = Paths.get("/bla/foo/lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304.csv")
 
 		when:
-		def metaInformation = FileNamingStrategy.extractTimeSeriesMetaInformation(path)
+		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
+
+		then:
+		FileNamingStrategy.LoadProfileTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as FileNamingStrategy.LoadProfileTimeSeriesMetaInformation).with {
+			assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
+			assert profile == "g3"
+		}
+	}
+
+	def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name with pre- and suffix"() {
+		given:
+		def fns = new FileNamingStrategy("prefix", "suffix")
+		def path = Paths.get("/bla/foo/prefix_lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304_suffix.csv")
+
+		when:
+		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
 
 		then:
 		FileNamingStrategy.LoadProfileTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())

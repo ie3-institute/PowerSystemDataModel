@@ -306,10 +306,10 @@ class HierarchicFileNamingStrategyTest extends Specification {
 
 	def "A FileNamingStrategy without pre- or suffixes should return valid strings for time series mapping"() {
 		given: "a file naming strategy without pre- or suffixes"
-		FileNamingStrategy strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		Optional<String> res = strategy.getFileName(TimeSeriesMapping.Entry.class)
+		def res = strategy.getFileName(TimeSeriesMapping.Entry.class)
 
 		then:
 		res.present
@@ -318,13 +318,35 @@ class HierarchicFileNamingStrategyTest extends Specification {
 
 	def "A FileNamingStrategy with pre- and suffix should return valid strings for time series mapping"() {
 		given: "a file naming strategy without pre- or suffixes"
-		FileNamingStrategy strategy = new HierarchicFileNamingStrategy("prefix", "suffix", defaultHierarchy)
+		def strategy = new HierarchicFileNamingStrategy("prefix", "suffix", defaultHierarchy)
 
 		when:
-		Optional<String> res = strategy.getFileName(TimeSeriesMapping.Entry.class)
+		def res = strategy.getFileName(TimeSeriesMapping.Entry.class)
 
 		then:
 		res.present
 		res.get() == "participants/time_series/prefix_time_series_mapping_suffix"
+	}
+
+	def "A hierarchic file naming strategy returns correct individual time series file name pattern"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+
+		when:
+		def actual = strategy.getIndividualTimeSeriesPattern().pattern()
+
+		then:
+		actual == "participants/time_series/its_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+	}
+
+	def "A hierarchic file naming strategy returns correct load profile time series file name pattern"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+
+		when:
+		def actual = strategy.getLoadProfileTimeSeriesPattern().pattern()
+
+		then:
+		actual == "global/lpts_(?<profile>[^_]+)_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 }
