@@ -251,7 +251,11 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   @Override
   public String toString() {
     return "Transformer3WTypeInput{"
-        + "sRatedA="
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", sRatedA="
         + sRatedA
         + ", sRatedB="
         + sRatedB

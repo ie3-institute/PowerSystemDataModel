@@ -70,4 +70,18 @@ public class NodeAssetInputEntityData extends AssetInputEntityData {
   public int hashCode() {
     return Objects.hash(super.hashCode(), getNode());
   }
+
+  @Override
+  public String toString() {
+    return "NodeAssetInputEntityData{"
+        + "fieldsToValues="
+        + getFieldsToValues()
+        + ", entityClass="
+        + getEntityClass()
+        + ", operatorInput="
+        + getOperatorInput().getUuid()
+        + ", node="
+        + node.getUuid()
+        + '}';
+  }
 }

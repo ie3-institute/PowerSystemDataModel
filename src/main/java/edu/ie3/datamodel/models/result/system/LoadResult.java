@@ -47,4 +47,20 @@ public class LoadResult extends SystemParticipantResult {
       ComparableQuantity<Power> q) {
     super(uuid, timestamp, inputModel, p, q);
   }
+
+  @Override
+  public String toString() {
+    return "LoadResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + '}';
+  }
 }

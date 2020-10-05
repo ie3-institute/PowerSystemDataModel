@@ -73,6 +73,15 @@ public abstract class ThermalUnitResult extends ResultEntity {
 
   @Override
   public String toString() {
-    return "ThermalUnitResult{" + "qDot=" + qDot + '}';
+    return "ThermalUnitResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", qDot="
+        + qDot
+        + '}';
   }
 }

@@ -72,11 +72,11 @@ public class ConnectorInputEntityData extends AssetInputEntityData {
         + ", entityClass="
         + getEntityClass()
         + ", operatorInput="
-        + getOperatorInput()
+        + getOperatorInput().getUuid()
         + ", nodeA="
-        + nodeA
+        + nodeA.getUuid()
         + ", nodeB="
-        + nodeB
+        + nodeB.getUuid()
         + '}';
   }
 }

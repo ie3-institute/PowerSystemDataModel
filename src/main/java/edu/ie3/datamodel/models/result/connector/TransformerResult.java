@@ -92,6 +92,23 @@ public abstract class TransformerResult extends ConnectorResult {
 
   @Override
   public String toString() {
-    return "TransformerResult{" + "tapPos=" + tapPos + '}';
+    return "TransformerResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", iAMag="
+        + getiAMag()
+        + ", iAAng="
+        + getiAAng()
+        + ", iBMag="
+        + getiBMag()
+        + ", iBAng="
+        + getiBAng()
+        + ", tapPos="
+        + tapPos
+        + '}';
   }
 }
