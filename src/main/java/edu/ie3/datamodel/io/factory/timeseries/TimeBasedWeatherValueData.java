@@ -5,13 +5,12 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
+import edu.ie3.datamodel.models.value.WeatherValue;
 import java.util.Map;
 import java.util.Objects;
 import org.locationtech.jts.geom.Point;
 
-public class TimeBasedWeatherValueData extends EntityData {
+public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> {
 
   private final Point coordinate;
 
@@ -22,7 +21,7 @@ public class TimeBasedWeatherValueData extends EntityData {
    * @param coordinate coordinate for this WeatherValue
    */
   public TimeBasedWeatherValueData(Map<String, String> fieldsToAttributes, Point coordinate) {
-    super(fieldsToAttributes, TimeBasedValue.class);
+    super(fieldsToAttributes, WeatherValue.class);
     this.coordinate = coordinate;
   }
 
@@ -51,9 +50,11 @@ public class TimeBasedWeatherValueData extends EntityData {
   public String toString() {
     return "TimeBasedWeatherValueData{"
         + "fieldsToAttributes="
-        + getFieldsToValues()
+        + fieldsToAttributes
         + ", entityClass="
-        + getEntityClass()
+        + entityClass
+        + "valueClass="
+        + valueClass
         + ", coordinate="
         + coordinate
         + '}';

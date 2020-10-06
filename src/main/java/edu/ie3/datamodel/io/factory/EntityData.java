@@ -36,8 +36,8 @@ public abstract class EntityData {
   private static final Logger logger = LoggerFactory.getLogger(EntityData.class);
   private static final GeoJsonReader geoJsonReader = new GeoJsonReader();
 
-  private final Map<String, String> fieldsToAttributes;
-  private final Class<? extends UniqueEntity> entityClass;
+  protected final Map<String, String> fieldsToAttributes;
+  protected final Class<? extends UniqueEntity> entityClass;
 
   /**
    * Creates a new EntityData object
