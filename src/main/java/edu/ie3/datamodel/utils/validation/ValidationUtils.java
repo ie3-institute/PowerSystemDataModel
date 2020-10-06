@@ -32,7 +32,7 @@ public class ValidationUtils {
 
   /**
    * This is a "distribution" method, that forwards the check request to specific implementations to
-   * fulfill the checking task, based on the class of the given object. If an not yet know class is
+   * fulfill the checking task, based on the class of the given object. If a not yet know class is
    * handed in, a {@link ValidationException} is thrown.
    *
    * <p>TODO @ Niklas: Fill with other method calls, as collection of validation utils increases
@@ -54,7 +54,7 @@ public class ValidationUtils {
       SystemParticipantValidationUtils.check((SystemParticipantInput) obj);
     } else if (ThermalUnitInput.class.isAssignableFrom(obj.getClass())) {
       ThermalUnitValidationUtils.check((ThermalUnitInput) obj);
-      //TODO NSteffan: Missing objects to check? -> OperatorInput, ...TypeInputs?
+      //TODO NSteffan: Missing objects to check? -> OperatorInput, RandomLoadParameters?
     } else {
       throw new ValidationException(
           "Cannot validate object of class '"

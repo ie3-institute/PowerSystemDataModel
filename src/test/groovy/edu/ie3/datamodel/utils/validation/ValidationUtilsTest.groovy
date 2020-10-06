@@ -100,5 +100,6 @@ class ValidationUtilsTest extends Specification {
 		then:
 		NullPointerException ex = thrown()
 		/* TODO @ Niklas: This test doesn't do anything. Please add a test logic. */
+		System.out.println"Test 123";
 	}
 }

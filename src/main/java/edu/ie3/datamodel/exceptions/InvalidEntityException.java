@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 
 /** Is thrown, when a checked entity is illegal and thus not usable */
 public class InvalidEntityException extends ValidationException {
+
   public InvalidEntityException(String faultDescription, UniqueEntity invalidEntity) {
     super("Entity is invalid because of: " + faultDescription + " [" + invalidEntity + "]");
   }
