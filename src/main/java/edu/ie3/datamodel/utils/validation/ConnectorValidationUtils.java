@@ -13,6 +13,12 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import javax.measure.Quantity;
 
 public class ConnectorValidationUtils extends ValidationUtils {
+
+  /** Private Constructor as this class is not meant to be instantiated */
+  private ConnectorValidationUtils() {
+    throw new IllegalStateException("Don't try and instantiate a Utility class.");
+  }
+
   /**
    * Validates a connector if: <br>
    * - it is not null <br>
@@ -66,7 +72,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (line.getLength() == null)
       throw new InvalidEntityException("line length of line {} is null", line);
     //Check if line length is positive value
-    if (line.getLength().getValue().doubleValue() <= 0)
+    if (line.getLength().getValue().doubleValue() <= 0d)
       throw new InvalidEntityException("the line {} has a negative length", line);
           //TODO: NSteffan - alternatively work with detectZeroOrNegativeQuantities?
           // detectZeroOrNegativeQuantities(new Quantity<?>[] {line.getLength()}, line);

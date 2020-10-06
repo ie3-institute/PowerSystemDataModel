@@ -18,36 +18,45 @@ public class NodeValidationUtils extends ValidationUtils {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
-
   /**
    * Validates a node if: <br>
    * - it is not null <br>
+   * - operator is not null <br>
+   * - voltage level is not null and valid <br>
+   * - vTarget is not null and valid <br>
    * - subnet is not null <br>
-   * - vRated and vTarget are neither null nor 0
+   * - geoPosition is not null
    *
    * @param node Node to validate
    */
   public static void check(NodeInput node) {
-
-    // if (node == null) throw new NullPointerException("Expected a node, but got nothing. :-(");
-
+    //Check if null
     checkNonNull(node, "a node");
+    //Check if operator is null
+    if (node.getOperator() == null)
+      throw new InvalidEntityException("No operator assigned", node);
+    //Check if valid voltage level
     try {
       checkVoltageLevel(node.getVoltLvl());
     } catch (VoltageLevelException e) {
       throw new InvalidEntityException("Element has invalid voltage level", node);
     }
-
+    //Check if target voltage is null or invalid
     if (node.getvTarget() == null)
       throw new InvalidEntityException("vRated or vTarget is null", node);
     if (node.getvTarget().getValue().doubleValue() <= 0d)
       throw new UnsafeEntityException("vTarget is not a positive value", node);
-
+    //Check if subnet is valid
     if (node.getSubnet() <= 0)
       throw new InvalidEntityException("Subnet can't be zero or negative", node);
-
+    //Check if geoPosition is null
+    if (node.getGeoPosition() == null)
+      throw new InvalidEntityException("Node has no GeoPosition", node);
+    //TODO: @NSteffan - necessary to check operator ("at least dummy")? operationTime? slack?
   }
 
+
+  //TODO @NSteffan: separate ValidationUtils for Voltage Level?
   /**
    * Validates a voltage level
    *
