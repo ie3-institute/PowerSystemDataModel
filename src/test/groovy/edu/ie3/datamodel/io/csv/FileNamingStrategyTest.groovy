@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.csv
 
+import edu.ie3.datamodel.io.factory.timeseries.TimeBasedValueData
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -33,12 +34,18 @@ import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
+import edu.ie3.datamodel.models.value.EnergyPriceValue
+import edu.ie3.datamodel.models.value.PValue
+import edu.ie3.util.quantities.dep.PowerSystemUnits
 import spock.lang.Specification
+import tec.uom.se.quantity.Quantities
 
 import java.nio.file.Paths
+import java.time.ZonedDateTime
 import java.util.regex.Pattern
 
 class FileNamingStrategyTest extends Specification {
@@ -58,7 +65,7 @@ class FileNamingStrategyTest extends Specification {
 	def "The pattern for an individual time series file name actually matches a valid file name and extracts the correct groups"() {
 		given:
 		def fns = new FileNamingStrategy()
-		def validFileName = "its_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
+		def validFileName = "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 
 		when:
 		def matcher = fns.individualTimeSeriesPattern.matcher(validFileName)
@@ -67,8 +74,10 @@ class FileNamingStrategyTest extends Specification {
 		matcher.matches()
 
 		then: "it also has correct capturing groups"
-		matcher.groupCount() == 1
-		matcher.group(1) == "4881fda2-bcee-4f4f-a5bb-6a09bf785276"
+		matcher.groupCount() == 2
+		matcher.group(1) == "c"
+		matcher.group("columnScheme") == "c"
+		matcher.group(2) == "4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 		matcher.group("uuid") == "4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 	}
 
@@ -107,7 +116,7 @@ class FileNamingStrategyTest extends Specification {
 	def "The FileNamingStrategy extracts correct meta information from a valid individual time series file name"() {
 		given:
 		def fns = new FileNamingStrategy()
-		def path = Paths.get("/bla/foo/its_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv")
+		def path = Paths.get(pathString)
 
 		when:
 		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
@@ -116,13 +125,24 @@ class FileNamingStrategyTest extends Specification {
 		FileNamingStrategy.IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())
 		(metaInformation as FileNamingStrategy.IndividualTimeSeriesMetaInformation).with {
 			assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
+			assert it.columnScheme == expectedColumnScheme
 		}
+
+		where:
+		pathString || expectedColumnScheme
+		"/bla/foo/its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ENERGY_PRICE
+		"/bla/foo/its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ACTIVE_POWER
+		"/bla/foo/its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.APPARENT_POWER
+		"/bla/foo/its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.HEAT_DEMAND
+		"/bla/foo/its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
+		"/bla/foo/its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
+		"/bla/foo/its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.WEATHER
 	}
 
 	def "The FileNamingStrategy extracts correct meta information from a valid individual time series file name with pre- and suffix"() {
 		given:
 		def fns = new FileNamingStrategy("prefix", "suffix")
-		def path = Paths.get("/bla/foo/prefix_its_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv")
+		def path = Paths.get(pathString)
 
 		when:
 		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
@@ -131,7 +151,31 @@ class FileNamingStrategyTest extends Specification {
 		FileNamingStrategy.IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())
 		(metaInformation as FileNamingStrategy.IndividualTimeSeriesMetaInformation).with {
 			assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
+			assert it.columnScheme == expectedColumnScheme
 		}
+
+		where:
+		pathString || expectedColumnScheme
+		"/bla/foo/prefix_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ENERGY_PRICE
+		"/bla/foo/prefix_its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ACTIVE_POWER
+		"/bla/foo/prefix_its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.APPARENT_POWER
+		"/bla/foo/prefix_its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.HEAT_DEMAND
+		"/bla/foo/prefix_its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
+		"/bla/foo/prefix_its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
+		"/bla/foo/prefix_its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.WEATHER
+	}
+
+	def "The FileNamingStrategy throw an IllegalArgumentException, if the column scheme is malformed."() {
+		given:
+		def fns = new FileNamingStrategy()
+		def path = Paths.get("/bla/foo/its_whoops_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv")
+
+		when:
+		fns.extractTimeSeriesMetaInformation(path)
+
+		then:
+		def ex = thrown(IllegalArgumentException)
+		ex.message == "Cannot parse 'whoops' to valid column scheme."
 	}
 
 	def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name"() {
@@ -411,8 +455,11 @@ class FileNamingStrategyTest extends Specification {
 	def "A FileNamingStrategy without pre- or suffix should return valid file name for individual time series" () {
 		given:
 		FileNamingStrategy strategy = new FileNamingStrategy()
+		def entries = new TreeSet()
+		entries.add(new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR))))
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> uuid
+		timeSeries.entries >> entries
 
 		when:
 		Optional<String> actual = strategy.getFileName(timeSeries)
@@ -423,14 +470,17 @@ class FileNamingStrategyTest extends Specification {
 
 		where:
 		clazz                || uuid 													|| expectedFileName
-		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "its_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
+		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 	}
 
 	def "A FileNamingStrategy with pre- or suffix should return valid file name for individual time series" () {
 		given:
 		FileNamingStrategy strategy = new FileNamingStrategy("aa", "zz")
+		def entries = new TreeSet()
+		entries.add(new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR))))
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> uuid
+		timeSeries.entries >> entries
 
 		when:
 		Optional<String> actual = strategy.getFileName(timeSeries)
@@ -441,7 +491,7 @@ class FileNamingStrategyTest extends Specification {
 
 		where:
 		clazz                || uuid 													|| expectedFileName
-		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_its_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
+		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
 	}
 
 	def "A FileNamingStrategy without pre- or suffix should return valid file name for load profile input" () {

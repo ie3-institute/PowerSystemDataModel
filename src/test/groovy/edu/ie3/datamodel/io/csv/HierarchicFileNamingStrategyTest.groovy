@@ -41,13 +41,18 @@ import edu.ie3.datamodel.models.result.system.WecResult
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
+import edu.ie3.datamodel.models.value.EnergyPriceValue
+import edu.ie3.util.quantities.dep.PowerSystemUnits
 import spock.lang.Shared
 import spock.lang.Specification
+import tec.uom.se.quantity.Quantities
 
 import java.nio.file.Files
+import java.time.ZonedDateTime
 
 class HierarchicFileNamingStrategyTest extends Specification {
 	@Shared
@@ -240,8 +245,11 @@ class HierarchicFileNamingStrategyTest extends Specification {
 	def "A FileNamingStrategy without pre- or suffix should return valid file name for individual time series"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
-		def timeSeries = Mock(IndividualTimeSeries)
-		timeSeries.getUuid() >> uuid
+		def entries = new TreeSet()
+		entries.add(new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR))))
+		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
+		timeSeries.uuid >> uuid
+		timeSeries.entries >> entries
 
 		when:
 		def actual = strategy.getFileName(timeSeries)
@@ -252,14 +260,17 @@ class HierarchicFileNamingStrategyTest extends Specification {
 
 		where:
 		clazz                || uuid                                                    || expectedFileName
-		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "participants/time_series/its_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
+		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "participants/time_series/its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 	}
 
 	def "A FileNamingStrategy with pre- or suffix should return valid file name for individual time series"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy("aa", "zz", defaultHierarchy)
-		def timeSeries = Mock(IndividualTimeSeries)
-		timeSeries.getUuid() >> uuid
+		def entries = new TreeSet()
+		entries.add(new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR))))
+		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
+		timeSeries.uuid >> uuid
+		timeSeries.entries >> entries
 
 		when:
 		def actual = strategy.getFileName(timeSeries)
@@ -270,7 +281,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 
 		where:
 		clazz                || uuid                                                    || expectedFileName
-		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "participants/time_series/aa_its_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
+		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "participants/time_series/aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
 	}
 
 	def "A FileNamingStrategy without pre- or suffix should return valid file name for load profile input"() {
@@ -336,7 +347,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def actual = strategy.getIndividualTimeSeriesPattern().pattern()
 
 		then:
-		actual == "participants/time_series/its_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+		actual == "participants/time_series/its_(?<columnScheme>[a-zA-Z]+)_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 
 	def "A hierarchic file naming strategy returns correct load profile time series file name pattern"() {

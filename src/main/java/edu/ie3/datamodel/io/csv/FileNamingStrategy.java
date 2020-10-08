@@ -18,9 +18,10 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
-import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.StringUtils;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,11 +44,12 @@ public class FileNamingStrategy {
   private static final String UUID_STRING =
       "[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}";
   /**
-   * Regex to match the naming convention of a file for an individual time series. The time series'
-   * UUID is accessible by the named capturing group "uuid"
+   * Regex to match the naming convention of a file for an individual time series. The column scheme
+   * is accessible via the named capturing group "columnScheme". The time series' UUID is accessible
+   * by the named capturing group "uuid"
    */
   private static final Pattern INDIVIDUAL_TIME_SERIES_PATTERN =
-      Pattern.compile("its_(?<uuid>" + UUID_STRING + ")");
+      Pattern.compile("its_(?<columnScheme>[a-zA-Z]+)_(?<uuid>" + UUID_STRING + ")");
 
   /**
    * Pattern to identify individual time series in this instance of the naming strategy (takes care
@@ -175,8 +177,28 @@ public class FileNamingStrategy {
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<String> getFileName(T timeSeries) {
     if (timeSeries instanceof IndividualTimeSeries) {
-      return Optional.of(
-          prefix.concat("its").concat("_").concat(timeSeries.getUuid().toString()).concat(suffix));
+      Optional<E> maybeFirstElement = timeSeries.getEntries().stream().findFirst();
+      if (maybeFirstElement.isPresent()) {
+        Class<? extends Value> valueClass = maybeFirstElement.get().getValue().getClass();
+        Optional<IndividualTimeSeriesMetaInformation.ColumnScheme> mayBeColumnScheme =
+            IndividualTimeSeriesMetaInformation.ColumnScheme.parse(valueClass);
+        if (mayBeColumnScheme.isPresent()) {
+          return Optional.of(
+              prefix
+                  .concat("its")
+                  .concat("_")
+                  .concat(mayBeColumnScheme.get().getScheme())
+                  .concat("_")
+                  .concat(timeSeries.getUuid().toString())
+                  .concat(suffix));
+        } else {
+          logger.error("Unsupported content of time series {}", timeSeries);
+          return Optional.empty();
+        }
+      } else {
+        logger.error("Unable to determine content of time series {}", timeSeries);
+        return Optional.empty();
+      }
     } else if (timeSeries instanceof LoadProfileInput) {
       LoadProfileInput loadProfileInput = (LoadProfileInput) timeSeries;
       return Optional.of(
@@ -228,7 +250,16 @@ public class FileNamingStrategy {
       throw new IllegalArgumentException(
           "Cannot extract meta information on individual time series from '" + fileName + "'.");
 
-    return new IndividualTimeSeriesMetaInformation(UUID.fromString(matcher.group("uuid")));
+    String columnSchemeKey = matcher.group("columnScheme");
+    IndividualTimeSeriesMetaInformation.ColumnScheme columnScheme =
+        IndividualTimeSeriesMetaInformation.ColumnScheme.parse(columnSchemeKey)
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "Cannot parse '" + columnSchemeKey + "' to valid column scheme."));
+
+    return new IndividualTimeSeriesMetaInformation(
+        UUID.fromString(matcher.group("uuid")), columnScheme);
   }
 
   /**
@@ -369,14 +400,60 @@ public class FileNamingStrategy {
   public interface FileNameMetaInformation {}
 
   public static class IndividualTimeSeriesMetaInformation implements FileNameMetaInformation {
-    private final UUID uuid;
+    public enum ColumnScheme {
+      ENERGY_PRICE("c"),
+      ACTIVE_POWER("p"),
+      APPARENT_POWER("pq"),
+      HEAT_DEMAND("h"),
+      ACTIVE_POWER_AND_HEAT_DEMAND("ph"),
+      APPARENT_POWER_AND_HEAT_DEMAND("pqh"),
+      WEATHER("weather");
 
-    public IndividualTimeSeriesMetaInformation(UUID uuid) {
+      private final String scheme;
+
+      ColumnScheme(String scheme) {
+        this.scheme = scheme;
+      }
+
+      public String getScheme() {
+        return scheme;
+      }
+
+      public static Optional<ColumnScheme> parse(String key) {
+        String cleanString = StringUtils.cleanString(key).toLowerCase();
+        return Arrays.stream(ColumnScheme.values())
+            .filter(entry -> Objects.equals(entry.scheme, cleanString))
+            .findFirst();
+      }
+
+      public static <V extends Value> Optional<ColumnScheme> parse(Class<V> valueClass) {
+        if (EnergyPriceValue.class.isAssignableFrom(valueClass)) return Optional.of(ENERGY_PRICE);
+        if (PValue.class.isAssignableFrom(valueClass)) return Optional.of(ACTIVE_POWER);
+        if (SValue.class.isAssignableFrom(valueClass)) return Optional.of(APPARENT_POWER);
+        if (HeatDemandValue.class.isAssignableFrom(valueClass)) return Optional.of(HEAT_DEMAND);
+        if (HeatAndPValue.class.isAssignableFrom(valueClass))
+          return Optional.of(ACTIVE_POWER_AND_HEAT_DEMAND);
+        if (HeatAndSValue.class.isAssignableFrom(valueClass))
+          return Optional.of(APPARENT_POWER_AND_HEAT_DEMAND);
+        if (WeatherValue.class.isAssignableFrom(valueClass)) return Optional.of(WEATHER);
+        return Optional.empty();
+      }
+    }
+
+    private final UUID uuid;
+    private final ColumnScheme columnScheme;
+
+    public IndividualTimeSeriesMetaInformation(UUID uuid, ColumnScheme columnScheme) {
       this.uuid = uuid;
+      this.columnScheme = columnScheme;
     }
 
     public UUID getUuid() {
       return uuid;
+    }
+
+    public ColumnScheme getColumnScheme() {
+      return columnScheme;
     }
 
     @Override
@@ -384,12 +461,12 @@ public class FileNamingStrategy {
       if (this == o) return true;
       if (!(o instanceof IndividualTimeSeriesMetaInformation)) return false;
       IndividualTimeSeriesMetaInformation that = (IndividualTimeSeriesMetaInformation) o;
-      return uuid.equals(that.uuid);
+      return uuid.equals(that.uuid) && columnScheme == that.columnScheme;
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(uuid);
+      return Objects.hash(uuid, columnScheme);
     }
   }
 
