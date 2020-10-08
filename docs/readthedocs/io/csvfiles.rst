@@ -81,13 +81,48 @@ Input
 Time Series
 -----------
 
-+-------------------------------------------------------+-------------------------------------------+
-| Model                                                 | File Name                                 |
-+=======================================================+===========================================+
-| :ref:`individual time series<individual_time_series>` | *prefix_*\ its\ *_UUID_suffix*            |
-+-------------------------------------------------------+-------------------------------------------+
-| :ref:`load profile input<repetitive_time_series>`     | *prefix_*\ rts\ *_profileKey_UUID_suffix* |
-+-------------------------------------------------------+-------------------------------------------+
++-------------------------------------------------------+---------------------------------------------+
+| Model                                                 | File Name                                   |
++=======================================================+=============================================+
+| :ref:`individual time series<individual_time_series>` | *prefix_*\ its\ *_columnScheme_UUID_suffix* |
++-------------------------------------------------------+---------------------------------------------+
+| :ref:`load profile input<repetitive_time_series>`     | *prefix_*\ rts\ *_profileKey_UUID_suffix*   |
++-------------------------------------------------------+---------------------------------------------+
+
+Let's spend a few more words on the individual time series:
+Those files are meant to carry different types of content - one might give information about wholesale market prices,
+the other is a record of power values provided by a real system.
+To be able to understand, what's inside of the file, the *columnScheme* part of the file name gives insight of it's
+content.
+The following keys are supported until now:
+
++---------+----------------------------------------------------------------------------------------------------------------+
+| Key     | Information and supported head line                                                                            |
++=========+================================================================================================================+
+| c       | | An energy price (e.g. in €/MWh; c stands for charge".                                                        |
+|         | | Permissible head line: ``uuid,time,price``                                                                   |
++---------+----------------------------------------------------------------------------------------------------------------+
+| p       | | Active power                                                                                                 |
+|         | | Permissible head line: ``uuid,time,p``                                                                       |
++---------+----------------------------------------------------------------------------------------------------------------+
+| pq      | | Active and reactive power                                                                                    |
+|         | | Permissible head line: ``uuid,time,p,q``                                                                     |
++---------+----------------------------------------------------------------------------------------------------------------+
+| h       | | Heat power demand                                                                                            |
+|         | | Permissible head line: ``uuid,time,h``                                                                       |
++---------+----------------------------------------------------------------------------------------------------------------+
+| ph      | | Active and heat power                                                                                        |
+|         | | Permissible head line: ``uuid,time,p,h``                                                                     |
++---------+----------------------------------------------------------------------------------------------------------------+
+| pqh     | | Active, reactive and heat power                                                                              |
+|         | | Permissible head line: ``uuid,time,p,q,h``                                                                   |
++---------+----------------------------------------------------------------------------------------------------------------+
+| weather | | Weather information                                                                                          |
+|         | | Permissible head line:                                                                                       |
+|         | |     ``uuid,time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction`` |
++---------+----------------------------------------------------------------------------------------------------------------+
+
+As the ``uuid`` and ``time`` field are mandatory, they are not mentioned explicitly, here.
 
 Results
 -------
