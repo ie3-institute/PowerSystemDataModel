@@ -57,6 +57,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       checkPv((PvInput) systemParticipant);
     if (StorageInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkStorage((StorageInput) systemParticipant);
+    if (WecInput.class.isAssignableFrom(systemParticipant.getClass()))
+      checkWec((WecInput) systemParticipant);
   }
 
   //TODO @NSteffan: Ist das eine gute (und funktionierende) Lösung für weniger Redundanz?
