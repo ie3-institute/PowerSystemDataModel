@@ -12,7 +12,10 @@ import edu.ie3.datamodel.models.value.Value;
 import java.util.Optional;
 import org.apache.commons.io.FilenameUtils;
 
-/** A file naming strategy, that takes hierarchic order of sub folders into account. */
+/**
+ * A file naming strategy, that takes hierarchic order of sub folders into account. For the standard
+ * structure that can be found in the documentation {@link DefaultInputHierarchy} can be used
+ */
 public class HierarchicFileNamingStrategy extends FileNamingStrategy {
   private final FileHierarchy hierarchy;
 
