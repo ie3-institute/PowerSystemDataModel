@@ -19,7 +19,7 @@ public class TimeSeriesMappingFactory
     extends EntityFactory<TimeSeriesMapping.Entry, SimpleEntityData> {
   private static final String UUID = "uuid";
   private static final String PARTICIPANT = "participant";
-  private static final String TIME_SERIES = "timeseries";
+  private static final String TIME_SERIES = "timeSeries";
 
   public TimeSeriesMappingFactory() {
     super(TimeSeriesMapping.Entry.class);
