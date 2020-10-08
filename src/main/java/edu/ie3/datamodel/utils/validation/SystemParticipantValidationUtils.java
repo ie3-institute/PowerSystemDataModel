@@ -456,4 +456,60 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     //TODO @NSteffan: Einschränkung < / <= 0 richtig?
   }
 
+  /**
+   * Validates a WecInput if: <br>
+   * - {@link SystemParticipantValidationUtils#checkWecType(WecTypeInput)} confirms a
+   * valid type properties
+   *
+   * @param wecInput WecInput to validate
+   */
+  public static void checkWec(WecInput wecInput) {
+    //Check WecType
+    checkWecType(wecInput.getType());
+  }
+
+  /**
+   * Validates a WecTypeInput if: <br>
+   * - it is not null <br>
+   * - common system participants values (capex, opex, sRated) are null or negative <br>
+   * - its rated power factor is between 0 and 1 <br>
+   * - its cpCharacteristic is not null <br>
+   * - its efficiency of the assets converter is not null and between 0% and 100% <br>
+   * - its rotor area is not null and positive <br>
+   * - its height of the rotor hub is not null and positive
+   *
+   * @param wecTypeInput WecTypeInput to validate
+   */
+  public static void checkWecType(WecTypeInput wecTypeInput) {
+    //Check if null
+    checkNonNull(wecTypeInput, "a wecInput type");
+    //Check if any common values of system participants are null or negative
+    try {
+      checkType(wecTypeInput);
+    } catch (InvalidEntityException e) {
+      throw new InvalidEntityException("At least one value of wecTypeInput is null", wecTypeInput);
+    }
+    //Check if rated power factor is between 0 and 1
+    if (wecTypeInput.getCosPhiRated() < 0d || wecTypeInput.getCosPhiRated() > 1d)
+      throw new InvalidEntityException("Rated power factor of wecTypeInput must be between zero and one", wecTypeInput);
+    //Check if any values are null
+    if ((wecTypeInput.getCpCharacteristic() == null)
+            || (wecTypeInput.getEtaConv() == null)
+            || (wecTypeInput.getRotorArea() == null)
+            || (wecTypeInput.getHubHeight() == null))
+      throw new InvalidEntityException("at least one value of wecTypeInput is null", wecTypeInput);
+    //TODO NSteffan: Check of CpCharacteristics necessary/how?
+    //Check if efficiency of the assets converter is between 0% and 100%
+    if (wecTypeInput.getEtaConv().getValue().doubleValue() < 0d
+            || wecTypeInput.getEtaConv().getValue().doubleValue() > 100d)
+      throw new InvalidEntityException("Efficiency of the assets converter must be between 0% and 100%", wecTypeInput);
+    //Check if rotorArea or hubHeight are zero or negative
+    detectZeroOrNegativeQuantities(
+            new Quantity<?>[] {
+                    wecTypeInput.getRotorArea(),
+                    wecTypeInput.getHubHeight()
+            },
+            wecTypeInput);
+  }
+
 }
