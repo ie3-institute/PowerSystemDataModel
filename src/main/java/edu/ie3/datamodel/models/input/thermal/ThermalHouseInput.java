@@ -83,16 +83,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ThermalHouseInput that = (ThermalHouseInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(ethLosses)) {
-      if (QuantityUtil.quantityIsEmpty(that.ethLosses)) return false;
-      if (!ethLosses.isEquivalentTo(that.ethLosses)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.ethLosses)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(ethCapa)) {
-      if (QuantityUtil.quantityIsEmpty(that.ethCapa)) return false;
-      return ethCapa.isEquivalentTo(that.ethCapa);
-    } else return QuantityUtil.quantityIsEmpty(that.ethCapa);
+    return QuantityUtil.isTheSameConsideringEmpty(ethLosses, that.ethLosses)
+        && QuantityUtil.isTheSameConsideringEmpty(ethCapa, that.ethCapa);
   }
 
   @Override

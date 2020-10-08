@@ -83,15 +83,8 @@ public class NodeResult extends ResultEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     NodeResult that = (NodeResult) o;
-    if (!QuantityUtil.quantityIsEmpty(vMag)) {
-      if (QuantityUtil.quantityIsEmpty(that.vMag)) return false;
-      if (!vMag.isEquivalentTo(that.vMag)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.vMag)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(vAng)) {
-      if (QuantityUtil.quantityIsEmpty(that.vAng)) return false;
-      return vAng.isEquivalentTo(that.vAng);
-    } else return QuantityUtil.quantityIsEmpty(that.vAng);
+    return QuantityUtil.isTheSameConsideringEmpty(vMag, that.vMag)
+        && QuantityUtil.isTheSameConsideringEmpty(vAng, that.vAng);
   }
 
   @Override

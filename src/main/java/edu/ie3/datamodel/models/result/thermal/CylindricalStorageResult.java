@@ -76,10 +76,7 @@ public class CylindricalStorageResult extends ThermalStorageResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     CylindricalStorageResult that = (CylindricalStorageResult) o;
-    if (!QuantityUtil.quantityIsEmpty(fillLevel)) {
-      if (QuantityUtil.quantityIsEmpty(that.fillLevel)) return false;
-      return fillLevel.isEquivalentTo(that.fillLevel);
-    } else return QuantityUtil.quantityIsEmpty(that.fillLevel);
+    return QuantityUtil.isTheSameConsideringEmpty(fillLevel, that.fillLevel);
   }
 
   @Override

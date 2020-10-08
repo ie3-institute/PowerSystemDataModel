@@ -42,15 +42,8 @@ public class IrradiationValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     IrradiationValue that = (IrradiationValue) o;
-    if (!QuantityUtil.quantityIsEmpty(directIrradiation)) {
-      if (QuantityUtil.quantityIsEmpty(that.directIrradiation)) return false;
-      if (!directIrradiation.isEquivalentTo(that.directIrradiation)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.directIrradiation)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(diffuseIrradiation)) {
-      if (QuantityUtil.quantityIsEmpty(that.diffuseIrradiation)) return false;
-      return diffuseIrradiation.isEquivalentTo(that.diffuseIrradiation);
-    } else return QuantityUtil.quantityIsEmpty(that.diffuseIrradiation);
+    return QuantityUtil.isTheSameConsideringEmpty(directIrradiation, that.directIrradiation)
+        && QuantityUtil.isTheSameConsideringEmpty(diffuseIrradiation, that.diffuseIrradiation);
   }
 
   @Override

@@ -95,8 +95,8 @@ class SystemParticipantTestData {
 
 	// PV
 	private static final double albedo = 0.20000000298023224
-	private static final ComparableQuantity<Angle> azimuth = Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM)
-	private static final ComparableQuantity<Angle> height = Quantities.getQuantity(41.01871871948242, DEGREE_GEOM)
+	private static final ComparableQuantity<Angle> azimuth = Quantities.getQuantity(-8.926613807678223d, DEGREE_GEOM)
+	private static final ComparableQuantity<Angle> height = Quantities.getQuantity(41.01871871948242d, DEGREE_GEOM)
 	private static double kT = 1
 	private static double kG = 0.8999999761581421
 	public static final PvInput pvInput = new PvInput(

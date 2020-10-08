@@ -72,10 +72,7 @@ public class EvResult extends SystemParticipantResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     EvResult evResult = (EvResult) o;
-    if (!QuantityUtil.quantityIsEmpty(soc)) {
-      if (QuantityUtil.quantityIsEmpty(evResult.soc)) return false;
-      return soc.isEquivalentTo(evResult.soc);
-    } else return QuantityUtil.quantityIsEmpty(evResult.soc);
+    return QuantityUtil.isTheSameConsideringEmpty(soc, evResult.soc);
   }
 
   @Override

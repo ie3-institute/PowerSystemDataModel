@@ -64,10 +64,7 @@ public abstract class ThermalUnitResult extends ResultEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ThermalUnitResult that = (ThermalUnitResult) o;
-    if (!QuantityUtil.quantityIsEmpty(qDot)) {
-      if (QuantityUtil.quantityIsEmpty(that.qDot)) return false;
-      return qDot.isEquivalentTo(that.qDot);
-    } else return QuantityUtil.quantityIsEmpty(that.qDot);
+    return QuantityUtil.isTheSameConsideringEmpty(qDot, that.qDot);
   }
 
   @Override

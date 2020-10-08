@@ -30,10 +30,7 @@ public class TemperatureValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     TemperatureValue that = (TemperatureValue) o;
-    if (!QuantityUtil.quantityIsEmpty(temperature)) {
-      if (QuantityUtil.quantityIsEmpty(that.temperature)) return false;
-      return temperature.isEquivalentTo(that.temperature);
-    } else return QuantityUtil.quantityIsEmpty(that.temperature);
+    return QuantityUtil.isTheSameConsideringEmpty(temperature, that.temperature);
   }
 
   @Override

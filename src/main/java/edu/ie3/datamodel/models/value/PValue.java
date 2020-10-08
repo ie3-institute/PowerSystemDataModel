@@ -31,10 +31,7 @@ public class PValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     PValue that = (PValue) o;
-    if (!QuantityUtil.quantityIsEmpty(p)) {
-      if (QuantityUtil.quantityIsEmpty(that.p)) return false;
-      return p.isEquivalentTo(that.p);
-    } else return QuantityUtil.quantityIsEmpty(that.p);
+    return QuantityUtil.isTheSameConsideringEmpty(p, that.p);
   }
 
   @Override

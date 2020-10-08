@@ -37,10 +37,7 @@ public class SValue extends PValue {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     SValue that = (SValue) o;
-    if (!QuantityUtil.quantityIsEmpty(q)) {
-      if (QuantityUtil.quantityIsEmpty(that.q)) return false;
-      return q.isEquivalentTo(that.q);
-    } else return QuantityUtil.quantityIsEmpty(that.q);
+    return QuantityUtil.isTheSameConsideringEmpty(q, that.q);
   }
 
   @Override

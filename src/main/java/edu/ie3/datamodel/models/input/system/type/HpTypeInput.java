@@ -51,11 +51,7 @@ public class HpTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HpTypeInput that = (HpTypeInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(pThermal)) {
-      if (QuantityUtil.quantityIsEmpty(that.pThermal)) return false;
-      return pThermal.isEquivalentTo(that.pThermal);
-    } else return QuantityUtil.quantityIsEmpty(that.pThermal);
+    return QuantityUtil.isTheSameConsideringEmpty(pThermal, that.pThermal);
   }
 
   @Override

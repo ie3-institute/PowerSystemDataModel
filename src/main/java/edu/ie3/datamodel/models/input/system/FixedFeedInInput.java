@@ -89,10 +89,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     FixedFeedInInput that = (FixedFeedInInput) o;
-    if (!QuantityUtil.quantityIsEmpty(sRated)) {
-      if (QuantityUtil.quantityIsEmpty(that.sRated)) return false;
-      return sRated.isEquivalentTo(that.sRated);
-    } else return QuantityUtil.quantityIsEmpty(that.sRated);
+    return QuantityUtil.isTheSameConsideringEmpty(sRated, that.sRated);
   }
 
   @Override

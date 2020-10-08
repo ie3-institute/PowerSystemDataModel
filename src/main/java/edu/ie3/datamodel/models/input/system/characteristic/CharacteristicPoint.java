@@ -112,14 +112,8 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     CharacteristicPoint<?, ?> that = (CharacteristicPoint<?, ?>) o;
-    if (!QuantityUtil.quantityIsEmpty(x)) {
-      if (QuantityUtil.quantityIsEmpty(that.x)) return false;
-      if (!x.isEquivalentTo((Quantity<A>) that.x)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.x)) return false;
-    if (!QuantityUtil.quantityIsEmpty(y)) {
-      if (QuantityUtil.quantityIsEmpty(that.y)) return false;
-      return y.isEquivalentTo((Quantity<O>) that.y);
-    } else return QuantityUtil.quantityIsEmpty(that.y);
+    return QuantityUtil.isTheSameConsideringEmpty(x, (Quantity<A>) that.x)
+        && QuantityUtil.isTheSameConsideringEmpty(y, (Quantity<O>) that.y);
   }
 
   @Override

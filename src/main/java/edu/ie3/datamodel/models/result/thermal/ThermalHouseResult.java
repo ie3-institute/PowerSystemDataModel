@@ -70,10 +70,7 @@ public class ThermalHouseResult extends ThermalSinkResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ThermalHouseResult that = (ThermalHouseResult) o;
-    if (!QuantityUtil.quantityIsEmpty(indoorTemperature)) {
-      if (QuantityUtil.quantityIsEmpty(that.indoorTemperature)) return false;
-      return indoorTemperature.isEquivalentTo(that.indoorTemperature);
-    } else return QuantityUtil.quantityIsEmpty(that.indoorTemperature);
+    return QuantityUtil.isTheSameConsideringEmpty(indoorTemperature, that.indoorTemperature);
   }
 
   @Override

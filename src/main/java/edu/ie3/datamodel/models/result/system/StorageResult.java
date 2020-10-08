@@ -75,10 +75,7 @@ public class StorageResult extends SystemParticipantResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     StorageResult that = (StorageResult) o;
-    if (!QuantityUtil.quantityIsEmpty(soc)) {
-      if (QuantityUtil.quantityIsEmpty(that.soc)) return false;
-      return soc.isEquivalentTo(that.soc);
-    } else return QuantityUtil.quantityIsEmpty(that.soc);
+    return QuantityUtil.isTheSameConsideringEmpty(soc, that.soc);
   }
 
   @Override

@@ -98,16 +98,8 @@ public class Transformer3WResult extends TransformerResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     Transformer3WResult that = (Transformer3WResult) o;
-
-    if (!QuantityUtil.quantityIsEmpty(iCMag)) {
-      if (QuantityUtil.quantityIsEmpty(that.iCMag)) return false;
-      if (!iCMag.isEquivalentTo(that.iCMag)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.iCMag)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(iCAng)) {
-      if (QuantityUtil.quantityIsEmpty(that.iCAng)) return false;
-      return iCAng.isEquivalentTo(that.iCAng);
-    } else return QuantityUtil.quantityIsEmpty(that.iCAng);
+    return QuantityUtil.isTheSameConsideringEmpty(iCMag, that.iCMag)
+        && QuantityUtil.isTheSameConsideringEmpty(iCAng, that.iCAng);
   }
 
   @Override

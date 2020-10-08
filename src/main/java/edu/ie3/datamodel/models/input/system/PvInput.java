@@ -176,32 +176,15 @@ public class PvInput extends SystemParticipantInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     PvInput pvInput = (PvInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(azimuth)) {
-      if (QuantityUtil.quantityIsEmpty(pvInput.azimuth)) return false;
-      if (!azimuth.isEquivalentTo(pvInput.azimuth)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(pvInput.azimuth)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(etaConv)) {
-      if (QuantityUtil.quantityIsEmpty(pvInput.etaConv)) return false;
-      if (!etaConv.isEquivalentTo(pvInput.etaConv)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(pvInput.etaConv)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(height)) {
-      if (QuantityUtil.quantityIsEmpty(pvInput.height)) return false;
-      if (!height.isEquivalentTo(pvInput.height)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(pvInput.height)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(sRated)) {
-      if (QuantityUtil.quantityIsEmpty(pvInput.sRated)) return false;
-      if (!sRated.isEquivalentTo(pvInput.sRated)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(pvInput.sRated)) return false;
-
     return Double.compare(pvInput.albedo, albedo) == 0
         && Double.compare(pvInput.kG, kG) == 0
         && Double.compare(pvInput.kT, kT) == 0
         && marketReaction == pvInput.marketReaction
-        && Double.compare(pvInput.cosPhiRated, cosPhiRated) == 0;
+        && Double.compare(pvInput.cosPhiRated, cosPhiRated) == 0
+        && QuantityUtil.isTheSameConsideringEmpty(azimuth, pvInput.azimuth)
+        && QuantityUtil.isTheSameConsideringEmpty(etaConv, pvInput.etaConv)
+        && QuantityUtil.isTheSameConsideringEmpty(height, pvInput.height)
+        && QuantityUtil.isTheSameConsideringEmpty(sRated, pvInput.sRated);
   }
 
   @Override

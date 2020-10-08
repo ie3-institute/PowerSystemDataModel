@@ -120,26 +120,10 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     CylindricalStorageInput that = (CylindricalStorageInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(storageVolumeLvl)) {
-      if (QuantityUtil.quantityIsEmpty(that.storageVolumeLvl)) return false;
-      if (!storageVolumeLvl.isEquivalentTo(that.storageVolumeLvl)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.storageVolumeLvl)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(storageVolumeLvlMin)) {
-      if (QuantityUtil.quantityIsEmpty(that.storageVolumeLvlMin)) return false;
-      if (!storageVolumeLvlMin.isEquivalentTo(that.storageVolumeLvlMin)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.storageVolumeLvlMin)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(inletTemp)) {
-      if (QuantityUtil.quantityIsEmpty(that.inletTemp)) return false;
-      if (!inletTemp.isEquivalentTo(that.inletTemp)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.inletTemp)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(returnTemp)) {
-      if (QuantityUtil.quantityIsEmpty(that.returnTemp)) return false;
-      return returnTemp.isEquivalentTo(that.returnTemp);
-    } else return QuantityUtil.quantityIsEmpty(that.returnTemp);
+    return QuantityUtil.isTheSameConsideringEmpty(storageVolumeLvl, that.storageVolumeLvl)
+        && QuantityUtil.isTheSameConsideringEmpty(storageVolumeLvlMin, that.storageVolumeLvlMin)
+        && QuantityUtil.isTheSameConsideringEmpty(inletTemp, that.inletTemp)
+        && QuantityUtil.isTheSameConsideringEmpty(returnTemp, that.returnTemp);
   }
 
   @Override

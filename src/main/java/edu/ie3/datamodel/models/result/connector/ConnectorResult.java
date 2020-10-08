@@ -117,26 +117,10 @@ public abstract class ConnectorResult extends ResultEntity {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ConnectorResult that = (ConnectorResult) o;
-
-    if (!QuantityUtil.quantityIsEmpty(iAMag)) {
-      if (QuantityUtil.quantityIsEmpty(that.iAMag)) return false;
-      if (!iAMag.isEquivalentTo(that.iAMag)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.iAMag)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(iAAng)) {
-      if (QuantityUtil.quantityIsEmpty(that.iAAng)) return false;
-      if (!iAAng.isEquivalentTo(that.iAAng)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.iAAng)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(iBMag)) {
-      if (QuantityUtil.quantityIsEmpty(that.iBMag)) return false;
-      if (!iBMag.isEquivalentTo(that.iBMag)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.iBMag)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(iBAng)) {
-      if (QuantityUtil.quantityIsEmpty(that.iBAng)) return false;
-      return iBAng.isEquivalentTo(that.iBAng);
-    } else return QuantityUtil.quantityIsEmpty(that.iBAng);
+    return QuantityUtil.isTheSameConsideringEmpty(iAMag, that.iAMag)
+        && QuantityUtil.isTheSameConsideringEmpty(iAAng, that.iAAng)
+        && QuantityUtil.isTheSameConsideringEmpty(iBMag, that.iBMag)
+        && QuantityUtil.isTheSameConsideringEmpty(iBAng, that.iBAng);
   }
 
   @Override

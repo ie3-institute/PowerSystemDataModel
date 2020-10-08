@@ -127,14 +127,11 @@ public class NodeInput extends AssetInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     NodeInput nodeInput = (NodeInput) o;
-    if (!QuantityUtil.quantityIsEmpty(vTarget)) {
-      if (QuantityUtil.quantityIsEmpty(nodeInput.vTarget)) return false;
-      if (!vTarget.isEquivalentTo(nodeInput.vTarget)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(nodeInput.vTarget)) return false;
     return slack == nodeInput.slack
         && subnet == nodeInput.subnet
         && Objects.equals(geoPosition, nodeInput.geoPosition)
-        && Objects.equals(voltLvl, nodeInput.voltLvl);
+        && Objects.equals(voltLvl, nodeInput.voltLvl)
+        && QuantityUtil.isTheSameConsideringEmpty(vTarget, nodeInput.vTarget);
   }
 
   @Override

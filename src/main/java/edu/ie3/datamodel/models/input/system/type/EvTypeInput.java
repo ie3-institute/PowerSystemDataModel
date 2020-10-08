@@ -61,16 +61,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     EvTypeInput that = (EvTypeInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(eStorage)) {
-      if (QuantityUtil.quantityIsEmpty(that.eStorage)) return false;
-      if (!eStorage.isEquivalentTo(that.eStorage)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.eStorage)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(eCons)) {
-      if (QuantityUtil.quantityIsEmpty(that.eCons)) return false;
-      return eCons.isEquivalentTo(that.eCons);
-    } else return QuantityUtil.quantityIsEmpty(that.eCons);
+    return QuantityUtil.isTheSameConsideringEmpty(eStorage, that.eStorage)
+        && QuantityUtil.isTheSameConsideringEmpty(eCons, that.eCons);
   }
 
   @Override

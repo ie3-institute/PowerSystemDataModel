@@ -41,14 +41,8 @@ public class WindValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     WindValue windValue = (WindValue) o;
-    if (!QuantityUtil.quantityIsEmpty(direction)) {
-      if (QuantityUtil.quantityIsEmpty(windValue.direction)) return false;
-      if (!direction.isEquivalentTo(windValue.direction)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(windValue.direction)) return false;
-    if (!QuantityUtil.quantityIsEmpty(velocity)) {
-      if (QuantityUtil.quantityIsEmpty(windValue.velocity)) return false;
-      return velocity.isEquivalentTo(windValue.velocity);
-    } else return QuantityUtil.quantityIsEmpty(windValue.velocity);
+    return QuantityUtil.isTheSameConsideringEmpty(direction, windValue.direction)
+        && QuantityUtil.isTheSameConsideringEmpty(velocity, windValue.velocity);
   }
 
   @Override

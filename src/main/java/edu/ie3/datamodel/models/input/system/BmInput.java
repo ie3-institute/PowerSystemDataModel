@@ -120,15 +120,10 @@ public class BmInput extends SystemParticipantInput implements HasType {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     BmInput bmInput = (BmInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(feedInTariff)) {
-      if (QuantityUtil.quantityIsEmpty(bmInput.feedInTariff)) return false;
-      if (!feedInTariff.isEquivalentTo(bmInput.feedInTariff)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(bmInput.feedInTariff)) return false;
-
     return marketReaction == bmInput.marketReaction
         && costControlled == bmInput.costControlled
-        && type.equals(bmInput.type);
+        && type.equals(bmInput.type)
+        && QuantityUtil.isTheSameConsideringEmpty(feedInTariff, bmInput.feedInTariff);
   }
 
   @Override

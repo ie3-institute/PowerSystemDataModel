@@ -213,18 +213,10 @@ public class LoadInput extends SystemParticipantInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     LoadInput loadInput = (LoadInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(eConsAnnual)) {
-      if (QuantityUtil.quantityIsEmpty(loadInput.eConsAnnual)) return false;
-      if (!eConsAnnual.isEquivalentTo(loadInput.eConsAnnual)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(loadInput.eConsAnnual)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(sRated)) {
-      if (QuantityUtil.quantityIsEmpty(loadInput.sRated)) return false;
-      if (!sRated.isEquivalentTo(loadInput.sRated)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(loadInput.sRated)) return false;
-
-    return dsm == loadInput.dsm && Double.compare(loadInput.cosPhiRated, cosPhiRated) == 0;
+    return dsm == loadInput.dsm
+        && Double.compare(loadInput.cosPhiRated, cosPhiRated) == 0
+        && QuantityUtil.isTheSameConsideringEmpty(eConsAnnual, loadInput.eConsAnnual)
+        && QuantityUtil.isTheSameConsideringEmpty(sRated, loadInput.sRated);
   }
 
   @Override

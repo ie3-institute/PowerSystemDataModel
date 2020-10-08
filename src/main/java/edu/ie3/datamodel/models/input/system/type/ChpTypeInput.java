@@ -78,26 +78,10 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ChpTypeInput that = (ChpTypeInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(etaEl)) {
-      if (QuantityUtil.quantityIsEmpty(that.etaEl)) return false;
-      if (!etaEl.isEquivalentTo(that.etaEl)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.etaEl)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(etaThermal)) {
-      if (QuantityUtil.quantityIsEmpty(that.etaThermal)) return false;
-      if (!etaThermal.isEquivalentTo(that.etaThermal)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.etaThermal)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(pThermal)) {
-      if (QuantityUtil.quantityIsEmpty(that.pThermal)) return false;
-      if (!pThermal.isEquivalentTo(that.pThermal)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.pThermal)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(pOwn)) {
-      if (QuantityUtil.quantityIsEmpty(that.pOwn)) return false;
-      return pOwn.isEquivalentTo(that.pOwn);
-    } else return QuantityUtil.quantityIsEmpty(that.pOwn);
+    return QuantityUtil.isTheSameConsideringEmpty(etaEl, that.etaEl)
+        && QuantityUtil.isTheSameConsideringEmpty(etaThermal, that.etaThermal)
+        && QuantityUtil.isTheSameConsideringEmpty(pThermal, that.pThermal)
+        && QuantityUtil.isTheSameConsideringEmpty(pOwn, that.pOwn);
   }
 
   @Override

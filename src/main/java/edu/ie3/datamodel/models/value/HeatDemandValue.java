@@ -28,10 +28,7 @@ public class HeatDemandValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     HeatDemandValue that = (HeatDemandValue) o;
-    if (!QuantityUtil.quantityIsEmpty(heatDemand)) {
-      if (QuantityUtil.quantityIsEmpty(that.heatDemand)) return false;
-      return heatDemand.isEquivalentTo(that.heatDemand);
-    } else return QuantityUtil.quantityIsEmpty(that.heatDemand);
+    return QuantityUtil.isTheSameConsideringEmpty(heatDemand, that.heatDemand);
   }
 
   @Override

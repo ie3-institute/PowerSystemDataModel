@@ -73,10 +73,7 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ThermalStorageResult that = (ThermalStorageResult) o;
-    if (!QuantityUtil.quantityIsEmpty(energy)) {
-      if (QuantityUtil.quantityIsEmpty(that.energy)) return false;
-      return energy.isEquivalentTo(that.energy);
-    } else return QuantityUtil.quantityIsEmpty(that.energy);
+    return QuantityUtil.isTheSameConsideringEmpty(energy, that.energy);
   }
 
   @Override

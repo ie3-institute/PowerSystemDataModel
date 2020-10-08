@@ -149,56 +149,19 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     Transformer2WTypeInput that = (Transformer2WTypeInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(rSc)) {
-      if (QuantityUtil.quantityIsEmpty(that.rSc)) return false;
-      if (!rSc.isEquivalentTo(that.rSc)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.rSc)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(xSc)) {
-      if (QuantityUtil.quantityIsEmpty(that.xSc)) return false;
-      if (!xSc.isEquivalentTo(that.xSc)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.xSc)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(sRated)) {
-      if (QuantityUtil.quantityIsEmpty(that.sRated)) return false;
-      if (!sRated.isEquivalentTo(that.sRated)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.sRated)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(vRatedA)) {
-      if (QuantityUtil.quantityIsEmpty(that.vRatedA)) return false;
-      if (!vRatedA.isEquivalentTo(that.vRatedA)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.vRatedA)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(vRatedB)) {
-      if (QuantityUtil.quantityIsEmpty(that.vRatedB)) return false;
-      if (!vRatedB.isEquivalentTo(that.vRatedB)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.vRatedB)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(gM)) {
-      if (QuantityUtil.quantityIsEmpty(that.gM)) return false;
-      if (!gM.isEquivalentTo(that.gM)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.gM)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(bM)) {
-      if (QuantityUtil.quantityIsEmpty(that.bM)) return false;
-      if (!bM.isEquivalentTo(that.bM)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.bM)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(dV)) {
-      if (QuantityUtil.quantityIsEmpty(that.dV)) return false;
-      if (!dV.isEquivalentTo(that.dV)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.dV)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(dPhi)) {
-      if (QuantityUtil.quantityIsEmpty(that.dPhi)) return false;
-      if (!dPhi.isEquivalentTo(that.dPhi)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.dPhi)) return false;
-
     return tapSide == that.tapSide
         && tapNeutr == that.tapNeutr
         && tapMin == that.tapMin
-        && tapMax == that.tapMax;
+        && tapMax == that.tapMax
+        && QuantityUtil.isTheSameConsideringEmpty(rSc, that.rSc)
+        && QuantityUtil.isTheSameConsideringEmpty(xSc, that.xSc)
+        && QuantityUtil.isTheSameConsideringEmpty(sRated, that.sRated)
+        && QuantityUtil.isTheSameConsideringEmpty(vRatedA, that.vRatedA)
+        && QuantityUtil.isTheSameConsideringEmpty(vRatedB, that.vRatedB)
+        && QuantityUtil.isTheSameConsideringEmpty(gM, that.gM)
+        && QuantityUtil.isTheSameConsideringEmpty(bM, that.bM)
+        && QuantityUtil.isTheSameConsideringEmpty(dV, that.dV)
+        && QuantityUtil.isTheSameConsideringEmpty(dPhi, that.dPhi);
   }
 
   @Override

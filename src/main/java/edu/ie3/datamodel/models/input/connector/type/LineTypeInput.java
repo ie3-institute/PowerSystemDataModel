@@ -89,31 +89,12 @@ public class LineTypeInput extends AssetTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     LineTypeInput that = (LineTypeInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(b)) {
-      if (QuantityUtil.quantityIsEmpty(that.b)) return false;
-      if (!b.isEquivalentTo(that.b)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.b)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(r)) {
-      if (QuantityUtil.quantityIsEmpty(that.r)) return false;
-      if (!r.isEquivalentTo(that.r)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.r)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(x)) {
-      if (QuantityUtil.quantityIsEmpty(that.x)) return false;
-      if (!x.isEquivalentTo(that.x)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.x)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(iMax)) {
-      if (QuantityUtil.quantityIsEmpty(that.iMax)) return false;
-      if (!iMax.isEquivalentTo(that.iMax)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.iMax)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(vRated)) {
-      if (QuantityUtil.quantityIsEmpty(that.vRated)) return false;
-      return vRated.isEquivalentTo(that.vRated);
-    } else return QuantityUtil.quantityIsEmpty(that.vRated);
+    return QuantityUtil.isTheSameConsideringEmpty(b, that.b)
+        && QuantityUtil.isTheSameConsideringEmpty(g, that.g)
+        && QuantityUtil.isTheSameConsideringEmpty(r, that.r)
+        && QuantityUtil.isTheSameConsideringEmpty(x, that.x)
+        && QuantityUtil.isTheSameConsideringEmpty(iMax, that.iMax)
+        && QuantityUtil.isTheSameConsideringEmpty(vRated, that.vRated);
   }
 
   @Override

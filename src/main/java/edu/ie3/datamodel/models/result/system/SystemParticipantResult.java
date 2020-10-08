@@ -93,16 +93,8 @@ public abstract class SystemParticipantResult extends ResultEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     SystemParticipantResult that = (SystemParticipantResult) o;
-
-    if (!QuantityUtil.quantityIsEmpty(p)) {
-      if (QuantityUtil.quantityIsEmpty(that.p)) return false;
-      if (!p.isEquivalentTo(that.p)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.p)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(q)) {
-      if (QuantityUtil.quantityIsEmpty(that.q)) return false;
-      return q.isEquivalentTo(that.q);
-    } else return QuantityUtil.quantityIsEmpty(that.q);
+    return QuantityUtil.isTheSameConsideringEmpty(p, that.p)
+        && QuantityUtil.isTheSameConsideringEmpty(q, that.q);
   }
 
   @Override

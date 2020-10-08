@@ -30,10 +30,7 @@ public class EnergyPriceValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     EnergyPriceValue that = (EnergyPriceValue) o;
-    if (!QuantityUtil.quantityIsEmpty(price)) {
-      if (QuantityUtil.quantityIsEmpty(that.price)) return false;
-      return price.isEquivalentTo(that.price);
-    } else return QuantityUtil.quantityIsEmpty(that.price);
+    return QuantityUtil.isTheSameConsideringEmpty(price, that.price);
   }
 
   @Override

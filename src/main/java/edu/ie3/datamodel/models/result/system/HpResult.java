@@ -67,10 +67,7 @@ public class HpResult extends SystemParticipantResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HpResult hpResult = (HpResult) o;
-    if (!QuantityUtil.quantityIsEmpty(qDot)) {
-      if (QuantityUtil.quantityIsEmpty(hpResult.qDot)) return false;
-      return qDot.isEquivalentTo(hpResult.qDot);
-    } else return QuantityUtil.quantityIsEmpty(hpResult.qDot);
+    return QuantityUtil.isTheSameConsideringEmpty(qDot, hpResult.qDot);
   }
 
   @Override

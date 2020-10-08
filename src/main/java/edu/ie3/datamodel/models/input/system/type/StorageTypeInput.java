@@ -108,38 +108,13 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     StorageTypeInput that = (StorageTypeInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(eStorage)) {
-      if (QuantityUtil.quantityIsEmpty(that.eStorage)) return false;
-      if (!eStorage.isEquivalentTo(that.eStorage)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.eStorage)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(pMax)) {
-      if (QuantityUtil.quantityIsEmpty(that.pMax)) return false;
-      if (!pMax.isEquivalentTo(that.pMax)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.pMax)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(activePowerGradient)) {
-      if (QuantityUtil.quantityIsEmpty(that.activePowerGradient)) return false;
-      if (!activePowerGradient.isEquivalentTo(that.activePowerGradient)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.activePowerGradient)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(eta)) {
-      if (QuantityUtil.quantityIsEmpty(that.eta)) return false;
-      if (!eta.isEquivalentTo(that.eta)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.eta)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(dod)) {
-      if (QuantityUtil.quantityIsEmpty(that.dod)) return false;
-      if (!dod.isEquivalentTo(that.dod)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.dod)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(lifeTime)) {
-      if (QuantityUtil.quantityIsEmpty(that.lifeTime)) return false;
-      if (!lifeTime.isEquivalentTo(that.lifeTime)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.lifeTime)) return false;
-
-    return lifeCycle == that.lifeCycle;
+    return lifeCycle == that.lifeCycle
+        && QuantityUtil.isTheSameConsideringEmpty(eStorage, that.eStorage)
+        && QuantityUtil.isTheSameConsideringEmpty(pMax, that.pMax)
+        && QuantityUtil.isTheSameConsideringEmpty(activePowerGradient, that.activePowerGradient)
+        && QuantityUtil.isTheSameConsideringEmpty(eta, that.eta)
+        && QuantityUtil.isTheSameConsideringEmpty(dod, that.dod)
+        && QuantityUtil.isTheSameConsideringEmpty(lifeTime, that.lifeTime);
   }
 
   @Override

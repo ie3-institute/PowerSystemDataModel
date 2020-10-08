@@ -62,16 +62,8 @@ public class BmTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     BmTypeInput that = (BmTypeInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(activePowerGradient)) {
-      if (QuantityUtil.quantityIsEmpty(that.activePowerGradient)) return false;
-      if (!activePowerGradient.isEquivalentTo(that.activePowerGradient)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.activePowerGradient)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(etaConv)) {
-      if (QuantityUtil.quantityIsEmpty(that.etaConv)) return false;
-      return etaConv.isEquivalentTo(that.etaConv);
-    } else return QuantityUtil.quantityIsEmpty(that.etaConv);
+    return QuantityUtil.isTheSameConsideringEmpty(activePowerGradient, that.activePowerGradient)
+        && QuantityUtil.isTheSameConsideringEmpty(etaConv, that.etaConv);
   }
 
   @Override

@@ -35,10 +35,7 @@ public class HeatAndPValue extends PValue {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HeatAndPValue that = (HeatAndPValue) o;
-    if (!QuantityUtil.quantityIsEmpty(heatDemand)) {
-      if (QuantityUtil.quantityIsEmpty(that.heatDemand)) return false;
-      return heatDemand.isEquivalentTo(that.heatDemand);
-    } else return QuantityUtil.quantityIsEmpty(that.heatDemand);
+    return QuantityUtil.isTheSameConsideringEmpty(heatDemand, that.heatDemand);
   }
 
   @Override
