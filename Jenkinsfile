@@ -105,7 +105,7 @@ node {
 
             // sonarqube analysis
             stage('sonarqube analysis') {
-                String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, orgName, projectName, projectName)
+                String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, currentBranchName, orgName, projectName, projectName)
                 withSonarQubeEnv() { // will pick the global server connection from jenkins for sonarqube
                     gradle(sonarqubeCmd, projectName)
                 }
@@ -332,8 +332,8 @@ def gradle(String command, String relativeProjectDir) {
     sh(script: """set +x && cd $relativeProjectDir""" + ''' set +x; ./gradlew ''' + """$command""", returnStdout: true)
 }
 
-def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String orgName, String projectName, String relativeGitDir) {
-    switch (env.BRANCH_NAME) {
+def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String currentBranchName, String orgName, String projectName, String relativeGitDir) {
+    switch (currentBranchName) {
         case "main":
             return "sonarqube -Dsonar.branch.name=main -Dsonar.projectKey=$sonarqubeProjectKey"
             break
@@ -349,10 +349,10 @@ def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String orgName, Stri
             // if this branch has a PR, the sonarqube cmd needs to be adapted
             if (env.CHANGE_ID == null) {
                 // no PR exists
-                return gradleCommand + " -Dsonar.branch.name=${env.BRANCH_NAME}"
+                return gradleCommand + " -Dsonar.branch.name=${currentBranchName}"
             } else {
                 // PR exists, adapt cmd accordingly
-                return gradleCommand + " -Dsonar.pullrequest.branch=${currentBuild.displayName} -Dsonar.pullrequest.key=${env.CHANGE_ID} " +
+                return gradleCommand + " -Dsonar.pullrequest.branch=${currentBranchName} -Dsonar.pullrequest.key=${env.CHANGE_ID} " +
                         "-Dsonar.pullrequest.base=dev -Dsonar.pullrequest.github.repository=${orgName}/${projectName} " +
                         "-Dsonar.pullrequest.provider=Github"
             }
