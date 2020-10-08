@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
@@ -41,12 +42,17 @@ public class ConnectorValidationUtils extends ValidationUtils {
     //Further checks for subclasses
     if (LineInput.class.isAssignableFrom(connector.getClass()))
       checkLine((LineInput) connector);
-    if (Transformer2WInput.class.isAssignableFrom(connector.getClass()))
+    else if (Transformer2WInput.class.isAssignableFrom(connector.getClass()))
       checkTransformer2W((Transformer2WInput) connector);
-    if (Transformer3WInput.class.isAssignableFrom(connector.getClass()))
+    else if (Transformer3WInput.class.isAssignableFrom(connector.getClass()))
       checkTransformer3W((Transformer3WInput) connector);
-    if (SwitchInput.class.isAssignableFrom(connector.getClass()))
+    else if (SwitchInput.class.isAssignableFrom(connector.getClass()))
       checkSwitch((SwitchInput) connector);
+    else
+      throw new ValidationException(
+              "Cannot validate object of class '"
+                      + connector.getClass().getSimpleName()
+                      + "', as no routine is implemented.");
   }
 
   /**

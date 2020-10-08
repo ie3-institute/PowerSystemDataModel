@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 
@@ -43,22 +44,27 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     //Further checks for subclasses
     if (BmInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkBm((BmInput) systemParticipant);
-    if (ChpInput.class.isAssignableFrom(systemParticipant.getClass()))
+    else if (ChpInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkChp((ChpInput) systemParticipant);
-    if (EvInput.class.isAssignableFrom(systemParticipant.getClass()))
+    else if (EvInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkEv((EvInput) systemParticipant);
-    if (FixedFeedInInput.class.isAssignableFrom(systemParticipant.getClass()))
+    else if (FixedFeedInInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkFixedFeedIn((FixedFeedInInput) systemParticipant);
-    if (HpInput.class.isAssignableFrom(systemParticipant.getClass()))
+    else if (HpInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkHp((HpInput) systemParticipant);
-    if (LoadInput.class.isAssignableFrom(systemParticipant.getClass()))
+    else if (LoadInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkLoad((LoadInput) systemParticipant);
-    if (PvInput.class.isAssignableFrom(systemParticipant.getClass()))
+    else if (PvInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkPv((PvInput) systemParticipant);
-    if (StorageInput.class.isAssignableFrom(systemParticipant.getClass()))
+    else if (StorageInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkStorage((StorageInput) systemParticipant);
-    if (WecInput.class.isAssignableFrom(systemParticipant.getClass()))
+    else if (WecInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkWec((WecInput) systemParticipant);
+    else
+      throw new ValidationException(
+              "Cannot validate object of class '"
+                      + systemParticipant.getClass().getSimpleName()
+                      + "', as no routine is implemented.");
   }
 
   //TODO @NSteffan: Ist das eine gute (und funktionierende) Lösung für weniger Redundanz?
