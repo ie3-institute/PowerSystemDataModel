@@ -99,7 +99,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
         || (lineType.getiMax() == null)
         || (lineType.getX() == null)
         || (lineType.getR() == null))
-      throw new InvalidEntityException("at least one value of line type is null", lineType);
+      throw new InvalidEntityException("at least one value of lineType is null", lineType);
     //Check for negative quantities
     detectNegativeQuantities(
             new Quantity<?>[] {lineType.getB(), lineType.getG()}, lineType);
