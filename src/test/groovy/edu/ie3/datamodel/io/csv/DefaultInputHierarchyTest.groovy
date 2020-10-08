@@ -16,7 +16,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class DefaultInputHierarchySpec extends Specification {
+class DefaultInputHierarchyTest extends Specification {
 	@Shared
 	Path tmpDirectory
 

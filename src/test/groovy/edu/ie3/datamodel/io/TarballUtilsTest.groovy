@@ -16,7 +16,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.stream.Collectors
 
-class TarballUtilsSpec extends Specification {
+class TarballUtilsTest extends Specification {
 	@Shared
 	Path tmpDirectory
 
