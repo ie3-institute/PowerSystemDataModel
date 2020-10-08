@@ -352,7 +352,7 @@ def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String orgName, Stri
                 return gradleCommand + " -Dsonar.branch.name=${env.BRANCH_NAME}"
             } else {
                 // PR exists, adapt cmd accordingly
-                return gradleCommand + " -Dsonar.pullrequest.branch=${env.BRANCH_NAME} -Dsonar.pullrequest.key=${env.CHANGE_ID} " +
+                return gradleCommand + " -Dsonar.pullrequest.branch=${currentBuild.displayName} -Dsonar.pullrequest.key=${env.CHANGE_ID} " +
                         "-Dsonar.pullrequest.base=dev -Dsonar.pullrequest.github.repository=${orgName}/${projectName} " +
                         "-Dsonar.pullrequest.provider=Github"
             }
