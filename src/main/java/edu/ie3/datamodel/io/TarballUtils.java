@@ -6,10 +6,7 @@
 package edu.ie3.datamodel.io;
 
 import edu.ie3.datamodel.exceptions.FileException;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -30,6 +27,10 @@ import org.slf4j.LoggerFactory;
  */
 public class TarballUtils {
   private static final Logger logger = LoggerFactory.getLogger(TarballUtils.class);
+
+  private static final int MAX_AMOUNT_OF_ENTRIES = 5000;
+  private static final long MAX_SIZE_UNCOMPRESSED = 0x280000000L; // 10 GB
+  private static final double MAX_COMPRESSION_RATIO = 0.7;
 
   private TarballUtils() {
     throw new IllegalStateException("This is an Utility Class and not meant to be instantiated");
@@ -123,6 +124,9 @@ public class TarballUtils {
     /* Pre-flight checks and assembly of the target path */
     Path targetDirectory = determineTargetDirectory(archive, target, override);
 
+    /* Get the archive file size */
+    long archiveSize = archive.toFile().length();
+
     /* Create the target folder */
     try {
       Files.createDirectories(targetDirectory);
@@ -130,14 +134,42 @@ public class TarballUtils {
       throw new FileException("Cannot create target directory '" + targetDirectory + "'.", e);
     }
 
+    /* Monitor amount of entries and their size for safety reasons */
+    int entries = 0;
+    long size = 0;
     try (InputStream fileInputStream = Files.newInputStream(archive);
         BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
         GzipCompressorInputStream gzipInputStream =
             new GzipCompressorInputStream(bufferedInputStream);
-        TarArchiveInputStream tarInputStream = new TarArchiveInputStream(gzipInputStream); ) {
+        TarArchiveInputStream tarInputStream = new TarArchiveInputStream(gzipInputStream)) {
       ArchiveEntry archiveEntry;
       while ((archiveEntry = tarInputStream.getNextEntry()) != null) {
-        treatZipEntry(archiveEntry, targetDirectory, tarInputStream);
+        /* Control the total amount of entries */
+        entries++;
+        if (entries > MAX_AMOUNT_OF_ENTRIES)
+          throw new IOException(
+              "The archive contains too many entries and is therefore possibly malicious.");
+
+        /* Control the size of extracted archive files */
+        long uncompressedSize = archiveEntry.getSize();
+        if (uncompressedSize == ArchiveEntry.SIZE_UNKNOWN)
+          throw new IOException(
+              "Unknown uncompressed file size of '" + archiveEntry.getName() + "'");
+        size += uncompressedSize;
+        if (size > MAX_SIZE_UNCOMPRESSED)
+          throw new IOException(
+              "Uncompressed size of archive exceeds permissible "
+                  + (MAX_SIZE_UNCOMPRESSED / 1024 / 1024)
+                  + " MB. Possibly malicious archive");
+
+        /* Control the compression ratio */
+        if (1 - (double) archiveSize / size > MAX_COMPRESSION_RATIO)
+          throw new IOException(
+              "Compression ratio exceeds its maximum permissible value "
+                  + (MAX_COMPRESSION_RATIO * 100)
+                  + " %. Possibly malicious archive");
+
+        handleZipEntrySafely(archiveEntry, targetDirectory, tarInputStream);
       }
     } catch (IOException ex) {
       throw new FileException("Unable to extract from '" + archive + "'.", ex);
@@ -193,7 +225,7 @@ public class TarballUtils {
    * @param tarInputStream Input stream
    * @throws IOException Whenever something toes not work
    */
-  private static void treatZipEntry(
+  private static void handleZipEntrySafely(
       ArchiveEntry archiveEntry, Path targetDirectory, TarArchiveInputStream tarInputStream)
       throws IOException {
     /* Check against zip slip vulnerability and return normalized path w.r.t. the target path */
