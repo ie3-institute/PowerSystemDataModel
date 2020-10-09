@@ -134,7 +134,7 @@ class DefaultInputHierarchyTest extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.message == "The path '" + basePath +"' has to be a directory."
+		ex.message == "The path '" + basePath + "' has to be a directory."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a hierarchy with missing mandatory directory"() {
