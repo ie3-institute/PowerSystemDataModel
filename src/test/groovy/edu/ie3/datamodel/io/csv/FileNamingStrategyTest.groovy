@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.io
+package edu.ie3.datamodel.io.csv
 
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
@@ -18,42 +18,20 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
-import edu.ie3.datamodel.models.input.system.BmInput
-import edu.ie3.datamodel.models.input.system.ChpInput
-import edu.ie3.datamodel.models.input.system.EvInput
-import edu.ie3.datamodel.models.input.system.EvcsInput
-import edu.ie3.datamodel.models.input.system.FixedFeedInInput
-import edu.ie3.datamodel.models.input.system.HpInput
-import edu.ie3.datamodel.models.input.system.LoadInput
-import edu.ie3.datamodel.models.input.system.PvInput
-import edu.ie3.datamodel.models.input.system.StorageInput
-import edu.ie3.datamodel.models.input.system.WecInput
+import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
-import edu.ie3.datamodel.models.input.system.type.BmTypeInput
-import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
-import edu.ie3.datamodel.models.input.system.type.EvTypeInput
-import edu.ie3.datamodel.models.input.system.type.HpTypeInput
-import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
-import edu.ie3.datamodel.models.input.system.type.WecTypeInput
+import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.NodeResult
-import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
-import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
-import edu.ie3.datamodel.models.result.system.BmResult
-import edu.ie3.datamodel.models.result.system.ChpResult
-import edu.ie3.datamodel.models.result.system.EvResult
-import edu.ie3.datamodel.models.result.system.EvcsResult
-import edu.ie3.datamodel.models.result.system.FixedFeedInResult
-import edu.ie3.datamodel.models.result.system.LoadResult
-import edu.ie3.datamodel.models.result.system.PvResult
-import edu.ie3.datamodel.models.result.system.StorageResult
-import edu.ie3.datamodel.models.result.system.WecResult
+import edu.ie3.datamodel.models.result.system.*
+import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
+import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
@@ -307,7 +285,7 @@ class FileNamingStrategyTest extends Specification {
 		given:
 		FileNamingStrategy strategy = new FileNamingStrategy()
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
-		timeSeries.getUuid() >> uuid
+		timeSeries.uuid >> uuid
 
 		when:
 		Optional<String> actual = strategy.getFileName(timeSeries)
@@ -325,7 +303,7 @@ class FileNamingStrategyTest extends Specification {
 		given:
 		FileNamingStrategy strategy = new FileNamingStrategy("aa", "zz")
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
-		timeSeries.getUuid() >> uuid
+		timeSeries.uuid >> uuid
 
 		when:
 		Optional<String> actual = strategy.getFileName(timeSeries)
@@ -343,7 +321,7 @@ class FileNamingStrategyTest extends Specification {
 		given:
 		FileNamingStrategy strategy = new FileNamingStrategy()
 		LoadProfileInput timeSeries = Mock(LoadProfileInput)
-		timeSeries.getUuid() >> uuid
+		timeSeries.uuid >> uuid
 		timeSeries.getType() >> type
 
 		when:

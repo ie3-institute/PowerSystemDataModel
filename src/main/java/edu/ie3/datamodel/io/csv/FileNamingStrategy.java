@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.io;
+package edu.ie3.datamodel.io.csv;
 
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
@@ -25,14 +25,15 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Provides an easy to use standard way to name files based on the class that should be processed
- * e.g. when writing .csv or .xml files
+ * e.g. when writing .csv files. Represents a flat dir with all files inside. To use a hierarchic
+ * directory structure one might consider using {@link HierarchicFileNamingStrategy}
  *
  * @version 0.1
  * @since 03.02.20
  */
 public class FileNamingStrategy {
 
-  private static final Logger logger = LogManager.getLogger(FileNamingStrategy.class);
+  protected static final Logger logger = LogManager.getLogger(FileNamingStrategy.class);
 
   private static final String RES_ENTITY_SUFFIX = "_res";
 

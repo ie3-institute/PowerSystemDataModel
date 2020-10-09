@@ -1,0 +1,2 @@
+uuid,closed,id,node_a,node_b,operates_from,operates_until,operator
+5dc88077-aeb6-4711-9142-db57287640b1,true,test_switch_AtoB,4ca90220-74c2-4369-9afa-a18bf068840d,47d29df0-ba2d-4d23-8e75-c82229c5c758,2020-03-24T15:11:31Z[UTC],2020-03-25T15:11:31Z[UTC],f15105c4-a2de-4ab8-a621-4bc98e372d92
