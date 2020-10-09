@@ -99,8 +99,12 @@ node {
 
             // test the project
             stage('run tests') {
+
                 gradle('--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain ' +
                         'spotbugsTest test jacocoTestReport jacocoTestCoverageVerification', projectName)
+
+                // due to an issue with openjdk-8 we use openjdk-11 for javadocs generation
+                sh(script: """set +x && cd $projectName""" + ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/usr/local/openjdk-11''', returnStdout: true)
             }
 
             // sonarqube analysis
@@ -152,6 +156,9 @@ node {
                         createAndPushTagOnMain(projectName, sshCredentialsId)
 
                         // todo JH create github release
+
+                        // deploy java docs
+                        deployJavaDocs(projectName, sshCredentialsId, gitCheckoutUrl)
                     }
 
                     // notify rocket chat
@@ -321,6 +328,37 @@ def createAndPushTagOnMain(String projectName, String sshCredentialsId) {
     } catch (Exception e) {
         println "Error when creating tag on main branch! Exception: $e"
     }
+}
+
+def deployJavaDocs(String projectName, String sshCredentialsId, String gitCheckoutUrl) {
+
+    try {
+        withCredentials([sshUserPrivateKey(credentialsId: sshCredentialsId, keyFileVariable: 'sshKey')]) {
+            // set mail and name in git config
+            sh(script: "set +x && cd $projectName && " +
+                    "git config user.email 'johannes.hiry@tu-dortmund.de' && " +
+                    "git config user.name 'Johannes Hiry'", returnStdout: false)
+
+            // create a temporary repo in the javadocs folder and push the updated javadocs to api-docs branch
+            sh(script: "set +x && cd $projectName && " +
+                    "./gradlew clean && rm -rf tmp-api-docs && mkdir tmp-api-docs && cd tmp-api-docs && " +
+                    "ssh-agent bash -c \"set +x && ssh-add $sshKey; " +
+                    "git init && git remote add origin $gitCheckoutUrl && " +
+                    "git config user.email 'johannes.hiry@tu-dortmund.de' && " +
+                    "git config user.name 'Johannes Hiry' && " +
+                    "git fetch --depth=1 origin api-docs && " +
+                    "git checkout api-docs && " +
+                    "cd .. && ./gradlew clean javadoc -Dorg.gradle.java.home=/usr/local/openjdk-11 && " +
+                    "cp -R build/docs/javadoc/* tmp-api-docs && " +
+                    "cd tmp-api-docs &&" +
+                    "git add --all && git commit -m 'updated api-docs' && git push origin api-docs:api-docs" +
+                    "\"",
+                    returnStdout: false)
+        }
+    } catch (Exception e) {
+        println "Error when deploying javadocs! Exception: $e"
+    }
+
 }
 
 /* gradle */
