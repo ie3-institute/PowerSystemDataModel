@@ -26,6 +26,7 @@ import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,7 +46,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
   private static final Logger logger = LoggerFactory.getLogger(DefaultInputHierarchy.class);
 
   /** Use the unix file separator here. */
-  protected static final String FILE_SEPARATOR = "/";
+  protected static final String FILE_SEPARATOR = File.separator;
 
   /** Base directory for this specific grid model. The base path should be a directory. */
   private final Path baseDirectory;

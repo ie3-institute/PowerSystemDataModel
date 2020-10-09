@@ -17,6 +17,8 @@ import org.apache.commons.io.FilenameUtils;
  * structure that can be found in the documentation {@link DefaultInputHierarchy} can be used
  */
 public class HierarchicFileNamingStrategy extends FileNamingStrategy {
+  private static final String ALL_POSSIBLE_FILE_SEPARATORS_AT_START = "^[\\\\/]";
+
   private final FileHierarchy hierarchy;
 
   public HierarchicFileNamingStrategy(String prefix, String suffix, FileHierarchy hierarchy) {
@@ -51,7 +53,7 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
       return Optional.empty();
     } else {
       /* Make sure, that the file name does not start with a file separator */
-      fileName = maybeFilename.get().replaceFirst("^[\\\\/]", "");
+      fileName = maybeFilename.get().replaceFirst(ALL_POSSIBLE_FILE_SEPARATORS_AT_START, "");
     }
 
     /* Get the directory name */
@@ -63,7 +65,10 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
     } else {
       /* Make sure, that the directory name does not start with a file separator */
       directoryName =
-          maybeDirectoryName.get().replaceFirst("^[\\\\/]", "").replaceAll("[\\\\/]", "/");
+          maybeDirectoryName
+              .get()
+              .replaceFirst(ALL_POSSIBLE_FILE_SEPARATORS_AT_START, "")
+              .replaceAll("[\\\\/]", "/");
     }
 
     /* Put everything together and return it */
@@ -83,7 +88,7 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
       return Optional.empty();
     } else {
       /* Make sure, that the file name does not start with a file separator */
-      fileName = maybeFilename.get().replaceFirst("^[\\\\/]", "");
+      fileName = maybeFilename.get().replaceFirst(ALL_POSSIBLE_FILE_SEPARATORS_AT_START, "");
     }
 
     /* Get the directory name */
@@ -95,7 +100,10 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
     } else {
       /* Make sure, that the directory name does not start with a file separator */
       directoryName =
-          maybeDirectoryName.get().replaceFirst("^[\\\\/]", "").replaceAll("[\\\\/]", "/");
+          maybeDirectoryName
+              .get()
+              .replaceFirst(ALL_POSSIBLE_FILE_SEPARATORS_AT_START, "")
+              .replaceAll("[\\\\/]", "/");
     }
 
     /* Put everything together and return it */
