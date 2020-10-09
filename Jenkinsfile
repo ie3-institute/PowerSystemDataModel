@@ -343,7 +343,10 @@ def deployJavaDocs(String projectName, String sshCredentialsId, String gitChecko
             sh(script: "set +x && cd $projectName && " +
                     "./gradlew clean && rm -rf tmp-api-docs && mkdir tmp-api-docs && cd tmp-api-docs && " +
                     "ssh-agent bash -c \"set +x && ssh-add $sshKey; " +
-                    "git init && git remote add origin $gitCheckoutUrl && git fetch --depth=1 origin api-docs && " +
+                    "git init && git remote add origin $gitCheckoutUrl && " +
+                    "git config user.email 'johannes.hiry@tu-dortmund.de' && " +
+                    "git config user.name 'Johannes Hiry' && " +
+                    "git fetch --depth=1 origin api-docs && " +
                     "git checkout api-docs && " +
                     "cd .. && ./gradlew clean javadoc -Dorg.gradle.java.home=/usr/local/openjdk-11 && " +
                     "cp -R build/docs/javadoc/* tmp-api-docs && " +
