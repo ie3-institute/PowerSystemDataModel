@@ -100,9 +100,6 @@ node {
             // test the project
             stage('run tests') {
 
-                // todo JH remove
-                deployJavaDocs(projectName, sshCredentialsId, gitCheckoutUrl)
-
                 gradle('--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain ' +
                         'spotbugsTest test jacocoTestReport jacocoTestCoverageVerification', projectName)
 
@@ -159,6 +156,9 @@ node {
                         createAndPushTagOnMain(projectName, sshCredentialsId)
 
                         // todo JH create github release
+
+                        // deploy java docs
+                        deployJavaDocs(projectName, sshCredentialsId, gitCheckoutUrl)
                     }
 
                     // notify rocket chat
@@ -353,8 +353,7 @@ def deployJavaDocs(String projectName, String sshCredentialsId, String gitChecko
                     "cd tmp-api-docs &&" +
                     "git add --all && git commit -m 'updated api-docs' && git push origin api-docs:api-docs" +
                     "\"",
-                    returnStdout: true)
-
+                    returnStdout: false)
         }
     } catch (Exception e) {
         println "Error when deploying javadocs! Exception: $e"
