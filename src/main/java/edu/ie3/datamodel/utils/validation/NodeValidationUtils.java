@@ -21,7 +21,6 @@ public class NodeValidationUtils extends ValidationUtils {
   /**
    * Validates a node if: <br>
    * - it is not null <br>
-   * - operator is not null <br>
    * - voltage level is not null and valid <br>
    * - vTarget is not null and valid <br>
    * - subnet is not null <br>
@@ -32,9 +31,6 @@ public class NodeValidationUtils extends ValidationUtils {
   public static void check(NodeInput node) {
     //Check if null
     checkNonNull(node, "a node");
-    //Check if operator is null
-    if (node.getOperator() == null)
-      throw new InvalidEntityException("No operator assigned", node);
     //Check if valid voltage level
     try {
       checkVoltageLevel(node.getVoltLvl());
@@ -52,12 +48,9 @@ public class NodeValidationUtils extends ValidationUtils {
     //Check if geoPosition is null
     if (node.getGeoPosition() == null)
       throw new InvalidEntityException("Node has no GeoPosition", node);
-    //TODO: @NSteffan - necessary to check operator ("at least dummy")? operationTime? slack?
-    //TODO OPERATOR UND OPERATIONTIME IMMER CHECKEN + OPERATIONTIME START DATE VOR END DATE (rausziehen)
+    //TODO: @NSteffan - necessary to check operator ("at least dummy")? operationTime?
   }
 
-
-  //TODO @NSteffan: separate ValidationUtils for Voltage Level?
   /**
    * Validates a voltage level
    *

@@ -6,8 +6,8 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
-import edu.ie3.datamodel.exceptions.UnsafeEntityException;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
+import java.util.logging.Logger;
 
 public class MeasurementUnitValidationUtils extends ValidationUtils {
 
@@ -20,7 +20,6 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
    * Validates a measurement unit if: <br>
    * - it is not null <br>
    * - its node is not null <br>
-   * - its operator is not null <br>
    * - any values are measured
    *
    * @param measurementUnit Measurement unit to validate
@@ -31,16 +30,15 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
     //Check if node is null
     if (measurementUnit.getNode() == null)
       throw new InvalidEntityException("Node is null", measurementUnit);
-    //Check if operator is null
-    if (measurementUnit.getOperator() == null)
-      throw new InvalidEntityException("No operator assigned", measurementUnit);
-    //TODO: NSteffan - necessary to check operator ("at least dummy")? vMag? vAng? p? q?
-    if (measurementUnit.getP() == false
-        && measurementUnit.getQ() == false
-        && measurementUnit.getVAng() == false
-        && measurementUnit.getVMag() == false)
-      throw new InvalidEntityException("Measurement Unit does not measure any values", measurementUnit);
-    //TODO hier mit warning arbeiten anstatt exception? -> log Nachricht
+    //Check if measurement unit measures any values
+    Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    if (!measurementUnit.getP()
+        && !measurementUnit.getQ()
+        && !measurementUnit.getVAng()
+        && !measurementUnit.getVMag())
+      logger.warning("Measurement Unit does not measure any values");
+      //throw new InvalidEntityException("Measurement Unit does not measure any values", measurementUnit);
+    //TODO NSteffan: Work with logger warning instead of exception? Correct usage of logger?
   }
 
 }

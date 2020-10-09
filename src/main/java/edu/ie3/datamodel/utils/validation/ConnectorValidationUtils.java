@@ -23,8 +23,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Validates a connector if: <br>
    * - it is not null <br>
-   * - both of its nodes are not null <br>
-   * - its operator is not null
+   * - both of its nodes are not null
    *
    * @param connector Connector to validate
    */
@@ -34,10 +33,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     //Check if nodes of connector are null
     if (connector.getNodeA() == null || connector.getNodeB() == null)
       throw new InvalidEntityException("at least one node of this connector is null ", connector);
-    //Check if operator is null
-    if (connector.getOperator() == null)
-      throw new InvalidEntityException("no operator assigned", connector);
-    //TODO: NSteffan - necessary to check operator ("at least dummy")? operationTime? parallelDevices?
+    //TODO: NSteffan - necessary to check parallelDevices?
 
     //Further checks for subclasses
     if (LineInput.class.isAssignableFrom(connector.getClass()))
@@ -62,30 +58,32 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * properties <br>
    * - line length is not null and positive value <br>
    * - geoPosition is not null <br>
+   * - Description of an optional weather dependent operation curve is not null
    *
    * @param line Line to validate
    */
   public static void checkLine(LineInput line) {
     //check LineType
-    checkLineType(line.getType()); //TODO: Diese checks nicht notwendig
+    checkLineType(line.getType());
     //Check if line connects same subnet
     if (line.getNodeA().getSubnet() != line.getNodeB().getSubnet())
-      throw new InvalidEntityException("the line {} connects to different subnets", line);
+      throw new InvalidEntityException("Line connects to different subnets", line);
     //Check if line connects same voltage level
     if (line.getNodeA().getVoltLvl() != line.getNodeB().getVoltLvl())
-      throw new InvalidEntityException("the line {} connects to different voltage levels", line);
+      throw new InvalidEntityException("Line connects to different voltage levels", line);
     //Check if line length is not null
     if (line.getLength() == null)
-      throw new InvalidEntityException("line length of line {} is null", line);
+      throw new InvalidEntityException("Length of line is null", line);
     //Check if line length is positive value
     if (line.getLength().getValue().doubleValue() <= 0d)
-      throw new InvalidEntityException("the line {} has a negative length", line);
-          //TODO: NSteffan - alternatively work with detectZeroOrNegativeQuantities? JA!
-          // detectZeroOrNegativeQuantities(new Quantity<?>[] {line.getLength()}, line);
-          // bei sowas auch checkNonNull nötig?
+      throw new InvalidEntityException("Line has a negative length", line);
+    detectZeroOrNegativeQuantities(new Quantity<?>[] {line.getLength()}, line);
     //Check if geoPosition is null
     if (line.getGeoPosition() == null)
-      throw new InvalidEntityException("found no geoPosition for line {}", line);
+      throw new InvalidEntityException("GeoPosition of the line is null", line);
+    //Check if olmCharacteristics is null
+    if (line.getOlmCharacteristic() == null)
+      throw new InvalidEntityException("Description of an optional weather dependent operation curve of the line is null", line);
   }
 
   /**
@@ -206,7 +204,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
         || trafo.getNodeA().getSubnet() == trafo.getNodeC().getSubnet()
         || trafo.getNodeB().getSubnet() == trafo.getNodeC().getSubnet())
       throw new InvalidEntityException("trafo {} connects nodes in the same subnet", trafo);
-    //TODO NSteffan: check with Chris if those checks is correct (for 2W and 3W)
+    //TODO NSteffan: check if those checks are correct (for 2W and 3W)
   }
 
   /**

@@ -23,7 +23,6 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * Validates a system participant if: <br>
    * - it is not null <br>
    * - its node is not null <br>
-   * - its operator is not null <br>
    * - its qCharacteristics are not null
    *
    * @param systemParticipant systemParticipant to validate
@@ -34,9 +33,6 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     //Check if node is null
     if (systemParticipant.getNode() == null)
       throw new InvalidEntityException("Node of system participant is null", systemParticipant);
-    //Check if operator is null
-    if (systemParticipant.getOperator() == null)
-      throw new InvalidEntityException("No operator for system participant assigned", systemParticipant);
     //Check if qCharacteristics is null
     if (systemParticipant.getqCharacteristics() == null)
       throw new InvalidEntityException("qCharacteristics of system participant not defined", systemParticipant);
@@ -67,7 +63,6 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
                       + "', as no routine is implemented.");
   }
 
-  //TODO @NSteffan: Ist das eine gute (und funktionierende) Lösung für weniger Redundanz?
   /**
    * Validates a system participant type if: <br>
    * - capex, opex, or sRated are null <br>

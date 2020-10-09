@@ -30,7 +30,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     //Check if thermal bus is null
     if (thermalUnitInput.getThermalBus() == null)
       throw new InvalidEntityException("Thermal bus of thermalUnitInput is null", thermalUnitInput);
-    //TODO NSteffan: Check operator / operationTime? -> not necessarily?
+
     //Further checks for subclasses
     if (ThermalSinkInput.class.isAssignableFrom(thermalUnitInput.getClass()))
       checkThermalSink((ThermalSinkInput) thermalUnitInput);
@@ -58,6 +58,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    */
   public static void checkThermalSink(ThermalSinkInput thermalSinkInput) {
     checkNonNull(thermalSinkInput, "a thermalSinkInput");
+
+    //Further checks for subclasses
     if (ThermalHouseInput.class.isAssignableFrom(thermalSinkInput.getClass()))
       checkThermalHouse((ThermalHouseInput) thermalSinkInput);
     else
@@ -76,6 +78,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    */
   public static void checkThermalStorage(ThermalStorageInput thermalStorageInput) {
     checkNonNull(thermalStorageInput, "a thermalStorageInput");
+
+    //Further checks for subclasses
     if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass()))
       checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput);
     else
