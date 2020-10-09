@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+-  Definition for a default input file directory structure
+-  Tarball utils to extract and compress files
+
 ### Changed
 - moved api docs to own branch incl. automated api-docs deployment
 
@@ -30,8 +34,6 @@ most of the commonly known power flow calculations
 -  Added ``DistanceWeightedGraph`` + corresponding utility method to generate a graph topology whose vertices are `NodeInput` entities and its edges are weighted with the distance between the vertices in meter
 -  Added ``ContainerNodeUpdateUtil`` to support updating nested nodes in ``GridContainer`` instances
 -  Gradle task `gradle finalizePR` to format and test the code as well as generate JavaDoc
--  Definition for a default input file directory structure
--  Tarball utils to extract and compress files
 
 ### Changed
 -  Disabled concurrent writing in `CsvFileSink.persistJointGrid()` as this caused concurrency issues

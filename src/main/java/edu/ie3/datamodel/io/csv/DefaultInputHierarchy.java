@@ -78,7 +78,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
   }
 
   /**
-   * Checks, if the structure beneath {@link this#baseDirectory} is okay.
+   * Checks, if the structure beneath {@link #baseDirectory} is okay.
    *
    * @throws FileException if not
    */
@@ -140,7 +140,11 @@ public class DefaultInputHierarchy implements FileHierarchy {
     }
   }
 
-  /** Creates all mandatory subdirectories of this default directory hierarchy */
+  /**
+   * Creates all mandatory subdirectories of this default directory hierarchy
+   *
+   * @throws IOException If the creation of sub directories is not possible
+   */
   public void createDirs() throws IOException {
     createDirs(false);
   }
@@ -150,6 +154,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
    * directories are created.
    *
    * @param withOptionals if true, also optional directories get created.
+   * @throws IOException If the creation of sub directories is not possible
    */
   public void createDirs(boolean withOptionals) throws IOException {
     Files.createDirectories(baseDirectory);
@@ -164,7 +169,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
   }
 
   /**
-   * Gives the correct sub directory (w.r.t. {@link this#baseDirectory}) for the provided class.
+   * Gives the correct sub directory (w.r.t. {@link #baseDirectory}) for the provided class.
    *
    * @param cls Class to define the sub directory for
    * @param fileSeparator The file separator to use

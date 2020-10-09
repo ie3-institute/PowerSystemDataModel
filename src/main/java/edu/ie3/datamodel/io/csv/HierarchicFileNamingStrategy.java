@@ -37,8 +37,8 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
 
   /**
    * Determines the filename for a certain class by composing the hierarchic sub directory structure
-   * provided by {@link this#hierarchy} with the actual file name given by {@link super}. If one of
-   * both components cannot be determined, an empty {@link Optional} is returned.
+   * provided by {@link #hierarchy} with the actual file name given by {@link FileNamingStrategy}.
+   * If one of both components cannot be determined, an empty {@link Optional} is returned.
    *
    * @param cls The class to define the file name for.
    * @return The file name including the hierarchic sub directory structure
