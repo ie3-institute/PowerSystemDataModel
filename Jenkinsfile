@@ -351,7 +351,7 @@ def deployJavaDocs(String projectName, String sshCredentialsId, String gitChecko
                     "cd .. && ./gradlew clean javadoc -Dorg.gradle.java.home=/usr/local/openjdk-11 && " +
                     "cp -R build/docs/javadoc/* tmp-api-docs && " +
                     "cd tmp-api-docs &&" +
-                    "git add --all && git commit -m \"updated api-docs\" && git push origin api-docs:api-docs" +
+                    "git add --all && git commit -m 'updated api-docs' && git push origin api-docs:api-docs" +
                     "\"",
                     returnStdout: true)
 
