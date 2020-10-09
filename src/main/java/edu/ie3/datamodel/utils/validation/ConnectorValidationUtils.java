@@ -67,7 +67,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   public static void checkLine(LineInput line) {
     //check LineType
-    checkLineType(line.getType());
+    checkLineType(line.getType()); //TODO: Diese checks nicht notwendig
     //Check if line connects same subnet
     if (line.getNodeA().getSubnet() != line.getNodeB().getSubnet())
       throw new InvalidEntityException("the line {} connects to different subnets", line);
@@ -80,7 +80,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     //Check if line length is positive value
     if (line.getLength().getValue().doubleValue() <= 0d)
       throw new InvalidEntityException("the line {} has a negative length", line);
-          //TODO: NSteffan - alternatively work with detectZeroOrNegativeQuantities?
+          //TODO: NSteffan - alternatively work with detectZeroOrNegativeQuantities? JA!
           // detectZeroOrNegativeQuantities(new Quantity<?>[] {line.getLength()}, line);
           // bei sowas auch checkNonNull nötig?
     //Check if geoPosition is null
@@ -133,8 +133,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
     //Check if tap position is within bounds
     if (trafo.getTapPos() < trafo.getType().getTapMin() || trafo.getTapPos() > trafo.getType().getTapMax())
       throw new InvalidEntityException("tap position of trafo {} is outside of bounds", trafo);
-    //TODO: NSteffan - Check if (trafo.isAutoTap() is null) -> necessary? how is syntax?
-    // necessary to check tap position (int) is "not null"?
     //Check if trafo connects different voltage levels
     if (trafo.getNodeA().getVoltLvl() == trafo.getNodeB().getVoltLvl())
       throw new InvalidEntityException("trafo {} connects nodes with the same voltage level", trafo);

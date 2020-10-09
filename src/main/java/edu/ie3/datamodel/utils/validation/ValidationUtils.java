@@ -54,7 +54,8 @@ public class ValidationUtils {
       SystemParticipantValidationUtils.check((SystemParticipantInput) obj);
     } else if (ThermalUnitInput.class.isAssignableFrom(obj.getClass())) {
       ThermalUnitValidationUtils.check((ThermalUnitInput) obj);
-      //TODO NSteffan: Missing objects to check? -> OperatorInput, RandomLoadParameters?
+      //TODO NSteffan: Missing objects to check? -> OperatorInput, RandomLoadParameters, VoltageLevel, ThermalBusInput, ...?
+      //TODO: ganzen if else Schleifen könnten performaance relevant sein (für Dokumentation)
     } else {
       throw new ValidationException(
           "Cannot validate object of class '"

@@ -39,7 +39,8 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
         && measurementUnit.getQ() == false
         && measurementUnit.getVAng() == false
         && measurementUnit.getVMag() == false)
-      throw new UnsafeEntityException("Measurement Unit does not measure any values", measurementUnit);
+      throw new InvalidEntityException("Measurement Unit does not measure any values", measurementUnit);
+    //TODO hier mit warning arbeiten anstatt exception? -> log Nachricht
   }
 
 }

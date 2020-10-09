@@ -53,6 +53,7 @@ public class NodeValidationUtils extends ValidationUtils {
     if (node.getGeoPosition() == null)
       throw new InvalidEntityException("Node has no GeoPosition", node);
     //TODO: @NSteffan - necessary to check operator ("at least dummy")? operationTime? slack?
+    //TODO OPERATOR UND OPERATIONTIME IMMER CHECKEN + OPERATIONTIME START DATE VOR END DATE (rausziehen)
   }
 
 
