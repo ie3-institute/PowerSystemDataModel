@@ -6,8 +6,8 @@
 package edu.ie3.datamodel.io.sink;
 
 import edu.ie3.datamodel.exceptions.SinkException;
-import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
+import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
