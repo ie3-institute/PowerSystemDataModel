@@ -29,26 +29,26 @@ public class NodeValidationUtils extends ValidationUtils {
    * @param node Node to validate
    */
   public static void check(NodeInput node) {
-    //Check if null
+    // Check if null
     checkNonNull(node, "a node");
-    //Check if valid voltage level
+    // Check if valid voltage level
     try {
       checkVoltageLevel(node.getVoltLvl());
     } catch (VoltageLevelException e) {
       throw new InvalidEntityException("Element has invalid voltage level", node);
     }
-    //Check if target voltage is null or invalid
+    // Check if target voltage is null or invalid
     if (node.getvTarget() == null)
       throw new InvalidEntityException("vRated or vTarget is null", node);
     if (node.getvTarget().getValue().doubleValue() <= 0d)
       throw new UnsafeEntityException("vTarget is not a positive value", node);
-    //Check if subnet is valid
+    // Check if subnet is valid
     if (node.getSubnet() <= 0)
       throw new InvalidEntityException("Subnet can't be zero or negative", node);
-    //Check if geoPosition is null
+    // Check if geoPosition is null
     if (node.getGeoPosition() == null)
       throw new InvalidEntityException("Node has no GeoPosition", node);
-    //TODO: @NSteffan - necessary to check operator ("at least dummy")? operationTime?
+    // TODO: @NSteffan - necessary to check operator ("at least dummy")? operationTime?
   }
 
   /**

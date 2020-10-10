@@ -28,16 +28,15 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param connector Connector to validate
    */
   public static void check(ConnectorInput connector) {
-    //Check if null
+    // Check if null
     checkNonNull(connector, "a connector");
-    //Check if nodes of connector are null
+    // Check if nodes of connector are null
     if (connector.getNodeA() == null || connector.getNodeB() == null)
       throw new InvalidEntityException("at least one node of this connector is null ", connector);
-    //TODO: NSteffan - necessary to check parallelDevices?
+    // TODO: NSteffan - necessary to check parallelDevices?
 
-    //Further checks for subclasses
-    if (LineInput.class.isAssignableFrom(connector.getClass()))
-      checkLine((LineInput) connector);
+    // Further checks for subclasses
+    if (LineInput.class.isAssignableFrom(connector.getClass())) checkLine((LineInput) connector);
     else if (Transformer2WInput.class.isAssignableFrom(connector.getClass()))
       checkTransformer2W((Transformer2WInput) connector);
     else if (Transformer3WInput.class.isAssignableFrom(connector.getClass()))
@@ -46,9 +45,9 @@ public class ConnectorValidationUtils extends ValidationUtils {
       checkSwitch((SwitchInput) connector);
     else
       throw new ValidationException(
-              "Cannot validate object of class '"
-                      + connector.getClass().getSimpleName()
-                      + "', as no routine is implemented.");
+          "Cannot validate object of class '"
+              + connector.getClass().getSimpleName()
+              + "', as no routine is implemented.");
   }
 
   /**
@@ -63,27 +62,27 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param line Line to validate
    */
   public static void checkLine(LineInput line) {
-    //check LineType
+    // check LineType
     checkLineType(line.getType());
-    //Check if line connects same subnet
+    // Check if line connects same subnet
     if (line.getNodeA().getSubnet() != line.getNodeB().getSubnet())
       throw new InvalidEntityException("Line connects to different subnets", line);
-    //Check if line connects same voltage level
+    // Check if line connects same voltage level
     if (line.getNodeA().getVoltLvl() != line.getNodeB().getVoltLvl())
       throw new InvalidEntityException("Line connects to different voltage levels", line);
-    //Check if line length is not null
-    if (line.getLength() == null)
-      throw new InvalidEntityException("Length of line is null", line);
-    //Check if line length is positive value
+    // Check if line length is not null
+    if (line.getLength() == null) throw new InvalidEntityException("Length of line is null", line);
+    // Check if line length is positive value
     if (line.getLength().getValue().doubleValue() <= 0d)
       throw new InvalidEntityException("Line has a negative length", line);
     detectZeroOrNegativeQuantities(new Quantity<?>[] {line.getLength()}, line);
-    //Check if geoPosition is null
+    // Check if geoPosition is null
     if (line.getGeoPosition() == null)
       throw new InvalidEntityException("GeoPosition of the line is null", line);
-    //Check if olmCharacteristics is null
+    // Check if olmCharacteristics is null
     if (line.getOlmCharacteristic() == null)
-      throw new InvalidEntityException("Description of an optional weather dependent operation curve of the line is null", line);
+      throw new InvalidEntityException(
+          "Description of an optional weather dependent operation curve of the line is null", line);
   }
 
   /**
@@ -94,9 +93,9 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param lineType Line type to validate
    */
   public static void checkLineType(LineTypeInput lineType) {
-    //Check if null
+    // Check if null
     checkNonNull(lineType, "a line type");
-    //Check if any values are null
+    // Check if any values are null
     if ((lineType.getB() == null)
         || (lineType.getG() == null)
         || (lineType.getvRated() == null)
@@ -104,15 +103,14 @@ public class ConnectorValidationUtils extends ValidationUtils {
         || (lineType.getX() == null)
         || (lineType.getR() == null))
       throw new InvalidEntityException("at least one value of lineType is null", lineType);
-    //Check for negative quantities
-    detectNegativeQuantities(
-            new Quantity<?>[] {lineType.getB(), lineType.getG()}, lineType);
-    //Check for zero or negative quantities
+    // Check for negative quantities
+    detectNegativeQuantities(new Quantity<?>[] {lineType.getB(), lineType.getG()}, lineType);
+    // Check for zero or negative quantities
     detectZeroOrNegativeQuantities(
-            new Quantity<?>[] {
-                    lineType.getvRated(), lineType.getiMax(), lineType.getX(), lineType.getR()
-            },
-            lineType);
+        new Quantity<?>[] {
+          lineType.getvRated(), lineType.getiMax(), lineType.getX(), lineType.getR()
+        },
+        lineType);
   }
 
   /**
@@ -123,18 +121,21 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - tap position is within bounds <br>
    * - connects different subnets <br>
    * - connects different voltage levels <br>
+   *
    * @param trafo Transformer to validate
    */
   public static void checkTransformer2W(Transformer2WInput trafo) {
-    //Check Transformer2WType
+    // Check Transformer2WType
     checkTransformer2WType(trafo.getType());
-    //Check if tap position is within bounds
-    if (trafo.getTapPos() < trafo.getType().getTapMin() || trafo.getTapPos() > trafo.getType().getTapMax())
+    // Check if tap position is within bounds
+    if (trafo.getTapPos() < trafo.getType().getTapMin()
+        || trafo.getTapPos() > trafo.getType().getTapMax())
       throw new InvalidEntityException("tap position of trafo {} is outside of bounds", trafo);
-    //Check if trafo connects different voltage levels
+    // Check if trafo connects different voltage levels
     if (trafo.getNodeA().getVoltLvl() == trafo.getNodeB().getVoltLvl())
-      throw new InvalidEntityException("trafo {} connects nodes with the same voltage level", trafo);
-    //Check if trafo connects different subnets
+      throw new InvalidEntityException(
+          "trafo {} connects nodes with the same voltage level", trafo);
+    // Check if trafo connects different subnets
     if (trafo.getNodeA().getSubnet() == trafo.getNodeB().getSubnet())
       throw new InvalidEntityException("trafo {} connects nodes in the same subnet", trafo);
   }
@@ -148,7 +149,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   public static void checkTransformer2WType(Transformer2WTypeInput trafoType) {
     checkNonNull(trafoType, "a two winding transformer type");
-    //Check if any value are null
+    // Check if any value are null
     if ((trafoType.getsRated() == null)
         || (trafoType.getvRatedA() == null)
         || (trafoType.getvRatedB() == null)
@@ -183,28 +184,31 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - tap position is within bounds <br>
    * - connects different subnets <br>
    * - connects different voltage levels <br>
+   *
    * @param trafo Transformer to validate
    */
   public static void checkTransformer3W(Transformer3WInput trafo) {
-    //Check if node C is null
+    // Check if node C is null
     if (trafo.getNodeC() == null)
       throw new InvalidEntityException("at least one node of this connector is null", trafo);
-    //Check Transformer3WType
+    // Check Transformer3WType
     checkTransformer3WType(trafo.getType());
-    //Check if tap position is within bounds
-    if (trafo.getTapPos() < trafo.getType().getTapMin() || trafo.getTapPos() > trafo.getType().getTapMax())
+    // Check if tap position is within bounds
+    if (trafo.getTapPos() < trafo.getType().getTapMin()
+        || trafo.getTapPos() > trafo.getType().getTapMax())
       throw new InvalidEntityException("tap position of trafo {} is outside of bounds", trafo);
-    //Check if trafo connects different voltage levels
+    // Check if trafo connects different voltage levels
     if (trafo.getNodeA().getVoltLvl() == trafo.getNodeB().getVoltLvl()
         || trafo.getNodeA().getVoltLvl() == trafo.getNodeC().getVoltLvl()
         || trafo.getNodeB().getVoltLvl() == trafo.getNodeC().getVoltLvl())
-      throw new InvalidEntityException("trafo {} connects nodes with the same voltage level", trafo);
-    //Check if trafo connects different subnets
+      throw new InvalidEntityException(
+          "trafo {} connects nodes with the same voltage level", trafo);
+    // Check if trafo connects different subnets
     if (trafo.getNodeA().getSubnet() == trafo.getNodeB().getSubnet()
         || trafo.getNodeA().getSubnet() == trafo.getNodeC().getSubnet()
         || trafo.getNodeB().getSubnet() == trafo.getNodeC().getSubnet())
       throw new InvalidEntityException("trafo {} connects nodes in the same subnet", trafo);
-    //TODO NSteffan: check if those checks are correct (for 2W and 3W)
+    // TODO NSteffan: check if those checks are correct (for 2W and 3W)
   }
 
   /**
@@ -254,9 +258,10 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param switchInput Switch to validate
    */
   public static void checkSwitch(SwitchInput switchInput) {
-    //Check if switch connects same voltage level
+    // Check if switch connects same voltage level
     if (switchInput.getNodeA().getVoltLvl() != switchInput.getNodeB().getVoltLvl())
-      throw new InvalidEntityException("the switch {} connects to different voltage levels", switchInput);
+      throw new InvalidEntityException(
+          "the switch {} connects to different voltage levels", switchInput);
     /* Remark: Connecting two different "subnets" is fine, because as of our definition regarding a switchgear in
      * "upstream" direction of a transformer, all the nodes, that hare within the switch chain, belong to the lower
      * grid, whilst the "real" upper node is within the upper grid */

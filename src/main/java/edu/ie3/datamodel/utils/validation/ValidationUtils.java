@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.input.container.GridContainer;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -39,42 +38,44 @@ public class ValidationUtils {
    * @param obj Object to check
    */
   public static void check(Object obj) {
-    if (AssetInput.class.isAssignableFrom(obj.getClass()))
-      checkAsset((AssetInput) obj);
-    else if (GridContainer.class.isAssignableFrom(obj.getClass())) //InputContainer?
-      GridContainerValidationUtils.check((GridContainer) obj);
+    if (AssetInput.class.isAssignableFrom(obj.getClass())) checkAsset((AssetInput) obj);
+    else if (GridContainer.class.isAssignableFrom(obj.getClass())) // InputContainer?
+    GridContainerValidationUtils.check((GridContainer) obj);
     else if (GraphicInput.class.isAssignableFrom(obj.getClass()))
       GraphicValidationUtils.check((GraphicInput) obj);
-    //TODO NSteffan: Check here also for AssetTypeInput, OperatorInput, ...?
+    // TODO NSteffan: Check here also for AssetTypeInput, OperatorInput, ...?
     else {
       throw new ValidationException(
-              "Cannot validate object of class '"
-                      + obj.getClass().getSimpleName()
-                      + "', as no routine is implemented.");
+          "Cannot validate object of class '"
+              + obj.getClass().getSimpleName()
+              + "', as no routine is implemented.");
     }
   }
 
   /**
-   * This is a "distribution" method for AssetInput, that checks the operator and operation time of the asset and
-   * forwards the check request to specific implementations to fulfill the checking task,
-   * based on the class of the given object. If a not yet know class is handed in,
-   * a {@link ValidationException} is thrown.
+   * This is a "distribution" method for AssetInput, that checks the operator and operation time of
+   * the asset and forwards the check request to specific implementations to fulfill the checking
+   * task, based on the class of the given object. If a not yet know class is handed in, a {@link
+   * ValidationException} is thrown.
    *
    * @param assetInput AssetInput to check
    */
   public static void checkAsset(AssetInput assetInput) {
-    //Check if operator is not null
+    // Check if operator is not null
     if (assetInput.getOperator() == null)
       throw new InvalidEntityException("No operator assigned", assetInput);
-    //Check if operation time is not null
+    // Check if operation time is not null
     if (assetInput.getOperationTime() == null)
       throw new InvalidEntityException("Operation time of the asset is not defined", assetInput);
-    //TODO NSteffan: Check operator and operation time here or write method to use in every subclass check?
-    //Check if start time is before end time
-    //if (assetInput.getOperationTime().getEndDate().isBefore(assetInput.getOperationTime().getStartDate())) //TODO NSteffan: How to compare ZonedDateTime?
-      //throw new InvalidEntityException("Operation start time of the asset has to be before end time", assetInput);
+    // TODO NSteffan: Check operator and operation time here or write method to use in every
+    // subclass check?
+    // Check if start time is before end time
+    // if
+    // (assetInput.getOperationTime().getEndDate().isBefore(assetInput.getOperationTime().getStartDate())) //TODO NSteffan: How to compare ZonedDateTime?
+    // throw new InvalidEntityException("Operation start time of the asset has to be before end
+    // time", assetInput);
 
-    //Further checks for subclasses
+    // Further checks for subclasses
     if (NodeInput.class.isAssignableFrom(assetInput.getClass()))
       NodeValidationUtils.check((NodeInput) assetInput);
     else if (ConnectorInput.class.isAssignableFrom(assetInput.getClass()))
@@ -85,7 +86,7 @@ public class ValidationUtils {
       SystemParticipantValidationUtils.check((SystemParticipantInput) assetInput);
     else if (ThermalUnitInput.class.isAssignableFrom(assetInput.getClass()))
       ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput);
-    //TODO NSteffan: Implement check for thermal bus?
+    // TODO NSteffan: Implement check for thermal bus?
     else {
       throw new ValidationException(
           "Cannot validate object of class '"
@@ -150,7 +151,9 @@ public class ValidationUtils {
             .map(Quantity::toString)
             .collect(Collectors.joining(", "));
     if (!malformedQuantities.isEmpty()) {
-      throw new UnsafeEntityException(msg + ": " + malformedQuantities, entity); //TODO NSteffan: use InvalidEntityException here?
+      throw new UnsafeEntityException(
+          msg + ": " + malformedQuantities,
+          entity); // TODO NSteffan: use InvalidEntityException here?
     }
   }
 

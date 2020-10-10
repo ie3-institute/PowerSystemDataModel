@@ -2,7 +2,7 @@
  * © 2020. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
- */
+*/
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
@@ -25,20 +25,20 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
    * @param measurementUnit Measurement unit to validate
    */
   public static void check(MeasurementUnitInput measurementUnit) {
-    //Check if null
+    // Check if null
     checkNonNull(measurementUnit, "a measurement unit");
-    //Check if node is null
+    // Check if node is null
     if (measurementUnit.getNode() == null)
       throw new InvalidEntityException("Node is null", measurementUnit);
-    //Check if measurement unit measures any values
+    // Check if measurement unit measures any values
     Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     if (!measurementUnit.getP()
         && !measurementUnit.getQ()
         && !measurementUnit.getVAng()
         && !measurementUnit.getVMag())
       logger.warning("Measurement Unit does not measure any values");
-      //throw new InvalidEntityException("Measurement Unit does not measure any values", measurementUnit);
-    //TODO NSteffan: Work with logger warning instead of exception? Correct usage of logger?
+    // throw new InvalidEntityException("Measurement Unit does not measure any values",
+    // measurementUnit);
+    // TODO NSteffan: Work with logger warning instead of exception? Correct usage of logger?
   }
-
 }
