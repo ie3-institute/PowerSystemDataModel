@@ -8,6 +8,7 @@ package edu.ie3.test.common
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardLoadProfile
+import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.*
@@ -26,6 +27,7 @@ import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.*
 
+import static edu.ie3.datamodel.models.StandardUnits.*
 import static edu.ie3.util.quantities.PowerSystemUnits.*
 import static tech.units.indriya.unit.Units.*
 
@@ -47,12 +49,12 @@ class SystemParticipantTestData {
 	public static final String cosPhiFixedDeSerialized = "cosPhiFixed:{(0.00,0.95)}"
 	public static final String cosPhiPDeSerialized = "cosPhiP:{(0.00,1.00),(0.90,1.00),(1.20,-0.30)}"
 	public static final String qVDeSerialized = "qV:{(0.90,-0.30),(0.95,0.00),(1.05,0.00),(1.10,0.30)}"
-	private static final ComparableQuantity<Power> sRated = Quantities.getQuantity(25d, KILOVOLTAMPERE)
+	private static final ComparableQuantity<Power> sRated = Quantities.getQuantity(25d, ACTIVE_POWER_IN)
 	private static final double cosPhiRated = 0.95
 	private static final UUID typeUuid = UUID.fromString("5ebd8f7e-dedb-4017-bb86-6373c4b68eb8")
-	private static final ComparableQuantity<Currency> capex = Quantities.getQuantity(100d, EURO)
-	private static final ComparableQuantity<EnergyPrice> opex = Quantities.getQuantity(50d, EURO_PER_MEGAWATTHOUR)
-	private static final ComparableQuantity<Dimensionless> etaConv = Quantities.getQuantity(98d, PERCENT)
+	private static final ComparableQuantity<Currency> capex = Quantities.getQuantity(100d, CAPEX)
+	private static final ComparableQuantity<EnergyPrice> opex = Quantities.getQuantity(50d, ENERGY_PRICE)
+	private static final ComparableQuantity<Dimensionless> etaConv = Quantities.getQuantity(98d, EFFICIENCY)
 
 
 	// FixedFeedInput
@@ -68,11 +70,11 @@ class SystemParticipantTestData {
 	)
 
 	// PV
-	private static final double albedo = 0.20000000298023224
-	private static final ComparableQuantity<Angle> azimuth = Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM)
-	private static final ComparableQuantity<Angle> height = Quantities.getQuantity(41.01871871948242, DEGREE_GEOM)
-	private static double kT = 1
-	private static double kG = 0.8999999761581421
+	private static final double albedo = 0.20000000298023224d
+	private static final ComparableQuantity<Angle> azimuth = Quantities.getQuantity(-8.926613807678223d, AZIMUTH)
+	private static final ComparableQuantity<Angle> height = Quantities.getQuantity(41.01871871948242d, SOLAR_HEIGHT)
+	private static double kT = 1d
+	private static double kG = 0.8999999761581421d
 	public static final PvInput pvInput = new PvInput(
 	UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
 	"test_pvInput",
@@ -94,8 +96,8 @@ class SystemParticipantTestData {
 
 	// WEC
 	private static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
-	private static final ComparableQuantity<Area> rotorArea = Quantities.getQuantity(20, SQUARE_METRE)
-	private static final ComparableQuantity<Length> hubHeight = Quantities.getQuantity(200, METRE)
+	private static final ComparableQuantity<Area> rotorArea = Quantities.getQuantity(20, ROTOR_AREA)
+	private static final ComparableQuantity<Length> hubHeight = Quantities.getQuantity(200, HUB_HEIGHT)
 	public static final WecTypeInput wecType = new WecTypeInput(
 	typeUuid,
 	"test_wecType",
@@ -121,10 +123,10 @@ class SystemParticipantTestData {
 	)
 
 	// CHP
-	private static final ComparableQuantity<Dimensionless> etaEl = Quantities.getQuantity(19, PERCENT)
-	private static final ComparableQuantity<Dimensionless> etaThermal = Quantities.getQuantity(76, PERCENT)
-	private static final ComparableQuantity<Power> pOwn = Quantities.getQuantity(0, KILOWATT)
-	private static final ComparableQuantity<Power> pThermal = Quantities.getQuantity(9, KILOWATT)
+	private static final ComparableQuantity<Dimensionless> etaEl = Quantities.getQuantity(19, EFFICIENCY)
+	private static final ComparableQuantity<Dimensionless> etaThermal = Quantities.getQuantity(76, EFFICIENCY)
+	private static final ComparableQuantity<Power> pOwn = Quantities.getQuantity(0, ACTIVE_POWER_IN)
+	private static final ComparableQuantity<Power> pThermal = Quantities.getQuantity(9, ACTIVE_POWER_IN)
 	public static final ChpTypeInput chpTypeInput = new ChpTypeInput(
 	typeUuid,
 	"test_chpType",
@@ -144,12 +146,12 @@ class SystemParticipantTestData {
 	operator,
 	operationTime
 	)
-	public static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(1.039154027, CUBIC_METRE)
-	public static final ComparableQuantity<Volume> storageVolumeLvlMin = Quantities.getQuantity(0.3, CUBIC_METRE)
-	public static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(110, CELSIUS)
-	public static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, CELSIUS)
+	public static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(1.039154027, VOLUME)
+	public static final ComparableQuantity<Volume> storageVolumeLvlMin = Quantities.getQuantity(0.3, VOLUME)
+	public static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(110, TEMPERATURE)
+	public static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, TEMPERATURE)
 	public static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(
-	1, KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE)
+	1, SPECIFIC_HEAT_CAPACITY)
 	public static final ThermalStorageInput thermalStorage = new CylindricalStorageInput(
 	UUID.fromString("8851813b-3a7d-4fee-874b-4df9d724e4b3"),
 	"test_cylindricThermalStorage",
@@ -175,7 +177,7 @@ class SystemParticipantTestData {
 	)
 
 	// BM
-	private static final ComparableQuantity<DimensionlessRate> loadGradient = Quantities.getQuantity(25, PERCENT_PER_HOUR)
+	private static final ComparableQuantity<DimensionlessRate> loadGradient = Quantities.getQuantity(25, ACTIVE_POWER_GRADIENT)
 	public static final BmTypeInput bmTypeInput = new BmTypeInput(
 	typeUuid,
 	"test_bmTypeInput",
@@ -187,7 +189,7 @@ class SystemParticipantTestData {
 	etaConv
 	)
 
-	private static final ComparableQuantity<EnergyPrice> feedInTarif = Quantities.getQuantity(10, EURO_PER_MEGAWATTHOUR)
+	private static final ComparableQuantity<EnergyPrice> feedInTarif = Quantities.getQuantity(10, ENERGY_PRICE)
 	public static final BmInput bmInput = new BmInput(
 	UUID.fromString("d06e5bb7-a3c7-4749-bdd1-4581ff2f6f4d"),
 	"test_bmInput",
@@ -202,8 +204,8 @@ class SystemParticipantTestData {
 	)
 
 	// EV
-	private static final ComparableQuantity<Energy> eStorage = Quantities.getQuantity(100, KILOWATTHOUR)
-	private static final ComparableQuantity<SpecificEnergy> eCons = Quantities.getQuantity(5, KILOWATTHOUR_PER_KILOMETRE)
+	private static final ComparableQuantity<Energy> eStorage = Quantities.getQuantity(100, ENERGY_IN)
+	private static final ComparableQuantity<SpecificEnergy> eCons = Quantities.getQuantity(5, ENERGY_PER_DISTANCE)
 	public static final EvTypeInput evTypeInput = new EvTypeInput(
 	typeUuid,
 	"test_evTypeInput",
@@ -224,7 +226,7 @@ class SystemParticipantTestData {
 	)
 
 	// Load
-	private static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, KILOWATTHOUR)
+	private static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, ENERGY_IN)
 	private static final StandardLoadProfile standardLoadProfile = BdewLoadProfile.H0
 	public static final LoadInput loadInput = new LoadInput(
 	UUID.fromString("eaf77f7e-9001-479f-94ca-7fb657766f5f"),
@@ -241,11 +243,11 @@ class SystemParticipantTestData {
 	)
 
 	// Storage
-	private static final ComparableQuantity<Power> pMax = Quantities.getQuantity(15, KILOWATT)
-	private static final ComparableQuantity<Dimensionless> eta = Quantities.getQuantity(95, PERCENT)
-	private static final ComparableQuantity<Dimensionless> dod = Quantities.getQuantity(10, PERCENT)
-	private static final ComparableQuantity<DimensionlessRate> cpRate = Quantities.getQuantity(1, PU_PER_HOUR)
-	private static final ComparableQuantity<Time> lifeTime = Quantities.getQuantity(20, YEAR)
+	private static final ComparableQuantity<Power> pMax = Quantities.getQuantity(15, ACTIVE_POWER_IN)
+	private static final ComparableQuantity<Dimensionless> eta = Quantities.getQuantity(95, EFFICIENCY)
+	private static final ComparableQuantity<Dimensionless> dod = Quantities.getQuantity(10, EFFICIENCY)
+	private static final ComparableQuantity<DimensionlessRate> cpRate = Quantities.getQuantity(100, ACTIVE_POWER_GRADIENT)
+	private static final ComparableQuantity<Time> lifeTime = Quantities.getQuantity(175316.4, LIFE_TIME)
 	private static final int lifeCycle = 100
 	public static final StorageTypeInput storageTypeInput = new StorageTypeInput(
 	typeUuid,
@@ -294,7 +296,6 @@ class SystemParticipantTestData {
 	cosPhiFixed,
 	hpTypeInput
 	)
-
 
 	public static allParticipants = [
 		fixedFeedInInput,

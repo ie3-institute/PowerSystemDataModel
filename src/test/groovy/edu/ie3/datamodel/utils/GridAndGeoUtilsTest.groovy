@@ -74,6 +74,6 @@ class GridAndGeoUtilsTest extends Specification {
 		def nodeB = GridTestData.nodeB
 
 		expect:
-		GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB) == Quantities.getQuantity(0.9135678707610981, PowerSystemUnits.KILOMETRE)
+		GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB) == Quantities.getQuantity(0.91356787076109815268517, PowerSystemUnits.KILOMETRE)
 	}
 }
