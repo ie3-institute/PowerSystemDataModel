@@ -84,7 +84,7 @@ public class WeatherValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     WeatherValue that = (WeatherValue) o;
-    return Objects.equals(coordinate, that.coordinate)
+    return coordinate.equals(that.coordinate)
         && Objects.equals(irradiation, that.irradiation)
         && Objects.equals(temperature, that.temperature)
         && Objects.equals(wind, that.wind);

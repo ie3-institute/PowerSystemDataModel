@@ -17,7 +17,7 @@ public class EnergyPriceValue implements Value {
 
   /** @param price per MWh */
   public EnergyPriceValue(ComparableQuantity<EnergyPrice> price) {
-    this.price = price.to(StandardUnits.ENERGY_PRICE);
+    this.price = price == null ? null : price.to(StandardUnits.ENERGY_PRICE);
   }
 
   public ComparableQuantity<EnergyPrice> getPrice() {

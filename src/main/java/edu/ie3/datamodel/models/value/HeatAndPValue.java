@@ -21,7 +21,7 @@ public class HeatAndPValue extends PValue {
    */
   public HeatAndPValue(ComparableQuantity<Power> p, ComparableQuantity<Power> heatDemand) {
     super(p);
-    this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
+    this.heatDemand = heatDemand == null ? null : heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
   public ComparableQuantity<Power> getHeatDemand() {

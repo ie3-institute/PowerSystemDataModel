@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.timeseries;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import java.util.Map;
-import java.util.Objects;
 import org.locationtech.jts.geom.Point;
 
 public class TimeBasedWeatherValueData extends EntityData {
@@ -37,7 +36,7 @@ public class TimeBasedWeatherValueData extends EntityData {
     if (!super.equals(o)) return false;
 
     TimeBasedWeatherValueData that = (TimeBasedWeatherValueData) o;
-    return Objects.equals(coordinate, that.coordinate);
+    return coordinate.equals(that.coordinate);
   }
 
   @Override

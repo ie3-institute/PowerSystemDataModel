@@ -24,8 +24,10 @@ public class IrradiationValue implements Value {
   public IrradiationValue(
       ComparableQuantity<Irradiation> directIrradiation,
       ComparableQuantity<Irradiation> diffuseIrradiation) {
-    this.directIrradiation = directIrradiation.to(StandardUnits.IRRADIATION);
-    this.diffuseIrradiation = diffuseIrradiation.to(StandardUnits.IRRADIATION);
+    this.directIrradiation =
+        directIrradiation == null ? null : directIrradiation.to(StandardUnits.IRRADIATION);
+    this.diffuseIrradiation =
+        diffuseIrradiation == null ? null : diffuseIrradiation.to(StandardUnits.IRRADIATION);
   }
 
   public ComparableQuantity<Irradiation> getDiffuseIrradiation() {

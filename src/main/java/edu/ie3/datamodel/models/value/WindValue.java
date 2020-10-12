@@ -23,8 +23,8 @@ public class WindValue implements Value {
    * @param velocity Wind velocity (typically in m/s)
    */
   public WindValue(ComparableQuantity<Angle> direction, ComparableQuantity<Speed> velocity) {
-    this.direction = direction.to(StandardUnits.WIND_DIRECTION);
-    this.velocity = velocity.to(StandardUnits.WIND_VELOCITY);
+    this.direction = direction == null ? null : direction.to(StandardUnits.WIND_DIRECTION);
+    this.velocity = velocity == null ? null : velocity.to(StandardUnits.WIND_VELOCITY);
   }
 
   public ComparableQuantity<Angle> getDirection() {

@@ -24,7 +24,7 @@ public class SValue extends PValue {
    */
   public SValue(ComparableQuantity<Power> p, ComparableQuantity<Power> q) {
     super(p);
-    this.q = q.to(StandardUnits.REACTIVE_POWER_IN);
+    this.q = q == null ? null : q.to(StandardUnits.REACTIVE_POWER_IN);
   }
 
   public ComparableQuantity<Power> getQ() {

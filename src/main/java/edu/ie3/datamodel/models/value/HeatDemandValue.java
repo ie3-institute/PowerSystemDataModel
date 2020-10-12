@@ -15,7 +15,7 @@ public class HeatDemandValue implements Value {
   private final ComparableQuantity<Power> heatDemand;
 
   public HeatDemandValue(ComparableQuantity<Power> heatDemand) {
-    this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
+    this.heatDemand = heatDemand == null ? null : heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
   public ComparableQuantity<Power> getHeatDemand() {
