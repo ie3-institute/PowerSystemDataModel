@@ -97,7 +97,7 @@ public class Transformer3WResult extends TransformerResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     Transformer3WResult that = (Transformer3WResult) o;
-    return Objects.equals(iCMag, that.iCMag) && Objects.equals(iCAng, that.iCAng);
+    return iCMag.equals(that.iCMag) && iCAng.equals(that.iCAng);
   }
 
   @Override

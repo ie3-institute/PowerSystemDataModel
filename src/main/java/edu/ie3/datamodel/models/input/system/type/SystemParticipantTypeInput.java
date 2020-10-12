@@ -69,9 +69,9 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     if (!super.equals(o)) return false;
     SystemParticipantTypeInput that = (SystemParticipantTypeInput) o;
     return Double.compare(that.cosPhiRated, cosPhiRated) == 0
-        && Objects.equals(capex, that.capex)
-        && Objects.equals(opex, that.opex)
-        && Objects.equals(sRated, that.sRated);
+        && capex.equals(that.capex)
+        && opex.equals(that.opex)
+        && sRated.equals(that.sRated);
   }
 
   @Override

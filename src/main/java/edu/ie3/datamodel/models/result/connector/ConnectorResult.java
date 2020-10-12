@@ -115,12 +115,11 @@ public abstract class ConnectorResult extends ResultEntity {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
     ConnectorResult that = (ConnectorResult) o;
-    return Objects.equals(iAMag, that.iAMag)
-        && Objects.equals(iAAng, that.iAAng)
-        && Objects.equals(iBMag, that.iBMag)
-        && Objects.equals(iBAng, that.iBAng);
+    return iAMag.equals(that.iAMag)
+        && iAAng.equals(that.iAAng)
+        && iBMag.equals(that.iBMag)
+        && iBAng.equals(that.iBAng);
   }
 
   @Override

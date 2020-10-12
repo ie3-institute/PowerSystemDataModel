@@ -71,7 +71,7 @@ public class EvResult extends SystemParticipantResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     EvResult evResult = (EvResult) o;
-    return Objects.equals(soc, evResult.soc);
+    return soc.equals(evResult.soc);
   }
 
   @Override

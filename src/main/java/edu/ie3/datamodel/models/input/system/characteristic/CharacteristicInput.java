@@ -131,8 +131,8 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
     if (o == null || getClass() != o.getClass()) return false;
     CharacteristicInput<?, ?> that = (CharacteristicInput<?, ?>) o;
     return decimalPlaces == that.decimalPlaces
-        && Objects.equals(characteristicPrefix, that.characteristicPrefix)
-        && Objects.equals(points, that.points);
+        && characteristicPrefix.equals(that.characteristicPrefix)
+        && points.equals(that.points);
   }
 
   @Override

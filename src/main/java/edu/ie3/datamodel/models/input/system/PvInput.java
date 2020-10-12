@@ -180,10 +180,10 @@ public class PvInput extends SystemParticipantInput {
         && Double.compare(pvInput.kT, kT) == 0
         && marketReaction == pvInput.marketReaction
         && Double.compare(pvInput.cosPhiRated, cosPhiRated) == 0
-        && Objects.equals(azimuth, pvInput.azimuth)
-        && Objects.equals(etaConv, pvInput.etaConv)
-        && Objects.equals(height, pvInput.height)
-        && Objects.equals(sRated, pvInput.sRated);
+        && azimuth.equals(pvInput.azimuth)
+        && etaConv.equals(pvInput.etaConv)
+        && height.equals(pvInput.height)
+        && sRated.equals(pvInput.sRated);
   }
 
   @Override

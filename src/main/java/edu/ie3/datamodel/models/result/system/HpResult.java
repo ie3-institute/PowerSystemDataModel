@@ -68,7 +68,7 @@ public class HpResult extends SystemParticipantResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HpResult hpResult = (HpResult) o;
-    return Objects.equals(qDot, hpResult.qDot);
+    return qDot.equals(hpResult.qDot);
   }
 
   @Override

@@ -61,8 +61,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     BmTypeInput that = (BmTypeInput) o;
-    return Objects.equals(activePowerGradient, that.activePowerGradient)
-        && Objects.equals(etaConv, that.etaConv);
+    return activePowerGradient.equals(that.activePowerGradient) && etaConv.equals(that.etaConv);
   }
 
   @Override

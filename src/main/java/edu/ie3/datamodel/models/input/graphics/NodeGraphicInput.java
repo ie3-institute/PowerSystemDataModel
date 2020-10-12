@@ -50,7 +50,7 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     NodeGraphicInput that = (NodeGraphicInput) o;
-    return Objects.equals(node, that.node) && Objects.equals(point, that.point);
+    return node.equals(that.node) && point.equals(that.point);
   }
 
   @Override

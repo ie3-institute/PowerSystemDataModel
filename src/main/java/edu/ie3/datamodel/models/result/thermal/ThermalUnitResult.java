@@ -63,7 +63,7 @@ public abstract class ThermalUnitResult extends ResultEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ThermalUnitResult that = (ThermalUnitResult) o;
-    return Objects.equals(qDot, that.qDot);
+    return qDot.equals(that.qDot);
   }
 
   @Override

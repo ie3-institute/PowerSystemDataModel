@@ -69,7 +69,7 @@ public class ThermalHouseResult extends ThermalSinkResult {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ThermalHouseResult that = (ThermalHouseResult) o;
-    return Objects.equals(indoorTemperature, that.indoorTemperature);
+    return indoorTemperature.equals(that.indoorTemperature);
   }
 
   @Override

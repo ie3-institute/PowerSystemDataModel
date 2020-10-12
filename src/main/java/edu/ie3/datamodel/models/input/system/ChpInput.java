@@ -122,9 +122,8 @@ public class ChpInput extends SystemParticipantInput
     if (!super.equals(o)) return false;
     ChpInput chpInput = (ChpInput) o;
     return marketReaction == chpInput.marketReaction
-        && Objects.equals(thermalBus, chpInput.thermalBus)
-        && Objects.equals(type, chpInput.type)
-        && Objects.equals(thermalStorage, chpInput.thermalStorage);
+        && thermalBus.equals(chpInput.thermalBus)
+        && type.equals(chpInput.type);
   }
 
   @Override

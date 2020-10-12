@@ -84,10 +84,10 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     GridContainer that = (GridContainer) o;
-    return Objects.equals(gridName, that.gridName)
-        && Objects.equals(rawGrid, that.rawGrid)
-        && Objects.equals(systemParticipants, that.systemParticipants)
-        && Objects.equals(graphics, that.graphics);
+    return gridName.equals(that.gridName)
+        && rawGrid.equals(that.rawGrid)
+        && systemParticipants.equals(that.systemParticipants)
+        && graphics.equals(that.graphics);
   }
 
   @Override

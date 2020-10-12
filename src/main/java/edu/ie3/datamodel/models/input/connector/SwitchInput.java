@@ -67,7 +67,7 @@ public class SwitchInput extends ConnectorInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     SwitchInput that = (SwitchInput) o;
-    return closed == that.closed;
+    return Objects.equals(closed, that.closed);
   }
 
   @Override

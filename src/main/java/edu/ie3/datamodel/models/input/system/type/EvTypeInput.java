@@ -60,7 +60,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     EvTypeInput that = (EvTypeInput) o;
-    return Objects.equals(eStorage, that.eStorage) && Objects.equals(eCons, that.eCons);
+    return eStorage.equals(that.eStorage) && eCons.equals(that.eCons);
   }
 
   @Override

@@ -29,7 +29,7 @@ public class TemperatureValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     TemperatureValue that = (TemperatureValue) o;
-    return Objects.equals(temperature, that.temperature);
+    return temperature.equals(that.temperature);
   }
 
   @Override

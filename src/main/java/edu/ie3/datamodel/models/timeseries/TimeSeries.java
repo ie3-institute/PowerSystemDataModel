@@ -107,7 +107,7 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     TimeSeries<?, ?> that = (TimeSeries<?, ?>) o;
-    return Objects.equals(entries, that.entries);
+    return entries.equals(that.entries);
   }
 
   @Override

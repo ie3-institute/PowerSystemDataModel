@@ -77,10 +77,10 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ChpTypeInput that = (ChpTypeInput) o;
-    return Objects.equals(etaEl, that.etaEl)
-        && Objects.equals(etaThermal, that.etaThermal)
-        && Objects.equals(pThermal, that.pThermal)
-        && Objects.equals(pOwn, that.pOwn);
+    return etaEl.equals(that.etaEl)
+        && etaThermal.equals(that.etaThermal)
+        && pThermal.equals(that.pThermal)
+        && pOwn.equals(that.pOwn);
   }
 
   @Override

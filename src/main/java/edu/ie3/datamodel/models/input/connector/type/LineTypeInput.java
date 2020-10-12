@@ -88,12 +88,12 @@ public class LineTypeInput extends AssetTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     LineTypeInput that = (LineTypeInput) o;
-    return Objects.equals(b, that.b)
-        && Objects.equals(g, that.g)
-        && Objects.equals(r, that.r)
-        && Objects.equals(x, that.x)
-        && Objects.equals(iMax, that.iMax)
-        && Objects.equals(vRated, that.vRated);
+    return b.equals(that.b)
+        && g.equals(that.g)
+        && r.equals(that.r)
+        && x.equals(that.x)
+        && iMax.equals(that.iMax)
+        && vRated.equals(that.vRated);
   }
 
   @Override

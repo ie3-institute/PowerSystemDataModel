@@ -199,12 +199,12 @@ public class RawGridElements implements InputContainer<AssetInput> {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     RawGridElements that = (RawGridElements) o;
-    return Objects.equals(nodes, that.nodes)
-        && Objects.equals(lines, that.lines)
-        && Objects.equals(transformer2Ws, that.transformer2Ws)
-        && Objects.equals(transformer3Ws, that.transformer3Ws)
-        && Objects.equals(switches, that.switches)
-        && Objects.equals(measurementUnits, that.measurementUnits);
+    return nodes.equals(that.nodes)
+        && lines.equals(that.lines)
+        && transformer2Ws.equals(that.transformer2Ws)
+        && transformer3Ws.equals(that.transformer3Ws)
+        && switches.equals(that.switches)
+        && measurementUnits.equals(that.measurementUnits);
   }
 
   @Override

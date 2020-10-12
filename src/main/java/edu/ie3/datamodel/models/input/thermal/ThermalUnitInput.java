@@ -55,7 +55,7 @@ public abstract class ThermalUnitInput extends AssetInput implements HasThermalB
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ThermalUnitInput that = (ThermalUnitInput) o;
-    return Objects.equals(thermalBus, that.thermalBus);
+    return thermalBus.equals(that.thermalBus);
   }
 
   @Override

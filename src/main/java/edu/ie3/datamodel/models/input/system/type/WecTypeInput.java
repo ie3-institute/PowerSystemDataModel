@@ -80,10 +80,10 @@ public class WecTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     WecTypeInput that = (WecTypeInput) o;
-    return Objects.equals(cpCharacteristic, that.cpCharacteristic)
-        && Objects.equals(etaConv, that.etaConv)
-        && Objects.equals(rotorArea, that.rotorArea)
-        && Objects.equals(hubHeight, that.hubHeight);
+    return cpCharacteristic.equals(that.cpCharacteristic)
+        && etaConv.equals(that.etaConv)
+        && rotorArea.equals(that.rotorArea)
+        && hubHeight.equals(that.hubHeight);
   }
 
   @Override

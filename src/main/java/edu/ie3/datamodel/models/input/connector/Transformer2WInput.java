@@ -90,7 +90,7 @@ public class Transformer2WInput extends TransformerInput implements HasType {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     Transformer2WInput that = (Transformer2WInput) o;
-    return Objects.equals(type, that.type);
+    return type.equals(that.type);
   }
 
   @Override

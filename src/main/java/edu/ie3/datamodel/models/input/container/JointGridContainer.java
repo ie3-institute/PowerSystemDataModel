@@ -61,7 +61,7 @@ public class JointGridContainer extends GridContainer {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     JointGridContainer that = (JointGridContainer) o;
-    return Objects.equals(subGridTopologyGraph, that.subGridTopologyGraph);
+    return subGridTopologyGraph.equals(that.subGridTopologyGraph);
   }
 
   @Override

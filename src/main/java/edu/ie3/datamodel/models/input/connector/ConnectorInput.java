@@ -90,8 +90,8 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
     if (!super.equals(o)) return false;
     ConnectorInput that = (ConnectorInput) o;
     return parallelDevices == that.parallelDevices
-        && Objects.equals(nodeA, that.nodeA)
-        && Objects.equals(nodeB, that.nodeB);
+        && nodeA.equals(that.nodeA)
+        && nodeB.equals(that.nodeB);
   }
 
   @Override

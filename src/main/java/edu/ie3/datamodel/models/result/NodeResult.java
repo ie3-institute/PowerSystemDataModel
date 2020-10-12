@@ -82,7 +82,7 @@ public class NodeResult extends ResultEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     NodeResult that = (NodeResult) o;
-    return Objects.equals(vMag, that.vMag) && Objects.equals(vAng, that.vAng);
+    return vMag.equals(that.vMag) && vAng.equals(that.vAng);
   }
 
   @Override

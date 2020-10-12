@@ -50,7 +50,7 @@ public class HpTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HpTypeInput that = (HpTypeInput) o;
-    return Objects.equals(pThermal, that.pThermal);
+    return pThermal.equals(that.pThermal);
   }
 
   @Override
