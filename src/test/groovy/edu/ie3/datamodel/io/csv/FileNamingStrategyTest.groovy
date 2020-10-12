@@ -32,6 +32,7 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
+import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
@@ -98,7 +99,7 @@ class FileNamingStrategyTest extends Specification {
 		matcher.group("uuid") == "bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
-	def "The FileNamingStrategy throws an Exception, if it is provided a malformed string"() {
+	def "Trying to extract time series meta information throws an Exception, if it is provided a malformed string"() {
 		given:
 		def fns = new FileNamingStrategy()
 		def path = Paths.get("/bla/foo")
@@ -109,6 +110,43 @@ class FileNamingStrategyTest extends Specification {
 		then:
 		def ex = thrown(IllegalArgumentException)
 		ex.message == "Unknown format of 'foo'. Cannot extract meta information."
+	}
+
+	def "Trying to extract individual time series meta information throws an Exception, if it is provided a malformed string"() {
+		given:
+		def fns = new FileNamingStrategy()
+		def fileName = "foo"
+
+		when:
+		fns.extractIndividualTimesSeriesMetaInformation(fileName)
+
+		then:
+		def ex = thrown(IllegalArgumentException)
+		ex.message == "Cannot extract meta information on individual time series from 'foo'."
+	}
+
+	def "Trying to extract load profile time series meta information throws an Exception, if it is provided a malformed string"() {
+		given:
+		def fns = new FileNamingStrategy()
+		def fileName = "foo"
+
+		when:
+		fns.extractLoadProfileTimesSeriesMetaInformation(fileName)
+
+		then:
+		def ex = thrown(IllegalArgumentException)
+		ex.message == "Cannot extract meta information on load profile time series from 'foo'."
+	}
+
+	def "An unknown column scheme gets not parsed"() {
+		given:
+		def invalidColumnScheme = "what's this"
+
+		when:
+		def actual = FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.parse(invalidColumnScheme)
+
+		then:
+		!actual.present
 	}
 
 	def "The FileNamingStrategy extracts correct meta information from a valid individual time series file name"() {
@@ -448,6 +486,38 @@ class FileNamingStrategyTest extends Specification {
 		modelClass       || expectedString
 		NodeGraphicInput || "node_graphic_input"
 		LineGraphicInput || "line_graphic_input"
+	}
+
+	def "A FileNamingStrategy without pre- or suffix should return empty Optional, if the content of the time series is not covered"() {
+		given:
+		FileNamingStrategy strategy = new FileNamingStrategy()
+		def entries = [
+			new TimeBasedValue(ZonedDateTime.now(), new IntValue(5))
+		] as SortedSet
+		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
+		timeSeries.uuid >> UUID.randomUUID()
+		timeSeries.entries >> entries
+
+		when:
+		Optional<String> actual = strategy.getFileName(timeSeries)
+
+		then:
+		!actual.present
+	}
+
+	def "A FileNamingStrategy without pre- or suffix should return empty Optional, if the time series is empty"() {
+		given:
+		FileNamingStrategy strategy = new FileNamingStrategy()
+		def entries = [] as SortedSet
+		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
+		timeSeries.uuid >> UUID.randomUUID()
+		timeSeries.entries >> entries
+
+		when:
+		Optional<String> actual = strategy.getFileName(timeSeries)
+
+		then:
+		!actual.present
 	}
 
 	def "A FileNamingStrategy without pre- or suffix should return valid file name for individual time series" () {
