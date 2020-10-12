@@ -152,15 +152,15 @@ public class Transformer2WTypeInput extends AssetTypeInput {
         && tapNeutr == that.tapNeutr
         && tapMin == that.tapMin
         && tapMax == that.tapMax
-        && rSc.equals(that.rSc)
-        && xSc.equals(that.xSc)
-        && sRated.equals(that.sRated)
-        && vRatedA.equals(that.vRatedA)
-        && vRatedB.equals(that.vRatedB)
-        && gM.equals(that.gM)
-        && bM.equals(that.bM)
-        && dV.equals(that.dV)
-        && dPhi.equals(that.dPhi);
+        && Objects.equals(rSc, that.rSc)
+        && Objects.equals(xSc, that.xSc)
+        && Objects.equals(sRated, that.sRated)
+        && Objects.equals(vRatedA, that.vRatedA)
+        && Objects.equals(vRatedB, that.vRatedB)
+        && Objects.equals(gM, that.gM)
+        && Objects.equals(bM, that.bM)
+        && Objects.equals(dV, that.dV)
+        && Objects.equals(dPhi, that.dPhi);
   }
 
   @Override

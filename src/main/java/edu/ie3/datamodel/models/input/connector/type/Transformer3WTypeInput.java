@@ -205,22 +205,22 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     return tapNeutr == that.tapNeutr
         && tapMin == that.tapMin
         && tapMax == that.tapMax
-        && sRatedA.equals(that.sRatedA)
-        && sRatedB.equals(that.sRatedB)
-        && sRatedC.equals(that.sRatedC)
-        && vRatedA.equals(that.vRatedA)
-        && vRatedB.equals(that.vRatedB)
-        && vRatedC.equals(that.vRatedC)
-        && rScA.equals(that.rScA)
-        && rScB.equals(that.rScB)
-        && rScC.equals(that.rScC)
-        && xScA.equals(that.xScA)
-        && xScB.equals(that.xScB)
-        && xScC.equals(that.xScC)
-        && gM.equals(that.gM)
-        && bM.equals(that.bM)
-        && dV.equals(that.dV)
-        && dPhi.equals(that.dPhi);
+        && Objects.equals(sRatedA, that.sRatedA)
+        && Objects.equals(sRatedB, that.sRatedB)
+        && Objects.equals(sRatedC, that.sRatedC)
+        && Objects.equals(vRatedA, that.vRatedA)
+        && Objects.equals(vRatedB, that.vRatedB)
+        && Objects.equals(vRatedC, that.vRatedC)
+        && Objects.equals(rScA, that.rScA)
+        && Objects.equals(rScB, that.rScB)
+        && Objects.equals(rScC, that.rScC)
+        && Objects.equals(xScA, that.xScA)
+        && Objects.equals(xScB, that.xScB)
+        && Objects.equals(xScC, that.xScC)
+        && Objects.equals(gM, that.gM)
+        && Objects.equals(bM, that.bM)
+        && Objects.equals(dV, that.dV)
+        && Objects.equals(dPhi, that.dPhi);
   }
 
   @Override

@@ -214,8 +214,9 @@ public class LoadInput extends SystemParticipantInput {
     LoadInput loadInput = (LoadInput) o;
     return dsm == loadInput.dsm
         && Double.compare(loadInput.cosPhiRated, cosPhiRated) == 0
-        && eConsAnnual.equals(loadInput.eConsAnnual)
-        && sRated.equals(loadInput.sRated);
+        && Objects.equals(standardLoadProfile, loadInput.standardLoadProfile)
+        && Objects.equals(eConsAnnual, loadInput.eConsAnnual)
+        && Objects.equals(sRated, loadInput.sRated);
   }
 
   @Override

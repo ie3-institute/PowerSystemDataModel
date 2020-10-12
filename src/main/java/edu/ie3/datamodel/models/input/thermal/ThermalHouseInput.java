@@ -82,7 +82,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ThermalHouseInput that = (ThermalHouseInput) o;
-    return ethLosses.equals(that.ethLosses) && ethCapa.equals(that.ethCapa);
+    return Objects.equals(ethLosses, that.ethLosses) && Objects.equals(ethCapa, that.ethCapa);
   }
 
   @Override

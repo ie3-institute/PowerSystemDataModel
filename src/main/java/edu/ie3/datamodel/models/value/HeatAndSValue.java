@@ -38,7 +38,7 @@ public class HeatAndSValue extends SValue {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HeatAndSValue that = (HeatAndSValue) o;
-    return heatDemand.equals(that.heatDemand);
+    return Objects.equals(heatDemand, that.heatDemand);
   }
 
   @Override

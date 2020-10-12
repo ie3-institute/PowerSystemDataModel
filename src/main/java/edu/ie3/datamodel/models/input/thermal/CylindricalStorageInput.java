@@ -119,11 +119,11 @@ public class CylindricalStorageInput extends ThermalStorageInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     CylindricalStorageInput that = (CylindricalStorageInput) o;
-    return storageVolumeLvl.equals(that.storageVolumeLvl)
-        && storageVolumeLvlMin.equals(that.storageVolumeLvlMin)
-        && inletTemp.equals(that.inletTemp)
-        && returnTemp.equals(that.returnTemp)
-        && c.equals(that.c);
+    return Objects.equals(storageVolumeLvl, that.storageVolumeLvl)
+        && Objects.equals(storageVolumeLvlMin, that.storageVolumeLvlMin)
+        && Objects.equals(inletTemp, that.inletTemp)
+        && Objects.equals(returnTemp, that.returnTemp)
+        && Objects.equals(c, that.c);
   }
 
   @Override

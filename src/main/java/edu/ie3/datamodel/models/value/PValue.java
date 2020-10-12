@@ -29,8 +29,8 @@ public class PValue implements Value {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    PValue that = (PValue) o;
-    return p.equals(that.p);
+    PValue pValue = (PValue) o;
+    return Objects.equals(p, pValue.p);
   }
 
   @Override

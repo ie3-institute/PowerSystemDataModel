@@ -108,12 +108,12 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     if (!super.equals(o)) return false;
     StorageTypeInput that = (StorageTypeInput) o;
     return lifeCycle == that.lifeCycle
-        && eStorage.equals(that.eStorage)
-        && pMax.equals(that.pMax)
-        && activePowerGradient.equals(that.activePowerGradient)
-        && eta.equals(that.eta)
-        && dod.equals(that.dod)
-        && lifeTime.equals(that.lifeTime);
+        && Objects.equals(eStorage, that.eStorage)
+        && Objects.equals(pMax, that.pMax)
+        && Objects.equals(activePowerGradient, that.activePowerGradient)
+        && Objects.equals(eta, that.eta)
+        && Objects.equals(dod, that.dod)
+        && Objects.equals(lifeTime, that.lifeTime);
   }
 
   @Override

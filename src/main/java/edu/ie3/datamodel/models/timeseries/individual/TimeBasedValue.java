@@ -39,7 +39,7 @@ public class TimeBasedValue<T extends Value> extends TimeSeriesEntry<T>
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     TimeBasedValue<?> that = (TimeBasedValue<?>) o;
-    return time.equals(that.time);
+    return Objects.equals(time, that.time);
   }
 
   @Override

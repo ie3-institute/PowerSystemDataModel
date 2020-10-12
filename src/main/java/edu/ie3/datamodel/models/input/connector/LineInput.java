@@ -125,10 +125,10 @@ public class LineInput extends ConnectorInput implements HasType {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     LineInput lineInput = (LineInput) o;
-    return type.equals(lineInput.type)
-        && length.equals(lineInput.length)
-        && geoPosition.equals(lineInput.geoPosition)
-        && olmCharacteristic.equals(lineInput.olmCharacteristic);
+    return Objects.equals(type, lineInput.type)
+        && Objects.equals(length, lineInput.length)
+        && Objects.equals(geoPosition, lineInput.geoPosition)
+        && Objects.equals(olmCharacteristic, lineInput.olmCharacteristic);
   }
 
   @Override
