@@ -125,11 +125,13 @@ public class InfluxDbWeatherSource implements WeatherSource {
         InfluxDbConnector.parseQueryResult(queryResult, MEASUREMENT_NAME_WEATHER);
     return measurementsMap.get(MEASUREMENT_NAME_WEATHER).stream()
         .map(
-            fields ->
-                new TimeBasedWeatherValueData(
-                    fields,
-                    coordinateSource.getCoordinate(
-                        Integer.valueOf(fields.remove(COORDINATE_ID_COLUMN_NAME)))))
+            fields -> {
+              fields.putIfAbsent("uuid", UUID.randomUUID().toString());
+              return new TimeBasedWeatherValueData(
+                  fields,
+                  coordinateSource.getCoordinate(
+                      Integer.valueOf(fields.remove(COORDINATE_ID_COLUMN_NAME))));
+            })
         .map(weatherValueFactory::getEntity);
   }
 
