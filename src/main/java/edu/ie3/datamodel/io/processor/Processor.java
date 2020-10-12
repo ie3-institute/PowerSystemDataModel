@@ -225,6 +225,25 @@ public abstract class Processor<T> {
                                 + getRegisteredClass().getSimpleName()
                                 + ".class.")));
         break;
+      case "Optional":
+        // only quantity optionals are expected here!
+        // if optional and present, unpack value and call this method again, if not present return
+        // null
+        resultStringBuilder.append(
+            ((Optional<?>) methodReturnObject)
+                .map(
+                    o ->
+                        handleQuantity((Quantity<?>) o, fieldName)
+                            .orElseThrow(
+                                () ->
+                                    new EntityProcessorException(
+                                        "Unable to process quantity value for attribute '"
+                                            + fieldName
+                                            + "' in result entity "
+                                            + getRegisteredClass().getSimpleName()
+                                            + ".class.")))
+                .orElse(""));
+        break;
       case "ZonedDateTime":
         resultStringBuilder.append(processZonedDateTime((ZonedDateTime) methodReturnObject));
         break;

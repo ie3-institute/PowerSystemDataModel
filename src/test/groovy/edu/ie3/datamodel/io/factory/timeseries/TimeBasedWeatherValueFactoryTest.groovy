@@ -5,19 +5,14 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import com.sun.tools.doclets.standard.Standard
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.WeatherTestData
 import edu.ie3.util.TimeUtil
-import edu.ie3.util.quantities.interfaces.Irradiation
-import jdk.nashorn.internal.runtime.regexp.joni.ast.QuantifierNode
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import java.awt.geom.QuadCurve2D
-import java.time.ZonedDateTime
 
 
 class TimeBasedWeatherValueFactoryTest extends Specification {
