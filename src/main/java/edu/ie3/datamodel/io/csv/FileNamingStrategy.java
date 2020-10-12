@@ -50,7 +50,7 @@ public class FileNamingStrategy {
    * by the named capturing group "uuid"
    */
   private static final Pattern INDIVIDUAL_TIME_SERIES_PATTERN =
-      Pattern.compile("its_(?<columnScheme>[a-zA-Z]+)_(?<uuid>" + UUID_STRING + ")");
+      Pattern.compile("its_(?<columnScheme>[a-zA-Z]{1,7})_(?<uuid>" + UUID_STRING + ")");
 
   /**
    * Pattern to identify individual time series in this instance of the naming strategy (takes care
@@ -63,7 +63,7 @@ public class FileNamingStrategy {
    * profile is accessible via the named capturing group "profile", the uuid by the group "uuid"
    */
   private static final Pattern LOAD_PROFILE_TIME_SERIES =
-      Pattern.compile("lpts_(?<profile>[^_]+)_(?<uuid>" + UUID_STRING + ")");
+      Pattern.compile("lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>" + UUID_STRING + ")");
 
   /**
    * Pattern to identify load profile time series in this instance of the naming strategy (takes
@@ -227,7 +227,8 @@ public class FileNamingStrategy {
     Path filePath = path.getFileName();
     if (filePath == null)
       throw new IllegalArgumentException("Unable to extract file name from path '" + path + "'.");
-    String fileName = filePath.toString().replaceAll("(?:\\.[^\\\\/\\s]+){1,2}$", "");
+    /* Remove the file ending (ending limited to 255 chars, which is the max file name allowed in NTFS and ext4) */
+    String fileName = filePath.toString().replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
 
     if (getIndividualTimeSeriesPattern().matcher(fileName).matches())
       return extractIndividualTimesSeriesMetaInformation(fileName);

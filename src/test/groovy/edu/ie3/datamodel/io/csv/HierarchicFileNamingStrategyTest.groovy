@@ -347,7 +347,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def actual = strategy.getIndividualTimeSeriesPattern().pattern()
 
 		then:
-		actual == "participants/time_series/its_(?<columnScheme>[a-zA-Z]+)_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+		actual == "participants/time_series/its_(?<columnScheme>[a-zA-Z]{1,7})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 
 	def "A hierarchic file naming strategy returns correct load profile time series file name pattern"() {
@@ -358,6 +358,6 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def actual = strategy.getLoadProfileTimeSeriesPattern().pattern()
 
 		then:
-		actual == "global/lpts_(?<profile>[^_]+)_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+		actual == "global/lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 }
