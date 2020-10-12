@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.value;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
+import java.util.Optional;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes a price for energy */
@@ -20,8 +21,8 @@ public class EnergyPriceValue implements Value {
     this.price = price == null ? null : price.to(StandardUnits.ENERGY_PRICE);
   }
 
-  public ComparableQuantity<EnergyPrice> getPrice() {
-    return price;
+  public Optional<ComparableQuantity<EnergyPrice>> getPrice() {
+    return Optional.ofNullable(price);
   }
 
   @Override

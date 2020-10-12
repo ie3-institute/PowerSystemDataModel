@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
@@ -24,8 +25,8 @@ public class HeatAndPValue extends PValue {
     this.heatDemand = heatDemand == null ? null : heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
-  public ComparableQuantity<Power> getHeatDemand() {
-    return heatDemand;
+  public Optional<ComparableQuantity<Power>> getHeatDemand() {
+    return Optional.ofNullable(heatDemand);
   }
 
   @Override

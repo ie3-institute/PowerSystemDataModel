@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 
@@ -20,8 +21,8 @@ public class TemperatureValue implements Value {
     this.temperature = temperature == null ? null : temperature.to(StandardUnits.TEMPERATURE);
   }
 
-  public ComparableQuantity<Temperature> getTemperature() {
-    return temperature;
+  public Optional<ComparableQuantity<Temperature>> getTemperature() {
+    return Optional.ofNullable(temperature);
   }
 
   @Override

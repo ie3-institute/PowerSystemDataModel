@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
@@ -27,8 +28,8 @@ public class SValue extends PValue {
     this.q = q == null ? null : q.to(StandardUnits.REACTIVE_POWER_IN);
   }
 
-  public ComparableQuantity<Power> getQ() {
-    return q;
+  public Optional<ComparableQuantity<Power>> getQ() {
+    return Optional.ofNullable(q);
   }
 
   @Override

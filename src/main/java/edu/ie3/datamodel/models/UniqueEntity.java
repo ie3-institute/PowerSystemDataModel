@@ -32,7 +32,7 @@ public abstract class UniqueEntity {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     UniqueEntity that = (UniqueEntity) o;
-    return Objects.equals(uuid, that.uuid);
+    return uuid.equals(that.uuid);
   }
 
   @Override

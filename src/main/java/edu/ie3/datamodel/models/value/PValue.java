@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
@@ -21,8 +22,8 @@ public class PValue implements Value {
     this.p = p == null ? null : p.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
-  public ComparableQuantity<Power> getP() {
-    return p;
+  public Optional<ComparableQuantity<Power>> getP() {
+    return Optional.ofNullable(p);
   }
 
   @Override

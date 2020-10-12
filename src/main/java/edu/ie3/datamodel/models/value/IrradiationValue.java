@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.value;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Irradiation;
 import java.util.Objects;
+import java.util.Optional;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes an irradiation value as a pair of diffuse and direct radiation */
@@ -30,12 +31,12 @@ public class IrradiationValue implements Value {
         diffuseIrradiation == null ? null : diffuseIrradiation.to(StandardUnits.IRRADIATION);
   }
 
-  public ComparableQuantity<Irradiation> getDiffuseIrradiation() {
-    return diffuseIrradiation;
+  public Optional<ComparableQuantity<Irradiation>> getDiffuseIrradiation() {
+    return Optional.ofNullable(diffuseIrradiation);
   }
 
-  public ComparableQuantity<Irradiation> getDirectIrradiation() {
-    return directIrradiation;
+  public Optional<ComparableQuantity<Irradiation>> getDirectIrradiation() {
+    return Optional.ofNullable(directIrradiation);
   }
 
   @Override

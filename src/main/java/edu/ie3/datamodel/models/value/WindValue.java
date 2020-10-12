@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import tech.units.indriya.ComparableQuantity;
@@ -27,12 +28,12 @@ public class WindValue implements Value {
     this.velocity = velocity == null ? null : velocity.to(StandardUnits.WIND_VELOCITY);
   }
 
-  public ComparableQuantity<Angle> getDirection() {
-    return direction;
+  public Optional<ComparableQuantity<Angle>> getDirection() {
+    return Optional.ofNullable(direction);
   }
 
-  public ComparableQuantity<Speed> getVelocity() {
-    return velocity;
+  public Optional<ComparableQuantity<Speed>> getVelocity() {
+    return Optional.ofNullable(velocity);
   }
 
   @Override
