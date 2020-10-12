@@ -15,8 +15,13 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
 
-/** A file naming strategy, that takes hierarchic order of sub folders into account. */
+/**
+ * A file naming strategy, that takes hierarchic order of sub folders into account. For the standard
+ * structure that can be found in the documentation {@link DefaultInputHierarchy} can be used
+ */
 public class HierarchicFileNamingStrategy extends FileNamingStrategy {
+  private static final String ALL_POSSIBLE_FILE_SEPARATORS_AT_START = "^[\\\\/]";
+
   private final FileHierarchy hierarchy;
 
   public HierarchicFileNamingStrategy(String prefix, String suffix, FileHierarchy hierarchy) {
@@ -53,8 +58,8 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
 
   /**
    * Determines the filename for a certain class by composing the hierarchic sub directory structure
-   * provided by {@link this#hierarchy} with the actual file name given by {@link super}. If one of
-   * both components cannot be determined, an empty {@link Optional} is returned.
+   * provided by {@link #hierarchy} with the actual file name given by {@link FileNamingStrategy}.
+   * If one of both components cannot be determined, an empty {@link Optional} is returned.
    *
    * @param cls The class to define the file name for.
    * @return The file name including the hierarchic sub directory structure
@@ -69,7 +74,7 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
       return Optional.empty();
     } else {
       /* Make sure, that the file name does not start with a file separator */
-      fileName = maybeFilename.get().replaceFirst("^[\\\\/]", "");
+      fileName = maybeFilename.get().replaceFirst(ALL_POSSIBLE_FILE_SEPARATORS_AT_START, "");
     }
 
     /* Get the directory name */
@@ -81,7 +86,10 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
     } else {
       /* Make sure, that the directory name does not start with a file separator */
       directoryName =
-          maybeDirectoryName.get().replaceFirst("^[\\\\/]", "").replaceAll("[\\\\/]", "/");
+          maybeDirectoryName
+              .get()
+              .replaceFirst(ALL_POSSIBLE_FILE_SEPARATORS_AT_START, "")
+              .replaceAll("[\\\\/]", "/");
     }
 
     /* Put everything together and return it */
@@ -101,7 +109,7 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
       return Optional.empty();
     } else {
       /* Make sure, that the file name does not start with a file separator */
-      fileName = maybeFilename.get().replaceFirst("^[\\\\/]", "");
+      fileName = maybeFilename.get().replaceFirst(ALL_POSSIBLE_FILE_SEPARATORS_AT_START, "");
     }
 
     /* Get the directory name */
@@ -113,7 +121,10 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
     } else {
       /* Make sure, that the directory name does not start with a file separator */
       directoryName =
-          maybeDirectoryName.get().replaceFirst("^[\\\\/]", "").replaceAll("[\\\\/]", "/");
+          maybeDirectoryName
+              .get()
+              .replaceFirst(ALL_POSSIBLE_FILE_SEPARATORS_AT_START, "")
+              .replaceAll("[\\\\/]", "/");
     }
 
     /* Put everything together and return it */

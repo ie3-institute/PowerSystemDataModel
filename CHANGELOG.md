@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+-  Definition for a default input file directory structure
+-  Tarball utils to extract and compress files
+
+### Changed
+- moved api docs to own branch incl. automated api-docs deployment
+
 ## [1.1.0] - 2020-09-15
 
 ### Added

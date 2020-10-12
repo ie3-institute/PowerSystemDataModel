@@ -16,7 +16,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class DefaultInputHierarchySpec extends Specification {
+class DefaultInputHierarchyTest extends Specification {
 	@Shared
 	Path tmpDirectory
 
@@ -119,7 +119,7 @@ class DefaultInputHierarchySpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The path '" + basePath + "' does not exist."
+		ex.message == "The path '" + basePath + "' does not exist."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a file instead of a hierarchy"() {
@@ -134,7 +134,7 @@ class DefaultInputHierarchySpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The path '" + basePath +"' has to be a directory."
+		ex.message == "The path '" + basePath + "' has to be a directory."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a hierarchy with missing mandatory directory"() {
@@ -151,7 +151,7 @@ class DefaultInputHierarchySpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The mandatory directory '" + basePath + "/global' does not exist."
+		ex.message == "The mandatory directory '" + basePath + "/global' does not exist."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a hierarchy with file instead of mandatory directory"() {
@@ -169,7 +169,7 @@ class DefaultInputHierarchySpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The mandatory directory '" + basePath + "/global' is not a directory."
+		ex.message == "The mandatory directory '" + basePath + "/global' is not a directory."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a hierarchy with file instead of optional directory"() {
@@ -187,7 +187,7 @@ class DefaultInputHierarchySpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "The optional directory '" + basePath + "/thermal' is not a directory."
+		ex.message == "The optional directory '" + basePath + "/thermal' is not a directory."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a hierarchy with unsupported extra directory"() {
@@ -204,6 +204,6 @@ class DefaultInputHierarchySpec extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.getMessage() == "There is a directory '" + basePath + "/something_on_top' apparent, that is not supported by the default directory hierarchy."
+		ex.message == "There is a directory '" + basePath + "/something_on_top' apparent, that is not supported by the default directory hierarchy."
 	}
 }

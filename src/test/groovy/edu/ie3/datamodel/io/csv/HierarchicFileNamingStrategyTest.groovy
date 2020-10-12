@@ -288,8 +288,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		given:
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 		def timeSeries = Mock(LoadProfileInput)
-		timeSeries.getUuid() >> uuid
-		timeSeries.getType() >> type
+		timeSeries.uuid >> uuid
+		timeSeries.type >> type
 
 		when:
 		def actual = strategy.getFileName(timeSeries)

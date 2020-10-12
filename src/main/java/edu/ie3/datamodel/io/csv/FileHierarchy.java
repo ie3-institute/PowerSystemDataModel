@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.csv;
 
 import edu.ie3.datamodel.models.UniqueEntity;
+import java.io.File;
 import java.util.Optional;
 
 /**
@@ -31,6 +32,6 @@ public interface FileHierarchy {
    * @return An Option to the regarding sub directory as a string
    */
   default Optional<String> getSubDirectory(Class<? extends UniqueEntity> cls) {
-    return getSubDirectory(cls, "/");
+    return getSubDirectory(cls, File.separator);
   }
 }

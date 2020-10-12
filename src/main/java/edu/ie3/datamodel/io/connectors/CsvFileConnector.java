@@ -156,7 +156,7 @@ public class CsvFileConnector implements DataConnector {
    *
    * @param fileName the name of the file that should be read
    * @return the reader that contains information about the file to be read in
-   * @throws FileNotFoundException
+   * @throws FileNotFoundException if no file with the provided file name can be found
    */
   public BufferedReader initReader(String fileName) throws FileNotFoundException {
     BufferedReader newReader;

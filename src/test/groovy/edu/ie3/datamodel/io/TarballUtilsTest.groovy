@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io
 
 import edu.ie3.datamodel.exceptions.FileException
 import edu.ie3.util.io.FileIOUtils
+import org.apache.commons.compress.archivers.ArchiveEntry
 import org.apache.commons.io.FilenameUtils
 import spock.lang.Shared
 import spock.lang.Specification
@@ -16,7 +17,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.stream.Collectors
 
-class TarballUtilsSpec extends Specification {
+class TarballUtilsTest extends Specification {
 	@Shared
 	Path tmpDirectory
 
@@ -222,5 +223,18 @@ class TarballUtilsSpec extends Specification {
 		Files.list(participantsPath).map { it.toString() }.sorted().collect(Collectors.toList()) == [
 			tmpDirectory.toString() + "/extract/default_directory_hierarchy/participants/ev_input.csv"
 		]
+	}
+
+	def "The zip slip protection detects malicious entries correctly"() {
+		given:
+		def entry = Mock(ArchiveEntry)
+		entry.name >> "../../pirates/home"
+
+		when:
+		TarballUtils.zipSlipProtect(entry, tmpDirectory)
+
+		then:
+		def ex = thrown(IOException)
+		ex.message == "Bad entry: ../../pirates/home"
 	}
 }

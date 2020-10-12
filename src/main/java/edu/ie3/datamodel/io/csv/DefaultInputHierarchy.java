@@ -27,6 +27,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,7 +47,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
   private static final Logger logger = LoggerFactory.getLogger(DefaultInputHierarchy.class);
 
   /** Use the unix file separator here. */
-  protected static final String FILE_SEPARATOR = "/";
+  protected static final String FILE_SEPARATOR = File.separator;
 
   /** Base directory for this specific grid model. The base path should be a directory. */
   private final Path baseDirectory;
@@ -78,7 +79,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
   }
 
   /**
-   * Checks, if the structure beneath {@link this#baseDirectory} is okay.
+   * Checks, if the structure beneath {@link #baseDirectory} is okay.
    *
    * @throws FileException if not
    */
@@ -140,7 +141,11 @@ public class DefaultInputHierarchy implements FileHierarchy {
     }
   }
 
-  /** Creates all mandatory subdirectories of this default directory hierarchy */
+  /**
+   * Creates all mandatory subdirectories of this default directory hierarchy
+   *
+   * @throws IOException If the creation of sub directories is not possible
+   */
   public void createDirs() throws IOException {
     createDirs(false);
   }
@@ -150,6 +155,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
    * directories are created.
    *
    * @param withOptionals if true, also optional directories get created.
+   * @throws IOException If the creation of sub directories is not possible
    */
   public void createDirs(boolean withOptionals) throws IOException {
     Files.createDirectories(baseDirectory);
@@ -164,7 +170,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
   }
 
   /**
-   * Gives the correct sub directory (w.r.t. {@link this#baseDirectory}) for the provided class.
+   * Gives the correct sub directory (w.r.t. {@link #baseDirectory}) for the provided class.
    *
    * @param cls Class to define the sub directory for
    * @param fileSeparator The file separator to use

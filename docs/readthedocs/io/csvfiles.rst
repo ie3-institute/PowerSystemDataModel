@@ -13,7 +13,7 @@ Currently we offer two different, pre-defined file naming strategies, which you 
    considered. For more details see `Default naming strategy`_.
 2. **HierarchicFileNamingStrategy**:
    An extended version of the FileNamingStrategy. Additionally, the `Default directory hierarchy`_ is taken into
-   account. Please not, that this directory hierarchy is only meant to be used in conjunction with input models.
+   account. Please note, that this directory hierarchy is only meant to be used in conjunction with input models.
 
 However, you can control the behaviour of serialization and de-serialization of models by injecting the desired naming
 strategy you like into :code:`CsvDataSource` and :code:`CsvFileSink`.
@@ -21,7 +21,7 @@ strategy you like into :code:`CsvDataSource` and :code:`CsvFileSink`.
 Default naming strategy
 =======================
 There is a default mapping from model class to file naming in the case you would like to use csv files for
-(de)serialization of models.
+(de-)serialization of models.
 You may extend / alter the naming with pre- or suffix by calling :code:`new FileNamingStrategy("prefix", "suffix")`.
 
 Input
@@ -180,7 +180,7 @@ easier.
 
    Default directory hierarchy for input classes
 
-The italic parts are optional and therefore the others are mandatory.
+The italic parts are optional and the others are mandatory.
 As you see, this still is a pretty flexible approach, as you only need to provide, what you really need.
 However, note that this hierarchy is only meant to be used in conjunction with input models, yet.
 
@@ -189,8 +189,8 @@ hierarchy.
 
 De-Serialization (loading models)
 =================================
-At the end, having an instance of :ref:`Grid Container<grid_container_model>` is the goal.
-It consists of the three main blocks:
+Having an instance of :ref:`Grid Container<grid_container_model>` is most of the time the target whenever you load your
+grid. It consists of the three main blocks:
 
    1. :ref:`Raw grid elements<grid_container_raw_grid_elements>`
    2. :ref:`System participants<grid_container_system_participants>`
@@ -257,7 +257,7 @@ An application example to load an *exampleGrid* from csv files located in :code:
 
 As observable from the code, it doesn't play a role, where the different parts come from.
 It is also a valid solution, to receive types from file, but participants and raw grid elements from a data base.
-Only prerequisite: An implementation of the different interfaces for the desired data sink.
+Only prerequisite is an implementation of the different interfaces for the desired data source.
 
 Serialization (writing models)
 ==============================

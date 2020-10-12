@@ -32,7 +32,8 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Provides an easy to use standard way to name files based on the class that should be processed
- * e.g. when writing .csv or .xml files
+ * e.g. when writing .csv files. Represents a flat dir with all files inside. To use a hierarchic
+ * directory structure one might consider using {@link HierarchicFileNamingStrategy}
  *
  * @version 0.1
  * @since 03.02.20
