@@ -214,34 +214,15 @@ public abstract class Processor<T> {
         break;
       case "Quantity":
       case "ComparableQuantity":
-        resultStringBuilder.append(
-            handleQuantity((Quantity<?>) methodReturnObject, fieldName)
-                .orElseThrow(
-                    () ->
-                        new EntityProcessorException(
-                            "Unable to process quantity value for attribute '"
-                                + fieldName
-                                + "' in result entity "
-                                + getRegisteredClass().getSimpleName()
-                                + ".class.")));
+        resultStringBuilder.append(handleQuantity((Quantity<?>) methodReturnObject, fieldName));
         break;
       case "Optional":
         // only quantity optionals are expected here!
         // if optional and present, unpack value and call this method again, if not present return
-        // null
+        // an empty string as by convention null == missing value == "" when persisting data
         resultStringBuilder.append(
             ((Optional<?>) methodReturnObject)
-                .map(
-                    o ->
-                        handleQuantity((Quantity<?>) o, fieldName)
-                            .orElseThrow(
-                                () ->
-                                    new EntityProcessorException(
-                                        "Unable to process quantity value for attribute '"
-                                            + fieldName
-                                            + "' in result entity "
-                                            + getRegisteredClass().getSimpleName()
-                                            + ".class.")))
+                .map(o -> handleQuantity((Quantity<?>) o, fieldName))
                 .orElse(""));
         break;
       case "ZonedDateTime":
@@ -326,16 +307,7 @@ public abstract class Processor<T> {
     if (fieldName.equalsIgnoreCase(VOLT_LVL)) resultStringBuilder.append(voltageLevel.getId());
 
     if (fieldName.equalsIgnoreCase(V_RATED))
-      resultStringBuilder.append(
-          handleQuantity(voltageLevel.getNominalVoltage(), fieldName)
-              .orElseThrow(
-                  () ->
-                      new EntityProcessorException(
-                          "Unable to process quantity value for attribute '"
-                              + fieldName
-                              + "' in result entity "
-                              + getRegisteredClass().getSimpleName()
-                              + ".class.")));
+      resultStringBuilder.append(handleQuantity(voltageLevel.getNominalVoltage(), fieldName));
     return resultStringBuilder.toString();
   }
 
@@ -347,12 +319,21 @@ public abstract class Processor<T> {
    * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
    *     or empty if an error occurred during processing
    */
-  protected Optional<String> handleQuantity(Quantity<?> quantity, String fieldName) {
+  protected String handleQuantity(Quantity<?> quantity, String fieldName) {
+    Optional<String> optQuant;
     if (specificQuantityFieldNames.contains(fieldName)) {
-      return handleProcessorSpecificQuantity(quantity, fieldName);
+      optQuant = handleProcessorSpecificQuantity(quantity, fieldName);
     } else {
-      return quantityValToOptionalString(quantity);
+      optQuant = quantityValToOptionalString(quantity);
     }
+    return optQuant.orElseThrow(
+        () ->
+            new EntityProcessorException(
+                "Unable to process quantity value for attribute '"
+                    + fieldName
+                    + "' in result entity "
+                    + getRegisteredClass().getSimpleName()
+                    + ".class."));
   }
 
   /**
