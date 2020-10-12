@@ -92,6 +92,21 @@ public class ThermalHouseInput extends ThermalSinkInput {
 
   @Override
   public String toString() {
-    return "ThermalHouseInput{" + "ethLosses=" + ethLosses + ", ethCapa=" + ethCapa + '}';
+    return "ThermalHouseInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", bus="
+        + getThermalBus().getUuid()
+        + ", ethLosses="
+        + ethLosses
+        + ", ethCapa="
+        + ethCapa
+        + '}';
   }
 }

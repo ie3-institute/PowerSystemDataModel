@@ -226,7 +226,20 @@ public class LoadInput extends SystemParticipantInput {
   @Override
   public String toString() {
     return "LoadInput{"
-        + "dsm="
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + getNode().getUuid()
+        + ", qCharacteristics='"
+        + getqCharacteristics()
+        + '\''
+        + ", dsm="
         + dsm
         + ", eConsAnnual="
         + eConsAnnual

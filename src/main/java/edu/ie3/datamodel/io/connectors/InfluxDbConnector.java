@@ -63,8 +63,8 @@ public class InfluxDbConnector implements DataConnector {
   }
 
   /**
-   * Initializes a new InfluxDbConnector with the default URL {@value #INFLUXDB_URL}, database name
-   * {@value #INFLUXDB_DATABASE_NAME} and no scenario name
+   * Initializes a new InfluxDbConnector with the default URL {@link #INFLUXDB_URL}, database name
+   * {@link #INFLUXDB_DATABASE_NAME} and no scenario name
    */
   public InfluxDbConnector() {
     this(INFLUXDB_URL, INFLUXDB_DATABASE_NAME);

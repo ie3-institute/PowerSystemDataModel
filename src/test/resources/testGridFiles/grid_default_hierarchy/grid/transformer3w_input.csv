@@ -1,0 +1,2 @@
+uuid,auto_tap,id,node_a,node_b,node_c,operates_from,operates_until,operator,parallel_devices,tap_pos,type
+cc327469-7d56-472b-a0df-edbb64f90e8f,true,3w_test,4ca90220-74c2-4369-9afa-a18bf068840d,47d29df0-ba2d-4d23-8e75-c82229c5c758,bd837a25-58f3-44ac-aa90-c6b6e3cd91b2,2020-03-24T15:11:31Z[UTC],2020-03-25T15:11:31Z[UTC],f15105c4-a2de-4ab8-a621-4bc98e372d92,1,0,5b0ee546-21fb-4a7f-a801-5dbd3d7bb356

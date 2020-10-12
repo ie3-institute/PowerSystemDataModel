@@ -92,6 +92,17 @@ public class NodeResult extends ResultEntity {
 
   @Override
   public String toString() {
-    return "NodeResult{" + "vMag=" + vMag + ", vAng=" + vAng + '}';
+    return "NodeResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", vMag="
+        + vMag
+        + ", vAng="
+        + vAng
+        + '}';
   }
 }

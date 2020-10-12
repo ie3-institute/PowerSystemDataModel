@@ -99,13 +99,17 @@ node {
 
             // test the project
             stage('run tests') {
+
                 gradle('--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain ' +
                         'spotbugsTest test jacocoTestReport jacocoTestCoverageVerification', projectName)
+
+                // due to an issue with openjdk-8 we use openjdk-11 for javadocs generation
+                sh(script: """set +x && cd $projectName""" + ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/usr/local/openjdk-11''', returnStdout: true)
             }
 
             // sonarqube analysis
             stage('sonarqube analysis') {
-                String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, orgName, projectName)
+                String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, currentBranchName, orgName, projectName, projectName)
                 withSonarQubeEnv() { // will pick the global server connection from jenkins for sonarqube
                     gradle(sonarqubeCmd, projectName)
                 }
@@ -152,6 +156,9 @@ node {
                         createAndPushTagOnMain(projectName, sshCredentialsId)
 
                         // todo JH create github release
+
+                        // deploy java docs
+                        deployJavaDocs(projectName, sshCredentialsId, gitCheckoutUrl)
                     }
 
                     // notify rocket chat
@@ -323,33 +330,68 @@ def createAndPushTagOnMain(String projectName, String sshCredentialsId) {
     }
 }
 
+def deployJavaDocs(String projectName, String sshCredentialsId, String gitCheckoutUrl) {
+
+    try {
+        withCredentials([sshUserPrivateKey(credentialsId: sshCredentialsId, keyFileVariable: 'sshKey')]) {
+            // set mail and name in git config
+            sh(script: "set +x && cd $projectName && " +
+                    "git config user.email 'johannes.hiry@tu-dortmund.de' && " +
+                    "git config user.name 'Johannes Hiry'", returnStdout: false)
+
+            // create a temporary repo in the javadocs folder and push the updated javadocs to api-docs branch
+            sh(script: "set +x && cd $projectName && " +
+                    "./gradlew clean && rm -rf tmp-api-docs && mkdir tmp-api-docs && cd tmp-api-docs && " +
+                    "ssh-agent bash -c \"set +x && ssh-add $sshKey; " +
+                    "git init && git remote add origin $gitCheckoutUrl && " +
+                    "git config user.email 'johannes.hiry@tu-dortmund.de' && " +
+                    "git config user.name 'Johannes Hiry' && " +
+                    "git fetch --depth=1 origin api-docs && " +
+                    "git checkout api-docs && " +
+                    "cd .. && ./gradlew clean javadoc -Dorg.gradle.java.home=/usr/local/openjdk-11 && " +
+                    "cp -R build/docs/javadoc/* tmp-api-docs && " +
+                    "cd tmp-api-docs &&" +
+                    "git add --all && git commit -m 'updated api-docs' && git push origin api-docs:api-docs" +
+                    "\"",
+                    returnStdout: false)
+        }
+    } catch (Exception e) {
+        println "Error when deploying javadocs! Exception: $e"
+    }
+
+}
+
 /* gradle */
 
 def gradle(String command, String relativeProjectDir) {
     env.JENKINS_NODE_COOKIE = 'dontKillMe' // this is necessary for the Gradle daemon to be kept alive
 
     // switch directory to be able to use gradle wrapper
-    sh(script: """cd $relativeProjectDir""" + ''' set +x; ./gradlew ''' + """$command""", returnStdout: true)
+    sh(script: """set +x && cd $relativeProjectDir""" + ''' set +x; ./gradlew ''' + """$command""", returnStdout: true)
 }
 
-def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String orgName, String projectName) {
-    switch (env.BRANCH_NAME) {
+def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String currentBranchName, String orgName, String projectName, String relativeGitDir) {
+    switch (currentBranchName) {
         case "main":
             return "sonarqube -Dsonar.branch.name=main -Dsonar.projectKey=$sonarqubeProjectKey"
             break
         case "dev":
-            return "sonarqube -Dsonar.branch.name=main -Dsonar.projectKey=$sonarqubeProjectKey"
+            String[] branchVersion = gradle("-q currentVersion", relativeGitDir).toString().split('\\.')
+            Integer major = branchVersion[0].toInteger()
+            Integer minor = branchVersion[1].toInteger()
+            String projectVersion = "${major}.${minor}-SNAPSHOT"
+            return "sonarqube -Dsonar.projectVersion=${projectVersion} -Dsonar.projectKey=$sonarqubeProjectKey"
             break
         default:
             String gradleCommand = "sonarqube -Dsonar.projectKey=$sonarqubeProjectKey"
             // if this branch has a PR, the sonarqube cmd needs to be adapted
             if (env.CHANGE_ID == null) {
                 // no PR exists
-                return gradleCommand + " -Dsonar.branch.name=${env.BRANCH_NAME}"
+                return gradleCommand + " -Dsonar.branch.name=${currentBranchName}"
             } else {
                 // PR exists, adapt cmd accordingly
-                return gradleCommand + " -Dsonar.pullrequest.branch=${env.BRANCH_NAME} -Dsonar.pullrequest.key=${env.CHANGE_ID} " +
-                        "-Dsonar.pullrequest.base=main -Dsonar.pullrequest.github.repository=${orgName}/${projectName} " +
+                return gradleCommand + " -Dsonar.pullrequest.branch=${currentBranchName} -Dsonar.pullrequest.key=${env.CHANGE_ID} " +
+                        "-Dsonar.pullrequest.base=dev -Dsonar.pullrequest.github.repository=${orgName}/${projectName} " +
                         "-Dsonar.pullrequest.provider=Github"
             }
             break
@@ -568,7 +610,7 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
                 Integer sourceMinor = sourceBranchVersion[1].toInteger()
 
                 boolean validCheck1 = targetMajor == sourceMajor && targetMinor + 1 == sourceMinor
-                boolean validCheck2 = targetMajor + 1 == sourceMajor && targetMinor == sourceMinor
+                boolean validCheck2 = targetMajor + 1 == sourceMajor
 
                 // patch version always needs to be 0
                 boolean patchValid = sourceBranchVersion[2].toInteger() == 0
@@ -584,7 +626,7 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
                 }
             } else {
                 // invalid target branch type for release merge
-                println "Merging release branch into branch type '$targetBranchType' is not supported! Realeas branches" +
+                println "Merging release branch into branch type '$targetBranchType' is not supported! Realease branches" +
                         "can only be merged into main or dev branch!"
                 return -1
             }
@@ -601,7 +643,7 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
                 Integer sourceMinor = sourceBranchVersion[1].toInteger()
 
                 boolean validCheck1 = targetMajor == sourceMajor && targetMinor + 1 == sourceMinor
-                boolean validCheck2 = targetMajor + 1 == sourceMajor && targetMinor == sourceMinor
+                boolean validCheck2 = targetMajor + 1 == sourceMajor
 
                 // patch version always needs to be 0
                 boolean patchValid = sourceBranchVersion[2].toInteger() == 0
@@ -609,7 +651,7 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
                 if ((validCheck1 || validCheck2) && patchValid) {
                     return 0
                 } else {
-                    println "Dev branch versioning does not fit to main branch versioning!\n" +
+                    println "Dev branch versioning does not fit to main branch versioning! Must increase either major or minor version!\n" +
                             "devVersion: ${sourceBranchVersion[0]}.${sourceBranchVersion[1]}.${sourceBranchVersion[2]}\n" +
                             "mainVersion: ${targetBranchVersion[0]}.${targetBranchVersion[1]}.${targetBranchVersion[2]}"
                     return -1

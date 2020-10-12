@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+-  Definition for a default input file directory structure
+-  Tarball utils to extract and compress files
+
+### Changed
+- moved api docs to own branch incl. automated api-docs deployment
+
+## [1.1.0] - 2020-09-15
+
+### Added
 -  Headline in csv files is now mandatory. CsvDataSource checks for existing field `uuid` in first row of .csv file
 -  Minor logging improvements
 -  New constructor in ``Transformer3WInput`` that allows the internal node to be marked as slack
@@ -35,6 +44,7 @@ coordinates or multiple exactly equal coordinates possible
 - `SwitchResult` superclass changed from `ConnectorResult` to `ResultEntity`
 - ``CsvDataSource`` now parses valid RFC 4180 rows correctly (invalid, old syntax is still supported but deprecated!)
 -  Consolidate test tasks. `gradle allTests` is now replaced by `gradle test`. Only unit tests can be run with `gradle unitTest`.
+- Changed projects toString() methods for readability/completeness
 
 ### Fixed
 -  CsvDataSource now stops trying to get an operator for empty operator uuid field in entities

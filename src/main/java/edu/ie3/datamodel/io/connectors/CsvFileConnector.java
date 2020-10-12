@@ -6,9 +6,9 @@
 package edu.ie3.datamodel.io.connectors;
 
 import edu.ie3.datamodel.exceptions.ConnectorException;
-import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
 import edu.ie3.datamodel.io.csv.CsvFileDefinition;
+import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -156,7 +156,7 @@ public class CsvFileConnector implements DataConnector {
    *
    * @param fileName the name of the file that should be read
    * @return the reader that contains information about the file to be read in
-   * @throws FileNotFoundException
+   * @throws FileNotFoundException if no file with the provided file name can be found
    */
   public BufferedReader initReader(String fileName) throws FileNotFoundException {
     BufferedReader newReader;

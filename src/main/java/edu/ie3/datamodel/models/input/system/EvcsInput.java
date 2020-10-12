@@ -14,10 +14,12 @@ import java.util.UUID;
 public class EvcsInput extends SystemParticipantInput {
 
   /**
-   * Dummy constructor
-   *
    * @param uuid Unique identifier
    * @param id Human readable identifier
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node that the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
    * @deprecated only added to remove compile error. Please implement a real constructor
    */
   @Deprecated

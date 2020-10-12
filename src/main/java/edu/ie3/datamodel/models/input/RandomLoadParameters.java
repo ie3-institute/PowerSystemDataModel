@@ -151,7 +151,9 @@ public class RandomLoadParameters extends InputEntity {
   @Override
   public String toString() {
     return "RandomLoadParameters{"
-        + "quarterHour="
+        + "uuid="
+        + getUuid()
+        + ", quarterHour="
         + quarterHour
         + ", kWd="
         + kWd

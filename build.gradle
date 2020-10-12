@@ -80,6 +80,9 @@ dependencies {
 
 	//InfluxDb
 	compile 'org.influxdb:influxdb-java:2.17'
+
+	compile 'commons-io:commons-io:+' // I/O functionalities
+	compile 'org.apache.commons:commons-compress:+' // I/O functionalities
 }
 
 wrapper {

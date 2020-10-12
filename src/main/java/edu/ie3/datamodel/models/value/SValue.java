@@ -46,6 +46,6 @@ public class SValue extends PValue {
 
   @Override
   public String toString() {
-    return "SValue{" + "q=" + q + '}';
+    return "SValue{" + "p=" + getP() + ", q=" + q + '}';
   }
 }

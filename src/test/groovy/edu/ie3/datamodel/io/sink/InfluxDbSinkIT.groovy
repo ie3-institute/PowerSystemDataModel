@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.io.FileNamingStrategy
+import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
@@ -27,7 +27,6 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
 
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 

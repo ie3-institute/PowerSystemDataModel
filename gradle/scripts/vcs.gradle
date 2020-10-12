@@ -7,4 +7,3 @@ task finalizePR() {
 finalizePR.dependsOn("puml2png")
 finalizePR.dependsOn("spotlessApply")
 finalizePR.dependsOn("test")
-finalizePR.dependsOn("javadoc")

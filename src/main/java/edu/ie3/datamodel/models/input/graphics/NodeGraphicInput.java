@@ -60,7 +60,14 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
 
   @Override
   public String toString() {
-    return "NodeGraphicInput{" + "node=" + node + ", point=" + point + '}';
+    return "NodeGraphicInput{"
+        + "uuid="
+        + getUuid()
+        + ", node="
+        + node.getUuid()
+        + ", point="
+        + point
+        + '}';
   }
 
   @Override
