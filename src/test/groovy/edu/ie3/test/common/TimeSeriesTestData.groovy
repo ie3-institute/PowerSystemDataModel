@@ -512,16 +512,14 @@ trait TimeSeriesTestData {
 	] as Set
 
 	List<TimeSeries> allTimeSeries = [
+		individualPTimeSeries,
 		individualEnergyPriceTimeSeries,
 		individualHeatAndPTimeSeries,
 		individualHeatAndSTimeSeries,
 		individualHeatDemandTimeSeries,
-		individualIrradiationTimeSeries,
 		individualPTimeSeries,
 		individualSTimeSeries,
-		individualTemperatureTimeSeries,
 		individualWeatherTimeSeries,
-		individualWindTimeSeries,
 		loadProfileInput
 	]
 }

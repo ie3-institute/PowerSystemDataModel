@@ -428,14 +428,17 @@ public class FileNamingStrategy {
       }
 
       public static <V extends Value> Optional<ColumnScheme> parse(Class<V> valueClass) {
+        /* IMPORTANT NOTE: Make sure to start with child classes and then use parent classes to allow for most precise
+         * parsing (child class instances are also assignable to parent classes) */
+
         if (EnergyPriceValue.class.isAssignableFrom(valueClass)) return Optional.of(ENERGY_PRICE);
-        if (PValue.class.isAssignableFrom(valueClass)) return Optional.of(ACTIVE_POWER);
-        if (SValue.class.isAssignableFrom(valueClass)) return Optional.of(APPARENT_POWER);
-        if (HeatDemandValue.class.isAssignableFrom(valueClass)) return Optional.of(HEAT_DEMAND);
-        if (HeatAndPValue.class.isAssignableFrom(valueClass))
-          return Optional.of(ACTIVE_POWER_AND_HEAT_DEMAND);
         if (HeatAndSValue.class.isAssignableFrom(valueClass))
           return Optional.of(APPARENT_POWER_AND_HEAT_DEMAND);
+        if (SValue.class.isAssignableFrom(valueClass)) return Optional.of(APPARENT_POWER);
+        if (HeatAndPValue.class.isAssignableFrom(valueClass))
+          return Optional.of(ACTIVE_POWER_AND_HEAT_DEMAND);
+        if (PValue.class.isAssignableFrom(valueClass)) return Optional.of(ACTIVE_POWER);
+        if (HeatDemandValue.class.isAssignableFrom(valueClass)) return Optional.of(HEAT_DEMAND);
         if (WeatherValue.class.isAssignableFrom(valueClass)) return Optional.of(WEATHER);
         return Optional.empty();
       }
