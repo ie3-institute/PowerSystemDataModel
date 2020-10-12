@@ -5,7 +5,6 @@
  */
 package edu.ie3.datamodel.io.csv
 
-import edu.ie3.datamodel.io.factory.timeseries.TimeBasedValueData
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -39,7 +38,6 @@ import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import edu.ie3.datamodel.models.value.EnergyPriceValue
-import edu.ie3.datamodel.models.value.PValue
 import edu.ie3.util.quantities.dep.PowerSystemUnits
 import spock.lang.Specification
 import tec.uom.se.quantity.Quantities
@@ -122,7 +120,7 @@ class FileNamingStrategyTest extends Specification {
 		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
 
 		then:
-		FileNamingStrategy.IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())
+		FileNamingStrategy.IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
 		(metaInformation as FileNamingStrategy.IndividualTimeSeriesMetaInformation).with {
 			assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
 			assert it.columnScheme == expectedColumnScheme
@@ -187,7 +185,7 @@ class FileNamingStrategyTest extends Specification {
 		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
 
 		then:
-		FileNamingStrategy.LoadProfileTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())
+		FileNamingStrategy.LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
 		(metaInformation as FileNamingStrategy.LoadProfileTimeSeriesMetaInformation).with {
 			assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
 			assert profile == "g3"
@@ -203,7 +201,7 @@ class FileNamingStrategyTest extends Specification {
 		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
 
 		then:
-		FileNamingStrategy.LoadProfileTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())
+		FileNamingStrategy.LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
 		(metaInformation as FileNamingStrategy.LoadProfileTimeSeriesMetaInformation).with {
 			assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
 			assert profile == "g3"
@@ -455,8 +453,8 @@ class FileNamingStrategyTest extends Specification {
 	def "A FileNamingStrategy without pre- or suffix should return valid file name for individual time series" () {
 		given:
 		FileNamingStrategy strategy = new FileNamingStrategy()
-		def entries = new TreeSet()
-		entries.add(new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR))))
+		def entries = [
+			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> uuid
 		timeSeries.entries >> entries
@@ -530,7 +528,7 @@ class FileNamingStrategyTest extends Specification {
 		FileNamingStrategy strategy = new FileNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(TimeSeriesMapping.Entry.class)
+		Optional<String> res = strategy.getFileName(TimeSeriesMapping.Entry)
 
 		then:
 		res.present

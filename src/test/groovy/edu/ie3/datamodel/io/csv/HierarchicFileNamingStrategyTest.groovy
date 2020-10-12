@@ -245,8 +245,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 	def "A FileNamingStrategy without pre- or suffix should return valid file name for individual time series"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
-		def entries = new TreeSet()
-		entries.add(new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR))))
+		def entries = [
+			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> uuid
 		timeSeries.entries >> entries
@@ -266,8 +266,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 	def "A FileNamingStrategy with pre- or suffix should return valid file name for individual time series"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy("aa", "zz", defaultHierarchy)
-		def entries = new TreeSet()
-		entries.add(new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR))))
+		def entries = [
+			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> uuid
 		timeSeries.entries >> entries
@@ -320,7 +320,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def res = strategy.getFileName(TimeSeriesMapping.Entry.class)
+		def res = strategy.getFileName(TimeSeriesMapping.Entry)
 
 		then:
 		res.present
@@ -332,7 +332,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def strategy = new HierarchicFileNamingStrategy("prefix", "suffix", defaultHierarchy)
 
 		when:
-		def res = strategy.getFileName(TimeSeriesMapping.Entry.class)
+		def res = strategy.getFileName(TimeSeriesMapping.Entry)
 
 		then:
 		res.present
@@ -344,7 +344,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def actual = strategy.getIndividualTimeSeriesPattern().pattern()
+		def actual = strategy.individualTimeSeriesPattern.pattern()
 
 		then:
 		actual == "participants/time_series/its_(?<columnScheme>[a-zA-Z]{1,7})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
@@ -355,7 +355,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def actual = strategy.getLoadProfileTimeSeriesPattern().pattern()
+		def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
 		then:
 		actual == "global/lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"

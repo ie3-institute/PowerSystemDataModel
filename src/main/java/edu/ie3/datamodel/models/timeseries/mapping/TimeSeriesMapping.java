@@ -8,14 +8,15 @@ package edu.ie3.datamodel.models.timeseries.mapping;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.value.Value;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class TimeSeriesMapping {
-  private final Map<UUID, IndividualTimeSeries<?>> mapping;
+  private final Map<UUID, IndividualTimeSeries<Value>> mapping;
 
-  public TimeSeriesMapping(Map<UUID, IndividualTimeSeries<?>> mapping) {
+  public TimeSeriesMapping(Map<UUID, IndividualTimeSeries<Value>> mapping) {
     this.mapping = mapping;
   }
 
@@ -27,9 +28,9 @@ public class TimeSeriesMapping {
    * @param timeSeries Available time series
    */
   public TimeSeriesMapping(
-      Collection<Entry> entries, Collection<IndividualTimeSeries<?>> timeSeries) {
+      Collection<Entry> entries, Collection<IndividualTimeSeries<Value>> timeSeries) {
     /* Map time series from their uuid to themselves */
-    Map<UUID, IndividualTimeSeries<?>> timeSeriesMap =
+    Map<UUID, IndividualTimeSeries<Value>> timeSeriesMap =
         timeSeries.stream().collect(Collectors.toMap(UniqueEntity::getUuid, Function.identity()));
 
     /* Map from participant UUID to time series */
@@ -53,7 +54,7 @@ public class TimeSeriesMapping {
    * @param participantUuid UUID of the questioned participant
    * @return Optional time series, if it is available, empty Optional otherwise
    */
-  public Optional<IndividualTimeSeries<?>> get(UUID participantUuid) {
+  public Optional<IndividualTimeSeries<Value>> get(UUID participantUuid) {
     return Optional.ofNullable(mapping.get(participantUuid));
   }
 
