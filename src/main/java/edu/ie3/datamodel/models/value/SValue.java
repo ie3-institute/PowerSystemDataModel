@@ -35,8 +35,9 @@ public class SValue extends PValue {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    SValue that = (SValue) o;
-    return q.equals(that.q);
+    if (!super.equals(o)) return false;
+    SValue sValue = (SValue) o;
+    return Objects.equals(q, sValue.q);
   }
 
   @Override

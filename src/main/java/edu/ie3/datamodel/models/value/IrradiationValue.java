@@ -41,8 +41,8 @@ public class IrradiationValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     IrradiationValue that = (IrradiationValue) o;
-    return directIrradiation.equals(that.directIrradiation)
-        && diffuseIrradiation.equals(that.diffuseIrradiation);
+    return Objects.equals(directIrradiation, that.directIrradiation)
+        && Objects.equals(diffuseIrradiation, that.diffuseIrradiation);
   }
 
   @Override

@@ -27,7 +27,7 @@ public class HeatDemandValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     HeatDemandValue that = (HeatDemandValue) o;
-    return heatDemand.equals(that.heatDemand);
+    return Objects.equals(heatDemand, that.heatDemand);
   }
 
   @Override
