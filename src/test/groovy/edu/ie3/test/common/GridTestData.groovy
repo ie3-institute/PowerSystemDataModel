@@ -21,21 +21,17 @@ import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.util.TimeUtil
-import edu.ie3.util.quantities.dep.PowerSystemUnits
+import edu.ie3.util.quantities.PowerSystemUnits
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.io.geojson.GeoJsonReader
-import tec.uom.se.quantity.Quantities
-import tec.uom.se.unit.MetricPrefix
-import tec.uom.se.unit.Units
+import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLT
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
-import static tec.uom.se.unit.Units.OHM
-import static tec.uom.se.unit.Units.PERCENT
-import static tec.uom.se.unit.Units.SIEMENS
+import javax.measure.MetricPrefix
+
+import static edu.ie3.util.quantities.PowerSystemUnits.*
+import static tech.units.indriya.unit.Units.*
 
 /**
  * This class contains a collection of different model instances that can be used for testing purposes.

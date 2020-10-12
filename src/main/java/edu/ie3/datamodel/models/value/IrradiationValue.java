@@ -6,9 +6,9 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.util.quantities.dep.interfaces.Irradiation;
+import edu.ie3.util.quantities.interfaces.Irradiation;
 import java.util.Objects;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes an irradiation value as a pair of diffuse and direct radiation */
 public class IrradiationValue implements Value {

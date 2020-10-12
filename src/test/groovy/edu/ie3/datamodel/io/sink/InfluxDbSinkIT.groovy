@@ -5,8 +5,8 @@
  */
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
+import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.result.ResultEntity
@@ -25,7 +25,7 @@ import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.spock.Testcontainers
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
 import java.time.ZonedDateTime

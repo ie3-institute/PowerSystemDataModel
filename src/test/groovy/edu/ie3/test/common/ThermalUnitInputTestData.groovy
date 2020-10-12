@@ -9,17 +9,14 @@ import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
-import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
-import edu.ie3.util.TimeTools
 import edu.ie3.util.TimeUtil
-import edu.ie3.util.quantities.dep.interfaces.HeatCapacity
-import edu.ie3.util.quantities.dep.interfaces.SpecificHeatCapacity
-import edu.ie3.util.quantities.dep.interfaces.ThermalConductance
-import tec.uom.se.ComparableQuantity
-import tec.uom.se.quantity.Quantities
+import edu.ie3.util.quantities.interfaces.HeatCapacity
+import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
+import edu.ie3.util.quantities.interfaces.ThermalConductance
+import tech.units.indriya.ComparableQuantity
+import tech.units.indriya.quantity.Quantities
 
-import javax.measure.Quantity
 import javax.measure.quantity.Temperature
 import javax.measure.quantity.Volume
 

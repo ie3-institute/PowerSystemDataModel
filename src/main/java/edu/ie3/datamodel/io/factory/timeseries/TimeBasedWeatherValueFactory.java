@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
-import edu.ie3.util.quantities.dep.interfaces.Irradiation;
+import edu.ie3.util.quantities.interfaces.Irradiation;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -21,7 +21,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class TimeBasedWeatherValueFactory
     extends EntityFactory<TimeBasedValue, TimeBasedWeatherValueData> {

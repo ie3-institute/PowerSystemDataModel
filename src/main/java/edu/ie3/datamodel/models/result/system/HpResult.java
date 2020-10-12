@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpResult extends SystemParticipantResult {

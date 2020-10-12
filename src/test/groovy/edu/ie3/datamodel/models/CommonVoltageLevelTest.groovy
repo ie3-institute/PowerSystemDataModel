@@ -5,15 +5,15 @@
  */
 package edu.ie3.datamodel.models
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLT
-import static tec.uom.se.unit.Units.VOLT
-
 import edu.ie3.datamodel.exceptions.VoltageLevelException
 import edu.ie3.datamodel.models.voltagelevels.CommonVoltageLevel
 import edu.ie3.util.interval.RightOpenInterval
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
+
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
+import static tech.units.indriya.unit.Units.VOLT
 
 class CommonVoltageLevelTest extends Specification {
 	@Shared

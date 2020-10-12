@@ -15,7 +15,7 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class PvInputFactory
     extends SystemParticipantInputEntityFactory<PvInput, NodeAssetInputEntityData> {

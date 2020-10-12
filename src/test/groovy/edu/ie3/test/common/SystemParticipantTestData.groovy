@@ -10,50 +10,24 @@ import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardLoadProfile
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.system.BmInput
-import edu.ie3.datamodel.models.input.system.ChpInput
-import edu.ie3.datamodel.models.input.system.EvInput
-import edu.ie3.datamodel.models.input.system.FixedFeedInInput
-import edu.ie3.datamodel.models.input.system.HpInput
-import edu.ie3.datamodel.models.input.system.LoadInput
-import edu.ie3.datamodel.models.input.system.PvInput
-import edu.ie3.datamodel.models.input.system.StorageInput
-import edu.ie3.datamodel.models.input.system.WecInput
+import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiP
 import edu.ie3.datamodel.models.input.system.characteristic.QV
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
-import edu.ie3.datamodel.models.input.system.type.BmTypeInput
-import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
-import edu.ie3.datamodel.models.input.system.type.EvTypeInput
-import edu.ie3.datamodel.models.input.system.type.HpTypeInput
-import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
-import edu.ie3.datamodel.models.input.system.type.WecTypeInput
+import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
 import edu.ie3.util.TimeUtil
-import edu.ie3.util.quantities.dep.interfaces.Currency
-import edu.ie3.util.quantities.dep.interfaces.DimensionlessRate
-import edu.ie3.util.quantities.dep.interfaces.EnergyPrice
-import edu.ie3.util.quantities.dep.interfaces.SpecificEnergy
-import edu.ie3.util.quantities.dep.interfaces.SpecificHeatCapacity
-import tec.uom.se.ComparableQuantity
-import tec.uom.se.quantity.Quantities
+import edu.ie3.util.quantities.interfaces.*
+import tech.units.indriya.ComparableQuantity
+import tech.units.indriya.quantity.Quantities
 
-import javax.measure.Quantity
-import javax.measure.quantity.Angle
-import javax.measure.quantity.Area
-import javax.measure.quantity.Dimensionless
-import javax.measure.quantity.Energy
-import javax.measure.quantity.Length
-import javax.measure.quantity.Power
-import javax.measure.quantity.Temperature
-import javax.measure.quantity.Time
-import javax.measure.quantity.Volume
-import java.time.ZoneId
+import javax.measure.quantity.*
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.*
+import static edu.ie3.util.quantities.PowerSystemUnits.*
+import static tech.units.indriya.unit.Units.*
 
 
 class SystemParticipantTestData {

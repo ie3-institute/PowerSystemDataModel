@@ -6,14 +6,13 @@
 package edu.ie3.datamodel.models.input.connector
 
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
-import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.io.geojson.GeoJsonReader
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
-import tec.uom.se.unit.Units
+import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
 
 class LineInputTest extends Specification {
 

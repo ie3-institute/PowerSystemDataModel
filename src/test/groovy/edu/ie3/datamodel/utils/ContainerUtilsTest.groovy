@@ -5,35 +5,28 @@
  */
 package edu.ie3.datamodel.utils
 
-import edu.ie3.datamodel.graph.DistanceWeightedGraph
-import edu.ie3.datamodel.models.input.connector.SwitchInput
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput
-import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
-import edu.ie3.test.common.GridTestData
-
-import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 import edu.ie3.datamodel.exceptions.InvalidGridException
+import edu.ie3.datamodel.graph.DistanceWeightedGraph
 import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
-import edu.ie3.datamodel.models.input.container.GraphicElements
-import edu.ie3.datamodel.models.input.container.GridContainer
-import edu.ie3.datamodel.models.input.container.JointGridContainer
-import edu.ie3.datamodel.models.input.container.RawGridElements
-import edu.ie3.datamodel.models.input.container.SubGridContainer
-import edu.ie3.datamodel.models.input.container.SystemParticipants
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.container.*
+import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
+import edu.ie3.test.common.ComplexTopology
+import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeTools
-import tec.uom.se.quantity.Quantities
+import spock.lang.Shared
+import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
 
-import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
-import edu.ie3.test.common.ComplexTopology
-import spock.lang.Shared
-import spock.lang.Specification
+import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ContainerUtilsTest extends Specification {
 	static {

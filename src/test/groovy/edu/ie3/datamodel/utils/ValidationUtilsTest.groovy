@@ -5,20 +5,20 @@
  */
 package edu.ie3.datamodel.utils
 
-import edu.ie3.datamodel.exceptions.InvalidEntityException
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
+
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ValidationUtilsTest extends Specification {
 
