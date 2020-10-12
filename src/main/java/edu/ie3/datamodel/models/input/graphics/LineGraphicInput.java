@@ -45,7 +45,7 @@ public class LineGraphicInput extends GraphicInput implements HasLine {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     LineGraphicInput that = (LineGraphicInput) o;
-    return line.equals(that.line);
+    return Objects.equals(line, that.line);
   }
 
   @Override

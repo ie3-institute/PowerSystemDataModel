@@ -42,9 +42,9 @@ public class SubGridContainer extends GridContainer {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    SubGridContainer container = (SubGridContainer) o;
-    return subnet == container.subnet
-        && predominantVoltageLevel.equals(container.predominantVoltageLevel);
+    SubGridContainer that = (SubGridContainer) o;
+    return subnet == that.subnet
+        && Objects.equals(predominantVoltageLevel, that.predominantVoltageLevel);
   }
 
   @Override

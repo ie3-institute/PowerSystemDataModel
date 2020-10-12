@@ -121,8 +121,8 @@ public class BmInput extends SystemParticipantInput implements HasType {
     BmInput bmInput = (BmInput) o;
     return marketReaction == bmInput.marketReaction
         && costControlled == bmInput.costControlled
-        && type.equals(bmInput.type)
-        && feedInTariff.equals(bmInput.feedInTariff);
+        && Objects.equals(type, bmInput.type)
+        && Objects.equals(feedInTariff, bmInput.feedInTariff);
   }
 
   @Override

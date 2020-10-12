@@ -116,7 +116,8 @@ public class GraphicElements implements InputContainer<GraphicInput> {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     GraphicElements that = (GraphicElements) o;
-    return nodeGraphics.equals(that.nodeGraphics) && lineGraphics.equals(that.lineGraphics);
+    return Objects.equals(nodeGraphics, that.nodeGraphics)
+        && Objects.equals(lineGraphics, that.lineGraphics);
   }
 
   @Override

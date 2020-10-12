@@ -66,7 +66,7 @@ public abstract class ResultEntity extends UniqueEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ResultEntity that = (ResultEntity) o;
-    return timestamp.equals(that.timestamp) && inputModel.equals(that.inputModel);
+    return Objects.equals(timestamp, that.timestamp) && Objects.equals(inputModel, that.inputModel);
   }
 
   @Override

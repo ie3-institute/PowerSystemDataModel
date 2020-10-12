@@ -92,7 +92,7 @@ public abstract class SystemParticipantResult extends ResultEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     SystemParticipantResult that = (SystemParticipantResult) o;
-    return p.equals(that.p) && q.equals(that.q);
+    return Objects.equals(p, that.p) && Objects.equals(q, that.q);
   }
 
   @Override

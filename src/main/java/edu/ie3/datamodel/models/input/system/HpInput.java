@@ -91,7 +91,7 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HpInput hpInput = (HpInput) o;
-    return type.equals(hpInput.type) && thermalBus.equals(hpInput.thermalBus);
+    return Objects.equals(type, hpInput.type) && Objects.equals(thermalBus, hpInput.thermalBus);
   }
 
   @Override

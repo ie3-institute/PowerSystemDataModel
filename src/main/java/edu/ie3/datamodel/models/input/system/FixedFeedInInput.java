@@ -88,7 +88,8 @@ public class FixedFeedInInput extends SystemParticipantInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     FixedFeedInInput that = (FixedFeedInInput) o;
-    return sRated.equals(that.sRated);
+    return Double.compare(that.cosPhiRated, cosPhiRated) == 0
+        && Objects.equals(sRated, that.sRated);
   }
 
   @Override
