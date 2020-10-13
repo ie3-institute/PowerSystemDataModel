@@ -69,7 +69,7 @@ Equality Checks
     - for now, there is no default way to compare entities in a 'number equality' way provided. E.g. a line with a length
       of 1km compared to a line with a length of 1000m is actually of the same length, but calling :code:`LineA.equals(LineB)`
       would return :code:`false` as the equality check does NOT convert units. If you want to compare two entity instances
-      based on their equality you have (for now) check for each quantity manually using their :code:`isEquivalentTo()`
+      based on their equivalence you have (for now) check for each quantity manually using their :code:`isEquivalentTo()`
       method. If you think you would benefit from a standard method that allows entity equivalence check, please consider
       handing in an issue `here <https://github.com/ie3-institute/PowerSystemDataModel/issues>`_.
 
