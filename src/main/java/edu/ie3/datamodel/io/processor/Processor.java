@@ -341,7 +341,7 @@ public abstract class Processor<T> {
             new EntityProcessorException(
                 "Unable to process quantity value for attribute '"
                     + fieldName
-                    + "' in result entity "
+                    + "' in entity "
                     + getRegisteredClass().getSimpleName()
                     + ".class."));
   }
