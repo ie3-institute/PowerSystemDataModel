@@ -54,9 +54,9 @@ Equality Checks
   instances is not as trivial as it might seem, because there might be different understandings about the equality of
   quantities (e.g. there is a big difference between two instances being equal or equivalent). After long discussions how to
   treat quantities in the entity :code:`equals()` method, we agreed on the following rules to be applied:
-    - equality check is done by calling :code:`Objects.equals(<UnitInstanceA>, <UnitInstanceB>)` or
-      :code:`<UnitInstanceA>.equals(<UnitInstanceB>)`.
-      Using :code:`Objects.equals(<UnitInstanceA>, <UnitInstanceB>)` is necessary especially for time series data.
+    - equality check is done by calling :code:`Objects.equals(<QuantityInstanceA>, <QuantityInstanceB>)` or
+      :code:`<QuantityInstanceA>.equals(<QuantityInstanceB>)`.
+      Using :code:`Objects.equals(<QuantityInstanceA>, <QuantityInstanceB>)` is necessary especially for time series data.
       As in contrast to all other places, quantity time series from real world data sometimes are not complete and
       hence contain missing values. To represent missing values this is the only place where the usage of :code:`null`
       is a valid choice and hence needs to be treated accordingly. Please remember that his is only allowed in very few
