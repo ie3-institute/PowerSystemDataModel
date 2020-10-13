@@ -222,7 +222,17 @@ public abstract class Processor<T> {
         // an empty string as by convention null == missing value == "" when persisting data
         resultStringBuilder.append(
             ((Optional<?>) methodReturnObject)
-                .map(o -> handleQuantity((Quantity<?>) o, fieldName))
+                .map(
+                    o -> {
+                      if (o instanceof Quantity<?>) {
+                        return handleQuantity((Quantity<?>) o, fieldName);
+                      } else {
+                        throw new EntityProcessorException(
+                            "Handling of "
+                                + o.getClass().getSimpleName()
+                                + ".class instance wrapped into Optional is currently not supported by entity processors!");
+                      }
+                    })
                 .orElse(""));
         break;
       case "ZonedDateTime":
