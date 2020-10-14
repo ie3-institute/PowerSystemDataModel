@@ -7,10 +7,14 @@ package edu.ie3.datamodel.utils;
 
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.util.geo.GeoUtils;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import javax.measure.quantity.Length;
 import org.apache.commons.lang3.ArrayUtils;
-import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 import tech.units.indriya.ComparableQuantity;
 
@@ -138,11 +142,12 @@ public class GridAndGeoUtils extends GeoUtils {
   }
 
   /**
-   * Calculates the distance between two {@link NodeInput} entities using {@link #haversine}
+   * Calculates the distance between two {@link NodeInput} entities using {@link
+   * #calcHaversine(double, double, double, double)}
    *
    * @param nodeA start node
    * @param nodeB end node
-   * @return distancen between start node and end node
+   * @return distance between start node and end node
    */
   public static ComparableQuantity<Length> distanceBetweenNodes(NodeInput nodeA, NodeInput nodeB) {
     return calcHaversine(

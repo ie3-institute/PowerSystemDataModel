@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.util.quantities.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
 import java.util.Objects;
@@ -89,31 +88,12 @@ public class LineTypeInput extends AssetTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     LineTypeInput that = (LineTypeInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(b)) {
-      if (QuantityUtil.quantityIsEmpty(that.b)) return false;
-      if (!b.isEquivalentTo(that.b)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.b)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(r)) {
-      if (QuantityUtil.quantityIsEmpty(that.r)) return false;
-      if (!r.isEquivalentTo(that.r)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.r)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(x)) {
-      if (QuantityUtil.quantityIsEmpty(that.x)) return false;
-      if (!x.isEquivalentTo(that.x)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.x)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(iMax)) {
-      if (QuantityUtil.quantityIsEmpty(that.iMax)) return false;
-      if (!iMax.isEquivalentTo(that.iMax)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.iMax)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(vRated)) {
-      if (QuantityUtil.quantityIsEmpty(that.vRated)) return false;
-      return vRated.isEquivalentTo(that.vRated);
-    } else return QuantityUtil.quantityIsEmpty(that.vRated);
+    return b.equals(that.b)
+        && g.equals(that.g)
+        && r.equals(that.r)
+        && x.equals(that.x)
+        && iMax.equals(that.iMax)
+        && vRated.equals(that.vRated);
   }
 
   @Override

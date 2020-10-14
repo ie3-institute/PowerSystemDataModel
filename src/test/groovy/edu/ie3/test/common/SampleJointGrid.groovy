@@ -32,12 +32,7 @@ import tech.units.indriya.quantity.Quantities
 import javax.measure.MetricPrefix
 import java.util.stream.Collectors
 
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
-import static tech.units.indriya.unit.Units.OHM
-import static tech.units.indriya.unit.Units.PERCENT
-import static tech.units.indriya.unit.Units.SIEMENS
+import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 /**
  * //ToDo: Class Description

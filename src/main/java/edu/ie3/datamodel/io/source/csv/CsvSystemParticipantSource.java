@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.FileNamingStrategy;
+import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
@@ -14,7 +14,8 @@ import edu.ie3.datamodel.io.source.SystemParticipantSource;
 import edu.ie3.datamodel.io.source.ThermalSource;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.*;
+import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
@@ -25,7 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.commons.lang3.NotImplementedException;
 
 /**
  * Source that provides the capability to build entities of type {@link SystemParticipantInput} as
@@ -62,6 +62,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   private final PvInputFactory pvInputFactory;
   private final StorageInputFactory storageInputFactory;
   private final WecInputFactory wecInputFactory;
+  private final EvcsInputFactory evcsInputFactory;
 
   public CsvSystemParticipantSource(
       String csvSep,
@@ -85,6 +86,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     this.pvInputFactory = new PvInputFactory();
     this.storageInputFactory = new StorageInputFactory();
     this.wecInputFactory = new WecInputFactory();
+    this.evcsInputFactory = new EvcsInputFactory();
   }
 
   /** {@inheritDoc} */
@@ -263,7 +265,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   /** {@inheritDoc} */
   @Override
   public Set<EvcsInput> getEvCS() {
-    throw new NotImplementedException("Ev Charging Stations are not implemented yet!");
+    Set<OperatorInput> operators = typeSource.getOperators();
+    return getEvCS(rawGridSource.getNodes(operators), operators);
   }
 
   /**
@@ -280,8 +283,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    throw new NotImplementedException("Ev Charging Stations are not implemented yet!");
+    return filterEmptyOptionals(
+            nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators))
+        .collect(Collectors.toSet());
   }
+
   /** {@inheritDoc} */
   @Override
   public Set<BmInput> getBmPlants() {

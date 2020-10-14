@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
-import edu.ie3.util.quantities.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
@@ -81,23 +80,10 @@ public class WecTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     WecTypeInput that = (WecTypeInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(etaConv)) {
-      if (QuantityUtil.quantityIsEmpty(that.etaConv)) return false;
-      if (!etaConv.isEquivalentTo(that.etaConv)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.etaConv)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(rotorArea)) {
-      if (QuantityUtil.quantityIsEmpty(that.rotorArea)) return false;
-      if (!rotorArea.isEquivalentTo(that.rotorArea)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.rotorArea)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(hubHeight)) {
-      if (QuantityUtil.quantityIsEmpty(that.hubHeight)) return false;
-      if (!hubHeight.isEquivalentTo(that.hubHeight)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.hubHeight)) return false;
-
-    return cpCharacteristic.equals(that.cpCharacteristic);
+    return cpCharacteristic.equals(that.cpCharacteristic)
+        && etaConv.equals(that.etaConv)
+        && rotorArea.equals(that.rotorArea)
+        && hubHeight.equals(that.hubHeight);
   }
 
   @Override

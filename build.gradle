@@ -52,7 +52,10 @@ repositories {
 
 dependencies {
 	//	 ie³ power system utils
+	/* FIXME: Use stable version, as soon as release is available */
 	compile 'com.github.ie3-institute:PowerSystemUtils:1.4-SNAPSHOT'
+
+	implementation 'tech.units:indriya:2.0.4'
 
 	// JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
 	compile 'org.locationtech.jts:jts-core:1.16.1'
@@ -79,6 +82,9 @@ dependencies {
 
 	//InfluxDb
 	compile 'org.influxdb:influxdb-java:2.17'
+
+	compile 'commons-io:commons-io:+' // I/O functionalities
+	compile 'org.apache.commons:commons-compress:+' // I/O functionalities
 }
 
 wrapper {

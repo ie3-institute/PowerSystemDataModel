@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.util.quantities.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import edu.ie3.util.quantities.interfaces.SpecificEnergy;
@@ -61,16 +60,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     EvTypeInput that = (EvTypeInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(eStorage)) {
-      if (QuantityUtil.quantityIsEmpty(that.eStorage)) return false;
-      if (!eStorage.isEquivalentTo(that.eStorage)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.eStorage)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(eCons)) {
-      if (QuantityUtil.quantityIsEmpty(that.eCons)) return false;
-      return eCons.isEquivalentTo(that.eCons);
-    } else return QuantityUtil.quantityIsEmpty(that.eCons);
+    return eStorage.equals(that.eStorage) && eCons.equals(that.eCons);
   }
 
   @Override

@@ -5,8 +5,8 @@
  */
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
+import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.result.ResultEntity
@@ -27,7 +27,6 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -73,7 +72,7 @@ class InfluxDbSinkIT extends Specification {
 				null)
 		when:
 		sink.persist(lineResult1)
-		def key = fileNamingStrategy.getFileName(LineResult.class).get().trim().replaceAll("\\W", "_");
+		def key = fileNamingStrategy.getFileName(LineResult.class).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def fieldMap = parsedResults.get(key).first()
@@ -122,8 +121,8 @@ class InfluxDbSinkIT extends Specification {
 		]
 		when:
 		sink.persistAll(entities)
-		def key_line = fileNamingStrategy.getFileName(LineResult.class).get().trim().replaceAll("\\W", "_");
-		def key_chp = fileNamingStrategy.getFileName(ChpResult.class).get().trim().replaceAll("\\W", "_");
+		def key_line = fileNamingStrategy.getFileName(LineResult.class).get().trim().replaceAll("\\W", "_")
+		def key_chp = fileNamingStrategy.getFileName(ChpResult.class).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key_line + ", " + key_chp))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def lineResults = parsedResults.get(key_line)
@@ -151,7 +150,7 @@ class InfluxDbSinkIT extends Specification {
 		IndividualTimeSeries<PValue> timeSeries = new IndividualTimeSeries(UUID.randomUUID(), [p1, p2, p3] as Set<TimeBasedValue>)
 		when:
 		sink.persistTimeSeries(timeSeries)
-		def key = fileNamingStrategy.getFileName(timeSeries).get().trim().replaceAll("\\W", "_");
+		def key = fileNamingStrategy.getFileName(timeSeries).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def pValuesMap = parsedResults.get(key)
@@ -177,11 +176,11 @@ class InfluxDbSinkIT extends Specification {
 				new PValue(Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)))
 		IndividualTimeSeries<PValue> timeSeries = new IndividualTimeSeries(UUID.randomUUID(), [p1] as Set<TimeBasedValue>)
 
-		def sinkWithEmptyNamingStrategy = new InfluxDbSink(connector, new EmptyFileNamingStrategy());
+		def sinkWithEmptyNamingStrategy = new InfluxDbSink(connector, new EmptyFileNamingStrategy())
 		when:
 		sinkWithEmptyNamingStrategy.persist(lineResult1)
 		sinkWithEmptyNamingStrategy.persist(timeSeries)
-		def key_lineresult = lineResult1.getClass().getSimpleName();
+		def key_lineresult = lineResult1.getClass().getSimpleName()
 		def key_timeseries = timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName()
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key_lineresult))
 		def parsedResults_lineresult = InfluxDbConnector.parseQueryResult(queryResult)
@@ -250,20 +249,20 @@ class InfluxDbSinkIT extends Specification {
 		timeUtil.toZonedDateTime(fieldMap.get("time")) == pVal.getTime()
 		fieldMap.get("uuid") == pVal.getUuid().toString()
 		def pStr = fieldMap.get("p")
-		if(pStr== null || pStr.empty) pVal.getValue().getP() == null
-		else Double.parseDouble(pStr) == pVal.getValue().getP().getValue()
+		if(pStr == null || pStr.empty) pVal.getValue().getP() == Optional.empty()
+		else Double.parseDouble(pStr) == pVal.getValue().getP().get().getValue()
 	}
 
 	//Always return an empty Optional for results
 	class EmptyFileNamingStrategy extends FileNamingStrategy {
 		@Override
 		Optional<String> getResultEntityFileName(Class<? extends ResultEntity> resultEntityClass) {
-			return Optional.empty();
+			return Optional.empty()
 		}
 
 		@Override
 		<T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value> Optional<String> getFileName(T timeSeries) {
-			return Optional.empty();
+			return Optional.empty()
 		}
 	}
 }

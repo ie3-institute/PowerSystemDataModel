@@ -8,14 +8,10 @@ package edu.ie3.datamodel.utils
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.quantities.PowerSystemUnits
-import org.apache.commons.lang3.ArrayUtils
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-import tech.units.indriya.unit.Units
-
-import java.lang.reflect.Array
 
 class GridAndGeoUtilsTest extends Specification {
 

@@ -54,41 +54,41 @@ class WeatherTestData {
 
 
 	public static final WeatherValue weatherVal_coordinate_193186_15h = new WeatherValue(coordinate_193186,
-	Quantities.getQuantity(282.671997070312, StandardUnits.IRRADIATION),
-	Quantities.getQuantity(286.872985839844, StandardUnits.IRRADIATION),
-	Quantities.getQuantity(278.019012451172, StandardUnits.TEMPERATURE),
-	Quantities.getQuantity(0, StandardUnits.WIND_DIRECTION),
-	Quantities.getQuantity(1.66103506088257, StandardUnits.WIND_VELOCITY))
+	Quantities.getQuantity(282.671997070312d, StandardUnits.IRRADIATION),
+	Quantities.getQuantity(286.872985839844d, StandardUnits.IRRADIATION),
+	Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
+	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
+	Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY))
 	public static final WeatherValue weatherVal_coordinate_193186_16h = new WeatherValue(coordinate_193186,
-	Quantities.getQuantity(282.672, StandardUnits.IRRADIATION),
-	Quantities.getQuantity(286.872, StandardUnits.IRRADIATION),
-	Quantities.getQuantity(278.012, StandardUnits.TEMPERATURE),
-	Quantities.getQuantity(0, StandardUnits.WIND_DIRECTION),
-	Quantities.getQuantity(1.662, StandardUnits.WIND_VELOCITY))
+	Quantities.getQuantity(282.672d, StandardUnits.IRRADIATION),
+	Quantities.getQuantity(286.872d, StandardUnits.IRRADIATION),
+	Quantities.getQuantity(278.012d, StandardUnits.TEMPERATURE),
+	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
+	Quantities.getQuantity(1.662d, StandardUnits.WIND_VELOCITY))
 	public static final WeatherValue  weatherVal_coordinate_193186_17h = new WeatherValue(coordinate_193186,
-	Quantities.getQuantity(282.673, StandardUnits.IRRADIATION),
-	Quantities.getQuantity(286.873, StandardUnits.IRRADIATION),
-	Quantities.getQuantity(278.013, StandardUnits.TEMPERATURE),
-	Quantities.getQuantity(0, StandardUnits.WIND_DIRECTION),
-	Quantities.getQuantity(1.663, StandardUnits.WIND_VELOCITY))
+	Quantities.getQuantity(282.673d, StandardUnits.IRRADIATION),
+	Quantities.getQuantity(286.873d, StandardUnits.IRRADIATION),
+	Quantities.getQuantity(278.013d, StandardUnits.TEMPERATURE),
+	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
+	Quantities.getQuantity(1.663d, StandardUnits.WIND_VELOCITY))
 
 	public static final WeatherValue  weatherVal_coordinate_193187_15h = new WeatherValue(coordinate_193187,
-	Quantities.getQuantity(283.671997070312, StandardUnits.IRRADIATION),
-	Quantities.getQuantity(287.872985839844, StandardUnits.IRRADIATION),
-	Quantities.getQuantity(279.019012451172, StandardUnits.TEMPERATURE),
-	Quantities.getQuantity(0, StandardUnits.WIND_DIRECTION),
-	Quantities.getQuantity(1.76103506088257, StandardUnits.WIND_VELOCITY))
+	Quantities.getQuantity(283.671997070312d, StandardUnits.IRRADIATION),
+	Quantities.getQuantity(287.872985839844d, StandardUnits.IRRADIATION),
+	Quantities.getQuantity(279.019012451172d, StandardUnits.TEMPERATURE),
+	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
+	Quantities.getQuantity(1.76103506088257d, StandardUnits.WIND_VELOCITY))
 	public static final WeatherValue  weatherVal_coordinate_193187_16h = new WeatherValue(coordinate_193187,
-	Quantities.getQuantity(283.672, StandardUnits.IRRADIATION),
-	Quantities.getQuantity(287.872, StandardUnits.IRRADIATION),
-	Quantities.getQuantity(279.012, StandardUnits.TEMPERATURE),
-	Quantities.getQuantity(0, StandardUnits.WIND_DIRECTION),
-	Quantities.getQuantity(1.762, StandardUnits.WIND_VELOCITY))
+	Quantities.getQuantity(283.672d, StandardUnits.IRRADIATION),
+	Quantities.getQuantity(287.872d, StandardUnits.IRRADIATION),
+	Quantities.getQuantity(279.012d, StandardUnits.TEMPERATURE),
+	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
+	Quantities.getQuantity(1.762d, StandardUnits.WIND_VELOCITY))
 
 	public static final WeatherValue  weatherVal_coordinate_193188_15h = new WeatherValue(coordinate_193188,
-	Quantities.getQuantity(284.671997070312, StandardUnits.IRRADIATION),
-	Quantities.getQuantity(288.872985839844, StandardUnits.IRRADIATION),
-	Quantities.getQuantity(280.019012451172, StandardUnits.TEMPERATURE),
-	Quantities.getQuantity(0, StandardUnits.WIND_DIRECTION),
-	Quantities.getQuantity(1.86103506088257, StandardUnits.WIND_VELOCITY))
+	Quantities.getQuantity(284.671997070312d, StandardUnits.IRRADIATION),
+	Quantities.getQuantity(288.872985839844d, StandardUnits.IRRADIATION),
+	Quantities.getQuantity(280.019012451172d, StandardUnits.TEMPERATURE),
+	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
+	Quantities.getQuantity(1.86103506088257d, StandardUnits.WIND_VELOCITY))
 }

@@ -5,12 +5,11 @@
  */
 package edu.ie3.datamodel.utils
 
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeTools
@@ -18,6 +17,8 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
+
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ValidationUtilsTest extends Specification {
 
@@ -59,7 +60,8 @@ class ValidationUtilsTest extends Specification {
 		[
 			new NodeInput(
 			UUID.fromString("9e37ce48-9650-44ec-b888-c2fd182aff01"), "node_f", GridTestData.profBroccoli,
-			OperationTime.notLimited(),
+			OperationTime.notLimited()
+			,
 			Quantities.getQuantity(1d, PU),
 			false,
 			null,

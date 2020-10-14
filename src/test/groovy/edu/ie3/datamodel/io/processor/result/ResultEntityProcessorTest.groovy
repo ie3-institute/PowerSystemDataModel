@@ -9,12 +9,12 @@ import edu.ie3.datamodel.exceptions.EntityProcessorException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.ResultEntity
-import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.datamodel.models.result.system.*
+import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.util.TimeTools
 import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Shared
@@ -23,11 +23,7 @@ import tech.units.indriya.quantity.Quantities
 import tech.units.indriya.unit.Units
 
 import javax.measure.Quantity
-import javax.measure.quantity.Angle
-import javax.measure.quantity.Dimensionless
-import javax.measure.quantity.ElectricCurrent
-import javax.measure.quantity.Energy
-import javax.measure.quantity.Power
+import javax.measure.quantity.*
 import java.time.ZoneId
 import java.time.ZonedDateTime
 

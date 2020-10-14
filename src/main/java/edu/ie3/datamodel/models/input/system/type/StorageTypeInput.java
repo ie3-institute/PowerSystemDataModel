@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.util.quantities.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -108,38 +107,13 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     StorageTypeInput that = (StorageTypeInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(eStorage)) {
-      if (QuantityUtil.quantityIsEmpty(that.eStorage)) return false;
-      if (!eStorage.isEquivalentTo(that.eStorage)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.eStorage)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(pMax)) {
-      if (QuantityUtil.quantityIsEmpty(that.pMax)) return false;
-      if (!pMax.isEquivalentTo(that.pMax)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.pMax)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(activePowerGradient)) {
-      if (QuantityUtil.quantityIsEmpty(that.activePowerGradient)) return false;
-      if (!activePowerGradient.isEquivalentTo(that.activePowerGradient)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.activePowerGradient)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(eta)) {
-      if (QuantityUtil.quantityIsEmpty(that.eta)) return false;
-      if (!eta.isEquivalentTo(that.eta)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.eta)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(dod)) {
-      if (QuantityUtil.quantityIsEmpty(that.dod)) return false;
-      if (!dod.isEquivalentTo(that.dod)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.dod)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(lifeTime)) {
-      if (QuantityUtil.quantityIsEmpty(that.lifeTime)) return false;
-      if (!lifeTime.isEquivalentTo(that.lifeTime)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.lifeTime)) return false;
-
-    return lifeCycle == that.lifeCycle;
+    return lifeCycle == that.lifeCycle
+        && eStorage.equals(that.eStorage)
+        && pMax.equals(that.pMax)
+        && activePowerGradient.equals(that.activePowerGradient)
+        && eta.equals(that.eta)
+        && dod.equals(that.dod)
+        && lifeTime.equals(that.lifeTime);
   }
 
   @Override

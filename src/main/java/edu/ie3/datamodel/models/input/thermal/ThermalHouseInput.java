@@ -8,7 +8,6 @@ package edu.ie3.datamodel.models.input.thermal;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.util.quantities.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalConductance;
 import java.util.Objects;
@@ -83,16 +82,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ThermalHouseInput that = (ThermalHouseInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(ethLosses)) {
-      if (QuantityUtil.quantityIsEmpty(that.ethLosses)) return false;
-      if (!ethLosses.isEquivalentTo(that.ethLosses)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.ethLosses)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(ethCapa)) {
-      if (QuantityUtil.quantityIsEmpty(that.ethCapa)) return false;
-      return ethCapa.isEquivalentTo(that.ethCapa);
-    } else return QuantityUtil.quantityIsEmpty(that.ethCapa);
+    return ethLosses.equals(that.ethLosses) && ethCapa.equals(that.ethCapa);
   }
 
   @Override

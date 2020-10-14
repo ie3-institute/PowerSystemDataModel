@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.util.quantities.QuantityUtil;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
@@ -69,23 +68,10 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     SystemParticipantTypeInput that = (SystemParticipantTypeInput) o;
-
-    if (!QuantityUtil.quantityIsEmpty(capex)) {
-      if (QuantityUtil.quantityIsEmpty(that.capex)) return false;
-      if (!capex.isEquivalentTo(that.capex)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.capex)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(opex)) {
-      if (QuantityUtil.quantityIsEmpty(that.opex)) return false;
-      if (!opex.isEquivalentTo(that.opex)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.opex)) return false;
-
-    if (!QuantityUtil.quantityIsEmpty(sRated)) {
-      if (QuantityUtil.quantityIsEmpty(that.sRated)) return false;
-      if (!sRated.isEquivalentTo(that.sRated)) return false;
-    } else if (!QuantityUtil.quantityIsEmpty(that.sRated)) return false;
-
-    return Double.compare(that.cosPhiRated, cosPhiRated) == 0;
+    return Double.compare(that.cosPhiRated, cosPhiRated) == 0
+        && capex.equals(that.capex)
+        && opex.equals(that.opex)
+        && sRated.equals(that.sRated);
   }
 
   @Override

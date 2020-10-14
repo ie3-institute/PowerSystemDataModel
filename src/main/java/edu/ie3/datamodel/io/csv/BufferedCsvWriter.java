@@ -66,6 +66,7 @@ public class BufferedCsvWriter extends BufferedWriter {
   /**
    * Writes the file header
    *
+   * @param headLineElements the headline elements of the csv file
    * @throws IOException If something is messed up
    */
   protected final void writeFileHeader(String[] headLineElements) throws IOException {

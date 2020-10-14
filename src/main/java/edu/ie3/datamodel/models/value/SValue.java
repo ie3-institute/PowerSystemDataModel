@@ -6,8 +6,8 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.util.quantities.QuantityUtil;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
@@ -25,22 +25,20 @@ public class SValue extends PValue {
    */
   public SValue(ComparableQuantity<Power> p, ComparableQuantity<Power> q) {
     super(p);
-    this.q = q.to(StandardUnits.REACTIVE_POWER_IN);
+    this.q = q == null ? null : q.to(StandardUnits.REACTIVE_POWER_IN);
   }
 
-  public ComparableQuantity<Power> getQ() {
-    return q;
+  public Optional<ComparableQuantity<Power>> getQ() {
+    return Optional.ofNullable(q);
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    SValue that = (SValue) o;
-    if (!QuantityUtil.quantityIsEmpty(q)) {
-      if (QuantityUtil.quantityIsEmpty(that.q)) return false;
-      return q.isEquivalentTo(that.q);
-    } else return QuantityUtil.quantityIsEmpty(that.q);
+    if (!super.equals(o)) return false;
+    SValue sValue = (SValue) o;
+    return Objects.equals(q, sValue.q);
   }
 
   @Override

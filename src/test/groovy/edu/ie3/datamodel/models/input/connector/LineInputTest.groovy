@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input.connector
 
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
-import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.io.geojson.GeoJsonReader

@@ -17,15 +17,17 @@ sphinx {
 }
 
 /**
- * Task to generate the JavaDoc
+ * Task to generate the JavaDoc incl. build failure on warning (build always fails on JavaDoc error by default)
  */
 javadoc() {
 	description 'Generates java API doc at the correct place.'
 	group 'Documentation'
 
 	source = sourceSets.main.allJava
-	destinationDir = file( docBaseDirPath + 'javadoc' )
 	classpath = project.sourceSets.main.compileClasspath
+
+	// sanity check, break on warnings
+	options.addStringOption('Xwerror', '-quiet')
 }
 
 /**

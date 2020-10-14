@@ -6,8 +6,6 @@
 package edu.ie3.datamodel.io.factory.input.participant
 
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
-
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -19,6 +17,8 @@ import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
+
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 	def "A PvInputFactory should contain exactly the expected class for parsing"() {

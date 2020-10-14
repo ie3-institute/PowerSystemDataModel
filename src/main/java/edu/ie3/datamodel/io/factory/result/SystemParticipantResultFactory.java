@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
+import static tech.units.indriya.unit.Units.PERCENT;
+
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -16,7 +18,6 @@ import java.util.*;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.unit.Units;
 
 /**
  * Factory class for creating {@link SystemParticipantResult} entities from provided {@link
@@ -109,13 +110,13 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
           .map(uuid -> new HpResult(uuid, zdtTimestamp, inputModelUuid, p, q, qDotQuantity))
           .orElseGet(() -> new HpResult(zdtTimestamp, inputModelUuid, p, q, qDotQuantity));
     } else if (entityClass.equals(EvResult.class)) {
-      ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, Units.PERCENT);
+      ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, PERCENT);
 
       return uuidOpt
           .map(uuid -> new EvResult(uuid, zdtTimestamp, inputModelUuid, p, q, socQuantity))
           .orElseGet(() -> new EvResult(zdtTimestamp, inputModelUuid, p, q, socQuantity));
     } else if (entityClass.equals(StorageResult.class)) {
-      ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, Units.PERCENT);
+      ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, PERCENT);
 
       return uuidOpt
           .map(uuid -> new StorageResult(uuid, zdtTimestamp, inputModelUuid, p, q, socQuantity))

@@ -25,6 +25,7 @@ public class HpResult extends SystemParticipantResult {
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
+   * @param qDot provided head energy
    */
   public HpResult(
       ZonedDateTime timestamp,
@@ -45,6 +46,7 @@ public class HpResult extends SystemParticipantResult {
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
+   * @param qDot provided head energy
    */
   public HpResult(
       UUID uuid,
