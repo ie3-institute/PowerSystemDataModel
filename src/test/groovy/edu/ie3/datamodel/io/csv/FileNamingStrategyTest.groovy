@@ -39,9 +39,9 @@ import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import edu.ie3.datamodel.models.value.EnergyPriceValue
-import edu.ie3.util.quantities.dep.PowerSystemUnits
+import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import java.nio.file.Paths
 import java.time.ZonedDateTime
