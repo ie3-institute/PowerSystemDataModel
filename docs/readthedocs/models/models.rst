@@ -79,7 +79,7 @@ Equality Checks
       providing such a method in our `PowerSystemUtils <https://github.com/ie3-institute/PowerSystemUtils>`_ library.
       If you think you would benefit from such a method, please consider handing in an issue
       `here <https://github.com/ie3-institute/PowerSystemUtils/issues>`_.
-`
+
 *****
 Input
 *****
