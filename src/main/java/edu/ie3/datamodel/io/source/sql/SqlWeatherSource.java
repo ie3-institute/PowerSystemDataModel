@@ -241,6 +241,7 @@ public class SqlWeatherSource implements WeatherSource {
    */
   private TimeBasedWeatherValueData toTimeBasedWeatherValueData(Map<String, String> fieldMap) {
     String coordinateValue = fieldMap.remove(DEFAULT_COORDINATE_COLUMN);
+    fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     Point coordinate = idCoordinateSource.getCoordinate(Integer.parseInt(coordinateValue));
     return new TimeBasedWeatherValueData(fieldMap, coordinate);
   }
