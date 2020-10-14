@@ -15,10 +15,11 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -165,6 +166,35 @@ public class CsvFileConnector implements DataConnector {
         new BufferedReader(
             new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8), 16384);
     return newReader;
+  }
+
+  /*
+   * TODO: ~~~ Treating time series ~~~
+   */
+
+  /**
+   * Returns a set of relative paths strings to time series files, with respect to the base folder
+   * path
+   *
+   * @return A set of relative paths to time series files, with respect to the base folder path
+   * @throws IOException If the files cannot be walked
+   */
+  private Set<String> getIndividualTimeSeriesFilePaths() throws IOException {
+    Path baseFolderPath = Paths.get(baseFolderName);
+    try (Stream<Path> pathStream = Files.walk(baseFolderPath)) {
+      return pathStream
+          .map(baseFolderPath::relativize)
+          .filter(
+              path -> {
+                String withoutEnding = path.toString().replaceAll("(.*)" + FILE_ENDING + "$", "$1");
+                return fileNamingStrategy
+                    .getIndividualTimeSeriesPattern()
+                    .matcher(withoutEnding)
+                    .matches();
+              })
+          .map(Path::toString)
+          .collect(Collectors.toSet());
+    }
   }
 
   /**

@@ -22,6 +22,11 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
     super(csvSep, folderPath, fileNamingStrategy);
   }
 
+  /**
+   * Receive a set of time series mapping entries from participant uuid to time series uuid.
+   *
+   * @return A set of time series mapping entries from participant uuid to time series uuid
+   */
   @Override
   public Set<TimeSeriesMapping.Entry> getMapping() {
     return filterEmptyOptionals(
