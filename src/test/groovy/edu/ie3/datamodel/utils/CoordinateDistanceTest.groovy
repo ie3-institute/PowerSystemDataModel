@@ -17,9 +17,8 @@ class CoordinateDistanceTest extends Specification {
 		def expectedDistance = GeoUtils.calcHaversine(pointA.y, pointA.x, pointB.y, pointB.x)
 		when:
 		CoordinateDistance coordinateDistance = new CoordinateDistance(pointA, pointB)
-		CoordinateDistance expectedCoordinateDistance = new CoordinateDistance(coordinateDistance.getCoordinateA(), coordinateDistance.getCoordinateB(), expectedDistance)
+		CoordinateDistance expectedCoordinateDistance = new CoordinateDistance(coordinateDistance.coordinateA, coordinateDistance.coordinateB, expectedDistance)
 		then:
-		coordinateDistance.getDistance() == expectedDistance
 		coordinateDistance == expectedCoordinateDistance
 	}
 

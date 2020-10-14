@@ -54,7 +54,7 @@ class CsvIdCoordinateSourceTest extends Specification implements CsvTestDataMeta
 			GeoUtils.xyToPoint(48.031231, 14.57985)
 		].toSet()
 		when:
-		def actualCoordinates = source.getAllCoordinates().toSet()
+		def actualCoordinates = source.allCoordinates.toSet()
 		then:
 		actualCoordinates == expectedCoordinates
 	}
