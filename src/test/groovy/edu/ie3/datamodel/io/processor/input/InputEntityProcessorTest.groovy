@@ -273,6 +273,18 @@ class InputEntityProcessorTest extends Specification {
 			"thermalBus"      : SystemParticipantTestData.hpInput.thermalBus.uuid.toString(),
 			"type"            : SystemParticipantTestData.hpInput.type.uuid.toString()
 		]
+		EvcsInput | SystemParticipantTestData.evcsInput || [
+			"uuid"            : SystemParticipantTestData.evcsInput.uuid.toString(),
+			"id"              : SystemParticipantTestData.evcsInput.id,
+			"node"            : SystemParticipantTestData.evcsInput.node.uuid.toString(),
+			"operatesUntil"   : SystemParticipantTestData.evcsInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+			"operatesFrom"    : SystemParticipantTestData.evcsInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+			"operator"        : SystemParticipantTestData.evcsInput.operator.uuid.toString(),
+			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+			"type"            : SystemParticipantTestData.evcsInput.type.toString(),
+			"cosPhiRated"     : SystemParticipantTestData.evcsInput.cosPhiRated.toString(),
+			"chargingPoints"     : SystemParticipantTestData.evcsInput.chargingPoints.toString()
+		]
 	}
 
 	def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with point correctly"() {

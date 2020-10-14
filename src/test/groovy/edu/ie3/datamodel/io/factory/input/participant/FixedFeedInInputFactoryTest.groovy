@@ -94,7 +94,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 				"id -> TestID,\n" +
 				"srated -> 3,\n" +
 				"uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of FixedFeedInInput. \n" +
-				"The following fields to be passed to a constructor of 'FixedFeedInInput' are possible (NOT case-sensitive!):\n" +
+				"The following fields (without complex objects e.g. nodes) to be passed to a constructor of 'FixedFeedInInput' are possible (NOT case-sensitive!):\n" +
 				"0: [cosphirated, id, qcharacteristics, srated, uuid]\n" +
 				"1: [cosphirated, id, operatesfrom, qcharacteristics, srated, uuid]\n" +
 				"2: [cosphirated, id, operatesuntil, qcharacteristics, srated, uuid]\n" +

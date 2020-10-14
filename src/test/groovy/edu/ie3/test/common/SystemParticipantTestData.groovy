@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.input.system.characteristic.CosPhiP
 import edu.ie3.datamodel.models.input.system.characteristic.QV
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.*
+import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
@@ -296,6 +297,20 @@ class SystemParticipantTestData {
 	cosPhiFixed,
 	hpTypeInput
 	)
+
+	// charging station
+	public static final evcsInput = new EvcsInput(
+	UUID.fromString("798028b5-caff-4da7-bcd9-1750fdd8742c"),
+	"test_csInput",
+	operator,
+	operationTime,
+	participantNode,
+	cosPhiFixed,
+	ChargingPointTypeUtils.HouseholdSocket,
+	4,
+	cosPhiRated
+	)
+
 
 	public static allParticipants = [
 		fixedFeedInInput,

@@ -34,7 +34,7 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 	def setupSpec() {
 		// Copy import file into docker and then import it via influx CLI
 		// more information on file format and usage here: https://docs.influxdata.com/influxdb/v1.7/tools/shell/#import-data-from-a-file-with-import
-		MountableFile influxWeatherImportFile = MountableFile.forClasspathResource("/testcontainersFiles/influxDb/weather.txt");
+		MountableFile influxWeatherImportFile = MountableFile.forClasspathResource("/testcontainersFiles/influxDb/weather.txt")
 		influxDbContainer.copyFileToContainer(influxWeatherImportFile, "/home/weather.txt")
 		def execResult = influxDbContainer.execInContainer("influx", "-import", "-path=/home/weather.txt", "-precision=ms")
 		println "Command \"influx -import -path=/home/weather.txt -precision=ms\" returned:"
@@ -55,7 +55,7 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 
 	def "An InfluxDbWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
 		given:
-		def expectedTimeBasedValue = new TimeBasedValue(WeatherTestData.time_15h, WeatherTestData.weatherVal_coordinate_193186_15h);
+		def expectedTimeBasedValue = new TimeBasedValue(WeatherTestData.time_15h, WeatherTestData.weatherVal_coordinate_193186_15h)
 		when:
 		def optTimeBasedValue = source.getWeather(WeatherTestData.time_15h, WeatherTestData.coordinate_193186)
 		then:
@@ -69,7 +69,7 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 			WeatherTestData.coordinate_193186,
 			WeatherTestData.coordinate_193187
 		]
-		def timeInterval = new ClosedInterval(WeatherTestData.time_16h, WeatherTestData.time_17h);
+		def timeInterval = new ClosedInterval(WeatherTestData.time_16h, WeatherTestData.time_17h)
 		def timeseries_193186 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(WeatherTestData.time_16h, WeatherTestData.weatherVal_coordinate_193186_16h),
@@ -90,7 +90,7 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 
 	def "An InfluxDbWeatherSource can read all weather data in a given time interval"() {
 		given:
-		def timeInterval = new ClosedInterval(WeatherTestData.time_15h, WeatherTestData.time_17h);
+		def timeInterval = new ClosedInterval(WeatherTestData.time_15h, WeatherTestData.time_17h)
 		def timeseries_193186 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(WeatherTestData.time_15h,WeatherTestData.weatherVal_coordinate_193186_15h),

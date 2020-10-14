@@ -45,12 +45,12 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               Transformer3WInput.class,
               SwitchInput.class,
               MeasurementUnitInput.class,
-              EvcsInput.class,
               ThermalBusInput.class,
               /* -- SystemParticipantInput */
               ChpInput.class,
               BmInput.class,
               EvInput.class,
+              EvcsInput.class,
               FixedFeedInInput.class,
               HpInput.class,
               LoadInput.class,
