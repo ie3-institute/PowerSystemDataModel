@@ -47,11 +47,13 @@ class CsvIdCoordinateSourceTest extends Specification implements CsvTestDataMeta
 		then:
 		actualMap == expectedMap
 	}
-	
+
 	def "The CsvIdCoordinateSource is able to return all available coordinates" () {
-		def expectedCoordinates = [GeoUtils.xyToPoint(48.038719, 14.39335),
-								   GeoUtils.xyToPoint(48.035011, 14.48661),
-								   GeoUtils.xyToPoint(48.031231, 14.57985)].toSet()
+		def expectedCoordinates = [
+			GeoUtils.xyToPoint(48.038719, 14.39335),
+			GeoUtils.xyToPoint(48.035011, 14.48661),
+			GeoUtils.xyToPoint(48.031231, 14.57985)
+		].toSet()
 		when:
 		def actualCoordinates = source.getAllCoordinates().toSet()
 		then:
@@ -59,12 +61,20 @@ class CsvIdCoordinateSourceTest extends Specification implements CsvTestDataMeta
 	}
 
 	def "The CsvIdCoordinateSource is able to return the nearest n coordinates to a point" () {
-		def allCoordinates = [GeoUtils.xyToPoint(48.038719, 14.39335),
-								   GeoUtils.xyToPoint(48.035011, 14.48661),
-								   GeoUtils.xyToPoint(48.031231, 14.57985)]
+		def allCoordinates = [
+			GeoUtils.xyToPoint(48.038719, 14.39335),
+			GeoUtils.xyToPoint(48.035011, 14.48661),
+			GeoUtils.xyToPoint(48.031231, 14.57985)
+		]
 		def basePoint = GeoUtils.xyToPoint(48.0365, 14.48661)
-		def expectedNearestCoordinates = [allCoordinates[1], allCoordinates[0]]
-		def expectedDistances = [new CoordinateDistance(basePoint, allCoordinates[0]), new CoordinateDistance(basePoint, allCoordinates[1])].sort()
+		def expectedNearestCoordinates = [
+			allCoordinates[1],
+			allCoordinates[0]
+		]
+		def expectedDistances = [
+			new CoordinateDistance(basePoint, allCoordinates[0]),
+			new CoordinateDistance(basePoint, allCoordinates[1])
+		].sort()
 		when:
 		def actualNearestCoordinates = source.getNearestCoordinates(basePoint, 2)
 		then:
