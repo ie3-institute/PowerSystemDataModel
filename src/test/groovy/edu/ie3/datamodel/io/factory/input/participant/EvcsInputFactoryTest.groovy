@@ -12,7 +12,9 @@ import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils
 import edu.ie3.test.helper.FactoryTestHelper
+import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
@@ -69,7 +71,7 @@ class EvcsInputFactoryTest extends Specification  implements FactoryTestHelper {
 			assert qCharacteristics.with {
 				assert uuid != null
 				assert points == Collections.unmodifiableSortedSet([
-					new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
+					new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PowerSystemUnits.PU), Quantities.getQuantity(1d, PowerSystemUnits.PU))
 				] as TreeSet)
 			}
 			assert type == ChargingPointTypeUtils.HouseholdSocket
