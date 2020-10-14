@@ -14,11 +14,12 @@ class CoordinateDistanceTest extends Specification {
 		given:
 		def pointA = GeoUtils.xyToPoint(49d, 7d)
 		def pointB = GeoUtils.xyToPoint(50d, 7d)
-		def distance = GeoUtils.calcHaversine(pointA.getY(), pointA.getX(), pointB.getY(), pointB.getX())
-		def expectedCoordinateDistance = new CoordinateDistance(pointA, pointB, distance)
+		def expectedDistance = GeoUtils.calcHaversine(pointA.getY(), pointA.getX(), pointB.getY(), pointB.getX())
 		when:
 		def coordinateDistance = new CoordinateDistance(pointA, pointB)
+		def expectedCoordinateDistance = new CoordinateDistance(coordinateDistance.getCoordinateA(), coordinateDistance.getCoordinateB(), expectedDistance)
 		then:
+		coordinateDistance.getDistance() == expectedDistance
 		coordinateDistance == expectedCoordinateDistance
 	}
 
