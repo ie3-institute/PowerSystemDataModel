@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU;
+import static edu.ie3.util.quantities.PowerSystemUnits.PU;
 
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import java.util.*;
-import tec.uom.se.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 /**
  * Describes a three winding transformer, that is connected to three {@link

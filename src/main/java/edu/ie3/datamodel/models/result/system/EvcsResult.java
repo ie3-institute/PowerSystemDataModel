@@ -5,12 +5,13 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
+import edu.ie3.datamodel.models.input.system.EvcsInput;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
-/** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvcsInput} */
+/** Represents calculation results of a {@link EvcsInput} */
 public class EvcsResult extends SystemParticipantResult {
   /**
    * Standard constructor with automatic uuid generation.

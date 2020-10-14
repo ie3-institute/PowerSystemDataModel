@@ -7,8 +7,9 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes a triple based on active and reactive electrical power, as well as heat power */
 public class HeatAndSValue extends SValue {
@@ -25,11 +26,11 @@ public class HeatAndSValue extends SValue {
       ComparableQuantity<Power> q,
       ComparableQuantity<Power> heatDemand) {
     super(p, q);
-    this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
+    this.heatDemand = heatDemand == null ? null : heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
-  public ComparableQuantity<Power> getHeatDemand() {
-    return heatDemand;
+  public Optional<ComparableQuantity<Power>> getHeatDemand() {
+    return Optional.ofNullable(heatDemand);
   }
 
   @Override
@@ -38,7 +39,7 @@ public class HeatAndSValue extends SValue {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HeatAndSValue that = (HeatAndSValue) o;
-    return heatDemand.equals(that.heatDemand);
+    return Objects.equals(heatDemand, that.heatDemand);
   }
 
   @Override

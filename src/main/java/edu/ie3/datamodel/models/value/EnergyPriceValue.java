@@ -6,9 +6,10 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.util.quantities.dep.interfaces.EnergyPrice;
+import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
-import tec.uom.se.ComparableQuantity;
+import java.util.Optional;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes a price for energy */
 public class EnergyPriceValue implements Value {
@@ -17,11 +18,11 @@ public class EnergyPriceValue implements Value {
 
   /** @param price per MWh */
   public EnergyPriceValue(ComparableQuantity<EnergyPrice> price) {
-    this.price = price.to(StandardUnits.ENERGY_PRICE);
+    this.price = price == null ? null : price.to(StandardUnits.ENERGY_PRICE);
   }
 
-  public ComparableQuantity<EnergyPrice> getPrice() {
-    return price;
+  public Optional<ComparableQuantity<EnergyPrice>> getPrice() {
+    return Optional.ofNullable(price);
   }
 
   @Override
@@ -29,7 +30,7 @@ public class EnergyPriceValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     EnergyPriceValue that = (EnergyPriceValue) o;
-    return price.equals(that.price);
+    return Objects.equals(price, that.price);
   }
 
   @Override

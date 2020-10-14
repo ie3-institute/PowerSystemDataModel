@@ -5,20 +5,20 @@
  */
 package edu.ie3.datamodel.io.factory.typeinput
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.METRE_PER_SECOND
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
-
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
-import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.*
+import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Speed
+
+import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class SystemParticipantTypeInputFactoryTest extends Specification implements FactoryTestHelper {
 
@@ -312,7 +312,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 				"pmin -> 7,\n" +
 				"srated -> 5,\n" +
 				"uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
-				"The following fields to be passed to a constructor of 'StorageTypeInput' are possible (NOT case-sensitive!):\n" +
+				"The following fields (without complex objects e.g. nodes) to be passed to a constructor of 'StorageTypeInput' are possible (NOT case-sensitive!):\n" +
 				"0: [activepowergradient, capex, cosphirated, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, srated, uuid]\n"
 	}
 }

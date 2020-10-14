@@ -11,7 +11,7 @@ import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
-import tec.uom.se.ComparableQuantity
+import tech.units.indriya.ComparableQuantity
 
 import javax.measure.quantity.ElectricPotential
 import java.time.ZonedDateTime

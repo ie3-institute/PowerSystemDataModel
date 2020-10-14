@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
   private static final String VMAG = "vmag";

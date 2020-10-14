@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import org.jgrapht.graph.SimpleWeightedGraph;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** A distance weighted graph that uses {@link DistanceWeightedEdge}s as edge type. */
 public class DistanceWeightedGraph extends SimpleWeightedGraph<NodeInput, DistanceWeightedEdge> {
