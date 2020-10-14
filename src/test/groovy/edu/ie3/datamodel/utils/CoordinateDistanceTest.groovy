@@ -14,10 +14,10 @@ class CoordinateDistanceTest extends Specification {
 		given:
 		def pointA = GeoUtils.xyToPoint(49d, 7d)
 		def pointB = GeoUtils.xyToPoint(50d, 7d)
-		def expectedDistance = GeoUtils.calcHaversine(pointA.getY(), pointA.getX(), pointB.getY(), pointB.getX())
+		def expectedDistance = GeoUtils.calcHaversine(pointA.y, pointA.x, pointB.y, pointB.x)
 		when:
-		def coordinateDistance = new CoordinateDistance(pointA, pointB)
-		def expectedCoordinateDistance = new CoordinateDistance(coordinateDistance.getCoordinateA(), coordinateDistance.getCoordinateB(), expectedDistance)
+		CoordinateDistance coordinateDistance = new CoordinateDistance(pointA, pointB)
+		CoordinateDistance expectedCoordinateDistance = new CoordinateDistance(coordinateDistance.getCoordinateA(), coordinateDistance.getCoordinateB(), expectedDistance)
 		then:
 		coordinateDistance.getDistance() == expectedDistance
 		coordinateDistance == expectedCoordinateDistance
@@ -32,7 +32,7 @@ class CoordinateDistanceTest extends Specification {
 		def distD = new CoordinateDistance(basePoint, GeoUtils.xyToPoint(52d, 9d))
 		def coordinateDistances = [distA, distB, distC, distD]
 		when:
-		def sortedDistances = coordinateDistances.sort()
+		def sortedDistances = coordinateDistances.toSorted()
 		then:
 		sortedDistances == [distC, distA, distB, distD].toList()
 	}

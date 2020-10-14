@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.connectors.CsvFileConnector
 import edu.ie3.datamodel.utils.CoordinateDistance
-import edu.ie3.datamodel.utils.CoordinateDistanceTest
 import edu.ie3.util.geo.GeoUtils
 import spock.lang.Shared
 import spock.lang.Specification
@@ -67,19 +66,13 @@ class CsvIdCoordinateSourceTest extends Specification implements CsvTestDataMeta
 			GeoUtils.xyToPoint(48.031231, 14.57985)
 		]
 		def basePoint = GeoUtils.xyToPoint(48.0365, 14.48661)
-		def expectedNearestCoordinates = [
-			allCoordinates[1],
-			allCoordinates[0]
-		]
 		def expectedDistances = [
 			new CoordinateDistance(basePoint, allCoordinates[0]),
 			new CoordinateDistance(basePoint, allCoordinates[1])
 		].sort()
 		when:
-		def actualNearestCoordinates = source.getNearestCoordinates(basePoint, 2)
+		def actualDistances = source.getNearestCoordinates(basePoint, 2)
 		then:
-		actualNearestCoordinates[0].getCoordinateB() == expectedNearestCoordinates[0]
-		actualNearestCoordinates[1].getCoordinateB() == expectedNearestCoordinates[1]
-		actualNearestCoordinates == expectedDistances
+		actualDistances == expectedDistances
 	}
 }

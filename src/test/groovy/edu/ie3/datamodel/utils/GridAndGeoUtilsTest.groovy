@@ -13,9 +13,6 @@ import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import java.util.stream.Collector
-import java.util.stream.Collectors
-
 class GridAndGeoUtilsTest extends Specification {
 
 
