@@ -57,9 +57,9 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
   public String toString() {
     return "TimeBasedWeatherValueData{"
         + "fieldsToAttributes="
-        + fieldsToAttributes
+        + getFieldsToValues()
         + ", entityClass="
-        + entityClass
+        + getEntityClass()
         + "valueClass="
         + valueClass
         + ", coordinate="

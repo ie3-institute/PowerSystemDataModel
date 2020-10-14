@@ -52,9 +52,9 @@ public abstract class TimeBasedValueData<V extends Value> extends EntityData {
   public String toString() {
     return "TimeBasedValueData{"
         + "fieldsToAttributes="
-        + fieldsToAttributes
+        + getFieldsToValues()
         + ", entityClass="
-        + entityClass
+        + getEntityClass()
         + "valueClass="
         + valueClass
         + "} "

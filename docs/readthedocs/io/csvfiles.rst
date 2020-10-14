@@ -99,7 +99,7 @@ The following keys are supported until now:
 +---------+----------------------------------------------------------------------------------------------------------------+
 | Key     | Information and supported head line                                                                            |
 +=========+================================================================================================================+
-| c       | | An energy price (e.g. in €/MWh; c stands for charge".                                                        |
+| c       | | An energy price (e.g. in €/MWh; c stands for charge).                                                        |
 |         | | Permissible head line: ``uuid,time,price``                                                                   |
 +---------+----------------------------------------------------------------------------------------------------------------+
 | p       | | Active power                                                                                                 |

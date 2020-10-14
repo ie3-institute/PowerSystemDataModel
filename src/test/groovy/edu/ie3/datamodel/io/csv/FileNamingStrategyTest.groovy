@@ -610,7 +610,7 @@ class FileNamingStrategyTest extends Specification {
 		FileNamingStrategy strategy = new FileNamingStrategy("prefix", "suffix")
 
 		when:
-		Optional<String> res = strategy.getFileName(TimeSeriesMapping.Entry.class)
+		Optional<String> res = strategy.getFileName(TimeSeriesMapping.Entry)
 
 		then:
 		res.present

@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.timeseries.mapping
 
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
+import edu.ie3.datamodel.models.value.Value
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -94,7 +95,7 @@ class TimeSeriesMappingTest extends Specification {
 
 	def "The time series mapping returns correct entries"() {
 		given:
-		def mapping = new HashMap()
+		def mapping = [:]
 		mapping.put(UUID.fromString("502351b5-21f1-489a-8ac0-b85893cbfa47"), ts0)
 		mapping.put(UUID.fromString("05d22f64-f252-4c4c-b724-dc69a0611ffe"), ts1)
 		mapping.put(UUID.fromString("43ca59dd-c70c-4184-9638-fd50da53847c"), ts2)

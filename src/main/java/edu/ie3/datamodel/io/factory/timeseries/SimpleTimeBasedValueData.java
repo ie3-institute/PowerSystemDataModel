@@ -29,9 +29,9 @@ public class SimpleTimeBasedValueData<V extends Value> extends TimeBasedValueDat
   public String toString() {
     return "SimpleTimeBasedValueData{"
         + "fieldsToAttributes="
-        + fieldsToAttributes
+        + getFieldsToValues()
         + ", entityClass="
-        + entityClass
+        + getEntityClass()
         + "valueClass="
         + valueClass
         + '}';
