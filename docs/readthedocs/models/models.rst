@@ -54,9 +54,9 @@ Equality Checks
   instances is not as trivial as it might seem, because there might be different understandings about the equality of
   quantities (e.g. there is a big difference between two instances being equal or equivalent). After long discussions how to
   treat quantities in the entity :code:`equals()` method, we agreed on the following rules to be applied:
-    - equality check is done by calling :code:`Objects.equals(<UnitInstanceA>, <UnitInstanceB>)` or
-      :code:`<UnitInstanceA>.equals(<UnitInstanceB>)`.
-      Using :code:`Objects.equals(<UnitInstanceA>, <UnitInstanceB>)` is necessary especially for time series data.
+    - equality check is done by calling :code:`Objects.equals(<QuantityInstanceA>, <QuantityInstanceB>)` or
+      :code:`<QuantityInstanceA>.equals(<QuantityInstanceB>)`.
+      Using :code:`Objects.equals(<QuantityInstanceA>, <QuantityInstanceB>)` is necessary especially for time series data.
       As in contrast to all other places, quantity time series from real world data sometimes are not complete and
       hence contain missing values. To represent missing values this is the only place where the usage of :code:`null`
       is a valid choice and hence needs to be treated accordingly. Please remember that his is only allowed in very few
@@ -71,7 +71,7 @@ Equality Checks
     - for now, there is no default way to compare entities in a 'number equality' way provided. E.g. a line with a length
       of 1km compared to a line with a length of 1000m is actually of the same length, but calling :code:`LineA.equals(LineB)`
       would return :code:`false` as the equality check does NOT convert units. If you want to compare two entity instances
-      based on their equality you have (for now) check for each quantity manually using their :code:`isEquivalentTo()`
+      based on their equivalence you have (for now) check for each quantity manually using their :code:`isEquivalentTo()`
       method. If you think you would benefit from a standard method that allows entity equivalence check, please consider
       handing in an issue `here <https://github.com/ie3-institute/PowerSystemDataModel/issues>`_.
       Furthermore, the current existing implementation of :code:`isEquivalentTo()` in indriya does not allow the provision of
