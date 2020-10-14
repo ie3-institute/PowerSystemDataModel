@@ -554,7 +554,7 @@ public class ContainerUtils {
                     rawGridElements.getLines().parallelStream(),
                     rawGridElements.getTransformer2Ws().parallelStream()),
                 rawGridElements.getTransformer3Ws().parallelStream())
-            .flatMap(connector -> ((ConnectorInput) connector).allNodes().parallelStream())
+            .flatMap(connector -> connector.allNodes().parallelStream())
             .collect(Collectors.toSet());
     return traverseAlongSwitchChain(startNode, rawGridElements.getSwitches(), possibleJunctions);
   }
