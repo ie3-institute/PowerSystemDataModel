@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.timeseries.mapping
 
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
-import edu.ie3.datamodel.models.value.Value
 import spock.lang.Shared
 import spock.lang.Specification
 
