@@ -11,16 +11,16 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
-import edu.ie3.util.quantities.dep.interfaces.Currency;
-import edu.ie3.util.quantities.dep.interfaces.DimensionlessRate;
-import edu.ie3.util.quantities.dep.interfaces.EnergyPrice;
-import edu.ie3.util.quantities.dep.interfaces.SpecificEnergy;
+import edu.ie3.util.quantities.interfaces.Currency;
+import edu.ie3.util.quantities.interfaces.DimensionlessRate;
+import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import edu.ie3.util.quantities.interfaces.SpecificEnergy;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.measure.quantity.*;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class SystemParticipantTypeInputFactory
     extends AssetTypeInputEntityFactory<SystemParticipantTypeInput> {

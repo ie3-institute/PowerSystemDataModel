@@ -6,14 +6,14 @@
 package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.util.quantities.dep.interfaces.Currency;
-import edu.ie3.util.quantities.dep.interfaces.DimensionlessRate;
-import edu.ie3.util.quantities.dep.interfaces.EnergyPrice;
+import edu.ie3.util.quantities.interfaces.Currency;
+import edu.ie3.util.quantities.interfaces.DimensionlessRate;
+import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.BmInput} */
 public class BmTypeInput extends SystemParticipantTypeInput {
@@ -71,6 +71,23 @@ public class BmTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public String toString() {
-    return "BmTypeInput{" + "loadGradient=" + activePowerGradient + ", etaConv=" + etaConv + '}';
+    return "BmTypeInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", capex="
+        + getCapex()
+        + ", opex="
+        + getOpex()
+        + ", sRated="
+        + getsRated()
+        + ", cosphiRated="
+        + getCosPhiRated()
+        + "loadGradient="
+        + activePowerGradient
+        + ", etaConv="
+        + etaConv
+        + '}';
   }
 }

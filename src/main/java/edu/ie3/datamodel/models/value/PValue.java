@@ -7,10 +7,11 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
-/** Describes a actove power value as active power */
+/** Describes a active power value as active power */
 public class PValue implements Value {
 
   /** Active power */
@@ -18,19 +19,19 @@ public class PValue implements Value {
 
   /** @param p Active power */
   public PValue(ComparableQuantity<Power> p) {
-    this.p = p.to(StandardUnits.ACTIVE_POWER_IN);
+    this.p = p == null ? null : p.to(StandardUnits.ACTIVE_POWER_IN);
   }
 
-  public ComparableQuantity<Power> getP() {
-    return p;
+  public Optional<ComparableQuantity<Power>> getP() {
+    return Optional.ofNullable(p);
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    PValue that = (PValue) o;
-    return p.equals(that.p);
+    PValue pValue = (PValue) o;
+    return Objects.equals(p, pValue.p);
   }
 
   @Override

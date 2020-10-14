@@ -93,13 +93,13 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
         + ", entityClass="
         + getEntityClass()
         + ", operatorInput="
-        + getOperatorInput()
+        + getOperatorInput().getUuid()
         + ", nodeA="
-        + getNodeA()
+        + getNodeA().getUuid()
         + ", nodeB="
-        + getNodeB()
+        + getNodeB().getUuid()
         + ", type="
-        + type
+        + type.getUuid()
         + '}';
   }
 }

@@ -68,11 +68,11 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
   public String toString() {
     return "SystemParticipantTypedEntityData{"
         + "typeInput="
-        + typeInput
+        + typeInput.getUuid()
         + ", node="
-        + getNode()
+        + getNode().getUuid()
         + ", operatorInput="
-        + getOperatorInput()
+        + getOperatorInput().getUuid()
         + ", fieldsToValues="
         + getFieldsToValues()
         + ", entityClass="

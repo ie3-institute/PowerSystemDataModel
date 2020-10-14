@@ -8,7 +8,7 @@ package edu.ie3.datamodel.models.result.system;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.PvInput} */
 public class PvResult extends SystemParticipantResult {
@@ -46,5 +46,21 @@ public class PvResult extends SystemParticipantResult {
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q) {
     super(uuid, timestamp, inputModel, p, q);
+  }
+
+  @Override
+  public String toString() {
+    return "PvResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + '}';
   }
 }

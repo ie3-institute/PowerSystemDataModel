@@ -8,13 +8,13 @@ package edu.ie3.datamodel.models.input.thermal;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.util.quantities.dep.interfaces.SpecificHeatCapacity;
+import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import org.apache.commons.lang3.NotImplementedException;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Thermal storage with cylindrical shape */
 public class CylindricalStorageInput extends ThermalStorageInput {
@@ -135,7 +135,17 @@ public class CylindricalStorageInput extends ThermalStorageInput {
   @Override
   public String toString() {
     return "CylindricalStorageInput{"
-        + "storageVolumeLvl="
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", bus="
+        + getThermalBus().getUuid()
+        + ", storageVolumeLvl="
         + storageVolumeLvl
         + ", storageVolumeLvlMin="
         + storageVolumeLvlMin

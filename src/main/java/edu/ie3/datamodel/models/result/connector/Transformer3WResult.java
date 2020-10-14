@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class Transformer3WResult extends TransformerResult {
 
@@ -107,6 +107,27 @@ public class Transformer3WResult extends TransformerResult {
 
   @Override
   public String toString() {
-    return "Transformer3WResult{" + "iCMag=" + iCMag + ", iCAng=" + iCAng + '}';
+    return "Transformer3WResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", iAMag="
+        + getiAMag()
+        + ", iAAng="
+        + getiAAng()
+        + ", iBMag="
+        + getiBMag()
+        + ", iBAng="
+        + getiBAng()
+        + ", tapPos="
+        + getTapPos()
+        + ", iCMag="
+        + iCMag
+        + ", iCAng="
+        + iCAng
+        + '}';
   }
 }

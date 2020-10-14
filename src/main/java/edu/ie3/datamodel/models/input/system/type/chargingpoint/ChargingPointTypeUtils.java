@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
-import tec.uom.se.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 /**
  * Utility class to create either custom instances of {@link ChargingPointType}s or to retrieve

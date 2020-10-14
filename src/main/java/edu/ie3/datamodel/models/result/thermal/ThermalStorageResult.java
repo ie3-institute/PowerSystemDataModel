@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents calculation results of {@link
@@ -82,6 +82,17 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
 
   @Override
   public String toString() {
-    return "ThermalStorageResult{" + "energy=" + energy + '}';
+    return "ThermalStorageResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", qDot="
+        + getqDot()
+        + ", energy="
+        + energy
+        + '}';
   }
 }

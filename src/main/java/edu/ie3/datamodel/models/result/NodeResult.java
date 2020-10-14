@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput} */
 public class NodeResult extends ResultEntity {
@@ -92,6 +92,17 @@ public class NodeResult extends ResultEntity {
 
   @Override
   public String toString() {
-    return "NodeResult{" + "vMag=" + vMag + ", vAng=" + vAng + '}';
+    return "NodeResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", vMag="
+        + vMag
+        + ", vAng="
+        + vAng
+        + '}';
   }
 }

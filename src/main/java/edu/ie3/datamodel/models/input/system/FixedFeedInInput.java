@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Dummy class to represent a constant feed in regardless of its type */
 public class FixedFeedInInput extends SystemParticipantInput {
@@ -98,7 +98,25 @@ public class FixedFeedInInput extends SystemParticipantInput {
 
   @Override
   public String toString() {
-    return "FixedFeedInInput{" + "sRated=" + sRated + ", cosphiRated=" + cosPhiRated + '}';
+    return "FixedFeedInInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + getNode().getUuid()
+        + ", qCharacteristics='"
+        + getqCharacteristics()
+        + '\''
+        + ", sRated="
+        + sRated
+        + ", cosphiRated="
+        + cosPhiRated
+        + '}';
   }
 
   /**

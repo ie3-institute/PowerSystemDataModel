@@ -8,12 +8,12 @@ package edu.ie3.datamodel.models.input.thermal;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.util.quantities.dep.interfaces.HeatCapacity;
-import edu.ie3.util.quantities.dep.interfaces.ThermalConductance;
+import edu.ie3.util.quantities.interfaces.HeatCapacity;
+import edu.ie3.util.quantities.interfaces.ThermalConductance;
 import java.util.Objects;
 import java.util.UUID;
 import org.apache.commons.lang3.NotImplementedException;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Quite simple thermal model of a house to serve as a heat sink */
 public class ThermalHouseInput extends ThermalSinkInput {
@@ -92,6 +92,21 @@ public class ThermalHouseInput extends ThermalSinkInput {
 
   @Override
   public String toString() {
-    return "ThermalHouseInput{" + "ethLosses=" + ethLosses + ", ethCapa=" + ethCapa + '}';
+    return "ThermalHouseInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", bus="
+        + getThermalBus().getUuid()
+        + ", ethLosses="
+        + ethLosses
+        + ", ethCapa="
+        + ethCapa
+        + '}';
   }
 }

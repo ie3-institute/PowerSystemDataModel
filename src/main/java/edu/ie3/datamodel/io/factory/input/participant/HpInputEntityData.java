@@ -37,4 +37,22 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
   public ThermalBusInput getThermalBusInput() {
     return thermalBusInput;
   }
+
+  @Override
+  public String toString() {
+    return "HpInputEntityData{"
+        + "thermalBusInput="
+        + thermalBusInput.getUuid()
+        + ", typeInput="
+        + getTypeInput().getUuid()
+        + ", node="
+        + getNode().getUuid()
+        + ", operatorInput="
+        + getOperatorInput().getUuid()
+        + ", fieldsToValues="
+        + getFieldsToValues()
+        + ", entityClass="
+        + getEntityClass()
+        + '}';
+  }
 }

@@ -76,6 +76,13 @@ public abstract class ResultEntity extends UniqueEntity {
 
   @Override
   public String toString() {
-    return "ResultEntity{" + "timestamp=" + timestamp + ", inputModel=" + inputModel + '}';
+    return "ResultEntity{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + timestamp
+        + ", inputModel="
+        + inputModel
+        + '}';
   }
 }

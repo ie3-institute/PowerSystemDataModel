@@ -13,7 +13,7 @@ import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Respresents the results of {@link CylindricalStorageInput} */
 public class CylindricalStorageResult extends ThermalStorageResult {
@@ -85,6 +85,19 @@ public class CylindricalStorageResult extends ThermalStorageResult {
 
   @Override
   public String toString() {
-    return "CylindricalStorageResult{" + "fillLevel=" + fillLevel + '}';
+    return "CylindricalStorageResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", qDot="
+        + getqDot()
+        + ", energy="
+        + getEnergy()
+        + ", fillLevel="
+        + fillLevel
+        + '}';
   }
 }

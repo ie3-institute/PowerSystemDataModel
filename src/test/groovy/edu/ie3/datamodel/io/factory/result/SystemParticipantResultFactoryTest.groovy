@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
-import tec.uom.se.unit.Units
+import tech.units.indriya.unit.Units
 
 class SystemParticipantResultFactoryTest extends Specification implements FactoryTestHelper {
 

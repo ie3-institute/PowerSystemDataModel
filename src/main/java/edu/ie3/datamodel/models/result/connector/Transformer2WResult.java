@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link
@@ -62,5 +62,27 @@ public class Transformer2WResult extends TransformerResult {
       ComparableQuantity<Angle> iBAng,
       int tapPos) {
     super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+  }
+
+  @Override
+  public String toString() {
+    return "Transformer2WResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", iAMag="
+        + getiAMag()
+        + ", iAAng="
+        + getiAAng()
+        + ", iBMag="
+        + getiBMag()
+        + ", iBAng="
+        + getiBAng()
+        + ", tapPos="
+        + getTapPos()
+        + '}';
   }
 }

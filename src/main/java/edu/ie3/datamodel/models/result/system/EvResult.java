@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvInput} */
 public class EvResult extends SystemParticipantResult {
@@ -81,6 +81,19 @@ public class EvResult extends SystemParticipantResult {
 
   @Override
   public String toString() {
-    return "EvResult{" + "soc=" + soc + '}';
+    return "EvResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + ", soc="
+        + soc
+        + '}';
   }
 }

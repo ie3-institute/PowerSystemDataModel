@@ -9,7 +9,7 @@ import edu.ie3.datamodel.models.input.system.EvcsInput;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Represents calculation results of a {@link EvcsInput} */
 public class EvcsResult extends SystemParticipantResult {
@@ -46,5 +46,21 @@ public class EvcsResult extends SystemParticipantResult {
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q) {
     super(uuid, timestamp, inputModel, p, q);
+  }
+
+  @Override
+  public String toString() {
+    return "EvcsResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + '}';
   }
 }

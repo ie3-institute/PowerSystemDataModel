@@ -63,4 +63,24 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
   public int hashCode() {
     return Objects.hash(super.hashCode(), thermalBusInput, thermalStorageInput);
   }
+
+  @Override
+  public String toString() {
+    return "ChpInputEntityData{"
+        + "thermalBusInput="
+        + thermalBusInput.getUuid()
+        + ", thermalStorageInput="
+        + thermalStorageInput.getUuid()
+        + ", typeInput="
+        + getTypeInput().getUuid()
+        + ", node="
+        + getNode().getUuid()
+        + ", operatorInput="
+        + getOperatorInput().getUuid()
+        + ", fieldsToValues="
+        + getFieldsToValues()
+        + ", entityClass="
+        + getEntityClass()
+        + '}';
+  }
 }

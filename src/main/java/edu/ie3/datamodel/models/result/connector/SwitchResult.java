@@ -68,6 +68,15 @@ public class SwitchResult extends ResultEntity {
 
   @Override
   public String toString() {
-    return "SwitchResult{" + "closed=" + closed + '}';
+    return "SwitchResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + "closed="
+        + closed
+        + '}';
   }
 }

@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Describes an electrical grid line that connects two {@link
@@ -139,8 +139,22 @@ public class LineInput extends ConnectorInput implements HasType {
   @Override
   public String toString() {
     return "LineInput{"
-        + "type="
-        + type
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", nodeA="
+        + getNodeA().getUuid()
+        + ", nodeB="
+        + getNodeB().getUuid()
+        + ", noOfParallelDevices="
+        + getParallelDevices()
+        + ", type="
+        + type.getUuid()
         + ", length="
         + length
         + ", geoPosition="

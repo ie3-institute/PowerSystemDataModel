@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.HpInput} */
 public class HpResult extends SystemParticipantResult {
@@ -24,6 +24,7 @@ public class HpResult extends SystemParticipantResult {
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
+   * @param qDot provided head energy
    */
   public HpResult(
       ZonedDateTime timestamp,
@@ -44,6 +45,7 @@ public class HpResult extends SystemParticipantResult {
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
+   * @param qDot provided head energy
    */
   public HpResult(
       UUID uuid,
@@ -72,5 +74,23 @@ public class HpResult extends SystemParticipantResult {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), qDot);
+  }
+
+  @Override
+  public String toString() {
+    return "HpResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + ", qDot="
+        + qDot
+        + '}';
   }
 }

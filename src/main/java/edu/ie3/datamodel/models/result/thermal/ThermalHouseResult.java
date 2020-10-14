@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Represents the results of {@link edu.ie3.datamodel.models.input.thermal.ThermalHouseInput} */
 public class ThermalHouseResult extends ThermalSinkResult {
@@ -79,6 +79,17 @@ public class ThermalHouseResult extends ThermalSinkResult {
 
   @Override
   public String toString() {
-    return "ThermalHouseResult{" + "indoorTemperature=" + indoorTemperature + '}';
+    return "ThermalHouseResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", qDot="
+        + getqDot()
+        + ", indoorTemperature="
+        + indoorTemperature
+        + '}';
   }
 }

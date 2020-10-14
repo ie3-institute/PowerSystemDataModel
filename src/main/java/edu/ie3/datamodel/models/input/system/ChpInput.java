@@ -134,12 +134,25 @@ public class ChpInput extends SystemParticipantInput
   @Override
   public String toString() {
     return "ChpInput{"
-        + "thermalBus="
-        + thermalBus
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + getNode().getUuid()
+        + ", qCharacteristics='"
+        + getqCharacteristics()
+        + '\''
+        + ", thermalBus="
+        + thermalBus.getUuid()
         + ", type="
-        + type
+        + type.getUuid()
         + ", thermalStorage="
-        + thermalStorage
+        + thermalStorage.getUuid()
         + ", marketReaction="
         + marketReaction
         + '}';

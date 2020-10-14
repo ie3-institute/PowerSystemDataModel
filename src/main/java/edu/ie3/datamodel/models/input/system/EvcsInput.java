@@ -24,6 +24,17 @@ public class EvcsInput extends SystemParticipantInput {
   /** Rated power factor */
   private final double cosPhiRated;
 
+  /**
+   * @param uuid Unique identifier
+   * @param id Human readable identifier
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node that the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param type type of the charging points available to this charging station
+   * @param chargingPoints number of charging points available at this charging station
+   * @param cosPhiRated rated cos phi
+   */
   public EvcsInput(
       UUID uuid,
       String id,
@@ -40,6 +51,16 @@ public class EvcsInput extends SystemParticipantInput {
     this.cosPhiRated = cosPhiRated;
   }
 
+  /**
+   * @param uuid Unique identifier
+   * @param id Human readable identifier
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node that the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param type type of the charging points available to this charging station
+   * @param cosPhiRated rated cos phi
+   */
   public EvcsInput(
       UUID uuid,
       String id,
@@ -51,7 +72,15 @@ public class EvcsInput extends SystemParticipantInput {
       double cosPhiRated) {
     this(uuid, id, operator, operationTime, node, qCharacteristics, type, 1, cosPhiRated);
   }
-
+  /**
+   * @param uuid Unique identifier
+   * @param id Human readable identifier
+   * @param node that the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param type type of the charging points available to this charging station
+   * @param chargingPoints number of charging points available at this charging station
+   * @param cosPhiRated rated cos phi
+   */
   public EvcsInput(
       UUID uuid,
       String id,
@@ -66,6 +95,14 @@ public class EvcsInput extends SystemParticipantInput {
     this.cosPhiRated = cosPhiRated;
   }
 
+  /**
+   * @param uuid Unique identifier
+   * @param id Human readable identifier
+   * @param node that the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param type type of the charging points available to this charging station
+   * @param cosPhiRated rated cos phi
+   */
   public EvcsInput(
       UUID uuid,
       String id,
@@ -129,6 +166,13 @@ public class EvcsInput extends SystemParticipantInput {
         + super.toString();
   }
 
+  /**
+   * A builder pattern based approach to create copies of {@link EvcsInput} entities with altered
+   * field values. For detailed field descriptions refer to java docs of {@link EvcsInput}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
   public static class EvcsInputCopyBuilder
       extends SystemParticipantInputCopyBuilder<EvcsInputCopyBuilder> {
 

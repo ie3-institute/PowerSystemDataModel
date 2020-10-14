@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Representation of a result with regard to a thermal unit */
 public abstract class ThermalUnitResult extends ResultEntity {
@@ -73,6 +73,15 @@ public abstract class ThermalUnitResult extends ResultEntity {
 
   @Override
   public String toString() {
-    return "ThermalUnitResult{" + "qDot=" + qDot + '}';
+    return "ThermalUnitResult{"
+        + "uuid="
+        + getUuid()
+        + ", timestamp="
+        + getTimestamp()
+        + ", inputModel="
+        + getInputModel()
+        + ", qDot="
+        + qDot
+        + '}';
   }
 }
