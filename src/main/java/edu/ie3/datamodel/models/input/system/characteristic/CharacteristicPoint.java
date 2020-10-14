@@ -10,8 +10,8 @@ import java.util.Locale;
 import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.quantity.Quantities;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 /** Class to describe one point of a given {@link CharacteristicInput} */
 public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>

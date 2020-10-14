@@ -65,7 +65,7 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     IndividualTimeSeries<?> that = (IndividualTimeSeries<?>) o;
-    return Objects.equals(timeToValue, that.timeToValue);
+    return timeToValue.equals(that.timeToValue);
   }
 
   @Override

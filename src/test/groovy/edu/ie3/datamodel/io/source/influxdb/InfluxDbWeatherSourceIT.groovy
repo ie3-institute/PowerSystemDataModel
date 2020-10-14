@@ -60,7 +60,7 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 		def optTimeBasedValue = source.getWeather(WeatherTestData.time_15h, WeatherTestData.coordinate_193186)
 		then:
 		optTimeBasedValue.isPresent()
-		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
+		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
 	}
 
 	def "An InfluxDbWeatherSource can read multiple timeseries values for multiple coordinates"() {

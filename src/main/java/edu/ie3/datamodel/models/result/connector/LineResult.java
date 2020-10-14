@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link edu.ie3.datamodel.models.input.connector.LineInput}

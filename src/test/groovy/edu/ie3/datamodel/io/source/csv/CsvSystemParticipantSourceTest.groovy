@@ -340,7 +340,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 		where:
 		nodes               | operators               || resultingSize || resultingSet
 		[sptd.pvInput.node]| [sptd.pvInput.operator]|| 1             || [sptd.pvInput]
-		[sptd.pvInput.node]| []|| 1             || [
+		[sptd.pvInput.node]| []|| 1                  || [
 			new PvInput(sptd.pvInput.uuid, sptd.pvInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.pvInput.operationTime, sptd.pvInput.node, sptd.pvInput.qCharacteristics, sptd.pvInput.albedo, sptd.pvInput.azimuth, sptd.pvInput.etaConv, sptd.pvInput.height, sptd.pvInput.kG, sptd.pvInput.kT, sptd.pvInput.marketReaction, sptd.pvInput.sRated, sptd.pvInput.cosPhiRated)
 		]
 		[]| [sptd.pvInput.operator]|| 0             || []

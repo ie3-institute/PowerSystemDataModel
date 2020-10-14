@@ -7,8 +7,9 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes a tuple based on active electrical power, as well as heat power */
 public class HeatAndPValue extends PValue {
@@ -21,11 +22,11 @@ public class HeatAndPValue extends PValue {
    */
   public HeatAndPValue(ComparableQuantity<Power> p, ComparableQuantity<Power> heatDemand) {
     super(p);
-    this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
+    this.heatDemand = heatDemand == null ? null : heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
-  public ComparableQuantity<Power> getHeatDemand() {
-    return heatDemand;
+  public Optional<ComparableQuantity<Power>> getHeatDemand() {
+    return Optional.ofNullable(heatDemand);
   }
 
   @Override
@@ -34,7 +35,7 @@ public class HeatAndPValue extends PValue {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     HeatAndPValue that = (HeatAndPValue) o;
-    return heatDemand.equals(that.heatDemand);
+    return Objects.equals(heatDemand, that.heatDemand);
   }
 
   @Override

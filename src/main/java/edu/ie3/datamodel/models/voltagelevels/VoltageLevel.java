@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.voltagelevels;
 
 import javax.measure.quantity.ElectricPotential;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Definition of a concrete voltage level. Here, only voltage levels with one rated voltage are

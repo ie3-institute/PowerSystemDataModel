@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import org.locationtech.jts.geom.Point;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetInputEntityData> {
   private static final String V_TARGET = "vtarget";
