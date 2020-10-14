@@ -16,10 +16,17 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
-import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.StringUtils;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,6 +42,35 @@ public class FileNamingStrategy {
 
   protected static final Logger logger = LogManager.getLogger(FileNamingStrategy.class);
 
+  private static final String UUID_STRING =
+      "[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}";
+  /**
+   * Regex to match the naming convention of a file for an individual time series. The column scheme
+   * is accessible via the named capturing group "columnScheme". The time series' UUID is accessible
+   * by the named capturing group "uuid"
+   */
+  private static final Pattern INDIVIDUAL_TIME_SERIES_PATTERN =
+      Pattern.compile("its_(?<columnScheme>[a-zA-Z]{1,7})_(?<uuid>" + UUID_STRING + ")");
+
+  /**
+   * Pattern to identify individual time series in this instance of the naming strategy (takes care
+   * of prefix and suffix)
+   */
+  protected final Pattern individualTimeSeriesPattern;
+
+  /**
+   * Regex to match the naming convention of a file for a repetitive load profile time series. The
+   * profile is accessible via the named capturing group "profile", the uuid by the group "uuid"
+   */
+  private static final Pattern LOAD_PROFILE_TIME_SERIES =
+      Pattern.compile("lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>" + UUID_STRING + ")");
+
+  /**
+   * Pattern to identify load profile time series in this instance of the naming strategy (takes
+   * care of prefix and suffix)
+   */
+  protected final Pattern loadProfileTimeSeriesPattern;
+
   private static final String RES_ENTITY_SUFFIX = "_res";
 
   private final String prefix;
@@ -49,6 +85,21 @@ public class FileNamingStrategy {
   public FileNamingStrategy(String prefix, String suffix) {
     this.prefix = preparePrefix(prefix);
     this.suffix = prepareSuffix(suffix);
+
+    this.individualTimeSeriesPattern =
+        Pattern.compile(
+            prefix
+                + (prefix.isEmpty() ? "" : "_")
+                + INDIVIDUAL_TIME_SERIES_PATTERN.pattern()
+                + (suffix.isEmpty() ? "" : "_")
+                + suffix);
+    this.loadProfileTimeSeriesPattern =
+        Pattern.compile(
+            prefix
+                + (prefix.isEmpty() ? "" : "_")
+                + LOAD_PROFILE_TIME_SERIES.pattern()
+                + (suffix.isEmpty() ? "" : "_")
+                + suffix);
   }
 
   /** Constructor for building the file names without provided files with prefix and suffix */
@@ -85,6 +136,14 @@ public class FileNamingStrategy {
     return StringUtils.cleanString(suffix).replaceAll("^([^_])", "_$1").toLowerCase();
   }
 
+  public Pattern getIndividualTimeSeriesPattern() {
+    return individualTimeSeriesPattern;
+  }
+
+  public Pattern getLoadProfileTimeSeriesPattern() {
+    return loadProfileTimeSeriesPattern;
+  }
+
   public Optional<String> getFileName(Class<? extends UniqueEntity> cls) {
     if (AssetTypeInput.class.isAssignableFrom(cls))
       return getTypeFileName(cls.asSubclass(AssetTypeInput.class));
@@ -102,6 +161,7 @@ public class FileNamingStrategy {
       return getGraphicsInputFileName(cls.asSubclass(GraphicInput.class));
     if (OperatorInput.class.isAssignableFrom(cls))
       return getOperatorInputFileName(cls.asSubclass(OperatorInput.class));
+    if (TimeSeriesMapping.Entry.class.isAssignableFrom(cls)) return getTimeSeriesMappingFileName();
     logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
     return Optional.empty();
   }
@@ -118,19 +178,33 @@ public class FileNamingStrategy {
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<String> getFileName(T timeSeries) {
     if (timeSeries instanceof IndividualTimeSeries) {
-      return Optional.of(
-          prefix
-              .concat("individual")
-              .concat("_time_series")
-              .concat("_")
-              .concat(timeSeries.getUuid().toString())
-              .concat(suffix));
+      Optional<E> maybeFirstElement = timeSeries.getEntries().stream().findFirst();
+      if (maybeFirstElement.isPresent()) {
+        Class<? extends Value> valueClass = maybeFirstElement.get().getValue().getClass();
+        Optional<IndividualTimeSeriesMetaInformation.ColumnScheme> mayBeColumnScheme =
+            IndividualTimeSeriesMetaInformation.ColumnScheme.parse(valueClass);
+        if (mayBeColumnScheme.isPresent()) {
+          return Optional.of(
+              prefix
+                  .concat("its")
+                  .concat("_")
+                  .concat(mayBeColumnScheme.get().getScheme())
+                  .concat("_")
+                  .concat(timeSeries.getUuid().toString())
+                  .concat(suffix));
+        } else {
+          logger.error("Unsupported content of time series {}", timeSeries);
+          return Optional.empty();
+        }
+      } else {
+        logger.error("Unable to determine content of time series {}", timeSeries);
+        return Optional.empty();
+      }
     } else if (timeSeries instanceof LoadProfileInput) {
       LoadProfileInput loadProfileInput = (LoadProfileInput) timeSeries;
       return Optional.of(
           prefix
-              .concat("load_profile")
-              .concat("_time_series")
+              .concat("lpts")
               .concat("_")
               .concat(loadProfileInput.getType().getKey())
               .concat("_")
@@ -140,6 +214,80 @@ public class FileNamingStrategy {
       logger.error("There is no naming strategy defined for {}", timeSeries);
       return Optional.empty();
     }
+  }
+
+  /**
+   * Extracts meta information from a file name, of a time series.
+   *
+   * @param path Path to the file
+   * @return The meeting meta information
+   */
+  public FileNameMetaInformation extractTimeSeriesMetaInformation(Path path) {
+    /* Extract file name from possibly fully qualified path */
+    Path filePath = path.getFileName();
+    if (filePath == null)
+      throw new IllegalArgumentException("Unable to extract file name from path '" + path + "'.");
+    /* Remove the file ending (ending limited to 255 chars, which is the max file name allowed in NTFS and ext4) */
+    String fileName = filePath.toString().replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
+
+    if (getIndividualTimeSeriesPattern().matcher(fileName).matches())
+      return extractIndividualTimesSeriesMetaInformation(fileName);
+    else if (getLoadProfileTimeSeriesPattern().matcher(fileName).matches())
+      return extractLoadProfileTimesSeriesMetaInformation(fileName);
+    else
+      throw new IllegalArgumentException(
+          "Unknown format of '" + fileName + "'. Cannot extract meta information.");
+  }
+
+  /**
+   * Extracts meta information from a valid file name for a individual time series
+   *
+   * @param fileName File name to extract information from
+   * @return Meta information form individual time series file name
+   */
+  private IndividualTimeSeriesMetaInformation extractIndividualTimesSeriesMetaInformation(
+      String fileName) {
+    Matcher matcher = getIndividualTimeSeriesPattern().matcher(fileName);
+    if (!matcher.matches())
+      throw new IllegalArgumentException(
+          "Cannot extract meta information on individual time series from '" + fileName + "'.");
+
+    String columnSchemeKey = matcher.group("columnScheme");
+    IndividualTimeSeriesMetaInformation.ColumnScheme columnScheme =
+        IndividualTimeSeriesMetaInformation.ColumnScheme.parse(columnSchemeKey)
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "Cannot parse '" + columnSchemeKey + "' to valid column scheme."));
+
+    return new IndividualTimeSeriesMetaInformation(
+        UUID.fromString(matcher.group("uuid")), columnScheme);
+  }
+
+  /**
+   * Extracts meta information from a valid file name for a load profile time series
+   *
+   * @param fileName File name to extract information from
+   * @return Meta information form load profile time series file name
+   */
+  private LoadProfileTimeSeriesMetaInformation extractLoadProfileTimesSeriesMetaInformation(
+      String fileName) {
+    Matcher matcher = getLoadProfileTimeSeriesPattern().matcher(fileName);
+    if (!matcher.matches())
+      throw new IllegalArgumentException(
+          "Cannot extract meta information on load profile time series from '" + fileName + "'.");
+
+    return new LoadProfileTimeSeriesMetaInformation(
+        UUID.fromString(matcher.group("uuid")), matcher.group("profile"));
+  }
+
+  /**
+   * Get the file name for time series mapping
+   *
+   * @return The file name string
+   */
+  public Optional<String> getTimeSeriesMappingFileName() {
+    return Optional.of(addPrefixAndSuffix("time_series_mapping"));
   }
 
   /**
@@ -249,5 +397,112 @@ public class FileNamingStrategy {
    */
   private String addPrefixAndSuffix(String s) {
     return prefix.concat(s).concat(suffix);
+  }
+
+  public interface FileNameMetaInformation {}
+
+  public static class IndividualTimeSeriesMetaInformation implements FileNameMetaInformation {
+    public enum ColumnScheme {
+      ENERGY_PRICE("c"),
+      ACTIVE_POWER("p"),
+      APPARENT_POWER("pq"),
+      HEAT_DEMAND("h"),
+      ACTIVE_POWER_AND_HEAT_DEMAND("ph"),
+      APPARENT_POWER_AND_HEAT_DEMAND("pqh"),
+      WEATHER("weather");
+
+      private final String scheme;
+
+      ColumnScheme(String scheme) {
+        this.scheme = scheme;
+      }
+
+      public String getScheme() {
+        return scheme;
+      }
+
+      public static Optional<ColumnScheme> parse(String key) {
+        String cleanString = StringUtils.cleanString(key).toLowerCase();
+        return Arrays.stream(ColumnScheme.values())
+            .filter(entry -> Objects.equals(entry.scheme, cleanString))
+            .findFirst();
+      }
+
+      public static <V extends Value> Optional<ColumnScheme> parse(Class<V> valueClass) {
+        /* IMPORTANT NOTE: Make sure to start with child classes and then use parent classes to allow for most precise
+         * parsing (child class instances are also assignable to parent classes) */
+
+        if (EnergyPriceValue.class.isAssignableFrom(valueClass)) return Optional.of(ENERGY_PRICE);
+        if (HeatAndSValue.class.isAssignableFrom(valueClass))
+          return Optional.of(APPARENT_POWER_AND_HEAT_DEMAND);
+        if (SValue.class.isAssignableFrom(valueClass)) return Optional.of(APPARENT_POWER);
+        if (HeatAndPValue.class.isAssignableFrom(valueClass))
+          return Optional.of(ACTIVE_POWER_AND_HEAT_DEMAND);
+        if (PValue.class.isAssignableFrom(valueClass)) return Optional.of(ACTIVE_POWER);
+        if (HeatDemandValue.class.isAssignableFrom(valueClass)) return Optional.of(HEAT_DEMAND);
+        if (WeatherValue.class.isAssignableFrom(valueClass)) return Optional.of(WEATHER);
+        return Optional.empty();
+      }
+    }
+
+    private final UUID uuid;
+    private final ColumnScheme columnScheme;
+
+    public IndividualTimeSeriesMetaInformation(UUID uuid, ColumnScheme columnScheme) {
+      this.uuid = uuid;
+      this.columnScheme = columnScheme;
+    }
+
+    public UUID getUuid() {
+      return uuid;
+    }
+
+    public ColumnScheme getColumnScheme() {
+      return columnScheme;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof IndividualTimeSeriesMetaInformation)) return false;
+      IndividualTimeSeriesMetaInformation that = (IndividualTimeSeriesMetaInformation) o;
+      return uuid.equals(that.uuid) && columnScheme == that.columnScheme;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(uuid, columnScheme);
+    }
+  }
+
+  public static class LoadProfileTimeSeriesMetaInformation implements FileNameMetaInformation {
+    private final UUID uuid;
+    private final String profile;
+
+    public LoadProfileTimeSeriesMetaInformation(UUID uuid, String profile) {
+      this.uuid = uuid;
+      this.profile = profile;
+    }
+
+    public UUID getUuid() {
+      return uuid;
+    }
+
+    public String getProfile() {
+      return profile;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof LoadProfileTimeSeriesMetaInformation)) return false;
+      LoadProfileTimeSeriesMetaInformation that = (LoadProfileTimeSeriesMetaInformation) o;
+      return uuid.equals(that.uuid) && profile.equals(that.profile);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(uuid, profile);
+    }
   }
 }
