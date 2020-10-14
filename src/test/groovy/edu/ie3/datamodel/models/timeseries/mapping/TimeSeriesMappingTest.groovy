@@ -109,7 +109,7 @@ class TimeSeriesMappingTest extends Specification {
 		]
 
 		when:
-		def actual = tsm.buildEntries().sort{ a, b -> a.participant <=> b.participant }
+		def actual = tsm.buildEntries().sort { a, b -> a.participant <=> b.participant }
 
 		then:
 		[actual, expectedEntries].transpose().forEach { it ->

@@ -184,7 +184,7 @@ class FileNamingStrategyTest extends Specification {
 		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
 
 		then:
-		FileNamingStrategy.IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())
+		FileNamingStrategy.IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
 		(metaInformation as FileNamingStrategy.IndividualTimeSeriesMetaInformation).with {
 			assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
 			assert it.columnScheme == expectedColumnScheme
@@ -544,7 +544,7 @@ class FileNamingStrategyTest extends Specification {
 	def "A FileNamingStrategy with pre- or suffix should return valid file name for individual time series" () {
 		given:
 		FileNamingStrategy strategy = new FileNamingStrategy("aa", "zz")
-		def entries = new TreeSet()
+		def entries = [] as SortedSet
 		entries.add(new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR))))
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> uuid
