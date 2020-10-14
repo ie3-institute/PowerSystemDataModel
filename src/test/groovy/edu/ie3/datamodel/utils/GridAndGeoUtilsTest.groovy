@@ -13,6 +13,9 @@ import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
+import java.util.stream.Collector
+import java.util.stream.Collectors
+
 class GridAndGeoUtilsTest extends Specification {
 
 
@@ -75,5 +78,24 @@ class GridAndGeoUtilsTest extends Specification {
 
 		expect:
 		GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB) == Quantities.getQuantity(0.91356787076109815268517, PowerSystemUnits.KILOMETRE)
+	}
+
+	def "The GridAndGeoUtils should get the CoordinateDistances between a base point and a collection of other points correctly"() {
+		given:
+		def basePoint = GeoUtils.xyToPoint(49d, 7d)
+		def points = [
+			GeoUtils.xyToPoint(50d, 7d),
+			GeoUtils.xyToPoint(50d, 7.1d),
+			GeoUtils.xyToPoint(49d, 7.1d),
+			GeoUtils.xyToPoint(52d, 9d)
+		]
+		def coordinateDistances = [
+			new CoordinateDistance(basePoint, points[0]),
+			new CoordinateDistance(basePoint, points[1]),
+			new CoordinateDistance(basePoint, points[2]),
+			new CoordinateDistance(basePoint, points[3])
+		]
+		expect:
+		GridAndGeoUtils.getCoordinateDistances(basePoint, points) == new TreeSet(coordinateDistances)
 	}
 }
