@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.measure.quantity.ElectricPotential;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Class with extended information to describe common voltage levels in energy systems. */
 public class CommonVoltageLevel extends VoltageLevel {

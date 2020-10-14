@@ -10,22 +10,20 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
-import edu.ie3.util.quantities.dep.interfaces.Irradiation;
+import edu.ie3.util.quantities.interfaces.Irradiation;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class TimeBasedWeatherValueFactory
     extends EntityFactory<TimeBasedValue, TimeBasedWeatherValueData> {
 
+  private static final String UUID = "uuid";
   private static final String TIME = "time";
   // weather
   private static final String DIFFUSE_IRRADIATION = "diffuse_irradiation";
@@ -49,6 +47,7 @@ public class TimeBasedWeatherValueFactory
   protected List<Set<String>> getFields(TimeBasedWeatherValueData data) {
     Set<String> minConstructorParams =
         newSet(
+            UUID,
             TIME,
             DIFFUSE_IRRADIATION,
             DIRECT_IRRADIATION,
@@ -61,6 +60,7 @@ public class TimeBasedWeatherValueFactory
   @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
     Point coordinate = data.getCoordinate();
+    UUID uuid = data.getUUID(UUID);
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiation> directIrradiation =
         data.getQuantity(DIRECT_IRRADIATION, StandardUnits.IRRADIATION);
@@ -80,6 +80,6 @@ public class TimeBasedWeatherValueFactory
             temperature,
             windDirection,
             windVelocity);
-    return new TimeBasedValue<>(time, weatherValue);
+    return new TimeBasedValue<>(uuid, time, weatherValue);
   }
 }

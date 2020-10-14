@@ -6,29 +6,11 @@
 package edu.ie3.test.common
 
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
+import edu.ie3.datamodel.models.input.system.type.*
+import tech.units.indriya.quantity.Quantities
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.EURO
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOWATT
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOWATTHOUR
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOWATTHOUR_PER_KILOMETRE
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.MEGAVOLTAMPERE
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU_PER_HOUR
-import static tec.uom.se.unit.Units.HOUR
-import static tec.uom.se.unit.Units.PERCENT
-import static tec.uom.se.unit.Units.SQUARE_METRE
-import static tec.uom.se.unit.Units.METRE
-
-import edu.ie3.datamodel.models.input.system.type.BmTypeInput
-import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
-import edu.ie3.datamodel.models.input.system.type.EvTypeInput
-import edu.ie3.datamodel.models.input.system.type.HpTypeInput
-import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
-
-import edu.ie3.datamodel.models.input.system.type.WecTypeInput
-import tec.uom.se.quantity.Quantities
+import static edu.ie3.util.quantities.PowerSystemUnits.*
+import static tech.units.indriya.unit.Units.*
 
 class TypeTestData extends GridTestData {
 	public static final BmTypeInput bmType = new BmTypeInput(

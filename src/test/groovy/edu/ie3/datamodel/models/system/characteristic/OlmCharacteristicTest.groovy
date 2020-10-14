@@ -5,18 +5,18 @@
  */
 package edu.ie3.datamodel.models.system.characteristic
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.METRE_PER_SECOND
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
-
 import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Speed
+
+import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class OlmCharacteristicTest extends Specification {
 	@Shared

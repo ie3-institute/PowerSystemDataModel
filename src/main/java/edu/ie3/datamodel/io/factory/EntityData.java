@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory;
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLT;
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
@@ -23,8 +23,8 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.geojson.GeoJsonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.quantity.Quantities;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 /**
  * Internal API Contains data that is needed by an {@link EntityFactory} to generate an entity

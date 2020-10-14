@@ -26,7 +26,7 @@ Type Model
 +------------------+---------+----------------------------------------------------------------------+
 | cosphiRated      | --      | Rated power factor                                                   |
 +------------------+---------+----------------------------------------------------------------------+
-| cpCharacteristic | --      | Wind velocity dependent :ref:`Betz factors <wec_cp_characteristic>`. |
+| cpCharacteristic | --      | Wind velocity dependent :ref:`Betz factors<wec_cp_characteristic>`. |
 +------------------+---------+----------------------------------------------------------------------+
 | etaConv          | %       | Efficiency of the assets inverter                                    |
 +------------------+---------+----------------------------------------------------------------------+

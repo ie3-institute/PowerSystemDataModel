@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.test.helper.FactoryTestHelper
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
-import tec.uom.se.unit.Units
+import tech.units.indriya.unit.Units
 
 class SystemParticipantResultFactoryTest extends Specification implements FactoryTestHelper {
 
@@ -133,7 +133,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 				"{inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,\n" +
 				"q -> 2,\n" +
 				"timestamp -> 2020-01-30 17:26:44} are invalid for instance of WecResult. \n" +
-				"The following fields to be passed to a constructor of 'WecResult' are possible (NOT case-sensitive!):\n" +
+				"The following fields (without complex objects e.g. nodes) to be passed to a constructor of 'WecResult' are possible (NOT case-sensitive!):\n" +
 				"0: [inputModel, p, q, timestamp]\n" +
 				"1: [inputModel, p, q, timestamp, uuid]\n"
 	}

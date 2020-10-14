@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.voltagelevels;
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLT;
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
 
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.util.interval.RightOpenInterval;
@@ -16,8 +16,8 @@ import java.util.Set;
 import javax.measure.quantity.ElectricPotential;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.quantity.Quantities;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 public class GermanVoltageLevelUtils {
   protected static final Logger logger = LoggerFactory.getLogger(GermanVoltageLevelUtils.class);

@@ -6,9 +6,10 @@
 package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.util.quantities.dep.interfaces.Irradiation;
+import edu.ie3.util.quantities.interfaces.Irradiation;
 import java.util.Objects;
-import tec.uom.se.ComparableQuantity;
+import java.util.Optional;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes an irradiation value as a pair of diffuse and direct radiation */
 public class IrradiationValue implements Value {
@@ -24,16 +25,18 @@ public class IrradiationValue implements Value {
   public IrradiationValue(
       ComparableQuantity<Irradiation> directIrradiation,
       ComparableQuantity<Irradiation> diffuseIrradiation) {
-    this.directIrradiation = directIrradiation.to(StandardUnits.IRRADIATION);
-    this.diffuseIrradiation = diffuseIrradiation.to(StandardUnits.IRRADIATION);
+    this.directIrradiation =
+        directIrradiation == null ? null : directIrradiation.to(StandardUnits.IRRADIATION);
+    this.diffuseIrradiation =
+        diffuseIrradiation == null ? null : diffuseIrradiation.to(StandardUnits.IRRADIATION);
   }
 
-  public ComparableQuantity<Irradiation> getDiffuseIrradiation() {
-    return diffuseIrradiation;
+  public Optional<ComparableQuantity<Irradiation>> getDiffuseIrradiation() {
+    return Optional.ofNullable(diffuseIrradiation);
   }
 
-  public ComparableQuantity<Irradiation> getDirectIrradiation() {
-    return directIrradiation;
+  public Optional<ComparableQuantity<Irradiation>> getDirectIrradiation() {
+    return Optional.ofNullable(directIrradiation);
   }
 
   @Override
@@ -41,8 +44,8 @@ public class IrradiationValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     IrradiationValue that = (IrradiationValue) o;
-    return directIrradiation.equals(that.directIrradiation)
-        && diffuseIrradiation.equals(that.diffuseIrradiation);
+    return Objects.equals(directIrradiation, that.directIrradiation)
+        && Objects.equals(diffuseIrradiation, that.diffuseIrradiation);
   }
 
   @Override

@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class to hold most 'ElectricCurrent and Angle'-mappings common to all connectors */
 public abstract class ConnectorResult extends ResultEntity {

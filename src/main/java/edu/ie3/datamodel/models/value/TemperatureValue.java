@@ -7,8 +7,9 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Temperature;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes a temperature value */
 public class TemperatureValue implements Value {
@@ -17,11 +18,11 @@ public class TemperatureValue implements Value {
 
   /** @param temperature (typically in K) */
   public TemperatureValue(ComparableQuantity<Temperature> temperature) {
-    this.temperature = temperature.to(StandardUnits.TEMPERATURE);
+    this.temperature = temperature == null ? null : temperature.to(StandardUnits.TEMPERATURE);
   }
 
-  public ComparableQuantity<Temperature> getTemperature() {
-    return temperature;
+  public Optional<ComparableQuantity<Temperature>> getTemperature() {
+    return Optional.ofNullable(temperature);
   }
 
   @Override
@@ -29,7 +30,7 @@ public class TemperatureValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     TemperatureValue that = (TemperatureValue) o;
-    return temperature.equals(that.temperature);
+    return Objects.equals(temperature, that.temperature);
   }
 
   @Override
