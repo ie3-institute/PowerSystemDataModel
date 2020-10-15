@@ -19,7 +19,9 @@ class CoordinateDistanceTest extends Specification {
 		CoordinateDistance coordinateDistance = new CoordinateDistance(pointA, pointB)
 		CoordinateDistance expectedCoordinateDistance = new CoordinateDistance(coordinateDistance.coordinateA, coordinateDistance.coordinateB, expectedDistance)
 		then:
-		coordinateDistance == expectedCoordinateDistance
+		coordinateDistance.distance == expectedDistance
+		// this equals can not be replaced with the == operator as this would cause equals not to be called
+		coordinateDistance.equals(expectedCoordinateDistance)
 	}
 
 	def "CoordinateDistances are sortable using their distance field" () {
