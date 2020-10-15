@@ -73,6 +73,7 @@ dependencies {
 	testCompile "org.testcontainers:testcontainers:$testcontainersVersion"
 	testCompile "org.testcontainers:spock:$testcontainersVersion"
 	testCompile "org.testcontainers:influxdb:$testcontainersVersion"
+	testCompile "org.testcontainers:postgresql:$testcontainersVersion"
 
 	// logging
 	compile 'org.apache.logging.log4j:log4j-api:+' // log4j
