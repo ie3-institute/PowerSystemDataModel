@@ -8,7 +8,10 @@ package edu.ie3.datamodel.io.connectors;
 import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
 import edu.ie3.datamodel.io.csv.CsvFileDefinition;
+import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
 import edu.ie3.datamodel.io.csv.FileNamingStrategy;
+import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -174,10 +177,7 @@ public class CsvFileConnector implements DataConnector {
    *
    * @return A mapping from column type to respective readers
    */
-  public Map<
-          FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme,
-          Set<TimeSeriesReadingData>>
-      initTimeSeriesReader() {
+  public Map<ColumnScheme, Set<TimeSeriesReadingData>> initTimeSeriesReader() {
     return getIndividualTimeSeriesFilePaths()
         .parallelStream()
         .map(
@@ -226,18 +226,17 @@ public class CsvFileConnector implements DataConnector {
    * @return An {@link Optional} to {@link TimeSeriesReadingData}
    */
   private Optional<TimeSeriesReadingData> buildReadingData(String filePathString) {
-    FileNamingStrategy.FileNameMetaInformation metaInformation =
+    FileNameMetaInformation metaInformation =
         fileNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
-    if (!FileNamingStrategy.IndividualTimeSeriesMetaInformation.class.isAssignableFrom(
-        metaInformation.getClass())) {
+    if (!IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())) {
       log.error(
           "The time series file '{}' does not represent an individual time series.",
           filePathString);
       return Optional.empty();
     }
 
-    FileNamingStrategy.IndividualTimeSeriesMetaInformation individualMetaInformation =
-        (FileNamingStrategy.IndividualTimeSeriesMetaInformation) metaInformation;
+    IndividualTimeSeriesMetaInformation individualMetaInformation =
+        (IndividualTimeSeriesMetaInformation) metaInformation;
 
     try {
       BufferedReader reader = initReader(filePathString);
@@ -260,61 +259,6 @@ public class CsvFileConnector implements DataConnector {
    */
   private String removeFileEnding(String input) {
     return input.replaceAll(FILE_ENDING + "$", "");
-  }
-
-  /** Class to bundle all information, that are necessary to read a single time series */
-  public static class TimeSeriesReadingData {
-    private final UUID uuid;
-    private final FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme columnScheme;
-    private final BufferedReader reader;
-
-    public TimeSeriesReadingData(
-        UUID uuid,
-        FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme columnScheme,
-        BufferedReader reader) {
-      this.uuid = uuid;
-      this.columnScheme = columnScheme;
-      this.reader = reader;
-    }
-
-    public UUID getUuid() {
-      return uuid;
-    }
-
-    public FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme getColumnScheme() {
-      return columnScheme;
-    }
-
-    public BufferedReader getReader() {
-      return reader;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (!(o instanceof TimeSeriesReadingData)) return false;
-      TimeSeriesReadingData that = (TimeSeriesReadingData) o;
-      return uuid.equals(that.uuid)
-          && columnScheme == that.columnScheme
-          && reader.equals(that.reader);
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(uuid, columnScheme, reader);
-    }
-
-    @Override
-    public String toString() {
-      return "TimeSeriesReadingData{"
-          + "uuid="
-          + uuid
-          + ", columnScheme="
-          + columnScheme
-          + ", reader="
-          + reader
-          + '}';
-    }
   }
 
   /**

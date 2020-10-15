@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.connectors
 
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
+import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.util.io.FileIOUtils
 import org.apache.commons.io.FilenameUtils
 import spock.lang.Shared
@@ -86,9 +87,9 @@ class CsvFileConnectorTest extends Specification {
 	def "The csv file connector is able to build correct reading information from valid input"() {
 		given:
 		def pathString = "its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf"
-		def expected = new CsvFileConnector.TimeSeriesReadingData(
+		def expected = new TimeSeriesReadingData(
 				UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf"),
-				FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.APPARENT_POWER,
+				ColumnScheme.APPARENT_POWER,
 				Mock(BufferedReader)
 				)
 
@@ -110,7 +111,7 @@ class CsvFileConnectorTest extends Specification {
 
 		then:
 		actual.size() == 5
-		def energyPriceEntries = actual.get(FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ENERGY_PRICE)
+		def energyPriceEntries = actual.get(ColumnScheme.ENERGY_PRICE)
 		Objects.nonNull(energyPriceEntries)
 		energyPriceEntries.size() == 2
 	}
