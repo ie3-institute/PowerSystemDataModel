@@ -168,25 +168,42 @@ public class CsvFileConnector implements DataConnector {
     return newReader;
   }
 
-  /*
-   * TODO: ~~~ Treating time series ~~~
+  /**
+   * Initialises all readers for time series. They are given back grouped by the column scheme in
+   * order to allow for accounting the different content types.
+   *
+   * @return A mapping from column type to respective readers
    */
+  public Map<
+          FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme,
+          Set<TimeSeriesReadingData>>
+      initTimeSeriesReader() {
+    return getIndividualTimeSeriesFilePaths()
+        .parallelStream()
+        .map(
+            pathString -> {
+              String filePathWithoutEnding = removeFileEnding(pathString);
+              return buildReadingData(filePathWithoutEnding);
+            })
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.groupingBy(TimeSeriesReadingData::getColumnScheme, Collectors.toSet()));
+  }
 
   /**
    * Returns a set of relative paths strings to time series files, with respect to the base folder
    * path
    *
    * @return A set of relative paths to time series files, with respect to the base folder path
-   * @throws IOException If the files cannot be walked
    */
-  private Set<String> getIndividualTimeSeriesFilePaths() throws IOException {
+  private Set<String> getIndividualTimeSeriesFilePaths() {
     Path baseFolderPath = Paths.get(baseFolderName);
     try (Stream<Path> pathStream = Files.walk(baseFolderPath)) {
       return pathStream
           .map(baseFolderPath::relativize)
           .filter(
               path -> {
-                String withoutEnding = path.toString().replaceAll("(.*)" + FILE_ENDING + "$", "$1");
+                String withoutEnding = removeFileEnding(path.toString());
                 return fileNamingStrategy
                     .getIndividualTimeSeriesPattern()
                     .matcher(withoutEnding)
@@ -194,6 +211,109 @@ public class CsvFileConnector implements DataConnector {
               })
           .map(Path::toString)
           .collect(Collectors.toSet());
+    } catch (IOException e) {
+      log.error("Unable to determine time series files readers for time series.", e);
+      return Collections.emptySet();
+    }
+  }
+
+  /**
+   * Compose the needed information for reading in a single time series. If either the file points
+   * to a non-individual time series or the initialisation of the reader does not work, an empty
+   * {@link Optional} is given back
+   *
+   * @param filePathString String describing the path to the time series file
+   * @return An {@link Optional} to {@link TimeSeriesReadingData}
+   */
+  private Optional<TimeSeriesReadingData> buildReadingData(String filePathString) {
+    FileNamingStrategy.FileNameMetaInformation metaInformation =
+        fileNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
+    if (!FileNamingStrategy.IndividualTimeSeriesMetaInformation.class.isAssignableFrom(
+        metaInformation.getClass())) {
+      log.error(
+          "The time series file '{}' does not represent an individual time series.",
+          filePathString);
+      return Optional.empty();
+    }
+
+    FileNamingStrategy.IndividualTimeSeriesMetaInformation individualMetaInformation =
+        (FileNamingStrategy.IndividualTimeSeriesMetaInformation) metaInformation;
+
+    try {
+      BufferedReader reader = initReader(filePathString);
+      return Optional.of(
+          new TimeSeriesReadingData(
+              individualMetaInformation.getUuid(),
+              individualMetaInformation.getColumnScheme(),
+              reader));
+    } catch (FileNotFoundException e) {
+      log.error("Cannot init the writer for time series file path '{}'.", filePathString);
+      return Optional.empty();
+    }
+  }
+
+  /**
+   * Removes the file ending from input string
+   *
+   * @param input String to manipulate
+   * @return input without possible ending
+   */
+  private String removeFileEnding(String input) {
+    return input.replaceAll(FILE_ENDING + "$", "");
+  }
+
+  /** Class to bundle all information, that are necessary to read a single time series */
+  public static class TimeSeriesReadingData {
+    private final UUID uuid;
+    private final FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme columnScheme;
+    private final BufferedReader reader;
+
+    public TimeSeriesReadingData(
+        UUID uuid,
+        FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme columnScheme,
+        BufferedReader reader) {
+      this.uuid = uuid;
+      this.columnScheme = columnScheme;
+      this.reader = reader;
+    }
+
+    public UUID getUuid() {
+      return uuid;
+    }
+
+    public FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme getColumnScheme() {
+      return columnScheme;
+    }
+
+    public BufferedReader getReader() {
+      return reader;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof TimeSeriesReadingData)) return false;
+      TimeSeriesReadingData that = (TimeSeriesReadingData) o;
+      return uuid.equals(that.uuid)
+          && columnScheme == that.columnScheme
+          && reader.equals(that.reader);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(uuid, columnScheme, reader);
+    }
+
+    @Override
+    public String toString() {
+      return "TimeSeriesReadingData{"
+          + "uuid="
+          + uuid
+          + ", columnScheme="
+          + columnScheme
+          + ", reader="
+          + reader
+          + '}';
     }
   }
 

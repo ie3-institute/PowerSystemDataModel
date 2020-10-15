@@ -224,16 +224,26 @@ public class FileNamingStrategy {
    */
   public FileNameMetaInformation extractTimeSeriesMetaInformation(Path path) {
     /* Extract file name from possibly fully qualified path */
-    Path filePath = path.getFileName();
-    if (filePath == null)
+    Path fileName = path.getFileName();
+    if (fileName == null)
       throw new IllegalArgumentException("Unable to extract file name from path '" + path + "'.");
+    return extractTimeSeriesMetaInformation(fileName.toString());
+  }
+  /**
+   * Extracts meta information from a file name, of a time series. Here, a file name <u>without</u>
+   * leading path has to be provided
+   *
+   * @param fileName File name
+   * @return The meeting meta information
+   */
+  public FileNameMetaInformation extractTimeSeriesMetaInformation(String fileName) {
     /* Remove the file ending (ending limited to 255 chars, which is the max file name allowed in NTFS and ext4) */
-    String fileName = filePath.toString().replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
+    String withoutEnding = fileName.replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
 
-    if (getIndividualTimeSeriesPattern().matcher(fileName).matches())
-      return extractIndividualTimesSeriesMetaInformation(fileName);
-    else if (getLoadProfileTimeSeriesPattern().matcher(fileName).matches())
-      return extractLoadProfileTimesSeriesMetaInformation(fileName);
+    if (getIndividualTimeSeriesPattern().matcher(withoutEnding).matches())
+      return extractIndividualTimesSeriesMetaInformation(withoutEnding);
+    else if (getLoadProfileTimeSeriesPattern().matcher(withoutEnding).matches())
+      return extractLoadProfileTimesSeriesMetaInformation(withoutEnding);
     else
       throw new IllegalArgumentException(
           "Unknown format of '" + fileName + "'. Cannot extract meta information.");
