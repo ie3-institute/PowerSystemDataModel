@@ -66,6 +66,11 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
     return coordinateToId.get(coordinate);
   }
 
+  @Override
+  public Collection<Point> getAllCoordinates() {
+    return coordinateToId.keySet();
+  }
+
   public Integer getCoordinateCount() {
     return idToCoordinate.keySet().size();
   }

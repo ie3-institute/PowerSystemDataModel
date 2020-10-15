@@ -40,6 +40,15 @@ class WeatherTestData {
 			if(coordinate.x == 50 && coordinate.y == 7) return 193188
 			return null
 		}
+
+		@Override
+		Collection<Point> getAllCoordinates() {
+			return [
+				GeoUtils.xyToPoint(49d, 7d),
+				GeoUtils.xyToPoint(49d, 8d),
+				GeoUtils.xyToPoint(50d, 7d)
+			]
+		}
 	}
 
 	public static final IdCoordinateSource coordinateSource = new DummyIdCoordinateSource()
