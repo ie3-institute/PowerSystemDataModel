@@ -13,7 +13,6 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.util.TimeTools;
 import edu.ie3.util.TimeUtil;
 import edu.ie3.util.interval.ClosedInterval;
 import java.sql.ResultSet;
@@ -157,7 +156,7 @@ public class SqlWeatherSource implements WeatherSource {
    * @return the constraint string
    */
   private static String createTimeConstraint(ZonedDateTime time) {
-    return DEFAULT_TIME_COLUMN + "='" + TimeTools.toString(time) + "'";
+    return DEFAULT_TIME_COLUMN + "='" + TimeUtil.withDefaults.toString(time) + "'";
   }
 
   /**
