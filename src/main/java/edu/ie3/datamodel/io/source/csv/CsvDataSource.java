@@ -539,9 +539,8 @@ public abstract class CsvDataSource {
    * @return stream of optionals of the entity data or empty optionals of the node required for the
    *     data cannot be found
    */
-  protected <C extends AssetInput>
-      Stream<Optional<NodeAssetInputEntityData>> nodeAssetInputEntityDataStream(
-          Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
+  protected Stream<Optional<NodeAssetInputEntityData>> nodeAssetInputEntityDataStream(
+      Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
 
     return assetInputEntityDataStream
         .parallel()
@@ -588,6 +587,7 @@ public abstract class CsvDataSource {
    *     entities
    * @param operators a collection of {@link OperatorInput} entities should be used to build the
    *     entities
+   * @param <T> Type of the {@link AssetInput} to expect
    * @return stream of optionals of the entities that has been built by the factor or empty
    *     optionals if the entity could not have been build
    */

@@ -33,7 +33,7 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
 
   /**
    * Expands a set of attributes with further attributes. This method should always be used when
-   * returning attribute sets, i.e. through {@link #getFields(EntityData)}.
+   * returning attribute sets, i.e. through {@link #getFields(D)}.
    *
    * @param attributeSet set of attributes to expand
    * @param more attribute names to expand given set with
