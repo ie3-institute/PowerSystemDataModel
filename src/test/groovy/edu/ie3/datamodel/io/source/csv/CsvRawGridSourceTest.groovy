@@ -64,7 +64,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		connectorDataOption.isPresent()
 		connectorDataOption.get().with {
 			assert fieldsToValues == expectedFieldsToAttributes
-			assert entityClass == SwitchInput
+			assert targetClass == SwitchInput
 			assert nodeA == rgtd.nodeA
 			assert nodeB == rgtd.nodeB
 		}

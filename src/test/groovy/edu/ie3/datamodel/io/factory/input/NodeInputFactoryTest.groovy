@@ -23,7 +23,7 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [NodeInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A NodeInputFactory should parse a valid NodeInput correctly"() {
@@ -45,7 +45,7 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<NodeInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<NodeInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present

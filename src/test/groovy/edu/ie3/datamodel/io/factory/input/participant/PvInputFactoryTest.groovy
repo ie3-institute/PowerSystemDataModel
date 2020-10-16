@@ -27,7 +27,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [PvInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A PvInputFactory should parse a valid PvInput correctly"() {
@@ -54,7 +54,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<PvInput> input = inputFactory.getEntity(
+		Optional<PvInput> input = inputFactory.get(
 				new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
 		then:

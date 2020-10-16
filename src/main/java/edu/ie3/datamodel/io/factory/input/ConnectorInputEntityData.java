@@ -69,8 +69,8 @@ public class ConnectorInputEntityData extends AssetInputEntityData {
     return "ConnectorInputEntityData{"
         + "fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + ", operatorInput="
         + getOperatorInput().getUuid()
         + ", nodeA="

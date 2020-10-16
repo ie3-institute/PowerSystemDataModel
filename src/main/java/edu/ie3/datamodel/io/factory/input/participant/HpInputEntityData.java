@@ -51,8 +51,8 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
         + getOperatorInput().getUuid()
         + ", fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + '}';
   }
 }

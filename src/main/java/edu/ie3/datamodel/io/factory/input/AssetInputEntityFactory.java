@@ -97,7 +97,8 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
    * @param data entity data to take the dates from
    * @return Operation time object
    */
-  private static OperationTime buildOperationTime(AssetInputEntityData data) {
+  private static <C extends AssetInput> OperationTime buildOperationTime(
+      AssetInputEntityData data) {
     final String from = data.getFieldOptional(OPERATES_FROM).orElse(null);
     final String until = data.getFieldOptional(OPERATES_UNTIL).orElse(null);
 

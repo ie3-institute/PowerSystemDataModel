@@ -22,7 +22,7 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
 		def expectedClasses = [LineGraphicInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A LineGraphicInputFactory should parse a valid LineGraphicInput correctly"() {
@@ -38,7 +38,7 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
 		def lineInput = Mock(LineInput)
 
 		when:
-		Optional<LineGraphicInput> input = inputFactory.getEntity(
+		Optional<LineGraphicInput> input = inputFactory.get(
 				new LineGraphicInputEntityData(parameter, lineInput))
 
 		then:
@@ -64,7 +64,7 @@ class LineGraphicInputFactoryTest extends Specification implements FactoryTestHe
 		def lineInput = Mock(LineInput)
 
 		when:
-		Optional<LineGraphicInput> input = inputFactory.getEntity(
+		Optional<LineGraphicInput> input = inputFactory.get(
 				new LineGraphicInputEntityData(parameter, lineInput))
 
 		then:

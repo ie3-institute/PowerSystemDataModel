@@ -32,7 +32,7 @@ class EvcsInputFactoryTest extends Specification  implements FactoryTestHelper {
 		def expectedClasses = [EvcsInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A CsInputFactory should parse a valid CsInput correctly"() {
@@ -53,7 +53,7 @@ class EvcsInputFactoryTest extends Specification  implements FactoryTestHelper {
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<EvcsInput> input = inputFactory.getEntity(
+		Optional<EvcsInput> input = inputFactory.get(
 				new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
 		then:

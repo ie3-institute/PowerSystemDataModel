@@ -42,8 +42,8 @@ public class LineGraphicInputEntityData extends EntityData {
         + line.getUuid()
         + ", fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + '}';
   }
 

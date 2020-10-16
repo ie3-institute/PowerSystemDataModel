@@ -12,10 +12,7 @@ import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.SwitchInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
@@ -160,7 +157,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   @Override
   public Set<NodeInput> getNodes(Set<OperatorInput> operators) {
     return filterEmptyOptionals(
-            assetInputEntityDataStream(NodeInput.class, operators).map(nodeInputFactory::getEntity))
+            assetInputEntityDataStream(NodeInput.class, operators).map(nodeInputFactory::get))
         .collect(Collectors.toSet());
   }
 
@@ -269,7 +266,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                     assetInputEntityDataStream(Transformer3WInput.class, operators), nodes),
                 transformer3WTypeInputs),
             nodes)
-        .map(dataOpt -> dataOpt.flatMap(transformer3WInputFactory::getEntity));
+        .map(dataOpt -> dataOpt.flatMap(transformer3WInputFactory::get));
   }
 
   /** {@inheritDoc} */
@@ -300,7 +297,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         .collect(Collectors.toSet());
   }
 
-  private <T extends AssetInput> Stream<Optional<T>> untypedConnectorInputEntityStream(
+  private <T extends ConnectorInput> Stream<Optional<T>> untypedConnectorInputEntityStream(
       Class<T> entityClass,
       EntityFactory<T, ConnectorInputEntityData> factory,
       Set<NodeInput> nodes,
@@ -308,7 +305,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
     return buildUntypedConnectorInputEntityData(
             assetInputEntityDataStream(entityClass, operators), nodes)
-        .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
+        .map(dataOpt -> dataOpt.flatMap(factory::get));
   }
 
   /** {@inheritDoc} */
@@ -339,18 +336,19 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
         .collect(Collectors.toSet());
   }
 
-  private <T extends AssetInput, A extends AssetTypeInput> Stream<Optional<T>> typedEntityStream(
-      Class<T> entityClass,
-      EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
-      Collection<NodeInput> nodes,
-      Collection<OperatorInput> operators,
-      Collection<A> types) {
+  private <T extends ConnectorInput, A extends AssetTypeInput>
+      Stream<Optional<T>> typedEntityStream(
+          Class<T> entityClass,
+          EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
+          Collection<NodeInput> nodes,
+          Collection<OperatorInput> operators,
+          Collection<A> types) {
 
     return buildTypedConnectorEntityData(
             buildUntypedConnectorInputEntityData(
                 assetInputEntityDataStream(entityClass, operators), nodes),
             types)
-        .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
+        .map(dataOpt -> dataOpt.flatMap(factory::get));
   }
 
   /**
@@ -361,8 +359,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * @param nodes A collection of known nodes
    * @return A stream on option to matching {@link ConnectorInputEntityData}
    */
-  private Stream<Optional<ConnectorInputEntityData>> buildUntypedConnectorInputEntityData(
-      Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
+  private <C extends ConnectorInput>
+      Stream<Optional<ConnectorInputEntityData>> buildUntypedConnectorInputEntityData(
+          Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
     return assetInputEntityDataStream
         .parallel()
         .map(
@@ -379,8 +378,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * @param nodes A collection of known nodes
    * @return An option to matching {@link ConnectorInputEntityData}
    */
-  private Optional<ConnectorInputEntityData> buildUntypedConnectorInputEntityData(
-      AssetInputEntityData assetInputEntityData, Collection<NodeInput> nodes) {
+  private <C extends ConnectorInput>
+      Optional<ConnectorInputEntityData> buildUntypedConnectorInputEntityData(
+          AssetInputEntityData assetInputEntityData, Collection<NodeInput> nodes) {
     // get the raw data
     Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
 
@@ -402,7 +402,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
               .collect(Collectors.joining("\n"));
 
       logSkippingWarning(
-          assetInputEntityData.getEntityClass().getSimpleName(),
+          assetInputEntityData.getTargetClass().getSimpleName(),
           fieldsToAttributes.get("uuid"),
           fieldsToAttributes.get("id"),
           debugString);
@@ -415,7 +415,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     return Optional.of(
         new ConnectorInputEntityData(
             fieldsToAttributes,
-            assetInputEntityData.getEntityClass(),
+            assetInputEntityData.getTargetClass(),
             assetInputEntityData.getOperatorInput(),
             nodeA.get(),
             nodeB.get()));
@@ -430,7 +430,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * @param <T> Type of the asset type
    * @return Stream of option to enhanced data
    */
-  private <T extends AssetTypeInput>
+  private <T extends AssetTypeInput, C extends ConnectorInput>
       Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntityData(
           Stream<Optional<ConnectorInputEntityData>> noTypeConnectorEntityDataStream,
           Collection<T> availableTypes) {
@@ -450,8 +450,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * @param <T> Type of the asset type
    * @return Option to enhanced data
    */
-  private <T extends AssetTypeInput> Optional<TypedConnectorInputEntityData<T>> findAndAddType(
-      ConnectorInputEntityData untypedEntityData, Collection<T> availableTypes) {
+  private <T extends AssetTypeInput, C extends ConnectorInput>
+      Optional<TypedConnectorInputEntityData<T>> findAndAddType(
+          ConnectorInputEntityData untypedEntityData, Collection<T> availableTypes) {
     Optional<T> assetTypeOption =
         getAssetType(
             availableTypes,
@@ -468,8 +469,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * @param <T> Type of the asset type
    * @return The enriched entity data
    */
-  private <T extends AssetTypeInput> TypedConnectorInputEntityData<T> addTypeToEntityData(
-      ConnectorInputEntityData untypedEntityData, T assetType) {
+  private <T extends AssetTypeInput, C extends ConnectorInput>
+      TypedConnectorInputEntityData<T> addTypeToEntityData(
+          ConnectorInputEntityData untypedEntityData, T assetType) {
     Map<String, String> fieldsToAttributes = untypedEntityData.getFieldsToValues();
 
     // remove fields that are passed as objects to constructor
@@ -478,7 +480,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     // build result object
     return new TypedConnectorInputEntityData<>(
         fieldsToAttributes,
-        untypedEntityData.getEntityClass(),
+        untypedEntityData.getTargetClass(),
         untypedEntityData.getOperatorInput(),
         untypedEntityData.getNodeA(),
         untypedEntityData.getNodeB(),
@@ -527,7 +529,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     // log a warning
     if (!nodeC.isPresent()) {
       logSkippingWarning(
-          typeEntityData.getEntityClass().getSimpleName(),
+          typeEntityData.getTargetClass().getSimpleName(),
           fieldsToAttributes.get("uuid"),
           fieldsToAttributes.get("id"),
           "nodeC: " + nodeCUuid);
@@ -540,7 +542,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
     return Optional.of(
         new Transformer3WInputEntityData(
             fieldsToAttributes,
-            typeEntityData.getEntityClass(),
+            typeEntityData.getTargetClass(),
             typeEntityData.getOperatorInput(),
             typeEntityData.getNodeA(),
             typeEntityData.getNodeB(),

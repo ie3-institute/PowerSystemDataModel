@@ -79,8 +79,8 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
         + getOperatorInput().getUuid()
         + ", fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + '}';
   }
 }

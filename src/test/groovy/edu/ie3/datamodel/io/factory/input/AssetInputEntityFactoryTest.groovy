@@ -26,7 +26,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def expectedClasses = [TestAssetInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "An AssetInputFactory should parse a valid operated AssetInput correctly (no operation time provided)"() {
@@ -40,7 +40,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present
@@ -66,7 +66,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present
@@ -93,7 +93,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present
@@ -121,7 +121,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present
@@ -147,7 +147,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def inputClass = TestAssetInput
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
 		then:
 		input.present
@@ -171,7 +171,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def inputClass = TestAssetInput
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
 		then:
 		input.present
@@ -197,7 +197,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def inputClass = TestAssetInput
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
 		then:
 		input.present
@@ -224,7 +224,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def inputClass = TestAssetInput
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
 		then:
 		input.present
@@ -251,7 +251,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def inputClass = TestAssetInput
 
 		when:
-		inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass))
+		inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
 		then:
 		FactoryException ex = thrown()

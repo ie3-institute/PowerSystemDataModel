@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.result;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.connector.ConnectorResult;
 import edu.ie3.datamodel.models.result.connector.LineResult;
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
@@ -40,7 +39,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
     Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
-    final Class<? extends UniqueEntity> entityClass = simpleEntityData.getEntityClass();
+    final Class<?> entityClass = simpleEntityData.getTargetClass();
     if (entityClass.equals(Transformer2WResult.class)) {
       minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, TAPPOS);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
@@ -55,7 +54,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
 
   @Override
   protected ConnectorResult buildModel(SimpleEntityData data) {
-    final Class<? extends UniqueEntity> entityClass = data.getEntityClass();
+    final Class<?> entityClass = data.getTargetClass();
 
     ZonedDateTime timestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModel = data.getUUID(INPUT_MODEL);

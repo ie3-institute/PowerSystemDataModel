@@ -10,7 +10,6 @@ import static tech.units.indriya.unit.Units.PERCENT;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.util.TimeTools;
 import java.time.ZonedDateTime;
@@ -50,13 +49,13 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
     Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, POWER, REACTIVE_POWER);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
-    if (data.getEntityClass().equals(StorageResult.class)
-        || data.getEntityClass().equals(EvResult.class)) {
+    if (data.getTargetClass().equals(StorageResult.class)
+        || data.getTargetClass().equals(EvResult.class)) {
       minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, POWER, REACTIVE_POWER, SOC);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
-    if (data.getEntityClass().equals(HpResult.class)) {
+    if (data.getTargetClass().equals(HpResult.class)) {
       minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, POWER, REACTIVE_POWER, Q_DOT);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
@@ -66,7 +65,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
 
   @Override
   protected SystemParticipantResult buildModel(SimpleEntityData data) {
-    Class<? extends UniqueEntity> entityClass = data.getEntityClass();
+    Class<?> entityClass = data.getTargetClass();
 
     ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);

@@ -31,7 +31,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [LineInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A LineInputFactory should parse a valid LineInput correctly"() {
@@ -56,7 +56,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(LineTypeInput)
 
 		when:
-		Optional<LineInput> input = inputFactory.getEntity(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<LineInput> input = inputFactory.get(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present
@@ -107,7 +107,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(LineTypeInput)
 
 		when:
-		Optional<LineInput> input = inputFactory.getEntity(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<LineInput> input = inputFactory.get(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present
@@ -158,7 +158,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(LineTypeInput)
 
 		when:
-		Optional<LineInput> input = inputFactory.getEntity(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<LineInput> input = inputFactory.get(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present

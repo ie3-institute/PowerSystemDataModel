@@ -19,6 +19,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.utils.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -334,10 +335,8 @@ public abstract class CsvDataSource {
   }
 
   /**
-   * Tries to open a file reader from the connector based on the provided entity class, reads the
-   * first line (considered to be the headline with headline fields) and returns a stream of
-   * (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since the
-   * returning stream is a parallel stream, the order of the elements cannot be guaranteed.
+   * Tries to open a file reader from the connector based on the provided entity class and hands it
+   * over for further processing.
    *
    * @param entityClass the entity class that should be build and that is used to get the
    *     corresponding reader
@@ -347,8 +346,29 @@ public abstract class CsvDataSource {
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
+    try {
+      return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
+    } catch (FileNotFoundException e) {
+      log.warn(
+          "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+    }
 
-    try (BufferedReader reader = connector.initReader(entityClass)) {
+    return Stream.empty();
+  }
+
+  /**
+   * Reads the first line (considered to be the headline with headline fields) and returns a stream
+   * of (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since
+   * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
+   *
+   * @param entityClass the entity class that should be build
+   * @param bufferedReader the reader to use
+   * @return a parallel stream of maps, where each map represents one row of the csv file with the
+   *     mapping (fieldName to fieldValue)
+   */
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
+    try (BufferedReader reader = bufferedReader) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
       // sanity check for headline
@@ -519,8 +539,9 @@ public abstract class CsvDataSource {
    * @return stream of optionals of the entity data or empty optionals of the node required for the
    *     data cannot be found
    */
-  protected Stream<Optional<NodeAssetInputEntityData>> nodeAssetInputEntityDataStream(
-      Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
+  protected <C extends AssetInput>
+      Stream<Optional<NodeAssetInputEntityData>> nodeAssetInputEntityDataStream(
+          Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
 
     return assetInputEntityDataStream
         .parallel()
@@ -538,7 +559,7 @@ public abstract class CsvDataSource {
               // log a warning
               if (!node.isPresent()) {
                 logSkippingWarning(
-                    assetInputEntityData.getEntityClass().getSimpleName(),
+                    assetInputEntityData.getTargetClass().getSimpleName(),
                     fieldsToAttributes.get("uuid"),
                     fieldsToAttributes.get("id"),
                     NODE + ": " + nodeUuid);
@@ -551,7 +572,7 @@ public abstract class CsvDataSource {
               return Optional.of(
                   new NodeAssetInputEntityData(
                       fieldsToAttributes,
-                      assetInputEntityData.getEntityClass(),
+                      assetInputEntityData.getTargetClass(),
                       assetInputEntityData.getOperatorInput(),
                       node.get()));
             });
@@ -567,7 +588,6 @@ public abstract class CsvDataSource {
    *     entities
    * @param operators a collection of {@link OperatorInput} entities should be used to build the
    *     entities
-   * @param <T> type of the entity that should be build
    * @return stream of optionals of the entities that has been built by the factor or empty
    *     optionals if the entity could not have been build
    */
@@ -577,6 +597,6 @@ public abstract class CsvDataSource {
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators) {
     return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
-        .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
+        .map(dataOpt -> dataOpt.flatMap(factory::get));
   }
 }
