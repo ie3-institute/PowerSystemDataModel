@@ -5,19 +5,17 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Abstract definition of data, that is used to build a {@link TimeBasedValue} within a Factory
  *
  * @param <V> Type of inner value class
  */
-public abstract class TimeBasedValueData<V extends Value> extends EntityData {
-  protected final Class<V> valueClass;
+public abstract class TimeBasedValueData<V extends Value> extends FactoryData {
 
   /**
    * Creates a new TimeBasedValueData object
@@ -26,38 +24,11 @@ public abstract class TimeBasedValueData<V extends Value> extends EntityData {
    * @param valueClass Class of the underlying value
    */
   public TimeBasedValueData(Map<String, String> fieldsToAttributes, Class<V> valueClass) {
-    super(fieldsToAttributes, TimeBasedValue.class);
-    this.valueClass = valueClass;
-  }
-
-  public Class<V> getValueClass() {
-    return valueClass;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof TimeBasedValueData)) return false;
-    if (!super.equals(o)) return false;
-    TimeBasedValueData<?> that = (TimeBasedValueData<?>) o;
-    return valueClass.equals(that.valueClass);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), valueClass);
+    super(fieldsToAttributes, valueClass);
   }
 
   @Override
   public String toString() {
-    return "TimeBasedValueData{"
-        + "fieldsToAttributes="
-        + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
-        + "valueClass="
-        + valueClass
-        + "} "
-        + super.toString();
+    return "TimeBasedValueData{" + "fieldsToAttributes=" + getFieldsToValues() + "} ";
   }
 }

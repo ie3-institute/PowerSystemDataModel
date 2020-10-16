@@ -13,8 +13,6 @@ import edu.ie3.util.TimeUtil
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-
-
 class TimeBasedWeatherValueFactoryTest extends Specification {
 
 	def "A TimeBasedWeatherValueFactory should be able to create time series with missing values"() {
@@ -26,11 +24,11 @@ class TimeBasedWeatherValueFactoryTest extends Specification {
 		Map<String, String> parameter = [
 			"uuid"               : "980f7714-8def-479f-baae-4deed6c8d6d1",
 			"time"               : TimeUtil.withDefaults.toString(time),
-			"diffuse_irradiation": "282.671997070312",
-			"direct_irradiation" : "286.872985839844",
+			"diffuseirradiation": "282.671997070312",
+			"directirradiation" : "286.872985839844",
 			"temperature"        : "",
-			"wind_direction"     : "0",
-			"wind_velocity"      : "1.66103506088257"
+			"winddirection"     : "0",
+			"windvelocity"      : "1.66103506088257"
 		]
 
 		def data = new TimeBasedWeatherValueData(parameter, coordinate)
@@ -59,11 +57,11 @@ class TimeBasedWeatherValueFactoryTest extends Specification {
 		Map<String, String> parameter = [
 			"time"               : TimeUtil.withDefaults.toString(time),
 			"uuid"               : "980f7714-8def-479f-baae-4deed6c8d6d1",
-			"diffuse_irradiation": "282.671997070312",
-			"direct_irradiation" : "286.872985839844",
+			"diffuseirradiation": "282.671997070312",
+			"directirradiation" : "286.872985839844",
 			"temperature"        : "278.019012451172",
-			"wind_direction"     : "0",
-			"wind_velocity"      : "1.66103506088257"
+			"winddirection"     : "0",
+			"windvelocity"      : "1.66103506088257"
 		]
 
 		def data = new TimeBasedWeatherValueData(parameter, coordinate)

@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.util.StringUtils;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -129,12 +130,21 @@ public class InfluxDbWeatherSource implements WeatherSource {
         InfluxDbConnector.parseQueryResult(queryResult, MEASUREMENT_NAME_WEATHER);
     return measurementsMap.get(MEASUREMENT_NAME_WEATHER).stream()
         .map(
-            fields -> {
-              fields.putIfAbsent("uuid", UUID.randomUUID().toString());
+            fieldToValue -> {
+              fieldToValue.putIfAbsent("uuid", UUID.randomUUID().toString());
+
+              /* The factory expects to get camel case id's for fields -> Convert the keys */
+              Map<String, String> camelCaseFields =
+                  fieldToValue.entrySet().stream()
+                      .collect(
+                          Collectors.toMap(
+                              entry -> StringUtils.snakeCaseToCamelCase(entry.getKey()),
+                              Map.Entry::getValue));
+
               return new TimeBasedWeatherValueData(
-                  fields,
+                  camelCaseFields,
                   coordinateSource.getCoordinate(
-                      Integer.valueOf(fields.remove(COORDINATE_ID_COLUMN_NAME))));
+                      Integer.valueOf(camelCaseFields.remove(COORDINATE_ID_COLUMN_NAME))));
             })
         .map(weatherValueFactory::get);
   }

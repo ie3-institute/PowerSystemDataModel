@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -21,16 +20,16 @@ import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
 public class TimeBasedWeatherValueFactory
-    extends EntityFactory<TimeBasedValue, TimeBasedWeatherValueData> {
+    extends TimeBasedValueFactory<TimeBasedWeatherValueData, WeatherValue> {
 
   private static final String UUID = "uuid";
   private static final String TIME = "time";
   // weather
-  private static final String DIFFUSE_IRRADIATION = "diffuse_irradiation";
-  private static final String DIRECT_IRRADIATION = "direct_irradiation";
+  private static final String DIFFUSE_IRRADIATION = "diffuseirradiation";
+  private static final String DIRECT_IRRADIATION = "directirradiation";
   private static final String TEMPERATURE = "temperature";
-  private static final String WIND_DIRECTION = "wind_direction";
-  private static final String WIND_VELOCITY = "wind_velocity";
+  private static final String WIND_DIRECTION = "winddirection";
+  private static final String WIND_VELOCITY = "windvelocity";
 
   private final TimeUtil timeUtil;
 
@@ -39,7 +38,7 @@ public class TimeBasedWeatherValueFactory
   }
 
   public TimeBasedWeatherValueFactory(String timestampPattern) {
-    super(TimeBasedValue.class);
+    super(WeatherValue.class);
     timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timestampPattern);
   }
 
