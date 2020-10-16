@@ -9,19 +9,19 @@ import edu.ie3.datamodel.io.connectors.TimeSeriesReadingData;
 import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
-import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
-import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
-import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
+import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
+import edu.ie3.datamodel.models.value.EnergyPriceValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
 
 /** Source that is capable of providing information around time series from csv files. */
@@ -29,6 +29,8 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
   /* Available factories */
   private final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
   private final TimeBasedWeatherValueFactory weatherFactory = new TimeBasedWeatherValueFactory();
+  private final TimeBasedSimpleValueFactory<EnergyPriceValue> energyPriceFactory =
+      new TimeBasedSimpleValueFactory<>(EnergyPriceValue.class);
 
   private final IdCoordinateSource coordinateSource;
 
@@ -62,7 +64,7 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
   }
 
   /* FIXME: Under Construction */
-  public void getTimeSeries() {
+  public Set<Set<? extends IndividualTimeSeries<? extends Value>>> getTimeSeries() {
     /* Get all time series reader */
     Map<ColumnScheme, Set<TimeSeriesReadingData>> colTypeToReadingData =
         connector.initTimeSeriesReader();
@@ -79,6 +81,25 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
               .map(data -> buildIndividualTimeSeries(data, weatherValueFunction))
               .collect(Collectors.toSet());
     }
+
+    /* Reading in energy price time series */
+    Set<TimeSeriesReadingData> energyPriceReadingData =
+        colTypeToReadingData.get(ColumnScheme.ENERGY_PRICE);
+    Set<IndividualTimeSeries<EnergyPriceValue>> energyPriceTimeSeries = Collections.emptySet();
+    if (!energyPriceReadingData.isEmpty()) {
+      Function<Map<String, String>, Optional<TimeBasedValue<EnergyPriceValue>>>
+          energyPriceValueFunction =
+              fieldToValue ->
+                  this.buildTimeBasedValue(
+                      fieldToValue, EnergyPriceValue.class, energyPriceFactory);
+      energyPriceTimeSeries =
+          energyPriceReadingData
+              .parallelStream()
+              .map(data -> buildIndividualTimeSeries(data, energyPriceValueFunction))
+              .collect(Collectors.toSet());
+    }
+
+    return Stream.of(weatherTimeSeries, energyPriceTimeSeries).collect(Collectors.toSet());
   }
 
   /**
@@ -110,7 +131,7 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
    * information. If the single model cannot be built, an empty optionl is handed back.
    *
    * @param fieldToValues "flat " input information as a mapping from field to value
-   * @return Optional time based weahter value
+   * @return Optional time based weather value
    */
   private Optional<TimeBasedValue<WeatherValue>> buildWeatherValue(
       Map<String, String> fieldToValues) {
@@ -137,5 +158,24 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
     TimeBasedWeatherValueData factoryData =
         new TimeBasedWeatherValueData(fieldToValues, coordinate);
     return weatherFactory.get(factoryData);
+  }
+
+  /**
+   * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
+   * need any additional information.
+   *
+   * @param fieldToValues Mapping from field id to values
+   * @param valueClass Class of the desired underlying value
+   * @param factory Factory to process the "flat" information
+   * @param <V> Type of the underlying value
+   * @return Optional simple time based value
+   */
+  private <V extends Value> Optional<TimeBasedValue<V>> buildTimeBasedValue(
+      Map<String, String> fieldToValues,
+      Class<V> valueClass,
+      TimeBasedSimpleValueFactory<V> factory) {
+    SimpleTimeBasedValueData<V> factoryData =
+        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
+    return factory.get(factoryData);
   }
 }
