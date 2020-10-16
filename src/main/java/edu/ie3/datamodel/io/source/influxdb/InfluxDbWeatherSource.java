@@ -133,7 +133,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
             fieldToValue -> {
               fieldToValue.putIfAbsent("uuid", UUID.randomUUID().toString());
 
-              /* The factory expects to get camel case id's for fields -> Convert the keys */
+              /* The factory expects camel case id's for fields -> Convert the keys */
               Map<String, String> camelCaseFields =
                   fieldToValue.entrySet().stream()
                       .collect(
