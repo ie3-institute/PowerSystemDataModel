@@ -81,7 +81,7 @@ class CsvFileConnectorTest extends Specification {
 		def actual = cfc.buildReadingData(pathString)
 
 		then:
-		!actual.isPresent()
+		!actual.present
 	}
 
 	def "The csv file connector is able to build correct reading information from valid input"() {
