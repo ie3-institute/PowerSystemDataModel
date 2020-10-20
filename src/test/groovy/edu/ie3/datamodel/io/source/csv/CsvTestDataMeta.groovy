@@ -12,13 +12,15 @@ import edu.ie3.datamodel.io.csv.FileNamingStrategy
  */
 trait CsvTestDataMeta {
 
-	String testBaseFolderPath = new File(getClass().getResource('/testGridFiles').toURI()).absolutePath
-	String graphicsFolderPath = testBaseFolderPath.concat(File.separator).concat("graphics")
-	String typeFolderPath = testBaseFolderPath.concat(File.separator).concat("types")
-	String gridFolderPath = testBaseFolderPath.concat(File.separator).concat("grid")
-	String participantsFolderPath =  testBaseFolderPath.concat(File.separator).concat("participants")
-	String thermalFolderPath = testBaseFolderPath.concat(File.separator).concat("thermal")
-	String coordinatesFolderPath = testBaseFolderPath.concat(File.separator).concat("coordinates")
+	String testParticipantsBaseFolderPath = new File(getClass().getResource('/testGridFiles').toURI()).absolutePath
+	String testTimeSeriesBaseFolderPath = new File(getClass().getResource('/testTimeSeriesFiles').toURI()).absolutePath
+	String graphicsFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("graphics")
+	String typeFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("types")
+	String gridFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("grid")
+	String participantsFolderPath =  testParticipantsBaseFolderPath.concat(File.separator).concat("participants")
+	String timeSeriesFolderPath =  testTimeSeriesBaseFolderPath
+	String thermalFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("thermal")
+	String coordinatesFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("coordinates")
 
 	String csvSep = ","
 	FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()

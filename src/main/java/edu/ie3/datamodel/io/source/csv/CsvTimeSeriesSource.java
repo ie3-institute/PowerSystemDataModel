@@ -12,16 +12,14 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
+import edu.ie3.datamodel.models.timeseries.TimeSeriesContainer;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
-import edu.ie3.datamodel.models.value.EnergyPriceValue;
-import edu.ie3.datamodel.models.value.Value;
-import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.datamodel.models.value.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
 
 /** Source that is capable of providing information around time series from csv files. */
@@ -31,6 +29,22 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
   private final TimeBasedWeatherValueFactory weatherFactory = new TimeBasedWeatherValueFactory();
   private final TimeBasedSimpleValueFactory<EnergyPriceValue> energyPriceFactory =
       new TimeBasedSimpleValueFactory<>(EnergyPriceValue.class);
+  private final TimeBasedSimpleValueFactory<HeatAndSValue> heatAndSValueFactory =
+      new TimeBasedSimpleValueFactory<>(HeatAndSValue.class);
+  private final TimeBasedSimpleValueFactory<HeatAndPValue> heatAndPValueFactory =
+      new TimeBasedSimpleValueFactory<>(HeatAndPValue.class);
+  private final TimeBasedSimpleValueFactory<HeatDemandValue> heatDemandValueFactory =
+      new TimeBasedSimpleValueFactory<>(HeatDemandValue.class);
+  private final TimeBasedSimpleValueFactory<SValue> sValueFactory =
+      new TimeBasedSimpleValueFactory<>(SValue.class);
+  private final TimeBasedSimpleValueFactory<PValue> pValueFactory =
+      new TimeBasedSimpleValueFactory<>(PValue.class);
+  private final TimeBasedSimpleValueFactory<IrradiationValue> irradiationValueValueFactory =
+      new TimeBasedSimpleValueFactory<>(IrradiationValue.class);
+  private final TimeBasedSimpleValueFactory<TemperatureValue> temperatureValueValueFactory =
+      new TimeBasedSimpleValueFactory<>(TemperatureValue.class);
+  private final TimeBasedSimpleValueFactory<WindValue> windValueValueFactory =
+      new TimeBasedSimpleValueFactory<>(WindValue.class);
 
   private final IdCoordinateSource coordinateSource;
 
@@ -63,8 +77,12 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
         .collect(Collectors.toSet());
   }
 
-  /* FIXME: Under Construction */
-  public Set<Set<? extends IndividualTimeSeries<? extends Value>>> getTimeSeries() {
+  /**
+   * Acquire all available time series
+   *
+   * @return A container with all relevant time series
+   */
+  public TimeSeriesContainer getTimeSeries() {
     /* Get all time series reader */
     Map<ColumnScheme, Set<TimeSeriesReadingData>> colTypeToReadingData =
         connector.initTimeSeriesReader();
@@ -83,23 +101,76 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
     }
 
     /* Reading in energy price time series */
-    Set<TimeSeriesReadingData> energyPriceReadingData =
-        colTypeToReadingData.get(ColumnScheme.ENERGY_PRICE);
-    Set<IndividualTimeSeries<EnergyPriceValue>> energyPriceTimeSeries = Collections.emptySet();
-    if (!energyPriceReadingData.isEmpty()) {
-      Function<Map<String, String>, Optional<TimeBasedValue<EnergyPriceValue>>>
-          energyPriceValueFunction =
-              fieldToValue ->
-                  this.buildTimeBasedValue(
-                      fieldToValue, EnergyPriceValue.class, energyPriceFactory);
-      energyPriceTimeSeries =
-          energyPriceReadingData
+    Set<IndividualTimeSeries<EnergyPriceValue>> energyPriceTimeSeries =
+        readIn(
+            colTypeToReadingData.get(ColumnScheme.ENERGY_PRICE),
+            EnergyPriceValue.class,
+            energyPriceFactory);
+
+    /* Reading in heat and apparent power time series */
+    Set<IndividualTimeSeries<HeatAndSValue>> heatAndApparentPowerTimeSeries =
+        readIn(
+            colTypeToReadingData.get(ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND),
+            HeatAndSValue.class,
+            heatAndSValueFactory);
+
+    /* Reading in heat time series */
+    Set<IndividualTimeSeries<HeatDemandValue>> heatTimeSeries =
+            readIn(
+                    colTypeToReadingData.get(ColumnScheme.HEAT_DEMAND),
+                    HeatDemandValue.class,
+                    heatDemandValueFactory);
+
+    /* Reading in heat and active power time series */
+    Set<IndividualTimeSeries<HeatAndPValue>> heatAndActivePowerTimeSeries =
+        readIn(
+            colTypeToReadingData.get(ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND),
+            HeatAndPValue.class,
+            heatAndPValueFactory);
+
+    /* Reading in apparent power time series */
+    Set<IndividualTimeSeries<SValue>> apparentPowerTimeSeries =
+        readIn(colTypeToReadingData.get(ColumnScheme.APPARENT_POWER), SValue.class, sValueFactory);
+
+    /* Reading in active power time series */
+    Set<IndividualTimeSeries<PValue>> activePowerTimeSeries =
+        readIn(colTypeToReadingData.get(ColumnScheme.ACTIVE_POWER), PValue.class, pValueFactory);
+
+    return new TimeSeriesContainer(
+            weatherTimeSeries,
+            energyPriceTimeSeries,
+            heatAndApparentPowerTimeSeries,
+            heatAndActivePowerTimeSeries,
+            heatTimeSeries,
+            apparentPowerTimeSeries,
+            activePowerTimeSeries);
+  }
+
+  /**
+   * Reads in time series of a specified class from given {@link TimeSeriesReadingData} utilising a
+   * provided {@link TimeBasedSimpleValueFactory}.
+   *
+   * @param readingData Data needed for reading
+   * @param valueClass Class of the target value within the time series
+   * @param factory Factory to utilize
+   * @param <V> Type of the value
+   * @return A set of {@link IndividualTimeSeries}
+   */
+  private <V extends Value> Set<IndividualTimeSeries<V>> readIn(
+      Set<TimeSeriesReadingData> readingData,
+      Class<V> valueClass,
+      TimeBasedSimpleValueFactory<V> factory) {
+    Set<IndividualTimeSeries<V>> timeSeries = Collections.emptySet();
+    if (!readingData.isEmpty()) {
+      Function<Map<String, String>, Optional<TimeBasedValue<V>>> valueFunction =
+          fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory);
+      timeSeries =
+          readingData
               .parallelStream()
-              .map(data -> buildIndividualTimeSeries(data, energyPriceValueFunction))
+              .map(data -> buildIndividualTimeSeries(data, valueFunction))
               .collect(Collectors.toSet());
     }
-
-    return Stream.of(weatherTimeSeries, energyPriceTimeSeries).collect(Collectors.toSet());
+    return timeSeries;
   }
 
   /**

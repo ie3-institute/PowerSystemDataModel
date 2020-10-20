@@ -75,20 +75,6 @@ public class TimeBasedSimpleValueFactory<V extends Value>
                   data.getQuantity(REACTIVE_POWER, REACTIVE_POWER_IN));
     } else if (PValue.class.isAssignableFrom(data.getTargetClass())) {
       value = (V) new PValue(data.getQuantity(ACTIVE_POWER, ACTIVE_POWER_IN));
-    } else if (IrradiationValue.class.isAssignableFrom(data.getTargetClass())) {
-      value =
-          (V)
-              new IrradiationValue(
-                  data.getQuantity(DIRECT_IRRADIATION, IRRADIATION),
-                  data.getQuantity(DIRECT_IRRADIATION, IRRADIATION));
-    } else if (TemperatureValue.class.isAssignableFrom(data.getTargetClass())) {
-      value = (V) new TemperatureValue(data.getQuantity(TEMPERATURE, StandardUnits.TEMPERATURE));
-    } else if (WindValue.class.isAssignableFrom(data.getTargetClass())) {
-      value =
-          (V)
-              new WindValue(
-                  data.getQuantity(WIND_DIRECTION, StandardUnits.WIND_DIRECTION),
-                  data.getQuantity(WIND_VELOCITY, StandardUnits.WIND_VELOCITY));
     } else {
       throw new FactoryException(
           "The given factory cannot handle target class '" + data.getTargetClass() + "'.");
@@ -113,12 +99,6 @@ public class TimeBasedSimpleValueFactory<V extends Value>
       minConstructorParams.addAll(Arrays.asList(ACTIVE_POWER, REACTIVE_POWER));
     } else if (PValue.class.isAssignableFrom(data.getTargetClass())) {
       minConstructorParams.add(ACTIVE_POWER);
-    } else if (IrradiationValue.class.isAssignableFrom(data.getTargetClass())) {
-      minConstructorParams.addAll(Arrays.asList(DIFFUSE_IRRADIATION, DIRECT_IRRADIATION));
-    } else if (TemperatureValue.class.isAssignableFrom(data.getTargetClass())) {
-      minConstructorParams.add(TEMPERATURE);
-    } else if (WindValue.class.isAssignableFrom(data.getTargetClass())) {
-      minConstructorParams.addAll(Arrays.asList(WIND_DIRECTION, WIND_VELOCITY));
     } else {
       throw new FactoryException(
           "The given factory cannot handle target class '" + data.getTargetClass() + "'.");

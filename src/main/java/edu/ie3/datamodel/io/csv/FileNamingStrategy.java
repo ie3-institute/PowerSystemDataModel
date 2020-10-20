@@ -51,7 +51,7 @@ public class FileNamingStrategy {
    * by the named capturing group "uuid"
    */
   private static final Pattern INDIVIDUAL_TIME_SERIES_PATTERN =
-      Pattern.compile("its_(?<columnScheme>[a-zA-Z]{1,7})_(?<uuid>" + UUID_STRING + ")");
+      Pattern.compile("its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>" + UUID_STRING + ")");
 
   /**
    * Pattern to identify individual time series in this instance of the naming strategy (takes care

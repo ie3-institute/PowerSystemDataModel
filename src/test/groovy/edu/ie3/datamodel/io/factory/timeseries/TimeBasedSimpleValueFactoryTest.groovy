@@ -87,26 +87,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
 				TIME,
 				HEAT_DEMAND] as Set
 		]
-		IrradiationValue || [
-			[
-				TimeBasedSimpleValueFactory.UUID,
-				TIME,
-				DIRECT_IRRADIATION,
-				DIFFUSE_IRRADIATION] as Set
-		]
-		TemperatureValue || [
-			[
-				TimeBasedSimpleValueFactory.UUID,
-				TIME,
-				TEMPERATURE] as Set
-		]
-		WindValue || [
-			[
-				TimeBasedSimpleValueFactory.UUID,
-				TIME,
-				WIND_DIRECTION,
-				WIND_VELOCITY] as Set
-		]
 	}
 
 	def "The simple time based value factory throws a FactoryException upon request of fields, if a class is not supported"() {
@@ -235,65 +215,6 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
 				UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
 				time,
 				new PValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN))
-				)
-
-		expect:
-		factory.buildModel(data) == expected
-	}
-
-	def "The simple time based value factory builds correct irradiation value"() {
-		given:
-		def factory = new TimeBasedSimpleValueFactory(IrradiationValue.class)
-		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
-		def data = new SimpleTimeBasedValueData([
-			"uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
-			"time": defaultTimeUtil.toString(time),
-			"diffuseirradiation": "282.671997070312",
-			"directirradiation" : "286.872985839844"
-		], IrradiationValue.class)
-		def expected = new TimeBasedValue(
-				UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
-				time,
-				new IrradiationValue(Quantities.getQuantity(282.671997070312, StandardUnits.IRRADIATION), Quantities.getQuantity(286.872985839844, StandardUnits.IRRADIATION))
-				)
-
-		expect:
-		factory.buildModel(data) == expected
-	}
-
-	def "The simple time based value factory builds correct temperature value"() {
-		given:
-		def factory = new TimeBasedSimpleValueFactory(TemperatureValue.class)
-		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
-		def data = new SimpleTimeBasedValueData([
-			"uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
-			"time": defaultTimeUtil.toString(time),
-			"temperature": "278.019012451172"
-		], TemperatureValue.class)
-		def expected = new TimeBasedValue(
-				UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
-				time,
-				new TemperatureValue(Quantities.getQuantity(278.019012451172, StandardUnits.TEMPERATURE))
-				)
-
-		expect:
-		factory.buildModel(data) == expected
-	}
-
-	def "The simple time based value factory builds correct wind value"() {
-		given:
-		def factory = new TimeBasedSimpleValueFactory(WindValue.class)
-		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
-		def data = new SimpleTimeBasedValueData([
-			"uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
-			"time": defaultTimeUtil.toString(time),
-			"winddirection"     : "0",
-			"windvelocity"      : "1.66103506088257"
-		], WindValue.class)
-		def expected = new TimeBasedValue(
-				UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
-				time,
-				new WindValue(Quantities.getQuantity(0, StandardUnits.WIND_DIRECTION), Quantities.getQuantity(1.66103506088257, StandardUnits.WIND_VELOCITY))
 				)
 
 		expect:
