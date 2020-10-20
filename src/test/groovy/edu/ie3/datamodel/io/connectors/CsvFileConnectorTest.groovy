@@ -53,7 +53,7 @@ class CsvFileConnectorTest extends Specification {
 
 	def "The csv file connector is able to provide correct paths time series files"() {
 		when:
-		def actual = cfc.getIndividualTimeSeriesFilePaths()
+		def actual = cfc.individualTimeSeriesFilePaths
 
 		then:
 		noExceptionThrown()
@@ -70,7 +70,7 @@ class CsvFileConnectorTest extends Specification {
 		def actual = cfc.buildReadingData(pathString)
 
 		then:
-		!actual.isPresent()
+		!actual.present
 	}
 
 	def "The csv file connector returns empty Optional of TimeSeriesReadingData when pointed to non-existing file"() {
@@ -97,10 +97,10 @@ class CsvFileConnectorTest extends Specification {
 		def actual = cfc.buildReadingData(pathString)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get().with {
 			assert uuid == expected.uuid
-			assert columnScheme == columnScheme
+			assert columnScheme == expected.columnScheme
 			/* Don't check the reader explicitly */
 		}
 	}

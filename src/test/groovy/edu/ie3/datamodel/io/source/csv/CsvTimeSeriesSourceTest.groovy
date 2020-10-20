@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.datamodel.models.StandardUnits.*
+
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.io.source.IdCoordinateSource
@@ -22,8 +24,6 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
-
-import static edu.ie3.datamodel.models.StandardUnits.*
 
 class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 	def "The csv time series source is able to provide a valid time series mapping from files"() {
@@ -165,7 +165,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(5) >> defaultCoordinate
 		def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
-		def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue.class)
+		def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
 		def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
 		def fieldToValue = [
@@ -180,7 +180,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 				)
 
 		when:
-		def actual = source.buildTimeBasedValue(fieldToValue, EnergyPriceValue.class, factory)
+		def actual = source.buildTimeBasedValue(fieldToValue, EnergyPriceValue, factory)
 
 		then:
 		actual.present

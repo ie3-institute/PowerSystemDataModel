@@ -55,9 +55,8 @@ public abstract class Factory<C, D extends FactoryData, R> {
     } catch (FactoryException e) {
       // only catch FactoryExceptions, as more serious exceptions should be handled elsewhere
       log.error(
-          "An error occurred when creating instance of "
-              + data.getTargetClass().getSimpleName()
-              + ".class.",
+          "An error occurred when creating instance of {}.class.",
+          data.getTargetClass().getSimpleName(),
           e);
     }
     return Optional.empty();

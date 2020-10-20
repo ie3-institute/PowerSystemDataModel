@@ -538,7 +538,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    * @return a stream of optional {@link SystemParticipantTypedEntityData} instances or empty
    *     optionals if the type couldn't be found
    */
-  private <T extends SystemParticipantTypeInput, C extends SystemParticipantInput>
+  private <T extends SystemParticipantTypeInput>
       Stream<Optional<SystemParticipantTypedEntityData<T>>> buildTypedEntityData(
           Stream<Optional<NodeAssetInputEntityData>> nodeAssetEntityDataStream,
           Collection<T> types) {
@@ -551,7 +551,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                         buildTypedEntityData(nodeAssetInputEntityData, types)));
   }
 
-  private <T extends SystemParticipantTypeInput, C extends SystemParticipantInput>
+  private <T extends SystemParticipantTypeInput>
       Optional<SystemParticipantTypedEntityData<T>> buildTypedEntityData(
           NodeAssetInputEntityData nodeAssetInputEntityData, Collection<T> types) {
     return getAssetType(

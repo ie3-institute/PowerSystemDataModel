@@ -359,9 +359,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * @param nodes A collection of known nodes
    * @return A stream on option to matching {@link ConnectorInputEntityData}
    */
-  private <C extends ConnectorInput>
-      Stream<Optional<ConnectorInputEntityData>> buildUntypedConnectorInputEntityData(
-          Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
+  private Stream<Optional<ConnectorInputEntityData>> buildUntypedConnectorInputEntityData(
+      Stream<AssetInputEntityData> assetInputEntityDataStream, Collection<NodeInput> nodes) {
     return assetInputEntityDataStream
         .parallel()
         .map(
@@ -378,9 +377,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * @param nodes A collection of known nodes
    * @return An option to matching {@link ConnectorInputEntityData}
    */
-  private <C extends ConnectorInput>
-      Optional<ConnectorInputEntityData> buildUntypedConnectorInputEntityData(
-          AssetInputEntityData assetInputEntityData, Collection<NodeInput> nodes) {
+  private Optional<ConnectorInputEntityData> buildUntypedConnectorInputEntityData(
+      AssetInputEntityData assetInputEntityData, Collection<NodeInput> nodes) {
     // get the raw data
     Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();
 
@@ -430,7 +428,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * @param <T> Type of the asset type
    * @return Stream of option to enhanced data
    */
-  private <T extends AssetTypeInput, C extends ConnectorInput>
+  private <T extends AssetTypeInput>
       Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntityData(
           Stream<Optional<ConnectorInputEntityData>> noTypeConnectorEntityDataStream,
           Collection<T> availableTypes) {
@@ -450,9 +448,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * @param <T> Type of the asset type
    * @return Option to enhanced data
    */
-  private <T extends AssetTypeInput, C extends ConnectorInput>
-      Optional<TypedConnectorInputEntityData<T>> findAndAddType(
-          ConnectorInputEntityData untypedEntityData, Collection<T> availableTypes) {
+  private <T extends AssetTypeInput> Optional<TypedConnectorInputEntityData<T>> findAndAddType(
+      ConnectorInputEntityData untypedEntityData, Collection<T> availableTypes) {
     Optional<T> assetTypeOption =
         getAssetType(
             availableTypes,

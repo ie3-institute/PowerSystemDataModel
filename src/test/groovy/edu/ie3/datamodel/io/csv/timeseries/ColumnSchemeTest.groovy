@@ -24,7 +24,7 @@ class ColumnSchemeTest extends Specification {
 		def actual = ColumnScheme.parse(input)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get() == expectedColumnScheme
 
 		where:

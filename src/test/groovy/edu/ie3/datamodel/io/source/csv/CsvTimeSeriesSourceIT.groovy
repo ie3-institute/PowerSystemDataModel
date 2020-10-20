@@ -5,6 +5,11 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.datamodel.models.StandardUnits.IRRADIATION
+import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
+import static edu.ie3.datamodel.models.StandardUnits.WIND_DIRECTION
+import static edu.ie3.datamodel.models.StandardUnits.WIND_VELOCITY
+
 import edu.ie3.datamodel.io.connectors.TimeSeriesReadingData
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
@@ -13,12 +18,7 @@ import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
-import edu.ie3.datamodel.models.value.EnergyPriceValue
-import edu.ie3.datamodel.models.value.HeatAndPValue
-import edu.ie3.datamodel.models.value.HeatAndSValue
-import edu.ie3.datamodel.models.value.HeatDemandValue
 import edu.ie3.datamodel.models.value.IrradiationValue
-import edu.ie3.datamodel.models.value.PValue
 import edu.ie3.datamodel.models.value.SValue
 import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -32,11 +32,6 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import java.nio.charset.StandardCharsets
-
-import static edu.ie3.datamodel.models.StandardUnits.IRRADIATION
-import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
-import static edu.ie3.datamodel.models.StandardUnits.WIND_DIRECTION
-import static edu.ie3.datamodel.models.StandardUnits.WIND_VELOCITY
 
 class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 	@Shared
@@ -60,7 +55,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
 	def "The csv time series source is able to provide an individual time series from given field to object function"() {
 		given:
-		def weatherValueFunction = {fieldToValues -> source.buildWeatherValue(fieldToValues)}
+		def weatherValueFunction = { fieldToValues -> source.buildWeatherValue(fieldToValues) }
 		def tsUuid = UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9")
 		def filePath = new File(this.getClass().getResource( File.separator + "testTimeSeriesFiles" + File.separator + "its_weather_8bc9120d-fb9b-4484-b4e3-0cdadf0feea9.csv").toURI())
 		def readingData = new TimeSeriesReadingData(
@@ -121,7 +116,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 			assert entries.containsAll(expected.entries)
 		}
 		/* Close the reader */
-		readingData.getReader().close()
+		readingData.reader.close()
 	}
 
 	def "The csv time series source is able to acquire all time series of a given type"() {
@@ -156,7 +151,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
 	def "The csv time series source is able to acquire all time series"() {
 		when:
-		def actual = source.getTimeSeries()
+		def actual = source.timeSeries
 
 		then:
 		Objects.nonNull(actual)
@@ -173,8 +168,8 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
 	def "The csv time series source is able to provide either mapping an time series, that can be put together"() {
 		when:
-		def mappingEntries = source.getMapping()
-		def timeSeries = source.getTimeSeries()
+		def mappingEntries = source.mapping
+		def timeSeries = source.timeSeries
 		def mapping = new TimeSeriesMapping(mappingEntries, timeSeries.all)
 
 		then:

@@ -39,12 +39,6 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
       new TimeBasedSimpleValueFactory<>(SValue.class);
   private final TimeBasedSimpleValueFactory<PValue> pValueFactory =
       new TimeBasedSimpleValueFactory<>(PValue.class);
-  private final TimeBasedSimpleValueFactory<IrradiationValue> irradiationValueValueFactory =
-      new TimeBasedSimpleValueFactory<>(IrradiationValue.class);
-  private final TimeBasedSimpleValueFactory<TemperatureValue> temperatureValueValueFactory =
-      new TimeBasedSimpleValueFactory<>(TemperatureValue.class);
-  private final TimeBasedSimpleValueFactory<WindValue> windValueValueFactory =
-      new TimeBasedSimpleValueFactory<>(WindValue.class);
 
   private final IdCoordinateSource coordinateSource;
 
