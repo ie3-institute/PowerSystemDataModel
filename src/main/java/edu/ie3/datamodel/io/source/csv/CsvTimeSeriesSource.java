@@ -116,10 +116,10 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
 
     /* Reading in heat time series */
     Set<IndividualTimeSeries<HeatDemandValue>> heatTimeSeries =
-            readIn(
-                    colTypeToReadingData.get(ColumnScheme.HEAT_DEMAND),
-                    HeatDemandValue.class,
-                    heatDemandValueFactory);
+        readIn(
+            colTypeToReadingData.get(ColumnScheme.HEAT_DEMAND),
+            HeatDemandValue.class,
+            heatDemandValueFactory);
 
     /* Reading in heat and active power time series */
     Set<IndividualTimeSeries<HeatAndPValue>> heatAndActivePowerTimeSeries =
@@ -137,13 +137,13 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
         readIn(colTypeToReadingData.get(ColumnScheme.ACTIVE_POWER), PValue.class, pValueFactory);
 
     return new TimeSeriesContainer(
-            weatherTimeSeries,
-            energyPriceTimeSeries,
-            heatAndApparentPowerTimeSeries,
-            heatAndActivePowerTimeSeries,
-            heatTimeSeries,
-            apparentPowerTimeSeries,
-            activePowerTimeSeries);
+        weatherTimeSeries,
+        energyPriceTimeSeries,
+        heatAndApparentPowerTimeSeries,
+        heatAndActivePowerTimeSeries,
+        heatTimeSeries,
+        apparentPowerTimeSeries,
+        activePowerTimeSeries);
   }
 
   /**
