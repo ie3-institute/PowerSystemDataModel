@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import static edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory.*;
+
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -24,12 +26,6 @@ public class TimeBasedWeatherValueFactory
 
   private static final String UUID = "uuid";
   private static final String TIME = "time";
-  // weather
-  private static final String DIFFUSE_IRRADIATION = "diffuseirradiation";
-  private static final String DIRECT_IRRADIATION = "directirradiation";
-  private static final String TEMPERATURE = "temperature";
-  private static final String WIND_DIRECTION = "winddirection";
-  private static final String WIND_VELOCITY = "windvelocity";
 
   private final TimeUtil timeUtil;
 

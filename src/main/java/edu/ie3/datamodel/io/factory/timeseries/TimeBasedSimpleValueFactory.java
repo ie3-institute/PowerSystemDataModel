@@ -8,14 +8,13 @@ package edu.ie3.datamodel.io.factory.timeseries;
 import static edu.ie3.datamodel.models.StandardUnits.*;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.value.EnergyPriceValue;
-import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.TimeUtil;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TimeBasedSimpleValueFactory<V extends Value>
     extends TimeBasedValueFactory<SimpleTimeBasedValueData<V>, V> {
@@ -23,6 +22,16 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   private static final String TIME = "time";
   /* Energy price */
   private static final String PRICE = "price";
+  /* Energy / Power */
+  private static final String ACTIVE_POWER = "p";
+  private static final String REACTIVE_POWER = "q";
+  private static final String HEAT_DEMAND = "heatdemand";
+  /* Weather */
+  public static final String DIFFUSE_IRRADIATION = "diffuseirradiation";
+  public static final String DIRECT_IRRADIATION = "directirradiation";
+  public static final String TEMPERATURE = "temperature";
+  public static final String WIND_DIRECTION = "winddirection";
+  public static final String WIND_VELOCITY = "windvelocity";
 
   private final TimeUtil timeUtil;
 
@@ -43,15 +52,46 @@ public class TimeBasedSimpleValueFactory<V extends Value>
 
     if (EnergyPriceValue.class.isAssignableFrom(data.getTargetClass())) {
       value = (V) new EnergyPriceValue(data.getQuantity(PRICE, ENERGY_PRICE));
+    } else if (HeatAndSValue.class.isAssignableFrom(data.getTargetClass())) {
+      value =
+          (V)
+              new HeatAndSValue(
+                  data.getQuantity(ACTIVE_POWER, ACTIVE_POWER_IN),
+                  data.getQuantity(REACTIVE_POWER, REACTIVE_POWER_IN),
+                  data.getQuantity(HEAT_DEMAND, StandardUnits.HEAT_DEMAND));
+    } else if (HeatAndPValue.class.isAssignableFrom(data.getTargetClass())) {
+      value =
+          (V)
+              new HeatAndPValue(
+                  data.getQuantity(ACTIVE_POWER, ACTIVE_POWER_IN),
+                  data.getQuantity(HEAT_DEMAND, StandardUnits.HEAT_DEMAND));
+    } else if (HeatDemandValue.class.isAssignableFrom(data.getTargetClass())) {
+      value = (V) new HeatDemandValue(data.getQuantity(HEAT_DEMAND, StandardUnits.HEAT_DEMAND));
+    } else if (SValue.class.isAssignableFrom(data.getTargetClass())) {
+      value =
+          (V)
+              new SValue(
+                  data.getQuantity(ACTIVE_POWER, ACTIVE_POWER_IN),
+                  data.getQuantity(REACTIVE_POWER, REACTIVE_POWER_IN));
+    } else if (PValue.class.isAssignableFrom(data.getTargetClass())) {
+      value = (V) new PValue(data.getQuantity(ACTIVE_POWER, ACTIVE_POWER_IN));
+    } else if (IrradiationValue.class.isAssignableFrom(data.getTargetClass())) {
+      value =
+          (V)
+              new IrradiationValue(
+                  data.getQuantity(DIRECT_IRRADIATION, IRRADIATION),
+                  data.getQuantity(DIRECT_IRRADIATION, IRRADIATION));
+    } else if (TemperatureValue.class.isAssignableFrom(data.getTargetClass())) {
+      value = (V) new TemperatureValue(data.getQuantity(TEMPERATURE, StandardUnits.TEMPERATURE));
+    } else if (WindValue.class.isAssignableFrom(data.getTargetClass())) {
+      value =
+          (V)
+              new WindValue(
+                  data.getQuantity(WIND_DIRECTION, StandardUnits.WIND_DIRECTION),
+                  data.getQuantity(WIND_VELOCITY, StandardUnits.WIND_VELOCITY));
     } else {
       throw new FactoryException(
-          "The given factory cannot handle target class '"
-              + data.getTargetClass()
-              + "'. Supported classes: '"
-              + getSupportedClasses().stream()
-                  .map(Class::getSimpleName)
-                  .collect(Collectors.joining(","))
-              + "'");
+          "The given factory cannot handle target class '" + data.getTargetClass() + "'.");
     }
 
     return new TimeBasedValue<>(uuid, time, value);
@@ -63,6 +103,25 @@ public class TimeBasedSimpleValueFactory<V extends Value>
 
     if (EnergyPriceValue.class.isAssignableFrom(data.getTargetClass())) {
       minConstructorParams.add(PRICE);
+    } else if (HeatAndSValue.class.isAssignableFrom(data.getTargetClass())) {
+      minConstructorParams.addAll(Arrays.asList(ACTIVE_POWER, REACTIVE_POWER, HEAT_DEMAND));
+    } else if (HeatAndPValue.class.isAssignableFrom(data.getTargetClass())) {
+      minConstructorParams.addAll(Arrays.asList(ACTIVE_POWER, HEAT_DEMAND));
+    } else if (HeatDemandValue.class.isAssignableFrom(data.getTargetClass())) {
+      minConstructorParams.add(HEAT_DEMAND);
+    } else if (SValue.class.isAssignableFrom(data.getTargetClass())) {
+      minConstructorParams.addAll(Arrays.asList(ACTIVE_POWER, REACTIVE_POWER));
+    } else if (PValue.class.isAssignableFrom(data.getTargetClass())) {
+      minConstructorParams.add(ACTIVE_POWER);
+    } else if (IrradiationValue.class.isAssignableFrom(data.getTargetClass())) {
+      minConstructorParams.addAll(Arrays.asList(DIFFUSE_IRRADIATION, DIRECT_IRRADIATION));
+    } else if (TemperatureValue.class.isAssignableFrom(data.getTargetClass())) {
+      minConstructorParams.add(TEMPERATURE);
+    } else if (WindValue.class.isAssignableFrom(data.getTargetClass())) {
+      minConstructorParams.addAll(Arrays.asList(WIND_DIRECTION, WIND_VELOCITY));
+    } else {
+      throw new FactoryException(
+          "The given factory cannot handle target class '" + data.getTargetClass() + "'.");
     }
 
     return Collections.singletonList(minConstructorParams);
