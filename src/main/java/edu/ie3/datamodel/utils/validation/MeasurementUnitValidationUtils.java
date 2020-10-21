@@ -29,14 +29,14 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
     checkNonNull(measurementUnit, "a measurement unit");
     // Check if node is null
     if (measurementUnit.getNode() == null)
-      throw new InvalidEntityException("Node is null", measurementUnit);
+      throw new InvalidEntityException("Node of measurement unit is null", measurementUnit);
     // Check if measurement unit measures any values
     Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     if (!measurementUnit.getP()
         && !measurementUnit.getQ()
         && !measurementUnit.getVAng()
         && !measurementUnit.getVMag())
-      logger.warning("Measurement Unit does not measure any values");
+      logger.warning("Measurement unit does not measure any values");
     // throw new InvalidEntityException("Measurement Unit does not measure any values",
     // measurementUnit);
     // TODO NSteffan: Work with logger warning instead of exception? Correct usage of logger?

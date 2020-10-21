@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
-import edu.ie3.datamodel.exceptions.UnsafeEntityException;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
@@ -22,16 +21,16 @@ public class NodeValidationUtils extends ValidationUtils {
    * Validates a node if: <br>
    * - it is not null <br>
    * - voltage level is not null and valid <br>
-   * - vTarget is not null and valid <br>
-   * - subnet is not null <br>
+   * - target voltage is not null and larger than zero <br>
+   * - subnet number is larger than zero <br>
    * - geoPosition is not null
    *
    * @param node Node to validate
    */
   public static void check(NodeInput node) {
-    // Check if null
+    // Check if node is null
     checkNonNull(node, "a node");
-    // Check if valid voltage level
+    // Check if node has valid voltage level
     try {
       checkVoltageLevel(node.getVoltLvl());
     } catch (VoltageLevelException e) {
@@ -39,16 +38,15 @@ public class NodeValidationUtils extends ValidationUtils {
     }
     // Check if target voltage is null or invalid
     if (node.getvTarget() == null)
-      throw new InvalidEntityException("vRated or vTarget is null", node);
+      throw new InvalidEntityException("Target voltage (p.u.) is null", node);
     if (node.getvTarget().getValue().doubleValue() <= 0d)
-      throw new UnsafeEntityException("vTarget is not a positive value", node);
+      throw new InvalidEntityException("Target voltage (p.u.) is not a positive value", node);
     // Check if subnet is valid
     if (node.getSubnet() <= 0)
       throw new InvalidEntityException("Subnet can't be zero or negative", node);
     // Check if geoPosition is null
     if (node.getGeoPosition() == null)
-      throw new InvalidEntityException("Node has no GeoPosition", node);
-    // TODO: @NSteffan - necessary to check operator ("at least dummy")? operationTime?
+      throw new InvalidEntityException("GeoPosition of node is null", node);
   }
 
   /**

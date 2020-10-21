@@ -18,17 +18,22 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates a thermalUnitInput if: <br>
+   * Validates a thermal unit if: <br>
    * - it is not null <br>
    * - its thermal bus is not null
+   *
+   * A "distribution" method, that forwards the check request to specific implementations to
+   * fulfill the checking task, based on the class of the given object. If an unknown class is
+   * handed in, a {@link ValidationException} is thrown.
    *
    * @param thermalUnitInput ThermalUnitInput to validate
    */
   public static void check(ThermalUnitInput thermalUnitInput) {
+    // Check if null
     checkNonNull(thermalUnitInput, "a thermal unit");
     // Check if thermal bus is null
     if (thermalUnitInput.getThermalBus() == null)
-      throw new InvalidEntityException("Thermal bus of thermalUnitInput is null", thermalUnitInput);
+      throw new InvalidEntityException("Thermal bus of the thermal input is null", thermalUnitInput);
 
     // Further checks for subclasses
     if (ThermalSinkInput.class.isAssignableFrom(thermalUnitInput.getClass()))
@@ -40,23 +45,21 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
           "Cannot validate object of class '"
               + thermalUnitInput.getClass().getSimpleName()
               + "', as no routine is implemented.");
-
-    // ThermalSinkInput -> ThermalHouseInput
-    // ThermalStorageInput -> CylindricalStorageInput
-
-    // TODO NSteffan: Check ThermalBusInput? Where/How?
-
   }
 
   /**
    * Validates a thermalSinkInput if: <br>
    * - it is not null <br>
-   * - subclasses are valid
+   *
+   * A "distribution" method, that forwards the check request to specific implementations to
+   * fulfill the checking task, based on the class of the given object. If an unknown class is
+   * handed in, a {@link ValidationException} is thrown.
    *
    * @param thermalSinkInput ThermalSinkInput to validate
    */
   public static void checkThermalSink(ThermalSinkInput thermalSinkInput) {
-    checkNonNull(thermalSinkInput, "a thermalSinkInput");
+    // Check if null
+    checkNonNull(thermalSinkInput, "a thermal sink");
 
     // Further checks for subclasses
     if (ThermalHouseInput.class.isAssignableFrom(thermalSinkInput.getClass()))
@@ -71,12 +74,16 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
   /**
    * Validates a thermalStorageInput if: <br>
    * - it is not null <br>
-   * - subclasses are valid
+   *
+   * A "distribution" method, that forwards the check request to specific implementations to
+   * fulfill the checking task, based on the class of the given object. If an unknown class is
+   * handed in, a {@link ValidationException} is thrown.
    *
    * @param thermalStorageInput ThermalStorageInput to validate
    */
   public static void checkThermalStorage(ThermalStorageInput thermalStorageInput) {
-    checkNonNull(thermalStorageInput, "a thermalStorageInput");
+    //Check if null
+    checkNonNull(thermalStorageInput, "a thermal storage");
 
     // Further checks for subclasses
     if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass()))
@@ -97,15 +104,16 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * @param thermalHouseInput ThermalHouseInput to validate
    */
   public static void checkThermalHouse(ThermalHouseInput thermalHouseInput) {
-    checkNonNull(thermalHouseInput, "a thermalHouseInput");
-    // Check if ethLosses is null
+    // Check if null
+    checkNonNull(thermalHouseInput, "a thermal house");
+    // Check if thermal losses is null
     if (thermalHouseInput.getEthLosses() == null)
       throw new InvalidEntityException(
-          "Thermal losses of thermalHouseInput is null", thermalHouseInput);
-    // Check if ethCapa is null
+          "Thermal losses of thermal house are null", thermalHouseInput);
+    // Check if thermal capacity is null
     if (thermalHouseInput.getEthCapa() == null)
       throw new InvalidEntityException(
-          "Thermal capacity of thermalHouseInput is null", thermalHouseInput);
+          "Thermal capacity of thermal house is null", thermalHouseInput);
     // Check for zero or negative quantities
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {thermalHouseInput.getEthCapa(), thermalHouseInput.getEthLosses()},
@@ -118,15 +126,15 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * - its available storage volume is not null and positive <br>
    * - its minimum permissible storage volume is not null, positive and not greater than the
    * available storage volume <br>
-   * - its inlet temperature is not null and not smaller than the outlet temperature <br>
-   * - its outlet/return temperature is not null and equal to / greater than the inlet temperature
-   * <br>
+   * - its inlet temperature is not null and equal/greater than the outlet temperature <br>
+   * - its outlet/return temperature is not null <br>
    * - its specific heat capacity is not null and positive
    *
    * @param cylindricalStorageInput CylindricalStorageInput to validate
    */
   public static void checkCylindricalStorage(CylindricalStorageInput cylindricalStorageInput) {
-    checkNonNull(cylindricalStorageInput, "a cylindricalSinkInput");
+    // Check if null
+    checkNonNull(cylindricalStorageInput, "a cylindrical storage");
     // Check if any values are null
     if ((cylindricalStorageInput.getStorageVolumeLvl() == null)
         || (cylindricalStorageInput.getStorageVolumeLvlMin() == null)
@@ -134,19 +142,19 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
         || (cylindricalStorageInput.getReturnTemp() == null)
         || (cylindricalStorageInput.getC() == null))
       throw new InvalidEntityException(
-          "at least one value of cylindricalStorageInput is null", cylindricalStorageInput);
+          "At least one value of the cylindrical storageInput is null", cylindricalStorageInput);
     // Check if inlet temperature is higher/equal to outlet temperature
     if (cylindricalStorageInput.getInletTemp().isLessThan(cylindricalStorageInput.getReturnTemp()))
       throw new InvalidEntityException(
-          "Inlet temperature of cylindricalStorageInput cannot be lower than outlet temperature",
+          "Inlet temperature of the cylindrical storage cannot be lower than outlet temperature",
           cylindricalStorageInput);
+    // Check if minimum permissible storage volume is lower than overall available storage volume
     if (cylindricalStorageInput
         .getStorageVolumeLvlMin()
         .isGreaterThan(cylindricalStorageInput.getStorageVolumeLvl()))
       throw new InvalidEntityException(
-          "Minimum permissible storage volume of cylindricalStorageInput cannot be higher than overall available storage volume",
+          "Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume",
           cylindricalStorageInput);
-    // TODO NSteffan: Sind diese Einschränkungen korrekt?
     // Check for zero or negative quantities
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {
