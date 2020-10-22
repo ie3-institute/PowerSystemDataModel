@@ -8,12 +8,17 @@ package edu.ie3.datamodel.utils.validation;
 import edu.ie3.datamodel.exceptions.*;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
+import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.GridContainer;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
+import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +48,8 @@ public class ValidationUtils {
       GridContainerValidationUtils.check((GridContainer) obj);
     else if (GraphicInput.class.isAssignableFrom(obj.getClass()))
       GraphicValidationUtils.check((GraphicInput) obj);
-    // TODO NSteffan: Check here also for AssetTypeInput, OperatorInput, ...?
+    else if (AssetTypeInput.class.isAssignableFrom(obj.getClass()))
+      checkAssetType((AssetTypeInput) obj);
     else {
       throw new ValidationException(
           "Cannot validate object of class '"
@@ -66,7 +72,7 @@ public class ValidationUtils {
    * @param assetInput AssetInput to check
    */
   public static void checkAsset(AssetInput assetInput) {
-    // Check if operator is null
+    // Check if asset is null
     checkNonNull(assetInput, "an asset");
     // Check if operator is not null
     if (assetInput.getOperator() == null)
@@ -97,6 +103,54 @@ public class ValidationUtils {
           "Cannot validate object of class '"
               + assetInput.getClass().getSimpleName()
               + "', as no routine is implemented.");
+    }
+  }
+
+  /**
+   * Validates an asset type if: <br>
+   * - it is not null <br>
+   *
+   * A "distribution" method, that forwards the check request to specific implementations to fulfill the checking
+   * task, based on the class of the given object. If an unknown class is handed in, a {@link
+   * ValidationException} is thrown.
+   *
+   * @param assetTypeInput AssetTypeInput to check
+   */
+  public static void checkAssetType(AssetTypeInput assetTypeInput) {
+    // Check if asset type is null
+    checkNonNull(assetTypeInput, "an asset type");
+
+    // Further checks for subclasses
+    if (LineTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+      ConnectorValidationUtils.checkLineType((LineTypeInput) assetTypeInput);
+    else if (Transformer2WTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+      ConnectorValidationUtils.checkTransformer2WType((Transformer2WTypeInput) assetTypeInput);
+    else if (Transformer3WTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+      ConnectorValidationUtils.checkTransformer3WType((Transformer3WTypeInput) assetTypeInput);
+    else if (SystemParticipantTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+      if (BmTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+        SystemParticipantValidationUtils.checkBmType((BmTypeInput) assetTypeInput);
+      else if (ChpTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+        SystemParticipantValidationUtils.checkChpType((ChpTypeInput) assetTypeInput);
+      else if (EvTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+        SystemParticipantValidationUtils.checkEvType((EvTypeInput) assetTypeInput);
+      else if (HpTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+        SystemParticipantValidationUtils.checkHpType((HpTypeInput) assetTypeInput);
+      else if (StorageTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+        SystemParticipantValidationUtils.checkStorageType((StorageTypeInput) assetTypeInput);
+      else if (WecTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+        SystemParticipantValidationUtils.checkWecType((WecTypeInput) assetTypeInput);
+      else {
+        throw new ValidationException(
+                "Cannot validate object of class '"
+                        + assetTypeInput.getClass().getSimpleName()
+                        + "', as no routine is implemented.");
+      }
+    else {
+      throw new ValidationException(
+              "Cannot validate object of class '"
+                      + assetTypeInput.getClass().getSimpleName()
+                      + "', as no routine is implemented.");
     }
   }
 
