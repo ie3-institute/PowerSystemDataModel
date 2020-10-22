@@ -12,32 +12,20 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
-import edu.ie3.datamodel.models.value.EnergyPriceValue
-import edu.ie3.datamodel.models.value.HeatAndPValue
-import edu.ie3.datamodel.models.value.HeatAndSValue
-import edu.ie3.datamodel.models.value.HeatDemandValue
-import edu.ie3.datamodel.models.value.IrradiationValue
-import edu.ie3.datamodel.models.value.PValue
-import edu.ie3.datamodel.models.value.SValue
-import edu.ie3.datamodel.models.value.TemperatureValue
-import edu.ie3.datamodel.models.value.WeatherValue
-import edu.ie3.datamodel.models.value.WindValue
+import edu.ie3.datamodel.models.value.*
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.geom.PrecisionModel
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import java.time.DayOfWeek
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.EURO_PER_MEGAWATTHOUR
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOWATT
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOWATTHOUR_PER_SQUAREMETRE
-import static tec.uom.se.unit.Units.CELSIUS
-import static tec.uom.se.unit.Units.METRE_PER_SECOND
+import static edu.ie3.util.quantities.PowerSystemUnits.*
+import static tech.units.indriya.unit.Units.CELSIUS
+import static tech.units.indriya.unit.Units.METRE_PER_SECOND
 
 trait TimeSeriesTestData {
 	GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326)
@@ -512,16 +500,14 @@ trait TimeSeriesTestData {
 	] as Set
 
 	List<TimeSeries> allTimeSeries = [
+		individualPTimeSeries,
 		individualEnergyPriceTimeSeries,
 		individualHeatAndPTimeSeries,
 		individualHeatAndSTimeSeries,
 		individualHeatDemandTimeSeries,
-		individualIrradiationTimeSeries,
 		individualPTimeSeries,
 		individualSTimeSeries,
-		individualTemperatureTimeSeries,
 		individualWeatherTimeSeries,
-		individualWindTimeSeries,
 		loadProfileInput
 	]
 }

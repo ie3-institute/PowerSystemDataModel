@@ -19,7 +19,7 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult> {
   private static final String Q_DOT = "qDot";

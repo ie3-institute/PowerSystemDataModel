@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.measure.quantity.*;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class Transformer2WTypeInputFactory
     extends AssetTypeInputEntityFactory<Transformer2WTypeInput> {

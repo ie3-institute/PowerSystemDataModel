@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 class ThermalResultFactoryTest extends Specification {
 

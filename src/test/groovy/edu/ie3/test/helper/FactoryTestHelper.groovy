@@ -6,7 +6,7 @@
 package edu.ie3.test.helper
 
 import org.locationtech.jts.io.geojson.GeoJsonReader
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.Unit
 

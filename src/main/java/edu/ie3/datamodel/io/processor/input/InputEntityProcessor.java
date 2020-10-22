@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
+import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +39,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               /* InputEntity */
               OperatorInput.class,
               RandomLoadParameters.class,
+              TimeSeriesMapping.Entry.class,
               /* - AssetInput */
               NodeInput.class,
               LineInput.class,
@@ -45,12 +47,12 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               Transformer3WInput.class,
               SwitchInput.class,
               MeasurementUnitInput.class,
-              EvcsInput.class,
               ThermalBusInput.class,
               /* -- SystemParticipantInput */
               ChpInput.class,
               BmInput.class,
               EvInput.class,
+              EvcsInput.class,
               FixedFeedInInput.class,
               HpInput.class,
               LoadInput.class,

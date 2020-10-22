@@ -17,7 +17,6 @@ plugins {
 ext {
 	//version (changing these should be considered thoroughly!)
 	javaVersion = JavaVersion.VERSION_1_8
-	unitsOfMeasurementVersion = '1.0.10'
 	tscfgVersion = '0.9.9'
 	testcontainersVersion = '1.14.1'
 
@@ -53,9 +52,10 @@ repositories {
 
 dependencies {
 	//	 ie³ power system utils
-	compile 'com.github.ie3-institute:PowerSystemUtils:1.3.2'
+	/* FIXME: Use stable version, as soon as release is available */
+	compile 'com.github.ie3-institute:PowerSystemUtils:1.4-SNAPSHOT'
 
-	compile "tec.uom:uom-se:$unitsOfMeasurementVersion"
+	implementation 'tech.units:indriya:2.0.4'
 
 	// JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
 	compile 'org.locationtech.jts:jts-core:1.16.1'

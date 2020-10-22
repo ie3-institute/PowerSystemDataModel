@@ -7,19 +7,20 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes as heat demand value */
 public class HeatDemandValue implements Value {
   private final ComparableQuantity<Power> heatDemand;
 
   public HeatDemandValue(ComparableQuantity<Power> heatDemand) {
-    this.heatDemand = heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
+    this.heatDemand = heatDemand == null ? null : heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
   }
 
-  public ComparableQuantity<Power> getHeatDemand() {
-    return heatDemand;
+  public Optional<ComparableQuantity<Power>> getHeatDemand() {
+    return Optional.ofNullable(heatDemand);
   }
 
   @Override
@@ -27,7 +28,7 @@ public class HeatDemandValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     HeatDemandValue that = (HeatDemandValue) o;
-    return heatDemand.equals(that.heatDemand);
+    return Objects.equals(heatDemand, that.heatDemand);
   }
 
   @Override
