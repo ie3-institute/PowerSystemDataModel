@@ -24,6 +24,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its node is not null <br>
    * - its qCharacteristics are not null
    *
+   * A "distribution" method, that forwards the check request to specific implementations to
+   * fulfill the checking task, based on the class of the given object. If an unknown class is
+   * handed in, a {@link ValidationException} is thrown.
+   *
    * @param systemParticipant systemParticipant to validate
    */
   public static void check(SystemParticipantInput systemParticipant) {
@@ -35,7 +39,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     // Check if qCharacteristics is null
     if (systemParticipant.getqCharacteristics() == null)
       throw new InvalidEntityException(
-          "qCharacteristics of system participant not defined", systemParticipant);
+          "Reactive power characteristics of system participant is not defined", systemParticipant);
 
     // Further checks for subclasses
     if (BmInput.class.isAssignableFrom(systemParticipant.getClass()))
@@ -65,20 +69,25 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
 
   /**
    * Validates a system participant type if: <br>
-   * - capex, opex, or sRated are null <br>
-   * - capex, opex, or sRated are negative
+   * - it is not null <br>
+   * - capex is not null and not negative <br>
+   * - opex is not null and not negative <br>
+   * - sRated is not null and not negative <br>
+   * - cosphiRated is between zero and one
    *
    * @param systemParticipantTypeInput systemParticipant Type to validate
    */
   public static void checkType(SystemParticipantTypeInput systemParticipantTypeInput) {
-    // Check if any values are null
+    // Check if null
+    checkNonNull(systemParticipantTypeInput, "a system participant type");
+    // Check if any quantities are null
     if ((systemParticipantTypeInput.getCapex() == null)
         || (systemParticipantTypeInput.getOpex() == null)
         || (systemParticipantTypeInput.getsRated() == null))
       throw new InvalidEntityException(
-          "at least one of capex, opex, or sRated of the system participant is null",
+          "At least one of capex, opex, or sRated is null",
           systemParticipantTypeInput);
-    // Check if any values are negative
+    // Check for negative quantities
     detectNegativeQuantities(
         new Quantity<?>[] {
           systemParticipantTypeInput.getCapex(),
@@ -86,11 +95,15 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
           systemParticipantTypeInput.getsRated()
         },
         systemParticipantTypeInput);
+    // Check if rated power factor is between zero and one
+    if (systemParticipantTypeInput.getCosPhiRated() < 0d || systemParticipantTypeInput.getCosPhiRated() > 1d)
+      throw new InvalidEntityException("Rated power factor must be between 0 and 1",
+              systemParticipantTypeInput);
   }
 
   /**
    * Validates a bmInput if: <br>
-   * - feed in tariff is null <br>
+   * - feed in tariff is not null <br>
    * - {@link SystemParticipantValidationUtils#checkBmType(BmTypeInput)} confirms a valid type
    * properties <br>
    *
@@ -100,49 +113,44 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     // Check if feed in tariff is null
     if (bmInput.getFeedInTariff() == null)
       throw new InvalidEntityException("Feed in tariff of biomass unit is null", bmInput);
-    // TODO @NSteffan: booleans don't need to be checked, right?
     // Check BmType
     checkBmType(bmInput.getType());
   }
 
   /**
    * Validates a bmTypeInput if: <br>
-   * - it is not null <br>
-   * - common system participants values (capex, opex, sRated) are null or negative <br>
-   * - its active power gradient is null or negative <br>
-   * - its efficiency of assets inverter is null or negative
+   * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
+   * - its active power gradient is not null and not negative <br>
+   * - its efficiency of assets inverter is not null and not negative
    *
    * @param bmTypeInput BmTypeInput to validate
    */
   public static void checkBmType(BmTypeInput bmTypeInput) {
-    // Check if null
-    checkNonNull(bmTypeInput, "a bmTypeInput");
-    // Check if any common values of system participants are null or negative
+    // Check common values of system participants
     try {
       checkType(bmTypeInput);
     } catch (InvalidEntityException e) {
-      throw new InvalidEntityException("At least one value of bmTypeInput is null", bmTypeInput);
+      throw new InvalidEntityException("At least one value of the biomass unit type is not valid", bmTypeInput);
     }
     // Check if active power gradient is null
     if (bmTypeInput.getActivePowerGradient() == null)
-      throw new InvalidEntityException("Active power gradient of bmTypeInput is null", bmTypeInput);
+      throw new InvalidEntityException("Active power gradient of biomass unit type is null", bmTypeInput);
     // Check if efficiency of assets inverter is null
     if (bmTypeInput.getEtaConv() == null)
       throw new InvalidEntityException(
-          "Efficiency of assets inverter of bmTypeInput is null", bmTypeInput);
+          "Efficiency of inverter of biomass unit type is null", bmTypeInput);
     // Check if any values are negative
     detectNegativeQuantities(
         new Quantity<?>[] {
           bmTypeInput.getActivePowerGradient(), bmTypeInput.getEtaConv(),
         },
         bmTypeInput);
-    // TODO @NSteffan: Einschränkung < / <= 0 richtig?
   }
 
   /**
    * Validates a chpInput if: <br>
-   * - thermal bus is null <br>
-   * - thermal storage is null <br>
+   * - thermal bus is not null <br>
+   * - thermal storage is not null <br>
    * - {@link SystemParticipantValidationUtils#checkChpType(ChpTypeInput)} confirms a valid type
    * properties
    *
@@ -161,49 +169,41 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
 
   /**
    * Validates a chpTypeInput if: <br>
-   * - it is not null <br>
-   * - common system participants values (capex, opex, sRated) are null or negative <br>
-   * - its efficiency of the electrical inverter is null or negative <br>
-   * - its thermal efficiency of the system is null or negative <br>
-   * - its rated thermal power is null or negative <br>
-   * - its needed self-consumption is null or negative
+   * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
+   * - its efficiency of the electrical inverter is not null and positive <br>
+   * - its thermal efficiency of the system is not null and positive <br>
+   * - its rated thermal power is not null and positive <br>
+   * - its needed self-consumption is not null and not negative
    *
    * @param chpTypeInput ChpTypeInput to validate
    */
   public static void checkChpType(ChpTypeInput chpTypeInput) {
-    // Check if null
-    checkNonNull(chpTypeInput, "a chpTypeInput");
-    // Check if any common values of system participants are null or negative
+    // Check common values of system participants
     try {
       checkType(chpTypeInput);
     } catch (InvalidEntityException e) {
-      throw new InvalidEntityException("At least one value of chpTypeInput is null", chpTypeInput);
+      throw new InvalidEntityException("At least one value of the CHP unit type is not valid", chpTypeInput);
     }
-    // Check if efficiency of the electrical inverter is null
-    if (chpTypeInput.getEtaEl() == null)
-      throw new InvalidEntityException(
-          "Efficiency of the electrical inverter of chpTypeInput is null", chpTypeInput);
-    // Check if thermal efficiency of the system is null
-    if (chpTypeInput.getEtaThermal() == null)
-      throw new InvalidEntityException(
-          "Thermal efficiency of the system of chpTypeInput is null", chpTypeInput);
-    // Check if rated thermal power is null
-    if (chpTypeInput.getpThermal() == null)
-      throw new InvalidEntityException("Rated thermal power of chpTypeInput is null", chpTypeInput);
-    // Check if needed self-consumption is null
-    if (chpTypeInput.getpOwn() == null)
-      throw new InvalidEntityException(
-          "Needed self-consumption of chpTypeInput is null", chpTypeInput);
-    // Check if any values are negative
+    // Check if any values are null
+    if ((chpTypeInput.getEtaEl() == null)
+          || (chpTypeInput.getEtaThermal() == null)
+          || (chpTypeInput.getpThermal() == null)
+          || (chpTypeInput.getpOwn() == null))
+      throw new InvalidEntityException("At least one value of the CHP unit type is null", chpTypeInput);
+    // Check for negative quantities
     detectNegativeQuantities(
         new Quantity<?>[] {
-          chpTypeInput.getEtaEl(),
-          chpTypeInput.getEtaThermal(),
-          chpTypeInput.getpThermal(),
           chpTypeInput.getpOwn()
         },
         chpTypeInput);
-    // TODO @NSteffan: Einschränkung < / <= 0 richtig?
+    // Check for zero or negative quantities
+    detectZeroOrNegativeQuantities(
+            new Quantity<?>[] {
+                    chpTypeInput.getEtaEl(),
+                    chpTypeInput.getEtaThermal(),
+                    chpTypeInput.getpThermal(),
+            },
+            chpTypeInput);
   }
 
   /**
@@ -220,110 +220,98 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
 
   /**
    * Validates a EvTypeInput if: <br>
-   * - it is not null <br>
-   * - common system participants values (capex, opex, sRated) are null or negative <br>
-   * - its available battery capacity is null or negative <br>
-   * - its energy consumption per driven kilometre is null or negative <br>
-   * - its rated power factor is not null and between 0 and 1
+   * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
+   * - its available battery capacity is not null and positive <br>
+   * - its energy consumption per driven kilometre is not null and not negative
    *
    * @param evTypeInput EvTypeInput to validate
    */
   public static void checkEvType(EvTypeInput evTypeInput) {
-    // Check if null
-    checkNonNull(evTypeInput, "a evTypeInput");
-    // Check if any common values of system participants are null or negative
+    // Check common values of system participants
     try {
       checkType(evTypeInput);
     } catch (InvalidEntityException e) {
-      throw new InvalidEntityException("At least one value of evTypeInput is null", evTypeInput);
+      throw new InvalidEntityException("At least one value of the EV type is not valid", evTypeInput);
     }
     // Check if available battery capacity is null
     if (evTypeInput.geteStorage() == null)
       throw new InvalidEntityException(
-          "Available battery capacity of evTypeInput is null", evTypeInput);
+          "Available battery capacity of the EV type is null", evTypeInput);
     // Check if energy consumption per driven kilometre is null
     if (evTypeInput.geteCons() == null)
       throw new InvalidEntityException(
-          "Energy consumption per driven kilometre of evTypeInput is null", evTypeInput);
-    // Check if rated power factor is between 0 and 1
-    if (evTypeInput.getCosPhiRated() < 0d || evTypeInput.getCosPhiRated() > 1d)
-      throw new InvalidEntityException(
-          "Rated power factor of evTypeInput must be between zero and one", evTypeInput);
-    // Check if any values are zero or negative
+          "Energy consumption per driven kilometre of the EV type is null", evTypeInput);
+    // Check for negative quantities
+    detectNegativeQuantities(
+            new Quantity<?>[] {evTypeInput.geteCons()}, evTypeInput);
+    // Check for zero or negative quantities
     detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {evTypeInput.geteStorage(), evTypeInput.geteCons()}, evTypeInput);
-    // TODO @NSteffan: Einschränkung < / <= 0 richtig?
+        new Quantity<?>[] {evTypeInput.geteStorage()}, evTypeInput);
   }
 
   /**
    * Validates a FixedFeedInInput if: <br>
-   * - its rated apparent power is not null or negative <br>
+   * - its rated apparent power is not null and not negative <br>
    * - its rated power factor is between 0 and 1
    *
    * @param fixedFeedInInput FixedFeedInInput to validate
    */
   public static void checkFixedFeedIn(FixedFeedInInput fixedFeedInInput) {
-    // Check if rated apparent power is null or negative
+    // Check if rated apparent power is null
     if (fixedFeedInInput.getsRated() == null)
       throw new InvalidEntityException(
           "Rated apparent power of fixed feed-in unit is null", fixedFeedInInput);
-    detectZeroOrNegativeQuantities(
+    // Check if rated apparent power is negative
+    detectNegativeQuantities(
         new Quantity<?>[] {fixedFeedInInput.getsRated()}, fixedFeedInInput);
-    // TODO NSteffan: Can fixed feed-in sRated be zero/negative?
     // Check if rated power factor is between 0 and 1
     if (fixedFeedInInput.getCosPhiRated() < 0d || fixedFeedInInput.getCosPhiRated() > 1d)
       throw new InvalidEntityException(
-          "Rated power factor of fixed feed-in unit must be between zero and one",
+          "Rated power factor of fixed feed-in unit must be between 0 and 1",
           fixedFeedInInput);
   }
 
   /**
    * Validates a HpInput if: <br>
-   * - its thermal bus is not null - {@link
-   * SystemParticipantValidationUtils#checkHpType(HpTypeInput)} confirms a valid type properties
+   * - its thermal bus is not null
+   * - {@link SystemParticipantValidationUtils#checkHpType(HpTypeInput)} confirms a valid type properties
    *
    * @param hpInput HpInput to validate
    */
   public static void checkHp(HpInput hpInput) {
     // Check if thermal bus is null
     if (hpInput.getThermalBus() == null)
-      throw new InvalidEntityException("Thermal bus of hpInput is null", hpInput);
+      throw new InvalidEntityException("Thermal bus of heat pump is null", hpInput);
     // Check HpType
     checkHpType(hpInput.getType());
   }
 
   /**
    * Validates a HpTypeInput if: <br>
-   * - it is not null <br>
-   * - common system participants values (capex, opex, sRated) are null or negative <br>
-   * - its rated power factor is between 0 and 1 <br>
+   * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
    * - its rated thermal power is not null and positive
    *
    * @param hpTypeInput HpTypeInput to validate
    */
   public static void checkHpType(HpTypeInput hpTypeInput) {
-    // Check if null
-    checkNonNull(hpTypeInput, "a hpTypeInput");
-    // Check if any common values of system participants are null or negative
+    // Check common values of system participants
     try {
       checkType(hpTypeInput);
     } catch (InvalidEntityException e) {
-      throw new InvalidEntityException("At least one value of hpTypeInput is null", hpTypeInput);
+      throw new InvalidEntityException("At least one value of heat pump type is not valid", hpTypeInput);
     }
-    // Check if rated power factor is between 0 and 1
-    if (hpTypeInput.getCosPhiRated() < 0d || hpTypeInput.getCosPhiRated() > 1d)
-      throw new InvalidEntityException(
-          "Rated power factor of hpTypeInput must be between zero and one", hpTypeInput);
-    // Check if rated thermal power is null or negative
+    // Check if rated thermal power is null
+    if (hpTypeInput.getpThermal() == null)
+      throw new InvalidEntityException("Rated thermal power of heat pump is null", hpTypeInput);
+    // Check if rated thermal power is positive
     detectZeroOrNegativeQuantities(new Quantity<?>[] {hpTypeInput.getpThermal()}, hpTypeInput);
-    // TODO @NSteffan: Einschränkung < / <= 0 richtig?
   }
 
   /**
    * Validates a LoadInput if: <br>
    * - its standard load profile is not null <br>
-   * - its rated apparent power is not null and positive <br>
-   * - its annual energy consumption is not null and positive <br>
+   * - its rated apparent power is not null and not negative <br>
+   * - its annual energy consumption is not null and not negative <br>
    * - its rated power factor is between 0 and 1
    *
    * @param loadInput LoadInput to validate
@@ -331,69 +319,65 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   public static void checkLoad(LoadInput loadInput) {
     // Check if standard load profile is null
     if (loadInput.getStandardLoadProfile() == null)
-      throw new InvalidEntityException("No standard load profile defined for loadInput", loadInput);
+      throw new InvalidEntityException("No standard load profile defined for load", loadInput);
     // Check if rated apparent power is null
     if (loadInput.getsRated() == null)
-      throw new InvalidEntityException("Rated apparent power of loadInput is null", loadInput);
+      throw new InvalidEntityException("Rated apparent power of load is null", loadInput);
     // Check if annual energy consumption is null
     if (loadInput.geteConsAnnual() == null)
-      throw new InvalidEntityException("Annual energy consumption of loadInput is null", loadInput);
-    // Check if values are zero or negative
-    detectZeroOrNegativeQuantities(
+      throw new InvalidEntityException("Annual energy consumption of load is null", loadInput);
+    // Check for negative quantities
+    detectNegativeQuantities(
         new Quantity<?>[] {loadInput.getsRated(), loadInput.geteConsAnnual()}, loadInput);
-    // TODO NSteffan: Can sRated be zero/negative/positive?
     // Check if rated power factor is between 0 and 1
     if (loadInput.getCosPhiRated() < 0d || loadInput.getCosPhiRated() > 1d)
       throw new InvalidEntityException(
-          "Rated power factor of loadInput must be between zero and one", loadInput);
+          "Rated power factor of load must be between 0 and 1", loadInput);
   }
 
   /**
    * Validates a PvInput if: <br>
-   * - its rated apparent power is not null and positive <br>
+   * - its rated apparent power is not null and not negative <br>
+   * - its albedo value of the plant's surrounding is between 0 and 1 <br>
    * - its inclination in a compass direction (azimuth) is not null and is between -90° and 90° <br>
    * - its efficiency of the asset's inverter (etaConv) is not null and is between 0% and 100% <br>
    * - its tilted inclination from horizontal (height) is not null and is between 0° and 90° <br>
-   * . its albedo value of the plant's surrounding is between 0 and 1 <br>
    * - its rated power factor is between 0 and 1
    *
    * @param pvInput PvInput to validate
    */
   public static void checkPv(PvInput pvInput) {
-    // Check if any values are null
+    // Check if any quantities are null
     if ((pvInput.getsRated() == null)
         || (pvInput.getAzimuth() == null)
         || (pvInput.getEtaConv() == null)
         || (pvInput.getHeight() == null))
-      throw new InvalidEntityException("at least one value of pvInput is null", pvInput);
-    // Check if rated apparent power is zero or negative
-    detectZeroOrNegativeQuantities(new Quantity<?>[] {pvInput.getsRated()}, pvInput);
-    // TODO NSteffan: Can sRated be zero/negative/positive?
+      throw new InvalidEntityException("At least one value of the PV unit is null", pvInput);
+    // Check if rated apparent power is negative
+    detectNegativeQuantities(new Quantity<?>[] {pvInput.getsRated()}, pvInput);
     // Check if albedo is between 0 and 1
     if (pvInput.getAlbedo() < 0d || pvInput.getAlbedo() > 1d)
       throw new InvalidEntityException(
-          "Albedo of the plant's surrounding of pvInput must be between zero and one", pvInput);
+          "Albedo of the plant's surrounding of the PV unit must be between 0 and 1", pvInput);
     // Check if azimuth angle is between -90° and 90°
     if (pvInput.getAzimuth().getValue().doubleValue() < -90d
         || pvInput.getAzimuth().getValue().doubleValue() > 90d)
       throw new InvalidEntityException(
-          "Azimuth angle of pvInput must be between -90° (east) and 90° (west)", pvInput);
+          "Azimuth angle of the PV unit must be between -90° (east) and 90° (west)", pvInput);
     // Check if efficiency of the assets converter (etaConv) is between 0% and 100%
     if (pvInput.getEtaConv().getValue().doubleValue() < 0d
         || pvInput.getEtaConv().getValue().doubleValue() > 100d)
       throw new InvalidEntityException(
-          "Efficiency of the assets converter of pvInput must be between 0% and 100%", pvInput);
+          "Efficiency of the converter of the PV unit must be between 0% and 100%", pvInput);
     // Check if tilted inclination from horizontal is between 0° and 90°
     if (pvInput.getHeight().getValue().doubleValue() < 0d
         || pvInput.getHeight().getValue().doubleValue() > 90d)
       throw new InvalidEntityException(
-          "Tilted inclination from horizontal of pvInput must be between 0° and 90°", pvInput);
-    // TODO NSteffan: Checks for boundaries for albedo, etaConv, azimuth and height correct?
+          "Tilted inclination from horizontal of the PV unit must be between 0° and 90°", pvInput);
     // Check if rated power factor is between 0 and 1
     if (pvInput.getCosPhiRated() < 0d || pvInput.getCosPhiRated() > 1d)
       throw new InvalidEntityException(
-          "Rated power factor of pvInput must be between zero and one", pvInput);
-    // TODO NSteffan: Keine Einschränkungen für kG, kT -> richtig?
+          "Rated power factor of the PV unit must be between 0 and 1", pvInput);
   }
 
   /**
@@ -410,30 +394,26 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
 
   /**
    * Validates a StorageTypeInput if: <br>
-   * - it is not null <br>
-   * - common system participants values (capex, opex, sRated) are null or negative <br>
-   * - its rated power factor is between 0 and 1 <br>
-   * - its permissible amount of full cycles is positive <br>
+   * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
+   * - its permissible amount of full cycles is not negative <br>
    * - its efficiency of the electrical converter is not null and between 0% and 100% <br>
    * - its maximum permissible depth of discharge is not null and between 0% and 100% <br>
-   * - its active power gradient is not null and positive <br>
-   * - its battery capacity is not null and positive <br>
-   * - its maximum permissible active power (in-feed or consumption) is not null and positive <br>
-   * - its permissible hours of full use is not null and positive
+   * - its active power gradient is not null and not negative <br>
+   * - its battery capacity is not null and not negative <br>
+   * - its maximum permissible active power (in-feed or consumption) is not null and not negative <br>
+   * - its permissible hours of full use is not null and not negative
    *
    * @param storageTypeInput StorageTypeInput to validate
    */
   public static void checkStorageType(StorageTypeInput storageTypeInput) {
-    // Check if null
-    checkNonNull(storageTypeInput, "a storageInput type");
-    // Check if any common values of system participants are null or negative
+    // Check common values of system participants
     try {
       checkType(storageTypeInput);
     } catch (InvalidEntityException e) {
       throw new InvalidEntityException(
-          "At least one value of storageTypeInput is null", storageTypeInput);
+          "At least one value of the storage type is not valid", storageTypeInput);
     }
-    // Check if any values are null
+    // Check if any quantities are null
     if ((storageTypeInput.geteStorage() == null)
         || (storageTypeInput.getpMax() == null)
         || (storageTypeInput.getActivePowerGradient() == null)
@@ -441,37 +421,31 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         || (storageTypeInput.getDod() == null)
         || (storageTypeInput.getLifeTime() == null))
       throw new InvalidEntityException(
-          "at least one value of storageTypeInput is null", storageTypeInput);
-
-    // Check if rated power factor is between 0 and 1
-    if (storageTypeInput.getCosPhiRated() < 0d || storageTypeInput.getCosPhiRated() > 1d)
-      throw new InvalidEntityException(
-          "Rated power factor of storageTypeInput must be between zero and one", storageTypeInput);
+          "At least one value of the storage type is null", storageTypeInput);
     // Check if permissible amount of full cycles is positive
     if (storageTypeInput.getLifeCycle() < 0)
       throw new InvalidEntityException(
-          "Permissible amount of life cycles of storageTypeInput must be positive",
+          "Permissible amount of life cycles of the storage type must be positive",
           storageTypeInput);
     // Check if efficiency of the electrical converter is between 0% and 100%
     if (storageTypeInput.getEta().getValue().doubleValue() < 0d
         || storageTypeInput.getEta().getValue().doubleValue() > 100d)
       throw new InvalidEntityException(
-          "Efficiency of the electrical converter must be between 0% and 100%", storageTypeInput);
+          "Efficiency of the electrical converter of the storage type must be between 0% and 100%", storageTypeInput);
     // Check if maximum permissible depth of discharge is between 0% and 100%
     if (storageTypeInput.getDod().getValue().doubleValue() < 0d
         || storageTypeInput.getDod().getValue().doubleValue() > 100d)
       throw new InvalidEntityException(
-          "Maximum permissible depth of discharge must be between 0% and 100%", storageTypeInput);
-    // Check if eStorage, pMax, activePowerGradient or lifeTime are zero or negative
-    detectZeroOrNegativeQuantities(
+          "Maximum permissible depth of discharge of the storage type must be between 0% and 100%", storageTypeInput);
+    // Check if eStorage, pMax, activePowerGradient or lifeTime are negative
+    detectNegativeQuantities(
         new Quantity<?>[] {
           storageTypeInput.geteStorage(),
           storageTypeInput.getpMax(),
-          storageTypeInput.getActivePowerGradient(), // TODO NSteffan: can be over 100%, correct?
+          storageTypeInput.getActivePowerGradient(),
           storageTypeInput.getLifeTime()
         },
         storageTypeInput);
-    // TODO @NSteffan: Einschränkung < / <= 0 richtig?
   }
 
   /**
@@ -488,43 +462,34 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
 
   /**
    * Validates a WecTypeInput if: <br>
-   * - it is not null <br>
-   * - common system participants values (capex, opex, sRated) are null or negative <br>
-   * - its rated power factor is between 0 and 1 <br>
+   * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
    * - its cpCharacteristic is not null <br>
    * - its efficiency of the assets converter is not null and between 0% and 100% <br>
-   * - its rotor area is not null and positive <br>
-   * - its height of the rotor hub is not null and positive
+   * - its rotor area is not null and not negative <br>
+   * - its height of the rotor hub is not null and not negative
    *
    * @param wecTypeInput WecTypeInput to validate
    */
   public static void checkWecType(WecTypeInput wecTypeInput) {
-    // Check if null
-    checkNonNull(wecTypeInput, "a wecInput type");
-    // Check if any common values of system participants are null or negative
+    // Check common values of system participants
     try {
       checkType(wecTypeInput);
     } catch (InvalidEntityException e) {
-      throw new InvalidEntityException("At least one value of wecTypeInput is null", wecTypeInput);
+      throw new InvalidEntityException("At least one value of the wind energy converter type is not valid", wecTypeInput);
     }
-    // Check if rated power factor is between 0 and 1
-    if (wecTypeInput.getCosPhiRated() < 0d || wecTypeInput.getCosPhiRated() > 1d)
-      throw new InvalidEntityException(
-          "Rated power factor of wecTypeInput must be between zero and one", wecTypeInput);
-    // Check if any values are null
+    // Check if any quantities are null
     if ((wecTypeInput.getCpCharacteristic() == null)
         || (wecTypeInput.getEtaConv() == null)
         || (wecTypeInput.getRotorArea() == null)
         || (wecTypeInput.getHubHeight() == null))
-      throw new InvalidEntityException("at least one value of wecTypeInput is null", wecTypeInput);
-    // TODO NSteffan: Check of CpCharacteristics necessary/how?
+      throw new InvalidEntityException("At least one value of he wind energy converter type is null", wecTypeInput);
     // Check if efficiency of the assets converter is between 0% and 100%
     if (wecTypeInput.getEtaConv().getValue().doubleValue() < 0d
         || wecTypeInput.getEtaConv().getValue().doubleValue() > 100d)
       throw new InvalidEntityException(
-          "Efficiency of the assets converter must be between 0% and 100%", wecTypeInput);
-    // Check if rotorArea or hubHeight are zero or negative
-    detectZeroOrNegativeQuantities(
+          "Efficiency of the assets converter of the wind energy converter type must be between 0% and 100%", wecTypeInput);
+    // Check if rotorArea or hubHeight are negative
+    detectNegativeQuantities(
         new Quantity<?>[] {wecTypeInput.getRotorArea(), wecTypeInput.getHubHeight()}, wecTypeInput);
   }
 }
