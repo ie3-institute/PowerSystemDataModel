@@ -5,13 +5,12 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.connectors.CsvFileConnector
-
 import static edu.ie3.datamodel.models.StandardUnits.IRRADIATION
 import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
 import static edu.ie3.datamodel.models.StandardUnits.WIND_DIRECTION
 import static edu.ie3.datamodel.models.StandardUnits.WIND_VELOCITY
 
+import edu.ie3.datamodel.io.connectors.CsvFileConnector
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
