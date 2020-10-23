@@ -466,9 +466,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * @param <T> Type of the asset type
    * @return The enriched entity data
    */
-  private <T extends AssetTypeInput, C extends ConnectorInput>
-      TypedConnectorInputEntityData<T> addTypeToEntityData(
-          ConnectorInputEntityData untypedEntityData, T assetType) {
+  private <T extends AssetTypeInput> TypedConnectorInputEntityData<T> addTypeToEntityData(
+      ConnectorInputEntityData untypedEntityData, T assetType) {
     Map<String, String> fieldsToAttributes = untypedEntityData.getFieldsToValues();
 
     // remove fields that are passed as objects to constructor

@@ -10,6 +10,7 @@ import static tech.units.indriya.unit.Units.PERCENT;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.util.TimeTools;
 import java.time.ZonedDateTime;
@@ -65,7 +66,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
 
   @Override
   protected SystemParticipantResult buildModel(SimpleEntityData data) {
-    Class<?> entityClass = data.getTargetClass();
+    Class<? extends UniqueEntity> entityClass = data.getTargetClass();
 
     ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);

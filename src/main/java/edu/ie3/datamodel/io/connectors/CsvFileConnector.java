@@ -226,19 +226,19 @@ public class CsvFileConnector implements DataConnector {
    * @return An {@link Optional} to {@link TimeSeriesReadingData}
    */
   private Optional<TimeSeriesReadingData> buildReadingData(String filePathString) {
-    FileNameMetaInformation metaInformation =
-        fileNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
-    if (!IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())) {
-      log.error(
-          "The time series file '{}' does not represent an individual time series.",
-          filePathString);
-      return Optional.empty();
-    }
-
-    IndividualTimeSeriesMetaInformation individualMetaInformation =
-        (IndividualTimeSeriesMetaInformation) metaInformation;
-
     try {
+      FileNameMetaInformation metaInformation =
+          fileNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
+      if (!IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())) {
+        log.error(
+            "The time series file '{}' does not represent an individual time series.",
+            filePathString);
+        return Optional.empty();
+      }
+
+      IndividualTimeSeriesMetaInformation individualMetaInformation =
+          (IndividualTimeSeriesMetaInformation) metaInformation;
+
       BufferedReader reader = initReader(filePathString);
       return Optional.of(
           new TimeSeriesReadingData(
@@ -246,7 +246,11 @@ public class CsvFileConnector implements DataConnector {
               individualMetaInformation.getColumnScheme(),
               reader));
     } catch (FileNotFoundException e) {
-      log.error("Cannot init the writer for time series file path '{}'.", filePathString);
+      log.error("Cannot init the writer for time series file path '{}'.", filePathString, e);
+      return Optional.empty();
+    } catch (IllegalArgumentException e) {
+      log.error(
+          "Error during extraction of meta information from file name '{}'.", filePathString, e);
       return Optional.empty();
     }
   }
@@ -317,5 +321,56 @@ public class CsvFileConnector implements DataConnector {
                 log.error("Error during CsvFileConnector shutdown process.", e);
               }
             });
+  }
+  /** Class to bundle all information, that are necessary to read a single time series */
+  public static class TimeSeriesReadingData {
+    private final UUID uuid;
+    private final ColumnScheme columnScheme;
+    private final BufferedReader reader;
+
+    public TimeSeriesReadingData(UUID uuid, ColumnScheme columnScheme, BufferedReader reader) {
+      this.uuid = uuid;
+      this.columnScheme = columnScheme;
+      this.reader = reader;
+    }
+
+    public UUID getUuid() {
+      return uuid;
+    }
+
+    public ColumnScheme getColumnScheme() {
+      return columnScheme;
+    }
+
+    public BufferedReader getReader() {
+      return reader;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof TimeSeriesReadingData)) return false;
+      TimeSeriesReadingData that = (TimeSeriesReadingData) o;
+      return uuid.equals(that.uuid)
+          && columnScheme == that.columnScheme
+          && reader.equals(that.reader);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(uuid, columnScheme, reader);
+    }
+
+    @Override
+    public String toString() {
+      return "TimeSeriesReadingData{"
+          + "uuid="
+          + uuid
+          + ", columnScheme="
+          + columnScheme
+          + ", reader="
+          + reader
+          + '}';
+    }
   }
 }

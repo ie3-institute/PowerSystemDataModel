@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.connectors.TimeSeriesReadingData;
+import edu.ie3.datamodel.io.connectors.CsvFileConnector.TimeSeriesReadingData;
 import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
@@ -76,6 +76,7 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
    *
    * @return A container with all relevant time series
    */
+  @Override
   public TimeSeriesContainer getTimeSeries() {
     /* Get all time series reader */
     Map<ColumnScheme, Set<TimeSeriesReadingData>> colTypeToReadingData =
@@ -96,39 +97,39 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
 
     /* Reading in energy price time series */
     Set<IndividualTimeSeries<EnergyPriceValue>> energyPriceTimeSeries =
-        readIn(
+        read(
             colTypeToReadingData.get(ColumnScheme.ENERGY_PRICE),
             EnergyPriceValue.class,
             energyPriceFactory);
 
     /* Reading in heat and apparent power time series */
     Set<IndividualTimeSeries<HeatAndSValue>> heatAndApparentPowerTimeSeries =
-        readIn(
+        read(
             colTypeToReadingData.get(ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND),
             HeatAndSValue.class,
             heatAndSValueFactory);
 
     /* Reading in heat time series */
     Set<IndividualTimeSeries<HeatDemandValue>> heatTimeSeries =
-        readIn(
+        read(
             colTypeToReadingData.get(ColumnScheme.HEAT_DEMAND),
             HeatDemandValue.class,
             heatDemandValueFactory);
 
     /* Reading in heat and active power time series */
     Set<IndividualTimeSeries<HeatAndPValue>> heatAndActivePowerTimeSeries =
-        readIn(
+        read(
             colTypeToReadingData.get(ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND),
             HeatAndPValue.class,
             heatAndPValueFactory);
 
     /* Reading in apparent power time series */
     Set<IndividualTimeSeries<SValue>> apparentPowerTimeSeries =
-        readIn(colTypeToReadingData.get(ColumnScheme.APPARENT_POWER), SValue.class, sValueFactory);
+        read(colTypeToReadingData.get(ColumnScheme.APPARENT_POWER), SValue.class, sValueFactory);
 
     /* Reading in active power time series */
     Set<IndividualTimeSeries<PValue>> activePowerTimeSeries =
-        readIn(colTypeToReadingData.get(ColumnScheme.ACTIVE_POWER), PValue.class, pValueFactory);
+        read(colTypeToReadingData.get(ColumnScheme.ACTIVE_POWER), PValue.class, pValueFactory);
 
     return new TimeSeriesContainer(
         weatherTimeSeries,
@@ -150,7 +151,7 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
    * @param <V> Type of the value
    * @return A set of {@link IndividualTimeSeries}
    */
-  private <V extends Value> Set<IndividualTimeSeries<V>> readIn(
+  private <V extends Value> Set<IndividualTimeSeries<V>> read(
       Set<TimeSeriesReadingData> readingData,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {

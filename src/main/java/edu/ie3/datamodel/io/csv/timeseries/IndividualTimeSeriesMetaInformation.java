@@ -10,17 +10,12 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Specific meta information, that can be derived from a individual time series file */
-public class IndividualTimeSeriesMetaInformation implements FileNameMetaInformation {
-  private final UUID uuid;
+public class IndividualTimeSeriesMetaInformation extends FileNameMetaInformation {
   private final ColumnScheme columnScheme;
 
   public IndividualTimeSeriesMetaInformation(UUID uuid, ColumnScheme columnScheme) {
-    this.uuid = uuid;
+    super(uuid);
     this.columnScheme = columnScheme;
-  }
-
-  public UUID getUuid() {
-    return uuid;
   }
 
   public ColumnScheme getColumnScheme() {
@@ -31,12 +26,23 @@ public class IndividualTimeSeriesMetaInformation implements FileNameMetaInformat
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof IndividualTimeSeriesMetaInformation)) return false;
+    if (!super.equals(o)) return false;
     IndividualTimeSeriesMetaInformation that = (IndividualTimeSeriesMetaInformation) o;
-    return uuid.equals(that.uuid) && columnScheme == that.columnScheme;
+    return columnScheme == that.columnScheme;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(uuid, columnScheme);
+    return Objects.hash(super.hashCode(), columnScheme);
+  }
+
+  @Override
+  public String toString() {
+    return "IndividualTimeSeriesMetaInformation{"
+        + "uuid="
+        + getUuid()
+        + ", columnScheme="
+        + columnScheme
+        + '}';
   }
 }

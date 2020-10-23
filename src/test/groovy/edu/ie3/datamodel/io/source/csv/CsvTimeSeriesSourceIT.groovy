@@ -5,12 +5,13 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.connectors.CsvFileConnector
+
 import static edu.ie3.datamodel.models.StandardUnits.IRRADIATION
 import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
 import static edu.ie3.datamodel.models.StandardUnits.WIND_DIRECTION
 import static edu.ie3.datamodel.models.StandardUnits.WIND_VELOCITY
 
-import edu.ie3.datamodel.io.connectors.TimeSeriesReadingData
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
@@ -58,7 +59,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 		def weatherValueFunction = { fieldToValues -> source.buildWeatherValue(fieldToValues) }
 		def tsUuid = UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9")
 		def filePath = new File(this.getClass().getResource( File.separator + "testTimeSeriesFiles" + File.separator + "its_weather_8bc9120d-fb9b-4484-b4e3-0cdadf0feea9.csv").toURI())
-		def readingData = new TimeSeriesReadingData(
+		def readingData = new CsvFileConnector.TimeSeriesReadingData(
 				tsUuid,
 				ColumnScheme.WEATHER,
 				new BufferedReader(
@@ -126,13 +127,13 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 		def filePath1 = new File(this.getClass().getResource( File.separator + "testTimeSeriesFiles" + File.separator + "its_pq_3fbfaa97-cff4-46d4-95ba-a95665e87c26.csv").toURI())
 		def tsUuid1 = UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26")
 		def readingData = [
-			new TimeSeriesReadingData(
+			new CsvFileConnector.TimeSeriesReadingData(
 			tsUuid0,
 			ColumnScheme.APPARENT_POWER,
 			new BufferedReader(
 			new InputStreamReader(new FileInputStream(filePath0), StandardCharsets.UTF_8), 16384)
 			),
-			new TimeSeriesReadingData(
+			new CsvFileConnector.TimeSeriesReadingData(
 			tsUuid1,
 			ColumnScheme.APPARENT_POWER,
 			new BufferedReader(
@@ -142,7 +143,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 		def factory = new TimeBasedSimpleValueFactory<>(SValue)
 
 		when:
-		def actual = source.readIn(readingData, SValue, factory)
+		def actual = source.read(readingData, SValue, factory)
 
 		then:
 		Objects.nonNull(actual)

@@ -87,7 +87,7 @@ class CsvFileConnectorTest extends Specification {
 	def "The csv file connector is able to build correct reading information from valid input"() {
 		given:
 		def pathString = "its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf"
-		def expected = new TimeSeriesReadingData(
+		def expected = new CsvFileConnector.TimeSeriesReadingData(
 				UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf"),
 				ColumnScheme.APPARENT_POWER,
 				Mock(BufferedReader)

@@ -10,17 +10,12 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Specific meta information, that can be derived from a load profile time series file */
-public class LoadProfileTimeSeriesMetaInformation implements FileNameMetaInformation {
-  private final UUID uuid;
+public class LoadProfileTimeSeriesMetaInformation extends FileNameMetaInformation {
   private final String profile;
 
   public LoadProfileTimeSeriesMetaInformation(UUID uuid, String profile) {
-    this.uuid = uuid;
+    super(uuid);
     this.profile = profile;
-  }
-
-  public UUID getUuid() {
-    return uuid;
   }
 
   public String getProfile() {
@@ -31,12 +26,25 @@ public class LoadProfileTimeSeriesMetaInformation implements FileNameMetaInforma
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof LoadProfileTimeSeriesMetaInformation)) return false;
+    if (!super.equals(o)) return false;
     LoadProfileTimeSeriesMetaInformation that = (LoadProfileTimeSeriesMetaInformation) o;
-    return uuid.equals(that.uuid) && profile.equals(that.profile);
+    return profile.equals(that.profile);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(uuid, profile);
+    return Objects.hash(super.hashCode(), profile);
+  }
+
+  @Override
+  public String toString() {
+    return "LoadProfileTimeSeriesMetaInformation{"
+        + "uuid='"
+        + getUuid()
+        + '\''
+        + ", profile='"
+        + profile
+        + '\''
+        + '}';
   }
 }
