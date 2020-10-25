@@ -7,13 +7,12 @@ package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.util.TimeTools;
-import java.time.ZoneId;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.*;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Universal factory class for creating entities with {@link EntityData} data objects.
@@ -36,7 +35,6 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
    */
   public EntityFactory(Class<? extends T>... allowedClasses) {
     this.classes = Arrays.asList(allowedClasses);
-    TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss");
   }
 
   /**

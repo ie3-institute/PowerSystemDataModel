@@ -10,10 +10,12 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.test.helper.FactoryTestHelper
-import edu.ie3.util.TimeTools
+import edu.ie3.util.TimeUtil
 import spock.lang.Specification
 
 class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
+
+	private TimeUtil timeUtil = TimeUtil.withDefaults;
 
 	def "A NodeResultFactory should contain all expected classes for parsing"() {
 		given:
@@ -43,7 +45,7 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
 		((NodeResult) result.get()).with {
 			assert vMag == getQuant(parameter["vmag"], StandardUnits.VOLTAGE_MAGNITUDE)
 			assert vAng == getQuant(parameter["vang"], StandardUnits.VOLTAGE_ANGLE)
-			assert timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+			assert timestamp == timeUtil.toZonedDateTime(parameter["timestamp"])
 			assert inputModel == UUID.fromString(parameter["inputModel"])
 		}
 	}

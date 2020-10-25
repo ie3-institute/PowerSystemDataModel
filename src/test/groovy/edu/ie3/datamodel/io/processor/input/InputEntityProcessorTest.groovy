@@ -25,7 +25,6 @@ import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.TypeTestData
-import edu.ie3.util.TimeTools
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
@@ -41,9 +40,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
  * @since 24.03.20
  */
 class InputEntityProcessorTest extends Specification {
-	static {
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-	}
 
 	def "A InputEntityProcessor should de-serialize a provided NodeInput correctly"() {
 		given:

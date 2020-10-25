@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
-import edu.ie3.util.TimeTools;
+import edu.ie3.util.TimeUtil;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Dimensionless;
@@ -26,6 +26,8 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
   private static final String INDOOR_TEMPERATURE = "indoorTemperature";
   private static final String ENERGY = "energy";
   private static final String FILL_LEVEL = "fillLevel";
+
+  private TimeUtil timeUtil = TimeUtil.withDefaults;
 
   public ThermalResultFactory() {
     super(ThermalHouseResult.class, CylindricalStorageResult.class);
@@ -49,7 +51,7 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
   protected ThermalUnitResult buildModel(SimpleEntityData data) {
     Class<? extends UniqueEntity> clazz = data.getEntityClass();
 
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
+    ZonedDateTime zdtTimestamp = timeUtil.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Power> qDotQuantity = data.getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND);
     Optional<UUID> uuidOpt =

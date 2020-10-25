@@ -5,19 +5,20 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
-import static tech.units.indriya.unit.Units.PERCENT;
-
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.system.*;
-import edu.ie3.util.TimeTools;
-import java.time.ZonedDateTime;
-import java.util.*;
+import edu.ie3.util.TimeUtil;
+import tech.units.indriya.ComparableQuantity;
+
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
-import tech.units.indriya.ComparableQuantity;
+import java.time.ZonedDateTime;
+import java.util.*;
+
+import static tech.units.indriya.unit.Units.PERCENT;
 
 /**
  * Factory class for creating {@link SystemParticipantResult} entities from provided {@link
@@ -29,6 +30,8 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   private static final String REACTIVE_POWER = "q";
   private static final String SOC = "soc";
   private static final String Q_DOT = "qdot";
+
+  private TimeUtil timeUtil = TimeUtil.withDefaults;
 
   public SystemParticipantResultFactory() {
     super(
@@ -68,7 +71,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   protected SystemParticipantResult buildModel(SimpleEntityData data) {
     Class<? extends UniqueEntity> entityClass = data.getEntityClass();
 
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
+    ZonedDateTime zdtTimestamp = timeUtil.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Power> p = data.getQuantity(POWER, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> q =

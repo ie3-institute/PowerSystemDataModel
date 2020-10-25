@@ -5,26 +5,20 @@
  */
 package edu.ie3.datamodel.utils
 
-
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
-import edu.ie3.util.TimeTools
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
-import java.time.ZoneId
 
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ValidationUtilsTest extends Specification {
 
-	static {
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-	}
+
 
 	def "The validation utils should determine if a collection with UniqueEntity's is distinct by their uuid"() {
 
