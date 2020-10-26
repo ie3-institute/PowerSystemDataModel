@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.influxdb
 
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
-import edu.ie3.datamodel.models.timeseries.IndividualTimeSeriesTest
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -57,9 +56,9 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 
 	def "An InfluxDbWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
 		given:
-		def expectedTimeBasedValue = new TimeBasedValue(WeatherTestData.TIME_15h, WeatherTestData.weatherVal_coordinate_193186_15h)
+		def expectedTimeBasedValue = new TimeBasedValue(WeatherTestData.TIME_15H , WeatherTestData.WEATHER_VALUE_193186_15H)
 		when:
-		def optTimeBasedValue = source.getWeather(WeatherTestData.TIME_15h, WeatherTestData.COORDINATE_193186)
+		def optTimeBasedValue = source.getWeather(WeatherTestData.TIME_15H , WeatherTestData.COORDINATE_193186)
 		then:
 		optTimeBasedValue.isPresent()
 		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
@@ -71,15 +70,15 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 			WeatherTestData.COORDINATE_193186,
 			WeatherTestData.COORDINATE_193187
 		]
-		def timeInterval = new ClosedInterval(WeatherTestData.TIME_16h, WeatherTestData.TIME_17h)
+		def timeInterval = new ClosedInterval(WeatherTestData.TIME_16H , WeatherTestData.TIME_17H)
 		def timeseries_193186 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.TIME_16h, WeatherTestData.weatherVal_coordinate_193186_16h),
-					new TimeBasedValue(WeatherTestData.TIME_17h, WeatherTestData.weatherVal_coordinate_193186_17h)]
+						new TimeBasedValue(WeatherTestData.TIME_16H , WeatherTestData.WEATHER_VALUE_193186_16H),
+						new TimeBasedValue(WeatherTestData.TIME_17H , WeatherTestData.WEATHER_VALUE_193186_17H)]
 				as Set<TimeBasedValue>)
 		def timeseries_193187 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.TIME_16h, WeatherTestData.weatherVal_coordinate_193187_16h)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.TIME_16H , WeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
 		then:
@@ -90,19 +89,19 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 
 	def "An InfluxDbWeatherSource can read all weather data in a given time interval"() {
 		given:
-		def timeInterval = new ClosedInterval(WeatherTestData.TIME_15h, WeatherTestData.TIME_17h)
+		def timeInterval = new ClosedInterval(WeatherTestData.TIME_15H , WeatherTestData.TIME_17H)
 		def timeseries_193186 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.TIME_15h,WeatherTestData.weatherVal_coordinate_193186_15h),
-					new TimeBasedValue(WeatherTestData.TIME_16h,WeatherTestData.weatherVal_coordinate_193186_16h),
-					new TimeBasedValue(WeatherTestData.TIME_17h,WeatherTestData.weatherVal_coordinate_193186_17h)] as Set<TimeBasedValue>)
+						new TimeBasedValue(WeatherTestData.TIME_15H ,WeatherTestData.WEATHER_VALUE_193186_15H),
+						new TimeBasedValue(WeatherTestData.TIME_16H ,WeatherTestData.WEATHER_VALUE_193186_16H),
+						new TimeBasedValue(WeatherTestData.TIME_17H ,WeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
 		def timeseries_193187 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.TIME_15h,WeatherTestData.weatherVal_coordinate_193187_15h),
-					new TimeBasedValue(WeatherTestData.TIME_16h,WeatherTestData.weatherVal_coordinate_193187_16h)] as Set<TimeBasedValue>)
+						new TimeBasedValue(WeatherTestData.TIME_15H ,WeatherTestData.WEATHER_VALUE_193187_15H),
+						new TimeBasedValue(WeatherTestData.TIME_16H ,WeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
 		def timeseries_193188 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.TIME_15h,WeatherTestData.weatherVal_coordinate_193188_15h)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.TIME_15H ,WeatherTestData.WEATHER_VALUE_193188_15H)] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
 		then:
@@ -115,14 +114,14 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 	def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to it's ID"() {
 		def validCoordinate = WeatherTestData.COORDINATE_193186
 		def invalidCoordinate = GeoUtils.xyToPoint(48d, 7d)
-		def timestamp = WeatherTestData.TIME_15h
-		def timeInterval = new ClosedInterval(WeatherTestData.TIME_15h, WeatherTestData.TIME_17h)
+		def timestamp = WeatherTestData.TIME_15H
+		def timeInterval = new ClosedInterval(WeatherTestData.TIME_15H , WeatherTestData.TIME_17H)
 		def emptyTimeSeries = new IndividualTimeSeries(UUID.randomUUID(), Collections.emptySet())
 		def timeseries_193186 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.TIME_15h,WeatherTestData.weatherVal_coordinate_193186_15h),
-					new TimeBasedValue(WeatherTestData.TIME_16h,WeatherTestData.weatherVal_coordinate_193186_16h),
-					new TimeBasedValue(WeatherTestData.TIME_17h,WeatherTestData.weatherVal_coordinate_193186_17h)] as Set<TimeBasedValue>)
+						new TimeBasedValue(WeatherTestData.TIME_15H ,WeatherTestData.WEATHER_VALUE_193186_15H),
+						new TimeBasedValue(WeatherTestData.TIME_16H ,WeatherTestData.WEATHER_VALUE_193186_16H),
+						new TimeBasedValue(WeatherTestData.TIME_17H ,WeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
 		when:
 		def coordinateAtDate = source.getWeather(timestamp, invalidCoordinate)
 		def coordinateInInterval = source.getWeather(timeInterval, invalidCoordinate)

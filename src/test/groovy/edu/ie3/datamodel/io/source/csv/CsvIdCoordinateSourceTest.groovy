@@ -86,7 +86,7 @@ class CsvIdCoordinateSourceTest extends Specification implements CsvTestDataMeta
 	def "The CsvIdCoordinateSource is able to return a count of all available coordinates" () {
 		def expectedCount = 3
 		when:
-		def actualCount = source.getCoordinateCount()
+		def actualCount = source.coordinateCount
 		then:
 		actualCount == expectedCount
 	}
@@ -122,7 +122,7 @@ class CsvIdCoordinateSourceTest extends Specification implements CsvTestDataMeta
 
 	def "If no collection is given, the CsvIdCoordinateSource is able to return the nearest n coordinates of all available coordinates" () {
 		def n = 2
-		def allCoordinates = source.getAllCoordinates()
+		def allCoordinates = source.allCoordinates
 		def basePoint = GeoUtils.xyToPoint(48.0365, 14.48661)
 		def expectedDistances = source.getNearestCoordinates(basePoint, n, allCoordinates)
 		when:
