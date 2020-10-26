@@ -211,9 +211,8 @@ public class ValidationUtils {
             .map(Quantity::toString)
             .collect(Collectors.joining(", "));
     if (!malformedQuantities.isEmpty()) {
-      throw new UnsafeEntityException(
+      throw new InvalidEntityException(
           msg + ": " + malformedQuantities, entity);
-      // TODO NSteffan: use InvalidEntityException here?
     }
   }
 

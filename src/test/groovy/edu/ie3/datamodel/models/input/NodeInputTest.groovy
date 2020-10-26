@@ -31,11 +31,6 @@ class NodeInputTest extends Specification {
 			assert subnet == 1
 			assert voltLvl == GermanVoltageLevelUtils.EHV_220KV
 		}
-		//TEST VON NSTEFFAN TODO: Test löschen
-		System.out.println(node.equals(alteredUnit))
-		System.out.println(node.getGeoPosition())
-		System.out.println(node.getVoltLvl())
-		System.out.println(node.getvTarget())
 	}
 
 	/*
