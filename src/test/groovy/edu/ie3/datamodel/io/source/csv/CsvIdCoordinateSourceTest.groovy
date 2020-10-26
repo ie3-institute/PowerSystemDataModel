@@ -47,6 +47,50 @@ class CsvIdCoordinateSourceTest extends Specification implements CsvTestDataMeta
 		actualMap == expectedMap
 	}
 
+	def "The CsvIdCoordinateSource is able to look up a specific point or an empty Optional otherwise" () {
+		def idA = 193186
+		def expectedPointA = Optional.of(GeoUtils.xyToPoint(48.038719, 14.39335))
+		def idB = 42
+		when:
+		def actualPointA = source.getCoordinate(idA)
+		def actualPointB = source.getCoordinate(idB)
+		then:
+		actualPointA == expectedPointA
+		actualPointB == Optional.empty()
+	}
+
+	def "The CsvIdCoordinateSource is able to look up specified points" () {
+		int[] ids = 193187..193192
+		def expectedCoordinates = [
+			GeoUtils.xyToPoint(48.031231, 14.57985),
+			GeoUtils.xyToPoint(48.035011, 14.48661)
+		].toSet()
+		when:
+		def actualCoordinates = source.getCoordinates(ids)
+		then:
+		actualCoordinates == expectedCoordinates
+	}
+
+	def "The CsvIdCoordinateSource is able to return a specific ID or an empty Optional otherwise" () {
+		def pointA = GeoUtils.xyToPoint(48.038719, 14.39335)
+		def expectedIdForA = Optional.of(193186)
+		def pointB = GeoUtils.xyToPoint(48.035011, 14.39335)
+		when:
+		def actualIdForA = source.getId(pointA)
+		def actualIdForB = source.getId(pointB)
+		then:
+		actualIdForA == expectedIdForA
+		actualIdForB == Optional.empty()
+	}
+
+	def "The CsvIdCoordinateSource is able to return a count of all available coordinates" () {
+		def expectedCount = 3
+		when:
+		def actualCount = source.getCoordinateCount()
+		then:
+		actualCount == expectedCount
+	}
+
 	def "The CsvIdCoordinateSource is able to return all available coordinates" () {
 		def expectedCoordinates = [
 			GeoUtils.xyToPoint(48.038719, 14.39335),
@@ -59,7 +103,7 @@ class CsvIdCoordinateSourceTest extends Specification implements CsvTestDataMeta
 		actualCoordinates == expectedCoordinates
 	}
 
-	def "The CsvIdCoordinateSource is able to return the nearest n coordinates to a point" () {
+	def "The CsvIdCoordinateSource is able to return the nearest n coordinates in a collection" () {
 		def allCoordinates = [
 			GeoUtils.xyToPoint(48.038719, 14.39335),
 			GeoUtils.xyToPoint(48.035011, 14.48661),
@@ -72,6 +116,17 @@ class CsvIdCoordinateSourceTest extends Specification implements CsvTestDataMeta
 		].sort()
 		when:
 		def actualDistances = source.getNearestCoordinates(basePoint, 2)
+		then:
+		actualDistances == expectedDistances
+	}
+
+	def "If no collection is given, the CsvIdCoordinateSource is able to return the nearest n coordinates of all available coordinates" () {
+		def n = 2
+		def allCoordinates = source.getAllCoordinates()
+		def basePoint = GeoUtils.xyToPoint(48.0365, 14.48661)
+		def expectedDistances = source.getNearestCoordinates(basePoint, n, allCoordinates)
+		when:
+		def actualDistances = source.getNearestCoordinates(basePoint, n)
 		then:
 		actualDistances == expectedDistances
 	}

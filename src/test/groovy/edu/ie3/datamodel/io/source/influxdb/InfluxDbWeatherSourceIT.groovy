@@ -6,11 +6,13 @@
 package edu.ie3.datamodel.io.source.influxdb
 
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
+import edu.ie3.datamodel.models.timeseries.IndividualTimeSeriesTest
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.WeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
+import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.InfluxDBContainer
@@ -55,60 +57,84 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 
 	def "An InfluxDbWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
 		given:
-		def expectedTimeBasedValue = new TimeBasedValue(WeatherTestData.time_15h, WeatherTestData.weatherVal_coordinate_193186_15h)
+		def expectedTimeBasedValue = new TimeBasedValue(WeatherTestData.TIME_15h, WeatherTestData.weatherVal_coordinate_193186_15h)
 		when:
-		def optTimeBasedValue = source.getWeather(WeatherTestData.time_15h, WeatherTestData.coordinate_193186)
+		def optTimeBasedValue = source.getWeather(WeatherTestData.TIME_15h, WeatherTestData.COORDINATE_193186)
 		then:
 		optTimeBasedValue.isPresent()
 		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
 	}
 
-	def "An InfluxDbWeatherSource can read multiple timeseries values for multiple coordinates"() {
+	def "An InfluxDbWeatherSource can read multiple time series values for multiple coordinates"() {
 		given:
 		def coordinates = [
-			WeatherTestData.coordinate_193186,
-			WeatherTestData.coordinate_193187
+			WeatherTestData.COORDINATE_193186,
+			WeatherTestData.COORDINATE_193187
 		]
-		def timeInterval = new ClosedInterval(WeatherTestData.time_16h, WeatherTestData.time_17h)
+		def timeInterval = new ClosedInterval(WeatherTestData.TIME_16h, WeatherTestData.TIME_17h)
 		def timeseries_193186 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.time_16h, WeatherTestData.weatherVal_coordinate_193186_16h),
-					new TimeBasedValue(WeatherTestData.time_17h, WeatherTestData.weatherVal_coordinate_193186_17h)]
+					new TimeBasedValue(WeatherTestData.TIME_16h, WeatherTestData.weatherVal_coordinate_193186_16h),
+					new TimeBasedValue(WeatherTestData.TIME_17h, WeatherTestData.weatherVal_coordinate_193186_17h)]
 				as Set<TimeBasedValue>)
 		def timeseries_193187 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.time_16h, WeatherTestData.weatherVal_coordinate_193187_16h)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.TIME_16h, WeatherTestData.weatherVal_coordinate_193187_16h)] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
 		then:
 		coordinateToTimeSeries.keySet().size() == 2
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193186), timeseries_193186)
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193187), timeseries_193187)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193186), timeseries_193186)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193187), timeseries_193187)
 	}
-
-
 
 	def "An InfluxDbWeatherSource can read all weather data in a given time interval"() {
 		given:
-		def timeInterval = new ClosedInterval(WeatherTestData.time_15h, WeatherTestData.time_17h)
+		def timeInterval = new ClosedInterval(WeatherTestData.TIME_15h, WeatherTestData.TIME_17h)
 		def timeseries_193186 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.time_15h,WeatherTestData.weatherVal_coordinate_193186_15h),
-					new TimeBasedValue(WeatherTestData.time_16h,WeatherTestData.weatherVal_coordinate_193186_16h),
-					new TimeBasedValue(WeatherTestData.time_17h,WeatherTestData.weatherVal_coordinate_193186_17h)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.TIME_15h,WeatherTestData.weatherVal_coordinate_193186_15h),
+					new TimeBasedValue(WeatherTestData.TIME_16h,WeatherTestData.weatherVal_coordinate_193186_16h),
+					new TimeBasedValue(WeatherTestData.TIME_17h,WeatherTestData.weatherVal_coordinate_193186_17h)] as Set<TimeBasedValue>)
 		def timeseries_193187 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.time_15h,WeatherTestData.weatherVal_coordinate_193187_15h),
-					new TimeBasedValue(WeatherTestData.time_16h,WeatherTestData.weatherVal_coordinate_193187_16h)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.TIME_15h,WeatherTestData.weatherVal_coordinate_193187_15h),
+					new TimeBasedValue(WeatherTestData.TIME_16h,WeatherTestData.weatherVal_coordinate_193187_16h)] as Set<TimeBasedValue>)
 		def timeseries_193188 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.time_15h,WeatherTestData.weatherVal_coordinate_193188_15h)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.TIME_15h,WeatherTestData.weatherVal_coordinate_193188_15h)] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
 		then:
 		coordinateToTimeSeries.keySet().size() == 3
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193186).getEntries(), timeseries_193186.getEntries())
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193187).getEntries(), timeseries_193187.getEntries())
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.coordinate_193188).getEntries(), timeseries_193188.getEntries())
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193186).getEntries(), timeseries_193186.getEntries())
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193187).getEntries(), timeseries_193187.getEntries())
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193188).getEntries(), timeseries_193188.getEntries())
+	}
+
+	def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to it's ID"() {
+		def validCoordinate = WeatherTestData.COORDINATE_193186
+		def invalidCoordinate = GeoUtils.xyToPoint(48d, 7d)
+		def timestamp = WeatherTestData.TIME_15h
+		def timeInterval = new ClosedInterval(WeatherTestData.TIME_15h, WeatherTestData.TIME_17h)
+		def emptyTimeSeries = new IndividualTimeSeries(UUID.randomUUID(), Collections.emptySet())
+		def timeseries_193186 = new IndividualTimeSeries(null,
+				[
+					new TimeBasedValue(WeatherTestData.TIME_15h,WeatherTestData.weatherVal_coordinate_193186_15h),
+					new TimeBasedValue(WeatherTestData.TIME_16h,WeatherTestData.weatherVal_coordinate_193186_16h),
+					new TimeBasedValue(WeatherTestData.TIME_17h,WeatherTestData.weatherVal_coordinate_193186_17h)] as Set<TimeBasedValue>)
+		when:
+		def coordinateAtDate = source.getWeather(timestamp, invalidCoordinate)
+		def coordinateInInterval = source.getWeather(timeInterval, invalidCoordinate)
+		def coordinatesToTimeSeries = source.getWeather(timeInterval, [
+			validCoordinate,
+			invalidCoordinate
+		])
+
+		then:
+		coordinateAtDate == Optional.empty()
+		equalsIgnoreUUID(coordinateInInterval, emptyTimeSeries)
+		coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
+		equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries_193186)
 	}
 }
