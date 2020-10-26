@@ -31,7 +31,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   private static final String SOC = "soc";
   private static final String Q_DOT = "qdot";
 
-  private TimeUtil timeUtil = TimeUtil.withDefaults;
+  private final TimeUtil timeUtil = TimeUtil.withDefaults;
 
   public SystemParticipantResultFactory() {
     super(
