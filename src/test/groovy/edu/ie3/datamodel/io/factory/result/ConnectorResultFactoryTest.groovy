@@ -12,12 +12,9 @@ import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.test.helper.FactoryTestHelper
-import edu.ie3.util.TimeUtil
 import spock.lang.Specification
 
 class ConnectorResultFactoryTest extends Specification implements FactoryTestHelper {
-
-	private final TimeUtil timeUtil = TimeUtil.withDefaults
 
 	def "A ConnectorResultFactory should contain all expected classes for parsing"() {
 		given:

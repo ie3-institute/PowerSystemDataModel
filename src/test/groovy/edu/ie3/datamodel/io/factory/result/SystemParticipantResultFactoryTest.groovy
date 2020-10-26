@@ -10,13 +10,10 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.test.helper.FactoryTestHelper
-import edu.ie3.util.TimeUtil
 import spock.lang.Specification
 import tech.units.indriya.unit.Units
 
 class SystemParticipantResultFactoryTest extends Specification implements FactoryTestHelper {
-
-	private final TimeUtil timeUtil = TimeUtil.withDefaults
 
 	def "A SystemParticipantResultFactory should contain all expected classes for parsing"() {
 		given:
