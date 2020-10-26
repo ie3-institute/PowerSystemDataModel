@@ -73,8 +73,8 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 		def timeInterval = new ClosedInterval(WeatherTestData.TIME_16H , WeatherTestData.TIME_17H)
 		def timeseries_193186 = new IndividualTimeSeries(null,
 				[
-						new TimeBasedValue(WeatherTestData.TIME_16H , WeatherTestData.WEATHER_VALUE_193186_16H),
-						new TimeBasedValue(WeatherTestData.TIME_17H , WeatherTestData.WEATHER_VALUE_193186_17H)]
+					new TimeBasedValue(WeatherTestData.TIME_16H , WeatherTestData.WEATHER_VALUE_193186_16H),
+					new TimeBasedValue(WeatherTestData.TIME_17H , WeatherTestData.WEATHER_VALUE_193186_17H)]
 				as Set<TimeBasedValue>)
 		def timeseries_193187 = new IndividualTimeSeries(null,
 				[
@@ -92,13 +92,13 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 		def timeInterval = new ClosedInterval(WeatherTestData.TIME_15H , WeatherTestData.TIME_17H)
 		def timeseries_193186 = new IndividualTimeSeries(null,
 				[
-						new TimeBasedValue(WeatherTestData.TIME_15H ,WeatherTestData.WEATHER_VALUE_193186_15H),
-						new TimeBasedValue(WeatherTestData.TIME_16H ,WeatherTestData.WEATHER_VALUE_193186_16H),
-						new TimeBasedValue(WeatherTestData.TIME_17H ,WeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.TIME_15H ,WeatherTestData.WEATHER_VALUE_193186_15H),
+					new TimeBasedValue(WeatherTestData.TIME_16H ,WeatherTestData.WEATHER_VALUE_193186_16H),
+					new TimeBasedValue(WeatherTestData.TIME_17H ,WeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
 		def timeseries_193187 = new IndividualTimeSeries(null,
 				[
-						new TimeBasedValue(WeatherTestData.TIME_15H ,WeatherTestData.WEATHER_VALUE_193187_15H),
-						new TimeBasedValue(WeatherTestData.TIME_16H ,WeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.TIME_15H ,WeatherTestData.WEATHER_VALUE_193187_15H),
+					new TimeBasedValue(WeatherTestData.TIME_16H ,WeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
 		def timeseries_193188 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(WeatherTestData.TIME_15H ,WeatherTestData.WEATHER_VALUE_193188_15H)] as Set<TimeBasedValue>)
@@ -119,9 +119,9 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 		def emptyTimeSeries = new IndividualTimeSeries(UUID.randomUUID(), Collections.emptySet())
 		def timeseries_193186 = new IndividualTimeSeries(null,
 				[
-						new TimeBasedValue(WeatherTestData.TIME_15H ,WeatherTestData.WEATHER_VALUE_193186_15H),
-						new TimeBasedValue(WeatherTestData.TIME_16H ,WeatherTestData.WEATHER_VALUE_193186_16H),
-						new TimeBasedValue(WeatherTestData.TIME_17H ,WeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.TIME_15H ,WeatherTestData.WEATHER_VALUE_193186_15H),
+					new TimeBasedValue(WeatherTestData.TIME_16H ,WeatherTestData.WEATHER_VALUE_193186_16H),
+					new TimeBasedValue(WeatherTestData.TIME_17H ,WeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
 		when:
 		def coordinateAtDate = source.getWeather(timestamp, invalidCoordinate)
 		def coordinateInInterval = source.getWeather(timeInterval, invalidCoordinate)
