@@ -11,7 +11,6 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
-import edu.ie3.datamodel.utils.validation.ValidationUtils
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
