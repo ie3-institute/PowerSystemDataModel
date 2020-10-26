@@ -46,7 +46,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 	def setupSpec() {
 		defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
 		coordinateSource = Mock(IdCoordinateSource)
-		coordinateSource.getCoordinate(5) >> defaultCoordinate
+		coordinateSource.getCoordinate(5) >> Optional.of(defaultCoordinate)
 	}
 
 	def setup() {

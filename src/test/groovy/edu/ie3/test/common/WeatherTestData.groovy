@@ -27,7 +27,7 @@ class WeatherTestData {
 				case 193187: return Optional.of(GeoUtils.xyToPoint(49d, 8d))
 				case 193188: return Optional.of(GeoUtils.xyToPoint(50d, 7d))
 			}
-			return null
+			return Optional.empty()
 		}
 		@Override
 		Collection<Point> getCoordinates(int... ids) {

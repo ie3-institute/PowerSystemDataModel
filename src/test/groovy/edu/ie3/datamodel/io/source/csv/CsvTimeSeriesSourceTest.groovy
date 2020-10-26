@@ -49,7 +49,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 		given:
 		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
 		def coordinateSource = Mock(IdCoordinateSource)
-		coordinateSource.getCoordinate(5) >> defaultCoordinate
+		coordinateSource.getCoordinate(5) >> Optional.of(defaultCoordinate)
 		def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
 		def fieldToValues = [
 			"uuid": "71a79f59-eebf-40c1-8358-ba7414077d57",
@@ -137,9 +137,8 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "The csv time series source returns no WeatherValue, if the coordinate cannot be obtained"() {
 		given:
-		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
 		def coordinateSource = Mock(IdCoordinateSource)
-		coordinateSource.getCoordinate(5) >> defaultCoordinate
+		coordinateSource.getCoordinate(6) >> Optional.empty()
 		def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
 		def fieldToValues = [
 			"uuid": "71a79f59-eebf-40c1-8358-ba7414077d57",
