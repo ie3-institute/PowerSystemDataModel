@@ -15,7 +15,7 @@ import spock.lang.Specification
 
 class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
 
-	private TimeUtil timeUtil = TimeUtil.withDefaults;
+	private final TimeUtil timeUtil = TimeUtil.withDefaults
 
 	def "A NodeResultFactory should contain all expected classes for parsing"() {
 		given:

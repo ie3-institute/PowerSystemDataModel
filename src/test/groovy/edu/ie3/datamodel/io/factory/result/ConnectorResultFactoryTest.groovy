@@ -17,7 +17,7 @@ import spock.lang.Specification
 
 class ConnectorResultFactoryTest extends Specification implements FactoryTestHelper {
 
-	private TimeUtil timeUtil = TimeUtil.withDefaults;
+	private final TimeUtil timeUtil = TimeUtil.withDefaults
 
 	def "A ConnectorResultFactory should contain all expected classes for parsing"() {
 		given:

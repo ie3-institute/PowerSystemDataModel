@@ -16,7 +16,7 @@ import tech.units.indriya.unit.Units
 
 class SystemParticipantResultFactoryTest extends Specification implements FactoryTestHelper {
 
-	private TimeUtil timeUtil = TimeUtil.withDefaults;
+	private final TimeUtil timeUtil = TimeUtil.withDefaults
 
 	def "A SystemParticipantResultFactory should contain all expected classes for parsing"() {
 		given:

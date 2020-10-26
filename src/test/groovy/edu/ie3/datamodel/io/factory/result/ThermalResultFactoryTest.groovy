@@ -16,7 +16,7 @@ import tech.units.indriya.quantity.Quantities
 
 class ThermalResultFactoryTest extends Specification {
 
-	private TimeUtil timeUtil = TimeUtil.withDefaults;
+	private final TimeUtil timeUtil = TimeUtil.withDefaults;
 
 	def "A ThermalResultFactory should contain all expected classes for parsing"() {
 		given:
