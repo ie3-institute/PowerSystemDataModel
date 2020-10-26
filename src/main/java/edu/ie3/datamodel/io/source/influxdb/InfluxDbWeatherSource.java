@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.util.StringUtils;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -52,7 +53,8 @@ public class InfluxDbWeatherSource implements WeatherSource {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForInterval(timeInterval);
       QueryResult queryResult = session.query(new Query(query));
-      Stream<Optional<TimeBasedValue>> optValues = optTimeBasedValueStream(queryResult);
+      Stream<Optional<TimeBasedValue<WeatherValue>>> optValues =
+          optTimeBasedValueStream(queryResult);
       Set<TimeBasedValue<WeatherValue>> timeBasedValues =
           filterEmptyOptionals(optValues).collect(Collectors.toSet());
       Map<Point, Set<TimeBasedValue<WeatherValue>>> coordinateToValues =
@@ -82,7 +84,8 @@ public class InfluxDbWeatherSource implements WeatherSource {
           String query =
               createQueryStringForIntervalAndCoordinate(timeInterval, coordinateId.get());
           QueryResult queryResult = session.query(new Query(query));
-          Stream<Optional<TimeBasedValue>> optValues = optTimeBasedValueStream(queryResult);
+          Stream<Optional<TimeBasedValue<WeatherValue>>> optValues =
+              optTimeBasedValueStream(queryResult);
           Set<TimeBasedValue<WeatherValue>> timeBasedValues =
               filterEmptyOptionals(optValues).collect(Collectors.toSet());
           IndividualTimeSeries<WeatherValue> timeSeries =
@@ -110,7 +113,8 @@ public class InfluxDbWeatherSource implements WeatherSource {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinateId.get());
       QueryResult queryResult = session.query(new Query(query));
-      Stream<Optional<TimeBasedValue>> optValues = optTimeBasedValueStream(queryResult);
+      Stream<Optional<TimeBasedValue<WeatherValue>>> optValues =
+          optTimeBasedValueStream(queryResult);
       return new IndividualTimeSeries<>(
           null, filterEmptyOptionals(optValues).collect(Collectors.toSet()));
     }
@@ -134,21 +138,31 @@ public class InfluxDbWeatherSource implements WeatherSource {
    * TimeBasedValue&lt;WeatherValue&gt;, with a present Optional value, if the transformation was
    * successful and an empty optional otherwise.
    */
-  private Stream<Optional<TimeBasedValue>> optTimeBasedValueStream(QueryResult queryResult) {
+  private Stream<Optional<TimeBasedValue<WeatherValue>>> optTimeBasedValueStream(
+      QueryResult queryResult) {
     Map<String, Set<Map<String, String>>> measurementsMap =
         InfluxDbConnector.parseQueryResult(queryResult, MEASUREMENT_NAME_WEATHER);
     return measurementsMap.get(MEASUREMENT_NAME_WEATHER).stream()
         .map(
-            fields -> {
+            fieldToValue -> {
               Optional<Point> coordinate =
                   coordinateSource.getCoordinate(
-                      Integer.parseInt(fields.remove(COORDINATE_ID_COLUMN_NAME)));
+                      Integer.parseInt(fieldToValue.remove(COORDINATE_ID_COLUMN_NAME)));
               if (!coordinate.isPresent()) return null;
-              fields.putIfAbsent("uuid", UUID.randomUUID().toString());
-              return new TimeBasedWeatherValueData(fields, coordinate.get());
+              fieldToValue.putIfAbsent("uuid", UUID.randomUUID().toString());
+
+              /* The factory expects camel case id's for fields -> Convert the keys */
+              Map<String, String> camelCaseFields =
+                  fieldToValue.entrySet().stream()
+                      .collect(
+                          Collectors.toMap(
+                              entry -> StringUtils.snakeCaseToCamelCase(entry.getKey()),
+                              Map.Entry::getValue));
+
+              return new TimeBasedWeatherValueData(camelCaseFields, coordinate.get());
             })
         .filter(Objects::nonNull)
-        .map(weatherValueFactory::getEntity);
+        .map(weatherValueFactory::get);
   }
 
   private String createQueryStringForIntervalAndCoordinate(
@@ -189,7 +203,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
    * @return filtered elements Stream
    */
   protected Stream<TimeBasedValue<WeatherValue>> filterEmptyOptionals(
-      Stream<Optional<TimeBasedValue>> elements) {
+      Stream<Optional<TimeBasedValue<WeatherValue>>> elements) {
     return elements.filter(Optional::isPresent).map(Optional::get).map(TimeBasedValue.class::cast);
   }
 }

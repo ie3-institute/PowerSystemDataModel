@@ -28,7 +28,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 		def expectedClasses = [FixedFeedInInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A FixedFeedInInputFactory should parse a valid FixedFeedInInput correctly"() {
@@ -48,7 +48,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<FixedFeedInInput> input = inputFactory.getEntity(new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
+		Optional<FixedFeedInInput> input = inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
 		then:
 		input.present
@@ -85,7 +85,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 		def nodeInput = Mock(NodeInput)
 
 		when:
-		inputFactory.getEntity(new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
+		inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
 
 		then:
 		FactoryException ex = thrown()

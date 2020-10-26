@@ -40,7 +40,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
     Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
-    final Class<? extends UniqueEntity> entityClass = simpleEntityData.getEntityClass();
+    final Class<? extends UniqueEntity> entityClass = simpleEntityData.getTargetClass();
     if (entityClass.equals(Transformer2WResult.class)) {
       minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, TAPPOS);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
@@ -55,7 +55,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
 
   @Override
   protected ConnectorResult buildModel(SimpleEntityData data) {
-    final Class<? extends UniqueEntity> entityClass = data.getEntityClass();
+    final Class<? extends UniqueEntity> entityClass = data.getTargetClass();
 
     ZonedDateTime timestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModel = data.getUUID(INPUT_MODEL);

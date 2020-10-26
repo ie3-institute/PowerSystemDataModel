@@ -75,8 +75,8 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
         + getOperatorInput().getUuid()
         + ", fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + '}';
   }
 

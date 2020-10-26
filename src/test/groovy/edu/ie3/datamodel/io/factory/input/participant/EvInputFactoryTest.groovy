@@ -26,7 +26,7 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [EvInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A EvInputFactory should parse a valid EvInput correctly"() {
@@ -45,7 +45,7 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(EvTypeInput)
 
 		when:
-		Optional<EvInput> input = inputFactory.getEntity(
+		Optional<EvInput> input = inputFactory.get(
 				new SystemParticipantTypedEntityData<EvTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
 		then:

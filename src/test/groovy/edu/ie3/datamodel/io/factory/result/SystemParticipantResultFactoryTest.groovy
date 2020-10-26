@@ -33,7 +33,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		]
 
 		expect:
-		resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		resultFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A SystemParticipantResultFactory should parse a valid result model correctly"() {
@@ -55,7 +55,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		}
 
 		when:
-		Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, modelClass))
+		Optional<? extends SystemParticipantResult> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
 
 		then:
 		result.present
@@ -102,7 +102,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 			"q":            "2"
 		]
 		when:
-		Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, StorageResult))
+		Optional<? extends SystemParticipantResult> result = resultFactory.get(new SimpleEntityData(parameter, StorageResult))
 
 		then:
 		result.present
@@ -125,7 +125,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 			"q":            "2"
 		]
 		when:
-		resultFactory.getEntity(new SimpleEntityData(parameter, WecResult))
+		resultFactory.get(new SimpleEntityData(parameter, WecResult))
 
 		then:
 		FactoryException ex = thrown()
@@ -151,7 +151,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		expect: "that the factory should not need more than 2 seconds for processing 100.000 entities"
 		Long startTime = System.currentTimeMillis()
 		10000.times {
-			resultFactory.getEntity(new SimpleEntityData(parameter, StorageResult))
+			resultFactory.get(new SimpleEntityData(parameter, StorageResult))
 		}
 		BigDecimal elapsedTime = (System
 				.currentTimeMillis() - startTime) / 1000.0

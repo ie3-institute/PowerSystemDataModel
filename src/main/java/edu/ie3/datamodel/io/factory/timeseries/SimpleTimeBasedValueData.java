@@ -30,10 +30,8 @@ public class SimpleTimeBasedValueData<V extends Value> extends TimeBasedValueDat
     return "SimpleTimeBasedValueData{"
         + "fieldsToAttributes="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
-        + "valueClass="
-        + valueClass
+        + ", targetClass="
+        + getTargetClass()
         + '}';
   }
 }

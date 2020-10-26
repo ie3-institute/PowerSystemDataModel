@@ -26,7 +26,7 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
 		def expectedClasses = [StorageInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A StorageInputFactory should parse a valid StorageInput correctly"() {
@@ -45,7 +45,7 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
 		def typeInput = Mock(StorageTypeInput)
 
 		when:
-		Optional<StorageInput> input = inputFactory.getEntity(
+		Optional<StorageInput> input = inputFactory.get(
 				new SystemParticipantTypedEntityData<StorageTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
 		then:

@@ -27,7 +27,7 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [HpInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A HpInputFactory should parse a valid HpInput correctly"() {
@@ -47,7 +47,7 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
 		def thermalBusInput = Mock(ThermalBusInput)
 
 		when:
-		Optional<HpInput> input = inputFactory.getEntity(
+		Optional<HpInput> input = inputFactory.get(
 				new HpInputEntityData(parameter,operatorInput, nodeInput, typeInput, thermalBusInput))
 
 		then:

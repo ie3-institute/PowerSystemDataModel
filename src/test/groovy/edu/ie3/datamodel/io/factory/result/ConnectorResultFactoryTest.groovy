@@ -24,7 +24,7 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 		]
 
 		expect:
-		resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		resultFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A ConnectorResultFactory should parse a valid result model correctly"() {
@@ -49,7 +49,7 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 		}
 
 		when:
-		Optional<? extends ConnectorResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, modelClass))
+		Optional<? extends ConnectorResult> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
 
 		then:
 		result.present

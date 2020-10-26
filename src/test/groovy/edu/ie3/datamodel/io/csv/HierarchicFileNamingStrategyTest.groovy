@@ -347,7 +347,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def actual = strategy.individualTimeSeriesPattern.pattern()
 
 		then:
-		actual == "participants/time_series/its_(?<columnScheme>[a-zA-Z]{1,7})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+		actual == "participants/time_series/its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 
 	def "A hierarchic file naming strategy returns correct load profile time series file name pattern"() {

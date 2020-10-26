@@ -90,8 +90,8 @@ public class TypedConnectorInputEntityData<T extends AssetTypeInput>
     return "TypedConnectorInputEntityData{"
         + "fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + ", operatorInput="
         + getOperatorInput().getUuid()
         + ", nodeA="

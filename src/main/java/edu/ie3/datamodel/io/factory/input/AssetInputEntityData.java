@@ -68,8 +68,8 @@ public class AssetInputEntityData extends EntityData {
     return "AssetInputEntityData{"
         + "fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + ", operatorInput="
         + operator.getUuid()
         + '}';

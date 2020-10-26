@@ -62,8 +62,8 @@ public class Transformer3WInputEntityData
     return "Transformer3WInputEntityData{"
         + "fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + ", operatorInput="
         + getOperatorInput()
         + ", nodeA="
