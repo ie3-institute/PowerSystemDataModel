@@ -62,7 +62,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		((SystemParticipantResult) result.get()).with {
 			assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
 			assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
-			assert timestamp == timeUtil.toZonedDateTime(parameter["timestamp"])
+			assert timestamp == TIME_UTIL.toZonedDateTime(parameter["timestamp"])
 			assert inputModel == UUID.fromString(parameter["inputModel"])
 		}
 
@@ -110,7 +110,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 			assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
 			assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
 			assert soc == getQuant(parameter["soc"], Units.PERCENT)
-			assert timestamp == timeUtil.toZonedDateTime(parameter["timestamp"])
+			assert timestamp == TIME_UTIL.toZonedDateTime(parameter["timestamp"])
 			assert inputModel == UUID.fromString(parameter["inputModel"])
 		}
 	}

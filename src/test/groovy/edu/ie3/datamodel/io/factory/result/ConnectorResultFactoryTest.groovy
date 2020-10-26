@@ -57,7 +57,7 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 		result.present
 		result.get().getClass() == resultingModelClass
 		((ConnectorResult) result.get()).with {
-			assert timestamp == timeUtil.toZonedDateTime(parameter["timestamp"])
+			assert timestamp == TIME_UTIL.toZonedDateTime(parameter["timestamp"])
 			assert inputModel == UUID.fromString(parameter["inputModel"])
 			assert iAAng == getQuant(parameter["iaang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
 			assert iAMag == getQuant(parameter["iamag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)

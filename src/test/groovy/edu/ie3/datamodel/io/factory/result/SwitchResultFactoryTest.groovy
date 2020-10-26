@@ -40,7 +40,7 @@ class SwitchResultFactoryTest extends Specification implements FactoryTestHelper
 		result.present
 		result.get().getClass() == SwitchResult
 		((SwitchResult) result.get()).with {
-			assert timestamp == TimeUtil.withDefaults.toZonedDateTime(parameter["timestamp"])
+			assert timestamp == TIME_UTIL.toZonedDateTime(parameter["timestamp"])
 			assert inputModel == UUID.fromString(parameter["inputModel"])
 			assert closed == Boolean.parseBoolean(parameter["closed"])
 		}

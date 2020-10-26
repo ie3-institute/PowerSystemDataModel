@@ -13,7 +13,7 @@ import javax.measure.Unit
 
 trait FactoryTestHelper {
 	private static final GeoJsonReader GEOJSON_READER = new GeoJsonReader()
-	private static final TimeUtil TIME_UTIL = TimeUtil.withDefaults
+	static final TimeUtil TIME_UTIL = TimeUtil.withDefaults
 
 	static getQuant(String parameter, Unit unit) {
 		return Quantities.getQuantity(Double.parseDouble(parameter), unit)
@@ -23,7 +23,4 @@ trait FactoryTestHelper {
 		return GEOJSON_READER.read(value)
 	}
 
-	static TimeUtil getTimeUtil() {
-		return TIME_UTIL
-	}
 }
