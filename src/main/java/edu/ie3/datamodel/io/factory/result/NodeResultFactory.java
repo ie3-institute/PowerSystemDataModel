@@ -20,7 +20,7 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
   private static final String VMAG = "vmag";
   private static final String VANG = "vang";
 
-  private TimeUtil timeUtil = TimeUtil.withDefaults;
+  private final TimeUtil timeUtil = TimeUtil.withDefaults;
 
   public NodeResultFactory() {
     super(NodeResult.class);

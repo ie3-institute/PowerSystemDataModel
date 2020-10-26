@@ -30,7 +30,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   private static final String ICMAG = "icmag";
   private static final String ICANG = "icang";
   private static final String TAPPOS = "tappos";
-  private TimeUtil timeUtil = TimeUtil.withDefaults;
+  private final TimeUtil timeUtil = TimeUtil.withDefaults;
 
 
   public ConnectorResultFactory() {

@@ -27,7 +27,7 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
   private static final String ENERGY = "energy";
   private static final String FILL_LEVEL = "fillLevel";
 
-  private TimeUtil timeUtil = TimeUtil.withDefaults;
+  private final TimeUtil timeUtil = TimeUtil.withDefaults;
 
   public ThermalResultFactory() {
     super(ThermalHouseResult.class, CylindricalStorageResult.class);
