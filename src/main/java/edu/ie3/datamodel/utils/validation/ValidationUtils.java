@@ -43,6 +43,7 @@ public class ValidationUtils {
    * @param obj Object to check
    */
   public static void check(Object obj) {
+    checkNonNull(obj, "an object");
     if (AssetInput.class.isAssignableFrom(obj.getClass())) checkAsset((AssetInput) obj);
     else if (GridContainer.class.isAssignableFrom(obj.getClass()))
       GridContainerValidationUtils.check((GridContainer) obj);

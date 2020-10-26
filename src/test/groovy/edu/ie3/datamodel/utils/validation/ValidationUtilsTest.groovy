@@ -5,12 +5,13 @@
  */
 package edu.ie3.datamodel.utils
 
-
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
+import edu.ie3.datamodel.utils.validation.ValidationUtils
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeTools
 import spock.lang.Specification
@@ -86,11 +87,11 @@ class ValidationUtilsTest extends Specification {
 
 	def "The validation utils should thrown an null pointer exception if the provided type is null"() {
 		when:
-		ValidationUtils.checkLineType(null)
+		ValidationUtils.check(null)
 
 		then:
-		NullPointerException ex = thrown()
-		ex.message == "Expected a line type, but got nothing. :-("
+		ValidationException ex = thrown()
+		ex.message == "Expected an object, but got nothing. :-("
 	}
 
 	def "A LineType should throw a NullPointerException if the provided field values are null"() {
