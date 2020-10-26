@@ -49,24 +49,30 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
     return inv;
   }
 
-  public Point getCoordinate(Integer id) {
-    return idToCoordinate.get(id);
+  @Override
+  public Optional<Point> getCoordinate(int id) {
+    return Optional.ofNullable(idToCoordinate.get(id));
   }
 
   @Override
-  public Collection<Point> getCoordinates(Integer... ids) {
-    return Stream.of(ids).map(this::getCoordinate).collect(Collectors.toList());
-  }
-
   public Collection<Point> getCoordinates(int... ids) {
-    return Arrays.stream(ids).mapToObj(this::getCoordinate).collect(Collectors.toSet());
+    return Arrays.stream(ids)
+        .mapToObj(this::getCoordinate)
+        .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+        .collect(Collectors.toSet());
   }
 
-  public Integer getId(Point coordinate) {
-    return coordinateToId.get(coordinate);
+  @Override
+  public Optional<Integer> getId(Point coordinate) {
+    return Optional.ofNullable(coordinateToId.get(coordinate));
   }
 
-  public Integer getCoordinateCount() {
+  @Override
+  public Collection<Point> getAllCoordinates() {
+    return coordinateToId.keySet();
+  }
+
+  public int getCoordinateCount() {
     return idToCoordinate.keySet().size();
   }
 

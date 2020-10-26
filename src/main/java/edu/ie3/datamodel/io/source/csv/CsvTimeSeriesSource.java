@@ -20,7 +20,6 @@ import edu.ie3.datamodel.models.value.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.locationtech.jts.geom.Point;
 
 /** Source that is capable of providing information around time series from csv files. */
 public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSource {
@@ -211,19 +210,23 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
       return Optional.empty();
     }
     int coordinateId = Integer.parseInt(coordinateString);
-    Point coordinate = coordinateSource.getCoordinate(coordinateId);
-    if (Objects.isNull(coordinate)) {
-      log.error("Unable to find coordinate with id '{}'.", coordinateId);
-      return Optional.empty();
-    }
+    return coordinateSource
+        .getCoordinate(coordinateId)
+        .map(
+            coordinate -> {
+              /* Remove coordinate entry from fields */
+              fieldToValues.remove(COORDINATE_FIELD);
 
-    /* Remove coordinate entry from fields */
-    fieldToValues.remove(COORDINATE_FIELD);
-
-    /* Build factory data */
-    TimeBasedWeatherValueData factoryData =
-        new TimeBasedWeatherValueData(fieldToValues, coordinate);
-    return weatherFactory.get(factoryData);
+              /* Build factory data */
+              TimeBasedWeatherValueData factoryData =
+                  new TimeBasedWeatherValueData(fieldToValues, coordinate);
+              return weatherFactory.get(factoryData);
+            })
+        .orElseGet(
+            () -> {
+              log.error("Unable to find coordinate with id '{}'.", coordinateId);
+              return Optional.empty();
+            });
   }
 
   /**

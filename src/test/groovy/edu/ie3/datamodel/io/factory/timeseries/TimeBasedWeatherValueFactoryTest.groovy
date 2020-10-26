@@ -18,7 +18,7 @@ class TimeBasedWeatherValueFactoryTest extends Specification {
 	def "A TimeBasedWeatherValueFactory should be able to create time series with missing values"() {
 		given:
 		def factory = new TimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
-		def coordinate = WeatherTestData.coordinate_193186
+		def coordinate = WeatherTestData.COORDINATE_193186
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
 
 		Map<String, String> parameter = [
@@ -51,7 +51,7 @@ class TimeBasedWeatherValueFactoryTest extends Specification {
 	def "A TimeBasedWeatherValueFactory should be able to create time series values"() {
 		given:
 		def factory = new TimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
-		def coordinate = WeatherTestData.coordinate_193186
+		def coordinate = WeatherTestData.COORDINATE_193186
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
 
 		Map<String, String> parameter = [
