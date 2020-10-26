@@ -21,24 +21,24 @@ class WeatherTestData {
 
 	private static final class DummyIdCoordinateSource implements IdCoordinateSource {
 		@Override
-		Point getCoordinate(Integer id) {
+		Optional<Point> getCoordinate(int id) {
 			switch (id) {
-				case 193186: return GeoUtils.xyToPoint(49d, 7d)
-				case 193187: return GeoUtils.xyToPoint(49d, 8d)
-				case 193188: return GeoUtils.xyToPoint(50d, 7d)
+				case 193186: return Optional.of(GeoUtils.xyToPoint(49d, 7d))
+				case 193187: return Optional.of(GeoUtils.xyToPoint(49d, 8d))
+				case 193188: return Optional.of(GeoUtils.xyToPoint(50d, 7d))
 			}
 			return null
 		}
 		@Override
-		Collection<Point> getCoordinates(Integer... ids) {
+		Collection<Point> getCoordinates(int... ids) {
 			return Stream.of(ids).map(this.&getCoordinate).filter({ c -> c != null }).collect(Collectors.toSet())
 		}
 		@Override
-		Integer getId(Point coordinate) {
-			if(coordinate.x == 49 && coordinate.y == 7) return 193186
-			if(coordinate.x == 49 && coordinate.y == 8) return 193187
-			if(coordinate.x == 50 && coordinate.y == 7) return 193188
-			return null
+		Optional<Integer> getId(Point coordinate) {
+			if(coordinate.x == 49 && coordinate.y == 7) return Optional.of(193186)
+			if(coordinate.x == 49 && coordinate.y == 8) return Optional.of(193187)
+			if(coordinate.x == 50 && coordinate.y == 7) return Optional.of(193188)
+			return Optional.empty()
 		}
 
 		@Override
@@ -53,9 +53,9 @@ class WeatherTestData {
 
 	public static final IdCoordinateSource coordinateSource = new DummyIdCoordinateSource()
 
-	public static final coordinate_193186 = coordinateSource.getCoordinate(193186)
-	public static final coordinate_193187 = coordinateSource.getCoordinate(193187)
-	public static final coordinate_193188 = coordinateSource.getCoordinate(193188)
+	public static final coordinate_193186 = coordinateSource.getCoordinate(193186).get()
+	public static final coordinate_193187 = coordinateSource.getCoordinate(193187).get()
+	public static final coordinate_193188 = coordinateSource.getCoordinate(193188).get()
 
 	public static final ZonedDateTime time_15h = ZonedDateTime.of(2020, 04, 28, 15, 0, 0, 0, ZoneId.of("UTC"))
 	public static final ZonedDateTime time_16h = ZonedDateTime.of(2020, 04, 28, 16, 0, 0, 0, ZoneId.of("UTC"))
