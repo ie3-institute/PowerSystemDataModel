@@ -52,6 +52,9 @@ public class DefaultInputHierarchy implements FileHierarchy {
   /** Base directory for this specific grid model. The base path should be a directory. */
   private final Path baseDirectory;
 
+  /** The project's directory beneath the {@code baseDirectory} */
+  private final Path projectDirectory;
+
   /** Mapping from sub directories to if they are mandatory or not */
   private final Map<Path, Boolean> subDirectories;
 
@@ -59,7 +62,8 @@ public class DefaultInputHierarchy implements FileHierarchy {
     /* Prepare the base path */
     String baseDirectoryNormalized =
         FilenameUtils.normalizeNoEndSeparator(baseDirectory, true) + FILE_SEPARATOR;
-    this.baseDirectory =
+    this.baseDirectory = Paths.get(baseDirectoryNormalized).toAbsolutePath();
+    this.projectDirectory =
         Paths.get(
                 baseDirectoryNormalized
                     + FilenameUtils.normalizeNoEndSeparator(gridName, true)
@@ -74,7 +78,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
                     subDirectory ->
                         Paths.get(
                             FilenameUtils.concat(
-                                this.baseDirectory.toString(), subDirectory.getRelPath())),
+                                this.projectDirectory.toString(), subDirectory.getRelPath())),
                     SubDirectories::isMandatory));
   }
 
@@ -84,10 +88,10 @@ public class DefaultInputHierarchy implements FileHierarchy {
    * @throws FileException if not
    */
   public void validate() throws FileException {
-    if (!Files.exists(baseDirectory))
-      throw new FileException("The path '" + baseDirectory + "' does not exist.");
-    if (!Files.isDirectory(baseDirectory))
-      throw new FileException("The path '" + baseDirectory + "' has to be a directory.");
+    if (!Files.exists(projectDirectory))
+      throw new FileException("The path '" + projectDirectory + "' does not exist.");
+    if (!Files.isDirectory(projectDirectory))
+      throw new FileException("The path '" + projectDirectory + "' has to be a directory.");
 
     checkExpectedDirectories();
     checkFurtherDirectoryElements();
@@ -127,7 +131,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
    * @throws FileException if there is an unexpected directory
    */
   private void checkFurtherDirectoryElements() throws FileException {
-    try (Stream<Path> apparentElementsStream = Files.list(baseDirectory)) {
+    try (Stream<Path> apparentElementsStream = Files.list(projectDirectory)) {
       for (Path apparentPath : apparentElementsStream.collect(Collectors.toList())) {
         if (Files.isDirectory(apparentPath) && !subDirectories.containsKey(apparentPath))
           throw new FileException(
@@ -137,7 +141,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
       }
     } catch (IOException e) {
       throw new FileException(
-          "Cannot get the list of apparent elements in '" + baseDirectory + "'.", e);
+          "Cannot get the list of apparent elements in '" + projectDirectory + "'.", e);
     }
   }
 
@@ -158,7 +162,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
    * @throws IOException If the creation of sub directories is not possible
    */
   public void createDirs(boolean withOptionals) throws IOException {
-    Files.createDirectories(baseDirectory);
+    Files.createDirectories(projectDirectory);
     for (Map.Entry<Path, Boolean> entry : subDirectories.entrySet()) {
       Path directoryPath = entry.getKey();
       boolean isMandatory = entry.getValue();
@@ -191,7 +195,14 @@ public class DefaultInputHierarchy implements FileHierarchy {
       logger.debug("Don't know a fitting sub directory for class '{}'.", cls.getSimpleName());
       return Optional.empty();
     } else {
-      return Optional.of(maybeSubDirectory.get().getRelPath());
+      /* Build the full path and then refer it to the base directory */
+      Path fullPath =
+          Paths.get(
+              FilenameUtils.concat(
+                  this.projectDirectory.toString(), maybeSubDirectory.get().getRelPath()));
+      String relPath = this.baseDirectory.relativize(fullPath).toString();
+
+      return Optional.of(relPath);
     }
   }
 
