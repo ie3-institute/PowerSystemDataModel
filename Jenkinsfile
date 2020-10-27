@@ -53,6 +53,11 @@ node {
             String currentBranchName = prJsonObj == null ? env.BRANCH_NAME : prJsonObj.head.ref
             String targetBranchName = prJsonObj == null ? null : prJsonObj.base.ref
 
+            println(prJsonObj)
+            println(env.CHANGE_FORK)
+            println("\n")
+            sh 'env'
+
             // notify rocket chat
             notifyRocketChat(rocketChatChannel, ':jenkins_triggered:', buildStartMsg(currentBranchName, targetBranchName, projectName))
 
