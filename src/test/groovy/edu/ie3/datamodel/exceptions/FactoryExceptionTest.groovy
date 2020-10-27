@@ -18,4 +18,9 @@ class FactoryExceptionTest extends Specification {
 		expect:
 		new FactoryException(new NullPointerException())
 	}
+
+	def "blafo"(){
+		expect:
+		println("test")
+	}
 }
