@@ -40,6 +40,7 @@ public class BufferedCsvWriter extends BufferedWriter {
             StandardCharsets.UTF_8));
     this.fileDefinition = fileDefinition;
     if (writeHeader) writeFileHeader(fileDefinition.headLineElements);
+    System.out.println("RemoveMe"); // todo remove
   }
 
   /**
