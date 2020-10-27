@@ -38,9 +38,9 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
     Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, Q_DOT);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
-    if (simpleEntityData.getEntityClass().equals(ThermalHouseResult.class)) {
+    if (simpleEntityData.getTargetClass().equals(ThermalHouseResult.class)) {
       minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, Q_DOT, INDOOR_TEMPERATURE);
-    } else if (simpleEntityData.getEntityClass().equals(CylindricalStorageResult.class)) {
+    } else if (simpleEntityData.getTargetClass().equals(CylindricalStorageResult.class)) {
       minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, Q_DOT, ENERGY, FILL_LEVEL);
     }
 
@@ -49,7 +49,7 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
 
   @Override
   protected ThermalUnitResult buildModel(SimpleEntityData data) {
-    Class<? extends UniqueEntity> clazz = data.getEntityClass();
+    Class<? extends UniqueEntity> clazz = data.getTargetClass();
 
     ZonedDateTime zdtTimestamp = timeUtil.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);

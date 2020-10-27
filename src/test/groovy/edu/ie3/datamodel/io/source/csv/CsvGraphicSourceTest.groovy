@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData
-import edu.ie3.datamodel.io.source.RawGridSource
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
@@ -15,8 +14,6 @@ import edu.ie3.test.common.GridTestData as gtd
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
 import spock.lang.Specification
-
-import java.util.stream.Collectors
 
 class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 

@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.io.csv
 
+import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -138,17 +141,6 @@ class FileNamingStrategyTest extends Specification {
 		ex.message == "Cannot extract meta information on load profile time series from 'foo'."
 	}
 
-	def "An unknown column scheme gets not parsed"() {
-		given:
-		def invalidColumnScheme = "what's this"
-
-		when:
-		def actual = FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.parse(invalidColumnScheme)
-
-		then:
-		!actual.present
-	}
-
 	def "The FileNamingStrategy extracts correct meta information from a valid individual time series file name"() {
 		given:
 		def fns = new FileNamingStrategy()
@@ -158,21 +150,21 @@ class FileNamingStrategyTest extends Specification {
 		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
 
 		then:
-		FileNamingStrategy.IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
-		(metaInformation as FileNamingStrategy.IndividualTimeSeriesMetaInformation).with {
+		IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as IndividualTimeSeriesMetaInformation).with {
 			assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
 			assert it.columnScheme == expectedColumnScheme
 		}
 
 		where:
 		pathString || expectedColumnScheme
-		"/bla/foo/its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ENERGY_PRICE
-		"/bla/foo/its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ACTIVE_POWER
-		"/bla/foo/its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.APPARENT_POWER
-		"/bla/foo/its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.HEAT_DEMAND
-		"/bla/foo/its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
-		"/bla/foo/its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
-		"/bla/foo/its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.WEATHER
+		"/bla/foo/its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.ENERGY_PRICE
+		"/bla/foo/its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.ACTIVE_POWER
+		"/bla/foo/its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.APPARENT_POWER
+		"/bla/foo/its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.HEAT_DEMAND
+		"/bla/foo/its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
+		"/bla/foo/its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
+		"/bla/foo/its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.WEATHER
 	}
 
 	def "The FileNamingStrategy extracts correct meta information from a valid individual time series file name with pre- and suffix"() {
@@ -184,21 +176,21 @@ class FileNamingStrategyTest extends Specification {
 		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
 
 		then:
-		FileNamingStrategy.IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
-		(metaInformation as FileNamingStrategy.IndividualTimeSeriesMetaInformation).with {
+		IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as IndividualTimeSeriesMetaInformation).with {
 			assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
 			assert it.columnScheme == expectedColumnScheme
 		}
 
 		where:
 		pathString || expectedColumnScheme
-		"/bla/foo/prefix_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ENERGY_PRICE
-		"/bla/foo/prefix_its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ACTIVE_POWER
-		"/bla/foo/prefix_its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.APPARENT_POWER
-		"/bla/foo/prefix_its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.HEAT_DEMAND
-		"/bla/foo/prefix_its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
-		"/bla/foo/prefix_its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
-		"/bla/foo/prefix_its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || FileNamingStrategy.IndividualTimeSeriesMetaInformation.ColumnScheme.WEATHER
+		"/bla/foo/prefix_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.ENERGY_PRICE
+		"/bla/foo/prefix_its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.ACTIVE_POWER
+		"/bla/foo/prefix_its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.APPARENT_POWER
+		"/bla/foo/prefix_its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.HEAT_DEMAND
+		"/bla/foo/prefix_its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
+		"/bla/foo/prefix_its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
+		"/bla/foo/prefix_its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.WEATHER
 	}
 
 	def "The FileNamingStrategy throw an IllegalArgumentException, if the column scheme is malformed."() {
@@ -223,8 +215,8 @@ class FileNamingStrategyTest extends Specification {
 		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
 
 		then:
-		FileNamingStrategy.LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
-		(metaInformation as FileNamingStrategy.LoadProfileTimeSeriesMetaInformation).with {
+		LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as LoadProfileTimeSeriesMetaInformation).with {
 			assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
 			assert profile == "g3"
 		}
@@ -239,8 +231,8 @@ class FileNamingStrategyTest extends Specification {
 		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
 
 		then:
-		FileNamingStrategy.LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
-		(metaInformation as FileNamingStrategy.LoadProfileTimeSeriesMetaInformation).with {
+		LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as LoadProfileTimeSeriesMetaInformation).with {
 			assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
 			assert profile == "g3"
 		}

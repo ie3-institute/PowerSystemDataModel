@@ -35,7 +35,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 		]
 
 		expect:
-		typeInputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		typeInputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A SystemParticipantTypeInputFactory should parse a valid EvTypeInput correctly"() {
@@ -55,7 +55,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 		def typeInputClass = EvTypeInput
 
 		when:
-		Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
+		Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
 		then:
 		typeInput.present
@@ -90,7 +90,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 		def typeInputClass = HpTypeInput
 
 		when:
-		Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
+		Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
 		then:
 		typeInput.present
@@ -124,7 +124,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 		def typeInputClass = BmTypeInput
 
 		when:
-		Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
+		Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
 		then:
 		typeInput.present
@@ -162,7 +162,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 		def typeInputClass = WecTypeInput
 
 		when:
-		Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
+		Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
 		then:
 		typeInput.present
@@ -209,7 +209,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 		def typeInputClass = ChpTypeInput
 
 		when:
-		Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
+		Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
 		then:
 		typeInput.present
@@ -252,7 +252,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 		def typeInputClass = StorageTypeInput
 
 		when:
-		Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
+		Optional<? extends SystemParticipantTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
 		then:
 		typeInput.present
@@ -295,7 +295,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 		]
 
 		when:
-		typeInputFactory.getEntity(new SimpleEntityData(parameter, StorageTypeInput))
+		typeInputFactory.get(new SimpleEntityData(parameter, StorageTypeInput))
 
 		then:
 		FactoryException ex = thrown()

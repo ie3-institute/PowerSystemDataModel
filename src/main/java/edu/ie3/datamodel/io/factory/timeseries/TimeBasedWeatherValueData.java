@@ -58,10 +58,8 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
     return "TimeBasedWeatherValueData{"
         + "fieldsToAttributes="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
-        + "valueClass="
-        + valueClass
+        + ", targetClass="
+        + getTargetClass()
         + ", coordinate="
         + coordinate
         + '}';

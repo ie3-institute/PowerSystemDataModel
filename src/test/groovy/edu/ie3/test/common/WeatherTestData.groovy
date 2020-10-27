@@ -21,71 +21,86 @@ class WeatherTestData {
 
 	private static final class DummyIdCoordinateSource implements IdCoordinateSource {
 		@Override
-		Point getCoordinate(Integer id) {
+		Optional<Point> getCoordinate(int id) {
 			switch (id) {
-				case 193186: return GeoUtils.xyToPoint(49d, 7d)
-				case 193187: return GeoUtils.xyToPoint(49d, 8d)
-				case 193188: return GeoUtils.xyToPoint(50d, 7d)
+				case 193186: return Optional.of(GeoUtils.xyToPoint(49d, 7d))
+				case 193187: return Optional.of(GeoUtils.xyToPoint(49d, 8d))
+				case 193188: return Optional.of(GeoUtils.xyToPoint(50d, 7d))
 			}
-			return null
+			return Optional.empty()
 		}
 		@Override
-		Collection<Point> getCoordinates(Integer... ids) {
+		Collection<Point> getCoordinates(int... ids) {
 			return Stream.of(ids).map(this.&getCoordinate).filter({ c -> c != null }).collect(Collectors.toSet())
 		}
 		@Override
-		Integer getId(Point coordinate) {
-			if(coordinate.x == 49 && coordinate.y == 7) return 193186
-			if(coordinate.x == 49 && coordinate.y == 8) return 193187
-			if(coordinate.x == 50 && coordinate.y == 7) return 193188
-			return null
+		Optional<Integer> getId(Point coordinate) {
+			if (coordinate.x == 49 && coordinate.y == 7) {
+				return Optional.of(193186)
+			}
+			if (coordinate.x == 49 && coordinate.y == 8) {
+				return Optional.of(193187)
+			}
+			if (coordinate.x == 50 && coordinate.y == 7) {
+				return Optional.of(193188)
+			}
+			return Optional.empty()
+		}
+
+		@Override
+		Collection<Point> getAllCoordinates() {
+			return [
+				GeoUtils.xyToPoint(49d, 7d),
+				GeoUtils.xyToPoint(49d, 8d),
+				GeoUtils.xyToPoint(50d, 7d)
+			]
 		}
 	}
 
 	public static final IdCoordinateSource coordinateSource = new DummyIdCoordinateSource()
 
-	public static final coordinate_193186 = coordinateSource.getCoordinate(193186)
-	public static final coordinate_193187 = coordinateSource.getCoordinate(193187)
-	public static final coordinate_193188 = coordinateSource.getCoordinate(193188)
+	public static final COORDINATE_193186 = coordinateSource.getCoordinate(193186).get()
+	public static final COORDINATE_193187 = coordinateSource.getCoordinate(193187).get()
+	public static final COORDINATE_193188 = coordinateSource.getCoordinate(193188).get()
 
-	public static final ZonedDateTime time_15h = ZonedDateTime.of(2020, 04, 28, 15, 0, 0, 0, ZoneId.of("UTC"))
-	public static final ZonedDateTime time_16h = ZonedDateTime.of(2020, 04, 28, 16, 0, 0, 0, ZoneId.of("UTC"))
-	public static final ZonedDateTime time_17h = ZonedDateTime.of(2020, 04, 28, 17, 0, 0, 0, ZoneId.of("UTC"))
+	public static final ZonedDateTime TIME_15H = ZonedDateTime.of(2020, 04, 28, 15, 0, 0, 0, ZoneId.of("UTC"))
+	public static final ZonedDateTime TIME_16H = ZonedDateTime.of(2020, 04, 28, 16, 0, 0, 0, ZoneId.of("UTC"))
+	public static final ZonedDateTime TIME_17H = ZonedDateTime.of(2020, 04, 28, 17, 0, 0, 0, ZoneId.of("UTC"))
 
 
-	public static final WeatherValue weatherVal_coordinate_193186_15h = new WeatherValue(coordinate_193186,
+	public static final WeatherValue WEATHER_VALUE_193186_15H = new WeatherValue(COORDINATE_193186,
 	Quantities.getQuantity(282.671997070312d, StandardUnits.IRRADIATION),
 	Quantities.getQuantity(286.872985839844d, StandardUnits.IRRADIATION),
 	Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
 	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
 	Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY))
-	public static final WeatherValue weatherVal_coordinate_193186_16h = new WeatherValue(coordinate_193186,
+	public static final WeatherValue WEATHER_VALUE_193186_16H = new WeatherValue(COORDINATE_193186,
 	Quantities.getQuantity(282.672d, StandardUnits.IRRADIATION),
 	Quantities.getQuantity(286.872d, StandardUnits.IRRADIATION),
 	Quantities.getQuantity(278.012d, StandardUnits.TEMPERATURE),
 	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
 	Quantities.getQuantity(1.662d, StandardUnits.WIND_VELOCITY))
-	public static final WeatherValue  weatherVal_coordinate_193186_17h = new WeatherValue(coordinate_193186,
+	public static final WeatherValue WEATHER_VALUE_193186_17H = new WeatherValue(COORDINATE_193186,
 	Quantities.getQuantity(282.673d, StandardUnits.IRRADIATION),
 	Quantities.getQuantity(286.873d, StandardUnits.IRRADIATION),
 	Quantities.getQuantity(278.013d, StandardUnits.TEMPERATURE),
 	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
 	Quantities.getQuantity(1.663d, StandardUnits.WIND_VELOCITY))
 
-	public static final WeatherValue  weatherVal_coordinate_193187_15h = new WeatherValue(coordinate_193187,
+	public static final WeatherValue WEATHER_VALUE_193187_15H = new WeatherValue(COORDINATE_193187,
 	Quantities.getQuantity(283.671997070312d, StandardUnits.IRRADIATION),
 	Quantities.getQuantity(287.872985839844d, StandardUnits.IRRADIATION),
 	Quantities.getQuantity(279.019012451172d, StandardUnits.TEMPERATURE),
 	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
 	Quantities.getQuantity(1.76103506088257d, StandardUnits.WIND_VELOCITY))
-	public static final WeatherValue  weatherVal_coordinate_193187_16h = new WeatherValue(coordinate_193187,
+	public static final WeatherValue WEATHER_VALUE_193187_16H = new WeatherValue(COORDINATE_193187,
 	Quantities.getQuantity(283.672d, StandardUnits.IRRADIATION),
 	Quantities.getQuantity(287.872d, StandardUnits.IRRADIATION),
 	Quantities.getQuantity(279.012d, StandardUnits.TEMPERATURE),
 	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
 	Quantities.getQuantity(1.762d, StandardUnits.WIND_VELOCITY))
 
-	public static final WeatherValue  weatherVal_coordinate_193188_15h = new WeatherValue(coordinate_193188,
+	public static final WeatherValue WEATHER_VALUE_193188_15H = new WeatherValue(COORDINATE_193188,
 	Quantities.getQuantity(284.671997070312d, StandardUnits.IRRADIATION),
 	Quantities.getQuantity(288.872985839844d, StandardUnits.IRRADIATION),
 	Quantities.getQuantity(280.019012451172d, StandardUnits.TEMPERATURE),

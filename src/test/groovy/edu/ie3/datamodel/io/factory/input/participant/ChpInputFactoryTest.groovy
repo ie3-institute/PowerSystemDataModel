@@ -28,7 +28,7 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [ChpInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A ChpInputFactory should parse a valid ChpInput correctly"() {
@@ -50,7 +50,7 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
 		def thermalStorageInput = Mock(ThermalStorageInput)
 
 		when:
-		Optional<ChpInput> input = inputFactory.getEntity(
+		Optional<ChpInput> input = inputFactory.get(
 				new ChpInputEntityData(parameter, operatorInput, nodeInput, typeInput, thermalBusInput, thermalStorageInput))
 
 		then:

@@ -27,7 +27,7 @@ class ThermalResultFactoryTest extends Specification {
 		]
 
 		expect:
-		resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		resultFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A ThermalResultFactory should parse a CylindricalStorageResult correctly"() {
@@ -41,7 +41,7 @@ class ThermalResultFactoryTest extends Specification {
 			"fillLevel":    "20"
 		]
 		when:
-		Optional<? extends ThermalUnitResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, CylindricalStorageResult))
+		Optional<? extends ThermalUnitResult> result = resultFactory.get(new SimpleEntityData(parameter, CylindricalStorageResult))
 
 		then:
 		result.present
@@ -65,7 +65,7 @@ class ThermalResultFactoryTest extends Specification {
 			"indoorTemperature":    "21"
 		]
 		when:
-		Optional<? extends ThermalUnitResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, ThermalHouseResult))
+		Optional<? extends ThermalUnitResult> result = resultFactory.get(new SimpleEntityData(parameter, ThermalHouseResult))
 
 		then:
 		result.present

@@ -26,7 +26,7 @@ class WecInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [WecInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A WecInputFactory should parse a valid WecInput correctly"() {
@@ -46,7 +46,7 @@ class WecInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(WecTypeInput)
 
 		when:
-		Optional<WecInput> input = inputFactory.getEntity(
+		Optional<WecInput> input = inputFactory.get(
 				new SystemParticipantTypedEntityData<WecTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
 		then:

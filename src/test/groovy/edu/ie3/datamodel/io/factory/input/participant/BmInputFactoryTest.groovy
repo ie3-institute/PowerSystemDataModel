@@ -27,7 +27,7 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [BmInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A BmInputFactory should parse a valid BmInput correctly"() {
@@ -49,7 +49,7 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(BmTypeInput)
 
 		when:
-		Optional<BmInput> input = inputFactory.getEntity(
+		Optional<BmInput> input = inputFactory.get(
 				new SystemParticipantTypedEntityData<BmTypeInput>(parameter, inputClass,operatorInput, nodeInput, typeInput))
 
 		then:

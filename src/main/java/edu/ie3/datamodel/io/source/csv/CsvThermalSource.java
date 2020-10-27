@@ -61,7 +61,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<ThermalBusInput> getThermalBuses() {
     return filterEmptyOptionals(
             assetInputEntityDataStream(ThermalBusInput.class, typeSource.getOperators())
-                .map(thermalBusInputFactory::getEntity))
+                .map(thermalBusInputFactory::get))
         .collect(Collectors.toSet());
   }
 
@@ -75,7 +75,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<ThermalBusInput> getThermalBuses(Set<OperatorInput> operators) {
     return filterEmptyOptionals(
             assetInputEntityDataStream(ThermalBusInput.class, operators)
-                .map(thermalBusInputFactory::getEntity))
+                .map(thermalBusInputFactory::get))
         .collect(Collectors.toSet());
   }
   /** {@inheritDoc} */
@@ -109,7 +109,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .map(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
-                    .map(dataOpt -> dataOpt.flatMap(thermalHouseInputFactory::getEntity)))
+                    .map(dataOpt -> dataOpt.flatMap(thermalHouseInputFactory::get)))
         .flatMap(this::filterEmptyOptionals)
         .collect(Collectors.toSet()));
   }
@@ -134,7 +134,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .map(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
-                    .map(dataOpt -> dataOpt.flatMap(thermalHouseInputFactory::getEntity)))
+                    .map(dataOpt -> dataOpt.flatMap(thermalHouseInputFactory::get)))
         .flatMap(this::filterEmptyOptionals)
         .collect(Collectors.toSet()));
   }
@@ -146,7 +146,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .map(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
-                    .map(dataOpt -> dataOpt.flatMap(cylindricalStorageInputFactory::getEntity)))
+                    .map(dataOpt -> dataOpt.flatMap(cylindricalStorageInputFactory::get)))
         .flatMap(this::filterEmptyOptionals)
         .collect(Collectors.toSet()));
   }
@@ -171,7 +171,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .map(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
-                    .map(dataOpt -> dataOpt.flatMap(cylindricalStorageInputFactory::getEntity)))
+                    .map(dataOpt -> dataOpt.flatMap(cylindricalStorageInputFactory::get)))
         .flatMap(this::filterEmptyOptionals)
         .collect(Collectors.toSet()));
   }
@@ -196,7 +196,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
     // log a warning
     if (!thermalBus.isPresent()) {
       logSkippingWarning(
-          assetInputEntityData.getEntityClass().getSimpleName(),
+          assetInputEntityData.getTargetClass().getSimpleName(),
           fieldsToAttributes.get("uuid"),
           fieldsToAttributes.get("id"),
           "thermalBus: " + thermalBusUuid);
@@ -207,7 +207,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         Optional.of(
             new ThermalUnitInputEntityData(
                 assetInputEntityData.getFieldsToValues(),
-                assetInputEntityData.getEntityClass(),
+                assetInputEntityData.getTargetClass(),
                 assetInputEntityData.getOperatorInput(),
                 thermalBus.get())));
   }

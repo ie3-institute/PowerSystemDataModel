@@ -21,7 +21,7 @@ class SwitchResultFactoryTest extends Specification implements FactoryTestHelper
 		def expectedClasses = [SwitchResult]
 
 		expect:
-		resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		resultFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A SwitchResultFactory should parse a valid result model correctly"() {
@@ -34,7 +34,7 @@ class SwitchResultFactoryTest extends Specification implements FactoryTestHelper
 		]
 
 		when:
-		Optional<SwitchResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, SwitchResult))
+		Optional<SwitchResult> result = resultFactory.get(new SimpleEntityData(parameter, SwitchResult))
 
 		then:
 		result.present

@@ -42,8 +42,8 @@ public class NodeGraphicInputEntityData extends EntityData {
         + node.getUuid()
         + ", fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + '}';
   }
 

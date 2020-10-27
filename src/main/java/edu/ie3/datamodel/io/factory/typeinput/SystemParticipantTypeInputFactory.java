@@ -76,19 +76,19 @@ public class SystemParticipantTypeInputFactory
         newSet(ENTITY_UUID, ENTITY_ID, CAP_EX, OP_EX, S_RATED, COS_PHI_RATED);
 
     Set<String> constructorParameters = null;
-    if (data.getEntityClass().equals(EvTypeInput.class)) {
+    if (data.getTargetClass().equals(EvTypeInput.class)) {
       constructorParameters = expandSet(standardConstructorParams, E_STORAGE, E_CONS);
-    } else if (data.getEntityClass().equals(HpTypeInput.class)) {
+    } else if (data.getTargetClass().equals(HpTypeInput.class)) {
       constructorParameters = expandSet(standardConstructorParams, P_THERMAL);
-    } else if (data.getEntityClass().equals(BmTypeInput.class)) {
+    } else if (data.getTargetClass().equals(BmTypeInput.class)) {
       constructorParameters = expandSet(standardConstructorParams, ACTIVE_POWER_GRADIENT, ETA_CONV);
-    } else if (data.getEntityClass().equals(WecTypeInput.class)) {
+    } else if (data.getTargetClass().equals(WecTypeInput.class)) {
       constructorParameters =
           expandSet(standardConstructorParams, CP_CHARACTERISTIC, ETA_CONV, ROTOR_AREA, HUB_HEIGHT);
-    } else if (data.getEntityClass().equals(ChpTypeInput.class)) { // into new file
+    } else if (data.getTargetClass().equals(ChpTypeInput.class)) { // into new file
       constructorParameters =
           expandSet(standardConstructorParams, ETA_EL, ETA_THERMAL, P_THERMAL, P_OWN);
-    } else if (data.getEntityClass().equals(StorageTypeInput.class)) {
+    } else if (data.getTargetClass().equals(StorageTypeInput.class)) {
       constructorParameters =
           expandSet(
               standardConstructorParams,
@@ -113,22 +113,22 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     double cosPhi = data.getDouble(COS_PHI_RATED);
 
-    if (data.getEntityClass().equals(EvTypeInput.class))
+    if (data.getTargetClass().equals(EvTypeInput.class))
       return buildEvTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
-    else if (data.getEntityClass().equals(HpTypeInput.class))
+    else if (data.getTargetClass().equals(HpTypeInput.class))
       return buildHpTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
-    else if (data.getEntityClass().equals(BmTypeInput.class))
+    else if (data.getTargetClass().equals(BmTypeInput.class))
       return buildBmTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
-    else if (data.getEntityClass().equals(WecTypeInput.class))
+    else if (data.getTargetClass().equals(WecTypeInput.class))
       return buildWecTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
-    else if (data.getEntityClass().equals(ChpTypeInput.class))
+    else if (data.getTargetClass().equals(ChpTypeInput.class))
       return buildChpTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
-    else if (data.getEntityClass().equals(StorageTypeInput.class))
+    else if (data.getTargetClass().equals(StorageTypeInput.class))
       return buildStorageTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
     else
       throw new FactoryException(
           "SystemParticipantTypeInputFactory does not know how to build a "
-              + data.getEntityClass().getName());
+              + data.getTargetClass().getName());
   }
 
   private SystemParticipantTypeInput buildEvTypeInput(

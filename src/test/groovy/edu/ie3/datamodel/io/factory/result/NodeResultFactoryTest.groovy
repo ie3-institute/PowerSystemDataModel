@@ -20,7 +20,7 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [NodeResult]
 
 		expect:
-		resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		resultFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A NodeResultFactory should parse a WecResult correctly"() {
@@ -34,7 +34,7 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
 		]
 
 		when:
-		Optional<? extends NodeResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, NodeResult))
+		Optional<? extends NodeResult> result = resultFactory.get(new SimpleEntityData(parameter, NodeResult))
 
 		then:
 		result.present
@@ -57,7 +57,7 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
 		]
 
 		when:
-		resultFactory.getEntity(new SimpleEntityData(parameter, NodeResult))
+		resultFactory.get(new SimpleEntityData(parameter, NodeResult))
 
 		then:
 		FactoryException ex = thrown()

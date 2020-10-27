@@ -19,7 +19,7 @@ class ThermalBusInputFactoryTest extends Specification implements FactoryTestHel
 		def expectedClasses = [ThermalBusInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A ThermalBusInputFactory should parse a valid SwitchInput correctly"() {
@@ -35,7 +35,7 @@ class ThermalBusInputFactoryTest extends Specification implements FactoryTestHel
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<ThermalBusInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<ThermalBusInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present
