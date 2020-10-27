@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - moved api docs to own branch incl. automated api-docs deployment
 - added methods for nearest and all coordinates to IdCoordinateSource
 - added coordinate distance sort method to GridAndGeoUtils
+- adapted Jenkinsfile to treat PRs from forks like feature branches 
 
 ## [1.1.0] - 2020-09-15
 
