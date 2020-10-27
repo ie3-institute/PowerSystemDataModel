@@ -5,8 +5,11 @@
  */
 package edu.ie3.datamodel.io.connectors
 
+import edu.ie3.datamodel.io.csv.DefaultInputHierarchy
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
+import edu.ie3.datamodel.io.csv.HierarchicFileNamingStrategy
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
+import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.util.io.FileIOUtils
 import org.apache.commons.io.FilenameUtils
 import spock.lang.Shared
@@ -114,5 +117,51 @@ class CsvFileConnectorTest extends Specification {
 		def energyPriceEntries = actual.get(ColumnScheme.ENERGY_PRICE)
 		Objects.nonNull(energyPriceEntries)
 		energyPriceEntries.size() == 2
+	}
+
+	def "The csv file connector is able to init writers utilizing a directory hierarchy"() {
+		given: "a suitable connector"
+		def baseDirectory = FilenameUtils.concat(tmpFolder.toString(), "directoryHierarchy")
+		def directoryHierarchy = new DefaultInputHierarchy(baseDirectory, "test")
+		def fileNamingStrategy = new HierarchicFileNamingStrategy(directoryHierarchy)
+		def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+
+		and: "expected results"
+		def nodeFile = new File(
+				FilenameUtils.concat(
+				FilenameUtils.concat(
+				FilenameUtils.concat(baseDirectory, "test"),
+				"grid"),
+				"node_input.csv"
+				)
+				)
+
+		when:
+		/* The head line is of no interest here */
+		connector.getOrInitWriter(NodeInput, [] as String[], ",")
+
+		then:
+		noExceptionThrown()
+		nodeFile.exists()
+		nodeFile.isFile()
+	}
+
+	def "The csv file connector is able to init writers utilizing no directory hierarchy"() {
+		given: "a suitable connector"
+		def baseDirectory = FilenameUtils.concat(tmpFolder.toString(), "directoryHierarchy")
+		def fileNamingStrategy = new FileNamingStrategy()
+		def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+
+		and: "expected results"
+		def nodeFile = new File(FilenameUtils.concat(baseDirectory, "node_input.csv"))
+
+		when:
+		/* The head line is of no interest here */
+		connector.getOrInitWriter(NodeInput, [] as String[], ",")
+
+		then:
+		noExceptionThrown()
+		nodeFile.exists()
+		nodeFile.isFile()
 	}
 }

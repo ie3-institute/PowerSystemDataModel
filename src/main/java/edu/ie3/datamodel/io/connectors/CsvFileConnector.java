@@ -6,10 +6,7 @@
 package edu.ie3.datamodel.io.connectors;
 
 import edu.ie3.datamodel.exceptions.ConnectorException;
-import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
-import edu.ie3.datamodel.io.csv.CsvFileDefinition;
-import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
-import edu.ie3.datamodel.io.csv.FileNamingStrategy;
+import edu.ie3.datamodel.io.csv.*;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -24,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -101,23 +99,37 @@ public class CsvFileConnector implements DataConnector {
    */
   private BufferedCsvWriter initWriter(String baseFolder, CsvFileDefinition fileDefinition)
       throws ConnectorException, IOException {
-    File basePathDir = new File(baseFolder);
-    if (basePathDir.isFile())
-      throw new ConnectorException(
-          "Base path dir '" + baseFolder + "' already exists and is a file!");
-    if (!basePathDir.exists()) basePathDir.mkdirs();
+    /* Put together the full file path */
+    String fullPath =
+        FilenameUtils.concat(baseFolder, fileDefinition.getFilePath())
+            .replaceAll("[/\\\\]{1,2}", File.separator);
 
-    String fullPathToFile = baseFolder + File.separator + fileDefinition.getFilePath();
+    /* Split into directories and actual file name */
+    String[] segments = fullPath.split(File.separator);
+    if (segments.length < 1)
+      throw new IOException(
+          "Cannot split path into directory path and file name. Invalid path: '" + fullPath + "'");
+    String directoryPath =
+        String.join(File.separator, Arrays.copyOfRange(segments, 0, segments.length - 1));
 
-    File pathFile = new File(fullPathToFile);
+    /* Create missing directories */
+    File directories = new File(directoryPath);
+    if (directories.isFile())
+      throw new ConnectorException("Directory '" + directories + "' already exists and is a file!");
+    if (!directories.exists() && !directories.mkdirs())
+      throw new IOException("Unable to create directory tree ''");
+
+    File pathFile = new File(fullPath);
     if (!pathFile.exists()) {
-      return new BufferedCsvWriter(baseFolder, fileDefinition, true, false);
+      return new BufferedCsvWriter(
+          fullPath, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep(), true, false);
     }
     log.warn(
         "File '{}.csv' already exist. Will append new content WITHOUT new header! Full path: {}",
         fileDefinition.getFileName(),
         pathFile.getAbsolutePath());
-    return new BufferedCsvWriter(baseFolder, fileDefinition, false, true);
+    return new BufferedCsvWriter(
+        fullPath, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep(), false, true);
   }
 
   /**
@@ -322,6 +334,7 @@ public class CsvFileConnector implements DataConnector {
               }
             });
   }
+
   /** Class to bundle all information, that are necessary to read a single time series */
   public static class TimeSeriesReadingData {
     private final UUID uuid;
