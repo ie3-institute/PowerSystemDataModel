@@ -5,20 +5,19 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
+import static tech.units.indriya.unit.Units.PERCENT;
+
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.util.TimeUtil;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.Dimensionless;
-import javax.measure.quantity.Power;
 import java.time.ZonedDateTime;
 import java.util.*;
-
-import static tech.units.indriya.unit.Units.PERCENT;
+import javax.measure.quantity.Dimensionless;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Factory class for creating {@link SystemParticipantResult} entities from provided {@link

@@ -6,9 +6,6 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.models.UniqueEntity;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.*;
 
 /**
@@ -29,7 +26,6 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
    */
   public EntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
-    TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss");
   }
 
   /**

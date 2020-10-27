@@ -14,12 +14,11 @@ import edu.ie3.datamodel.models.result.connector.LineResult;
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.util.TimeUtil;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.Angle;
-import javax.measure.quantity.ElectricCurrent;
 import java.time.ZonedDateTime;
 import java.util.*;
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.ElectricCurrent;
+import tech.units.indriya.ComparableQuantity;
 
 public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult> {
 
@@ -31,7 +30,6 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   private static final String ICANG = "icang";
   private static final String TAPPOS = "tappos";
   private final TimeUtil timeUtil = TimeUtil.withDefaults;
-
 
   public ConnectorResultFactory() {
     super(LineResult.class, Transformer2WResult.class, Transformer3WResult.class);

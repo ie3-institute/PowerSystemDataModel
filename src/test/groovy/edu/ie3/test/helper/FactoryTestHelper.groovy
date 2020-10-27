@@ -22,5 +22,4 @@ trait FactoryTestHelper {
 	static getGeometry(String value) {
 		return GEOJSON_READER.read(value)
 	}
-
 }

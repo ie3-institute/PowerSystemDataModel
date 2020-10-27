@@ -9,12 +9,11 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.util.TimeUtil;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.Angle;
-import javax.measure.quantity.Dimensionless;
 import java.time.ZonedDateTime;
 import java.util.*;
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Dimensionless;
+import tech.units.indriya.ComparableQuantity;
 
 public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
   private static final String VMAG = "vmag";
