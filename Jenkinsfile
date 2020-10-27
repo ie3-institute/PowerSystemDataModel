@@ -118,7 +118,8 @@ node {
             // sonarqube analysis
             stage('sonarqube analysis') {
                 String sonarqubeCurrentBranchName = prFromFork() ? prJsonObj.head.repo.full_name : currentBranchName // forks needs to be handled differently
-                String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, sonarqubeCurrentBranchName, orgName, projectName, projectName)
+                String pullRequestGithubRepository = prFromFork() ? prJsonObj.head.repo.full_name : orgName + "/" + projectName
+                String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, sonarqubeCurrentBranchName, pullRequestGithubRepository, projectName)
                 withSonarQubeEnv() { // will pick the global server connection from jenkins for sonarqube
                     gradle(sonarqubeCmd, projectName)
                 }
@@ -379,7 +380,7 @@ def gradle(String command, String relativeProjectDir) {
     sh(script: """set +x && cd $relativeProjectDir""" + ''' set +x; ./gradlew ''' + """$command""", returnStdout: true)
 }
 
-def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String currentBranchName, String orgName, String projectName, String relativeGitDir) {
+def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String currentBranchName, String pullRequestGithubRepository, String relativeGitDir) {
     switch (currentBranchName) {
         case "main":
             return "sonarqube -Dsonar.branch.name=main -Dsonar.projectKey=$sonarqubeProjectKey"
@@ -400,7 +401,7 @@ def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String currentBranch
             } else {
                 // PR exists, adapt cmd accordingly
                 return gradleCommand + " -Dsonar.pullrequest.branch=${currentBranchName} -Dsonar.pullrequest.key=${env.CHANGE_ID} " +
-                        "-Dsonar.pullrequest.base=dev -Dsonar.pullrequest.github.repository=${orgName}/${projectName} " +
+                        "-Dsonar.pullrequest.base=dev -Dsonar.pullrequest.github.repository=${pullRequestGithubRepository} " +
                         "-Dsonar.pullrequest.provider=Github"
             }
             break
