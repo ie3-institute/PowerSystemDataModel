@@ -106,9 +106,8 @@ public class CsvFileConnector implements DataConnector {
 
     /* Split into directories and actual file name */
     String[] segments = fullPath.split(File.separator);
-    if (segments.length < 1)
-      throw new IOException(
-          "Cannot split path into directory path and file name. Invalid path: '" + fullPath + "'");
+    /* By the concatenation of baseFolder and file definition above, it is ensured, that at any time the amount of
+     * segments is at least 2. Therefore, no range check is needed */
     String directoryPath =
         String.join(File.separator, Arrays.copyOfRange(segments, 0, segments.length - 1));
 

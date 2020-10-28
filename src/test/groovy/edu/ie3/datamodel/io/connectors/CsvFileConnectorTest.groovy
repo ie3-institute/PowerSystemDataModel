@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.connectors
 
+import edu.ie3.datamodel.exceptions.ConnectorException
+import edu.ie3.datamodel.io.csv.CsvFileDefinition
 import edu.ie3.datamodel.io.csv.DefaultInputHierarchy
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.csv.HierarchicFileNamingStrategy
@@ -163,5 +165,20 @@ class CsvFileConnectorTest extends Specification {
 		noExceptionThrown()
 		nodeFile.exists()
 		nodeFile.isFile()
+	}
+
+	def "Initialising a writer with incorrect base directory leads to ConnectorException"() {
+		given:
+		def baseFolder = FilenameUtils.concat(tmpFolder.toString(), "helloWorld.txt")
+		def baseFolderFile = new File(baseFolder)
+		baseFolderFile.createNewFile()
+		def fileDefinition = new CsvFileDefinition("test.csv", [] as String[], ",")
+
+		when:
+		cfc.initWriter(baseFolder, fileDefinition)
+
+		then:
+		def e = thrown(ConnectorException)
+		e.message == "Directory '" + baseFolder + "' already exists and is a file!"
 	}
 }
