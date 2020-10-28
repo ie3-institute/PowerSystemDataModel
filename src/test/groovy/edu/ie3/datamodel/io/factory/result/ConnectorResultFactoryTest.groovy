@@ -7,9 +7,11 @@ package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.result.connector.*
+import edu.ie3.datamodel.models.result.connector.ConnectorResult
+import edu.ie3.datamodel.models.result.connector.LineResult
+import edu.ie3.datamodel.models.result.connector.Transformer2WResult
+import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.test.helper.FactoryTestHelper
-import edu.ie3.util.TimeTools
 import spock.lang.Specification
 
 class ConnectorResultFactoryTest extends Specification implements FactoryTestHelper {
@@ -55,7 +57,7 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 		result.present
 		result.get().getClass() == resultingModelClass
 		((ConnectorResult) result.get()).with {
-			assert timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+			assert timestamp == TIME_UTIL.toZonedDateTime(parameter["timestamp"])
 			assert inputModel == UUID.fromString(parameter["inputModel"])
 			assert iAAng == getQuant(parameter["iaang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
 			assert iAMag == getQuant(parameter["iamag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)

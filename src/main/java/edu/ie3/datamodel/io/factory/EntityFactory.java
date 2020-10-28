@@ -6,8 +6,6 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.util.TimeTools;
-import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -28,7 +26,6 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
    */
   public EntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
-    TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss");
   }
 
   /**

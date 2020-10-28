@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.factory.result;
 
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.result.connector.SwitchResult;
-import edu.ie3.util.TimeUtil;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -32,7 +31,7 @@ public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
   protected SwitchResult buildModel(SimpleEntityData data) {
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
-    ZonedDateTime timestamp = TimeUtil.withDefaults.toZonedDateTime(data.getField(TIMESTAMP));
+    ZonedDateTime timestamp = TIME_UTIL.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModel = data.getUUID(INPUT_MODEL);
 
     final boolean closed = data.getBoolean(CLOSED);
