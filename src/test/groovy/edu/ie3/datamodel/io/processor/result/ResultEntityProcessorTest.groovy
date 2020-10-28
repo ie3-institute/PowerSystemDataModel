@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
-import edu.ie3.util.TimeTools
 import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Shared
 import spock.lang.Specification
@@ -24,15 +23,9 @@ import tech.units.indriya.unit.Units
 
 import javax.measure.Quantity
 import javax.measure.quantity.*
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class ResultEntityProcessorTest extends Specification {
-
-	// initialize TimeTools for parsing
-	def setupSpec() {
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-	}
 
 	// static fields
 	@Shared
@@ -73,7 +66,6 @@ class ResultEntityProcessorTest extends Specification {
 
 	def "A ResultEntityProcessor should de-serialize a provided SystemParticipantResult correctly"() {
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(modelClass)
 		def validResult = validSystemParticipantResult
 
@@ -101,7 +93,6 @@ class ResultEntityProcessorTest extends Specification {
 
 	def "A ResultEntityProcessor should de-serialize a provided SystemParticipantResult with null values correctly"() {
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(StorageResult)
 		def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, null)
 
@@ -122,7 +113,6 @@ class ResultEntityProcessorTest extends Specification {
 
 	def "A ResultEntityProcessor should throw an exception if the provided class is not registered"() {
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(LoadResult)
 		def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, null)
 
@@ -136,7 +126,6 @@ class ResultEntityProcessorTest extends Specification {
 
 	def "A ResultEntityProcessor should de-serialize a NodeResult correctly"() {
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(NodeResult)
 
 		Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PowerSystemUnits.PU)
@@ -218,7 +207,6 @@ class ResultEntityProcessorTest extends Specification {
 
 	def "A ResultEntityProcessor should de-serialize all ConnectorResults correctly"() {
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(modelClass)
 
 		def validResult = validConnectorResult
@@ -240,7 +228,6 @@ class ResultEntityProcessorTest extends Specification {
 
 	def "A ResultEntityProcessor should de-serialize a CylindricalStorageResult correctly"() {
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(CylindricalStorageResult)
 
 		Quantity<Power> qDot = Quantities.getQuantity(2, StandardUnits.Q_DOT_RESULT)
@@ -268,7 +255,6 @@ class ResultEntityProcessorTest extends Specification {
 	def "A ResultEntityProcessor should throw an EntityProcessorException when it receives an entity result that is not eligible"() {
 
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(ResultEntityProcessor.eligibleEntityClasses.get(0))
 
 		def invalidClassResult = new InvalidTestResult(ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), uuid)

@@ -18,7 +18,6 @@ import edu.ie3.datamodel.models.input.container.*
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
 import edu.ie3.test.common.ComplexTopology
 import edu.ie3.test.common.GridTestData
-import edu.ie3.util.TimeTools
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -29,9 +28,6 @@ import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ContainerUtilsTest extends Specification {
-	static {
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-	}
 
 	@Shared
 	GridContainer complexTopology = ComplexTopology.grid

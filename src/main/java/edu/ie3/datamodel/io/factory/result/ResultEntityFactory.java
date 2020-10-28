@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.result;
 
 import edu.ie3.datamodel.io.factory.SimpleEntityFactory;
 import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.util.TimeUtil;
 
 /**
  * Internal API for building {@link ResultEntity}s. This additional abstraction layer is necessary
@@ -20,6 +21,8 @@ abstract class ResultEntityFactory<T extends ResultEntity> extends SimpleEntityF
   protected static final String ENTITY_UUID = "uuid";
   protected static final String TIMESTAMP = "timestamp";
   protected static final String INPUT_MODEL = "inputModel";
+
+  protected static final TimeUtil TIME_UTIL = TimeUtil.withDefaults;
 
   public ResultEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
