@@ -54,10 +54,7 @@ node {
             String targetBranchName = prJsonObj == null ? null : prJsonObj.base.ref
 
             /* prs from forks require a special handling*/
-            String headGitCheckoutUrl = null
-            if(prFromFork()) {
-                headGitCheckoutUrl = prJsonObj.head.repo.ssh_url
-            }
+            String headGitCheckoutUrl = prJsonObj.head.repo.ssh_url
 
             // notify rocket chat
             notifyRocketChat(rocketChatChannel, ':jenkins_triggered:', buildStartMsg(currentBranchName, targetBranchName, projectName))
@@ -67,8 +64,7 @@ node {
             stage('checkout') {
                 // commit hash from scm checkout
                 // https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/Complete-Jenkins-Git-environment-variables-list-for-batch-jobs-and-shell-script-builds
-                String checkoutUrl = prFromFork() ? headGitCheckoutUrl : gitCheckoutUrl // forks needs to be treated differently
-                commitHash = gitCheckout(projectName, checkoutUrl, currentBranchName, sshCredentialsId).GIT_COMMIT
+                commitHash = gitCheckout(projectName, headGitCheckoutUrl, currentBranchName, sshCredentialsId).GIT_COMMIT
             }
 
             // set build display name
@@ -532,7 +528,7 @@ def checkVersion(String branchName, String targetBranchName, String relativeGitD
                  String sshCredentialsId) {
     // get current branch type
     // if headGitCheckoutUrl is set (= pr from fork), this branch type is always treated as a feature branch
-    String branchType = headGitCheckoutUrl != null ? "feature" : getBranchType(branchName)
+    String branchType = prFromFork() ? "feature" : getBranchType(branchName)
     if (branchType == null) {
         println "Cannot derive branch type from current branch with name '$branchName'."
         return -1
@@ -542,7 +538,7 @@ def checkVersion(String branchName, String targetBranchName, String relativeGitD
     /// save the current version string
     String[] currentVersion = gradle("-q currentVersion", relativeGitDir).toString().split('\\.')
 
-    /// switch to the comparison branch
+    /// switch to the comparison branch, this is always the base git checkout url
     gitCheckout(projectName, baseGitCheckoutUrl, targetBranchName, sshCredentialsId)
     String[] targetBranchVersion = gradle("-q currentVersion", relativeGitDir).toString().split('\\.')
 
@@ -551,8 +547,7 @@ def checkVersion(String branchName, String targetBranchName, String relativeGitD
         return -1
     } else {
         // switch back to current branch. Select url depending on if this is a fork or not
-        String checkoutUrl = headGitCheckoutUrl != null ? headGitCheckoutUrl : baseGitCheckoutUrl
-        gitCheckout(projectName, checkoutUrl, branchName, sshCredentialsId)
+        gitCheckout(projectName, headGitCheckoutUrl, branchName, sshCredentialsId)
         return 0
     }
 }
