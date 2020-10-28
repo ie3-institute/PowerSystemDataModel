@@ -12,7 +12,6 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.system.*;
-import edu.ie3.util.TimeUtil;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Dimensionless;
@@ -29,8 +28,6 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   private static final String REACTIVE_POWER = "q";
   private static final String SOC = "soc";
   private static final String Q_DOT = "qdot";
-
-  private final TimeUtil timeUtil = TimeUtil.withDefaults;
 
   public SystemParticipantResultFactory() {
     super(
@@ -70,7 +67,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   protected SystemParticipantResult buildModel(SimpleEntityData data) {
     Class<? extends UniqueEntity> entityClass = data.getTargetClass();
 
-    ZonedDateTime zdtTimestamp = timeUtil.toZonedDateTime(data.getField(TIMESTAMP));
+    ZonedDateTime zdtTimestamp = TIME_UTIL.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Power> p = data.getQuantity(POWER, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> q =

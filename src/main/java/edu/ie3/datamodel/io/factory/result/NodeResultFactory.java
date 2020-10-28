@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.result;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.NodeResult;
-import edu.ie3.util.TimeUtil;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Angle;
@@ -18,8 +17,6 @@ import tech.units.indriya.ComparableQuantity;
 public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
   private static final String VMAG = "vmag";
   private static final String VANG = "vang";
-
-  private final TimeUtil timeUtil = TimeUtil.withDefaults;
 
   public NodeResultFactory() {
     super(NodeResult.class);
@@ -35,7 +32,7 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
 
   @Override
   protected NodeResult buildModel(SimpleEntityData data) {
-    ZonedDateTime zdtTimestamp = timeUtil.toZonedDateTime(data.getField(TIMESTAMP));
+    ZonedDateTime zdtTimestamp = TIME_UTIL.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Dimensionless> vMagValue =
         data.getQuantity(VMAG, StandardUnits.VOLTAGE_MAGNITUDE);

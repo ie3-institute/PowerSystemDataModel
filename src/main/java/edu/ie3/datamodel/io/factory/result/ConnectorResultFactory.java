@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.result.connector.ConnectorResult;
 import edu.ie3.datamodel.models.result.connector.LineResult;
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
-import edu.ie3.util.TimeUtil;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Angle;
@@ -29,7 +28,6 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   private static final String ICMAG = "icmag";
   private static final String ICANG = "icang";
   private static final String TAPPOS = "tappos";
-  private final TimeUtil timeUtil = TimeUtil.withDefaults;
 
   public ConnectorResultFactory() {
     super(LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
@@ -57,7 +55,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   @Override
   protected ConnectorResult buildModel(SimpleEntityData data) {
     final Class<? extends UniqueEntity> entityClass = data.getTargetClass();
-    ZonedDateTime timestamp = timeUtil.toZonedDateTime(data.getField(TIMESTAMP));
+    ZonedDateTime timestamp = TIME_UTIL.toZonedDateTime(data.getField(TIMESTAMP));
 
     UUID inputModel = data.getUUID(INPUT_MODEL);
     ComparableQuantity<ElectricCurrent> iAMag =
