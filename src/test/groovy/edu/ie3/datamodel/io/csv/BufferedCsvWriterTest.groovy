@@ -30,7 +30,7 @@ class BufferedCsvWriterTest extends Specification {
 		given:
 		def baseDirectory = tmpDirectory.toString()
 		def fileDefinition = new CsvFileDefinition("test.csv", ["a", "b", "c"] as String[], ",")
-		def expectedFile = new File(FilenameUtils.concat(tmpDirectory.toString(), fileDefinition.getFilePath()))
+		def expectedFile = new File(FilenameUtils.concat(tmpDirectory.toString(), fileDefinition.filePath))
 
 		when:
 		def actual = new BufferedCsvWriter(baseDirectory, fileDefinition, false, false)
@@ -41,7 +41,7 @@ class BufferedCsvWriterTest extends Specification {
 			assert it.csvSep == ","
 		}
 		expectedFile.exists()
-		expectedFile.isFile()
+		expectedFile.file // is it a file?
 	}
 
 	def "The buffered csv writer refuses to write entries, if their length does not conform the needed length of head line elements"() {
