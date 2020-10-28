@@ -550,8 +550,9 @@ def checkVersion(String branchName, String targetBranchName, String relativeGitD
         // comparison failed
         return -1
     } else {
-        // switch back to current branch
-        gitCheckout(projectName, headGitCheckoutUrl, branchName, sshCredentialsId)
+        // switch back to current branch. Select url depending on if this is a fork or not
+        String checkoutUrl = headGitCheckoutUrl != null ? headGitCheckoutUrl : baseGitCheckoutUrl
+        gitCheckout(projectName, checkoutUrl, branchName, sshCredentialsId)
         return 0
     }
 }
