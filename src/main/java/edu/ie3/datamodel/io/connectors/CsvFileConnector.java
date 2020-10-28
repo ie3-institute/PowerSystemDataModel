@@ -105,7 +105,7 @@ public class CsvFileConnector implements DataConnector {
             .replaceAll("[/\\\\]{1,2}", File.separator);
 
     /* Split into directories and actual file name */
-    String[] segments = fullPath.split(File.separator);
+    String[] segments = fullPath.split(File.separatorChar == '\\' ? "\\\\" : File.separator);
     /* By the concatenation of baseFolder and file definition above, it is ensured, that at any time the amount of
      * segments is at least 2. Therefore, no range check is needed */
     String directoryPath =
