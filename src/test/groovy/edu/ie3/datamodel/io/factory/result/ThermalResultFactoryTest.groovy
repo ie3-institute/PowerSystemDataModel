@@ -10,13 +10,11 @@ import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult
-import edu.ie3.util.TimeUtil
+import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-class ThermalResultFactoryTest extends Specification {
-
-	private final TimeUtil timeUtil = TimeUtil.withDefaults
+class ThermalResultFactoryTest extends Specification implements FactoryTestHelper {
 
 	def "A ThermalResultFactory should contain all expected classes for parsing"() {
 		given:
@@ -47,7 +45,7 @@ class ThermalResultFactoryTest extends Specification {
 		result.present
 		result.get().getClass() == CylindricalStorageResult
 		((CylindricalStorageResult) result.get()).with {
-			assert timestamp == timeUtil.toZonedDateTime(parameter.get("timestamp"))
+			assert timestamp == TIME_UTIL.toZonedDateTime(parameter.get("timestamp"))
 			assert inputModel == UUID.fromString(parameter.get("inputModel"))
 			assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
 			assert energy == Quantities.getQuantity(Double.parseDouble(parameter.get("energy")), StandardUnits.ENERGY_RESULT)
@@ -71,7 +69,7 @@ class ThermalResultFactoryTest extends Specification {
 		result.present
 		result.get().getClass() == ThermalHouseResult
 		((ThermalHouseResult) result.get()).with {
-			assert timestamp == timeUtil.toZonedDateTime(parameter.get("timestamp"))
+			assert timestamp == TIME_UTIL.toZonedDateTime(parameter.get("timestamp"))
 			assert inputModel == UUID.fromString(parameter.get("inputModel"))
 			assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
 			assert indoorTemperature == Quantities.getQuantity(Double.parseDouble(parameter.get("indoorTemperature")), StandardUnits.TEMPERATURE)

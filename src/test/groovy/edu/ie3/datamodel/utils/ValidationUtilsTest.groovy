@@ -18,8 +18,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ValidationUtilsTest extends Specification {
 
-
-
 	def "The validation utils should determine if a collection with UniqueEntity's is distinct by their uuid"() {
 
 		expect:
