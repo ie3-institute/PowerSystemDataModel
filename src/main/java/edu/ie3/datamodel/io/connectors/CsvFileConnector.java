@@ -110,7 +110,7 @@ public class CsvFileConnector implements DataConnector {
     if (directories.isFile())
       throw new ConnectorException("Directory '" + directories + "' already exists and is a file!");
     if (!directories.exists() && !directories.mkdirs())
-      throw new IOException("Unable to create directory tree ''");
+      throw new IOException("Unable to create directory tree '" + directories.toString() + "'");
 
     File pathFile = new File(fullPath);
     if (!pathFile.exists()) {

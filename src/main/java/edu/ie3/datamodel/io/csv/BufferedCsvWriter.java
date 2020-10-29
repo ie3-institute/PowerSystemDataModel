@@ -106,7 +106,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    * @param entries Entries to write to the line of the file
    * @throws IOException If writing is not possible
    */
-  private final void writeOneLine(String[] entries) throws IOException {
+  private void writeOneLine(String[] entries) throws IOException {
     for (int i = 0; i < entries.length; i++) {
       String attribute = entries[i];
       super.append(attribute);
