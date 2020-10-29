@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -145,6 +146,76 @@ public class FileNamingStrategy {
     return loadProfileTimeSeriesPattern;
   }
 
+  /**
+   * Get the full path to the file with regard to some (not explicitly specified) base directory.
+   * The path does NOT start or end with any of the known file separators or file extension.
+   *
+   * @param cls Targeted class of the given file
+   * @return An optional sub path to the actual file
+   */
+  public Optional<String> getFilePath(Class<? extends UniqueEntity> cls) {
+    Optional<String> maybeFileName = getFileName(cls);
+    if (!maybeFileName.isPresent()) return Optional.empty();
+    String fileName = maybeFileName.get();
+    Optional<String> maybeSubDirectories = getDirectoryPath(cls);
+    if (maybeSubDirectories.isPresent() && !maybeSubDirectories.get().isEmpty())
+      return Optional.of(FilenameUtils.concat(maybeSubDirectories.get(), fileName));
+    else return Optional.of(fileName);
+  }
+
+  /**
+   * Get the full path to the file with regard to some (not explicitly specified) base directory.
+   * The path does NOT start or end with any of the known file separators or file extension.
+   *
+   * @param <T> Type of the time series
+   * @param <E> Type of the entry in the time series
+   * @param <V> Type of the value, that is carried by the time series entry
+   * @param timeSeries Time series to derive naming information from
+   * @return An optional sub path to the actual file
+   */
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+      Optional<String> getFilePath(T timeSeries) {
+    Optional<String> maybeFileName = getFileName(timeSeries);
+    if (!maybeFileName.isPresent()) return Optional.empty();
+    String fileName = maybeFileName.get();
+    Optional<String> maybeSubDirectories = getDirectoryPath(timeSeries);
+    if (maybeSubDirectories.isPresent() && !maybeSubDirectories.get().isEmpty())
+      return Optional.of(FilenameUtils.concat(maybeSubDirectories.get(), fileName));
+    else return Optional.of(fileName);
+  }
+
+  /**
+   * Returns the sub directory structure with regard to some (not explicitly specified) base
+   * directory. The path does NOT start or end with any of the known file separators.
+   *
+   * @param cls Targeted class of the given file
+   * @return An optional sub directory path
+   */
+  public Optional<String> getDirectoryPath(Class<? extends UniqueEntity> cls) {
+    return Optional.empty();
+  }
+
+  /**
+   * Returns the sub directory structure with regard to some (not explicitly specified) base
+   * directory. The path does NOT start or end with any of the known file separators.
+   *
+   * @param <T> Type of the time series
+   * @param <E> Type of the entry in the time series
+   * @param <V> Type of the value, that is carried by the time series entry
+   * @param timeSeries Time series to derive naming information from
+   * @return An optional sub directory path
+   */
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+      Optional<String> getDirectoryPath(T timeSeries) {
+    return Optional.empty();
+  }
+
+  /**
+   * Returns the file name (and only the file name without any directories and extension).
+   *
+   * @param cls Targeted class of the given file
+   * @return The file name
+   */
   public Optional<String> getFileName(Class<? extends UniqueEntity> cls) {
     if (AssetTypeInput.class.isAssignableFrom(cls))
       return getTypeFileName(cls.asSubclass(AssetTypeInput.class));
@@ -168,7 +239,8 @@ public class FileNamingStrategy {
   }
 
   /**
-   * Builds a file name of the given information.
+   * Builds a file name (and only the file name without any directories and extension) of the given
+   * information.
    *
    * @param <T> Type of the time series
    * @param <E> Type of the entry in the time series

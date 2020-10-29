@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.BdewLoadProfile
+import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.RandomLoadParameters
@@ -529,8 +530,8 @@ class FileNamingStrategyTest extends Specification {
 		actual.get() == expectedFileName
 
 		where:
-		clazz                || uuid 													|| expectedFileName
-		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
+		clazz                | uuid                                                    || expectedFileName
+		IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 	}
 
 	def "A FileNamingStrategy with pre- or suffix should return valid file name for individual time series" () {
@@ -550,8 +551,8 @@ class FileNamingStrategyTest extends Specification {
 		actual.get() == expectedFileName
 
 		where:
-		clazz                || uuid 													|| expectedFileName
-		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
+		clazz                | uuid                                                    || expectedFileName
+		IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
 	}
 
 	def "A FileNamingStrategy without pre- or suffix should return valid file name for load profile input" () {
@@ -569,8 +570,8 @@ class FileNamingStrategyTest extends Specification {
 		actual.get() == expectedFileName
 
 		where:
-		clazz                || uuid 													|| type 				|| expectedFileName
-		LoadProfileInput     || UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") || BdewLoadProfile.G3 	|| "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
+		clazz            | uuid                                                    | type               || expectedFileName
+		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewLoadProfile.G3 || "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
 	def "A FileNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {
@@ -607,5 +608,196 @@ class FileNamingStrategyTest extends Specification {
 		then:
 		res.present
 		res.get() == "prefix_time_series_mapping_suffix"
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for any model or result class"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new FileNamingStrategy()
+
+		when:
+		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		actual == expected
+
+		where:
+		modelClass               || expected
+		FixedFeedInInput         || Optional.empty()
+		PvInput                  || Optional.empty()
+		WecInput                 || Optional.empty()
+		ChpInput                 || Optional.empty()
+		BmInput                  || Optional.empty()
+		EvInput                  || Optional.empty()
+		LoadInput                || Optional.empty()
+		StorageInput             || Optional.empty()
+		HpInput                  || Optional.empty()
+		LineInput                || Optional.empty()
+		SwitchInput              || Optional.empty()
+		NodeInput                || Optional.empty()
+		MeasurementUnitInput     || Optional.empty()
+		EvcsInput                || Optional.empty()
+		Transformer2WInput       || Optional.empty()
+		Transformer3WInput       || Optional.empty()
+		CylindricalStorageInput  || Optional.empty()
+		ThermalHouseInput        || Optional.empty()
+		LoadResult               || Optional.empty()
+		FixedFeedInResult        || Optional.empty()
+		BmResult                 || Optional.empty()
+		PvResult                 || Optional.empty()
+		ChpResult                || Optional.empty()
+		WecResult                || Optional.empty()
+		StorageResult            || Optional.empty()
+		EvcsResult               || Optional.empty()
+		EvResult                 || Optional.empty()
+		Transformer2WResult      || Optional.empty()
+		Transformer3WResult      || Optional.empty()
+		LineResult               || Optional.empty()
+		SwitchResult             || Optional.empty()
+		NodeResult               || Optional.empty()
+		CylindricalStorageResult || Optional.empty()
+		ThermalHouseResult       || Optional.empty()
+		BmTypeInput              || Optional.empty()
+		ChpTypeInput             || Optional.empty()
+		EvTypeInput              || Optional.empty()
+		HpTypeInput              || Optional.empty()
+		LineTypeInput            || Optional.empty()
+		StorageTypeInput         || Optional.empty()
+		Transformer2WTypeInput   || Optional.empty()
+		Transformer3WTypeInput   || Optional.empty()
+		WecTypeInput             || Optional.empty()
+		WecTypeInput             || Optional.empty()
+		RandomLoadParameters     || Optional.empty()
+		NodeGraphicInput         || Optional.empty()
+		LineGraphicInput         || Optional.empty()
+		WecCharacteristicInput   || Optional.empty()
+		EvCharacteristicInput    || Optional.empty()
+		TimeSeriesMapping.Entry  || Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for load profile time series"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new FileNamingStrategy()
+		def timeSeries = Mock(LoadProfileInput)
+
+		when:
+		def actual = strategy.getDirectoryPath(timeSeries)
+
+		then:
+		actual == Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for individual time series"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new FileNamingStrategy()
+		def timeSeries = Mock(IndividualTimeSeries)
+
+		when:
+		def actual = strategy.getDirectoryPath(timeSeries)
+
+		then:
+		actual == Optional.empty()
+	}
+
+	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for all result and model classes"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new FileNamingStrategy()
+
+		when:
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass               || expectedString
+		LoadResult               || "load_res"
+		FixedFeedInResult        || "fixedfeedin_res"
+		BmResult                 || "bm_res"
+		PvResult                 || "pv_res"
+		ChpResult                || "chp_res"
+		WecResult                || "wec_res"
+		StorageResult            || "storage_res"
+		EvcsResult               || "evcs_res"
+		EvResult                 || "ev_res"
+		Transformer2WResult      || "transformer2w_res"
+		Transformer3WResult      || "transformer3w_res"
+		LineResult               || "line_res"
+		SwitchResult             || "switch_res"
+		NodeResult               || "node_res"
+		CylindricalStorageResult || "cylindricalstorage_res"
+		ThermalHouseResult       || "thermalhouse_res"
+		WecCharacteristicInput   || "wec_characteristic_input"
+		FixedFeedInInput         || "fixed_feed_in_input"
+		PvInput                  || "pv_input"
+		WecInput                 || "wec_input"
+		ChpInput                 || "chp_input"
+		BmInput                  || "bm_input"
+		EvInput                  || "ev_input"
+		LoadInput                || "load_input"
+		StorageInput             || "storage_input"
+		HpInput                  || "hp_input"
+		LineInput                || "line_input"
+		SwitchInput              || "switch_input"
+		NodeInput                || "node_input"
+		MeasurementUnitInput     || "measurement_unit_input"
+		EvcsInput                || "evcs_input"
+		Transformer2WInput       || "transformer2w_input"
+		Transformer3WInput       || "transformer3w_input"
+		CylindricalStorageInput  || "cylindrical_storage_input"
+		ThermalHouseInput        || "thermal_house_input"
+		EvCharacteristicInput    || "ev_characteristic_input"
+		BmTypeInput              || "bm_type_input"
+		ChpTypeInput             || "chp_type_input"
+		EvTypeInput              || "ev_type_input"
+		HpTypeInput              || "hp_type_input"
+		LineTypeInput            || "line_type_input"
+		StorageTypeInput         || "storage_type_input"
+		Transformer2WTypeInput   || "transformer2w_type_input"
+		Transformer3WTypeInput   || "transformer3w_type_input"
+		WecTypeInput             || "wec_type_input"
+		WecTypeInput             || "wec_type_input"
+		NodeGraphicInput         || "node_graphic_input"
+		LineGraphicInput         || "line_graphic_input"
+	}
+
+	def "A simple file naming strategy does return valid file path for load profile time series"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new FileNamingStrategy()
+		def timeSeries = Mock(LoadProfileInput)
+		timeSeries.uuid >> uuid
+		timeSeries.type >> type
+
+		when:
+		def actual = strategy.getFilePath(timeSeries)
+
+		then:
+		actual.present
+		actual.get() == expectedFilePath
+
+		where:
+		clazz            | uuid                                                    | type               || expectedFilePath
+		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewLoadProfile.G3 || "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
+	}
+
+	def "A simple file naming strategy does return valid file path for individual time series"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new FileNamingStrategy()
+		def entries = [
+			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
+		def timeSeries = Mock(IndividualTimeSeries)
+		timeSeries.uuid >> uuid
+		timeSeries.entries >> entries
+
+		when:
+		def actual = strategy.getFilePath(timeSeries)
+
+		then:
+		actual.present
+		actual.get() == expectedFilePath
+
+		where:
+		clazz                | uuid                                                    || expectedFilePath
+		IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 	}
 }
