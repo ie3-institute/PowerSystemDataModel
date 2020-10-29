@@ -33,7 +33,7 @@ class BufferedCsvWriterTest extends Specification {
 		def expectedFile = new File(FilenameUtils.concat(tmpDirectory.toString(), fileDefinition.filePath))
 
 		when:
-		def actual = new BufferedCsvWriter(baseDirectory, fileDefinition, false, false)
+		def actual = new BufferedCsvWriter(baseDirectory, fileDefinition, false)
 
 		then:
 		actual.with {
@@ -47,7 +47,7 @@ class BufferedCsvWriterTest extends Specification {
 	def "The buffered csv writer refuses to write entries, if their length does not conform the needed length of head line elements"() {
 		given:
 		def targetFile = FilenameUtils.concat(tmpDirectory.toString(), "test.csv")
-		def writer = new BufferedCsvWriter(targetFile, ["a", "b", "c"] as String[], "c,", false, false)
+		def writer = new BufferedCsvWriter(targetFile, ["a", "b", "c"] as String[], "c,", false)
 		def malFormedInput = [
 			"a": "z",
 			"b": "y"
@@ -64,7 +64,7 @@ class BufferedCsvWriterTest extends Specification {
 	def "The buffered csv writer refuses to write entries, if keys do not match the required head line"() {
 		given:
 		def targetFile = FilenameUtils.concat(tmpDirectory.toString(), "test.csv")
-		def writer = new BufferedCsvWriter(targetFile, ["a", "b", "c"] as String[], "c,", false, false)
+		def writer = new BufferedCsvWriter(targetFile, ["a", "b", "c"] as String[], "c,", false)
 		def malFormedInput = [
 			"a": "z",
 			"b": "y",

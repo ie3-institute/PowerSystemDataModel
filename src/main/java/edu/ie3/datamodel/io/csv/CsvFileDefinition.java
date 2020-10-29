@@ -20,7 +20,7 @@ public class CsvFileDefinition {
   private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
   private static final Pattern FILE_NAME_PATTERN =
       Pattern.compile(
-          "^(?<fileName>[^\\\\/\\s.]+)(?:\\.(?<extension>[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)?))?$");
+          "^(?<fileName>[^\\\\/\\s.]{0,255})(?:\\.(?<extension>[a-zA-Z0-9]{0,10}(?:\\.[a-zA-Z0-9]{0,10})?))?$");
 
   protected static final String FILE_EXTENSION = "csv";
 

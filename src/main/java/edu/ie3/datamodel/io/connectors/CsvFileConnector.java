@@ -113,16 +113,19 @@ public class CsvFileConnector implements DataConnector {
       throw new IOException("Unable to create directory tree '" + directories.toString() + "'");
 
     File pathFile = new File(fullPath);
-    if (!pathFile.exists()) {
-      return new BufferedCsvWriter(
-          fullPath, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep(), true, false);
+    boolean append = pathFile.exists();
+    BufferedCsvWriter writer =
+        new BufferedCsvWriter(
+            fullPath, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep(), append);
+    if (!append) {
+      writer.writeFileHeader();
+    } else {
+      log.warn(
+          "File '{}' already exist. Will append new content WITHOUT new header! Full path: {}",
+          fileDefinition.getFileName(),
+          pathFile.getAbsolutePath());
     }
-    log.warn(
-        "File '{}' already exist. Will append new content WITHOUT new header! Full path: {}",
-        fileDefinition.getFileName(),
-        pathFile.getAbsolutePath());
-    return new BufferedCsvWriter(
-        fullPath, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep(), false, true);
+    return writer;
   }
 
   /**
