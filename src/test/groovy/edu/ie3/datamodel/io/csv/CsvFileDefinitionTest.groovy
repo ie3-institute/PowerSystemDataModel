@@ -110,7 +110,7 @@ class CsvFileDefinitionTest extends Specification {
 		def definition = new CsvFileDefinition(fileName, manipulatedDirectory, headLineElements, csvSep)
 
 		when:
-		def actual = definition.getFilePath()
+		def actual = definition.filePath
 
 		then:
 		actual == expected

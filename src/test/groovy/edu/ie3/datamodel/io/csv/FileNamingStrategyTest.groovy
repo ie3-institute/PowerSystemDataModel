@@ -610,7 +610,7 @@ class FileNamingStrategyTest extends Specification {
 		res.get() == "prefix_time_series_mapping_suffix"
 	}
 
-	def "A simple file naming strategy does return empty sub directory path for any model or result class"() {
+	def "A simple file naming strategy does return empty sub directory path for any model inputclass"() {
 		given: "a file naming strategy without pre- or suffixes"
 		def strategy = new FileNamingStrategy()
 
@@ -640,22 +640,6 @@ class FileNamingStrategyTest extends Specification {
 		Transformer3WInput       || Optional.empty()
 		CylindricalStorageInput  || Optional.empty()
 		ThermalHouseInput        || Optional.empty()
-		LoadResult               || Optional.empty()
-		FixedFeedInResult        || Optional.empty()
-		BmResult                 || Optional.empty()
-		PvResult                 || Optional.empty()
-		ChpResult                || Optional.empty()
-		WecResult                || Optional.empty()
-		StorageResult            || Optional.empty()
-		EvcsResult               || Optional.empty()
-		EvResult                 || Optional.empty()
-		Transformer2WResult      || Optional.empty()
-		Transformer3WResult      || Optional.empty()
-		LineResult               || Optional.empty()
-		SwitchResult             || Optional.empty()
-		NodeResult               || Optional.empty()
-		CylindricalStorageResult || Optional.empty()
-		ThermalHouseResult       || Optional.empty()
 		BmTypeInput              || Optional.empty()
 		ChpTypeInput             || Optional.empty()
 		EvTypeInput              || Optional.empty()
@@ -672,6 +656,36 @@ class FileNamingStrategyTest extends Specification {
 		WecCharacteristicInput   || Optional.empty()
 		EvCharacteristicInput    || Optional.empty()
 		TimeSeriesMapping.Entry  || Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for any result class"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new FileNamingStrategy()
+
+		when:
+		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		actual == expected
+
+		where:
+		modelClass               || expected
+		LoadResult               || Optional.empty()
+		FixedFeedInResult        || Optional.empty()
+		BmResult                 || Optional.empty()
+		PvResult                 || Optional.empty()
+		ChpResult                || Optional.empty()
+		WecResult                || Optional.empty()
+		StorageResult            || Optional.empty()
+		EvcsResult               || Optional.empty()
+		EvResult                 || Optional.empty()
+		Transformer2WResult      || Optional.empty()
+		Transformer3WResult      || Optional.empty()
+		LineResult               || Optional.empty()
+		SwitchResult             || Optional.empty()
+		NodeResult               || Optional.empty()
+		CylindricalStorageResult || Optional.empty()
+		ThermalHouseResult       || Optional.empty()
 	}
 
 	def "A simple file naming strategy does return empty sub directory path for load profile time series"() {
@@ -698,7 +712,7 @@ class FileNamingStrategyTest extends Specification {
 		actual == Optional.empty()
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for all result and model classes"() {
+	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for all input classes"() {
 		given: "a file naming strategy without pre- or suffixes"
 		def strategy = new FileNamingStrategy()
 
@@ -711,22 +725,6 @@ class FileNamingStrategyTest extends Specification {
 
 		where:
 		modelClass               || expectedString
-		LoadResult               || "load_res"
-		FixedFeedInResult        || "fixedfeedin_res"
-		BmResult                 || "bm_res"
-		PvResult                 || "pv_res"
-		ChpResult                || "chp_res"
-		WecResult                || "wec_res"
-		StorageResult            || "storage_res"
-		EvcsResult               || "evcs_res"
-		EvResult                 || "ev_res"
-		Transformer2WResult      || "transformer2w_res"
-		Transformer3WResult      || "transformer3w_res"
-		LineResult               || "line_res"
-		SwitchResult             || "switch_res"
-		NodeResult               || "node_res"
-		CylindricalStorageResult || "cylindricalstorage_res"
-		ThermalHouseResult       || "thermalhouse_res"
 		WecCharacteristicInput   || "wec_characteristic_input"
 		FixedFeedInInput         || "fixed_feed_in_input"
 		PvInput                  || "pv_input"
@@ -759,6 +757,37 @@ class FileNamingStrategyTest extends Specification {
 		WecTypeInput             || "wec_type_input"
 		NodeGraphicInput         || "node_graphic_input"
 		LineGraphicInput         || "line_graphic_input"
+	}
+
+	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for all result classes"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new FileNamingStrategy()
+
+		when:
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass               || expectedString
+		LoadResult               || "load_res"
+		FixedFeedInResult        || "fixedfeedin_res"
+		BmResult                 || "bm_res"
+		PvResult                 || "pv_res"
+		ChpResult                || "chp_res"
+		WecResult                || "wec_res"
+		StorageResult            || "storage_res"
+		EvcsResult               || "evcs_res"
+		EvResult                 || "ev_res"
+		Transformer2WResult      || "transformer2w_res"
+		Transformer3WResult      || "transformer3w_res"
+		LineResult               || "line_res"
+		SwitchResult             || "switch_res"
+		NodeResult               || "node_res"
+		CylindricalStorageResult || "cylindricalstorage_res"
+		ThermalHouseResult       || "thermalhouse_res"
 	}
 
 	def "A simple file naming strategy does return valid file path for load profile time series"() {

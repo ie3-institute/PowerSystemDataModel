@@ -18,11 +18,9 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.util.io.FileIOUtils
-import edu.ie3.util.quantities.interfaces.EnergyPrice
 import org.apache.commons.io.FilenameUtils
 import spock.lang.Shared
 import spock.lang.Specification
-import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
 import java.nio.file.Files
@@ -183,7 +181,7 @@ class CsvFileConnectorTest extends Specification {
 		def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
 
 		when:
-		connector.buildFileDefinition(String.class, ["a", "b", "c"] as String[], ",")
+		connector.buildFileDefinition(String, ["a", "b", "c"] as String[], ",")
 
 		then:
 		def ex = thrown(ConnectorException)
@@ -198,7 +196,7 @@ class CsvFileConnectorTest extends Specification {
 		def expected = new CsvFileDefinition("node_input.csv", "", ["a", "b", "c"] as String[], ",")
 
 		when:
-		def actual = connector.buildFileDefinition(NodeInput.class, ["a", "b", "c"] as String[], ",")
+		def actual = connector.buildFileDefinition(NodeInput, ["a", "b", "c"] as String[], ",")
 
 		then:
 		actual == expected
@@ -212,7 +210,7 @@ class CsvFileConnectorTest extends Specification {
 		def expected = new CsvFileDefinition("node_input.csv", "test/grid", ["a", "b", "c"] as String[], ",")
 
 		when:
-		def actual = connector.buildFileDefinition(NodeInput.class, ["a", "b", "c"] as String[], ",")
+		def actual = connector.buildFileDefinition(NodeInput, ["a", "b", "c"] as String[], ",")
 
 		then:
 		actual == expected

@@ -72,7 +72,7 @@ class InfluxDbSinkIT extends Specification {
 				null)
 		when:
 		sink.persist(lineResult1)
-		def key = fileNamingStrategy.getFileName(LineResult.class).get().trim().replaceAll("\\W", "_")
+		def key = fileNamingStrategy.getFileName(LineResult).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def fieldMap = parsedResults.get(key).first()
@@ -121,8 +121,8 @@ class InfluxDbSinkIT extends Specification {
 		]
 		when:
 		sink.persistAll(entities)
-		def key_line = fileNamingStrategy.getFileName(LineResult.class).get().trim().replaceAll("\\W", "_")
-		def key_chp = fileNamingStrategy.getFileName(ChpResult.class).get().trim().replaceAll("\\W", "_")
+		def key_line = fileNamingStrategy.getFileName(LineResult).get().trim().replaceAll("\\W", "_")
+		def key_chp = fileNamingStrategy.getFileName(ChpResult).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key_line + ", " + key_chp))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def lineResults = parsedResults.get(key_line)
