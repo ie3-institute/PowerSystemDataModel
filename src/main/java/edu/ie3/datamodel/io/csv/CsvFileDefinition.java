@@ -10,39 +10,72 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CsvFileDefinition {
-  private static final Pattern fileNamePattern = Pattern.compile("[\\w\\\\/-]+");
-  private static final Pattern fullPathPattern =
-      Pattern.compile("(" + fileNamePattern.pattern() + ")\\.+(\\w+)");
+  private static final Logger logger = LoggerFactory.getLogger(CsvFileDefinition.class);
+
+  private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
+  private static final Pattern FILE_NAME_PATTERN =
+      Pattern.compile(
+          "^(?<fileName>[^\\\\/\\s.]+)(?:\\.(?<extension>[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)?))?$");
 
   protected static final String FILE_EXTENSION = "csv";
 
-  protected final String fileName;
-  protected final String[] headLineElements;
-  protected final String csvSep;
+  private final String directoryPath;
+  private final String fileName;
+  private final String[] headLineElements;
+  private final String csvSep;
 
-  public CsvFileDefinition(String fileName, String[] headLineElements, String csvSep) {
-    Matcher fullPathMatcher = fullPathPattern.matcher(fileName);
-    if (fullPathMatcher.matches()) {
-      this.fileName = fullPathMatcher.group(1).replaceAll("\\\\/", File.separator);
-    } else if (fileName.matches(fileNamePattern.pattern())) {
-      this.fileName = fileName.replaceAll("\\\\/", File.separator);
+  public CsvFileDefinition(
+      String fileName, String directoryPath, String[] headLineElements, String csvSep) {
+    /* Remove all file separators at the beginning and end of a directory path and ensure harmonized file separator */
+    this.directoryPath =
+        Objects.nonNull(directoryPath)
+            ? directoryPath
+                .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
+                .replaceAll(FILE_SEPARATOR_REGEX + "$", "")
+                .replaceAll(FILE_SEPARATOR_REGEX, File.separator)
+            : "";
+
+    /* Check the given information of the file name */
+    Matcher matcher = FILE_NAME_PATTERN.matcher(fileName);
+    if (matcher.matches()) {
+      String extension = matcher.group("extension");
+      if (Objects.nonNull(extension) && !extension.equalsIgnoreCase(FILE_EXTENSION))
+        logger.warn(
+            "You provided a file name with extension '{}'. It will be overridden to '{}'.",
+            extension,
+            FILE_EXTENSION);
+      this.fileName = matcher.group("fileName") + "." + FILE_EXTENSION;
     } else {
       throw new IllegalArgumentException(
-          "The file name \"" + fileName + "\" is no valid file name.");
+          "The file name '"
+              + fileName
+              + "' is no valid file name. It may contain everything, except '/', '\\', '.' and any white space character.");
     }
 
     this.headLineElements = headLineElements;
     this.csvSep = csvSep;
   }
 
+  public String getDirectoryPath() {
+    return directoryPath;
+  }
+
+  /** @return The file name including extension */
   public String getFileName() {
     return fileName;
   }
 
+  /**
+   * @return The path to the file relative to a not explicitly defined base directory, including the
+   *     file extension
+   */
   public String getFilePath() {
-    return fileName + "." + FILE_EXTENSION;
+    return !directoryPath.isEmpty() ? FilenameUtils.concat(directoryPath, fileName) : fileName;
   }
 
   public String[] getHeadLineElements() {
@@ -56,16 +89,17 @@ public class CsvFileDefinition {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof CsvFileDefinition)) return false;
     CsvFileDefinition that = (CsvFileDefinition) o;
-    return fileName.equals(that.fileName)
+    return directoryPath.equals(that.directoryPath)
+        && fileName.equals(that.fileName)
         && Arrays.equals(headLineElements, that.headLineElements)
         && csvSep.equals(that.csvSep);
   }
 
   @Override
   public int hashCode() {
-    int result = Objects.hash(fileName, csvSep);
+    int result = Objects.hash(directoryPath, fileName, csvSep);
     result = 31 * result + Arrays.hashCode(headLineElements);
     return result;
   }
@@ -73,7 +107,10 @@ public class CsvFileDefinition {
   @Override
   public String toString() {
     return "CsvFileDefinition{"
-        + "fileName='"
+        + "directoryPath='"
+        + directoryPath
+        + '\''
+        + ", fileName='"
         + fileName
         + '\''
         + ", headLineElements="

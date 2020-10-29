@@ -11,15 +11,24 @@ import edu.ie3.datamodel.io.csv.DefaultInputHierarchy
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.csv.HierarchicFileNamingStrategy
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
+import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
+import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
+import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.util.io.FileIOUtils
+import edu.ie3.util.quantities.interfaces.EnergyPrice
 import org.apache.commons.io.FilenameUtils
 import spock.lang.Shared
 import spock.lang.Specification
+import tech.units.indriya.ComparableQuantity
+import tech.units.indriya.quantity.Quantities
 
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.time.ZonedDateTime
 
 class CsvFileConnectorTest extends Specification {
 	@Shared
@@ -167,12 +176,115 @@ class CsvFileConnectorTest extends Specification {
 		nodeFile.file // is it a file?
 	}
 
+	def "The csv file connector throws ConnectorException if no csv file definition can be built from class information"() {
+		given:
+		def baseDirectory = tmpFolder.toString()
+		def fileNamingStrategy = new FileNamingStrategy()
+		def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+
+		when:
+		connector.buildFileDefinition(String.class, ["a", "b", "c"] as String[], ",")
+
+		then:
+		def ex = thrown(ConnectorException)
+		ex.message == "Cannot determine the file name for class 'String'."
+	}
+
+	def "The csv file connector is able to build correct csv file definition from class upon request"() {
+		given:
+		def baseDirectory = tmpFolder.toString()
+		def fileNamingStrategy = new FileNamingStrategy()
+		def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+		def expected = new CsvFileDefinition("node_input.csv", "", ["a", "b", "c"] as String[], ",")
+
+		when:
+		def actual = connector.buildFileDefinition(NodeInput.class, ["a", "b", "c"] as String[], ",")
+
+		then:
+		actual == expected
+	}
+
+	def "The csv file connector is able to build correct csv file definition from class upon request, utilizing directory hierarchy"() {
+		given:
+		def baseDirectory = tmpFolder.toString()
+		def fileNamingStrategy = new HierarchicFileNamingStrategy(new DefaultInputHierarchy(tmpFolder.toString(), "test"))
+		def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+		def expected = new CsvFileDefinition("node_input.csv", "test/grid", ["a", "b", "c"] as String[], ",")
+
+		when:
+		def actual = connector.buildFileDefinition(NodeInput.class, ["a", "b", "c"] as String[], ",")
+
+		then:
+		actual == expected
+	}
+
+	def "The csv file connector throws ConnectorException if no csv file definition can be built from time series"() {
+		given: "a suitable connector"
+		def baseDirectory = tmpFolder.toString()
+		def fileNamingStrategy = new FileNamingStrategy()
+		def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+
+		and: "credible input"
+		def timeSeries = Mock(RepetitiveTimeSeries)
+
+		when:
+		connector.buildFileDefinition(timeSeries, ["a", "b", "c"] as String[], ",")
+
+		then:
+		def ex = thrown(ConnectorException)
+		ex.message == "Cannot determine the file name for time series 'Mock for type 'RepetitiveTimeSeries' named 'timeSeries''."
+	}
+
+	def "The csv file connector is able to build correct csv file definition from time series upon request"() {
+		given: "a suitable connector"
+		def baseDirectory = tmpFolder.toString()
+		def fileNamingStrategy = new FileNamingStrategy()
+		def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+		def expected = new CsvFileDefinition("its_c_0c03ce9f-ab0e-4715-bc13-f9d903f26dbf.csv", "", ["a", "b", "c"] as String[], ",")
+
+		and: "credible input"
+		def entries = [
+			new TimeBasedValue(UUID.fromString("5bac1c86-19d1-4145-8dae-f207a1346916"), ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(50d, StandardUnits.ENERGY_PRICE)))
+		] as SortedSet
+		def timeSeries = Mock(IndividualTimeSeries)
+		timeSeries.uuid >> UUID.fromString("0c03ce9f-ab0e-4715-bc13-f9d903f26dbf")
+		timeSeries.entries >> entries
+
+		when:
+		def actual = connector.buildFileDefinition(timeSeries, ["a", "b", "c"] as String[], ",")
+
+		then:
+		actual == expected
+	}
+
+	def "The csv file connector is able to build correct csv file definition from time series upon request, utilizing directory hierarchy"() {
+		given: "a suitable connector"
+		def baseDirectory = tmpFolder.toString()
+		def fileNamingStrategy = new HierarchicFileNamingStrategy(new DefaultInputHierarchy(tmpFolder.toString(), "test"))
+		def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
+		def expected = new CsvFileDefinition("its_c_0c03ce9f-ab0e-4715-bc13-f9d903f26dbf.csv", "test/participants/time_series", ["a", "b", "c"] as String[], ",")
+
+		and: "credible input"
+		def entries = [
+			new TimeBasedValue(UUID.fromString("5bac1c86-19d1-4145-8dae-f207a1346916"), ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(50d, StandardUnits.ENERGY_PRICE)))
+		] as SortedSet
+		def timeSeries = Mock(IndividualTimeSeries)
+		timeSeries.uuid >> UUID.fromString("0c03ce9f-ab0e-4715-bc13-f9d903f26dbf")
+		timeSeries.entries >> entries
+
+		when:
+		def actual = connector.buildFileDefinition(timeSeries, ["a", "b", "c"] as String[], ",")
+
+		then:
+		actual == expected
+	}
+
 	def "Initialising a writer with incorrect base directory leads to ConnectorException"() {
 		given:
 		def baseFolder = FilenameUtils.concat(tmpFolder.toString(), "helloWorld.txt")
 		def baseFolderFile = new File(baseFolder)
 		baseFolderFile.createNewFile()
-		def fileDefinition = new CsvFileDefinition("test.csv", [] as String[], ",")
+		def fileDefinition = new CsvFileDefinition("test.csv", "", [] as String[], ",")
 
 		when:
 		cfc.initWriter(baseFolder, fileDefinition)

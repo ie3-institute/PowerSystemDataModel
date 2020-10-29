@@ -91,28 +91,22 @@ public class CsvFileConnector implements DataConnector {
   /**
    * Initializes a writer with the given base folder and file definition
    *
-   * @param baseFolder Base folder, where the file hierarchy should start
+   * @param baseDirectory Base directory, where the file hierarchy should start
    * @param fileDefinition Definition of the files shape
    * @return an initialized buffered writer
    * @throws ConnectorException If the base folder is a file
    * @throws IOException If the writer cannot be initialized correctly
    */
-  private BufferedCsvWriter initWriter(String baseFolder, CsvFileDefinition fileDefinition)
+  private BufferedCsvWriter initWriter(String baseDirectory, CsvFileDefinition fileDefinition)
       throws ConnectorException, IOException {
-    /* Put together the full file path */
-    String fullPath =
-        FilenameUtils.concat(baseFolder, fileDefinition.getFilePath())
-            .replaceAll("[/\\\\]{1,2}", File.separator);
-
-    /* Split into directories and actual file name */
-    String[] segments = fullPath.split(File.separatorChar == '\\' ? "\\\\" : File.separator);
-    /* By the concatenation of baseFolder and file definition above, it is ensured, that at any time the amount of
-     * segments is at least 2. Therefore, no range check is needed */
-    String directoryPath =
-        String.join(File.separator, Arrays.copyOfRange(segments, 0, segments.length - 1));
+    /* Join the full DIRECTORY path (excluding file name) */
+    String baseDirectoryHarmonized = baseDirectory.replaceAll("[/\\\\]", File.separator);
+    String fullDirectoryPath =
+        FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getDirectoryPath());
+    String fullPath = FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getFilePath());
 
     /* Create missing directories */
-    File directories = new File(directoryPath);
+    File directories = new File(fullDirectoryPath);
     if (directories.isFile())
       throw new ConnectorException("Directory '" + directories + "' already exists and is a file!");
     if (!directories.exists() && !directories.mkdirs())
@@ -124,7 +118,7 @@ public class CsvFileConnector implements DataConnector {
           fullPath, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep(), true, false);
     }
     log.warn(
-        "File '{}.csv' already exist. Will append new content WITHOUT new header! Full path: {}",
+        "File '{}' already exist. Will append new content WITHOUT new header! Full path: {}",
         fileDefinition.getFileName(),
         pathFile.getAbsolutePath());
     return new BufferedCsvWriter(
@@ -288,6 +282,7 @@ public class CsvFileConnector implements DataConnector {
   private <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       CsvFileDefinition buildFileDefinition(T timeSeries, String[] headLineElements, String csvSep)
           throws ConnectorException {
+    String directoryPath = fileNamingStrategy.getDirectoryPath(timeSeries).orElse("");
     String fileName =
         fileNamingStrategy
             .getFileName(timeSeries)
@@ -295,7 +290,7 @@ public class CsvFileConnector implements DataConnector {
                 () ->
                     new ConnectorException(
                         "Cannot determine the file name for time series '" + timeSeries + "'."));
-    return new CsvFileDefinition(fileName, headLineElements, csvSep);
+    return new CsvFileDefinition(fileName, directoryPath, headLineElements, csvSep);
   }
 
   /**
@@ -310,14 +305,15 @@ public class CsvFileConnector implements DataConnector {
   private CsvFileDefinition buildFileDefinition(
       Class<? extends UniqueEntity> clz, String[] headLineElements, String csvSep)
       throws ConnectorException {
+    String directoryPath = fileNamingStrategy.getDirectoryPath(clz).orElse("");
     String fileName =
         fileNamingStrategy
             .getFileName(clz)
             .orElseThrow(
                 () ->
                     new ConnectorException(
-                        "Cannot determine the file name for class '" + clz + "'."));
-    return new CsvFileDefinition(fileName, headLineElements, csvSep);
+                        "Cannot determine the file name for class '" + clz.getSimpleName() + "'."));
+    return new CsvFileDefinition(fileName, directoryPath, headLineElements, csvSep);
   }
 
   @Override

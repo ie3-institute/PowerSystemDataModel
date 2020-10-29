@@ -29,7 +29,7 @@ class BufferedCsvWriterTest extends Specification {
 	def "The convenience constructor of the BufferedCsvWriter class works as expected."() {
 		given:
 		def baseDirectory = tmpDirectory.toString()
-		def fileDefinition = new CsvFileDefinition("test.csv", ["a", "b", "c"] as String[], ",")
+		def fileDefinition = new CsvFileDefinition("test.csv", "", ["a", "b", "c"] as String[], ",")
 		def expectedFile = new File(FilenameUtils.concat(tmpDirectory.toString(), fileDefinition.filePath))
 
 		when:
