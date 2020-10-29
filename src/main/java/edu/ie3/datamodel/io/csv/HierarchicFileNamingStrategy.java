@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
+import java.io.File;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
@@ -20,7 +21,7 @@ import org.apache.commons.io.FilenameUtils;
  * structure that can be found in the documentation {@link DefaultInputHierarchy} can be used
  */
 public class HierarchicFileNamingStrategy extends FileNamingStrategy {
-  private static final String ALL_POSSIBLE_FILE_SEPARATORS_AT_START = "^[\\\\/]";
+  private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
 
   private final FileHierarchy hierarchy;
 
@@ -57,79 +58,48 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
   }
 
   /**
-   * Determines the filename for a certain class by composing the hierarchic sub directory structure
-   * provided by {@link #hierarchy} with the actual file name given by {@link FileNamingStrategy}.
-   * If one of both components cannot be determined, an empty {@link Optional} is returned.
+   * Returns the sub directory structure with regard to some (not explicitly specified) base
+   * directory. The path does NOT start or end with any of the known file separators.
    *
-   * @param cls The class to define the file name for.
-   * @return The file name including the hierarchic sub directory structure
+   * @param cls Targeted class of the given file
+   * @return An optional sub directory path
    */
   @Override
-  public Optional<String> getFileName(Class<? extends UniqueEntity> cls) {
-    /* Get the file name */
-    Optional<String> maybeFilename = super.getFileName(cls);
-    String fileName;
-    if (!maybeFilename.isPresent()) {
-      logger.debug("Cannot determine file name for class '{}'.", cls);
-      return Optional.empty();
-    } else {
-      /* Make sure, that the file name does not start with a file separator */
-      fileName = maybeFilename.get().replaceFirst(ALL_POSSIBLE_FILE_SEPARATORS_AT_START, "");
-    }
-
-    /* Get the directory name */
+  public Optional<String> getDirectoryPath(Class<? extends UniqueEntity> cls) {
     Optional<String> maybeDirectoryName = hierarchy.getSubDirectory(cls);
-    String directoryName;
+    String directoryPath;
     if (!maybeDirectoryName.isPresent()) {
       logger.debug("Cannot determine directory name for class '{}'.", cls);
       return Optional.empty();
     } else {
-      /* Make sure, that the directory name does not start with a file separator */
-      directoryName =
+      /* Make sure, the directory path does not start or end with file separator and in between the separator is harmonized */
+      directoryPath =
           maybeDirectoryName
               .get()
-              .replaceFirst(ALL_POSSIBLE_FILE_SEPARATORS_AT_START, "")
-              .replaceAll("[\\\\/]", "/");
+              .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
+              .replaceAll(FILE_SEPARATOR_REGEX + "$", "")
+              .replaceAll(FILE_SEPARATOR_REGEX, File.separator);
+      return Optional.of(directoryPath);
     }
-
-    /* Put everything together and return it */
-    String fullName = FilenameUtils.concat(directoryName, fileName);
-
-    return Optional.of(fullName);
   }
 
   @Override
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      Optional<String> getFileName(T timeSeries) {
-    /* Get the file name */
-    Optional<String> maybeFilename = super.getFileName(timeSeries);
-    String fileName;
-    if (!maybeFilename.isPresent()) {
-      logger.debug("Cannot determine file name for time series '{}'.", timeSeries);
-      return Optional.empty();
-    } else {
-      /* Make sure, that the file name does not start with a file separator */
-      fileName = maybeFilename.get().replaceFirst(ALL_POSSIBLE_FILE_SEPARATORS_AT_START, "");
-    }
-
-    /* Get the directory name */
+      Optional<String> getDirectoryPath(T timeSeries) {
     Optional<String> maybeDirectoryName = hierarchy.getSubDirectory(timeSeries.getClass());
-    String directoryName;
+    String directoryPath;
     if (!maybeDirectoryName.isPresent()) {
-      logger.debug("Cannot determine directory name for class '{}'.", timeSeries.getClass());
+      logger.debug("Cannot determine directory name for time series '{}'.", timeSeries);
       return Optional.empty();
     } else {
-      /* Make sure, that the directory name does not start with a file separator */
-      directoryName =
+      /* Make sure, the directory path does not start or end with file separator and in between the separator is harmonized */
+      directoryPath =
           maybeDirectoryName
               .get()
-              .replaceFirst(ALL_POSSIBLE_FILE_SEPARATORS_AT_START, "")
-              .replaceAll("[\\\\/]", "/");
+              .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
+              .replaceAll(FILE_SEPARATOR_REGEX + "$", "")
+              .replaceAll(FILE_SEPARATOR_REGEX, File.separator);
+      return Optional.of(directoryPath);
     }
-
-    /* Put everything together and return it */
-    String fullName = FilenameUtils.concat(directoryName, fileName);
-
-    return Optional.of(fullName);
   }
 }
