@@ -54,7 +54,7 @@ node {
             String targetBranchName = prJsonObj == null ? null : prJsonObj.base.ref
 
             /* prs from forks require a special handling*/
-            String headGitCheckoutUrl = prJsonObj.head.repo.ssh_url
+            String headGitCheckoutUrl = prJsonObj.head.repo.ssh_url == null ? gitCheckoutUrl : prJsonObj.head.repo.ssh_url
 
             // notify rocket chat
             notifyRocketChat(rocketChatChannel, ':jenkins_triggered:', buildStartMsg(currentBranchName, targetBranchName, projectName))
