@@ -1,0 +1,17 @@
+@startuml
+
+package <gridname>(.tar.gz) {
+    package //results// {
+        package //grid// {
+            label "//line_result.csv//\n//node_result.csv//\n//switch_result.csv//\n//transformer_2w_result.csv//\n//transformer_3w_result.csv//"
+        }
+        package "//thermal//" {
+            label "//cylindrical_storage_result.csv//\n//thermal_bus_result.csv//\n//thermal_house_result.csv//"
+        }
+        package "//participants//" {
+            label "//bm_result.csv//\n//chp_result.csv//\n//ev_result.csv//\n//evcs_result.csv//\n//fixed_feed_in_result.csv//\n//hp_result.csv//\n//load_result.csv//\n//pv_result.csv//\n//storage_result.csv//\n//wec_result.csv//"
+        }
+    }
+}
+
+@enduml

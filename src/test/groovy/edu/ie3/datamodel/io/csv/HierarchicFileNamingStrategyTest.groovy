@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.csv
 
 import edu.ie3.datamodel.models.BdewLoadProfile
+import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.RandomLoadParameters
@@ -29,15 +30,7 @@ import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
-import edu.ie3.datamodel.models.result.system.BmResult
-import edu.ie3.datamodel.models.result.system.ChpResult
-import edu.ie3.datamodel.models.result.system.EvResult
-import edu.ie3.datamodel.models.result.system.EvcsResult
-import edu.ie3.datamodel.models.result.system.FixedFeedInResult
-import edu.ie3.datamodel.models.result.system.LoadResult
-import edu.ie3.datamodel.models.result.system.PvResult
-import edu.ie3.datamodel.models.result.system.StorageResult
-import edu.ie3.datamodel.models.result.system.WecResult
+import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -56,11 +49,11 @@ import java.time.ZonedDateTime
 
 class HierarchicFileNamingStrategyTest extends Specification {
 	@Shared
-	DefaultInputHierarchy defaultHierarchy
+	DefaultDirectoryHierarchy defaultHierarchy
 
 	def setup() {
 		def tmpPath = Files.createTempDirectory("psdm_hierarchic_file_naming_strategy")
-		defaultHierarchy = new DefaultInputHierarchy(tmpPath.toString(), "test_grid")
+		defaultHierarchy = new DefaultDirectoryHierarchy(tmpPath.toString(), "test_grid")
 	}
 
 	def "A FileNamingStrategy should return an empty optional on a invalid class"() {
@@ -74,72 +67,43 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		!res.present
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return empty optionals for all result models"() {
+	def "A FileNamingStrategy without pre- or suffixes should return valid directory paths for all result models"() {
 		given: "a file naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def res = strategy.getFileName(modelClass)
+		def res = strategy.getDirectoryPath(modelClass)
 
 		then:
-		!res.present
+		res.present
+		res.get() == expectedString
 
 		where:
 		modelClass               || expectedString
-		LoadResult               || ""
-		FixedFeedInResult        || ""
-		BmResult                 || ""
-		PvResult                 || ""
-		ChpResult                || ""
-		WecResult                || ""
-		StorageResult            || ""
-		EvcsResult               || ""
-		EvResult                 || ""
-		Transformer2WResult      || ""
-		Transformer3WResult      || ""
-		LineResult               || ""
-		SwitchResult             || ""
-		NodeResult               || ""
-		CylindricalStorageResult || ""
-		ThermalHouseResult       || ""
+		LoadResult               || "test_grid" + File.separator + "results" + File.separator + "participants"
+		FixedFeedInResult        || "test_grid" + File.separator + "results" + File.separator + "participants"
+		BmResult                 || "test_grid" + File.separator + "results" + File.separator + "participants"
+		PvResult                 || "test_grid" + File.separator + "results" + File.separator + "participants"
+		ChpResult                || "test_grid" + File.separator + "results" + File.separator + "participants"
+		WecResult                || "test_grid" + File.separator + "results" + File.separator + "participants"
+		StorageResult            || "test_grid" + File.separator + "results" + File.separator + "participants"
+		EvcsResult               || "test_grid" + File.separator + "results" + File.separator + "participants"
+		EvResult                 || "test_grid" + File.separator + "results" + File.separator + "participants"
+		Transformer2WResult      || "test_grid" + File.separator + "results" + File.separator + "grid"
+		Transformer3WResult      || "test_grid" + File.separator + "results" + File.separator + "grid"
+		LineResult               || "test_grid" + File.separator + "results" + File.separator + "grid"
+		SwitchResult             || "test_grid" + File.separator + "results" + File.separator + "grid"
+		NodeResult               || "test_grid" + File.separator + "results" + File.separator + "grid"
+		CylindricalStorageResult || "test_grid" + File.separator + "results" + File.separator + "thermal"
+		ThermalHouseResult       || "test_grid" + File.separator + "results" + File.separator + "thermal"
 	}
 
-	def "A FileNamingStrategy with pre- and suffixes should return empty optionals for all result models"() {
-		given: "a file naming strategy with pre- or suffixes"
-		def strategy = new HierarchicFileNamingStrategy("prefix", "suffix", defaultHierarchy)
-
-		when:
-		def res = strategy.getFileName(modelClass)
-
-		then:
-		!res.present
-
-		where:
-		modelClass               || expectedString
-		LoadResult               || ""
-		FixedFeedInResult        || ""
-		BmResult                 || ""
-		PvResult                 || ""
-		ChpResult                || ""
-		WecResult                || ""
-		StorageResult            || ""
-		EvcsResult               || ""
-		EvResult                 || ""
-		Transformer2WResult      || ""
-		Transformer3WResult      || ""
-		LineResult               || ""
-		SwitchResult             || ""
-		NodeResult               || ""
-		CylindricalStorageResult || ""
-		ThermalHouseResult       || ""
-	}
-
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all input assets models"() {
+	def "A FileNamingStrategy without pre- or suffixes should return valid directory paths for all input assets models"() {
 		given: "a file naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def res = strategy.getFileName(modelClass)
+		def res = strategy.getDirectoryPath(modelClass)
 
 		then:
 		res.present
@@ -147,32 +111,65 @@ class HierarchicFileNamingStrategyTest extends Specification {
 
 		where:
 		modelClass              || expectedString
-		FixedFeedInInput        || "participants/fixed_feed_in_input"
-		PvInput                 || "participants/pv_input"
-		WecInput                || "participants/wec_input"
-		ChpInput                || "participants/chp_input"
-		BmInput                 || "participants/bm_input"
-		EvInput                 || "participants/ev_input"
-		LoadInput               || "participants/load_input"
-		StorageInput            || "participants/storage_input"
-		HpInput                 || "participants/hp_input"
-		LineInput               || "grid/line_input"
-		SwitchInput             || "grid/switch_input"
-		NodeInput               || "grid/node_input"
-		MeasurementUnitInput    || "grid/measurement_unit_input"
-		EvcsInput               || "participants/evcs_input"
-		Transformer2WInput      || "grid/transformer2w_input"
-		Transformer3WInput      || "grid/transformer3w_input"
-		CylindricalStorageInput || "thermal/cylindrical_storage_input"
-		ThermalHouseInput       || "thermal/thermal_house_input"
+		FixedFeedInInput        || "test_grid" + File.separator + "input" + File.separator + "participants"
+		PvInput                 || "test_grid" + File.separator + "input" + File.separator + "participants"
+		WecInput                || "test_grid" + File.separator + "input" + File.separator + "participants"
+		ChpInput                || "test_grid" + File.separator + "input" + File.separator + "participants"
+		BmInput                 || "test_grid" + File.separator + "input" + File.separator + "participants"
+		EvInput                 || "test_grid" + File.separator + "input" + File.separator + "participants"
+		LoadInput               || "test_grid" + File.separator + "input" + File.separator + "participants"
+		StorageInput            || "test_grid" + File.separator + "input" + File.separator + "participants"
+		HpInput                 || "test_grid" + File.separator + "input" + File.separator + "participants"
+		LineInput               || "test_grid" + File.separator + "input" + File.separator + "grid"
+		SwitchInput             || "test_grid" + File.separator + "input" + File.separator + "grid"
+		NodeInput               || "test_grid" + File.separator + "input" + File.separator + "grid"
+		MeasurementUnitInput    || "test_grid" + File.separator + "input" + File.separator + "grid"
+		EvcsInput               || "test_grid" + File.separator + "input" + File.separator + "participants"
+		Transformer2WInput      || "test_grid" + File.separator + "input" + File.separator + "grid"
+		Transformer3WInput      || "test_grid" + File.separator + "input" + File.separator + "grid"
+		CylindricalStorageInput || "test_grid" + File.separator + "input" + File.separator + "thermal"
+		ThermalHouseInput       || "test_grid" + File.separator + "input" + File.separator + "thermal"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all asset characteristics models"() {
+	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for all input assets models"() {
 		given: "a file naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def res = strategy.getFileName(modelClass)
+		def res = strategy.getFilePath(modelClass)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass              || expectedString
+		FixedFeedInInput        || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "fixed_feed_in_input"
+		PvInput                 || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "pv_input"
+		WecInput                || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "wec_input"
+		ChpInput                || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "chp_input"
+		BmInput                 || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "bm_input"
+		EvInput                 || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "ev_input"
+		LoadInput               || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "load_input"
+		StorageInput            || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "storage_input"
+		HpInput                 || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "hp_input"
+		LineInput               || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "line_input"
+		SwitchInput             || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "switch_input"
+		NodeInput               || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "node_input"
+		MeasurementUnitInput    || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "measurement_unit_input"
+		EvcsInput               || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "evcs_input"
+		Transformer2WInput      || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "transformer2w_input"
+		Transformer3WInput      || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "transformer3w_input"
+		CylindricalStorageInput || "test_grid" + File.separator + "input" + File.separator + "thermal" + File.separator + "cylindrical_storage_input"
+		ThermalHouseInput       || "test_grid" + File.separator + "input" + File.separator + "thermal" + File.separator + "thermal_house_input"
+	}
+
+	def "A FileNamingStrategy without pre- or suffixes should return valid directory paths for all asset characteristics models"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+
+		when:
+		def res = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
 
 		then:
 		res.present
@@ -180,16 +177,16 @@ class HierarchicFileNamingStrategyTest extends Specification {
 
 		where:
 		modelClass             || expectedString
-		WecCharacteristicInput || "global/wec_characteristic_input"
-		EvCharacteristicInput  || "global/ev_characteristic_input"
+		WecCharacteristicInput || "test_grid" + File.separator + "input" + File.separator + "global"
+		EvCharacteristicInput  || "test_grid" + File.separator + "input" + File.separator + "global"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all input types models"() {
+	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for all asset characteristics models"() {
 		given: "a file naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def res = strategy.getFileName(modelClass)
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
 
 		then:
 		res.present
@@ -197,24 +194,66 @@ class HierarchicFileNamingStrategyTest extends Specification {
 
 		where:
 		modelClass             || expectedString
-		BmTypeInput            || "global/bm_type_input"
-		ChpTypeInput           || "global/chp_type_input"
-		EvTypeInput            || "global/ev_type_input"
-		HpTypeInput            || "global/hp_type_input"
-		LineTypeInput          || "global/line_type_input"
-		StorageTypeInput       || "global/storage_type_input"
-		Transformer2WTypeInput || "global/transformer2w_type_input"
-		Transformer3WTypeInput || "global/transformer3w_type_input"
-		WecTypeInput           || "global/wec_type_input"
-		WecTypeInput           || "global/wec_type_input"
+		WecCharacteristicInput || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "wec_characteristic_input"
+		EvCharacteristicInput  || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "ev_characteristic_input"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for a Load Parameter Model"() {
+	def "A FileNamingStrategy without pre- or suffixes should return valid directory paths for all input types models"() {
 		given: "a file naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def res = strategy.getFileName(modelClass)
+		def res = strategy.getDirectoryPath(modelClass)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass             || expectedString
+		BmTypeInput            || "test_grid" + File.separator + "input" + File.separator + "global"
+		ChpTypeInput           || "test_grid" + File.separator + "input" + File.separator + "global"
+		EvTypeInput            || "test_grid" + File.separator + "input" + File.separator + "global"
+		HpTypeInput            || "test_grid" + File.separator + "input" + File.separator + "global"
+		LineTypeInput          || "test_grid" + File.separator + "input" + File.separator + "global"
+		StorageTypeInput       || "test_grid" + File.separator + "input" + File.separator + "global"
+		Transformer2WTypeInput || "test_grid" + File.separator + "input" + File.separator + "global"
+		Transformer3WTypeInput || "test_grid" + File.separator + "input" + File.separator + "global"
+		WecTypeInput           || "test_grid" + File.separator + "input" + File.separator + "global"
+		WecTypeInput           || "test_grid" + File.separator + "input" + File.separator + "global"
+	}
+
+	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for all input types models"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+
+		when:
+		def res = strategy.getFilePath(modelClass)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass             || expectedString
+		BmTypeInput            || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "bm_type_input"
+		ChpTypeInput           || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "chp_type_input"
+		EvTypeInput            || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "ev_type_input"
+		HpTypeInput            || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "hp_type_input"
+		LineTypeInput          || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "line_type_input"
+		StorageTypeInput       || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "storage_type_input"
+		Transformer2WTypeInput || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "transformer2w_type_input"
+		Transformer3WTypeInput || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "transformer3w_type_input"
+		WecTypeInput           || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "wec_type_input"
+		WecTypeInput           || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "wec_type_input"
+	}
+
+	def "A FileNamingStrategy without pre- or suffixes should return valid directory path for a Load Parameter Model"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+
+		when:
+		def res = strategy.getDirectoryPath(modelClass)
 
 		then:
 		res.present
@@ -222,15 +261,31 @@ class HierarchicFileNamingStrategyTest extends Specification {
 
 		where:
 		modelClass           || expectedString
-		RandomLoadParameters || "global/random_load_parameters_input"
+		RandomLoadParameters || "test_grid" + File.separator + "input" + File.separator + "global"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for a graphic input Model"() {
+	def "A FileNamingStrategy without pre- or suffixes should return valid file path for a Load Parameter Model"() {
 		given: "a file naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def res = strategy.getFileName(modelClass)
+		def res = strategy.getFilePath(modelClass)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass           || expectedString
+		RandomLoadParameters || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "random_load_parameters_input"
+	}
+
+	def "A FileNamingStrategy without pre- or suffixes should return valid directory paths for a graphic input Model"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+
+		when:
+		def res = strategy.getDirectoryPath(modelClass)
 
 		then:
 		res.present
@@ -238,11 +293,45 @@ class HierarchicFileNamingStrategyTest extends Specification {
 
 		where:
 		modelClass       || expectedString
-		NodeGraphicInput || "graphics/node_graphic_input"
-		LineGraphicInput || "graphics/line_graphic_input"
+		NodeGraphicInput || "test_grid" + File.separator + "input" + File.separator + "graphics"
+		LineGraphicInput || "test_grid" + File.separator + "input" + File.separator + "graphics"
 	}
 
-	def "A FileNamingStrategy without pre- or suffix should return valid file name for individual time series"() {
+	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for a graphic input Model"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+
+		when:
+		def res = strategy.getFilePath(modelClass)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass       || expectedString
+		NodeGraphicInput || "test_grid" + File.separator + "input" + File.separator + "graphics" + File.separator + "node_graphic_input"
+		LineGraphicInput || "test_grid" + File.separator + "input" + File.separator + "graphics" + File.separator + "line_graphic_input"
+	}
+
+	def "A FileNamingStrategy should return valid directory path for individual time series"() {
+		given:
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
+
+		when:
+		def actual = strategy.getDirectoryPath(timeSeries)
+
+		then:
+		actual.present
+		actual.get() == expected
+
+		where:
+		clazz                || expected
+		IndividualTimeSeries || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series"
+	}
+
+	def "A FileNamingStrategy without pre- or suffix should return valid file path for individual time series"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 		def entries = [
@@ -252,18 +341,18 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		timeSeries.entries >> entries
 
 		when:
-		def actual = strategy.getFileName(timeSeries)
+		def actual = strategy.getFilePath(timeSeries)
 
 		then:
 		actual.present
-		actual.get() == expectedFileName
+		actual.get() == expectedFilePath
 
 		where:
-		clazz                || uuid                                                    || expectedFileName
-		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "participants/time_series/its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
+		clazz                | uuid                                                    || expectedFilePath
+		IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series" + File.separator + "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 	}
 
-	def "A FileNamingStrategy with pre- or suffix should return valid file name for individual time series"() {
+	def "A FileNamingStrategy with pre- or suffix should return valid file path for individual time series"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy("aa", "zz", defaultHierarchy)
 		def entries = [
@@ -273,18 +362,35 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		timeSeries.entries >> entries
 
 		when:
-		def actual = strategy.getFileName(timeSeries)
+		def actual = strategy.getFilePath(timeSeries)
 
 		then:
 		actual.present
 		actual.get() == expectedFileName
 
 		where:
-		clazz                || uuid                                                    || expectedFileName
-		IndividualTimeSeries || UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "participants/time_series/aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
+		clazz                | uuid                                                    || expectedFileName
+		IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series" + File.separator + "aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
 	}
 
-	def "A FileNamingStrategy without pre- or suffix should return valid file name for load profile input"() {
+	def "A FileNamingStrategy without pre- or suffix should return valid directory path for load profile input"() {
+		given:
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+		def timeSeries = Mock(LoadProfileInput)
+
+		when:
+		def actual = strategy.getDirectoryPath(timeSeries)
+
+		then:
+		actual.present
+		actual.get() == expected
+
+		where:
+		clazz            || expected
+		LoadProfileInput || "test_grid" + File.separator + "input" + File.separator + "global"
+	}
+
+	def "A FileNamingStrategy without pre- or suffix should return valid file path for load profile input"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 		def timeSeries = Mock(LoadProfileInput)
@@ -292,15 +398,15 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		timeSeries.type >> type
 
 		when:
-		def actual = strategy.getFileName(timeSeries)
+		def actual = strategy.getFilePath(timeSeries)
 
 		then:
 		actual.present
 		actual.get() == expectedFileName
 
 		where:
-		clazz            || uuid                                                    || type               || expectedFileName
-		LoadProfileInput || UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") || BdewLoadProfile.G3 || "global/lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
+		clazz            | uuid                                                    | type               || expectedFileName
+		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewLoadProfile.G3 || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
 	def "A FileNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {
@@ -315,28 +421,40 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		!fileName.present
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for time series mapping"() {
+	def "A FileNamingStrategy without pre- or suffixes should return valid directory path for time series mapping"() {
 		given: "a file naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def res = strategy.getFileName(TimeSeriesMapping.Entry)
+		def res = strategy.getDirectoryPath(TimeSeriesMapping.Entry)
 
 		then:
 		res.present
-		res.get() == "participants/time_series/time_series_mapping"
+		res.get() == "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series"
 	}
 
-	def "A FileNamingStrategy with pre- and suffix should return valid strings for time series mapping"() {
+	def "A FileNamingStrategy without pre- or suffixes should return valid file path for time series mapping"() {
+		given: "a file naming strategy without pre- or suffixes"
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+
+		when:
+		def res = strategy.getFilePath(TimeSeriesMapping.Entry)
+
+		then:
+		res.present
+		res.get() == "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series" + File.separator + "time_series_mapping"
+	}
+
+	def "A FileNamingStrategy with pre- and suffix should return valid file path for time series mapping"() {
 		given: "a file naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy("prefix", "suffix", defaultHierarchy)
 
 		when:
-		def res = strategy.getFileName(TimeSeriesMapping.Entry)
+		def res = strategy.getFilePath(TimeSeriesMapping.Entry)
 
 		then:
 		res.present
-		res.get() == "participants/time_series/prefix_time_series_mapping_suffix"
+		res.get() == "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series" + File.separator + "prefix_time_series_mapping_suffix"
 	}
 
 	def "A hierarchic file naming strategy returns correct individual time series file name pattern"() {
@@ -347,7 +465,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def actual = strategy.individualTimeSeriesPattern.pattern()
 
 		then:
-		actual == "participants/time_series/its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+		actual == "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series" + File.separator + "its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 
 	def "A hierarchic file naming strategy returns correct load profile time series file name pattern"() {
@@ -358,6 +476,6 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
 		then:
-		actual == "global/lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+		actual == "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 }
