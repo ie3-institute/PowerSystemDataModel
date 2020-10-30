@@ -161,8 +161,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		NodeInput               || "grid/node_input"
 		MeasurementUnitInput    || "grid/measurement_unit_input"
 		EvcsInput               || "participants/evcs_input"
-		Transformer2WInput      || "grid/transformer2w_input"
-		Transformer3WInput      || "grid/transformer3w_input"
+		Transformer2WInput      || "grid/transformer_2_w_input"
+		Transformer3WInput      || "grid/transformer_3_w_input"
 		CylindricalStorageInput || "thermal/cylindrical_storage_input"
 		ThermalHouseInput       || "thermal/thermal_house_input"
 	}
@@ -203,8 +203,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		HpTypeInput            || "global/hp_type_input"
 		LineTypeInput          || "global/line_type_input"
 		StorageTypeInput       || "global/storage_type_input"
-		Transformer2WTypeInput || "global/transformer2w_type_input"
-		Transformer3WTypeInput || "global/transformer3w_type_input"
+		Transformer2WTypeInput || "global/transformer_2_w_type_input"
+		Transformer3WTypeInput || "global/transformer_3_w_type_input"
 		WecTypeInput           || "global/wec_type_input"
 		WecTypeInput           || "global/wec_type_input"
 	}

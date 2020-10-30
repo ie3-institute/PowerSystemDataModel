@@ -42,26 +42,26 @@ class ResultEntityProcessorTest extends Specification {
 	Quantity<Power> qDot = Quantities.getQuantity(1, StandardUnits.Q_DOT_RESULT)
 	@Shared
 	def expectedStandardResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-								   inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-								   p         : '0.01',
-								   q         : '0.01',
-								   time      : '2020-01-30T17:26:44Z[UTC]']
+		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+		p         : '0.01',
+		q         : '0.01',
+		time      : '2020-01-30T17:26:44Z[UTC]']
 
 	@Shared
 	def expectedSocResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-							  inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-							  p         : '0.01',
-							  q         : '0.01',
-							  soc       : '50.0',
-							  time      : '2020-01-30T17:26:44Z[UTC]']
+		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+		p         : '0.01',
+		q         : '0.01',
+		soc       : '50.0',
+		time      : '2020-01-30T17:26:44Z[UTC]']
 
 	@Shared
 	def expectedHpResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-							 inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-							 p         : '0.01',
-							 q         : '0.01',
-							 time      : '2020-01-30T17:26:44Z[UTC]',
-							 qDot      : '1.0']
+		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+		p         : '0.01',
+		q         : '0.01',
+		time      : '2020-01-30T17:26:44Z[UTC]',
+		qDot      : '1.0']
 
 
 	def "A ResultEntityProcessor should de-serialize a provided SystemParticipantResult correctly"() {
@@ -103,11 +103,11 @@ class ResultEntityProcessorTest extends Specification {
 		then:
 		validProcessedElement.present
 		validProcessedElement.get() == [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-										inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-										p         : '0.01',
-										q         : '0.01',
-										soc       : '',
-										time      : '2020-01-30T17:26:44Z[UTC]']
+			inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+			p         : '0.01',
+			q         : '0.01',
+			soc       : '',
+			time      : '2020-01-30T17:26:44Z[UTC]']
 
 	}
 
@@ -134,10 +134,10 @@ class ResultEntityProcessorTest extends Specification {
 		def validResult = new NodeResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, vMag, vAng)
 
 		def expectedResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-							   inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-							   vAng      : '45.0',
-							   vMag      : '0.95',
-							   time      : '2020-01-30T17:26:44Z[UTC]']
+			inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+			vAng      : '45.0',
+			vMag      : '0.95',
+			time      : '2020-01-30T17:26:44Z[UTC]']
 
 		when:
 		def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
@@ -150,41 +150,41 @@ class ResultEntityProcessorTest extends Specification {
 
 	@Shared
 	def expectedLineResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-							   inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-							   iAMag     : '100.0',
-							   iAAng     : '45.0',
-							   iBMag     : '150.0',
-							   iBAng     : '30.0',
-							   time      : '2020-01-30T17:26:44Z[UTC]']
+		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+		iAMag     : '100.0',
+		iAAng     : '45.0',
+		iBMag     : '150.0',
+		iBAng     : '30.0',
+		time      : '2020-01-30T17:26:44Z[UTC]']
 
 	@Shared
 	def expectedTrafo2WResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-								  inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-								  iAMag     : '100.0',
-								  iAAng     : '45.0',
-								  iBMag     : '150.0',
-								  iBAng     : '30.0',
-								  tapPos    : '5',
-								  time      : '2020-01-30T17:26:44Z[UTC]']
+		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+		iAMag     : '100.0',
+		iAAng     : '45.0',
+		iBMag     : '150.0',
+		iBAng     : '30.0',
+		tapPos    : '5',
+		time      : '2020-01-30T17:26:44Z[UTC]']
 
 
 	@Shared
 	def expectedTrafo3WResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-								  inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-								  iAMag     : '100.0',
-								  iAAng     : '45.0',
-								  iBMag     : '150.0',
-								  iBAng     : '30.0',
-								  iCMag     : '300.0',
-								  iCAng     : '70.0',
-								  tapPos    : '5',
-								  time      : '2020-01-30T17:26:44Z[UTC]']
+		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+		iAMag     : '100.0',
+		iAAng     : '45.0',
+		iBMag     : '150.0',
+		iBAng     : '30.0',
+		iCMag     : '300.0',
+		iCAng     : '70.0',
+		tapPos    : '5',
+		time      : '2020-01-30T17:26:44Z[UTC]']
 
 	@Shared
 	def expectedSwitchResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-								 inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-								 closed    : 'true',
-								 time      : '2020-01-30T17:26:44Z[UTC]']
+		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+		closed    : 'true',
+		time      : '2020-01-30T17:26:44Z[UTC]']
 
 
 	@Shared
@@ -237,11 +237,11 @@ class ResultEntityProcessorTest extends Specification {
 		def validResult = new CylindricalStorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, energy, qDot, fillLevel)
 
 		def expectedResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-							   energy    : '3.0',
-							   fillLevel : '20.0',
-							   inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-							   qDot      : '2.0',
-							   time      : '2020-01-30T17:26:44Z[UTC]']
+			energy    : '3.0',
+			fillLevel : '20.0',
+			inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+			qDot      : '2.0',
+			time      : '2020-01-30T17:26:44Z[UTC]']
 
 		when:
 		def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
