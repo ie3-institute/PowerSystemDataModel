@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.connectors
 
 import edu.ie3.datamodel.exceptions.ConnectorException
 import edu.ie3.datamodel.io.csv.CsvFileDefinition
-import edu.ie3.datamodel.io.csv.DefaultInputHierarchy
+import edu.ie3.datamodel.io.csv.DefaultDirectoryHierarchy
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.csv.HierarchicFileNamingStrategy
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
@@ -27,6 +27,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.ZonedDateTime
+import java.util.stream.Collectors
+import java.util.stream.Stream
 
 class CsvFileConnectorTest extends Specification {
 	@Shared
@@ -131,19 +133,12 @@ class CsvFileConnectorTest extends Specification {
 	def "The csv file connector is able to init writers utilizing a directory hierarchy"() {
 		given: "a suitable connector"
 		def baseDirectory = FilenameUtils.concat(tmpFolder.toString(), "directoryHierarchy")
-		def directoryHierarchy = new DefaultInputHierarchy(baseDirectory, "test")
+		def directoryHierarchy = new DefaultDirectoryHierarchy(baseDirectory, "test")
 		def fileNamingStrategy = new HierarchicFileNamingStrategy(directoryHierarchy)
 		def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
 
 		and: "expected results"
-		def nodeFile = new File(
-				FilenameUtils.concat(
-				FilenameUtils.concat(
-				FilenameUtils.concat(baseDirectory, "test"),
-				"grid"),
-				"node_input.csv"
-				)
-				)
+		def nodeFile = new File(Stream.of(baseDirectory, "test", "input", "grid", "node_input.csv").collect(Collectors.joining(File.separator)))
 
 		when:
 		/* The head line is of no interest here */
@@ -205,9 +200,9 @@ class CsvFileConnectorTest extends Specification {
 	def "The csv file connector is able to build correct csv file definition from class upon request, utilizing directory hierarchy"() {
 		given:
 		def baseDirectory = tmpFolder.toString()
-		def fileNamingStrategy = new HierarchicFileNamingStrategy(new DefaultInputHierarchy(tmpFolder.toString(), "test"))
+		def fileNamingStrategy = new HierarchicFileNamingStrategy(new DefaultDirectoryHierarchy(tmpFolder.toString(), "test"))
 		def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
-		def expected = new CsvFileDefinition("node_input.csv", "test/grid", ["a", "b", "c"] as String[], ",")
+		def expected = new CsvFileDefinition("node_input.csv", Stream.of("test", "input", "grid").collect(Collectors.joining(File.separator)), ["a", "b", "c"] as String[], ",")
 
 		when:
 		def actual = connector.buildFileDefinition(NodeInput, ["a", "b", "c"] as String[], ",")
@@ -258,9 +253,9 @@ class CsvFileConnectorTest extends Specification {
 	def "The csv file connector is able to build correct csv file definition from time series upon request, utilizing directory hierarchy"() {
 		given: "a suitable connector"
 		def baseDirectory = tmpFolder.toString()
-		def fileNamingStrategy = new HierarchicFileNamingStrategy(new DefaultInputHierarchy(tmpFolder.toString(), "test"))
+		def fileNamingStrategy = new HierarchicFileNamingStrategy(new DefaultDirectoryHierarchy(tmpFolder.toString(), "test"))
 		def connector = new CsvFileConnector(baseDirectory, fileNamingStrategy)
-		def expected = new CsvFileDefinition("its_c_0c03ce9f-ab0e-4715-bc13-f9d903f26dbf.csv", "test/participants/time_series", ["a", "b", "c"] as String[], ",")
+		def expected = new CsvFileDefinition("its_c_0c03ce9f-ab0e-4715-bc13-f9d903f26dbf.csv", Stream.of("test", "input", "participants", "time_series").collect(Collectors.joining(File.separator)), ["a", "b", "c"] as String[], ",")
 
 		and: "credible input"
 		def entries = [

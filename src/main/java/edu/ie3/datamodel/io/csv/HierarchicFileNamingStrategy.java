@@ -18,7 +18,7 @@ import org.apache.commons.io.FilenameUtils;
 
 /**
  * A file naming strategy, that takes hierarchic order of sub folders into account. For the standard
- * structure that can be found in the documentation {@link DefaultInputHierarchy} can be used
+ * structure that can be found in the documentation {@link DefaultDirectoryHierarchy} can be used
  */
 public class HierarchicFileNamingStrategy extends FileNamingStrategy {
   private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
