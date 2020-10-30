@@ -21,7 +21,7 @@ public class Transformer3WResult extends TransformerResult {
   private ComparableQuantity<Angle> iCAng;
 
   /**
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
    * @param iAAng electric current angle @ Port A in degree
@@ -32,7 +32,7 @@ public class Transformer3WResult extends TransformerResult {
    * @param tapPos the current position of the transformers tap changer
    */
   public Transformer3WResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
       ComparableQuantity<Angle> iAAng,
@@ -41,7 +41,7 @@ public class Transformer3WResult extends TransformerResult {
       ComparableQuantity<ElectricCurrent> iCMag,
       ComparableQuantity<Angle> iCAng,
       int tapPos) {
-    super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+    super(time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     this.iCMag = iCMag;
     this.iCAng = iCAng;
   }
@@ -49,7 +49,7 @@ public class Transformer3WResult extends TransformerResult {
   /**
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
    * @param iAAng electric current angle @ Port A in degree
@@ -61,7 +61,7 @@ public class Transformer3WResult extends TransformerResult {
    */
   public Transformer3WResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
       ComparableQuantity<Angle> iAAng,
@@ -70,7 +70,7 @@ public class Transformer3WResult extends TransformerResult {
       ComparableQuantity<ElectricCurrent> iCMag,
       ComparableQuantity<Angle> iCAng,
       int tapPos) {
-    super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+    super(uuid, time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     this.iCMag = iCMag;
     this.iCAng = iCAng;
   }
@@ -110,8 +110,8 @@ public class Transformer3WResult extends TransformerResult {
     return "Transformer3WResult{"
         + "uuid="
         + getUuid()
-        + ", timestamp="
-        + getTimestamp()
+        + ", time="
+        + getTime()
         + ", inputModel="
         + getInputModel()
         + ", iAMag="

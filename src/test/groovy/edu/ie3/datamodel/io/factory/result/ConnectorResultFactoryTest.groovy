@@ -33,7 +33,7 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 		given: "a connector result factory and model data"
 		def resultFactory = new ConnectorResultFactory()
 		Map<String, String> parameter = [
-			"timestamp" : "2020-01-30 17:26:44",
+			"time"      : "2020-01-30 17:26:44",
 			"inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
 			"iamag"     : "1.0",
 			"iaang"     : "90",
@@ -57,7 +57,7 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 		result.present
 		result.get().getClass() == resultingModelClass
 		((ConnectorResult) result.get()).with {
-			assert timestamp == TIME_UTIL.toZonedDateTime(parameter["timestamp"])
+			assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
 			assert inputModel == UUID.fromString(parameter["inputModel"])
 			assert iAAng == getQuant(parameter["iaang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
 			assert iAMag == getQuant(parameter["iamag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)

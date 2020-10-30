@@ -21,7 +21,7 @@ public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
   @Override
   protected List<Set<String>> getFields(SimpleEntityData data) {
 
-    Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, CLOSED);
+    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, CLOSED);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     return Arrays.asList(minConstructorParams, optionalFields);
@@ -31,13 +31,13 @@ public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
   protected SwitchResult buildModel(SimpleEntityData data) {
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
-    ZonedDateTime timestamp = TIME_UTIL.toZonedDateTime(data.getField(TIMESTAMP));
+    ZonedDateTime time = TIME_UTIL.toZonedDateTime(data.getField(TIME));
     UUID inputModel = data.getUUID(INPUT_MODEL);
 
     final boolean closed = data.getBoolean(CLOSED);
 
     return uuidOpt
-        .map(uuid -> new SwitchResult(uuid, timestamp, inputModel, closed))
-        .orElseGet(() -> new SwitchResult(timestamp, inputModel, closed));
+        .map(uuid -> new SwitchResult(uuid, time, inputModel, closed))
+        .orElseGet(() -> new SwitchResult(time, inputModel, closed));
   }
 }

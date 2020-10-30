@@ -23,19 +23,19 @@ public class StorageResult extends SystemParticipantResult {
   /**
    * Standard constructor with automatic uuid generation.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
    * @param soc the current state of charge of the storage
    */
   public StorageResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q,
       ComparableQuantity<Dimensionless> soc) {
-    super(timestamp, inputModel, p, q);
+    super(time, inputModel, p, q);
     this.soc = soc;
   }
 
@@ -43,7 +43,7 @@ public class StorageResult extends SystemParticipantResult {
    * Standard constructor with automatic uuid generation.
    *
    * @param uuid Unique identifier
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
@@ -51,12 +51,12 @@ public class StorageResult extends SystemParticipantResult {
    */
   public StorageResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q,
       ComparableQuantity<Dimensionless> soc) {
-    super(uuid, timestamp, inputModel, p, q);
+    super(uuid, time, inputModel, p, q);
     this.soc = soc;
   }
 
