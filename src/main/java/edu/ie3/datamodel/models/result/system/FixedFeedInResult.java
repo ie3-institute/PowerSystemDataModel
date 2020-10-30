@@ -19,17 +19,17 @@ public class FixedFeedInResult extends SystemParticipantResult {
   /**
    * Standard constructor with automatic uuid generation.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
    */
   public FixedFeedInResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q) {
-    super(timestamp, inputModel, p, q);
+    super(time, inputModel, p, q);
   }
 
   /**
@@ -37,18 +37,18 @@ public class FixedFeedInResult extends SystemParticipantResult {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
    */
   public FixedFeedInResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q) {
-    super(uuid, timestamp, inputModel, p, q);
+    super(uuid, time, inputModel, p, q);
   }
 
   @Override
@@ -56,8 +56,8 @@ public class FixedFeedInResult extends SystemParticipantResult {
     return "FixedFeedInResult{"
         + "uuid="
         + getUuid()
-        + ", timestamp="
-        + getTimestamp()
+        + ", time="
+        + getTime()
         + ", inputModel="
         + getInputModel()
         + ", p="

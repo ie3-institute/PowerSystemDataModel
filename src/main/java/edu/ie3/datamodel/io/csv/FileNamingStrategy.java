@@ -453,7 +453,7 @@ public class FileNamingStrategy {
 
   private String buildResultEntityString(Class<? extends ResultEntity> resultEntityClass) {
     String resultEntityString =
-        resultEntityClass.getSimpleName().replace("Result", "").toLowerCase();
+        camelCaseToSnakeCase(resultEntityClass.getSimpleName().replace("Result", ""));
     return addPrefixAndSuffix(resultEntityString.concat(RES_ENTITY_SUFFIX));
   }
 
@@ -464,13 +464,17 @@ public class FileNamingStrategy {
    * @return the resulting snake case representation
    */
   private String camelCaseToSnakeCase(String camelCaseString) {
-    String regularCamelCaseRegex = "([a-z])([A-Z]+)";
-    String regularSnakeCaseReplacement = "$1_$2";
-    String specialCamelCaseRegex = "((?<!_)[A-Z]?)((?<!^)[A-Z]+)";
-    String specialSnakeCaseReplacement = "$1_$2";
+    String snakeCaseReplacement = "$1_$2";
+    /* Separate all lower case letters, that are followed by a capital or a digit by underscore */
+    String regularCamelCaseRegex = "([a-z])([A-Z0-9]+)";
+    /* Separate all digits, that are followed by a letter by underscore */
+    String numberLetterCamelCaseRegex = "([0-9])([a-zA-Z]+)";
+    /* Separate two or more capitals, that are not at the beginning of the string by underscore */
+    String specialCamelCaseRegex = "((?<!^)[A-Z])([A-Z]+)";
     return camelCaseString
-        .replaceAll(regularCamelCaseRegex, regularSnakeCaseReplacement)
-        .replaceAll(specialCamelCaseRegex, specialSnakeCaseReplacement)
+        .replaceAll(regularCamelCaseRegex, snakeCaseReplacement)
+        .replaceAll(numberLetterCamelCaseRegex, snakeCaseReplacement)
+        .replaceAll(specialCamelCaseRegex, snakeCaseReplacement)
         .toLowerCase();
   }
 

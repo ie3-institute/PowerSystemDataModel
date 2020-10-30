@@ -25,13 +25,12 @@ public abstract class ThermalUnitResult extends ResultEntity {
   /**
    * Constructor for the thermal result with
    *
-   * @param timestamp The time, the result is related to
+   * @param time The time, the result is related to
    * @param inputModel The input model's UUID, the result is related to
    * @param qDot Average thermal power exchanged with the unit
    */
-  public ThermalUnitResult(
-      ZonedDateTime timestamp, UUID inputModel, ComparableQuantity<Power> qDot) {
-    super(timestamp, inputModel);
+  public ThermalUnitResult(ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
+    super(time, inputModel);
     this.qDot = qDot;
   }
 
@@ -39,13 +38,13 @@ public abstract class ThermalUnitResult extends ResultEntity {
    * Constructor for the thermal result with
    *
    * @param uuid The uuid of this result
-   * @param timestamp The time, the result is related to
+   * @param time The time, the result is related to
    * @param inputModel The input model's UUID, the result is related to
    * @param qDot Average thermal power exchanged with the unit
    */
   public ThermalUnitResult(
-      UUID uuid, ZonedDateTime timestamp, UUID inputModel, ComparableQuantity<Power> qDot) {
-    super(uuid, timestamp, inputModel);
+      UUID uuid, ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
+    super(uuid, time, inputModel);
     this.qDot = qDot;
   }
 
@@ -76,8 +75,8 @@ public abstract class ThermalUnitResult extends ResultEntity {
     return "ThermalUnitResult{"
         + "uuid="
         + getUuid()
-        + ", timestamp="
-        + getTimestamp()
+        + ", time="
+        + getTime()
         + ", inputModel="
         + getInputModel()
         + ", qDot="

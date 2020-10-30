@@ -19,7 +19,7 @@ import edu.ie3.util.TimeUtil;
 abstract class ResultEntityFactory<T extends ResultEntity> extends SimpleEntityFactory<T> {
 
   protected static final String ENTITY_UUID = "uuid";
-  protected static final String TIMESTAMP = "timestamp";
+  protected static final String TIME = "time";
   protected static final String INPUT_MODEL = "inputModel";
 
   protected static final TimeUtil TIME_UTIL = TimeUtil.withDefaults;

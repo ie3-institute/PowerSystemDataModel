@@ -23,19 +23,19 @@ public class CylindricalStorageResult extends ThermalStorageResult {
   /**
    * Constructs the result with
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param energy Currently stored energy
    * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
    * @param fillLevel Fill level of the storage
    */
   public CylindricalStorageResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Energy> energy,
       ComparableQuantity<Power> qDot,
       ComparableQuantity<Dimensionless> fillLevel) {
-    super(timestamp, inputModel, energy, qDot);
+    super(time, inputModel, energy, qDot);
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }
 
@@ -44,7 +44,7 @@ public class CylindricalStorageResult extends ThermalStorageResult {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param energy Currently stored energy
    * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
@@ -52,12 +52,12 @@ public class CylindricalStorageResult extends ThermalStorageResult {
    */
   public CylindricalStorageResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Energy> energy,
       ComparableQuantity<Power> qDot,
       ComparableQuantity<Dimensionless> fillLevel) {
-    super(uuid, timestamp, inputModel, energy, qDot);
+    super(uuid, time, inputModel, energy, qDot);
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }
 
@@ -88,8 +88,8 @@ public class CylindricalStorageResult extends ThermalStorageResult {
     return "CylindricalStorageResult{"
         + "uuid="
         + getUuid()
-        + ", timestamp="
-        + getTimestamp()
+        + ", time="
+        + getTime()
         + ", inputModel="
         + getInputModel()
         + ", qDot="

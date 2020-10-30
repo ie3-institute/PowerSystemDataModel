@@ -3,7 +3,7 @@
 package <gridname>(.tar.gz) {
     package //results// {
         package //grid// {
-            label "//line_result.csv//\n//node_result.csv//\n//switch_result.csv//\n//transformer_2w_result.csv//\n//transformer_3w_result.csv//"
+            label "//line_result.csv//\n//node_result.csv//\n//switch_result.csv//\n//transformer_2_w_result.csv//\n//transformer_3_w_result.csv//"
         }
         package "//thermal//" {
             label "//cylindrical_storage_result.csv//\n//thermal_bus_result.csv//\n//thermal_house_result.csv//"

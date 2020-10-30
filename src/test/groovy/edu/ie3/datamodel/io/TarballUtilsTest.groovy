@@ -214,8 +214,8 @@ class TarballUtilsTest extends Specification {
 			tmpDirectory.toString() + "/extract/default_directory_hierarchy/grid/measurement_unit_input.csv",
 			tmpDirectory.toString() + "/extract/default_directory_hierarchy/grid/node_input.csv",
 			tmpDirectory.toString() + "/extract/default_directory_hierarchy/grid/switch_input.csv",
-			tmpDirectory.toString() + "/extract/default_directory_hierarchy/grid/transformer2w_input.csv",
-			tmpDirectory.toString() + "/extract/default_directory_hierarchy/grid/transformer3w_input.csv"
+			tmpDirectory.toString() + "/extract/default_directory_hierarchy/grid/transformer_2_w_input.csv",
+			tmpDirectory.toString() + "/extract/default_directory_hierarchy/grid/transformer_3_w_input.csv"
 		]
 
 		def participantsPath = Paths.get(FilenameUtils.concat(FilenameUtils.concat(targetDirectory.toString(), "default_directory_hierarchy"), "participants"))

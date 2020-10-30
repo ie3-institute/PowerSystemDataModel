@@ -20,19 +20,19 @@ public class HpResult extends SystemParticipantResult {
   /**
    * Standard constructor with automatic uuid generation.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
    * @param qDot provided head energy
    */
   public HpResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q,
       Quantity<Power> qDot) {
-    super(timestamp, inputModel, p, q);
+    super(time, inputModel, p, q);
     this.qDot = qDot;
   }
 
@@ -41,7 +41,7 @@ public class HpResult extends SystemParticipantResult {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
@@ -49,12 +49,12 @@ public class HpResult extends SystemParticipantResult {
    */
   public HpResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q,
       Quantity<Power> qDot) {
-    super(uuid, timestamp, inputModel, p, q);
+    super(uuid, time, inputModel, p, q);
     this.qDot = qDot;
   }
 
@@ -81,8 +81,8 @@ public class HpResult extends SystemParticipantResult {
     return "HpResult{"
         + "uuid="
         + getUuid()
-        + ", timestamp="
-        + getTimestamp()
+        + ", time="
+        + getTime()
         + ", inputModel="
         + getInputModel()
         + ", p="

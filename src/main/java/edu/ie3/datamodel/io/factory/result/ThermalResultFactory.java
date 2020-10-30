@@ -32,13 +32,13 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
 
   @Override
   protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
-    Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, Q_DOT);
+    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     if (simpleEntityData.getTargetClass().equals(ThermalHouseResult.class)) {
-      minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, Q_DOT, INDOOR_TEMPERATURE);
+      minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, INDOOR_TEMPERATURE);
     } else if (simpleEntityData.getTargetClass().equals(CylindricalStorageResult.class)) {
-      minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, Q_DOT, ENERGY, FILL_LEVEL);
+      minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT, ENERGY, FILL_LEVEL);
     }
 
     return Arrays.asList(minConstructorParams, optionalFields);
@@ -48,7 +48,7 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
   protected ThermalUnitResult buildModel(SimpleEntityData data) {
     Class<? extends UniqueEntity> clazz = data.getTargetClass();
 
-    ZonedDateTime zdtTimestamp = TIME_UTIL.toZonedDateTime(data.getField(TIMESTAMP));
+    ZonedDateTime zdtTime = TIME_UTIL.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Power> qDotQuantity = data.getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND);
     Optional<UUID> uuidOpt =
@@ -62,11 +62,10 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
           .map(
               uuid ->
                   new ThermalHouseResult(
-                      uuid, zdtTimestamp, inputModelUuid, qDotQuantity, indoorTemperature))
+                      uuid, zdtTime, inputModelUuid, qDotQuantity, indoorTemperature))
           .orElseGet(
               () ->
-                  new ThermalHouseResult(
-                      zdtTimestamp, inputModelUuid, qDotQuantity, indoorTemperature));
+                  new ThermalHouseResult(zdtTime, inputModelUuid, qDotQuantity, indoorTemperature));
     } else if (clazz.equals(CylindricalStorageResult.class)) {
       ComparableQuantity<Energy> energyQuantity =
           data.getQuantity(ENERGY, StandardUnits.ENERGY_RESULT);
@@ -78,7 +77,7 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
               uuid ->
                   new CylindricalStorageResult(
                       uuid,
-                      zdtTimestamp,
+                      zdtTime,
                       inputModelUuid,
                       energyQuantity,
                       qDotQuantity,
@@ -86,11 +85,7 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
           .orElseGet(
               () ->
                   new CylindricalStorageResult(
-                      zdtTimestamp,
-                      inputModelUuid,
-                      energyQuantity,
-                      qDotQuantity,
-                      fillLevelQuantity));
+                      zdtTime, inputModelUuid, energyQuantity, qDotQuantity, fillLevelQuantity));
     } else {
       throw new FactoryException("Cannot process " + clazz.getSimpleName() + ".class.");
     }

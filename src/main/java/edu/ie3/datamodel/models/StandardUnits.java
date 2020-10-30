@@ -86,6 +86,8 @@ public class StandardUnits {
   public static final Unit<ThermalConductance> THERMAL_TRANSMISSION = KILOWATT_PER_KELVIN;
   /** Depth of discharge */
   public static final Unit<Dimensionless> DOD = PERCENT;
+  /** State of charge */
+  public static final Unit<Dimensionless> SOC = PERCENT;
   /** Life time of a system */
   public static final Unit<Time> LIFE_TIME = HOUR;
   /** Area covered by the rotor of a wind energy converter */

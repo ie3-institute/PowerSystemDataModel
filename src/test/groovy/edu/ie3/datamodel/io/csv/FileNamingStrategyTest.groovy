@@ -325,7 +325,7 @@ class FileNamingStrategyTest extends Specification {
 		where:
 		modelClass               || expectedString
 		LoadResult               || "load_res"
-		FixedFeedInResult        || "fixedfeedin_res"
+		FixedFeedInResult        || "fixed_feed_in_res"
 		BmResult                 || "bm_res"
 		PvResult                 || "pv_res"
 		ChpResult                || "chp_res"
@@ -333,13 +333,13 @@ class FileNamingStrategyTest extends Specification {
 		StorageResult            || "storage_res"
 		EvcsResult               || "evcs_res"
 		EvResult                 || "ev_res"
-		Transformer2WResult      || "transformer2w_res"
-		Transformer3WResult      || "transformer3w_res"
+		Transformer2WResult      || "transformer_2_w_res"
+		Transformer3WResult      || "transformer_3_w_res"
 		LineResult               || "line_res"
 		SwitchResult             || "switch_res"
 		NodeResult               || "node_res"
-		CylindricalStorageResult || "cylindricalstorage_res"
-		ThermalHouseResult       || "thermalhouse_res"
+		CylindricalStorageResult || "cylindrical_storage_res"
+		ThermalHouseResult       || "thermal_house_res"
 	}
 
 	def "A FileNamingStrategy with pre- and suffixes should return valid strings for all result models"() {
@@ -356,7 +356,7 @@ class FileNamingStrategyTest extends Specification {
 		where:
 		modelClass               || expectedString
 		LoadResult               || "prefix_load_res_suffix"
-		FixedFeedInResult        || "prefix_fixedfeedin_res_suffix"
+		FixedFeedInResult        || "prefix_fixed_feed_in_res_suffix"
 		BmResult                 || "prefix_bm_res_suffix"
 		PvResult                 || "prefix_pv_res_suffix"
 		ChpResult                || "prefix_chp_res_suffix"
@@ -364,13 +364,13 @@ class FileNamingStrategyTest extends Specification {
 		StorageResult            || "prefix_storage_res_suffix"
 		EvcsResult               || "prefix_evcs_res_suffix"
 		EvResult                 || "prefix_ev_res_suffix"
-		Transformer2WResult      || "prefix_transformer2w_res_suffix"
-		Transformer3WResult      || "prefix_transformer3w_res_suffix"
+		Transformer2WResult      || "prefix_transformer_2_w_res_suffix"
+		Transformer3WResult      || "prefix_transformer_3_w_res_suffix"
 		LineResult               || "prefix_line_res_suffix"
 		SwitchResult             || "prefix_switch_res_suffix"
 		NodeResult               || "prefix_node_res_suffix"
-		CylindricalStorageResult || "prefix_cylindricalstorage_res_suffix"
-		ThermalHouseResult       || "prefix_thermalhouse_res_suffix"
+		CylindricalStorageResult || "prefix_cylindrical_storage_res_suffix"
+		ThermalHouseResult       || "prefix_thermal_house_res_suffix"
 	}
 
 	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all input assets models"() {
@@ -400,8 +400,8 @@ class FileNamingStrategyTest extends Specification {
 		NodeInput               || "node_input"
 		MeasurementUnitInput    || "measurement_unit_input"
 		EvcsInput               || "evcs_input"
-		Transformer2WInput      || "transformer2w_input"
-		Transformer3WInput      || "transformer3w_input"
+		Transformer2WInput      || "transformer_2_w_input"
+		Transformer3WInput      || "transformer_3_w_input"
 		CylindricalStorageInput || "cylindrical_storage_input"
 		ThermalHouseInput       || "thermal_house_input"
 	}
@@ -442,8 +442,8 @@ class FileNamingStrategyTest extends Specification {
 		HpTypeInput            || "hp_type_input"
 		LineTypeInput          || "line_type_input"
 		StorageTypeInput       || "storage_type_input"
-		Transformer2WTypeInput || "transformer2w_type_input"
-		Transformer3WTypeInput || "transformer3w_type_input"
+		Transformer2WTypeInput || "transformer_2_w_type_input"
+		Transformer3WTypeInput || "transformer_3_w_type_input"
 		WecTypeInput           || "wec_type_input"
 		WecTypeInput           || "wec_type_input"
 	}
@@ -610,7 +610,7 @@ class FileNamingStrategyTest extends Specification {
 		res.get() == "prefix_time_series_mapping_suffix"
 	}
 
-	def "A simple file naming strategy does return empty sub directory path for any model inputclass"() {
+	def "A simple file naming strategy does return empty sub directory path for any model input class"() {
 		given: "a file naming strategy without pre- or suffixes"
 		def strategy = new FileNamingStrategy()
 
@@ -740,8 +740,8 @@ class FileNamingStrategyTest extends Specification {
 		NodeInput                || "node_input"
 		MeasurementUnitInput     || "measurement_unit_input"
 		EvcsInput                || "evcs_input"
-		Transformer2WInput       || "transformer2w_input"
-		Transformer3WInput       || "transformer3w_input"
+		Transformer2WInput       || "transformer_2_w_input"
+		Transformer3WInput       || "transformer_3_w_input"
 		CylindricalStorageInput  || "cylindrical_storage_input"
 		ThermalHouseInput        || "thermal_house_input"
 		EvCharacteristicInput    || "ev_characteristic_input"
@@ -751,8 +751,8 @@ class FileNamingStrategyTest extends Specification {
 		HpTypeInput              || "hp_type_input"
 		LineTypeInput            || "line_type_input"
 		StorageTypeInput         || "storage_type_input"
-		Transformer2WTypeInput   || "transformer2w_type_input"
-		Transformer3WTypeInput   || "transformer3w_type_input"
+		Transformer2WTypeInput   || "transformer_2_w_type_input"
+		Transformer3WTypeInput   || "transformer_3_w_type_input"
 		WecTypeInput             || "wec_type_input"
 		WecTypeInput             || "wec_type_input"
 		NodeGraphicInput         || "node_graphic_input"
@@ -773,7 +773,7 @@ class FileNamingStrategyTest extends Specification {
 		where:
 		modelClass               || expectedString
 		LoadResult               || "load_res"
-		FixedFeedInResult        || "fixedfeedin_res"
+		FixedFeedInResult        || "fixed_feed_in_res"
 		BmResult                 || "bm_res"
 		PvResult                 || "pv_res"
 		ChpResult                || "chp_res"
@@ -781,13 +781,13 @@ class FileNamingStrategyTest extends Specification {
 		StorageResult            || "storage_res"
 		EvcsResult               || "evcs_res"
 		EvResult                 || "ev_res"
-		Transformer2WResult      || "transformer2w_res"
-		Transformer3WResult      || "transformer3w_res"
+		Transformer2WResult      || "transformer_2_w_res"
+		Transformer3WResult      || "transformer_3_w_res"
 		LineResult               || "line_res"
 		SwitchResult             || "switch_res"
 		NodeResult               || "node_res"
-		CylindricalStorageResult || "cylindricalstorage_res"
-		ThermalHouseResult       || "thermalhouse_res"
+		CylindricalStorageResult || "cylindrical_storage_res"
+		ThermalHouseResult       || "thermal_house_res"
 	}
 
 	def "A simple file naming strategy does return valid file path for load profile time series"() {

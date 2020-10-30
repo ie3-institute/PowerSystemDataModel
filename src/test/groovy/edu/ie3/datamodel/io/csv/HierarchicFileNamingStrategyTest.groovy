@@ -158,8 +158,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		NodeInput               || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "node_input"
 		MeasurementUnitInput    || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "measurement_unit_input"
 		EvcsInput               || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "evcs_input"
-		Transformer2WInput      || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "transformer2w_input"
-		Transformer3WInput      || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "transformer3w_input"
+		Transformer2WInput      || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "transformer_2_w_input"
+		Transformer3WInput      || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "transformer_3_w_input"
 		CylindricalStorageInput || "test_grid" + File.separator + "input" + File.separator + "thermal" + File.separator + "cylindrical_storage_input"
 		ThermalHouseInput       || "test_grid" + File.separator + "input" + File.separator + "thermal" + File.separator + "thermal_house_input"
 	}
@@ -242,9 +242,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		HpTypeInput            || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "hp_type_input"
 		LineTypeInput          || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "line_type_input"
 		StorageTypeInput       || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "storage_type_input"
-		Transformer2WTypeInput || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "transformer2w_type_input"
-		Transformer3WTypeInput || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "transformer3w_type_input"
-		WecTypeInput           || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "wec_type_input"
+		Transformer2WTypeInput || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "transformer_2_w_type_input"
+		Transformer3WTypeInput || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "transformer_3_w_type_input"
 		WecTypeInput           || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "wec_type_input"
 	}
 

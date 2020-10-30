@@ -6,7 +6,7 @@ package <gridname>(.tar.gz) {
             label "//bm_type.csv//\n//chp_type.csv//\n//ev_type.csv//\n//hp_type.csv//\nline_type.csv\n//operator_input.csv//\n//storage_type.csv//\ntransformer_2w_type.csv\n//transformer_3w_type.csv//\n//wec_type.csv//\n//wec_characteristic_input.csv//"
         }
         package grid {
-            label "line_input.csv\n//measurement_unit_input.csv//\nnode_input.csv\n//switch_input.csv//\ntransformer_2w_input.csv\n//transformer_3w_input.csv//"
+            label "line_input.csv\n//measurement_unit_input.csv//\nnode_input.csv\n//switch_input.csv//\ntransformer_2_w_input.csv\n//transformer_3_w_input.csv//"
         }
         package "//thermal//" as th {
             label "//cylindrical_storage_input.csv//\n//thermal_bus_input.csv//\n//thermal_house_input.csv//"
