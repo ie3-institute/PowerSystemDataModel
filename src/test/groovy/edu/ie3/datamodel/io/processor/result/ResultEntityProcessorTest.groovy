@@ -87,34 +87,14 @@ class ResultEntityProcessorTest extends Specification {
 		ChpResult         | new ChpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
 		WecResult         | new WecResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
 		StorageResult     | new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, soc) || expectedSocResults
-		HpResult          | new HpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, qDot)           || expectedHpResults
-
-	}
-
-	def "A ResultEntityProcessor should de-serialize a provided SystemParticipantResult with null values correctly"() {
-		given:
-		def sysPartResProcessor = new ResultEntityProcessor(StorageResult)
-		def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, null)
-
-
-		when:
-		def validProcessedElement = sysPartResProcessor.handleEntity(storageResult)
-
-		then:
-		validProcessedElement.present
-		validProcessedElement.get() == [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-			inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-			p         : '0.01',
-			q         : '0.01',
-			soc       : '',
-			time      : '2020-01-30T17:26:44Z[UTC]']
+		HpResult          | new HpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, qDot)     || expectedHpResults
 
 	}
 
 	def "A ResultEntityProcessor should throw an exception if the provided class is not registered"() {
 		given:
 		def sysPartResProcessor = new ResultEntityProcessor(LoadResult)
-		def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, null)
+		def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, Quantities.getQuantity(10d, StandardUnits.SOC))
 
 		when:
 		sysPartResProcessor.handleEntity(storageResult)
