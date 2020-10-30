@@ -154,13 +154,10 @@ public class FileNamingStrategy {
    * @return An optional sub path to the actual file
    */
   public Optional<String> getFilePath(Class<? extends UniqueEntity> cls) {
-    Optional<String> maybeFileName = getFileName(cls);
-    if (!maybeFileName.isPresent()) return Optional.empty();
-    String fileName = maybeFileName.get();
-    Optional<String> maybeSubDirectories = getDirectoryPath(cls);
-    if (maybeSubDirectories.isPresent() && !maybeSubDirectories.get().isEmpty())
-      return Optional.of(FilenameUtils.concat(maybeSubDirectories.get(), fileName));
-    else return Optional.of(fileName);
+    // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
+    // details
+    return getFilePath(
+        getFileName(cls).orElseGet(() -> ""), getDirectoryPath(cls).orElseGet(() -> ""));
   }
 
   /**
@@ -175,12 +172,17 @@ public class FileNamingStrategy {
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<String> getFilePath(T timeSeries) {
-    Optional<String> maybeFileName = getFileName(timeSeries);
-    if (!maybeFileName.isPresent()) return Optional.empty();
-    String fileName = maybeFileName.get();
-    Optional<String> maybeSubDirectories = getDirectoryPath(timeSeries);
-    if (maybeSubDirectories.isPresent() && !maybeSubDirectories.get().isEmpty())
-      return Optional.of(FilenameUtils.concat(maybeSubDirectories.get(), fileName));
+    // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
+    // details
+    return getFilePath(
+        getFileName(timeSeries).orElseGet(() -> ""),
+        getDirectoryPath(timeSeries).orElseGet(() -> ""));
+  }
+
+  private Optional<String> getFilePath(String fileName, String subDirectories) {
+    if (fileName.isEmpty()) return Optional.empty();
+    if (!subDirectories.isEmpty())
+      return Optional.of(FilenameUtils.concat(subDirectories, fileName));
     else return Optional.of(fileName);
   }
 
@@ -301,6 +303,7 @@ public class FileNamingStrategy {
       throw new IllegalArgumentException("Unable to extract file name from path '" + path + "'.");
     return extractTimeSeriesMetaInformation(fileName.toString());
   }
+
   /**
    * Extracts meta information from a file name, of a time series. Here, a file name <u>without</u>
    * leading path has to be provided
