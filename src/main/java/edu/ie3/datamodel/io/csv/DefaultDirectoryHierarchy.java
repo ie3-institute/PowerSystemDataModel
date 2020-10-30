@@ -7,10 +7,7 @@ package edu.ie3.datamodel.io.csv;
 
 import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.MeasurementUnitInput;
-import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.RandomLoadParameters;
+import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
@@ -24,6 +21,13 @@ import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInpu
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
+import edu.ie3.datamodel.models.result.NodeResult;
+import edu.ie3.datamodel.models.result.connector.LineResult;
+import edu.ie3.datamodel.models.result.connector.SwitchResult;
+import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
+import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
+import edu.ie3.datamodel.models.result.system.*;
+import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
@@ -32,10 +36,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.io.FilenameUtils;
@@ -43,8 +44,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Default directory hierarchy for input models */
-public class DefaultInputHierarchy implements FileHierarchy {
-  private static final Logger logger = LoggerFactory.getLogger(DefaultInputHierarchy.class);
+public class DefaultDirectoryHierarchy implements FileHierarchy {
+  private static final Logger logger = LoggerFactory.getLogger(DefaultDirectoryHierarchy.class);
 
   /** Use the unix file separator here. */
   protected static final String FILE_SEPARATOR = File.separator;
@@ -52,14 +53,23 @@ public class DefaultInputHierarchy implements FileHierarchy {
   /** Base directory for this specific grid model. The base path should be a directory. */
   private final Path baseDirectory;
 
+  /** The project's directory beneath the {@code baseDirectory} */
+  private final Path projectDirectory;
+
   /** Mapping from sub directories to if they are mandatory or not */
   private final Map<Path, Boolean> subDirectories;
 
-  public DefaultInputHierarchy(String baseDirectory, String gridName) {
+  /** Set of additional paths (sub directory trees), that are permissible to exist */
+  private final Path inputTree;
+
+  private final Path resultTree;
+
+  public DefaultDirectoryHierarchy(String baseDirectory, String gridName) {
     /* Prepare the base path */
     String baseDirectoryNormalized =
         FilenameUtils.normalizeNoEndSeparator(baseDirectory, true) + FILE_SEPARATOR;
-    this.baseDirectory =
+    this.baseDirectory = Paths.get(baseDirectoryNormalized).toAbsolutePath();
+    this.projectDirectory =
         Paths.get(
                 baseDirectoryNormalized
                     + FilenameUtils.normalizeNoEndSeparator(gridName, true)
@@ -74,8 +84,17 @@ public class DefaultInputHierarchy implements FileHierarchy {
                     subDirectory ->
                         Paths.get(
                             FilenameUtils.concat(
-                                this.baseDirectory.toString(), subDirectory.getRelPath())),
+                                this.projectDirectory.toString(), subDirectory.getRelPath())),
                     SubDirectories::isMandatory));
+
+    inputTree =
+        Paths.get(
+            FilenameUtils.concat(
+                projectDirectory.toString(), SubDirectories.Constants.INPUT_SUB_TREE));
+    resultTree =
+        Paths.get(
+            FilenameUtils.concat(
+                projectDirectory.toString(), SubDirectories.Constants.RESULT_SUB_TREEE));
   }
 
   /**
@@ -84,10 +103,10 @@ public class DefaultInputHierarchy implements FileHierarchy {
    * @throws FileException if not
    */
   public void validate() throws FileException {
-    if (!Files.exists(baseDirectory))
-      throw new FileException("The path '" + baseDirectory + "' does not exist.");
-    if (!Files.isDirectory(baseDirectory))
-      throw new FileException("The path '" + baseDirectory + "' has to be a directory.");
+    if (!Files.exists(projectDirectory))
+      throw new FileException("The path '" + projectDirectory + "' does not exist.");
+    if (!Files.isDirectory(projectDirectory))
+      throw new FileException("The path '" + projectDirectory + "' has to be a directory.");
 
     checkExpectedDirectories();
     checkFurtherDirectoryElements();
@@ -127,9 +146,12 @@ public class DefaultInputHierarchy implements FileHierarchy {
    * @throws FileException if there is an unexpected directory
    */
   private void checkFurtherDirectoryElements() throws FileException {
-    try (Stream<Path> apparentElementsStream = Files.list(baseDirectory)) {
+    try (Stream<Path> apparentElementsStream = Files.list(projectDirectory)) {
       for (Path apparentPath : apparentElementsStream.collect(Collectors.toList())) {
-        if (Files.isDirectory(apparentPath) && !subDirectories.containsKey(apparentPath))
+        if (Files.isDirectory(apparentPath)
+            && !subDirectories.containsKey(apparentPath)
+            && apparentPath.compareTo(inputTree) != 0
+            && apparentPath.compareTo(resultTree) != 0)
           throw new FileException(
               "There is a directory '"
                   + apparentPath
@@ -137,7 +159,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
       }
     } catch (IOException e) {
       throw new FileException(
-          "Cannot get the list of apparent elements in '" + baseDirectory + "'.", e);
+          "Cannot get the list of apparent elements in '" + projectDirectory + "'.", e);
     }
   }
 
@@ -158,7 +180,7 @@ public class DefaultInputHierarchy implements FileHierarchy {
    * @throws IOException If the creation of sub directories is not possible
    */
   public void createDirs(boolean withOptionals) throws IOException {
-    Files.createDirectories(baseDirectory);
+    Files.createDirectories(projectDirectory);
     for (Map.Entry<Path, Boolean> entry : subDirectories.entrySet()) {
       Path directoryPath = entry.getKey();
       boolean isMandatory = entry.getValue();
@@ -191,13 +213,20 @@ public class DefaultInputHierarchy implements FileHierarchy {
       logger.debug("Don't know a fitting sub directory for class '{}'.", cls.getSimpleName());
       return Optional.empty();
     } else {
-      return Optional.of(maybeSubDirectory.get().getRelPath());
+      /* Build the full path and then refer it to the base directory */
+      Path fullPath =
+          Paths.get(
+              FilenameUtils.concat(
+                  this.projectDirectory.toString(), maybeSubDirectory.get().getRelPath()));
+      String relPath = this.baseDirectory.relativize(fullPath).toString();
+
+      return Optional.of(relPath);
     }
   }
 
   private enum SubDirectories {
-    GRID(
-        "grid" + FILE_SEPARATOR,
+    GRID_INPUT(
+        Constants.INPUT_SUB_TREE + FILE_SEPARATOR + "grid" + FILE_SEPARATOR,
         true,
         Stream.of(
                 LineInput.class,
@@ -207,8 +236,18 @@ public class DefaultInputHierarchy implements FileHierarchy {
                 MeasurementUnitInput.class,
                 NodeInput.class)
             .collect(Collectors.toSet())),
+    GRID_RESULT(
+        Constants.RESULT_SUB_TREEE + FILE_SEPARATOR + "grid" + FILE_SEPARATOR,
+        false,
+        Stream.of(
+                LineResult.class,
+                SwitchResult.class,
+                Transformer2WResult.class,
+                Transformer3WResult.class,
+                NodeResult.class)
+            .collect(Collectors.toSet())),
     GLOBAL(
-        "global" + FILE_SEPARATOR,
+        Constants.INPUT_SUB_TREE + FILE_SEPARATOR + "global" + FILE_SEPARATOR,
         true,
         Stream.of(
                 LineTypeInput.class,
@@ -226,8 +265,8 @@ public class DefaultInputHierarchy implements FileHierarchy {
                 RandomLoadParameters.class,
                 LoadProfileInput.class)
             .collect(Collectors.toSet())),
-    PARTICIPANTS(
-        "participants" + FILE_SEPARATOR,
+    PARTICIPANTS_INPUT(
+        Constants.INPUT_SUB_TREE + FILE_SEPARATOR + "participants" + FILE_SEPARATOR,
         true,
         Stream.of(
                 BmInput.class,
@@ -241,16 +280,35 @@ public class DefaultInputHierarchy implements FileHierarchy {
                 StorageInput.class,
                 WecInput.class)
             .collect(Collectors.toSet())),
+    PARTICIPANTS_RESULTS(
+        Constants.RESULT_SUB_TREEE + FILE_SEPARATOR + "participants" + FILE_SEPARATOR,
+        false,
+        Stream.of(
+                BmResult.class,
+                ChpResult.class,
+                EvResult.class,
+                EvcsResult.class,
+                FixedFeedInResult.class,
+                HpResult.class,
+                LoadResult.class,
+                PvResult.class,
+                StorageResult.class,
+                WecResult.class)
+            .collect(Collectors.toSet())),
     TIME_SERIES(
-        PARTICIPANTS.relPath + "time_series" + FILE_SEPARATOR,
+        PARTICIPANTS_INPUT.relPath + "time_series" + FILE_SEPARATOR,
         false,
         Stream.of(TimeSeries.class, TimeSeriesMapping.Entry.class).collect(Collectors.toSet())),
-    THERMAL(
-        "thermal" + FILE_SEPARATOR,
+    THERMAL_INPUT(
+        Constants.INPUT_SUB_TREE + FILE_SEPARATOR + "thermal" + FILE_SEPARATOR,
         false,
         Stream.of(ThermalUnitInput.class).collect(Collectors.toSet())),
+    THERMAL_RESULTS(
+        Constants.RESULT_SUB_TREEE + FILE_SEPARATOR + "thermal" + FILE_SEPARATOR,
+        false,
+        Stream.of(ThermalUnitResult.class).collect(Collectors.toSet())),
     GRAPHICS(
-        "graphics" + FILE_SEPARATOR,
+        Constants.INPUT_SUB_TREE + FILE_SEPARATOR + "graphics" + FILE_SEPARATOR,
         false,
         Stream.of(GraphicInput.class).collect(Collectors.toSet()));
     private final String relPath;
@@ -273,6 +331,11 @@ public class DefaultInputHierarchy implements FileHierarchy {
       this.relPath = relPath;
       this.mandatory = mandatory;
       this.relevantClasses = relevantClasses;
+    }
+
+    private static class Constants {
+      private static final String INPUT_SUB_TREE = "input";
+      private static final String RESULT_SUB_TREEE = "results";
     }
   }
 }
