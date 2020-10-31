@@ -98,7 +98,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
   /**
    * Validates a thermalHouseInput if: <br>
    * - it is not null <br>
-   * - its thermal losses are not null and positive <br>
+   * - its thermal losses are not null not negative <br>
    * - its thermal capacity is not null and positive
    *
    * @param thermalHouseInput ThermalHouseInput to validate
@@ -114,9 +114,13 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     if (thermalHouseInput.getEthCapa() == null)
       throw new InvalidEntityException(
           "Thermal capacity of thermal house is null", thermalHouseInput);
+    // Check for negative quantities
+    detectNegativeQuantities(
+        new Quantity<?>[] {thermalHouseInput.getEthLosses()},
+        thermalHouseInput);
     // Check for zero or negative quantities
     detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {thermalHouseInput.getEthCapa(), thermalHouseInput.getEthLosses()},
+        new Quantity<?>[] {thermalHouseInput.getEthCapa()},
         thermalHouseInput);
   }
 

@@ -121,7 +121,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * Validates a bmTypeInput if: <br>
    * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
    * - its active power gradient is not null and not negative <br>
-   * - its efficiency of assets inverter is not null and not negative
+   * - its efficiency of assets inverter is not null and between 0% and 100%
    *
    * @param bmTypeInput BmTypeInput to validate
    */
@@ -139,12 +139,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     if (bmTypeInput.getEtaConv() == null)
       throw new InvalidEntityException(
           "Efficiency of inverter of biomass unit type is null", bmTypeInput);
-    // Check if any values are negative
+    // Check if active power gradient is negative
     detectNegativeQuantities(
-        new Quantity<?>[] {
-          bmTypeInput.getActivePowerGradient(), bmTypeInput.getEtaConv(),
-        },
-        bmTypeInput);
+        new Quantity<?>[] {bmTypeInput.getActivePowerGradient()},bmTypeInput);
+    // Check if efficiency of assets inverter is between 0% and 100%
+    if (bmTypeInput.getEtaConv().getValue().doubleValue() < 0d || bmTypeInput.getEtaConv().getValue().doubleValue() > 100d)
+      throw new InvalidEntityException("Efficiency of inverter of biomass unit type must be between 0% and 100%", bmTypeInput);
   }
 
   /**
@@ -170,8 +170,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   /**
    * Validates a chpTypeInput if: <br>
    * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
-   * - its efficiency of the electrical inverter is not null and positive <br>
-   * - its thermal efficiency of the system is not null and positive <br>
+   * - its efficiency of the electrical inverter is not null and between 0% and 100% <br>
+   * - its thermal efficiency of the system is not null and between 0% and 100% <br>
    * - its rated thermal power is not null and positive <br>
    * - its needed self-consumption is not null and not negative
    *
@@ -190,20 +190,16 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
           || (chpTypeInput.getpThermal() == null)
           || (chpTypeInput.getpOwn() == null))
       throw new InvalidEntityException("At least one value of the CHP unit type is null", chpTypeInput);
-    // Check for negative quantities
-    detectNegativeQuantities(
-        new Quantity<?>[] {
-          chpTypeInput.getpOwn()
-        },
-        chpTypeInput);
-    // Check for zero or negative quantities
-    detectZeroOrNegativeQuantities(
-            new Quantity<?>[] {
-                    chpTypeInput.getEtaEl(),
-                    chpTypeInput.getEtaThermal(),
-                    chpTypeInput.getpThermal(),
-            },
-            chpTypeInput);
+    // Check if needed self-consumption is negative
+    detectNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpOwn()},chpTypeInput);
+    // Check if rated thermal power is zero or negative
+    detectZeroOrNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpThermal()}, chpTypeInput);
+    // Check if efficiency of electrical inverter is between 0% and 100%
+    if (chpTypeInput.getEtaEl().getValue().doubleValue() < 0d || chpTypeInput.getEtaEl().getValue().doubleValue() > 100d)
+      throw new InvalidEntityException("Efficiency of electrical inverter of CHP unit type must be between 0% and 100%", chpTypeInput);
+    // Check if thermal efficiency of system is between 0% and 100%
+    if (chpTypeInput.getEtaThermal().getValue().doubleValue() < 0d || chpTypeInput.getEtaThermal().getValue().doubleValue() > 100d)
+      throw new InvalidEntityException("Thermal efficiency of system of CHP unit type must be between 0% and 100%", chpTypeInput);
   }
 
   /**
@@ -222,7 +218,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * Validates a EvTypeInput if: <br>
    * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
    * - its available battery capacity is not null and positive <br>
-   * - its energy consumption per driven kilometre is not null and not negative
+   * - its energy consumption per driven kilometre is not null and positive
    *
    * @param evTypeInput EvTypeInput to validate
    */
@@ -241,12 +237,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     if (evTypeInput.geteCons() == null)
       throw new InvalidEntityException(
           "Energy consumption per driven kilometre of the EV type is null", evTypeInput);
-    // Check for negative quantities
-    detectNegativeQuantities(
-            new Quantity<?>[] {evTypeInput.geteCons()}, evTypeInput);
     // Check for zero or negative quantities
     detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {evTypeInput.geteStorage()}, evTypeInput);
+        new Quantity<?>[] {evTypeInput.geteStorage(), evTypeInput.geteCons()}, evTypeInput);
   }
 
   /**
@@ -399,7 +392,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its efficiency of the electrical converter is not null and between 0% and 100% <br>
    * - its maximum permissible depth of discharge is not null and between 0% and 100% <br>
    * - its active power gradient is not null and not negative <br>
-   * - its battery capacity is not null and not negative <br>
+   * - its battery capacity is not null and positive <br>
    * - its maximum permissible active power (in-feed or consumption) is not null and not negative <br>
    * - its permissible hours of full use is not null and not negative
    *
@@ -437,15 +430,16 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         || storageTypeInput.getDod().getValue().doubleValue() > 100d)
       throw new InvalidEntityException(
           "Maximum permissible depth of discharge of the storage type must be between 0% and 100%", storageTypeInput);
-    // Check if eStorage, pMax, activePowerGradient or lifeTime are negative
+    // Check if pMax, activePowerGradient or lifeTime are negative
     detectNegativeQuantities(
         new Quantity<?>[] {
-          storageTypeInput.geteStorage(),
           storageTypeInput.getpMax(),
           storageTypeInput.getActivePowerGradient(),
           storageTypeInput.getLifeTime()
         },
         storageTypeInput);
+    // Check if eStorage is zero or negative
+    detectZeroOrNegativeQuantities(new Quantity<?>[] { storageTypeInput.geteStorage()}, storageTypeInput);
   }
 
   /**

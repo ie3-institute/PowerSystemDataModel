@@ -64,7 +64,7 @@ public class ValidationUtils {
    * - it is not null <br>
    * - its operator is not null <br>
    * - its operation time is not null <br>
-   * - its start time and end time are not null and start time is before end time <br>
+   * - in case operation time is limited, its start time and end time are not null and start time is before end time <br>
    *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill the checking
    * task, based on the class of the given object. If an unknown class is handed in, a {@link
@@ -73,8 +73,14 @@ public class ValidationUtils {
    * @param assetInput AssetInput to check
    */
   public static void checkAsset(AssetInput assetInput) {
-    // Check if asset is null
+    // Check if asset is not null
     checkNonNull(assetInput, "an asset");
+    // Check if UUID is not null
+    if (assetInput.getUuid() == null)
+      throw new InvalidEntityException("No UUID assigned", assetInput);
+    // Check if ID is not null
+    if (assetInput.getId() == null)
+      throw new InvalidEntityException("No ID assigned", assetInput);
     // Check if operator is not null
     if (assetInput.getOperator() == null)
       throw new InvalidEntityException("No operator assigned", assetInput);
@@ -82,13 +88,14 @@ public class ValidationUtils {
     if (assetInput.getOperationTime() == null)
       throw new InvalidEntityException("Operation time of the asset is not defined", assetInput);
     // Check if start time and end time are not null and start time is before end time
-    if (assetInput.getOperationTime().getEndDate().isPresent() && assetInput.getOperationTime().getStartDate().isPresent())
-      {
-      if (assetInput.getOperationTime().getEndDate().get().isBefore(assetInput.getOperationTime().getStartDate().get()))
-        throw new InvalidEntityException("Operation start time of the asset has to be before end time", assetInput);
-      }
-      else
-        throw new InvalidEntityException("Start and/or end time of operationTime is null", assetInput);
+    if (assetInput.getOperationTime().isLimited()) {
+      if (assetInput.getOperationTime().getEndDate().isPresent() && assetInput.getOperationTime().getStartDate().isPresent()) {
+        if (assetInput.getOperationTime().getEndDate().get().isBefore(assetInput.getOperationTime().getStartDate().get()))
+          throw new InvalidEntityException("Operation start time of the asset has to be before end time", assetInput);
+      } else
+        throw new InvalidEntityException("Start and/or end time of operation time is null, although operation should be limited", assetInput);
+    }
+    // TODO NSteffan: Test if this is correctly tested!
 
     // Further checks for subclasses
     if (NodeInput.class.isAssignableFrom(assetInput.getClass()))
@@ -122,6 +129,12 @@ public class ValidationUtils {
   public static void checkAssetType(AssetTypeInput assetTypeInput) {
     // Check if asset type is null
     checkNonNull(assetTypeInput, "an asset type");
+    // Check if UUID is not null
+    if (assetTypeInput.getUuid() == null)
+      throw new InvalidEntityException("No UUID assigned", assetTypeInput);
+    // Check if ID is not null
+    if (assetTypeInput.getId() == null)
+      throw new InvalidEntityException("No ID assigned", assetTypeInput);
 
     // Further checks for subclasses
     if (LineTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))

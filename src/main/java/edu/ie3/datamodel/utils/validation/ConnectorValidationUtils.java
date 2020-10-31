@@ -161,7 +161,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - sRated > 0 (rated apparent power) <br>
    * - vRatedA > 0 (rated voltage at higher voltage terminal) <br>
    * - vRatedB > 0 (rated voltage at lower voltage terminal) <br>
-   * - dV > 0 (voltage magnitude increase per tap position <br>
+   * - dV > 0% and dV <= 100% (voltage magnitude increase per tap position <br>
    * - dPhi >= 0 (voltage angle increase per tap position) <br>
    * - neutral tap position is positive and between min and max tap position <br>
    * - minimum tap position is positive and smaller than maximum tap position <br>
@@ -185,7 +185,12 @@ public class ConnectorValidationUtils extends ValidationUtils {
       throw new InvalidEntityException("At least one value of the transformer2W type is null", transformer2WType);
     // Check for negative quantities
     detectNegativeQuantities(
-        new Quantity<?>[] {transformer2WType.getgM(), transformer2WType.getbM(), transformer2WType.getdPhi()}, transformer2WType);
+        new Quantity<?>[] {
+          transformer2WType.getgM(),
+          transformer2WType.getbM(),
+          transformer2WType.getdPhi()
+        },
+          transformer2WType);
     // Check for zero or negative quantities
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {
@@ -194,9 +199,10 @@ public class ConnectorValidationUtils extends ValidationUtils {
           transformer2WType.getvRatedB(),
           transformer2WType.getrSc(),
           transformer2WType.getxSc(),
-          transformer2WType.getdV()
         },
         transformer2WType);
+    // Check if voltage magnitude increase per tap position is between 0% and 100%
+    if (transformer2WType.getdV().getValue().doubleValue() <= 0d || transformer2WType.getdV().getValue().doubleValue() > 100d)
     // Check if neutral tap position is positive
     if (transformer2WType.getTapNeutr() <= 0)
       throw new InvalidEntityException("Neutral tap position of transformer2W type must be positive", transformer2WType);
@@ -256,7 +262,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - bM >= 0 (no load susceptance) <br>
    * - sRatedA, sRatedB, sRatedC > 0 (rated apparent power in branches A,B,C) <br>
    * - vRatedA, vRatedB, vRatedC > 0 (rated voltage at higher node A,B,C) <br>
-   * - dV > 0 (voltage magnitude increase per tap position <br>
+   * - dV > 0% and dV <= 100% (voltage magnitude increase per tap position <br>
    * - dPhi >= 0 (voltage angle increase per tap position) <br>
    * - neutral tap position is positive and between min and max tap position <br>
    * - minimum tap position is positive and smaller than maximum tap position <br>
@@ -294,10 +300,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
           transformer3WType.getsRatedA(), transformer3WType.getsRatedB(), transformer3WType.getsRatedC(),
           transformer3WType.getvRatedA(), transformer3WType.getvRatedB(), transformer3WType.getvRatedC(),
           transformer3WType.getrScA(), transformer3WType.getrScB(), transformer3WType.getrScC(),
-          transformer3WType.getxScA(), transformer3WType.getxScB(), transformer3WType.getxScC(),
-          transformer3WType.getdV()
+          transformer3WType.getxScA(), transformer3WType.getxScB(), transformer3WType.getxScC()
         },
         transformer3WType);
+    // Check if voltage magnitude increase per tap position is between 0% and 100%
+    if (transformer3WType.getdV().getValue().doubleValue() <= 0d || transformer3WType.getdV().getValue().doubleValue() > 100d)
     // Check if neutral tap position is positive
     if (transformer3WType.getTapNeutr() <= 0)
       throw new InvalidEntityException("Neutral tap position of transformer3W type must be positive", transformer3WType);
