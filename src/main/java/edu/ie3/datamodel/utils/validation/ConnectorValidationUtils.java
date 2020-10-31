@@ -24,10 +24,9 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * Validates a connector if: <br>
    * - it is not null <br>
    * - both of its nodes are not null <br>
-   *
-   * A "distribution" method, that forwards the check request to specific implementations to
-   * fulfill the checking task, based on the class of the given object. If an unknown class is
-   * handed in, a {@link ValidationException} is thrown.
+   * A "distribution" method, that forwards the check request to specific implementations to fulfill
+   * the checking task, based on the class of the given object. If an unknown class is handed in, a
+   * {@link ValidationException} is thrown.
    *
    * @param connector Connector to validate
    */
@@ -39,8 +38,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
       throw new InvalidEntityException("at least one node of this connector is null", connector);
 
     // Further checks for subclasses
-    if (LineInput.class.isAssignableFrom(connector.getClass()))
-      checkLine((LineInput) connector);
+    if (LineInput.class.isAssignableFrom(connector.getClass())) checkLine((LineInput) connector);
     else if (Transformer2WInput.class.isAssignableFrom(connector.getClass()))
       checkTransformer2W((Transformer2WInput) connector);
     else if (Transformer3WInput.class.isAssignableFrom(connector.getClass()))
@@ -56,8 +54,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
 
   /**
    * Validates a line if: <br>
-   * - {@link ConnectorValidationUtils#checkLineType(LineTypeInput)} confirms valid type
-   * properties <br>
+   * - {@link ConnectorValidationUtils#checkLineType(LineTypeInput)} confirms valid type properties
+   * <br>
    * - it connects nodes in the same subnet <br>
    * - it connects nodes in the same voltage level <br>
    * - its line length is not null and has a positive value <br>
@@ -140,14 +138,16 @@ public class ConnectorValidationUtils extends ValidationUtils {
     // Check if tap position is within bounds
     if (transformer2W.getTapPos() < transformer2W.getType().getTapMin()
         || transformer2W.getTapPos() > transformer2W.getType().getTapMax())
-      throw new InvalidEntityException("Tap position of transformer is outside of bounds", transformer2W);
+      throw new InvalidEntityException(
+          "Tap position of transformer is outside of bounds", transformer2W);
     // Check if transformer connects different voltage levels
     if (transformer2W.getNodeA().getVoltLvl() == transformer2W.getNodeB().getVoltLvl())
       throw new InvalidEntityException(
           "Transformer connects nodes of the same voltage level", transformer2W);
     // Check if transformer connects different subnets
     if (transformer2W.getNodeA().getSubnet() == transformer2W.getNodeB().getSubnet())
-      throw new InvalidEntityException("Transformer connects nodes in the same subnet", transformer2W);
+      throw new InvalidEntityException(
+          "Transformer connects nodes in the same subnet", transformer2W);
   }
 
   /**
@@ -182,15 +182,14 @@ public class ConnectorValidationUtils extends ValidationUtils {
         || (transformer2WType.getbM() == null)
         || (transformer2WType.getdV() == null)
         || (transformer2WType.getdPhi() == null))
-      throw new InvalidEntityException("At least one value of the transformer2W type is null", transformer2WType);
+      throw new InvalidEntityException(
+          "At least one value of the transformer2W type is null", transformer2WType);
     // Check for negative quantities
     detectNegativeQuantities(
         new Quantity<?>[] {
-          transformer2WType.getgM(),
-          transformer2WType.getbM(),
-          transformer2WType.getdPhi()
+          transformer2WType.getgM(), transformer2WType.getbM(), transformer2WType.getdPhi()
         },
-          transformer2WType);
+        transformer2WType);
     // Check for zero or negative quantities
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {
@@ -202,20 +201,27 @@ public class ConnectorValidationUtils extends ValidationUtils {
         },
         transformer2WType);
     // Check if voltage magnitude increase per tap position is between 0% and 100%
-    if (transformer2WType.getdV().getValue().doubleValue() <= 0d || transformer2WType.getdV().getValue().doubleValue() > 100d)
-    // Check if neutral tap position is positive
-    if (transformer2WType.getTapNeutr() <= 0)
-      throw new InvalidEntityException("Neutral tap position of transformer2W type must be positive", transformer2WType);
-    // Check if minimum and maximum tap position are positive and minimum is lower than maximum tap position
+    if (transformer2WType.getdV().getValue().doubleValue() <= 0d
+        || transformer2WType.getdV().getValue().doubleValue() > 100d)
+      // Check if neutral tap position is positive
+      if (transformer2WType.getTapNeutr() <= 0)
+        throw new InvalidEntityException(
+            "Neutral tap position of transformer2W type must be positive", transformer2WType);
+    // Check if minimum and maximum tap position are positive and minimum is lower than maximum tap
+    // position
     if (transformer2WType.getTapMin() <= 0
-          || transformer2WType.getTapMax() <= 0
-          || transformer2WType.getTapMax() < transformer2WType.getTapMin())
-      throw new InvalidEntityException("Minimum and maximum tap positions of transformer2W type must be positive " +
-              "and minimum tap position must be lower than maximum tap position", transformer2WType);
+        || transformer2WType.getTapMax() <= 0
+        || transformer2WType.getTapMax() < transformer2WType.getTapMin())
+      throw new InvalidEntityException(
+          "Minimum and maximum tap positions of transformer2W type must be positive "
+              + "and minimum tap position must be lower than maximum tap position",
+          transformer2WType);
     // Check if neutral tap position lies between minimum and maximum tap position
     if (transformer2WType.getTapNeutr() < transformer2WType.getTapMin()
-         || transformer2WType.getTapNeutr() > transformer2WType.getTapMax())
-      throw new InvalidEntityException("Neutral tap position must be between minimum and maximum tap position", transformer2WType);
+        || transformer2WType.getTapNeutr() > transformer2WType.getTapMax())
+      throw new InvalidEntityException(
+          "Neutral tap position must be between minimum and maximum tap position",
+          transformer2WType);
   }
 
   /**
@@ -232,13 +238,15 @@ public class ConnectorValidationUtils extends ValidationUtils {
   public static void checkTransformer3W(Transformer3WInput transformer3W) {
     // Check if node C is null
     if (transformer3W.getNodeC() == null)
-      throw new InvalidEntityException("At least one node of this transformer3W is null", transformer3W);
+      throw new InvalidEntityException(
+          "At least one node of this transformer3W is null", transformer3W);
     // Check Transformer3WType
     checkTransformer3WType(transformer3W.getType());
     // Check if tap position is within bounds
     if (transformer3W.getTapPos() < transformer3W.getType().getTapMin()
         || transformer3W.getTapPos() > transformer3W.getType().getTapMax())
-      throw new InvalidEntityException("Tap position of transformer is outside of bounds", transformer3W);
+      throw new InvalidEntityException(
+          "Tap position of transformer is outside of bounds", transformer3W);
     // Check if transformer connects different voltage levels
     if (transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeB().getVoltLvl()
         || transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeC().getVoltLvl()
@@ -249,7 +257,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (transformer3W.getNodeA().getSubnet() == transformer3W.getNodeB().getSubnet()
         || transformer3W.getNodeA().getSubnet() == transformer3W.getNodeC().getSubnet()
         || transformer3W.getNodeB().getSubnet() == transformer3W.getNodeC().getSubnet())
-      throw new InvalidEntityException("Transformer connects nodes in the same subnet", transformer3W);
+      throw new InvalidEntityException(
+          "Transformer connects nodes in the same subnet", transformer3W);
   }
 
   /**
@@ -290,34 +299,47 @@ public class ConnectorValidationUtils extends ValidationUtils {
         || (transformer3WType.getbM() == null)
         || (transformer3WType.getdV() == null)
         || (transformer3WType.getdPhi() == null))
-      throw new InvalidEntityException("at least one value of the transformer3W type is null", transformer3WType);
+      throw new InvalidEntityException(
+          "at least one value of the transformer3W type is null", transformer3WType);
     // Check for negative quantities
     detectNegativeQuantities(
-        new Quantity<?>[] {transformer3WType.getgM(), transformer3WType.getbM(), transformer3WType.getdPhi()}, transformer3WType);
+        new Quantity<?>[] {
+          transformer3WType.getgM(), transformer3WType.getbM(), transformer3WType.getdPhi()
+        },
+        transformer3WType);
     // Check for zero or negative quantities
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {
-          transformer3WType.getsRatedA(), transformer3WType.getsRatedB(), transformer3WType.getsRatedC(),
-          transformer3WType.getvRatedA(), transformer3WType.getvRatedB(), transformer3WType.getvRatedC(),
+          transformer3WType.getsRatedA(), transformer3WType.getsRatedB(),
+              transformer3WType.getsRatedC(),
+          transformer3WType.getvRatedA(), transformer3WType.getvRatedB(),
+              transformer3WType.getvRatedC(),
           transformer3WType.getrScA(), transformer3WType.getrScB(), transformer3WType.getrScC(),
           transformer3WType.getxScA(), transformer3WType.getxScB(), transformer3WType.getxScC()
         },
         transformer3WType);
     // Check if voltage magnitude increase per tap position is between 0% and 100%
-    if (transformer3WType.getdV().getValue().doubleValue() <= 0d || transformer3WType.getdV().getValue().doubleValue() > 100d)
-    // Check if neutral tap position is positive
-    if (transformer3WType.getTapNeutr() <= 0)
-      throw new InvalidEntityException("Neutral tap position of transformer3W type must be positive", transformer3WType);
-    // Check if minimum and maximum tap position are positive and minimum is lower than maximum tap position
+    if (transformer3WType.getdV().getValue().doubleValue() <= 0d
+        || transformer3WType.getdV().getValue().doubleValue() > 100d)
+      // Check if neutral tap position is positive
+      if (transformer3WType.getTapNeutr() <= 0)
+        throw new InvalidEntityException(
+            "Neutral tap position of transformer3W type must be positive", transformer3WType);
+    // Check if minimum and maximum tap position are positive and minimum is lower than maximum tap
+    // position
     if (transformer3WType.getTapMin() <= 0
-            || transformer3WType.getTapMax() <= 0
-            || transformer3WType.getTapMax() < transformer3WType.getTapMin())
-      throw new InvalidEntityException("Minimum and maximum tap positions of transformer3W type must be positive " +
-              "and minimum tap position must be lower than maximum tap position", transformer3WType);
+        || transformer3WType.getTapMax() <= 0
+        || transformer3WType.getTapMax() < transformer3WType.getTapMin())
+      throw new InvalidEntityException(
+          "Minimum and maximum tap positions of transformer3W type must be positive "
+              + "and minimum tap position must be lower than maximum tap position",
+          transformer3WType);
     // Check if neutral tap position lies between minimum and maximum tap position
     if (transformer3WType.getTapNeutr() < transformer3WType.getTapMin()
-            || transformer3WType.getTapNeutr() > transformer3WType.getTapMax())
-      throw new InvalidEntityException("Neutral tap position must be between minimum and maximum tap position", transformer3WType);
+        || transformer3WType.getTapNeutr() > transformer3WType.getTapMax())
+      throw new InvalidEntityException(
+          "Neutral tap position must be between minimum and maximum tap position",
+          transformer3WType);
   }
 
   /**
@@ -329,8 +351,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
   public static void checkSwitch(SwitchInput switchInput) {
     // Check if switch connects nodes of same voltage level
     if (!switchInput.getNodeA().getVoltLvl().equals(switchInput.getNodeB().getVoltLvl()))
-      throw new InvalidEntityException(
-          "Switch connects two different voltage levels", switchInput);
+      throw new InvalidEntityException("Switch connects two different voltage levels", switchInput);
     /* Remark: Connecting two different "subnets" is fine, because as of our definition regarding a switchgear in
      * "upstream" direction of a transformer, all the nodes, that hare within the switch chain, belong to the lower
      * grid, whilst the "real" upper node is within the upper grid */

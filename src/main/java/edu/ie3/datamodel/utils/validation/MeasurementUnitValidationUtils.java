@@ -35,6 +35,7 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
         && !measurementUnit.getQ()
         && !measurementUnit.getVAng()
         && !measurementUnit.getVMag())
-      throw new UnsafeEntityException("Measurement Unit does not measure any values", measurementUnit);
+      throw new UnsafeEntityException(
+          "Measurement Unit does not measure any values", measurementUnit);
   }
 }

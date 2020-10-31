@@ -22,7 +22,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * - it is not null <br>
    * - its thermal bus is not null
    *
-   * A "distribution" method, that forwards the check request to specific implementations to
+   * <p>A "distribution" method, that forwards the check request to specific implementations to
    * fulfill the checking task, based on the class of the given object. If an unknown class is
    * handed in, a {@link ValidationException} is thrown.
    *
@@ -33,7 +33,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     checkNonNull(thermalUnitInput, "a thermal unit");
     // Check if thermal bus is null
     if (thermalUnitInput.getThermalBus() == null)
-      throw new InvalidEntityException("Thermal bus of the thermal input is null", thermalUnitInput);
+      throw new InvalidEntityException(
+          "Thermal bus of the thermal input is null", thermalUnitInput);
 
     // Further checks for subclasses
     if (ThermalSinkInput.class.isAssignableFrom(thermalUnitInput.getClass()))
@@ -50,10 +51,9 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
   /**
    * Validates a thermalSinkInput if: <br>
    * - it is not null <br>
-   *
-   * A "distribution" method, that forwards the check request to specific implementations to
-   * fulfill the checking task, based on the class of the given object. If an unknown class is
-   * handed in, a {@link ValidationException} is thrown.
+   * A "distribution" method, that forwards the check request to specific implementations to fulfill
+   * the checking task, based on the class of the given object. If an unknown class is handed in, a
+   * {@link ValidationException} is thrown.
    *
    * @param thermalSinkInput ThermalSinkInput to validate
    */
@@ -74,15 +74,14 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
   /**
    * Validates a thermalStorageInput if: <br>
    * - it is not null <br>
-   *
-   * A "distribution" method, that forwards the check request to specific implementations to
-   * fulfill the checking task, based on the class of the given object. If an unknown class is
-   * handed in, a {@link ValidationException} is thrown.
+   * A "distribution" method, that forwards the check request to specific implementations to fulfill
+   * the checking task, based on the class of the given object. If an unknown class is handed in, a
+   * {@link ValidationException} is thrown.
    *
    * @param thermalStorageInput ThermalStorageInput to validate
    */
   public static void checkThermalStorage(ThermalStorageInput thermalStorageInput) {
-    //Check if null
+    // Check if null
     checkNonNull(thermalStorageInput, "a thermal storage");
 
     // Further checks for subclasses
@@ -116,12 +115,10 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
           "Thermal capacity of thermal house is null", thermalHouseInput);
     // Check for negative quantities
     detectNegativeQuantities(
-        new Quantity<?>[] {thermalHouseInput.getEthLosses()},
-        thermalHouseInput);
+        new Quantity<?>[] {thermalHouseInput.getEthLosses()}, thermalHouseInput);
     // Check for zero or negative quantities
     detectZeroOrNegativeQuantities(
-        new Quantity<?>[] {thermalHouseInput.getEthCapa()},
-        thermalHouseInput);
+        new Quantity<?>[] {thermalHouseInput.getEthCapa()}, thermalHouseInput);
   }
 
   /**

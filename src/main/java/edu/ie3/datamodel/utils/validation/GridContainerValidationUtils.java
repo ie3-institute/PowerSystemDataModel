@@ -112,8 +112,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .forEach(
             measurement -> {
               checkNodeAvailability(measurement, nodes);
-              MeasurementUnitValidationUtils.check(
-                  measurement);
+              MeasurementUnitValidationUtils.check(measurement);
               // TODO NSteffan: Bezug aus MeasurementUnitValidationUtils, da bei
               //  Aufteilung der ValidationUtils notwendig geworden; anders lösen?
             });

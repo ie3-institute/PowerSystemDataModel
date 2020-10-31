@@ -64,11 +64,11 @@ public class ValidationUtils {
    * - it is not null <br>
    * - its operator is not null <br>
    * - its operation time is not null <br>
-   * - in case operation time is limited, its start time and end time are not null and start time is before end time <br>
-   *
-   * A "distribution" method, that forwards the check request to specific implementations to fulfill the checking
-   * task, based on the class of the given object. If an unknown class is handed in, a {@link
-   * ValidationException} is thrown.
+   * - in case operation time is limited, its start time and end time are not null and start time is
+   * before end time <br>
+   * A "distribution" method, that forwards the check request to specific implementations to fulfill
+   * the checking task, based on the class of the given object. If an unknown class is handed in, a
+   * {@link ValidationException} is thrown.
    *
    * @param assetInput AssetInput to check
    */
@@ -79,8 +79,7 @@ public class ValidationUtils {
     if (assetInput.getUuid() == null)
       throw new InvalidEntityException("No UUID assigned", assetInput);
     // Check if ID is not null
-    if (assetInput.getId() == null)
-      throw new InvalidEntityException("No ID assigned", assetInput);
+    if (assetInput.getId() == null) throw new InvalidEntityException("No ID assigned", assetInput);
     // Check if operator is not null
     if (assetInput.getOperator() == null)
       throw new InvalidEntityException("No operator assigned", assetInput);
@@ -89,11 +88,19 @@ public class ValidationUtils {
       throw new InvalidEntityException("Operation time of the asset is not defined", assetInput);
     // Check if start time and end time are not null and start time is before end time
     if (assetInput.getOperationTime().isLimited()) {
-      if (assetInput.getOperationTime().getEndDate().isPresent() && assetInput.getOperationTime().getStartDate().isPresent()) {
-        if (assetInput.getOperationTime().getEndDate().get().isBefore(assetInput.getOperationTime().getStartDate().get()))
-          throw new InvalidEntityException("Operation start time of the asset has to be before end time", assetInput);
+      if (assetInput.getOperationTime().getEndDate().isPresent()
+          && assetInput.getOperationTime().getStartDate().isPresent()) {
+        if (assetInput
+            .getOperationTime()
+            .getEndDate()
+            .get()
+            .isBefore(assetInput.getOperationTime().getStartDate().get()))
+          throw new InvalidEntityException(
+              "Operation start time of the asset has to be before end time", assetInput);
       } else
-        throw new InvalidEntityException("Start and/or end time of operation time is null, although operation should be limited", assetInput);
+        throw new InvalidEntityException(
+            "Start and/or end time of operation time is null, although operation should be limited",
+            assetInput);
     }
     // TODO NSteffan: Test if this is correctly tested!
 
@@ -119,10 +126,9 @@ public class ValidationUtils {
   /**
    * Validates an asset type if: <br>
    * - it is not null <br>
-   *
-   * A "distribution" method, that forwards the check request to specific implementations to fulfill the checking
-   * task, based on the class of the given object. If an unknown class is handed in, a {@link
-   * ValidationException} is thrown.
+   * A "distribution" method, that forwards the check request to specific implementations to fulfill
+   * the checking task, based on the class of the given object. If an unknown class is handed in, a
+   * {@link ValidationException} is thrown.
    *
    * @param assetTypeInput AssetTypeInput to check
    */
@@ -158,15 +164,15 @@ public class ValidationUtils {
         SystemParticipantValidationUtils.checkWecType((WecTypeInput) assetTypeInput);
       else {
         throw new ValidationException(
-                "Cannot validate object of class '"
-                        + assetTypeInput.getClass().getSimpleName()
-                        + "', as no routine is implemented.");
+            "Cannot validate object of class '"
+                + assetTypeInput.getClass().getSimpleName()
+                + "', as no routine is implemented.");
       }
     else {
       throw new ValidationException(
-              "Cannot validate object of class '"
-                      + assetTypeInput.getClass().getSimpleName()
-                      + "', as no routine is implemented.");
+          "Cannot validate object of class '"
+              + assetTypeInput.getClass().getSimpleName()
+              + "', as no routine is implemented.");
     }
   }
 
@@ -226,8 +232,7 @@ public class ValidationUtils {
             .map(Quantity::toString)
             .collect(Collectors.joining(", "));
     if (!malformedQuantities.isEmpty()) {
-      throw new InvalidEntityException(
-          msg + ": " + malformedQuantities, entity);
+      throw new InvalidEntityException(msg + ": " + malformedQuantities, entity);
     }
   }
 
