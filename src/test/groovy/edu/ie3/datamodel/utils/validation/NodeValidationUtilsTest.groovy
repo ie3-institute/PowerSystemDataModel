@@ -35,6 +35,7 @@ class NodeValidationUtilsTest extends Specification {
 		ex.message == "Expected an object, but got nothing. :-("
 	}
 
+	/*
 	def "The check method recognizes an invalid voltage level"() {
 		given:
 		def correctNode = GridTestData.nodeB
@@ -98,5 +99,5 @@ class NodeValidationUtilsTest extends Specification {
 		then:
 		thrown(InvalidEntityException)
 	}
-
+	 */
 }
