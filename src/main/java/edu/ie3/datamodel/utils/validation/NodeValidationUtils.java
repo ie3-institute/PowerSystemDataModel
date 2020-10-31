@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.UnsafeEntityException;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
@@ -21,7 +22,7 @@ public class NodeValidationUtils extends ValidationUtils {
    * Validates a node if: <br>
    * - it is not null <br>
    * - voltage level is not null and valid <br>
-   * - target voltage is not null and larger than zero <br>
+   * - target voltage is not null, larger than zero and smaller than two <br>
    * - subnet number is larger than zero <br>
    * - geoPosition is not null
    *
@@ -41,6 +42,8 @@ public class NodeValidationUtils extends ValidationUtils {
       throw new InvalidEntityException("Target voltage (p.u.) is null", node);
     if (node.getvTarget().getValue().doubleValue() <= 0d)
       throw new InvalidEntityException("Target voltage (p.u.) is not a positive value", node);
+    else if (node.getvTarget().getValue().doubleValue() > 2d)
+      throw new UnsafeEntityException("Target voltage (p.u.) might be too high", node);
     // Check if subnet is valid
     if (node.getSubnet() <= 0)
       throw new InvalidEntityException("Subnet can't be zero or negative", node);

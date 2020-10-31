@@ -6,8 +6,8 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.UnsafeEntityException;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
-import java.util.logging.Logger;
 
 public class MeasurementUnitValidationUtils extends ValidationUtils {
 
@@ -31,14 +31,10 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
     if (measurementUnit.getNode() == null)
       throw new InvalidEntityException("Node of measurement unit is null", measurementUnit);
     // Check if measurement unit measures any values
-    Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     if (!measurementUnit.getP()
         && !measurementUnit.getQ()
         && !measurementUnit.getVAng()
         && !measurementUnit.getVMag())
-      logger.warning("Measurement unit does not measure any values");
-    // throw new InvalidEntityException("Measurement Unit does not measure any values",
-    // measurementUnit);
-    // TODO NSteffan: Work with logger warning instead of exception? Correct usage of logger?
+      throw new UnsafeEntityException("Measurement Unit does not measure any values", measurementUnit);
   }
 }
