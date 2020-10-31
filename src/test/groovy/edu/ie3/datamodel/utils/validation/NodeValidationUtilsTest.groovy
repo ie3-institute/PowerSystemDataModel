@@ -5,13 +5,13 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.test.common.GridTestData
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class NodeValidationUtilsTest extends Specification{
 
