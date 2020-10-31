@@ -48,7 +48,7 @@ class NodeValidationUtilsTest extends Specification {
 		when:
 		NodeValidationUtils.check(errorNode)
 		then:
-		ValidationException ex = thrown()
+		thrown(ValidationException)
 	}
 
 	def "The check method recognizes an invalid target voltage"() {
@@ -64,7 +64,7 @@ class NodeValidationUtilsTest extends Specification {
 		when:
 		NodeValidationUtils.check(errorNode)
 		then:
-		InvalidEntityException ex = thrown()
+		thrown(InvalidEntityException)
 	}
 
 	def "The check method recognizes an invalid subnet"() {
@@ -80,7 +80,7 @@ class NodeValidationUtilsTest extends Specification {
 		when:
 		NodeValidationUtils.check(errorNode)
 		then:
-		InvalidEntityException ex = thrown()
+		thrown(InvalidEntityException)
 	}
 
 	def "The check method recognizes an invalid geoPosition"() {
@@ -96,7 +96,7 @@ class NodeValidationUtilsTest extends Specification {
 		when:
 		NodeValidationUtils.check(errorNode)
 		then:
-		InvalidEntityException ex = thrown()
+		thrown(InvalidEntityException)
 	}
 
 }
