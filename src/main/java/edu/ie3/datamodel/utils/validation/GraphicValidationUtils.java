@@ -24,7 +24,7 @@ public class GraphicValidationUtils extends ValidationUtils {
    * - its graphic layer is not null <br>
    * - its path is not null
    *
-   * A "distribution" method, that forwards the check request to specific implementations to
+   * <p>A "distribution" method, that forwards the check request to specific implementations to
    * fulfill the checking task, based on the class of the given object. If an unknown class is
    * handed in, a {@link ValidationException} is thrown.
    *
@@ -38,7 +38,8 @@ public class GraphicValidationUtils extends ValidationUtils {
     checkNonNull(graphicInput, "a graphic input");
     // Check if graphic layer is null
     if (graphicInput.getGraphicLayer() == null)
-      throw new InvalidEntityException("Graphic Layer of graphic element is not defined", graphicInput);
+      throw new InvalidEntityException(
+          "Graphic Layer of graphic element is not defined", graphicInput);
     // Check if path is null
     if (graphicInput.getPath() == null)
       throw new InvalidEntityException("Path of graphic element is not defined", graphicInput);

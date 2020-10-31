@@ -24,7 +24,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its node is not null <br>
    * - its qCharacteristics are not null
    *
-   * A "distribution" method, that forwards the check request to specific implementations to
+   * <p>A "distribution" method, that forwards the check request to specific implementations to
    * fulfill the checking task, based on the class of the given object. If an unknown class is
    * handed in, a {@link ValidationException} is thrown.
    *
@@ -85,8 +85,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         || (systemParticipantTypeInput.getOpex() == null)
         || (systemParticipantTypeInput.getsRated() == null))
       throw new InvalidEntityException(
-          "At least one of capex, opex, or sRated is null",
-          systemParticipantTypeInput);
+          "At least one of capex, opex, or sRated is null", systemParticipantTypeInput);
     // Check for negative quantities
     detectNegativeQuantities(
         new Quantity<?>[] {
@@ -96,9 +95,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         },
         systemParticipantTypeInput);
     // Check if rated power factor is between zero and one
-    if (systemParticipantTypeInput.getCosPhiRated() < 0d || systemParticipantTypeInput.getCosPhiRated() > 1d)
-      throw new InvalidEntityException("Rated power factor must be between 0 and 1",
-              systemParticipantTypeInput);
+    if (systemParticipantTypeInput.getCosPhiRated() < 0d
+        || systemParticipantTypeInput.getCosPhiRated() > 1d)
+      throw new InvalidEntityException(
+          "Rated power factor must be between 0 and 1", systemParticipantTypeInput);
   }
 
   /**
@@ -130,21 +130,24 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     try {
       checkType(bmTypeInput);
     } catch (InvalidEntityException e) {
-      throw new InvalidEntityException("At least one value of the biomass unit type is not valid", bmTypeInput);
+      throw new InvalidEntityException(
+          "At least one value of the biomass unit type is not valid", bmTypeInput);
     }
     // Check if active power gradient is null
     if (bmTypeInput.getActivePowerGradient() == null)
-      throw new InvalidEntityException("Active power gradient of biomass unit type is null", bmTypeInput);
+      throw new InvalidEntityException(
+          "Active power gradient of biomass unit type is null", bmTypeInput);
     // Check if efficiency of assets inverter is null
     if (bmTypeInput.getEtaConv() == null)
       throw new InvalidEntityException(
           "Efficiency of inverter of biomass unit type is null", bmTypeInput);
     // Check if active power gradient is negative
-    detectNegativeQuantities(
-        new Quantity<?>[] {bmTypeInput.getActivePowerGradient()},bmTypeInput);
+    detectNegativeQuantities(new Quantity<?>[] {bmTypeInput.getActivePowerGradient()}, bmTypeInput);
     // Check if efficiency of assets inverter is between 0% and 100%
-    if (bmTypeInput.getEtaConv().getValue().doubleValue() < 0d || bmTypeInput.getEtaConv().getValue().doubleValue() > 100d)
-      throw new InvalidEntityException("Efficiency of inverter of biomass unit type must be between 0% and 100%", bmTypeInput);
+    if (bmTypeInput.getEtaConv().getValue().doubleValue() < 0d
+        || bmTypeInput.getEtaConv().getValue().doubleValue() > 100d)
+      throw new InvalidEntityException(
+          "Efficiency of inverter of biomass unit type must be between 0% and 100%", bmTypeInput);
   }
 
   /**
@@ -182,24 +185,32 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     try {
       checkType(chpTypeInput);
     } catch (InvalidEntityException e) {
-      throw new InvalidEntityException("At least one value of the CHP unit type is not valid", chpTypeInput);
+      throw new InvalidEntityException(
+          "At least one value of the CHP unit type is not valid", chpTypeInput);
     }
     // Check if any values are null
     if ((chpTypeInput.getEtaEl() == null)
-          || (chpTypeInput.getEtaThermal() == null)
-          || (chpTypeInput.getpThermal() == null)
-          || (chpTypeInput.getpOwn() == null))
-      throw new InvalidEntityException("At least one value of the CHP unit type is null", chpTypeInput);
+        || (chpTypeInput.getEtaThermal() == null)
+        || (chpTypeInput.getpThermal() == null)
+        || (chpTypeInput.getpOwn() == null))
+      throw new InvalidEntityException(
+          "At least one value of the CHP unit type is null", chpTypeInput);
     // Check if needed self-consumption is negative
-    detectNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpOwn()},chpTypeInput);
+    detectNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpOwn()}, chpTypeInput);
     // Check if rated thermal power is zero or negative
     detectZeroOrNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpThermal()}, chpTypeInput);
     // Check if efficiency of electrical inverter is between 0% and 100%
-    if (chpTypeInput.getEtaEl().getValue().doubleValue() < 0d || chpTypeInput.getEtaEl().getValue().doubleValue() > 100d)
-      throw new InvalidEntityException("Efficiency of electrical inverter of CHP unit type must be between 0% and 100%", chpTypeInput);
+    if (chpTypeInput.getEtaEl().getValue().doubleValue() < 0d
+        || chpTypeInput.getEtaEl().getValue().doubleValue() > 100d)
+      throw new InvalidEntityException(
+          "Efficiency of electrical inverter of CHP unit type must be between 0% and 100%",
+          chpTypeInput);
     // Check if thermal efficiency of system is between 0% and 100%
-    if (chpTypeInput.getEtaThermal().getValue().doubleValue() < 0d || chpTypeInput.getEtaThermal().getValue().doubleValue() > 100d)
-      throw new InvalidEntityException("Thermal efficiency of system of CHP unit type must be between 0% and 100%", chpTypeInput);
+    if (chpTypeInput.getEtaThermal().getValue().doubleValue() < 0d
+        || chpTypeInput.getEtaThermal().getValue().doubleValue() > 100d)
+      throw new InvalidEntityException(
+          "Thermal efficiency of system of CHP unit type must be between 0% and 100%",
+          chpTypeInput);
   }
 
   /**
@@ -227,7 +238,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     try {
       checkType(evTypeInput);
     } catch (InvalidEntityException e) {
-      throw new InvalidEntityException("At least one value of the EV type is not valid", evTypeInput);
+      throw new InvalidEntityException(
+          "At least one value of the EV type is not valid", evTypeInput);
     }
     // Check if available battery capacity is null
     if (evTypeInput.geteStorage() == null)
@@ -255,19 +267,17 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       throw new InvalidEntityException(
           "Rated apparent power of fixed feed-in unit is null", fixedFeedInInput);
     // Check if rated apparent power is negative
-    detectNegativeQuantities(
-        new Quantity<?>[] {fixedFeedInInput.getsRated()}, fixedFeedInInput);
+    detectNegativeQuantities(new Quantity<?>[] {fixedFeedInInput.getsRated()}, fixedFeedInInput);
     // Check if rated power factor is between 0 and 1
     if (fixedFeedInInput.getCosPhiRated() < 0d || fixedFeedInInput.getCosPhiRated() > 1d)
       throw new InvalidEntityException(
-          "Rated power factor of fixed feed-in unit must be between 0 and 1",
-          fixedFeedInInput);
+          "Rated power factor of fixed feed-in unit must be between 0 and 1", fixedFeedInInput);
   }
 
   /**
    * Validates a HpInput if: <br>
-   * - its thermal bus is not null
-   * - {@link SystemParticipantValidationUtils#checkHpType(HpTypeInput)} confirms a valid type properties
+   * - its thermal bus is not null - {@link
+   * SystemParticipantValidationUtils#checkHpType(HpTypeInput)} confirms a valid type properties
    *
    * @param hpInput HpInput to validate
    */
@@ -291,7 +301,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     try {
       checkType(hpTypeInput);
     } catch (InvalidEntityException e) {
-      throw new InvalidEntityException("At least one value of heat pump type is not valid", hpTypeInput);
+      throw new InvalidEntityException(
+          "At least one value of heat pump type is not valid", hpTypeInput);
     }
     // Check if rated thermal power is null
     if (hpTypeInput.getpThermal() == null)
@@ -393,7 +404,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its maximum permissible depth of discharge is not null and between 0% and 100% <br>
    * - its active power gradient is not null and not negative <br>
    * - its battery capacity is not null and positive <br>
-   * - its maximum permissible active power (in-feed or consumption) is not null and not negative <br>
+   * - its maximum permissible active power (in-feed or consumption) is not null and not negative
+   * <br>
    * - its permissible hours of full use is not null and not negative
    *
    * @param storageTypeInput StorageTypeInput to validate
@@ -424,12 +436,14 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     if (storageTypeInput.getEta().getValue().doubleValue() < 0d
         || storageTypeInput.getEta().getValue().doubleValue() > 100d)
       throw new InvalidEntityException(
-          "Efficiency of the electrical converter of the storage type must be between 0% and 100%", storageTypeInput);
+          "Efficiency of the electrical converter of the storage type must be between 0% and 100%",
+          storageTypeInput);
     // Check if maximum permissible depth of discharge is between 0% and 100%
     if (storageTypeInput.getDod().getValue().doubleValue() < 0d
         || storageTypeInput.getDod().getValue().doubleValue() > 100d)
       throw new InvalidEntityException(
-          "Maximum permissible depth of discharge of the storage type must be between 0% and 100%", storageTypeInput);
+          "Maximum permissible depth of discharge of the storage type must be between 0% and 100%",
+          storageTypeInput);
     // Check if pMax, activePowerGradient or lifeTime are negative
     detectNegativeQuantities(
         new Quantity<?>[] {
@@ -439,7 +453,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         },
         storageTypeInput);
     // Check if eStorage is zero or negative
-    detectZeroOrNegativeQuantities(new Quantity<?>[] { storageTypeInput.geteStorage()}, storageTypeInput);
+    detectZeroOrNegativeQuantities(
+        new Quantity<?>[] {storageTypeInput.geteStorage()}, storageTypeInput);
   }
 
   /**
@@ -469,19 +484,22 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     try {
       checkType(wecTypeInput);
     } catch (InvalidEntityException e) {
-      throw new InvalidEntityException("At least one value of the wind energy converter type is not valid", wecTypeInput);
+      throw new InvalidEntityException(
+          "At least one value of the wind energy converter type is not valid", wecTypeInput);
     }
     // Check if any quantities are null
     if ((wecTypeInput.getCpCharacteristic() == null)
         || (wecTypeInput.getEtaConv() == null)
         || (wecTypeInput.getRotorArea() == null)
         || (wecTypeInput.getHubHeight() == null))
-      throw new InvalidEntityException("At least one value of he wind energy converter type is null", wecTypeInput);
+      throw new InvalidEntityException(
+          "At least one value of he wind energy converter type is null", wecTypeInput);
     // Check if efficiency of the assets converter is between 0% and 100%
     if (wecTypeInput.getEtaConv().getValue().doubleValue() < 0d
         || wecTypeInput.getEtaConv().getValue().doubleValue() > 100d)
       throw new InvalidEntityException(
-          "Efficiency of the assets converter of the wind energy converter type must be between 0% and 100%", wecTypeInput);
+          "Efficiency of the assets converter of the wind energy converter type must be between 0% and 100%",
+          wecTypeInput);
     // Check if rotorArea or hubHeight are negative
     detectNegativeQuantities(
         new Quantity<?>[] {wecTypeInput.getRotorArea(), wecTypeInput.getHubHeight()}, wecTypeInput);
