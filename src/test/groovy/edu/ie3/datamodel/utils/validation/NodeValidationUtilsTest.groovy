@@ -15,7 +15,6 @@ import tech.units.indriya.quantity.Quantities
 
 class NodeValidationUtilsTest extends Specification {
 
-	/*
 	def "The check method in ValidationUtils delegates the check to NodeValidationUtils for a node"() {
 		given:
 		def node = GridTestData.nodeB
@@ -25,12 +24,9 @@ class NodeValidationUtilsTest extends Specification {
 
 		then:
 		0 * NodeValidationUtils.check(node)
-		// TODO NSteffan: Why is the method invoked 0 times?
 	}
-	*/
 
 	def "The check method in ValidationUtils recognizes a null object"() {
-		// TODO NSteffan: Only in main ValidationUtilsTest?
 		when:
 		ValidationUtils.check(null)
 
@@ -103,19 +99,4 @@ class NodeValidationUtilsTest extends Specification {
 		InvalidEntityException ex = thrown()
 	}
 
-	/*
-	 def "The check method recognizes an invalid geoPosition2"() {
-	 given:
-	 def node = GridTestData.nodeB.copy().geoPosition(input).build()
-	 def testNode = node.copy().geoPosition(input).build()
-	 when:
-	 NodeValidationUtils.check(testNode)
-	 then:
-	 thrown(ex)
-	 where:
-	 input || ex
-	 null  || InvalidEntityException
-	 node.getGeoPosition()  || null
-	 }
-	 */
 }
