@@ -117,18 +117,16 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
    * @return a set containing all entities that could have been built or an empty set if no entity
    *     could been built
    */
-  @SuppressWarnings("unchecked cast")
   private <T extends InputEntity> Set<T> buildSimpleEntities(
       Class<T> entityClass, EntityFactory<? extends InputEntity, SimpleEntityData> factory) {
-    return (Set<T>)
-        buildStreamWithFieldsToAttributesMap(entityClass, connector)
-            .map(
-                fieldsToAttributes -> {
-                  SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
-                  return factory.getEntity(data);
-                })
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(Collectors.toSet());
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
+        .map(
+            fieldsToAttributes -> {
+              SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
+              return (Optional<T>) factory.get(data);
+            })
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.toSet());
   }
 }

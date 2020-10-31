@@ -18,7 +18,7 @@ public class LineResult extends ConnectorResult {
   /**
    * Standard constructor with automatic uuid generation.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
    * @param iAAng electric current angle @ Port A in degree
@@ -26,13 +26,13 @@ public class LineResult extends ConnectorResult {
    * @param iBAng electric current angle @ Port B in degree
    */
   public LineResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
       ComparableQuantity<Angle> iAAng,
       ComparableQuantity<ElectricCurrent> iBMag,
       ComparableQuantity<Angle> iBAng) {
-    super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
+    super(time, inputModel, iAMag, iAAng, iBMag, iBAng);
   }
 
   /**
@@ -40,7 +40,7 @@ public class LineResult extends ConnectorResult {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
    * @param iAAng electric current angle @ Port A in degree
@@ -49,13 +49,13 @@ public class LineResult extends ConnectorResult {
    */
   public LineResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
       ComparableQuantity<Angle> iAAng,
       ComparableQuantity<ElectricCurrent> iBMag,
       ComparableQuantity<Angle> iBAng) {
-    super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng);
+    super(uuid, time, inputModel, iAMag, iAAng, iBMag, iBAng);
   }
 
   @Override
@@ -63,8 +63,8 @@ public class LineResult extends ConnectorResult {
     return "LineResult{"
         + "uuid="
         + getUuid()
-        + ", timestamp="
-        + getTimestamp()
+        + ", time="
+        + getTime()
         + ", inputModel="
         + getInputModel()
         + ", iAMag="

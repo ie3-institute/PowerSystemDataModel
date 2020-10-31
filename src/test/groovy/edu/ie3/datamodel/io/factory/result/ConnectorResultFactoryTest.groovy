@@ -7,9 +7,11 @@ package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.result.connector.*
+import edu.ie3.datamodel.models.result.connector.ConnectorResult
+import edu.ie3.datamodel.models.result.connector.LineResult
+import edu.ie3.datamodel.models.result.connector.Transformer2WResult
+import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.test.helper.FactoryTestHelper
-import edu.ie3.util.TimeTools
 import spock.lang.Specification
 
 class ConnectorResultFactoryTest extends Specification implements FactoryTestHelper {
@@ -24,14 +26,14 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 		]
 
 		expect:
-		resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		resultFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A ConnectorResultFactory should parse a valid result model correctly"() {
 		given: "a connector result factory and model data"
 		def resultFactory = new ConnectorResultFactory()
 		Map<String, String> parameter = [
-			"timestamp" : "2020-01-30 17:26:44",
+			"time"      : "2020-01-30 17:26:44",
 			"inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
 			"iamag"     : "1.0",
 			"iaang"     : "90",
@@ -49,13 +51,13 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 		}
 
 		when:
-		Optional<? extends ConnectorResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, modelClass))
+		Optional<? extends ConnectorResult> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
 
 		then:
 		result.present
 		result.get().getClass() == resultingModelClass
 		((ConnectorResult) result.get()).with {
-			assert timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+			assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
 			assert inputModel == UUID.fromString(parameter["inputModel"])
 			assert iAAng == getQuant(parameter["iaang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
 			assert iAMag == getQuant(parameter["iamag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)

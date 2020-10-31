@@ -21,17 +21,17 @@ public class ThermalHouseResult extends ThermalSinkResult {
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param qDot thermal heat demand of the sink
    * @param indoorTemperature Indoor room temperature
    */
   public ThermalHouseResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> qDot,
       ComparableQuantity<Temperature> indoorTemperature) {
-    super(timestamp, inputModel, qDot);
+    super(time, inputModel, qDot);
     this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
   }
 
@@ -40,18 +40,18 @@ public class ThermalHouseResult extends ThermalSinkResult {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param qDot thermal heat demand of the sink
    * @param indoorTemperature Indoor room temperature
    */
   public ThermalHouseResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> qDot,
       ComparableQuantity<Temperature> indoorTemperature) {
-    super(uuid, timestamp, inputModel, qDot);
+    super(uuid, time, inputModel, qDot);
     this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
   }
 
@@ -82,8 +82,8 @@ public class ThermalHouseResult extends ThermalSinkResult {
     return "ThermalHouseResult{"
         + "uuid="
         + getUuid()
-        + ", timestamp="
-        + getTimestamp()
+        + ", time="
+        + getTime()
         + ", inputModel="
         + getInputModel()
         + ", qDot="

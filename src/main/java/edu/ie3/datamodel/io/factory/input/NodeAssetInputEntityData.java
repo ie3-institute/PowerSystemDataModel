@@ -76,8 +76,8 @@ public class NodeAssetInputEntityData extends AssetInputEntityData {
     return "NodeAssetInputEntityData{"
         + "fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + ", operatorInput="
         + getOperatorInput().getUuid()
         + ", node="

@@ -53,6 +53,9 @@ node {
             String currentBranchName = prJsonObj == null ? env.BRANCH_NAME : prJsonObj.head.ref
             String targetBranchName = prJsonObj == null ? null : prJsonObj.base.ref
 
+            /* prs from forks require a special handling*/
+            String headGitCheckoutUrl = prJsonObj == null ? gitCheckoutUrl : prJsonObj.head.repo.ssh_url
+
             // notify rocket chat
             notifyRocketChat(rocketChatChannel, ':jenkins_triggered:', buildStartMsg(currentBranchName, targetBranchName, projectName))
 
@@ -61,11 +64,12 @@ node {
             stage('checkout') {
                 // commit hash from scm checkout
                 // https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/Complete-Jenkins-Git-environment-variables-list-for-batch-jobs-and-shell-script-builds
-                commitHash = gitCheckout(projectName, gitCheckoutUrl, currentBranchName, sshCredentialsId).GIT_COMMIT
+                commitHash = gitCheckout(projectName, headGitCheckoutUrl, currentBranchName, sshCredentialsId).GIT_COMMIT
             }
 
             // set build display name
-            currentBuild.displayName = determineDisplayName(currentBranchName, commitHash, orgName, projectName)
+            String displayNameBranchName = prFromFork() ? prJsonObj.head.repo.full_name : currentBranchName
+            currentBuild.displayName = determineDisplayName(displayNameBranchName, commitHash, orgName, projectName)
 
             if (currentBranchName == "main") {
                 stage('handle dev pr') {
@@ -81,12 +85,12 @@ node {
             stage('version check') {
                 // version check can only be executed, if target branch is known (derived from a PR)
                 if (targetBranchName == "main" || targetBranchName == "dev") {
-                    if (checkVersion(currentBranchName, targetBranchName, projectName, projectName, gitCheckoutUrl, sshCredentialsId) != 0)
+                    if (checkVersion(currentBranchName, targetBranchName, projectName, projectName, gitCheckoutUrl, headGitCheckoutUrl, sshCredentialsId) != 0)
                         error "Version check failed! See log for version differences."
                 } else if (targetBranchName == null) {
                     // if this branch is the dev branch, we can still do version check to compare if dev and main have the same semnatic version
                     if (env.BRANCH_NAME == "dev") {
-                        if (checkVersion(currentBranchName, "main", projectName, projectName, gitCheckoutUrl, sshCredentialsId) != 0)
+                        if (checkVersion(currentBranchName, "main", projectName, projectName, gitCheckoutUrl, headGitCheckoutUrl, sshCredentialsId) != 0)
                             error "Version check failed! See log for version differences."
                     } else {
                         println "No PR for branch '$currentBranchName' exists. Cannot check versioning! Please create a PR to enable version check."
@@ -109,7 +113,8 @@ node {
 
             // sonarqube analysis
             stage('sonarqube analysis') {
-                String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, currentBranchName, orgName, projectName, projectName)
+                String sonarqubeCurrentBranchName = prFromFork() ? prJsonObj.head.repo.full_name : currentBranchName // forks needs to be handled differently
+                String sonarqubeCmd = determineSonarqubeGradleCmd(sonarqubeProjectKey, sonarqubeCurrentBranchName, orgName, projectName, projectName)
                 withSonarQubeEnv() { // will pick the global server connection from jenkins for sonarqube
                     gradle(sonarqubeCmd, projectName)
                 }
@@ -455,6 +460,10 @@ def buildStartMsg(String currentBranchName, String targetBranchName, String proj
     return msg + targetBranch
 }
 
+def prFromFork() {
+    return env.CHANGE_FORK != null
+}
+
 /**
  * utility functions - methods that does not require node context
  */
@@ -512,9 +521,14 @@ def getPRJsonObj(String orgName, String projectName, String changeId) {
 }
 
 
-def checkVersion(String branchName, String targetBranchName, String relativeGitDir, String projectName, String gitCheckoutUrl, String sshCredentialsId) {
+def checkVersion(String branchName, String targetBranchName, String relativeGitDir,
+                 String projectName,
+                 String baseGitCheckoutUrl,
+                 String headGitCheckoutUrl,
+                 String sshCredentialsId) {
     // get current branch type
-    String branchType = getBranchType(branchName)
+    // if headGitCheckoutUrl is set (= pr from fork), this branch type is always treated as a feature branch
+    String branchType = prFromFork() ? "feature" : getBranchType(branchName)
     if (branchType == null) {
         println "Cannot derive branch type from current branch with name '$branchName'."
         return -1
@@ -524,16 +538,16 @@ def checkVersion(String branchName, String targetBranchName, String relativeGitD
     /// save the current version string
     String[] currentVersion = gradle("-q currentVersion", relativeGitDir).toString().split('\\.')
 
-    /// switch to the comparison branch
-    gitCheckout(projectName, gitCheckoutUrl, targetBranchName, sshCredentialsId)
+    /// switch to the comparison branch, this is always the base git checkout url
+    gitCheckout(projectName, baseGitCheckoutUrl, targetBranchName, sshCredentialsId)
     String[] targetBranchVersion = gradle("-q currentVersion", relativeGitDir).toString().split('\\.')
 
     if (compareVersionParts(branchType, currentVersion, getBranchType(targetBranchName), targetBranchVersion) != 0) {
         // comparison failed
         return -1
     } else {
-        // switch back to current branch
-        gitCheckout(projectName, gitCheckoutUrl, branchName, sshCredentialsId)
+        // switch back to current branch. Select url depending on if this is a fork or not
+        gitCheckout(projectName, headGitCheckoutUrl, branchName, sshCredentialsId)
         return 0
     }
 }

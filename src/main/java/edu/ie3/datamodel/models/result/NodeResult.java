@@ -24,17 +24,17 @@ public class NodeResult extends ResultEntity {
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param vMag voltage magnitude @ this node in p.u.
    * @param vAng voltage angle @ this node in degree
    */
   public NodeResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Dimensionless> vMag,
       ComparableQuantity<Angle> vAng) {
-    super(timestamp, inputModel);
+    super(time, inputModel);
     this.vMag = vMag;
     this.vAng = vAng;
   }
@@ -44,18 +44,18 @@ public class NodeResult extends ResultEntity {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param vMag Dimensionless voltage magnitude
    * @param vAng Voltage angle in degrees
    */
   public NodeResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Dimensionless> vMag,
       ComparableQuantity<Angle> vAng) {
-    super(uuid, timestamp, inputModel);
+    super(uuid, time, inputModel);
     this.vMag = vMag;
     this.vAng = vAng;
   }
@@ -95,8 +95,8 @@ public class NodeResult extends ResultEntity {
     return "NodeResult{"
         + "uuid="
         + getUuid()
-        + ", timestamp="
-        + getTimestamp()
+        + ", time="
+        + getTime()
         + ", inputModel="
         + getInputModel()
         + ", vMag="

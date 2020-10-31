@@ -28,7 +28,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [LoadInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A LoadInputFactory should parse a valid LoadInput correctly"() {
@@ -48,7 +48,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 		def nodeInput = Mock(NodeInput)
 
 		when:
-		Optional<LoadInput> input = inputFactory.getEntity(
+		Optional<LoadInput> input = inputFactory.get(
 				new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
 
 		then:

@@ -21,7 +21,7 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
 		def expectedClasses = [Transformer2WInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A Transformer2WInputFactory should parse a valid Transformer2WInput correctly"() {
@@ -43,7 +43,7 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
 		def typeInput = Mock(Transformer2WTypeInput)
 
 		when:
-		Optional<Transformer2WInput> input = inputFactory.getEntity(new TypedConnectorInputEntityData<Transformer2WTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<Transformer2WInput> input = inputFactory.get(new TypedConnectorInputEntityData<Transformer2WTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present

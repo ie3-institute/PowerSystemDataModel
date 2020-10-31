@@ -15,8 +15,10 @@ import spock.lang.Specification
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.stream.Collectors
+import java.util.stream.Stream
 
-class DefaultInputHierarchyTest extends Specification {
+class DefaultDirectoryHierarchyTest extends Specification {
 	@Shared
 	Path tmpDirectory
 
@@ -38,17 +40,21 @@ class DefaultInputHierarchyTest extends Specification {
 		def basePath = basePathString(gridName)
 
 		when:
-		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
+		def dfh = new DefaultDirectoryHierarchy(tmpDirectory.toString(), gridName)
 
 		then:
 		try {
 			dfh.baseDirectory == Paths.get(basePath)
-			dfh.subDirectories.get(Paths.get(FilenameUtils.concat(basePath, "grid"))) == true
-			dfh.subDirectories.get(Paths.get(FilenameUtils.concat(basePath, "participants"))) == true
-			dfh.subDirectories.get(Paths.get(FilenameUtils.concat(FilenameUtils.concat(basePath, "participants"), "time_series"))) == false
-			dfh.subDirectories.get(Paths.get(FilenameUtils.concat(basePath, "global"))) == true
-			dfh.subDirectories.get(Paths.get(FilenameUtils.concat(basePath, "thermal"))) == false
-			dfh.subDirectories.get(Paths.get(FilenameUtils.concat(basePath, "graphics"))) == false
+			dfh.subDirectories.size() == 9
+			dfh.subDirectories.get(Paths.get(Stream.of(basePath, "input", "grid").collect(Collectors.joining(File.separator)))) == true
+			dfh.subDirectories.get(Paths.get(Stream.of(basePath, "input", "participants").collect(Collectors.joining(File.separator)))) == true
+			dfh.subDirectories.get(Paths.get(Stream.of(basePath, "input", "participants", "time_series").collect(Collectors.joining(File.separator)))) == false
+			dfh.subDirectories.get(Paths.get(Stream.of(basePath, "input", "global").collect(Collectors.joining(File.separator)))) == true
+			dfh.subDirectories.get(Paths.get(Stream.of(basePath, "input", "thermal").collect(Collectors.joining(File.separator)))) == false
+			dfh.subDirectories.get(Paths.get(Stream.of(basePath, "input", "graphics").collect(Collectors.joining(File.separator)))) == false
+			dfh.subDirectories.get(Paths.get(Stream.of(basePath, "results", "grid").collect(Collectors.joining(File.separator)))) == false
+			dfh.subDirectories.get(Paths.get(Stream.of(basePath, "results", "participants").collect(Collectors.joining(File.separator)))) == false
+			dfh.subDirectories.get(Paths.get(Stream.of(basePath, "results", "thermal").collect(Collectors.joining(File.separator)))) == false
 		} catch (TestFailedException e) {
 			FileIOUtils.deleteRecursively(tmpDirectory)
 			throw e
@@ -59,7 +65,7 @@ class DefaultInputHierarchyTest extends Specification {
 		given:
 		def gridName = "test_grid"
 		def basePath = Paths.get(basePathString(gridName))
-		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
+		def dfh = new DefaultDirectoryHierarchy(tmpDirectory.toString(), gridName)
 
 		when:
 		dfh.createDirs()
@@ -73,14 +79,19 @@ class DefaultInputHierarchyTest extends Specification {
 				assert Files.isDirectory(path)
 			}
 		}
-		Files.list(basePath).each { path -> assert dfh.subDirectories.containsKey(path) }
+		/* Ignore the partial result and input trees, as they are not listed explicitly */
+		Files.list(basePath).filter { path ->
+			path != Paths.get(Stream.of(basePath.toString(), "input").collect(Collectors.joining(File.separator))) && path != Paths.get(Stream.of(basePath.toString(), "results").collect(Collectors.joining(File.separator)))
+		}.each { path ->
+			assert dfh.subDirectories.containsKey(path)
+		}
 	}
 
 	def "A DefaultFileHierarchy is able to create a correct hierarchy of mandatory and optional directories"() {
 		given:
 		def gridName = "test_grid"
 		def basePath = Paths.get(basePathString(gridName))
-		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
+		def dfh = new DefaultDirectoryHierarchy(tmpDirectory.toString(), gridName)
 
 		when:
 		dfh.createDirs(true)
@@ -92,13 +103,15 @@ class DefaultInputHierarchyTest extends Specification {
 			assert Files.exists(path)
 			assert Files.isDirectory(path)
 		}
-		Files.list(basePath).forEach { path -> assert dfh.subDirectories.containsKey(path) }
+		Files.list(basePath).filter { path ->
+			path != Paths.get(Stream.of(basePath.toString(), "input").collect(Collectors.joining(File.separator))) && path != Paths.get(Stream.of(basePath.toString(), "results").collect(Collectors.joining(File.separator)))
+		}.each { path -> assert dfh.subDirectories.containsKey(path) }
 	}
 
 	def "A DefaultFileHierarchy is able to validate a correct hierarchy of mandatory and optional directories"() {
 		given:
 		def gridName = "test_grid"
-		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
+		def dfh = new DefaultDirectoryHierarchy(tmpDirectory.toString(), gridName)
 		dfh.createDirs(true)
 
 		when:
@@ -112,7 +125,7 @@ class DefaultInputHierarchyTest extends Specification {
 		given:
 		def gridName = "test_grid"
 		def basePath = Paths.get(basePathString(gridName))
-		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
+		def dfh = new DefaultDirectoryHierarchy(tmpDirectory.toString(), gridName)
 
 		when:
 		dfh.validate()
@@ -126,7 +139,7 @@ class DefaultInputHierarchyTest extends Specification {
 		given:
 		def gridName = "test_grid"
 		def basePath = Paths.get(basePathString(gridName))
-		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
+		def dfh = new DefaultDirectoryHierarchy(tmpDirectory.toString(), gridName)
 		Files.createFile(basePath)
 
 		when:
@@ -141,7 +154,7 @@ class DefaultInputHierarchyTest extends Specification {
 		given:
 		def gridName = "test_grid"
 		def basePath = Paths.get(basePathString(gridName))
-		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
+		def dfh = new DefaultDirectoryHierarchy(tmpDirectory.toString(), gridName)
 		dfh.createDirs()
 		def globalDirectory = dfh.subDirectories.entrySet().find { entry -> entry.key.toString().endsWith("global") }.key
 		Files.delete(globalDirectory)
@@ -151,14 +164,14 @@ class DefaultInputHierarchyTest extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.message == "The mandatory directory '" + basePath + "/global' does not exist."
+		ex.message == "The mandatory directory '" + Stream.of(basePath.toString(), "input", "global").collect(Collectors.joining(File.separator)) + "' does not exist."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a hierarchy with file instead of mandatory directory"() {
 		given:
 		def gridName = "test_grid"
 		def basePath = Paths.get(basePathString(gridName))
-		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
+		def dfh = new DefaultDirectoryHierarchy(tmpDirectory.toString(), gridName)
 		dfh.createDirs()
 		def globalDirectory = dfh.subDirectories.entrySet().find { entry -> entry.key.toString().endsWith("global") }.key
 		Files.delete(globalDirectory)
@@ -169,25 +182,25 @@ class DefaultInputHierarchyTest extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.message == "The mandatory directory '" + basePath + "/global' is not a directory."
+		ex.message == "The mandatory directory '" + Stream.of(basePath.toString(), "input", "global").collect(Collectors.joining(File.separator)) + "' is not a directory."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a hierarchy with file instead of optional directory"() {
 		given:
 		def gridName = "test_grid"
 		def basePath = Paths.get(basePathString(gridName))
-		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
+		def dfh = new DefaultDirectoryHierarchy(tmpDirectory.toString(), gridName)
 		dfh.createDirs(true)
-		def globalDirectory = dfh.subDirectories.entrySet().find { entry -> entry.key.toString().endsWith("thermal") }.key
-		Files.delete(globalDirectory)
-		Files.createFile(globalDirectory)
+		def thermalDirectory = dfh.subDirectories.entrySet().find { entry -> entry.key.toString().endsWith("input" + File.separator + "thermal") }.key
+		Files.delete(thermalDirectory)
+		Files.createFile(thermalDirectory)
 
 		when:
 		dfh.validate()
 
 		then:
 		def ex = thrown(FileException)
-		ex.message == "The optional directory '" + basePath + "/thermal' is not a directory."
+		ex.message == "The optional directory '" + Stream.of(basePath.toString(), "input", "thermal").collect(Collectors.joining(File.separator)) + "' is not a directory."
 	}
 
 	def "A DefaultFileHierarchy throws an exception when trying to validate a hierarchy with unsupported extra directory"() {
@@ -195,7 +208,7 @@ class DefaultInputHierarchyTest extends Specification {
 		def gridName = "test_grid"
 		def basePath = Paths.get(basePathString(gridName))
 		def fifthWheelPath = Paths.get(FilenameUtils.concat(basePathString(gridName), "something_on_top"))
-		def dfh = new DefaultInputHierarchy(tmpDirectory.toString(), gridName)
+		def dfh = new DefaultDirectoryHierarchy(tmpDirectory.toString(), gridName)
 		dfh.createDirs(true)
 		Files.createDirectory(fifthWheelPath)
 
@@ -204,6 +217,6 @@ class DefaultInputHierarchyTest extends Specification {
 
 		then:
 		def ex = thrown(FileException)
-		ex.message == "There is a directory '" + basePath + "/something_on_top' apparent, that is not supported by the default directory hierarchy."
+		ex.message == "There is a directory '" + Stream.of(basePath.toString(), "something_on_top").collect(Collectors.joining(File.separator)) + "' apparent, that is not supported by the default directory hierarchy."
 	}
 }

@@ -20,7 +20,7 @@ class CylindricalStorageInputFactoryTest  extends Specification implements Facto
 		def expectedClasses = [CylindricalStorageInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A CylindricalStorageInputFactory should parse a valid CylindricalStorageInput correctly"() {
@@ -39,7 +39,7 @@ class CylindricalStorageInputFactoryTest  extends Specification implements Facto
 		def thermalBusInput = Mock(ThermalBusInput)
 
 		when:
-		Optional<CylindricalStorageInput> input = inputFactory.getEntity(new ThermalUnitInputEntityData(parameter, inputClass, thermalBusInput))
+		Optional<CylindricalStorageInput> input = inputFactory.get(new ThermalUnitInputEntityData(parameter, inputClass, thermalBusInput))
 
 		then:
 		input.present

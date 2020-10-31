@@ -173,12 +173,19 @@ You may either ship your csv files directly in this structure or compress everyt
 However, following this form, we are able to provide you some helpful tools in obtaining and saving your models a bit
 easier.
 
-.. figure:: ../_static/figures/uml/DefaultInputFolderStructure.png
+.. figure:: ../_static/figures/uml/DefaultInputDirectoryHierarchy.png
    :align: center
    :alt: Default directory hierarchy for input classes
    :width: 650
 
    Default directory hierarchy for input classes
+
+.. figure:: ../_static/figures/uml/DefaultResultDirectoryHierarchy.png
+   :align: center
+   :alt: Default directory hierarchy for result classes
+   :width: 650
+
+   Default directory hierarchy for result classes
 
 The italic parts are optional and the others are mandatory.
 As you see, this still is a pretty flexible approach, as you only need to provide, what you really need.

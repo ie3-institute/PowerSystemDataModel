@@ -20,7 +20,7 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
 		def expectedClasses = [ThermalHouseInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A ThermalHouseInputFactory should parse a valid ThermalHouseInput correctly"() {
@@ -36,7 +36,7 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
 		def thermalBusInput = Mock(ThermalBusInput)
 
 		when:
-		Optional<ThermalHouseInput> input = inputFactory.getEntity(new ThermalUnitInputEntityData(parameter, inputClass, thermalBusInput))
+		Optional<ThermalHouseInput> input = inputFactory.get(new ThermalUnitInputEntityData(parameter, inputClass, thermalBusInput))
 
 		then:
 		input.present

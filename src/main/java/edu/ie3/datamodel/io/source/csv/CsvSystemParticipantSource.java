@@ -421,7 +421,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             nodeAssetInputEntityDataStream(
                 assetInputEntityDataStream(entityClass, operators), nodes),
             types)
-        .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
+        .map(dataOpt -> dataOpt.flatMap(factory::get));
   }
   /** {@inheritDoc} */
   @Override
@@ -475,7 +475,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                 types),
             thermalStorages,
             thermalBuses)
-        .map(dataOpt -> dataOpt.flatMap(chpInputFactory::getEntity));
+        .map(dataOpt -> dataOpt.flatMap(chpInputFactory::get));
   }
   /** {@inheritDoc} */
   @Override
@@ -522,7 +522,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                     assetInputEntityDataStream(HpInput.class, operators), nodes),
                 types),
             thermalBuses)
-        .map(dataOpt -> dataOpt.flatMap(hpInputFactory::getEntity));
+        .map(dataOpt -> dataOpt.flatMap(hpInputFactory::get));
   }
 
   /**
@@ -569,7 +569,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
               return new SystemParticipantTypedEntityData<>(
                   fieldsToAttributes,
-                  nodeAssetInputEntityData.getEntityClass(),
+                  nodeAssetInputEntityData.getTargetClass(),
                   nodeAssetInputEntityData.getOperatorInput(),
                   nodeAssetInputEntityData.getNode(),
                   assetType);
@@ -634,7 +634,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     // log a warning
     if (!hpInputEntityDataOpt.isPresent()) {
       logSkippingWarning(
-          typedEntityData.getEntityClass().getSimpleName(),
+          typedEntityData.getTargetClass().getSimpleName(),
           saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
           saveMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
           "thermalBus: " + saveMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
@@ -705,7 +705,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       }
 
       logSkippingWarning(
-          typedEntityData.getEntityClass().getSimpleName(),
+          typedEntityData.getTargetClass().getSimpleName(),
           saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
           saveMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
           sB.toString());

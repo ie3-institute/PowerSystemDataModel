@@ -17,7 +17,7 @@ class OperatorInputFactoryTest extends Specification {
 		def expectedClasses = [OperatorInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "An OperatorInputFactory should parse a valid OperatorInput correctly"() {
@@ -31,7 +31,7 @@ class OperatorInputFactoryTest extends Specification {
 		def inputClass = OperatorInput
 
 		when:
-		Optional<OperatorInput> input = inputFactory.getEntity(new SimpleEntityData(parameter, inputClass))
+		Optional<OperatorInput> input = inputFactory.get(new SimpleEntityData(parameter, inputClass))
 
 		then:
 		input.present

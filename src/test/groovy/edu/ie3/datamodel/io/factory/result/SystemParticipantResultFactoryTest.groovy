@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.test.helper.FactoryTestHelper
-import edu.ie3.util.TimeTools
 import spock.lang.Specification
 import tech.units.indriya.unit.Units
 
@@ -33,17 +32,17 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		]
 
 		expect:
-		resultFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		resultFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A SystemParticipantResultFactory should parse a valid result model correctly"() {
 		given: "a system participant factory and model data"
 		def resultFactory = new SystemParticipantResultFactory()
 		Map<String, String> parameter = [
-			"timestamp":    "2020-01-30 17:26:44",
-			"inputModel":   "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"p":            "2",
-			"q":            "2"
+			"time"      : "2020-01-30 17:26:44",
+			"inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"p"         : "2",
+			"q"         : "2"
 		]
 
 		if (modelClass == EvResult || modelClass == StorageResult) {
@@ -55,7 +54,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		}
 
 		when:
-		Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, modelClass))
+		Optional<? extends SystemParticipantResult> result = resultFactory.get(new SimpleEntityData(parameter, modelClass))
 
 		then:
 		result.present
@@ -63,7 +62,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		((SystemParticipantResult) result.get()).with {
 			assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
 			assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
-			assert timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+			assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
 			assert inputModel == UUID.fromString(parameter["inputModel"])
 		}
 
@@ -95,14 +94,14 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		given: "a system participant factory and model data"
 		def resultFactory = new SystemParticipantResultFactory()
 		Map<String, String> parameter = [
-			"timestamp":    "2020-01-30 17:26:44",
-			"inputModel":   "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"soc":          "20",
-			"p":            "2",
-			"q":            "2"
+			"time"      : "2020-01-30 17:26:44",
+			"inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"soc"       : "20",
+			"p"         : "2",
+			"q"         : "2"
 		]
 		when:
-		Optional<? extends SystemParticipantResult> result = resultFactory.getEntity(new SimpleEntityData(parameter, StorageResult))
+		Optional<? extends SystemParticipantResult> result = resultFactory.get(new SimpleEntityData(parameter, StorageResult))
 
 		then:
 		result.present
@@ -111,7 +110,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 			assert p == getQuant(parameter["p"], StandardUnits.ACTIVE_POWER_RESULT)
 			assert q == getQuant(parameter["q"], StandardUnits.REACTIVE_POWER_RESULT)
 			assert soc == getQuant(parameter["soc"], Units.PERCENT)
-			assert timestamp == TimeTools.toZonedDateTime(parameter["timestamp"])
+			assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
 			assert inputModel == UUID.fromString(parameter["inputModel"])
 		}
 	}
@@ -120,38 +119,38 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		given: "a system participant factory and model data"
 		def resultFactory = new SystemParticipantResultFactory()
 		Map<String, String> parameter = [
-			"timestamp":    "2020-01-30 17:26:44",
-			"inputModel":   "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"q":            "2"
+			"time"      : "2020-01-30 17:26:44",
+			"inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"q"         : "2"
 		]
 		when:
-		resultFactory.getEntity(new SimpleEntityData(parameter, WecResult))
+		resultFactory.get(new SimpleEntityData(parameter, WecResult))
 
 		then:
 		FactoryException ex = thrown()
-		ex.message == "The provided fields [inputModel, q, timestamp] with data \n" +
+		ex.message == "The provided fields [inputModel, q, time] with data \n" +
 				"{inputModel -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7,\n" +
 				"q -> 2,\n" +
-				"timestamp -> 2020-01-30 17:26:44} are invalid for instance of WecResult. \n" +
+				"time -> 2020-01-30 17:26:44} are invalid for instance of WecResult. \n" +
 				"The following fields (without complex objects e.g. nodes) to be passed to a constructor of 'WecResult' are possible (NOT case-sensitive!):\n" +
-				"0: [inputModel, p, q, timestamp]\n" +
-				"1: [inputModel, p, q, timestamp, uuid]\n"
+				"0: [inputModel, p, q, time]\n" +
+				"1: [inputModel, p, q, time, uuid]\n"
 	}
 
 	def "A SystemParticipantResultFactory should be performant"() {
 		given: "a factory and dummy model data"
 		def resultFactory = new SystemParticipantResultFactory()
 		Map<String, String> parameter = [
-			"timestamp":    "2020-01-30 17:26:44",
-			"inputModel":   "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"soc":          "20",
-			"p":            "2",
-			"q":            "2",
+			"time"      : "2020-01-30 17:26:44",
+			"inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"soc"       : "20",
+			"p"         : "2",
+			"q"         : "2",
 		]
 		expect: "that the factory should not need more than 2 seconds for processing 100.000 entities"
 		Long startTime = System.currentTimeMillis()
 		10000.times {
-			resultFactory.getEntity(new SimpleEntityData(parameter, StorageResult))
+			resultFactory.get(new SimpleEntityData(parameter, StorageResult))
 		}
 		BigDecimal elapsedTime = (System
 				.currentTimeMillis() - startTime) / 1000.0

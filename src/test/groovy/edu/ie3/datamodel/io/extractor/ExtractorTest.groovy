@@ -12,19 +12,11 @@ import edu.ie3.datamodel.models.input.system.FixedFeedInInput
 import edu.ie3.test.common.GridTestData as gtd
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 import edu.ie3.test.common.ThermalUnitInputTestData as tutd
-import edu.ie3.util.TimeTools
 import spock.lang.Specification
-
-import java.time.ZoneId
-
 
 class ExtractorTest extends Specification {
 
 	private final class InvalidNestedExtensionClass implements NestedEntity {}
-
-	static {
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-	}
 
 	def "An Extractor should be able to extract an entity with nested elements correctly"() {
 

@@ -7,9 +7,8 @@ package edu.ie3.datamodel.utils;
 
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.util.geo.GeoUtils;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 import javax.measure.quantity.Length;
 import org.apache.commons.lang3.ArrayUtils;
 import org.locationtech.jts.geom.Coordinate;
@@ -155,5 +154,20 @@ public class GridAndGeoUtils extends GeoUtils {
         nodeA.getGeoPosition().getX(),
         nodeB.getGeoPosition().getY(),
         nodeB.getGeoPosition().getX());
+  }
+
+  /**
+   * Calculates and sorts the distances between a base coordinate and other given coordinates using
+   * {@link #calcHaversine(double, double, double, double)}
+   *
+   * @param baseCoordinate the base point
+   * @param coordinates the points to calculate the distance from the base point for
+   * @return a sorted set of distances between the base and other coordinates
+   */
+  public static SortedSet<CoordinateDistance> getCoordinateDistances(
+      Point baseCoordinate, Collection<Point> coordinates) {
+    return coordinates.stream()
+        .map(coordinate -> new CoordinateDistance(baseCoordinate, coordinate))
+        .collect(Collectors.toCollection(TreeSet::new));
   }
 }
