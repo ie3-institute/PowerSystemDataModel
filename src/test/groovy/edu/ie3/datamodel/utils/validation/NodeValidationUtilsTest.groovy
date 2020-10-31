@@ -5,13 +5,9 @@
  */
 package edu.ie3.datamodel.utils.validation
 
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
-
-import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.test.common.GridTestData
 import spock.lang.Specification
-import tech.units.indriya.quantity.Quantities
 
 class NodeValidationUtilsTest extends Specification {
 
@@ -35,69 +31,4 @@ class NodeValidationUtilsTest extends Specification {
 		ex.message == "Expected an object, but got nothing. :-("
 	}
 
-	/*
-	def "The check method recognizes an invalid voltage level"() {
-		given:
-		def correctNode = GridTestData.nodeB
-		def errorNode = correctNode.copy().voltLvl(null).build()
-
-		when:
-		NodeValidationUtils.check(correctNode)
-		then:
-		noExceptionThrown()
-
-		when:
-		NodeValidationUtils.check(errorNode)
-		then:
-		thrown(ValidationException)
-	}
-
-	def "The check method recognizes an invalid target voltage"() {
-		given:
-		def correctNode = GridTestData.nodeB
-		def errorNode = correctNode.copy().vTarget(Quantities.getQuantity(0d, PU)).build()
-
-		when:
-		NodeValidationUtils.check(correctNode)
-		then:
-		noExceptionThrown()
-
-		when:
-		NodeValidationUtils.check(errorNode)
-		then:
-		thrown(InvalidEntityException)
-	}
-
-	def "The check method recognizes an invalid subnet"() {
-		given:
-		def correctNode = GridTestData.nodeB
-		def errorNode = correctNode.copy().subnet(0).build()
-
-		when:
-		NodeValidationUtils.check(correctNode)
-		then:
-		noExceptionThrown()
-
-		when:
-		NodeValidationUtils.check(errorNode)
-		then:
-		thrown(InvalidEntityException)
-	}
-
-	def "The check method recognizes an invalid geoPosition"() {
-		given:
-		def correctNode = GridTestData.nodeB
-		def errorNode = correctNode.copy().geoPosition(null).build()
-
-		when:
-		NodeValidationUtils.check(correctNode)
-		then:
-		noExceptionThrown()
-
-		when:
-		NodeValidationUtils.check(errorNode)
-		then:
-		thrown(InvalidEntityException)
-	}
-	 */
 }
