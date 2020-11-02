@@ -33,17 +33,26 @@ import org.locationtech.jts.geom.Point;
 /** Couchbase Source for weather data */
 public class CouchbaseWeatherSource implements WeatherSource {
   private static final Logger logger = LogManager.getLogger(CouchbaseWeatherSource.class);
-  private static final String COORDINATE_ID_COLUMN_NAME = "coordinate";
-  private static final String TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
-  private final TimeBasedWeatherValueFactory weatherFactory;
+  private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
+  /** The start of the document key, comparable to a table name in relational databases*/
+  private static final String DEFAULT_KEY_PREFIX = "weather";
 
+  private final TimeBasedWeatherValueFactory weatherFactory;
+  private final String keyPrefix;
   private final CouchbaseConnector connector;
   private final IdCoordinateSource coordinateSource;
+  private final String coordinateIdColumnName;
 
-  public CouchbaseWeatherSource(CouchbaseConnector connector, IdCoordinateSource coordinateSource) {
+  public CouchbaseWeatherSource(CouchbaseConnector connector, IdCoordinateSource coordinateSource, String coordinateIdColumnName) {
+    this(connector, coordinateSource, coordinateIdColumnName, DEFAULT_TIMESTAMP_PATTERN, DEFAULT_KEY_PREFIX);
+  }
+
+  public CouchbaseWeatherSource(CouchbaseConnector connector, IdCoordinateSource coordinateSource, String coordinateIdColumnName, String timestampPattern, String keyPrefix) {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
-    this.weatherFactory = new TimeBasedWeatherValueFactory(TIMESTAMP_PATTERN);
+    this.coordinateIdColumnName = coordinateIdColumnName;
+    this.weatherFactory = new TimeBasedWeatherValueFactory(timestampPattern);
+    this.keyPrefix = keyPrefix;
   }
 
   @Override
@@ -60,34 +69,42 @@ public class CouchbaseWeatherSource implements WeatherSource {
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
     HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     for (Point coordinate : coordinates) {
-      String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinate);
-      CompletableFuture<QueryResult> futureResult = connector.query(query);
-      QueryResult queryResult = futureResult.join();
-      List<JsonObject> jsonWeatherInputs = Collections.emptyList();
-      try {
-        jsonWeatherInputs = queryResult.rowsAsObject();
-      } catch (DecodingFailureException ex) {
-        logger.error(ex);
-      }
-      if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
-        Set<TimeBasedValue<WeatherValue>> weatherInputs =
-            jsonWeatherInputs.stream()
-                .map(this::toTimeBasedWeatherValue)
-                .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
-                .collect(Collectors.toSet());
-        IndividualTimeSeries<WeatherValue> weatherTimeSeries =
-            new IndividualTimeSeries<>(null, weatherInputs);
-        coordinateToTimeSeries.put(coordinate, weatherTimeSeries);
-      }
+      Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
+      if (coordinateId.isPresent()) {
+        String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinateId.get());
+        CompletableFuture<QueryResult> futureResult = connector.query(query);
+        QueryResult queryResult = futureResult.join();
+        List<JsonObject> jsonWeatherInputs = Collections.emptyList();
+        try {
+          jsonWeatherInputs = queryResult.rowsAsObject();
+        } catch (DecodingFailureException ex) {
+          logger.error(ex);
+        }
+        if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
+          Set<TimeBasedValue<WeatherValue>> weatherInputs =
+                  jsonWeatherInputs.stream()
+                          .map(this::toTimeBasedWeatherValue)
+                          .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+                          .collect(Collectors.toSet());
+          IndividualTimeSeries<WeatherValue> weatherTimeSeries =
+                  new IndividualTimeSeries<>(null, weatherInputs);
+          coordinateToTimeSeries.put(coordinate, weatherTimeSeries);
+        }
+      } else logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
     }
     return coordinateToTimeSeries;
   }
 
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
+    Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
+    if(!coordinateId.isPresent()) {
+      logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
+      return Optional.empty();
+    }
     try {
       CompletableFuture<GetResult> futureResult =
-          connector.get(generateWeatherKey(date, coordinate));
+          connector.get(generateWeatherKey(date, coordinateId.get()));
       GetResult getResult = futureResult.join();
       JsonObject jsonWeatherInput = getResult.contentAsObject();
       return toTimeBasedWeatherValue(jsonWeatherInput);
@@ -107,13 +124,13 @@ public class CouchbaseWeatherSource implements WeatherSource {
    * weather::<coordinate_id>::<time>}
    *
    * @param time the timestamp for the weather data
-   * @param coordinate the coordinate of the weather data
+   * @param coordinateId the coordinate Id of the weather data
    * @return a weather document key
    */
-  public String generateWeatherKey(ZonedDateTime time, Point coordinate) {
-    String key = "weather::";
-    key += coordinateSource.getId(coordinate) + "::";
-    key += time.format(DateTimeFormatter.ofPattern(TIMESTAMP_PATTERN));
+  public String generateWeatherKey(ZonedDateTime time, Integer coordinateId) {
+    String key = keyPrefix + "::";
+    key += coordinateId + "::";
+    key += time.format(DateTimeFormatter.ofPattern(DEFAULT_TIMESTAMP_PATTERN));
     return key;
   }
 
@@ -122,37 +139,41 @@ public class CouchbaseWeatherSource implements WeatherSource {
    * interval by querying a range of document keys
    *
    * @param timeInterval the time interval for which the documents are queried
-   * @param coordinate the coordinate for which the documents are queried
+   * @param coordinateId the coordinate ID for which the documents are queried
    * @return the query string
    */
   public String createQueryStringForIntervalAndCoordinate(
-      ClosedInterval<ZonedDateTime> timeInterval, Point coordinate) {
+      ClosedInterval<ZonedDateTime> timeInterval, int coordinateId) {
     String basicQuery =
         "SELECT " + connector.getBucketName() + ".* FROM " + connector.getBucketName();
     String whereClause =
-        " WHERE META().id >= '" + generateWeatherKey(timeInterval.getLower(), coordinate);
+        " WHERE META().id >= '" + generateWeatherKey(timeInterval.getLower(), coordinateId);
     whereClause +=
-        "' AND META().id <= '" + generateWeatherKey(timeInterval.getUpper(), coordinate) + "'";
+        "' AND META().id <= '" + generateWeatherKey(timeInterval.getUpper(), coordinateId) + "'";
     return basicQuery + whereClause;
   }
 
   /**
-   * Converts a JsonObject into TimeBasedWeatherValueData ba extracting all fields into a field to
+   * Converts a JsonObject into TimeBasedWeatherValueData by extracting all fields into a field to
    * value map and then removing the coordinate from it to supply as a parameter
    *
    * @param jsonObj the JsonObject to convert
    * @return the Data object
    */
-  private TimeBasedWeatherValueData toTimeBasedWeatherValueData(JsonObject jsonObj) {
-    Integer coordinateId = jsonObj.getInt(COORDINATE_ID_COLUMN_NAME);
-    jsonObj.removeKey(COORDINATE_ID_COLUMN_NAME);
-    Point coordinate = coordinateSource.getCoordinate(coordinateId);
+  private Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(JsonObject jsonObj) {
+    Integer coordinateId = jsonObj.getInt(coordinateIdColumnName);
+    jsonObj.removeKey(coordinateIdColumnName);
+    Optional<Point> coordinate = coordinateSource.getCoordinate(coordinateId);
+    if(!coordinate.isPresent()) {
+      logger.warn("Unable to match coordinate ID {} to a coordinate", coordinateId);
+      return Optional.empty();
+    }
     Map<String, String> fieldToValueMap =
         jsonObj.toMap().entrySet().stream()
             .collect(
                 Collectors.toMap(Map.Entry::getKey, entry -> String.valueOf(entry.getValue())));
     fieldToValueMap.putIfAbsent("uuid", UUID.randomUUID().toString());
-    return new TimeBasedWeatherValueData(fieldToValueMap, coordinate);
+    return Optional.of(new TimeBasedWeatherValueData(fieldToValueMap, coordinate.get()));
   }
 
   /**
@@ -164,8 +185,13 @@ public class CouchbaseWeatherSource implements WeatherSource {
    * @return an optional weather value
    */
   public Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(JsonObject jsonObj) {
-    TimeBasedWeatherValueData data = toTimeBasedWeatherValueData(jsonObj);
-    TimeBasedValue<WeatherValue> timeBasedValue = weatherFactory.getEntity(data).orElse(null);
+    Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(jsonObj);
+    if(!data.isPresent()) {
+      logger.warn("Unable to parse json object");
+      logger.debug("The following json could not be parsed:\n{}", jsonObj);
+      return Optional.empty();
+    }
+    TimeBasedValue<WeatherValue> timeBasedValue = weatherFactory.get(data.get()).orElse(null);
     return Optional.ofNullable(timeBasedValue);
   }
 }

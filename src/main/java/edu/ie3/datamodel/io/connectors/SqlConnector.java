@@ -37,16 +37,6 @@ public class SqlConnector implements DataConnector {
   }
 
   /**
-   * Initializes a SqlConnector with default parameters: <br>
-   * jdbcUrl = jdbc:postgresql://localhost:5432/simona <br>
-   * username = postgres <br>
-   * password = root <br>
-   */
-  public SqlConnector() {
-    this("jdbc:postgresql://localhost:5432/simona", "postgres", "root");
-  }
-
-  /**
    * Executes the given query. For update queries please use {@link
    * SqlConnector#executeUpdate(String)}.
    *
@@ -82,7 +72,7 @@ public class SqlConnector implements DataConnector {
    * Establishes and returns a database connection
    *
    * @return the connection object
-   * @throws SQLException if the connection could not be establlished
+   * @throws SQLException if the connection could not be established
    */
   public Connection getConnection() throws SQLException {
     Properties connectionProps = new Properties();

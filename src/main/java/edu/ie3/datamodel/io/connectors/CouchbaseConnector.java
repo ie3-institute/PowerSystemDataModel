@@ -20,11 +20,6 @@ import java.util.stream.Collectors;
  * Entities will be persisted in documents which are then mapped by a key.
  */
 public class CouchbaseConnector implements DataConnector {
-
-  private static final String DEFAULT_URL = "127.0.0.1";
-  private static final String DEFAULT_BUCKET_NAME = "ie3_in";
-  private static final String DEFAULT_USERNAME = "Administrator";
-  private static final String DEFAULT_PASSWORD = "password";
   private final Cluster cluster;
   private final String bucketName;
 
@@ -39,26 +34,6 @@ public class CouchbaseConnector implements DataConnector {
   public CouchbaseConnector(String url, String bucketName, String username, String password) {
     this.bucketName = bucketName;
     cluster = Cluster.connect(url, username, password);
-  }
-
-  /**
-   * Initializes a new CouchbaseConnector, uses the default URL ({@value #DEFAULT_URL} and bucket
-   * name ({@value #DEFAULT_BUCKET_NAME})
-   *
-   * @param username the user name
-   * @param password the user password
-   */
-  public CouchbaseConnector(String username, String password) {
-    this(DEFAULT_URL, DEFAULT_BUCKET_NAME, username, password);
-  }
-
-  /**
-   * Initializes a new CouchbaseConnector, uses the default URL ({@value #DEFAULT_URL}), bucket name
-   * ({@value #DEFAULT_BUCKET_NAME}), user name ({@value #DEFAULT_USERNAME}) and password ({@value
-   * #DEFAULT_PASSWORD})
-   */
-  public CouchbaseConnector() {
-    this(DEFAULT_URL, DEFAULT_BUCKET_NAME, DEFAULT_USERNAME, DEFAULT_PASSWORD);
   }
 
   /**

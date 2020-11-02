@@ -28,19 +28,18 @@ import org.locationtech.jts.geom.Point;
 
 /** SQL source for weather data */
 public class SqlWeatherSource implements WeatherSource {
-  private static final Logger mainLogger = LogManager.getLogger("Main");
+  private static final Logger logger = LogManager.getLogger(SqlWeatherSource.class);
 
-  private static final String DEFAULT_WEATHER_TABLE = "weather";
-  private static final String DEFAULT_WEATHER_SCHEMA = "public";
-  private static final String BASIC_QUERY =
-      "SELECT * FROM " + DEFAULT_WEATHER_SCHEMA + "." + DEFAULT_WEATHER_TABLE;
-  private static final String DEFAULT_COORDINATE_COLUMN = "coordinate";
-  private static final String DEFAULT_TIME_COLUMN = "time";
-
+  private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.S";
   private static final String DEFAULT_WEATHER_FETCHING_ERROR = "Error while fetching weather";
+  private static final String WHERE = " WHERE ";
 
   private final SqlConnector connector;
   private final IdCoordinateSource idCoordinateSource;
+  private final String weatherTableName;
+  private final String schemaName;
+  private final String coordinateColumnName;
+  private final String timeColumnName;
   private final TimeBasedWeatherValueFactory weatherFactory;
 
   /**
@@ -48,11 +47,34 @@ public class SqlWeatherSource implements WeatherSource {
    *
    * @param connector the connector needed for database connection
    * @param idCoordinateSource a coordinate source to map ids to points
+   * @param schemaName the database schema to use
+   * @param weatherTableName the name of the table containing weather data
+   * @param coordinateColumnName the name of the column containing coordinate IDs
+   * @param timeColumnName the name of the column containing timestamps
    */
-  public SqlWeatherSource(SqlConnector connector, IdCoordinateSource idCoordinateSource) {
+  public SqlWeatherSource(SqlConnector connector, IdCoordinateSource idCoordinateSource, String weatherTableName, String schemaName, String coordinateColumnName, String timeColumnName) {
+    this(connector, idCoordinateSource, weatherTableName, schemaName, coordinateColumnName, timeColumnName, DEFAULT_TIMESTAMP_PATTERN);
+  }
+
+  /**
+   * Initializes a new SqlWeatherSource
+   *
+   * @param connector the connector needed for database connection
+   * @param idCoordinateSource a coordinate source to map ids to points
+   * @param schemaName the database schema to use
+   * @param weatherTableName the name of the table containing weather data
+   * @param coordinateColumnName the name of the column containing coordinate IDs
+   * @param timeColumnName the name of the column containing timestamps
+   * @param timestampPattern the pattern of the timestamps
+   */
+  public SqlWeatherSource(SqlConnector connector, IdCoordinateSource idCoordinateSource, String schemaName, String weatherTableName, String coordinateColumnName, String timeColumnName, String timestampPattern) {
     this.connector = connector;
     this.idCoordinateSource = idCoordinateSource;
-    this.weatherFactory = new TimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss.S");
+    this.schemaName = schemaName;
+    this.weatherTableName = weatherTableName;
+    this.coordinateColumnName = coordinateColumnName;
+    this.timeColumnName = timeColumnName;
+    this.weatherFactory = new TimeBasedWeatherValueFactory(timestampPattern);
   }
 
   @Override
@@ -66,7 +88,7 @@ public class SqlWeatherSource implements WeatherSource {
       timeBasedValues = toTimeBasedWeatherValues(fieldMaps);
       if (!resultSet.isClosed()) resultSet.close();
     } catch (SQLException e) {
-      mainLogger.error(DEFAULT_WEATHER_FETCHING_ERROR, e);
+      logger.error(DEFAULT_WEATHER_FETCHING_ERROR, e);
     }
     return mapWeatherValuesToPoints(timeBasedValues);
   }
@@ -75,15 +97,20 @@ public class SqlWeatherSource implements WeatherSource {
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues = Collections.emptyList();
+    Set<Integer> coordinateIds = coordinates.stream().map(idCoordinateSource::getId).flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty)).collect(Collectors.toSet());
+    if(coordinateIds.isEmpty()) {
+      logger.warn("Unable to match coordinates to coordinate ID");
+      return Collections.emptyMap();
+    }
     try (Statement stmt = connector.getConnection().createStatement()) {
       ResultSet resultSet =
           connector.executeQuery(
-              stmt, createQueryStringForTimeIntervalAndCoordinates(timeInterval, coordinates));
+              stmt, createQueryStringForTimeIntervalAndCoordinates(timeInterval, coordinateIds));
       List<Map<String, String>> fieldMaps = SqlConnector.extractFieldMaps(resultSet);
       timeBasedValues = toTimeBasedWeatherValues(fieldMaps);
       if (!resultSet.isClosed()) resultSet.close();
     } catch (SQLException e) {
-      mainLogger.error(DEFAULT_WEATHER_FETCHING_ERROR, e);
+      logger.error(DEFAULT_WEATHER_FETCHING_ERROR, e);
     }
     return mapWeatherValuesToPoints(timeBasedValues);
   }
@@ -91,19 +118,33 @@ public class SqlWeatherSource implements WeatherSource {
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues = Collections.emptyList();
+    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
+    if(!coordinateId.isPresent()) {
+      logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
+      return Optional.empty();
+    }
     try (Statement stmt = connector.getConnection().createStatement()) {
       ResultSet resultSet =
-          connector.executeQuery(stmt, createQueryStringForTimeAndCoordinate(date, coordinate));
+          connector.executeQuery(stmt, createQueryStringForTimeAndCoordinate(date, coordinateId.get()));
       List<Map<String, String>> fieldMaps = SqlConnector.extractFieldMaps(resultSet);
       timeBasedValues = toTimeBasedWeatherValues(fieldMaps);
       if (!resultSet.isClosed()) resultSet.close();
     } catch (SQLException e) {
-      mainLogger.error(DEFAULT_WEATHER_FETCHING_ERROR, e);
+      logger.error(DEFAULT_WEATHER_FETCHING_ERROR, e);
     }
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
-      mainLogger.warn("Retrieved more than one result value, using the first");
+      logger.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.get(0));
+  }
+  
+  /**
+   * Creates a basic query string without closing semicolon
+   *
+   * @return basic query string without semicolon
+   */
+  private String createBasicQueryString() {
+    return "SELECT * FROM " + schemaName + "." + weatherTableName;
   }
 
   /**
@@ -113,20 +154,20 @@ public class SqlWeatherSource implements WeatherSource {
    * @return the query string
    */
   private String createQueryStringForTimeInterval(ClosedInterval<ZonedDateTime> timeInterval) {
-    return BASIC_QUERY + " WHERE " + createTimeConstraint(timeInterval) + ";";
+    return createBasicQueryString() + WHERE + createTimeConstraint(timeInterval) + ";";
   }
 
   /**
    * Creates a basic query to retrieve an entry for the given time and coordinate
    *
    * @param time the timestamp for the query
-   * @param coordinate the queried coordinate
+   * @param coordinateId the queried coordinate ID
    * @return the query string
    */
-  private String createQueryStringForTimeAndCoordinate(ZonedDateTime time, Point coordinate) {
-    return BASIC_QUERY
-        + " WHERE "
-        + createCoordinateConstraint(coordinate)
+  private String createQueryStringForTimeAndCoordinate(ZonedDateTime time, int coordinateId) {
+    return createBasicQueryString()
+        + WHERE
+        + createCoordinateConstraint(coordinateId)
         + " AND "
         + createTimeConstraint(time)
         + ";";
@@ -136,14 +177,14 @@ public class SqlWeatherSource implements WeatherSource {
    * Creates a basic query to retrieve all entities in the given time frame and coordinates
    *
    * @param timeInterval the time frame for the query
-   * @param coordinates the allowed coordinates
+   * @param coordinateIds the allowed coordinate IDs
    * @return the query string
    */
   private String createQueryStringForTimeIntervalAndCoordinates(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
-    return BASIC_QUERY
-        + " WHERE "
-        + createCoordinateConstraint(coordinates)
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Integer> coordinateIds) {
+    return createBasicQueryString()
+        + WHERE
+        + createCoordinateConstraint(coordinateIds)
         + " AND "
         + createTimeConstraint(timeInterval)
         + ";";
@@ -155,8 +196,8 @@ public class SqlWeatherSource implements WeatherSource {
    * @param time the time to use
    * @return the constraint string
    */
-  private static String createTimeConstraint(ZonedDateTime time) {
-    return DEFAULT_TIME_COLUMN + "='" + TimeUtil.withDefaults.toString(time) + "'";
+  private String createTimeConstraint(ZonedDateTime time) {
+    return timeColumnName + "='" + TimeUtil.withDefaults.toString(time) + "'";
   }
 
   /**
@@ -166,8 +207,8 @@ public class SqlWeatherSource implements WeatherSource {
    * @param timeInterval the time interval to use
    * @return the constraint string
    */
-  private static String createTimeConstraint(ClosedInterval<ZonedDateTime> timeInterval) {
-    return DEFAULT_TIME_COLUMN
+  private String createTimeConstraint(ClosedInterval<ZonedDateTime> timeInterval) {
+    return timeColumnName
         + " BETWEEN '"
         + TimeUtil.withDefaults.toString(timeInterval.getLower())
         + "' AND '"
@@ -176,28 +217,25 @@ public class SqlWeatherSource implements WeatherSource {
   }
 
   /**
-   * Creates a simple coordinate constraint for which the point is mapped to it's id, like:
-   * "coordinate=193186"
+   * Creates a simple coordinate constraint
    *
-   * @param coordinate the coordinate point
+   * @param coordinateId the coordinate ID
    * @return the constraint string
    */
-  private String createCoordinateConstraint(Point coordinate) {
-    return DEFAULT_COORDINATE_COLUMN + "=" + idCoordinateSource.getId(coordinate);
+  private String createCoordinateConstraint(int coordinateId) {
+    return coordinateColumnName + "=" + coordinateId;
   }
 
   /**
-   * Creates a constraint for multiple cooridnates, for which the points are mapped to their ids,
-   * like: "coordinate IN (193186, 193187, 193188)"
+   * Creates a constraint for multiple coordinates, like: "coordinate IN (193186, 193187, 193188)"
    *
-   * @param coordinates the coordinate points
+   * @param coordinateIds the coordinate points
    * @return the constraint string
    */
-  private String createCoordinateConstraint(Collection<Point> coordinates) {
-    String constraint = DEFAULT_COORDINATE_COLUMN + " IN (";
+  private String createCoordinateConstraint(Collection<Integer> coordinateIds) {
+    String constraint = coordinateColumnName + " IN (";
     constraint +=
-        coordinates.stream()
-            .map(idCoordinateSource::getId)
+        coordinateIds.stream()
             .map(Object::toString)
             .collect(Collectors.joining(", "));
     constraint += ")";
@@ -215,7 +253,6 @@ public class SqlWeatherSource implements WeatherSource {
     return fieldMaps.stream()
         .map(this::toTimeBasedWeatherValue)
         .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
-        .map(tbv -> (TimeBasedValue<WeatherValue>) tbv)
         .collect(Collectors.toList());
   }
 
@@ -225,10 +262,11 @@ public class SqlWeatherSource implements WeatherSource {
    * @param fieldMap the field to value map for one TimeBasedValue
    * @return an Optional of that TimeBasedValue
    */
-  private Optional<TimeBasedValue> toTimeBasedWeatherValue(Map<String, String> fieldMap) {
+  private Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(Map<String, String> fieldMap) {
     fieldMap.remove("tid");
-    TimeBasedWeatherValueData data = toTimeBasedWeatherValueData(fieldMap);
-    return weatherFactory.getEntity(data);
+    Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
+    if(!data.isPresent()) return Optional.empty();
+    return weatherFactory.get(data.get());
   }
 
   /**
@@ -238,11 +276,16 @@ public class SqlWeatherSource implements WeatherSource {
    * @param fieldMap the field to value map for one TimeBasedValue
    * @return the TimeBasedWeatherValueData
    */
-  private TimeBasedWeatherValueData toTimeBasedWeatherValueData(Map<String, String> fieldMap) {
-    String coordinateValue = fieldMap.remove(DEFAULT_COORDINATE_COLUMN);
+  private Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(Map<String, String> fieldMap) {
+    String coordinateValue = fieldMap.remove(coordinateColumnName);
     fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
-    Point coordinate = idCoordinateSource.getCoordinate(Integer.parseInt(coordinateValue));
-    return new TimeBasedWeatherValueData(fieldMap, coordinate);
+    int coordinateId = Integer.parseInt(coordinateValue);
+    Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
+    if(!coordinate.isPresent()){
+      logger.warn("Unable to match coordinate ID {} to a point", coordinateId);
+      return Optional.empty();
+    }
+    return Optional.of(new TimeBasedWeatherValueData(fieldMap, coordinate.get()));
   }
 
   /**
