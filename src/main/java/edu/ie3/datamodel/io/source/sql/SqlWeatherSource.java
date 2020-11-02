@@ -52,8 +52,21 @@ public class SqlWeatherSource implements WeatherSource {
    * @param coordinateColumnName the name of the column containing coordinate IDs
    * @param timeColumnName the name of the column containing timestamps
    */
-  public SqlWeatherSource(SqlConnector connector, IdCoordinateSource idCoordinateSource, String weatherTableName, String schemaName, String coordinateColumnName, String timeColumnName) {
-    this(connector, idCoordinateSource, weatherTableName, schemaName, coordinateColumnName, timeColumnName, DEFAULT_TIMESTAMP_PATTERN);
+  public SqlWeatherSource(
+      SqlConnector connector,
+      IdCoordinateSource idCoordinateSource,
+      String weatherTableName,
+      String schemaName,
+      String coordinateColumnName,
+      String timeColumnName) {
+    this(
+        connector,
+        idCoordinateSource,
+        weatherTableName,
+        schemaName,
+        coordinateColumnName,
+        timeColumnName,
+        DEFAULT_TIMESTAMP_PATTERN);
   }
 
   /**
@@ -67,7 +80,14 @@ public class SqlWeatherSource implements WeatherSource {
    * @param timeColumnName the name of the column containing timestamps
    * @param timestampPattern the pattern of the timestamps
    */
-  public SqlWeatherSource(SqlConnector connector, IdCoordinateSource idCoordinateSource, String schemaName, String weatherTableName, String coordinateColumnName, String timeColumnName, String timestampPattern) {
+  public SqlWeatherSource(
+      SqlConnector connector,
+      IdCoordinateSource idCoordinateSource,
+      String schemaName,
+      String weatherTableName,
+      String coordinateColumnName,
+      String timeColumnName,
+      String timestampPattern) {
     this.connector = connector;
     this.idCoordinateSource = idCoordinateSource;
     this.schemaName = schemaName;
@@ -97,8 +117,12 @@ public class SqlWeatherSource implements WeatherSource {
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues = Collections.emptyList();
-    Set<Integer> coordinateIds = coordinates.stream().map(idCoordinateSource::getId).flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty)).collect(Collectors.toSet());
-    if(coordinateIds.isEmpty()) {
+    Set<Integer> coordinateIds =
+        coordinates.stream()
+            .map(idCoordinateSource::getId)
+            .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+            .collect(Collectors.toSet());
+    if (coordinateIds.isEmpty()) {
       logger.warn("Unable to match coordinates to coordinate ID");
       return Collections.emptyMap();
     }
@@ -119,13 +143,14 @@ public class SqlWeatherSource implements WeatherSource {
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues = Collections.emptyList();
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if(!coordinateId.isPresent()) {
+    if (!coordinateId.isPresent()) {
       logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
       return Optional.empty();
     }
     try (Statement stmt = connector.getConnection().createStatement()) {
       ResultSet resultSet =
-          connector.executeQuery(stmt, createQueryStringForTimeAndCoordinate(date, coordinateId.get()));
+          connector.executeQuery(
+              stmt, createQueryStringForTimeAndCoordinate(date, coordinateId.get()));
       List<Map<String, String>> fieldMaps = SqlConnector.extractFieldMaps(resultSet);
       timeBasedValues = toTimeBasedWeatherValues(fieldMaps);
       if (!resultSet.isClosed()) resultSet.close();
@@ -137,7 +162,7 @@ public class SqlWeatherSource implements WeatherSource {
       logger.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.get(0));
   }
-  
+
   /**
    * Creates a basic query string without closing semicolon
    *
@@ -234,10 +259,7 @@ public class SqlWeatherSource implements WeatherSource {
    */
   private String createCoordinateConstraint(Collection<Integer> coordinateIds) {
     String constraint = coordinateColumnName + " IN (";
-    constraint +=
-        coordinateIds.stream()
-            .map(Object::toString)
-            .collect(Collectors.joining(", "));
+    constraint += coordinateIds.stream().map(Object::toString).collect(Collectors.joining(", "));
     constraint += ")";
     return constraint;
   }
@@ -262,10 +284,11 @@ public class SqlWeatherSource implements WeatherSource {
    * @param fieldMap the field to value map for one TimeBasedValue
    * @return an Optional of that TimeBasedValue
    */
-  private Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(Map<String, String> fieldMap) {
+  private Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(
+      Map<String, String> fieldMap) {
     fieldMap.remove("tid");
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
-    if(!data.isPresent()) return Optional.empty();
+    if (!data.isPresent()) return Optional.empty();
     return weatherFactory.get(data.get());
   }
 
@@ -276,12 +299,13 @@ public class SqlWeatherSource implements WeatherSource {
    * @param fieldMap the field to value map for one TimeBasedValue
    * @return the TimeBasedWeatherValueData
    */
-  private Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(Map<String, String> fieldMap) {
+  private Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(
+      Map<String, String> fieldMap) {
     String coordinateValue = fieldMap.remove(coordinateColumnName);
     fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     int coordinateId = Integer.parseInt(coordinateValue);
     Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
-    if(!coordinate.isPresent()){
+    if (!coordinate.isPresent()) {
       logger.warn("Unable to match coordinate ID {} to a point", coordinateId);
       return Optional.empty();
     }

@@ -34,7 +34,7 @@ import org.locationtech.jts.geom.Point;
 public class CouchbaseWeatherSource implements WeatherSource {
   private static final Logger logger = LogManager.getLogger(CouchbaseWeatherSource.class);
   private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
-  /** The start of the document key, comparable to a table name in relational databases*/
+  /** The start of the document key, comparable to a table name in relational databases */
   private static final String DEFAULT_KEY_PREFIX = "weather";
 
   private final TimeBasedWeatherValueFactory weatherFactory;
@@ -43,11 +43,24 @@ public class CouchbaseWeatherSource implements WeatherSource {
   private final IdCoordinateSource coordinateSource;
   private final String coordinateIdColumnName;
 
-  public CouchbaseWeatherSource(CouchbaseConnector connector, IdCoordinateSource coordinateSource, String coordinateIdColumnName) {
-    this(connector, coordinateSource, coordinateIdColumnName, DEFAULT_TIMESTAMP_PATTERN, DEFAULT_KEY_PREFIX);
+  public CouchbaseWeatherSource(
+      CouchbaseConnector connector,
+      IdCoordinateSource coordinateSource,
+      String coordinateIdColumnName) {
+    this(
+        connector,
+        coordinateSource,
+        coordinateIdColumnName,
+        DEFAULT_TIMESTAMP_PATTERN,
+        DEFAULT_KEY_PREFIX);
   }
 
-  public CouchbaseWeatherSource(CouchbaseConnector connector, IdCoordinateSource coordinateSource, String coordinateIdColumnName, String timestampPattern, String keyPrefix) {
+  public CouchbaseWeatherSource(
+      CouchbaseConnector connector,
+      IdCoordinateSource coordinateSource,
+      String coordinateIdColumnName,
+      String timestampPattern,
+      String keyPrefix) {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
     this.coordinateIdColumnName = coordinateIdColumnName;
@@ -82,12 +95,12 @@ public class CouchbaseWeatherSource implements WeatherSource {
         }
         if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
           Set<TimeBasedValue<WeatherValue>> weatherInputs =
-                  jsonWeatherInputs.stream()
-                          .map(this::toTimeBasedWeatherValue)
-                          .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
-                          .collect(Collectors.toSet());
+              jsonWeatherInputs.stream()
+                  .map(this::toTimeBasedWeatherValue)
+                  .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+                  .collect(Collectors.toSet());
           IndividualTimeSeries<WeatherValue> weatherTimeSeries =
-                  new IndividualTimeSeries<>(null, weatherInputs);
+              new IndividualTimeSeries<>(null, weatherInputs);
           coordinateToTimeSeries.put(coordinate, weatherTimeSeries);
         }
       } else logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
@@ -98,7 +111,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
-    if(!coordinateId.isPresent()) {
+    if (!coordinateId.isPresent()) {
       logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
       return Optional.empty();
     }
@@ -164,7 +177,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
     Integer coordinateId = jsonObj.getInt(coordinateIdColumnName);
     jsonObj.removeKey(coordinateIdColumnName);
     Optional<Point> coordinate = coordinateSource.getCoordinate(coordinateId);
-    if(!coordinate.isPresent()) {
+    if (!coordinate.isPresent()) {
       logger.warn("Unable to match coordinate ID {} to a coordinate", coordinateId);
       return Optional.empty();
     }
@@ -186,7 +199,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
    */
   public Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(JsonObject jsonObj) {
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(jsonObj);
-    if(!data.isPresent()) {
+    if (!data.isPresent()) {
       logger.warn("Unable to parse json object");
       logger.debug("The following json could not be parsed:\n{}", jsonObj);
       return Optional.empty();
