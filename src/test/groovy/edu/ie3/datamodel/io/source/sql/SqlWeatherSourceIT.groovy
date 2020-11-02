@@ -35,6 +35,8 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 	static String timeColumnName = "time"
 
 	def setupSpec() {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+
 		// Copy sql import script into docker
 		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/weather.sql")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather.sql")
@@ -94,7 +96,7 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 					new TimeBasedValue(WeatherTestData.TIME_16H, WeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
 		def timeseries_193188 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193188_15H)] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
 		then:

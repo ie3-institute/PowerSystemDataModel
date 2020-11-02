@@ -18,6 +18,7 @@ import edu.ie3.util.interval.ClosedInterval;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ import org.locationtech.jts.geom.Point;
 public class SqlWeatherSource implements WeatherSource {
   private static final Logger logger = LogManager.getLogger(SqlWeatherSource.class);
 
-  private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.S";
+  private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.0";
   private static final String DEFAULT_WEATHER_FETCHING_ERROR = "Error while fetching weather";
   private static final String WHERE = " WHERE ";
 
@@ -41,6 +42,7 @@ public class SqlWeatherSource implements WeatherSource {
   private final String coordinateColumnName;
   private final String timeColumnName;
   private final TimeBasedWeatherValueFactory weatherFactory;
+  private final TimeUtil timeUtil;
 
   /**
    * Initializes a new SqlWeatherSource
@@ -95,6 +97,7 @@ public class SqlWeatherSource implements WeatherSource {
     this.coordinateColumnName = coordinateColumnName;
     this.timeColumnName = timeColumnName;
     this.weatherFactory = new TimeBasedWeatherValueFactory(timestampPattern);
+    this.timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timestampPattern);
   }
 
   @Override
@@ -222,7 +225,7 @@ public class SqlWeatherSource implements WeatherSource {
    * @return the constraint string
    */
   private String createTimeConstraint(ZonedDateTime time) {
-    return timeColumnName + "='" + TimeUtil.withDefaults.toString(time) + "'";
+    return timeColumnName + "='" + timeUtil.toString(time) + "'";
   }
 
   /**
@@ -235,9 +238,9 @@ public class SqlWeatherSource implements WeatherSource {
   private String createTimeConstraint(ClosedInterval<ZonedDateTime> timeInterval) {
     return timeColumnName
         + " BETWEEN '"
-        + TimeUtil.withDefaults.toString(timeInterval.getLower())
+        + timeUtil.toString(timeInterval.getLower())
         + "' AND '"
-        + TimeUtil.withDefaults.toString(timeInterval.getUpper())
+        + timeUtil.toString(timeInterval.getUpper())
         + "'";
   }
 
