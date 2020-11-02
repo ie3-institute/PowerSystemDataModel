@@ -64,20 +64,20 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 			WeatherTestData.COORDINATE_193187
 		]
 		def timeInterval = new ClosedInterval(WeatherTestData.TIME_16H, WeatherTestData.TIME_17H)
-		def timeseries_193186 = new IndividualTimeSeries(null,
+		def timeSeries193186 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(WeatherTestData.TIME_16H, WeatherTestData.WEATHER_VALUE_193186_16H),
 					new TimeBasedValue(WeatherTestData.TIME_17H, WeatherTestData.WEATHER_VALUE_193186_17H)]
 				as Set<TimeBasedValue>)
-		def timeseries_193187 = new IndividualTimeSeries(null,
+		def timeSeries193187 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(WeatherTestData.TIME_16H, WeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
 		then:
 		coordinateToTimeSeries.keySet().size() == 2
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193186), timeseries_193186)
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193187), timeseries_193187)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193186), timeSeries193186)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193187), timeSeries193187)
 	}
 
 
@@ -85,24 +85,24 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 	def "A NativeSqlWeatherSource can read all weather data in a given time interval"() {
 		given:
 		def timeInterval = new ClosedInterval(WeatherTestData.TIME_15H, WeatherTestData.TIME_17H)
-		def timeseries_193186 = new IndividualTimeSeries(null,
+		def timeSeries193186 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193186_15H),
 					new TimeBasedValue(WeatherTestData.TIME_16H, WeatherTestData.WEATHER_VALUE_193186_16H),
 					new TimeBasedValue(WeatherTestData.TIME_17H, WeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
-		def timeseries_193187 = new IndividualTimeSeries(null,
+		def timeSeries193187 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193187_15H),
 					new TimeBasedValue(WeatherTestData.TIME_16H, WeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
-		def timeseries_193188 = new IndividualTimeSeries(null,
+		def timeSeries193188 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193188_15H)] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
 		then:
 		coordinateToTimeSeries.keySet().size() == 3
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193186).entries, timeseries_193186.entries)
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193187).entries, timeseries_193187.entries)
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193188).entries, timeseries_193188.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
 	}
 }

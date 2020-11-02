@@ -21,7 +21,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class CouchbaseWeatherSourceIT extends Specification implements WeatherSourceTestHelper{
+class CouchbaseWeatherSourceIT extends Specification implements WeatherSourceTestHelper {
 
 	@Shared
 	BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")
@@ -36,35 +36,36 @@ class CouchbaseWeatherSourceIT extends Specification implements WeatherSourceTes
 	static String coordinateIdColumnName = "coordinate"
 
 	def setupSpec() {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
 
 		// Copy import file with json array of documents into docker
 		MountableFile couchbaseWeatherJsonsFile = MountableFile.forClasspathResource("/testcontainersFiles/couchbase/weather.json")
 		couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather.json")
 
 		// create an index for the document keys
-		def execResult = couchbaseContainer.execInContainer("cbq",
+		couchbaseContainer.execInContainer("cbq",
 				"-e", "http://localhost:8093",
-				"-u", couchbaseContainer.getUsername(),
-				"-p", couchbaseContainer.getPassword(),
-				"-s", "CREATE index id_idx ON `" + bucketDefinition.getName() + "` (META().id);")
+				"-u", couchbaseContainer.username,
+				"-p", couchbaseContainer.password,
+				"-s", "CREATE index id_idx ON `" + bucketDefinition.name + "` (META().id);")
 
 		//import the json documents from the copied file
-		execResult = couchbaseContainer.execInContainer("cbimport", "json",
+		couchbaseContainer.execInContainer("cbimport", "json",
 				"-cluster", "http://localhost:8091",
 				"--bucket", "ie3_in",
-				"--username", couchbaseContainer.getUsername(),
-				"--password", couchbaseContainer.getPassword(),
+				"--username", couchbaseContainer.username,
+				"--password", couchbaseContainer.password,
 				"--format", "list",
 				"--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
 				"--dataset", "file:///home/weather.json")
 
-		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.getName(), couchbaseContainer.getUsername(), couchbaseContainer.getPassword())
+		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
 		source = new CouchbaseWeatherSource(connector, WeatherTestData.coordinateSource, coordinateIdColumnName)
 	}
 
 	def "The test container can establish a valid connection"() {
 		when:
-		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.getName(), couchbaseContainer.getUsername(), couchbaseContainer.getPassword())
+		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
 		then:
 		connector.connectionValid
 	}
@@ -107,24 +108,24 @@ class CouchbaseWeatherSourceIT extends Specification implements WeatherSourceTes
 	def "A CouchbaseWeatherSource can read all weather data in a given time interval"() {
 		given:
 		def timeInterval = new ClosedInterval(WeatherTestData.TIME_15H, WeatherTestData.TIME_17H)
-		def timeseries_193186 = new IndividualTimeSeries(null,
+		def timeSeries193186 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193186_15H),
 					new TimeBasedValue(WeatherTestData.TIME_16H, WeatherTestData.WEATHER_VALUE_193186_16H),
 					new TimeBasedValue(WeatherTestData.TIME_17H, WeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
-		def timeseries_193187 = new IndividualTimeSeries(null,
+		def timeSeries193187 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193187_15H),
 					new TimeBasedValue(WeatherTestData.TIME_16H, WeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
-		def timeseries_193188 = new IndividualTimeSeries(null,
+		def timeSeries193188 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193188_15H)] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
 		then:
 		coordinateToTimeSeries.keySet().size() == 3
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193186).entries, timeseries_193186.entries)
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193187).entries, timeseries_193187.entries)
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193188).entries, timeseries_193188.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
 	}
 }
