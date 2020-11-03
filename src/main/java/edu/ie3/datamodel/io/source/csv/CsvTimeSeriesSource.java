@@ -20,6 +20,7 @@ import edu.ie3.datamodel.models.value.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.locationtech.jts.geom.Point;
 
 /** Source that is capable of providing information around time series from csv files. */
 public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSource {
@@ -83,7 +84,7 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
 
     /* Reading in weather time series */
     Set<TimeSeriesReadingData> weatherReadingData = colTypeToReadingData.get(ColumnScheme.WEATHER);
-    Set<IndividualTimeSeries<WeatherValue>> weatherTimeSeries = Collections.emptySet();
+    Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = Collections.emptyMap();
     if (!weatherReadingData.isEmpty()) {
       Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> weatherValueFunction =
           this::buildWeatherValue;
@@ -91,7 +92,17 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
           weatherReadingData
               .parallelStream()
               .map(data -> buildIndividualTimeSeries(data, weatherValueFunction))
-              .collect(Collectors.toSet());
+              .filter(timeSeries -> !timeSeries.getEntries().isEmpty())
+              // we are able to use any coordinate of a time series as a key, as weather time series
+              // are supposed to hold only one coordinate each
+              .collect(
+                  Collectors.toMap(
+                      timeSeries ->
+                          new ArrayList<>(timeSeries.getEntries())
+                              .get(0)
+                              .getValue()
+                              .getCoordinate(),
+                      timeSeries -> timeSeries));
     }
 
     /* Reading in energy price time series */

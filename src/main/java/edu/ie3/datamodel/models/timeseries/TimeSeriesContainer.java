@@ -7,14 +7,16 @@ package edu.ie3.datamodel.models.timeseries;
 
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.value.*;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.locationtech.jts.geom.Point;
 
 /** Container class to hold different types of individual time series */
 public class TimeSeriesContainer {
-  private final Set<IndividualTimeSeries<WeatherValue>> weather;
+  private final Map<Point, IndividualTimeSeries<WeatherValue>> weather;
   private final Set<IndividualTimeSeries<EnergyPriceValue>> energyPrice;
   private final Set<IndividualTimeSeries<HeatAndSValue>> heatAndApparentPower;
   private final Set<IndividualTimeSeries<HeatAndPValue>> heatAndActivePower;
@@ -23,7 +25,7 @@ public class TimeSeriesContainer {
   private final Set<IndividualTimeSeries<PValue>> activePower;
 
   public TimeSeriesContainer(
-      Set<IndividualTimeSeries<WeatherValue>> weather,
+      Map<Point, IndividualTimeSeries<WeatherValue>> weather,
       Set<IndividualTimeSeries<EnergyPriceValue>> energyPrice,
       Set<IndividualTimeSeries<HeatAndSValue>> heatAndApparentPower,
       Set<IndividualTimeSeries<HeatAndPValue>> heatAndActivePower,
@@ -46,7 +48,7 @@ public class TimeSeriesContainer {
         Objects.requireNonNull(activePower, "Active power time series may not be null.");
   }
 
-  public Set<IndividualTimeSeries<WeatherValue>> getWeather() {
+  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather() {
     return weather;
   }
 
@@ -76,7 +78,7 @@ public class TimeSeriesContainer {
 
   public Set<IndividualTimeSeries<Value>> getAll() {
     return Stream.of(
-            weather,
+            weather.values(),
             energyPrice,
             heatAndApparentPower,
             heatAndActivePower,
