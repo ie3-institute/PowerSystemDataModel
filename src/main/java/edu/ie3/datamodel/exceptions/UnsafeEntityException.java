@@ -10,6 +10,6 @@ import edu.ie3.datamodel.models.UniqueEntity;
 /** Is thrown, when a checked entity may be unsafe to use, but is not necessarily unsafe */
 public class UnsafeEntityException extends RuntimeException {
   public UnsafeEntityException(String faultDescription, UniqueEntity unsafeEntity) {
-    super("Entity may be unsafe because " + faultDescription + " [" + unsafeEntity + "]");
+    super("Entity may be unsafe because of: " + faultDescription + " [" + unsafeEntity + "]");
   }
 }

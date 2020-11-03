@@ -84,7 +84,7 @@ class ValidationUtilsTest extends Specification {
 		[] as Set                          || Optional.empty()
 	}
 
-	def "The validation utils should thrown an null pointer exception if the provided type is null"() {
+	def "The validation utils should throw a validation exception if the provided type is null"() {
 		when:
 		ValidationUtils.check(null)
 
@@ -93,6 +93,7 @@ class ValidationUtilsTest extends Specification {
 		ex.message == "Expected an object, but got nothing. :-("
 	}
 
+	// TODO NSteffan: Move to right place
 	def "A LineType should throw a NullPointerException if the provided field values are null"() {
 		when:
 		new LineTypeInput(null, null, null,null,null,null,null,null)
@@ -100,4 +101,5 @@ class ValidationUtilsTest extends Specification {
 		then:
 		NullPointerException ex = thrown()
 	}
+
 }
