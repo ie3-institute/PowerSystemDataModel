@@ -24,7 +24,6 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 
 	@Shared
 	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.9")
-	.withExposedPorts(5432)
 
 	@Shared
 	SqlWeatherSource source
