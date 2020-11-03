@@ -59,12 +59,12 @@ class NodeValidationUtilsTest extends Specification {
 		def invalidNodeTooHigh = GridTestData.nodeA.copy().vTarget(Quantities.getQuantity(2.1d, PU)).build()
 
 		/*
-		when:
-		NodeValidationUtils.check(nullNode)
-		then:
-		NullPointerException ex = thrown()
-		ex.message == "Entity is invalid because of: Target voltage (p.u.) is null [NodeInput{uuid=47d29df0-ba2d-4d23-8e75-c82229c5c758, id='node_b', operator=28c9f622-210c-4d4d-806d-d338e29009c0, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=0 PU, slack=false, geoPosition=POINT (7.4116482 51.4843281), voltLvl=CommonVoltageLevel{id='Hochspannung', nominalVoltage=110 kV, synonymousIds=[Hochspannung, hs, hv], voltageRange=Interval [110 kV, 220 kV)}, subnet=2}]"
-		*/
+		 when:
+		 NodeValidationUtils.check(nullNode)
+		 then:
+		 NullPointerException ex = thrown()
+		 ex.message == "Entity is invalid because of: Target voltage (p.u.) is null [NodeInput{uuid=47d29df0-ba2d-4d23-8e75-c82229c5c758, id='node_b', operator=28c9f622-210c-4d4d-806d-d338e29009c0, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=0 PU, slack=false, geoPosition=POINT (7.4116482 51.4843281), voltLvl=CommonVoltageLevel{id='Hochspannung', nominalVoltage=110 kV, synonymousIds=[Hochspannung, hs, hv], voltageRange=Interval [110 kV, 220 kV)}, subnet=2}]"
+		 */
 		// TODO NSteffan: vTarget can't be null, causes NullPointerException in builder -> not necessary to check?
 
 		when:
@@ -104,34 +104,31 @@ class NodeValidationUtilsTest extends Specification {
 
 		then:
 		Exception ex = thrown()
-		ex == expectedException
+		ex.class == expectedException.class
 		ex.message == expectedException.message
 
 		where:
-		invalidNode || expectedException
-		GridTestData.nodeA.copy().vTarget(Quantities.getQuantity(0d, PU)).build() || new InvalidEntityException("Target voltage (p.u.) is not a positive value", invalidNode)
+		invalidNode                                                                 || expectedException
+		GridTestData.nodeA.copy().vTarget(Quantities.getQuantity(0d, PU)).build()   || new InvalidEntityException("Target voltage (p.u.) is not a positive value", invalidNode)
 		GridTestData.nodeA.copy().vTarget(Quantities.getQuantity(2.1d, PU)).build() || new UnsafeEntityException("Target voltage (p.u.) might be too high", invalidNode)
 
 	}
 
 
 	/*
-	def "The check method recognizes an null or invalid target voltage2"() {
-		given:
-		def node = GridTestData.nodeA.copy().vTarget(input).build()
-
-		when:
-		NodeValidationUtils.check(node)
-
-		then:
-		InvalidEntityException ex = thrown()
-		ex.message == text
-
-		where:
-		input | text
-		null  | "Entity is invalid because of: Target voltage (p.u.) is null [NodeInput{uuid=47d29df0-ba2d-4d23-8e75-c82229c5c758, id='node_b', operator=28c9f622-210c-4d4d-806d-d338e29009c0, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=0 PU, slack=false, geoPosition=POINT (7.4116482 51.4843281), voltLvl=CommonVoltageLevel{id='Hochspannung', nominalVoltage=110 kV, synonymousIds=[Hochspannung, hs, hv], voltageRange=Interval [110 kV, 220 kV)}, subnet=2}]"
-		Quantities.getQuantity(0d, PU) | "Entity is invalid because of: Target voltage (p.u.) is not a positive value [NodeInput{uuid=47d29df0-ba2d-4d23-8e75-c82229c5c758, id='node_b', operator=28c9f622-210c-4d4d-806d-d338e29009c0, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=0 PU, slack=false, geoPosition=POINT (7.4116482 51.4843281), voltLvl=CommonVoltageLevel{id='Hochspannung', nominalVoltage=110 kV, synonymousIds=[Hochspannung, hs, hv], voltageRange=Interval [110 kV, 220 kV)}, subnet=2}]"
-	}
+	 def "The check method recognizes an null or invalid target voltage2"() {
+	 given:
+	 def node = GridTestData.nodeA.copy().vTarget(input).build()
+	 when:
+	 NodeValidationUtils.check(node)
+	 then:
+	 InvalidEntityException ex = thrown()
+	 ex.message == text
+	 where:
+	 input | text
+	 null  | "Entity is invalid because of: Target voltage (p.u.) is null [NodeInput{uuid=47d29df0-ba2d-4d23-8e75-c82229c5c758, id='node_b', operator=28c9f622-210c-4d4d-806d-d338e29009c0, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=0 PU, slack=false, geoPosition=POINT (7.4116482 51.4843281), voltLvl=CommonVoltageLevel{id='Hochspannung', nominalVoltage=110 kV, synonymousIds=[Hochspannung, hs, hv], voltageRange=Interval [110 kV, 220 kV)}, subnet=2}]"
+	 Quantities.getQuantity(0d, PU) | "Entity is invalid because of: Target voltage (p.u.) is not a positive value [NodeInput{uuid=47d29df0-ba2d-4d23-8e75-c82229c5c758, id='node_b', operator=28c9f622-210c-4d4d-806d-d338e29009c0, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=0 PU, slack=false, geoPosition=POINT (7.4116482 51.4843281), voltLvl=CommonVoltageLevel{id='Hochspannung', nominalVoltage=110 kV, synonymousIds=[Hochspannung, hs, hv], voltageRange=Interval [110 kV, 220 kV)}, subnet=2}]"
+	 }
 	 */
 
 
