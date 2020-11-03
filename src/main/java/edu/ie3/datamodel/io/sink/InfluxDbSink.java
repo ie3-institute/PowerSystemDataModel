@@ -28,9 +28,7 @@ import org.influxdb.dto.Point;
 /** InfluxDB Sink for result and time series data */
 public class InfluxDbSink implements OutputDataSink {
   private static final Logger log = LogManager.getLogger(InfluxDbSink.class);
-  /** Field name for timestamp field in result entities */
-  private static final String FIELD_NAME_TIMESTAMP = "timestamp";
-  /** Field name for timestamp field in time series */
+  /** Field name for time */
   private static final String FIELD_NAME_TIME = "time";
   /** Field name for input model uuid field in result entities */
   private static final String FIELD_NAME_INPUT = "inputModel";
@@ -133,10 +131,10 @@ public class InfluxDbSink implements OutputDataSink {
                                   .map(Class::getSimpleName)
                                   .collect(Collectors.joining(","))
                               + "]"));
-      entityFieldData.remove(FIELD_NAME_TIMESTAMP);
+      entityFieldData.remove(FIELD_NAME_TIME);
       return Optional.of(
           Point.measurement(transformToMeasurementName(measurementName))
-              .time((entity).getTimestamp().toInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
+              .time((entity).getTime().toInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
               .tag("input_model", entityFieldData.remove(FIELD_NAME_INPUT))
               .tag("scenario", connector.getScenarioName())
               .fields(Collections.unmodifiableMap(entityFieldData))

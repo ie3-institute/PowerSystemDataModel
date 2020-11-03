@@ -224,7 +224,7 @@ class ComplexTopology extends GridTestData {
 				)
 
 		DirectedMultigraph<SubGridContainer, SubGridGate> mutableGraph =
-				new DirectedMultigraph<>(SubGridGate.class)
+				new DirectedMultigraph<>(SubGridGate)
 		/* Add all edges */
 		expectedSubGrids.values().forEach({ subGrid -> mutableGraph.addVertex(subGrid) })
 

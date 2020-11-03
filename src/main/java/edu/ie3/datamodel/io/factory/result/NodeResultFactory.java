@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.result;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.NodeResult;
-import edu.ie3.util.TimeTools;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Angle;
@@ -25,7 +24,7 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
 
   @Override
   protected List<Set<String>> getFields(SimpleEntityData entityData) {
-    Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, VMAG, VANG);
+    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, VMAG, VANG);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     return Arrays.asList(minConstructorParams, optionalFields);
@@ -33,7 +32,7 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
 
   @Override
   protected NodeResult buildModel(SimpleEntityData data) {
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
+    ZonedDateTime zdtTime = TIME_UTIL.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Dimensionless> vMagValue =
         data.getQuantity(VMAG, StandardUnits.VOLTAGE_MAGNITUDE);
@@ -42,7 +41,7 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
     return uuidOpt
-        .map(uuid -> new NodeResult(uuid, zdtTimestamp, inputModelUuid, vMagValue, vAngValue))
-        .orElseGet(() -> new NodeResult(zdtTimestamp, inputModelUuid, vMagValue, vAngValue));
+        .map(uuid -> new NodeResult(uuid, zdtTime, inputModelUuid, vMagValue, vAngValue))
+        .orElseGet(() -> new NodeResult(zdtTime, inputModelUuid, vMagValue, vAngValue));
   }
 }

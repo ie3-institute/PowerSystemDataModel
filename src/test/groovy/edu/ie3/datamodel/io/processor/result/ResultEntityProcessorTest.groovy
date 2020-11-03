@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
-import edu.ie3.util.TimeTools
 import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Shared
 import spock.lang.Specification
@@ -24,15 +23,9 @@ import tech.units.indriya.unit.Units
 
 import javax.measure.Quantity
 import javax.measure.quantity.*
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class ResultEntityProcessorTest extends Specification {
-
-	// initialize TimeTools for parsing
-	def setupSpec() {
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-	}
 
 	// static fields
 	@Shared
@@ -52,7 +45,7 @@ class ResultEntityProcessorTest extends Specification {
 		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 		p         : '0.01',
 		q         : '0.01',
-		timestamp : '2020-01-30T17:26:44Z[UTC]']
+		time      : '2020-01-30T17:26:44Z[UTC]']
 
 	@Shared
 	def expectedSocResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
@@ -60,20 +53,19 @@ class ResultEntityProcessorTest extends Specification {
 		p         : '0.01',
 		q         : '0.01',
 		soc       : '50.0',
-		timestamp : '2020-01-30T17:26:44Z[UTC]']
+		time      : '2020-01-30T17:26:44Z[UTC]']
 
 	@Shared
 	def expectedHpResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 		p         : '0.01',
 		q         : '0.01',
-		timestamp : '2020-01-30T17:26:44Z[UTC]',
-		qDot: '1.0']
+		time      : '2020-01-30T17:26:44Z[UTC]',
+		qDot      : '1.0']
 
 
 	def "A ResultEntityProcessor should de-serialize a provided SystemParticipantResult correctly"() {
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(modelClass)
 		def validResult = validSystemParticipantResult
 
@@ -95,36 +87,14 @@ class ResultEntityProcessorTest extends Specification {
 		ChpResult         | new ChpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
 		WecResult         | new WecResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
 		StorageResult     | new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, soc) || expectedSocResults
-		HpResult          | new HpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, qDot)           || expectedHpResults
-
-	}
-
-	def "A ResultEntityProcessor should de-serialize a provided SystemParticipantResult with null values correctly"() {
-		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-		def sysPartResProcessor = new ResultEntityProcessor(StorageResult)
-		def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, null)
-
-
-		when:
-		def validProcessedElement = sysPartResProcessor.handleEntity(storageResult)
-
-		then:
-		validProcessedElement.present
-		validProcessedElement.get() == [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-			inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
-			p         : '0.01',
-			q         : '0.01',
-			soc       : '',
-			timestamp : '2020-01-30T17:26:44Z[UTC]']
+		HpResult          | new HpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, qDot)     || expectedHpResults
 
 	}
 
 	def "A ResultEntityProcessor should throw an exception if the provided class is not registered"() {
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(LoadResult)
-		def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, null)
+		def storageResult = new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, Quantities.getQuantity(10d, StandardUnits.SOC))
 
 		when:
 		sysPartResProcessor.handleEntity(storageResult)
@@ -136,7 +106,6 @@ class ResultEntityProcessorTest extends Specification {
 
 	def "A ResultEntityProcessor should de-serialize a NodeResult correctly"() {
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(NodeResult)
 
 		Quantity<Dimensionless> vMag = Quantities.getQuantity(0.95, PowerSystemUnits.PU)
@@ -148,7 +117,7 @@ class ResultEntityProcessorTest extends Specification {
 			inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 			vAng      : '45.0',
 			vMag      : '0.95',
-			timestamp : '2020-01-30T17:26:44Z[UTC]']
+			time      : '2020-01-30T17:26:44Z[UTC]']
 
 		when:
 		def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
@@ -166,7 +135,7 @@ class ResultEntityProcessorTest extends Specification {
 		iAAng     : '45.0',
 		iBMag     : '150.0',
 		iBAng     : '30.0',
-		timestamp : '2020-01-30T17:26:44Z[UTC]']
+		time      : '2020-01-30T17:26:44Z[UTC]']
 
 	@Shared
 	def expectedTrafo2WResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
@@ -176,7 +145,7 @@ class ResultEntityProcessorTest extends Specification {
 		iBMag     : '150.0',
 		iBAng     : '30.0',
 		tapPos    : '5',
-		timestamp : '2020-01-30T17:26:44Z[UTC]']
+		time      : '2020-01-30T17:26:44Z[UTC]']
 
 
 	@Shared
@@ -189,13 +158,13 @@ class ResultEntityProcessorTest extends Specification {
 		iCMag     : '300.0',
 		iCAng     : '70.0',
 		tapPos    : '5',
-		timestamp : '2020-01-30T17:26:44Z[UTC]']
+		time      : '2020-01-30T17:26:44Z[UTC]']
 
 	@Shared
 	def expectedSwitchResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 		closed    : 'true',
-		timestamp : '2020-01-30T17:26:44Z[UTC]']
+		time      : '2020-01-30T17:26:44Z[UTC]']
 
 
 	@Shared
@@ -218,7 +187,6 @@ class ResultEntityProcessorTest extends Specification {
 
 	def "A ResultEntityProcessor should de-serialize all ConnectorResults correctly"() {
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(modelClass)
 
 		def validResult = validConnectorResult
@@ -240,7 +208,6 @@ class ResultEntityProcessorTest extends Specification {
 
 	def "A ResultEntityProcessor should de-serialize a CylindricalStorageResult correctly"() {
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(CylindricalStorageResult)
 
 		Quantity<Power> qDot = Quantities.getQuantity(2, StandardUnits.Q_DOT_RESULT)
@@ -254,7 +221,7 @@ class ResultEntityProcessorTest extends Specification {
 			fillLevel : '20.0',
 			inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 			qDot      : '2.0',
-			timestamp : '2020-01-30T17:26:44Z[UTC]']
+			time      : '2020-01-30T17:26:44Z[UTC]']
 
 		when:
 		def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
@@ -268,7 +235,6 @@ class ResultEntityProcessorTest extends Specification {
 	def "A ResultEntityProcessor should throw an EntityProcessorException when it receives an entity result that is not eligible"() {
 
 		given:
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
 		def sysPartResProcessor = new ResultEntityProcessor(ResultEntityProcessor.eligibleEntityClasses.get(0))
 
 		def invalidClassResult = new InvalidTestResult(ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), uuid)
@@ -302,12 +268,12 @@ class ResultEntityProcessorTest extends Specification {
 
 	private class InvalidTestResult extends ResultEntity {
 
-		InvalidTestResult(ZonedDateTime timestamp, UUID inputModel) {
-			super(timestamp, inputModel)
+		InvalidTestResult(ZonedDateTime time, UUID inputModel) {
+			super(time, inputModel)
 		}
 
-		InvalidTestResult(UUID uuid, ZonedDateTime timestamp, UUID inputModel) {
-			super(uuid, timestamp, inputModel)
+		InvalidTestResult(UUID uuid, ZonedDateTime time, UUID inputModel) {
+			super(uuid, time, inputModel)
 		}
 	}
 
