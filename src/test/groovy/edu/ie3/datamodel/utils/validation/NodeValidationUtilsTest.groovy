@@ -17,24 +17,12 @@ import tech.units.indriya.quantity.Quantities
 
 class NodeValidationUtilsTest extends Specification {
 
-	def "The check method in ValidationUtils delegates the check to NodeValidationUtils for a node"() {
-		given:
-		def node = GridTestData.nodeA
-
-		when:
-		ValidationUtils.check(node)
-
-		then:
-		1 * NodeValidationUtils.check(node)
-		// TODO NSteffan: Why is the method invoked 0 times?
-	}
-
 	def "Smoke Test: Correct node throws no exception"() {
 		given:
 		def node = GridTestData.nodeA
 
 		when:
-		ValidationUtils.check(node)
+		NodeValidationUtils.check(node)
 
 		then:
 		noExceptionThrown()
@@ -134,16 +122,16 @@ class NodeValidationUtilsTest extends Specification {
 	}
 	 */
 
-
 	def "The check method recognizes an invalid subnet"() {
 		given:
-		def correctNode = GridTestData.nodeA
-		def errorNode = correctNode.copy().subnet(0).build()
+		def node = GridTestData.nodeA.copy().subnet(0).build()
 
 		when:
-		NodeValidationUtils.check(errorNode)
+		NodeValidationUtils.check(node)
+
 		then:
 		InvalidEntityException ex = thrown()
+		ex.message == "Entity is invalid because of: Subnet can't be zero or negative [NodeInput{uuid=4ca90220-74c2-4369-9afa-a18bf068840d, id='node_a', operator=f15105c4-a2de-4ab8-a621-4bc98e372d92, operationTime=OperationTime{startDate=2020-03-24T15:11:31Z[UTC], endDate=2020-03-25T15:11:31Z[UTC], isLimited=true}, vTarget=1 PU, slack=true, geoPosition=POINT (7.411111 51.492528), voltLvl=CommonVoltageLevel{id='Höchstspannung', nominalVoltage=380 kV, synonymousIds=[Höchstspannung, ehv, ehv_380kv, hoes, hoes_380kv], voltageRange=Interval [380 kV, 560 kV)}, subnet=0}]"
 	}
 
 	def "The check method recognizes an invalid geoPosition"() {
@@ -155,6 +143,8 @@ class NodeValidationUtilsTest extends Specification {
 		NodeValidationUtils.check(errorNode)
 		then:
 		InvalidEntityException ex = thrown()
+		ex.message == "Entity is invalid because of: GeoPosition of node is null [NodeInput{uuid=4ca90220-74c2-4369-9afa-a18bf068840d, id='node_a', operator=f15105c4-a2de-4ab8-a621-4bc98e372d92, operationTime=OperationTime{startDate=2020-03-24T15:11:31Z[UTC], endDate=2020-03-25T15:11:31Z[UTC], isLimited=true}, vTarget=1 PU, slack=true, geoPosition=null, voltLvl=CommonVoltageLevel{id='Höchstspannung', nominalVoltage=380 kV, synonymousIds=[Höchstspannung, ehv, ehv_380kv, hoes, hoes_380kv], voltageRange=Interval [380 kV, 560 kV)}, subnet=1}]"
+
 	}
 
 	/*

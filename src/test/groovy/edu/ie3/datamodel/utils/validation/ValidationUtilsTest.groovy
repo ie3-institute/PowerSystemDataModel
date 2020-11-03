@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
@@ -92,6 +93,31 @@ class ValidationUtilsTest extends Specification {
 		ValidationException ex = thrown()
 		ex.message == "Expected an object, but got nothing. :-("
 	}
+
+	def "The checkAsset validation recognizes a missing id"() {
+		given:
+		def asset = GridTestData.nodeA.copy().id(null).build()
+		when:
+		ValidationUtils.check(asset)
+		then:
+		InvalidEntityException ex = thrown()
+		ex.message == "Entity is invalid because of: No ID assigned [NodeInput{uuid=4ca90220-74c2-4369-9afa-a18bf068840d, id='null', operator=f15105c4-a2de-4ab8-a621-4bc98e372d92, operationTime=OperationTime{startDate=2020-03-24T15:11:31Z[UTC], endDate=2020-03-25T15:11:31Z[UTC], isLimited=true}, vTarget=1 PU, slack=true, geoPosition=POINT (7.411111 51.492528), voltLvl=CommonVoltageLevel{id='Höchstspannung', nominalVoltage=380 kV, synonymousIds=[Höchstspannung, ehv, ehv_380kv, hoes, hoes_380kv], voltageRange=Interval [380 kV, 560 kV)}, subnet=1}]"
+	}
+
+	def "The checkAsset validation recognizes a missing operator"() {
+		given:
+		def asset = GridTestData.nodeA.copy().operator(null).build()
+		when:
+		ValidationUtils.check(asset)
+		then:
+		InvalidEntityException ex = thrown()
+		ex.message == "Entity is invalid because of: No operator assigned [NodeInput{uuid=4ca90220-74c2-4369-9afa-a18bf068840d, id='node_A', operator=null, operationTime=OperationTime{startDate=2020-03-24T15:11:31Z[UTC], endDate=2020-03-25T15:11:31Z[UTC], isLimited=true}, vTarget=1 PU, slack=true, geoPosition=POINT (7.411111 51.492528), voltLvl=CommonVoltageLevel{id='Höchstspannung', nominalVoltage=380 kV, synonymousIds=[Höchstspannung, ehv, ehv_380kv, hoes, hoes_380kv], voltageRange=Interval [380 kV, 560 kV)}, subnet=1}]"
+	}
+	// TODO NSteffan: in NodeInput wird in toString Methode getOperator().getUuid() aufgerufen, erzeugt NullPointerException
+	//  -> Text für InvalidEntityException kann nicht erstellt werden
+
+
+
 
 	// TODO NSteffan: Move to right place
 	def "A LineType should throw a NullPointerException if the provided field values are null"() {

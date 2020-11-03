@@ -31,9 +31,6 @@ public class GraphicValidationUtils extends ValidationUtils {
    * @param graphicInput GraphicInput to validate
    */
   public static void check(GraphicInput graphicInput) {
-    // Check if UUID is not null
-    if (graphicInput.getUuid() == null)
-      throw new InvalidEntityException("No UUID assigned", graphicInput);
     // Check if null
     checkNonNull(graphicInput, "a graphic input");
     // Check if graphic layer is null

@@ -62,6 +62,7 @@ public class ValidationUtils {
   /**
    * Validates an asset if: <br>
    * - it is not null <br>
+   * - its id is not null
    * - its operator is not null <br>
    * - its operation time is not null <br>
    * - in case operation time is limited, its start time and end time are not null and start time is
@@ -75,9 +76,6 @@ public class ValidationUtils {
   public static void checkAsset(AssetInput assetInput) {
     // Check if asset is not null
     checkNonNull(assetInput, "an asset");
-    // Check if UUID is not null
-    if (assetInput.getUuid() == null)
-      throw new InvalidEntityException("No UUID assigned", assetInput);
     // Check if ID is not null
     if (assetInput.getId() == null) throw new InvalidEntityException("No ID assigned", assetInput);
     // Check if operator is not null
