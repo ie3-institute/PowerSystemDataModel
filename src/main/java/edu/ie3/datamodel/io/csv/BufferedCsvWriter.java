@@ -23,6 +23,9 @@ public class BufferedCsvWriter extends BufferedWriter {
 
   private final String csvSep;
 
+  private static final String APPENDING_WARNING =
+      "Direct appending is prohibited. Use write instead.";
+
   /**
    * Build a new CsvBufferedWriter
    *
@@ -68,7 +71,8 @@ public class BufferedCsvWriter extends BufferedWriter {
    * @throws IOException If writing has failed
    * @throws SinkException If the data does not meet the pre-defined head line
    */
-  public void write(Map<String, String> entityFieldData) throws IOException, SinkException {
+  public synchronized void write(Map<String, String> entityFieldData)
+      throws IOException, SinkException {
     /* Check against eligible head line elements */
     if (entityFieldData.size() != headLineElements.length
         || !entityFieldData.keySet().containsAll(Arrays.asList(headLineElements)))
@@ -86,7 +90,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    *
    * @throws IOException If something is messed up
    */
-  public final void writeFileHeader() throws IOException {
+  public final synchronized void writeFileHeader() throws IOException {
     writeOneLine(StringUtils.camelCaseToSnakeCase(headLineElements));
   }
 
@@ -111,17 +115,17 @@ public class BufferedCsvWriter extends BufferedWriter {
 
   @Override
   public Writer append(CharSequence csq) {
-    throw new UnsupportedOperationException("Direct appending is prohibited. Use write instead.");
+    throw new UnsupportedOperationException(APPENDING_WARNING);
   }
 
   @Override
   public Writer append(CharSequence csq, int start, int end) {
-    throw new UnsupportedOperationException("Direct appending is prohibited. Use write instead.");
+    throw new UnsupportedOperationException(APPENDING_WARNING);
   }
 
   @Override
   public Writer append(char c) {
-    throw new UnsupportedOperationException("Direct appending is prohibited. Use write instead.");
+    throw new UnsupportedOperationException(APPENDING_WARNING);
   }
 
   @Override
