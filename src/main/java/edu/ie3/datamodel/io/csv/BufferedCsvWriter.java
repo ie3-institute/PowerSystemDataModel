@@ -24,7 +24,7 @@ public class BufferedCsvWriter extends BufferedWriter {
   private final String csvSep;
 
   private static final String APPENDING_WARNING =
-          "Direct appending is prohibited. Use write instead.";
+      "Direct appending is prohibited. Use write instead.";
 
   /**
    * Build a new CsvBufferedWriter
