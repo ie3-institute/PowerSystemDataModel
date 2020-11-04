@@ -35,7 +35,7 @@ public class NodeValidationUtils extends ValidationUtils {
     try {
       checkVoltageLevel(node.getVoltLvl());
     } catch (VoltageLevelException e) {
-      throw new InvalidEntityException("Element has invalid voltage level", node);
+      throw new InvalidEntityException("Node has invalid voltage level", node);
     }
     // Check if target voltage is null or invalid
     if (node.getvTarget() == null)
