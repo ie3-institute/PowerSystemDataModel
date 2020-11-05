@@ -39,9 +39,9 @@ public class TimeBasedSimpleValueFactory<V extends Value>
     this(valueClasses, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'");
   }
 
-  public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses, String timestampPattern) {
+  public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses, String timePattern) {
     super(valueClasses);
-    timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timestampPattern);
+    timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern);
   }
 
   @Override

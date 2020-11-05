@@ -31,7 +31,7 @@ public abstract class ConnectorResult extends ResultEntity {
   /**
    * Standard constructor with automatic uuid generation.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
    * @param iAAng electric current angle @ Port A in degree
@@ -39,13 +39,13 @@ public abstract class ConnectorResult extends ResultEntity {
    * @param iBAng electric current angle @ Port B in degree
    */
   public ConnectorResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
       ComparableQuantity<Angle> iAAng,
       ComparableQuantity<ElectricCurrent> iBMag,
       ComparableQuantity<Angle> iBAng) {
-    super(timestamp, inputModel);
+    super(time, inputModel);
     this.iAMag = iAMag;
     this.iAAng = iAAng;
     this.iBMag = iBMag;
@@ -57,7 +57,7 @@ public abstract class ConnectorResult extends ResultEntity {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
    * @param iAAng electric current angle @ Port A in degree
@@ -66,13 +66,13 @@ public abstract class ConnectorResult extends ResultEntity {
    */
   public ConnectorResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
       ComparableQuantity<Angle> iAAng,
       ComparableQuantity<ElectricCurrent> iBMag,
       ComparableQuantity<Angle> iBAng) {
-    super(uuid, timestamp, inputModel);
+    super(uuid, time, inputModel);
     this.iAMag = iAMag;
     this.iAAng = iAAng;
     this.iBMag = iBMag;
@@ -132,8 +132,8 @@ public abstract class ConnectorResult extends ResultEntity {
     return "ConnectorResult{"
         + "uuid="
         + getUuid()
-        + ", timestamp="
-        + getTimestamp()
+        + ", time="
+        + getTime()
         + ", inputModel="
         + getInputModel()
         + ", iAMag="

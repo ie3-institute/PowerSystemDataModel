@@ -10,11 +10,11 @@ import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult
-import edu.ie3.util.TimeTools
+import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-class ThermalResultFactoryTest extends Specification {
+class ThermalResultFactoryTest extends Specification implements FactoryTestHelper {
 
 	def "A ThermalResultFactory should contain all expected classes for parsing"() {
 		given:
@@ -32,11 +32,11 @@ class ThermalResultFactoryTest extends Specification {
 		given: "a thermal result factory and model data"
 		def resultFactory = new ThermalResultFactory()
 		Map<String, String> parameter = [
-			"timestamp":    "2020-01-30 17:26:44",
-			"inputModel":   "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
-			"qDot":         "2",
-			"energy":       "3",
-			"fillLevel":    "20"
+			"time"      : "2020-01-30 17:26:44",
+			"inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
+			"qDot"      : "2",
+			"energy"    : "3",
+			"fillLevel" : "20"
 		]
 		when:
 		Optional<? extends ThermalUnitResult> result = resultFactory.get(new SimpleEntityData(parameter, CylindricalStorageResult))
@@ -45,7 +45,7 @@ class ThermalResultFactoryTest extends Specification {
 		result.present
 		result.get().getClass() == CylindricalStorageResult
 		((CylindricalStorageResult) result.get()).with {
-			assert timestamp == TimeTools.toZonedDateTime(parameter.get("timestamp"))
+			assert time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
 			assert inputModel == UUID.fromString(parameter.get("inputModel"))
 			assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
 			assert energy == Quantities.getQuantity(Double.parseDouble(parameter.get("energy")), StandardUnits.ENERGY_RESULT)
@@ -57,10 +57,10 @@ class ThermalResultFactoryTest extends Specification {
 		given: "a thermal result factory and model data"
 		def resultFactory = new ThermalResultFactory()
 		HashMap<String, String> parameter = [
-			"timestamp":            "2020-01-30 17:26:44",
-			"inputModel":           "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
-			"qDot":                 "2",
-			"indoorTemperature":    "21"
+			"time"             : "2020-01-30 17:26:44",
+			"inputModel"       : "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
+			"qDot"             : "2",
+			"indoorTemperature": "21"
 		]
 		when:
 		Optional<? extends ThermalUnitResult> result = resultFactory.get(new SimpleEntityData(parameter, ThermalHouseResult))
@@ -69,7 +69,7 @@ class ThermalResultFactoryTest extends Specification {
 		result.present
 		result.get().getClass() == ThermalHouseResult
 		((ThermalHouseResult) result.get()).with {
-			assert timestamp == TimeTools.toZonedDateTime(parameter.get("timestamp"))
+			assert time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
 			assert inputModel == UUID.fromString(parameter.get("inputModel"))
 			assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
 			assert indoorTemperature == Quantities.getQuantity(Double.parseDouble(parameter.get("indoorTemperature")), StandardUnits.TEMPERATURE)

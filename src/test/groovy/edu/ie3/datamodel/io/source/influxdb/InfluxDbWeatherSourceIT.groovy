@@ -114,7 +114,7 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 	def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to it's ID"() {
 		def validCoordinate = WeatherTestData.COORDINATE_193186
 		def invalidCoordinate = GeoUtils.xyToPoint(48d, 7d)
-		def timestamp = WeatherTestData.TIME_15H
+		def time = WeatherTestData.TIME_15H
 		def timeInterval = new ClosedInterval(WeatherTestData.TIME_15H , WeatherTestData.TIME_17H)
 		def emptyTimeSeries = new IndividualTimeSeries(UUID.randomUUID(), Collections.emptySet())
 		def timeseries_193186 = new IndividualTimeSeries(null,
@@ -123,7 +123,7 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 					new TimeBasedValue(WeatherTestData.TIME_16H ,WeatherTestData.WEATHER_VALUE_193186_16H),
 					new TimeBasedValue(WeatherTestData.TIME_17H ,WeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
 		when:
-		def coordinateAtDate = source.getWeather(timestamp, invalidCoordinate)
+		def coordinateAtDate = source.getWeather(time, invalidCoordinate)
 		def coordinateInInterval = source.getWeather(timeInterval, invalidCoordinate)
 		def coordinatesToTimeSeries = source.getWeather(timeInterval, [
 			validCoordinate,

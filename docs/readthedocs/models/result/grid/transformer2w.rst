@@ -12,7 +12,7 @@ Attributes, Units and Remarks
 +===============+================+==========================================================+
 | uuid          | --             |   uuid for the result entity                             |
 +---------------+----------------+----------------------------------------------------------+
-| timeStamp     | ZonedDateTime  |   date and time for the produced result                  |
+| time          | ZonedDateTime  |   date and time for the produced result                  |
 +---------------+----------------+----------------------------------------------------------+
 | inputModel    | --             |   uuid for the associated input model                    |
 +---------------+----------------+----------------------------------------------------------+

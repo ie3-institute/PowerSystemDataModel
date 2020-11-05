@@ -72,7 +72,7 @@ class InfluxDbSinkIT extends Specification {
 				null)
 		when:
 		sink.persist(lineResult1)
-		def key = fileNamingStrategy.getFileName(LineResult.class).get().trim().replaceAll("\\W", "_")
+		def key = fileNamingStrategy.getFileName(LineResult).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def fieldMap = parsedResults.get(key).first()
@@ -121,8 +121,8 @@ class InfluxDbSinkIT extends Specification {
 		]
 		when:
 		sink.persistAll(entities)
-		def key_line = fileNamingStrategy.getFileName(LineResult.class).get().trim().replaceAll("\\W", "_")
-		def key_chp = fileNamingStrategy.getFileName(ChpResult.class).get().trim().replaceAll("\\W", "_")
+		def key_line = fileNamingStrategy.getFileName(LineResult).get().trim().replaceAll("\\W", "_")
+		def key_chp = fileNamingStrategy.getFileName(ChpResult).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key_line + ", " + key_chp))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def lineResults = parsedResults.get(key_line)
@@ -213,7 +213,7 @@ class InfluxDbSinkIT extends Specification {
 
 	static def mapMatchesLineResultEntity(Map<String, String> fieldMap, LineResult lineResult) {
 		def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
-		timeUtil.toZonedDateTime(fieldMap.get("time")) == lineResult.getTimestamp()
+		timeUtil.toZonedDateTime(fieldMap.get("time")) == lineResult.getTime()
 		fieldMap.get("uuid") == lineResult.getUuid().toString()
 		fieldMap.get("input_model") == lineResult.getInputModel().toString()
 		def iAMagStr = fieldMap.get("iAMag")
@@ -233,7 +233,7 @@ class InfluxDbSinkIT extends Specification {
 
 	static def mapMatchesChpResultEntity(Map<String, String> fieldMap, ChpResult chpResult) {
 		def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
-		timeUtil.toZonedDateTime(fieldMap.get("time")) == chpResult.getTimestamp()
+		timeUtil.toZonedDateTime(fieldMap.get("time")) == chpResult.getTime()
 		fieldMap.get("uuid") == chpResult.getUuid().toString()
 		fieldMap.get("input_model") == chpResult.getInputModel().toString()
 		def pStr = fieldMap.get("p")

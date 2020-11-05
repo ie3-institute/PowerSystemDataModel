@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -145,6 +146,78 @@ public class FileNamingStrategy {
     return loadProfileTimeSeriesPattern;
   }
 
+  /**
+   * Get the full path to the file with regard to some (not explicitly specified) base directory.
+   * The path does NOT start or end with any of the known file separators or file extension.
+   *
+   * @param cls Targeted class of the given file
+   * @return An optional sub path to the actual file
+   */
+  public Optional<String> getFilePath(Class<? extends UniqueEntity> cls) {
+    // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
+    // details
+    return getFilePath(
+        getFileName(cls).orElseGet(() -> ""), getDirectoryPath(cls).orElseGet(() -> ""));
+  }
+
+  /**
+   * Get the full path to the file with regard to some (not explicitly specified) base directory.
+   * The path does NOT start or end with any of the known file separators or file extension.
+   *
+   * @param <T> Type of the time series
+   * @param <E> Type of the entry in the time series
+   * @param <V> Type of the value, that is carried by the time series entry
+   * @param timeSeries Time series to derive naming information from
+   * @return An optional sub path to the actual file
+   */
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+      Optional<String> getFilePath(T timeSeries) {
+    // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
+    // details
+    return getFilePath(
+        getFileName(timeSeries).orElseGet(() -> ""),
+        getDirectoryPath(timeSeries).orElseGet(() -> ""));
+  }
+
+  private Optional<String> getFilePath(String fileName, String subDirectories) {
+    if (fileName.isEmpty()) return Optional.empty();
+    if (!subDirectories.isEmpty())
+      return Optional.of(FilenameUtils.concat(subDirectories, fileName));
+    else return Optional.of(fileName);
+  }
+
+  /**
+   * Returns the sub directory structure with regard to some (not explicitly specified) base
+   * directory. The path does NOT start or end with any of the known file separators.
+   *
+   * @param cls Targeted class of the given file
+   * @return An optional sub directory path
+   */
+  public Optional<String> getDirectoryPath(Class<? extends UniqueEntity> cls) {
+    return Optional.empty();
+  }
+
+  /**
+   * Returns the sub directory structure with regard to some (not explicitly specified) base
+   * directory. The path does NOT start or end with any of the known file separators.
+   *
+   * @param <T> Type of the time series
+   * @param <E> Type of the entry in the time series
+   * @param <V> Type of the value, that is carried by the time series entry
+   * @param timeSeries Time series to derive naming information from
+   * @return An optional sub directory path
+   */
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+      Optional<String> getDirectoryPath(T timeSeries) {
+    return Optional.empty();
+  }
+
+  /**
+   * Returns the file name (and only the file name without any directories and extension).
+   *
+   * @param cls Targeted class of the given file
+   * @return The file name
+   */
   public Optional<String> getFileName(Class<? extends UniqueEntity> cls) {
     if (AssetTypeInput.class.isAssignableFrom(cls))
       return getTypeFileName(cls.asSubclass(AssetTypeInput.class));
@@ -168,7 +241,8 @@ public class FileNamingStrategy {
   }
 
   /**
-   * Builds a file name of the given information.
+   * Builds a file name (and only the file name without any directories and extension) of the given
+   * information.
    *
    * @param <T> Type of the time series
    * @param <E> Type of the entry in the time series
@@ -229,6 +303,7 @@ public class FileNamingStrategy {
       throw new IllegalArgumentException("Unable to extract file name from path '" + path + "'.");
     return extractTimeSeriesMetaInformation(fileName.toString());
   }
+
   /**
    * Extracts meta information from a file name, of a time series. Here, a file name <u>without</u>
    * leading path has to be provided
@@ -378,7 +453,7 @@ public class FileNamingStrategy {
 
   private String buildResultEntityString(Class<? extends ResultEntity> resultEntityClass) {
     String resultEntityString =
-        resultEntityClass.getSimpleName().replace("Result", "").toLowerCase();
+        camelCaseToSnakeCase(resultEntityClass.getSimpleName().replace("Result", ""));
     return addPrefixAndSuffix(resultEntityString.concat(RES_ENTITY_SUFFIX));
   }
 
@@ -389,13 +464,17 @@ public class FileNamingStrategy {
    * @return the resulting snake case representation
    */
   private String camelCaseToSnakeCase(String camelCaseString) {
-    String regularCamelCaseRegex = "([a-z])([A-Z]+)";
-    String regularSnakeCaseReplacement = "$1_$2";
-    String specialCamelCaseRegex = "((?<!_)[A-Z]?)((?<!^)[A-Z]+)";
-    String specialSnakeCaseReplacement = "$1_$2";
+    String snakeCaseReplacement = "$1_$2";
+    /* Separate all lower case letters, that are followed by a capital or a digit by underscore */
+    String regularCamelCaseRegex = "([a-z])([A-Z0-9]+)";
+    /* Separate all digits, that are followed by a letter by underscore */
+    String numberLetterCamelCaseRegex = "([0-9])([a-zA-Z]+)";
+    /* Separate two or more capitals, that are not at the beginning of the string by underscore */
+    String specialCamelCaseRegex = "((?<!^)[A-Z])([A-Z]+)";
     return camelCaseString
-        .replaceAll(regularCamelCaseRegex, regularSnakeCaseReplacement)
-        .replaceAll(specialCamelCaseRegex, specialSnakeCaseReplacement)
+        .replaceAll(regularCamelCaseRegex, snakeCaseReplacement)
+        .replaceAll(numberLetterCamelCaseRegex, snakeCaseReplacement)
+        .replaceAll(specialCamelCaseRegex, snakeCaseReplacement)
         .toLowerCase();
   }
 

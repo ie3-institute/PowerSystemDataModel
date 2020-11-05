@@ -164,7 +164,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 			"inputModel",
 			"p",
 			"q",
-			"timestamp"] as String[]
+			"time"] as String[]
 
 		when:
 		provider.getHeaderElements(WecResult)
@@ -209,7 +209,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 			"inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
 			"p"         : "0.01",
 			"q"         : "0.01",
-			"timestamp" : "2020-01-30T17:26:44Z[UTC]"]
+			"time"      : "2020-01-30T17:26:44Z[UTC]"]
 
 		when:
 		UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")

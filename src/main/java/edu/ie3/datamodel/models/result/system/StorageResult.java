@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.result.system;
 
 import java.time.ZonedDateTime;
-import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
@@ -15,35 +14,31 @@ import tech.units.indriya.ComparableQuantity;
 /**
  * Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.StorageInput}
  */
-public class StorageResult extends SystemParticipantResult {
-
-  /** State of Charge (SoC) in % */
-  private ComparableQuantity<Dimensionless> soc;
+public class StorageResult extends ElectricalEnergyStorageResult {
 
   /**
    * Standard constructor with automatic uuid generation.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
    * @param soc the current state of charge of the storage
    */
   public StorageResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q,
       ComparableQuantity<Dimensionless> soc) {
-    super(timestamp, inputModel, p, q);
-    this.soc = soc;
+    super(time, inputModel, p, q, soc);
   }
 
   /**
    * Standard constructor with automatic uuid generation.
    *
    * @param uuid Unique identifier
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
@@ -51,39 +46,29 @@ public class StorageResult extends SystemParticipantResult {
    */
   public StorageResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q,
       ComparableQuantity<Dimensionless> soc) {
-    super(uuid, timestamp, inputModel, p, q);
-    this.soc = soc;
-  }
-
-  public ComparableQuantity<Dimensionless> getSoc() {
-    return soc;
-  }
-
-  public void setSoc(ComparableQuantity<Dimensionless> soc) {
-    this.soc = soc;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
-    StorageResult that = (StorageResult) o;
-    return soc.equals(that.soc);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), soc);
+    super(uuid, time, inputModel, p, q, soc);
   }
 
   @Override
   public String toString() {
-    return "StorageResult{" + "soc=" + soc + '}';
+    return "StorageResult{"
+        + "uuid="
+        + getUuid()
+        + ", time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + getP()
+        + ", q="
+        + getQ()
+        + "soc="
+        + getSoc()
+        + '}';
   }
 }
