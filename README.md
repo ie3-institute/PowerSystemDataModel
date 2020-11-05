@@ -1,5 +1,5 @@
 # PowerSystemDataModel
-[![Build Status](https://simona.ie3.e-technik.tu-dortmund.de/ci/buildStatus/icon?job=ie3-institute%2FPowerSystemDataModel%2Fmaster)](https://simona.ie3.e-technik.tu-dortmund.de/ci/job/ie3-institute/job/PowerSystemDataModel/job/master/)
+[![Build Status](https://simona.ie3.e-technik.tu-dortmund.de/ci/buildStatus/icon?job=ie3-institute%2FPowerSystemDataModel%2Fdev)](https://simona.ie3.e-technik.tu-dortmund.de/ci/job/ie3-institute/job/PowerSystemDataModel/job/dev/)
 [![Quality Gate Status](https://simona.ie3.e-technik.tu-dortmund.de/sonar/api/project_badges/measure?project=edu.ie3%3APowerSystemDataModel&metric=alert_status)](https://simona.ie3.e-technik.tu-dortmund.de/sonar/dashboard?id=edu.ie3%3APowerSystemDataModel)
 [![codecov](https://codecov.io/gh/ie3-institute/PowerSystemDataModel/branch/master/graph/badge.svg)](https://codecov.io/gh/ie3-institute/PowerSystemDataModel)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d1d73fb87e084904993f968178274835)](https://www.codacy.com/gh/ie3-institute/PowerSystemDataModel?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ie3-institute/PowerSystemDatamodel&amp;utm_campaign=Badge_Grade)
