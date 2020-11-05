@@ -41,7 +41,7 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-		source = new SqlWeatherSource(connector, WeatherTestData.coordinateSource, schemaName, weatherTableName, coordinateColumnName, timeColumnName)
+		source = new SqlWeatherSource(connector, WeatherTestData.coordinateSource, weatherTableName, schemaName, coordinateColumnName, timeColumnName)
 	}
 
 	def "A NativeSqlWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {

@@ -27,21 +27,26 @@ import org.locationtech.jts.geom.Point;
 public class SqlWeatherSource implements WeatherSource {
   private static final Logger logger = LogManager.getLogger(SqlWeatherSource.class);
 
-  private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.0";
   private static final String DEFAULT_WEATHER_FETCHING_ERROR = "Error while fetching weather";
   private static final String WHERE = " WHERE ";
 
   private final SqlConnector connector;
   private final IdCoordinateSource idCoordinateSource;
   private final String coordinateColumnName;
-  private final String timeColumnName;
   private final TimeBasedWeatherValueFactory weatherFactory;
+
+  /**
+   * Queries that are available within this source. Motivation to have them as field value is to
+   * avoid creating a new string each time, bc they're always the same.
+   */
   private final String queryTimeInterval;
+
   private final String queryTimeAndCoordinate;
   private final String queryTimeIntervalAndCoordinates;
 
   /**
-   * Initializes a new SqlWeatherSource
+   * Initializes a new SqlWeatherSource with a default instance of {@link
+   * TimeBasedWeatherValueFactory}
    *
    * @param connector the connector needed for database connection
    * @param idCoordinateSource a coordinate source to map ids to points
@@ -60,11 +65,11 @@ public class SqlWeatherSource implements WeatherSource {
     this(
         connector,
         idCoordinateSource,
-        weatherTableName,
         schemaName,
+        weatherTableName,
         coordinateColumnName,
         timeColumnName,
-        DEFAULT_TIMESTAMP_PATTERN);
+        new TimeBasedWeatherValueFactory());
   }
 
   /**
@@ -76,7 +81,7 @@ public class SqlWeatherSource implements WeatherSource {
    * @param weatherTableName the name of the table containing weather data
    * @param coordinateColumnName the name of the column containing coordinate IDs
    * @param timeColumnName the name of the column containing timestamps
-   * @param timestampPattern the pattern of the timestamps
+   * @param weatherFactory instance of a time based weather value factory
    */
   public SqlWeatherSource(
       SqlConnector connector,
@@ -85,12 +90,13 @@ public class SqlWeatherSource implements WeatherSource {
       String weatherTableName,
       String coordinateColumnName,
       String timeColumnName,
-      String timestampPattern) {
+      TimeBasedWeatherValueFactory weatherFactory) {
     this.connector = connector;
     this.idCoordinateSource = idCoordinateSource;
     this.coordinateColumnName = coordinateColumnName;
-    this.timeColumnName = timeColumnName;
-    this.weatherFactory = new TimeBasedWeatherValueFactory(timestampPattern);
+    this.weatherFactory = weatherFactory;
+
+    // setup queries
     this.queryTimeInterval =
         createQueryStringForTimeInterval(schemaName, weatherTableName, timeColumnName);
     this.queryTimeAndCoordinate =
@@ -252,7 +258,7 @@ public class SqlWeatherSource implements WeatherSource {
   private List<TimeBasedValue<WeatherValue>> processWeatherQuery(PreparedStatement ps)
       throws SQLException {
     try (ResultSet resultSet = ps.executeQuery()) {
-      List<Map<String, String>> fieldMaps = connector.extractFieldMaps(resultSet, timeColumnName);
+      List<Map<String, String>> fieldMaps = connector.extractFieldMaps(resultSet);
       return toTimeBasedWeatherValues(fieldMaps);
     }
   }

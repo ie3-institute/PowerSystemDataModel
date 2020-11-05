@@ -34,8 +34,12 @@ public class TimeBasedWeatherValueFactory
   }
 
   public TimeBasedWeatherValueFactory(String timePattern) {
+    this(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern));
+  }
+
+  public TimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(WeatherValue.class);
-    timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern);
+    this.timeUtil = timeUtil;
   }
 
   @Override

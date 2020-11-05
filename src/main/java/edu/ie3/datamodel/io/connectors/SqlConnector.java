@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.connectors;
 
 import edu.ie3.util.TimeUtil;
 import java.sql.*;
-import java.time.ZoneId;
 import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,25 +19,8 @@ import org.apache.logging.log4j.Logger;
 public class SqlConnector implements DataConnector {
   private static final Logger log = LogManager.getLogger(SqlConnector.class);
 
-  private final TimeUtil timeUtil;
   private final String jdbcUrl;
   private final Properties connectionProps;
-
-  /**
-   * Initializes a SqlConnector with the given JDBC url, username and password
-   *
-   * @param jdbcUrl the JDBC url, should start with "jdbc:postgresql://" and contain the database
-   *     name
-   * @param userName Name of the role used for authentication
-   * @param password Password for the role
-   */
-  public SqlConnector(String jdbcUrl, String userName, String password) {
-    this(
-        jdbcUrl,
-        userName,
-        password,
-        new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss.0"));
-  }
 
   /**
    * Initializes a SqlConnector with the given JDBC url, username, password and time util
@@ -47,11 +29,9 @@ public class SqlConnector implements DataConnector {
    *     name
    * @param userName Name of the role used for authentication
    * @param password Password for the role
-   * @param timeUtil the time util to use for all timestamp result conversions
    */
-  public SqlConnector(String jdbcUrl, String userName, String password, TimeUtil timeUtil) {
+  public SqlConnector(String jdbcUrl, String userName, String password) {
     this.jdbcUrl = jdbcUrl;
-    this.timeUtil = timeUtil;
 
     // setup properties
     this.connectionProps = new Properties();
@@ -115,14 +95,13 @@ public class SqlConnector implements DataConnector {
    * Extracts all field to value maps from the ResultSet, one for each row
    *
    * @param rs the ResultSet to use
-   * @param timeColumns names of the columns that contain a timestamp
    * @return a list of field maps
    */
-  public List<Map<String, String>> extractFieldMaps(ResultSet rs, String... timeColumns) {
+  public List<Map<String, String>> extractFieldMaps(ResultSet rs) {
     List<Map<String, String>> fieldMaps = new ArrayList<>();
     try {
       while (rs.next()) {
-        fieldMaps.add(extractFieldMap(rs, timeColumns));
+        fieldMaps.add(extractFieldMap(rs));
       }
     } catch (SQLException e) {
       log.error("Exception at extracting ResultSet: ", e);
@@ -134,10 +113,9 @@ public class SqlConnector implements DataConnector {
    * Extracts only the current row of the ResultSet into a field to value map
    *
    * @param rs the ResultSet to use
-   * @param timeColumns names of the columns that contain a timestamp
    * @return the field map for the current row
    */
-  public Map<String, String> extractFieldMap(ResultSet rs, String... timeColumns) {
+  public Map<String, String> extractFieldMap(ResultSet rs) {
     HashMap<String, String> fieldMap = new HashMap<>();
     try {
       ResultSetMetaData metaData = rs.getMetaData();
@@ -145,8 +123,9 @@ public class SqlConnector implements DataConnector {
       for (int i = 1; i <= columnCount; i++) {
         String columnName = metaData.getColumnName(i);
         String value;
-        if (Arrays.asList(timeColumns).contains(columnName)) {
-          value = timeUtil.toString(rs.getTimestamp(i).toInstant());
+        Object result = rs.getObject(i);
+        if (result instanceof Timestamp) {
+          value = TimeUtil.withDefaults.toString(rs.getTimestamp(i).toInstant());
         } else {
           value = String.valueOf(rs.getObject(i));
         }

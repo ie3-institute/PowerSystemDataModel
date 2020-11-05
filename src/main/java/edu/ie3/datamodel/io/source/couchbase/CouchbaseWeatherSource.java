@@ -18,7 +18,9 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.util.TimeUtil;
 import edu.ie3.util.interval.ClosedInterval;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -64,7 +66,9 @@ public class CouchbaseWeatherSource implements WeatherSource {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
     this.coordinateIdColumnName = coordinateIdColumnName;
-    this.weatherFactory = new TimeBasedWeatherValueFactory(timestampPattern);
+    this.weatherFactory =
+        new TimeBasedWeatherValueFactory(
+            new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timestampPattern));
     this.keyPrefix = keyPrefix;
   }
 
