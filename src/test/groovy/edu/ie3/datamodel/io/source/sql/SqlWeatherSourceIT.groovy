@@ -35,8 +35,6 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 	static String timeColumnName = "time"
 
 	def setupSpec() {
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
-
 		// Copy sql import script into docker
 		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/weather.sql")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather.sql")

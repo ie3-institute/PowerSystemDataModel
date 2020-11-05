@@ -36,8 +36,6 @@ class CouchbaseWeatherSourceIT extends Specification implements WeatherSourceTes
 	static String coordinateIdColumnName = "coordinate"
 
 	def setupSpec() {
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
-
 		// Copy import file with json array of documents into docker
 		MountableFile couchbaseWeatherJsonsFile = MountableFile.forClasspathResource("/testcontainersFiles/couchbase/weather.json")
 		couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather.json")
