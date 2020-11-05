@@ -27,7 +27,6 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 	InfluxDBContainer influxDbContainer = new InfluxDBContainer()
 	.withAuthEnabled(false)
 	.withDatabase("test_weather")
-	.withExposedPorts(8086)
 
 	@Shared
 	InfluxDbWeatherSource source
