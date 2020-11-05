@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.util.TimeUtil;
 import edu.ie3.util.interval.ClosedInterval;
 import java.sql.*;
 import java.time.ZonedDateTime;
@@ -46,7 +47,7 @@ public class SqlWeatherSource implements WeatherSource {
 
   /**
    * Initializes a new SqlWeatherSource with a default instance of {@link
-   * TimeBasedWeatherValueFactory}
+   * TimeBasedWeatherValueFactory} incl. an {@link TimeUtil#withDefaults} instance
    *
    * @param connector the connector needed for database connection
    * @param idCoordinateSource a coordinate source to map ids to points
@@ -69,7 +70,7 @@ public class SqlWeatherSource implements WeatherSource {
         weatherTableName,
         coordinateColumnName,
         timeColumnName,
-        new TimeBasedWeatherValueFactory());
+        new TimeBasedWeatherValueFactory(TimeUtil.withDefaults));
   }
 
   /**
