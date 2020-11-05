@@ -48,7 +48,7 @@ public class CsvFileConnector implements DataConnector {
     this.fileNamingStrategy = fileNamingStrategy;
   }
 
-  public BufferedCsvWriter getOrInitWriter(
+  public synchronized BufferedCsvWriter getOrInitWriter(
       Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep)
       throws ConnectorException {
     /* Try to the the right writer */
@@ -68,7 +68,7 @@ public class CsvFileConnector implements DataConnector {
     }
   }
 
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public synchronized <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       BufferedCsvWriter getOrInitWriter(T timeSeries, String[] headerElements, String csvSep)
           throws ConnectorException {
     /* Try to the the right writer */
