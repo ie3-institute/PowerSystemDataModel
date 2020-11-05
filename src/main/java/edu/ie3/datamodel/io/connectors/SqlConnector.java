@@ -22,8 +22,7 @@ public class SqlConnector implements DataConnector {
 
   private final TimeUtil timeUtil;
   private final String jdbcUrl;
-  private final String userName;
-  private final String password;
+  private final Properties connectionProps;
 
   /**
    * Initializes a SqlConnector with the given JDBC url, username and password
@@ -52,9 +51,12 @@ public class SqlConnector implements DataConnector {
    */
   public SqlConnector(String jdbcUrl, String userName, String password, TimeUtil timeUtil) {
     this.jdbcUrl = jdbcUrl;
-    this.userName = userName;
-    this.password = password;
     this.timeUtil = timeUtil;
+
+    // setup properties
+    this.connectionProps = new Properties();
+    connectionProps.put("user", userName);
+    connectionProps.put("password", password);
   }
 
   /**
@@ -96,9 +98,6 @@ public class SqlConnector implements DataConnector {
    * @throws SQLException if the connection could not be established
    */
   public Connection getConnection() throws SQLException {
-    Properties connectionProps = new Properties();
-    connectionProps.put("user", userName);
-    connectionProps.put("password", password);
     try {
       return DriverManager.getConnection(jdbcUrl, connectionProps);
     } catch (SQLException e) {
@@ -108,7 +107,8 @@ public class SqlConnector implements DataConnector {
 
   @Override
   public void shutdown() {
-    // Nothing needs to be closed or shutdown
+    // Nothing needs to be closed or shutdown, as we use short-lived sessions,
+    // that are auto-closable and wrapped in a try-with-resources for every query.
   }
 
   /**
