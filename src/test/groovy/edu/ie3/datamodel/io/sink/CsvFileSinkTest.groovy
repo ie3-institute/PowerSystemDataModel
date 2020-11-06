@@ -188,9 +188,9 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		new File(testBaseFolderPath + File.separator + "wec_res.csv").exists()
 		new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
 		new File(testBaseFolderPath + File.separator + "evcs_res.csv").exists()
-		new File(testBaseFolderPath + File.separator + "transformer2w_type_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "transformer_2_w_type_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "node_input.csv").exists()
-		new File(testBaseFolderPath + File.separator + "transformer2w_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "transformer_2_w_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "operator_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "cylindrical_storage_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "line_graphic_input.csv").exists()
@@ -323,8 +323,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		new File(testBaseFolderPath + File.separator + "pv_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "storage_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "storage_type_input.csv").exists()
-		new File(testBaseFolderPath + File.separator + "transformer2w_input.csv").exists()
-		new File(testBaseFolderPath + File.separator + "transformer2w_type_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "transformer_2_w_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "transformer_2_w_type_input.csv").exists()
 
 		cleanup:
 		csvFileSink.shutdown()

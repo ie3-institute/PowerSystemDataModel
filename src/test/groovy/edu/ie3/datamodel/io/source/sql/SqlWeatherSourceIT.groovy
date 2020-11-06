@@ -24,7 +24,6 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 
 	@Shared
 	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.9")
-	.withExposedPorts(5432)
 
 	@Shared
 	SqlWeatherSource source
@@ -35,8 +34,6 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 	static String timeColumnName = "time"
 
 	def setupSpec() {
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
-
 		// Copy sql import script into docker
 		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/weather.sql")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather.sql")
@@ -44,7 +41,7 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-		source = new SqlWeatherSource(connector, WeatherTestData.coordinateSource, schemaName, weatherTableName, coordinateColumnName, timeColumnName)
+		source = new SqlWeatherSource(connector, WeatherTestData.coordinateSource, weatherTableName, schemaName, coordinateColumnName, timeColumnName)
 	}
 
 	def "A NativeSqlWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {

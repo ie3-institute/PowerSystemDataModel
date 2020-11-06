@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.connectors;
 
+import edu.ie3.util.TimeUtil;
 import java.sql.*;
 import java.util.*;
 import org.apache.logging.log4j.LogManager;
@@ -19,11 +20,10 @@ public class SqlConnector implements DataConnector {
   private static final Logger log = LogManager.getLogger(SqlConnector.class);
 
   private final String jdbcUrl;
-  private final String userName;
-  private final String password;
+  private final Properties connectionProps;
 
   /**
-   * Initializes a SqlConnector with the given JDBC url, username and password
+   * Initializes a SqlConnector with the given JDBC url, username, password and time util
    *
    * @param jdbcUrl the JDBC url, should start with "jdbc:postgresql://" and contain the database
    *     name
@@ -32,8 +32,11 @@ public class SqlConnector implements DataConnector {
    */
   public SqlConnector(String jdbcUrl, String userName, String password) {
     this.jdbcUrl = jdbcUrl;
-    this.userName = userName;
-    this.password = password;
+
+    // setup properties
+    this.connectionProps = new Properties();
+    connectionProps.put("user", userName);
+    connectionProps.put("password", password);
   }
 
   /**
@@ -75,9 +78,6 @@ public class SqlConnector implements DataConnector {
    * @throws SQLException if the connection could not be established
    */
   public Connection getConnection() throws SQLException {
-    Properties connectionProps = new Properties();
-    connectionProps.put("user", userName);
-    connectionProps.put("password", password);
     try {
       return DriverManager.getConnection(jdbcUrl, connectionProps);
     } catch (SQLException e) {
@@ -87,7 +87,8 @@ public class SqlConnector implements DataConnector {
 
   @Override
   public void shutdown() {
-    // Nothing needs to be closed or shutdown
+    // Nothing needs to be closed or shutdown, as we use short-lived sessions,
+    // that are auto-closable and wrapped in a try-with-resources for every query.
   }
 
   /**
@@ -96,7 +97,7 @@ public class SqlConnector implements DataConnector {
    * @param rs the ResultSet to use
    * @return a list of field maps
    */
-  public static List<Map<String, String>> extractFieldMaps(ResultSet rs) {
+  public List<Map<String, String>> extractFieldMaps(ResultSet rs) {
     List<Map<String, String>> fieldMaps = new ArrayList<>();
     try {
       while (rs.next()) {
@@ -114,17 +115,22 @@ public class SqlConnector implements DataConnector {
    * @param rs the ResultSet to use
    * @return the field map for the current row
    */
-  public static Map<String, String> extractFieldMap(ResultSet rs) {
+  public Map<String, String> extractFieldMap(ResultSet rs) {
     HashMap<String, String> fieldMap = new HashMap<>();
     try {
       ResultSetMetaData metaData = rs.getMetaData();
       int columnCount = metaData.getColumnCount();
-
       for (int i = 1; i <= columnCount; i++) {
-        String value = String.valueOf(rs.getObject(i));
-        fieldMap.put(metaData.getColumnName(i), value);
+        String columnName = metaData.getColumnName(i);
+        String value;
+        Object result = rs.getObject(i);
+        if (result instanceof Timestamp) {
+          value = TimeUtil.withDefaults.toString(rs.getTimestamp(i).toInstant());
+        } else {
+          value = String.valueOf(rs.getObject(i));
+        }
+        fieldMap.put(columnName, value);
       }
-
     } catch (SQLException e) {
       log.error("Exception at extracting ResultSet: ", e);
     }

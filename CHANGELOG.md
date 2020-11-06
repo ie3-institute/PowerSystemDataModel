@@ -15,11 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Couchbase and SQL connectors and sources for weather data
 
 ### Changed
-- BREAKING: replaced [Unit API 1.0](https://github.com/unitsofmeasurement/uom-se) (JSR 363, tec.uom.se) with [Unit API 2.0](https://github.com/unitsofmeasurement/indriya) (JSR 385, tech.units.indriya)
-- added possibility to allow `null` values in time series for missing values (e.g. if some measure data points from real world data time series are missing)
-- moved api docs to own branch incl. automated api-docs deployment
-- added methods for nearest and all coordinates to IdCoordinateSource
-- added coordinate distance sort method to GridAndGeoUtils
+-   BREAKING: replaced [Unit API 1.0](https://github.com/unitsofmeasurement/uom-se) (JSR 363, tec.uom.se) with [Unit API 2.0](https://github.com/unitsofmeasurement/indriya) (JSR 385, tech.units.indriya)
+-   added possibility to allow `null` values in time series for missing values (e.g. if some measure data points from real world data time series are missing)
+-   moved api docs to own branch incl. automated api-docs deployment
+-   added methods for nearest and all coordinates to IdCoordinateSource
+-   added coordinate distance sort method to GridAndGeoUtils
+-   BREAKING: Harmonized field naming for time information
+-   BREAKING: Properly applying snake case to result file names
 
 ## [1.1.0] - 2020-09-15
 

@@ -6,10 +6,7 @@
 package edu.ie3.datamodel.io.connectors;
 
 import edu.ie3.datamodel.exceptions.ConnectorException;
-import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
-import edu.ie3.datamodel.io.csv.CsvFileDefinition;
-import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
-import edu.ie3.datamodel.io.csv.FileNamingStrategy;
+import edu.ie3.datamodel.io.csv.*;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -24,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -50,7 +48,7 @@ public class CsvFileConnector implements DataConnector {
     this.fileNamingStrategy = fileNamingStrategy;
   }
 
-  public BufferedCsvWriter getOrInitWriter(
+  public synchronized BufferedCsvWriter getOrInitWriter(
       Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep)
       throws ConnectorException {
     /* Try to the the right writer */
@@ -70,7 +68,7 @@ public class CsvFileConnector implements DataConnector {
     }
   }
 
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public synchronized <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       BufferedCsvWriter getOrInitWriter(T timeSeries, String[] headerElements, String csvSep)
           throws ConnectorException {
     /* Try to the the right writer */
@@ -93,31 +91,41 @@ public class CsvFileConnector implements DataConnector {
   /**
    * Initializes a writer with the given base folder and file definition
    *
-   * @param baseFolder Base folder, where the file hierarchy should start
+   * @param baseDirectory Base directory, where the file hierarchy should start
    * @param fileDefinition Definition of the files shape
    * @return an initialized buffered writer
    * @throws ConnectorException If the base folder is a file
    * @throws IOException If the writer cannot be initialized correctly
    */
-  private BufferedCsvWriter initWriter(String baseFolder, CsvFileDefinition fileDefinition)
+  private BufferedCsvWriter initWriter(String baseDirectory, CsvFileDefinition fileDefinition)
       throws ConnectorException, IOException {
-    File basePathDir = new File(baseFolder);
-    if (basePathDir.isFile())
-      throw new ConnectorException(
-          "Base path dir '" + baseFolder + "' already exists and is a file!");
-    if (!basePathDir.exists()) basePathDir.mkdirs();
+    /* Join the full DIRECTORY path (excluding file name) */
+    String baseDirectoryHarmonized = baseDirectory.replaceAll("[/\\\\]", File.separator);
+    String fullDirectoryPath =
+        FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getDirectoryPath());
+    String fullPath = FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getFilePath());
 
-    String fullPathToFile = baseFolder + File.separator + fileDefinition.getFilePath();
+    /* Create missing directories */
+    File directories = new File(fullDirectoryPath);
+    if (directories.isFile())
+      throw new ConnectorException("Directory '" + directories + "' already exists and is a file!");
+    if (!directories.exists() && !directories.mkdirs())
+      throw new IOException("Unable to create directory tree '" + directories.toString() + "'");
 
-    File pathFile = new File(fullPathToFile);
-    if (!pathFile.exists()) {
-      return new BufferedCsvWriter(baseFolder, fileDefinition, true, false);
+    File pathFile = new File(fullPath);
+    boolean append = pathFile.exists();
+    BufferedCsvWriter writer =
+        new BufferedCsvWriter(
+            fullPath, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep(), append);
+    if (!append) {
+      writer.writeFileHeader();
+    } else {
+      log.warn(
+          "File '{}' already exist. Will append new content WITHOUT new header! Full path: {}",
+          fileDefinition.getFileName(),
+          pathFile.getAbsolutePath());
     }
-    log.warn(
-        "File '{}.csv' already exist. Will append new content WITHOUT new header! Full path: {}",
-        fileDefinition.getFileName(),
-        pathFile.getAbsolutePath());
-    return new BufferedCsvWriter(baseFolder, fileDefinition, false, true);
+    return writer;
   }
 
   /**
@@ -277,6 +285,7 @@ public class CsvFileConnector implements DataConnector {
   private <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       CsvFileDefinition buildFileDefinition(T timeSeries, String[] headLineElements, String csvSep)
           throws ConnectorException {
+    String directoryPath = fileNamingStrategy.getDirectoryPath(timeSeries).orElse("");
     String fileName =
         fileNamingStrategy
             .getFileName(timeSeries)
@@ -284,7 +293,7 @@ public class CsvFileConnector implements DataConnector {
                 () ->
                     new ConnectorException(
                         "Cannot determine the file name for time series '" + timeSeries + "'."));
-    return new CsvFileDefinition(fileName, headLineElements, csvSep);
+    return new CsvFileDefinition(fileName, directoryPath, headLineElements, csvSep);
   }
 
   /**
@@ -299,14 +308,15 @@ public class CsvFileConnector implements DataConnector {
   private CsvFileDefinition buildFileDefinition(
       Class<? extends UniqueEntity> clz, String[] headLineElements, String csvSep)
       throws ConnectorException {
+    String directoryPath = fileNamingStrategy.getDirectoryPath(clz).orElse("");
     String fileName =
         fileNamingStrategy
             .getFileName(clz)
             .orElseThrow(
                 () ->
                     new ConnectorException(
-                        "Cannot determine the file name for class '" + clz + "'."));
-    return new CsvFileDefinition(fileName, headLineElements, csvSep);
+                        "Cannot determine the file name for class '" + clz.getSimpleName() + "'."));
+    return new CsvFileDefinition(fileName, directoryPath, headLineElements, csvSep);
   }
 
   @Override
@@ -322,6 +332,7 @@ public class CsvFileConnector implements DataConnector {
               }
             });
   }
+
   /** Class to bundle all information, that are necessary to read a single time series */
   public static class TimeSeriesReadingData {
     private final UUID uuid;

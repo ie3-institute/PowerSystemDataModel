@@ -33,9 +33,13 @@ public class TimeBasedWeatherValueFactory
     this("yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'");
   }
 
-  public TimeBasedWeatherValueFactory(String timestampPattern) {
+  public TimeBasedWeatherValueFactory(String timePattern) {
+    this(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern));
+  }
+
+  public TimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(WeatherValue.class);
-    timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timestampPattern);
+    this.timeUtil = timeUtil;
   }
 
   @Override

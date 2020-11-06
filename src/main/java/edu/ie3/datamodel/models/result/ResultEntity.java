@@ -14,19 +14,19 @@ import java.util.UUID;
 public abstract class ResultEntity extends UniqueEntity {
 
   /** date and time of the produced result */
-  private ZonedDateTime timestamp;
+  private ZonedDateTime time;
   /** uuid of the input model that produces the result */
   private UUID inputModel;
 
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    */
-  public ResultEntity(ZonedDateTime timestamp, UUID inputModel) {
+  public ResultEntity(ZonedDateTime time, UUID inputModel) {
     super();
-    this.timestamp = timestamp;
+    this.time = time;
     this.inputModel = inputModel;
   }
 
@@ -35,12 +35,12 @@ public abstract class ResultEntity extends UniqueEntity {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    */
-  public ResultEntity(UUID uuid, ZonedDateTime timestamp, UUID inputModel) {
+  public ResultEntity(UUID uuid, ZonedDateTime time, UUID inputModel) {
     super(uuid);
-    this.timestamp = timestamp;
+    this.time = time;
     this.inputModel = inputModel;
   }
 
@@ -52,12 +52,12 @@ public abstract class ResultEntity extends UniqueEntity {
     inputModel = inputID;
   }
 
-  public ZonedDateTime getTimestamp() {
-    return timestamp;
+  public ZonedDateTime getTime() {
+    return time;
   }
 
-  public void setTimestamp(ZonedDateTime timestamp) {
-    this.timestamp = timestamp;
+  public void setTime(ZonedDateTime time) {
+    this.time = time;
   }
 
   @Override
@@ -66,12 +66,12 @@ public abstract class ResultEntity extends UniqueEntity {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ResultEntity that = (ResultEntity) o;
-    return timestamp.equals(that.timestamp) && inputModel.equals(that.inputModel);
+    return time.equals(that.time) && inputModel.equals(that.inputModel);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), timestamp, inputModel);
+    return Objects.hash(super.hashCode(), time, inputModel);
   }
 
   @Override
@@ -79,8 +79,8 @@ public abstract class ResultEntity extends UniqueEntity {
     return "ResultEntity{"
         + "uuid="
         + getUuid()
-        + ", timestamp="
-        + timestamp
+        + ", time="
+        + time
         + ", inputModel="
         + inputModel
         + '}';

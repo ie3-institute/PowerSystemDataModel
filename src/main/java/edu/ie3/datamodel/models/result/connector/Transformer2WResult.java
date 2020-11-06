@@ -20,7 +20,7 @@ public class Transformer2WResult extends TransformerResult {
   /**
    * Standard constructor with automatic uuid generation.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
    * @param iAAng electric current angle @ Port A in degree
@@ -29,14 +29,14 @@ public class Transformer2WResult extends TransformerResult {
    * @param tapPos Current position of the tap changer
    */
   public Transformer2WResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
       ComparableQuantity<Angle> iAAng,
       ComparableQuantity<ElectricCurrent> iBMag,
       ComparableQuantity<Angle> iBAng,
       int tapPos) {
-    super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+    super(time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
   }
 
   /**
@@ -44,7 +44,7 @@ public class Transformer2WResult extends TransformerResult {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
    * @param iAAng electric current angle @ Port A in degree
@@ -54,14 +54,14 @@ public class Transformer2WResult extends TransformerResult {
    */
   public Transformer2WResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
       ComparableQuantity<Angle> iAAng,
       ComparableQuantity<ElectricCurrent> iBMag,
       ComparableQuantity<Angle> iBAng,
       int tapPos) {
-    super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+    super(uuid, time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
   }
 
   @Override
@@ -69,8 +69,8 @@ public class Transformer2WResult extends TransformerResult {
     return "Transformer2WResult{"
         + "uuid="
         + getUuid()
-        + ", timestamp="
-        + getTimestamp()
+        + ", time="
+        + getTime()
         + ", inputModel="
         + getInputModel()
         + ", iAMag="
