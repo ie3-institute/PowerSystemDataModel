@@ -24,7 +24,7 @@ import spock.lang.Specification
 class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTestHelper {
 
 	@Shared
-	InfluxDBContainer influxDbContainer = new InfluxDBContainer()
+	InfluxDBContainer influxDbContainer = new InfluxDBContainer("latest")
 	.withAuthEnabled(false)
 	.withDatabase("test_weather")
 
