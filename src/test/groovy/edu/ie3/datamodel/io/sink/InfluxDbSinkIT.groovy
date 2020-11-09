@@ -34,7 +34,7 @@ import java.time.ZonedDateTime
 class InfluxDbSinkIT extends Specification {
 
 	@Shared
-	InfluxDBContainer influxDbContainer = new InfluxDBContainer()
+	InfluxDBContainer influxDbContainer = new InfluxDBContainer("latest")
 	.withAuthEnabled(false)
 	.withDatabase("test_out")
 	.withExposedPorts(8086)
