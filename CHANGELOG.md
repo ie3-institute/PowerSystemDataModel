@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   added electric vehicle charging station implementation ``EvcsInput``
 -   reading time series from csv files (including a container object to hold the different types of time series)
 -   reading mapping from participant uuid to time series uuid including a mapping object for easy access to time series
--   Couchbase and SQL connectors and sources for weather data
+-   Couchbase, SQL and CSV connectors and sources for weather data
 
 ### Changed
 -   BREAKING: replaced [Unit API 1.0](https://github.com/unitsofmeasurement/uom-se) (JSR 363, tec.uom.se) with [Unit API 2.0](https://github.com/unitsofmeasurement/indriya) (JSR 385, tech.units.indriya)
