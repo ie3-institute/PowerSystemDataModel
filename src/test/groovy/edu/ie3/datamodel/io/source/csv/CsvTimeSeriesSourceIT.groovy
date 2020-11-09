@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.datamodel.models.StandardUnits.*
 import edu.ie3.datamodel.io.connectors.CsvFileConnector
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
@@ -22,7 +23,6 @@ import tech.units.indriya.quantity.Quantities
 
 import java.nio.charset.StandardCharsets
 
-import static edu.ie3.datamodel.models.StandardUnits.*
 
 class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
@@ -42,7 +42,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
 	def "The csv time series source is able to provide an individual time series from given field to object function"() {
 		given:
-		def weatherValueFunction = { fieldToValues -> source.buildTimeBasedValue(fieldToValues, HeatAndSValue, new TimeBasedSimpleValueFactory<>(HeatAndSValue.class)) }
+		def weatherValueFunction = { fieldToValues -> source.buildTimeBasedValue(fieldToValues, HeatAndSValue, new TimeBasedSimpleValueFactory<>(HeatAndSValue)) }
 		def tsUuid = UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047")
 		def filePath = new File(this.getClass().getResource( File.separator + "testTimeSeriesFiles" + File.separator + "its_pqh_46be1e57-e4ed-4ef7-95f1-b2b321cb2047.csv").toURI())
 		def readingData = new CsvFileConnector.TimeSeriesReadingData(

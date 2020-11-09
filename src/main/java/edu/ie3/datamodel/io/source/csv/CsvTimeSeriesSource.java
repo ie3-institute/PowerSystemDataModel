@@ -165,7 +165,8 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
     if (!readingData.isEmpty()) {
       if (valueClass == WeatherValue.class) {
         // manual casting is possible because of the above check
-        timeSeries = readWeatherTimeSeries(readingData).values().stream()
+        timeSeries =
+            readWeatherTimeSeries(readingData).values().stream()
                 .map(originalTimeSeries -> (IndividualTimeSeries<V>) originalTimeSeries)
                 .collect(Collectors.toSet());
       } else {
