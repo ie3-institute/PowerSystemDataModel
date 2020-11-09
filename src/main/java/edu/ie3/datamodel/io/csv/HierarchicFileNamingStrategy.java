@@ -22,6 +22,8 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class HierarchicFileNamingStrategy extends FileNamingStrategy {
   private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
+  private static final String FILE_SEPARATOR_REPLACEMENT =
+      File.separator.equals("\\") ? "\\\\" : "/";
 
   private final FileHierarchy hierarchy;
 
@@ -78,7 +80,7 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
               .get()
               .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
               .replaceAll(FILE_SEPARATOR_REGEX + "$", "")
-              .replaceAll(FILE_SEPARATOR_REGEX, File.separator);
+              .replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT);
       return Optional.of(directoryPath);
     }
   }
@@ -98,7 +100,7 @@ public class HierarchicFileNamingStrategy extends FileNamingStrategy {
               .get()
               .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
               .replaceAll(FILE_SEPARATOR_REGEX + "$", "")
-              .replaceAll(FILE_SEPARATOR_REGEX, File.separator);
+              .replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT);
       return Optional.of(directoryPath);
     }
   }
