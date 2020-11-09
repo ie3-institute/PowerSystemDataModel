@@ -20,10 +20,14 @@ import edu.ie3.datamodel.models.value.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Point;
 
 /** Source that is capable of providing information around time series from csv files. */
 public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSource {
+  private static final Logger logger = LogManager.getLogger(CsvTimeSeriesSource.class);
+
   /* Available factories */
   private final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
   private final TimeBasedWeatherValueFactory weatherFactory = new TimeBasedWeatherValueFactory();
@@ -44,6 +48,14 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
 
   private static final String COORDINATE_FIELD = "coordinate";
 
+  /**
+   * Initializes a new CsvTimeSeriesSource
+   *
+   * @param csvSep the separator string for csv columns
+   * @param folderPath path to the folder holding the time series files
+   * @param fileNamingStrategy strategy for the naming of time series files
+   * @param coordinateSource a coordinate source to map ids to points
+   */
   public CsvTimeSeriesSource(
       String csvSep,
       String folderPath,
@@ -84,26 +96,8 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
 
     /* Reading in weather time series */
     Set<TimeSeriesReadingData> weatherReadingData = colTypeToReadingData.get(ColumnScheme.WEATHER);
-    Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = Collections.emptyMap();
-    if (!weatherReadingData.isEmpty()) {
-      Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> weatherValueFunction =
-          this::buildWeatherValue;
-      weatherTimeSeries =
-          weatherReadingData
-              .parallelStream()
-              .map(data -> buildIndividualTimeSeries(data, weatherValueFunction))
-              .filter(timeSeries -> !timeSeries.getEntries().isEmpty())
-              // we are able to use any coordinate of a time series as a key, as weather time series
-              // are supposed to hold only one coordinate each
-              .collect(
-                  Collectors.toMap(
-                      timeSeries ->
-                          new ArrayList<>(timeSeries.getEntries())
-                              .get(0)
-                              .getValue()
-                              .getCoordinate(),
-                      timeSeries -> timeSeries));
-    }
+    Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries =
+        readWeatherTimeSeries(weatherReadingData);
 
     /* Reading in energy price time series */
     Set<IndividualTimeSeries<EnergyPriceValue>> energyPriceTimeSeries =
@@ -153,7 +147,8 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
 
   /**
    * Reads in time series of a specified class from given {@link TimeSeriesReadingData} utilising a
-   * provided {@link TimeBasedSimpleValueFactory}.
+   * provided {@link TimeBasedSimpleValueFactory}, except for weather data, which needs a special
+   * processing
    *
    * @param readingData Data needed for reading
    * @param valueClass Class of the target value within the time series
@@ -166,16 +161,67 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
     Set<IndividualTimeSeries<V>> timeSeries = Collections.emptySet();
+
     if (!readingData.isEmpty()) {
-      Function<Map<String, String>, Optional<TimeBasedValue<V>>> valueFunction =
-          fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory);
-      timeSeries =
-          readingData
-              .parallelStream()
-              .map(data -> buildIndividualTimeSeries(data, valueFunction))
-              .collect(Collectors.toSet());
+      if (valueClass == WeatherValue.class) {
+        timeSeries = cast(readWeatherTimeSeries(readingData).values(), valueClass);
+      } else {
+        Function<Map<String, String>, Optional<TimeBasedValue<V>>> valueFunction =
+            fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory);
+        timeSeries =
+            readingData
+                .parallelStream()
+                .map(data -> buildIndividualTimeSeries(data, valueFunction))
+                .collect(Collectors.toSet());
+      }
     }
     return timeSeries;
+  }
+
+  /**
+   * Reads weather data to time series and maps them coordinate wise
+   *
+   * @param weatherReadingData Data needed for reading
+   * @return time series mapped to the represented coordinate
+   */
+  protected Map<Point, IndividualTimeSeries<WeatherValue>> readWeatherTimeSeries(
+      Set<TimeSeriesReadingData> weatherReadingData) {
+    Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
+    Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> fieldToValueFunction =
+        this::buildWeatherValue;
+
+    /* Reading in weather time series */
+    for (TimeSeriesReadingData data : weatherReadingData) {
+      Set<TimeBasedValue<WeatherValue>> timeBasedValues =
+          filterEmptyOptionals(
+                  buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, data.getReader())
+                      .map(fieldToValueFunction))
+              .collect(Collectors.toSet());
+      Map<Point, List<TimeBasedValue<WeatherValue>>> coordinateToValues =
+          timeBasedValues.stream()
+              .parallel()
+              .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()));
+
+      // We have to generate a random UUID as we'd risk running into duplicate key issues otherwise
+      Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries =
+          coordinateToValues.entrySet().stream()
+              .collect(
+                  Collectors.toMap(
+                      Map.Entry::getKey,
+                      entry ->
+                          new IndividualTimeSeries<>(
+                              UUID.randomUUID(), new HashSet<>(entry.getValue()))));
+      coordinateToTimeSeries.forEach(
+          (point, timeSeries) -> {
+            if (weatherTimeSeries.containsKey(point)) {
+              IndividualTimeSeries<WeatherValue> mergedTimeSeries =
+                  mergeTimeSeries(weatherTimeSeries.get(point), timeSeries);
+              weatherTimeSeries.put(point, mergedTimeSeries);
+            } else weatherTimeSeries.put(point, timeSeries);
+          });
+      weatherTimeSeries.putAll(coordinateToTimeSeries);
+    }
+    return weatherTimeSeries;
   }
 
   /**
@@ -190,9 +236,12 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
    *     located entry
    * @return An {@link IndividualTimeSeries} with {@link TimeBasedValue} of type {@code V}.
    */
-  private <V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries(
+  protected <V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries(
       TimeSeriesReadingData data,
       Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction) {
+    if (data.getColumnScheme() == ColumnScheme.WEATHER)
+      logger.warn(
+          "This method is generally unfit for weather time series, as it works on the assumption that one csv file only holds one time series. If your csv might hold more than one coordinate, please consider using the method 'readWeatherTimeSeries' instead.");
     Set<TimeBasedValue<V>> timeBasedValues =
         filterEmptyOptionals(
                 buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, data.getReader())
@@ -204,12 +253,12 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
 
   /**
    * Builds a {@link TimeBasedValue} of type {@link WeatherValue} from given "flat " input
-   * information. If the single model cannot be built, an empty optionl is handed back.
+   * information. If the single model cannot be built, an empty optional is handed back.
    *
    * @param fieldToValues "flat " input information as a mapping from field to value
    * @return Optional time based weather value
    */
-  private Optional<TimeBasedValue<WeatherValue>> buildWeatherValue(
+  protected Optional<TimeBasedValue<WeatherValue>> buildWeatherValue(
       Map<String, String> fieldToValues) {
     /* Try to get the coordinate from entries */
     String coordinateString = fieldToValues.get(COORDINATE_FIELD);
@@ -257,5 +306,36 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
     return factory.get(factoryData);
+  }
+
+  /**
+   * Casts a collection of IndividualTimeSeries from one generic typed value to another. Does not
+   * check on compatibility.
+   *
+   * @param collection to collection to cast
+   * @param toValueClass the class to cast the time series' values to
+   * @param <V> value class to cast to
+   * @param <U> original value class
+   * @return casted set
+   */
+  private static <V extends Value, U extends Value> Set<IndividualTimeSeries<V>> cast(
+      Collection<IndividualTimeSeries<U>> collection, Class<V> toValueClass) {
+    return collection.stream()
+        .map(originalTimeSeries -> (IndividualTimeSeries<V>) originalTimeSeries)
+        .collect(Collectors.toSet());
+  }
+
+  /**
+   * Merge two individual time series into a new time series with the UUID of the first parameter
+   *
+   * @param a the first time series to merge
+   * @param b the second time series to merge
+   * @return merged time series with a's UUID
+   */
+  private static <V extends Value> IndividualTimeSeries<V> mergeTimeSeries(
+      IndividualTimeSeries<V> a, IndividualTimeSeries<V> b) {
+    SortedSet<TimeBasedValue<V>> entries = a.getEntries();
+    entries.addAll(b.getEntries());
+    return new IndividualTimeSeries<>(a.getUuid(), entries);
   }
 }
