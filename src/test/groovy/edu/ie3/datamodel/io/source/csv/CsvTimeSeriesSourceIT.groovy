@@ -42,7 +42,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
 	def "The csv time series source is able to provide an individual time series from given field to object function"() {
 		given:
-		def weatherValueFunction = { fieldToValues -> source.buildTimeBasedValue(fieldToValues, HeatAndSValue.class as Class<Value>, new TimeBasedSimpleValueFactory<>(HeatAndSValue.class)) }
+		def weatherValueFunction = { fieldToValues -> source.buildTimeBasedValue(fieldToValues, HeatAndSValue, new TimeBasedSimpleValueFactory<>(HeatAndSValue.class)) }
 		def tsUuid = UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047")
 		def filePath = new File(this.getClass().getResource( File.separator + "testTimeSeriesFiles" + File.separator + "its_pqh_46be1e57-e4ed-4ef7-95f1-b2b321cb2047.csv").toURI())
 		def readingData = new CsvFileConnector.TimeSeriesReadingData(

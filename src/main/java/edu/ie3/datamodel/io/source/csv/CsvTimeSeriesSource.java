@@ -164,7 +164,10 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
 
     if (!readingData.isEmpty()) {
       if (valueClass == WeatherValue.class) {
-        timeSeries = cast(readWeatherTimeSeries(readingData).values(), valueClass);
+        // manual casting is possible because of the above check
+        timeSeries = readWeatherTimeSeries(readingData).values().stream()
+                .map(originalTimeSeries -> (IndividualTimeSeries<V>) originalTimeSeries)
+                .collect(Collectors.toSet());
       } else {
         Function<Map<String, String>, Optional<TimeBasedValue<V>>> valueFunction =
             fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory);
@@ -306,23 +309,6 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
     return factory.get(factoryData);
-  }
-
-  /**
-   * Casts a collection of IndividualTimeSeries from one generic typed value to another. Does not
-   * check on compatibility.
-   *
-   * @param collection to collection to cast
-   * @param toValueClass the class to cast the time series' values to
-   * @param <V> value class to cast to
-   * @param <U> original value class
-   * @return casted set
-   */
-  private static <V extends Value, U extends Value> Set<IndividualTimeSeries<V>> cast(
-      Collection<IndividualTimeSeries<U>> collection, Class<V> toValueClass) {
-    return collection.stream()
-        .map(originalTimeSeries -> (IndividualTimeSeries<V>) originalTimeSeries)
-        .collect(Collectors.toSet());
   }
 
   /**
