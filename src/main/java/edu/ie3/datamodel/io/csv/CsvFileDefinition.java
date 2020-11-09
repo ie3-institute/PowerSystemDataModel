@@ -18,6 +18,8 @@ public class CsvFileDefinition {
   private static final Logger logger = LoggerFactory.getLogger(CsvFileDefinition.class);
 
   private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
+  private static final String FILE_SEPARATOR_REPLACEMENT =
+      File.separator.equals("\\") ? "\\\\" : "/";
   private static final Pattern FILE_NAME_PATTERN =
       Pattern.compile(
           "^(?<fileName>[^\\\\/\\s.]{0,255})(?:\\.(?<extension>[a-zA-Z0-9]{0,10}(?:\\.[a-zA-Z0-9]{0,10})?))?$");
@@ -37,7 +39,7 @@ public class CsvFileDefinition {
             ? directoryPath
                 .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
                 .replaceAll(FILE_SEPARATOR_REGEX + "$", "")
-                .replaceAll(FILE_SEPARATOR_REGEX, File.separator)
+                .replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT)
             : "";
 
     /* Check the given information of the file name */

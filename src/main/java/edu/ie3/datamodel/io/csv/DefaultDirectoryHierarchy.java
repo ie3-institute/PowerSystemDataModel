@@ -20,6 +20,7 @@ import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
+import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.connector.LineResult;
@@ -302,7 +303,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
     THERMAL_INPUT(
         Constants.INPUT_SUB_TREE + FILE_SEPARATOR + "thermal" + FILE_SEPARATOR,
         false,
-        Stream.of(ThermalUnitInput.class).collect(Collectors.toSet())),
+        Stream.of(ThermalUnitInput.class, ThermalBusInput.class).collect(Collectors.toSet())),
     THERMAL_RESULTS(
         Constants.RESULT_SUB_TREEE + FILE_SEPARATOR + "thermal" + FILE_SEPARATOR,
         false,
