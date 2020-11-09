@@ -27,7 +27,7 @@ class CouchbaseWeatherSourceIT extends Specification implements WeatherSourceTes
 	BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")
 
 	@Shared
-	CouchbaseContainer couchbaseContainer = new CouchbaseContainer().withBucket(bucketDefinition)
+	CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:latest").withBucket(bucketDefinition)
 	.withExposedPorts(8091, 8092, 8093, 8094, 11210)
 
 	@Shared

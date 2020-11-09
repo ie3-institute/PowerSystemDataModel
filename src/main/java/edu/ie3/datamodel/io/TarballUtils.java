@@ -30,7 +30,7 @@ public class TarballUtils {
 
   private static final int MAX_AMOUNT_OF_ENTRIES = 5000;
   private static final long MAX_SIZE_UNCOMPRESSED = 0x280000000L; // 10 GB
-  private static final double MAX_COMPRESSION_RATIO = 0.7;
+  private static final double MAX_COMPRESSION_RATIO = 0.75;
 
   private TarballUtils() {
     throw new IllegalStateException("This is an Utility Class and not meant to be instantiated");
