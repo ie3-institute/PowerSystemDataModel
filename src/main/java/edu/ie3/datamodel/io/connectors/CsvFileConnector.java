@@ -203,7 +203,7 @@ public class CsvFileConnector implements DataConnector {
    *
    * @return A set of relative paths to time series files, with respect to the base folder path
    */
-  public Set<String> getIndividualTimeSeriesFilePaths() {
+  private Set<String> getIndividualTimeSeriesFilePaths() {
     Path baseDirectoryPath = Paths.get(baseDirectoryName);
     try (Stream<Path> pathStream = Files.walk(baseDirectoryPath)) {
       return pathStream
@@ -249,10 +249,16 @@ public class CsvFileConnector implements DataConnector {
       IndividualTimeSeriesMetaInformation individualMetaInformation =
           (IndividualTimeSeriesMetaInformation) metaInformation;
 
+      // If no column schemes are specified, we will include all. If there a specified schemes, we
+      // check if the file's column scheme matches any of them
       if (columnSchemes != null
           && columnSchemes.length > 0
           && Stream.of(columnSchemes)
               .noneMatch(scheme -> scheme.equals(individualMetaInformation.getColumnScheme()))) {
+        log.warn(
+            "The column scheme of the time series file {} does not match any of the specified column schemes ({}), so it will not be processed.",
+            filePathString,
+            columnSchemes);
         return Optional.empty();
       }
 
