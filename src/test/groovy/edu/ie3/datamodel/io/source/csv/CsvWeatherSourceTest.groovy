@@ -100,7 +100,7 @@ class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, Wea
 		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
 	}
 
-	def "The csv time series source is able to build a single WeatherValue from field to value mapping"() {
+	def "The CsvWeatherSource is able to build a single WeatherValue from field to value mapping"() {
 		given:
 		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
 		def coordinateSource = Mock(IdCoordinateSource)
@@ -143,7 +143,7 @@ class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, Wea
 		actual.get() == expectedValue
 	}
 
-	def "The csv time series source returns no WeatherValue, if the coordinate field is empty"() {
+	def "The CsvWeatherSource returns no WeatherValue, if the coordinate field is empty"() {
 		given:
 		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
 		def coordinateSource = Mock(IdCoordinateSource)
@@ -167,7 +167,7 @@ class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, Wea
 		!actual.present
 	}
 
-	def "The csv time series source returns no WeatherValue, if the coordinate field is missing"() {
+	def "The CsvWeatherSource returns no WeatherValue, if the coordinate field is missing"() {
 		given:
 		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
 		def coordinateSource = Mock(IdCoordinateSource)
@@ -190,7 +190,7 @@ class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, Wea
 		!actual.present
 	}
 
-	def "The csv time series source returns no WeatherValue, if the coordinate cannot be obtained"() {
+	def "The CsvWeatherSource returns no WeatherValue, if the coordinate cannot be obtained"() {
 		given:
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> Optional.empty()
