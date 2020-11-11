@@ -9,13 +9,26 @@ import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.value.IrradiationValue
+import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
+import edu.ie3.datamodel.models.value.WindValue
 import edu.ie3.test.common.WeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
+import edu.ie3.util.TimeUtil
+import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
+import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Point
 import spock.lang.Shared
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
+
+import static edu.ie3.datamodel.models.StandardUnits.IRRADIATION
+import static edu.ie3.datamodel.models.StandardUnits.IRRADIATION
+import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
+import static edu.ie3.datamodel.models.StandardUnits.WIND_DIRECTION
+import static edu.ie3.datamodel.models.StandardUnits.WIND_VELOCITY
 
 class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, WeatherSourceTestHelper {
 
@@ -37,7 +50,7 @@ class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, Wea
 		def optTimeBasedValue = source.getWeather(WeatherTestData.TIME_15H, WeatherTestData.COORDINATE_193186)
 		then:
 		optTimeBasedValue.present
-		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
+		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
 	}
 
 	def "A CsvWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -64,7 +77,6 @@ class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, Wea
 	}
 
 
-
 	def "A CsvWeatherSource can read all weather data in a given time interval"() {
 		given:
 		def timeInterval = new ClosedInterval(WeatherTestData.TIME_15H, WeatherTestData.TIME_17H)
@@ -87,5 +99,118 @@ class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, Wea
 		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
 		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
 		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
+	}
+
+	def "The csv time series source is able to build a single WeatherValue from field to value mapping"() {
+		given:
+		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
+		def coordinateSource = Mock(IdCoordinateSource)
+		coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
+		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
+		def fieldToValues = [
+			"uuid"              : "71a79f59-eebf-40c1-8358-ba7414077d57",
+			"time"              : "2020-10-16T12:40:42Z",
+			"coordinate"        : "5",
+			"directirradiation" : "1.234",
+			"diffuseirradiation": "5.678",
+			"temperature"       : "9.1011",
+			"windvelocity"      : "12.1314",
+			"winddirection"     : "15.1617"
+		]
+		def expectedValue = new TimeBasedValue(
+				UUID.fromString("71a79f59-eebf-40c1-8358-ba7414077d57"),
+				TimeUtil.withDefaults.toZonedDateTime("2020-10-16 12:40:42"),
+				new WeatherValue(
+				defaultCoordinate,
+				new IrradiationValue(
+				Quantities.getQuantity(1.234, IRRADIATION),
+				Quantities.getQuantity(5.678, IRRADIATION)
+				),
+				new TemperatureValue(
+				Quantities.getQuantity(9.1011, TEMPERATURE)
+				),
+				new WindValue(
+				Quantities.getQuantity(12.1314, WIND_DIRECTION),
+				Quantities.getQuantity(15.1617, WIND_VELOCITY)
+				)
+				)
+				)
+
+		when:
+		def actual = source.buildWeatherValue(fieldToValues)
+
+		then:
+		actual.present
+		actual.get() == expectedValue
+	}
+
+	def "The csv time series source returns no WeatherValue, if the coordinate field is empty"() {
+		given:
+		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
+		def coordinateSource = Mock(IdCoordinateSource)
+		coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
+		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
+		def fieldToValues = [
+			"uuid"              : "71a79f59-eebf-40c1-8358-ba7414077d57",
+			"time"              : "2020-10-16T12:40:42Z",
+			"coordinate"        : "",
+			"directirradiation" : "1.234",
+			"diffuseirradiation": "5.678",
+			"temperature"       : "9.1011",
+			"windvelocity"      : "12.1314",
+			"winddirection"     : "15.1617"
+		]
+
+		when:
+		def actual = source.buildWeatherValue(fieldToValues)
+
+		then:
+		!actual.present
+	}
+
+	def "The csv time series source returns no WeatherValue, if the coordinate field is missing"() {
+		given:
+		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
+		def coordinateSource = Mock(IdCoordinateSource)
+		coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
+		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
+		def fieldToValues = [
+			"uuid"              : "71a79f59-eebf-40c1-8358-ba7414077d57",
+			"time"              : "2020-10-16T12:40:42Z",
+			"directirradiation" : "1.234",
+			"diffuseirradiation": "5.678",
+			"temperature"       : "9.1011",
+			"windvelocity"      : "12.1314",
+			"winddirection"     : "15.1617"
+		]
+
+		when:
+		def actual = source.buildWeatherValue(fieldToValues)
+
+		then:
+		!actual.present
+	}
+
+	def "The csv time series source returns no WeatherValue, if the coordinate cannot be obtained"() {
+		given:
+		def coordinateSource = Mock(IdCoordinateSource)
+		coordinateSource.getCoordinate(_) >> Optional.empty()
+		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
+		def fieldToValues = [
+			"uuid"              : "71a79f59-eebf-40c1-8358-ba7414077d57",
+			"time"              : "2020-10-16T12:40:42Z",
+			"coordinate"        : "6",
+			"directirradiation" : "1.234",
+			"diffuseirradiation": "5.678",
+			"temperature"       : "9.1011",
+			"windvelocity"      : "12.1314",
+			"winddirection"     : "15.1617"
+		]
+
+		when:
+		def actual = source.buildWeatherValue(fieldToValues)
+
+		then:
+		!actual.present
 	}
 }

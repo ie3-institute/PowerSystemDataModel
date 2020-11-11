@@ -63,8 +63,9 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
       FileNamingStrategy fileNamingStrategy,
       IdCoordinateSource coordinateSource) {
     super(csvSep, folderPath, fileNamingStrategy);
-    coordinateToTimeSeries = getWeatherTimeSeries();
     this.coordinateSource = coordinateSource;
+
+    coordinateToTimeSeries = getWeatherTimeSeries();
   }
 
   /**

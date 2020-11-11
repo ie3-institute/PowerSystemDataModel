@@ -37,7 +37,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 	}
 
 	def setup() {
-		source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
+		source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy())
 	}
 
 	def "The csv time series source is able to provide an individual time series from given field to object function"() {
@@ -124,7 +124,6 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 		then:
 		Objects.nonNull(actual)
 		actual.with {
-			assert weather.size() == 3
 			assert energyPrice.size() == 1
 			assert heatAndApparentPower.size() == 1
 			assert heatAndActivePower.size() == 1
