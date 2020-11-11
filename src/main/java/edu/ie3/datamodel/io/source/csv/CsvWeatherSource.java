@@ -157,25 +157,24 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
 
     /* Reading in weather time series */
     for (CsvFileConnector.TimeSeriesReadingData data : weatherReadingData) {
-      Map<Point, List<TimeBasedValue<WeatherValue>>> coordinateToValues =
-          filterEmptyOptionals(
-                  buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, data.getReader())
-                      .map(fieldToValueFunction))
-              .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()));
-
-      // We have to generate a random UUID as we'd risk running into duplicate key issues otherwise
-      coordinateToValues.forEach(
-          (point, timeBasedValues) -> {
-            IndividualTimeSeries<WeatherValue> timeSeries =
-                new IndividualTimeSeries<>(UUID.randomUUID(), new HashSet<>(timeBasedValues));
-            if (weatherTimeSeries.containsKey(point)) {
-              IndividualTimeSeries<WeatherValue> mergedTimeSeries =
-                  mergeTimeSeries(weatherTimeSeries.get(point), timeSeries);
-              weatherTimeSeries.put(point, mergedTimeSeries);
-            } else {
-              weatherTimeSeries.put(point, timeSeries);
-            }
-          });
+      filterEmptyOptionals(
+              buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, data.getReader())
+                  .map(fieldToValueFunction))
+          .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
+          .forEach(
+              (point, timeBasedValues) -> {
+                // We have to generate a random UUID as we'd risk running into duplicate key issues
+                // otherwise
+                IndividualTimeSeries<WeatherValue> timeSeries =
+                    new IndividualTimeSeries<>(UUID.randomUUID(), new HashSet<>(timeBasedValues));
+                if (weatherTimeSeries.containsKey(point)) {
+                  IndividualTimeSeries<WeatherValue> mergedTimeSeries =
+                      mergeTimeSeries(weatherTimeSeries.get(point), timeSeries);
+                  weatherTimeSeries.put(point, mergedTimeSeries);
+                } else {
+                  weatherTimeSeries.put(point, timeSeries);
+                }
+              });
     }
     return weatherTimeSeries;
   }
