@@ -7,6 +7,7 @@ package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
@@ -90,10 +91,14 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (line.getGeoPosition() == null)
       throw new InvalidEntityException("GeoPosition of the line is null", line);
     // Check if lineLength equals sum of calculated distances between points of LineString
-    if (line.getLength()
-        .isEquivalentTo(GridAndGeoUtils.calculateTotalLengthOfLineString(line.getGeoPosition())))
-      throw new InvalidEntityException(
-          "Line length does not equal calculated distances between points building the line", line);
+    // (only if not geo positions ob both nodes are dummy values)
+    if (line.getNodeA().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION
+          || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION) {
+      if (!line.getLength()
+              .isEquivalentTo(GridAndGeoUtils.calculateTotalLengthOfLineString(line.getGeoPosition())))
+        throw new InvalidEntityException(
+                "Line length does not equal calculated distances between points building the line", line);
+    }
     // Check if olmCharacteristics is null
     if (line.getOlmCharacteristic() == null)
       throw new InvalidEntityException(
