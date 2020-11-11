@@ -5,6 +5,11 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.datamodel.models.StandardUnits.IRRADIATION
+import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
+import static edu.ie3.datamodel.models.StandardUnits.WIND_DIRECTION
+import static edu.ie3.datamodel.models.StandardUnits.WIND_VELOCITY
+
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -23,12 +28,6 @@ import org.locationtech.jts.geom.Point
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
-import static edu.ie3.datamodel.models.StandardUnits.IRRADIATION
-import static edu.ie3.datamodel.models.StandardUnits.IRRADIATION
-import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
-import static edu.ie3.datamodel.models.StandardUnits.WIND_DIRECTION
-import static edu.ie3.datamodel.models.StandardUnits.WIND_VELOCITY
 
 class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, WeatherSourceTestHelper {
 
