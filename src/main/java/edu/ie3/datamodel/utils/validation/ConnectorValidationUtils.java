@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import javax.measure.Quantity;
 
 public class ConnectorValidationUtils extends ValidationUtils {
@@ -56,17 +57,23 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * Validates a line if: <br>
    * - {@link ConnectorValidationUtils#checkLineType(LineTypeInput)} confirms valid type properties
    * <br>
+   * - it does not connect the same node <br>
    * - it connects nodes in the same subnet <br>
    * - it connects nodes in the same voltage level <br>
    * - its line length is not null and has a positive value <br>
    * - its geoPosition is not null <br>
-   * - its characteristic for overhead line monitoring is not null
+   * - its length equals the sum of calculated distances between points of LineString <br>
+   * - its characteristic for overhead line monitoring is not null <br>
+   * - its coordinates of start and end point equal coordinates of nodes
    *
    * @param line Line to validate
    */
   public static void checkLine(LineInput line) {
     // check LineType
     checkLineType(line.getType());
+    // Check if line connects same node
+    if (line.getNodeA() == line.getNodeB())
+      throw new InvalidEntityException("Line connects the same node", line);
     // Check if line connects same subnet
     if (line.getNodeA().getSubnet() != line.getNodeB().getSubnet())
       throw new InvalidEntityException("Line connects different subnets", line);
@@ -82,10 +89,22 @@ public class ConnectorValidationUtils extends ValidationUtils {
     // Check if geoPosition is null
     if (line.getGeoPosition() == null)
       throw new InvalidEntityException("GeoPosition of the line is null", line);
+    // Check if lineLength equals sum of calculated distances between points of LineString
+    if (line.getLength()
+        .isEquivalentTo(GridAndGeoUtils.calculateTotalLengthOfLineString(line.getGeoPosition())))
+      throw new InvalidEntityException(
+          "Line length does not equal calculated distances between points building the line", line);
     // Check if olmCharacteristics is null
     if (line.getOlmCharacteristic() == null)
       throw new InvalidEntityException(
           "Characteristic for overhead line monitoring of the line is null", line);
+    // Coordinates of start and end point of line equal coordinates of nodes
+    if (!line.getGeoPosition().getStartPoint().equalsExact(line.getNodeA().getGeoPosition())
+            && !line.getGeoPosition().getStartPoint().equalsExact(line.getNodeB().getGeoPosition())
+        || !line.getGeoPosition().getEndPoint().equalsExact(line.getNodeA().getGeoPosition())
+            && !line.getGeoPosition().getEndPoint().equalsExact(line.getNodeB().getGeoPosition()))
+      throw new InvalidEntityException(
+          "Coordinates of start and end point do not match coordinates of connected nodes", line);
   }
 
   /**
