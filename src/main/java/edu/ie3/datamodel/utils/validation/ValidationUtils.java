@@ -62,7 +62,7 @@ public class ValidationUtils {
   /**
    * Validates an asset if: <br>
    * - it is not null <br>
-   * - its id is not null
+   * - its id is not null <br>
    * - its operator is not null <br>
    * - its operation time is not null <br>
    * - in case operation time is limited, its start time and end time are not null and start time is
@@ -100,7 +100,6 @@ public class ValidationUtils {
             "Start and/or end time of operation time is null, although operation should be limited",
             assetInput);
     }
-    // TODO NSteffan: Test if this is correctly tested!
 
     // Further checks for subclasses
     if (NodeInput.class.isAssignableFrom(assetInput.getClass()))

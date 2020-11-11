@@ -48,14 +48,14 @@ class NodeValidationUtilsTest extends Specification {
 				null,
 				new HashSet<>(Arrays.asList("null")),
 				new RightOpenInterval<>(
-						Quantities.getQuantity(380d, KILOVOLT), Quantities.getQuantity(560d, KILOVOLT)))).build()																	|| new InvalidEntityException("Node has invalid voltage level", invalidNode)
+				Quantities.getQuantity(380d, KILOVOLT), Quantities.getQuantity(560d, KILOVOLT)))).build()																	|| new InvalidEntityException("Node has invalid voltage level", invalidNode)
 
 		GridTestData.nodeA.copy().voltLvl(new CommonVoltageLevel(
 				"zero volt",
 				Quantities.getQuantity(0d, KILOVOLT),
 				new HashSet<>(Arrays.asList("zero volt")),
 				new RightOpenInterval<>(
-						Quantities.getQuantity(380d, KILOVOLT), Quantities.getQuantity(560d, KILOVOLT)))).build()																	|| new InvalidEntityException("Node has invalid voltage level", invalidNode)
+				Quantities.getQuantity(380d, KILOVOLT), Quantities.getQuantity(560d, KILOVOLT)))).build()																	|| new InvalidEntityException("Node has invalid voltage level", invalidNode)
 		//GridTestData.nodeA.copy().vTarget(null).build()								|| new NullPointerException("Target voltage (p.u.) is null")
 		GridTestData.nodeA.copy().subnet(0).build()									|| new InvalidEntityException("Subnet can't be zero or negative", invalidNode)
 		GridTestData.nodeA.copy().geoPosition(null).build()							|| new InvalidEntityException("GeoPosition of node is null", invalidNode)
@@ -63,6 +63,8 @@ class NodeValidationUtilsTest extends Specification {
 		GridTestData.nodeA.copy().vTarget(Quantities.getQuantity(2.1d, PU)).build() || new UnsafeEntityException("Target voltage (p.u.) might be too high", invalidNode)
 	}
 
-	// TODO NSteffan: vTarget can't be null, causes NullPointerException in builder -> not necessary to check?
+	// TODO NSteffan: vTarget can't be null, causes NullPointerException in node builder
+	//  at this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE)
+	//  -> not necessary to check?
 
 }

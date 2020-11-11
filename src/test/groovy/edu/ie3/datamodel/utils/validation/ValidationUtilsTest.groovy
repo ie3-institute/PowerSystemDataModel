@@ -14,17 +14,36 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeTools
+import edu.ie3.util.TimeUtil
+import edu.ie3.util.quantities.interfaces.SpecificConductance
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
+import javax.measure.Quantity
 import java.time.ZoneId
 
+import static edu.ie3.datamodel.models.StandardUnits.ADMITTANCE_PER_LENGTH
+import static edu.ie3.datamodel.models.StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
+import static edu.ie3.datamodel.models.StandardUnits.RATED_VOLTAGE_MAGNITUDE
+import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
+import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ValidationUtilsTest extends Specification {
 
 	static {
 		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
+	}
+
+	def "Smoke Test: Correct asset throws no exception"() {
+		given:
+		def asset = GridTestData.nodeA
+
+		when:
+		ValidationUtils.check(asset)
+
+		then:
+		noExceptionThrown()
 	}
 
 	def "The validation utils should determine if a collection with UniqueEntity's is distinct by their uuid"() {
@@ -85,38 +104,103 @@ class ValidationUtilsTest extends Specification {
 		[] as Set                          || Optional.empty()
 	}
 
-	def "The validation utils should throw a validation exception if the provided type is null"() {
+
+
+	def "The validation check method recognizes all potential errors for an asset"() {
 		when:
-		ValidationUtils.check(null)
+		ValidationUtils.check(invalidAsset)
 
 		then:
-		ValidationException ex = thrown()
-		ex.message == "Expected an object, but got nothing. :-("
+		Exception ex = thrown()
+		ex.class == expectedException.class
+		ex.message == expectedException.message
+
+		where:
+		invalidAsset                                                            	    || expectedException
+		null 																			|| new ValidationException("Expected an object, but got nothing. :-(")
+		GridTestData.nodeA.copy().id(null).build()										|| new InvalidEntityException("No ID assigned", invalidAsset)
+		//GridTestData.nodeA.copy().operator(null).build()								|| new InvalidEntityException("No operator assigned", invalidAsset)
+		// TODO NSteffan: in NodeInput wird in toString Methode getOperator().getUuid() aufgerufen, erzeugt NullPointerException
+		//  -> Text für InvalidEntityException kann nicht erstellt werden
+		GridTestData.nodeA.copy().operationTime(null).build()							|| new InvalidEntityException("Operation time of the asset is not defined", invalidAsset)
+		GridTestData.nodeA.copy().operationTime(OperationTime.builder().
+				withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-26 15:11:31")).
+				withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()).build() || new InvalidEntityException("Operation start time of the asset has to be before end time", invalidAsset)
+		GridTestData.nodeA.copy().operationTime(OperationTime.builder().
+				withStart(null).
+				withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()).build() || new InvalidEntityException("Start and/or end time of operation time is null, although operation should be limited", invalidAsset)
+		GridTestData.nodeA.copy().operationTime(OperationTime.builder().
+				withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-26 15:11:31")).
+				withEnd(null).build()).build() || new InvalidEntityException("Start and/or end time of operation time is null, although operation should be limited", invalidAsset)
 	}
 
-	def "The checkAsset validation recognizes a missing id"() {
+	def "The check for negative entities should work as expected"() {
 		given:
-		def asset = GridTestData.nodeA.copy().id(null).build()
+		def asset = new LineTypeInput(
+				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
+				"lineType_AtoB",
+				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
+				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
+				Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
+				Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE))
+		def invalidAsset = new LineTypeInput(
+				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
+				"lineType_AtoB",
+				Quantities.getQuantity(-1d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
+				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
+				Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
+				Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE))
+
 		when:
-		ValidationUtils.check(asset)
+		ValidationUtils.detectNegativeQuantities(new Quantity<SpecificConductance>[] {asset.getB()}, asset)
+		then:
+		noExceptionThrown()
+
+		when:
+		ValidationUtils.detectNegativeQuantities(new Quantity<SpecificConductance>[] {invalidAsset.getB()}, invalidAsset)
 		then:
 		InvalidEntityException ex = thrown()
-		ex.message == "Entity is invalid because of: No ID assigned [NodeInput{uuid=4ca90220-74c2-4369-9afa-a18bf068840d, id='null', operator=f15105c4-a2de-4ab8-a621-4bc98e372d92, operationTime=OperationTime{startDate=2020-03-24T15:11:31Z[UTC], endDate=2020-03-25T15:11:31Z[UTC], isLimited=true}, vTarget=1 PU, slack=true, geoPosition=POINT (7.411111 51.492528), voltLvl=CommonVoltageLevel{id='Höchstspannung', nominalVoltage=380 kV, synonymousIds=[Höchstspannung, ehv, ehv_380kv, hoes, hoes_380kv], voltageRange=Interval [380 kV, 560 kV)}, subnet=1}]"
+		ex.message == "Entity is invalid because of: The following quantities have to be zero or positive: -1 μS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=-1 μS/km, g=0 μS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
 	}
 
-	def "The checkAsset validation recognizes a missing operator"() {
+	def "The check for zero or negative entities should work as expected"() {
 		given:
-		def asset = GridTestData.nodeA.copy().operator(null).build()
+		def asset = new LineTypeInput(
+				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
+				"lineType_AtoB",
+				Quantities.getQuantity(1d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
+				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
+				Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
+				Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE))
+		def invalidAsset = new LineTypeInput(
+				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
+				"lineType_AtoB",
+				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
+				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
+				Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
+				Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE))
+
 		when:
-		ValidationUtils.check(asset)
+		// TODO NSteffan: build fails here, solution something like
+		//  ValidationUtils.detectZeroOrNegativeQuantities(asset.getB() as Quantity<?>[], asset)
+		ValidationUtils.detectZeroOrNegativeQuantities(new Quantity<SpecificConductance>[] {asset.getB()}, asset)
+		then:
+		noExceptionThrown()
+
+		when:
+		ValidationUtils.detectZeroOrNegativeQuantities(new Quantity<SpecificConductance>[] {invalidAsset.getB()}, invalidAsset)
 		then:
 		InvalidEntityException ex = thrown()
-		ex.message == "Entity is invalid because of: No operator assigned [NodeInput{uuid=4ca90220-74c2-4369-9afa-a18bf068840d, id='node_A', operator=null, operationTime=OperationTime{startDate=2020-03-24T15:11:31Z[UTC], endDate=2020-03-25T15:11:31Z[UTC], isLimited=true}, vTarget=1 PU, slack=true, geoPosition=POINT (7.411111 51.492528), voltLvl=CommonVoltageLevel{id='Höchstspannung', nominalVoltage=380 kV, synonymousIds=[Höchstspannung, ehv, ehv_380kv, hoes, hoes_380kv], voltageRange=Interval [380 kV, 560 kV)}, subnet=1}]"
+		ex.message == "Entity is invalid because of: The following quantities have to be positive: 0 μS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0 μS/km, g=0 μS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
 	}
-	// TODO NSteffan: in NodeInput wird in toString Methode getOperator().getUuid() aufgerufen, erzeugt NullPointerException
-	//  -> Text für InvalidEntityException kann nicht erstellt werden
-
-
 
 
 	// TODO NSteffan: Move to right place
