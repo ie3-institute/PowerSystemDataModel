@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.*;
-import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesContainer;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -23,9 +22,9 @@ import java.util.stream.Collectors;
 
 /** Source that is capable of providing information around time series from csv files. */
 public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSource {
+
   /* Available factories */
   private final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
-  private final TimeBasedWeatherValueFactory weatherFactory = new TimeBasedWeatherValueFactory();
   private final TimeBasedSimpleValueFactory<EnergyPriceValue> energyPriceFactory =
       new TimeBasedSimpleValueFactory<>(EnergyPriceValue.class);
   private final TimeBasedSimpleValueFactory<HeatAndSValue> heatAndSValueFactory =
@@ -39,17 +38,16 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
   private final TimeBasedSimpleValueFactory<PValue> pValueFactory =
       new TimeBasedSimpleValueFactory<>(PValue.class);
 
-  private final IdCoordinateSource coordinateSource;
-
-  private static final String COORDINATE_FIELD = "coordinate";
-
+  /**
+   * Initializes a new CsvTimeSeriesSource
+   *
+   * @param csvSep the separator string for csv columns
+   * @param folderPath path to the folder holding the time series files
+   * @param fileNamingStrategy strategy for the naming of time series files
+   */
   public CsvTimeSeriesSource(
-      String csvSep,
-      String folderPath,
-      FileNamingStrategy fileNamingStrategy,
-      IdCoordinateSource coordinateSource) {
+      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     super(csvSep, folderPath, fileNamingStrategy);
-    this.coordinateSource = coordinateSource;
   }
 
   /**
@@ -80,19 +78,6 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
     /* Get all time series reader */
     Map<ColumnScheme, Set<TimeSeriesReadingData>> colTypeToReadingData =
         connector.initTimeSeriesReader();
-
-    /* Reading in weather time series */
-    Set<TimeSeriesReadingData> weatherReadingData = colTypeToReadingData.get(ColumnScheme.WEATHER);
-    Set<IndividualTimeSeries<WeatherValue>> weatherTimeSeries = Collections.emptySet();
-    if (!weatherReadingData.isEmpty()) {
-      Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> weatherValueFunction =
-          this::buildWeatherValue;
-      weatherTimeSeries =
-          weatherReadingData
-              .parallelStream()
-              .map(data -> buildIndividualTimeSeries(data, weatherValueFunction))
-              .collect(Collectors.toSet());
-    }
 
     /* Reading in energy price time series */
     Set<IndividualTimeSeries<EnergyPriceValue>> energyPriceTimeSeries =
@@ -131,7 +116,6 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
         read(colTypeToReadingData.get(ColumnScheme.ACTIVE_POWER), PValue.class, pValueFactory);
 
     return new TimeSeriesContainer(
-        weatherTimeSeries,
         energyPriceTimeSeries,
         heatAndApparentPowerTimeSeries,
         heatAndActivePowerTimeSeries,
@@ -142,7 +126,8 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
 
   /**
    * Reads in time series of a specified class from given {@link TimeSeriesReadingData} utilising a
-   * provided {@link TimeBasedSimpleValueFactory}.
+   * provided {@link TimeBasedSimpleValueFactory}, except for weather data, which needs a special
+   * processing
    *
    * @param readingData Data needed for reading
    * @param valueClass Class of the target value within the time series
@@ -154,17 +139,14 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
       Set<TimeSeriesReadingData> readingData,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
-    Set<IndividualTimeSeries<V>> timeSeries = Collections.emptySet();
-    if (!readingData.isEmpty()) {
-      Function<Map<String, String>, Optional<TimeBasedValue<V>>> valueFunction =
-          fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory);
-      timeSeries =
-          readingData
-              .parallelStream()
-              .map(data -> buildIndividualTimeSeries(data, valueFunction))
-              .collect(Collectors.toSet());
-    }
-    return timeSeries;
+    return readingData
+        .parallelStream()
+        .map(
+            data ->
+                buildIndividualTimeSeries(
+                    data,
+                    fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory)))
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -189,44 +171,6 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
             .collect(Collectors.toSet());
 
     return new IndividualTimeSeries<>(data.getUuid(), timeBasedValues);
-  }
-
-  /**
-   * Builds a {@link TimeBasedValue} of type {@link WeatherValue} from given "flat " input
-   * information. If the single model cannot be built, an empty optionl is handed back.
-   *
-   * @param fieldToValues "flat " input information as a mapping from field to value
-   * @return Optional time based weather value
-   */
-  private Optional<TimeBasedValue<WeatherValue>> buildWeatherValue(
-      Map<String, String> fieldToValues) {
-    /* Try to get the coordinate from entries */
-    String coordinateString = fieldToValues.get(COORDINATE_FIELD);
-    if (Objects.isNull(coordinateString) || coordinateString.isEmpty()) {
-      log.error(
-          "Cannot parse weather value. Unable to find field '{}' in data: {}",
-          COORDINATE_FIELD,
-          fieldToValues);
-      return Optional.empty();
-    }
-    int coordinateId = Integer.parseInt(coordinateString);
-    return coordinateSource
-        .getCoordinate(coordinateId)
-        .map(
-            coordinate -> {
-              /* Remove coordinate entry from fields */
-              fieldToValues.remove(COORDINATE_FIELD);
-
-              /* Build factory data */
-              TimeBasedWeatherValueData factoryData =
-                  new TimeBasedWeatherValueData(fieldToValues, coordinate);
-              return weatherFactory.get(factoryData);
-            })
-        .orElseGet(
-            () -> {
-              log.error("Unable to find coordinate with id '{}'.", coordinateId);
-              return Optional.empty();
-            });
   }
 
   /**
