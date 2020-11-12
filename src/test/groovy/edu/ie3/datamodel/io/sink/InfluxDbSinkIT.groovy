@@ -37,7 +37,7 @@ class InfluxDbSinkIT extends Specification {
 	InfluxDBContainer influxDbContainer = new InfluxDBContainer("latest")
 	.withAuthEnabled(false)
 	.withDatabase("test_out")
-	.withExposedPorts(8086)
+	.withExposedPorts(8086) as InfluxDBContainer
 
 	@Shared
 	InfluxDbConnector connector
