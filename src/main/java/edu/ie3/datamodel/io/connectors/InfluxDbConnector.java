@@ -45,6 +45,7 @@ public class InfluxDbConnector implements DataConnector {
    * @param url the connection url for the influxDB database
    * @param scenarioName the name of the simulation scenario which will be used in influxDB
    *     measurement names
+   * @param databaseName the name of the database the session should be set to
    * @param createDb true if the connector should create the database if it doesn't exist yet, false
    *     otherwise
    * @param logLevel log level of the {@link InfluxDB.LogLevel} logger
@@ -103,6 +104,7 @@ public class InfluxDbConnector implements DataConnector {
   /**
    * Create the database of this connector if it doesn't exist yet
    *
+   * @param databaseName the name of the database that should be created
    * @return the result of the create database query
    */
   public QueryResult createDb(String databaseName) {
