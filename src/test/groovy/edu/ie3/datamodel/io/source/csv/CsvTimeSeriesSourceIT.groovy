@@ -10,12 +10,10 @@ import edu.ie3.datamodel.io.connectors.CsvFileConnector
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
-import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
 import edu.ie3.datamodel.models.value.*
-import edu.ie3.test.common.WeatherTestData
 import edu.ie3.util.TimeUtil
 import spock.lang.Shared
 import spock.lang.Specification
@@ -27,14 +25,7 @@ import java.nio.charset.StandardCharsets
 class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
 	@Shared
-	IdCoordinateSource coordinateSource
-
-	@Shared
 	CsvTimeSeriesSource source
-
-	def setupSpec() {
-		coordinateSource = WeatherTestData.coordinateSource
-	}
 
 	def setup() {
 		source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy())
@@ -75,7 +66,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 				)
 
 		when:
-		def actual = source.buildIndividualTimeSeries(readingData, weatherValueFunction)
+		def actual = source.buildIndividualTimeSeries(readingData, heatAndSValueFunction)
 
 		then:
 		actual.with {
