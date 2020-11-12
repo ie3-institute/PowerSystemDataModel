@@ -176,18 +176,21 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
-   * Initialises all readers for time series. They are given back grouped by the column scheme in
-   * order to allow for accounting the different content types.
+   * Initialises the readers for time series with the specified column schemes. They are given back
+   * grouped by the column scheme in order to allow for accounting the different content types.
    *
+   * @param columnSchemes the column schemes to initialize readers for. If no scheme is given, all
+   *     possible readers will be initialized.
    * @return A mapping from column type to respective readers
    */
-  public Map<ColumnScheme, Set<TimeSeriesReadingData>> initTimeSeriesReader() {
+  public Map<ColumnScheme, Set<TimeSeriesReadingData>> initTimeSeriesReader(
+      ColumnScheme... columnSchemes) {
     return getIndividualTimeSeriesFilePaths()
         .parallelStream()
         .map(
             pathString -> {
               String filePathWithoutEnding = removeFileEnding(pathString);
-              return buildReadingData(filePathWithoutEnding);
+              return buildReadingData(filePathWithoutEnding, columnSchemes);
             })
         .filter(Optional::isPresent)
         .map(Optional::get)
@@ -222,14 +225,17 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
-   * Compose the needed information for reading in a single time series. If either the file points
-   * to a non-individual time series or the initialisation of the reader does not work, an empty
-   * {@link Optional} is given back
+   * Compose the needed information for reading in a single time series. If the file points to a
+   * non-individual time series or a time series of a column scheme other than the specified ones,
+   * or the initialisation of the reader does not work, an empty {@link Optional} is given back
    *
    * @param filePathString String describing the path to the time series file
+   * @param columnSchemes the allowed column schemes. If no scheme is specified, all schemes are
+   *     allowed.
    * @return An {@link Optional} to {@link TimeSeriesReadingData}
    */
-  private Optional<TimeSeriesReadingData> buildReadingData(String filePathString) {
+  private Optional<TimeSeriesReadingData> buildReadingData(
+      String filePathString, ColumnScheme... columnSchemes) {
     try {
       FileNameMetaInformation metaInformation =
           fileNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
@@ -242,6 +248,19 @@ public class CsvFileConnector implements DataConnector {
 
       IndividualTimeSeriesMetaInformation individualMetaInformation =
           (IndividualTimeSeriesMetaInformation) metaInformation;
+
+      // If no column schemes are specified, we will include all. If there a specified schemes, we
+      // check if the file's column scheme matches any of them
+      if (columnSchemes != null
+          && columnSchemes.length > 0
+          && Stream.of(columnSchemes)
+              .noneMatch(scheme -> scheme.equals(individualMetaInformation.getColumnScheme()))) {
+        log.warn(
+            "The column scheme of the time series file {} does not match any of the specified column schemes ({}), so it will not be processed.",
+            filePathString,
+            columnSchemes);
+        return Optional.empty();
+      }
 
       BufferedReader reader = initReader(filePathString);
       return Optional.of(

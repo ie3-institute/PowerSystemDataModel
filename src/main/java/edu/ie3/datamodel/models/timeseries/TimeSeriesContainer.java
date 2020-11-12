@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 
 /** Container class to hold different types of individual time series */
 public class TimeSeriesContainer {
-  private final Set<IndividualTimeSeries<WeatherValue>> weather;
   private final Set<IndividualTimeSeries<EnergyPriceValue>> energyPrice;
   private final Set<IndividualTimeSeries<HeatAndSValue>> heatAndApparentPower;
   private final Set<IndividualTimeSeries<HeatAndPValue>> heatAndActivePower;
@@ -23,14 +22,12 @@ public class TimeSeriesContainer {
   private final Set<IndividualTimeSeries<PValue>> activePower;
 
   public TimeSeriesContainer(
-      Set<IndividualTimeSeries<WeatherValue>> weather,
       Set<IndividualTimeSeries<EnergyPriceValue>> energyPrice,
       Set<IndividualTimeSeries<HeatAndSValue>> heatAndApparentPower,
       Set<IndividualTimeSeries<HeatAndPValue>> heatAndActivePower,
       Set<IndividualTimeSeries<HeatDemandValue>> heat,
       Set<IndividualTimeSeries<SValue>> apparentPower,
       Set<IndividualTimeSeries<PValue>> activePower) {
-    this.weather = Objects.requireNonNull(weather, "Weather time series may not be null.");
     this.energyPrice =
         Objects.requireNonNull(energyPrice, "Energy price time series may not be null.");
     this.heatAndApparentPower =
@@ -44,10 +41,6 @@ public class TimeSeriesContainer {
         Objects.requireNonNull(apparentPower, "Apparent power time series may not be null.");
     this.activePower =
         Objects.requireNonNull(activePower, "Active power time series may not be null.");
-  }
-
-  public Set<IndividualTimeSeries<WeatherValue>> getWeather() {
-    return weather;
   }
 
   public Set<IndividualTimeSeries<EnergyPriceValue>> getEnergyPrice() {
@@ -76,13 +69,7 @@ public class TimeSeriesContainer {
 
   public Set<IndividualTimeSeries<Value>> getAll() {
     return Stream.of(
-            weather,
-            energyPrice,
-            heatAndApparentPower,
-            heatAndActivePower,
-            heat,
-            apparentPower,
-            activePower)
+            energyPrice, heatAndApparentPower, heatAndActivePower, heat, apparentPower, activePower)
         .flatMap(set -> set.parallelStream().map(ts -> (IndividualTimeSeries<Value>) ts))
         .collect(Collectors.toSet());
   }
@@ -92,8 +79,7 @@ public class TimeSeriesContainer {
     if (this == o) return true;
     if (!(o instanceof TimeSeriesContainer)) return false;
     TimeSeriesContainer that = (TimeSeriesContainer) o;
-    return weather.equals(that.weather)
-        && energyPrice.equals(that.energyPrice)
+    return energyPrice.equals(that.energyPrice)
         && heatAndApparentPower.equals(that.heatAndApparentPower)
         && heatAndActivePower.equals(that.heatAndActivePower)
         && heat.equals(that.heat)
@@ -104,21 +90,13 @@ public class TimeSeriesContainer {
   @Override
   public int hashCode() {
     return Objects.hash(
-        weather,
-        energyPrice,
-        heatAndApparentPower,
-        heatAndActivePower,
-        heat,
-        apparentPower,
-        activePower);
+        energyPrice, heatAndApparentPower, heatAndActivePower, heat, apparentPower, activePower);
   }
 
   @Override
   public String toString() {
     return "TimeSeriesContainer{"
-        + "#weather="
-        + weather.size()
-        + ", #energyPrice="
+        + "#energyPrice="
         + energyPrice.size()
         + ", #heatAndApparentPower="
         + heatAndApparentPower.size()
