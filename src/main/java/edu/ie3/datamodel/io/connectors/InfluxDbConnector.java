@@ -53,16 +53,9 @@ public class InfluxDbConnector implements DataConnector {
       boolean createDb,
       InfluxDB.LogLevel logLevel,
       BatchOptions batchOptions) {
-    this.scenarioName = scenarioName;
-
-    // init session
-    this.session = InfluxDBFactory.connect(url);
-    session.setDatabase(databaseName);
-
-    // create database on init if it doesn't exist yet
-    if (createDb) createDb(databaseName);
-    session.setLogLevel(logLevel);
-    session.enableBatch(batchOptions);
+    this(InfluxDBFactory.connect(url), scenarioName, databaseName, createDb);
+    this.session.setLogLevel(logLevel);
+    this.session.enableBatch(batchOptions);
   }
 
   /**
@@ -119,7 +112,8 @@ public class InfluxDbConnector implements DataConnector {
 
   @Override
   public void shutdown() {
-    session.close();
+    session.close(); // release async writing resources and flushes the batch if batch is enabled
+    // (blocking!)
   }
 
   /**

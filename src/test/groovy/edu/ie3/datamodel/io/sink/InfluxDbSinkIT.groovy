@@ -210,6 +210,16 @@ class InfluxDbSinkIT extends Specification {
 		queryResult.getResults().get(0).getSeries() == null
 	}
 
+	def "An InfluxDbSink should terminate the corresponding session inside its connector correctly"() {
+		when:
+		sink.shutdown()
+
+		then:
+		// after shutdown the batch processor must be disabled and empty
+		!sink.connector.getSession().batchEnabled
+		sink.connector.getSession().batchProcessor.queue.isEmpty()
+	}
+
 
 	static def mapMatchesLineResultEntity(Map<String, String> fieldMap, LineResult lineResult) {
 		def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
