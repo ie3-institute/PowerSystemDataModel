@@ -31,11 +31,6 @@ public class InfluxDbConnector implements DataConnector {
         return maps;
       };
 
-  // todo JH remove
-  //    private static final String INFLUXDB_URL              = "http://localhost:8086/";
-  //    private static final String INFLUXDB_DATABASE_NAME    = "ie3_in";
-  //    private static final String INFLUXDB_DEFAULT_SCENARIO = "no_scenario";
-
   private final String scenarioName;
   private final InfluxDB session;
 
@@ -107,7 +102,7 @@ public class InfluxDbConnector implements DataConnector {
    * @param databaseName the name of the database that should be created
    * @return the result of the create database query
    */
-  public QueryResult createDb(String databaseName) {
+  public final QueryResult createDb(String databaseName) {
     return session.query(new Query("CREATE DATABASE " + databaseName, databaseName));
   }
 
