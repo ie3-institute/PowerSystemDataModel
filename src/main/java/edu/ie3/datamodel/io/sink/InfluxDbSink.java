@@ -90,6 +90,14 @@ public class InfluxDbSink implements OutputDataSink {
   }
 
   /**
+   * If batch writing is enabled, this call writes everything inside the batch to the database. This
+   * will block until all pending points are written.
+   */
+  public void flush() {
+    if (connector.getSession().isBatchEnabled()) connector.getSession().flush();
+  }
+
+  /**
    * Transforms a ResultEntity to an influxDB data point. <br>
    * As the equivalent to a relational table, the influxDB measurement point will be named using the
    * given FileNamingStrategy if possible, or the class name otherwise. All special characters in
