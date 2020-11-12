@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 
@@ -254,9 +253,7 @@ public class InfluxDbSink implements OutputDataSink {
    */
   private void write(Point point) {
     if (point == null) return;
-    try (InfluxDB session = connector.getSession()) {
-      session.write(point);
-    }
+    connector.getSession().write(point);
   }
 
   /**
@@ -267,9 +264,7 @@ public class InfluxDbSink implements OutputDataSink {
   private void writeAll(Collection<Point> points) {
     if (points.isEmpty()) return;
     BatchPoints batchPoints = BatchPoints.builder().points(points).build();
-    try (InfluxDB session = connector.getSession()) {
-      session.write(batchPoints);
-    }
+    connector.getSession().write(batchPoints);
   }
 
   /**
