@@ -37,7 +37,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     checkNonNull(connector, "a connector");
     // Check if nodes of connector are null
     if (connector.getNodeA() == null || connector.getNodeB() == null)
-      throw new InvalidEntityException("at least one node of this connector is null", connector);
+      throw new InvalidEntityException("At least one node of this connector is null", connector);
 
     // Further checks for subclasses
     if (LineInput.class.isAssignableFrom(connector.getClass())) checkLine((LineInput) connector);
@@ -82,18 +82,28 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (!line.getNodeA().getVoltLvl().equals(line.getNodeB().getVoltLvl()))
       throw new InvalidEntityException("Line connects different voltage levels", line);
     // Check if line length is not null
-    if (line.getLength() == null) throw new InvalidEntityException("Length of line is null", line);
+    if (line.getLength() == null)
+      throw new InvalidEntityException("Length of line is null", line);
     // Check if line length is positive value
     if (line.getLength().getValue().doubleValue() <= 0d)
-      throw new InvalidEntityException("Line has a negative length", line);
-    detectZeroOrNegativeQuantities(new Quantity<?>[] {line.getLength()}, line);
+      throw new InvalidEntityException("Line has a zero or negative length", line);
+    detectZeroOrNegativeQuantities(new Quantity<?>[]{line.getLength()}, line);
     // Check if geoPosition is null
     if (line.getGeoPosition() == null)
       throw new InvalidEntityException("GeoPosition of the line is null", line);
+    // Coordinates of start and end point of line equal coordinates of nodes
+      if (!(line.getGeoPosition().getStartPoint().isWithinDistance(line.getNodeA().getGeoPosition(), 0.000001)
+              || line.getGeoPosition().getEndPoint().isWithinDistance(line.getNodeA().getGeoPosition(), 0.000001)))
+        throw new InvalidEntityException(
+                "Coordinates of start and end point do not match coordinates of connected nodes", line);
+      if (!(line.getGeoPosition().getStartPoint().isWithinDistance(line.getNodeB().getGeoPosition(), 0.000001)
+              || line.getGeoPosition().getEndPoint().isWithinDistance(line.getNodeB().getGeoPosition(), 0.000001)))
+        throw new InvalidEntityException(
+                "Coordinates of start and end point do not match coordinates of connected nodes", line);
     // Check if lineLength equals sum of calculated distances between points of LineString
     // (only if not geo positions ob both nodes are dummy values)
     if (line.getNodeA().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION
-          || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION) {
+            || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION) {
       if (!line.getLength()
               .isEquivalentTo(GridAndGeoUtils.calculateTotalLengthOfLineString(line.getGeoPosition())))
         throw new InvalidEntityException(
@@ -102,14 +112,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     // Check if olmCharacteristics is null
     if (line.getOlmCharacteristic() == null)
       throw new InvalidEntityException(
-          "Characteristic for overhead line monitoring of the line is null", line);
-    // Coordinates of start and end point of line equal coordinates of nodes
-    if (!line.getGeoPosition().getStartPoint().equalsExact(line.getNodeA().getGeoPosition())
-            && !line.getGeoPosition().getStartPoint().equalsExact(line.getNodeB().getGeoPosition())
-        || !line.getGeoPosition().getEndPoint().equalsExact(line.getNodeA().getGeoPosition())
-            && !line.getGeoPosition().getEndPoint().equalsExact(line.getNodeB().getGeoPosition()))
-      throw new InvalidEntityException(
-          "Coordinates of start and end point do not match coordinates of connected nodes", line);
+              "Characteristic for overhead line monitoring of the line is null", line);
   }
 
   /**
@@ -187,9 +190,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - vRatedB > 0 (rated voltage at lower voltage terminal) <br>
    * - dV > 0% and dV <= 100% (voltage magnitude increase per tap position <br>
    * - dPhi >= 0 (voltage angle increase per tap position) <br>
-   * - neutral tap position is positive and between min and max tap position <br>
-   * - minimum tap position is positive and smaller than maximum tap position <br>
-   * - maximum tap position is positive
+   * - neutral tap position is between min and max tap position <br>
+   * - minimum tap position is smaller than maximum tap position
    *
    * @param transformer2WType Transformer2W type to validate
    */
@@ -227,18 +229,13 @@ public class ConnectorValidationUtils extends ValidationUtils {
     // Check if voltage magnitude increase per tap position is between 0% and 100%
     if (transformer2WType.getdV().getValue().doubleValue() <= 0d
         || transformer2WType.getdV().getValue().doubleValue() > 100d)
-      // Check if neutral tap position is positive
-      if (transformer2WType.getTapNeutr() <= 0)
-        throw new InvalidEntityException(
-            "Neutral tap position of transformer2W type must be positive", transformer2WType);
-    // Check if minimum and maximum tap position are positive and minimum is lower than maximum tap
-    // position
-    if (transformer2WType.getTapMin() <= 0
-        || transformer2WType.getTapMax() <= 0
-        || transformer2WType.getTapMax() < transformer2WType.getTapMin())
       throw new InvalidEntityException(
-          "Minimum and maximum tap positions of transformer2W type must be positive "
-              + "and minimum tap position must be lower than maximum tap position",
+              "Voltage magnitude increase per tap position must be between 0% and 100%",
+              transformer2WType);
+    // Check minimum tap position is lower than maximum tap position
+    if (transformer2WType.getTapMax() < transformer2WType.getTapMin())
+      throw new InvalidEntityException(
+          "Minimum tap position must be lower than maximum tap position",
           transformer2WType);
     // Check if neutral tap position lies between minimum and maximum tap position
     if (transformer2WType.getTapNeutr() < transformer2WType.getTapMin()
@@ -297,9 +294,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - vRatedA, vRatedB, vRatedC > 0 (rated voltage at higher node A,B,C) <br>
    * - dV > 0% and dV <= 100% (voltage magnitude increase per tap position <br>
    * - dPhi >= 0 (voltage angle increase per tap position) <br>
-   * - neutral tap position is positive and between min and max tap position <br>
-   * - minimum tap position is positive and smaller than maximum tap position <br>
-   * - maximum tap position is positive
+   * - neutral tap position is between min and max tap position <br>
+   * - minimum tap position is smaller than maximum tap position <br>
    *
    * @param transformer3WType Transformer type to validate
    */
@@ -345,18 +341,13 @@ public class ConnectorValidationUtils extends ValidationUtils {
     // Check if voltage magnitude increase per tap position is between 0% and 100%
     if (transformer3WType.getdV().getValue().doubleValue() <= 0d
         || transformer3WType.getdV().getValue().doubleValue() > 100d)
-      // Check if neutral tap position is positive
-      if (transformer3WType.getTapNeutr() <= 0)
-        throw new InvalidEntityException(
-            "Neutral tap position of transformer3W type must be positive", transformer3WType);
-    // Check if minimum and maximum tap position are positive and minimum is lower than maximum tap
-    // position
-    if (transformer3WType.getTapMin() <= 0
-        || transformer3WType.getTapMax() <= 0
-        || transformer3WType.getTapMax() < transformer3WType.getTapMin())
       throw new InvalidEntityException(
-          "Minimum and maximum tap positions of transformer3W type must be positive "
-              + "and minimum tap position must be lower than maximum tap position",
+              "Voltage magnitude increase per tap position must be between 0% and 100%",
+              transformer3WType);
+    // Check if minimum tap position is lower than maximum tap position
+    if (transformer3WType.getTapMax() < transformer3WType.getTapMin())
+      throw new InvalidEntityException(
+          "Minimum tap position must be lower than maximum tap position",
           transformer3WType);
     // Check if neutral tap position lies between minimum and maximum tap position
     if (transformer3WType.getTapNeutr() < transformer3WType.getTapMin()
