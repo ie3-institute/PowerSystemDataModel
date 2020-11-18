@@ -9,10 +9,10 @@ class MeasurementUnitValidationUtilsTest extends Specification {
 
     def "Smoke Test: Correct measurement unit throws no exception"() {
         given:
-        def measurementUnitInput = GridTestData.measurementUnitInput
+        def measurementUnit = GridTestData.measurementUnitInput
 
         when:
-        ValidationUtils.check(measurementUnitInput)
+        ValidationUtils.check(measurementUnit)
 
         then:
         noExceptionThrown()

@@ -16,6 +16,7 @@ import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeTools
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.SpecificConductance
+import org.locationtech.jts.geom.Coordinate
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
@@ -104,7 +105,19 @@ class ValidationUtilsTest extends Specification {
 		[] as Set                          || Optional.empty()
 	}
 
+	def "If an object can't be identified, a ValidationException is thrown as expected"() {
+		when:
+		ValidationUtils.check(invalidObject)
 
+		then:
+		Exception ex = thrown()
+		ex.class == expectedException.class
+		ex.message == expectedException.message
+
+		where:
+		invalidObject          || expectedException
+		new Coordinate(10, 10) || new ValidationException("Cannot validate object of class '" + invalidObject.getClass().getSimpleName() + "', as no routine is implemented.")
+	}
 
 	def "The validation check method recognizes all potential errors for an asset"() {
 		when:

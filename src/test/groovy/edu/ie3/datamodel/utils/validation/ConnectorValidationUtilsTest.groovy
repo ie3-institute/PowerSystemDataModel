@@ -5,9 +5,12 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
+import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
+import org.locationtech.jts.geom.LineString
 
 import static edu.ie3.datamodel.models.StandardUnits.*
 import static edu.ie3.util.quantities.PowerSystemUnits.*
@@ -72,11 +75,6 @@ class ConnectorValidationUtilsTest extends Specification {
 	}
 
 	def "ConnectorValidationUtils.checkLine() recognizes all potential errors for a line"() {
-		// given:
-		// def nodeFWrongSubnet = GridTestData.nodeF.copy().subnet(5).build()
-		// def nodeFWrongVoltLvl = GridTestData.nodeF.copy().voltLvl(GermanVoltageLevelUtils.MV_10KV).build()
-		// def nodeNotDefaultGeoPosition = GridTestData.nodeF.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))).build()
-
 		when:
 		ConnectorValidationUtils.check(invalidLine)
 
@@ -90,12 +88,24 @@ class ConnectorValidationUtilsTest extends Specification {
 		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeG).build()                                                                                                                                || new InvalidEntityException("Line connects the same node", invalidLine)
 		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().subnet(5).build()).build()                                                                                                       || new InvalidEntityException("Line connects different subnets", invalidLine)
 		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().voltLvl(GermanVoltageLevelUtils.MV_10KV).build()).build()                                                                        || new InvalidEntityException("Line connects different voltage levels", invalidLine)
-		// GridTestData.lineFtoG.copy().length(null).build()                   							  || new InvalidEntityException("Length of line is null", invalidLine)
+		// GridTestData.lineFtoG.copy().length(null).build()                   																														  || new InvalidEntityException("Length of line is null", invalidLine)
 		GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, METRE)).build()                                                                                                                || new InvalidEntityException("Line has a zero or negative length", invalidLine)
-		// GridTestData.lineFtoG.copy().geoPosition(null).build()          						          || new InvalidEntityException("GeoPosition of the line is null", invalidLine)
+		// GridTestData.lineFtoG.copy().geoPosition(null).build()          						   														   									          || new InvalidEntityException("GeoPosition of the line is null", invalidLine)
 		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))).build()).build()                              || new InvalidEntityException("Coordinates of start and end point do not match coordinates of connected nodes", invalidLine)
 		GridTestData.lineFtoG.copy().nodeB(GridTestData.nodeG.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))).build()).build()                              || new InvalidEntityException("Coordinates of start and end point do not match coordinates of connected nodes", invalidLine)
-		GridTestData.lineFtoGWithExtraPoint.copy().nodeA(GridTestData.nodeF.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))).build()).build() || new InvalidEntityException("Line length does not equal calculated distances between points building the line", invalidLine)
+		new LineInput(
+				UUID.fromString("92ec3bcf-1777-4d38-af67-0bf8c9fa73c7"),
+				"test_line_FtoG",
+				GridTestData.profBroccoli,
+				GridTestData.defaultOperationTime,
+				GridTestData.nodeF.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))).build(),
+				GridTestData.nodeG,
+				2,
+				GridTestData.lineTypeInputCtoD,
+				Quantities.getQuantity(0.003d, LINE_LENGTH),
+				GridTestData.geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.4116482, 51.4843281], [3.4116482, 10.4843281], [7.4116482, 51.4843281]]}") as LineString,
+				OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
+		) 																																															  || new InvalidEntityException("Line length does not equal calculated distances between points building the line", invalidLine)
 		GridTestData.lineFtoG.copy().olmCharacteristic(null).build()                                                                                                                                  || new InvalidEntityException("Characteristic for overhead line monitoring of the line is null", invalidLine)
 	}
 
