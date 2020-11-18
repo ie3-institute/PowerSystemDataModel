@@ -23,6 +23,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   BREAKING: Harmonized field naming for time information
 -   BREAKING: Properly applying snake case to result file names
 
+### Fixed
+- InfluxDbConnector now keeps session instead of creating a new one each call
+(resolves [#247](https://github.com/ie3-institute/PowerSystemDataModel/issues/247)
+and [#248](https://github.com/ie3-institute/PowerSystemDataModel/issues/248))
+
 ## [1.1.0] - 2020-09-15
 
 ### Added
