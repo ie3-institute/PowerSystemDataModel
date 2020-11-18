@@ -37,7 +37,7 @@ class InfluxDbSinkIT extends Specification {
 	InfluxDBContainer influxDbContainer = new InfluxDBContainer("latest")
 	.withAuthEnabled(false)
 	.withDatabase("test_out")
-	.withExposedPorts(8086)
+	.withExposedPorts(8086) as InfluxDBContainer
 
 	@Shared
 	InfluxDbConnector connector
@@ -72,6 +72,7 @@ class InfluxDbSinkIT extends Specification {
 				null)
 		when:
 		sink.persist(lineResult1)
+		sink.flush()
 		def key = fileNamingStrategy.getFileName(LineResult).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
@@ -180,6 +181,8 @@ class InfluxDbSinkIT extends Specification {
 		when:
 		sinkWithEmptyNamingStrategy.persist(lineResult1)
 		sinkWithEmptyNamingStrategy.persist(timeSeries)
+		sinkWithEmptyNamingStrategy.flush()
+
 		def key_lineresult = lineResult1.getClass().getSimpleName()
 		def key_timeseries = timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName()
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key_lineresult))
@@ -208,6 +211,16 @@ class InfluxDbSinkIT extends Specification {
 		def queryResult = connector.getSession().query(new Query("SHOW MEASUREMENTS"))
 		then:
 		queryResult.getResults().get(0).getSeries() == null
+	}
+
+	def "An InfluxDbSink should terminate the corresponding session inside its connector correctly"() {
+		when:
+		sink.shutdown()
+
+		then:
+		// after shutdown the batch processor must be disabled and empty
+		!sink.connector.getSession().batchEnabled
+		sink.connector.getSession().batchProcessor.queue.isEmpty()
 	}
 
 

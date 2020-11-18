@@ -84,7 +84,7 @@ dependencies {
 	compile 'org.influxdb:influxdb-java:2.17'
 	compile 'com.couchbase.client:java-client:3.0.0'
 
-	compile 'commons-io:commons-io:+' // I/O functionalities
+	compile 'commons-io:commons-io:2.8.0' // I/O functionalities
 	compile 'org.apache.commons:commons-compress:+' // I/O functionalities
 }
 
