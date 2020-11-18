@@ -24,6 +24,13 @@ import org.influxdb.dto.QueryResult;
  * metadata. A measurement name is the equivalent of the name of a table in relational data models.
  */
 public class InfluxDbConnector implements DataConnector {
+
+  /* default scenario parameter when no scenario is provided */
+  public static final String NO_SCENARIO = "no_scenario";
+
+  /* default scenario parameter for weather data */
+  public static final String WEATHER_SCENARIO = "weather_scenario";
+
   /** Merges two sets of (fieldName to fieldValue) maps */
   private static final BinaryOperator<Set<Map<String, String>>> mergeSets =
       (maps, maps2) -> {
@@ -87,6 +94,17 @@ public class InfluxDbConnector implements DataConnector {
    */
   public InfluxDbConnector(String url, String databaseName, String scenarioName) {
     this(url, databaseName, scenarioName, true, InfluxDB.LogLevel.NONE, BatchOptions.DEFAULTS);
+  }
+
+  /**
+   * Initializes a new InfluxDbConnector with the given url, databaseName and {@link #NO_SCENARIO}
+   * as scenario parameter
+   *
+   * @param url the connection url for the influxDB database
+   * @param databaseName the name of the database to which the connection should be established
+   */
+  public InfluxDbConnector(String url, String databaseName) {
+    this(url, databaseName, NO_SCENARIO, true, InfluxDB.LogLevel.NONE, BatchOptions.DEFAULTS);
   }
 
   /**
