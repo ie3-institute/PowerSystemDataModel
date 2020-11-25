@@ -376,17 +376,17 @@ class GridTestData {
 
 	// added bei NSteffan for ConnectorValidationUtilsTest
 	public static final LineInput lineFtoG = new LineInput(
-			UUID.fromString("92ec3bcf-1777-4d38-af67-0bf8c9fa73c7"),
-			"test_line_FtoG",
-			profBroccoli,
-			defaultOperationTime,
-			nodeF,
-			nodeG,
-			2,
-			lineTypeInputCtoD,
-			Quantities.getQuantity(0.003d, LINE_LENGTH),
-			geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.4116482, 51.4843281], [7.4116482, 51.4843281]]}") as LineString,
-			OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
+	UUID.fromString("92ec3bcf-1777-4d38-af67-0bf8c9fa73c7"),
+	"test_line_FtoG",
+	profBroccoli,
+	defaultOperationTime,
+	nodeF,
+	nodeG,
+	2,
+	lineTypeInputCtoD,
+	Quantities.getQuantity(0.003d, LINE_LENGTH),
+	geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.4116482, 51.4843281], [7.4116482, 51.4843281]]}") as LineString,
+	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
 	)
 
 }

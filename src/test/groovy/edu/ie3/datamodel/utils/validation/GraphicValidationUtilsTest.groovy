@@ -69,5 +69,4 @@ class GraphicValidationUtilsTest extends Specification {
 		invalidNodeGraphicInput                                                         || expectedException
 		GridTestData.nodeGraphicC.copy().point(null).build()                            || new InvalidEntityException("Point of node graphic is not defined", invalidNodeGraphicInput)
 	}
-
 }

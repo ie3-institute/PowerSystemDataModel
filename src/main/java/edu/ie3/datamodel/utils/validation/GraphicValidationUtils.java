@@ -53,7 +53,8 @@ public class GraphicValidationUtils extends ValidationUtils {
   protected static void checkLineGraphicInput(LineGraphicInput lineGraphicInput) {
     // Check if path is null
     if (lineGraphicInput.getPath() == null)
-      throw new InvalidEntityException("Path of line graphic element is not defined", lineGraphicInput);
+      throw new InvalidEntityException(
+          "Path of line graphic element is not defined", lineGraphicInput);
   }
 
   /**

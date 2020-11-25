@@ -199,13 +199,9 @@ class ConnectorValidationUtilsTest extends Specification {
 	}
 
 	// Data for valid transformer3WType (partly already defined above for 2W)
-	// UUID uuid
-	// String id
 	private static ComparableQuantity<Power> sRatedA = Quantities.getQuantity(120000d, ACTIVE_POWER_IN)
 	private static ComparableQuantity<Power> sRatedB = Quantities.getQuantity(60000d, ACTIVE_POWER_IN)
 	private static ComparableQuantity<Power> sRatedC = Quantities.getQuantity(40000d, ACTIVE_POWER_IN)
-	// ComparableQuantity<ElectricPotential> vRatedA = Quantities.getQuantity(380d, RATED_VOLTAGE_MAGNITUDE)
-	// ComparableQuantity<ElectricPotential> vRatedB = Quantities.getQuantity(110d, RATED_VOLTAGE_MAGNITUDE)
 	private static ComparableQuantity<ElectricPotential> vRatedC = Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
 	private static ComparableQuantity<ElectricResistance> rScA = Quantities.getQuantity(0.3d, IMPEDANCE)
 	private static ComparableQuantity<ElectricResistance> rScB = Quantities.getQuantity(0.025d, IMPEDANCE)
@@ -213,13 +209,6 @@ class ConnectorValidationUtilsTest extends Specification {
 	private static ComparableQuantity<ElectricResistance> xScA = Quantities.getQuantity(1d, IMPEDANCE)
 	private static ComparableQuantity<ElectricResistance> xScB = Quantities.getQuantity(0.08d, IMPEDANCE)
 	private static ComparableQuantity<ElectricResistance> xScC = Quantities.getQuantity(0.003d, IMPEDANCE)
-	// ComparableQuantity<ElectricConductance> gM = Quantities.getQuantity(40000d, ADMITTANCE)
-	// ComparableQuantity<ElectricConductance> bM = Quantities.getQuantity(1000d, ADMITTANCE)
-	// ComparableQuantity<Dimensionless> dV = Quantities.getQuantity(1.5d, DV_TAP)
-	// ComparableQuantity<Angle> dPhi = Quantities.getQuantity(0d, DPHI_TAP)
-	// int tapNeutr = 0
-	// int tapMin = -10
-	// int tapMax = 10
 
 	def "ConnectorValidationUtils.checkTransformer3WType recognizes all potential errors for a transformer3W type"() {
 		when:

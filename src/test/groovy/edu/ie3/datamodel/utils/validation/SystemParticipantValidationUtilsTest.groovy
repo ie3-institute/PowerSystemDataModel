@@ -6,8 +6,6 @@
 package edu.ie3.datamodel.utils.validation
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
-import edu.ie3.datamodel.models.BdewLoadProfile
-import edu.ie3.datamodel.models.StandardLoadProfile
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
@@ -19,7 +17,6 @@ import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.util.quantities.interfaces.Currency
 import edu.ie3.util.quantities.interfaces.DimensionlessRate
 import edu.ie3.util.quantities.interfaces.EnergyPrice
-import edu.ie3.util.quantities.interfaces.SpecificEnergy
 import spock.lang.Specification
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
@@ -27,7 +24,6 @@ import tech.units.indriya.quantity.Quantities
 import javax.measure.quantity.*
 
 import static edu.ie3.datamodel.models.StandardUnits.*
-import static edu.ie3.util.quantities.PowerSystemUnits.*
 import static tech.units.indriya.unit.Units.PERCENT
 
 class SystemParticipantValidationUtilsTest extends Specification {
@@ -439,10 +435,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
 		ex.message == expectedException.message
 
 		where:
-		invalidWecType                                                                                                                                  || expectedException
+		invalidWecType                          || expectedException
 		new WecTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, wecCharacteristic, Quantities.getQuantity(110d, EFFICIENCY), rotorArea, hubHeight) || new InvalidEntityException("Efficiency of the assets converter of the wind energy converter type must be between 0% and 100%", invalidWecType)
 		new WecTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, wecCharacteristic, etaConv, Quantities.getQuantity(-10, ROTOR_AREA), Quantities.getQuantity(-200, HUB_HEIGHT)) || new InvalidEntityException("The following quantities have to be zero or positive: -10 m², -200 m", invalidWecType)
 	}
-
 
 }

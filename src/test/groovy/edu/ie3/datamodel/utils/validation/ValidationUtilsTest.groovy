@@ -144,72 +144,80 @@ class ValidationUtilsTest extends Specification {
 				withEnd(null).build()).build() || new InvalidEntityException("Start and/or end time of operation time is null, although operation should be limited", invalidAsset)
 	}
 
-	def "The check for negative entities should work as expected"() {
-		given:
-		def asset = new LineTypeInput(
-				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
-				"lineType_AtoB",
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
-				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
-				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
-				Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
-				Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE))
-		def invalidAsset = new LineTypeInput(
-				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
-				"lineType_AtoB",
-				Quantities.getQuantity(-1d, ADMITTANCE_PER_LENGTH), // invalid value
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
-				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
-				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
-				Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
-				Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE))
+	 def "The check for negative entities should work as expected"() {
+		 given:
+		 def asset = new LineTypeInput(
+			 UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
+			 "lineType_AtoB",
+			 Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+			 Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+			 Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
+			 Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
+			 Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
+			 Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
+		 )
+		 def invalidAsset = new LineTypeInput(
+			 UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
+			 "lineType_AtoB",
+			 Quantities.getQuantity(-1d, ADMITTANCE_PER_LENGTH), // invalid value
+			 Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+			 Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
+			 Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
+			 Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
+			 Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
+		 )
 
-		when:
-		ValidationUtils.detectNegativeQuantities(new Quantity<SpecificConductance>[] {asset.getB()}, asset)
-		then:
-		noExceptionThrown()
+		 when:
+		 ValidationUtils.detectNegativeQuantities(new Quantity<SpecificConductance>[] {asset.getB()}, asset)
 
-		when:
-		ValidationUtils.detectNegativeQuantities(new Quantity<SpecificConductance>[] {invalidAsset.getB()}, invalidAsset)
-		then:
-		InvalidEntityException ex = thrown()
-		ex.message == "Entity is invalid because of: The following quantities have to be zero or positive: -1 μS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=-1 μS/km, g=0 μS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
-	}
+		 then:
+		 noExceptionThrown()
 
-	def "The check for zero or negative entities should work as expected"() {
-		given:
-		def asset = new LineTypeInput(
-				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
-				"lineType_AtoB",
-				Quantities.getQuantity(1d, ADMITTANCE_PER_LENGTH),
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
-				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
-				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
-				Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
-				Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE))
-		def invalidAsset = new LineTypeInput(
-				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
-				"lineType_AtoB",
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH), // invalid value
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
-				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
-				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
-				Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
-				Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE))
+		 when:
+		 ValidationUtils.detectNegativeQuantities(new Quantity<SpecificConductance>[] {invalidAsset.getB()}, invalidAsset)
 
-		when:
-		// TODO NSteffan: build fails here, solution something like
-		//  ValidationUtils.detectZeroOrNegativeQuantities(asset.getB() as Quantity<?>[], asset)
-		ValidationUtils.detectZeroOrNegativeQuantities(new Quantity<SpecificConductance>[] {asset.getB()}, asset)
-		then:
-		noExceptionThrown()
+		 then:
+		 InvalidEntityException ex = thrown()
+		 ex.message == "Entity is invalid because of: The following quantities have to be zero or positive: -1 μS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=-1 μS/km, g=0 μS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
+	 }
 
-		when:
-		ValidationUtils.detectZeroOrNegativeQuantities(new Quantity<SpecificConductance>[] {invalidAsset.getB()}, invalidAsset)
-		then:
-		InvalidEntityException ex = thrown()
-		ex.message == "Entity is invalid because of: The following quantities have to be positive: 0 μS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0 μS/km, g=0 μS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
-	}
+	 def "The check for zero or negative entities should work as expected"() {
+		 given:
+		 def asset = new LineTypeInput(
+			 UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
+			 "lineType_AtoB",
+			 Quantities.getQuantity(1d, ADMITTANCE_PER_LENGTH),
+			 Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+			 Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
+			 Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
+			 Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
+			 Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
+		 )
+		 def invalidAsset = new LineTypeInput(
+			 UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
+			 "lineType_AtoB",
+			 Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH), // invalid value
+			 Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+			 Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
+			 Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
+			 Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
+			 Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
+		 )
+
+		 when:
+		 // TODO NSteffan: build fails here, solution something like
+		 //  ValidationUtils.detectZeroOrNegativeQuantities(asset.getB() as Quantity<?>[], asset)
+		 ValidationUtils.detectZeroOrNegativeQuantities(new Quantity<SpecificConductance>[] {asset.getB()}, asset)
+
+		 then:
+		 noExceptionThrown()
+
+		 when:
+		 ValidationUtils.detectZeroOrNegativeQuantities(new Quantity<SpecificConductance>[] {invalidAsset.getB()}, invalidAsset)
+
+		 then:
+		 InvalidEntityException ex = thrown()
+		 ex.message == "Entity is invalid because of: The following quantities have to be positive: 0 μS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0 μS/km, g=0 μS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
+	 }
 
 }

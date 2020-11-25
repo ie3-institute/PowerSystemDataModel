@@ -155,6 +155,8 @@ public class ValidationUtils {
         SystemParticipantValidationUtils.checkStorageType((StorageTypeInput) assetTypeInput);
       else if (WecTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
         SystemParticipantValidationUtils.checkWecType((WecTypeInput) assetTypeInput);
+      // else if (ChargingPointType.class.isAssignableFrom(assetTypeInput.getClass()))
+      //   SystemParticipantValidationUtils.checkEvcsType((ChargingPointType) assetTypeInput);
       else {
         throw new ValidationException(
             "Cannot validate object of class '"

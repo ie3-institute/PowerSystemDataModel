@@ -1,0 +1,106 @@
+/*
+ * © 2020. TU Dortmund University,
+ * Institute of Energy Systems, Energy Efficiency and Energy Economics,
+ * Research group Distribution grid planning and operation
+ */
+package edu.ie3.datamodel.utils.validation
+
+import edu.ie3.datamodel.exceptions.InvalidEntityException
+import edu.ie3.datamodel.models.OperationTime
+import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
+import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
+import edu.ie3.test.common.SystemParticipantTestData
+import edu.ie3.test.common.ThermalUnitInputTestData
+import edu.ie3.util.TimeUtil
+import edu.ie3.util.quantities.interfaces.HeatCapacity
+import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
+import edu.ie3.util.quantities.interfaces.ThermalConductance
+import spock.lang.Specification
+import tech.units.indriya.ComparableQuantity
+import tech.units.indriya.quantity.Quantities
+
+import javax.measure.quantity.Temperature
+import javax.measure.quantity.Volume
+
+class ThermalUnitValidationUtilsTest extends Specification {
+
+	// General data
+	private static UUID thermalUnitUuid = UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a")
+	private static String id = "thermal_unit_test"
+	public static OperationTime operationTime = OperationTime.builder()
+	.withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31"))
+	.withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
+	private static OperatorInput operator = new OperatorInput(
+	UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator")
+
+	// Specific data for thermal house input
+	private static ComparableQuantity<ThermalConductance> thermalConductance = Quantities.getQuantity(10, StandardUnits.THERMAL_TRANSMISSION)
+	private static ComparableQuantity<HeatCapacity> ethCapa = Quantities.getQuantity(20, StandardUnits.HEAT_CAPACITY)
+
+	// Specific data for thermal cylindric storage input
+	private static ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)
+	private static ComparableQuantity<Volume> storageVolumeLvlMin = Quantities.getQuantity(10, StandardUnits.VOLUME)
+	private static ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(100, StandardUnits.TEMPERATURE)
+	private static ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, StandardUnits.TEMPERATURE)
+	private static ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)
+
+	// Thermal House
+
+	def "Smoke Test: Correct thermal house throws no exception"() {
+		given:
+		def thermalHouseInput = ThermalUnitInputTestData.thermalHouseInput
+
+		when:
+		ValidationUtils.check(thermalHouseInput)
+
+		then:
+		noExceptionThrown()
+	}
+
+	def "ThermalUnitValidationUtils.checkThermalHouse() recognizes all potential errors for a thermal house"() {
+		when:
+		ThermalUnitValidationUtils.check(invalidThermalHouse)
+
+		then:
+		Exception ex = thrown()
+		ex.class == expectedException.class
+		ex.message == expectedException.message
+
+		where:
+		invalidThermalHouse                                                                                          || expectedException
+		new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-10, StandardUnits.THERMAL_TRANSMISSION), ethCapa) || new InvalidEntityException("The following quantities have to be zero or positive: -10 kW/K", invalidThermalHouse)
+		new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, Quantities.getQuantity(0, StandardUnits.HEAT_CAPACITY)) || new InvalidEntityException("The following quantities have to be positive: 0 kWh/K", invalidThermalHouse)
+	}
+
+	// Thermal Cylindrical Storage
+
+	def "Smoke Test: Correct thermal cylindrical storage throws no exception"() {
+		given:
+		def cylindricalStorageInput = ThermalUnitInputTestData.cylindricStorageInput
+
+		when:
+		ValidationUtils.check(cylindricalStorageInput)
+
+		then:
+		noExceptionThrown()
+	}
+
+	def "ThermalUnitValidationUtils.checkCylindricalStorage() recognizes all potential errors for a thermal cylindrical storage"() {
+		when:
+		ThermalUnitValidationUtils.check(invalidCylindricalStorage)
+
+		then:
+		Exception ex = thrown()
+		ex.class == expectedException.class
+		ex.message == expectedException.message
+
+		where:
+		invalidCylindricalStorage                                                                                         || expectedException
+		new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, storageVolumeLvlMin, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(200, StandardUnits.TEMPERATURE), c) || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower than outlet temperature", invalidCylindricalStorage)
+		new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(100, StandardUnits.VOLUME), Quantities.getQuantity(200, StandardUnits.VOLUME), inletTemp, returnTemp, c) || new InvalidEntityException("Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume", invalidCylindricalStorage)
+		new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), Quantities.getQuantity(-200, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)) || new InvalidEntityException("The following quantities have to be positive: -100 ㎥, -200 ㎥, -1.05 kWh/K*m³", invalidCylindricalStorage)
+	}
+
+}

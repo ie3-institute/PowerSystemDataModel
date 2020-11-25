@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
+import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType;
 import javax.measure.Quantity;
 
 public class SystemParticipantValidationUtils extends ValidationUtils {
@@ -56,6 +57,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       checkStorage((StorageInput) systemParticipant);
     else if (WecInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkWec((WecInput) systemParticipant);
+    else if (EvcsInput.class.isAssignableFrom(systemParticipant.getClass()))
+      checkEvcs((EvcsInput) systemParticipant);
     else
       throw new ValidationException(
           "Cannot validate object of class '"
@@ -218,7 +221,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
 
   /**
    * Validates a HpInput if: <br>
-   * - {@link SystemParticipantValidationUtils#checkHpType(HpTypeInput)} confirms a valid type properties
+   * - {@link SystemParticipantValidationUtils#checkHpType(HpTypeInput)} confirms a valid type
+   * properties
    *
    * @param hpInput HpInput to validate
    */
@@ -322,8 +326,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its maximum permissible depth of discharge is between 0% and 100% <br>
    * - its active power gradient is not negative <br>
    * - its battery capacity is positive <br>
-   * - its maximum permissible active power (in-feed or consumption) is not negative
-   * <br>
+   * - its maximum permissible active power (in-feed or consumption) is not negative <br>
    * - its permissible hours of full use is not negative
    *
    * @param storageTypeInput StorageTypeInput to validate
@@ -376,10 +379,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   /**
    * Validates a WecTypeInput if: <br>
    * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
-   * - its cpCharacteristic is not null <br>
-   * - its efficiency of the assets converter is not null and between 0% and 100% <br>
-   * - its rotor area is not null and not negative <br>
-   * - its height of the rotor hub is not null and not negative
+   * - its efficiency of the assets converter is between 0% and 100% <br>
+   * - its rotor area is not negative <br>
+   * - its height of the rotor hub is not negative
    *
    * @param wecTypeInput WecTypeInput to validate
    */
@@ -395,5 +397,28 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     // Check if rotorArea or hubHeight are negative
     detectNegativeQuantities(
         new Quantity<?>[] {wecTypeInput.getRotorArea(), wecTypeInput.getHubHeight()}, wecTypeInput);
+  }
+
+  /**
+   * Validates a EvcsInput if: <br>
+   * - {@link SystemParticipantValidationUtils#checkEvcsType(ChargingPointType)} confirms a valid
+   * type properties
+   *
+   * @param evcsInput EvcsInput to validate
+   */
+  public static void checkEvcs(EvcsInput evcsInput) {
+    // Check WecType
+    checkEvcsType(evcsInput.getType());
+    // TODO: Implement when class is finished
+  }
+
+  /**
+   * Validates a ChargingPointType if: <br>
+   * - ...
+   *
+   * @param evcsTypeInput ChargingPointType to validate
+   */
+  public static void checkEvcsType(ChargingPointType evcsTypeInput) {
+    // TODO: Implement when class is finished
   }
 }

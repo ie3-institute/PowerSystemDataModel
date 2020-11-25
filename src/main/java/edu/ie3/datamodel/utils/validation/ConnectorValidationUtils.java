@@ -25,7 +25,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Validates a connector if: <br>
    * - it is not null <br>
-   *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object. If an unknown class is handed in, a
    * {@link ValidationException} is thrown.
@@ -80,29 +79,38 @@ public class ConnectorValidationUtils extends ValidationUtils {
     // Check if line length is positive value
     if (line.getLength().getValue().doubleValue() <= 0d)
       throw new InvalidEntityException("Line has a zero or negative length", line);
-    detectZeroOrNegativeQuantities(new Quantity<?>[]{line.getLength()}, line);
+    detectZeroOrNegativeQuantities(new Quantity<?>[] {line.getLength()}, line);
     // Coordinates of start and end point of line equal coordinates of nodes
-      if (!(line.getGeoPosition().getStartPoint().isWithinDistance(line.getNodeA().getGeoPosition(), 0.000001)
-              || line.getGeoPosition().getEndPoint().isWithinDistance(line.getNodeA().getGeoPosition(), 0.000001)))
-        throw new InvalidEntityException(
-                "Coordinates of start and end point do not match coordinates of connected nodes", line);
-      if (!(line.getGeoPosition().getStartPoint().isWithinDistance(line.getNodeB().getGeoPosition(), 0.000001)
-              || line.getGeoPosition().getEndPoint().isWithinDistance(line.getNodeB().getGeoPosition(), 0.000001)))
-        throw new InvalidEntityException(
-                "Coordinates of start and end point do not match coordinates of connected nodes", line);
+    if (!(line.getGeoPosition()
+            .getStartPoint()
+            .isWithinDistance(line.getNodeA().getGeoPosition(), 0.000001)
+        || line.getGeoPosition()
+            .getEndPoint()
+            .isWithinDistance(line.getNodeA().getGeoPosition(), 0.000001)))
+      throw new InvalidEntityException(
+          "Coordinates of start and end point do not match coordinates of connected nodes", line);
+    if (!(line.getGeoPosition()
+            .getStartPoint()
+            .isWithinDistance(line.getNodeB().getGeoPosition(), 0.000001)
+        || line.getGeoPosition()
+            .getEndPoint()
+            .isWithinDistance(line.getNodeB().getGeoPosition(), 0.000001)))
+      throw new InvalidEntityException(
+          "Coordinates of start and end point do not match coordinates of connected nodes", line);
     // Check if lineLength equals sum of calculated distances between points of LineString
     // (only if not geo positions ob both nodes are dummy values)
     if (line.getNodeA().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION
-            || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION) {
+        || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION) {
       if (!line.getLength()
-              .isEquivalentTo(GridAndGeoUtils.TotalLengthOfLineString(line.getGeoPosition())))
+          .isEquivalentTo(GridAndGeoUtils.TotalLengthOfLineString(line.getGeoPosition())))
         throw new InvalidEntityException(
-                "Line length does not equal calculated distances between points building the line", line);
+            "Line length does not equal calculated distances between points building the line",
+            line);
     }
     // Check if olmCharacteristics is null
     if (line.getOlmCharacteristic() == null)
       throw new InvalidEntityException(
-              "Characteristic for overhead line monitoring of the line is null", line);
+          "Characteristic for overhead line monitoring of the line is null", line);
   }
 
   /**
@@ -203,8 +211,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     // Check minimum tap position is lower than maximum tap position
     if (transformer2WType.getTapMax() < transformer2WType.getTapMin())
       throw new InvalidEntityException(
-          "Minimum tap position must be lower than maximum tap position",
-          transformer2WType);
+          "Minimum tap position must be lower than maximum tap position", transformer2WType);
     // Check if neutral tap position lies between minimum and maximum tap position
     if (transformer2WType.getTapNeutr() < transformer2WType.getTapMin()
         || transformer2WType.getTapNeutr() > transformer2WType.getTapMax())
@@ -285,13 +292,12 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (transformer3WType.getdV().getValue().doubleValue() <= 0d
         || transformer3WType.getdV().getValue().doubleValue() > 100d)
       throw new InvalidEntityException(
-              "Voltage magnitude increase per tap position must be between 0% and 100%",
-              transformer3WType);
+          "Voltage magnitude increase per tap position must be between 0% and 100%",
+          transformer3WType);
     // Check if minimum tap position is lower than maximum tap position
     if (transformer3WType.getTapMax() < transformer3WType.getTapMin())
       throw new InvalidEntityException(
-          "Minimum tap position must be lower than maximum tap position",
-          transformer3WType);
+          "Minimum tap position must be lower than maximum tap position", transformer3WType);
     // Check if neutral tap position lies between minimum and maximum tap position
     if (transformer3WType.getTapNeutr() < transformer3WType.getTapMin()
         || transformer3WType.getTapNeutr() > transformer3WType.getTapMax())
