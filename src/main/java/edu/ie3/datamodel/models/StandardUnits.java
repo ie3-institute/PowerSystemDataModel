@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models;
 
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT_PER_SQUAREMETRE;
 import static edu.ie3.util.quantities.PowerSystemUnits.*;
 
 import edu.ie3.util.quantities.interfaces.*;
@@ -112,8 +113,10 @@ public class StandardUnits {
   public static final Unit<Dimensionless> OLM_CHARACTERISTIC = PU;
   /** Standard unit for reactive power characteristics */
   public static final Unit<Dimensionless> Q_CHARACTERISTIC = PU;
-  /** Solar irradiation on a flat surface */
-  public static final Unit<Irradiation> IRRADIATION = KILOWATTHOUR_PER_SQUAREMETRE;
+  /** Solar irradiation on a flat surface as Power per Area */
+  public static final Unit<Irradiation> IRRADIATION = KILOWATT_PER_SQUAREMETRE;
+  /** Energy per Area, used as an alternative dimension for {@link StandardUnits#IRRADIATION} */
+  public static final Unit<EnergyDensity> ENERGY_DENSITY = KILOWATTHOUR_PER_SQUAREMETRE;
   /** Capex (capital expenditure) */
   public static final Unit<Currency> CAPEX = EURO;
   /** Length of a line */
