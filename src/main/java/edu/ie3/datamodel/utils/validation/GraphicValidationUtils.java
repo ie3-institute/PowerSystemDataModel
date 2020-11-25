@@ -46,15 +46,11 @@ public class GraphicValidationUtils extends ValidationUtils {
 
   /**
    * Validates a line graphic input if: <br>
-   * - its line is not null
    * - its path is not null
    *
    * @param lineGraphicInput LineGraphicInput to validate
    */
   protected static void checkLineGraphicInput(LineGraphicInput lineGraphicInput) {
-    // Check if line is null
-    if (lineGraphicInput.getLine() == null)
-      throw new InvalidEntityException("Line of line graphic is not defined", lineGraphicInput);
     // Check if path is null
     if (lineGraphicInput.getPath() == null)
       throw new InvalidEntityException("Path of line graphic element is not defined", lineGraphicInput);
@@ -68,9 +64,6 @@ public class GraphicValidationUtils extends ValidationUtils {
    * @param nodeGraphicInput NodeGraphicInput to validate
    */
   protected static void checkNodeGraphicInput(NodeGraphicInput nodeGraphicInput) {
-    // Check if node is null
-    if (nodeGraphicInput.getNode() == null)
-      throw new InvalidEntityException("Node of node graphic is not defined", nodeGraphicInput);
     // Check if line is null
     if (nodeGraphicInput.getPoint() == null)
       throw new InvalidEntityException("Point of node graphic is not defined", nodeGraphicInput);

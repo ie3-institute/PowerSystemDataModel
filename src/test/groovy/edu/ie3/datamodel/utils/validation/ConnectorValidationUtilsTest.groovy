@@ -128,21 +128,21 @@ class ConnectorValidationUtilsTest extends Specification {
 	}
 
 	// Data for valid transformer2WType
-	static UUID uuid = UUID.fromString("202069a7-bcf8-422c-837c-273575220c8a")
-	static String id = "HS-MS_1"
-	static ComparableQuantity<ElectricResistance> rSc = Quantities.getQuantity(45.375d, IMPEDANCE)
-	static ComparableQuantity<ElectricResistance> xSc = Quantities.getQuantity(102.759d, IMPEDANCE)
-	static ComparableQuantity<Power> sRated = Quantities.getQuantity(20000d, ACTIVE_POWER_IN)
-	static ComparableQuantity<ElectricPotential> vRatedA = Quantities.getQuantity(110d, RATED_VOLTAGE_MAGNITUDE)
-	static ComparableQuantity<ElectricPotential> vRatedB = Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
-	static ComparableQuantity<ElectricConductance> gM = Quantities.getQuantity(0d, ADMITTANCE)
-	static ComparableQuantity<ElectricConductance> bM = Quantities.getQuantity(0d, ADMITTANCE)
-	static ComparableQuantity<Dimensionless> dV = Quantities.getQuantity(1.5d, DV_TAP)
-	static ComparableQuantity<Angle> dPhi = Quantities.getQuantity(0d, DPHI_TAP)
-	static boolean tapSide = false
-	static int tapNeutr = 0
-	static int tapMin = -10
-	static int tapMax = 10
+	private static UUID uuid = UUID.fromString("202069a7-bcf8-422c-837c-273575220c8a")
+	private static String id = "HS-MS_1"
+	private static ComparableQuantity<ElectricResistance> rSc = Quantities.getQuantity(45.375d, IMPEDANCE)
+	private static ComparableQuantity<ElectricResistance> xSc = Quantities.getQuantity(102.759d, IMPEDANCE)
+	private static ComparableQuantity<Power> sRated = Quantities.getQuantity(20000d, ACTIVE_POWER_IN)
+	private static ComparableQuantity<ElectricPotential> vRatedA = Quantities.getQuantity(110d, RATED_VOLTAGE_MAGNITUDE)
+	private static ComparableQuantity<ElectricPotential> vRatedB = Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
+	private static ComparableQuantity<ElectricConductance> gM = Quantities.getQuantity(0d, ADMITTANCE)
+	private static ComparableQuantity<ElectricConductance> bM = Quantities.getQuantity(0d, ADMITTANCE)
+	private static ComparableQuantity<Dimensionless> dV = Quantities.getQuantity(1.5d, DV_TAP)
+	private static ComparableQuantity<Angle> dPhi = Quantities.getQuantity(0d, DPHI_TAP)
+	private static boolean tapSide = false
+	private static int tapNeutr = 0
+	private static int tapMin = -10
+	private static int tapMax = 10
 
 	def "ConnectorValidationUtils.checkTransformer2WType recognizes all potential errors for a transformer2W type"() {
 		when:
@@ -201,18 +201,18 @@ class ConnectorValidationUtilsTest extends Specification {
 	// Data for valid transformer3WType (partly already defined above for 2W)
 	// UUID uuid
 	// String id
-	static ComparableQuantity<Power> sRatedA = Quantities.getQuantity(120000d, ACTIVE_POWER_IN)
-	static ComparableQuantity<Power> sRatedB = Quantities.getQuantity(60000d, ACTIVE_POWER_IN)
-	static ComparableQuantity<Power> sRatedC = Quantities.getQuantity(40000d, ACTIVE_POWER_IN)
+	private static ComparableQuantity<Power> sRatedA = Quantities.getQuantity(120000d, ACTIVE_POWER_IN)
+	private static ComparableQuantity<Power> sRatedB = Quantities.getQuantity(60000d, ACTIVE_POWER_IN)
+	private static ComparableQuantity<Power> sRatedC = Quantities.getQuantity(40000d, ACTIVE_POWER_IN)
 	// ComparableQuantity<ElectricPotential> vRatedA = Quantities.getQuantity(380d, RATED_VOLTAGE_MAGNITUDE)
 	// ComparableQuantity<ElectricPotential> vRatedB = Quantities.getQuantity(110d, RATED_VOLTAGE_MAGNITUDE)
-	static ComparableQuantity<ElectricPotential> vRatedC = Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
-	static ComparableQuantity<ElectricResistance> rScA = Quantities.getQuantity(0.3d, IMPEDANCE)
-	static ComparableQuantity<ElectricResistance> rScB = Quantities.getQuantity(0.025d, IMPEDANCE)
-	static ComparableQuantity<ElectricResistance> rScC = Quantities.getQuantity(0.0080d, IMPEDANCE)
-	static ComparableQuantity<ElectricResistance> xScA = Quantities.getQuantity(1d, IMPEDANCE)
-	static ComparableQuantity<ElectricResistance> xScB = Quantities.getQuantity(0.08d, IMPEDANCE)
-	static ComparableQuantity<ElectricResistance> xScC = Quantities.getQuantity(0.003d, IMPEDANCE)
+	private static ComparableQuantity<ElectricPotential> vRatedC = Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
+	private static ComparableQuantity<ElectricResistance> rScA = Quantities.getQuantity(0.3d, IMPEDANCE)
+	private static ComparableQuantity<ElectricResistance> rScB = Quantities.getQuantity(0.025d, IMPEDANCE)
+	private static ComparableQuantity<ElectricResistance> rScC = Quantities.getQuantity(0.0080d, IMPEDANCE)
+	private static ComparableQuantity<ElectricResistance> xScA = Quantities.getQuantity(1d, IMPEDANCE)
+	private static ComparableQuantity<ElectricResistance> xScB = Quantities.getQuantity(0.08d, IMPEDANCE)
+	private static ComparableQuantity<ElectricResistance> xScC = Quantities.getQuantity(0.003d, IMPEDANCE)
 	// ComparableQuantity<ElectricConductance> gM = Quantities.getQuantity(40000d, ADMITTANCE)
 	// ComparableQuantity<ElectricConductance> bM = Quantities.getQuantity(1000d, ADMITTANCE)
 	// ComparableQuantity<Dimensionless> dV = Quantities.getQuantity(1.5d, DV_TAP)
