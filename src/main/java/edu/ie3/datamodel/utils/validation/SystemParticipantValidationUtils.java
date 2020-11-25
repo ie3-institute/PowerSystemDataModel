@@ -127,12 +127,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    */
   public static void checkBmType(BmTypeInput bmTypeInput) {
     // Check common values of system participants
-    try {
-      checkType(bmTypeInput);
-    } catch (InvalidEntityException e) {
-      throw new InvalidEntityException(
-          "At least one value of the biomass unit type is not valid", bmTypeInput);
-    }
+    checkType(bmTypeInput);
     // Check if active power gradient is null
     if (bmTypeInput.getActivePowerGradient() == null)
       throw new InvalidEntityException(
@@ -182,12 +177,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    */
   public static void checkChpType(ChpTypeInput chpTypeInput) {
     // Check common values of system participants
-    try {
-      checkType(chpTypeInput);
-    } catch (InvalidEntityException e) {
-      throw new InvalidEntityException(
-          "At least one value of the CHP unit type is not valid", chpTypeInput);
-    }
+    checkType(chpTypeInput);
     // Check if any values are null
     if ((chpTypeInput.getEtaEl() == null)
         || (chpTypeInput.getEtaThermal() == null)
@@ -235,12 +225,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    */
   public static void checkEvType(EvTypeInput evTypeInput) {
     // Check common values of system participants
-    try {
-      checkType(evTypeInput);
-    } catch (InvalidEntityException e) {
-      throw new InvalidEntityException(
-          "At least one value of the EV type is not valid", evTypeInput);
-    }
+    checkType(evTypeInput);
     // Check if available battery capacity is null
     if (evTypeInput.geteStorage() == null)
       throw new InvalidEntityException(
@@ -298,12 +283,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    */
   public static void checkHpType(HpTypeInput hpTypeInput) {
     // Check common values of system participants
-    try {
-      checkType(hpTypeInput);
-    } catch (InvalidEntityException e) {
-      throw new InvalidEntityException(
-          "At least one value of heat pump type is not valid", hpTypeInput);
-    }
+    checkType(hpTypeInput);
     // Check if rated thermal power is null
     if (hpTypeInput.getpThermal() == null)
       throw new InvalidEntityException("Rated thermal power of heat pump is null", hpTypeInput);
@@ -412,12 +392,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    */
   public static void checkStorageType(StorageTypeInput storageTypeInput) {
     // Check common values of system participants
-    try {
-      checkType(storageTypeInput);
-    } catch (InvalidEntityException e) {
-      throw new InvalidEntityException(
-          "At least one value of the storage type is not valid", storageTypeInput);
-    }
+    checkType(storageTypeInput);
     // Check if any quantities are null
     if ((storageTypeInput.geteStorage() == null)
         || (storageTypeInput.getpMax() == null)
@@ -481,12 +456,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    */
   public static void checkWecType(WecTypeInput wecTypeInput) {
     // Check common values of system participants
-    try {
-      checkType(wecTypeInput);
-    } catch (InvalidEntityException e) {
-      throw new InvalidEntityException(
-          "At least one value of the wind energy converter type is not valid", wecTypeInput);
-    }
+    checkType(wecTypeInput);
     // Check if any quantities are null
     if ((wecTypeInput.getCpCharacteristic() == null)
         || (wecTypeInput.getEtaConv() == null)

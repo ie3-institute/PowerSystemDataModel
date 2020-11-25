@@ -25,7 +25,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Validates a connector if: <br>
    * - it is not null <br>
-   * - both of its nodes are not null <br>
+   *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object. If an unknown class is handed in, a
    * {@link ValidationException} is thrown.
@@ -35,9 +35,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
   public static void check(ConnectorInput connector) {
     // Check if null
     checkNonNull(connector, "a connector");
-    // Check if nodes of connector are null
-    if (connector.getNodeA() == null || connector.getNodeB() == null)
-      throw new InvalidEntityException("At least one node of this connector is null", connector);
 
     // Further checks for subclasses
     if (LineInput.class.isAssignableFrom(connector.getClass())) checkLine((LineInput) connector);
@@ -61,8 +58,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - it does not connect the same node <br>
    * - it connects nodes in the same subnet <br>
    * - it connects nodes in the same voltage level <br>
-   * - its line length is not null and has a positive value <br>
-   * - its geoPosition is not null <br>
+   * - its line length has a positive value <br>
    * - its length equals the sum of calculated distances between points of LineString <br>
    * - its characteristic for overhead line monitoring is not null <br>
    * - its coordinates of start and end point equal coordinates of nodes
@@ -81,16 +77,10 @@ public class ConnectorValidationUtils extends ValidationUtils {
     // Check if line connects same voltage level
     if (!line.getNodeA().getVoltLvl().equals(line.getNodeB().getVoltLvl()))
       throw new InvalidEntityException("Line connects different voltage levels", line);
-    // Check if line length is not null
-    if (line.getLength() == null)
-      throw new InvalidEntityException("Length of line is null", line);
     // Check if line length is positive value
     if (line.getLength().getValue().doubleValue() <= 0d)
       throw new InvalidEntityException("Line has a zero or negative length", line);
     detectZeroOrNegativeQuantities(new Quantity<?>[]{line.getLength()}, line);
-    // Check if geoPosition is null
-    if (line.getGeoPosition() == null)
-      throw new InvalidEntityException("GeoPosition of the line is null", line);
     // Coordinates of start and end point of line equal coordinates of nodes
       if (!(line.getGeoPosition().getStartPoint().isWithinDistance(line.getNodeA().getGeoPosition(), 0.000001)
               || line.getGeoPosition().getEndPoint().isWithinDistance(line.getNodeA().getGeoPosition(), 0.000001)))
@@ -105,7 +95,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (line.getNodeA().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION
             || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION) {
       if (!line.getLength()
-              .isEquivalentTo(GridAndGeoUtils.calculateTotalLengthOfLineString(line.getGeoPosition())))
+              .isEquivalentTo(GridAndGeoUtils.TotalLengthOfLineString(line.getGeoPosition())))
         throw new InvalidEntityException(
                 "Line length does not equal calculated distances between points building the line", line);
     }
@@ -118,7 +108,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Validates a line type if: <br>
    * - it is not null <br>
-   * - none of its values are null <br>
    * - B >= 0 (Phase-to-ground susceptance per length) <br>
    * - G >= 0 (Phase-to-ground conductance per length) <br>
    * - R > 0 (Phase resistance per length) <br>
@@ -131,14 +120,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
   public static void checkLineType(LineTypeInput lineType) {
     // Check if null
     checkNonNull(lineType, "a line type");
-    // Check if any values are null
-    if ((lineType.getB() == null)
-        || (lineType.getG() == null)
-        || (lineType.getvRated() == null)
-        || (lineType.getiMax() == null)
-        || (lineType.getX() == null)
-        || (lineType.getR() == null))
-      throw new InvalidEntityException("At least one value of lineType is null", lineType);
     // Check for negative quantities
     detectNegativeQuantities(new Quantity<?>[] {lineType.getB(), lineType.getG()}, lineType);
     // Check for zero or negative quantities
@@ -180,7 +161,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Validates a transformer2W type if: <br>
    * - it is not null <br>
-   * - none of its values are null <br>
    * - rSc > 0 (short circuit resistance) <br>
    * - xSc > 0 (short circuit impedance) <br>
    * - gM >= 0 (no load conductance) <br>
@@ -198,18 +178,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
   public static void checkTransformer2WType(Transformer2WTypeInput transformer2WType) {
     // check if null
     checkNonNull(transformer2WType, "a two winding transformer type");
-    // Check if any values are null
-    if ((transformer2WType.getsRated() == null)
-        || (transformer2WType.getvRatedA() == null)
-        || (transformer2WType.getvRatedB() == null)
-        || (transformer2WType.getrSc() == null)
-        || (transformer2WType.getxSc() == null)
-        || (transformer2WType.getgM() == null)
-        || (transformer2WType.getbM() == null)
-        || (transformer2WType.getdV() == null)
-        || (transformer2WType.getdPhi() == null))
-      throw new InvalidEntityException(
-          "At least one value of the transformer2W type is null", transformer2WType);
     // Check for negative quantities
     detectNegativeQuantities(
         new Quantity<?>[] {
@@ -230,8 +198,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (transformer2WType.getdV().getValue().doubleValue() <= 0d
         || transformer2WType.getdV().getValue().doubleValue() > 100d)
       throw new InvalidEntityException(
-              "Voltage magnitude increase per tap position must be between 0% and 100%",
-              transformer2WType);
+          "Voltage magnitude increase per tap position must be between 0% and 100%",
+          transformer2WType);
     // Check minimum tap position is lower than maximum tap position
     if (transformer2WType.getTapMax() < transformer2WType.getTapMin())
       throw new InvalidEntityException(
@@ -249,7 +217,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * Validates a transformer3W if: <br>
    * - {@link ConnectorValidationUtils#checkTransformer3WType(Transformer3WTypeInput)} confirm a
    * valid type <br>
-   * - node C is not null <br>
    * - its tap position is within bounds <br>
    * - it connects different subnets <br>
    * - it connects different voltage levels <br>
@@ -257,10 +224,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param transformer3W Transformer3W to validate
    */
   public static void checkTransformer3W(Transformer3WInput transformer3W) {
-    // Check if node C is null
-    if (transformer3W.getNodeC() == null)
-      throw new InvalidEntityException(
-          "At least one node of this transformer3W is null", transformer3W);
     // Check Transformer3WType
     checkTransformer3WType(transformer3W.getType());
     // Check if tap position is within bounds
@@ -285,7 +248,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Validates a transformer3W type if: <br>
    * - it is not null <br>
-   * - none of its values are null <br>
    * - rScA, rScB, rScC > 0 (short circuit resistance in branches A,B,C) <br>
    * - xScA, xScB, xScC > 0 (short circuit impedance in branches A,B,C) <br>
    * - gM >= 0 (no load conductance) <br>
@@ -302,25 +264,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
   public static void checkTransformer3WType(Transformer3WTypeInput transformer3WType) {
     // check if null
     checkNonNull(transformer3WType, "a three winding transformer type");
-    // Check if any values are null
-    if ((transformer3WType.getsRatedA() == null)
-        || (transformer3WType.getsRatedB() == null)
-        || (transformer3WType.getsRatedC() == null)
-        || (transformer3WType.getvRatedA() == null)
-        || (transformer3WType.getvRatedB() == null)
-        || (transformer3WType.getvRatedC() == null)
-        || (transformer3WType.getrScA() == null)
-        || (transformer3WType.getrScB() == null)
-        || (transformer3WType.getrScC() == null)
-        || (transformer3WType.getxScA() == null)
-        || (transformer3WType.getxScB() == null)
-        || (transformer3WType.getxScC() == null)
-        || (transformer3WType.getgM() == null)
-        || (transformer3WType.getbM() == null)
-        || (transformer3WType.getdV() == null)
-        || (transformer3WType.getdPhi() == null))
-      throw new InvalidEntityException(
-          "at least one value of the transformer3W type is null", transformer3WType);
     // Check for negative quantities
     detectNegativeQuantities(
         new Quantity<?>[] {

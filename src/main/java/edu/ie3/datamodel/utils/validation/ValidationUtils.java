@@ -63,7 +63,6 @@ public class ValidationUtils {
    * Validates an asset if: <br>
    * - it is not null <br>
    * - its id is not null <br>
-   * - its operator is not null <br>
    * - its operation time is not null <br>
    * - in case operation time is limited, its start time and end time are not null and start time is
    * before end time <br>
@@ -78,9 +77,6 @@ public class ValidationUtils {
     checkNonNull(assetInput, "an asset");
     // Check if ID is not null
     if (assetInput.getId() == null) throw new InvalidEntityException("No ID assigned", assetInput);
-    // Check if operator is not null
-    if (assetInput.getOperator() == null)
-      throw new InvalidEntityException("No operator assigned", assetInput);
     // Check if operation time is not null
     if (assetInput.getOperationTime() == null)
       throw new InvalidEntityException("Operation time of the asset is not defined", assetInput);

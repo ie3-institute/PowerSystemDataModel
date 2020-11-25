@@ -22,7 +22,7 @@ public class NodeValidationUtils extends ValidationUtils {
    * Validates a node if: <br>
    * - it is not null <br>
    * - voltage level is not null and valid <br>
-   * - target voltage is not null, larger than zero and smaller than two <br>
+   * - target voltage is larger than zero and smaller than two <br>
    * - subnet number is larger than zero <br>
    * - geoPosition is not null
    *
@@ -37,9 +37,6 @@ public class NodeValidationUtils extends ValidationUtils {
     } catch (VoltageLevelException e) {
       throw new InvalidEntityException("Node has invalid voltage level", node);
     }
-    // Check if target voltage is null or invalid
-    if (node.getvTarget() == null)
-      throw new InvalidEntityException("Target voltage (p.u.) is null", node);
     if (node.getvTarget().getValue().doubleValue() <= 0d)
       throw new InvalidEntityException("Target voltage (p.u.) is not a positive value", node);
     else if (node.getvTarget().getValue().doubleValue() > 2d)

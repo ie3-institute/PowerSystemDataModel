@@ -132,9 +132,6 @@ class ValidationUtilsTest extends Specification {
 		invalidAsset                                                            	    || expectedException
 		null 																			|| new ValidationException("Expected an object, but got nothing. :-(")
 		GridTestData.nodeA.copy().id(null).build()										|| new InvalidEntityException("No ID assigned", invalidAsset)
-		//GridTestData.nodeA.copy().operator(null).build()								|| new InvalidEntityException("No operator assigned", invalidAsset)
-		// TODO NSteffan: in NodeInput wird in toString Methode getOperator().getUuid() aufgerufen, erzeugt NullPointerException
-		//  -> Text für InvalidEntityException kann nicht erstellt werden
 		GridTestData.nodeA.copy().operationTime(null).build()							|| new InvalidEntityException("Operation time of the asset is not defined", invalidAsset)
 		GridTestData.nodeA.copy().operationTime(OperationTime.builder().
 				withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-26 15:11:31")).
@@ -161,7 +158,7 @@ class ValidationUtilsTest extends Specification {
 		def invalidAsset = new LineTypeInput(
 				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
 				"lineType_AtoB",
-				Quantities.getQuantity(-1d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(-1d, ADMITTANCE_PER_LENGTH), // invalid value
 				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
 				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
 				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
@@ -194,7 +191,7 @@ class ValidationUtilsTest extends Specification {
 		def invalidAsset = new LineTypeInput(
 				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
 				"lineType_AtoB",
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH), // invalid value
 				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
 				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
 				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
@@ -213,16 +210,6 @@ class ValidationUtilsTest extends Specification {
 		then:
 		InvalidEntityException ex = thrown()
 		ex.message == "Entity is invalid because of: The following quantities have to be positive: 0 μS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0 μS/km, g=0 μS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
-	}
-
-
-	// TODO NSteffan: Move to right place
-	def "A LineType should throw a NullPointerException if the provided field values are null"() {
-		when:
-		new LineTypeInput(null, null, null,null,null,null,null,null)
-
-		then:
-		NullPointerException ex = thrown()
 	}
 
 }

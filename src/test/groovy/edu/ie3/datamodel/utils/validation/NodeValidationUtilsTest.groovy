@@ -49,7 +49,6 @@ class NodeValidationUtilsTest extends Specification {
 				new HashSet<>(Arrays.asList("null")),
 				new RightOpenInterval<>(
 				Quantities.getQuantity(380d, KILOVOLT), Quantities.getQuantity(560d, KILOVOLT)))).build()																	|| new InvalidEntityException("Node has invalid voltage level", invalidNode)
-
 		GridTestData.nodeA.copy().voltLvl(new CommonVoltageLevel(
 				"zero volt",
 				Quantities.getQuantity(0d, KILOVOLT),
@@ -62,9 +61,4 @@ class NodeValidationUtilsTest extends Specification {
 		GridTestData.nodeA.copy().vTarget(Quantities.getQuantity(0d, PU)).build()   || new InvalidEntityException("Target voltage (p.u.) is not a positive value", invalidNode)
 		GridTestData.nodeA.copy().vTarget(Quantities.getQuantity(2.1d, PU)).build() || new UnsafeEntityException("Target voltage (p.u.) might be too high", invalidNode)
 	}
-
-	// TODO NSteffan: vTarget can't be null, causes NullPointerException in node builder
-	//  at this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE)
-	//  -> not necessary to check?
-
 }

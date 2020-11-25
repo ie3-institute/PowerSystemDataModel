@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
-import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.UnsafeEntityException;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 
@@ -19,7 +18,6 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
   /**
    * Validates a measurement unit if: <br>
    * - it is not null <br>
-   * - its node is not null <br>
    * - any values are measured
    *
    * @param measurementUnit Measurement unit to validate
@@ -27,9 +25,6 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
   public static void check(MeasurementUnitInput measurementUnit) {
     // Check if null
     checkNonNull(measurementUnit, "a measurement unit");
-    // Check if node is null
-    if (measurementUnit.getNode() == null)
-      throw new InvalidEntityException("Node of measurement unit is null", measurementUnit);
     // Check if measurement unit measures any values
     if (!measurementUnit.getP()
         && !measurementUnit.getQ()
