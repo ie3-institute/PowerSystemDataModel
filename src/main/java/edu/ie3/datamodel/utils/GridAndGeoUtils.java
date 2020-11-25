@@ -181,16 +181,16 @@ public class GridAndGeoUtils extends GeoUtils {
    * @param lineString the line string which length shall be calculated
    * @return The total length of the line string
    */
-  public static ComparableQuantity<Length> calculateTotalLengthOfLineString(LineString lineString) {
+  public static ComparableQuantity<Length> TotalLengthOfLineString(LineString lineString) {
     ComparableQuantity<Length> y = Quantities.getQuantity(0, KILOMETRE);
     for (int i = 0; i < lineString.getNumPoints() - 1; i++) {
       y =
           y.add(
               calcHaversine(
-                  lineString.getCoordinateN(i).getY(),
                   lineString.getCoordinateN(i).getX(),
-                  lineString.getCoordinateN(i + 1).getY(),
-                  lineString.getCoordinateN(i + 1).getX()));
+                  lineString.getCoordinateN(i).getY(),
+                  lineString.getCoordinateN(i + 1).getX(),
+                  lineString.getCoordinateN(i + 1).getY()));
     }
     return y;
   }
