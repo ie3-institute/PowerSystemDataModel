@@ -19,25 +19,31 @@ class GridAndGeoUtilsTest extends Specification {
 		given:
 		def line = GridTestData.geoJsonReader.read(lineString) as LineString
 
-		expect:
+		when:
 		def safeLineString = GridAndGeoUtils.buildSafeLineString(line)
-		safeLineString.getCoordinates() as List == coordinates
+		def actualCoordinates = safeLineString.getCoordinates()
+
+		then:
+		coordinates.length == actualCoordinates.length
+		for(int cnt = 0; cnt < coordinates.length; cnt++){
+			coordinates[cnt] == actualCoordinates[cnt]
+		}
 
 		where:
 		lineString                                                                                                                            | coordinates
 		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228]]}"                                           | [
 			new Coordinate(7.4111110000001, 51.4922800000001),
 			new Coordinate(7.411111, 51.49228)
-		]
+		] as Coordinate[]
 		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228]]}" | [
 			new Coordinate(7.4111110000001, 51.4922800000001),
 			new Coordinate(7.411111, 51.49228)
-		]
+		] as Coordinate[]
 		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.311111, 51.49228],[7.511111, 51.49228]]}" | [
-			new Coordinate(7.311111, 51.49228),
 			new Coordinate(7.411111, 51.49228),
+			new Coordinate(7.311111, 51.49228),
 			new Coordinate(7.511111, 51.49228)
-		]
+		] as Coordinate[]
 	}
 
 	def "The GridAngGeoUtils maintain the correct order of coordinates, when overhauling a given LineString"() {
