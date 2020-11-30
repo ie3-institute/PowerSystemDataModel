@@ -23,10 +23,11 @@ import org.slf4j.LoggerFactory;
  * A utility class to compress and decompress .tar.gz archives.
  *
  * @deprecated replaced by linked class FileIOUtils.
- *
- * @see <a href="https://github.com/ie3-institute/PowerSystemUtils/blob/master/src/main/java/edu/ie3/util/io/FileIOUtils.java">FileIOUtils</a>
+ * @see <a
+ *     href="https://github.com/ie3-institute/PowerSystemUtils/blob/master/src/main/java/edu/ie3/util/io/FileIOUtils.java">FileIOUtils</a>
  */
-@Deprecated public class TarballUtils {
+@Deprecated
+public class TarballUtils {
   private static final Logger logger = LoggerFactory.getLogger(TarballUtils.class);
 
   private static final int MAX_AMOUNT_OF_ENTRIES = 5000;
@@ -39,15 +40,18 @@ import org.slf4j.LoggerFactory;
 
   /**
    * Compresses files to .tar.gz format
+   *
    * @param source source path to compress
    * @param archiveFile path of the target archive file
    * @throws FileException If unable to create the file
-   * @deprecated replaced by #compress(String, String, boolean) in linked class FileIOUtils. The file paths are now passed
-   * as Strings and there is a need to mention whether a directory has to be compressed or a single file.
-   *
-   * @see <a href="https://github.com/ie3-institute/PowerSystemUtils/blob/master/src/main/java/edu/ie3/util/io/FileIOUtils.java">FileIOUtils</a>
+   * @deprecated replaced by #compress(String, String, boolean) in linked class FileIOUtils. The
+   *     file paths are now passed as Strings and there is a need to mention whether a directory has
+   *     to be compressed or a single file.
+   * @see <a
+   *     href="https://github.com/ie3-institute/PowerSystemUtils/blob/master/src/main/java/edu/ie3/util/io/FileIOUtils.java">FileIOUtils</a>
    */
-  @Deprecated public static void compress(Path source, Path archiveFile) throws FileException {
+  @Deprecated
+  public static void compress(Path source, Path archiveFile) throws FileException {
     Path validatedArchiveFile = checkAndCreateArchive(archiveFile);
 
     /* Open a stream and add content to the archive */
@@ -130,11 +134,13 @@ import org.slf4j.LoggerFactory;
    * @return Path to the actual folder, where the content is extracted to
    * @throws FileException If the archive is not in a well shape, the target folder doesn't meet the
    *     requirements or the archive tries to impose harm by exploiting zip slip vulnerability
-   * @deprecated replaced by #extract(Path, Path) in linked class FileIOUtils. The override parameter is invalid now.
-   *
-   * @see <a href="https://github.com/ie3-institute/PowerSystemUtils/blob/master/src/main/java/edu/ie3/util/io/FileIOUtils.java">FileIOUtils</a>
+   * @deprecated replaced by #extract(Path, Path) in linked class FileIOUtils. The override
+   *     parameter is invalid now.
+   * @see <a
+   *     href="https://github.com/ie3-institute/PowerSystemUtils/blob/master/src/main/java/edu/ie3/util/io/FileIOUtils.java">FileIOUtils</a>
    */
-  @Deprecated public static Path extract(Path archive, Path target, boolean override) throws FileException {
+  @Deprecated
+  public static Path extract(Path archive, Path target, boolean override) throws FileException {
     /* Pre-flight checks and assembly of the target path */
     Path targetDirectory = determineTargetDirectory(archive, target, override);
 
