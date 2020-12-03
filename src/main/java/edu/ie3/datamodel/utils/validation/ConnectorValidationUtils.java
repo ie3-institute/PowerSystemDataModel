@@ -99,14 +99,12 @@ public class ConnectorValidationUtils extends ValidationUtils {
           "Coordinates of start and end point do not match coordinates of connected nodes", line);
     // Check if lineLength equals sum of calculated distances between points of LineString
     // (only if not geo positions ob both nodes are dummy values)
-    if (line.getNodeA().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION
-        || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION) {
-      if (!line.getLength()
-          .isEquivalentTo(GridAndGeoUtils.totalLengthOfLineString(line.getGeoPosition())))
-        throw new InvalidEntityException(
-            "Line length does not equal calculated distances between points building the line",
-            line);
-    }
+    if ((line.getNodeA().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION
+            || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION)
+        && (!line.getLength()
+            .isEquivalentTo(GridAndGeoUtils.totalLengthOfLineString(line.getGeoPosition()))))
+      throw new InvalidEntityException(
+          "Line length does not equal calculated distances between points building the line", line);
     // Check if olmCharacteristics is null
     if (line.getOlmCharacteristic() == null)
       throw new InvalidEntityException(
