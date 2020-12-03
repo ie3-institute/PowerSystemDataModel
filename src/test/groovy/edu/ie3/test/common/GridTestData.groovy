@@ -362,19 +362,6 @@ class GridTestData {
 	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
 	)
 
-	public static final MeasurementUnitInput measurementUnitInput = new MeasurementUnitInput(
-	UUID.fromString("ce6119e3-f725-4166-b6e0-59f62e0c293d"),
-	"test_measurementUnit",
-	profBroccoli,
-	defaultOperationTime,
-	nodeG,
-	true,
-	true,
-	true,
-	true
-	)
-
-	// added bei NSteffan for ConnectorValidationUtilsTest
 	public static final LineInput lineFtoG = new LineInput(
 	UUID.fromString("92ec3bcf-1777-4d38-af67-0bf8c9fa73c7"),
 	"test_line_FtoG",
@@ -389,4 +376,15 @@ class GridTestData {
 	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
 	)
 
+	public static final MeasurementUnitInput measurementUnitInput = new MeasurementUnitInput(
+	UUID.fromString("ce6119e3-f725-4166-b6e0-59f62e0c293d"),
+	"test_measurementUnit",
+	profBroccoli,
+	defaultOperationTime,
+	nodeG,
+	true,
+	true,
+	true,
+	true
+	)
 }

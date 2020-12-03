@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.utils.validation
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
-import edu.ie3.datamodel.exceptions.UnsafeEntityException
 import edu.ie3.test.common.GridTestData
 import spock.lang.Specification
 

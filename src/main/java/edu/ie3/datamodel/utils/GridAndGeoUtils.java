@@ -185,7 +185,7 @@ public class GridAndGeoUtils extends GeoUtils {
    * @param lineString the line string which length shall be calculated
    * @return The total length of the line string
    */
-  public static ComparableQuantity<Length> TotalLengthOfLineString(LineString lineString) {
+  public static ComparableQuantity<Length> totalLengthOfLineString(LineString lineString) {
     ComparableQuantity<Length> y = Quantities.getQuantity(0, KILOMETRE);
     for (int i = 0; i < lineString.getNumPoints() - 1; i++) {
       y =

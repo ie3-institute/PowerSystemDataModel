@@ -5,12 +5,12 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.UnsafeEntityException
 import edu.ie3.datamodel.models.voltagelevels.CommonVoltageLevel
 import edu.ie3.util.interval.RightOpenInterval
-
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.exceptions.ValidationException

@@ -132,32 +132,31 @@ class GridAndGeoUtilsTest extends Specification {
 	def "TotalLengthOfLineString correctly calculates the total length of lineString correctly"() {
 		given:
 		LineString lineString = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createLineString([
-			new Coordinate(22.69962d,11.13038d,0),
-			new Coordinate(20.84247d,28.14743d,0),
-			new Coordinate(24.21942d,12.04265d,0)] as Coordinate[])
+			new Coordinate(22.69962d, 11.13038d, 0),
+			new Coordinate(20.84247d, 28.14743d, 0),
+			new Coordinate(24.21942d, 12.04265d, 0)] as Coordinate[])
 
 		when:
-		ComparableQuantity<Length> y = GridAndGeoUtils.TotalLengthOfLineString(lineString)
+		ComparableQuantity<Length> y = GridAndGeoUtils.totalLengthOfLineString(lineString)
 
 		then:
-		y.isGreaterThanOrEqualTo(Quantities.getQuantity(3463.37-10, KILOMETRE))
-		y.isLessThanOrEqualTo(Quantities.getQuantity(3463.37+10, KILOMETRE))
+		y.isGreaterThanOrEqualTo(Quantities.getQuantity(3463.37 - 10, KILOMETRE))
+		y.isLessThanOrEqualTo(Quantities.getQuantity(3463.37 + 10, KILOMETRE))
 		// Value from Google Maps, error range of +-10
 	}
 
 	def "TotalLengthOfLineString correctly calculates the total length of lineString correctly2"() {
 		given:
 		LineString lineString = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createLineString([
-			new Coordinate(51.48386110716543, 7.498165075275441,0),
-			new Coordinate(3.4884439989616043, 137.87593281832065,0)] as Coordinate[])
+			new Coordinate(51.48386110716543, 7.498165075275441, 0),
+			new Coordinate(3.4884439989616043, 137.87593281832065, 0)] as Coordinate[])
 
 		when:
-		ComparableQuantity<Length> y = GridAndGeoUtils.TotalLengthOfLineString(lineString)
+		ComparableQuantity<Length> y = GridAndGeoUtils.totalLengthOfLineString(lineString)
 
 		then:
-		System.out.println(y)
-		y.isGreaterThanOrEqualTo(Quantities.getQuantity(12323.99-15, KILOMETRE))
-		y.isLessThanOrEqualTo(Quantities.getQuantity(12323.99+15, KILOMETRE))
+		y.isGreaterThanOrEqualTo(Quantities.getQuantity(12323.99 - 15, KILOMETRE))
+		y.isLessThanOrEqualTo(Quantities.getQuantity(12323.99 + 15, KILOMETRE))
 		// Value from Google Maps, error range of +-15
 		// TODO NSteffan: Let check -> I use calcHaversine with (X1, Y1, X2, Y2), in other places it is used with (Y1, X1, Y2, X2)
 		//  -> what is latitude, what is longitude?

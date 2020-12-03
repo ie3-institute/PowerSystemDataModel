@@ -102,7 +102,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (line.getNodeA().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION
         || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION) {
       if (!line.getLength()
-          .isEquivalentTo(GridAndGeoUtils.TotalLengthOfLineString(line.getGeoPosition())))
+          .isEquivalentTo(GridAndGeoUtils.totalLengthOfLineString(line.getGeoPosition())))
         throw new InvalidEntityException(
             "Line length does not equal calculated distances between points building the line",
             line);

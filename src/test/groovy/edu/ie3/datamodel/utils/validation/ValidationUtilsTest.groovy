@@ -5,6 +5,12 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static edu.ie3.datamodel.models.StandardUnits.ADMITTANCE_PER_LENGTH
+import static edu.ie3.datamodel.models.StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
+import static edu.ie3.datamodel.models.StandardUnits.RATED_VOLTAGE_MAGNITUDE
+import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.OperationTime
@@ -20,12 +26,6 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import javax.measure.Quantity
-
-import static edu.ie3.datamodel.models.StandardUnits.ADMITTANCE_PER_LENGTH
-import static edu.ie3.datamodel.models.StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
-import static edu.ie3.datamodel.models.StandardUnits.RATED_VOLTAGE_MAGNITUDE
-import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
-import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ValidationUtilsTest extends Specification {
 

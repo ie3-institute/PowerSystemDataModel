@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static edu.ie3.datamodel.models.StandardUnits.*
+import static tech.units.indriya.unit.Units.PERCENT
+
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
@@ -22,9 +25,6 @@ import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.*
-
-import static edu.ie3.datamodel.models.StandardUnits.*
-import static tech.units.indriya.unit.Units.PERCENT
 
 class SystemParticipantValidationUtilsTest extends Specification {
 
@@ -54,33 +54,33 @@ class SystemParticipantValidationUtilsTest extends Specification {
 	}
 
 	// Common data for all system participant types
-	private static UUID uuid = UUID.fromString("92ec3bcf-1327-4d38-af67-0bf7a9fa73c7")
-	private static String id = "test_id"
-	private static ComparableQuantity<Currency> capex = Quantities.getQuantity(100d, CAPEX)
-	private static ComparableQuantity<EnergyPrice> opex = Quantities.getQuantity(50d, ENERGY_PRICE)
-	private static ComparableQuantity<Power> sRated = Quantities.getQuantity(25d, ACTIVE_POWER_IN)
-	private static cosPhiRated = 0.95
+	private static final UUID uuid = UUID.fromString("92ec3bcf-1327-4d38-af67-0bf7a9fa73c7")
+	private static final String id = "test_id"
+	private static final ComparableQuantity<Currency> capex = Quantities.getQuantity(100d, CAPEX)
+	private static final ComparableQuantity<EnergyPrice> opex = Quantities.getQuantity(50d, ENERGY_PRICE)
+	private static final ComparableQuantity<Power> sRated = Quantities.getQuantity(25d, ACTIVE_POWER_IN)
+	private static final cosPhiRated = 0.95
 
 	// Common data for some (but not all) system participant types
-	private static ComparableQuantity<Dimensionless> etaConv = Quantities.getQuantity(98d, EFFICIENCY)
+	private static final ComparableQuantity<Dimensionless> etaConv = Quantities.getQuantity(98d, EFFICIENCY)
 
 	// Specific data for bm type
-	private static ComparableQuantity<DimensionlessRate> activePowerGradient = Quantities.getQuantity(25, ACTIVE_POWER_GRADIENT)
+	private static final ComparableQuantity<DimensionlessRate> activePowerGradient = Quantities.getQuantity(25, ACTIVE_POWER_GRADIENT)
 
 	// Specific data for CHP type (and HP type)
-	private static ComparableQuantity<Dimensionless> etaEl = Quantities.getQuantity(19, EFFICIENCY)
-	private static ComparableQuantity<Dimensionless> etaThermal = Quantities.getQuantity(76, EFFICIENCY)
-	private static ComparableQuantity<Power> pOwn = Quantities.getQuantity(0, ACTIVE_POWER_IN)
-	private static ComparableQuantity<Power> pThermal = Quantities.getQuantity(9, ACTIVE_POWER_IN)
+	private static final ComparableQuantity<Dimensionless> etaEl = Quantities.getQuantity(19, EFFICIENCY)
+	private static final ComparableQuantity<Dimensionless> etaThermal = Quantities.getQuantity(76, EFFICIENCY)
+	private static final ComparableQuantity<Power> pOwn = Quantities.getQuantity(0, ACTIVE_POWER_IN)
+	private static final ComparableQuantity<Power> pThermal = Quantities.getQuantity(9, ACTIVE_POWER_IN)
 
 	// Specific data for storage type
 	private static final ComparableQuantity<Energy> eStorage = Quantities.getQuantity(100, ENERGY_IN)
-	private static ComparableQuantity<Power> pMax = Quantities.getQuantity(15, ACTIVE_POWER_IN)
-	private static ComparableQuantity<Dimensionless> eta = Quantities.getQuantity(95, EFFICIENCY)
-	private static ComparableQuantity<Dimensionless> dod = Quantities.getQuantity(10, EFFICIENCY)
-	private static ComparableQuantity<DimensionlessRate> cpRate = Quantities.getQuantity(100, ACTIVE_POWER_GRADIENT)
-	private static ComparableQuantity<Time> lifeTime = Quantities.getQuantity(175316.4, LIFE_TIME)
-	private static int lifeCycle = 100
+	private static final ComparableQuantity<Power> pMax = Quantities.getQuantity(15, ACTIVE_POWER_IN)
+	private static final ComparableQuantity<Dimensionless> eta = Quantities.getQuantity(95, EFFICIENCY)
+	private static final ComparableQuantity<Dimensionless> dod = Quantities.getQuantity(10, EFFICIENCY)
+	private static final ComparableQuantity<DimensionlessRate> cpRate = Quantities.getQuantity(100, ACTIVE_POWER_GRADIENT)
+	private static final ComparableQuantity<Time> lifeTime = Quantities.getQuantity(175316.4, LIFE_TIME)
+	private static final int lifeCycle = 100
 
 	def "SystemParticipantValidationUtils.checkType() recognizes all potential errors for a system participant type"() {
 		when:
@@ -421,9 +421,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
 		noExceptionThrown()
 	}
 
-	private static WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
-	private static ComparableQuantity<Area> rotorArea = Quantities.getQuantity(20, ROTOR_AREA)
-	private static ComparableQuantity<Length> hubHeight = Quantities.getQuantity(200, HUB_HEIGHT)
+	private static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
+	private static final ComparableQuantity<Area> rotorArea = Quantities.getQuantity(20, ROTOR_AREA)
+	private static final ComparableQuantity<Length> hubHeight = Quantities.getQuantity(200, HUB_HEIGHT)
 
 	def "SystemParticipantValidationUtils.checkWecType() recognizes all potential errors for a wec type"() {
 		when:
