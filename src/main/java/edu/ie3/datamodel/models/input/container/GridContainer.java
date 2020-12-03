@@ -55,9 +55,6 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
               + "This is not allowed!\nDuplicated uuids:\n\n"
               + exceptionString);
     }
-
-    /* TODO @ Niklas : Remove this call, as the user is meant to control, when and if the validation should take place */
-    ValidationUtils.check(this);
   }
 
   /**

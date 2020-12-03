@@ -144,7 +144,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * valid type properties <br>
    * - its tap position is within bounds <br>
    * - it connects different subnets <br>
-   * - it connects different voltage levels
+   * - it connects different voltage levels <br>
+   * - its rated voltages match the voltages at the nodes
    *
    * @param transformer2W Transformer2W to validate
    */
@@ -164,6 +165,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (transformer2W.getNodeA().getSubnet() == transformer2W.getNodeB().getSubnet())
       throw new InvalidEntityException(
           "Transformer connects nodes in the same subnet", transformer2W);
+    // Check if vRated of transformer match voltLvl of nodes
+    if (!transformer2W.getType().getvRatedA().equals(transformer2W.getNodeA().getVoltLvl().getNominalVoltage())
+        || !transformer2W.getType().getvRatedB().equals(transformer2W.getNodeB().getVoltLvl().getNominalVoltage()))
+      throw new InvalidEntityException(
+              "Rated voltages of transformer do not equal voltage levels at the nodes", transformer2W);
   }
 
   /**
@@ -227,6 +233,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - its tap position is within bounds <br>
    * - it connects different subnets <br>
    * - it connects different voltage levels <br>
+   * - its rated voltages match the voltages at the nodes
    *
    * @param transformer3W Transformer3W to validate
    */
@@ -250,6 +257,12 @@ public class ConnectorValidationUtils extends ValidationUtils {
         || transformer3W.getNodeB().getSubnet() == transformer3W.getNodeC().getSubnet())
       throw new InvalidEntityException(
           "Transformer connects nodes in the same subnet", transformer3W);
+    // Check if vRated of transformer match voltLvl of nodes
+    if (!transformer3W.getType().getvRatedA().equals(transformer3W.getNodeA().getVoltLvl().getNominalVoltage())
+        || !transformer3W.getType().getvRatedB().equals(transformer3W.getNodeB().getVoltLvl().getNominalVoltage())
+        || !transformer3W.getType().getvRatedC().equals(transformer3W.getNodeC().getVoltLvl().getNominalVoltage()))
+      throw new InvalidEntityException(
+              "Rated voltages of transformer do not equal voltage levels at the nodes", transformer3W);
   }
 
   /**

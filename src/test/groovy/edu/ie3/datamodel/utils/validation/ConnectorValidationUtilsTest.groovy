@@ -110,10 +110,11 @@ class ConnectorValidationUtilsTest extends Specification {
 		ex.message == expectedException.message
 
 		where:
-		invalidTransformer2W                                                                                                     || expectedException
-		GridTestData.transformerBtoD.copy().tapPos(100).build()                                                                  || new InvalidEntityException("Tap position of transformer is outside of bounds", invalidTransformer2W)
-		GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().voltLvl(GermanVoltageLevelUtils.HV).build()).build() || new InvalidEntityException("Transformer connects nodes of the same voltage level", invalidTransformer2W)
-		GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().subnet(2).build()).build()                           || new InvalidEntityException("Transformer connects nodes in the same subnet", invalidTransformer2W)
+		invalidTransformer2W                                                                                                     		|| expectedException
+		GridTestData.transformerBtoD.copy().tapPos(100).build()                                                                  		|| new InvalidEntityException("Tap position of transformer is outside of bounds", invalidTransformer2W)
+		GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().voltLvl(GermanVoltageLevelUtils.HV).build()).build() 		|| new InvalidEntityException("Transformer connects nodes of the same voltage level", invalidTransformer2W)
+		GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().subnet(2).build()).build()                           		|| new InvalidEntityException("Transformer connects nodes in the same subnet", invalidTransformer2W)
+		GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().voltLvl(GermanVoltageLevelUtils.MV_30KV).build()).build() 	|| new InvalidEntityException("Rated voltages of transformer do not equal voltage levels at the nodes", invalidTransformer2W)
 	}
 
 	def "Smoke Test: Correct transformer2W type throws no exception"() {
@@ -181,10 +182,11 @@ class ConnectorValidationUtilsTest extends Specification {
 		ex.message == expectedException.message
 
 		where:
-		invalidTransformer3W             	                                                                                        || expectedException
-		GridTestData.transformerAtoBtoC.copy().tapPos(100).build()                                                                  || new InvalidEntityException("Tap position of transformer is outside of bounds", invalidTransformer3W)
-		GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().voltLvl(GermanVoltageLevelUtils.HV).build()).build() || new InvalidEntityException("Transformer connects nodes of the same voltage level", invalidTransformer3W)
-		GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().subnet(2).build()).build()                           || new InvalidEntityException("Transformer connects nodes in the same subnet", invalidTransformer3W)
+		invalidTransformer3W             	                                                                                        		|| expectedException
+		GridTestData.transformerAtoBtoC.copy().tapPos(100).build()                                                                  		|| new InvalidEntityException("Tap position of transformer is outside of bounds", invalidTransformer3W)
+		GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().voltLvl(GermanVoltageLevelUtils.HV).build()).build() 		|| new InvalidEntityException("Transformer connects nodes of the same voltage level", invalidTransformer3W)
+		GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().subnet(2).build()).build()                           		|| new InvalidEntityException("Transformer connects nodes in the same subnet", invalidTransformer3W)
+		GridTestData.transformerAtoBtoC.copy().nodeA(GridTestData.nodeA.copy().voltLvl(GermanVoltageLevelUtils.MV_30KV).build()).build() 	|| new InvalidEntityException("Rated voltages of transformer do not equal voltage levels at the nodes", invalidTransformer3W)
 	}
 
 	def "Smoke Test: Correct transformer3W type throws no exception"() {

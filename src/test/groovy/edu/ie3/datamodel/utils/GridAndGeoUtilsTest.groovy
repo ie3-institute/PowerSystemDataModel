@@ -132,6 +132,7 @@ class GridAndGeoUtilsTest extends Specification {
 		y.isLessThanOrEqualTo(Quantities.getQuantity(12323.99+15, KILOMETRE))
 		// Value from Google Maps, error range of +-15
 		// TODO NSteffan: Let check -> I use calcHaversine with (X1, Y1, X2, Y2), in other places it is used with (Y1, X1, Y2, X2)
+		//  -> what is latitude, what is longitude?
 		//  Luftlinie.org says my version is right, but with small error
 		//  https://www.luftlinie.org/51.48386110716543,%207.498165075275441/3.4884439989616043,137.87593281832065
 		//  Luftlinie.org says 12.323.99 km
