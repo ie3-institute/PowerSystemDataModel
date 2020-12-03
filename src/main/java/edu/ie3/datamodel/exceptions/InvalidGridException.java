@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.exceptions;
 
-public class InvalidGridException extends ValidationException {
+public class InvalidGridException extends IllegalArgumentException {
   public InvalidGridException(String message) {
     super(message);
   }

@@ -35,11 +35,13 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
       checkThermalSink((ThermalSinkInput) thermalUnitInput);
     else if (ThermalStorageInput.class.isAssignableFrom(thermalUnitInput.getClass()))
       checkThermalStorage((ThermalStorageInput) thermalUnitInput);
-    else
-      throw new ValidationException(
+    else {
+      String message =
           "Cannot validate object of class '"
               + thermalUnitInput.getClass().getSimpleName()
-              + "', as no routine is implemented.");
+              + "', as no routine is implemented.";
+      throw new ValidationException(message);
+    }
   }
 
   /**
@@ -58,11 +60,13 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     // Further checks for subclasses
     if (ThermalHouseInput.class.isAssignableFrom(thermalSinkInput.getClass()))
       checkThermalHouse((ThermalHouseInput) thermalSinkInput);
-    else
-      throw new ValidationException(
+    else {
+      String message =
           "Cannot validate object of class '"
               + thermalSinkInput.getClass().getSimpleName()
-              + "', as no routine is implemented.");
+              + "', as no routine is implemented.";
+      throw new ValidationException(message);
+    }
   }
 
   /**
@@ -81,11 +85,13 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     // Further checks for subclasses
     if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass()))
       checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput);
-    else
-      throw new ValidationException(
+    else {
+      String message =
           "Cannot validate object of class '"
               + thermalStorageInput.getClass().getSimpleName()
-              + "', as no routine is implemented.");
+              + "', as no routine is implemented.";
+      throw new ValidationException(message);
+    }
   }
 
   /**

@@ -52,10 +52,11 @@ public class ValidationUtils {
     else if (AssetTypeInput.class.isAssignableFrom(obj.getClass()))
       checkAssetType((AssetTypeInput) obj);
     else {
-      throw new ValidationException(
+      String message =
           "Cannot validate object of class '"
               + obj.getClass().getSimpleName()
-              + "', as no routine is implemented.");
+              + "', as no routine is implemented.";
+      throw new ValidationException(message);
     }
   }
 
@@ -109,10 +110,11 @@ public class ValidationUtils {
     else if (ThermalUnitInput.class.isAssignableFrom(assetInput.getClass()))
       ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput);
     else {
-      throw new ValidationException(
+      String message =
           "Cannot validate object of class '"
               + assetInput.getClass().getSimpleName()
-              + "', as no routine is implemented.");
+              + "', as no routine is implemented.";
+      throw new ValidationException(message);
     }
   }
 
@@ -142,7 +144,7 @@ public class ValidationUtils {
       ConnectorValidationUtils.checkTransformer2WType((Transformer2WTypeInput) assetTypeInput);
     else if (Transformer3WTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
       ConnectorValidationUtils.checkTransformer3WType((Transformer3WTypeInput) assetTypeInput);
-    else if (SystemParticipantTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+    else if (SystemParticipantTypeInput.class.isAssignableFrom(assetTypeInput.getClass())) {
       if (BmTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
         SystemParticipantValidationUtils.checkBmType((BmTypeInput) assetTypeInput);
       else if (ChpTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
@@ -155,19 +157,19 @@ public class ValidationUtils {
         SystemParticipantValidationUtils.checkStorageType((StorageTypeInput) assetTypeInput);
       else if (WecTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
         SystemParticipantValidationUtils.checkWecType((WecTypeInput) assetTypeInput);
-      // else if (ChargingPointType.class.isAssignableFrom(assetTypeInput.getClass()))
-      //   SystemParticipantValidationUtils.checkEvcsType((ChargingPointType) assetTypeInput);
       else {
-        throw new ValidationException(
+        String message =
             "Cannot validate object of class '"
                 + assetTypeInput.getClass().getSimpleName()
-                + "', as no routine is implemented.");
+                + "', as no routine is implemented.";
+        throw new ValidationException(message);
       }
-    else {
-      throw new ValidationException(
+    } else {
+      String message =
           "Cannot validate object of class '"
               + assetTypeInput.getClass().getSimpleName()
-              + "', as no routine is implemented.");
+              + "', as no routine is implemented.";
+      throw new ValidationException(message);
     }
   }
 
