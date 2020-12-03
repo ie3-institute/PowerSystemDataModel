@@ -44,9 +44,7 @@ public class TarballUtils {
    * @param source source path to compress
    * @param archiveFile path of the target archive file
    * @throws FileException If unable to create the file
-   * @deprecated replaced by #compress(String, String, boolean) in linked class FileIOUtils. The
-   *     file paths are now passed as Strings and there is a need to mention whether a directory has
-   *     to be compressed or a single file.
+   * @deprecated replaced by #compressDir(Path, Path) in linked class FileIOUtils
    * @see <a
    *     href="https://github.com/ie3-institute/PowerSystemUtils/blob/master/src/main/java/edu/ie3/util/io/FileIOUtils.java">FileIOUtils</a>
    */
