@@ -114,12 +114,12 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Validates a line type if: <br>
    * - it is not null <br>
-   * - B >= 0 (Phase-to-ground susceptance per length) <br>
-   * - G >= 0 (Phase-to-ground conductance per length) <br>
-   * - R > 0 (Phase resistance per length) <br>
-   * - X > 0 (Phase reactance per length) <br>
-   * - iMax > 0 (Maximum permissible current) <br>
-   * - vRated > 0 (Rated voltage)
+   * - B is greater/equal to 0 (Phase-to-ground susceptance per length) <br>
+   * - G is greater/equal to 0 (Phase-to-ground conductance per length) <br>
+   * - R is greater 0 (Phase resistance per length) <br>
+   * - X is greater 0 (Phase reactance per length) <br>
+   * - iMax is greater 0 (Maximum permissible current) <br>
+   * - vRated is greater 0 (Rated voltage)
    *
    * @param lineType Line type to validate
    */
@@ -179,15 +179,15 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Validates a transformer2W type if: <br>
    * - it is not null <br>
-   * - rSc > 0 (short circuit resistance) <br>
-   * - xSc > 0 (short circuit impedance) <br>
-   * - gM >= 0 (no load conductance) <br>
-   * - bM >= 0 (no load susceptance) <br>
-   * - sRated > 0 (rated apparent power) <br>
-   * - vRatedA > 0 (rated voltage at higher voltage terminal) <br>
-   * - vRatedB > 0 (rated voltage at lower voltage terminal) <br>
-   * - dV > 0% and dV <= 100% (voltage magnitude increase per tap position <br>
-   * - dPhi >= 0 (voltage angle increase per tap position) <br>
+   * - rSc is greater 0 (short circuit resistance) <br>
+   * - xSc is greater 0 (short circuit impedance) <br>
+   * - gM is greater/equal to 0 (no load conductance) <br>
+   * - bM is greater/equal to 0 (no load susceptance) <br>
+   * - sRated is greater 0 (rated apparent power) <br>
+   * - vRatedA is greater 0 (rated voltage at higher voltage terminal) <br>
+   * - vRatedB is greater 0 (rated voltage at lower voltage terminal) <br>
+   * - dV is between 0% and 100% (voltage magnitude increase per tap position <br>
+   * - dPhi is greater/equal to 0 (voltage angle increase per tap position) <br>
    * - neutral tap position is between min and max tap position <br>
    * - minimum tap position is smaller than maximum tap position
    *
@@ -281,14 +281,14 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Validates a transformer3W type if: <br>
    * - it is not null <br>
-   * - rScA, rScB, rScC > 0 (short circuit resistance in branches A,B,C) <br>
-   * - xScA, xScB, xScC > 0 (short circuit impedance in branches A,B,C) <br>
-   * - gM >= 0 (no load conductance) <br>
-   * - bM >= 0 (no load susceptance) <br>
-   * - sRatedA, sRatedB, sRatedC > 0 (rated apparent power in branches A,B,C) <br>
-   * - vRatedA, vRatedB, vRatedC > 0 (rated voltage at higher node A,B,C) <br>
-   * - dV > 0% and dV <= 100% (voltage magnitude increase per tap position <br>
-   * - dPhi >= 0 (voltage angle increase per tap position) <br>
+   * - rScA, rScB, rScC are greater 0 (short circuit resistance in branches A,B,C) <br>
+   * - xScA, xScB, xScC are greater 0 (short circuit impedance in branches A,B,C) <br>
+   * - gM is greater/equal to 0 (no load conductance) <br>
+   * - bM is greater/equal to 0 (no load susceptance) <br>
+   * - sRatedA, sRatedB, sRatedC are greater 0 (rated apparent power in branches A,B,C) <br>
+   * - vRatedA, vRatedB, vRatedC are greater 0 (rated voltage at higher node A,B,C) <br>
+   * - dV is between 0% and 100% (voltage magnitude increase per tap position <br>
+   * - dPhi is greater/equal to 0 (voltage angle increase per tap position) <br>
    * - neutral tap position is between min and max tap position <br>
    * - minimum tap position is smaller than maximum tap position <br>
    *
