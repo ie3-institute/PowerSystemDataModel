@@ -36,7 +36,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.*
  */
 class GridTestData {
 
-	private static final GeoJsonReader geoJsonReader = new GeoJsonReader()
+	public static final GeoJsonReader geoJsonReader = new GeoJsonReader()
 
 	public static final OperationTime defaultOperationTime = OperationTime.builder().
 	withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).

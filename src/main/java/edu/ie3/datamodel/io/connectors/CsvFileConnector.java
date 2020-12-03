@@ -39,16 +39,19 @@ public class CsvFileConnector implements DataConnector {
       new HashMap<>();
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
   private final FileNamingStrategy fileNamingStrategy;
-  private final String baseFolderName;
+  private final String baseDirectoryName;
 
   private static final String FILE_ENDING = ".csv";
+  private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
+  private static final String FILE_SEPARATOR_REPLACEMENT =
+      File.separator.equals("\\") ? "\\\\" : "/";
 
-  public CsvFileConnector(String baseFolderName, FileNamingStrategy fileNamingStrategy) {
-    this.baseFolderName = baseFolderName;
+  public CsvFileConnector(String baseDirectoryName, FileNamingStrategy fileNamingStrategy) {
+    this.baseDirectoryName = baseDirectoryName;
     this.fileNamingStrategy = fileNamingStrategy;
   }
 
-  public BufferedCsvWriter getOrInitWriter(
+  public synchronized BufferedCsvWriter getOrInitWriter(
       Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep)
       throws ConnectorException {
     /* Try to the the right writer */
@@ -58,7 +61,7 @@ public class CsvFileConnector implements DataConnector {
     /* If it is not available, build and register one */
     try {
       CsvFileDefinition fileDefinition = buildFileDefinition(clz, headerElements, csvSep);
-      BufferedCsvWriter newWriter = initWriter(baseFolderName, fileDefinition);
+      BufferedCsvWriter newWriter = initWriter(baseDirectoryName, fileDefinition);
 
       entityWriters.put(clz, newWriter);
       return newWriter;
@@ -68,7 +71,7 @@ public class CsvFileConnector implements DataConnector {
     }
   }
 
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  public synchronized <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       BufferedCsvWriter getOrInitWriter(T timeSeries, String[] headerElements, String csvSep)
           throws ConnectorException {
     /* Try to the the right writer */
@@ -78,7 +81,7 @@ public class CsvFileConnector implements DataConnector {
     /* If it is not available, build and register one */
     try {
       CsvFileDefinition fileDefinition = buildFileDefinition(timeSeries, headerElements, csvSep);
-      BufferedCsvWriter newWriter = initWriter(baseFolderName, fileDefinition);
+      BufferedCsvWriter newWriter = initWriter(baseDirectoryName, fileDefinition);
 
       timeSeriesWriters.put(timeSeries.getUuid(), newWriter);
       return newWriter;
@@ -100,7 +103,8 @@ public class CsvFileConnector implements DataConnector {
   private BufferedCsvWriter initWriter(String baseDirectory, CsvFileDefinition fileDefinition)
       throws ConnectorException, IOException {
     /* Join the full DIRECTORY path (excluding file name) */
-    String baseDirectoryHarmonized = baseDirectory.replaceAll("[/\\\\]", File.separator);
+    String baseDirectoryHarmonized =
+        baseDirectory.replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT);
     String fullDirectoryPath =
         FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getDirectoryPath());
     String fullPath = FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getFilePath());
@@ -137,14 +141,11 @@ public class CsvFileConnector implements DataConnector {
    * @throws FileNotFoundException If the matching file cannot be found
    */
   public BufferedReader initReader(Class<? extends UniqueEntity> clz) throws FileNotFoundException {
-
-    BufferedReader newReader;
-
-    String fileName = null;
+    String filePath = null;
     try {
-      fileName =
+      filePath =
           fileNamingStrategy
-              .getFileName(clz)
+              .getFilePath(clz)
               .orElseThrow(
                   () ->
                       new ConnectorException(
@@ -157,41 +158,39 @@ public class CsvFileConnector implements DataConnector {
           clz::getSimpleName,
           () -> e);
     }
-    newReader = initReader(fileName);
-
-    return newReader;
+    return initReader(filePath);
   }
 
   /**
    * Initializes a file reader for the given file name. Use {@link
    * CsvFileConnector#initReader(Class)} for files that actually correspond to concrete entities.
    *
-   * @param fileName the name of the file that should be read
+   * @param filePath sub directory tree starting from base folder, including file name
    * @return the reader that contains information about the file to be read in
    * @throws FileNotFoundException if no file with the provided file name can be found
    */
-  public BufferedReader initReader(String fileName) throws FileNotFoundException {
-    BufferedReader newReader;
-    File filePath = new File(baseFolderName + File.separator + fileName + FILE_ENDING);
-    newReader =
-        new BufferedReader(
-            new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8), 16384);
-    return newReader;
+  public BufferedReader initReader(String filePath) throws FileNotFoundException {
+    File fullPath = new File(baseDirectoryName + File.separator + filePath + FILE_ENDING);
+    return new BufferedReader(
+        new InputStreamReader(new FileInputStream(fullPath), StandardCharsets.UTF_8), 16384);
   }
 
   /**
-   * Initialises all readers for time series. They are given back grouped by the column scheme in
-   * order to allow for accounting the different content types.
+   * Initialises the readers for time series with the specified column schemes. They are given back
+   * grouped by the column scheme in order to allow for accounting the different content types.
    *
+   * @param columnSchemes the column schemes to initialize readers for. If no scheme is given, all
+   *     possible readers will be initialized.
    * @return A mapping from column type to respective readers
    */
-  public Map<ColumnScheme, Set<TimeSeriesReadingData>> initTimeSeriesReader() {
+  public Map<ColumnScheme, Set<TimeSeriesReadingData>> initTimeSeriesReader(
+      ColumnScheme... columnSchemes) {
     return getIndividualTimeSeriesFilePaths()
         .parallelStream()
         .map(
             pathString -> {
               String filePathWithoutEnding = removeFileEnding(pathString);
-              return buildReadingData(filePathWithoutEnding);
+              return buildReadingData(filePathWithoutEnding, columnSchemes);
             })
         .filter(Optional::isPresent)
         .map(Optional::get)
@@ -205,10 +204,10 @@ public class CsvFileConnector implements DataConnector {
    * @return A set of relative paths to time series files, with respect to the base folder path
    */
   private Set<String> getIndividualTimeSeriesFilePaths() {
-    Path baseFolderPath = Paths.get(baseFolderName);
-    try (Stream<Path> pathStream = Files.walk(baseFolderPath)) {
+    Path baseDirectoryPath = Paths.get(baseDirectoryName);
+    try (Stream<Path> pathStream = Files.walk(baseDirectoryPath)) {
       return pathStream
-          .map(baseFolderPath::relativize)
+          .map(baseDirectoryPath::relativize)
           .filter(
               path -> {
                 String withoutEnding = removeFileEnding(path.toString());
@@ -226,14 +225,17 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
-   * Compose the needed information for reading in a single time series. If either the file points
-   * to a non-individual time series or the initialisation of the reader does not work, an empty
-   * {@link Optional} is given back
+   * Compose the needed information for reading in a single time series. If the file points to a
+   * non-individual time series or a time series of a column scheme other than the specified ones,
+   * or the initialisation of the reader does not work, an empty {@link Optional} is given back
    *
    * @param filePathString String describing the path to the time series file
+   * @param columnSchemes the allowed column schemes. If no scheme is specified, all schemes are
+   *     allowed.
    * @return An {@link Optional} to {@link TimeSeriesReadingData}
    */
-  private Optional<TimeSeriesReadingData> buildReadingData(String filePathString) {
+  private Optional<TimeSeriesReadingData> buildReadingData(
+      String filePathString, ColumnScheme... columnSchemes) {
     try {
       FileNameMetaInformation metaInformation =
           fileNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
@@ -246,6 +248,19 @@ public class CsvFileConnector implements DataConnector {
 
       IndividualTimeSeriesMetaInformation individualMetaInformation =
           (IndividualTimeSeriesMetaInformation) metaInformation;
+
+      // If no column schemes are specified, we will include all. If there a specified schemes, we
+      // check if the file's column scheme matches any of them
+      if (columnSchemes != null
+          && columnSchemes.length > 0
+          && Stream.of(columnSchemes)
+              .noneMatch(scheme -> scheme.equals(individualMetaInformation.getColumnScheme()))) {
+        log.warn(
+            "The column scheme of the time series file {} does not match any of the specified column schemes ({}), so it will not be processed.",
+            filePathString,
+            columnSchemes);
+        return Optional.empty();
+      }
 
       BufferedReader reader = initReader(filePathString);
       return Optional.of(

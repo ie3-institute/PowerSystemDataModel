@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   added electric vehicle charging station implementation ``EvcsInput``
 -   reading time series from csv files (including a container object to hold the different types of time series)
 -   reading mapping from participant uuid to time series uuid including a mapping object for easy access to time series
+-   Couchbase, SQL and CSV connectors and sources for weather data
 
 ### Changed
 -   BREAKING: replaced [Unit API 1.0](https://github.com/unitsofmeasurement/uom-se) (JSR 363, tec.uom.se) with [Unit API 2.0](https://github.com/unitsofmeasurement/indriya) (JSR 385, tech.units.indriya)
@@ -21,6 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   added coordinate distance sort method to GridAndGeoUtils
 -   BREAKING: Harmonized field naming for time information
 -   BREAKING: Properly applying snake case to result file names
+
+### Fixed
+- InfluxDbConnector now keeps session instead of creating a new one each call
+(resolves [#247](https://github.com/ie3-institute/PowerSystemDataModel/issues/247)
+and [#248](https://github.com/ie3-institute/PowerSystemDataModel/issues/248))
 
 ## [1.1.0] - 2020-09-15
 

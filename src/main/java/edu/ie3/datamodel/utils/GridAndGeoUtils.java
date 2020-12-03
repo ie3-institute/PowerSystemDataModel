@@ -104,10 +104,14 @@ public class GridAndGeoUtils extends GeoUtils {
       return buildSafeLineStringBetweenPoints(lineString.getStartPoint(), lineString.getEndPoint());
     } else {
       // rebuild line with unique points
-      Set<Coordinate> uniqueCoords = new HashSet<>(Arrays.asList(lineString.getCoordinates()));
-      return uniqueCoords.size() == 1
+      /* Please note, that using a simple HashSet here to obtain uniqueness is harmful, as it not necessarily maintains
+       * the order of coordinates (but most likely will). Additionally, the behaviour of a HashSet might change with the
+       * JVM (version) you use to execute the code. */
+      Coordinate[] uniqueCoords =
+          Arrays.stream(lineString.getCoordinates()).distinct().toArray(Coordinate[]::new);
+      return uniqueCoords.length == 1
           ? buildSafeLineStringBetweenPoints(lineString.getStartPoint(), lineString.getEndPoint())
-          : DEFAULT_GEOMETRY_FACTORY.createLineString(uniqueCoords.toArray(new Coordinate[0]));
+          : DEFAULT_GEOMETRY_FACTORY.createLineString(uniqueCoords);
     }
   }
 

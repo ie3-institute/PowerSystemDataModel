@@ -20,30 +20,58 @@ import javax.measure.quantity.Length
 
 class GridAndGeoUtilsTest extends Specification {
 
-
 	def "The GridAndGeoUtils should build a line string with two exact equal geo coordinates correctly avoiding the known bug in jts geometry"() {
 		given:
 		def line = GridTestData.geoJsonReader.read(lineString) as LineString
 
-		expect:
+		when:
 		def safeLineString = GridAndGeoUtils.buildSafeLineString(line)
-		safeLineString.getCoordinates() as List == coordinates
+		def actualCoordinates = safeLineString.getCoordinates()
+
+		then:
+		coordinates.length == actualCoordinates.length
+		for(int cnt = 0; cnt < coordinates.length; cnt++){
+			coordinates[cnt] == actualCoordinates[cnt]
+		}
 
 		where:
 		lineString                                                                                                                            | coordinates
 		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228]]}"                                           | [
 			new Coordinate(7.4111110000001, 51.4922800000001),
 			new Coordinate(7.411111, 51.49228)
-		]
+		] as Coordinate[]
 		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228]]}" | [
 			new Coordinate(7.4111110000001, 51.4922800000001),
 			new Coordinate(7.411111, 51.49228)
-		]
+		] as Coordinate[]
 		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.311111, 51.49228],[7.511111, 51.49228]]}" | [
-			new Coordinate(7.311111, 51.49228),
 			new Coordinate(7.411111, 51.49228),
+			new Coordinate(7.311111, 51.49228),
 			new Coordinate(7.511111, 51.49228)
-		]
+		] as Coordinate[]
+	}
+
+	def "The GridAngGeoUtils maintain the correct order of coordinates, when overhauling a given LineString"() {
+		/* Remark: This test might even NOT fail, if the method is implemented incorrectly (utilizing a HashSet to
+		 * maintain uniqueness). For detailed explanation cf. comment in method's implementation. */
+		given:
+		def coordinates = [
+			new Coordinate(51.49292, 7.41197),
+			new Coordinate(51.49333, 7.41183),
+			new Coordinate(51.49341, 7.41189),
+			new Coordinate(51.49391, 7.41172),
+			new Coordinate(51.49404, 7.41279)
+		] as Coordinate[]
+		def lineString = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createLineString(coordinates)
+
+		when:
+		def actual = GridAndGeoUtils.buildSafeLineString(lineString).coordinates
+
+		then:
+		coordinates.length == actual.length
+		for(int cnt = 0; cnt < coordinates.length; cnt++){
+			coordinates[cnt] == actual[cnt]
+		}
 	}
 
 	def "The GridAndGeoUtils should only modify a provided Coordinate as least as possible"() {

@@ -6,10 +6,10 @@
 package edu.ie3.datamodel.io.connectors;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.influxdb.BatchOptions;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Pong;
@@ -24,6 +24,13 @@ import org.influxdb.dto.QueryResult;
  * metadata. A measurement name is the equivalent of the name of a table in relational data models.
  */
 public class InfluxDbConnector implements DataConnector {
+
+  /* default scenario parameter when no scenario is provided */
+  public static final String NO_SCENARIO = "no_scenario";
+
+  /* default scenario parameter for weather data */
+  public static final String WEATHER_SCENARIO = "weather_scenario";
+
   /** Merges two sets of (fieldName to fieldValue) maps */
   private static final BinaryOperator<Set<Map<String, String>>> mergeSets =
       (maps, maps2) -> {
@@ -31,11 +38,51 @@ public class InfluxDbConnector implements DataConnector {
         return maps;
       };
 
-  private static final String INFLUXDB_URL = "http://localhost:8086/";
-  private static final String INFLUXDB_DATABASE_NAME = "ie3_in";
-  private final String databaseName;
   private final String scenarioName;
-  private final String url;
+  private final InfluxDB session;
+
+  /**
+   * Initializes a new InfluxDbConnector with the given url, databaseName and scenario name.
+   *
+   * @param url the connection url for the influxDB database
+   * @param scenarioName the name of the simulation scenario which will be used in influxDB
+   *     measurement names
+   * @param databaseName the name of the database the session should be set to
+   * @param createDb true if the connector should create the database if it doesn't exist yet, false
+   *     otherwise
+   * @param logLevel log level of the {@link InfluxDB.LogLevel} logger
+   * @param batchOptions write options to write batch operations
+   */
+  public InfluxDbConnector(
+      String url,
+      String databaseName,
+      String scenarioName,
+      boolean createDb,
+      InfluxDB.LogLevel logLevel,
+      BatchOptions batchOptions) {
+    this(InfluxDBFactory.connect(url), scenarioName, databaseName, createDb);
+    this.session.setLogLevel(logLevel);
+    this.session.enableBatch(batchOptions);
+  }
+
+  /**
+   * Initializes a new InfluxDbConnector with the given influxDb session, the databaseName and
+   * scenario name.
+   *
+   * @param session the influxdb session that should be managed by this connector
+   * @param scenarioName the name of the scenario
+   * @param databaseName the name of the database the session should be set to
+   * @param createDb true if the connector should create the database if it doesn't exist yet, false
+   *     otherwise
+   */
+  public InfluxDbConnector(
+      InfluxDB session, String scenarioName, String databaseName, boolean createDb) {
+    this.scenarioName = scenarioName;
+    this.session = session;
+
+    session.setDatabase(databaseName);
+    if (createDb) createDb(databaseName);
+  }
 
   /**
    * Initializes a new InfluxDbConnector with the given url, databaseName and scenario name.
@@ -46,28 +93,28 @@ public class InfluxDbConnector implements DataConnector {
    *     measurement names
    */
   public InfluxDbConnector(String url, String databaseName, String scenarioName) {
-    this.url = url;
-    this.databaseName = databaseName;
-    this.scenarioName = scenarioName;
+    this(url, databaseName, scenarioName, true, InfluxDB.LogLevel.NONE, BatchOptions.DEFAULTS);
   }
 
   /**
-   * Initializes a new InfluxDbConnector with the given url and databaseName and no scenario name.
-   * Consider using a scenario name if you plan to persist results using this connector.
+   * Initializes a new InfluxDbConnector with the given url, databaseName and {@link #NO_SCENARIO}
+   * as scenario parameter
    *
    * @param url the connection url for the influxDB database
    * @param databaseName the name of the database to which the connection should be established
    */
   public InfluxDbConnector(String url, String databaseName) {
-    this(url, databaseName, null);
+    this(url, databaseName, NO_SCENARIO, true, InfluxDB.LogLevel.NONE, BatchOptions.DEFAULTS);
   }
 
   /**
-   * Initializes a new InfluxDbConnector with the default URL {@link #INFLUXDB_URL}, database name
-   * {@link #INFLUXDB_DATABASE_NAME} and no scenario name
+   * Create the database of this connector if it doesn't exist yet
+   *
+   * @param databaseName the name of the database that should be created
+   * @return the result of the create database query
    */
-  public InfluxDbConnector() {
-    this(INFLUXDB_URL, INFLUXDB_DATABASE_NAME);
+  public final QueryResult createDb(String databaseName) {
+    return session.query(new Query("CREATE DATABASE " + databaseName, databaseName));
   }
 
   /**
@@ -76,8 +123,6 @@ public class InfluxDbConnector implements DataConnector {
    * @return true, if the database returned the ping
    */
   public Boolean isConnectionValid() {
-    InfluxDB session = getSession();
-    if (session == null) return false;
     Pong response = session.ping();
     session.close();
     return !response.getVersion().equalsIgnoreCase("unknown");
@@ -85,26 +130,16 @@ public class InfluxDbConnector implements DataConnector {
 
   @Override
   public void shutdown() {
-    // no cleanup actions necessary
-  }
-
-  public String getDatabaseName() {
-    return databaseName;
+    session.close(); // release async writing resources and flushes the batch if batch is enabled
+    // (blocking!)
   }
 
   /**
-   * Creates a session using the given connection parameters. If no database with the given name
-   * exists, one is created.
+   * Return the session of this connector
    *
-   * @return Autocloseable InfluxDB session
+   * @return influx db session
    */
   public InfluxDB getSession() {
-    InfluxDB session;
-    session = InfluxDBFactory.connect(url);
-    session.setDatabase(databaseName);
-    session.query(new Query("CREATE DATABASE " + databaseName, databaseName));
-    session.setLogLevel(InfluxDB.LogLevel.NONE);
-    session.enableBatch(100000, 5, TimeUnit.SECONDS);
     return session;
   }
 

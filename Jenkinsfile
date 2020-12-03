@@ -143,7 +143,18 @@ node {
                                      file(credentialsId: mavenCentralSignKeyFileId, variable: 'mavenCentralKeyFile'),
                                      usernamePassword(credentialsId: mavenCentralSignKeyId, passwordVariable: 'signingPassword', usernameVariable: 'signingKeyId')]) {
 
-                        String deployGradleTasks = "--refresh-dependencies clean test " +
+                        /*
+                         * There is a known bug in JavaDoc generation in JDK 8. Therefore generate the JavaDoc with JDK
+                         * 11 first and do the rest of the tasks with JDK 8. IMPORTANT: Do not issue 'clean' in the
+                         * following task
+                         */
+                        sh(
+                                script: """set +x && cd $projectName""" +
+                                ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/usr/local/openjdk-11''',
+                                returnStdout: true
+                        )
+
+                        String deployGradleTasks = "--refresh-dependencies test " +
                                 "publish -Puser=${env.mavencentral_username} " +
                                 "-Ppassword=${env.mavencentral_password} " +
                                 "-Psigning.keyId=${env.signingKeyId} " +

@@ -18,7 +18,7 @@ ext {
 	//version (changing these should be considered thoroughly!)
 	javaVersion = JavaVersion.VERSION_1_8
 	tscfgVersion = '0.9.9'
-	testcontainersVersion = '1.14.1'
+	testcontainersVersion = '1.15.0'
 
 	scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -52,8 +52,7 @@ repositories {
 
 dependencies {
 	//	 ie³ power system utils
-	/* FIXME: Use stable version, as soon as release is available */
-	compile 'com.github.ie3-institute:PowerSystemUtils:1.4-SNAPSHOT'
+	compile 'com.github.ie3-institute:PowerSystemUtils:1.4'
 
 	implementation 'tech.units:indriya:2.0.4'
 
@@ -73,16 +72,19 @@ dependencies {
 	testCompile "org.testcontainers:testcontainers:$testcontainersVersion"
 	testCompile "org.testcontainers:spock:$testcontainersVersion"
 	testCompile "org.testcontainers:influxdb:$testcontainersVersion"
+	testCompile "org.testcontainers:postgresql:$testcontainersVersion"
+	testCompile "org.testcontainers:couchbase:$testcontainersVersion"
 
 	// logging
 	compile 'org.apache.logging.log4j:log4j-api:+' // log4j
 	compile 'org.apache.logging.log4j:log4j-core:+' // log4j
 	compile 'org.apache.logging.log4j:log4j-slf4j-impl:+' // log4j -> slf4j
 
-	//InfluxDb
+	// Databases
 	compile 'org.influxdb:influxdb-java:2.17'
+	compile 'com.couchbase.client:java-client:3.0.0'
 
-	compile 'commons-io:commons-io:+' // I/O functionalities
+	compile 'commons-io:commons-io:2.8.0' // I/O functionalities
 	compile 'org.apache.commons:commons-compress:+' // I/O functionalities
 }
 
