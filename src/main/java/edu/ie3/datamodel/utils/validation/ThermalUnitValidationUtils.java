@@ -17,6 +17,9 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
+  static String errorMessage1 = "Cannot validate object of class '";
+  static String errorMessage2 = "', as no routine is implemented.";
+
   /**
    * Validates a thermal unit if: <br>
    * - it is not null <br>
@@ -35,13 +38,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
       checkThermalSink((ThermalSinkInput) thermalUnitInput);
     else if (ThermalStorageInput.class.isAssignableFrom(thermalUnitInput.getClass()))
       checkThermalStorage((ThermalStorageInput) thermalUnitInput);
-    else {
-      String message =
-          "Cannot validate object of class '"
-              + thermalUnitInput.getClass().getSimpleName()
-              + "', as no routine is implemented.";
-      throw new ValidationException(message);
-    }
+    else
+      throw new ValidationException(errorMessage1 + thermalUnitInput.getClass().getSimpleName() + errorMessage2);
   }
 
   /**
@@ -60,13 +58,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     // Further checks for subclasses
     if (ThermalHouseInput.class.isAssignableFrom(thermalSinkInput.getClass()))
       checkThermalHouse((ThermalHouseInput) thermalSinkInput);
-    else {
-      String message =
-          "Cannot validate object of class '"
-              + thermalSinkInput.getClass().getSimpleName()
-              + "', as no routine is implemented.";
-      throw new ValidationException(message);
-    }
+    else
+      throw new ValidationException(errorMessage1 + thermalSinkInput.getClass().getSimpleName() + errorMessage2);
   }
 
   /**
@@ -85,13 +78,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     // Further checks for subclasses
     if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass()))
       checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput);
-    else {
-      String message =
-          "Cannot validate object of class '"
-              + thermalStorageInput.getClass().getSimpleName()
-              + "', as no routine is implemented.";
-      throw new ValidationException(message);
-    }
+    else
+      throw new ValidationException(errorMessage1 + thermalStorageInput.getClass().getSimpleName() + errorMessage2);
   }
 
   /**
