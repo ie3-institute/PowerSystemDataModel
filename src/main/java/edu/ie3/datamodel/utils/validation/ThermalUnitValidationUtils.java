@@ -39,7 +39,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     else if (ThermalStorageInput.class.isAssignableFrom(thermalUnitInput.getClass()))
       checkThermalStorage((ThermalStorageInput) thermalUnitInput);
     else
-      throw new ValidationException(errorMessage1 + thermalUnitInput.getClass().getSimpleName() + errorMessage2);
+      throw new ValidationException(
+          errorMessage1 + thermalUnitInput.getClass().getSimpleName() + errorMessage2);
   }
 
   /**
@@ -59,7 +60,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     if (ThermalHouseInput.class.isAssignableFrom(thermalSinkInput.getClass()))
       checkThermalHouse((ThermalHouseInput) thermalSinkInput);
     else
-      throw new ValidationException(errorMessage1 + thermalSinkInput.getClass().getSimpleName() + errorMessage2);
+      throw new ValidationException(
+          errorMessage1 + thermalSinkInput.getClass().getSimpleName() + errorMessage2);
   }
 
   /**
@@ -79,7 +81,8 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass()))
       checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput);
     else
-      throw new ValidationException(errorMessage1 + thermalStorageInput.getClass().getSimpleName() + errorMessage2);
+      throw new ValidationException(
+          errorMessage1 + thermalStorageInput.getClass().getSimpleName() + errorMessage2);
   }
 
   /**

@@ -91,7 +91,7 @@ public class ValidationUtils {
           throw new InvalidEntityException(
               "Operation start time of the asset has to be before end time", assetInput);
       } else
-          throw new InvalidEntityException(
+        throw new InvalidEntityException(
             "Start and/or end time of operation time is null, although operation should be limited",
             assetInput);
     }
@@ -108,7 +108,8 @@ public class ValidationUtils {
     else if (ThermalUnitInput.class.isAssignableFrom(assetInput.getClass()))
       ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput);
     else
-      throw new ValidationException(errorMessage1 + assetInput.getClass().getSimpleName() + errorMessage2);
+      throw new ValidationException(
+          errorMessage1 + assetInput.getClass().getSimpleName() + errorMessage2);
   }
 
   /**
@@ -151,10 +152,11 @@ public class ValidationUtils {
       else if (WecTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
         SystemParticipantValidationUtils.checkWecType((WecTypeInput) assetTypeInput);
       else
-        throw new ValidationException(errorMessage1 + assetTypeInput.getClass().getSimpleName() + errorMessage2);
-    }
-    else
-      throw new ValidationException(errorMessage1 + assetTypeInput.getClass().getSimpleName() + errorMessage2);
+        throw new ValidationException(
+            errorMessage1 + assetTypeInput.getClass().getSimpleName() + errorMessage2);
+    } else
+      throw new ValidationException(
+          errorMessage1 + assetTypeInput.getClass().getSimpleName() + errorMessage2);
   }
 
   /**
