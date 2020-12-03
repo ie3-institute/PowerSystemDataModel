@@ -91,7 +91,7 @@ public class ValidationUtils {
           throw new InvalidEntityException(
               "Operation start time of the asset has to be before end time", assetInput);
       } else
-        throw new InvalidEntityException(
+          throw new InvalidEntityException(
             "Start and/or end time of operation time is null, although operation should be limited",
             assetInput);
     }
@@ -155,7 +155,7 @@ public class ValidationUtils {
         throw new ValidationException(
             errorMessage1 + assetTypeInput.getClass().getSimpleName() + errorMessage2);
     } else
-      throw new ValidationException(
+        throw new ValidationException(
           errorMessage1 + assetTypeInput.getClass().getSimpleName() + errorMessage2);
   }
 
