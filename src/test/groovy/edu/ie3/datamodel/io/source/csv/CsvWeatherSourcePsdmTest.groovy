@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.factory.timeseries.PsdmTimeBasedWeatherValueFactory
+
 import static edu.ie3.datamodel.models.StandardUnits.IRRADIATION
 import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
 import static edu.ie3.datamodel.models.StandardUnits.WIND_DIRECTION
@@ -29,7 +31,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, WeatherSourceTestHelper {
+class CsvWeatherSourcePsdmTest extends Specification implements CsvTestDataMeta, WeatherSourceTestHelper {
 
 	@Shared
 	CsvWeatherSource source
@@ -39,7 +41,8 @@ class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, Wea
 
 	def setupSpec() {
 		coordinateSource = WeatherTestData.coordinateSource
-		source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
+		def weatherFactory = new PsdmTimeBasedWeatherValueFactory()
+		source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 	}
 
 	def "A CsvWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
@@ -105,7 +108,8 @@ class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, Wea
 		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
-		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
+		def weatherFactory = new PsdmTimeBasedWeatherValueFactory()
+		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"uuid"              : "71a79f59-eebf-40c1-8358-ba7414077d57",
 			"time"              : "2020-10-16T12:40:42Z",
@@ -148,7 +152,8 @@ class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, Wea
 		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
-		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
+		def weatherFactory = new PsdmTimeBasedWeatherValueFactory()
+		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"uuid"              : "71a79f59-eebf-40c1-8358-ba7414077d57",
 			"time"              : "2020-10-16T12:40:42Z",
@@ -172,7 +177,8 @@ class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, Wea
 		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
-		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
+		def weatherFactory = new PsdmTimeBasedWeatherValueFactory()
+		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"uuid"              : "71a79f59-eebf-40c1-8358-ba7414077d57",
 			"time"              : "2020-10-16T12:40:42Z",
@@ -194,7 +200,8 @@ class CsvWeatherSourceTest extends Specification implements CsvTestDataMeta, Wea
 		given:
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> Optional.empty()
-		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource)
+		def weatherFactory = new PsdmTimeBasedWeatherValueFactory()
+		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"uuid"              : "71a79f59-eebf-40c1-8358-ba7414077d57",
 			"time"              : "2020-10-16T12:40:42Z",

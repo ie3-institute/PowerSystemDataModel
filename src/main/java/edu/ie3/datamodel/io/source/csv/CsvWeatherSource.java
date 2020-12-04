@@ -26,8 +26,7 @@ import org.locationtech.jts.geom.Point;
 /** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
 public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
 
-  private final TimeBasedWeatherValueFactory weatherFactory = new TimeBasedWeatherValueFactory();
-  private static final String COORDINATE_FIELD = "coordinate";
+  private final TimeBasedWeatherValueFactory weatherFactory;
 
   private final Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries;
   private final IdCoordinateSource coordinateSource;
@@ -40,12 +39,17 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @param folderPath path to the folder holding the time series files
    * @param fileNamingStrategy strategy for the naming of time series files
    */
-  public CsvWeatherSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+  public CsvWeatherSource(
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      TimeBasedWeatherValueFactory weatherFactory) {
     this(
         csvSep,
         folderPath,
         fileNamingStrategy,
-        new CsvIdCoordinateSource(csvSep, folderPath, fileNamingStrategy));
+        new CsvIdCoordinateSource(csvSep, folderPath, fileNamingStrategy),
+        weatherFactory);
   }
 
   /**
@@ -56,14 +60,18 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @param folderPath path to the folder holding the time series files
    * @param fileNamingStrategy strategy for the naming of time series files
    * @param coordinateSource a coordinate source to map ids to points
+   * @param weatherFactory factory to transfer field to value mapping into actual java object
+   *     instances
    */
   public CsvWeatherSource(
       String csvSep,
       String folderPath,
       FileNamingStrategy fileNamingStrategy,
-      IdCoordinateSource coordinateSource) {
+      IdCoordinateSource coordinateSource,
+      TimeBasedWeatherValueFactory weatherFactory) {
     super(csvSep, folderPath, fileNamingStrategy);
     this.coordinateSource = coordinateSource;
+    this.weatherFactory = weatherFactory;
 
     coordinateToTimeSeries = getWeatherTimeSeries();
   }
@@ -190,21 +198,12 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
   private Optional<TimeBasedValue<WeatherValue>> buildWeatherValue(
       Map<String, String> fieldToValues) {
     /* Try to get the coordinate from entries */
-    String coordinateString = fieldToValues.get(COORDINATE_FIELD);
-    if (Objects.isNull(coordinateString) || coordinateString.isEmpty()) {
-      log.error(
-          "Cannot parse weather value. Unable to find field '{}' in data: {}",
-          COORDINATE_FIELD,
-          fieldToValues);
-      return Optional.empty();
-    }
-    int coordinateId = Integer.parseInt(coordinateString);
-    return coordinateSource
-        .getCoordinate(coordinateId)
+    Optional<Point> maybeCoordinate = extractCoordinate(fieldToValues);
+    return maybeCoordinate
         .map(
             coordinate -> {
               /* Remove coordinate entry from fields */
-              fieldToValues.remove(COORDINATE_FIELD);
+              fieldToValues.remove(weatherFactory.getCoordinateIdFieldString());
 
               /* Build factory data */
               TimeBasedWeatherValueData factoryData =
@@ -213,9 +212,29 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
             })
         .orElseGet(
             () -> {
-              log.error("Unable to find coordinate with id '{}'.", coordinateId);
+              log.error("Unable to find coordinate for entry '{}'.", fieldToValues);
               return Optional.empty();
             });
+  }
+
+  /**
+   * Extract the coordinate identifier from the field to value mapping and obtain the actual
+   * coordinate in collaboration with the source.
+   *
+   * @param fieldToValues "flat " input information as a mapping from field to value
+   * @return Optional time based weather value
+   */
+  private Optional<Point> extractCoordinate(Map<String, String> fieldToValues) {
+    String coordinateString = fieldToValues.get(weatherFactory.getCoordinateIdFieldString());
+    if (Objects.isNull(coordinateString) || coordinateString.isEmpty()) {
+      log.error(
+          "Cannot parse weather value. Unable to find field '{}' in data: {}",
+          weatherFactory.getCoordinateIdFieldString(),
+          fieldToValues);
+      return Optional.empty();
+    }
+    int coordinateId = Integer.parseInt(coordinateString);
+    return coordinateSource.getCoordinate(coordinateId);
   }
 
   /**

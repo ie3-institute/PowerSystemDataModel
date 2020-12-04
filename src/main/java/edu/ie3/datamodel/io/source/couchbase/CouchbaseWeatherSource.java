@@ -18,9 +18,7 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.util.TimeUtil;
 import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -40,6 +38,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
   private static final String DEFAULT_KEY_PREFIX = "weather";
 
   private final TimeBasedWeatherValueFactory weatherFactory;
+
   private final String keyPrefix;
   private final CouchbaseConnector connector;
   private final IdCoordinateSource coordinateSource;
@@ -48,28 +47,22 @@ public class CouchbaseWeatherSource implements WeatherSource {
   public CouchbaseWeatherSource(
       CouchbaseConnector connector,
       IdCoordinateSource coordinateSource,
-      String coordinateIdColumnName) {
-    this(
-        connector,
-        coordinateSource,
-        coordinateIdColumnName,
-        DEFAULT_TIMESTAMP_PATTERN,
-        DEFAULT_KEY_PREFIX);
+      String coordinateIdColumnName,
+      TimeBasedWeatherValueFactory weatherFactory) {
+    this(connector, coordinateSource, coordinateIdColumnName, DEFAULT_KEY_PREFIX, weatherFactory);
   }
 
   public CouchbaseWeatherSource(
       CouchbaseConnector connector,
       IdCoordinateSource coordinateSource,
       String coordinateIdColumnName,
-      String timestampPattern,
-      String keyPrefix) {
+      String keyPrefix,
+      TimeBasedWeatherValueFactory weatherFactory) {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
     this.coordinateIdColumnName = coordinateIdColumnName;
-    this.weatherFactory =
-        new TimeBasedWeatherValueFactory(
-            new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timestampPattern));
     this.keyPrefix = keyPrefix;
+    this.weatherFactory = weatherFactory;
   }
 
   @Override

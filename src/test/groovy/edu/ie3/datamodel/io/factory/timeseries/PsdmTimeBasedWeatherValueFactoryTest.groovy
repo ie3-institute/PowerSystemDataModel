@@ -13,11 +13,11 @@ import edu.ie3.util.TimeUtil
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-class TimeBasedWeatherValueFactoryTest extends Specification {
+class PsdmTimeBasedWeatherValueFactoryTest extends Specification {
 
-	def "A TimeBasedWeatherValueFactory should be able to create time series with missing values"() {
+	def "A PsdmTimeBasedWeatherValueFactory should be able to create time series with missing values"() {
 		given:
-		def factory = new TimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
+		def factory = new PsdmTimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
 		def coordinate = WeatherTestData.COORDINATE_193186
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
 
@@ -48,9 +48,9 @@ class TimeBasedWeatherValueFactoryTest extends Specification {
 		model == expectedResults
 	}
 
-	def "A TimeBasedWeatherValueFactory should be able to create time series values"() {
+	def "A PsdmTimeBasedWeatherValueFactory should be able to create time series values"() {
 		given:
-		def factory = new TimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
+		def factory = new PsdmTimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
 		def coordinate = WeatherTestData.COORDINATE_193186
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
 

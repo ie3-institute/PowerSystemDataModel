@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.influxdb
 
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
+import edu.ie3.datamodel.io.factory.timeseries.PsdmTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -21,7 +22,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTestHelper {
+class InfluxDbWeatherSourcePsdmIT extends Specification implements WeatherSourceTestHelper {
 
 	@Shared
 	InfluxDBContainer influxDbContainer = new InfluxDBContainer("latest")
@@ -42,7 +43,8 @@ class InfluxDbWeatherSourceIT extends Specification implements WeatherSourceTest
 		if(!execResult.stdout.isEmpty()) println execResult.getStdout()
 
 		def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
-		source = new InfluxDbWeatherSource(connector, WeatherTestData.coordinateSource)
+		def weatherFactory = new PsdmTimeBasedWeatherValueFactory()
+		source = new InfluxDbWeatherSource(connector, WeatherTestData.coordinateSource, weatherFactory)
 	}
 
 

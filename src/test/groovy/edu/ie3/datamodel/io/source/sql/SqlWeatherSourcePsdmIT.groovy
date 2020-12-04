@@ -6,11 +6,13 @@
 package edu.ie3.datamodel.io.source.sql
 
 import edu.ie3.datamodel.io.connectors.SqlConnector
+import edu.ie3.datamodel.io.factory.timeseries.PsdmTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.WeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
+import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.PostgreSQLContainer
@@ -20,7 +22,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelper {
+class SqlWeatherSourcePsdmIT extends Specification implements WeatherSourceTestHelper {
 
 	@Shared
 	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.9")
@@ -41,7 +43,8 @@ class SqlWeatherSourceIT extends Specification implements WeatherSourceTestHelpe
 		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-		source = new SqlWeatherSource(connector, WeatherTestData.coordinateSource, weatherTableName, schemaName, coordinateColumnName, timeColumnName)
+		def weatherFactory = new PsdmTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
+		source = new SqlWeatherSource(connector, WeatherTestData.coordinateSource, schemaName, weatherTableName, coordinateColumnName, timeColumnName, weatherFactory)
 	}
 
 	def "A NativeSqlWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {

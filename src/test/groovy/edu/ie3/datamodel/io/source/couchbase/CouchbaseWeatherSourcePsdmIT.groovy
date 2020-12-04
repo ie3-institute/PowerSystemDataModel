@@ -6,11 +6,13 @@
 package edu.ie3.datamodel.io.source.couchbase
 
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector
+import edu.ie3.datamodel.io.factory.timeseries.PsdmTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.WeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
+import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
 import org.testcontainers.couchbase.BucketDefinition
@@ -20,8 +22,10 @@ import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.time.ZoneId
+
 @Testcontainers
-class CouchbaseWeatherSourceIT extends Specification implements WeatherSourceTestHelper {
+class CouchbaseWeatherSourcePsdmIT extends Specification implements WeatherSourceTestHelper {
 
 	@Shared
 	BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")
@@ -58,7 +62,8 @@ class CouchbaseWeatherSourceIT extends Specification implements WeatherSourceTes
 				"--dataset", "file:///home/weather.json")
 
 		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
-		source = new CouchbaseWeatherSource(connector, WeatherTestData.coordinateSource, coordinateIdColumnName)
+		def weatherFactory = new PsdmTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ssxxx"))
+		source = new CouchbaseWeatherSource(connector, WeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory)
 	}
 
 	def "The test container can establish a valid connection"() {
@@ -71,11 +76,13 @@ class CouchbaseWeatherSourceIT extends Specification implements WeatherSourceTes
 	def "A CouchbaseWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
 		given:
 		def expectedTimeBasedValue = new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193186_15H)
+
 		when:
 		def optTimeBasedValue = source.getWeather(WeatherTestData.TIME_15H, WeatherTestData.COORDINATE_193186)
+
 		then:
 		optTimeBasedValue.present
-		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
+		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
 	}
 
 	def "A CouchbaseWeatherSource can read multiple time series values for multiple coordinates"() {
