@@ -19,8 +19,8 @@ public class IrradiationValue implements Value {
   private final ComparableQuantity<Irradiation> diffuseIrradiation;
 
   /**
-   * @param directIrradiation Direct sun radiation (typically in kWh/m²)
-   * @param diffuseIrradiation Diffuse sun radiation (typically in kWh/m²)
+   * @param directIrradiation Direct sun radiation (typically in kW/m²)
+   * @param diffuseIrradiation Diffuse sun radiation (typically in kW/m²)
    */
   public IrradiationValue(
       ComparableQuantity<Irradiation> directIrradiation,

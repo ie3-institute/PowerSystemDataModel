@@ -13,8 +13,8 @@ import java.time.ZoneId;
 import java.util.*;
 
 /**
- * Abstract factory to handle the conversion from "flat" field to value mapping onto actual
- * {@link TimeBasedValueFactory} with {@link WeatherValue}
+ * Abstract factory to handle the conversion from "flat" field to value mapping onto actual {@link
+ * TimeBasedValueFactory} with {@link WeatherValue}
  */
 public abstract class TimeBasedWeatherValueFactory
     extends TimeBasedValueFactory<TimeBasedWeatherValueData, WeatherValue> {

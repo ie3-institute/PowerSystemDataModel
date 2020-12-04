@@ -113,7 +113,7 @@ public class StandardUnits {
   /** Standard unit for reactive power characteristics */
   public static final Unit<Dimensionless> Q_CHARACTERISTIC = PU;
   /** Solar irradiation on a flat surface */
-  public static final Unit<Irradiation> IRRADIATION = KILOWATTHOUR_PER_SQUAREMETRE;
+  public static final Unit<Irradiation> IRRADIATION = KILOWATT_PER_SQUAREMETRE;
   /** Capex (capital expenditure) */
   public static final Unit<Currency> CAPEX = EURO;
   /** Length of a line */

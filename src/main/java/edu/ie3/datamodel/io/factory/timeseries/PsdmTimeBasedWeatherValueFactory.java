@@ -20,8 +20,8 @@ import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to value mapping
- * in the typical PowerSystemDataModel (PSDM) column scheme
+ * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to
+ * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
  */
 public class PsdmTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
   private static final String COORDINATE = "coordinate";
