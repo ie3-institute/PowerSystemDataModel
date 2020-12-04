@@ -90,10 +90,11 @@ public class ValidationUtils {
             .isBefore(assetInput.getOperationTime().getStartDate().get()))
           throw new InvalidEntityException(
               "Operation start time of the asset has to be before end time", assetInput);
-      } else
-          throw new InvalidEntityException(
-              "Start and/or end time of operation time is null, although operation should be limited",
-              assetInput);
+      } else {
+        throw new InvalidEntityException(
+            "Start and/or end time of operation time is null, although operation should be limited",
+            assetInput);
+      }
     }
 
     // Further checks for subclasses
@@ -154,9 +155,10 @@ public class ValidationUtils {
       else
         throw new ValidationException(
             errorMessage1 + assetTypeInput.getClass().getSimpleName() + errorMessage2);
-    } else
-        throw new ValidationException(
-            errorMessage1 + assetTypeInput.getClass().getSimpleName() + errorMessage2);
+    } else {
+      throw new ValidationException(
+          errorMessage1 + assetTypeInput.getClass().getSimpleName() + errorMessage2);
+    }
   }
 
   /**
