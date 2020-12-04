@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import static edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory.*;
-
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -15,7 +13,7 @@ import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiation;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Locale;
+import java.util.*;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
@@ -30,11 +28,13 @@ import tech.units.indriya.quantity.Quantities;
  */
 public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
   /* Redefine the column names to meet the icon specifications */
-  private static final String COORDINATE = "coordinate";
+  private static final String COORDINATE = "coordinateId";
   private static final String TIME = "datum";
-  private static final String DIFFUSE_IRRADIATION = "aswdifd_s";
-  private static final String DIRECT_IRRADIATION = "aswdir_s";
-  private static final String TEMPERATURE = "t_2m";
+  private static final String DIFFUSE_IRRADIATION = "aswdifdS";
+  private static final String DIRECT_IRRADIATION = "aswdirS";
+  private static final String TEMPERATURE = "t2m";
+  private static final String WIND_VELOCITY_U = "u131m";
+  private static final String WIND_VELOCITY_V = "v131m";
 
   public IconTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
@@ -51,6 +51,55 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   @Override
   public String getCoordinateIdFieldString() {
     return COORDINATE;
+  }
+
+  @Override
+  public String getTimeFieldString() {
+    return TIME;
+  }
+
+  @Override
+  protected List<Set<String>> getFields(TimeBasedWeatherValueData data) {
+    Set<String> minConstructorParams =
+        newSet(
+            TIME,
+            DIFFUSE_IRRADIATION,
+            DIRECT_IRRADIATION,
+            TEMPERATURE,
+            WIND_VELOCITY_U,
+            WIND_VELOCITY_V);
+    Set<String> allParameters = new HashSet<>(minConstructorParams);
+    allParameters.addAll(
+        newSet(
+            "albRad",
+            "asobS",
+            "aswdifdS",
+            "aswdifuS",
+            "aswdirS",
+            "t2m",
+            "tG",
+            "u10m",
+            "u131m",
+            "u20m",
+            "u216m",
+            "u65m",
+            "v10m",
+            "v131m",
+            "v20m",
+            "v216m",
+            "v65m",
+            "w131m",
+            "w20m",
+            "w216m",
+            "w65m",
+            "z0",
+            "p131m",
+            "p20m",
+            "p65m",
+            "sobsRad",
+            "t131m"));
+
+    return Arrays.asList(minConstructorParams, allParameters);
   }
 
   @Override
@@ -94,9 +143,11 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
    */
   private static ComparableQuantity<Angle> getWindDirection(TimeBasedWeatherValueData data) {
     /* Get the three dimensional parts of the wind velocity vector in cartesian coordinates */
-    double u = data.getDouble("u_131m"); // Wind component from west to east (parallel to latitudes)
+    double u =
+        data.getDouble(WIND_VELOCITY_U); // Wind component from west to east (parallel to latitudes)
     double v =
-        data.getDouble("v_131m"); // Wind component from south to north (parallel to longitudes)
+        data.getDouble(
+            WIND_VELOCITY_V); // Wind component from south to north (parallel to longitudes)
 
     double angle = Math.toDegrees(Math.atan2(-u, -v));
     return Quantities.getQuantity(angle < 0 ? angle + 360d : angle, PowerSystemUnits.DEGREE_GEOM)
@@ -116,8 +167,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
    */
   private static ComparableQuantity<Speed> getWindVelocity(TimeBasedWeatherValueData data) {
     /* Get the three dimensional parts of the wind velocity vector in cartesian coordinates */
-    double u = data.getDouble("u_131m");
-    double v = data.getDouble("v_131m");
+    double u = data.getDouble(WIND_VELOCITY_U);
+    double v = data.getDouble(WIND_VELOCITY_V);
 
     double velocity = Math.sqrt(Math.pow(u, 2) + Math.pow(v, 2));
     return Quantities.getQuantity(velocity, PowerSystemUnits.METRE_PER_SECOND)

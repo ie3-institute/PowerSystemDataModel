@@ -13,6 +13,9 @@ import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.interfaces.Irradiation;
 import java.time.ZonedDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
@@ -41,6 +44,25 @@ public class PsdmTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   @Override
   public String getCoordinateIdFieldString() {
     return COORDINATE;
+  }
+
+  @Override
+  public String getTimeFieldString() {
+    return TIME;
+  }
+
+  @Override
+  protected List<Set<String>> getFields(TimeBasedWeatherValueData data) {
+    Set<String> minConstructorParams =
+        newSet(
+            UUID,
+            TIME,
+            DIFFUSE_IRRADIATION,
+            DIRECT_IRRADIATION,
+            TEMPERATURE,
+            WIND_DIRECTION,
+            WIND_VELOCITY);
+    return Collections.singletonList(minConstructorParams);
   }
 
   @Override

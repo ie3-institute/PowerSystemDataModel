@@ -43,17 +43,10 @@ public abstract class TimeBasedWeatherValueFactory
    */
   public abstract String getCoordinateIdFieldString();
 
-  @Override
-  protected List<Set<String>> getFields(TimeBasedWeatherValueData data) {
-    Set<String> minConstructorParams =
-        newSet(
-            UUID,
-            TIME,
-            DIFFUSE_IRRADIATION,
-            DIRECT_IRRADIATION,
-            TEMPERATURE,
-            WIND_DIRECTION,
-            WIND_VELOCITY);
-    return Collections.singletonList(minConstructorParams);
-  }
+  /**
+   * Return the field name for the date time
+   *
+   * @return the field name for the date time
+   */
+  public abstract String getTimeFieldString();
 }

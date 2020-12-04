@@ -20,7 +20,7 @@ import edu.ie3.datamodel.models.value.IrradiationValue
 import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.datamodel.models.value.WindValue
-import edu.ie3.test.common.WeatherTestData
+import edu.ie3.test.common.PsdmWeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.geo.GeoUtils
@@ -40,16 +40,16 @@ class CsvWeatherSourcePsdmTest extends Specification implements CsvTestDataMeta,
 	IdCoordinateSource coordinateSource
 
 	def setupSpec() {
-		coordinateSource = WeatherTestData.coordinateSource
+		coordinateSource = PsdmWeatherTestData.coordinateSource
 		def weatherFactory = new PsdmTimeBasedWeatherValueFactory()
 		source = new CsvWeatherSource(";", timeSeriesFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 	}
 
 	def "A CsvWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
 		given:
-		def expectedTimeBasedValue = new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193186_15H)
+		def expectedTimeBasedValue = new TimeBasedValue(PsdmWeatherTestData.TIME_15H, PsdmWeatherTestData.WEATHER_VALUE_193186_15H)
 		when:
-		def optTimeBasedValue = source.getWeather(WeatherTestData.TIME_15H, WeatherTestData.COORDINATE_193186)
+		def optTimeBasedValue = source.getWeather(PsdmWeatherTestData.TIME_15H, PsdmWeatherTestData.COORDINATE_193186)
 		then:
 		optTimeBasedValue.present
 		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
@@ -58,49 +58,49 @@ class CsvWeatherSourcePsdmTest extends Specification implements CsvTestDataMeta,
 	def "A CsvWeatherSource can read multiple time series values for multiple coordinates"() {
 		given:
 		def coordinates = [
-			WeatherTestData.COORDINATE_193186,
-			WeatherTestData.COORDINATE_193187
+			PsdmWeatherTestData.COORDINATE_193186,
+			PsdmWeatherTestData.COORDINATE_193187
 		]
-		def timeInterval = new ClosedInterval(WeatherTestData.TIME_16H, WeatherTestData.TIME_17H)
+		def timeInterval = new ClosedInterval(PsdmWeatherTestData.TIME_16H, PsdmWeatherTestData.TIME_17H)
 		def timeSeries193186 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.TIME_16H, WeatherTestData.WEATHER_VALUE_193186_16H),
-					new TimeBasedValue(WeatherTestData.TIME_17H, WeatherTestData.WEATHER_VALUE_193186_17H)]
+					new TimeBasedValue(PsdmWeatherTestData.TIME_16H, PsdmWeatherTestData.WEATHER_VALUE_193186_16H),
+					new TimeBasedValue(PsdmWeatherTestData.TIME_17H, PsdmWeatherTestData.WEATHER_VALUE_193186_17H)]
 				as Set<TimeBasedValue>)
 		def timeSeries193187 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.TIME_16H, WeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(PsdmWeatherTestData.TIME_16H, PsdmWeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
 		then:
 		coordinateToTimeSeries.keySet().size() == 2
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193186), timeSeries193186)
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193187), timeSeries193187)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(PsdmWeatherTestData.COORDINATE_193186), timeSeries193186)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(PsdmWeatherTestData.COORDINATE_193187), timeSeries193187)
 	}
 
 
 	def "A CsvWeatherSource can read all weather data in a given time interval"() {
 		given:
-		def timeInterval = new ClosedInterval(WeatherTestData.TIME_15H, WeatherTestData.TIME_17H)
+		def timeInterval = new ClosedInterval(PsdmWeatherTestData.TIME_15H, PsdmWeatherTestData.TIME_17H)
 		def timeSeries193186 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193186_15H),
-					new TimeBasedValue(WeatherTestData.TIME_16H, WeatherTestData.WEATHER_VALUE_193186_16H),
-					new TimeBasedValue(WeatherTestData.TIME_17H, WeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(PsdmWeatherTestData.TIME_15H, PsdmWeatherTestData.WEATHER_VALUE_193186_15H),
+					new TimeBasedValue(PsdmWeatherTestData.TIME_16H, PsdmWeatherTestData.WEATHER_VALUE_193186_16H),
+					new TimeBasedValue(PsdmWeatherTestData.TIME_17H, PsdmWeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
 		def timeSeries193187 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193187_15H),
-					new TimeBasedValue(WeatherTestData.TIME_16H, WeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(PsdmWeatherTestData.TIME_15H, PsdmWeatherTestData.WEATHER_VALUE_193187_15H),
+					new TimeBasedValue(PsdmWeatherTestData.TIME_16H, PsdmWeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
 		def timeSeries193188 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(WeatherTestData.TIME_15H, WeatherTestData.WEATHER_VALUE_193188_15H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(PsdmWeatherTestData.TIME_15H, PsdmWeatherTestData.WEATHER_VALUE_193188_15H)] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
 		then:
 		coordinateToTimeSeries.keySet().size() == 3
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
-		equalsIgnoreUUID(coordinateToTimeSeries.get(WeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(PsdmWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(PsdmWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(PsdmWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
 	}
 
 	def "The CsvWeatherSource is able to build a single WeatherValue from field to value mapping"() {

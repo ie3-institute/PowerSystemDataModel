@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries
 
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.test.common.WeatherTestData
+import edu.ie3.test.common.PsdmWeatherTestData
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.PowerSystemUnits
 import edu.ie3.util.quantities.QuantityUtil
@@ -19,8 +19,8 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 	def "A time based weather value factory for ICON column scheme determines wind velocity angle correctly"() {
 		given:
 		def data = new TimeBasedWeatherValueData([
-			"u_131m": u.toString(),
-			"v_131m": v.toString(),
+			"u131m": u.toString(),
+			"v131m": v.toString(),
 		], Mock(Point))
 		def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.DEGREE_GEOM)
 
@@ -46,8 +46,8 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 	def "A time based weather value factory for ICON column scheme determines wind velocity correctly"() {
 		given:
 		def data = new TimeBasedWeatherValueData([
-			"u_131m": u.toString(),
-			"v_131m": v.toString(),
+			"u131m": u.toString(),
+			"v131m": v.toString(),
 		], Mock(Point))
 		def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.METRE_PER_SECOND)
 
@@ -73,38 +73,38 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 	def "A time based weather value factory for ICON column scheme builds a single time based value correctly"() {
 		given:
 		def factory = new IconTimeBasedWeatherValueFactory()
-		def coordinate = WeatherTestData.COORDINATE_67775
+		def coordinate = PsdmWeatherTestData.COORDINATE_67775
 
 		def parameter = [
 			"datum"        : "2019-08-01 01:00:00",
-			"alb_rad"      : "13.015240669",
-			"asob_s"       : "3.555093673828124",
-			"aswdifd_s"    : "1.8088226191406245",
-			"aswdifu_s"    : "0.5713421484374998",
-			"aswdir_s"     : "2.317613203124999",
-			"t_2m"         : "289.1179319051744",
-			"t_g"          : "288.4101691197649",
-			"u_10m"        : "0.3021732864307963",
-			"u_131m"       : "2.6058700426057797",
-			"u_20m"        : "0.32384365019387784",
-			"u_216m"       : "3.9015497418041756",
-			"u_65m"        : "1.2823686334340363",
-			"v_10m"        : "1.3852550649486943",
-			"v_131m"       : "3.8391590569599927",
-			"v_20m"        : "1.3726831152710628",
-			"v_216m"       : "4.339362039492466",
-			"v_65m"        : "2.809877942347672",
-			"w_131m"       : "-0.02633474740256081",
-			"w_20m"        : "-0.0100060345167524",
-			"w_216m"       : "-0.030348050471342078",
-			"w_65m"        : "-0.01817112027569893",
+			"albRad"      : "13.015240669",
+			"asobS"       : "3.555093673828124",
+			"aswdifdS"    : "1.8088226191406245",
+			"aswdifuS"    : "0.5713421484374998",
+			"aswdirS"     : "2.317613203124999",
+			"t2m"         : "289.1179319051744",
+			"tg"          : "288.4101691197649",
+			"u10m"        : "0.3021732864307963",
+			"u131m"       : "2.6058700426057797",
+			"u20m"        : "0.32384365019387784",
+			"u216m"       : "3.9015497418041756",
+			"u65m"        : "1.2823686334340363",
+			"v10m"        : "1.3852550649486943",
+			"v131m"       : "3.8391590569599927",
+			"v20m"        : "1.3726831152710628",
+			"v216m"       : "4.339362039492466",
+			"v65m"        : "2.809877942347672",
+			"w131m"       : "-0.02633474740256081",
+			"w20m"        : "-0.0100060345167524",
+			"w216m"       : "-0.030348050471342078",
+			"w65m"        : "-0.01817112027569893",
 			"z0"           : "0.955323922526438",
-			"coordinate_id": "67775",
-			"p_131m"       : "",
-			"p_20m"        : "",
-			"p_65m"        : "",
-			"sobs_rad"     : "",
-			"t_131m"       : ""
+			"coordinateId": "67775",
+			"p131m"       : "",
+			"p20m"        : "",
+			"p65m"        : "",
+			"sobsRad"     : "",
+			"t131m"       : ""
 		]
 		def data = new TimeBasedWeatherValueData(parameter, coordinate)
 
