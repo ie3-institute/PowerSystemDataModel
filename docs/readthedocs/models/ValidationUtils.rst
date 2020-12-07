@@ -79,5 +79,8 @@ Which objects are checked?
     - GridContainerValidationUtils
         (to be added)
 
+What should be considered?
+- Due to many checks with if-loops, the usage of the ValidationUtils for many objects might be runtime relevant.
+
 !! If new classes are introduced to the PowerSystemDataModel, make sure to follow the forwarding structure of the
     ValidationUtils methods when writing the check methods !!
