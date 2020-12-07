@@ -14,15 +14,15 @@ What is checked?
 
 How does it work?
 ^^^^^^^^^^^^^^^^^
-- The method ValidationUtils.check() is the only method that should be called by the user.
+- The method :code:`ValidationUtils.check()` is the only method that should be called by the user.
 - This check method identifies the object class and forwards it to a specific check method for the given object
 - The overall structure of the ValidationUtils methods follows a cascading scheme, orientated along the class tree
 - Example: A LineInput lineInput should be checked
-    1. ValidationUtils.check(lineInput) is called
-    2. ValidationUtils.check(lineInput) identifies the class of the object as AssetInput and calls ValidationUtils.checkAsset(lineInput)
-    3. ValidationUtils.checkAsset(lineInput), if applicable, checks those parameters that all AssetInput have in common (e.g. operation time) and further identifies the object, more specifically, as a ConnectorInput and calls ConnectorValidationUtils.check(lineInput)
-    4. ConnectorValidationUtils.check(lineInput), if applicable, checks those parameters that all ConnectorInput have in common and further identifies the object, more specifically, as a LineInput and calls ConnectorValidationUtils.checkLine(lineInput)
-    5. ConnectorValidationUtils.checkLine(lineInput) checks all specific parameters of a LineInput
+    1. :code:`ValidationUtils.check(lineInput)` is called
+    2. :code:`ValidationUtils.check(lineInput)` identifies the class of the object as :code:`AssetInput` and calls :code:`ValidationUtils.checkAsset(lineInput)`
+    3. :code:`ValidationUtils.checkAsset(lineInput)`, if applicable, checks those parameters that all :code:`AssetInput` have in common (e.g. operation time) and further identifies the object, more specifically, as a :code:`ConnectorInput` and calls :code:`ConnectorValidationUtils.check(lineInput)`
+    4. :code:`ConnectorValidationUtils.check(lineInput)`, if applicable, checks those parameters that all :code:`ConnectorInput` have in common and further identifies the object, more specifically, as a :code:`LineInput` and calls :code:`ConnectorValidationUtils.checkLine(lineInput)`
+    5. :code:`ConnectorValidationUtils.checkLine(lineInput)` checks all specific parameters of a :code:`LineInput`
 - ValidationUtils furthermore contains several utils methods used in the subclasses
 
 Which objects are checked?
@@ -37,42 +37,42 @@ Which objects are checked?
             - Transformer2WInput
             - Transformer3WInput
             - SwitchInput
-        ConnectorTypeInput
-        LineTypeInput
-        Transformer2WTypeInput
-        Transformer3WTypeInput
+        - ConnectorTypeInput
+        - LineTypeInput
+        - Transformer2WTypeInput
+        - Transformer3WTypeInput
     - MeasurementUnitValidationUtils
-        MeasurementUnitInput
+        - MeasurementUnitInput
     - SystemParticipantValidationUtils
-        SystemParticipantInput
-            BmInput
-            ChpInput
-            EvInput
-            FixedFeedInInput
-            HpInput
-            LoadInput
-            PvInput
-            StorageInput
-            WecInput
-            (missing: EvcsInput)
-        SystemParticipantTypeInput
-            BmTypeInput
-            ChpTypeInput
-            EvTypeInput
-            HpTypeInput
-            StorageTypeInput
-            WecTypeInput
-            (missing: EvcsTypeInput/ChargingPointType)
+        - SystemParticipantInput
+            - BmInput
+            - ChpInput
+            - EvInput
+            - FixedFeedInInput
+            - HpInput
+            - LoadInput
+            - PvInput
+            - StorageInput
+            - WecInput
+            - (missing: EvcsInput)
+        - SystemParticipantTypeInput
+            - BmTypeInput
+            - ChpTypeInput
+            - EvTypeInput
+            - HpTypeInput
+            - StorageTypeInput
+            - WecTypeInput
+            - (missing: EvcsTypeInput/ChargingPointType)
     - ThermalUnitValidationUtils
-        ThermalUnitInput
-            ThermalSinkInput
-                ThermalHouseInput
-            ThermalStorageInput
-                CylindricalStorageInput
+        - ThermalUnitInput
+            - ThermalSinkInput
+                - ThermalHouseInput
+            - ThermalStorageInput
+                - CylindricalStorageInput
     - GraphicValidationUtils
-        GraphicInput
-            LineGraphicInput
-            NodeGraphicInput
+        - GraphicInput
+            - LineGraphicInput
+            - NodeGraphicInput
     - GridContainerValidationUtils
         (to be added)
 
