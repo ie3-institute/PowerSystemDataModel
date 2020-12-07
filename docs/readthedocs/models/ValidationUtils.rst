@@ -39,9 +39,9 @@ The ValidationUtils include validation checks for...
         - Transformer3WInput
         - SwitchInput
     - ConnectorTypeInput
-    - LineTypeInput
-    - Transformer2WTypeInput
-    - Transformer3WTypeInput
+        - LineTypeInput
+        - Transformer2WTypeInput
+        - Transformer3WTypeInput
 - MeasurementUnitValidationUtils
     - MeasurementUnitInput
 - SystemParticipantValidationUtils
