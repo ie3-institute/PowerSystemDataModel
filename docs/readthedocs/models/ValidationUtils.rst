@@ -28,6 +28,7 @@ How does it work?
 Which objects are checked?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 The ValidationUtils include validation checks for...
+
 - NodeValidationUtils
     - NodeInput
     - VoltageLevel

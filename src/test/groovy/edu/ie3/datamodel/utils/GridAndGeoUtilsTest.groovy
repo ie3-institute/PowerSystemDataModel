@@ -164,6 +164,6 @@ class GridAndGeoUtilsTest extends Specification {
 		//  https://www.luftlinie.org/51.48386110716543,%207.498165075275441/3.4884439989616043,137.87593281832065
 		//  Luftlinie.org says 12.323.99 km
 		//  with (Y1, X1, Y2, X2) it says 12.675.25 -> wrong
-		//  with (X1, Y1, X2, Xy2) it says 12.333.92 -> right
+		//  with (X1, Y1, X2, Y2) it says 12.333.92 -> right
 	}
 }
