@@ -20,6 +20,7 @@ import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.Units;
 
 /**
  * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to
@@ -73,18 +74,18 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
         newSet(
             "albRad",
             "asobS",
-            "aswdifdS",
+            DIFFUSE_IRRADIATION,
             "aswdifuS",
-            "aswdirS",
-            "t2m",
+            DIRECT_IRRADIATION,
+            TEMPERATURE,
             "tG",
             "u10m",
-            "u131m",
+            WIND_VELOCITY_U,
             "u20m",
             "u216m",
             "u65m",
             "v10m",
-            "v131m",
+            WIND_VELOCITY_V,
             "v20m",
             "v216m",
             "v65m",
@@ -114,7 +115,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
         data.getQuantity(DIFFUSE_IRRADIATION, PowerSystemUnits.WATT_PER_SQUAREMETRE)
             .to(StandardUnits.IRRADIATION);
     ComparableQuantity<Temperature> temperature =
-        data.getQuantity(TEMPERATURE, PowerSystemUnits.KELVIN).to(StandardUnits.TEMPERATURE);
+        data.getQuantity(TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection = getWindDirection(data);
     ComparableQuantity<Speed> windVelocity = getWindVelocity(data);
     WeatherValue weatherValue =
@@ -171,7 +172,6 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     double v = data.getDouble(WIND_VELOCITY_V);
 
     double velocity = Math.sqrt(Math.pow(u, 2) + Math.pow(v, 2));
-    return Quantities.getQuantity(velocity, PowerSystemUnits.METRE_PER_SECOND)
-        .to(StandardUnits.WIND_VELOCITY);
+    return Quantities.getQuantity(velocity, Units.METRE_PER_SECOND).to(StandardUnits.WIND_VELOCITY);
   }
 }

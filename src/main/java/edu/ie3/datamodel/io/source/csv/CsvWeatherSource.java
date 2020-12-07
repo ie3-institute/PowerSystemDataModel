@@ -45,6 +45,8 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
    * @param fileNamingStrategy strategy for the naming of time series files
+   * @param weatherFactory factory to transfer field to value mapping into actual java object
+   *     instances
    */
   public CsvWeatherSource(
       String csvSep,

@@ -44,6 +44,18 @@ public class CouchbaseWeatherSource implements WeatherSource {
   private final IdCoordinateSource coordinateSource;
   private final String coordinateIdColumnName;
 
+  /**
+   * Instantiate a weather source utilising a connection to a couchbase instance obtained via the
+   * connector. This convenient constructor uses the {@link
+   * CouchbaseWeatherSource#DEFAULT_KEY_PREFIX} as key prefix.
+   *
+   * @param connector Connector, that establishes the connection to the couchbase instance
+   * @param coordinateSource Source to obtain actual coordinates from
+   * @param coordinateIdColumnName Name of the column containing the information about the
+   *     coordinate identifier
+   * @param weatherFactory Factory to transfer field to value mapping into actual java object
+   *     instances
+   */
   public CouchbaseWeatherSource(
       CouchbaseConnector connector,
       IdCoordinateSource coordinateSource,
@@ -52,6 +64,18 @@ public class CouchbaseWeatherSource implements WeatherSource {
     this(connector, coordinateSource, coordinateIdColumnName, DEFAULT_KEY_PREFIX, weatherFactory);
   }
 
+  /**
+   * Instantiate a weather source utilising a connection to a couchbase instance obtained via the
+   * connector
+   *
+   * @param connector Connector, that establishes the connection to the couchbase instance
+   * @param coordinateSource Source to obtain actual coordinates from
+   * @param coordinateIdColumnName Name of the column containing the information about the
+   *     coordinate identifier
+   * @param keyPrefix Prefix of entries, that belong to weather
+   * @param weatherFactory Factory to transfer field to value mapping into actual java object
+   *     instances
+   */
   public CouchbaseWeatherSource(
       CouchbaseConnector connector,
       IdCoordinateSource coordinateSource,
