@@ -423,7 +423,7 @@ public abstract class CsvDataSource {
    * @return either a set containing only unique rows or an empty set if at least two rows with the
    *     same UUID but different field values exist
    */
-  private <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
+  protected <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
       Class<T> entityClass, Collection<Map<String, String>> allRows) {
     Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
     // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial

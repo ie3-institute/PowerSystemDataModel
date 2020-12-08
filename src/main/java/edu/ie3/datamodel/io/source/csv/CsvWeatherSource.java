@@ -279,7 +279,8 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @return either a set containing only unique rows or an empty set if at least two rows with the
    *     same UUID but different field values exist
    */
-  private <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
+  @Override
+  protected <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
       Class<T> entityClass, Collection<Map<String, String>> allRows) {
     Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
     // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial
