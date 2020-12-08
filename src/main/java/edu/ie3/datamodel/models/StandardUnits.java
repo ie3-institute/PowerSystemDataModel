@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models;
 
 import static edu.ie3.util.quantities.PowerSystemUnits.*;
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT_PER_SQUAREMETRE;
 
 import edu.ie3.util.quantities.interfaces.*;
 import javax.measure.MetricPrefix;
