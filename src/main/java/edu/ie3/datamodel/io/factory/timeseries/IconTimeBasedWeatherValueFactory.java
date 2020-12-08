@@ -99,14 +99,17 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "p65m",
             "sobsRad",
             "t131m"));
+    Set<String> allParametersWithUuid = new HashSet<>(allParameters);
+    allParametersWithUuid.add("uuid");
 
-    return Arrays.asList(minConstructorParams, allParameters);
+    return Arrays.asList(minConstructorParams, allParameters, allParametersWithUuid);
   }
 
   @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
     Point coordinate = data.getCoordinate();
-    java.util.UUID uuid = java.util.UUID.randomUUID();
+    java.util.UUID uuid =
+        data.containsKey("uuid") ? data.getUUID("uuid") : java.util.UUID.randomUUID();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiation> directIrradiation =
         data.getQuantity(DIRECT_IRRADIATION, PowerSystemUnits.WATT_PER_SQUAREMETRE)

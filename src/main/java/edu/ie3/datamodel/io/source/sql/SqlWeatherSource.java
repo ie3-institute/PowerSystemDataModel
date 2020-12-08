@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.util.StringUtils;
 import edu.ie3.util.interval.ClosedInterval;
 import java.sql.*;
 import java.time.ZonedDateTime;
@@ -51,8 +52,6 @@ public class SqlWeatherSource implements WeatherSource {
    * @param idCoordinateSource a coordinate source to map ids to points
    * @param schemaName the database schema to use
    * @param weatherTableName the name of the table containing weather data
-   * @param coordinateColumnName the name of the column containing coordinate IDs
-   * @param timeColumnName the name of the column containing timestamps
    * @param weatherFactory instance of a time based weather value factory
    */
   public SqlWeatherSource(
@@ -60,23 +59,29 @@ public class SqlWeatherSource implements WeatherSource {
       IdCoordinateSource idCoordinateSource,
       String schemaName,
       String weatherTableName,
-      String coordinateColumnName,
-      String timeColumnName,
       TimeBasedWeatherValueFactory weatherFactory) {
     this.connector = connector;
     this.idCoordinateSource = idCoordinateSource;
-    this.coordinateColumnName = coordinateColumnName;
+    this.coordinateColumnName = weatherFactory.getCoordinateIdFieldString();
     this.weatherFactory = weatherFactory;
+
+    String timeColumnName = weatherFactory.getTimeFieldString();
 
     // setup queries
     this.queryTimeInterval =
         createQueryStringForTimeInterval(schemaName, weatherTableName, timeColumnName);
     this.queryTimeAndCoordinate =
         createQueryStringForTimeAndCoordinate(
-            schemaName, weatherTableName, timeColumnName, coordinateColumnName);
+            schemaName,
+            weatherTableName,
+            StringUtils.camelCaseToSnakeCase(timeColumnName),
+            StringUtils.camelCaseToSnakeCase(coordinateColumnName));
     this.queryTimeIntervalAndCoordinates =
         createQueryStringForTimeIntervalAndCoordinates(
-            schemaName, weatherTableName, timeColumnName, coordinateColumnName);
+            schemaName,
+            weatherTableName,
+            StringUtils.camelCaseToSnakeCase(timeColumnName),
+            StringUtils.camelCaseToSnakeCase(coordinateColumnName));
   }
 
   @Override

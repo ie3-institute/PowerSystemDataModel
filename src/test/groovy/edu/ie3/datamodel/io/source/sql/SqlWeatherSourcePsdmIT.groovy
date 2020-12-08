@@ -32,19 +32,17 @@ class SqlWeatherSourcePsdmIT extends Specification implements WeatherSourceTestH
 
 	static String schemaName = "public"
 	static String weatherTableName = "weather"
-	static String coordinateColumnName = "coordinate"
-	static String timeColumnName = "time"
 
 	def setupSpec() {
 		// Copy sql import script into docker
-		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/weather.sql")
+		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/psdm/weather.sql")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather.sql")
 		// Execute import script
 		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
 		def weatherFactory = new PsdmTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
-		source = new SqlWeatherSource(connector, PsdmWeatherTestData.coordinateSource, schemaName, weatherTableName, coordinateColumnName, timeColumnName, weatherFactory)
+		source = new SqlWeatherSource(connector, PsdmWeatherTestData.coordinateSource, schemaName, weatherTableName, weatherFactory)
 	}
 
 	def "A NativeSqlWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.connectors;
 
+import edu.ie3.util.StringUtils;
 import edu.ie3.util.TimeUtil;
 import java.sql.*;
 import java.util.*;
@@ -121,7 +122,7 @@ public class SqlConnector implements DataConnector {
       ResultSetMetaData metaData = rs.getMetaData();
       int columnCount = metaData.getColumnCount();
       for (int i = 1; i <= columnCount; i++) {
-        String columnName = metaData.getColumnName(i);
+        String columnName = StringUtils.snakeCaseToCamelCase(metaData.getColumnName(i));
         String value;
         Object result = rs.getObject(i);
         if (result instanceof Timestamp) {
