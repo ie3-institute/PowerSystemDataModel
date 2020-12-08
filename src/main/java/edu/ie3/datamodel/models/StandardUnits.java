@@ -116,10 +116,11 @@ public class StandardUnits {
   /** Solar irradiation on a flat surface as Power per Area in kW/m² */
   public static final Unit<Irradiation> IRRADIATION = KILOWATT_PER_SQUAREMETRE;
   /**
-   * Energy per Area, used as an alternative dimension for {@link StandardUnits#IRRADIATION} in
-   * kWh/m²
+   * Energy per Area, used as an outdated dimension for {@link StandardUnits#IRRADIATION} in kWh/m²
+   *
+   * @deprecated Use {@link Irradiation} together with {@link StandardUnits#IRRADIATION}
    */
-  public static final Unit<EnergyDensity> ENERGY_DENSITY = KILOWATTHOUR_PER_SQUAREMETRE;
+  @Deprecated public static final Unit<EnergyDensity> ENERGY_DENSITY = KILOWATTHOUR_PER_SQUAREMETRE;
   /** Capex (capital expenditure) in € */
   public static final Unit<Currency> CAPEX = EURO;
   /** Length of a line in km */
