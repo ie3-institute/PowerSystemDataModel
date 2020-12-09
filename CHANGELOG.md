@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   added coordinate distance sort method to GridAndGeoUtils
 -   BREAKING: Harmonized field naming for time information
 -   BREAKING: Properly applying snake case to result file names
+-   BREAKING: Change in dimension of `Irradiation` from Energy/Area to Power/Area led to adaptions in the `StandardUnits`. `StandardUnits.IRRADIATION` is now kW/m² instead of kW**h**/m²
 
 ### Fixed
 - InfluxDbConnector now keeps session instead of creating a new one each call
