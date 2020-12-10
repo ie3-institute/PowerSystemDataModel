@@ -61,7 +61,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
   private static void connectsDifferentNodes(ConnectorInput connectorInput) {
     if (connectorInput.getNodeA() == connectorInput.getNodeB()) {
       throw new InvalidEntityException(
-              connectorInput.getClass().getSimpleName() + " connects the same node, but shouldn't", connectorInput);
+          connectorInput.getClass().getSimpleName() + " connects the same node, but shouldn't",
+          connectorInput);
     }
   }
 
@@ -75,40 +76,48 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (yes) {
       if (connectorInput.getNodeA().getSubnet() == connectorInput.getNodeB().getSubnet()) {
         throw new InvalidEntityException(
-                connectorInput.getClass().getSimpleName() + " connects the same subnet, but shouldn't", connectorInput);
+            connectorInput.getClass().getSimpleName() + " connects the same subnet, but shouldn't",
+            connectorInput);
       }
-    }
-    else {
+    } else {
       if (connectorInput.getNodeA().getSubnet() != connectorInput.getNodeB().getSubnet()) {
         throw new InvalidEntityException(
-                connectorInput.getClass().getSimpleName() + " connects different subnets, but shouldn't", connectorInput);
+            connectorInput.getClass().getSimpleName()
+                + " connects different subnets, but shouldn't",
+            connectorInput);
       }
     }
   }
 
   /**
-   * Check if voltage levels of connector's nodes are correct depending on if they should be equal or not
+   * Check if voltage levels of connector's nodes are correct depending on if they should be equal
+   * or not
    *
    * @param connectorInput ConnectorInput to validate
    * @param yes determines if voltage levels should be equal or not
    */
-  private static void connectsNodesWithDifferentVoltageLevels(ConnectorInput connectorInput, boolean yes) {
+  private static void connectsNodesWithDifferentVoltageLevels(
+      ConnectorInput connectorInput, boolean yes) {
     if (yes) {
       if (connectorInput.getNodeA().getVoltLvl().equals(connectorInput.getNodeB().getVoltLvl())) {
         throw new InvalidEntityException(
-                connectorInput.getClass().getSimpleName() + " connects the same voltage level, but shouldn't", connectorInput);
+            connectorInput.getClass().getSimpleName()
+                + " connects the same voltage level, but shouldn't",
+            connectorInput);
       }
-    }
-    else {
+    } else {
       if (!connectorInput.getNodeA().getVoltLvl().equals(connectorInput.getNodeB().getVoltLvl())) {
         throw new InvalidEntityException(
-                connectorInput.getClass().getSimpleName() + " connects different voltage levels, but shouldn't", connectorInput);
+            connectorInput.getClass().getSimpleName()
+                + " connects different voltage levels, but shouldn't",
+            connectorInput);
       }
     }
   }
 
   /**
-   * Check if the coordinates of the start and end points of a line equal the coordinates of the nodes
+   * Check if the coordinates of the start and end points of a line equal the coordinates of the
+   * nodes
    *
    * @param line LineInput to validate
    */
@@ -117,19 +126,19 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (!(line.getGeoPosition()
             .getStartPoint()
             .isWithinDistance(line.getNodeA().getGeoPosition(), allowedError)
-            || line.getGeoPosition()
+        || line.getGeoPosition()
             .getEndPoint()
             .isWithinDistance(line.getNodeA().getGeoPosition(), allowedError)))
       throw new InvalidEntityException(
-              "Coordinates of start and end point do not match coordinates of connected nodes", line);
+          "Coordinates of start and end point do not match coordinates of connected nodes", line);
     if (!(line.getGeoPosition()
             .getStartPoint()
             .isWithinDistance(line.getNodeB().getGeoPosition(), allowedError)
-            || line.getGeoPosition()
+        || line.getGeoPosition()
             .getEndPoint()
             .isWithinDistance(line.getNodeB().getGeoPosition(), allowedError)))
       throw new InvalidEntityException(
-              "Coordinates of start and end point do not match coordinates of connected nodes", line);
+          "Coordinates of start and end point do not match coordinates of connected nodes", line);
   }
 
   /**
@@ -141,10 +150,10 @@ public class ConnectorValidationUtils extends ValidationUtils {
     // only if not geo positions ob both nodes are dummy values
     if ((line.getNodeA().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION
             || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION)
-            && (!line.getLength()
+        && (!line.getLength()
             .isEquivalentTo(GridAndGeoUtils.totalLengthOfLineString(line.getGeoPosition()))))
       throw new InvalidEntityException(
-              "Line length does not equal calculated distances between points building the line", line);
+          "Line length does not equal calculated distances between points building the line", line);
   }
 
   /**
@@ -152,30 +161,33 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer2W Transformer2WInput to validate
    */
-  private static void ratedVoltageOfTransformer2WMatchesVoltagesOfNodes(Transformer2WInput transformer2W) {
+  private static void ratedVoltageOfTransformer2WMatchesVoltagesOfNodes(
+      Transformer2WInput transformer2W) {
     if (!transformer2W
             .getType()
             .getvRatedA()
             .equals(transformer2W.getNodeA().getVoltLvl().getNominalVoltage())
-            || !transformer2W
+        || !transformer2W
             .getType()
             .getvRatedB()
             .equals(transformer2W.getNodeB().getVoltLvl().getNominalVoltage()))
       throw new InvalidEntityException(
-              "Rated voltages of transformer do not equal voltage levels at the nodes", transformer2W);
+          "Rated voltages of transformer do not equal voltage levels at the nodes", transformer2W);
   }
 
   /**
-   * Check if voltage magnitude increase per tap position of transformer2WType is between 0% and 100%
+   * Check if voltage magnitude increase per tap position of transformer2WType is between 0% and
+   * 100%
    *
    * @param transformer2WType Transformer2WTypeInput to validate
    */
-  private static void checkVoltageMagnitudeChangePerTapPosition(Transformer2WTypeInput transformer2WType) {
-      if (transformer2WType.getdV().getValue().doubleValue() <= 0d
-              || transformer2WType.getdV().getValue().doubleValue() > 100d)
-        throw new InvalidEntityException(
-                "Voltage magnitude increase per tap position must be between 0% and 100%",
-                transformer2WType);
+  private static void checkVoltageMagnitudeChangePerTapPosition(
+      Transformer2WTypeInput transformer2WType) {
+    if (transformer2WType.getdV().getValue().doubleValue() <= 0d
+        || transformer2WType.getdV().getValue().doubleValue() > 100d)
+      throw new InvalidEntityException(
+          "Voltage magnitude increase per tap position must be between 0% and 100%",
+          transformer2WType);
   }
 
   /**
@@ -294,7 +306,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
           "Neutral tap position must be between minimum and maximum tap position",
           transformer2WType);
   }
-
 
   /**
    * Validates a transformer3W if: <br>
