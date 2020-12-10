@@ -27,5 +27,4 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
   public EntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
-
 }

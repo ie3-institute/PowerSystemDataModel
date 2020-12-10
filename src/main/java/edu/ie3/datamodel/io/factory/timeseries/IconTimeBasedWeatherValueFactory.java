@@ -61,14 +61,17 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
 
   @Override
   protected List<Set<String>> getFields(TimeBasedWeatherValueData data) {
-    Set<String> constructorParamsMin = newSet(
+    Set<String> constructorParamsMin =
+        newSet(
             TIME,
             DIFFUSE_IRRADIATION,
             DIRECT_IRRADIATION,
             TEMPERATURE,
             WIND_VELOCITY_U,
             WIND_VELOCITY_V);
-    Set<String> allParameters = expandSet(constructorParamsMin,
+    Set<String> allParameters =
+        expandSet(
+            constructorParamsMin,
             "albrad",
             "asobs",
             DIFFUSE_IRRADIATION,
