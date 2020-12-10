@@ -28,6 +28,11 @@ import tech.units.indriya.ComparableQuantity;
  */
 public class PsdmTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
   private static final String COORDINATE = "coordinate";
+  private static final String DIFFUSE_IRRADIATION = "diffuseirradiation";
+  private static final String DIRECT_IRRADIATION = "directirradiation";
+  private static final String TEMPERATURE = "temperature";
+  private static final String WIND_DIRECTION = "winddirection";
+  private static final String WIND_VELOCITY = "windvelocity";
 
   public PsdmTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
