@@ -8,17 +8,17 @@ package edu.ie3.datamodel.io.factory.timeseries
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
-import edu.ie3.test.common.WeatherTestData
+import edu.ie3.test.common.PsdmWeatherTestData
 import edu.ie3.util.TimeUtil
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-class TimeBasedWeatherValueFactoryTest extends Specification {
+class PsdmTimeBasedWeatherValueFactoryTest extends Specification {
 
-	def "A TimeBasedWeatherValueFactory should be able to create time series with missing values"() {
+	def "A PsdmTimeBasedWeatherValueFactory should be able to create time series with missing values"() {
 		given:
-		def factory = new TimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
-		def coordinate = WeatherTestData.COORDINATE_193186
+		def factory = new PsdmTimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
+		def coordinate = PsdmWeatherTestData.COORDINATE_193186
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
 
 		Map<String, String> parameter = [
@@ -48,10 +48,10 @@ class TimeBasedWeatherValueFactoryTest extends Specification {
 		model == expectedResults
 	}
 
-	def "A TimeBasedWeatherValueFactory should be able to create time series values"() {
+	def "A PsdmTimeBasedWeatherValueFactory should be able to create time series values"() {
 		given:
-		def factory = new TimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
-		def coordinate = WeatherTestData.COORDINATE_193186
+		def factory = new PsdmTimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
+		def coordinate = PsdmWeatherTestData.COORDINATE_193186
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
 
 		Map<String, String> parameter = [

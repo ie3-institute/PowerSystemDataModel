@@ -12,22 +12,28 @@ import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.interval.ClosedInterval;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.jgrapht.alg.util.Pair;
 import org.locationtech.jts.geom.Point;
 
 /** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
 public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
 
-  private final TimeBasedWeatherValueFactory weatherFactory = new TimeBasedWeatherValueFactory();
-  private static final String COORDINATE_FIELD = "coordinate";
+  private final TimeBasedWeatherValueFactory weatherFactory;
 
   private final Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries;
   private final IdCoordinateSource coordinateSource;
@@ -39,13 +45,20 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
    * @param fileNamingStrategy strategy for the naming of time series files
+   * @param weatherFactory factory to transfer field to value mapping into actual java object
+   *     instances
    */
-  public CsvWeatherSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+  public CsvWeatherSource(
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      TimeBasedWeatherValueFactory weatherFactory) {
     this(
         csvSep,
         folderPath,
         fileNamingStrategy,
-        new CsvIdCoordinateSource(csvSep, folderPath, fileNamingStrategy));
+        new CsvIdCoordinateSource(csvSep, folderPath, fileNamingStrategy),
+        weatherFactory);
   }
 
   /**
@@ -56,14 +69,18 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @param folderPath path to the folder holding the time series files
    * @param fileNamingStrategy strategy for the naming of time series files
    * @param coordinateSource a coordinate source to map ids to points
+   * @param weatherFactory factory to transfer field to value mapping into actual java object
+   *     instances
    */
   public CsvWeatherSource(
       String csvSep,
       String folderPath,
       FileNamingStrategy fileNamingStrategy,
-      IdCoordinateSource coordinateSource) {
+      IdCoordinateSource coordinateSource,
+      TimeBasedWeatherValueFactory weatherFactory) {
     super(csvSep, folderPath, fileNamingStrategy);
     this.coordinateSource = coordinateSource;
+    this.weatherFactory = weatherFactory;
 
     coordinateToTimeSeries = getWeatherTimeSeries();
   }
@@ -190,21 +207,12 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
   private Optional<TimeBasedValue<WeatherValue>> buildWeatherValue(
       Map<String, String> fieldToValues) {
     /* Try to get the coordinate from entries */
-    String coordinateString = fieldToValues.get(COORDINATE_FIELD);
-    if (Objects.isNull(coordinateString) || coordinateString.isEmpty()) {
-      log.error(
-          "Cannot parse weather value. Unable to find field '{}' in data: {}",
-          COORDINATE_FIELD,
-          fieldToValues);
-      return Optional.empty();
-    }
-    int coordinateId = Integer.parseInt(coordinateString);
-    return coordinateSource
-        .getCoordinate(coordinateId)
+    Optional<Point> maybeCoordinate = extractCoordinate(fieldToValues);
+    return maybeCoordinate
         .map(
             coordinate -> {
               /* Remove coordinate entry from fields */
-              fieldToValues.remove(COORDINATE_FIELD);
+              fieldToValues.remove(weatherFactory.getCoordinateIdFieldString());
 
               /* Build factory data */
               TimeBasedWeatherValueData factoryData =
@@ -213,9 +221,141 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
             })
         .orElseGet(
             () -> {
-              log.error("Unable to find coordinate with id '{}'.", coordinateId);
+              log.error("Unable to find coordinate for entry '{}'.", fieldToValues);
               return Optional.empty();
             });
+  }
+
+  /**
+   * Reads the first line (considered to be the headline with headline fields) and returns a stream
+   * of (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since
+   * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
+   *
+   * <p>This method overrides {@link CsvDataSource#buildStreamWithFieldsToAttributesMap(Class,
+   * BufferedReader)} to not do sanity check for available UUID. This is because the weather source
+   * might make use of ICON weather data, which don't have a UUID. For weather it is indeed not
+   * necessary, to have one unique UUID.
+   *
+   * @param entityClass the entity class that should be build
+   * @param bufferedReader the reader to use
+   * @return a parallel stream of maps, where each map represents one row of the csv file with the
+   *     mapping (fieldName to fieldValue)
+   */
+  @Override
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
+    try (BufferedReader reader = bufferedReader) {
+      final String[] headline = parseCsvRow(reader.readLine(), csvSep);
+
+      // by default try-with-resources closes the reader directly when we leave this method (which
+      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
+      // As we still want to consume the data at other places, we start a new stream instead of
+      // returning the original one
+      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
+
+      return distinctRowsWithLog(entityClass, allRows).parallelStream();
+
+    } catch (IOException e) {
+      log.warn(
+          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+    }
+
+    return Stream.empty();
+  }
+
+  /**
+   * Returns a collection of maps each representing a row in csv file that can be used to built an
+   * instance of a {@link UniqueEntity}. The uniqueness of each row is doubled checked by a) that no
+   * duplicated rows are returned that are full (1:1) matches and b) that no rows are returned that
+   * have the same composite primary key (in terms of date and coordinate id) but different field
+   * values. As the later case (b) is destroying the contract of unique primary keys, an empty set
+   * is returned to indicate that these data cannot be processed safely and the error is logged. For
+   * case a), only the duplicates are filtered out an a set with unique rows is returned.
+   *
+   * @param entityClass the entity class that should be built based on the provided (fieldName to
+   *     fieldValue) collection
+   * @param allRows collection of rows of a csv file an entity should be built from
+   * @param <T> type of the entity
+   * @return either a set containing only unique rows or an empty set if at least two rows with the
+   *     same UUID but different field values exist
+   */
+  @Override
+  protected <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
+      Class<T> entityClass, Collection<Map<String, String>> allRows) {
+    Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
+    // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial
+    if (allRows.size() != allRowsSet.size()) {
+      log.warn(
+          "File with '{}' entities contains {} exact duplicated rows. File cleanup is recommended!",
+          entityClass.getSimpleName(),
+          (allRows.size() - allRowsSet.size()));
+    }
+
+    // check for rows that match exactly by their UUID, but have different fields -> crucial, we
+    // allow only unique UUID entities
+    Set<Map<String, String>> distinctUuidRowSet =
+        allRowsSet
+            .parallelStream()
+            .filter(
+                distinctByKey(
+                    fieldToValues ->
+                        Pair.of(
+                            fieldToValues.get(weatherFactory.getTimeFieldString()),
+                            fieldToValues.get(weatherFactory.getCoordinateIdFieldString()))))
+            .collect(Collectors.toSet());
+    if (distinctUuidRowSet.size() != allRowsSet.size()) {
+      allRowsSet.removeAll(distinctUuidRowSet);
+      String affectedTimesAndCoordinates =
+          allRowsSet.stream()
+              .map(
+                  row ->
+                      Pair.of(
+                              row.get(weatherFactory.getTimeFieldString()),
+                              row.get(weatherFactory.getCoordinateIdFieldString()))
+                          .toString())
+              .collect(Collectors.joining(",\n"));
+      log.error(
+          "'{}' entities with duplicated composite primary key, but different field values found! Please review the corresponding input file!\nAffected primary keys:\n{}",
+          entityClass.getSimpleName(),
+          affectedTimesAndCoordinates);
+      // if this happens, we return an empty set to prevent further processing
+      return new HashSet<>();
+    }
+
+    return allRowsSet;
+  }
+
+  /**
+   * State full predicate to allow for filtering distinct elements by a key
+   *
+   * @param keyExtractor Function, that extracts the key, the elements may be distinct in
+   * @param <T> Type of elements to filter
+   * @return True, if the elements hasn't been seen, yet. False otherwise
+   * @see <a href="https://www.baeldung.com/java-streams-distinct-by">This baeldung tutorial</a>
+   */
+  private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+    Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+    return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+  }
+
+  /**
+   * Extract the coordinate identifier from the field to value mapping and obtain the actual
+   * coordinate in collaboration with the source.
+   *
+   * @param fieldToValues "flat " input information as a mapping from field to value
+   * @return Optional time based weather value
+   */
+  private Optional<Point> extractCoordinate(Map<String, String> fieldToValues) {
+    String coordinateString = fieldToValues.get(weatherFactory.getCoordinateIdFieldString());
+    if (Objects.isNull(coordinateString) || coordinateString.isEmpty()) {
+      log.error(
+          "Cannot parse weather value. Unable to find field '{}' in data: {}",
+          weatherFactory.getCoordinateIdFieldString(),
+          fieldToValues);
+      return Optional.empty();
+    }
+    int coordinateId = Integer.parseInt(coordinateString);
+    return coordinateSource.getCoordinate(coordinateId);
   }
 
   /**
