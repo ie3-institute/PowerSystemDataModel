@@ -27,9 +27,9 @@ import org.locationtech.jts.geom.Point;
 /** InfluxDB Source for weather data */
 public class InfluxDbWeatherSource implements WeatherSource {
   private static final String BASIC_QUERY_STRING = "Select * from weather";
-  private static final String COORDINATE_ID_COLUMN_NAME = "coordinate";
   private static final String MEASUREMENT_NAME_WEATHER = "weather";
   private static final int MILLI_TO_NANO_FACTOR = 1000000;
+  private final String coordinateIdColumnName;
   private final InfluxDbConnector connector;
   private final IdCoordinateSource coordinateSource;
   private final TimeBasedWeatherValueFactory weatherValueFactory;
@@ -49,6 +49,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
     this.weatherValueFactory = weatherValueFactory;
+    this.coordinateIdColumnName = weatherValueFactory.getCoordinateIdFieldString();
   }
 
   @Override
@@ -151,7 +152,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
             fieldToValue -> {
               Optional<Point> coordinate =
                   coordinateSource.getCoordinate(
-                      Integer.parseInt(fieldToValue.remove(COORDINATE_ID_COLUMN_NAME)));
+                      Integer.parseInt(fieldToValue.remove(coordinateIdColumnName)));
               if (!coordinate.isPresent()) return null;
               fieldToValue.putIfAbsent("uuid", UUID.randomUUID().toString());
 
