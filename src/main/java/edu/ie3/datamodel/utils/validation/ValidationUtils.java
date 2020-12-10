@@ -35,8 +35,11 @@ public class ValidationUtils {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
-  static String errorMessage1 = "Cannot validate object of class '";
-  static String errorMessage2 = "', as no routine is implemented.";
+  private static String notImplementedString(Object obj) {
+    return "Cannot validate object of class '"
+        + obj.getClass().getSimpleName()
+        + "', as no routine is implemented.";
+  }
 
   /**
    * This is a "distribution" method, that forwards the check request to specific implementations to
@@ -54,8 +57,7 @@ public class ValidationUtils {
       GraphicValidationUtils.check((GraphicInput) obj);
     else if (AssetTypeInput.class.isAssignableFrom(obj.getClass()))
       checkAssetType((AssetTypeInput) obj);
-    else
-      throw new ValidationException(errorMessage1 + obj.getClass().getSimpleName() + errorMessage2);
+    else throw new ValidationException(notImplementedString(obj));
   }
 
   /**
@@ -63,8 +65,7 @@ public class ValidationUtils {
    * - it is not null <br>
    * - its id is not null <br>
    * - its operation time is not null <br>
-   * - in case operation time is limited, its start time and end time are not null and start time is
-   * before end time <br>
+   * - in case operation time is limited, start time is before end time <br>
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
    * the checking task, based on the class of the given object. If an unknown class is handed in, a
    * {@link ValidationException} is thrown.
@@ -81,20 +82,24 @@ public class ValidationUtils {
       throw new InvalidEntityException("Operation time of the asset is not defined", assetInput);
     // Check if start time and end time are not null and start time is before end time
     if (assetInput.getOperationTime().isLimited()) {
-      if (assetInput.getOperationTime().getEndDate().isPresent()
-          && assetInput.getOperationTime().getStartDate().isPresent()) {
-        if (assetInput
-            .getOperationTime()
-            .getEndDate()
-            .get()
-            .isBefore(assetInput.getOperationTime().getStartDate().get()))
-          throw new InvalidEntityException(
-              "Operation start time of the asset has to be before end time", assetInput);
-      } else {
-        throw new InvalidEntityException(
-            "Start and/or end time of operation time is null, although operation should be limited",
-            assetInput);
-      }
+      assetInput
+          .getOperationTime()
+          .getEndDate()
+          .map(
+              endDate -> {
+                assetInput
+                    .getOperationTime()
+                    .getStartDate()
+                    .map(
+                        startDate -> {
+                          if (endDate.isBefore(startDate))
+                            throw new InvalidEntityException(
+                                "Operation start time of the asset has to be before end time",
+                                assetInput);
+                          return startDate;
+                        });
+                return endDate;
+              });
     }
 
     // Further checks for subclasses
@@ -108,9 +113,7 @@ public class ValidationUtils {
       SystemParticipantValidationUtils.check((SystemParticipantInput) assetInput);
     else if (ThermalUnitInput.class.isAssignableFrom(assetInput.getClass()))
       ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput);
-    else
-      throw new ValidationException(
-          errorMessage1 + assetInput.getClass().getSimpleName() + errorMessage2);
+    else throw new ValidationException(notImplementedString(assetInput));
   }
 
   /**
@@ -152,12 +155,9 @@ public class ValidationUtils {
         SystemParticipantValidationUtils.checkStorageType((StorageTypeInput) assetTypeInput);
       else if (WecTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
         SystemParticipantValidationUtils.checkWecType((WecTypeInput) assetTypeInput);
-      else
-        throw new ValidationException(
-            errorMessage1 + assetTypeInput.getClass().getSimpleName() + errorMessage2);
+      else throw new ValidationException(notImplementedString(assetTypeInput));
     } else {
-      throw new ValidationException(
-          errorMessage1 + assetTypeInput.getClass().getSimpleName() + errorMessage2);
+      throw new ValidationException(notImplementedString(assetTypeInput));
     }
   }
 

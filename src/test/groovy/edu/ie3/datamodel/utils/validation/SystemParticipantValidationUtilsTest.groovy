@@ -82,6 +82,12 @@ class SystemParticipantValidationUtilsTest extends Specification {
 	private static final ComparableQuantity<Time> lifeTime = Quantities.getQuantity(175316.4, LIFE_TIME)
 	private static final int lifeCycle = 100
 
+	// Specific data for wec type
+	private static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
+	private static final ComparableQuantity<Area> rotorArea = Quantities.getQuantity(20, ROTOR_AREA)
+	private static final ComparableQuantity<Length> hubHeight = Quantities.getQuantity(200, HUB_HEIGHT)
+
+
 	def "SystemParticipantValidationUtils.checkType() recognizes all potential errors for a system participant type"() {
 		when:
 		SystemParticipantValidationUtils.check(invalidType)
@@ -420,10 +426,6 @@ class SystemParticipantValidationUtilsTest extends Specification {
 		then:
 		noExceptionThrown()
 	}
-
-	private static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
-	private static final ComparableQuantity<Area> rotorArea = Quantities.getQuantity(20, ROTOR_AREA)
-	private static final ComparableQuantity<Length> hubHeight = Quantities.getQuantity(200, HUB_HEIGHT)
 
 	def "SystemParticipantValidationUtils.checkWecType() recognizes all potential errors for a wec type"() {
 		when:

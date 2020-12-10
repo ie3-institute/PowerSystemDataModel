@@ -129,12 +129,6 @@ class ValidationUtilsTest extends Specification {
 		GridTestData.nodeA.copy().operationTime(OperationTime.builder().
 				withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-26 15:11:31")).
 				withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()).build() || new InvalidEntityException("Operation start time of the asset has to be before end time", invalidAsset)
-		GridTestData.nodeA.copy().operationTime(OperationTime.builder().
-				withStart(null).
-				withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()).build() || new InvalidEntityException("Start and/or end time of operation time is null, although operation should be limited", invalidAsset)
-		GridTestData.nodeA.copy().operationTime(OperationTime.builder().
-				withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-26 15:11:31")).
-				withEnd(null).build()).build() || new InvalidEntityException("Start and/or end time of operation time is null, although operation should be limited", invalidAsset)
 	}
 
 	def "The check for negative entities should work as expected"() {

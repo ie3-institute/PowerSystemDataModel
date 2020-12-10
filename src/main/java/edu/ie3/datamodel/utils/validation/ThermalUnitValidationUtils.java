@@ -17,8 +17,11 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
-  static String errorMessage1 = "Cannot validate object of class '";
-  static String errorMessage2 = "', as no routine is implemented.";
+  private static String notImplementedString(Object obj) {
+    return "Cannot validate object of class '"
+        + obj.getClass().getSimpleName()
+        + "', as no routine is implemented.";
+  }
 
   /**
    * Validates a thermal unit if: <br>
@@ -38,9 +41,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
       checkThermalSink((ThermalSinkInput) thermalUnitInput);
     else if (ThermalStorageInput.class.isAssignableFrom(thermalUnitInput.getClass()))
       checkThermalStorage((ThermalStorageInput) thermalUnitInput);
-    else
-      throw new ValidationException(
-          errorMessage1 + thermalUnitInput.getClass().getSimpleName() + errorMessage2);
+    else throw new ValidationException(notImplementedString(thermalUnitInput));
   }
 
   /**
@@ -59,9 +60,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     // Further checks for subclasses
     if (ThermalHouseInput.class.isAssignableFrom(thermalSinkInput.getClass()))
       checkThermalHouse((ThermalHouseInput) thermalSinkInput);
-    else
-      throw new ValidationException(
-          errorMessage1 + thermalSinkInput.getClass().getSimpleName() + errorMessage2);
+    else throw new ValidationException(notImplementedString(thermalSinkInput));
   }
 
   /**
@@ -80,9 +79,7 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     // Further checks for subclasses
     if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass()))
       checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput);
-    else
-      throw new ValidationException(
-          errorMessage1 + thermalStorageInput.getClass().getSimpleName() + errorMessage2);
+    else throw new ValidationException(notImplementedString(thermalStorageInput));
   }
 
   /**

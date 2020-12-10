@@ -54,10 +54,10 @@ class ConnectorValidationUtilsTest extends Specification {
 
 		where:
 		invalidLine                                                                                                                                                                                   || expectedException
-		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeG).build()                                                                                                                                || new InvalidEntityException("Line connects the same node", invalidLine)
-		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().subnet(5).build()).build()                                                                                                       || new InvalidEntityException("Line connects different subnets", invalidLine)
-		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().voltLvl(GermanVoltageLevelUtils.MV_10KV).build()).build()                                                                        || new InvalidEntityException("Line connects different voltage levels", invalidLine)
-		GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, METRE)).build()                                                                                                                || new InvalidEntityException("Line has a zero or negative length", invalidLine)
+		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeG).build()                                                                                                                                || new InvalidEntityException("LineInput connects the same node, but shouldn't", invalidLine)
+		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().subnet(5).build()).build()                                                                                                       || new InvalidEntityException("LineInput connects different subnets, but shouldn't", invalidLine)
+		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().voltLvl(GermanVoltageLevelUtils.MV_10KV).build()).build()                                                                        || new InvalidEntityException("LineInput connects different voltage levels, but shouldn't", invalidLine)
+		GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, METRE)).build()                                                                                                                || new InvalidEntityException("The following quantities have to be positive: 0 km", invalidLine)
 		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))).build()).build()                              || new InvalidEntityException("Coordinates of start and end point do not match coordinates of connected nodes", invalidLine)
 		GridTestData.lineFtoG.copy().nodeB(GridTestData.nodeG.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))).build()).build()                              || new InvalidEntityException("Coordinates of start and end point do not match coordinates of connected nodes", invalidLine)
 		new LineInput(
@@ -112,8 +112,8 @@ class ConnectorValidationUtilsTest extends Specification {
 		where:
 		invalidTransformer2W                                                                                                     		|| expectedException
 		GridTestData.transformerBtoD.copy().tapPos(100).build()                                                                  		|| new InvalidEntityException("Tap position of transformer is outside of bounds", invalidTransformer2W)
-		GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().voltLvl(GermanVoltageLevelUtils.HV).build()).build() 		|| new InvalidEntityException("Transformer connects nodes of the same voltage level", invalidTransformer2W)
-		GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().subnet(2).build()).build()                           		|| new InvalidEntityException("Transformer connects nodes in the same subnet", invalidTransformer2W)
+		GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().voltLvl(GermanVoltageLevelUtils.HV).build()).build() 		|| new InvalidEntityException("Transformer2WInput connects the same voltage level, but shouldn't", invalidTransformer2W)
+		GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().subnet(2).build()).build()                           		|| new InvalidEntityException("Transformer2WInput connects the same subnet, but shouldn't", invalidTransformer2W)
 		GridTestData.transformerBtoD.copy().nodeB(GridTestData.nodeD.copy().voltLvl(GermanVoltageLevelUtils.MV_30KV).build()).build() 	|| new InvalidEntityException("Rated voltages of transformer do not equal voltage levels at the nodes", invalidTransformer2W)
 	}
 

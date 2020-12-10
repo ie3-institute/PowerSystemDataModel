@@ -19,6 +19,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
+  private static String notImplementedString(Object obj) {
+    return "Cannot validate object of class '"
+        + obj.getClass().getSimpleName()
+        + "', as no routine is implemented.";
+  }
+
   /**
    * Validates a system participant if: <br>
    * - it is not null <br>
@@ -59,11 +65,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       checkWec((WecInput) systemParticipant);
     else if (EvcsInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkEvcs((EvcsInput) systemParticipant);
-    else
-      throw new ValidationException(
-          "Cannot validate object of class '"
-              + systemParticipant.getClass().getSimpleName()
-              + "', as no routine is implemented.");
+    else throw new ValidationException(notImplementedString(systemParticipant));
   }
 
   /**
