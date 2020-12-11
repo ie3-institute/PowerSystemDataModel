@@ -18,9 +18,7 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.util.TimeUtil;
 import edu.ie3.util.interval.ClosedInterval;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -40,36 +38,55 @@ public class CouchbaseWeatherSource implements WeatherSource {
   private static final String DEFAULT_KEY_PREFIX = "weather";
 
   private final TimeBasedWeatherValueFactory weatherFactory;
+
   private final String keyPrefix;
   private final CouchbaseConnector connector;
   private final IdCoordinateSource coordinateSource;
   private final String coordinateIdColumnName;
 
-  public CouchbaseWeatherSource(
-      CouchbaseConnector connector,
-      IdCoordinateSource coordinateSource,
-      String coordinateIdColumnName) {
-    this(
-        connector,
-        coordinateSource,
-        coordinateIdColumnName,
-        DEFAULT_TIMESTAMP_PATTERN,
-        DEFAULT_KEY_PREFIX);
-  }
-
+  /**
+   * Instantiate a weather source utilising a connection to a couchbase instance obtained via the
+   * connector. This convenient constructor uses the {@link
+   * CouchbaseWeatherSource#DEFAULT_KEY_PREFIX} as key prefix.
+   *
+   * @param connector Connector, that establishes the connection to the couchbase instance
+   * @param coordinateSource Source to obtain actual coordinates from
+   * @param coordinateIdColumnName Name of the column containing the information about the
+   *     coordinate identifier
+   * @param weatherFactory Factory to transfer field to value mapping into actual java object
+   *     instances
+   */
   public CouchbaseWeatherSource(
       CouchbaseConnector connector,
       IdCoordinateSource coordinateSource,
       String coordinateIdColumnName,
-      String timestampPattern,
-      String keyPrefix) {
+      TimeBasedWeatherValueFactory weatherFactory) {
+    this(connector, coordinateSource, coordinateIdColumnName, DEFAULT_KEY_PREFIX, weatherFactory);
+  }
+
+  /**
+   * Instantiate a weather source utilising a connection to a couchbase instance obtained via the
+   * connector
+   *
+   * @param connector Connector, that establishes the connection to the couchbase instance
+   * @param coordinateSource Source to obtain actual coordinates from
+   * @param coordinateIdColumnName Name of the column containing the information about the
+   *     coordinate identifier
+   * @param keyPrefix Prefix of entries, that belong to weather
+   * @param weatherFactory Factory to transfer field to value mapping into actual java object
+   *     instances
+   */
+  public CouchbaseWeatherSource(
+      CouchbaseConnector connector,
+      IdCoordinateSource coordinateSource,
+      String coordinateIdColumnName,
+      String keyPrefix,
+      TimeBasedWeatherValueFactory weatherFactory) {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
     this.coordinateIdColumnName = coordinateIdColumnName;
-    this.weatherFactory =
-        new TimeBasedWeatherValueFactory(
-            new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timestampPattern));
     this.keyPrefix = keyPrefix;
+    this.weatherFactory = weatherFactory;
   }
 
   @Override

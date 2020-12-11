@@ -25,6 +25,6 @@ class IrradiationValueTest extends Specification {
 		null                                                                                                 | new IrradiationValue(null, null)                                                     || false
 		null                                                                                                 | null                                                                                 || true
 		new IrradiationValue(Quantities.getQuantity(10.23d, StandardUnits.IRRADIATION), null)                | new IrradiationValue(Quantities.getQuantity(10.23, StandardUnits.IRRADIATION), null) || false
-		new IrradiationValue(Quantities.getQuantity(10230, PowerSystemUnits.WATT_PER_SQUAREMETRE), null) 	 | new IrradiationValue(Quantities.getQuantity(10.23, StandardUnits.IRRADIATION), null) || false
+		new IrradiationValue(Quantities.getQuantity(10230, PowerSystemUnits.WATT_PER_SQUAREMETRE), null) 	   | new IrradiationValue(Quantities.getQuantity(10.23, StandardUnits.IRRADIATION), null) || false
 	}
 }

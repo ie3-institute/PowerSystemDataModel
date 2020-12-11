@@ -8,6 +8,9 @@ package edu.ie3.test.helper
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
+import edu.ie3.util.quantities.QuantityUtil
+
+import javax.measure.Quantity
 
 trait WeatherSourceTestHelper {
 
@@ -28,6 +31,17 @@ trait WeatherSourceTestHelper {
 
 	static boolean equalsIgnoreUUID(TimeBasedValue<WeatherValue> val1, TimeBasedValue<WeatherValue> val2) {
 		if(val1.time != val2.time) return false
-		return val1.getValue() == val2.getValue()
+
+		def weatherValue1 = val1.value
+		def weatherValue2 = val2.value
+		try {
+			return weatherValue1.irradiation.directIrradiation.isPresent() == weatherValue2.irradiation.directIrradiation.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.irradiation.directIrradiation.get(), weatherValue2.irradiation.directIrradiation.get(), 1E-10) &&
+					weatherValue1.irradiation.diffuseIrradiation.isPresent() == weatherValue2.irradiation.diffuseIrradiation.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.irradiation.diffuseIrradiation.get(), weatherValue2.irradiation.diffuseIrradiation.get(), 1E-10) &&
+					weatherValue1.temperature.temperature.isPresent() == weatherValue2.temperature.temperature.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.temperature.temperature.get(), weatherValue2.temperature.temperature.get(), 1E-10) &&
+					weatherValue1.wind.velocity.isPresent() == weatherValue2.wind.velocity.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.wind.velocity.get(), weatherValue2.wind.velocity.get(), 1E-10) &&
+					weatherValue1.wind.direction.isPresent() == weatherValue2.wind.direction.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.wind.direction.get(), weatherValue2.wind.direction.get(), 1E-10)
+		} catch (NullPointerException npe) {
+			return false
+		}
 	}
 }

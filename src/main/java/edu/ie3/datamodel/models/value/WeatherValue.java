@@ -46,7 +46,8 @@ public class WeatherValue implements Value {
    * @param directIrradiation Direct sun irradiation for this coordinate (typically in W/m²)
    * @param diffuseIrradiation Diffuse sun irradiation for this coordinate (typically in W/m²)
    * @param temperature for this coordinate (typically in K)
-   * @param direction Wind direction as an angle from north for this coordinate (typically in rad)
+   * @param direction Direction, the wind comes from as an angle from north increasing clockwise
+   *     (typically in rad)
    * @param velocity Wind velocity for this coordinate (typically in m/s)
    */
   public WeatherValue(

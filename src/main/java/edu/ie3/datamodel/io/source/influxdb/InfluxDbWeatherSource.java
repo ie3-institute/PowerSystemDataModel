@@ -40,11 +40,15 @@ public class InfluxDbWeatherSource implements WeatherSource {
    * @param connector needed for database connection
    * @param coordinateSource needed to map coordinates to ID as InfluxDB does not support spatial
    *     types
+   * @param weatherValueFactory instance of a time based weather value factory
    */
-  public InfluxDbWeatherSource(InfluxDbConnector connector, IdCoordinateSource coordinateSource) {
+  public InfluxDbWeatherSource(
+      InfluxDbConnector connector,
+      IdCoordinateSource coordinateSource,
+      TimeBasedWeatherValueFactory weatherValueFactory) {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
-    this.weatherValueFactory = new TimeBasedWeatherValueFactory();
+    this.weatherValueFactory = weatherValueFactory;
   }
 
   @Override
