@@ -9,7 +9,7 @@ Provides an extensive data model capable of modelling energy systems with high g
 
 **Supported physical models:**
 
-	- Power Grids containing nodes, lines, swithces and transformers
+	- Power Grids containing nodes, lines, switches and transformers
 	- Conventional and renewable generating components such as fixed feed, biomass plants, wind turbines and photovoltaics
 	- Power to heat units e.g. combined heat and power plants and heat pumps
 	- Electrical storages, electric vehicles and charging stations
