@@ -198,6 +198,18 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
+   * Initialises a reader to get grip on the file that contains mapping information between
+   * coordinate id and actual coordinate
+   *
+   * @return A {@link BufferedReader}
+   * @throws FileNotFoundException If the file is not present
+   */
+  public BufferedReader initIdCoordinateReader() throws FileNotFoundException {
+    String filePath = fileNamingStrategy.getIdCoordinateFileName();
+    return initReader(filePath);
+  }
+
+  /**
    * Returns a set of relative paths strings to time series files, with respect to the base folder
    * path
    *

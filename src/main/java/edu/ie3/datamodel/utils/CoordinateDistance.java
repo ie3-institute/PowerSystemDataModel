@@ -89,4 +89,16 @@ public class CoordinateDistance implements Comparable<CoordinateDistance> {
   public int hashCode() {
     return Objects.hash(coordinateA, coordinateB, distance);
   }
+
+  @Override
+  public String toString() {
+    return "CoordinateDistance{"
+        + "coordinateA="
+        + coordinateA
+        + ", coordinateB="
+        + coordinateB
+        + ", distance="
+        + distance
+        + '}';
+  }
 }

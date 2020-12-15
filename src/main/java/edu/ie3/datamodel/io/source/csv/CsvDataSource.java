@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -137,6 +138,19 @@ public abstract class CsvDataSource {
           () -> e);
     }
     return insensitiveFieldsToAttributes;
+  }
+
+  /**
+   * State full predicate to allow for filtering distinct elements by a key
+   *
+   * @param keyExtractor Function, that extracts the key, the elements may be distinct in
+   * @param <T> Type of elements to filter
+   * @return True, if the elements hasn't been seen, yet. False otherwise
+   * @see <a href="https://www.baeldung.com/java-streams-distinct-by">This baeldung tutorial</a>
+   */
+  protected static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+    Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+    return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
   }
 
   /**

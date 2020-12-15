@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.connectors.CsvFileConnector
+import edu.ie3.datamodel.io.factory.timeseries.CosmoIdCoordinateFactory
 import edu.ie3.datamodel.utils.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import spock.lang.Shared
@@ -20,113 +20,134 @@ class CsvIdCoordinateSourceTest extends Specification implements CsvTestDataMeta
 	CsvIdCoordinateSource source
 
 	def setupSpec() {
-		source = new CsvIdCoordinateSource(csvSep, coordinatesFolderPath, fileNamingStrategy)
+		source = new CsvIdCoordinateSource(csvSep, coordinatesFolderPath, fileNamingStrategy, new CosmoIdCoordinateFactory())
 	}
 
 	def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {
 		def expectedStream = Stream.of(
-				["id": "193186", "lat": "48.038719", "lon": "14.39335"],
-				["id": "193187", "lat": "48.035011", "lon": "14.48661"],
-				["id": "193188", "lat": "48.031231", "lon": "14.57985"])
-		def connector = new CsvFileConnector(coordinatesFolderPath, fileNamingStrategy)
+				["id": "106580", "latgeo": "39.602772", "latrot": "-10", "longgeo": "1.279336", "longrot": "-6.8125", "tid": "1"],
+				["id": "106581", "latgeo": "39.610001", "latrot": "-10", "longgeo": "1.358673", "longrot": "-6.75", "tid": "2"],
+				["id": "106582", "latgeo": "39.617161", "latrot": "-10", "longgeo": "1.438028", "longrot": "-6.6875", "tid": "3"],
+				["id": "106583", "latgeo": "39.624249", "latrot": "-10", "longgeo": "1.5174021", "longrot": "-6.625", "tid": "4"])
+
 		when:
-		def actualStream = source.buildStreamWithFieldsToAttributesMap(fileNamingStrategy.idCoordinateFileName, connector)
+		def actualStream = source.buildStreamWithFieldsToAttributesMap()
+
 		then:
 		actualStream.collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))
 	}
 
-	def "The CsvCoordinateSource is able to convert a (fieldname -> fieldValue) stream to an (id -> Point) map"() {
-		def validStream = Stream.of([
-			"id"			: "42",
-			"lat"			: "3.07",
-			"lon"		    : "19.95"])
-		def expectedMap = [42 : GeoUtils.xyToPoint(3.07,19.95)]
-		when:
-		def actualMap = source.buildIdToCoordinateMap(validStream)
-		then:
-		actualMap == expectedMap
-	}
-
 	def "The CsvIdCoordinateSource is able to look up a specific point or an empty Optional otherwise" () {
-		def idA = 193186
-		def expectedPointA = Optional.of(GeoUtils.xyToPoint(48.038719, 14.39335))
-		def idB = 42
-		when:
-		def actualPointA = source.getCoordinate(idA)
-		def actualPointB = source.getCoordinate(idB)
-		then:
+		given:
+		def knownCoordinateId = 106582
+		def expectedPointA = Optional.of(GeoUtils.xyToPoint(1.438028, 39.617161))
+		def unknownCoordinateId = 42
+
+		when: "looking up a known coordinate id"
+		def actualPointA = source.getCoordinate(knownCoordinateId)
+
+		then: "we get the expected point"
 		actualPointA == expectedPointA
+
+		when: "looking up an unknown coordinate id"
+		def actualPointB = source.getCoordinate(unknownCoordinateId)
+
+		then: "we get an empty optional"
 		actualPointB == Optional.empty()
 	}
 
 	def "The CsvIdCoordinateSource is able to look up specified points" () {
-		int[] ids = 193187..193192
+		int[] ids = 106580..106582
 		def expectedCoordinates = [
-			GeoUtils.xyToPoint(48.031231, 14.57985),
-			GeoUtils.xyToPoint(48.035011, 14.48661)
+			GeoUtils.xyToPoint(1.279336, 39.602772),
+			GeoUtils.xyToPoint(1.358673, 39.610001),
+			GeoUtils.xyToPoint(1.438028, 39.617161)
 		].toSet()
+
 		when:
 		def actualCoordinates = source.getCoordinates(ids)
+
 		then:
 		actualCoordinates == expectedCoordinates
 	}
 
 	def "The CsvIdCoordinateSource is able to return a specific ID or an empty Optional otherwise" () {
-		def pointA = GeoUtils.xyToPoint(48.038719, 14.39335)
-		def expectedIdForA = Optional.of(193186)
-		def pointB = GeoUtils.xyToPoint(48.035011, 14.39335)
-		when:
-		def actualIdForA = source.getId(pointA)
-		def actualIdForB = source.getId(pointB)
-		then:
+		def knownCoordinate = GeoUtils.xyToPoint(1.279336, 39.602772)
+		def expectedIdForA = Optional.of(106580)
+		def unknownCoordinate = GeoUtils.xyToPoint(14.39335, 48.035011)
+
+		when: "looking up an id of a known coordinate"
+		def actualIdForA = source.getId(knownCoordinate)
+
+		then: "we get the matching id"
 		actualIdForA == expectedIdForA
+
+		when: "looking up an unknown coordinate"
+		def actualIdForB = source.getId(unknownCoordinate)
+
+		then: "we get nothing"
 		actualIdForB == Optional.empty()
 	}
 
 	def "The CsvIdCoordinateSource is able to return a count of all available coordinates" () {
-		def expectedCount = 3
+		given:
+		def expectedCount = 4
+
 		when:
 		def actualCount = source.coordinateCount
+
 		then:
 		actualCount == expectedCount
 	}
 
 	def "The CsvIdCoordinateSource is able to return all available coordinates" () {
+		given:
 		def expectedCoordinates = [
-			GeoUtils.xyToPoint(48.038719, 14.39335),
-			GeoUtils.xyToPoint(48.035011, 14.48661),
-			GeoUtils.xyToPoint(48.031231, 14.57985)
+			GeoUtils.xyToPoint(1.279336, 39.602772),
+			GeoUtils.xyToPoint(1.358673, 39.610001),
+			GeoUtils.xyToPoint(1.438028, 39.617161),
+			GeoUtils.xyToPoint(1.5174021, 39.624249)
 		].toSet()
+
 		when:
 		def actualCoordinates = source.allCoordinates.toSet()
+
 		then:
 		actualCoordinates == expectedCoordinates
 	}
 
 	def "The CsvIdCoordinateSource is able to return the nearest n coordinates in a collection" () {
+		given:
 		def allCoordinates = [
-			GeoUtils.xyToPoint(48.038719, 14.39335),
-			GeoUtils.xyToPoint(48.035011, 14.48661),
-			GeoUtils.xyToPoint(48.031231, 14.57985)
+			GeoUtils.xyToPoint(1d, 39d),
+			GeoUtils.xyToPoint(2d, 40d),
+			GeoUtils.xyToPoint(1d, 40d),
+			GeoUtils.xyToPoint(2d, 39d)
 		]
-		def basePoint = GeoUtils.xyToPoint(48.0365, 14.48661)
+
+		def basePoint = GeoUtils.xyToPoint(1.438029, 39.617162)
 		def expectedDistances = [
-			new CoordinateDistance(basePoint, allCoordinates[0]),
+			new CoordinateDistance(basePoint, allCoordinates[2]),
 			new CoordinateDistance(basePoint, allCoordinates[1])
 		].sort()
+
 		when:
-		def actualDistances = source.getNearestCoordinates(basePoint, 2)
+		def actualDistances = source.getNearestCoordinates(basePoint, 2, allCoordinates)
+
 		then:
 		actualDistances == expectedDistances
 	}
 
 	def "If no collection is given, the CsvIdCoordinateSource is able to return the nearest n coordinates of all available coordinates" () {
+		given:
 		def n = 2
 		def allCoordinates = source.allCoordinates
-		def basePoint = GeoUtils.xyToPoint(48.0365, 14.48661)
+		def basePoint = GeoUtils.xyToPoint(1.438029, 39.617162)
 		def expectedDistances = source.getNearestCoordinates(basePoint, n, allCoordinates)
+
 		when:
 		def actualDistances = source.getNearestCoordinates(basePoint, n)
+
 		then:
 		actualDistances == expectedDistances
 	}

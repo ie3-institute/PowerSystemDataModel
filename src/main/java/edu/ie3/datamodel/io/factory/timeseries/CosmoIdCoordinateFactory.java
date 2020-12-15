@@ -36,4 +36,19 @@ public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
     return Collections.singletonList(
         newSet(TID, COORDINATE_ID, LONG_GEO, LAT_GEO, LONG_ROT, LAT_ROT));
   }
+
+  @Override
+  public String getIdField() {
+    return COORDINATE_ID;
+  }
+
+  @Override
+  public String getLatField() {
+    return LAT_GEO;
+  }
+
+  @Override
+  public String getLonField() {
+    return LONG_GEO;
+  }
 }

@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
@@ -22,12 +23,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.jgrapht.alg.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 
 /** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
@@ -47,17 +46,19 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @param fileNamingStrategy strategy for the naming of time series files
    * @param weatherFactory factory to transfer field to value mapping into actual java object
    *     instances
+   * @param coordinateFactory factory to build coordinate id to coordinate mapping
    */
   public CsvWeatherSource(
       String csvSep,
       String folderPath,
       FileNamingStrategy fileNamingStrategy,
-      TimeBasedWeatherValueFactory weatherFactory) {
+      TimeBasedWeatherValueFactory weatherFactory,
+      IdCoordinateFactory coordinateFactory) {
     this(
         csvSep,
         folderPath,
         fileNamingStrategy,
-        new CsvIdCoordinateSource(csvSep, folderPath, fileNamingStrategy),
+        new CsvIdCoordinateSource(csvSep, folderPath, fileNamingStrategy, coordinateFactory),
         weatherFactory);
   }
 
@@ -323,19 +324,6 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
     }
 
     return allRowsSet;
-  }
-
-  /**
-   * State full predicate to allow for filtering distinct elements by a key
-   *
-   * @param keyExtractor Function, that extracts the key, the elements may be distinct in
-   * @param <T> Type of elements to filter
-   * @return True, if the elements hasn't been seen, yet. False otherwise
-   * @see <a href="https://www.baeldung.com/java-streams-distinct-by">This baeldung tutorial</a>
-   */
-  private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-    Map<Object, Boolean> seen = new ConcurrentHashMap<>();
-    return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
   }
 
   /**
