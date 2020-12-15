@@ -35,11 +35,11 @@ trait WeatherSourceTestHelper {
 		def weatherValue1 = val1.value
 		def weatherValue2 = val2.value
 		try {
-			return weatherValue1.irradiation.directIrradiation.isPresent() == weatherValue2.irradiation.directIrradiation.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.irradiation.directIrradiation.get(), weatherValue2.irradiation.directIrradiation.get(), 1E-10) &&
-					weatherValue1.irradiation.diffuseIrradiation.isPresent() == weatherValue2.irradiation.diffuseIrradiation.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.irradiation.diffuseIrradiation.get(), weatherValue2.irradiation.diffuseIrradiation.get(), 1E-10) &&
-					weatherValue1.temperature.temperature.isPresent() == weatherValue2.temperature.temperature.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.temperature.temperature.get(), weatherValue2.temperature.temperature.get(), 1E-10) &&
-					weatherValue1.wind.velocity.isPresent() == weatherValue2.wind.velocity.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.wind.velocity.get(), weatherValue2.wind.velocity.get(), 1E-10) &&
-					weatherValue1.wind.direction.isPresent() == weatherValue2.wind.direction.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.wind.direction.get(), weatherValue2.wind.direction.get(), 1E-10)
+			return weatherValue1.irradiation.directIrradiation.present == weatherValue2.irradiation.directIrradiation.present && QuantityUtil.isEquivalentAbs(weatherValue1.irradiation.directIrradiation.get(), weatherValue2.irradiation.directIrradiation.get(), 1E-10) &&
+					weatherValue1.irradiation.diffuseIrradiation.present == weatherValue2.irradiation.diffuseIrradiation.present && QuantityUtil.isEquivalentAbs(weatherValue1.irradiation.diffuseIrradiation.get(), weatherValue2.irradiation.diffuseIrradiation.get(), 1E-10) &&
+					weatherValue1.temperature.temperature.present == weatherValue2.temperature.temperature.present && QuantityUtil.isEquivalentAbs(weatherValue1.temperature.temperature.get(), weatherValue2.temperature.temperature.get(), 1E-10) &&
+					weatherValue1.wind.velocity.present == weatherValue2.wind.velocity.present && QuantityUtil.isEquivalentAbs(weatherValue1.wind.velocity.get(), weatherValue2.wind.velocity.get(), 1E-10) &&
+					weatherValue1.wind.direction.present == weatherValue2.wind.direction.present && QuantityUtil.isEquivalentAbs(weatherValue1.wind.direction.get(), weatherValue2.wind.direction.get(), 1E-10)
 		} catch (NullPointerException npe) {
 			return false
 		}

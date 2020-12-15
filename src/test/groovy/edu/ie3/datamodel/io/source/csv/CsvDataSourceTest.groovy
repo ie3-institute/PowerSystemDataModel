@@ -21,7 +21,7 @@ import java.util.stream.Collectors
 
 class CsvDataSourceTest extends Specification {
 	@Shared
-	Function<Map<String, String>, String> uuidExtractor = {fieldToValues -> fieldToValues.get("uuid")}
+	Function<Map<String, String>, String> uuidExtractor = { fieldToValues -> fieldToValues.get("uuid") }
 
 	// Using a groovy bug to gain access to private methods in superclass:
 	// by default, we cannot access private methods with parameters from abstract parent classes, introducing a
@@ -45,7 +45,7 @@ class CsvDataSourceTest extends Specification {
 
 		def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
 				Class<T> entityClass, Collection<Map<String, String>> allRows) {
-			return super.distinctRowsWithLog(allRows, uuidExtractor, entityClass.getSimpleName(), "UUID")
+			return super.distinctRowsWithLog(allRows, uuidExtractor, entityClass.simpleName, "UUID")
 		}
 
 		String[] parseCsvRow(
@@ -413,7 +413,7 @@ class CsvDataSourceTest extends Specification {
 
 		when:
 		def allRows = [nodeInputRow]* noOfEntities
-		def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.getSimpleName(), "UUID")
+		def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
 
 		then:
 		distinctRows.size() == distinctSize
@@ -468,7 +468,7 @@ class CsvDataSourceTest extends Specification {
 
 		when:
 		def allRows = [nodeInputRow1, nodeInputRow2]*10
-		def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.getSimpleName(), "UUID")
+		def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
 
 		then:
 		distinctRows.size() == 0

@@ -37,7 +37,7 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 			"longgeo": "1.279336",
 			"latrot": "-10",
 			"longrot": "-6.8125"
-		] as Map<String, String>, Pair.class)
+		] as Map<String, String>, Pair)
 
 
 		when:
@@ -55,7 +55,7 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 			"id": "106580",
 			"latrot": "-10",
 			"longrot": "-6.8125"
-		] as Map<String, String>, Pair.class)
+		] as Map<String, String>, Pair)
 
 		when:
 		factory.get(invalidSimpleFactoryData)
@@ -75,14 +75,14 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 			"longgeo": "1.279336",
 			"latrot": "-10",
 			"longrot": "-6.8125"
-		] as Map<String, String>, Pair.class)
+		] as Map<String, String>, Pair)
 		Pair<Integer, Point> expectedPair = Pair.of(106580, GeoUtils.xyToPoint(1.279336, 39.602772))
 
 		when:
 		def actual = factory.get(validSimpleFactoryData)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get().with {
 			assert it.key == expectedPair.key
 			assert it.value.equalsExact(expectedPair.value, 1E-6)

@@ -32,7 +32,7 @@ class IconIdCoordinateFactoryTest extends Specification {
 			"id":"477295",
 			"latitude":"52.312",
 			"longitude":"12.812",
-			"coordinatetype":"ICON"] as Map<String, String>, Pair.class)
+			"coordinatetype":"ICON"] as Map<String, String>, Pair)
 
 		when:
 		def actual = factory.getFields(validSimpleFactoryData)
@@ -47,7 +47,7 @@ class IconIdCoordinateFactoryTest extends Specification {
 		def invalidSimpleFactoryData = new SimpleFactoryData([
 			"id":"477295",
 			"latitude":"52.312",
-			"coordinatetype":"ICON"] as Map<String, String>, Pair.class)
+			"coordinatetype":"ICON"] as Map<String, String>, Pair)
 
 		when:
 		factory.get(invalidSimpleFactoryData)
@@ -64,14 +64,14 @@ class IconIdCoordinateFactoryTest extends Specification {
 			"id":"477295",
 			"latitude":"52.312",
 			"longitude":"12.812",
-			"coordinatetype":"ICON"] as Map<String, String>, Pair.class)
+			"coordinatetype":"ICON"] as Map<String, String>, Pair)
 		Pair<Integer, Point> expectedPair = Pair.of(477295, GeoUtils.xyToPoint(12.812, 52.312))
 
 		when:
 		def actual = factory.get(validSimpleFactoryData)
 
 		then:
-		actual.isPresent()
+		actual.present
 		actual.get().with {
 			assert it.key == expectedPair.key
 			assert it.value.equalsExact(expectedPair.value, 1E-6)

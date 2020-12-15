@@ -183,8 +183,8 @@ class InfluxDbSinkIT extends Specification {
 		sinkWithEmptyNamingStrategy.persist(timeSeries)
 		sinkWithEmptyNamingStrategy.flush()
 
-		def key_lineresult = lineResult1.getClass().getSimpleName()
-		def key_timeseries = timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName()
+		def key_lineresult = lineResult1.getClass().simpleName
+		def key_timeseries = timeSeries.getEntries().iterator().next().getValue().getClass().simpleName
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key_lineresult))
 		def parsedResults_lineresult = InfluxDbConnector.parseQueryResult(queryResult)
 		def fieldMap_lineresult = parsedResults_lineresult.get(key_lineresult).first()

@@ -111,7 +111,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 		then:
 		resultingDataOpt.size() == 1
-		resultingDataOpt.first().isPresent() == resultIsPresent
+		resultingDataOpt.first().present == resultIsPresent
 		resultingDataOpt.first().ifPresent({ resultingData ->
 			assert (resultingData == expectedThermalUnitInputEntityData)
 		})

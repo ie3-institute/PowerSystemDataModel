@@ -275,7 +275,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		@Override
 		UniqueEntityBuilder copy() {
 			throw new NotImplementedException(
-			"Copying of " + this.getClass().getSimpleName() + " entities is not supported yet!")
+			"Copying of " + this.getClass().simpleName + " entities is not supported yet!")
 		}
 	}
 
