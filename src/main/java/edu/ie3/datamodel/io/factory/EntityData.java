@@ -67,25 +67,6 @@ public abstract class EntityData extends FactoryData {
   }
 
   /**
-   * Returns int value for given field name. Throws {@link FactoryException} if field does not exist
-   * or parsing fails.
-   *
-   * @param field field name
-   * @return int value
-   */
-  public int getInt(String field) {
-    try {
-      return Integer.parseInt(getField(field));
-    } catch (NumberFormatException nfe) {
-      throw new FactoryException(
-          String.format(
-              "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
-              field, getField(field)),
-          nfe);
-    }
-  }
-
-  /**
    * Parses and returns a geometry from field value of given field name. Throws {@link
    * FactoryException} if field does not exist or parsing fails.
    *
