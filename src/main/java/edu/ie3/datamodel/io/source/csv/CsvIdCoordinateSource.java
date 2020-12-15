@@ -12,6 +12,7 @@ import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
@@ -112,86 +113,22 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
       // returning the original one
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
-      return distinctRowsWithLog(allRows).parallelStream();
+      Function<Map<String, String>, String> idExtractor =
+          fieldToValues -> fieldToValues.get(factory.getIdField());
+      Set<Map<String, String>> withDistinctCoordinateId =
+          distinctRowsWithLog(allRows, idExtractor, "coordinate id mapping", "coordinate id");
+      Function<Map<String, String>, Pair<String, String>> coordinateExtractor =
+          fieldToValues ->
+              Pair.of(
+                  fieldToValues.get(factory.getLatField()),
+                  fieldToValues.get(factory.getLonField()));
+      return distinctRowsWithLog(
+              withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
+          .parallelStream();
     } catch (IOException e) {
       log.error("Cannot read the file for coordinate id to coordinate mapping.", e);
     }
 
     return Stream.empty();
-  }
-
-  /**
-   * Returns a collection of maps each representing a row in csv file that can be used to built one
-   * coordinate id mapping. The uniqueness of each row is doubled checked by a) that no duplicated
-   * rows are returned that are full (1:1) matches and b) that no rows are returned that have the
-   * same composite primary key (in terms of coordinate id) but different field values. As well as
-   * c) if multiple coordinates map to the same id. As all cases destroy uniqueness constraints, an
-   * empty set is returned to indicate that these data cannot be processed safely and the error is
-   * logged. For case a), only the duplicates are filtered out and a set with unique rows is
-   * returned.
-   *
-   * @param allRows collection of rows of a csv file an entity should be built from
-   * @return either a set containing only unique rows or an empty set if at least two rows with the
-   *     same UUID but different field values exist
-   */
-  protected Set<Map<String, String>> distinctRowsWithLog(Collection<Map<String, String>> allRows) {
-    Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
-    // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
-    // case a)
-    if (allRows.size() != allRowsSet.size()) {
-      log.warn(
-          "File with coordinate id mapping contains {} exact duplicated rows. File cleanup is recommended!",
-          (allRows.size() - allRowsSet.size()));
-    }
-
-    /* Check for rows with the same coordinate id (primary key) */
-    Set<Map<String, String>> distinctIdSet =
-        allRowsSet
-            .parallelStream()
-            .filter(distinctByKey(fieldToValues -> fieldToValues.get(factory.getIdField())))
-            .collect(Collectors.toSet());
-    if (distinctIdSet.size() != allRowsSet.size()) {
-      allRowsSet.removeAll(distinctIdSet);
-      String affectedCoordinateIds =
-          allRowsSet.stream()
-              .map(row -> row.get(factory.getIdField()))
-              .collect(Collectors.joining(",\n"));
-      log.error(
-          "Coordinate id mapping entities with duplicated composite primary key, but different field values "
-              + "found! Please review the corresponding input file!\nAffected primary keys:\n{}",
-          affectedCoordinateIds);
-      // if this happens, we return an empty set to prevent further processing
-      return new HashSet<>();
-    }
-
-    /* Check for rows with the same coordinate */
-    Set<Map<String, String>> distinctCoordinateSet =
-        allRowsSet
-            .parallelStream()
-            .filter(
-                distinctByKey(
-                    fieldToValues ->
-                        Pair.of(
-                            fieldToValues.get(factory.getLatField()),
-                            fieldToValues.get(factory.getLonField()))))
-            .collect(Collectors.toSet());
-    if (distinctCoordinateSet.size() != allRowsSet.size()) {
-      allRowsSet.removeAll(distinctIdSet);
-      String affectedCoordinateIds =
-          allRowsSet.stream()
-              .map(
-                  row ->
-                      Pair.of(row.get(factory.getLatField()), row.get(factory.getLonField()))
-                          .toString())
-              .collect(Collectors.joining(",\n"));
-      log.error(
-          "Coordinate id mapping entities with duplicated composite primary key, but different field "
-              + "values found! Please review the corresponding input file!\nAffected primary keys:\n{}",
-          affectedCoordinateIds);
-      // if this happens, we return an empty set to prevent further processing
-      return new HashSet<>();
-    }
-
-    return allRowsSet;
   }
 }

@@ -9,17 +9,19 @@ import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.test.common.SystemParticipantTestData as sptd
 import edu.ie3.test.common.GridTestData as gtd
+import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Shared
 import spock.lang.Specification
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.LongAdder
+import java.util.function.Function
 import java.util.stream.Collectors
 
-
 class CsvDataSourceTest extends Specification {
+	@Shared
+	Function<Map<String, String>, String> uuidExtractor = {fieldToValues -> fieldToValues.get("uuid")}
 
 	// Using a groovy bug to gain access to private methods in superclass:
 	// by default, we cannot access private methods with parameters from abstract parent classes, introducing a
@@ -43,7 +45,7 @@ class CsvDataSourceTest extends Specification {
 
 		def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
 				Class<T> entityClass, Collection<Map<String, String>> allRows) {
-			return super.distinctRowsWithLog(entityClass, allRows)
+			return super.distinctRowsWithLog(allRows, uuidExtractor, entityClass.getSimpleName(), "UUID")
 		}
 
 		String[] parseCsvRow(
@@ -411,7 +413,7 @@ class CsvDataSourceTest extends Specification {
 
 		when:
 		def allRows = [nodeInputRow]* noOfEntities
-		def distinctRows = dummyCsvSource.distinctRowsWithLog(NodeInput, allRows)
+		def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.getSimpleName(), "UUID")
 
 		then:
 		distinctRows.size() == distinctSize
@@ -420,8 +422,8 @@ class CsvDataSourceTest extends Specification {
 		where:
 		noOfEntities || distinctSize || firstElement
 		0            || 0            || null
-		10           || 1            || ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
-			"geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+		10           || 1            || ["uuid"        : "4ca90220-74c2-4369-9afa-a18bf068840d",
+			"geo_position": "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"id"            : "node_a",
 			"operates_until": "2020-03-25T15:11:31Z[UTC]",
 			"operates_from" : "2020-03-24T15:11:31Z[UTC]",
@@ -466,7 +468,7 @@ class CsvDataSourceTest extends Specification {
 
 		when:
 		def allRows = [nodeInputRow1, nodeInputRow2]*10
-		def distinctRows = dummyCsvSource.distinctRowsWithLog(NodeInput, allRows)
+		def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.getSimpleName(), "UUID")
 
 		then:
 		distinctRows.size() == 0
