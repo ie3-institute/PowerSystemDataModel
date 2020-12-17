@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - InfluxDbConnector now keeps session instead of creating a new one each call
 (resolves [#247](https://github.com/ie3-institute/PowerSystemDataModel/issues/247)
 and [#248](https://github.com/ie3-institute/PowerSystemDataModel/issues/248))
+- fix invalid application of solar irradiance / irradiation ([#266](https://github.com/ie3-institute/PowerSystemDataModel/issues/266))
 
 ## [1.1.0] - 2020-09-15
 
