@@ -13,11 +13,11 @@ import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes weather as a combination of irradiation, temperature and wind values */
+/** Describes weather as a combination of solar irradiance, temperature and wind values */
 public class WeatherValue implements Value {
   /** The coordinate of this weather value set */
   private final Point coordinate;
-  /** irradiation values for this coordinate */
+  /** solar irradiance values for this coordinate */
   private final SolarIrradianceValue solarIrradiance;
 
   /** Temperature value for this coordinate */
@@ -69,7 +69,7 @@ public class WeatherValue implements Value {
     return coordinate;
   }
 
-  public SolarIrradianceValue getIrradiation() {
+  public SolarIrradianceValue getSolarIrradiance() {
     return solarIrradiance;
   }
 

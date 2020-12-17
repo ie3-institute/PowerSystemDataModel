@@ -137,7 +137,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
 	def "A TimeSeriesProcessors handles a complete time series with IrradianceValues correctly"() {
 		given:
-		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, IrradiationValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, IrradiationValue)
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue,SolarIrradianceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, SolarIrradianceValue)
 
 		when:
 		Set<Map<String, String>> actual = processor.handleTimeSeries(individualIrradianceTimeSeries)

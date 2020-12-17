@@ -175,20 +175,20 @@ trait TimeSeriesTestData {
 	Set<LinkedHashMap<String, String>>  individualIrradiationTimeSeriesProcessed = [
 		[
 			"uuid" 					: "e397cf20-43ae-4601-a6cd-0ee85c63cec3",
-			"directIrradiation"		: "5.0",
-			"diffuseIrradiation"	: "10.0",
+			"directIrradiance"		: "5.0",
+			"diffuseIrradiance"	: "10.0",
 			"time"					: "2020-04-02T10:00Z[UTC]"
 		] as LinkedHashMap,
 		[
 			"uuid" 					: "94400577-83ac-4dd5-818d-8d62edcd4ee2",
-			"directIrradiation"		: "15.0",
-			"diffuseIrradiation"	: "20.0",
+			"directIrradiance"		: "15.0",
+			"diffuseIrradiance"	: "20.0",
 			"time"					: "2020-04-02T10:15Z[UTC]"
 		] as LinkedHashMap,
 		[
 			"uuid" 					: "d7523ef9-f8d7-449f-834f-7b92bf51fd9e",
-			"directIrradiation"		: "10.0",
-			"diffuseIrradiation"	: "15.0",
+			"directIrradiance"		: "10.0",
+			"diffuseIrradiance"	: "15.0",
 			"time"					: "2020-04-02T10:30Z[UTC]"
 		] as LinkedHashMap
 	] as Set
@@ -233,8 +233,8 @@ trait TimeSeriesTestData {
 		[
 			"uuid" 					: "edb872a0-7421-4283-b072-91b9a729dabf",
 			"coordinate"			: "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-			"diffuseIrradiation"	: "10.0",
-			"directIrradiation"		: "5.0",
+			"diffuseIrradiance"	: "10.0",
+			"directIrradiance"		: "5.0",
 			"direction"				: "5.0",
 			"temperature"			: "5.0",
 			"time"					: "2020-04-02T10:00Z[UTC]",
@@ -243,8 +243,8 @@ trait TimeSeriesTestData {
 		[
 			"uuid" 					: "b264057c-bc38-4f49-ab27-c7dc5dd51b4c",
 			"coordinate"			: "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-			"diffuseIrradiation"	: "20.0",
-			"directIrradiation"		: "15.0",
+			"diffuseIrradiance"	: "20.0",
+			"directIrradiance"		: "15.0",
 			"direction"				: "15.0",
 			"temperature"			: "15.0",
 			"time"					: "2020-04-02T10:15Z[UTC]",
@@ -253,8 +253,8 @@ trait TimeSeriesTestData {
 		[
 			"uuid" 					: "79eff66e-a910-4ba8-b2c6-ac622bef55b3",
 			"coordinate"			: "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-			"diffuseIrradiation"	: "15.0",
-			"directIrradiation"		: "10.0",
+			"diffuseIrradiance"	: "15.0",
+			"directIrradiance"		: "10.0",
 			"direction"				: "10.0",
 			"temperature"			: "10.0",
 			"time"					: "2020-04-02T10:30Z[UTC]",
