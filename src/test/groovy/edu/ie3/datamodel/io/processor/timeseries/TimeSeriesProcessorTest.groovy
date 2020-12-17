@@ -135,12 +135,12 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 		actual == individualWindTimeSeriesProcessed
 	}
 
-	def "A TimeSeriesProcessors handles a complete time series with IrradiationValues correctly"() {
+	def "A TimeSeriesProcessors handles a complete time series with IrradianceValues correctly"() {
 		given:
 		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, IrradiationValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, IrradiationValue)
 
 		when:
-		Set<Map<String, String>> actual = processor.handleTimeSeries(individualIrradiationTimeSeries)
+		Set<Map<String, String>> actual = processor.handleTimeSeries(individualIrradianceTimeSeries)
 
 		then:
 		actual == individualIrradiationTimeSeriesProcessed

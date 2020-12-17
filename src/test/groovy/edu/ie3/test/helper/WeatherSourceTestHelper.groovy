@@ -21,27 +21,24 @@ trait WeatherSourceTestHelper {
 
 	static boolean equalsIgnoreUUID(Collection<TimeBasedValue<WeatherValue>> c1,
 			Collection<TimeBasedValue<WeatherValue>> c2) {
-		if(c1 == null || c2 == null) return (c1 == null && c2 == null)
-		if(c1.size() != c2.size()) return false;
-		for(TimeBasedValue<WeatherValue> value1 : c1){
-			if(!c2.stream().anyMatch({value2 -> equalsIgnoreUUID(value1, value2)})) return false;
+		if (c1 == null || c2 == null) return (c1 == null && c2 == null)
+		if (c1.size() != c2.size()) return false
+		for (TimeBasedValue<WeatherValue> value1 : c1) {
+			if (!c2.stream().anyMatch({ value2 -> equalsIgnoreUUID(value1, value2) })) return false
 		}
-		return true;
+		return true
 	}
 
 	static boolean equalsIgnoreUUID(TimeBasedValue<WeatherValue> val1, TimeBasedValue<WeatherValue> val2) {
-		if(val1.time != val2.time) return false
+		if (val1.time != val2.time) return false
 
 		def weatherValue1 = val1.value
 		def weatherValue2 = val2.value
-		try {
-			return weatherValue1.irradiation.directIrradiation.isPresent() == weatherValue2.irradiation.directIrradiation.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.irradiation.directIrradiation.get(), weatherValue2.irradiation.directIrradiation.get(), 1E-10) &&
-					weatherValue1.irradiation.diffuseIrradiation.isPresent() == weatherValue2.irradiation.diffuseIrradiation.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.irradiation.diffuseIrradiation.get(), weatherValue2.irradiation.diffuseIrradiation.get(), 1E-10) &&
-					weatherValue1.temperature.temperature.isPresent() == weatherValue2.temperature.temperature.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.temperature.temperature.get(), weatherValue2.temperature.temperature.get(), 1E-10) &&
-					weatherValue1.wind.velocity.isPresent() == weatherValue2.wind.velocity.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.wind.velocity.get(), weatherValue2.wind.velocity.get(), 1E-10) &&
-					weatherValue1.wind.direction.isPresent() == weatherValue2.wind.direction.isPresent() && QuantityUtil.isEquivalentAbs(weatherValue1.wind.direction.get(), weatherValue2.wind.direction.get(), 1E-10)
-		} catch (NullPointerException npe) {
-			return false
-		}
+
+		return weatherValue1.irradiation.directIrradiance.present == weatherValue2.irradiation.directIrradiance.present && QuantityUtil.isEquivalentAbs(weatherValue1.irradiation.directIrradiance.get(), weatherValue2.irradiation.directIrradiance.get(), 1E-10) &&
+				weatherValue1.irradiation.diffuseIrradiance.present == weatherValue2.irradiation.diffuseIrradiance.present && QuantityUtil.isEquivalentAbs(weatherValue1.irradiation.diffuseIrradiance.get(), weatherValue2.irradiation.diffuseIrradiance.get(), 1E-10) &&
+				weatherValue1.temperature.temperature.present == weatherValue2.temperature.temperature.present && QuantityUtil.isEquivalentAbs(weatherValue1.temperature.temperature.get(), weatherValue2.temperature.temperature.get(), 1E-10) &&
+				weatherValue1.wind.velocity.present == weatherValue2.wind.velocity.present && QuantityUtil.isEquivalentAbs(weatherValue1.wind.velocity.get(), weatherValue2.wind.velocity.get(), 1E-10) &&
+				weatherValue1.wind.direction.present == weatherValue2.wind.direction.present && QuantityUtil.isEquivalentAbs(weatherValue1.wind.direction.get(), weatherValue2.wind.direction.get(), 1E-10)
 	}
 }
