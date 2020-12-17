@@ -13,22 +13,22 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes an irradiation value as a pair of diffuse and direct radiation */
 public class IrradiationValue implements Value {
-  /** Direct sun radiation (typically in kWh/m²) */
+  /** Direct sun radiation (typically in Wh/m²) */
   private final ComparableQuantity<Irradiation> directIrradiation;
-  /** Diffuse sun radiation (typically in kWh/m²) */
+  /** Diffuse sun radiation (typically in Wh/m²) */
   private final ComparableQuantity<Irradiation> diffuseIrradiation;
 
   /**
-   * @param directIrradiation Direct sun radiation (typically in kW/m²)
-   * @param diffuseIrradiation Diffuse sun radiation (typically in kW/m²)
+   * @param directIrradiation Direct sun radiation (typically in J/m² or Wh/m²)
+   * @param diffuseIrradiation Diffuse sun radiation (typically in J/m² Wh/m²)
    */
   public IrradiationValue(
       ComparableQuantity<Irradiation> directIrradiation,
       ComparableQuantity<Irradiation> diffuseIrradiation) {
     this.directIrradiation =
-        directIrradiation == null ? null : directIrradiation.to(StandardUnits.IRRADIATION);
+        directIrradiation == null ? null : directIrradiation.to(StandardUnits.SOLAR_IRRADIATION);
     this.diffuseIrradiation =
-        diffuseIrradiation == null ? null : diffuseIrradiation.to(StandardUnits.IRRADIATION);
+        diffuseIrradiation == null ? null : diffuseIrradiation.to(StandardUnits.SOLAR_IRRADIATION);
   }
 
   public Optional<ComparableQuantity<Irradiation>> getDiffuseIrradiation() {

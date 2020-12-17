@@ -26,12 +26,6 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   private static final String ACTIVE_POWER = "p";
   private static final String REACTIVE_POWER = "q";
   private static final String HEAT_DEMAND = "heatdemand";
-  /* Weather */
-  public static final String DIFFUSE_IRRADIATION = "diffuseirradiation";
-  public static final String DIRECT_IRRADIATION = "directirradiation";
-  public static final String TEMPERATURE = "temperature";
-  public static final String WIND_DIRECTION = "winddirection";
-  public static final String WIND_VELOCITY = "windvelocity";
 
   private final TimeUtil timeUtil;
 

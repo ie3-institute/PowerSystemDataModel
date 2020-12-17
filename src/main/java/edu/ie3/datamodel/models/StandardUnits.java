@@ -94,15 +94,15 @@ public class StandardUnits {
   public static final Unit<Area> ROTOR_AREA = SQUARE_METRE;
   /** Height of the hub of an wind energy converter in metre */
   public static final Unit<Length> HUB_HEIGHT = METRE;
-  /** Price per energy in euro_per_MWhour */
+  /** Price per energy in euro per megawatt hour */
   public static final Unit<EnergyPrice> ENERGY_PRICE = EURO_PER_MEGAWATTHOUR;
   /** Orientation of a pv panel with regard to the north-south line in degree_geom */
   public static final Unit<Angle> AZIMUTH = DEGREE_GEOM;
   /** Elevation of a pv panel with regard to the plane in degree_geom */
   public static final Unit<Angle> SOLAR_HEIGHT = DEGREE_GEOM;
-  /** Direction of the wind in degree_geom */
+  /** Direction of the wind in degree geom */
   public static final Unit<Angle> WIND_DIRECTION = DEGREE_GEOM;
-  /** Velocity of the wind in metre_per_second */
+  /** Velocity of the wind in metre per second */
   public static final Unit<Speed> WIND_VELOCITY = METRE_PER_SECOND;
   /** Standard unit for the Betz' coefficient curve of wind energy converters in p.U. */
   public static final Unit<Dimensionless> CP_CHARACTERISTIC = PU;
@@ -112,14 +112,11 @@ public class StandardUnits {
   public static final Unit<Dimensionless> OLM_CHARACTERISTIC = PU;
   /** Standard unit for reactive power characteristics in p.U. */
   public static final Unit<Dimensionless> Q_CHARACTERISTIC = PU;
-  /** Solar irradiation on a flat surface as Power per Area in kW/m² */
-  public static final Unit<Irradiation> IRRADIATION = KILOWATT_PER_SQUAREMETRE;
-  /**
-   * Energy per Area, used as an outdated dimension for {@link StandardUnits#IRRADIATION} in kWh/m²
-   *
-   * @deprecated Use {@link Irradiation} together with {@link StandardUnits#IRRADIATION}
-   */
-  @Deprecated public static final Unit<EnergyDensity> ENERGY_DENSITY = KILOWATTHOUR_PER_SQUAREMETRE;
+  /** Solar irradiance on a flat surface as power per area in W/m² */
+  public static final Unit<Irradiance> SOLAR_IRRADIANCE = WATT_PER_SQUAREMETRE;
+  /** Solar irradiation on a flat surface as integrated irradiance over a given time in Wh/m² */
+  public static final Unit<Irradiation> SOLAR_IRRADIATION = WATTHOUR_PER_SQUAREMETRE;
+
   /** Capex (capital expenditure) in € */
   public static final Unit<Currency> CAPEX = EURO;
   /** Length of a line in km */
