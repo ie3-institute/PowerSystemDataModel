@@ -35,8 +35,8 @@ trait WeatherSourceTestHelper {
 		def weatherValue1 = val1.value
 		def weatherValue2 = val2.value
 
-		return weatherValue1.irradiation.directIrradiance.present == weatherValue2.irradiation.directIrradiance.present && QuantityUtil.isEquivalentAbs(weatherValue1.irradiation.directIrradiance.get(), weatherValue2.irradiation.directIrradiance.get(), 1E-10) &&
-				weatherValue1.irradiation.diffuseIrradiance.present == weatherValue2.irradiation.diffuseIrradiance.present && QuantityUtil.isEquivalentAbs(weatherValue1.irradiation.diffuseIrradiance.get(), weatherValue2.irradiation.diffuseIrradiance.get(), 1E-10) &&
+		return weatherValue1.solarIrradiance.directIrradiance.present == weatherValue2.solarIrradiance.directIrradiance.present && QuantityUtil.isEquivalentAbs(weatherValue1.solarIrradiance.directIrradiance.get(), weatherValue2.solarIrradiance.directIrradiance.get(), 1E-10) &&
+				weatherValue1.solarIrradiance.diffuseIrradiance.present == weatherValue2.solarIrradiance.diffuseIrradiance.present && QuantityUtil.isEquivalentAbs(weatherValue1.solarIrradiance.diffuseIrradiance.get(), weatherValue2.solarIrradiance.diffuseIrradiance.get(), 1E-10) &&
 				weatherValue1.temperature.temperature.present == weatherValue2.temperature.temperature.present && QuantityUtil.isEquivalentAbs(weatherValue1.temperature.temperature.get(), weatherValue2.temperature.temperature.get(), 1E-10) &&
 				weatherValue1.wind.velocity.present == weatherValue2.wind.velocity.present && QuantityUtil.isEquivalentAbs(weatherValue1.wind.velocity.get(), weatherValue2.wind.velocity.get(), 1E-10) &&
 				weatherValue1.wind.direction.present == weatherValue2.wind.direction.present && QuantityUtil.isEquivalentAbs(weatherValue1.wind.direction.get(), weatherValue2.wind.direction.get(), 1E-10)
