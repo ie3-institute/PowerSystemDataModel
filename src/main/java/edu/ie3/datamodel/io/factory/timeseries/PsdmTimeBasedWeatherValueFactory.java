@@ -75,9 +75,9 @@ public class PsdmTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     Point coordinate = data.getCoordinate();
     java.util.UUID uuid = data.getUUID(UUID);
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
-    ComparableQuantity<Irradiance> directIrradiation =
+    ComparableQuantity<Irradiance> directIrradiance =
         data.getQuantity(DIRECT_IRRADIANCE, StandardUnits.SOLAR_IRRADIANCE);
-    ComparableQuantity<Irradiance> diffuseIrradiation =
+    ComparableQuantity<Irradiance> diffuseIrradiance =
         data.getQuantity(DIFFUSE_IRRADIANCE, StandardUnits.SOLAR_IRRADIANCE);
     ComparableQuantity<Temperature> temperature =
         data.getQuantity(TEMPERATURE, StandardUnits.TEMPERATURE);
@@ -88,8 +88,8 @@ public class PsdmTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
-            directIrradiation,
-            diffuseIrradiation,
+            directIrradiance,
+            diffuseIrradiance,
             temperature,
             windDirection,
             windVelocity);

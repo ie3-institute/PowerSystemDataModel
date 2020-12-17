@@ -68,10 +68,16 @@ package models {
         HeatAndSValue --|> SValue
 
         class IrradiationValue {
-          - directIrradiation: ComparableQuantity<Irradiation> [kWh/m²]
-          - diffuseIrradiation: ComparableQuantity<Irradiation> [kWh/m²]
+          - directIrradiation: ComparableQuantity<Irradiation> [Wh/m²]
+          - diffuseIrradiation: ComparableQuantity<Irradiation> [Wh/m²]
         }
         IrradiationValue ..|> Value
+
+        class SolarIrradianceValue {
+            - directIrradiance: ComparableQuantity<Irradiance> [W/m²]
+            - diffuseIrradiance: ComparableQuantity<Irradiance> [W/m²]
+        }
+        SolarIrradianceValue ..|> Value
 
         class TemperatureValue {
           - temperature: ComparableQuantity<Temperature> [°C]
@@ -86,12 +92,12 @@ package models {
 
         class WeatherValue {
           - coordinate: Point
-          - irradiation: IrradiationValue
+          - solarIrradiance: SolarIrradianceValue
           - temperature: TemperatureValue
           - wind: WindValue
         }
         WeatherValue ..|> Value
-        WeatherValue *-- IrradiationValue
+        WeatherValue *-- SolarIrradianceValue
         WeatherValue *-- TemperatureValue
         WeatherValue *-- WindValue
     }
