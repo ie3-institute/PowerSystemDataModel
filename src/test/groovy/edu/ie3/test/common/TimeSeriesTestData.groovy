@@ -164,7 +164,7 @@ trait TimeSeriesTestData {
 		new TimeBasedValue<>(
 		UUID.fromString("94400577-83ac-4dd5-818d-8d62edcd4ee2"),
 		ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-		new SolarIrradianceValue(Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(20d,StandardUnits.SOLAR_IRRADIANCE))),
+		new SolarIrradianceValue(Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(20d, StandardUnits.SOLAR_IRRADIANCE))),
 		new TimeBasedValue<>(
 		UUID.fromString("d7523ef9-f8d7-449f-834f-7b92bf51fd9e"),
 		ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),

@@ -5,14 +5,13 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.factory.timeseries.PsdmTimeBasedWeatherValueFactory
-import edu.ie3.datamodel.models.value.SolarIrradianceValue
-
 import static edu.ie3.datamodel.models.StandardUnits.SOLAR_IRRADIANCE
 import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
 import static edu.ie3.datamodel.models.StandardUnits.WIND_DIRECTION
 import static edu.ie3.datamodel.models.StandardUnits.WIND_VELOCITY
 
+import edu.ie3.datamodel.io.factory.timeseries.PsdmTimeBasedWeatherValueFactory
+import edu.ie3.datamodel.models.value.SolarIrradianceValue
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries

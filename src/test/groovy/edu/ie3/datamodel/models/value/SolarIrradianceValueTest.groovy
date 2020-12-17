@@ -11,7 +11,7 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 
-class SolarIrradianceValueTest extends Specification{
+class SolarIrradianceValueTest extends Specification {
 
 	def "An solar irradiance equals method should work as expected on null and provided quantities"() {
 		expect:
