@@ -117,11 +117,11 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
           fieldToValues -> fieldToValues.get(factory.getIdField());
       Set<Map<String, String>> withDistinctCoordinateId =
           distinctRowsWithLog(allRows, idExtractor, "coordinate id mapping", "coordinate id");
-      Function<Map<String, String>, Pair<String, String>> coordinateExtractor =
+      Function<Map<String, String>, String> coordinateExtractor =
           fieldToValues ->
-              Pair.of(
-                  fieldToValues.get(factory.getLatField()),
-                  fieldToValues.get(factory.getLonField()));
+              fieldToValues
+                  .get(factory.getLatField())
+                  .concat(fieldToValues.get(factory.getLonField()));
       return distinctRowsWithLog(
               withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
           .parallelStream();

@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.utils.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -137,19 +138,6 @@ public abstract class CsvDataSource {
           () -> e);
     }
     return insensitiveFieldsToAttributes;
-  }
-
-  /**
-   * State full predicate to allow for filtering distinct elements by a key
-   *
-   * @param keyExtractor Function, that extracts the key, the elements may be distinct in
-   * @param <T> Type of elements to filter
-   * @return True, if the elements hasn't been seen, yet. False otherwise
-   * @see <a href="https://www.baeldung.com/java-streams-distinct-by">This baeldung tutorial</a>
-   */
-  protected static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-    Map<Object, Boolean> seen = new ConcurrentHashMap<>();
-    return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
   }
 
   /**
@@ -397,9 +385,11 @@ public abstract class CsvDataSource {
       // returning the original one
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
-      Function<Map<String, String>, String> keyExtractor =
-          fieldToValues -> fieldToValues.get("uuid");
-      return distinctRowsWithLog(allRows, keyExtractor, entityClass.getSimpleName(), "UUID")
+      return distinctRowsWithLog(
+              allRows,
+              fieldToValues -> fieldToValues.get("uuid"),
+              entityClass.getSimpleName(),
+              "UUID")
           .parallelStream();
     } catch (IOException e) {
       log.warn(
@@ -443,7 +433,7 @@ public abstract class CsvDataSource {
    */
   protected Set<Map<String, String>> distinctRowsWithLog(
       Collection<Map<String, String>> allRows,
-      Function<Map<String, String>, ?> keyExtractor,
+      final Function<Map<String, String>, String> keyExtractor,
       String entityDescriptor,
       String keyDescriptor) {
     Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
@@ -456,15 +446,16 @@ public abstract class CsvDataSource {
           (allRows.size() - allRowsSet.size()));
     }
 
-    /* Check for rows with the same coordinate id (primary key) */
+    /* Check for rows with the same key based on the provided key extractor function */
     Set<Map<String, String>> distinctIdSet =
-        allRowsSet.parallelStream().filter(distinctByKey(keyExtractor)).collect(Collectors.toSet());
+        allRowsSet
+            .parallelStream()
+            .filter(ValidationUtils.distinctByKey(keyExtractor))
+            .collect(Collectors.toSet());
     if (distinctIdSet.size() != allRowsSet.size()) {
       allRowsSet.removeAll(distinctIdSet);
       String affectedCoordinateIds =
-          allRowsSet.stream()
-              .map(row -> keyExtractor.apply(row).toString())
-              .collect(Collectors.joining(",\n"));
+          allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
           "'{}' entities with duplicated {} key, but different field values found! Please review the "
               + "corresponding input file!\nAffected primary keys:\n{}",

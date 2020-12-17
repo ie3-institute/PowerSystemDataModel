@@ -26,7 +26,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 
 /** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
@@ -254,11 +253,11 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
       // returning the original one
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
-      Function<Map<String, String>, Pair<String, String>> timeCoordinateIdExtractor =
+      Function<Map<String, String>, String> timeCoordinateIdExtractor =
           fieldToValues ->
-              Pair.of(
-                  fieldToValues.get(weatherFactory.getTimeFieldString()),
-                  fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
+              fieldToValues
+                  .get(weatherFactory.getTimeFieldString())
+                  .concat(fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
       return distinctRowsWithLog(
               allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
           .parallelStream();
