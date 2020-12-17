@@ -21,15 +21,15 @@ public abstract class TimeBasedWeatherValueFactory
 
   protected final TimeUtil timeUtil;
 
-  public TimeBasedWeatherValueFactory() {
+  protected TimeBasedWeatherValueFactory() {
     this("yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'");
   }
 
-  public TimeBasedWeatherValueFactory(String timePattern) {
+  protected TimeBasedWeatherValueFactory(String timePattern) {
     this(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern));
   }
 
-  public TimeBasedWeatherValueFactory(TimeUtil timeUtil) {
+  protected TimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(WeatherValue.class);
     this.timeUtil = timeUtil;
   }
