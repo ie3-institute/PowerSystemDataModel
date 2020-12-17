@@ -16,7 +16,7 @@ public abstract class FactoryData {
   private final Map<String, String> fieldsToAttributes;
   private final Class<?> targetClass;
 
-  public FactoryData(Map<String, String> fieldsToAttributes, Class<?> targetClass) {
+  protected FactoryData(Map<String, String> fieldsToAttributes, Class<?> targetClass) {
     // this does the magic: case-insensitive get/set calls on keys
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);

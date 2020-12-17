@@ -16,7 +16,7 @@ import org.locationtech.jts.geom.Point;
  */
 public abstract class IdCoordinateFactory
     extends Factory<Pair, SimpleFactoryData, Pair<Integer, Point>> {
-  public IdCoordinateFactory() {
+  protected IdCoordinateFactory() {
     super(Pair.class);
   }
 

@@ -39,7 +39,7 @@ public abstract class EntityData extends FactoryData {
    * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    */
-  public EntityData(
+  protected EntityData(
       Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
     super(fieldsToAttributes, entityClass);
   }
