@@ -67,7 +67,7 @@ public class SqlWeatherSource implements WeatherSource {
     this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
 
     String dbTimeColumnName =
-        dbColumnName(weatherFactory.getTimeFieldString(), connector, weatherTableName)
+        getDbColumnName(weatherFactory.getTimeFieldString(), connector, weatherTableName)
             .orElseThrow(
                 () ->
                     new InvalidWeatherColumnNameException(
@@ -77,12 +77,12 @@ public class SqlWeatherSource implements WeatherSource {
                             + "Please ensure that the database connection is working and the column names are correct!"));
 
     String dbCoordColumnName =
-        dbColumnName(weatherFactory.getCoordinateIdFieldString(), connector, weatherTableName)
+        getDbColumnName(factoryCoordinateFieldName, connector, weatherTableName)
             .orElseThrow(
                 () ->
                     new InvalidWeatherColumnNameException(
                         "Cannot find column for '"
-                            + weatherFactory.getCoordinateIdFieldString()
+                            + factoryCoordinateFieldName
                             + "' in provided weather data configuration."
                             + "Please ensure that the database connection is working and the column names are correct!"));
 
@@ -169,7 +169,7 @@ public class SqlWeatherSource implements WeatherSource {
    * @return the column name that corresponds to the provided field parameter or an empty optional
    *     if no matching column can be found
    */
-  private Optional<String> dbColumnName(
+  private Optional<String> getDbColumnName(
       String factoryColumnName, SqlConnector connector, String weatherTableName) {
 
     // get the column names from the database
@@ -186,9 +186,12 @@ public class SqlWeatherSource implements WeatherSource {
           break;
         }
       }
-
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
+    } catch (SQLException ex) {
+      logger.error(
+          "Cannot connect to database to retrieve db column name for factory column name '{}' in weather table '{}'",
+          factoryColumnName,
+          weatherTableName,
+          ex);
     }
     return dbColumnName;
   }
