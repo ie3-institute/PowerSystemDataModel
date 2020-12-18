@@ -160,8 +160,8 @@ public class SqlWeatherSource implements WeatherSource {
   }
 
   /**
-   * Determine the corresponding database column name based on the provided factory field
-   * parameter name. Needed to support camel as well as snake case database column names.
+   * Determine the corresponding database column name based on the provided factory field parameter
+   * name. Needed to support camel as well as snake case database column names.
    *
    * @param factoryColumnName the name of the field parameter set in the entity factory
    * @param connector the sql connector of this source
