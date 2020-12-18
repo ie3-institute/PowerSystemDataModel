@@ -29,7 +29,7 @@ import tech.units.indriya.unit.Units;
  */
 public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
   /* Redefine the column names to meet the icon specifications */
-  private static final String COORDINATE = "coordinateId";
+  private static final String COORDINATE = "coordinateid";
   private static final String TIME = "datum";
   private static final String DIFFUSE_IRRADIANCE = "aswdifdS";
   private static final String DIRECT_IRRADIANCE = "aswdirS";
@@ -61,7 +61,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
 
   @Override
   protected List<Set<String>> getFields(TimeBasedWeatherValueData data) {
-    Set<String> minConstructorParams =
+    Set<String> constructorParamsMin =
         newSet(
             TIME,
             DIFFUSE_IRRADIANCE,
@@ -69,13 +69,13 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             TEMPERATURE,
             WIND_VELOCITY_U,
             WIND_VELOCITY_V);
-    Set<String> allParameters = new HashSet<>(minConstructorParams);
-    allParameters.addAll(
-        newSet(
-            "albRad",
-            "asobS",
+    Set<String> allParameters =
+        expandSet(
+            constructorParamsMin,
+            "albrad",
+            "asobs",
             DIFFUSE_IRRADIANCE,
-            "aswdifuS",
+            "aswdifus",
             DIRECT_IRRADIANCE,
             TEMPERATURE,
             "tG",
@@ -97,12 +97,11 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "p131m",
             "p20m",
             "p65m",
-            "sobsRad",
-            "t131m"));
-    Set<String> allParametersWithUuid = new HashSet<>(allParameters);
-    allParametersWithUuid.add("uuid");
+            "sobsrad",
+            "t131m");
+    Set<String> allParametersWithUuid = expandSet(allParameters, UUID);
 
-    return Arrays.asList(minConstructorParams, allParameters, allParametersWithUuid);
+    return Arrays.asList(constructorParamsMin, allParameters, allParametersWithUuid);
   }
 
   @Override

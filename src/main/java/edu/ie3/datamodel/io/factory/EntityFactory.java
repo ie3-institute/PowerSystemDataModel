@@ -27,19 +27,4 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
   public EntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
-
-  /**
-   * Expands a set of attributes with further attributes. This method should always be used when
-   * returning attribute sets, i.e. through getting the needed fields.
-   *
-   * @param attributeSet set of attributes to expand
-   * @param more attribute names to expand given set with
-   * @return new set exactly containing given attribute set plus additional attributes
-   */
-  protected TreeSet<String> expandSet(Set<String> attributeSet, String... more) {
-    TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-    newSet.addAll(attributeSet);
-    newSet.addAll(Arrays.asList(more));
-    return newSet;
-  }
 }
