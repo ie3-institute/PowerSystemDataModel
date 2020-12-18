@@ -23,12 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   added coordinate distance sort method to GridAndGeoUtils
 -   BREAKING: Harmonized field naming for time information
 -   BREAKING: Properly applying snake case to result file names
--   BREAKING: Change in dimension of `Irradiation` from Energy/Area to Power/Area led to adaptions in the `StandardUnits`. `StandardUnits.IRRADIATION` is now kW/m² instead of kW**h**/m²
 
 ### Fixed
 - InfluxDbConnector now keeps session instead of creating a new one each call
 (resolves [#247](https://github.com/ie3-institute/PowerSystemDataModel/issues/247)
 and [#248](https://github.com/ie3-institute/PowerSystemDataModel/issues/248))
+- BREAKING: fix invalid application of solar irradiance / irradiation ([#266](https://github.com/ie3-institute/PowerSystemDataModel/issues/266))
+- BREAKING: deleted `IrradiationValue` as it is invalid and no longer required
 
 ## [1.1.0] - 2020-09-15
 

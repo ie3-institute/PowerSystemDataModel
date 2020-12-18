@@ -129,7 +129,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 		ProcessorProvider provider = new ProcessorProvider()
 		Set expected = [
 			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue),
-			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, IrradiationValue),
+			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, SolarIrradianceValue),
 			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, TemperatureValue),
 			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, WindValue),
 			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, WeatherValue),
