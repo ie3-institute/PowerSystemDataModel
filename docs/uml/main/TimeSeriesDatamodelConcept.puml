@@ -67,12 +67,6 @@ package models {
         }
         HeatAndSValue --|> SValue
 
-        class IrradiationValue {
-          - directIrradiation: ComparableQuantity<Irradiation> [Wh/m²]
-          - diffuseIrradiation: ComparableQuantity<Irradiation> [Wh/m²]
-        }
-        IrradiationValue ..|> Value
-
         class SolarIrradianceValue {
             - directIrradiance: ComparableQuantity<Irradiance> [W/m²]
             - diffuseIrradiance: ComparableQuantity<Irradiance> [W/m²]

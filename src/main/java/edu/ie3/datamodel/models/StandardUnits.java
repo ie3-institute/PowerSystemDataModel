@@ -114,8 +114,6 @@ public class StandardUnits {
   public static final Unit<Dimensionless> Q_CHARACTERISTIC = PU;
   /** Solar irradiance on a flat surface as power per area in W/m² */
   public static final Unit<Irradiance> SOLAR_IRRADIANCE = WATT_PER_SQUAREMETRE;
-  /** Solar irradiation on a flat surface as integrated irradiance over a given time in Wh/m² */
-  public static final Unit<Irradiation> SOLAR_IRRADIATION = WATTHOUR_PER_SQUAREMETRE;
 
   /** Capex (capital expenditure) in € */
   public static final Unit<Currency> CAPEX = EURO;

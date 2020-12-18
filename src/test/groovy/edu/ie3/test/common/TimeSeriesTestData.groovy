@@ -172,7 +172,7 @@ trait TimeSeriesTestData {
 	] as Set
 	)
 
-	Set<LinkedHashMap<String, String>>  individualIrradiationTimeSeriesProcessed = [
+	Set<LinkedHashMap<String, String>> individualIrradianceTimeSeriesProcessed = [
 		[
 			"uuid" 					: "e397cf20-43ae-4601-a6cd-0ee85c63cec3",
 			"directIrradiance"		: "5.0",

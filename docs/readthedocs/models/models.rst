@@ -204,8 +204,6 @@ The following different values are available:
 +-------------------------------+------------------------------------------------------------------+
 | :code:`EnergyPriceValue`      | Wholesale market price (e.g. in € / MWh)                         |
 +-------------------------------+------------------------------------------------------------------+
-| :code:`IrradiationValue`      | Combination of diffuse and direct solar irradiation              |
-+-------------------------------+------------------------------------------------------------------+
 | :code:`SolarIrradianceValue`  | Combination of diffuse and direct solar irradiance               |
 +-------------------------------+------------------------------------------------------------------+
 | :code:`TemperatureValue`      | Temperature information                                          |
