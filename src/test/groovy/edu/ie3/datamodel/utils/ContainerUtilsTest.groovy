@@ -433,7 +433,7 @@ class ContainerUtilsTest extends Specification {
 		Optional<DistanceWeightedGraph> resultingGraphOpt = ContainerUtils.getDistanceTopologyGraph(grid)
 
 		then:
-		resultingGraphOpt.isPresent()
+		resultingGraphOpt.present
 		DistanceWeightedGraph resultingGraph = resultingGraphOpt.get()
 
 		resultingGraph.vertexSet() == ComplexTopology.grid.getRawGrid().getNodes()
