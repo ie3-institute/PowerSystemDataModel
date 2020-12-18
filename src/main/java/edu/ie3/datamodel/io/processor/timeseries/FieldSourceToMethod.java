@@ -52,7 +52,7 @@ public class FieldSourceToMethod {
     TIMESERIES,
     ENTRY,
     VALUE,
-    WEATHER_IRRADIATION,
+    WEATHER_IRRADIANCE,
     WEATHER_TEMPERATURE,
     WEATHER_WIND
   }

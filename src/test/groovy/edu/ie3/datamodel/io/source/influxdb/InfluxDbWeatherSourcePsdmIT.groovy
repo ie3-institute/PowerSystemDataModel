@@ -61,7 +61,7 @@ class InfluxDbWeatherSourcePsdmIT extends Specification implements WeatherSource
 		when:
 		def optTimeBasedValue = source.getWeather(PsdmWeatherTestData.TIME_15H , PsdmWeatherTestData.COORDINATE_193186)
 		then:
-		optTimeBasedValue.isPresent()
+		optTimeBasedValue.present
 		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
 	}
 

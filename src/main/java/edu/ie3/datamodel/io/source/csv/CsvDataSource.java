@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -384,8 +385,12 @@ public abstract class CsvDataSource {
       // returning the original one
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
-      return distinctRowsWithLog(entityClass, allRows).parallelStream();
-
+      return distinctRowsWithLog(
+              allRows,
+              fieldToValues -> fieldToValues.get("uuid"),
+              entityClass.getSimpleName(),
+              "UUID")
+          .parallelStream();
     } catch (IOException e) {
       log.warn(
           "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
@@ -408,47 +413,55 @@ public abstract class CsvDataSource {
   }
 
   /**
-   * Returns a collection of maps each representing a row in csv file that can be used to built an
-   * instance of a {@link UniqueEntity}. The uniqueness of each row is doubled checked by a) that no
-   * duplicated rows are returned that are full (1:1) matches and b) that no rows are returned that
-   * have the same UUID but different field values. As the later case (b) is destroying the contract
-   * of UUIDs an empty set is returned to indicate that these data cannot be processed safely and
-   * the error is logged. For case a), only the duplicates are filtered out an a set with unique
-   * rows is returned.
+   * Returns a collection of maps each representing a row in csv file that can be used to built one
+   * entity. The uniqueness of each row is doubled checked by a) that no duplicated rows are
+   * returned that are full (1:1) matches and b) that no rows are returned that have the same
+   * composite key, which gets extracted by the provided extractor. As both cases destroy uniqueness
+   * constraints, an empty set is returned to indicate that these data cannot be processed safely
+   * and the error is logged. For case a), only the duplicates are filtered out and a set with
+   * unique rows is returned.
    *
-   * @param entityClass the entity class that should be built based on the provided (fieldName to
-   *     fieldValue) collection
    * @param allRows collection of rows of a csv file an entity should be built from
-   * @param <T> type of the entity
+   * @param keyExtractor Function, that extracts the key from field to value mapping, that is meant
+   *     to be unique
+   * @param entityDescriptor Colloquial descriptor of the entity, the data is foreseen for (for
+   *     debug String)
+   * @param keyDescriptor Colloquial descriptor of the key, that is meant to be unique (for debug
+   *     String)
    * @return either a set containing only unique rows or an empty set if at least two rows with the
    *     same UUID but different field values exist
    */
-  protected <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
-      Class<T> entityClass, Collection<Map<String, String>> allRows) {
+  protected Set<Map<String, String>> distinctRowsWithLog(
+      Collection<Map<String, String>> allRows,
+      final Function<Map<String, String>, String> keyExtractor,
+      String entityDescriptor,
+      String keyDescriptor) {
     Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
-    // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial
+    // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
+    // case a)
     if (allRows.size() != allRowsSet.size()) {
       log.warn(
-          "File with '{}' entities contains {} exact duplicated rows. File cleanup is recommended!",
-          entityClass.getSimpleName(),
+          "File with {} contains {} exact duplicated rows. File cleanup is recommended!",
+          entityDescriptor,
           (allRows.size() - allRowsSet.size()));
     }
 
-    // check for rows that match exactly by their UUID, but have different fields -> crucial, we
-    // allow only unique UUID entities
-    Set<Map<String, String>> distinctUuidRowSet =
+    /* Check for rows with the same key based on the provided key extractor function */
+    Set<Map<String, String>> distinctIdSet =
         allRowsSet
             .parallelStream()
-            .filter(ValidationUtils.distinctByKey(x -> x.get("uuid")))
+            .filter(ValidationUtils.distinctByKey(keyExtractor))
             .collect(Collectors.toSet());
-    if (distinctUuidRowSet.size() != allRowsSet.size()) {
-      allRowsSet.removeAll(distinctUuidRowSet);
-      String affectedUuids =
-          allRowsSet.stream().map(row -> row.get("uuid")).collect(Collectors.joining(",\n"));
+    if (distinctIdSet.size() != allRowsSet.size()) {
+      allRowsSet.removeAll(distinctIdSet);
+      String affectedCoordinateIds =
+          allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
-          "'{}' entities with duplicated UUIDs, but different field values found! Please review the corresponding input file!\nAffected UUIDs:\n{}",
-          entityClass.getSimpleName(),
-          affectedUuids);
+          "'{}' entities with duplicated {} key, but different field values found! Please review the "
+              + "corresponding input file!\nAffected primary keys:\n{}",
+          entityDescriptor,
+          keyDescriptor,
+          affectedCoordinateIds);
       // if this happens, we return an empty set to prevent further processing
       return new HashSet<>();
     }

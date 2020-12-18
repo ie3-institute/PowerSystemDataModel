@@ -5,18 +5,17 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.factory.timeseries.PsdmTimeBasedWeatherValueFactory
-
-import static edu.ie3.datamodel.models.StandardUnits.IRRADIATION
+import static edu.ie3.datamodel.models.StandardUnits.SOLAR_IRRADIANCE
 import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
 import static edu.ie3.datamodel.models.StandardUnits.WIND_DIRECTION
 import static edu.ie3.datamodel.models.StandardUnits.WIND_VELOCITY
 
+import edu.ie3.datamodel.io.factory.timeseries.PsdmTimeBasedWeatherValueFactory
+import edu.ie3.datamodel.models.value.SolarIrradianceValue
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.value.IrradiationValue
 import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.datamodel.models.value.WindValue
@@ -125,9 +124,9 @@ class CsvWeatherSourcePsdmTest extends Specification implements CsvTestDataMeta,
 				TimeUtil.withDefaults.toZonedDateTime("2020-10-16 12:40:42"),
 				new WeatherValue(
 				defaultCoordinate,
-				new IrradiationValue(
-				Quantities.getQuantity(1.234, IRRADIATION),
-				Quantities.getQuantity(5.678, IRRADIATION)
+				new SolarIrradianceValue(
+				Quantities.getQuantity(1.234, SOLAR_IRRADIANCE),
+				Quantities.getQuantity(5.678, SOLAR_IRRADIANCE)
 				),
 				new TemperatureValue(
 				Quantities.getQuantity(9.1011, TEMPERATURE)

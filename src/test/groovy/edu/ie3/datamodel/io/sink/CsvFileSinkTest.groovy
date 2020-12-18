@@ -244,6 +244,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		new File(testBaseFolderPath + File.separator + "its_pqh_83b577cc-06b1-47a1-bfff-ad648a00784b.csv").exists()
 		new File(testBaseFolderPath + File.separator + "its_c_a4bbcb77-b9d0-4b88-92be-b9a14a3e332b.csv").exists()
 		new File(testBaseFolderPath + File.separator + "lpts_g2_b56853fe-b800-4c18-b324-db1878b22a28.csv").exists()
+		new File(testBaseFolderPath + File.separator + "its_weather_4fcbdfcd-4ff0-46dd-b0df-f3af7ae3ed98.csv").exists()
 	}
 
 	def "A valid CsvFileSink is able to persist an InputEntity without persisting the nested elements"() {

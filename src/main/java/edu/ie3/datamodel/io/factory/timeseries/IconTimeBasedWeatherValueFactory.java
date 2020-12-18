@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.PowerSystemUnits;
-import edu.ie3.util.quantities.interfaces.Irradiation;
+import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -31,8 +31,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   /* Redefine the column names to meet the icon specifications */
   private static final String COORDINATE = "coordinateid";
   private static final String TIME = "datum";
-  private static final String DIFFUSE_IRRADIATION = "aswdifds";
-  private static final String DIRECT_IRRADIATION = "aswdirs";
+  private static final String DIFFUSE_IRRADIANCE = "aswdifdS";
+  private static final String DIRECT_IRRADIANCE = "aswdirS";
   private static final String TEMPERATURE = "t2m";
   private static final String WIND_VELOCITY_U = "u131m";
   private static final String WIND_VELOCITY_V = "v131m";
@@ -64,8 +64,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     Set<String> constructorParamsMin =
         newSet(
             TIME,
-            DIFFUSE_IRRADIATION,
-            DIRECT_IRRADIATION,
+            DIFFUSE_IRRADIANCE,
+            DIRECT_IRRADIANCE,
             TEMPERATURE,
             WIND_VELOCITY_U,
             WIND_VELOCITY_V);
@@ -74,9 +74,9 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             constructorParamsMin,
             "albrad",
             "asobs",
-            DIFFUSE_IRRADIATION,
+            DIFFUSE_IRRADIANCE,
             "aswdifus",
-            DIRECT_IRRADIATION,
+            DIRECT_IRRADIANCE,
             TEMPERATURE,
             "tG",
             "u10m",
@@ -109,12 +109,10 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     Point coordinate = data.getCoordinate();
     java.util.UUID uuid = data.containsKey(UUID) ? data.getUUID(UUID) : java.util.UUID.randomUUID();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
-    ComparableQuantity<Irradiation> directIrradiation =
-        data.getQuantity(DIRECT_IRRADIATION, PowerSystemUnits.WATT_PER_SQUAREMETRE)
-            .to(StandardUnits.IRRADIATION);
-    ComparableQuantity<Irradiation> diffuseIrradiation =
-        data.getQuantity(DIFFUSE_IRRADIATION, PowerSystemUnits.WATT_PER_SQUAREMETRE)
-            .to(StandardUnits.IRRADIATION);
+    ComparableQuantity<Irradiance> directIrradiance =
+        data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
+    ComparableQuantity<Irradiance> diffuseIrradiance =
+        data.getQuantity(DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Temperature> temperature =
         data.getQuantity(TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection = getWindDirection(data);
@@ -122,8 +120,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
-            directIrradiation,
-            diffuseIrradiation,
+            directIrradiance,
+            diffuseIrradiance,
             temperature,
             windDirection,
             windVelocity);
