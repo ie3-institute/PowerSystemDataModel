@@ -111,9 +111,9 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     java.util.UUID uuid = data.containsKey(UUID) ? data.getUUID(UUID) : java.util.UUID.randomUUID();
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
-        data.getQuantity(DIRECT_IRRADIANCE, StandardUnits.SOLAR_IRRADIANCE);
+        data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Irradiance> diffuseIrradiance =
-        data.getQuantity(DIFFUSE_IRRADIANCE, StandardUnits.SOLAR_IRRADIANCE);
+        data.getQuantity(DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Temperature> temperature =
         data.getQuantity(TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection = getWindDirection(data);

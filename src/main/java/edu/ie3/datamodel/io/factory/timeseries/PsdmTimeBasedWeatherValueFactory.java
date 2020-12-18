@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
+import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -76,9 +77,9 @@ public class PsdmTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     java.util.UUID uuid = data.getUUID(UUID);
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
-        data.getQuantity(DIRECT_IRRADIANCE, StandardUnits.SOLAR_IRRADIANCE);
+        data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Irradiance> diffuseIrradiance =
-        data.getQuantity(DIFFUSE_IRRADIANCE, StandardUnits.SOLAR_IRRADIANCE);
+        data.getQuantity(DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Temperature> temperature =
         data.getQuantity(TEMPERATURE, StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection =
