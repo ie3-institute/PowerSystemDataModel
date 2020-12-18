@@ -11,7 +11,8 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
-import edu.ie3.util.quantities.interfaces.Irradiation;
+import edu.ie3.util.quantities.PowerSystemUnits;
+import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +29,11 @@ import tech.units.indriya.ComparableQuantity;
  */
 public class PsdmTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
   private static final String COORDINATE = "coordinate";
+  private static final String DIFFUSE_IRRADIANCE = "diffuseirradiation";
+  private static final String DIRECT_IRRADIANCE = "directirradiation";
+  private static final String TEMPERATURE = "temperature";
+  private static final String WIND_DIRECTION = "winddirection";
+  private static final String WIND_VELOCITY = "windvelocity";
 
   public PsdmTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
@@ -57,8 +63,8 @@ public class PsdmTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
         newSet(
             UUID,
             TIME,
-            DIFFUSE_IRRADIATION,
-            DIRECT_IRRADIATION,
+            DIFFUSE_IRRADIANCE,
+            DIRECT_IRRADIANCE,
             TEMPERATURE,
             WIND_DIRECTION,
             WIND_VELOCITY);
@@ -70,10 +76,10 @@ public class PsdmTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     Point coordinate = data.getCoordinate();
     java.util.UUID uuid = data.getUUID(UUID);
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
-    ComparableQuantity<Irradiation> directIrradiation =
-        data.getQuantity(DIRECT_IRRADIATION, StandardUnits.IRRADIATION);
-    ComparableQuantity<Irradiation> diffuseIrradiation =
-        data.getQuantity(DIFFUSE_IRRADIATION, StandardUnits.IRRADIATION);
+    ComparableQuantity<Irradiance> directIrradiance =
+        data.getQuantity(DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
+    ComparableQuantity<Irradiance> diffuseIrradiance =
+        data.getQuantity(DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Temperature> temperature =
         data.getQuantity(TEMPERATURE, StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection =
@@ -83,8 +89,8 @@ public class PsdmTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
-            directIrradiation,
-            diffuseIrradiation,
+            directIrradiance,
+            diffuseIrradiance,
             temperature,
             windDirection,
             windVelocity);
