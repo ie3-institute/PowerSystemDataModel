@@ -29,9 +29,7 @@ public class NodeValidationUtils extends ValidationUtils {
    * @param node Node to validate
    */
   public static void check(NodeInput node) {
-    // Check if node is null
     checkNonNull(node, "a node");
-    // Check if node has valid voltage level
     try {
       checkVoltageLevel(node.getVoltLvl());
     } catch (VoltageLevelException e) {
@@ -41,10 +39,8 @@ public class NodeValidationUtils extends ValidationUtils {
       throw new InvalidEntityException("Target voltage (p.u.) is not a positive value", node);
     else if (node.getvTarget().getValue().doubleValue() > 2d)
       throw new UnsafeEntityException("Target voltage (p.u.) might be too high", node);
-    // Check if subnet is valid
     if (node.getSubnet() <= 0)
       throw new InvalidEntityException("Subnet can't be zero or negative", node);
-    // Check if geoPosition is null
     if (node.getGeoPosition() == null)
       throw new InvalidEntityException("GeoPosition of node is null", node);
   }

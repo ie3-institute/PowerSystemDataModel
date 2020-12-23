@@ -23,9 +23,7 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
    * @param measurementUnit Measurement unit to validate
    */
   public static void check(MeasurementUnitInput measurementUnit) {
-    // Check if null
     checkNonNull(measurementUnit, "a measurement unit");
-    // Check if measurement unit measures any values
     if (!measurementUnit.getP()
         && !measurementUnit.getQ()
         && !measurementUnit.getVAng()

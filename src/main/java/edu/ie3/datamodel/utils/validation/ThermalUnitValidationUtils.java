@@ -33,7 +33,6 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * @param thermalUnitInput ThermalUnitInput to validate
    */
   public static void check(ThermalUnitInput thermalUnitInput) {
-    // Check if null
     checkNonNull(thermalUnitInput, "a thermal unit");
 
     // Further checks for subclasses
@@ -54,7 +53,6 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * @param thermalSinkInput ThermalSinkInput to validate
    */
   public static void checkThermalSink(ThermalSinkInput thermalSinkInput) {
-    // Check if null
     checkNonNull(thermalSinkInput, "a thermal sink");
 
     // Further checks for subclasses
@@ -73,7 +71,6 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * @param thermalStorageInput ThermalStorageInput to validate
    */
   public static void checkThermalStorage(ThermalStorageInput thermalStorageInput) {
-    // Check if null
     checkNonNull(thermalStorageInput, "a thermal storage");
 
     // Further checks for subclasses
@@ -91,12 +88,9 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * @param thermalHouseInput ThermalHouseInput to validate
    */
   public static void checkThermalHouse(ThermalHouseInput thermalHouseInput) {
-    // Check if null
     checkNonNull(thermalHouseInput, "a thermal house");
-    // Check for negative quantities
     detectNegativeQuantities(
         new Quantity<?>[] {thermalHouseInput.getEthLosses()}, thermalHouseInput);
-    // Check for zero or negative quantities
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {thermalHouseInput.getEthCapa()}, thermalHouseInput);
   }
@@ -113,7 +107,6 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * @param cylindricalStorageInput CylindricalStorageInput to validate
    */
   public static void checkCylindricalStorage(CylindricalStorageInput cylindricalStorageInput) {
-    // Check if null
     checkNonNull(cylindricalStorageInput, "a cylindrical storage");
     // Check if inlet temperature is higher/equal to outlet temperature
     if (cylindricalStorageInput.getInletTemp().isLessThan(cylindricalStorageInput.getReturnTemp()))
@@ -127,7 +120,6 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
       throw new InvalidEntityException(
           "Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume",
           cylindricalStorageInput);
-    // Check for zero or negative quantities
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {
           cylindricalStorageInput.getStorageVolumeLvl(),

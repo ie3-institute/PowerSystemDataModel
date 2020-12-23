@@ -30,9 +30,7 @@ public class GraphicValidationUtils extends ValidationUtils {
    * @param graphicInput GraphicInput to validate
    */
   public static void check(GraphicInput graphicInput) {
-    // Check if null
     checkNonNull(graphicInput, "a graphic input");
-    // Check if graphic layer is null
     if (graphicInput.getGraphicLayer() == null)
       throw new InvalidEntityException(
           "Graphic Layer of graphic element is not defined", graphicInput);
@@ -51,7 +49,6 @@ public class GraphicValidationUtils extends ValidationUtils {
    * @param lineGraphicInput LineGraphicInput to validate
    */
   protected static void checkLineGraphicInput(LineGraphicInput lineGraphicInput) {
-    // Check if path is null
     if (lineGraphicInput.getPath() == null)
       throw new InvalidEntityException(
           "Path of line graphic element is not defined", lineGraphicInput);
@@ -65,7 +62,6 @@ public class GraphicValidationUtils extends ValidationUtils {
    * @param nodeGraphicInput NodeGraphicInput to validate
    */
   protected static void checkNodeGraphicInput(NodeGraphicInput nodeGraphicInput) {
-    // Check if line is null
     if (nodeGraphicInput.getPoint() == null)
       throw new InvalidEntityException("Point of node graphic is not defined", nodeGraphicInput);
   }
