@@ -107,37 +107,39 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 		coordinateSource.getCoordinate(_) >> { args -> args[0] == 67775 ? Optional.of(expectedCoordinate) : Optional.empty() }
 		def weatherFactory = new IconTimeBasedWeatherValueFactory()
 		def source = new CsvWeatherSource(",", folderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
-		def fieldToValues = [
-			"datum"       : "2019-08-01 01:00:00",
-			"albRad"      : "13.015240669",
-			"asobS"       : "3.555093673828124",
-			"aswdifdS"    : "1.8088226191406245",
-			"aswdifuS"    : "0.5713421484374998",
-			"aswdirS"     : "2.317613203124999",
-			"t2m"         : "289.1179319051744",
-			"tg"          : "288.4101691197649",
-			"u10m"        : "0.3021732864307963",
-			"u131m"       : "2.6058700426057797",
-			"u20m"        : "0.32384365019387784",
-			"u216m"       : "3.9015497418041756",
-			"u65m"        : "1.2823686334340363",
-			"v10m"        : "1.3852550649486943",
-			"v131m"       : "3.8391590569599927",
-			"v20m"        : "1.3726831152710628",
-			"v216m"       : "4.339362039492466",
-			"v65m"        : "2.809877942347672",
-			"w131m"       : "-0.02633474740256081",
-			"w20m"        : "-0.0100060345167524",
-			"w216m"       : "-0.030348050471342078",
-			"w65m"        : "-0.01817112027569893",
-			"z0"          : "0.955323922526438",
-			"coordinateId": "67775",
-			"p131m"       : "",
-			"p20m"        : "",
-			"p65m"        : "",
-			"sobsRad"     : "",
-			"t131m"       : ""
-		]
+		def fieldToValues = new TreeMap<>(String.CASE_INSENSITIVE_ORDER)
+		fieldToValues.putAll(
+				[
+					"datum"       : "2019-08-01 01:00:00",
+					"albRad"      : "13.015240669",
+					"asobS"       : "3.555093673828124",
+					"aswdifdS"    : "1.8088226191406245",
+					"aswdifuS"    : "0.5713421484374998",
+					"aswdirS"     : "2.317613203124999",
+					"t2m"         : "289.1179319051744",
+					"tg"          : "288.4101691197649",
+					"u10m"        : "0.3021732864307963",
+					"u131m"       : "2.6058700426057797",
+					"u20m"        : "0.32384365019387784",
+					"u216m"       : "3.9015497418041756",
+					"u65m"        : "1.2823686334340363",
+					"v10m"        : "1.3852550649486943",
+					"v131m"       : "3.8391590569599927",
+					"v20m"        : "1.3726831152710628",
+					"v216m"       : "4.339362039492466",
+					"v65m"        : "2.809877942347672",
+					"w131m"       : "-0.02633474740256081",
+					"w20m"        : "-0.0100060345167524",
+					"w216m"       : "-0.030348050471342078",
+					"w65m"        : "-0.01817112027569893",
+					"z0"          : "0.955323922526438",
+					"coordinateId": "67775",
+					"p131m"       : "",
+					"p20m"        : "",
+					"p65m"        : "",
+					"sobsRad"     : "",
+					"t131m"       : ""
+				])
 
 		when:
 		def actual = source.extractCoordinate(fieldToValues)

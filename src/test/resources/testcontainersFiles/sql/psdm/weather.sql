@@ -2,10 +2,10 @@ CREATE TABLE public.weather
 (
     time timestamp with time zone,
     coordinate integer,
-    diffuseirradiation double precision,
-    directirradiation double precision,
-    winddirection double precision,
-    windvelocity double precision,
+    diffuse_irradiation double precision,
+    direct_irradiation double precision,
+    wind_direction double precision,
+    wind_velocity double precision,
     temperature double precision,
     tid serial,
     CONSTRAINT weather_pkey PRIMARY KEY (tid),
@@ -27,7 +27,7 @@ CREATE INDEX weather_coordinate_time_idx
     TABLESPACE pg_default;
 
 INSERT INTO
-    public.weather (time, coordinate, diffuseirradiation, directirradiation, winddirection, windvelocity, temperature)
+    public.weather (time, coordinate, diffuse_irradiation, direct_irradiation, wind_direction, wind_velocity, temperature)
 VALUES
 ('2020-04-28 15:00:00+0', 193186, 286.872985839844, 282.671997070312, 0, 1.66103506088257, 278.019012451172),
 ('2020-04-28 15:00:00+0', 193187, 287.872985839844, 283.671997070312, 0, 1.76103506088257, 279.019012451172),

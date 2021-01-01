@@ -35,8 +35,8 @@ class PsdmTimeBasedWeatherValueFactoryTest extends Specification {
 
 		def expectedResults = new TimeBasedValue(UUID.fromString("980f7714-8def-479f-baae-4deed6c8d6d1"),
 				time, new WeatherValue(coordinate,
-				Quantities.getQuantity(286.872985839844d, StandardUnits.IRRADIATION),
-				Quantities.getQuantity(282.671997070312d, StandardUnits.IRRADIATION),
+				Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
+				Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
 				null,
 				Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
 				Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY)))
@@ -68,8 +68,8 @@ class PsdmTimeBasedWeatherValueFactoryTest extends Specification {
 
 		def expectedResults = new TimeBasedValue(UUID.fromString("980f7714-8def-479f-baae-4deed6c8d6d1"),
 				time, new WeatherValue(coordinate,
-				Quantities.getQuantity(286.872985839844d, StandardUnits.IRRADIATION),
-				Quantities.getQuantity(282.671997070312d, StandardUnits.IRRADIATION),
+				Quantities.getQuantity(286.872985839844d, StandardUnits.SOLAR_IRRADIANCE),
+				Quantities.getQuantity(282.671997070312d, StandardUnits.SOLAR_IRRADIANCE),
 				Quantities.getQuantity(278.019012451172d, StandardUnits.TEMPERATURE),
 				Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
 				Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY)))
