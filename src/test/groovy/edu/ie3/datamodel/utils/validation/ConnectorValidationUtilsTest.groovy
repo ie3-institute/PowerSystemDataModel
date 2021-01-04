@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import org.locationtech.jts.geom.Point
+
 import static edu.ie3.datamodel.models.StandardUnits.*
 import static edu.ie3.util.quantities.PowerSystemUnits.*
 
@@ -57,6 +59,8 @@ class ConnectorValidationUtilsTest extends Specification {
 	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
 	)
 
+	private static final Point testCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))
+
 	def "ConnectorValidationUtils.checkLine() recognizes all potential errors for a line"() {
 		when:
 		ConnectorValidationUtils.check(invalidLine)
@@ -72,8 +76,8 @@ class ConnectorValidationUtilsTest extends Specification {
 		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().subnet(5).build()).build()                                                                                                       || new InvalidEntityException("LineInput connects different subnets, but shouldn't", invalidLine)
 		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().voltLvl(GermanVoltageLevelUtils.MV_10KV).build()).build()                                                                        || new InvalidEntityException("LineInput connects different voltage levels, but shouldn't", invalidLine)
 		GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, METRE)).build()                                                                                                                || new InvalidEntityException("The following quantities have to be positive: 0 km", invalidLine)
-		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))).build()).build()                              || new InvalidEntityException("Coordinates of start and end point do not match coordinates of connected nodes", invalidLine)
-		GridTestData.lineFtoG.copy().nodeB(GridTestData.nodeG.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))).build()).build()                              || new InvalidEntityException("Coordinates of start and end point do not match coordinates of connected nodes", invalidLine)
+		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().geoPosition(testCoordinate).build()).build()                              || new InvalidEntityException("Coordinates of start and end point do not match coordinates of connected nodes", invalidLine)
+		GridTestData.lineFtoG.copy().nodeB(GridTestData.nodeG.copy().geoPosition(testCoordinate).build()).build()                              || new InvalidEntityException("Coordinates of start and end point do not match coordinates of connected nodes", invalidLine)
 		invalidLineLengthNotMatchingCoordinateDistances 																																															  || new InvalidEntityException("Line length does not equal calculated distances between points building the line", invalidLine)
 	}
 
