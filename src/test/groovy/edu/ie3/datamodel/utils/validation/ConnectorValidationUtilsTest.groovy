@@ -72,7 +72,7 @@ class ConnectorValidationUtilsTest extends Specification {
 				Quantities.getQuantity(0.003d, LINE_LENGTH),
 				GridTestData.geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.4116482, 51.4843281], [3.4116482, 10.4843281], [7.4116482, 51.4843281]]}") as LineString,
 				OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
-		) 																																															  || new InvalidEntityException("Line length does not equal calculated distances between points building the line", invalidLine)
+				) 																																															  || new InvalidEntityException("Line length does not equal calculated distances between points building the line", invalidLine)
 	}
 
 	def "Smoke Test: Correct line type throws no exception"() {
