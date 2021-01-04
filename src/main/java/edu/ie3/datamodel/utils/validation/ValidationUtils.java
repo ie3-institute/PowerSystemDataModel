@@ -93,9 +93,9 @@ public class ValidationUtils {
                             throw new InvalidEntityException(
                                 "Operation start time of the asset has to be before end time",
                                 assetInput);
-                          return null;
+                          return startDate;
                         });
-                return null;
+                return endDate;
               });
     }
 
