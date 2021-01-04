@@ -61,7 +61,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - it connects nodes in the same voltage level <br>
    * - its line length has a positive value <br>
    * - its length equals the sum of calculated distances between points of LineString <br>
-   * - its characteristic for overhead line monitoring is not null <br>
    * - its coordinates of start and end point equal coordinates of nodes
    *
    * @param line Line to validate
@@ -73,9 +72,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
     detectZeroOrNegativeQuantities(new Quantity<?>[] {line.getLength()}, line);
     coordinatesOfLineEqualCoordinatesOfNodes(line);
     lineLengthMatchesDistancesBetweenPointsOfLineString(line);
-    if (line.getOlmCharacteristic() == null)
-      throw new InvalidEntityException(
-          "Characteristic for overhead line monitoring of the line is null", line);
   }
 
   /**
