@@ -20,7 +20,8 @@ public class WindValue implements Value {
   private final ComparableQuantity<Speed> velocity;
 
   /**
-   * @param direction Wind direction as an angle from north (typically in rad)
+   * @param direction Direction, the wind comes from as an angle from north increasing clockwise
+   *     (typically in rad)
    * @param velocity Wind velocity (typically in m/s)
    */
   public WindValue(ComparableQuantity<Angle> direction, ComparableQuantity<Speed> velocity) {

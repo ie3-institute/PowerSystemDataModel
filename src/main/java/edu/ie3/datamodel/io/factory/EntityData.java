@@ -39,7 +39,7 @@ public abstract class EntityData extends FactoryData {
    * @param fieldsToAttributes attribute map: field name to value
    * @param entityClass class of the entity to be created with this data
    */
-  public EntityData(
+  protected EntityData(
       Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> entityClass) {
     super(fieldsToAttributes, entityClass);
   }
@@ -64,25 +64,6 @@ public abstract class EntityData extends FactoryData {
       throw new FactoryException(String.format("Field \"%s\" is null or empty", field));
 
     return value.trim().equals("1") || value.trim().equalsIgnoreCase("true");
-  }
-
-  /**
-   * Returns int value for given field name. Throws {@link FactoryException} if field does not exist
-   * or parsing fails.
-   *
-   * @param field field name
-   * @return int value
-   */
-  public int getInt(String field) {
-    try {
-      return Integer.parseInt(getField(field));
-    } catch (NumberFormatException nfe) {
-      throw new FactoryException(
-          String.format(
-              "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
-              field, getField(field)),
-          nfe);
-    }
   }
 
   /**

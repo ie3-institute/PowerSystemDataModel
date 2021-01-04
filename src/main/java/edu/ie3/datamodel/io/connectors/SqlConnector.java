@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.connectors;
 
+import edu.ie3.util.StringUtils;
 import edu.ie3.util.TimeUtil;
 import java.sql.*;
 import java.util.*;
@@ -116,12 +117,13 @@ public class SqlConnector implements DataConnector {
    * @return the field map for the current row
    */
   public Map<String, String> extractFieldMap(ResultSet rs) {
-    HashMap<String, String> fieldMap = new HashMap<>();
+    TreeMap<String, String> insensitiveFieldsToAttributes =
+        new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     try {
       ResultSetMetaData metaData = rs.getMetaData();
       int columnCount = metaData.getColumnCount();
       for (int i = 1; i <= columnCount; i++) {
-        String columnName = metaData.getColumnName(i);
+        String columnName = StringUtils.snakeCaseToCamelCase(metaData.getColumnName(i));
         String value;
         Object result = rs.getObject(i);
         if (result instanceof Timestamp) {
@@ -129,11 +131,11 @@ public class SqlConnector implements DataConnector {
         } else {
           value = String.valueOf(rs.getObject(i));
         }
-        fieldMap.put(columnName, value);
+        insensitiveFieldsToAttributes.put(columnName, value);
       }
     } catch (SQLException e) {
       log.error("Exception at extracting ResultSet: ", e);
     }
-    return fieldMap;
+    return insensitiveFieldsToAttributes;
   }
 }

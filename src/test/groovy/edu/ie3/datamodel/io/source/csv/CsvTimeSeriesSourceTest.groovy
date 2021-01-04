@@ -13,10 +13,6 @@ import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
 import edu.ie3.datamodel.models.value.EnergyPriceValue
-import edu.ie3.datamodel.models.value.IrradiationValue
-import edu.ie3.datamodel.models.value.TemperatureValue
-import edu.ie3.datamodel.models.value.WeatherValue
-import edu.ie3.datamodel.models.value.WindValue
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Coordinate

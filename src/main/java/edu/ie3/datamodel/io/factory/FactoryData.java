@@ -16,7 +16,7 @@ public abstract class FactoryData {
   private final Map<String, String> fieldsToAttributes;
   private final Class<?> targetClass;
 
-  public FactoryData(Map<String, String> fieldsToAttributes, Class<?> targetClass) {
+  protected FactoryData(Map<String, String> fieldsToAttributes, Class<?> targetClass) {
     // this does the magic: case-insensitive get/set calls on keys
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -78,6 +78,25 @@ public abstract class FactoryData {
    */
   public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit) {
     return Quantities.getQuantity(getDouble(field), unit);
+  }
+
+  /**
+   * Returns int value for given field name. Throws {@link FactoryException} if field does not exist
+   * or parsing fails.
+   *
+   * @param field field name
+   * @return int value
+   */
+  public int getInt(String field) {
+    try {
+      return Integer.parseInt(getField(field));
+    } catch (NumberFormatException nfe) {
+      throw new FactoryException(
+          String.format(
+              "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
+              field, getField(field)),
+          nfe);
+    }
   }
 
   /**

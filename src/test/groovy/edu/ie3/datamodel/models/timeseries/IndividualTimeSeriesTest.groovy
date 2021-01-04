@@ -61,7 +61,7 @@ class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestDa
 		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC")))
 
 		then:
-		expected.isPresent()
+		expected.present
 		expected.get().time == actual.get().time
 		expected.get().value.value == actual.get().value.value
 	}
@@ -74,7 +74,7 @@ class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestDa
 		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
 
 		then:
-		expected.isPresent()
+		expected.present
 		expected.get().time == actual.get().time
 		expected.get().value.value == actual.get().value.value
 	}
@@ -92,7 +92,7 @@ class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestDa
 		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC")))
 
 		then:
-		expected.isPresent()
+		expected.present
 		expected.get().time == actual.get().time
 		expected.get().value.value == actual.get().value.value
 	}
@@ -105,7 +105,7 @@ class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestDa
 		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
 
 		then:
-		expected.isPresent()
+		expected.present
 		expected.get().time == actual.get().time
 		expected.get().value.value == actual.get().value.value
 	}

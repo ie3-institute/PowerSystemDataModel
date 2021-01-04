@@ -8,26 +8,30 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.interval.ClosedInterval;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
 
 /** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
 public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
 
-  private final TimeBasedWeatherValueFactory weatherFactory = new TimeBasedWeatherValueFactory();
-  private static final String COORDINATE_FIELD = "coordinate";
+  private final TimeBasedWeatherValueFactory weatherFactory;
 
   private final Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries;
   private final IdCoordinateSource coordinateSource;
@@ -39,13 +43,22 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
    * @param fileNamingStrategy strategy for the naming of time series files
+   * @param weatherFactory factory to transfer field to value mapping into actual java object
+   *     instances
+   * @param coordinateFactory factory to build coordinate id to coordinate mapping
    */
-  public CsvWeatherSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+  public CsvWeatherSource(
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      TimeBasedWeatherValueFactory weatherFactory,
+      IdCoordinateFactory coordinateFactory) {
     this(
         csvSep,
         folderPath,
         fileNamingStrategy,
-        new CsvIdCoordinateSource(csvSep, folderPath, fileNamingStrategy));
+        new CsvIdCoordinateSource(csvSep, folderPath, fileNamingStrategy, coordinateFactory),
+        weatherFactory);
   }
 
   /**
@@ -56,14 +69,18 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @param folderPath path to the folder holding the time series files
    * @param fileNamingStrategy strategy for the naming of time series files
    * @param coordinateSource a coordinate source to map ids to points
+   * @param weatherFactory factory to transfer field to value mapping into actual java object
+   *     instances
    */
   public CsvWeatherSource(
       String csvSep,
       String folderPath,
       FileNamingStrategy fileNamingStrategy,
-      IdCoordinateSource coordinateSource) {
+      IdCoordinateSource coordinateSource,
+      TimeBasedWeatherValueFactory weatherFactory) {
     super(csvSep, folderPath, fileNamingStrategy);
     this.coordinateSource = coordinateSource;
+    this.weatherFactory = weatherFactory;
 
     coordinateToTimeSeries = getWeatherTimeSeries();
   }
@@ -190,21 +207,12 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
   private Optional<TimeBasedValue<WeatherValue>> buildWeatherValue(
       Map<String, String> fieldToValues) {
     /* Try to get the coordinate from entries */
-    String coordinateString = fieldToValues.get(COORDINATE_FIELD);
-    if (Objects.isNull(coordinateString) || coordinateString.isEmpty()) {
-      log.error(
-          "Cannot parse weather value. Unable to find field '{}' in data: {}",
-          COORDINATE_FIELD,
-          fieldToValues);
-      return Optional.empty();
-    }
-    int coordinateId = Integer.parseInt(coordinateString);
-    return coordinateSource
-        .getCoordinate(coordinateId)
+    Optional<Point> maybeCoordinate = extractCoordinate(fieldToValues);
+    return maybeCoordinate
         .map(
             coordinate -> {
               /* Remove coordinate entry from fields */
-              fieldToValues.remove(COORDINATE_FIELD);
+              fieldToValues.remove(weatherFactory.getCoordinateIdFieldString());
 
               /* Build factory data */
               TimeBasedWeatherValueData factoryData =
@@ -213,9 +221,73 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
             })
         .orElseGet(
             () -> {
-              log.error("Unable to find coordinate with id '{}'.", coordinateId);
+              log.error("Unable to find coordinate for entry '{}'.", fieldToValues);
               return Optional.empty();
             });
+  }
+
+  /**
+   * Reads the first line (considered to be the headline with headline fields) and returns a stream
+   * of (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since
+   * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
+   *
+   * <p>This method overrides {@link CsvDataSource#buildStreamWithFieldsToAttributesMap(Class,
+   * BufferedReader)} to not do sanity check for available UUID. This is because the weather source
+   * might make use of ICON weather data, which don't have a UUID. For weather it is indeed not
+   * necessary, to have one unique UUID.
+   *
+   * @param entityClass the entity class that should be build
+   * @param bufferedReader the reader to use
+   * @return a parallel stream of maps, where each map represents one row of the csv file with the
+   *     mapping (fieldName to fieldValue)
+   */
+  @Override
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
+    try (BufferedReader reader = bufferedReader) {
+      final String[] headline = parseCsvRow(reader.readLine(), csvSep);
+
+      // by default try-with-resources closes the reader directly when we leave this method (which
+      // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
+      // As we still want to consume the data at other places, we start a new stream instead of
+      // returning the original one
+      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
+
+      Function<Map<String, String>, String> timeCoordinateIdExtractor =
+          fieldToValues ->
+              fieldToValues
+                  .get(weatherFactory.getTimeFieldString())
+                  .concat(fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
+      return distinctRowsWithLog(
+              allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
+          .parallelStream();
+
+    } catch (IOException e) {
+      log.warn(
+          "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+    }
+
+    return Stream.empty();
+  }
+
+  /**
+   * Extract the coordinate identifier from the field to value mapping and obtain the actual
+   * coordinate in collaboration with the source.
+   *
+   * @param fieldToValues "flat " input information as a mapping from field to value
+   * @return Optional time based weather value
+   */
+  private Optional<Point> extractCoordinate(Map<String, String> fieldToValues) {
+    String coordinateString = fieldToValues.get(weatherFactory.getCoordinateIdFieldString());
+    if (Objects.isNull(coordinateString) || coordinateString.isEmpty()) {
+      log.error(
+          "Cannot parse weather value. Unable to find field '{}' in data: {}",
+          weatherFactory.getCoordinateIdFieldString(),
+          fieldToValues);
+      return Optional.empty();
+    }
+    int coordinateId = Integer.parseInt(coordinateString);
+    return coordinateSource.getCoordinate(coordinateId);
   }
 
   /**

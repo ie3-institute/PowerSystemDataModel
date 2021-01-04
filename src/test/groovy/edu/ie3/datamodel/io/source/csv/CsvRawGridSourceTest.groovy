@@ -61,7 +61,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		def connectorDataOption = source.buildUntypedConnectorInputEntityData(validAssetEntityInputData, nodes)
 
 		then: "everything is fine"
-		connectorDataOption.isPresent()
+		connectorDataOption.present
 		connectorDataOption.get().with {
 			assert fieldsToValues == expectedFieldsToAttributes
 			assert targetClass == SwitchInput
@@ -91,7 +91,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		def connectorDataOption = source.buildUntypedConnectorInputEntityData(validAssetEntityInputData, nodes)
 
 		then: "it returns en empty Optional"
-		!connectorDataOption.isPresent()
+		!connectorDataOption.present
 	}
 
 
@@ -284,7 +284,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		def actual = source.findAndAddType(validConnectorEntityData, availableTypes)
 
 		then: "everything is fine"
-		!actual.isPresent()
+		!actual.present
 	}
 
 	def "The CsvRawGridSource is able to convert a stream of valid ConnectorInputEntityData to TypedConnectorInputEntityData"() {
@@ -442,7 +442,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		def actual = source.addThirdNode(typedEntityData, availableNodes)
 
 		then: "everything is fine"
-		!actual.isPresent()
+		!actual.present
 	}
 
 	def "The CsvRawGridSource is able to add the third node for a three winding transformer to a stream of candidates"() {
@@ -722,7 +722,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 				)
 
 		then: "all elements are there"
-		actual.isPresent()
+		actual.present
 		actual.get().with {
 			/* It's okay, to only test the uuids, because content is tested with the other test mehtods */
 			assert nodes.size() == expected.nodes.size()
@@ -749,7 +749,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		def actual = source.getGridData()
 
 		then: "the optional is empty"
-		!actual.isPresent()
+		!actual.present
 	}
 
 	def "The CsvRawGridSource returns an empty Optional, if the RawGridElements contain no single element"() {
@@ -761,6 +761,6 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		def actual = source.getGridData()
 
 		then: "the optional is empty"
-		!actual.isPresent()
+		!actual.present
 	}
 }
