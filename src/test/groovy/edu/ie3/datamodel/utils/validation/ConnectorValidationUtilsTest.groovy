@@ -59,19 +59,7 @@ class ConnectorValidationUtilsTest extends Specification {
 		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().voltLvl(GermanVoltageLevelUtils.MV_10KV).build()).build()                                                                        || new InvalidEntityException("LineInput connects different voltage levels, but shouldn't", invalidLine)
 		GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, METRE)).build()                                                                                                                || new InvalidEntityException("The following quantities have to be positive: 0 km", invalidLine)
 		GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))).build()).build()                              || new InvalidEntityException("Coordinates of start and end point do not match coordinates of connected nodes", invalidLine)
-		new LineInput(
-				UUID.fromString("92ec3bcf-1777-4d38-af67-0bf8c9fa73c7"),
-				"test_line_FtoG",
-				GridTestData.profBroccoli,
-				GridTestData.defaultOperationTime,
-				GridTestData.nodeF.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))).build(),
-				GridTestData.nodeG,
-				2,
-				GridTestData.lineTypeInputCtoD,
-				Quantities.getQuantity(0.003d, LINE_LENGTH),
-				GridTestData.geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.4116482, 51.4843281], [3.4116482, 10.4843281], [7.4116482, 51.4843281]]}") as LineString,
-				OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
-				) 																																															  || new InvalidEntityException("Line length does not equal calculated distances between points building the line", invalidLine)
+		GridTestData.lineFtoG.copy().nodeB(GridTestData.nodeG.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))).build()).build()                              || new InvalidEntityException("Coordinates of start and end point do not match coordinates of connected nodes", invalidLine)
 	}
 
 	def "Smoke Test: Correct line type throws no exception"() {
