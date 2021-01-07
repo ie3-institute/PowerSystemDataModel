@@ -44,9 +44,7 @@ public class TarballUtils {
    * @param source source path to compress
    * @param archiveFile path of the target archive file
    * @throws FileException If unable to create the file
-   * @deprecated replaced by #compressDir(Path, Path) in linked class FileIOUtils
-   * @see <a
-   *     href="https://github.com/ie3-institute/PowerSystemUtils/blob/master/src/main/java/edu/ie3/util/io/FileIOUtils.java">FileIOUtils</a>
+   * @deprecated replaced by {@link edu.ie3.util.io.FileIOUtils#compressDir(Path, Path)}
    */
   @Deprecated
   public static void compress(Path source, Path archiveFile) throws FileException {
@@ -132,10 +130,7 @@ public class TarballUtils {
    * @return Path to the actual folder, where the content is extracted to
    * @throws FileException If the archive is not in a well shape, the target folder doesn't meet the
    *     requirements or the archive tries to impose harm by exploiting zip slip vulnerability
-   * @deprecated replaced by #extractDir(Path, Path) in linked class FileIOUtils. The override
-   *     parameter is invalid now.
-   * @see <a
-   *     href="https://github.com/ie3-institute/PowerSystemUtils/blob/master/src/main/java/edu/ie3/util/io/FileIOUtils.java">FileIOUtils</a>
+   * @deprecated replaced by {@link edu.ie3.util.io.FileIOUtils#compressDir(Path, Path)}
    */
   @Deprecated
   public static Path extract(Path archive, Path target, boolean override) throws FileException {
