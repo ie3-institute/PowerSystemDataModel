@@ -79,6 +79,7 @@ public class ValidationUtils {
       throw new InvalidEntityException("Operation time of the asset is not defined", assetInput);
     // Check if start time and end time are not null and start time is before end time
     if (assetInput.getOperationTime().isLimited()) {
+      boolean x = true;
       assetInput
           .getOperationTime()
           .getEndDate()
@@ -93,9 +94,9 @@ public class ValidationUtils {
                             throw new InvalidEntityException(
                                 "Operation start time of the asset has to be before end time",
                                 assetInput);
-                          return startDate;
+                          return x;
                         });
-                return endDate;
+                return x;
               });
     }
 
