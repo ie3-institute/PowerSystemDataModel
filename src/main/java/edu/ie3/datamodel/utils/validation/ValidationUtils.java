@@ -80,24 +80,24 @@ public class ValidationUtils {
     // Check if start time and end time are not null and start time is before end time
     if (assetInput.getOperationTime().isLimited()) {
       Optional<Object> x =
-              assetInput
-          .getOperationTime()
-          .getEndDate()
-          .map(
-              endDate -> {
-                assetInput
-                    .getOperationTime()
-                    .getStartDate()
-                    .map(
-                        startDate -> {
-                          if (endDate.isBefore(startDate))
-                            throw new InvalidEntityException(
-                                "Operation start time of the asset has to be before end time",
-                                assetInput);
-                          return true;
-                        });
-                return true;
-              });
+          assetInput
+              .getOperationTime()
+              .getEndDate()
+              .map(
+                  endDate -> {
+                    assetInput
+                        .getOperationTime()
+                        .getStartDate()
+                        .map(
+                            startDate -> {
+                              if (endDate.isBefore(startDate))
+                                throw new InvalidEntityException(
+                                    "Operation start time of the asset has to be before end time",
+                                    assetInput);
+                              return true;
+                            });
+                    return true;
+                  });
     }
 
     // Further checks for subclasses
