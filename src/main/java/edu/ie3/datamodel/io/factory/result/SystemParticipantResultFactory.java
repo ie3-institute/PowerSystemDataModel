@@ -96,9 +96,10 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
           .map(uuid -> new EvcsResult(uuid, zdtTime, inputModelUuid, p, q))
           .orElseGet(() -> new EvcsResult(zdtTime, inputModelUuid, p, q));
     } else if (entityClass.equals(ChpResult.class)) {
+      ComparableQuantity<Power> qDot = data.getQuantity(Q_DOT, StandardUnits.Q_DOT_RESULT);
       return uuidOpt
-          .map(uuid -> new ChpResult(uuid, zdtTime, inputModelUuid, p, q))
-          .orElseGet(() -> new ChpResult(zdtTime, inputModelUuid, p, q));
+          .map(uuid -> new ChpResult(uuid, zdtTime, inputModelUuid, p, q, qDot))
+          .orElseGet(() -> new ChpResult(zdtTime, inputModelUuid, p, q, qDot));
     } else if (entityClass.equals(WecResult.class)) {
       return uuidOpt
           .map(uuid -> new WecResult(uuid, zdtTime, inputModelUuid, p, q))
