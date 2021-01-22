@@ -83,18 +83,17 @@ public class ValidationUtils {
           .getOperationTime()
           .getEndDate()
           .ifPresent(
-              endDate -> {
-                assetInput
-                    .getOperationTime()
-                    .getStartDate()
-                    .ifPresent(
-                        startDate -> {
-                          if (endDate.isBefore(startDate))
-                            throw new InvalidEntityException(
-                                "Operation start time of the asset has to be before end time",
-                                assetInput);
-                        });
-              });
+              endDate ->
+                  assetInput
+                      .getOperationTime()
+                      .getStartDate()
+                      .ifPresent(
+                          startDate -> {
+                            if (endDate.isBefore(startDate))
+                              throw new InvalidEntityException(
+                                  "Operation start time of the asset has to be before end time",
+                                  assetInput);
+                          }));
     }
 
     // Further checks for subclasses
