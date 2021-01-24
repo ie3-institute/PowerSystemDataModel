@@ -55,7 +55,8 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
-    if (data.getTargetClass().equals(HpResult.class)) {
+    if (data.getTargetClass().equals(HpResult.class)
+        || data.getTargetClass().equals(ChpResult.class)) {
       minConstructorParams = newSet(TIME, INPUT_MODEL, POWER, REACTIVE_POWER, Q_DOT);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
