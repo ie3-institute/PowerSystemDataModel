@@ -70,7 +70,7 @@ public class ChpResult extends SystemParticipantWithHeatResult {
         + ", q="
         + getQ()
         + ", qDot="
-        + getQDot()
+        + qDot
         + '}';
   }
 }
