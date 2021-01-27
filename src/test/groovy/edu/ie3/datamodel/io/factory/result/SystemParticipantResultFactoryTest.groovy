@@ -70,7 +70,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 			assert (((EvResult) result.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
 		}
 
-		if(modelClass ==StorageResult) {
+		if(modelClass == StorageResult) {
 			assert (((StorageResult) result.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
 		}
 
