@@ -13,6 +13,8 @@ import tech.units.indriya.ComparableQuantity;
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.ChpInput} */
 public class ChpResult extends SystemParticipantWithHeatResult {
 
+  private final ComparableQuantity<Power> qDot;
+
   /**
    * Standard constructor with automatic uuid generation.
    *
@@ -29,6 +31,7 @@ public class ChpResult extends SystemParticipantWithHeatResult {
       ComparableQuantity<Power> q,
       ComparableQuantity<Power> qDot) {
     super(time, inputModel, p, q, qDot);
+    this.qDot = qDot;
   }
 
   /**
@@ -50,6 +53,7 @@ public class ChpResult extends SystemParticipantWithHeatResult {
       ComparableQuantity<Power> q,
       ComparableQuantity<Power> qDot) {
     super(uuid, time, inputModel, p, q, qDot);
+    this.qDot = qDot;
   }
 
   @Override
