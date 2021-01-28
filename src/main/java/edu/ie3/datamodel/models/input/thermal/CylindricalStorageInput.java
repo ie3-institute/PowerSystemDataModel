@@ -161,7 +161,7 @@ public class CylindricalStorageInput extends ThermalStorageInput {
    * with altered field values. For detailed field descriptions refer to java docs of {@link
    * CylindricalStorageInput}
    */
-  public static class CylindricalStorageInputCopyBuilder
+  public class CylindricalStorageInputCopyBuilder
       extends AssetInput.AssetInputCopyBuilder<CylindricalStorageInputCopyBuilder> {
 
     private ComparableQuantity<Volume> storageVolumeLvl;
@@ -186,7 +186,7 @@ public class CylindricalStorageInput extends ThermalStorageInput {
           getId(),
           getOperator(),
           getOperationTime(),
-          build().getThermalBus(),
+          getThermalBus(),
           storageVolumeLvl,
           storageVolumeLvlMin,
           inletTemp,

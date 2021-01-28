@@ -113,7 +113,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
    * altered field values. For detailed field descriptions refer to java docs of {@link
    * ThermalHouseInput}
    */
-  public static class ThermalHouseInputCopyBuilder
+  public class ThermalHouseInputCopyBuilder
       extends AssetInput.AssetInputCopyBuilder<ThermalHouseInputCopyBuilder> {
 
     private ComparableQuantity<ThermalConductance> ethLosses;
@@ -132,7 +132,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
           getId(),
           getOperator(),
           getOperationTime(),
-          build().getThermalBus(),
+          getThermalBus(),
           ethLosses,
           ethCapa);
     }
