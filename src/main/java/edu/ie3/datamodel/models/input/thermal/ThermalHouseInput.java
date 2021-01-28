@@ -7,12 +7,12 @@ package edu.ie3.datamodel.models.input.thermal;
 
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalConductance;
 import java.util.Objects;
 import java.util.UUID;
-import org.apache.commons.lang3.NotImplementedException;
 import tech.units.indriya.ComparableQuantity;
 
 /** Quite simple thermal model of a house to serve as a heat sink */
@@ -70,10 +70,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
     return ethCapa;
   }
 
-  @Override
-  public UniqueEntityBuilder copy() {
-    throw new NotImplementedException(
-        "Copying of " + this.getClass().getSimpleName() + " entities is not supported yet!");
+  public ThermalHouseInput.ThermalHouseInputCopyBuilder copy() {
+    return new ThermalHouseInput.ThermalHouseInputCopyBuilder(this);
   }
 
   @Override
@@ -108,5 +106,52 @@ public class ThermalHouseInput extends ThermalSinkInput {
         + ", ethCapa="
         + ethCapa
         + '}';
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link ThermalHouseInput} entities with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * ThermalHouseInput}
+   */
+  public static class ThermalHouseInputCopyBuilder
+      extends AssetInput.AssetInputCopyBuilder<ThermalHouseInput.ThermalHouseInputCopyBuilder> {
+
+    private ComparableQuantity<ThermalConductance> ethLosses;
+    private ComparableQuantity<HeatCapacity> ethCapa;
+
+    private ThermalHouseInputCopyBuilder(ThermalHouseInput entity) {
+      super(entity);
+      this.ethLosses = entity.getEthLosses();
+      this.ethCapa = entity.getEthCapa();
+    }
+
+    @Override
+    public ThermalHouseInput build() {
+      return new ThermalHouseInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          build().getThermalBus(),
+          ethLosses,
+          ethCapa);
+    }
+
+    public ThermalHouseInput.ThermalHouseInputCopyBuilder ethLosses(
+        ComparableQuantity<ThermalConductance> ethLosses) {
+      this.ethLosses = ethLosses;
+      return this;
+    }
+
+    public ThermalHouseInput.ThermalHouseInputCopyBuilder ethCapa(
+        ComparableQuantity<HeatCapacity> ethCapa) {
+      this.ethCapa = ethCapa;
+      return this;
+    }
+
+    @Override
+    protected ThermalHouseInput.ThermalHouseInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }
