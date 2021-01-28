@@ -35,8 +35,8 @@ public class ThermalBusInput extends AssetInput {
     super(uuid, id);
   }
 
-  public ThermalBusInput.ThermalBusInputCopyBuilder copy() {
-    return new ThermalBusInput.ThermalBusInputCopyBuilder(this);
+  public ThermalBusInputCopyBuilder copy() {
+    return new ThermalBusInputCopyBuilder(this);
   }
 
   /**
@@ -45,7 +45,7 @@ public class ThermalBusInput extends AssetInput {
    * ThermalBusInput}
    */
   public static class ThermalBusInputCopyBuilder
-      extends AssetInput.AssetInputCopyBuilder<ThermalBusInput.ThermalBusInputCopyBuilder> {
+      extends AssetInput.AssetInputCopyBuilder<ThermalBusInputCopyBuilder> {
 
     private ThermalBusInputCopyBuilder(ThermalBusInput entity) {
       super(entity);
@@ -57,7 +57,7 @@ public class ThermalBusInput extends AssetInput {
     }
 
     @Override
-    protected ThermalBusInput.ThermalBusInputCopyBuilder childInstance() {
+    protected ThermalBusInputCopyBuilder childInstance() {
       return this;
     }
   }

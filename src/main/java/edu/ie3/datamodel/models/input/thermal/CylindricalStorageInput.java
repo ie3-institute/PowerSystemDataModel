@@ -162,8 +162,7 @@ public class CylindricalStorageInput extends ThermalStorageInput {
    * CylindricalStorageInput}
    */
   public static class CylindricalStorageInputCopyBuilder
-      extends AssetInput.AssetInputCopyBuilder<
-          CylindricalStorageInput.CylindricalStorageInputCopyBuilder> {
+      extends AssetInput.AssetInputCopyBuilder<CylindricalStorageInputCopyBuilder> {
 
     private ComparableQuantity<Volume> storageVolumeLvl;
     private ComparableQuantity<Volume> storageVolumeLvlMin;
@@ -195,38 +194,36 @@ public class CylindricalStorageInput extends ThermalStorageInput {
           c);
     }
 
-    public CylindricalStorageInput.CylindricalStorageInputCopyBuilder storageVolumeLvl(
+    public CylindricalStorageInputCopyBuilder storageVolumeLvl(
         ComparableQuantity<Volume> storageVolumeLvl) {
       this.storageVolumeLvl = storageVolumeLvl;
       return this;
     }
 
-    public CylindricalStorageInput.CylindricalStorageInputCopyBuilder storageVolumeLvlMin(
+    public CylindricalStorageInputCopyBuilder storageVolumeLvlMin(
         ComparableQuantity<Volume> storageVolumeLvlMin) {
       this.storageVolumeLvlMin = storageVolumeLvlMin;
       return this;
     }
 
-    public CylindricalStorageInput.CylindricalStorageInputCopyBuilder inletTemp(
-        ComparableQuantity<Temperature> inletTemp) {
+    public CylindricalStorageInputCopyBuilder inletTemp(ComparableQuantity<Temperature> inletTemp) {
       this.inletTemp = inletTemp;
       return this;
     }
 
-    public CylindricalStorageInput.CylindricalStorageInputCopyBuilder returnTemp(
+    public CylindricalStorageInputCopyBuilder returnTemp(
         ComparableQuantity<Temperature> returnTemp) {
       this.returnTemp = returnTemp;
       return this;
     }
 
-    public CylindricalStorageInput.CylindricalStorageInputCopyBuilder c(
-        ComparableQuantity<SpecificHeatCapacity> c) {
+    public CylindricalStorageInputCopyBuilder c(ComparableQuantity<SpecificHeatCapacity> c) {
       this.c = c;
       return this;
     }
 
     @Override
-    protected CylindricalStorageInput.CylindricalStorageInputCopyBuilder childInstance() {
+    protected CylindricalStorageInputCopyBuilder childInstance() {
       return this;
     }
   }

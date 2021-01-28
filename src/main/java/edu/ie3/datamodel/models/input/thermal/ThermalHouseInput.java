@@ -70,8 +70,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
     return ethCapa;
   }
 
-  public ThermalHouseInput.ThermalHouseInputCopyBuilder copy() {
-    return new ThermalHouseInput.ThermalHouseInputCopyBuilder(this);
+  public ThermalHouseInputCopyBuilder copy() {
+    return new ThermalHouseInputCopyBuilder(this);
   }
 
   @Override
@@ -114,7 +114,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
    * ThermalHouseInput}
    */
   public static class ThermalHouseInputCopyBuilder
-      extends AssetInput.AssetInputCopyBuilder<ThermalHouseInput.ThermalHouseInputCopyBuilder> {
+      extends AssetInput.AssetInputCopyBuilder<ThermalHouseInputCopyBuilder> {
 
     private ComparableQuantity<ThermalConductance> ethLosses;
     private ComparableQuantity<HeatCapacity> ethCapa;
@@ -137,20 +137,19 @@ public class ThermalHouseInput extends ThermalSinkInput {
           ethCapa);
     }
 
-    public ThermalHouseInput.ThermalHouseInputCopyBuilder ethLosses(
+    public ThermalHouseInputCopyBuilder ethLosses(
         ComparableQuantity<ThermalConductance> ethLosses) {
       this.ethLosses = ethLosses;
       return this;
     }
 
-    public ThermalHouseInput.ThermalHouseInputCopyBuilder ethCapa(
-        ComparableQuantity<HeatCapacity> ethCapa) {
+    public ThermalHouseInputCopyBuilder ethCapa(ComparableQuantity<HeatCapacity> ethCapa) {
       this.ethCapa = ethCapa;
       return this;
     }
 
     @Override
-    protected ThermalHouseInput.ThermalHouseInputCopyBuilder childInstance() {
+    protected ThermalHouseInputCopyBuilder childInstance() {
       return this;
     }
   }
