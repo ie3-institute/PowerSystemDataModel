@@ -63,10 +63,6 @@ public class SystemParticipantWithHeatResult extends SystemParticipantResult {
     return qDot;
   }
 
-  public void setQ(ComparableQuantity<Power> qDot) {
-    this.qDot = qDot;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
