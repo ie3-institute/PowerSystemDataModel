@@ -23,7 +23,6 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.*
-import spock.lang.Shared
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
@@ -32,8 +31,6 @@ import javax.measure.quantity.*
 import java.time.ZonedDateTime
 
 import static edu.ie3.datamodel.models.StandardUnits.*
-import static edu.ie3.util.quantities.PowerSystemUnits.*
-import static tech.units.indriya.unit.Units.*
 
 
 class SystemParticipantTestData {

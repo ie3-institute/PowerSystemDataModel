@@ -5,11 +5,9 @@
  */
 package edu.ie3.datamodel.models.result.system
 
-import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Shared
 import spock.lang.Specification
-import tech.units.indriya.quantity.Quantities
 
 import javax.measure.Quantity
 import javax.measure.quantity.Power
@@ -40,7 +38,7 @@ class SystemParticipantWithHeatResultTest extends Specification {
 		then:
 		def expectedString = "SystemParticipantWithHeatResult{uuid=" + uuid + ", time=" + time.toString() + ", inputModel=" +
 				inputModel.toString() + ", p=" + p.toString() + ", q=" + q.toString() + ", qDot=" + qDot.toString() + "}"
-		outputString.equals(expectedString)
+		outputString == expectedString
 	}
 
 	def "A SystemParticipantWithHeatResult object can be compared to another object correctly"() {
