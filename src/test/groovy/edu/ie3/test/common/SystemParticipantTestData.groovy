@@ -23,10 +23,13 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.*
+import spock.lang.Shared
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
+import javax.measure.Quantity
 import javax.measure.quantity.*
+import java.time.ZonedDateTime
 
 import static edu.ie3.datamodel.models.StandardUnits.*
 import static edu.ie3.util.quantities.PowerSystemUnits.*
@@ -323,5 +326,13 @@ class SystemParticipantTestData {
 		chpInput,
 		hpInput
 	]
+
+	//ChpResult & SystemParticipantWithHeatResult
+	private static final UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
+	private static final ZonedDateTime time = java.time.ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]")
+	private static final UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
+	private static final Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
+	private static final Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
+	private static final Quantity<Power> qDot = Quantities.getQuantity(1, StandardUnits.Q_DOT_RESULT)
 
 }
