@@ -57,15 +57,6 @@ public class ChpResult extends SystemParticipantWithHeatResult {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof ChpResult)) return false;
-    if (!super.equals(o)) return false;
-    ChpResult that = (ChpResult) o;
-    return qDot.equals(that.qDot);
-  }
-
-  @Override
   public String toString() {
     return "ChpResult{"
         + "uuid="

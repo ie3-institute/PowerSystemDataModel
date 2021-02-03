@@ -40,17 +40,4 @@ class ChpResultTest extends Specification {
 				inputModel.toString() + ", p=" + p.toString() + ", q=" + q.toString() + ", qDot=" + qDot.toString() + "}"
 		outputString == expectedString
 	}
-
-	def "A ChpResult object can be compared to another object correctly"() {
-		given:
-		def chpResultObj = new ChpResult(uuid, time, inputModel, p, q, qDot)
-
-		when:
-		def equivalentChpResultObj = new ChpResult(uuid, time, inputModel, p, q, qDot)
-		def differentChpResultObj = new ChpResult(uuid, time, inputModel, p, q, qDot.subtract(qDot))
-
-		then:
-		chpResultObj.equals(equivalentChpResultObj)
-		!chpResultObj.equals(differentChpResultObj)
-	}
 }

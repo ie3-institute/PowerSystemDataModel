@@ -40,17 +40,4 @@ class SystemParticipantWithHeatResultTest extends Specification {
 				inputModel.toString() + ", p=" + p.toString() + ", q=" + q.toString() + ", qDot=" + qDot.toString() + "}"
 		outputString == expectedString
 	}
-
-	def "A SystemParticipantWithHeatResult object can be compared to another object correctly"() {
-		given:
-		def systemParticipantWithHeatResultObj = new SystemParticipantWithHeatResult(uuid, time, inputModel, p, q, qDot)
-
-		when:
-		def equivalentSystemParticipantWithHeatResultObj = new SystemParticipantWithHeatResult(uuid, time, inputModel, p, q, qDot)
-		def differentSystemParticipantWithHeatResultObj = new SystemParticipantWithHeatResult(uuid, time, inputModel, p, q, qDot.subtract(qDot))
-
-		then:
-		systemParticipantWithHeatResultObj.equals(equivalentSystemParticipantWithHeatResultObj)
-		!systemParticipantWithHeatResultObj.equals(differentSystemParticipantWithHeatResultObj)
-	}
 }

@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.result.system;
 
 import java.time.ZonedDateTime;
-import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -61,20 +60,6 @@ public class SystemParticipantWithHeatResult extends SystemParticipantResult {
    */
   public ComparableQuantity<Power> getQDot() {
     return qDot;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
-    SystemParticipantWithHeatResult that = (SystemParticipantWithHeatResult) o;
-    return qDot.equals(that.qDot);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), qDot);
   }
 
   @Override
