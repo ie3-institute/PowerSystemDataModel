@@ -56,7 +56,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
     try (InfluxDB session = connector.getSession()) {
-      String query = createQueryStringForInterval(timeInterval);
+      String query = createQueryStringForTimeInterval(timeInterval);
       QueryResult queryResult = session.query(new Query(query));
       Stream<Optional<TimeBasedValue<WeatherValue>>> optValues =
           optTimeBasedValueStream(queryResult);
@@ -172,29 +172,34 @@ public class InfluxDbWeatherSource implements WeatherSource {
 
   private String createQueryStringForIntervalAndCoordinate(
       ClosedInterval<ZonedDateTime> timeInterval, int coordinateId) {
-    return createQueryStringForInterval(timeInterval)
+    return BASIC_QUERY_STRING
+        + " where "
+        + createCoordinateConstraintString(coordinateId)
         + " and "
-        + createCoordinateConstraintString(coordinateId);
+        + createTimeConstraint(timeInterval);
   }
 
   private String createQueryStringForDateAndCoordinate(ZonedDateTime date, int coordinateId) {
-    return createQueryStringForDate(date)
+    return BASIC_QUERY_STRING
+        + " where "
+        + createCoordinateConstraintString(coordinateId)
         + " and "
-        + createCoordinateConstraintString(coordinateId);
+        + createTimeConstraint(date);
   }
 
-  private String createQueryStringForInterval(ClosedInterval<ZonedDateTime> timeInterval) {
-    String timeConstraint =
-        "time >= "
-            + timeInterval.getLower().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR
-            + " and time <= "
-            + timeInterval.getUpper().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
-    return BASIC_QUERY_STRING + " where " + timeConstraint;
+  private String createQueryStringForTimeInterval(ClosedInterval<ZonedDateTime> timeInterval) {
+    return BASIC_QUERY_STRING + " where " + createTimeConstraint(timeInterval);
   }
 
-  private String createQueryStringForDate(ZonedDateTime date) {
-    String timeConstraint = "time=" + date.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
-    return BASIC_QUERY_STRING + " where " + timeConstraint;
+  private String createTimeConstraint(ClosedInterval<ZonedDateTime> timeInterval) {
+    return "time >= "
+        + timeInterval.getLower().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR
+        + " and time <= "
+        + timeInterval.getUpper().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
+  }
+
+  private String createTimeConstraint(ZonedDateTime date) {
+    return "time=" + date.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
   }
 
   private String createCoordinateConstraintString(int coordinateId) {
