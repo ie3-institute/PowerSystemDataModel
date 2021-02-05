@@ -57,8 +57,6 @@ public abstract class Processor<T> {
   private static final String VOLT_LVL = NodeInputFactory.VOLT_LVL;
   private static final String V_RATED = NodeInputFactory.V_RATED;
 
-  private static final String Q_DOT = "qDot";
-
   private static final String PARALLEL_DEVICES = "parallelDevices";
 
   /**
@@ -138,11 +136,6 @@ public abstract class Processor<T> {
                 if (fieldName.equalsIgnoreCase(VOLT_LVL_FIELD_NAME)) {
                   fieldName = V_RATED;
                   resFieldNameToMethod.put(VOLT_LVL, pd.getReadMethod());
-                }
-
-                // Rename the fieldName for thermal power
-                if (fieldName.equalsIgnoreCase(Q_DOT)) {
-                  fieldName = Q_DOT;
                 }
 
                 resFieldNameToMethod.put(fieldName, pd.getReadMethod());

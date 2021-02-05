@@ -6,14 +6,15 @@
 package edu.ie3.datamodel.models.result.system;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class that holds values common to result entities having heat result */
-public class SystemParticipantWithHeatResult extends SystemParticipantResult {
-  /** @param qDot thermal power output normally provided in MW */
-  private ComparableQuantity<Power> qDot;
+public abstract class SystemParticipantWithHeatResult extends SystemParticipantResult {
+  /** The thermal power output normally provided in MW */
+  private final ComparableQuantity<Power> qDot;
 
   /**
    * @param time date and time when the result is produced
@@ -58,8 +59,22 @@ public class SystemParticipantWithHeatResult extends SystemParticipantResult {
    *
    * @return Thermal power output in MW.
    */
-  public ComparableQuantity<Power> getQDot() {
+  public ComparableQuantity<Power> getqDot() {
     return qDot;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    SystemParticipantWithHeatResult that = (SystemParticipantWithHeatResult) o;
+    return qDot.equals(that.qDot);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), qDot);
   }
 
   @Override
@@ -76,7 +91,7 @@ public class SystemParticipantWithHeatResult extends SystemParticipantResult {
         + ", q="
         + getQ()
         + ", qDot="
-        + getQDot()
+        + getqDot()
         + '}';
   }
 }

@@ -75,11 +75,11 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		}
 
 		if (modelClass == HpResult) {
-			assert(((HpResult)result.get()).qDot == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
+			assert(((HpResult)result.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
 		}
 
 		if (modelClass == ChpResult) {
-			assert(((ChpResult)result.get()).qDot == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
+			assert(((ChpResult)result.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
 		}
 
 		where:

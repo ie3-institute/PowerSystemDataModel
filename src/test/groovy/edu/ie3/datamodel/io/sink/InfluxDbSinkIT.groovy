@@ -27,7 +27,6 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import java.nio.file.StandardCopyOption
 import java.time.ZoneId
 import java.time.ZonedDateTime
 

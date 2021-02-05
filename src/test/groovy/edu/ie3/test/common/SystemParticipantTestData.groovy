@@ -324,12 +324,4 @@ class SystemParticipantTestData {
 		hpInput
 	]
 
-	//ChpResult & SystemParticipantWithHeatResult
-	private static final UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-	private static final ZonedDateTime time = java.time.ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]")
-	private static final UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
-	private static final Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
-	private static final Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
-	private static final Quantity<Power> qDot = Quantities.getQuantity(1, StandardUnits.Q_DOT_RESULT)
-
 }
