@@ -8,7 +8,6 @@ package edu.ie3.test.common
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardLoadProfile
-import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.*
@@ -26,9 +25,7 @@ import edu.ie3.util.quantities.interfaces.*
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
-import javax.measure.Quantity
 import javax.measure.quantity.*
-import java.time.ZonedDateTime
 
 import static edu.ie3.datamodel.models.StandardUnits.*
 
