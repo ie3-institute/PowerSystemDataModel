@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.thermal;
 
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalConductance;
@@ -113,8 +112,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
    * altered field values. For detailed field descriptions refer to java docs of {@link
    * ThermalHouseInput}
    */
-  public class ThermalHouseInputCopyBuilder
-      extends AssetInput.AssetInputCopyBuilder<ThermalHouseInputCopyBuilder> {
+  public static class ThermalHouseInputCopyBuilder
+      extends ThermalUnitInput.ThermalUnitInputCopyBuilder<ThermalHouseInputCopyBuilder> {
 
     private ComparableQuantity<ThermalConductance> ethLosses;
     private ComparableQuantity<HeatCapacity> ethCapa;

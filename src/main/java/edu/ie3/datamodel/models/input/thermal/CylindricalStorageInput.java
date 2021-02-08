@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.thermal;
 
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import java.util.Objects;
@@ -161,8 +160,8 @@ public class CylindricalStorageInput extends ThermalStorageInput {
    * with altered field values. For detailed field descriptions refer to java docs of {@link
    * CylindricalStorageInput}
    */
-  public class CylindricalStorageInputCopyBuilder
-      extends AssetInput.AssetInputCopyBuilder<CylindricalStorageInputCopyBuilder> {
+  public static class CylindricalStorageInputCopyBuilder
+      extends ThermalUnitInput.ThermalUnitInputCopyBuilder<CylindricalStorageInputCopyBuilder> {
 
     private ComparableQuantity<Volume> storageVolumeLvl;
     private ComparableQuantity<Volume> storageVolumeLvlMin;

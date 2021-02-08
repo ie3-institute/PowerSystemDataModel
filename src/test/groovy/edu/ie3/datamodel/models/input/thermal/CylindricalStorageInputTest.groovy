@@ -18,7 +18,8 @@ class CylindricalStorageInputTest extends Specification {
 		when:
 		def alteredUnit = cylindricalStorageInput.copy().storageVolumeLvl(ThermalUnitInputTestData.storageVolumeLvl)
 				.storageVolumeLvlMin(ThermalUnitInputTestData.storageVolumeLvlMin).inletTemp(ThermalUnitInputTestData.inletTemp)
-				.returnTemp(ThermalUnitInputTestData.returnTemp).c(ThermalUnitInputTestData.c).build()
+				.returnTemp(ThermalUnitInputTestData.returnTemp).c(ThermalUnitInputTestData.c)
+				.thermalBus(ThermalUnitInputTestData.thermalBus).build()
 
 
 		then:

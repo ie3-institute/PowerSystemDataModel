@@ -17,7 +17,7 @@ class ThermalHouseInputTest extends Specification {
 
 		when:
 		def alteredUnit = thermalHouseInput.copy().ethLosses(ThermalUnitInputTestData.thermalConductance)
-				.ethCapa(ThermalUnitInputTestData.ethCapa).build()
+				.ethCapa(ThermalUnitInputTestData.ethCapa).thermalBus(ThermalUnitInputTestData.thermalBus).build()
 
 
 		then:

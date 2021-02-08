@@ -44,7 +44,7 @@ public class ThermalBusInput extends AssetInput {
    * altered field values. For detailed field descriptions refer to java docs of {@link
    * ThermalBusInput}
    */
-  public class ThermalBusInputCopyBuilder
+  public static class ThermalBusInputCopyBuilder
       extends AssetInput.AssetInputCopyBuilder<ThermalBusInputCopyBuilder> {
 
     private ThermalBusInputCopyBuilder(ThermalBusInput entity) {
