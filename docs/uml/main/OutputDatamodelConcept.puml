@@ -82,10 +82,14 @@ package models {
             class PvResult
             SystemParticipantResult  <|-- PvResult
 
-            class ChpResult
+            class ChpResult{
+                + qDot: ComparableQuantity<Power>
+            }
             SystemParticipantResult <|-- ChpResult
 
-            class HpResult
+            class HpResult{
+                + qDot: ComparableQuantity<Power>
+            }
             SystemParticipantResult <|-- HpResult
 
             class WecResult
