@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector.TimeSeriesReadingData;
 import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesContainer;
@@ -21,6 +20,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /** Source that is capable of providing information around time series from csv files. */
+@Deprecated
 public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSource {
 
   /* Available factories */
@@ -57,15 +57,7 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
    */
   @Override
   public Set<TimeSeriesMapping.Entry> getMapping() {
-    return filterEmptyOptionals(
-            buildStreamWithFieldsToAttributesMap(TimeSeriesMapping.Entry.class, connector)
-                .map(
-                    fieldToValues -> {
-                      SimpleEntityData entityData =
-                          new SimpleEntityData(fieldToValues, TimeSeriesMapping.Entry.class);
-                      return mappingFactory.get(entityData);
-                    }))
-        .collect(Collectors.toSet());
+    return Collections.emptySet();
   }
 
   /**

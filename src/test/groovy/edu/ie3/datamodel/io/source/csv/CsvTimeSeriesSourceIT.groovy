@@ -123,22 +123,4 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 			assert activePower.size() == 1
 		}
 	}
-
-	def "The csv time series source is able to provide either mapping an time series, that can be put together"() {
-		when:
-		def mappingEntries = source.mapping
-		def timeSeries = source.timeSeries
-		def mapping = new TimeSeriesMapping(mappingEntries, timeSeries.all)
-
-		then:
-		mapping.with {
-			assert it.mapping.size() == 3
-			assert it.mapping.containsKey(UUID.fromString("b86e95b0-e579-4a80-a534-37c7a470a409"))
-			assert it.mapping.get(UUID.fromString("b86e95b0-e579-4a80-a534-37c7a470a409")).uuid == UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5")
-			assert it.mapping.containsKey(UUID.fromString("c7ebcc6c-55fc-479b-aa6b-6fa82ccac6b8"))
-			assert it.mapping.get(UUID.fromString("c7ebcc6c-55fc-479b-aa6b-6fa82ccac6b8")).uuid == UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26")
-			assert it.mapping.containsKey(UUID.fromString("90a96daa-012b-4fea-82dc-24ba7a7ab81c"))
-			assert it.mapping.get(UUID.fromString("90a96daa-012b-4fea-82dc-24ba7a7ab81c")).uuid == UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26")
-		}
-	}
 }

@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.ProcessorProviderException
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -62,7 +63,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 			/* InputEntity */
 			OperatorInput,
 			RandomLoadParameters,
-			TimeSeriesMapping.Entry,
+			TimeSeriesMappingSource.MappingEntry,
 			/* - AssetInput */
 			NodeInput,
 			LineInput,

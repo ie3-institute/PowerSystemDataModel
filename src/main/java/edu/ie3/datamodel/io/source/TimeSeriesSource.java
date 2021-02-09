@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesContainer;
 import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import java.util.Set;
 
+@Deprecated
 public interface TimeSeriesSource {
   /**
    * Receive a set of time series mapping entries from participant uuid to time series uuid.

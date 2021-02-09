@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.csv
 
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
@@ -425,7 +426,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def res = strategy.getDirectoryPath(TimeSeriesMapping.Entry)
+		def res = strategy.getDirectoryPath(TimeSeriesMappingSource.MappingEntry)
 
 		then:
 		res.present
@@ -437,7 +438,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def res = strategy.getFilePath(TimeSeriesMapping.Entry)
+		def res = strategy.getFilePath(TimeSeriesMappingSource.MappingEntry)
 
 		then:
 		res.present
@@ -449,7 +450,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def strategy = new HierarchicFileNamingStrategy("prefix", "suffix", defaultHierarchy)
 
 		when:
-		def res = strategy.getFilePath(TimeSeriesMapping.Entry)
+		def res = strategy.getFilePath(TimeSeriesMappingSource.MappingEntry)
 
 		then:
 		res.present
