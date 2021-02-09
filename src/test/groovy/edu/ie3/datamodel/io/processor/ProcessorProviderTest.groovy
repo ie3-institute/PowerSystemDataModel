@@ -42,7 +42,6 @@ import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.value.*

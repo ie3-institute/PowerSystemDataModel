@@ -11,7 +11,6 @@ import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.geo.GeoUtils

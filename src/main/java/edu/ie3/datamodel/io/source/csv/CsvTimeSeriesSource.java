@@ -13,7 +13,6 @@ import edu.ie3.datamodel.io.source.TimeSeriesSource;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesContainer;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import edu.ie3.datamodel.models.value.*;
 import java.util.*;
 import java.util.function.Function;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSource {
 
   /* Available factories */
-  private final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
   private final TimeBasedSimpleValueFactory<EnergyPriceValue> energyPriceFactory =
       new TimeBasedSimpleValueFactory<>(EnergyPriceValue.class);
   private final TimeBasedSimpleValueFactory<HeatAndSValue> heatAndSValueFactory =
@@ -48,16 +46,6 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
   public CsvTimeSeriesSource(
       String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     super(csvSep, folderPath, fileNamingStrategy);
-  }
-
-  /**
-   * Receive a set of time series mapping entries from participant uuid to time series uuid.
-   *
-   * @return A set of time series mapping entries from participant uuid to time series uuid
-   */
-  @Override
-  public Set<TimeSeriesMapping.Entry> getMapping() {
-    return Collections.emptySet();
   }
 
   /**

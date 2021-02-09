@@ -12,7 +12,6 @@ import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
 import edu.ie3.datamodel.models.value.*
 import edu.ie3.util.TimeUtil
 import spock.lang.Shared
