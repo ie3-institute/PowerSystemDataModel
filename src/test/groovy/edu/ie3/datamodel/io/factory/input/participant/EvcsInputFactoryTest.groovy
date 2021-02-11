@@ -18,15 +18,14 @@ import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
-
 /**
- * //ToDo: Class Description
+ * Testing EvcsInputFactory
  *
  * @version 0.1* @since 26.07.20
  */
-class EvcsInputFactoryTest extends Specification  implements FactoryTestHelper {
+class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
-	def "A CsInputFactory should contain exactly the expected class for parsing"() {
+	def "A EvcsInputFactory should contain exactly the expected class for parsing"() {
 		given:
 		def inputFactory = new EvcsInputFactory()
 		def expectedClasses = [EvcsInput]
@@ -35,7 +34,7 @@ class EvcsInputFactoryTest extends Specification  implements FactoryTestHelper {
 		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
-	def "A CsInputFactory should parse a valid CsInput correctly"() {
+	def "A EvcsInputFactory should parse a valid EvcsInput correctly"() {
 		given: "a system participant input type factory and model data"
 		def inputFactory = new EvcsInputFactory()
 		Map<String, String> parameter = [
@@ -44,9 +43,9 @@ class EvcsInputFactoryTest extends Specification  implements FactoryTestHelper {
 			"operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
 			"id"              : "TestID",
 			"qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
-			"type"          : "Household",
-			"chargingpoints"         : "4",
-			"cosphirated"          : "0.95",
+			"type"            : "Household",
+			"chargingpoints"  : "4",
+			"cosphirated"     : "0.95",
 		]
 		def inputClass = EvcsInput
 		def nodeInput = Mock(NodeInput)
@@ -78,5 +77,31 @@ class EvcsInputFactoryTest extends Specification  implements FactoryTestHelper {
 			assert chargingPoints == Integer.parseInt(parameter["chargingpoints"])
 			assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
 		}
+	}
+
+	def "A EvcsInputFactory should fail when passing an invalid ChargingPointType"() {
+		given: "a system participant input type factory and model data"
+		def inputFactory = new EvcsInputFactory()
+		Map<String, String> parameter = [
+			"uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+			"operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
+			"id"              : "TestID",
+			"qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
+			"type"            : "-- invalid --",
+			"chargingpoints"  : "4",
+			"cosphirated"     : "0.95",
+		]
+		def inputClass = EvcsInput
+		def nodeInput = Mock(NodeInput)
+		def operatorInput = Mock(OperatorInput)
+
+		when:
+		Optional<EvcsInput> input = inputFactory.get(
+				new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
+
+		then:
+		// FactoryException is caught in Factory.java. We get an empty Option back
+		!input.present
 	}
 }
