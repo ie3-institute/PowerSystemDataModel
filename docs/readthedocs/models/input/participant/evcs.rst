@@ -111,7 +111,7 @@ Limitations
 """""""""""
 
 - the available charging types are currently limited to only some common standard charging point types and not configurable
-  via a type file or table. Although providing custom types is possible using the syntax explained above.
+  via a type file or table. Nevertheless, providing custom types is possible using the syntax explained above.
   If there is additional need for a more granular type configuration via type file please contact us.
 - each charging station can hold one or more charging points. If more than one charging point is available
   all attributes (e.g. :code:`sRated` or :code:`connectionType`) are considered to be equal for all connection
