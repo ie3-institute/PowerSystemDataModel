@@ -55,8 +55,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
-    if (data.getTargetClass().equals(HpResult.class)
-        || data.getTargetClass().equals(ChpResult.class)) {
+    if (SystemParticipantWithHeatResult.class.isAssignableFrom(data.getTargetClass())) {
       minConstructorParams = expandSet(minConstructorParams, Q_DOT);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }

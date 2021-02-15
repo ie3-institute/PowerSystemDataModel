@@ -82,15 +82,16 @@ package models {
             class PvResult
             SystemParticipantResult  <|-- PvResult
 
-            class ChpResult{
-                + qDot: ComparableQuantity<Power>
+            abstract class SystemParticipantWithHeatResult{
+                - qDot: ComparableQuantity<Power>
             }
-            SystemParticipantResult <|-- ChpResult
+            SystemParticipantResult  <|-- SystemParticipantWithHeatResult
 
-            class HpResult{
-                + qDot: ComparableQuantity<Power>
-            }
-            SystemParticipantResult <|-- HpResult
+            class ChpResult
+            SystemParticipantWithHeatResult <|-- ChpResult
+
+            class HpResult
+            SystemParticipantWithHeatResult <|-- HpResult
 
             class WecResult
             SystemParticipantResult <|-- WecResult
