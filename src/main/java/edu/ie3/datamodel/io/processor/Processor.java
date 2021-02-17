@@ -137,6 +137,7 @@ public abstract class Processor<T> {
                   fieldName = V_RATED;
                   resFieldNameToMethod.put(VOLT_LVL, pd.getReadMethod());
                 }
+
                 resFieldNameToMethod.put(fieldName, pd.getReadMethod());
               });
 

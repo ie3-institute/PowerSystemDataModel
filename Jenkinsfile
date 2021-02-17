@@ -108,7 +108,7 @@ node {
                         'spotbugsTest test jacocoTestReport jacocoTestCoverageVerification', projectName)
 
                 // due to an issue with openjdk-8 we use openjdk-11 for javadocs generation
-                sh(script: """set +x && cd $projectName""" + ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/usr/local/openjdk-11''', returnStdout: true)
+                sh(script: """set +x && cd $projectName""" + ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/opt/java/openjdk''', returnStdout: true)
             }
 
             // sonarqube analysis
@@ -150,7 +150,7 @@ node {
                          */
                         sh(
                                 script: """set +x && cd $projectName""" +
-                                ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/usr/local/openjdk-11''',
+                                ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/opt/java/openjdk''',
                                 returnStdout: true
                         )
 
@@ -364,7 +364,7 @@ def deployJavaDocs(String projectName, String sshCredentialsId, String gitChecko
                     "git config user.name 'Johannes Hiry' && " +
                     "git fetch --depth=1 origin api-docs && " +
                     "git checkout api-docs && " +
-                    "cd .. && ./gradlew clean javadoc -Dorg.gradle.java.home=/usr/local/openjdk-11 && " +
+                    "cd .. && ./gradlew clean javadoc -Dorg.gradle.java.home=/opt/java/openjdk && " +
                     "cp -R build/docs/javadoc/* tmp-api-docs && " +
                     "cd tmp-api-docs &&" +
                     "git add --all && git commit -m 'updated api-docs' && git push origin api-docs:api-docs" +
