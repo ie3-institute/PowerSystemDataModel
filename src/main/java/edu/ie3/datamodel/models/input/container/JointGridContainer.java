@@ -5,15 +5,18 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.graph.SubGridTopologyGraph;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Model class to hold input models for more than one galvanically separated subnet */
 public class JointGridContainer extends GridContainer {
   /** A graph describing the subnet dependencies */
   private final SubGridTopologyGraph subGridTopologyGraph;
+
+  private static final Logger logger = LoggerFactory.getLogger(JointGridContainer.class);
 
   public JointGridContainer(
       String gridName,
@@ -47,7 +50,7 @@ public class JointGridContainer extends GridContainer {
    */
   private void checkSubGridTopologyGraph(SubGridTopologyGraph subGridTopologyGraph) {
     if (subGridTopologyGraph.vertexSet().size() == 1)
-      throw new InvalidGridException(
+      logger.warn(
           "This joint grid model only contains one single grid. Consider using SubGridContainer.");
   }
 
