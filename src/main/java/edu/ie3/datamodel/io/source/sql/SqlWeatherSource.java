@@ -37,8 +37,6 @@ public class SqlWeatherSource implements WeatherSource {
   private final String factoryCoordinateFieldName;
   private final TimeBasedWeatherValueFactory weatherFactory;
 
-  private Connection connection;
-
   /**
    * Queries that are available within this source. Motivation to have them as field value is to
    * avoid creating a new string each time, bc they're always the same.
@@ -103,7 +101,7 @@ public class SqlWeatherSource implements WeatherSource {
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues = Collections.emptyList();
-    try (PreparedStatement ps = getConnection().prepareStatement(queryTimeInterval)) {
+    try (PreparedStatement ps = connector.getConnection().prepareStatement(queryTimeInterval)) {
       ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
       ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
       timeBasedValues = processWeatherQuery(ps);
@@ -126,7 +124,8 @@ public class SqlWeatherSource implements WeatherSource {
       logger.warn("Unable to match coordinates to coordinate ID");
       return Collections.emptyMap();
     }
-    try (PreparedStatement ps = getConnection().prepareStatement(queryTimeIntervalAndCoordinates)) {
+    try (PreparedStatement ps =
+        connector.getConnection().prepareStatement(queryTimeIntervalAndCoordinates)) {
       Array coordinateIdArr = ps.getConnection().createArrayOf("integer", coordinateIds.toArray());
       ps.setArray(1, coordinateIdArr);
       ps.setTimestamp(2, Timestamp.from(timeInterval.getLower().toInstant()));
@@ -146,7 +145,8 @@ public class SqlWeatherSource implements WeatherSource {
       logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
       return Optional.empty();
     }
-    try (PreparedStatement ps = getConnection().prepareStatement(queryTimeAndCoordinate)) {
+    try (PreparedStatement ps =
+        connector.getConnection().prepareStatement(queryTimeAndCoordinate)) {
       ps.setInt(1, coordinateId.get());
       ps.setTimestamp(2, Timestamp.from(date.toInstant()));
       timeBasedValues = processWeatherQuery(ps);
@@ -360,10 +360,5 @@ public class SqlWeatherSource implements WeatherSource {
       coordinateToTimeSeries.put(entry.getKey(), timeSeries);
     }
     return coordinateToTimeSeries;
-  }
-
-  private Connection getConnection() throws SQLException {
-    if (connection == null || connection.isClosed()) connection = connector.getConnection();
-    return connection;
   }
 }

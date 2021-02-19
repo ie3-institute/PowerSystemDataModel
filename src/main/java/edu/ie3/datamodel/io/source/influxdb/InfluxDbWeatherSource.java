@@ -27,6 +27,7 @@ import org.locationtech.jts.geom.Point;
 /** InfluxDB Source for weather data */
 public class InfluxDbWeatherSource implements WeatherSource {
   private static final String BASIC_QUERY_STRING = "Select * from weather";
+  private static final String WHERE = " where ";
   private static final String MEASUREMENT_NAME_WEATHER = "weather";
   private static final int MILLI_TO_NANO_FACTOR = 1000000;
   private final String coordinateIdColumnName;
@@ -173,7 +174,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   private String createQueryStringForIntervalAndCoordinate(
       ClosedInterval<ZonedDateTime> timeInterval, int coordinateId) {
     return BASIC_QUERY_STRING
-        + " where "
+        + WHERE
         + createCoordinateConstraintString(coordinateId)
         + " and "
         + createTimeConstraint(timeInterval);
@@ -181,14 +182,14 @@ public class InfluxDbWeatherSource implements WeatherSource {
 
   private String createQueryStringForDateAndCoordinate(ZonedDateTime date, int coordinateId) {
     return BASIC_QUERY_STRING
-        + " where "
+        + WHERE
         + createCoordinateConstraintString(coordinateId)
         + " and "
         + createTimeConstraint(date);
   }
 
   private String createQueryStringForTimeInterval(ClosedInterval<ZonedDateTime> timeInterval) {
-    return BASIC_QUERY_STRING + " where " + createTimeConstraint(timeInterval);
+    return BASIC_QUERY_STRING + WHERE + createTimeConstraint(timeInterval);
   }
 
   private String createTimeConstraint(ClosedInterval<ZonedDateTime> timeInterval) {
