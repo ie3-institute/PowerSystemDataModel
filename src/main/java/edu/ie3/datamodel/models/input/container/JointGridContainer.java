@@ -49,9 +49,10 @@ public class JointGridContainer extends GridContainer {
    * @param subGridTopologyGraph The graph to check
    */
   private void checkSubGridTopologyGraph(SubGridTopologyGraph subGridTopologyGraph) {
-    if (subGridTopologyGraph.vertexSet().size() == 1)
+    if (subGridTopologyGraph.vertexSet().size() == 1) {
       logger.warn(
           "This joint grid model only contains one single grid. Consider using SubGridContainer.");
+    }
   }
 
   public SubGridTopologyGraph getSubGridTopologyGraph() {
