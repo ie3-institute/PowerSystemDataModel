@@ -9,9 +9,9 @@ import edu.ie3.test.common.GridTestData
 import spock.lang.Specification
 
 class JointGridContainerTest extends Specification {
-	public static final gridName = "single_grid"
+	private static final GRID_NAME = "single_grid"
 
-	private static final RawGridElements rawGrid = new RawGridElements(
+	private static final RawGridElements RAW_GRID = new RawGridElements(
 	[GridTestData.nodeA] as Set,
 	[] as Set,
 	[] as Set,
@@ -19,7 +19,7 @@ class JointGridContainerTest extends Specification {
 	[] as Set,
 	[] as Set)
 
-	private static final SystemParticipants systemParticipants = new SystemParticipants(
+	private static final SystemParticipants SYSTEM_PARTICIPANTS = new SystemParticipants(
 	[] as Set,
 	[] as Set,
 	[] as Set,
@@ -31,13 +31,13 @@ class JointGridContainerTest extends Specification {
 	[] as Set,
 	[] as Set)
 
-	private static final GraphicElements graphicElements = new GraphicElements(
+	private static final GraphicElements GRAPHIC_ELEMENTS = new GraphicElements(
 	[] as Set,
 	[] as Set)
 
 	def "A single subgrid can be used to build a JointGridContainer"() {
 		when:
-		def jointGridContainer = new JointGridContainer(gridName, rawGrid, systemParticipants, graphicElements)
+		def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, SYSTEM_PARTICIPANTS, GRAPHIC_ELEMENTS)
 
 		then:
 		noExceptionThrown()
