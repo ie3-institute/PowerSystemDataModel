@@ -106,20 +106,4 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 		Objects.nonNull(actual)
 		actual.size() == 2
 	}
-
-	def "The csv time series source is able to acquire all time series"() {
-		when:
-		def actual = source.timeSeries
-
-		then:
-		Objects.nonNull(actual)
-		actual.with {
-			assert energyPrice.size() == 1
-			assert heatAndApparentPower.size() == 1
-			assert heatAndActivePower.size() == 1
-			assert heat.size() == 1
-			assert apparentPower.size() == 2
-			assert activePower.size() == 1
-		}
-	}
 }
