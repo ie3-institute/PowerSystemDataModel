@@ -38,6 +38,8 @@ public class CsvFileConnector implements DataConnector {
   private final Map<Class<? extends UniqueEntity>, BufferedCsvWriter> entityWriters =
       new HashMap<>();
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
+  // ATTENTION: Do not finalize. It's meant for lazy evaluation.
+  private Map<UUID, CsvIndividualTimeSeriesMetaInformation> individualTimeSeriesMetaInformation;
   private final FileNamingStrategy fileNamingStrategy;
   private final String baseDirectoryName;
 
@@ -173,6 +175,44 @@ public class CsvFileConnector implements DataConnector {
     File fullPath = new File(baseDirectoryName + File.separator + filePath + FILE_ENDING);
     return new BufferedReader(
         new InputStreamReader(new FileInputStream(fullPath), StandardCharsets.UTF_8), 16384);
+  }
+
+  /**
+   * Get time series meta information for a given uuid.
+   *
+   * <p>This method lazily evaluates the mapping from <i>all</i> time series files to their meta
+   * information.
+   *
+   * @param timeSeriesUuid The time series in question
+   * @return An option on the queried information
+   */
+  public Optional<IndividualTimeSeriesMetaInformation> getIndividualTimeSeriesMetaInformation(
+      UUID timeSeriesUuid) {
+    if (Objects.isNull(individualTimeSeriesMetaInformation))
+      individualTimeSeriesMetaInformation = buildIndividualTimeSeriesMetaInformation();
+
+    return Optional.ofNullable(individualTimeSeriesMetaInformation.get(timeSeriesUuid));
+  }
+
+  /**
+   * This method creates a map from time series uuid to it's meta information.
+   *
+   * @return Mapping from time series uuid to it's meta information.
+   */
+  private Map<UUID, CsvIndividualTimeSeriesMetaInformation>
+      buildIndividualTimeSeriesMetaInformation() {
+    return getIndividualTimeSeriesFilePaths()
+        .parallelStream()
+        .map(
+            filePath -> {
+              /* Extract meta information from file path and enhance it with the file path itself */
+              IndividualTimeSeriesMetaInformation metaInformation =
+                  (IndividualTimeSeriesMetaInformation)
+                      fileNamingStrategy.extractTimeSeriesMetaInformation(
+                          removeFileEnding(filePath));
+              return new CsvIndividualTimeSeriesMetaInformation(metaInformation, filePath);
+            })
+        .collect(Collectors.toMap(FileNameMetaInformation::getUuid, v -> v));
   }
 
   /**
@@ -408,6 +448,54 @@ public class CsvFileConnector implements DataConnector {
           + columnScheme
           + ", reader="
           + reader
+          + '}';
+    }
+  }
+
+  /** Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file */
+  public static class CsvIndividualTimeSeriesMetaInformation
+      extends IndividualTimeSeriesMetaInformation {
+    private final String fullFilePath;
+
+    public CsvIndividualTimeSeriesMetaInformation(
+        UUID uuid, ColumnScheme columnScheme, String fullFilePath) {
+      super(uuid, columnScheme);
+      this.fullFilePath = fullFilePath;
+    }
+
+    public CsvIndividualTimeSeriesMetaInformation(
+        IndividualTimeSeriesMetaInformation metaInformation, String fullFilePath) {
+      this(metaInformation.getUuid(), metaInformation.getColumnScheme(), fullFilePath);
+    }
+
+    public String getFullFilePath() {
+      return fullFilePath;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof CsvIndividualTimeSeriesMetaInformation)) return false;
+      if (!super.equals(o)) return false;
+      CsvIndividualTimeSeriesMetaInformation that = (CsvIndividualTimeSeriesMetaInformation) o;
+      return fullFilePath.equals(that.fullFilePath);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(super.hashCode(), fullFilePath);
+    }
+
+    @Override
+    public String toString() {
+      return "CsvIndividualTimeSeriesMetaInformation{"
+          + "uuid="
+          + getUuid()
+          + ", columnScheme="
+          + getColumnScheme()
+          + ", fullFilePath='"
+          + fullFilePath
+          + '\''
           + '}';
     }
   }

@@ -11,6 +11,7 @@ import edu.ie3.datamodel.io.csv.DefaultDirectoryHierarchy
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.csv.HierarchicFileNamingStrategy
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -66,7 +67,7 @@ class CsvFileConnectorTest extends Specification {
 		cfc.shutdown()
 	}
 
-	def "The csv file connector is able to provide correct paths time series files"() {
+	def "The csv file connector is able to provide correct paths to time series files"() {
 		when:
 		def actual = cfc.individualTimeSeriesFilePaths
 
@@ -75,6 +76,44 @@ class CsvFileConnectorTest extends Specification {
 
 		actual.size() == timeSeriesPaths.size()
 		actual.containsAll(timeSeriesPaths)
+	}
+
+	def "The csv file connector is able to build correct uuid to meta information mapping"() {
+		given:
+		def expected = [
+			(UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf")): new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf"), ColumnScheme.APPARENT_POWER, "its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf.csv"),
+			(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, "its_p_fcf0b851-a836-4bde-8090-f44c382ed226.csv"),
+			(UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b")): new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b"), ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND, "its_pqh_5022a70e-a58f-4bac-b8ec-1c62376c216b.csv"),
+			(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, "its_c_b88dee50-5484-4136-901d-050d8c1c97d1.csv"),
+			(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, "its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b.csv"),
+			(UUID.fromString("085d98ee-09a2-4de4-b119-83949690d7b6")): new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(UUID.fromString("085d98ee-09a2-4de4-b119-83949690d7b6"), ColumnScheme.WEATHER, "its_weather_085d98ee-09a2-4de4-b119-83949690d7b6.csv")
+		]
+
+		when:
+		def actual = cfc.buildIndividualTimeSeriesMetaInformation()
+
+		then:
+		actual == expected
+	}
+
+	def "The csv file connector returns empty optional, if there is no meta information for queried time series"() {
+		when:
+		def actual = cfc.getIndividualTimeSeriesMetaInformation(UUID.fromString("2602e863-3eb6-480e-b752-a3e653af74ec"))
+
+		then:
+		!actual.present
+	}
+
+	def "The csv file connector returns correct individual time series meta information"() {
+		given:
+		def timeSeriesUuid = UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")
+		def expected = Optional.of(new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(timeSeriesUuid, ColumnScheme.ENERGY_PRICE, "its_c_b88dee50-5484-4136-901d-050d8c1c97d1.csv"))
+
+		when:
+		def actual = cfc.getIndividualTimeSeriesMetaInformation(timeSeriesUuid)
+
+		then:
+		actual == expected
 	}
 
 	def "The csv file connector returns empty Optional of TimeSeriesReadingData when pointed to non-individual time series"() {
