@@ -43,11 +43,11 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 		def tsUuid = UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7")
 
 		when:
-		def actual = source.buildIndividualTimeSeries(tsUuid, filePath, { source.buildTimeBasedValue(it, HeatAndPValue.class, source.heatAndPValueFactory) })
+		def actual = source.buildIndividualTimeSeries(tsUuid, filePath, { source.buildTimeBasedValue(it, HeatAndPValue, source.heatAndPValueFactory) })
 
 		then:
 		noExceptionThrown()
-		actual.getEntries().size() == 2
+		actual.entries.size() == 2
 	}
 
 	def "A csv time series source returns empty optional, if there is no time series for a given model"() {
@@ -140,7 +140,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
 		then:
 		actual.present
-		actual.get().getEntries().size() == amountOfEntries
+		actual.get().entries.size() == amountOfEntries
 
 		where:
 		uuid                                                    | columnScheme                                | path                                           || amountOfEntries

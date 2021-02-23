@@ -95,7 +95,7 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
         (CsvFileConnector.CsvIndividualTimeSeriesMetaInformation) metaInformation;
 
     try {
-      IndividualTimeSeries<? extends Value> timeSeries = null;
+      IndividualTimeSeries<? extends Value> timeSeries;
       switch (metaInformation.getColumnScheme()) {
         case ACTIVE_POWER:
           timeSeries =
@@ -149,11 +149,13 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
                       this.buildTimeBasedValue(
                           fieldToValue, EnergyPriceValue.class, energyPriceFactory));
           break;
+        default:
+          timeSeries = null;
       }
 
       return Optional.ofNullable(timeSeries);
     } catch (SourceException e) {
-      logger.error("Error during reading of time series '" + metaInformation.getUuid() + "'.", e);
+      logger.error("Error during reading of time series '{}'.", metaInformation.getUuid(), e);
       return Optional.empty();
     }
   }

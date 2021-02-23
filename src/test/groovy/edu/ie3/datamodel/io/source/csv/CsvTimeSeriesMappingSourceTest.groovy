@@ -32,7 +32,7 @@ class CsvTimeSeriesMappingSourceTest extends Specification implements CsvTestDat
 		then:
 		actualMapping.size() == expectedMapping.size()
 
-		expectedMapping.entrySet().stream().allMatch {entry ->
+		expectedMapping.entrySet().stream().allMatch { entry ->
 			actualMapping.containsKey(entry.key) && actualMapping.get(entry.key) == entry.value
 		}
 	}
