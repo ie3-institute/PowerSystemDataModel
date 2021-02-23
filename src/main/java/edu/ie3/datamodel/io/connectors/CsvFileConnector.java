@@ -206,11 +206,12 @@ public class CsvFileConnector implements DataConnector {
         .map(
             filePath -> {
               /* Extract meta information from file path and enhance it with the file path itself */
+              String filePathWithoutEnding = removeFileEnding(filePath);
               IndividualTimeSeriesMetaInformation metaInformation =
                   (IndividualTimeSeriesMetaInformation)
-                      fileNamingStrategy.extractTimeSeriesMetaInformation(
-                          removeFileEnding(filePath));
-              return new CsvIndividualTimeSeriesMetaInformation(metaInformation, filePath);
+                      fileNamingStrategy.extractTimeSeriesMetaInformation(filePathWithoutEnding);
+              return new CsvIndividualTimeSeriesMetaInformation(
+                  metaInformation, filePathWithoutEnding);
             })
         .collect(Collectors.toMap(FileNameMetaInformation::getUuid, v -> v));
   }
