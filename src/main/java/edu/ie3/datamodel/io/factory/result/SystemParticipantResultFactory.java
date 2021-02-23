@@ -55,8 +55,8 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
-    if (data.getTargetClass().equals(HpResult.class)) {
-      minConstructorParams = newSet(TIME, INPUT_MODEL, POWER, REACTIVE_POWER, Q_DOT);
+    if (SystemParticipantWithHeatResult.class.isAssignableFrom(data.getTargetClass())) {
+      minConstructorParams = expandSet(minConstructorParams, Q_DOT);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
@@ -95,19 +95,25 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
       return uuidOpt
           .map(uuid -> new EvcsResult(uuid, zdtTime, inputModelUuid, p, q))
           .orElseGet(() -> new EvcsResult(zdtTime, inputModelUuid, p, q));
-    } else if (entityClass.equals(ChpResult.class)) {
-      return uuidOpt
-          .map(uuid -> new ChpResult(uuid, zdtTime, inputModelUuid, p, q))
-          .orElseGet(() -> new ChpResult(zdtTime, inputModelUuid, p, q));
+    } else if (SystemParticipantWithHeatResult.class.isAssignableFrom(entityClass)) {
+      /* The following classes all have a heat component as well */
+      ComparableQuantity<Power> qDot = data.getQuantity(Q_DOT, StandardUnits.Q_DOT_RESULT);
+
+      if (entityClass.equals(ChpResult.class)) {
+        return uuidOpt
+            .map(uuid -> new ChpResult(uuid, zdtTime, inputModelUuid, p, q, qDot))
+            .orElseGet(() -> new ChpResult(zdtTime, inputModelUuid, p, q, qDot));
+      } else if (entityClass.equals(HpResult.class)) {
+        return uuidOpt
+            .map(uuid -> new HpResult(uuid, zdtTime, inputModelUuid, p, q, qDot))
+            .orElseGet(() -> new HpResult(zdtTime, inputModelUuid, p, q, qDot));
+      } else {
+        throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
+      }
     } else if (entityClass.equals(WecResult.class)) {
       return uuidOpt
           .map(uuid -> new WecResult(uuid, zdtTime, inputModelUuid, p, q))
           .orElseGet(() -> new WecResult(zdtTime, inputModelUuid, p, q));
-    } else if (entityClass.equals(HpResult.class)) {
-      ComparableQuantity<Power> qDotQuantity = data.getQuantity(Q_DOT, StandardUnits.Q_DOT_RESULT);
-      return uuidOpt
-          .map(uuid -> new HpResult(uuid, zdtTime, inputModelUuid, p, q, qDotQuantity))
-          .orElseGet(() -> new HpResult(zdtTime, inputModelUuid, p, q, qDotQuantity));
     } else if (entityClass.equals(EvResult.class)) {
       ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, PERCENT);
 

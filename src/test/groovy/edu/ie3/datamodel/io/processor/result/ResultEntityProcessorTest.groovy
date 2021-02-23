@@ -56,7 +56,7 @@ class ResultEntityProcessorTest extends Specification {
 		time      : '2020-01-30T17:26:44Z[UTC]']
 
 	@Shared
-	def expectedHpResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+	def expectedQDotResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 		inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
 		p         : '0.01',
 		q         : '0.01',
@@ -84,10 +84,10 @@ class ResultEntityProcessorTest extends Specification {
 		EvResult          | new EvResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, soc)      || expectedSocResults
 		PvResult          | new PvResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)           || expectedStandardResults
 		EvcsResult        | new EvcsResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)         || expectedStandardResults
-		ChpResult         | new ChpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
+		ChpResult         | new ChpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, qDot)    || expectedQDotResults
 		WecResult         | new WecResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
 		StorageResult     | new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, soc) || expectedSocResults
-		HpResult          | new HpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, qDot)     || expectedHpResults
+		HpResult          | new HpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, qDot)     || expectedQDotResults
 
 	}
 
