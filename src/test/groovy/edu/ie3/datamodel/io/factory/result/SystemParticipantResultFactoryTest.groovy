@@ -49,7 +49,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 			parameter["soc"] = "10"
 		}
 
-		if(modelClass == HpResult){
+		if (modelClass == HpResult || modelClass == ChpResult) {
 			parameter["qDot"] = "1"
 		}
 
@@ -69,11 +69,17 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 		if (modelClass == EvResult) {
 			assert (((EvResult) result.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
 		}
-		if(modelClass ==StorageResult){
+
+		if (modelClass == StorageResult) {
 			assert (((StorageResult) result.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
 		}
-		if(modelClass == HpResult){
-			assert(((HpResult)result.get()).qDot == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
+
+		if (modelClass == HpResult) {
+			assert(((HpResult)result.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
+		}
+
+		if (modelClass == ChpResult) {
+			assert(((ChpResult)result.get()).getqDot() == getQuant(parameter["qDot"], StandardUnits.Q_DOT_RESULT))
 		}
 
 		where:

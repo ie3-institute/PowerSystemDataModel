@@ -8,7 +8,6 @@ package edu.ie3.test.common
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardLoadProfile
-import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.*
@@ -29,8 +28,6 @@ import tech.units.indriya.quantity.Quantities
 import javax.measure.quantity.*
 
 import static edu.ie3.datamodel.models.StandardUnits.*
-import static edu.ie3.util.quantities.PowerSystemUnits.*
-import static tech.units.indriya.unit.Units.*
 
 
 class SystemParticipantTestData {

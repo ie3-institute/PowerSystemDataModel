@@ -108,11 +108,14 @@ class InfluxDbSinkIT extends Specification {
 		def chpResult1 = new ChpResult(ZonedDateTime.of(2020, 5, 3, 14, 18, 0, 0, ZoneId.of("UTC")),
 				UUID.randomUUID(),
 				Quantities.getQuantity(42.24, StandardUnits.ACTIVE_POWER_RESULT),
-				Quantities.getQuantity(-42.24, StandardUnits.REACTIVE_POWER_RESULT))
+				Quantities.getQuantity(-42.24, StandardUnits.REACTIVE_POWER_RESULT),
+				Quantities.getQuantity(1.01, StandardUnits.Q_DOT_RESULT)
+				)
 		def chpResult2 = new ChpResult(ZonedDateTime.of(2020, 5, 3, 14, 19, 0, 0, ZoneId.of("UTC")),
 				UUID.randomUUID(),
 				Quantities.getQuantity(24.42, StandardUnits.ACTIVE_POWER_RESULT),
-				Quantities.getQuantity(-24.42, StandardUnits.REACTIVE_POWER_RESULT))
+				Quantities.getQuantity(-24.42, StandardUnits.REACTIVE_POWER_RESULT),
+				Quantities.getQuantity(1.01, StandardUnits.Q_DOT_RESULT))
 		def entities = [
 			lineResult1,
 			lineResult2,
