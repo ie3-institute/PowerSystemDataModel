@@ -7,14 +7,11 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.connectors.CsvFileConnector.TimeSeriesReadingData;
 import edu.ie3.datamodel.io.csv.FileNamingStrategy;
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
-import edu.ie3.datamodel.models.timeseries.TimeSeriesContainer;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
@@ -75,63 +72,6 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
       TimeSeriesMappingSource mappingSource) {
     super(csvSep, folderPath, fileNamingStrategy);
     this.mappingSource = mappingSource;
-  }
-
-  /**
-   * Acquire all available time series
-   *
-   * @return A container with all relevant time series
-   */
-  @Override
-  @Deprecated
-  public TimeSeriesContainer getTimeSeries() {
-    /* Get all time series reader */
-    Map<ColumnScheme, Set<TimeSeriesReadingData>> colTypeToReadingData =
-        connector.initTimeSeriesReader();
-
-    /* Reading in energy price time series */
-    Set<IndividualTimeSeries<EnergyPriceValue>> energyPriceTimeSeries =
-        read(
-            colTypeToReadingData.get(ColumnScheme.ENERGY_PRICE),
-            EnergyPriceValue.class,
-            energyPriceFactory);
-
-    /* Reading in heat and apparent power time series */
-    Set<IndividualTimeSeries<HeatAndSValue>> heatAndApparentPowerTimeSeries =
-        read(
-            colTypeToReadingData.get(ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND),
-            HeatAndSValue.class,
-            heatAndSValueFactory);
-
-    /* Reading in heat time series */
-    Set<IndividualTimeSeries<HeatDemandValue>> heatTimeSeries =
-        read(
-            colTypeToReadingData.get(ColumnScheme.HEAT_DEMAND),
-            HeatDemandValue.class,
-            heatDemandValueFactory);
-
-    /* Reading in heat and active power time series */
-    Set<IndividualTimeSeries<HeatAndPValue>> heatAndActivePowerTimeSeries =
-        read(
-            colTypeToReadingData.get(ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND),
-            HeatAndPValue.class,
-            heatAndPValueFactory);
-
-    /* Reading in apparent power time series */
-    Set<IndividualTimeSeries<SValue>> apparentPowerTimeSeries =
-        read(colTypeToReadingData.get(ColumnScheme.APPARENT_POWER), SValue.class, sValueFactory);
-
-    /* Reading in active power time series */
-    Set<IndividualTimeSeries<PValue>> activePowerTimeSeries =
-        read(colTypeToReadingData.get(ColumnScheme.ACTIVE_POWER), PValue.class, pValueFactory);
-
-    return new TimeSeriesContainer(
-        energyPriceTimeSeries,
-        heatAndApparentPowerTimeSeries,
-        heatAndActivePowerTimeSeries,
-        heatTimeSeries,
-        apparentPowerTimeSeries,
-        activePowerTimeSeries);
   }
 
   @Override
@@ -216,55 +156,6 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
       logger.error("Error during reading of time series '" + metaInformation.getUuid() + "'.", e);
       return Optional.empty();
     }
-  }
-
-  /**
-   * Reads in time series of a specified class from given {@link TimeSeriesReadingData} utilising a
-   * provided {@link TimeBasedSimpleValueFactory}, except for weather data, which needs a special
-   * processing
-   *
-   * @param readingData Data needed for reading
-   * @param valueClass Class of the target value within the time series
-   * @param factory Factory to utilize
-   * @param <V> Type of the value
-   * @return A set of {@link IndividualTimeSeries}
-   */
-  private <V extends Value> Set<IndividualTimeSeries<V>> read(
-      Set<TimeSeriesReadingData> readingData,
-      Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
-    return readingData
-        .parallelStream()
-        .map(
-            data ->
-                buildIndividualTimeSeries(
-                    data,
-                    fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory)))
-        .collect(Collectors.toSet());
-  }
-
-  /**
-   * Builds an individual time series, by obtaining the single entries (with the help of {@code
-   * fieldToValueFunction} and putting everything together in the {@link IndividualTimeSeries}
-   * container.
-   *
-   * @param data Needed data to read in the content of the specific, underlying file
-   * @param fieldToValueFunction Function, that is able to transfer a mapping (from field to value)
-   *     onto a specific instance of the targeted entry class
-   * @param <V> Type of the {@link Value}, that will be contained in each time series, timely
-   *     located entry
-   * @return An {@link IndividualTimeSeries} with {@link TimeBasedValue} of type {@code V}.
-   */
-  private <V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries(
-      TimeSeriesReadingData data,
-      Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction) {
-    Set<TimeBasedValue<V>> timeBasedValues =
-        filterEmptyOptionals(
-                buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, data.getReader())
-                    .map(fieldToValueFunction))
-            .collect(Collectors.toSet());
-
-    return new IndividualTimeSeries<>(data.getUuid(), timeBasedValues);
   }
 
   /**

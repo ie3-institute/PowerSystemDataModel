@@ -222,7 +222,10 @@ public class CsvFileConnector implements DataConnector {
    * @param columnSchemes the column schemes to initialize readers for. If no scheme is given, all
    *     possible readers will be initialized.
    * @return A mapping from column type to respective readers
+   * @deprecated Don't use {@link TimeSeriesReadingData}, as it contains a reader, that might not be
+   *     closed
    */
+  @Deprecated
   public Map<ColumnScheme, Set<TimeSeriesReadingData>> initTimeSeriesReader(
       ColumnScheme... columnSchemes) {
     return getIndividualTimeSeriesFilePaths()
@@ -285,7 +288,10 @@ public class CsvFileConnector implements DataConnector {
    * @param columnSchemes the allowed column schemes. If no scheme is specified, all schemes are
    *     allowed.
    * @return An {@link Optional} to {@link TimeSeriesReadingData}
+   * @deprecated Don't use {@link TimeSeriesReadingData}, as it contains a reader, that might not be
+   *     closed
    */
+  @Deprecated
   private Optional<TimeSeriesReadingData> buildReadingData(
       String filePathString, ColumnScheme... columnSchemes) {
     try {
@@ -400,7 +406,12 @@ public class CsvFileConnector implements DataConnector {
             });
   }
 
-  /** Class to bundle all information, that are necessary to read a single time series */
+  /**
+   * Class to bundle all information, that are necessary to read a single time series
+   *
+   * @deprecated Use the {@link CsvIndividualTimeSeriesMetaInformation} and build reader on demand
+   */
+  @Deprecated
   public static class TimeSeriesReadingData {
     private final UUID uuid;
     private final ColumnScheme columnScheme;

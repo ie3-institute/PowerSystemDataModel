@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.models.timeseries.TimeSeriesContainer;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import java.util.Optional;
@@ -17,14 +16,6 @@ import java.util.UUID;
  * model
  */
 public interface TimeSeriesSource extends DataSource {
-  /**
-   * Acquire all available time series
-   *
-   * @return A container with all relevant time series
-   */
-  @Deprecated
-  TimeSeriesContainer getTimeSeries();
-
   /**
    * Get the time series for the model denoted by its UUID
    *
