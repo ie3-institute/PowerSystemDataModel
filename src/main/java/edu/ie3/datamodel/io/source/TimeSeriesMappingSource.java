@@ -29,7 +29,7 @@ public interface TimeSeriesMappingSource {
    * @param modelIdentifier Identifier of the model
    * @return An {@link Optional} to the time series identifier
    */
-  default Optional<UUID> getTimeSeries(UUID modelIdentifier) {
+  default Optional<UUID> getTimeSeriesUuid(UUID modelIdentifier) {
     return Optional.ofNullable(getMapping().get(modelIdentifier));
   }
 

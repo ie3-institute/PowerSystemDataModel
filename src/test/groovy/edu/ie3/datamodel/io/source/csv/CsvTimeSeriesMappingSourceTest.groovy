@@ -42,7 +42,7 @@ class CsvTimeSeriesMappingSourceTest extends Specification implements CsvTestDat
 		def modelUuid = UUID.fromString("60b9a3da-e56c-40ff-ace7-8060cea84baf")
 
 		when:
-		def actual = source.getTimeSeries(modelUuid)
+		def actual = source.getTimeSeriesUuid(modelUuid)
 
 		then:
 		!actual.present
@@ -54,7 +54,7 @@ class CsvTimeSeriesMappingSourceTest extends Specification implements CsvTestDat
 		def expectedUuid = UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26")
 
 		when:
-		def actual = source.getTimeSeries(modelUuid)
+		def actual = source.getTimeSeriesUuid(modelUuid)
 
 		then:
 		actual.present
