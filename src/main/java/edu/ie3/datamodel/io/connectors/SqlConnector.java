@@ -104,7 +104,7 @@ public class SqlConnector implements DataConnector {
   @Override
   public void shutdown() {
     try {
-      connection.close();
+      if (Objects.nonNull(connection)) connection.close();
     } catch (SQLException throwables) {
       log.error("Unable to close connection '{}' during shutdown.", connection, throwables);
     }
