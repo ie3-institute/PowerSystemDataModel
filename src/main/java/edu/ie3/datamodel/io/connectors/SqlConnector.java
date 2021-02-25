@@ -103,8 +103,11 @@ public class SqlConnector implements DataConnector {
 
   @Override
   public void shutdown() {
-    // Nothing needs to be closed or shutdown, as we use short-lived sessions,
-    // that are auto-closable and wrapped in a try-with-resources for every query.
+    try {
+      connection.close();
+    } catch (SQLException throwables) {
+      log.error("Unable to close connection '{}' during shutdown.", connection, throwables);
+    }
   }
 
   /**
