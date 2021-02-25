@@ -22,6 +22,7 @@ public class SqlConnector implements DataConnector {
 
   private final String jdbcUrl;
   private final Properties connectionProps;
+  private Connection connection;
 
   /**
    * Initializes a SqlConnector with the given JDBC url, username, password and time util
@@ -73,23 +74,40 @@ public class SqlConnector implements DataConnector {
   }
 
   /**
-   * Establishes and returns a database connection
+   * Establishes and returns a new database connection
    *
    * @return the connection object
    * @throws SQLException if the connection could not be established
    */
   public Connection getConnection() throws SQLException {
-    try {
-      return DriverManager.getConnection(jdbcUrl, connectionProps);
-    } catch (SQLException e) {
-      throw new SQLException("Could not establish connection: ", e);
-    }
+    return getConnection(false);
+  }
+
+  /**
+   * Establishes and returns a database connection
+   *
+   * @param reuseConnection should the connection be used again, if it is still valid? If not, a new
+   *     connection will be established
+   * @return the connection object
+   * @throws SQLException if the connection could not be established
+   */
+  public Connection getConnection(boolean reuseConnection) throws SQLException {
+    if (!reuseConnection || connection == null || connection.isClosed())
+      try {
+        connection = DriverManager.getConnection(jdbcUrl, connectionProps);
+      } catch (SQLException e) {
+        throw new SQLException("Could not establish connection: ", e);
+      }
+    return connection;
   }
 
   @Override
   public void shutdown() {
-    // Nothing needs to be closed or shutdown, as we use short-lived sessions,
-    // that are auto-closable and wrapped in a try-with-resources for every query.
+    try {
+      if (Objects.nonNull(connection)) connection.close();
+    } catch (SQLException throwables) {
+      log.error("Unable to close connection '{}' during shutdown.", connection, throwables);
+    }
   }
 
   /**
