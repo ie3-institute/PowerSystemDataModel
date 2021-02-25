@@ -63,7 +63,7 @@ class SqlConnectorIT extends Specification {
 
 		then:
 		Objects.nonNull(actual)
-		!actual.isClosed()
+		!actual.closed
 	}
 
 	def "A SQL connector does not reuse the existing connection, if asked to do so."() {
@@ -146,7 +146,7 @@ class SqlConnectorIT extends Specification {
 	def "A SQL connector shuts down correctly, if a connection was opened"() {
 		given:
 		def testConnector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-		testConnector.getConnection()
+		testConnector.connection
 
 		when:
 		testConnector.shutdown()
