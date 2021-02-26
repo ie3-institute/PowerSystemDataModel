@@ -18,8 +18,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /**
@@ -180,7 +180,7 @@ public class ChargingPointTypeUtils {
       // try to parse sRated + currentType
       // regex limits to digits -> no need to catch any NumberFormatException ||
       // NullPointerException
-      final Quantity<Power> sRated =
+      final ComparableQuantity<Power> sRated =
           Quantities.getQuantity(Double.parseDouble(matcher.group(2)), StandardUnits.S_RATED);
 
       // regex limits to AC|DC -> parsing must always succeed, exception for safety reasons only
