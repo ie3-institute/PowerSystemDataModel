@@ -11,13 +11,14 @@ import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.TransformerInput;
 import edu.ie3.datamodel.models.input.container.SubGridContainer;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Defines gates between {@link SubGridContainer}s and serves as edge definition for {@link
  * SubGridTopologyGraph}
  */
-public class SubGridGate {
+public class SubGridGate implements Serializable {
   private final TransformerInput link;
   private final NodeInput superiorNode;
   private final NodeInput inferiorNode;

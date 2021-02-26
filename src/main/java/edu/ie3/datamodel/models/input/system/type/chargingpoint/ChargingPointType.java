@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.system.type.chargingpoint;
 
 import edu.ie3.datamodel.models.ElectricCurrentType;
 import edu.ie3.util.quantities.PowerSystemUnits;
+import java.io.Serializable;
 import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Power;
@@ -19,7 +20,7 @@ import javax.measure.quantity.Power;
  * @version 0.1
  * @since 25.07.20
  */
-public class ChargingPointType {
+public class ChargingPointType implements Serializable {
 
   private final String id;
   private final Quantity<Power> sRated;

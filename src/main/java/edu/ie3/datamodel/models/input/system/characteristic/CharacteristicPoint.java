@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import java.io.Serializable;
 import java.util.Locale;
 import java.util.Objects;
 import javax.measure.Quantity;
@@ -15,7 +16,7 @@ import tech.units.indriya.quantity.Quantities;
 
 /** Class to describe one point of a given {@link CharacteristicInput} */
 public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
-    implements Comparable<CharacteristicPoint<A, O>> {
+    implements Comparable<CharacteristicPoint<A, O>>, Serializable {
   public static final String REQUIRED_FORMAT = "(%d,%d)";
 
   private final ComparableQuantity<A> x;

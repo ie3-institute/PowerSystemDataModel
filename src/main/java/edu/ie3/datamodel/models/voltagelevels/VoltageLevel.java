@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.voltagelevels;
 
+import java.io.Serializable;
 import javax.measure.quantity.ElectricPotential;
 import tech.units.indriya.ComparableQuantity;
 
@@ -13,7 +14,7 @@ import tech.units.indriya.ComparableQuantity;
  * covered. Don't mix it up with "Netzebenen" in D-A-CH area, which also cover the transformation
  * levels.
  */
-public class VoltageLevel {
+public class VoltageLevel implements Serializable {
   protected final String id;
   protected final ComparableQuantity<ElectricPotential> nominalVoltage;
 
