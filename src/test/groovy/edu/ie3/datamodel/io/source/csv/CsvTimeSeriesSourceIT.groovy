@@ -50,30 +50,6 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 		actual.entries.size() == 2
 	}
 
-	def "A csv time series source returns empty optional, if there is no time series for a given model"() {
-		given:
-		def modelUuid = UUID.fromString("da01c973-46d0-458d-8bd3-c06831208e19")
-
-		when:
-		def actual = source.getTimeSeriesUuid(modelUuid)
-
-		then:
-		!actual.present
-	}
-
-	def "A csv time series source is able to get correct UUID mapping for a given model"() {
-		given:
-		def modelUuid = UUID.fromString("c7ebcc6c-55fc-479b-aa6b-6fa82ccac6b8")
-		def expected = UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26")
-
-		when:
-		def actual = source.getTimeSeriesUuid(modelUuid)
-
-		then:
-		actual.present
-		actual.get() == expected
-	}
-
 	def "A csv time series source returns empty optional on attempt to read time series with malformed meta information"() {
 		given:
 		def metaInformation = new IndividualTimeSeriesMetaInformation(UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26"), ColumnScheme.APPARENT_POWER)
