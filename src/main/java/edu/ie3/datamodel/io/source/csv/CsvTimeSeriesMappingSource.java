@@ -6,10 +6,12 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.csv.FileNamingStrategy;
+import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -39,5 +41,11 @@ public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSer
   @Override
   public Map<UUID, UUID> getMapping() {
     return mapping;
+  }
+
+  @Override
+  public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
+      UUID timeSeriesUuid) {
+    return connector.getIndividualTimeSeriesMetaInformation(timeSeriesUuid);
   }
 }

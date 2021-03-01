@@ -80,12 +80,6 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
   }
 
   @Override
-  public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
-      UUID timeSeriesUuid) {
-    return connector.getIndividualTimeSeriesMetaInformation(timeSeriesUuid);
-  }
-
-  @Override
   public Optional<IndividualTimeSeries<? extends Value>> getTimeSeries(
       IndividualTimeSeriesMetaInformation metaInformation) {
     if (!CsvFileConnector.CsvIndividualTimeSeriesMetaInformation.class.isAssignableFrom(

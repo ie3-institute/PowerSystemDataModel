@@ -43,14 +43,6 @@ public interface TimeSeriesSource extends DataSource {
   Optional<UUID> getTimeSeriesUuid(UUID modelUuid);
 
   /**
-   * Get an option on the given time series meta information
-   *
-   * @param timeSeriesUuid Unique identifier of the time series in question
-   * @return An Option onto the meta information
-   */
-  Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(UUID timeSeriesUuid);
-
-  /**
    * Obtain time series by provided meta information
    *
    * @param metaInformation Meta information of the time series to obtain
