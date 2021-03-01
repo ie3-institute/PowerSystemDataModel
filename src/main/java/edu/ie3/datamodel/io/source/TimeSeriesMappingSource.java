@@ -16,7 +16,7 @@ import java.util.UUID;
  * This interface describes basic function to handle mapping between models and their respective
  * time series
  */
-public interface TimeSeriesMappingSource {
+public interface TimeSeriesMappingSource extends DataSource {
   /**
    * Get a mapping from model {@link UUID} to the time series {@link UUID}
    *
