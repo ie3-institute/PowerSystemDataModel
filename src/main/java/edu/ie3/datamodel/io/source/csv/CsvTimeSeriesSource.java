@@ -33,6 +33,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    * @param folderPath path to the folder holding the time series files
    * @param fileNamingStrategy strategy for the naming of time series files
    * @param metaInformation The given meta information
+   * @throws SourceException If the given meta information are not supported
    * @return The source
    */
   public static CsvTimeSeriesSource<? extends Value> getSource(
