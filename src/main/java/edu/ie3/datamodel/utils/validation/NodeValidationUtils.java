@@ -8,8 +8,11 @@ package edu.ie3.datamodel.utils.validation;
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.UnsafeEntityException;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.Units;
 
 public class NodeValidationUtils extends ValidationUtils {
 
@@ -35,9 +38,9 @@ public class NodeValidationUtils extends ValidationUtils {
     } catch (VoltageLevelException e) {
       throw new InvalidEntityException("Node has invalid voltage level", node);
     }
-    if (node.getvTarget().getValue().doubleValue() <= 0d)
+    if (node.getvTarget().isLessThanOrEqualTo(Quantities.getQuantity(0, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)))
       throw new InvalidEntityException("Target voltage (p.u.) is not a positive value", node);
-    else if (node.getvTarget().getValue().doubleValue() > 2d)
+    else if (node.getvTarget().isGreaterThan(Quantities.getQuantity(2, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)))
       throw new UnsafeEntityException("Target voltage (p.u.) might be too high", node);
     if (node.getSubnet() <= 0)
       throw new InvalidEntityException("Subnet can't be zero or negative", node);
@@ -56,7 +59,7 @@ public class NodeValidationUtils extends ValidationUtils {
     if (voltageLevel.getNominalVoltage() == null)
       throw new VoltageLevelException(
           "The nominal voltage of voltage level " + voltageLevel + " is null");
-    if (voltageLevel.getNominalVoltage().getValue().doubleValue() <= 0d)
+    if (voltageLevel.getNominalVoltage().isLessThanOrEqualTo(Quantities.getQuantity(0, Units.VOLT)))
       throw new VoltageLevelException(
           "The nominal voltage of voltage level " + voltageLevel + " must be positive!");
   }

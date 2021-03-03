@@ -42,7 +42,6 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     return Collections.unmodifiableList(allEntities);
   }
 
-  @Override
   public void validate() {
     // sanity check to ensure distinct UUIDs
     Optional<String> exceptionString =

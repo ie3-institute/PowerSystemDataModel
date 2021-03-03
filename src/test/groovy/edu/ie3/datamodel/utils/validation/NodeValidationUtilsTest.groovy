@@ -55,7 +55,6 @@ class NodeValidationUtilsTest extends Specification {
 				new HashSet<>(Arrays.asList("zero volt")),
 				new RightOpenInterval<>(
 				Quantities.getQuantity(380d, KILOVOLT), Quantities.getQuantity(560d, KILOVOLT)))).build()																	|| new InvalidEntityException("Node has invalid voltage level", invalidNode)
-		//GridTestData.nodeA.copy().vTarget(null).build()								|| new NullPointerException("Target voltage (p.u.) is null")
 		GridTestData.nodeA.copy().subnet(0).build()									|| new InvalidEntityException("Subnet can't be zero or negative", invalidNode)
 		GridTestData.nodeA.copy().geoPosition(null).build()							|| new InvalidEntityException("GeoPosition of node is null", invalidNode)
 		GridTestData.nodeA.copy().vTarget(Quantities.getQuantity(0d, PU)).build()   || new InvalidEntityException("Target voltage (p.u.) is not a positive value", invalidNode)

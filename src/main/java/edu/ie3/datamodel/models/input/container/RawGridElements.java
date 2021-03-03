@@ -160,7 +160,6 @@ public class RawGridElements implements InputContainer<AssetInput> {
     return Collections.unmodifiableList(allEntities);
   }
 
-  @Override
   public void validate() {
     GridContainerValidationUtils.checkRawGridElements(this);
   }

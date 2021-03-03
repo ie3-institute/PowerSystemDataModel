@@ -33,16 +33,4 @@ class NodeInputTest extends Specification {
 		}
 	}
 
-	/*
-	 def "Validation of values when creating an instance of NodeInput should work as expected"() {
-	 given:
-	 def node = GridTestData.nodeB.copy().subnet(1)
-	 .build()
-	 when:
-	 node.validate()
-	 then:
-	 InvalidEntityException name = thrown()
-	 System.out.println()
-	 }
-	 */
 }

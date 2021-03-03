@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.utils
 
+import edu.ie3.util.quantities.QuantityUtil
+
 import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 import edu.ie3.test.common.GridTestData
@@ -140,30 +142,8 @@ class GridAndGeoUtilsTest extends Specification {
 		ComparableQuantity<Length> y = GridAndGeoUtils.totalLengthOfLineString(lineString)
 
 		then:
-		y.isGreaterThanOrEqualTo(Quantities.getQuantity(3463.37 - 10, KILOMETRE))
-		y.isLessThanOrEqualTo(Quantities.getQuantity(3463.37 + 10, KILOMETRE))
-		// Value from Google Maps, error range of +-10
+		QuantityUtil.isEquivalentAbs(y, Quantities.getQuantity(3463.37, KILOMETRE), 10)
+		// Value from Google Maps, error range of +-10 km
 	}
 
-	def "TotalLengthOfLineString correctly calculates the total length of lineString correctly2"() {
-		given:
-		LineString lineString = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createLineString([
-			new Coordinate(51.48386110716543, 7.498165075275441, 0),
-			new Coordinate(3.4884439989616043, 137.87593281832065, 0)] as Coordinate[])
-
-		when:
-		ComparableQuantity<Length> y = GridAndGeoUtils.totalLengthOfLineString(lineString)
-
-		then:
-		y.isGreaterThanOrEqualTo(Quantities.getQuantity(12323.99 - 15, KILOMETRE))
-		y.isLessThanOrEqualTo(Quantities.getQuantity(12323.99 + 15, KILOMETRE))
-		// Value from Google Maps, error range of +-15
-		// TODO NSteffan: Let check -> I use calcHaversine with (X1, Y1, X2, Y2), in other places it is used with (Y1, X1, Y2, X2)
-		//  -> what is latitude, what is longitude?
-		//  Luftlinie.org says my version is right, but with small error
-		//  https://www.luftlinie.org/51.48386110716543,%207.498165075275441/3.4884439989616043,137.87593281832065
-		//  Luftlinie.org says 12.323.99 km
-		//  with (Y1, X1, Y2, X2) it says 12.675.25 -> wrong
-		//  with (X1, Y1, X2, Y2) it says 12.333.92 -> right
-	}
 }

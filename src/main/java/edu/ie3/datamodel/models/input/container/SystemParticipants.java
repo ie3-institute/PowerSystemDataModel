@@ -209,7 +209,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return Collections.unmodifiableList(allEntities);
   }
 
-  @Override
   public void validate() {
     throw new UnsupportedOperationException(
         "Currently there are no tests for system participants in ValidationUtils.");

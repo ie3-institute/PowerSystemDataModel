@@ -95,7 +95,6 @@ public class GraphicElements implements InputContainer<GraphicInput> {
     return Collections.unmodifiableList(allEntities);
   }
 
-  @Override
   public void validate() {
     throw new UnsupportedOperationException(
         "Graphic elements cannot be validated without raw grid elements.");

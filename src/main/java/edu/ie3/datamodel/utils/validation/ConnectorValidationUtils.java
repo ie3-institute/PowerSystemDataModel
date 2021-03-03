@@ -13,6 +13,10 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.utils.GridAndGeoUtils;
+import edu.ie3.util.quantities.QuantityUtil;
+import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.Units;
+
 import javax.measure.Quantity;
 
 public class ConnectorValidationUtils extends ValidationUtils {
@@ -22,11 +26,18 @@ public class ConnectorValidationUtils extends ValidationUtils {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
-  private static String notImplementedString(Object obj) {
+  protected static String notImplementedString(Object obj) {
     return "Cannot validate object of class '"
         + obj.getClass().getSimpleName()
         + "', as no routine is implemented.";
   }
+
+  // allowed deviation of coordinates in degree for line position check
+  final private static double allowedCoordinateError = 0.000001d;
+  // allowed deviation of length in meters for line length
+  final private static double allowedLengthError = 1d;
+  // allowed deviation of voltage in kV for transformer checks
+  final private static double allowedVoltageError = 1d;
 
   /**
    * Validates a connector if: <br>
@@ -37,7 +48,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param connector Connector to validate
    */
-  public static void check(ConnectorInput connector) {
+  protected static void check(ConnectorInput connector) {
     checkNonNull(connector, "a connector");
     connectsDifferentNodes(connector);
 
@@ -65,7 +76,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param line Line to validate
    */
-  public static void checkLine(LineInput line) {
+  protected static void checkLine(LineInput line) {
     checkLineType(line.getType());
     connectsNodesInDifferentSubnets(line, false);
     connectsNodesWithDifferentVoltageLevels(line, false);
@@ -86,7 +97,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param lineType Line type to validate
    */
-  public static void checkLineType(LineTypeInput lineType) {
+  protected static void checkLineType(LineTypeInput lineType) {
     checkNonNull(lineType, "a line type");
     detectNegativeQuantities(new Quantity<?>[] {lineType.getB(), lineType.getG()}, lineType);
     detectZeroOrNegativeQuantities(
@@ -107,7 +118,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer2W Transformer2W to validate
    */
-  public static void checkTransformer2W(Transformer2WInput transformer2W) {
+  protected static void checkTransformer2W(Transformer2WInput transformer2W) {
     checkTransformer2WType(transformer2W.getType());
     checkIfTapPositionIsWithinBounds(transformer2W);
     connectsNodesWithDifferentVoltageLevels(transformer2W, true);
@@ -132,11 +143,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer2WType Transformer2W type to validate
    */
-  public static void checkTransformer2WType(Transformer2WTypeInput transformer2WType) {
+  protected static void checkTransformer2WType(Transformer2WTypeInput transformer2WType) {
     checkNonNull(transformer2WType, "a two winding transformer type");
     detectNegativeQuantities(
         new Quantity<?>[] {
-          transformer2WType.getgM(), transformer2WType.getbM(), transformer2WType.getdPhi()
+          transformer2WType.getgM(), transformer2WType.getbM(), transformer2WType.getdPhi(), transformer2WType.getrSc()
         },
         transformer2WType);
     detectZeroOrNegativeQuantities(
@@ -144,8 +155,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
           transformer2WType.getsRated(),
           transformer2WType.getvRatedA(),
           transformer2WType.getvRatedB(),
-          transformer2WType.getrSc(),
-          transformer2WType.getxSc(),
+          transformer2WType.getxSc()
         },
         transformer2WType);
     checkVoltageMagnitudeChangePerTapPosition(transformer2WType);
@@ -303,21 +313,20 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @param line LineInput to validate
    */
   private static void coordinatesOfLineEqualCoordinatesOfNodes(LineInput line) {
-    double allowedError = 0.000001;
     if (!(line.getGeoPosition()
             .getStartPoint()
-            .isWithinDistance(line.getNodeA().getGeoPosition(), allowedError)
+            .isWithinDistance(line.getNodeA().getGeoPosition(), allowedCoordinateError)
         || line.getGeoPosition()
             .getEndPoint()
-            .isWithinDistance(line.getNodeA().getGeoPosition(), allowedError)))
+            .isWithinDistance(line.getNodeA().getGeoPosition(), allowedCoordinateError)))
       throw new InvalidEntityException(
           "Coordinates of start and end point do not match coordinates of connected nodes", line);
     if (!(line.getGeoPosition()
             .getStartPoint()
-            .isWithinDistance(line.getNodeB().getGeoPosition(), allowedError)
+            .isWithinDistance(line.getNodeB().getGeoPosition(), allowedCoordinateError)
         || line.getGeoPosition()
             .getEndPoint()
-            .isWithinDistance(line.getNodeB().getGeoPosition(), allowedError)))
+            .isWithinDistance(line.getNodeB().getGeoPosition(), allowedCoordinateError)))
       throw new InvalidEntityException(
           "Coordinates of start and end point do not match coordinates of connected nodes", line);
   }
@@ -331,10 +340,9 @@ public class ConnectorValidationUtils extends ValidationUtils {
     // only if not geo positions of both nodes are dummy values
     if ((line.getNodeA().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION
             || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION)
-        && (!line.getLength()
-            .isEquivalentTo(GridAndGeoUtils.totalLengthOfLineString(line.getGeoPosition()))))
+            && !QuantityUtil.isEquivalentAbs(line.getLength(), GridAndGeoUtils.totalLengthOfLineString(line.getGeoPosition()), allowedLengthError))
       throw new InvalidEntityException(
-          "Line length does not equal calculated distances between points building the line", line);
+              "Line length does not equal calculated distances between points building the line", line);
   }
 
   /**
@@ -370,14 +378,12 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   private static void ratedVoltageOfTransformer2WMatchesVoltagesOfNodes(
       Transformer2WInput transformer2W) {
-    if (!transformer2W
+    if (!QuantityUtil.isEquivalentAbs(transformer2W
             .getType()
-            .getvRatedA()
-            .equals(transformer2W.getNodeA().getVoltLvl().getNominalVoltage())
-        || !transformer2W
+            .getvRatedA(), transformer2W.getNodeA().getVoltLvl().getNominalVoltage(), allowedVoltageError)
+        || !QuantityUtil.isEquivalentAbs(transformer2W
             .getType()
-            .getvRatedB()
-            .equals(transformer2W.getNodeB().getVoltLvl().getNominalVoltage()))
+            .getvRatedB(), transformer2W.getNodeB().getVoltLvl().getNominalVoltage(), allowedVoltageError))
       throw new InvalidEntityException(
           "Rated voltages of "
               + transformer2W.getClass().getSimpleName()
@@ -392,18 +398,16 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   private static void ratedVoltageOfTransformer3WMatchesVoltagesOfNodes(
       Transformer3WInput transformer3W) {
-    if (!transformer3W
+    if (!QuantityUtil.isEquivalentAbs(transformer3W
             .getType()
-            .getvRatedA()
-            .equals(transformer3W.getNodeA().getVoltLvl().getNominalVoltage())
-        || !transformer3W
+            .getvRatedA(), transformer3W.getNodeA().getVoltLvl().getNominalVoltage(), allowedVoltageError)
+        || !QuantityUtil.isEquivalentAbs(transformer3W
             .getType()
-            .getvRatedB()
-            .equals(transformer3W.getNodeB().getVoltLvl().getNominalVoltage())
-        || !transformer3W
+            .getvRatedB(), transformer3W.getNodeB().getVoltLvl().getNominalVoltage(), allowedVoltageError)
+        || !QuantityUtil.isEquivalentAbs(transformer3W
             .getType()
-            .getvRatedC()
-            .equals(transformer3W.getNodeC().getVoltLvl().getNominalVoltage()))
+            .getvRatedC(),transformer3W.getNodeC().getVoltLvl().getNominalVoltage(), allowedVoltageError)
+        )
       throw new InvalidEntityException(
           "Rated voltages of "
               + transformer3W.getClass().getSimpleName()
@@ -419,8 +423,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   private static void checkVoltageMagnitudeChangePerTapPosition(
       Transformer2WTypeInput transformer2WType) {
-    if (transformer2WType.getdV().getValue().doubleValue() <= 0d
-        || transformer2WType.getdV().getValue().doubleValue() > 100d)
+    if (transformer2WType.getdV().isLessThan(Quantities.getQuantity(0d, Units.PERCENT))
+        || transformer2WType.getdV().isGreaterThan(Quantities.getQuantity(100d, Units.PERCENT)))
       throw new InvalidEntityException(
           "Voltage magnitude increase per tap position must be between 0% and 100%",
           transformer2WType);
@@ -434,8 +438,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   private static void checkVoltageMagnitudeChangePerTapPosition(
       Transformer3WTypeInput transformer3WType) {
-    if (transformer3WType.getdV().getValue().doubleValue() <= 0d
-        || transformer3WType.getdV().getValue().doubleValue() > 100d)
+    if (transformer3WType.getdV().isLessThan(Quantities.getQuantity(0d, Units.PERCENT))
+        || transformer3WType.getdV().isGreaterThan(Quantities.getQuantity(100d, Units.PERCENT)))
       throw new InvalidEntityException(
           "Voltage magnitude increase per tap position must be between 0% and 100%",
           transformer3WType);
