@@ -189,29 +189,29 @@ Repetitive Time Series
 To be as flexible, as possible, the actual content of the time series is given as children of the :code:`Value` class.
 The following different values are available:
 
-+--------------------------+------------------------------------------------------------------+
-| Value Class              | Purpose                                                          |
-+==========================+==================================================================+
-| :code:`PValue`           | Electrical active power                                          |
-+--------------------------+------------------------------------------------------------------+
-| :code:`SValue`           | Electrical active and reactive power                             |
-+--------------------------+------------------------------------------------------------------+
-| :code:`HeatAndPValue`    | | Combination of thermal power (e.g. in kW)                      |
-|                          | | and electrical active power (e.g. in kW)                       |
-+--------------------------+------------------------------------------------------------------+
-| :code:`HeatAndSValue`    | | Combination of thermal power (e.g. in kW)                      |
-|                          | | and electrical active and reactive power (e.g. in kW and kVAr) |
-+--------------------------+------------------------------------------------------------------+
-| :code:`EnergyPriceValue` | Wholesale market price (e.g. in € / MWh)                         |
-+--------------------------+------------------------------------------------------------------+
-| :code:`IrradiationValue` | Combination of diffuse and direct solar irradiation              |
-+--------------------------+------------------------------------------------------------------+
-| :code:`TemperatureValue` | Temperature information                                          |
-+--------------------------+------------------------------------------------------------------+
-| :code:`WindValue`        | Combination of wind direction and wind velocity                  |
-+--------------------------+------------------------------------------------------------------+
-| :code:`WeatherValue`     | Combination of irradiation, temperature and wind information     |
-+--------------------------+------------------------------------------------------------------+
++-------------------------------+------------------------------------------------------------------+
+| Value Class                   | Purpose                                                          |
++===============================+==================================================================+
+| :code:`PValue`                | Electrical active power                                          |
++-------------------------------+------------------------------------------------------------------+
+| :code:`SValue`                | Electrical active and reactive power                             |
++-------------------------------+------------------------------------------------------------------+
+| :code:`HeatAndPValue`         | | Combination of thermal power (e.g. in kW)                      |
+|                               | | and electrical active power (e.g. in kW)                       |
++-------------------------------+------------------------------------------------------------------+
+| :code:`HeatAndSValue`         | | Combination of thermal power (e.g. in kW)                      |
+|                               | | and electrical active and reactive power (e.g. in kW and kVAr) |
++-------------------------------+------------------------------------------------------------------+
+| :code:`EnergyPriceValue`      | Wholesale market price (e.g. in € / MWh)                         |
++-------------------------------+------------------------------------------------------------------+
+| :code:`SolarIrradianceValue`  | Combination of diffuse and direct solar irradiance               |
++-------------------------------+------------------------------------------------------------------+
+| :code:`TemperatureValue`      | Temperature information                                          |
++-------------------------------+------------------------------------------------------------------+
+| :code:`WindValue`             | Combination of wind direction and wind velocity                  |
++-------------------------------+------------------------------------------------------------------+
+| :code:`WeatherValue`          | Combination of irradiance, temperature and wind information      |
++-------------------------------+------------------------------------------------------------------+
 
 ***********
 Validation Utils
