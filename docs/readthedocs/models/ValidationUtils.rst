@@ -14,7 +14,7 @@ What is checked?
 
 How does it work?
 ^^^^^^^^^^^^^^^^^
-- The method :code:`ValidationUtils.check()` is the only method that should be called by the user.
+- The method :code:`ValidationUtils.check(Object)` is the only method that should be called by the user.
 - This check method identifies the object class and forwards it to a specific check method for the given object
 - The overall structure of the ValidationUtils methods follows a cascading scheme, orientated along the class tree
 - Example: A :code:`LineInput lineInput` should be checked

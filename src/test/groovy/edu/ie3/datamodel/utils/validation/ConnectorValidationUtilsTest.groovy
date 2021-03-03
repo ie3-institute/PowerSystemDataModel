@@ -44,8 +44,8 @@ class ConnectorValidationUtilsTest extends Specification {
 		noExceptionThrown()
 	}
 
-	private static final Point testCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))
-	private static final LineInput invalidLineLengthNotMatchingCoordinateDistances = new LineInput(
+	defPoint testCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))
+	def LineInput invalidLineLengthNotMatchingCoordinateDistances = new LineInput(
 	UUID.fromString("92ec3bcf-1777-4d38-af67-0bf8c9fa73c7"),
 	"test_line_FtoG",
 	GridTestData.profBroccoli,

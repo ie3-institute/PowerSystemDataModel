@@ -195,7 +195,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * @param nodes Permissible, already known nodes
    */
   private static void checkNodeAvailability(ConnectorInput connector, Collection<NodeInput> nodes) {
-    if (!nodes.contains(connector.getNodeA()) || !nodes.contains(connector.getNodeB()))
+    if (!nodes.containsAll(Arrays.asList(connector.getNodeA(), connector.getNodeB())))
       throw getMissingNodeException(connector);
   }
 
@@ -208,9 +208,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
    */
   private static void checkNodeAvailability(
       Transformer3WInput transformer, Collection<NodeInput> nodes) {
-    if (!nodes.contains(transformer.getNodeA())
-        || !nodes.contains(transformer.getNodeB())
-        || !nodes.contains(transformer.getNodeC())) throw getMissingNodeException(transformer);
+    if (!nodes.containsAll(Arrays.asList(transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()))) throw getMissingNodeException(transformer);
   }
 
   /**
