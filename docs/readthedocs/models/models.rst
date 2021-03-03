@@ -218,8 +218,5 @@ Validation Utils
 ***********
 The methods in ValidationUtils can be used to check that created input objects are valid, meaning their parameters have valid values and they are correctly connected.
 
-.. toctree::
-   :maxdepth: 1
-
-   ValidationUtils
+.. include:: ValidationUtils.rst
 
