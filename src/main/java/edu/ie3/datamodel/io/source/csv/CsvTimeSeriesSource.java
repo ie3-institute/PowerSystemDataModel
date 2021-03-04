@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 /** Source that is capable of providing information around time series from csv files. */
 public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
     implements TimeSeriesSource<V> {
+  private final IndividualTimeSeries<V> timeSeries;
+
   /**
    * Factory method to build a source from given meta information
    *
@@ -114,8 +116,6 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
             "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
     }
   }
-
-  IndividualTimeSeries<V> timeSeries;
 
   /**
    * Initializes a new CsvTimeSeriesSource

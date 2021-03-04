@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.value.HeatAndPValue
-import edu.ie3.datamodel.models.value.SValue
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import spock.lang.Shared
@@ -26,8 +25,8 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 	TimeBasedSimpleValueFactory<HeatAndPValue> factory
 
 	def setup() {
-		factory = new TimeBasedSimpleValueFactory<>(HeatAndPValue.class)
-		source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7"), "its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7", HeatAndPValue.class, factory)
+		factory = new TimeBasedSimpleValueFactory<>(HeatAndPValue)
+		source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7"), "its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7", HeatAndPValue, factory)
 	}
 
 	def "A csv time series source throw an Exception, if the file cannot be found"() {
@@ -58,7 +57,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
 	def "Construction a csv time series source with malicious parameters, leads to IllegalArgumentException"() {
 		when:
-		new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("fbc59b5b-9307-4fb4-a406-c1f08f26fee5"), "file/not/found", HeatAndPValue.class, factory)
+		new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("fbc59b5b-9307-4fb4-a406-c1f08f26fee5"), "file/not/found", HeatAndPValue, factory)
 
 		then:
 		def e = thrown(IllegalArgumentException)

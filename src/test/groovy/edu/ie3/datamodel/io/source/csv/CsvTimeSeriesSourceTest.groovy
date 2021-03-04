@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.datamodel.models.StandardUnits.ENERGY_PRICE
+
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.CsvFileConnector
 import edu.ie3.datamodel.io.csv.FileNamingStrategy
@@ -21,8 +23,6 @@ import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
 
-import static edu.ie3.datamodel.models.StandardUnits.ENERGY_PRICE
-
 class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "The csv time series source is able to build time based values from simple data"() {
@@ -31,7 +31,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(5) >> defaultCoordinate
 		def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-		def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1", EnergyPriceValue.class, factory)
+		def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1", EnergyPriceValue, factory)
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
 		def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
 		def fieldToValue = [
@@ -74,7 +74,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 
 		then:
 		actual.timeSeries.entries.size() == amountOfEntries
-		actual.timeSeries.entries[0].getValue().class == valueClass
+		actual.timeSeries.entries[0].value.class == valueClass
 
 		where:
 		uuid                                                    | columnScheme                                | path                                           || amountOfEntries | valueClass
