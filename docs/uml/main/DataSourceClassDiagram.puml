@@ -88,11 +88,35 @@ interface WeatherSource {
 }
 DataSource <|-- WeatherSource
 
-interface WholeSalePriceSource {
-    {abstract} IndividualTimeSeries<EnergyPriceValue> getWholesalePrice(ClosedInterval<ZonedDateTime>)
-    {abstract} IndividualTimeSeries<EnergyPriceValue> getWholesalePrice(ZonedDateTime)
+interface TimeSeriesMappingSource {
+    {abstract} Map<UUID, UUID> getMapping()
+    Optional<UUID> getTimeSeriesUuid(UUID)
+    {abstract} Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(UUID)
 }
-DataSource <|-- WholeSalePriceSource
+DataSource <|-- TimeSeriesMappingSource
+
+class CsvTimeSeriesMappingSource {
+    - TimeSeriesMappingFactory mappingFactory
+    - Map<UUID, UUID> mapping
+}
+CsvTimeSeriesMappingSource <|.. TimeSeriesMappingSource
+CsvTimeSeriesMappingSource <|-- CsvDataSource
+
+interface TimeSeriesSource<V extends Value> {
+    {abstract} IndividualTimeSeries<V> getTimeSeries()
+    {abstract} IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime>))
+    {abstract} Optional<V> getValue(ZonedDateTime)
+}
+TimeSeriesSource <|-- DataSource
+
+class CsvTimeSeriesSource<V extends Value> {
+    - IndividualTimeSeries<V> timeSeries
+    + {static} CsvTimeSeriesSource<? extends Value> getSource(\n\tString,\n\tString,\n\tFileNamingStrategy,\n\tsvFileConnector.CsvIndividualTimeSeriesMetaInformation)
+    - IndividualTimeSeries<V> buildIndividualTimeSeries(\n\tUUID,\n\tfilePath,\n\tFunction<Map<String, String>,\n\tOptional<TimeBasedValue<V>>>)
+    - Optional<TimeBasedValue<V>> buildTimeBasedValue(\n\tMap<String, String>,\n\tClass<V>,\n\tTimeBasedSimpleValueFactory<V>)
+}
+CsvTimeSeriesSource <|.. TimeSeriesSource
+CsvTimeSeriesSource <|-- CsvDataSource
 
 interface DataConnector {
     {abstract} shutdown()

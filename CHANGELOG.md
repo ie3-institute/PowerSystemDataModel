@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   BREAKING: Harmonized field naming for time information
 -   BREAKING: Properly applying snake case to result file names
 -   deprecated `TarballUtils`
+-   Reworking the time series source (one source per time series, distinct mapping source, factory pattern)
 
 ### Fixed
 - InfluxDbConnector now keeps session instead of creating a new one each call
