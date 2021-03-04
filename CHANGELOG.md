@@ -33,6 +33,7 @@ and [#248](https://github.com/ie3-institute/PowerSystemDataModel/issues/248))
 - BREAKING: fix invalid application of solar irradiance / irradiation ([#266](https://github.com/ie3-institute/PowerSystemDataModel/issues/266))
 - BREAKING: deleted `IrradiationValue` as it is invalid and no longer required
 - added copy builder implementations for thermal input models `CylindricalStorageInput`, `ThermalBusInput` and `ThermalHouseInput`
+- the sample code for reading and writing model data from respectively to csv files documented in the Sphinx documentation is fixed
 
 ## [1.1.0] - 2020-09-15
 
