@@ -15,12 +15,10 @@ import tech.units.indriya.ComparableQuantity;
 /** Abstract class that holds values common to all other result entities */
 public abstract class SystemParticipantResult extends ResultEntity {
 
-  /**
-   * @param p active power output normally provided in MW
-   * @param q reactive power output normally provided in MVAr
-   */
+  /** active power output normally provided in MW */
   private ComparableQuantity<Power> p;
 
+  /** reactive power output normally provided in MVAr */
   private ComparableQuantity<Power> q;
 
   /**
