@@ -5,11 +5,12 @@
 */
 package edu.ie3.datamodel.models;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Supplies every subclass with a generated UUID, making it unique */
-public abstract class UniqueEntity {
+public abstract class UniqueEntity implements Serializable {
   /** Field name of {@link UniqueEntity} uuid */
   public static final String UUID_FIELD_NAME = "uuid";
 

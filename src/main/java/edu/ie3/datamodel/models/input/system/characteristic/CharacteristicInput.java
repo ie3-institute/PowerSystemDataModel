@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
@@ -17,7 +18,8 @@ import javax.measure.Unit;
  * @param <A> Type of quantity, that applies to the abscissa
  * @param <O> Type of quantity, that applies to the ordinate
  */
-public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quantity<O>> {
+public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quantity<O>>
+    implements Serializable {
   protected final String characteristicPrefix;
   protected final int decimalPlaces;
 

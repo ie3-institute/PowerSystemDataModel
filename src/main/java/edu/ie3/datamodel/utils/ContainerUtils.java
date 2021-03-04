@@ -821,7 +821,8 @@ public class ContainerUtils {
             newNodes,
             subGridContainer.getRawGrid().getLines(),
             newTrafos2w,
-            newTrafos3wToInternalNode.keySet(),
+            // HashSet$KeySet is not serializable, thus create new set
+            new HashSet<>(newTrafos3wToInternalNode.keySet()),
             subGridContainer.getRawGrid().getSwitches(),
             subGridContainer.getRawGrid().getMeasurementUnits()),
         subGridContainer.getSystemParticipants(),
