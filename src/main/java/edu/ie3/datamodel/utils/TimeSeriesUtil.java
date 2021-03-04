@@ -12,6 +12,11 @@ import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 
 public class TimeSeriesUtil {
+  /** Private Constructor as this class is not meant to be instantiated */
+  private TimeSeriesUtil() {
+    throw new IllegalStateException("Utility classes cannot be instantiated");
+  }
+
   /**
    * Trims a time series to the given time interval
    *
