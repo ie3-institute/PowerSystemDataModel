@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.processor.input;
 
 import edu.ie3.datamodel.io.processor.EntityProcessor;
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
@@ -18,7 +19,6 @@ import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
-import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +39,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               /* InputEntity */
               OperatorInput.class,
               RandomLoadParameters.class,
-              TimeSeriesMapping.Entry.class,
+              TimeSeriesMappingSource.MappingEntry.class,
               /* - AssetInput */
               NodeInput.class,
               LineInput.class,

@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   BREAKING: Properly applying snake case to result file names
 -   deprecated `TarballUtils`
 -   updated Indriya to version 2.1.2 to include fixes for serialization
+-   Reworking the time series source (one source per time series, distinct mapping source, factory pattern)
 
 ### Fixed
 - InfluxDbConnector now keeps session instead of creating a new one each call

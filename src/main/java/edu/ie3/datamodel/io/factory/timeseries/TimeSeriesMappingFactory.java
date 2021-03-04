@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
-import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TimeSeriesMappingFactory
-    extends EntityFactory<TimeSeriesMapping.Entry, SimpleEntityData> {
+    extends EntityFactory<TimeSeriesMappingSource.MappingEntry, SimpleEntityData> {
   private static final String UUID = "uuid";
   private static final String PARTICIPANT = "participant";
   private static final String TIME_SERIES = "timeSeries";
 
   public TimeSeriesMappingFactory() {
-    super(TimeSeriesMapping.Entry.class);
+    super(TimeSeriesMappingSource.MappingEntry.class);
   }
 
   @Override
@@ -32,10 +32,10 @@ public class TimeSeriesMappingFactory
   }
 
   @Override
-  protected TimeSeriesMapping.Entry buildModel(SimpleEntityData data) {
+  protected TimeSeriesMappingSource.MappingEntry buildModel(SimpleEntityData data) {
     UUID uuid = data.getUUID(UUID);
     UUID participant = data.getUUID(PARTICIPANT);
     UUID timeSeries = data.getUUID(TIME_SERIES);
-    return new TimeSeriesMapping.Entry(uuid, participant, timeSeries);
+    return new TimeSeriesMappingSource.MappingEntry(uuid, participant, timeSeries);
   }
 }
