@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   BREAKING: Harmonized field naming for time information
 -   BREAKING: Properly applying snake case to result file names
 -   deprecated `TarballUtils`
+-   updated Indriya to version 2.1.2 to include fixes for serialization
 
 ### Fixed
 - InfluxDbConnector now keeps session instead of creating a new one each call
