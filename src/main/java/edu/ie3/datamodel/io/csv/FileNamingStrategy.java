@@ -42,6 +42,7 @@ import org.apache.logging.log4j.Logger;
  * @since 03.02.20
  * @deprecated replaced by {@link EntityPersistenceNamingStrategy}
  */
+@Deprecated
 public class FileNamingStrategy {
 
   protected static final Logger logger = LogManager.getLogger(FileNamingStrategy.class);
@@ -118,6 +119,15 @@ public class FileNamingStrategy {
    */
   public FileNamingStrategy(String prefix) {
     this(prefix, "");
+  }
+
+  /**
+   * Create a {@link EntityPersistenceNamingStrategy} from a {@link FileNamingStrategy}
+   *
+   * @return an instance of {@link EntityPersistenceNamingStrategy}
+   */
+  public EntityPersistenceNamingStrategy asEntityPersistenceNamingStrategy() {
+    return new EntityPersistenceNamingStrategy(this.prefix, this.suffix);
   }
 
   /**
