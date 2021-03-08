@@ -8,7 +8,7 @@ A naming strategy provides a mapping between model classes and the file names, i
 several objects of this class can be found.
 Currently we offer two different, pre-defined file naming strategies, which you might extend to fit your needs:
 
-1. **FileNamingStrategy**:
+1. **EntityPersistenceNamingStrategy**:
    A basic file naming strategy that is able to add prefix and suffix to the file names. A flat folder structure is
    considered. For more details see `Default naming strategy`_.
 2. **HierarchicFileNamingStrategy**:

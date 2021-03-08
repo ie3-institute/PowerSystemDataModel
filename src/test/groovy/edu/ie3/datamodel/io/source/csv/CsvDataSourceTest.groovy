@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.csv.FileNamingStrategy
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -29,8 +29,8 @@ class CsvDataSourceTest extends Specification {
 	// methods in a public or protected method makes them available for testing
 	private final class DummyCsvSource extends CsvDataSource {
 
-		DummyCsvSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
-			super(csvSep, folderPath, fileNamingStrategy)
+		DummyCsvSource(String csvSep, String folderPath, EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+			super(csvSep, folderPath, entityPersistenceNamingStrategy)
 		}
 
 		Map<String, String> buildFieldsToAttributes(
@@ -62,15 +62,15 @@ class CsvDataSourceTest extends Specification {
 	@Shared
 	String csvSep = ","
 	String testBaseFolderPath = new File(getClass().getResource('/testGridFiles').toURI()).getAbsolutePath()
-	FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+	EntityPersistenceNamingStrategy entityPersistenceNamingStrategy = new EntityPersistenceNamingStrategy()
 
-	DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, fileNamingStrategy)
+	DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, entityPersistenceNamingStrategy)
 
 	def "A DataSource should contain a valid connector after initialization"() {
 		expect:
 		dummyCsvSource.connector != null
 		dummyCsvSource.connector.baseDirectoryName == testBaseFolderPath
-		dummyCsvSource.connector.fileNamingStrategy == fileNamingStrategy
+		dummyCsvSource.connector.entityPersistenceNamingStrategy == entityPersistenceNamingStrategy
 		dummyCsvSource.connector.entityWriters.isEmpty()
 
 	}

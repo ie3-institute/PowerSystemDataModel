@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.csv
 
+import edu.ie3.datamodel.io.naming.HierarchicFileNamingStrategy
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput

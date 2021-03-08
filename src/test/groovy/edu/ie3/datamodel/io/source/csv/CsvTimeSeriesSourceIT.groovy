@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.source.csv
 
 import static edu.ie3.datamodel.models.StandardUnits.*
 import edu.ie3.datamodel.io.connectors.CsvFileConnector
-import edu.ie3.datamodel.io.csv.FileNamingStrategy
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -28,7 +28,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 	CsvTimeSeriesSource source
 
 	def setup() {
-		source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy())
+		source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new EntityPersistenceNamingStrategy())
 	}
 
 	def "The csv time series source is able to provide an individual time series from given field to object function"() {

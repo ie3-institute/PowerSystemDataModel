@@ -6,10 +6,10 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.connectors.CsvFileConnector.TimeSeriesReadingData;
-import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.*;
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesContainer;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -43,11 +43,13 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
    *
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
-   * @param fileNamingStrategy strategy for the naming of time series files
+   * @param entityPersistenceNamingStrategy strategy for the naming of time series files
    */
   public CsvTimeSeriesSource(
-      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
-    super(csvSep, folderPath, fileNamingStrategy);
+      String csvSep,
+      String folderPath,
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+    super(csvSep, folderPath, entityPersistenceNamingStrategy);
   }
 
   /**

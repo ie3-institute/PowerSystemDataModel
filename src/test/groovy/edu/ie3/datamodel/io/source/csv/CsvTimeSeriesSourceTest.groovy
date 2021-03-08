@@ -5,9 +5,10 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+
 import static edu.ie3.datamodel.models.StandardUnits.*
 
-import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
@@ -24,7 +25,7 @@ import java.time.ZoneId
 class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 	def "The csv time series source is able to provide a valid time series mapping from files"() {
 		given:
-		def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy())
+		def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new EntityPersistenceNamingStrategy())
 		def expectedMapping = [
 			new TimeSeriesMapping.Entry(UUID.fromString("58167015-d760-4f90-8109-f2ebd94cda91"), UUID.fromString("b86e95b0-e579-4a80-a534-37c7a470a409"), UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5")),
 			new TimeSeriesMapping.Entry(UUID.fromString("9a9ebfda-dc26-4a40-b9ca-25cd42f6cc3f"), UUID.fromString("c7ebcc6c-55fc-479b-aa6b-6fa82ccac6b8"), UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26")),
@@ -45,7 +46,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(5) >> defaultCoordinate
-		def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy())
+		def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new EntityPersistenceNamingStrategy())
 		def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
 		def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")

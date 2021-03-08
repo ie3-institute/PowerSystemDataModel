@@ -5,9 +5,9 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,9 +32,9 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
   public CsvIdCoordinateSource(
       String csvSep,
       String folderPath,
-      FileNamingStrategy fileNamingStrategy,
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
       IdCoordinateFactory factory) {
-    super(csvSep, folderPath, fileNamingStrategy);
+    super(csvSep, folderPath, entityPersistenceNamingStrategy);
 
     this.factory = factory;
 

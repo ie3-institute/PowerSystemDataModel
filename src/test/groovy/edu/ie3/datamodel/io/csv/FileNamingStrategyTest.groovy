@@ -51,6 +51,7 @@ import java.nio.file.Paths
 import java.time.ZonedDateTime
 import java.util.regex.Pattern
 
+@Deprecated
 class FileNamingStrategyTest extends Specification {
 
 	def "The uuid pattern actually matches a valid uuid"() {

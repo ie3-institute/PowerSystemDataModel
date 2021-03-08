@@ -3,8 +3,10 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.io.csv;
+package edu.ie3.datamodel.io.naming;
 
+import edu.ie3.datamodel.io.csv.DefaultDirectoryHierarchy;
+import edu.ie3.datamodel.io.csv.FileHierarchy;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -20,7 +22,7 @@ import org.apache.commons.io.FilenameUtils;
  * A file naming strategy, that takes hierarchic order of sub folders into account. For the standard
  * structure that can be found in the documentation {@link DefaultDirectoryHierarchy} can be used
  */
-public class HierarchicFileNamingStrategy extends FileNamingStrategy {
+public class HierarchicFileNamingStrategy extends EntityPersistenceNamingStrategy {
   private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
   private static final String FILE_SEPARATOR_REPLACEMENT =
       File.separator.equals("\\") ? "\\\\" : "/";

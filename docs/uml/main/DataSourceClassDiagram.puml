@@ -103,7 +103,7 @@ interface DataConnector {
 Abstract Class CsvDataSource {
     - String csvSep
     # CsvFileConnector connector
-    + CsvDataSource(String, String, FileNamingStrategy)
+    + CsvDataSource(String, String, EntityPersistenceNamingStrategy)
 }
 DataSource <|.. CsvDataSource
 
@@ -113,7 +113,7 @@ Class CsvTypeSource {
     - LineTypeInputFactory lineTypeInputFactory
     - Transformer3WTypeInputFactory transformer3WTypeInputFactory
     - SystemParticipantTypeInputFactory systemParticipantTypeInputFactory
-    + CsvTypeSource(String, String, FileNamingStrategy)
+    + CsvTypeSource(String, String, EntityPersistenceNamingStrategy)
 }
 TypeSource <|.. CsvTypeSource
 CsvDataSource <|-- CsvTypeSource
