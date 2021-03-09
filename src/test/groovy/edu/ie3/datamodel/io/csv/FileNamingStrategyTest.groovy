@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.csv
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
@@ -39,7 +40,6 @@ import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import edu.ie3.datamodel.models.value.EnergyPriceValue
@@ -592,7 +592,7 @@ class FileNamingStrategyTest extends Specification {
 		FileNamingStrategy strategy = new FileNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(TimeSeriesMapping.Entry)
+		Optional<String> res = strategy.getFileName(TimeSeriesMappingSource.MappingEntry)
 
 		then:
 		res.present
@@ -604,7 +604,7 @@ class FileNamingStrategyTest extends Specification {
 		FileNamingStrategy strategy = new FileNamingStrategy("prefix", "suffix")
 
 		when:
-		Optional<String> res = strategy.getFileName(TimeSeriesMapping.Entry)
+		Optional<String> res = strategy.getFileName(TimeSeriesMappingSource.MappingEntry)
 
 		then:
 		res.present
@@ -622,41 +622,41 @@ class FileNamingStrategyTest extends Specification {
 		actual == expected
 
 		where:
-		modelClass               || expected
-		FixedFeedInInput         || Optional.empty()
-		PvInput                  || Optional.empty()
-		WecInput                 || Optional.empty()
-		ChpInput                 || Optional.empty()
-		BmInput                  || Optional.empty()
-		EvInput                  || Optional.empty()
-		LoadInput                || Optional.empty()
-		StorageInput             || Optional.empty()
-		HpInput                  || Optional.empty()
-		LineInput                || Optional.empty()
-		SwitchInput              || Optional.empty()
-		NodeInput                || Optional.empty()
-		MeasurementUnitInput     || Optional.empty()
-		EvcsInput                || Optional.empty()
-		Transformer2WInput       || Optional.empty()
-		Transformer3WInput       || Optional.empty()
-		CylindricalStorageInput  || Optional.empty()
-		ThermalHouseInput        || Optional.empty()
-		BmTypeInput              || Optional.empty()
-		ChpTypeInput             || Optional.empty()
-		EvTypeInput              || Optional.empty()
-		HpTypeInput              || Optional.empty()
-		LineTypeInput            || Optional.empty()
-		StorageTypeInput         || Optional.empty()
-		Transformer2WTypeInput   || Optional.empty()
-		Transformer3WTypeInput   || Optional.empty()
-		WecTypeInput             || Optional.empty()
-		WecTypeInput             || Optional.empty()
-		RandomLoadParameters     || Optional.empty()
-		NodeGraphicInput         || Optional.empty()
-		LineGraphicInput         || Optional.empty()
-		WecCharacteristicInput   || Optional.empty()
-		EvCharacteristicInput    || Optional.empty()
-		TimeSeriesMapping.Entry  || Optional.empty()
+		modelClass                           || expected
+		FixedFeedInInput                     || Optional.empty()
+		PvInput                              || Optional.empty()
+		WecInput                             || Optional.empty()
+		ChpInput                             || Optional.empty()
+		BmInput                              || Optional.empty()
+		EvInput                              || Optional.empty()
+		LoadInput                            || Optional.empty()
+		StorageInput                         || Optional.empty()
+		HpInput                              || Optional.empty()
+		LineInput                            || Optional.empty()
+		SwitchInput                          || Optional.empty()
+		NodeInput                            || Optional.empty()
+		MeasurementUnitInput                 || Optional.empty()
+		EvcsInput                            || Optional.empty()
+		Transformer2WInput                   || Optional.empty()
+		Transformer3WInput                   || Optional.empty()
+		CylindricalStorageInput              || Optional.empty()
+		ThermalHouseInput                    || Optional.empty()
+		BmTypeInput                          || Optional.empty()
+		ChpTypeInput                         || Optional.empty()
+		EvTypeInput                          || Optional.empty()
+		HpTypeInput                          || Optional.empty()
+		LineTypeInput                        || Optional.empty()
+		StorageTypeInput                     || Optional.empty()
+		Transformer2WTypeInput               || Optional.empty()
+		Transformer3WTypeInput               || Optional.empty()
+		WecTypeInput                         || Optional.empty()
+		WecTypeInput                         || Optional.empty()
+		RandomLoadParameters                 || Optional.empty()
+		NodeGraphicInput                     || Optional.empty()
+		LineGraphicInput                     || Optional.empty()
+		WecCharacteristicInput               || Optional.empty()
+		EvCharacteristicInput                || Optional.empty()
+		TimeSeriesMappingSource.MappingEntry || Optional.empty()
 	}
 
 	def "A simple file naming strategy does return empty sub directory path for any result class"() {

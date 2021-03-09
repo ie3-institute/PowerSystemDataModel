@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.datamodel.utils.TimeSeriesUtil;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -142,24 +143,7 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
         .collect(
             Collectors.toMap(
                 Map.Entry::getKey,
-                entry -> trimTimeSeriesToInterval(entry.getValue(), timeInterval)));
-  }
-
-  /**
-   * Trims a time series to the given time interval
-   *
-   * @param timeSeries the time series to trim
-   * @param timeInterval the interval to trim the data to
-   * @return the trimmed time series
-   */
-  private IndividualTimeSeries<WeatherValue> trimTimeSeriesToInterval(
-      IndividualTimeSeries<WeatherValue> timeSeries, ClosedInterval<ZonedDateTime> timeInterval) {
-    return new IndividualTimeSeries<>(
-        timeSeries.getUuid(),
-        timeSeries.getEntries().stream()
-            .parallel()
-            .filter(value -> timeInterval.includes(value.getTime()))
-            .collect(Collectors.toSet()));
+                entry -> TimeSeriesUtil.trimTimeSeriesToInterval(entry.getValue(), timeInterval)));
   }
 
   /**

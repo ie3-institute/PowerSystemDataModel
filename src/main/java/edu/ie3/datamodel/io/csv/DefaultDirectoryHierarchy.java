@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.csv;
 
 import edu.ie3.datamodel.exceptions.FileException;
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.LineInput;
@@ -30,7 +31,6 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
-import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import java.io.File;
 import java.io.IOException;
@@ -299,7 +299,8 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
     TIME_SERIES(
         PARTICIPANTS_INPUT.relPath + "time_series" + FILE_SEPARATOR,
         false,
-        Stream.of(TimeSeries.class, TimeSeriesMapping.Entry.class).collect(Collectors.toSet())),
+        Stream.of(TimeSeries.class, TimeSeriesMappingSource.MappingEntry.class)
+            .collect(Collectors.toSet())),
     THERMAL_INPUT(
         Constants.INPUT_SUB_TREE + FILE_SEPARATOR + "thermal" + FILE_SEPARATOR,
         false,

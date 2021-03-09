@@ -9,7 +9,6 @@ import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.io.csv.*;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -39,7 +38,9 @@ public class CsvFileConnector implements DataConnector {
   private final Map<Class<? extends UniqueEntity>, BufferedCsvWriter> entityWriters =
       new HashMap<>();
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
-  private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
+  // ATTENTION: Do not finalize. It's meant for lazy evaluation.
+  private Map<UUID, CsvIndividualTimeSeriesMetaInformation> individualTimeSeriesMetaInformation;
+  private final FileNamingStrategy fileNamingStrategy;
   private final String baseDirectoryName;
 
   private static final String FILE_ENDING = ".csv";
@@ -47,10 +48,9 @@ public class CsvFileConnector implements DataConnector {
   private static final String FILE_SEPARATOR_REPLACEMENT =
       File.separator.equals("\\") ? "\\\\" : "/";
 
-  public CsvFileConnector(
-      String baseDirectoryName, EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+  public CsvFileConnector(String baseDirectoryName, FileNamingStrategy fileNamingStrategy) {
     this.baseDirectoryName = baseDirectoryName;
-    this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
+    this.fileNamingStrategy = fileNamingStrategy;
   }
 
   public synchronized BufferedCsvWriter getOrInitWriter(
@@ -136,8 +136,7 @@ public class CsvFileConnector implements DataConnector {
 
   /**
    * Initializes a file reader for the given class that should be read in. The expected file name is
-   * determined based on {@link EntityPersistenceNamingStrategy} of the this {@link
-   * CsvFileConnector} instance
+   * determined based on {@link FileNamingStrategy} of the this {@link CsvFileConnector} instance
    *
    * @param clz the class of the entity that should be read
    * @return the reader that contains information about the file to be read in
@@ -147,7 +146,7 @@ public class CsvFileConnector implements DataConnector {
     String filePath = null;
     try {
       filePath =
-          entityPersistenceNamingStrategy
+          fileNamingStrategy
               .getFilePath(clz)
               .orElseThrow(
                   () ->
@@ -179,13 +178,55 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
+   * Get time series meta information for a given uuid.
+   *
+   * <p>This method lazily evaluates the mapping from <i>all</i> time series files to their meta
+   * information.
+   *
+   * @param timeSeriesUuid The time series in question
+   * @return An option on the queried information
+   */
+  public Optional<IndividualTimeSeriesMetaInformation> getIndividualTimeSeriesMetaInformation(
+      UUID timeSeriesUuid) {
+    if (Objects.isNull(individualTimeSeriesMetaInformation))
+      individualTimeSeriesMetaInformation = buildIndividualTimeSeriesMetaInformation();
+
+    return Optional.ofNullable(individualTimeSeriesMetaInformation.get(timeSeriesUuid));
+  }
+
+  /**
+   * This method creates a map from time series uuid to it's meta information.
+   *
+   * @return Mapping from time series uuid to it's meta information.
+   */
+  private Map<UUID, CsvIndividualTimeSeriesMetaInformation>
+      buildIndividualTimeSeriesMetaInformation() {
+    return getIndividualTimeSeriesFilePaths()
+        .parallelStream()
+        .map(
+            filePath -> {
+              /* Extract meta information from file path and enhance it with the file path itself */
+              String filePathWithoutEnding = removeFileEnding(filePath);
+              IndividualTimeSeriesMetaInformation metaInformation =
+                  (IndividualTimeSeriesMetaInformation)
+                      fileNamingStrategy.extractTimeSeriesMetaInformation(filePathWithoutEnding);
+              return new CsvIndividualTimeSeriesMetaInformation(
+                  metaInformation, filePathWithoutEnding);
+            })
+        .collect(Collectors.toMap(FileNameMetaInformation::getUuid, v -> v));
+  }
+
+  /**
    * Initialises the readers for time series with the specified column schemes. They are given back
    * grouped by the column scheme in order to allow for accounting the different content types.
    *
    * @param columnSchemes the column schemes to initialize readers for. If no scheme is given, all
    *     possible readers will be initialized.
    * @return A mapping from column type to respective readers
+   * @deprecated Don't use {@link TimeSeriesReadingData}, as it contains a reader, that might not be
+   *     closed
    */
+  @Deprecated
   public Map<ColumnScheme, Set<TimeSeriesReadingData>> initTimeSeriesReader(
       ColumnScheme... columnSchemes) {
     return getIndividualTimeSeriesFilePaths()
@@ -208,7 +249,7 @@ public class CsvFileConnector implements DataConnector {
    * @throws FileNotFoundException If the file is not present
    */
   public BufferedReader initIdCoordinateReader() throws FileNotFoundException {
-    String filePath = entityPersistenceNamingStrategy.getIdCoordinateFileName();
+    String filePath = fileNamingStrategy.getIdCoordinateFileName();
     return initReader(filePath);
   }
 
@@ -226,7 +267,7 @@ public class CsvFileConnector implements DataConnector {
           .filter(
               path -> {
                 String withoutEnding = removeFileEnding(path.toString());
-                return entityPersistenceNamingStrategy
+                return fileNamingStrategy
                     .getIndividualTimeSeriesPattern()
                     .matcher(withoutEnding)
                     .matches();
@@ -248,12 +289,15 @@ public class CsvFileConnector implements DataConnector {
    * @param columnSchemes the allowed column schemes. If no scheme is specified, all schemes are
    *     allowed.
    * @return An {@link Optional} to {@link TimeSeriesReadingData}
+   * @deprecated Don't use {@link TimeSeriesReadingData}, as it contains a reader, that might not be
+   *     closed
    */
+  @Deprecated
   private Optional<TimeSeriesReadingData> buildReadingData(
       String filePathString, ColumnScheme... columnSchemes) {
     try {
       FileNameMetaInformation metaInformation =
-          entityPersistenceNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
+          fileNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
       if (!IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())) {
         log.error(
             "The time series file '{}' does not represent an individual time series.",
@@ -315,9 +359,9 @@ public class CsvFileConnector implements DataConnector {
   private <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       CsvFileDefinition buildFileDefinition(T timeSeries, String[] headLineElements, String csvSep)
           throws ConnectorException {
-    String directoryPath = entityPersistenceNamingStrategy.getDirectoryPath(timeSeries).orElse("");
+    String directoryPath = fileNamingStrategy.getDirectoryPath(timeSeries).orElse("");
     String fileName =
-        entityPersistenceNamingStrategy
+        fileNamingStrategy
             .getFileName(timeSeries)
             .orElseThrow(
                 () ->
@@ -338,9 +382,9 @@ public class CsvFileConnector implements DataConnector {
   private CsvFileDefinition buildFileDefinition(
       Class<? extends UniqueEntity> clz, String[] headLineElements, String csvSep)
       throws ConnectorException {
-    String directoryPath = entityPersistenceNamingStrategy.getDirectoryPath(clz).orElse("");
+    String directoryPath = fileNamingStrategy.getDirectoryPath(clz).orElse("");
     String fileName =
-        entityPersistenceNamingStrategy
+        fileNamingStrategy
             .getFileName(clz)
             .orElseThrow(
                 () ->
@@ -363,7 +407,12 @@ public class CsvFileConnector implements DataConnector {
             });
   }
 
-  /** Class to bundle all information, that are necessary to read a single time series */
+  /**
+   * Class to bundle all information, that are necessary to read a single time series
+   *
+   * @deprecated Use the {@link CsvIndividualTimeSeriesMetaInformation} and build reader on demand
+   */
+  @Deprecated
   public static class TimeSeriesReadingData {
     private final UUID uuid;
     private final ColumnScheme columnScheme;
@@ -411,6 +460,54 @@ public class CsvFileConnector implements DataConnector {
           + columnScheme
           + ", reader="
           + reader
+          + '}';
+    }
+  }
+
+  /** Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file */
+  public static class CsvIndividualTimeSeriesMetaInformation
+      extends IndividualTimeSeriesMetaInformation {
+    private final String fullFilePath;
+
+    public CsvIndividualTimeSeriesMetaInformation(
+        UUID uuid, ColumnScheme columnScheme, String fullFilePath) {
+      super(uuid, columnScheme);
+      this.fullFilePath = fullFilePath;
+    }
+
+    public CsvIndividualTimeSeriesMetaInformation(
+        IndividualTimeSeriesMetaInformation metaInformation, String fullFilePath) {
+      this(metaInformation.getUuid(), metaInformation.getColumnScheme(), fullFilePath);
+    }
+
+    public String getFullFilePath() {
+      return fullFilePath;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof CsvIndividualTimeSeriesMetaInformation)) return false;
+      if (!super.equals(o)) return false;
+      CsvIndividualTimeSeriesMetaInformation that = (CsvIndividualTimeSeriesMetaInformation) o;
+      return fullFilePath.equals(that.fullFilePath);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(super.hashCode(), fullFilePath);
+    }
+
+    @Override
+    public String toString() {
+      return "CsvIndividualTimeSeriesMetaInformation{"
+          + "uuid="
+          + getUuid()
+          + ", columnScheme="
+          + getColumnScheme()
+          + ", fullFilePath='"
+          + fullFilePath
+          + '\''
           + '}';
     }
   }
