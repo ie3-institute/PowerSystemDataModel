@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
@@ -20,7 +21,6 @@ import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
-import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.StringUtils;
@@ -185,7 +185,8 @@ public class EntityPersistenceNamingStrategy {
       return getGraphicsInputFileName(cls.asSubclass(GraphicInput.class));
     if (OperatorInput.class.isAssignableFrom(cls))
       return getOperatorInputFileName(cls.asSubclass(OperatorInput.class));
-    if (TimeSeriesMapping.Entry.class.isAssignableFrom(cls)) return getTimeSeriesMappingFileName();
+    if (TimeSeriesMappingSource.MappingEntry.class.isAssignableFrom(cls))
+      return getTimeSeriesMappingFileName();
     logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
     return Optional.empty();
   }

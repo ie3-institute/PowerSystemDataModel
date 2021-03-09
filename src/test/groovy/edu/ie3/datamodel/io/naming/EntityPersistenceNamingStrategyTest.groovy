@@ -39,7 +39,7 @@ import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import edu.ie3.datamodel.models.value.EnergyPriceValue
@@ -591,7 +591,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(TimeSeriesMapping.Entry)
+		Optional<String> res = strategy.getFileName(TimeSeriesMappingSource.MappingEntry)
 
 		then:
 		res.present
@@ -603,7 +603,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("prefix", "suffix")
 
 		when:
-		Optional<String> res = strategy.getFileName(TimeSeriesMapping.Entry)
+		Optional<String> res = strategy.getFileName(TimeSeriesMappingSource.MappingEntry)
 
 		then:
 		res.present
@@ -655,7 +655,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		LineGraphicInput         || Optional.empty()
 		WecCharacteristicInput   || Optional.empty()
 		EvCharacteristicInput    || Optional.empty()
-		TimeSeriesMapping.Entry  || Optional.empty()
+		TimeSeriesMappingSource.MappingEntry  || Optional.empty()
 	}
 
 	def "A simple file naming strategy does return empty sub directory path for any result class"() {
