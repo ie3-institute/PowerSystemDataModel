@@ -274,7 +274,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy should recognize if empty strings are passed in the prefix/suffix constructor and don't add underlines then"() {
-		given: "a file naming strategy"
+		given: "a naming strategy"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("", "")
 
 		expect:
@@ -283,7 +283,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy should correctly append and prepend underscores"() {
-		given: "a file naming strategy"
+		given: "a naming strategy"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("bla", "foo")
 
 		expect:
@@ -292,7 +292,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy should correctly append underscore, when only prefix is set"() {
-		given: "a file naming strategy"
+		given: "a naming strategy"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("bla")
 
 		expect:
@@ -301,7 +301,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy should return an empty optional on a invalid class"() {
-		given: "a file naming strategy"
+		given: "a naming strategy"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
@@ -312,7 +312,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all result models"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
@@ -343,7 +343,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy with pre- and suffixes should return valid strings for all result models"() {
-		given: "a file naming strategy with pre- or suffixes"
+		given: "a naming strategy with pre- or suffixes"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("prefix", "suffix")
 
 		when:
@@ -374,7 +374,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all input assets models"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
@@ -407,7 +407,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all asset characteristics models"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
@@ -424,7 +424,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all input types models"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
@@ -449,7 +449,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for a Load Parameter Model"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
@@ -465,7 +465,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for a graphic input Model"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
@@ -560,7 +560,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 		LoadProfileInput timeSeries = Mock(LoadProfileInput)
 		timeSeries.uuid >> uuid
-		timeSeries.getType() >> type
+		timeSeries.type >> type
 
 		when:
 		Optional<String> actual = strategy.getFileName(timeSeries)
@@ -587,7 +587,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for time series mapping"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
@@ -599,7 +599,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy with pre- and suffix should return valid strings for time series mapping"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("prefix", "suffix")
 
 		when:
@@ -611,7 +611,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A simple file naming strategy does return empty sub directory path for any model input class"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new EntityPersistenceNamingStrategy()
 
 		when:
@@ -659,7 +659,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A simple file naming strategy does return empty sub directory path for any result class"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new EntityPersistenceNamingStrategy()
 
 		when:
@@ -689,7 +689,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A simple file naming strategy does return empty sub directory path for load profile time series"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new EntityPersistenceNamingStrategy()
 		def timeSeries = Mock(LoadProfileInput)
 
@@ -701,7 +701,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A simple file naming strategy does return empty sub directory path for individual time series"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new EntityPersistenceNamingStrategy()
 		def timeSeries = Mock(IndividualTimeSeries)
 
@@ -713,7 +713,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all input classes"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new EntityPersistenceNamingStrategy()
 
 		when:
@@ -760,7 +760,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all result classes"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new EntityPersistenceNamingStrategy()
 
 		when:
@@ -791,7 +791,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A simple file naming strategy does return valid file path for load profile time series"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new EntityPersistenceNamingStrategy()
 		def timeSeries = Mock(LoadProfileInput)
 		timeSeries.uuid >> uuid
@@ -810,7 +810,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	}
 
 	def "A simple file naming strategy does return valid file path for individual time series"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new EntityPersistenceNamingStrategy()
 		def entries = [
 			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
