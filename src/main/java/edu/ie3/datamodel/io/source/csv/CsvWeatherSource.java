@@ -43,7 +43,8 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    *
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
-   * @param entityPersistenceNamingStrategy strategy for the naming of time series files
+   * @param entityPersistenceNamingStrategy strategy for the naming of time series files / data
+   *     sinks
    * @param weatherFactory factory to transfer field to value mapping into actual java object
    *     instances
    * @param coordinateFactory factory to build coordinate id to coordinate mapping
@@ -69,7 +70,8 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    *
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
-   * @param entityPersistenceNamingStrategy strategy for the naming of time series files
+   * @param entityPersistenceNamingStrategy strategy for the naming of time series files / data
+   *     sinks
    * @param coordinateSource a coordinate source to map ids to points
    * @param weatherFactory factory to transfer field to value mapping into actual java object
    *     instances

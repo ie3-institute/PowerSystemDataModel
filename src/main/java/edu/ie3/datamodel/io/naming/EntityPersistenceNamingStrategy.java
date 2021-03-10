@@ -34,8 +34,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Provides an easy to use standard way to name files, tables or anything other data sink that is
- * used in order to persist entities. Normal use cases are e.g., I/O operations with .csv files or
+ * Provides an easy to use standard way to name files, tables or any other data sink that is used in
+ * order to persist entities. Normal use cases are e.g., I/O operations with .csv files or
  * databases. If a folder structure is required for file based I/O operations, one might consider
  * using {@link HierarchicFileNamingStrategy}
  *
@@ -81,25 +81,28 @@ public class EntityPersistenceNamingStrategy {
   private final String prefix;
   private final String suffix;
 
-  /** Constructor for building the file names without provided files with prefix and suffix */
+  /**
+   * Constructor for building the names of the data sinks without provided entities with prefix and
+   * suffix
+   */
   public EntityPersistenceNamingStrategy() {
     this("", "");
   }
 
   /**
-   * Constructor for building the file names
+   * Constructor for building the names of the data sinks
    *
-   * @param prefix Prefix of the files
+   * @param prefix Prefix of the data sinks
    */
   public EntityPersistenceNamingStrategy(String prefix) {
     this(prefix, "");
   }
 
   /**
-   * Constructor for building the file names
+   * Constructor for building the names of the data sinks
    *
-   * @param prefix Prefix of the files
-   * @param suffix Suffixes of the files
+   * @param prefix Prefix of the data sinks
+   * @param suffix Suffixes of the data sinks
    */
   public EntityPersistenceNamingStrategy(String prefix, String suffix) {
     this.prefix = preparePrefix(prefix);

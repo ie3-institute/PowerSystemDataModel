@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
 
 /**
- * A file naming strategy, that takes hierarchic order of sub folders into account. For the standard
+ * A naming strategy, that takes hierarchic order of sub folders into account. For the standard
  * structure that can be found in the documentation {@link DefaultDirectoryHierarchy} can be used
  */
 public class HierarchicFileNamingStrategy extends EntityPersistenceNamingStrategy {

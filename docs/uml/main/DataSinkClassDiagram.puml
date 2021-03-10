@@ -20,10 +20,10 @@ OutputDataSink --|> DataSink
 
 ' Implementations
 class CsvFileSink {
-+ CsvFileSink(String, ProcessorProvider, FileNamingStrategy, boolean, String)
-+ CsvFileSink(String, FileNamingStrategy, boolean, String)
++ CsvFileSink(String, ProcessorProvider, EntityPersistenceNamingStrategy, boolean, String)
++ CsvFileSink(String, EntityPersistenceNamingStrategy, boolean, String)
 + CsvFileSink(String)
-- void initFiles(ProcessorProvider, FileNamingStrategy)
+- void initFiles(ProcessorProvider, EntityPersistenceNamingStrategy)
 - void write(UniqueEntity)
 }
 CsvFileSink ..|> InputDataSink
@@ -31,7 +31,7 @@ CsvFileSink ..|> OutputDataSink
 
 
 class InfluxDBFileSink {
-+ InfluxDbSink(InfluxDbConnector, FileNamingStrategy)
++ InfluxDbSink(InfluxDbConnector, EntityPersistenceNamingStrategy)
 + InfluxDbSink(InfluxDbConnector)
 - Set<Point> extractPoints(UniqueEntity)
 - String transformToMeasurementName(String)

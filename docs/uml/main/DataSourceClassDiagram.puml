@@ -111,7 +111,7 @@ TimeSeriesSource <|-- DataSource
 
 class CsvTimeSeriesSource<V extends Value> {
     - IndividualTimeSeries<V> timeSeries
-    + {static} CsvTimeSeriesSource<? extends Value> getSource(\n\tString,\n\tString,\n\tFileNamingStrategy,\n\tsvFileConnector.CsvIndividualTimeSeriesMetaInformation)
+    + {static} CsvTimeSeriesSource<? extends Value> getSource(\n\tString,\n\tString,\n\tEntityPersistenceNamingStrategy,\n\tCsvFileConnector.CsvIndividualTimeSeriesMetaInformation)
     - IndividualTimeSeries<V> buildIndividualTimeSeries(\n\tUUID,\n\tfilePath,\n\tFunction<Map<String, String>,\n\tOptional<TimeBasedValue<V>>>)
     - Optional<TimeBasedValue<V>> buildTimeBasedValue(\n\tMap<String, String>,\n\tClass<V>,\n\tTimeBasedSimpleValueFactory<V>)
 }
@@ -147,7 +147,7 @@ Class CsvThermalSource {
     - ThermalBusInputFactory thermalBusInputFactory
     - CylindricalStorageInputFactory cylindricalStorageInputFactory
     - ThermalHouseInputFactory thermalHouseInputFactory
-    + CsvThermalSource(String, String, FileNamingStrategy, TypeSource)
+    + CsvThermalSource(String, String, EntityPersistenceNamingStrategy, TypeSource)
 }
 ThermalSource <|.. CsvThermalSource
 CsvDataSource <|-- CsvThermalSource
@@ -160,7 +160,7 @@ Class CsvRawGridSource {
     - Transformer3WInputFactory transformer3WInputFactory
     - SwitchInputFactory switchInputFactory
     - MeasurementUnitInputFactory measurementUnitInputFactory
-    + CsvRawGridSource(String, String, FileNamingStrategy, TypeSource)
+    + CsvRawGridSource(String, String, EntityPersistenceNamingStrategy, TypeSource)
 }
 RawGridSource <|.. CsvRawGridSource
 CsvDataSource <|-- CsvRawGridSource
@@ -178,7 +178,7 @@ Class CsvSystemParticipantSource {
     - PvInputFactory pvInputFactory
     - StorageInputFactory storageInputFactory
     - WecInputFactory wecInputFactory
-    + CsvSystemParticipantSource(String, String, FileNamingStrategy, TypeSource, ThermalSource, RawGridSource)
+    + CsvSystemParticipantSource(String, String, EntityPersistenceNamingStrategy, TypeSource, ThermalSource, RawGridSource)
 }
 SystemParticipantsSource <|.. CsvSystemParticipantSource
 CsvDataSource <|-- CsvSystemParticipantSource
@@ -188,7 +188,7 @@ Class CsvGraphicSource {
     - RawGridSource rawGridSource
     - LineGraphicInputFactory lineGraphicInputFactory
     - NodeGraphicInputFactory nodeGraphicInputFactory
-    + CsvGraphicSource(String, String, FileNamingStrategy, TypeSource, RawGridSource)
+    + CsvGraphicSource(String, String, EntityPersistenceNamingStrategy, TypeSource, RawGridSource)
 }
 GraphicSource <|.. CsvGraphicSource
 CsvDataSource <|-- CsvGraphicSource
@@ -196,10 +196,10 @@ CsvDataSource <|-- CsvGraphicSource
 Class CsvFileConnector {
     - Map<Class<? extends UniqueEntity>, BufferedCsvWriter> entityWriters
     - Map<UUID, BufferedCsvWriter> timeSeriesWriters
-    - FileNamingStrategy fileNamingStrategy
+    - EntityPersistenceNamingStrategy entityPersistenceNamingStrategy
     - String baseFolderName
     - {static} String FILE_ENDING
-    + CsvFileConnector(String, FileNamingStrategy)
+    + CsvFileConnector(String, EntityPersistenceNamingStrategy)
     + BufferedCsvWriter getOrInitWriter(Class<? extends UniqueEntity>, String[], String)
     + BufferedCsvWriter getOrInitWriter(T, String[], String)
     + BufferedCsvWriter initWriter(String, CsvFileDefinition)

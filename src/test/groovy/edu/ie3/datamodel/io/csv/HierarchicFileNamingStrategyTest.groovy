@@ -57,8 +57,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		defaultHierarchy = new DefaultDirectoryHierarchy(tmpPath.toString(), "test_grid")
 	}
 
-	def "A FileNamingStrategy should return an empty optional on a invalid class"() {
-		given: "a file naming strategy"
+	def "A HierarchicFileNamingStrategy should return an empty optional on a invalid class"() {
+		given: "a naming strategy"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -68,8 +68,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		!res.present
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid directory paths for all result models"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid directory paths for all result models"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -99,8 +99,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		ThermalHouseResult       || "test_grid" + File.separator + "results" + File.separator + "thermal"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid directory paths for all input assets models"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid directory paths for all input assets models"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -132,8 +132,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		ThermalHouseInput       || "test_grid" + File.separator + "input" + File.separator + "thermal"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for all input assets models"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid file paths for all input assets models"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -165,8 +165,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		ThermalHouseInput       || "test_grid" + File.separator + "input" + File.separator + "thermal" + File.separator + "thermal_house_input"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid directory paths for all asset characteristics models"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid directory paths for all asset characteristics models"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -182,8 +182,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		EvCharacteristicInput  || "test_grid" + File.separator + "input" + File.separator + "global"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for all asset characteristics models"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid file paths for all asset characteristics models"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -199,8 +199,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		EvCharacteristicInput  || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "ev_characteristic_input"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid directory paths for all input types models"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid directory paths for all input types models"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -224,8 +224,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		WecTypeInput           || "test_grid" + File.separator + "input" + File.separator + "global"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for all input types models"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid file paths for all input types models"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -248,8 +248,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		WecTypeInput           || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "wec_type_input"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid directory path for a Load Parameter Model"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid directory path for a Load Parameter Model"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -264,8 +264,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		RandomLoadParameters || "test_grid" + File.separator + "input" + File.separator + "global"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid file path for a Load Parameter Model"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid file path for a Load Parameter Model"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -280,8 +280,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		RandomLoadParameters || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "random_load_parameters_input"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid directory paths for a graphic input Model"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid directory paths for a graphic input Model"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -297,8 +297,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		LineGraphicInput || "test_grid" + File.separator + "input" + File.separator + "graphics"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for a graphic input Model"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid file paths for a graphic input Model"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -314,7 +314,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		LineGraphicInput || "test_grid" + File.separator + "input" + File.separator + "graphics" + File.separator + "line_graphic_input"
 	}
 
-	def "A FileNamingStrategy should return valid directory path for individual time series"() {
+	def "A HierarchicFileNamingStrategy should return valid directory path for individual time series"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
@@ -331,7 +331,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		IndividualTimeSeries || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series"
 	}
 
-	def "A FileNamingStrategy without pre- or suffix should return valid file path for individual time series"() {
+	def "A HierarchicFileNamingStrategy without pre- or suffix should return valid file path for individual time series"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 		def entries = [
@@ -352,7 +352,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series" + File.separator + "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 	}
 
-	def "A FileNamingStrategy with pre- or suffix should return valid file path for individual time series"() {
+	def "A HierarchicFileNamingStrategy with pre- or suffix should return valid file path for individual time series"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy("aa", "zz", defaultHierarchy)
 		def entries = [
@@ -373,7 +373,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series" + File.separator + "aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
 	}
 
-	def "A FileNamingStrategy without pre- or suffix should return valid directory path for load profile input"() {
+	def "A HierarchicFileNamingStrategy without pre- or suffix should return valid directory path for load profile input"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 		def timeSeries = Mock(LoadProfileInput)
@@ -390,7 +390,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		LoadProfileInput || "test_grid" + File.separator + "input" + File.separator + "global"
 	}
 
-	def "A FileNamingStrategy without pre- or suffix should return valid file path for load profile input"() {
+	def "A HierarchicFileNamingStrategy without pre- or suffix should return valid file path for load profile input"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 		def timeSeries = Mock(LoadProfileInput)
@@ -409,7 +409,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewLoadProfile.G3 || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
-	def "A FileNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {
+	def "A HierarchicFileNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {
 		given:
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 		def timeSeries = Mock(RepetitiveTimeSeries)
@@ -421,8 +421,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		!fileName.present
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid directory path for time series mapping"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid directory path for time series mapping"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -433,8 +433,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		res.get() == "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid file path for time series mapping"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid file path for time series mapping"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -445,8 +445,8 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		res.get() == "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series" + File.separator + "time_series_mapping"
 	}
 
-	def "A FileNamingStrategy with pre- and suffix should return valid file path for time series mapping"() {
-		given: "a file naming strategy without pre- or suffixes"
+	def "A HierarchicFileNamingStrategy with pre- and suffix should return valid file path for time series mapping"() {
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy("prefix", "suffix", defaultHierarchy)
 
 		when:
@@ -458,7 +458,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 	}
 
 	def "A hierarchic file naming strategy returns correct individual time series file name pattern"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
@@ -469,7 +469,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 	}
 
 	def "A hierarchic file naming strategy returns correct load profile time series file name pattern"() {
-		given: "a file naming strategy without pre- or suffixes"
+		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:

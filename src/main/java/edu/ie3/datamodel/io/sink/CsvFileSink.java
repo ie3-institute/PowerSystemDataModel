@@ -68,7 +68,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * starting several sinks and use them for specific entities.
    *
    * @param baseFolderPath the base folder path where the files should be put into
-   * @param entityPersistenceNamingStrategy the file naming strategy that should be used
+   * @param entityPersistenceNamingStrategy the data sink naming strategy that should be used
    * @param initFiles true if the files should be created during initialization (might create files,
    *     that only consist of a headline, because no data will be written into them), false
    *     otherwise
@@ -98,7 +98,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    *
    * @param baseFolderPath the base folder path where the files should be put into
    * @param processorProvider the processor provided that should be used for entity de-serialization
-   * @param entityPersistenceNamingStrategy the file naming strategy that should be used
+   * @param entityPersistenceNamingStrategy the data sink naming strategy that should be used
    * @param initFiles true if the files should be created during initialization (might create files,
    *     that only consist of a headline, because no data will be written into them), false
    *     otherwise

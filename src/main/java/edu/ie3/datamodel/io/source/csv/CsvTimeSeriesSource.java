@@ -33,7 +33,8 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    *
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
-   * @param entityPersistenceNamingStrategy strategy for the naming of time series files
+   * @param entityPersistenceNamingStrategy strategy for the naming of time series files / data
+   *     sinks
    * @param metaInformation The given meta information
    * @throws SourceException If the given meta information are not supported
    * @return The source
@@ -122,7 +123,8 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    *
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
-   * @param entityPersistenceNamingStrategy strategy for the naming of time series files
+   * @param entityPersistenceNamingStrategy strategy for the naming of time series files / data
+   *     sinks
    * @param timeSeriesUuid Unique identifier of the time series
    * @param filePath Path of the file, excluding extension and being relative to {@code folderPath}
    * @param valueClass Class of the value

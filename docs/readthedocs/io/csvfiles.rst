@@ -4,25 +4,26 @@ csv files
 
 Naming of files
 ===============
-A naming strategy provides a mapping between model classes and the file names, in which the serialized representation of
-several objects of this class can be found.
-Currently we offer two different, pre-defined file naming strategies, which you might extend to fit your needs:
+A naming strategy provides a mapping between model classes and the names of the data sinks, in which the serialized
+representation of several objects of this class can be found.
+Currently we offer two different, pre-defined naming strategies, which you might extend to fit your needs:
 
 1. **EntityPersistenceNamingStrategy**:
-   A basic file naming strategy that is able to add prefix and suffix to the file names. A flat folder structure is
-   considered. For more details see `Default naming strategy`_.
+   A basic naming strategy that is able to add prefix and suffix to the names of the data sinks. A flat folder structure
+   is considered. For more details see `Default naming strategy`_.
 2. **HierarchicFileNamingStrategy**:
-   An extended version of the FileNamingStrategy. Additionally, the `Default directory hierarchy`_ is taken into
-   account. Please note, that this directory hierarchy is only meant to be used in conjunction with input models.
+   An extended version of the EntityPersistenceNamingStrategy. Additionally, the `Default directory hierarchy`_ is taken
+   into account. Please note, that this directory hierarchy is only meant to be used in conjunction with input models.
 
 However, you can control the behaviour of serialization and de-serialization of models by injecting the desired naming
 strategy you like into :code:`CsvDataSource` and :code:`CsvFileSink`.
 
 Default naming strategy
 =======================
-There is a default mapping from model class to file naming in the case you would like to use csv files for
+There is a default mapping from model class to naming of data sinks in the case you would like to use csv files for
 (de-)serialization of models.
-You may extend / alter the naming with pre- or suffix by calling :code:`new FileNamingStrategy("prefix", "suffix")`.
+You may extend / alter the naming with pre- or suffix by calling :code:
+`new EntityPersistenceNamingStrategy("prefix","suffix")`.
 
 Input
 -----
@@ -224,7 +225,7 @@ An application example to load an *exampleGrid* from csv files located in :code:
    String gridName = "exampleGrid";
    String csvSep = ",";
    String folderPath = "./exampleGrid";
-   FileNamingStrategy namingStrategy = new FileNamingStrategy(); // Default naming strategy
+   EntityPersistenceNamingStrategy namingStrategy = new EntityPersistenceNamingStrategy(); // Default naming strategy
 
    /* Instantiating sources */
    TypeSource typeSource = new CsvTypeSource(csvSep, folderPath, namingStrategy);
@@ -273,7 +274,7 @@ Serializing models is a bit easier:
    /* Parameterization */
    String csvSep = ",";
    String folderPath = "./exampleGrid";
-   FileNamingStrategy namingStrategy = new FileNamingStrategy();
+   EntityPersistenceNamingStrategy namingStrategy = new EntityPersistenceNamingStrategy();
    boolean initEmptyFiles = false;
 
    /* Instantiating the sink */
