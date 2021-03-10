@@ -57,7 +57,7 @@ dependencies {
 	implementation 'tech.units:indriya:2.1.2'
 
 	// JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
-	compile 'org.locationtech.jts:jts-core:1.16.1'
+	compile 'org.locationtech.jts:jts-core:1.18.1'
 	compile 'org.locationtech.jts.io:jts-io-common:1.16.1'
 
 	// Graphs
@@ -65,7 +65,7 @@ dependencies {
 
 	// testing
 	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
-	testCompile 'org.spockframework:spock-core:2.0-M3-groovy-3.0'
+	testCompile 'org.spockframework:spock-core:2.0-groovy-3.0-SNAPSHOT'
 	testCompile 'org.objenesis:objenesis:3.1' // Mock creation with constructor parameters
 
 	// Testcontainers (Docker Framework for testing)

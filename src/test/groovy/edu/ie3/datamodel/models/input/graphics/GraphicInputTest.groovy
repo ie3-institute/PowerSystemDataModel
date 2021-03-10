@@ -12,7 +12,7 @@ import spock.lang.Specification
 
 class GraphicInputTest extends Specification {
 
-	final class DummyGraphicObject extends GraphicInput {
+	static final class DummyGraphicObject extends GraphicInput {
 
 		DummyGraphicObject(UUID uuid, String graphicLayer, LineString path) {
 			super(uuid, graphicLayer, path)
