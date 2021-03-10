@@ -123,7 +123,7 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
                   .get(factory.getLatField())
                   .concat(fieldToValues.get(factory.getLonField()));
       return distinctRowsWithLog(
-              withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
+          withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
           .parallelStream();
     } catch (IOException e) {
       log.error("Cannot read the file for coordinate id to coordinate mapping.", e);
