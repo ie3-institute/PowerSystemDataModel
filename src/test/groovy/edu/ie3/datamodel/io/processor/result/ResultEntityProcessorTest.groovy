@@ -266,7 +266,7 @@ class ResultEntityProcessorTest extends Specification {
 		thrown(EntityProcessorException)
 	}
 
-	private class InvalidTestResult extends ResultEntity {
+	private static class InvalidTestResult extends ResultEntity {
 
 		InvalidTestResult(ZonedDateTime time, UUID inputModel) {
 			super(time, inputModel)
