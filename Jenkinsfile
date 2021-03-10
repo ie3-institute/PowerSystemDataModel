@@ -683,7 +683,7 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
                 }
             } else {
                 // invalid branch type for dev branch version comparison
-                println "Invalid branch type '$targetBranchType' to be compared with dev branch. Dev branch version" +
+                println "Invalid branch type '$targetBranchType' to be compared with dev branch. Dev branch version " +
                         "can only be compared with main branch type!"
                 return -1
             }
@@ -697,19 +697,21 @@ def compareVersionParts(String sourceBranchType, String[] sourceBranchVersion, S
 }
 
 def getBranchType(String branchName) {
-    def dev_pattern = ".*dev"
+    def dev_pattern = "^(developer|develop|dev)\$"
     def release_pattern = ".*rel/.*"
     def feature_pattern = "^\\pL{2}/#\\d+.*"
+    def dependabot_pattern = "^dependabot/.*\$"
     def hotfix_pattern = ".*hotfix/\\pL{2}/#\\d+.*"
     def main_pattern = ".*main"
-    if (branchName.toLowerCase() =~ dev_pattern) {
-        return "dev"
-    } else if (branchName =~ release_pattern) {
+    if (branchName =~ feature_pattern || branchName =~ dependabot_pattern) {
+        return "feature"
+    } else
+    if (branchName =~ release_pattern) {
         return "release"
     } else if (branchName =~ main_pattern) {
         return "main"
-    } else if (branchName =~ feature_pattern) {
-        return "feature"
+    } else if (branchName.toLowerCase() =~ dev_pattern) {
+        return "dev"
     } else if (branchName =~ hotfix_pattern) {
         return "hotfix"
     } else {
