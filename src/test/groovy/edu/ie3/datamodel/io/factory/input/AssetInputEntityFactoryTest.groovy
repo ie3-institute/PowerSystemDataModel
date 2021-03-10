@@ -267,7 +267,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 				"3: [id, operatesfrom, operatesuntil, uuid]\n"
 	}
 
-	private class TestAssetInput extends AssetInput {
+	private static class TestAssetInput extends AssetInput {
 		TestAssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
 			super(uuid, id, operator, operationTime)
 		}
@@ -279,7 +279,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		}
 	}
 
-	private class TestAssetInputFactory extends AssetInputEntityFactory<TestAssetInput, AssetInputEntityData> {
+	private static class TestAssetInputFactory extends AssetInputEntityFactory<TestAssetInput, AssetInputEntityData> {
 		TestAssetInputFactory() {
 			super(TestAssetInput)
 		}

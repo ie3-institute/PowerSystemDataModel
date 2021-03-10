@@ -12,16 +12,16 @@ import edu.ie3.datamodel.io.csv.FileNamingStrategy
  */
 trait CsvTestDataMeta {
 
-	String testParticipantsBaseFolderPath = new File(getClass().getResource('/testGridFiles').toURI()).absolutePath
-	String testTimeSeriesBaseFolderPath = new File(getClass().getResource('/testTimeSeriesFiles').toURI()).absolutePath
-	String graphicsFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("graphics")
-	String typeFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("types")
-	String gridFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("grid")
-	String participantsFolderPath =  testParticipantsBaseFolderPath.concat(File.separator).concat("participants")
-	String timeSeriesFolderPath =  testTimeSeriesBaseFolderPath
-	String thermalFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("thermal")
-	String coordinatesFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("coordinates")
+	static String testParticipantsBaseFolderPath = new File(getClass().getResource('/testGridFiles').toURI()).absolutePath
+	static String testTimeSeriesBaseFolderPath = new File(getClass().getResource('/testTimeSeriesFiles').toURI()).absolutePath
+	static String graphicsFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("graphics")
+	static String typeFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("types")
+	static String gridFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("grid")
+	static String participantsFolderPath =  testParticipantsBaseFolderPath.concat(File.separator).concat("participants")
+	static String timeSeriesFolderPath =  testTimeSeriesBaseFolderPath
+	static String thermalFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("thermal")
+	static String coordinatesFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("coordinates")
 
-	String csvSep = ","
-	FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+	static String csvSep = ","
+	static FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
 }
