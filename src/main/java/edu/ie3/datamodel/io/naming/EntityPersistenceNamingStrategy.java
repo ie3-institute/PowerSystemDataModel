@@ -11,10 +11,7 @@ import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.RandomLoadParameters;
+import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
@@ -172,12 +169,25 @@ public class EntityPersistenceNamingStrategy {
    * @return The file name
    */
   public Optional<String> getFileName(Class<? extends UniqueEntity> cls) {
+    Optional<String> inputEntityFileName = getInputEntityFileName(cls);
+    if (inputEntityFileName.isPresent()) return inputEntityFileName;
+    if (ResultEntity.class.isAssignableFrom(cls))
+      return getResultEntityFileName(cls.asSubclass(ResultEntity.class));
+    logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
+    return Optional.empty();
+  }
+
+  /**
+   * Get the the file name for all {@link InputEntity}s
+   *
+   * @param cls Targeted class of the given file
+   * @return The file name
+   */
+  public Optional<String> getInputEntityFileName(Class<? extends UniqueEntity> cls) {
     if (AssetTypeInput.class.isAssignableFrom(cls))
       return getTypeFileName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))
       return getAssetInputFileName(cls.asSubclass(AssetInput.class));
-    if (ResultEntity.class.isAssignableFrom(cls))
-      return getResultEntityFileName(cls.asSubclass(ResultEntity.class));
     if (CharacteristicInput.class.isAssignableFrom(cls))
       return getAssetCharacteristicsFileName(cls.asSubclass(CharacteristicInput.class));
     if (cls.equals(RandomLoadParameters.class)) {
@@ -190,8 +200,17 @@ public class EntityPersistenceNamingStrategy {
       return getOperatorInputFileName(cls.asSubclass(OperatorInput.class));
     if (TimeSeriesMappingSource.MappingEntry.class.isAssignableFrom(cls))
       return getTimeSeriesMappingFileName();
-    logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
     return Optional.empty();
+  }
+
+  /**
+   * Get the the file name for all {@link ResultEntity}s
+   *
+   * @param resultEntityClass the result entity class a filename string should be generated from
+   * @return the filename string
+   */
+  public Optional<String> getResultEntityFileName(Class<? extends ResultEntity> resultEntityClass) {
+    return Optional.of(buildResultEntityString(resultEntityClass));
   }
 
   /**
@@ -214,16 +233,6 @@ public class EntityPersistenceNamingStrategy {
   public Optional<String> getAssetInputFileName(Class<? extends AssetInput> assetInputClass) {
     String assetInputString = camelCaseToSnakeCase(assetInputClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetInputString));
-  }
-
-  /**
-   * Get the the file name for all {@link ResultEntity}s
-   *
-   * @param resultEntityClass the result entity class a filename string should be generated from
-   * @return the filename string
-   */
-  public Optional<String> getResultEntityFileName(Class<? extends ResultEntity> resultEntityClass) {
-    return Optional.of(buildResultEntityString(resultEntityClass));
   }
 
   private String buildResultEntityString(Class<? extends ResultEntity> resultEntityClass) {
