@@ -61,7 +61,7 @@ dependencies {
 	compile 'org.locationtech.jts.io:jts-io-common:1.18.1'
 
 	// Graphs
-	compile 'org.jgrapht:jgrapht-core:1.4.0'
+	compile 'org.jgrapht:jgrapht-core:1.5.0'
 
 	// testing
 	testCompile 'org.junit.jupiter:junit-jupiter:5.7.1'
