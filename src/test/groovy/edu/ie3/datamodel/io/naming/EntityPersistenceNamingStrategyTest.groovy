@@ -610,7 +610,29 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		res.get() == "prefix_time_series_mapping_suffix"
 	}
 
-	def "A simple file naming strategy does return empty sub directory path for any model input class"() {
+	def "A simple file naming strategy does return empty sub directory path for system type and characteristic model input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		actual == expected
+
+		where:
+		modelClass               || expected
+		BmTypeInput              || Optional.empty()
+		ChpTypeInput             || Optional.empty()
+		EvTypeInput              || Optional.empty()
+		HpTypeInput              || Optional.empty()
+		StorageTypeInput         || Optional.empty()
+		WecTypeInput             || Optional.empty()
+		WecCharacteristicInput   || Optional.empty()
+		EvCharacteristicInput    || Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for other system model input classes"() {
 		given: "a naming strategy without pre- or suffixes"
 		def strategy = new EntityPersistenceNamingStrategy()
 
@@ -631,30 +653,77 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		LoadInput                || Optional.empty()
 		StorageInput             || Optional.empty()
 		HpInput                  || Optional.empty()
+		EvcsInput                || Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for connector model input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		actual == expected
+
+		where:
+		modelClass               || expected
 		LineInput                || Optional.empty()
 		SwitchInput              || Optional.empty()
-		NodeInput                || Optional.empty()
-		MeasurementUnitInput     || Optional.empty()
-		EvcsInput                || Optional.empty()
 		Transformer2WInput       || Optional.empty()
 		Transformer3WInput       || Optional.empty()
-		CylindricalStorageInput  || Optional.empty()
-		ThermalHouseInput        || Optional.empty()
-		BmTypeInput              || Optional.empty()
-		ChpTypeInput             || Optional.empty()
-		EvTypeInput              || Optional.empty()
-		HpTypeInput              || Optional.empty()
 		LineTypeInput            || Optional.empty()
-		StorageTypeInput         || Optional.empty()
 		Transformer2WTypeInput   || Optional.empty()
 		Transformer3WTypeInput   || Optional.empty()
-		WecTypeInput             || Optional.empty()
-		WecTypeInput             || Optional.empty()
-		RandomLoadParameters     || Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for graphics model input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		actual == expected
+
+		where:
+		modelClass               || expected
 		NodeGraphicInput         || Optional.empty()
 		LineGraphicInput         || Optional.empty()
-		WecCharacteristicInput   || Optional.empty()
-		EvCharacteristicInput    || Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for thermal model input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		actual == expected
+
+		where:
+		modelClass               || expected
+		CylindricalStorageInput  || Optional.empty()
+		ThermalHouseInput        || Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for any other model classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		actual == expected
+
+		where:
+		modelClass               || expected
+		NodeInput                || Optional.empty()
+		MeasurementUnitInput     || Optional.empty()
+		RandomLoadParameters     || Optional.empty()
 		TimeSeriesMappingSource.MappingEntry  || Optional.empty()
 	}
 
@@ -712,7 +781,63 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		actual == Optional.empty()
 	}
 
-	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all input classes"() {
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all connector input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass               || expectedString
+		LineInput                || "line_input"
+		SwitchInput              || "switch_input"
+		Transformer2WInput       || "transformer_2_w_input"
+		Transformer3WInput       || "transformer_3_w_input"
+		LineTypeInput            || "line_type_input"
+		Transformer2WTypeInput   || "transformer_2_w_type_input"
+		Transformer3WTypeInput   || "transformer_3_w_type_input"
+	}
+
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all graphics input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass               || expectedString
+		NodeGraphicInput         || "node_graphic_input"
+		LineGraphicInput         || "line_graphic_input"
+	}
+
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all thermal input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass               || expectedString
+		CylindricalStorageInput  || "cylindrical_storage_input"
+		ThermalHouseInput        || "thermal_house_input"
+	}
+
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all system characteristic and type input classes"() {
 		given: "a naming strategy without pre- or suffixes"
 		def strategy = new EntityPersistenceNamingStrategy()
 
@@ -726,6 +851,28 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		where:
 		modelClass               || expectedString
 		WecCharacteristicInput   || "wec_characteristic_input"
+		EvCharacteristicInput    || "ev_characteristic_input"
+		BmTypeInput              || "bm_type_input"
+		ChpTypeInput             || "chp_type_input"
+		EvTypeInput              || "ev_type_input"
+		HpTypeInput              || "hp_type_input"
+		StorageTypeInput         || "storage_type_input"
+		WecTypeInput             || "wec_type_input"
+	}
+
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all other system input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass               || expectedString
 		FixedFeedInInput         || "fixed_feed_in_input"
 		PvInput                  || "pv_input"
 		WecInput                 || "wec_input"
@@ -735,28 +882,24 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		LoadInput                || "load_input"
 		StorageInput             || "storage_input"
 		HpInput                  || "hp_input"
-		LineInput                || "line_input"
-		SwitchInput              || "switch_input"
+		EvcsInput                || "evcs_input"
+	}
+
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all other input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass               || expectedString
 		NodeInput                || "node_input"
 		MeasurementUnitInput     || "measurement_unit_input"
-		EvcsInput                || "evcs_input"
-		Transformer2WInput       || "transformer_2_w_input"
-		Transformer3WInput       || "transformer_3_w_input"
-		CylindricalStorageInput  || "cylindrical_storage_input"
-		ThermalHouseInput        || "thermal_house_input"
-		EvCharacteristicInput    || "ev_characteristic_input"
-		BmTypeInput              || "bm_type_input"
-		ChpTypeInput             || "chp_type_input"
-		EvTypeInput              || "ev_type_input"
-		HpTypeInput              || "hp_type_input"
-		LineTypeInput            || "line_type_input"
-		StorageTypeInput         || "storage_type_input"
-		Transformer2WTypeInput   || "transformer_2_w_type_input"
-		Transformer3WTypeInput   || "transformer_3_w_type_input"
-		WecTypeInput             || "wec_type_input"
-		WecTypeInput             || "wec_type_input"
-		NodeGraphicInput         || "node_graphic_input"
-		LineGraphicInput         || "line_graphic_input"
 	}
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all result classes"() {
