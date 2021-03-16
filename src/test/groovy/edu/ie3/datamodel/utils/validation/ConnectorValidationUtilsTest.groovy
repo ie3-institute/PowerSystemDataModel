@@ -44,8 +44,8 @@ class ConnectorValidationUtilsTest extends Specification {
 		noExceptionThrown()
 	}
 
-	defPoint testCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))
-	def LineInput invalidLineLengthNotMatchingCoordinateDistances = new LineInput(
+	def testCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))
+	def invalidLineLengthNotMatchingCoordinateDistances = new LineInput(
 	UUID.fromString("92ec3bcf-1777-4d38-af67-0bf8c9fa73c7"),
 	"test_line_FtoG",
 	GridTestData.profBroccoli,
@@ -90,7 +90,7 @@ class ConnectorValidationUtilsTest extends Specification {
 		noExceptionThrown()
 	}
 
-	// No tests for "ConnectorValidationUtils.checkLineType recognizes all potential errors for a line type"
+	// No tests for "ConnectorValidationUtils.checkLineType recognizes all potential errors for a line type", as nothing needs to be tested there
 
 	def "Smoke Test: Correct transformer2W throws no exception"() {
 		given:

@@ -26,12 +26,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
-  protected static String notImplementedString(Object obj) {
-    return "Cannot validate object of class '"
-        + obj.getClass().getSimpleName()
-        + "', as no routine is implemented.";
-  }
-
   // allowed deviation of coordinates in degree for line position check
   final private static double allowedCoordinateError = 0.000001d;
   // allowed deviation of length in meters for line length

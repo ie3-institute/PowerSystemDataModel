@@ -19,12 +19,6 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
-  protected static String notImplementedString(Object obj) {
-    return "Cannot validate object of class '"
-        + obj.getClass().getSimpleName()
-        + "', as no routine is implemented.";
-  }
-
   /**
    * Validates a system participant if: <br>
    * - it is not null <br>

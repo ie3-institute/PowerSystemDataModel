@@ -35,7 +35,7 @@ public class ValidationUtils {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
-  private static String notImplementedString(Object obj) {
+  protected static String notImplementedString(Object obj) {
     return "Cannot validate object of class '"
         + obj.getClass().getSimpleName()
         + "', as no routine is implemented.";
