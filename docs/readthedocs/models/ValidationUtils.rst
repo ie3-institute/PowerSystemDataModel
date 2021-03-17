@@ -83,4 +83,5 @@ The ValidationUtils include validation checks for...
 What should be considered?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 - Due to many checks with if-conditions, the usage of the ValidationUtils for many objects might be runtime relevant.
+- The check for a GridContainer includes the interplay of the contained entities as well as the checks of all contained entities.
 - If new classes are introduced to the *PowerSystemDataModel*, make sure to follow the forwarding structure of the ValidationUtils methods when writing the check methods!
