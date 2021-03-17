@@ -48,18 +48,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     this.pvPlants = pvPlants;
     this.storages = storages;
     this.wecPlants = wecPlants;
-
-    // sanity check for distinct uuids
-    Optional<String> exceptionString =
-        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
-    if (exceptionString.isPresent()) {
-      throw new InvalidGridException(
-          "The provided entities in '"
-              + this.getClass().getSimpleName()
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
-    }
   }
 
   /**
@@ -179,18 +167,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
             .filter(gridElement -> gridElement instanceof WecInput)
             .map(wecInput -> (WecInput) wecInput)
             .collect(Collectors.toSet());
-
-    // sanity check for distinct uuids
-    Optional<String> exceptionString =
-        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
-    if (exceptionString.isPresent()) {
-      throw new InvalidGridException(
-          "The provided entities in '"
-              + this.getClass().getSimpleName()
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
-    }
   }
 
   @Override
@@ -207,11 +183,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     allEntities.addAll(storages);
     allEntities.addAll(wecPlants);
     return Collections.unmodifiableList(allEntities);
-  }
-
-  public void validate() {
-    throw new UnsupportedOperationException(
-        "Currently there are no tests for system participants in ValidationUtils.");
   }
 
   /** @return unmodifiable Set of all biomass plants in this grid */

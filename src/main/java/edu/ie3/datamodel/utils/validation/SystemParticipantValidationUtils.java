@@ -5,12 +5,20 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
+import static edu.ie3.datamodel.models.StandardUnits.*;
+
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.Units;
+
 import javax.measure.Quantity;
+import javax.measure.quantity.Dimensionless;
 
 public class SystemParticipantValidationUtils extends ValidationUtils {
 
@@ -30,7 +38,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param systemParticipant systemParticipant to validate
    */
-  public static void check(SystemParticipantInput systemParticipant) {
+  protected static void check(SystemParticipantInput systemParticipant) {
     checkNonNull(systemParticipant, "a system participant");
     if (systemParticipant.getqCharacteristics() == null)
       throw new InvalidEntityException(
@@ -68,9 +76,13 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - sRated is not null and not negative <br>
    * - cosphiRated is between zero and one
    *
+   * <p>A "distribution" method, that forwards the check request to specific implementations to
+   * fulfill the checking task, based on the class of the given object. If an unknown class is
+   * handed in, a {@link ValidationException} is thrown.
+   *
    * @param systemParticipantTypeInput systemParticipant Type to validate
    */
-  public static void checkType(SystemParticipantTypeInput systemParticipantTypeInput) {
+  protected static void checkType(SystemParticipantTypeInput systemParticipantTypeInput) {
     checkNonNull(systemParticipantTypeInput, "a system participant type");
     if ((systemParticipantTypeInput.getCapex() == null)
         || (systemParticipantTypeInput.getOpex() == null)
@@ -84,10 +96,22 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
           systemParticipantTypeInput.getsRated()
         },
         systemParticipantTypeInput);
-    if (systemParticipantTypeInput.getCosPhiRated() < 0d
-        || systemParticipantTypeInput.getCosPhiRated() > 1d)
-      throw new InvalidEntityException(
-          "Rated power factor must be between 0 and 1", systemParticipantTypeInput);
+    checkRatedPowerFactor(systemParticipantTypeInput, systemParticipantTypeInput.getCosPhiRated());
+
+    if (BmTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
+      checkBmType((BmTypeInput) systemParticipantTypeInput);
+    else if (ChpTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
+      checkChpType((ChpTypeInput) systemParticipantTypeInput);
+    else if (EvTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
+      checkEvType((EvTypeInput) systemParticipantTypeInput);
+    else if (HpTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
+      checkHpType((HpTypeInput) systemParticipantTypeInput);
+    else if (StorageTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
+      checkStorageType((StorageTypeInput) systemParticipantTypeInput);
+    else if (WecTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
+      checkWecType((WecTypeInput) systemParticipantTypeInput);
+    else throw new ValidationException(notImplementedString(systemParticipantTypeInput));
+
   }
 
   /**
@@ -97,26 +121,22 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param bmInput BmInput to validate
    */
-  public static void checkBm(BmInput bmInput) {
-    checkBmType(bmInput.getType());
+  private static void checkBm(BmInput bmInput) {
+    checkType(bmInput.getType());
   }
 
   /**
    * Validates a bmTypeInput if: <br>
-   * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
    * - its active power gradient is not negative <br>
    * - its efficiency of assets inverter is between 0% and 100%
    *
    * @param bmTypeInput BmTypeInput to validate
    */
-  public static void checkBmType(BmTypeInput bmTypeInput) {
-    checkType(bmTypeInput);
-    detectNegativeQuantities(new Quantity<?>[] {bmTypeInput.getActivePowerGradient()}, bmTypeInput);
-    if (bmTypeInput.getEtaConv().getValue().doubleValue() < 0d
-        || bmTypeInput.getEtaConv().getValue().doubleValue() > 100d)
-      throw new InvalidEntityException(
-          "Efficiency of inverter of biomass unit type must be between 0% and 100%", bmTypeInput);
+  private static void checkBmType(BmTypeInput bmTypeInput) {
+    detectNegativeQuantities(new Quantity<?>[]{bmTypeInput.getActivePowerGradient()}, bmTypeInput);
+    isBetweenZeroAndHundredPercent(bmTypeInput, bmTypeInput.getEtaConv(), "Efficiency of inverter");
   }
+
 
   /**
    * Validates a chpInput if: <br>
@@ -125,13 +145,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param chpInput ChpInput to validate
    */
-  public static void checkChp(ChpInput chpInput) {
-    checkChpType(chpInput.getType());
+  private static void checkChp(ChpInput chpInput) {
+    checkType(chpInput.getType());
   }
 
   /**
    * Validates a chpTypeInput if: <br>
-   * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
    * - its efficiency of the electrical inverter is between 0% and 100% <br>
    * - its thermal efficiency of the system is between 0% and 100% <br>
    * - its rated thermal power is positive <br>
@@ -139,20 +158,11 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param chpTypeInput ChpTypeInput to validate
    */
-  public static void checkChpType(ChpTypeInput chpTypeInput) {
-    checkType(chpTypeInput);
+  private static void checkChpType(ChpTypeInput chpTypeInput) {
     detectNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpOwn()}, chpTypeInput);
     detectZeroOrNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpThermal()}, chpTypeInput);
-    if (chpTypeInput.getEtaEl().getValue().doubleValue() < 0d
-        || chpTypeInput.getEtaEl().getValue().doubleValue() > 100d)
-      throw new InvalidEntityException(
-          "Efficiency of electrical inverter of CHP unit type must be between 0% and 100%",
-          chpTypeInput);
-    if (chpTypeInput.getEtaThermal().getValue().doubleValue() < 0d
-        || chpTypeInput.getEtaThermal().getValue().doubleValue() > 100d)
-      throw new InvalidEntityException(
-          "Thermal efficiency of system of CHP unit type must be between 0% and 100%",
-          chpTypeInput);
+    isBetweenZeroAndHundredPercent(chpTypeInput, chpTypeInput.getEtaEl(), "Electrical efficiency" );
+    isBetweenZeroAndHundredPercent(chpTypeInput, chpTypeInput.getEtaThermal(), "Thermal efficiency");
   }
 
   /**
@@ -162,20 +172,18 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param evInput EvInput to validate
    */
-  public static void checkEv(EvInput evInput) {
-    checkEvType(evInput.getType());
+  private static void checkEv(EvInput evInput) {
+    checkType(evInput.getType());
   }
 
   /**
    * Validates a EvTypeInput if: <br>
-   * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
    * - its available battery capacity is positive <br>
    * - its energy consumption per driven kilometre is positive
    *
    * @param evTypeInput EvTypeInput to validate
    */
-  public static void checkEvType(EvTypeInput evTypeInput) {
-    checkType(evTypeInput);
+  private static void checkEvType(EvTypeInput evTypeInput) {
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {evTypeInput.geteStorage(), evTypeInput.geteCons()}, evTypeInput);
   }
@@ -187,11 +195,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param fixedFeedInInput FixedFeedInInput to validate
    */
-  public static void checkFixedFeedIn(FixedFeedInInput fixedFeedInInput) {
+  private static void checkFixedFeedIn(FixedFeedInInput fixedFeedInInput) {
     detectNegativeQuantities(new Quantity<?>[] {fixedFeedInInput.getsRated()}, fixedFeedInInput);
-    if (fixedFeedInInput.getCosPhiRated() < 0d || fixedFeedInInput.getCosPhiRated() > 1d)
-      throw new InvalidEntityException(
-          "Rated power factor of fixed feed-in unit must be between 0 and 1", fixedFeedInInput);
+    checkRatedPowerFactor(fixedFeedInInput, fixedFeedInInput.getCosPhiRated());
   }
 
   /**
@@ -201,19 +207,17 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param hpInput HpInput to validate
    */
-  public static void checkHp(HpInput hpInput) {
-    checkHpType(hpInput.getType());
+  private static void checkHp(HpInput hpInput) {
+    checkType(hpInput.getType());
   }
 
   /**
    * Validates a HpTypeInput if: <br>
-   * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
    * - its rated thermal power is positive
    *
    * @param hpTypeInput HpTypeInput to validate
    */
-  public static void checkHpType(HpTypeInput hpTypeInput) {
-    checkType(hpTypeInput);
+  private static void checkHpType(HpTypeInput hpTypeInput) {
     detectZeroOrNegativeQuantities(new Quantity<?>[] {hpTypeInput.getpThermal()}, hpTypeInput);
   }
 
@@ -226,14 +230,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param loadInput LoadInput to validate
    */
-  public static void checkLoad(LoadInput loadInput) {
+  private static void checkLoad(LoadInput loadInput) {
     if (loadInput.getStandardLoadProfile() == null)
       throw new InvalidEntityException("No standard load profile defined for load", loadInput);
     detectNegativeQuantities(
         new Quantity<?>[] {loadInput.getsRated(), loadInput.geteConsAnnual()}, loadInput);
-    if (loadInput.getCosPhiRated() < 0d || loadInput.getCosPhiRated() > 1d)
-      throw new InvalidEntityException(
-          "Rated power factor of load must be between 0 and 1", loadInput);
+    checkRatedPowerFactor(loadInput, loadInput.getCosPhiRated());
   }
 
   /**
@@ -247,15 +249,13 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param pvInput PvInput to validate
    */
-  public static void checkPv(PvInput pvInput) {
+  private static void checkPv(PvInput pvInput) {
     detectNegativeQuantities(new Quantity<?>[] {pvInput.getsRated()}, pvInput);
     checkAlbedo(pvInput);
     checkAzimuth(pvInput);
-    checkEtaConv(pvInput);
+    isBetweenZeroAndHundredPercent(pvInput, pvInput.getEtaConv(), "Efficiency of the converter");
     checkHeight(pvInput);
-    if (pvInput.getCosPhiRated() < 0d || pvInput.getCosPhiRated() > 1d)
-      throw new InvalidEntityException(
-          "Rated power factor of the PV unit must be between 0 and 1", pvInput);
+    checkRatedPowerFactor(pvInput, pvInput.getCosPhiRated());
   }
 
   /**
@@ -278,27 +278,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param pvInput PvInput to validate
    */
   private static void checkAzimuth(PvInput pvInput) {
-    if (pvInput.getAzimuth().getValue().doubleValue() < -90d
-        || pvInput.getAzimuth().getValue().doubleValue() > 90d)
+    if (pvInput.getAzimuth().isLessThan(Quantities.getQuantity(-90d, AZIMUTH))
+            || pvInput.getAzimuth().isGreaterThan(Quantities.getQuantity(90d, AZIMUTH)))
       throw new InvalidEntityException(
           "Azimuth angle of "
               + pvInput.getClass().getSimpleName()
               + " must be between -90° (east) and 90° (west)",
-          pvInput);
-  }
-
-  /**
-   * Check if efficiency of the assets converter (etaConv) of pvInput is between 0% and 100%
-   *
-   * @param pvInput PvInput to validate
-   */
-  private static void checkEtaConv(PvInput pvInput) {
-    if (pvInput.getEtaConv().getValue().doubleValue() < 0d
-        || pvInput.getEtaConv().getValue().doubleValue() > 100d)
-      throw new InvalidEntityException(
-          "Efficiency of the converter of "
-              + pvInput.getClass().getSimpleName()
-              + " must be between 0% and 100%",
           pvInput);
   }
 
@@ -308,8 +293,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param pvInput PvInput to validate
    */
   private static void checkHeight(PvInput pvInput) {
-    if (pvInput.getHeight().getValue().doubleValue() < 0d
-        || pvInput.getHeight().getValue().doubleValue() > 90d)
+    if (pvInput.getHeight().isLessThan(Quantities.getQuantity(0d, SOLAR_HEIGHT))
+            || pvInput.getHeight().isGreaterThan(Quantities.getQuantity(90d, SOLAR_HEIGHT)))
       throw new InvalidEntityException(
           "Tilted inclination from horizontal of "
               + pvInput.getClass().getSimpleName()
@@ -324,13 +309,12 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param storageInput StorageInput to validate
    */
-  public static void checkStorage(StorageInput storageInput) {
-    checkStorageType(storageInput.getType());
+  private static void checkStorage(StorageInput storageInput) {
+    checkType(storageInput.getType());
   }
 
   /**
    * Validates a StorageTypeInput if: <br>
-   * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
    * - its permissible amount of full cycles is not negative <br>
    * - its efficiency of the electrical converter is between 0% and 100% <br>
    * - its maximum permissible depth of discharge is between 0% and 100% <br>
@@ -341,22 +325,13 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param storageTypeInput StorageTypeInput to validate
    */
-  public static void checkStorageType(StorageTypeInput storageTypeInput) {
-    checkType(storageTypeInput);
+  private static void checkStorageType(StorageTypeInput storageTypeInput) {
     if (storageTypeInput.getLifeCycle() < 0)
       throw new InvalidEntityException(
           "Permissible amount of life cycles of the storage type must be zero or positive",
           storageTypeInput);
-    if (storageTypeInput.getEta().getValue().doubleValue() < 0d
-        || storageTypeInput.getEta().getValue().doubleValue() > 100d)
-      throw new InvalidEntityException(
-          "Efficiency of the electrical converter of the storage type must be between 0% and 100%",
-          storageTypeInput);
-    if (storageTypeInput.getDod().getValue().doubleValue() < 0d
-        || storageTypeInput.getDod().getValue().doubleValue() > 100d)
-      throw new InvalidEntityException(
-          "Maximum permissible depth of discharge of the storage type must be between 0% and 100%",
-          storageTypeInput);
+    isBetweenZeroAndHundredPercent(storageTypeInput, storageTypeInput.getEta(), "Efficiency of the electrical converter");
+    isBetweenZeroAndHundredPercent(storageTypeInput, storageTypeInput.getDod(), "Maximum permissible depth of discharge");
     detectNegativeQuantities(
         new Quantity<?>[] {
           storageTypeInput.getpMax(),
@@ -375,26 +350,20 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param wecInput WecInput to validate
    */
-  public static void checkWec(WecInput wecInput) {
-    checkWecType(wecInput.getType());
+  private static void checkWec(WecInput wecInput) {
+    checkType(wecInput.getType());
   }
 
   /**
    * Validates a WecTypeInput if: <br>
-   * - common system participants values (capex, opex, sRated, cosphiRated) are valid <br>
    * - its efficiency of the assets converter is between 0% and 100% <br>
    * - its rotor area is not negative <br>
    * - its height of the rotor hub is not negative
    *
    * @param wecTypeInput WecTypeInput to validate
    */
-  public static void checkWecType(WecTypeInput wecTypeInput) {
-    checkType(wecTypeInput);
-    if (wecTypeInput.getEtaConv().getValue().doubleValue() < 0d
-        || wecTypeInput.getEtaConv().getValue().doubleValue() > 100d)
-      throw new InvalidEntityException(
-          "Efficiency of the assets converter of the wind energy converter type must be between 0% and 100%",
-          wecTypeInput);
+  private static void checkWecType(WecTypeInput wecTypeInput) {
+    isBetweenZeroAndHundredPercent(wecTypeInput, wecTypeInput.getEtaConv(), "Efficiency of the converter");
     detectNegativeQuantities(
         new Quantity<?>[] {wecTypeInput.getRotorArea(), wecTypeInput.getHubHeight()}, wecTypeInput);
   }
@@ -406,8 +375,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param evcsInput EvcsInput to validate
    */
-  public static void checkEvcs(EvcsInput evcsInput) {
-    checkEvcsType(evcsInput.getType());
+  private static void checkEvcs(EvcsInput evcsInput) {
     // TODO: Implement when class is finished
   }
 
@@ -417,7 +385,33 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param evcsTypeInput ChargingPointType to validate
    */
-  public static void checkEvcsType(ChargingPointType evcsTypeInput) {
+  private static void checkEvcsType(ChargingPointType evcsTypeInput) {
     // TODO: Implement when class is finished
   }
+
+  /**
+   * Validates if the rated power factor is between 0 and 1, otherwise throws an {@link InvalidEntityException}
+   *
+   * @param input entity to validate
+   * @param cosPhiRated rated power factor to check
+   */
+  private static void checkRatedPowerFactor(InputEntity input, double cosPhiRated) {
+    if (cosPhiRated < 0d || cosPhiRated > 1d)
+      throw new InvalidEntityException(
+          "Rated power factor of " + input.getClass().getSimpleName() + " must be between 0 and 1", input);
+  }
+
+  /**
+   * Validates if a value (e.g. an efficiency) is between 0% and 100%, otherwise throws an {@link InvalidEntityException}
+   *
+   * @param input entity to validate
+   * @param value value of entity to check
+   */
+  private static void isBetweenZeroAndHundredPercent(InputEntity input, ComparableQuantity<Dimensionless> value, String string) {
+    if (value.isLessThan(Quantities.getQuantity(0d, Units.PERCENT))
+            || value.isGreaterThan(Quantities.getQuantity(100d, Units.PERCENT)))
+      throw new InvalidEntityException(
+              string + " of " + input.getClass().getSimpleName() + " must be between 0% and 100%", input);
+  }
+
 }

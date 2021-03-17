@@ -30,7 +30,6 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     this.rawGrid = rawGrid;
     this.systemParticipants = systemParticipants;
     this.graphics = graphics;
-    validate();
   }
 
   @Override
@@ -40,20 +39,6 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(graphics.allEntitiesAsList());
     return Collections.unmodifiableList(allEntities);
-  }
-
-  public void validate() {
-    // sanity check to ensure distinct UUIDs
-    Optional<String> exceptionString =
-        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
-    if (exceptionString.isPresent()) {
-      throw new InvalidGridException(
-          "The provided entities in '"
-              + this.getClass().getSimpleName()
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
-    }
   }
 
   /**

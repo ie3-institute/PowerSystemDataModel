@@ -70,7 +70,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param line Line to validate
    */
-  protected static void checkLine(LineInput line) {
+  private static void checkLine(LineInput line) {
     checkLineType(line.getType());
     connectsNodesInDifferentSubnets(line, false);
     connectsNodesWithDifferentVoltageLevels(line, false);
@@ -112,7 +112,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer2W Transformer2W to validate
    */
-  protected static void checkTransformer2W(Transformer2WInput transformer2W) {
+  private static void checkTransformer2W(Transformer2WInput transformer2W) {
     checkTransformer2WType(transformer2W.getType());
     checkIfTapPositionIsWithinBounds(transformer2W);
     connectsNodesWithDifferentVoltageLevels(transformer2W, true);
@@ -168,7 +168,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer3W Transformer3W to validate
    */
-  public static void checkTransformer3W(Transformer3WInput transformer3W) {
+  private static void checkTransformer3W(Transformer3WInput transformer3W) {
     checkTransformer3WType(transformer3W.getType());
     checkIfTapPositionIsWithinBounds((transformer3W));
     // Check if transformer connects different voltage levels
@@ -202,7 +202,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param transformer3WType Transformer type to validate
    */
-  public static void checkTransformer3WType(Transformer3WTypeInput transformer3WType) {
+  protected static void checkTransformer3WType(Transformer3WTypeInput transformer3WType) {
     checkNonNull(transformer3WType, "a three winding transformer type");
     detectNegativeQuantities(
         new Quantity<?>[] {
@@ -230,7 +230,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *
    * @param switchInput Switch to validate
    */
-  public static void checkSwitch(SwitchInput switchInput) {
+  private static void checkSwitch(SwitchInput switchInput) {
     if (!switchInput.getNodeA().getVoltLvl().equals(switchInput.getNodeB().getVoltLvl()))
       throw new InvalidEntityException("Switch connects two different voltage levels", switchInput);
     /* Remark: Connecting two different "subnets" is fine, because as of our definition regarding a switchgear in

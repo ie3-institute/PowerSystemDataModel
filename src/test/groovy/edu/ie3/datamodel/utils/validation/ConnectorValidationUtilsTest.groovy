@@ -44,8 +44,8 @@ class ConnectorValidationUtilsTest extends Specification {
 		noExceptionThrown()
 	}
 
-	def testCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))
-	def invalidLineLengthNotMatchingCoordinateDistances = new LineInput(
+	def static testCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))
+	def static invalidLineLengthNotMatchingCoordinateDistances = new LineInput(
 	UUID.fromString("92ec3bcf-1777-4d38-af67-0bf8c9fa73c7"),
 	"test_line_FtoG",
 	GridTestData.profBroccoli,
@@ -159,7 +159,7 @@ class ConnectorValidationUtilsTest extends Specification {
 
 		where:
 		invalidTransformer2WType || expectedException
-		new Transformer2WTypeInput(uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, Quantities.getQuantity(0d, DV_TAP), dPhi, tapSide, tapNeutr, tapMin, tapMax) || new InvalidEntityException("Voltage magnitude increase per tap position must be between 0% and 100%", invalidTransformer2WType)
+		new Transformer2WTypeInput(uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, Quantities.getQuantity(-1d, DV_TAP), dPhi, tapSide, tapNeutr, tapMin, tapMax) || new InvalidEntityException("Voltage magnitude increase per tap position must be between 0% and 100%", invalidTransformer2WType)
 		new Transformer2WTypeInput(uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, 100, tapMax) || new InvalidEntityException("Minimum tap position must be lower than maximum tap position", invalidTransformer2WType)
 		new Transformer2WTypeInput(uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, 100, tapMin, tapMax) || new InvalidEntityException("Neutral tap position must be between minimum and maximum tap position", invalidTransformer2WType)
 	}
@@ -226,7 +226,7 @@ class ConnectorValidationUtilsTest extends Specification {
 
 		where:
 		invalidTransformer3WType || expectedException
-		new Transformer3WTypeInput(uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, Quantities.getQuantity(0d, DV_TAP), dPhi, tapNeutr, tapMin, tapMax) || new InvalidEntityException("Voltage magnitude increase per tap position must be between 0% and 100%", invalidTransformer3WType)
+		new Transformer3WTypeInput(uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, Quantities.getQuantity(-1d, DV_TAP), dPhi, tapNeutr, tapMin, tapMax) || new InvalidEntityException("Voltage magnitude increase per tap position must be between 0% and 100%", invalidTransformer3WType)
 		new Transformer3WTypeInput(uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, 100, tapMax) || new InvalidEntityException("Minimum tap position must be lower than maximum tap position", invalidTransformer3WType)
 		new Transformer3WTypeInput(uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, 100, tapMin, tapMax) || new InvalidEntityException("Neutral tap position must be between minimum and maximum tap position", invalidTransformer3WType)
 	}

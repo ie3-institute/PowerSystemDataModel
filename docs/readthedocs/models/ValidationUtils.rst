@@ -75,7 +75,10 @@ The ValidationUtils include validation checks for...
         - LineGraphicInput
         - NodeGraphicInput
 - GridContainerValidationUtils
+    - GraphicElements
     - GridContainer
+    - RawGridElements
+    - SystemParticipants
 
 What should be considered?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

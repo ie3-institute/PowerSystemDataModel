@@ -31,7 +31,7 @@ public class NodeValidationUtils extends ValidationUtils {
    *
    * @param node Node to validate
    */
-  public static void check(NodeInput node) {
+  protected static void check(NodeInput node) {
     checkNonNull(node, "a node");
     try {
       checkVoltageLevel(node.getVoltLvl());

@@ -22,7 +22,7 @@ public class MeasurementUnitValidationUtils extends ValidationUtils {
    *
    * @param measurementUnit Measurement unit to validate
    */
-  public static void check(MeasurementUnitInput measurementUnit) {
+  protected static void check(MeasurementUnitInput measurementUnit) {
     checkNonNull(measurementUnit, "a measurement unit");
     if (!measurementUnit.getP()
         && !measurementUnit.getQ()

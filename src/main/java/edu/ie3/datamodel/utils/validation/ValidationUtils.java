@@ -15,6 +15,7 @@ import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.GridContainer;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
@@ -72,7 +73,7 @@ public class ValidationUtils {
    *
    * @param assetInput AssetInput to check
    */
-  public static void checkAsset(AssetInput assetInput) {
+  private static void checkAsset(AssetInput assetInput) {
     checkNonNull(assetInput, "an asset");
     if (assetInput.getId() == null) throw new InvalidEntityException("No ID assigned", assetInput);
     if (assetInput.getOperationTime() == null)
@@ -119,7 +120,7 @@ public class ValidationUtils {
    *
    * @param assetTypeInput AssetTypeInput to check
    */
-  public static void checkAssetType(AssetTypeInput assetTypeInput) {
+  private static void checkAssetType(AssetTypeInput assetTypeInput) {
     checkNonNull(assetTypeInput, "an asset type");
     if (assetTypeInput.getUuid() == null)
       throw new InvalidEntityException("No UUID assigned", assetTypeInput);
@@ -133,21 +134,9 @@ public class ValidationUtils {
       ConnectorValidationUtils.checkTransformer2WType((Transformer2WTypeInput) assetTypeInput);
     else if (Transformer3WTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
       ConnectorValidationUtils.checkTransformer3WType((Transformer3WTypeInput) assetTypeInput);
-    else if (SystemParticipantTypeInput.class.isAssignableFrom(assetTypeInput.getClass())) {
-      if (BmTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-        SystemParticipantValidationUtils.checkBmType((BmTypeInput) assetTypeInput);
-      else if (ChpTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-        SystemParticipantValidationUtils.checkChpType((ChpTypeInput) assetTypeInput);
-      else if (EvTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-        SystemParticipantValidationUtils.checkEvType((EvTypeInput) assetTypeInput);
-      else if (HpTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-        SystemParticipantValidationUtils.checkHpType((HpTypeInput) assetTypeInput);
-      else if (StorageTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-        SystemParticipantValidationUtils.checkStorageType((StorageTypeInput) assetTypeInput);
-      else if (WecTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
-        SystemParticipantValidationUtils.checkWecType((WecTypeInput) assetTypeInput);
-      else throw new ValidationException(notImplementedString(assetTypeInput));
-    } else {
+    else if (SystemParticipantTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+      SystemParticipantValidationUtils.checkType((SystemParticipantTypeInput) assetTypeInput);
+    else {
       throw new ValidationException(notImplementedString(assetTypeInput));
     }
   }
@@ -218,7 +207,7 @@ public class ValidationUtils {
    * @param entities the set that should be checked
    * @return true if all UUIDs of the provided entities are unique, false otherwise
    */
-  public static boolean distinctUuids(Set<? extends UniqueEntity> entities) {
+  private static boolean distinctUuids(Set<? extends UniqueEntity> entities) { // TODO NSteffan: Change all to private or protected -> no usage in other classes except subclasses
     return entities.stream()
             .filter(distinctByKey(UniqueEntity::getUuid))
             .collect(Collectors.toSet())
@@ -245,7 +234,7 @@ public class ValidationUtils {
    * @param entities the entities that should be checkd for UUID uniqueness
    * @return either a string wrapped in an optional with duplicate UUIDs or an empty optional
    */
-  public static Optional<String> checkForDuplicateUuids(Set<UniqueEntity> entities) {
+  protected static Optional<String> checkForDuplicateUuids(Set<UniqueEntity> entities) {
     if (distinctUuids(entities)) {
       return Optional.empty();
     }

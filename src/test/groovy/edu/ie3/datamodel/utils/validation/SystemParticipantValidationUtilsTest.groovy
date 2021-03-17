@@ -101,7 +101,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 		invalidType || expectedException
 		new BmTypeInput(uuid, id, null, opex, activePowerGradient, sRated, cosPhiRated, etaConv) || new InvalidEntityException("At least one of capex, opex, or sRated is null", invalidType)
 		new BmTypeInput(uuid, id, Quantities.getQuantity(-100d, CAPEX), Quantities.getQuantity(-50d, ENERGY_PRICE), activePowerGradient, Quantities.getQuantity(-25d, ACTIVE_POWER_IN), cosPhiRated, etaConv) || new InvalidEntityException("The following quantities have to be zero or positive: -100 EUR, -50 EUR/MWh, -25 kVA", invalidType)
-		new BmTypeInput(uuid, id, capex, opex, activePowerGradient, sRated, 2, etaConv) || new InvalidEntityException("Rated power factor must be between 0 and 1", invalidType)
+		new BmTypeInput(uuid, id, capex, opex, activePowerGradient, sRated, 2, etaConv) || new InvalidEntityException("Rated power factor of BmTypeInput must be between 0 and 1", invalidType)
 	}
 
 	// BM
@@ -142,7 +142,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 		where:
 		invalidBmType                                                              												|| expectedException
 		new BmTypeInput(uuid, id, capex, opex, Quantities.getQuantity(-25, ACTIVE_POWER_GRADIENT), sRated, cosPhiRated, etaConv) || new InvalidEntityException("The following quantities have to be zero or positive: -25 %/h", invalidBmType)
-		new BmTypeInput(uuid, id, capex, opex, activePowerGradient, sRated, cosPhiRated, Quantities.getQuantity(1000d, PERCENT)) || new InvalidEntityException("Efficiency of inverter of biomass unit type must be between 0% and 100%", invalidBmType)
+		new BmTypeInput(uuid, id, capex, opex, activePowerGradient, sRated, cosPhiRated, Quantities.getQuantity(1000d, PERCENT)) || new InvalidEntityException("Efficiency of inverter of BmTypeInput must be between 0% and 100%", invalidBmType)
 	}
 
 	// CHP
@@ -158,7 +158,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 		noExceptionThrown()
 	}
 
-	// No tests for "SystemParticipantValidationUtils.checkChp() recognizes all potential errors for a CHP plant"
+	// No tests for "SystemParticipantValidationUtils.checkChp() recognizes all potential errors for a CHP plant, as there is nothing to test here"
 
 	def "Smoke Test: Correct CHP type throws no exception"() {
 		given:
@@ -184,8 +184,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
 		invalidChpType                                                                   || expectedException
 		new ChpTypeInput(uuid, id, capex, opex, etaEl, etaThermal, sRated, cosPhiRated, pThermal, Quantities.getQuantity(-100, ACTIVE_POWER_IN)) || new InvalidEntityException("The following quantities have to be zero or positive: -100 kW", invalidChpType)
 		new ChpTypeInput(uuid, id, capex, opex, etaEl, etaThermal, sRated, cosPhiRated, Quantities.getQuantity(0, ACTIVE_POWER_IN), pOwn) || new InvalidEntityException("The following quantities have to be positive: 0 kW", invalidChpType)
-		new ChpTypeInput(uuid, id, capex, opex, Quantities.getQuantity(110, EFFICIENCY), etaThermal, sRated, cosPhiRated, pThermal, pOwn) || new InvalidEntityException("Efficiency of electrical inverter of CHP unit type must be between 0% and 100%", invalidChpType)
-		new ChpTypeInput(uuid, id, capex, opex, etaEl, Quantities.getQuantity(110, EFFICIENCY), sRated, cosPhiRated, pThermal, pOwn) || new InvalidEntityException("Thermal efficiency of system of CHP unit type must be between 0% and 100%", invalidChpType)
+		new ChpTypeInput(uuid, id, capex, opex, Quantities.getQuantity(110, EFFICIENCY), etaThermal, sRated, cosPhiRated, pThermal, pOwn) || new InvalidEntityException("Electrical efficiency of ChpTypeInput must be between 0% and 100%", invalidChpType)
+		new ChpTypeInput(uuid, id, capex, opex, etaEl, Quantities.getQuantity(110, EFFICIENCY), sRated, cosPhiRated, pThermal, pOwn) || new InvalidEntityException("Thermal efficiency of ChpTypeInput must be between 0% and 100%", invalidChpType)
 	}
 
 	// EV
@@ -253,7 +253,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 		where:
 		invalidFixedFeedIn                                                     || expectedException
 		SystemParticipantTestData.fixedFeedInInput.copy().sRated(Quantities.getQuantity(-100d, ACTIVE_POWER_IN)).build() || new InvalidEntityException("The following quantities have to be zero or positive: -100 kVA", invalidFixedFeedIn)
-		SystemParticipantTestData.fixedFeedInInput.copy().cosPhiRated(-1d).build() || new InvalidEntityException("Rated power factor of fixed feed-in unit must be between 0 and 1", invalidFixedFeedIn)
+		SystemParticipantTestData.fixedFeedInInput.copy().cosPhiRated(-1d).build() || new InvalidEntityException("Rated power factor of FixedFeedInInput must be between 0 and 1", invalidFixedFeedIn)
 	}
 
 	// HP
@@ -322,7 +322,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 		invalidLoad                                                   || expectedException
 		SystemParticipantTestData.loadInput.copy().standardLoadProfile(null).build() || new InvalidEntityException("No standard load profile defined for load", invalidLoad)
 		SystemParticipantTestData.loadInput.copy().sRated(Quantities.getQuantity(-25d, ACTIVE_POWER_IN)).eConsAnnual(Quantities.getQuantity(-4000, ENERGY_IN)).build() || new InvalidEntityException("The following quantities have to be zero or positive: -25 kVA, -4000 kWh", invalidLoad)
-		SystemParticipantTestData.loadInput.copy().cosPhiRated(2).build() || new InvalidEntityException("Rated power factor of load must be between 0 and 1", invalidLoad)
+		SystemParticipantTestData.loadInput.copy().cosPhiRated(2).build() || new InvalidEntityException("Rated power factor of LoadInput must be between 0 and 1", invalidLoad)
 	}
 
 	// PV
@@ -354,7 +354,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 		SystemParticipantTestData.pvInput.copy().azimuth(Quantities.getQuantity(-100d, AZIMUTH)).build() || new InvalidEntityException("Azimuth angle of PvInput must be between -90° (east) and 90° (west)", invalidPV)
 		SystemParticipantTestData.pvInput.copy().etaConv(Quantities.getQuantity(110d, EFFICIENCY)).build() || new InvalidEntityException("Efficiency of the converter of PvInput must be between 0% and 100%", invalidPV)
 		SystemParticipantTestData.pvInput.copy().height(Quantities.getQuantity(100d, SOLAR_HEIGHT)).build() || new InvalidEntityException("Tilted inclination from horizontal of PvInput must be between 0° and 90°", invalidPV)
-		SystemParticipantTestData.pvInput.copy().cosPhiRated(2).build() || new InvalidEntityException("Rated power factor of the PV unit must be between 0 and 1", invalidPV)
+		SystemParticipantTestData.pvInput.copy().cosPhiRated(2).build() || new InvalidEntityException("Rated power factor of PvInput must be between 0 and 1", invalidPV)
 	}
 
 	// Storage
@@ -395,8 +395,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
 		where:
 		invalidStorageType                                                                                           || expectedException
 		new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, eta, dod, lifeTime, -1) || new InvalidEntityException("Permissible amount of life cycles of the storage type must be zero or positive", invalidStorageType)
-		new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, Quantities.getQuantity(110, EFFICIENCY), dod, lifeTime, lifeCycle) || new InvalidEntityException("Efficiency of the electrical converter of the storage type must be between 0% and 100%", invalidStorageType)
-		new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, eta, Quantities.getQuantity(-10, EFFICIENCY), lifeTime, lifeCycle) || new InvalidEntityException("Maximum permissible depth of discharge of the storage type must be between 0% and 100%", invalidStorageType)
+		new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, Quantities.getQuantity(110, EFFICIENCY), dod, lifeTime, lifeCycle) || new InvalidEntityException("Efficiency of the electrical converter of StorageTypeInput must be between 0% and 100%", invalidStorageType)
+		new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, eta, Quantities.getQuantity(-10, EFFICIENCY), lifeTime, lifeCycle) || new InvalidEntityException("Maximum permissible depth of discharge of StorageTypeInput must be between 0% and 100%", invalidStorageType)
 		new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, Quantities.getQuantity(-15, ACTIVE_POWER_IN), Quantities.getQuantity(-100, ACTIVE_POWER_GRADIENT), eta, dod, Quantities.getQuantity(-10.5, LIFE_TIME), lifeCycle) || new InvalidEntityException("The following quantities have to be zero or positive: -15 kW, -100 %/h, -10.5 h", invalidStorageType)
 		new StorageTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), sRated, cosPhiRated, pMax, cpRate, eta, dod, lifeTime, lifeCycle) || new InvalidEntityException("The following quantities have to be positive: 0 kWh", invalidStorageType)
 	}
@@ -438,7 +438,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
 		where:
 		invalidWecType                          || expectedException
-		new WecTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, wecCharacteristic, Quantities.getQuantity(110d, EFFICIENCY), rotorArea, hubHeight) || new InvalidEntityException("Efficiency of the assets converter of the wind energy converter type must be between 0% and 100%", invalidWecType)
+		new WecTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, wecCharacteristic, Quantities.getQuantity(110d, EFFICIENCY), rotorArea, hubHeight) || new InvalidEntityException("Efficiency of the converter of WecTypeInput must be between 0% and 100%", invalidWecType)
 		new WecTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, wecCharacteristic, etaConv, Quantities.getQuantity(-10, ROTOR_AREA), Quantities.getQuantity(-200, HUB_HEIGHT)) || new InvalidEntityException("The following quantities have to be zero or positive: -10 m², -200 m", invalidWecType)
 	}
 
