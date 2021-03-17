@@ -38,9 +38,11 @@ public class NodeValidationUtils extends ValidationUtils {
     } catch (VoltageLevelException e) {
       throw new InvalidEntityException("Node has invalid voltage level", node);
     }
-    if (node.getvTarget().isLessThanOrEqualTo(Quantities.getQuantity(0, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)))
+    if (node.getvTarget()
+        .isLessThanOrEqualTo(Quantities.getQuantity(0, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)))
       throw new InvalidEntityException("Target voltage (p.u.) is not a positive value", node);
-    else if (node.getvTarget().isGreaterThan(Quantities.getQuantity(2, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)))
+    else if (node.getvTarget()
+        .isGreaterThan(Quantities.getQuantity(2, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)))
       throw new UnsafeEntityException("Target voltage (p.u.) might be too high", node);
     if (node.getSubnet() <= 0)
       throw new InvalidEntityException("Subnet can't be zero or negative", node);

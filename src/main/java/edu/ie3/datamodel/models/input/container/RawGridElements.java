@@ -5,13 +5,10 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
-import edu.ie3.datamodel.utils.validation.GridContainerValidationUtils;
-import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 

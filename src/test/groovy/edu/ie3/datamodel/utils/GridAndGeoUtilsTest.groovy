@@ -11,7 +11,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.geo.GeoUtils
-import edu.ie3.util.quantities.PowerSystemUnits
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
@@ -109,7 +108,7 @@ class GridAndGeoUtilsTest extends Specification {
 		def nodeB = GridTestData.nodeB
 
 		expect:
-		GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB) == Quantities.getQuantity(0.91356787076109815268517, PowerSystemUnits.KILOMETRE)
+		GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB) == Quantities.getQuantity(0.91356787076109815268517, KILOMETRE)
 	}
 
 	def "The GridAndGeoUtils should get the CoordinateDistances between a base point and a collection of other points correctly"() {
@@ -145,5 +144,4 @@ class GridAndGeoUtilsTest extends Specification {
 		QuantityUtil.isEquivalentAbs(y, Quantities.getQuantity(3463.37, KILOMETRE), 10)
 		// Value from Google Maps, error range of +-10 km
 	}
-
 }

@@ -32,5 +32,4 @@ class NodeInputTest extends Specification {
 			assert voltLvl == GermanVoltageLevelUtils.EHV_220KV
 		}
 	}
-
 }

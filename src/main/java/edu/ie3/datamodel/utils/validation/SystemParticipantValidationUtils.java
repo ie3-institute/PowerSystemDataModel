@@ -13,12 +13,11 @@ import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType;
+import javax.measure.Quantity;
+import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
-
-import javax.measure.Quantity;
-import javax.measure.quantity.Dimensionless;
 
 public class SystemParticipantValidationUtils extends ValidationUtils {
 
@@ -111,7 +110,6 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     else if (WecTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
       checkWecType((WecTypeInput) systemParticipantTypeInput);
     else throw new ValidationException(notImplementedString(systemParticipantTypeInput));
-
   }
 
   /**
@@ -133,10 +131,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param bmTypeInput BmTypeInput to validate
    */
   private static void checkBmType(BmTypeInput bmTypeInput) {
-    detectNegativeQuantities(new Quantity<?>[]{bmTypeInput.getActivePowerGradient()}, bmTypeInput);
+    detectNegativeQuantities(new Quantity<?>[] {bmTypeInput.getActivePowerGradient()}, bmTypeInput);
     isBetweenZeroAndHundredPercent(bmTypeInput, bmTypeInput.getEtaConv(), "Efficiency of inverter");
   }
-
 
   /**
    * Validates a chpInput if: <br>
@@ -161,8 +158,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   private static void checkChpType(ChpTypeInput chpTypeInput) {
     detectNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpOwn()}, chpTypeInput);
     detectZeroOrNegativeQuantities(new Quantity<?>[] {chpTypeInput.getpThermal()}, chpTypeInput);
-    isBetweenZeroAndHundredPercent(chpTypeInput, chpTypeInput.getEtaEl(), "Electrical efficiency" );
-    isBetweenZeroAndHundredPercent(chpTypeInput, chpTypeInput.getEtaThermal(), "Thermal efficiency");
+    isBetweenZeroAndHundredPercent(chpTypeInput, chpTypeInput.getEtaEl(), "Electrical efficiency");
+    isBetweenZeroAndHundredPercent(
+        chpTypeInput, chpTypeInput.getEtaThermal(), "Thermal efficiency");
   }
 
   /**
@@ -279,7 +277,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    */
   private static void checkAzimuth(PvInput pvInput) {
     if (pvInput.getAzimuth().isLessThan(Quantities.getQuantity(-90d, AZIMUTH))
-            || pvInput.getAzimuth().isGreaterThan(Quantities.getQuantity(90d, AZIMUTH)))
+        || pvInput.getAzimuth().isGreaterThan(Quantities.getQuantity(90d, AZIMUTH)))
       throw new InvalidEntityException(
           "Azimuth angle of "
               + pvInput.getClass().getSimpleName()
@@ -294,7 +292,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    */
   private static void checkHeight(PvInput pvInput) {
     if (pvInput.getHeight().isLessThan(Quantities.getQuantity(0d, SOLAR_HEIGHT))
-            || pvInput.getHeight().isGreaterThan(Quantities.getQuantity(90d, SOLAR_HEIGHT)))
+        || pvInput.getHeight().isGreaterThan(Quantities.getQuantity(90d, SOLAR_HEIGHT)))
       throw new InvalidEntityException(
           "Tilted inclination from horizontal of "
               + pvInput.getClass().getSimpleName()
@@ -330,8 +328,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       throw new InvalidEntityException(
           "Permissible amount of life cycles of the storage type must be zero or positive",
           storageTypeInput);
-    isBetweenZeroAndHundredPercent(storageTypeInput, storageTypeInput.getEta(), "Efficiency of the electrical converter");
-    isBetweenZeroAndHundredPercent(storageTypeInput, storageTypeInput.getDod(), "Maximum permissible depth of discharge");
+    isBetweenZeroAndHundredPercent(
+        storageTypeInput, storageTypeInput.getEta(), "Efficiency of the electrical converter");
+    isBetweenZeroAndHundredPercent(
+        storageTypeInput, storageTypeInput.getDod(), "Maximum permissible depth of discharge");
     detectNegativeQuantities(
         new Quantity<?>[] {
           storageTypeInput.getpMax(),
@@ -363,7 +363,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param wecTypeInput WecTypeInput to validate
    */
   private static void checkWecType(WecTypeInput wecTypeInput) {
-    isBetweenZeroAndHundredPercent(wecTypeInput, wecTypeInput.getEtaConv(), "Efficiency of the converter");
+    isBetweenZeroAndHundredPercent(
+        wecTypeInput, wecTypeInput.getEtaConv(), "Efficiency of the converter");
     detectNegativeQuantities(
         new Quantity<?>[] {wecTypeInput.getRotorArea(), wecTypeInput.getHubHeight()}, wecTypeInput);
   }
@@ -390,7 +391,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Validates if the rated power factor is between 0 and 1, otherwise throws an {@link InvalidEntityException}
+   * Validates if the rated power factor is between 0 and 1, otherwise throws an {@link
+   * InvalidEntityException}
    *
    * @param input entity to validate
    * @param cosPhiRated rated power factor to check
@@ -398,20 +400,23 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
   private static void checkRatedPowerFactor(InputEntity input, double cosPhiRated) {
     if (cosPhiRated < 0d || cosPhiRated > 1d)
       throw new InvalidEntityException(
-          "Rated power factor of " + input.getClass().getSimpleName() + " must be between 0 and 1", input);
+          "Rated power factor of " + input.getClass().getSimpleName() + " must be between 0 and 1",
+          input);
   }
 
   /**
-   * Validates if a value (e.g. an efficiency) is between 0% and 100%, otherwise throws an {@link InvalidEntityException}
+   * Validates if a value (e.g. an efficiency) is between 0% and 100%, otherwise throws an {@link
+   * InvalidEntityException}
    *
    * @param input entity to validate
    * @param value value of entity to check
    */
-  private static void isBetweenZeroAndHundredPercent(InputEntity input, ComparableQuantity<Dimensionless> value, String string) {
+  private static void isBetweenZeroAndHundredPercent(
+      InputEntity input, ComparableQuantity<Dimensionless> value, String string) {
     if (value.isLessThan(Quantities.getQuantity(0d, Units.PERCENT))
-            || value.isGreaterThan(Quantities.getQuantity(100d, Units.PERCENT)))
+        || value.isGreaterThan(Quantities.getQuantity(100d, Units.PERCENT)))
       throw new InvalidEntityException(
-              string + " of " + input.getClass().getSimpleName() + " must be between 0% and 100%", input);
+          string + " of " + input.getClass().getSimpleName() + " must be between 0% and 100%",
+          input);
   }
-
 }

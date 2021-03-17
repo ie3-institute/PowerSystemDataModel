@@ -13,5 +13,4 @@ public interface InputContainer<T extends InputEntity> {
 
   /** @return unmodifiable List of all entities */
   List<T> allEntitiesAsList();
-
 }

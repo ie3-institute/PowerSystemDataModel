@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.GridContainer;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
@@ -207,7 +206,7 @@ public class ValidationUtils {
    * @param entities the set that should be checked
    * @return true if all UUIDs of the provided entities are unique, false otherwise
    */
-  private static boolean distinctUuids(Set<? extends UniqueEntity> entities) { // TODO NSteffan: Change all to private or protected -> no usage in other classes except subclasses
+  private static boolean distinctUuids(Set<? extends UniqueEntity> entities) {
     return entities.stream()
             .filter(distinctByKey(UniqueEntity::getUuid))
             .collect(Collectors.toSet())

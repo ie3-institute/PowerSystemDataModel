@@ -14,10 +14,9 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import edu.ie3.util.quantities.QuantityUtil;
+import javax.measure.Quantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
-
-import javax.measure.Quantity;
 
 public class ConnectorValidationUtils extends ValidationUtils {
 
@@ -27,11 +26,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
   }
 
   // allowed deviation of coordinates in degree for line position check
-  final private static double allowedCoordinateError = 0.000001d;
+  private static final double allowedCoordinateError = 0.000001d;
   // allowed deviation of length in meters for line length
-  final private static double allowedLengthError = 1d;
+  private static final double allowedLengthError = 1d;
   // allowed deviation of voltage in kV for transformer checks
-  final private static double allowedVoltageError = 1d;
+  private static final double allowedVoltageError = 1d;
 
   /**
    * Validates a connector if: <br>
@@ -141,7 +140,10 @@ public class ConnectorValidationUtils extends ValidationUtils {
     checkNonNull(transformer2WType, "a two winding transformer type");
     detectNegativeQuantities(
         new Quantity<?>[] {
-          transformer2WType.getgM(), transformer2WType.getbM(), transformer2WType.getdPhi(), transformer2WType.getrSc()
+          transformer2WType.getgM(),
+          transformer2WType.getbM(),
+          transformer2WType.getdPhi(),
+          transformer2WType.getrSc()
         },
         transformer2WType);
     detectZeroOrNegativeQuantities(
@@ -334,9 +336,12 @@ public class ConnectorValidationUtils extends ValidationUtils {
     // only if not geo positions of both nodes are dummy values
     if ((line.getNodeA().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION
             || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION)
-            && !QuantityUtil.isEquivalentAbs(line.getLength(), GridAndGeoUtils.totalLengthOfLineString(line.getGeoPosition()), allowedLengthError))
+        && !QuantityUtil.isEquivalentAbs(
+            line.getLength(),
+            GridAndGeoUtils.totalLengthOfLineString(line.getGeoPosition()),
+            allowedLengthError))
       throw new InvalidEntityException(
-              "Line length does not equal calculated distances between points building the line", line);
+          "Line length does not equal calculated distances between points building the line", line);
   }
 
   /**
@@ -372,12 +377,14 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   private static void ratedVoltageOfTransformer2WMatchesVoltagesOfNodes(
       Transformer2WInput transformer2W) {
-    if (!QuantityUtil.isEquivalentAbs(transformer2W
-            .getType()
-            .getvRatedA(), transformer2W.getNodeA().getVoltLvl().getNominalVoltage(), allowedVoltageError)
-        || !QuantityUtil.isEquivalentAbs(transformer2W
-            .getType()
-            .getvRatedB(), transformer2W.getNodeB().getVoltLvl().getNominalVoltage(), allowedVoltageError))
+    if (!QuantityUtil.isEquivalentAbs(
+            transformer2W.getType().getvRatedA(),
+            transformer2W.getNodeA().getVoltLvl().getNominalVoltage(),
+            allowedVoltageError)
+        || !QuantityUtil.isEquivalentAbs(
+            transformer2W.getType().getvRatedB(),
+            transformer2W.getNodeB().getVoltLvl().getNominalVoltage(),
+            allowedVoltageError))
       throw new InvalidEntityException(
           "Rated voltages of "
               + transformer2W.getClass().getSimpleName()
@@ -392,16 +399,18 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   private static void ratedVoltageOfTransformer3WMatchesVoltagesOfNodes(
       Transformer3WInput transformer3W) {
-    if (!QuantityUtil.isEquivalentAbs(transformer3W
-            .getType()
-            .getvRatedA(), transformer3W.getNodeA().getVoltLvl().getNominalVoltage(), allowedVoltageError)
-        || !QuantityUtil.isEquivalentAbs(transformer3W
-            .getType()
-            .getvRatedB(), transformer3W.getNodeB().getVoltLvl().getNominalVoltage(), allowedVoltageError)
-        || !QuantityUtil.isEquivalentAbs(transformer3W
-            .getType()
-            .getvRatedC(),transformer3W.getNodeC().getVoltLvl().getNominalVoltage(), allowedVoltageError)
-        )
+    if (!QuantityUtil.isEquivalentAbs(
+            transformer3W.getType().getvRatedA(),
+            transformer3W.getNodeA().getVoltLvl().getNominalVoltage(),
+            allowedVoltageError)
+        || !QuantityUtil.isEquivalentAbs(
+            transformer3W.getType().getvRatedB(),
+            transformer3W.getNodeB().getVoltLvl().getNominalVoltage(),
+            allowedVoltageError)
+        || !QuantityUtil.isEquivalentAbs(
+            transformer3W.getType().getvRatedC(),
+            transformer3W.getNodeC().getVoltLvl().getNominalVoltage(),
+            allowedVoltageError))
       throw new InvalidEntityException(
           "Rated voltages of "
               + transformer3W.getClass().getSimpleName()

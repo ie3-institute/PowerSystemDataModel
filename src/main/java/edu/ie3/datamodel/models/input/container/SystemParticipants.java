@@ -5,9 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.system.*;
-import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 

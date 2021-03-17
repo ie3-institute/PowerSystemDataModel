@@ -8,7 +8,6 @@ package edu.ie3.datamodel.utils.validation;
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
@@ -17,7 +16,6 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.utils.ContainerUtils;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,14 +34,14 @@ public class GridContainerValidationUtils extends ValidationUtils {
    */
   protected static void check(GridContainer gridContainer) {
     Optional<String> exceptionString =
-            checkForDuplicateUuids(new HashSet<>(gridContainer.allEntitiesAsList()));
+        checkForDuplicateUuids(new HashSet<>(gridContainer.allEntitiesAsList()));
     if (exceptionString.isPresent()) {
       throw new InvalidGridException(
-              "The provided entities in '"
-                      + gridContainer.getClass().getSimpleName()
-                      + "' contains duplicate UUIDs. "
-                      + "This is not allowed!\nDuplicated uuids:\n\n"
-                      + exceptionString);
+          "The provided entities in '"
+              + gridContainer.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
     }
 
     checkRawGridElements(gridContainer.getRawGrid());
@@ -67,14 +65,14 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     /* sanity check to ensure distinct UUIDs */
     Optional<String> exceptionString =
-            checkForDuplicateUuids(new HashSet<>(rawGridElements.allEntitiesAsList()));
+        checkForDuplicateUuids(new HashSet<>(rawGridElements.allEntitiesAsList()));
     if (exceptionString.isPresent()) {
       throw new InvalidGridException(
-              "The provided entities in '"
-                      + rawGridElements.getClass().getSimpleName()
-                      + "' contains duplicate UUIDs. "
-                      + "This is not allowed!\nDuplicated uuids:\n\n"
-                      + exceptionString);
+          "The provided entities in '"
+              + rawGridElements.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
     }
 
     /* Checking nodes */
@@ -154,59 +152,83 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     // sanity check for distinct uuids
     Optional<String> exceptionString =
-            ValidationUtils.checkForDuplicateUuids(new HashSet<>(systemParticipants.allEntitiesAsList()));
+        ValidationUtils.checkForDuplicateUuids(
+            new HashSet<>(systemParticipants.allEntitiesAsList()));
     if (exceptionString.isPresent()) {
       throw new InvalidGridException(
-              "The provided entities in '"
-                      + systemParticipants.getClass().getSimpleName()
-                      + "' contains duplicate UUIDs. "
-                      + "This is not allowed!\nDuplicated uuids:\n\n"
-                      + exceptionString);
+          "The provided entities in '"
+              + systemParticipants.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
     }
 
-    systemParticipants.getBmPlants().forEach(entity -> {
-      checkNodeAvailability(entity, nodes);
-      SystemParticipantValidationUtils.check(entity);
-    });
+    systemParticipants
+        .getBmPlants()
+        .forEach(
+            entity -> {
+              checkNodeAvailability(entity, nodes);
+              SystemParticipantValidationUtils.check(entity);
+            });
 
-    systemParticipants.getChpPlants().forEach(entity -> {
-      checkNodeAvailability(entity, nodes);
-      SystemParticipantValidationUtils.check(entity);
-    });
+    systemParticipants
+        .getChpPlants()
+        .forEach(
+            entity -> {
+              checkNodeAvailability(entity, nodes);
+              SystemParticipantValidationUtils.check(entity);
+            });
 
     /* TODO: Electric vehicle charging systems are currently only dummy implementation. if this has changed, the whole
      *   method can be aggregated */
 
-    systemParticipants.getFixedFeedIns().forEach(entity -> {
-      checkNodeAvailability(entity, nodes);
-      SystemParticipantValidationUtils.check(entity);
-    });
+    systemParticipants
+        .getFixedFeedIns()
+        .forEach(
+            entity -> {
+              checkNodeAvailability(entity, nodes);
+              SystemParticipantValidationUtils.check(entity);
+            });
 
-    systemParticipants.getHeatPumps().forEach(entity -> {
-      checkNodeAvailability(entity, nodes);
-      SystemParticipantValidationUtils.check(entity);
-    });
+    systemParticipants
+        .getHeatPumps()
+        .forEach(
+            entity -> {
+              checkNodeAvailability(entity, nodes);
+              SystemParticipantValidationUtils.check(entity);
+            });
 
-    systemParticipants.getLoads().forEach(entity -> {
-      checkNodeAvailability(entity, nodes);
-      SystemParticipantValidationUtils.check(entity);
-    });
+    systemParticipants
+        .getLoads()
+        .forEach(
+            entity -> {
+              checkNodeAvailability(entity, nodes);
+              SystemParticipantValidationUtils.check(entity);
+            });
 
-    systemParticipants.getPvPlants().forEach(entity -> {
-      checkNodeAvailability(entity, nodes);
-      SystemParticipantValidationUtils.check(entity);
-    });
+    systemParticipants
+        .getPvPlants()
+        .forEach(
+            entity -> {
+              checkNodeAvailability(entity, nodes);
+              SystemParticipantValidationUtils.check(entity);
+            });
 
-    systemParticipants.getStorages().forEach(entity -> {
-      checkNodeAvailability(entity, nodes);
-      SystemParticipantValidationUtils.check(entity);
-    });
+    systemParticipants
+        .getStorages()
+        .forEach(
+            entity -> {
+              checkNodeAvailability(entity, nodes);
+              SystemParticipantValidationUtils.check(entity);
+            });
 
-    systemParticipants.getWecPlants().forEach(entity -> {
-      checkNodeAvailability(entity, nodes);
-      SystemParticipantValidationUtils.check(entity);
-    });
-
+    systemParticipants
+        .getWecPlants()
+        .forEach(
+            entity -> {
+              checkNodeAvailability(entity, nodes);
+              SystemParticipantValidationUtils.check(entity);
+            });
   }
 
   /**
@@ -222,14 +244,14 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     // sanity check for distinct uuids
     Optional<String> exceptionString =
-            checkForDuplicateUuids(new HashSet<>(graphicElements.allEntitiesAsList()));
+        checkForDuplicateUuids(new HashSet<>(graphicElements.allEntitiesAsList()));
     if (exceptionString.isPresent()) {
       throw new InvalidGridException(
-              "The provided entities in '"
-                      + graphicElements.getClass().getSimpleName()
-                      + "' contains duplicate UUIDs. "
-                      + "This is not allowed!\nDuplicated uuids:\n\n"
-                      + exceptionString);
+          "The provided entities in '"
+              + graphicElements.getClass().getSimpleName()
+              + "' contains duplicate UUIDs. "
+              + "This is not allowed!\nDuplicated uuids:\n\n"
+              + exceptionString);
     }
 
     graphicElements
@@ -284,7 +306,9 @@ public class GridContainerValidationUtils extends ValidationUtils {
    */
   private static void checkNodeAvailability(
       Transformer3WInput transformer, Collection<NodeInput> nodes) {
-    if (!nodes.containsAll(Arrays.asList(transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()))) throw getMissingNodeException(transformer);
+    if (!nodes.containsAll(
+        Arrays.asList(transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC())))
+      throw getMissingNodeException(transformer);
   }
 
   /**
