@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   reading mapping from participant uuid to time series uuid including a mapping object for easy access to time series
 -   Couchbase, SQL and CSV connectors and sources for weather data
 -   added validation utils that can be used to check whether objects have valid values (no usage implemented yet)
+-   added `SystemParticipantWithHeatResult` with thermal power variable to be used by heat plant result models
 
 ### Changed
 -   BREAKING: replaced [Unit API 1.0](https://github.com/unitsofmeasurement/uom-se) (JSR 363, tec.uom.se) with [Unit API 2.0](https://github.com/unitsofmeasurement/indriya) (JSR 385, tech.units.indriya)
@@ -24,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   added coordinate distance sort method to GridAndGeoUtils
 -   BREAKING: Harmonized field naming for time information
 -   BREAKING: Properly applying snake case to result file names
+-   deprecated `TarballUtils`
+-   updated Indriya to version 2.1.2 to include fixes for serialization
+-   Reworking the time series source (one source per time series, distinct mapping source, factory pattern)
 
 ### Fixed
 - InfluxDbConnector now keeps session instead of creating a new one each call
@@ -31,6 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 and [#248](https://github.com/ie3-institute/PowerSystemDataModel/issues/248))
 - BREAKING: fix invalid application of solar irradiance / irradiation ([#266](https://github.com/ie3-institute/PowerSystemDataModel/issues/266))
 - BREAKING: deleted `IrradiationValue` as it is invalid and no longer required
+- added copy builder implementations for thermal input models `CylindricalStorageInput`, `ThermalBusInput` and `ThermalHouseInput`
+- the sample code for reading and writing model data from respectively to csv files documented in the Sphinx documentation is fixed
 
 ## [1.1.0] - 2020-09-15
 

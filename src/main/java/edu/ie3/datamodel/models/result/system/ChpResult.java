@@ -11,7 +11,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.ChpInput} */
-public class ChpResult extends SystemParticipantResult {
+public class ChpResult extends SystemParticipantWithHeatResult {
 
   /**
    * Standard constructor with automatic uuid generation.
@@ -20,13 +20,15 @@ public class ChpResult extends SystemParticipantResult {
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
+   * @param qDot thermal power output normally provided in MW
    */
   public ChpResult(
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q) {
-    super(time, inputModel, p, q);
+      ComparableQuantity<Power> q,
+      ComparableQuantity<Power> qDot) {
+    super(time, inputModel, p, q, qDot);
   }
 
   /**
@@ -38,14 +40,16 @@ public class ChpResult extends SystemParticipantResult {
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
+   * @param qDot thermal power output normally provided in MW
    */
   public ChpResult(
       UUID uuid,
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q) {
-    super(uuid, time, inputModel, p, q);
+      ComparableQuantity<Power> q,
+      ComparableQuantity<Power> qDot) {
+    super(uuid, time, inputModel, p, q, qDot);
   }
 
   @Override
@@ -61,6 +65,8 @@ public class ChpResult extends SystemParticipantResult {
         + getP()
         + ", q="
         + getQ()
+        + ", qDot="
+        + getqDot()
         + '}';
   }
 }

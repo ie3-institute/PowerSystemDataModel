@@ -7,9 +7,10 @@ package edu.ie3.datamodel.models.input.system.type.chargingpoint;
 
 import edu.ie3.datamodel.models.ElectricCurrentType;
 import edu.ie3.util.quantities.PowerSystemUnits;
+import java.io.Serializable;
 import java.util.*;
-import javax.measure.Quantity;
 import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * The actual implementation {@link edu.ie3.datamodel.models.input.system.EvcsInput} types. Default
@@ -19,16 +20,16 @@ import javax.measure.quantity.Power;
  * @version 0.1
  * @since 25.07.20
  */
-public class ChargingPointType {
+public class ChargingPointType implements Serializable {
 
   private final String id;
-  private final Quantity<Power> sRated;
+  private final ComparableQuantity<Power> sRated;
   private final ElectricCurrentType electricCurrentType;
 
   private final Set<String> synonymousIds;
 
   public ChargingPointType(
-      String id, Quantity<Power> sRated, ElectricCurrentType electricCurrentType) {
+      String id, ComparableQuantity<Power> sRated, ElectricCurrentType electricCurrentType) {
     this.id = id;
     this.sRated = sRated;
     this.electricCurrentType = electricCurrentType;
@@ -37,7 +38,7 @@ public class ChargingPointType {
 
   public ChargingPointType(
       String id,
-      Quantity<Power> sRated,
+      ComparableQuantity<Power> sRated,
       ElectricCurrentType electricCurrentType,
       Set<String> synonymousIds) {
     this.id = id;
@@ -50,7 +51,7 @@ public class ChargingPointType {
     return id;
   }
 
-  public Quantity<Power> getsRated() {
+  public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 

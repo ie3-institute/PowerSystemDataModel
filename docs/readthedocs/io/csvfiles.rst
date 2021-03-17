@@ -221,46 +221,44 @@ An application example to load an *exampleGrid* from csv files located in :code:
 .. code-block:: java
 
    /* Parameterization */
-   String csvSep = ";"
-   String folderPath = "./exampleGrid"
-   FileNamingStrategy namingStrategy = new FileNamingStrategy() // Default naming strategy
+   String gridName = "exampleGrid";
+   String csvSep = ",";
+   String folderPath = "./exampleGrid";
+   FileNamingStrategy namingStrategy = new FileNamingStrategy(); // Default naming strategy
 
    /* Instantiating sources */
-   TypeSource typeSource = new CsvTypeSource(csvSep, folderPath, namingStrategy)
-   RawGridSource rawGridSource = new CsvRawGridSource(csvSep, folderPath, namingStrategy, typeSource)
-   ThermalSource thermalSource = new CsvThermalSource(csvSep, folderPath, namingStrategy, typeSource)
-   ParticipantSource participantSource = new CsvSystemParticipantSource(
-     csvSep,
-     folderPath,
-     namingStrategy,
-     typeSource,
-     thermalSource,
-     rawGridSource
-   )
+   TypeSource typeSource = new CsvTypeSource(csvSep, folderPath, namingStrategy);
+   RawGridSource rawGridSource = new CsvRawGridSource(csvSep, folderPath, namingStrategy, typeSource);
+   ThermalSource thermalSource = new CsvThermalSource(csvSep, folderPath, namingStrategy, typeSource);
+   SystemParticipantSource systemParticipantSource = new CsvSystemParticipantSource(
+           csvSep,
+           folderPath,
+           namingStrategy,
+           typeSource,
+           thermalSource,
+           rawGridSource
+   );
    GraphicSource graphicsSource = new CsvGraphicSource(
-     csvSep,
-     folderPath,
-     namingStrategy,
-     typeSource,
-     rawGridSource
-   )
+           csvSep,
+           folderPath,
+           namingStrategy,
+           typeSource,
+           rawGridSource
+   );
 
    /* Loading models */
-   RawGridElements rawGridElements = rawGridSource.getGridData.orElseThrow(
-         () -> new SourceException("Error during reading of raw grid data.")
-      )
-   SystemParticipants systemParticipants = systemParticipantSource.getGridData.orElseThrow(
-         () -> new SourceException("Error during reading of raw grid data.")
-      )
-   GraphicElements graphicElements = graphicsSource.getGraphicElements.orElseThrow(
-         () -> new SourceException("Error during reading of graphic elements data.")
-      )
+   RawGridElements rawGridElements = rawGridSource.getGridData().orElseThrow(
+           () -> new SourceException("Error during reading of raw grid data."));
+   SystemParticipants systemParticipants = systemParticipantSource.getSystemParticipants().orElseThrow(
+           () -> new SourceException("Error during reading of system participant data."));
+   GraphicElements graphicElements = graphicsSource.getGraphicElements().orElseThrow(
+           () -> new SourceException("Error during reading of graphic elements."));
    JointGridContainer fullGrid = new JointGridContainer(
-     gridName,
-     rawGridElements,
-     systemParticipants,
-     graphicElements
-   )
+           gridName,
+           rawGridElements,
+           systemParticipants,
+           graphicElements
+   );
 
 As observable from the code, it doesn't play a role, where the different parts come from.
 It is also a valid solution, to receive types from file, but participants and raw grid elements from a data base.
@@ -273,14 +271,14 @@ Serializing models is a bit easier:
 .. code-block:: java
 
    /* Parameterization */
-   String csvSep = ";"
-   String folderPath = "./exampleGrid"
-   FileNamingStrategy namingStrategy = new FileNamingStrategy()
-   boolean initEmptyFiles = false
+   String csvSep = ",";
+   String folderPath = "./exampleGrid";
+   FileNamingStrategy namingStrategy = new FileNamingStrategy();
+   boolean initEmptyFiles = false;
 
    /* Instantiating the sink */
-   DataSink sink = new CsvFileSink(folderPath, namingStrategy, initEmptyFiles, csvSep)
-   sink.persistJointGridContainer(grid)
+   CsvFileSink sink = new CsvFileSink(folderPath, namingStrategy, initEmptyFiles, csvSep);
+   sink.persistJointGridContainer(grid);
 
 The sink takes a collection of model suitable for serialization and handles the rest (e.g. unboxing of nested models)
 on its own.

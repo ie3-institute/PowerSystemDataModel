@@ -5,38 +5,117 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.connectors.CsvFileConnector.TimeSeriesReadingData;
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.FileNamingStrategy;
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
-import edu.ie3.datamodel.models.timeseries.TimeSeriesContainer;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.timeseries.mapping.TimeSeriesMapping;
 import edu.ie3.datamodel.models.value.*;
+import edu.ie3.datamodel.utils.TimeSeriesUtil;
+import edu.ie3.util.interval.ClosedInterval;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /** Source that is capable of providing information around time series from csv files. */
-public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSource {
+public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
+    implements TimeSeriesSource<V> {
+  private final IndividualTimeSeries<V> timeSeries;
 
-  /* Available factories */
-  private final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
-  private final TimeBasedSimpleValueFactory<EnergyPriceValue> energyPriceFactory =
-      new TimeBasedSimpleValueFactory<>(EnergyPriceValue.class);
-  private final TimeBasedSimpleValueFactory<HeatAndSValue> heatAndSValueFactory =
-      new TimeBasedSimpleValueFactory<>(HeatAndSValue.class);
-  private final TimeBasedSimpleValueFactory<HeatAndPValue> heatAndPValueFactory =
-      new TimeBasedSimpleValueFactory<>(HeatAndPValue.class);
-  private final TimeBasedSimpleValueFactory<HeatDemandValue> heatDemandValueFactory =
-      new TimeBasedSimpleValueFactory<>(HeatDemandValue.class);
-  private final TimeBasedSimpleValueFactory<SValue> sValueFactory =
-      new TimeBasedSimpleValueFactory<>(SValue.class);
-  private final TimeBasedSimpleValueFactory<PValue> pValueFactory =
-      new TimeBasedSimpleValueFactory<>(PValue.class);
+  /**
+   * Factory method to build a source from given meta information
+   *
+   * @param csvSep the separator string for csv columns
+   * @param folderPath path to the folder holding the time series files
+   * @param fileNamingStrategy strategy for the naming of time series files
+   * @param metaInformation The given meta information
+   * @throws SourceException If the given meta information are not supported
+   * @return The source
+   */
+  public static CsvTimeSeriesSource<? extends Value> getSource(
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      CsvFileConnector.CsvIndividualTimeSeriesMetaInformation metaInformation)
+      throws SourceException {
+    switch (metaInformation.getColumnScheme()) {
+      case ACTIVE_POWER:
+        TimeBasedSimpleValueFactory<PValue> pValueFactory =
+            new TimeBasedSimpleValueFactory<>(PValue.class);
+        return new CsvTimeSeriesSource<>(
+            csvSep,
+            folderPath,
+            fileNamingStrategy,
+            metaInformation.getUuid(),
+            metaInformation.getFullFilePath(),
+            PValue.class,
+            pValueFactory);
+      case APPARENT_POWER:
+        TimeBasedSimpleValueFactory<SValue> sValueFactory =
+            new TimeBasedSimpleValueFactory<>(SValue.class);
+        return new CsvTimeSeriesSource<>(
+            csvSep,
+            folderPath,
+            fileNamingStrategy,
+            metaInformation.getUuid(),
+            metaInformation.getFullFilePath(),
+            SValue.class,
+            sValueFactory);
+      case ENERGY_PRICE:
+        TimeBasedSimpleValueFactory<EnergyPriceValue> energyPriceFactory =
+            new TimeBasedSimpleValueFactory<>(EnergyPriceValue.class);
+        return new CsvTimeSeriesSource<>(
+            csvSep,
+            folderPath,
+            fileNamingStrategy,
+            metaInformation.getUuid(),
+            metaInformation.getFullFilePath(),
+            EnergyPriceValue.class,
+            energyPriceFactory);
+      case APPARENT_POWER_AND_HEAT_DEMAND:
+        TimeBasedSimpleValueFactory<HeatAndSValue> heatAndSValueFactory =
+            new TimeBasedSimpleValueFactory<>(HeatAndSValue.class);
+        return new CsvTimeSeriesSource<>(
+            csvSep,
+            folderPath,
+            fileNamingStrategy,
+            metaInformation.getUuid(),
+            metaInformation.getFullFilePath(),
+            HeatAndSValue.class,
+            heatAndSValueFactory);
+      case ACTIVE_POWER_AND_HEAT_DEMAND:
+        TimeBasedSimpleValueFactory<HeatAndPValue> heatAndPValueFactory =
+            new TimeBasedSimpleValueFactory<>(HeatAndPValue.class);
+        return new CsvTimeSeriesSource<>(
+            csvSep,
+            folderPath,
+            fileNamingStrategy,
+            metaInformation.getUuid(),
+            metaInformation.getFullFilePath(),
+            HeatAndPValue.class,
+            heatAndPValueFactory);
+      case HEAT_DEMAND:
+        TimeBasedSimpleValueFactory<HeatDemandValue> heatDemandValueFactory =
+            new TimeBasedSimpleValueFactory<>(HeatDemandValue.class);
+        return new CsvTimeSeriesSource<>(
+            csvSep,
+            folderPath,
+            fileNamingStrategy,
+            metaInformation.getUuid(),
+            metaInformation.getFullFilePath(),
+            HeatDemandValue.class,
+            heatDemandValueFactory);
+      default:
+        throw new SourceException(
+            "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
+    }
+  }
 
   /**
    * Initializes a new CsvTimeSeriesSource
@@ -44,133 +123,81 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
    * @param fileNamingStrategy strategy for the naming of time series files
+   * @param timeSeriesUuid Unique identifier of the time series
+   * @param filePath Path of the file, excluding extension and being relative to {@code folderPath}
+   * @param valueClass Class of the value
+   * @param factory The factory implementation to use for actual parsing of input data
    */
   public CsvTimeSeriesSource(
-      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
-    super(csvSep, folderPath, fileNamingStrategy);
-  }
-
-  /**
-   * Receive a set of time series mapping entries from participant uuid to time series uuid.
-   *
-   * @return A set of time series mapping entries from participant uuid to time series uuid
-   */
-  @Override
-  public Set<TimeSeriesMapping.Entry> getMapping() {
-    return filterEmptyOptionals(
-            buildStreamWithFieldsToAttributesMap(TimeSeriesMapping.Entry.class, connector)
-                .map(
-                    fieldToValues -> {
-                      SimpleEntityData entityData =
-                          new SimpleEntityData(fieldToValues, TimeSeriesMapping.Entry.class);
-                      return mappingFactory.get(entityData);
-                    }))
-        .collect(Collectors.toSet());
-  }
-
-  /**
-   * Acquire all available time series
-   *
-   * @return A container with all relevant time series
-   */
-  @Override
-  public TimeSeriesContainer getTimeSeries() {
-    /* Get all time series reader */
-    Map<ColumnScheme, Set<TimeSeriesReadingData>> colTypeToReadingData =
-        connector.initTimeSeriesReader();
-
-    /* Reading in energy price time series */
-    Set<IndividualTimeSeries<EnergyPriceValue>> energyPriceTimeSeries =
-        read(
-            colTypeToReadingData.get(ColumnScheme.ENERGY_PRICE),
-            EnergyPriceValue.class,
-            energyPriceFactory);
-
-    /* Reading in heat and apparent power time series */
-    Set<IndividualTimeSeries<HeatAndSValue>> heatAndApparentPowerTimeSeries =
-        read(
-            colTypeToReadingData.get(ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND),
-            HeatAndSValue.class,
-            heatAndSValueFactory);
-
-    /* Reading in heat time series */
-    Set<IndividualTimeSeries<HeatDemandValue>> heatTimeSeries =
-        read(
-            colTypeToReadingData.get(ColumnScheme.HEAT_DEMAND),
-            HeatDemandValue.class,
-            heatDemandValueFactory);
-
-    /* Reading in heat and active power time series */
-    Set<IndividualTimeSeries<HeatAndPValue>> heatAndActivePowerTimeSeries =
-        read(
-            colTypeToReadingData.get(ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND),
-            HeatAndPValue.class,
-            heatAndPValueFactory);
-
-    /* Reading in apparent power time series */
-    Set<IndividualTimeSeries<SValue>> apparentPowerTimeSeries =
-        read(colTypeToReadingData.get(ColumnScheme.APPARENT_POWER), SValue.class, sValueFactory);
-
-    /* Reading in active power time series */
-    Set<IndividualTimeSeries<PValue>> activePowerTimeSeries =
-        read(colTypeToReadingData.get(ColumnScheme.ACTIVE_POWER), PValue.class, pValueFactory);
-
-    return new TimeSeriesContainer(
-        energyPriceTimeSeries,
-        heatAndApparentPowerTimeSeries,
-        heatAndActivePowerTimeSeries,
-        heatTimeSeries,
-        apparentPowerTimeSeries,
-        activePowerTimeSeries);
-  }
-
-  /**
-   * Reads in time series of a specified class from given {@link TimeSeriesReadingData} utilising a
-   * provided {@link TimeBasedSimpleValueFactory}, except for weather data, which needs a special
-   * processing
-   *
-   * @param readingData Data needed for reading
-   * @param valueClass Class of the target value within the time series
-   * @param factory Factory to utilize
-   * @param <V> Type of the value
-   * @return A set of {@link IndividualTimeSeries}
-   */
-  private <V extends Value> Set<IndividualTimeSeries<V>> read(
-      Set<TimeSeriesReadingData> readingData,
+      String csvSep,
+      String folderPath,
+      FileNamingStrategy fileNamingStrategy,
+      UUID timeSeriesUuid,
+      String filePath,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
-    return readingData
-        .parallelStream()
-        .map(
-            data ->
-                buildIndividualTimeSeries(
-                    data,
-                    fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory)))
-        .collect(Collectors.toSet());
+    super(csvSep, folderPath, fileNamingStrategy);
+
+    /* Read in the full time series */
+    try {
+      this.timeSeries =
+          buildIndividualTimeSeries(
+              timeSeriesUuid,
+              filePath,
+              fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory));
+    } catch (SourceException e) {
+      throw new IllegalArgumentException(
+          "Unable to obtain time series with UUID '"
+              + timeSeriesUuid
+              + "'. Please check arguments!",
+          e);
+    }
+  }
+
+  @Override
+  public IndividualTimeSeries<V> getTimeSeries() {
+    return timeSeries;
+  }
+
+  @Override
+  public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
+    return TimeSeriesUtil.trimTimeSeriesToInterval(timeSeries, timeInterval);
+  }
+
+  @Override
+  public Optional<V> getValue(ZonedDateTime time) {
+    return timeSeries.getValue(time);
   }
 
   /**
-   * Builds an individual time series, by obtaining the single entries (with the help of {@code
-   * fieldToValueFunction} and putting everything together in the {@link IndividualTimeSeries}
-   * container.
+   * Attempts to read a time series with given unique identifier and file path. Single entries are
+   * obtained entries with the help of {@code fieldToValueFunction}.
    *
-   * @param data Needed data to read in the content of the specific, underlying file
-   * @param fieldToValueFunction Function, that is able to transfer a mapping (from field to value)
+   * @param timeSeriesUuid unique identifier of the time series
+   * @param filePath path to the file to read
+   * @param fieldToValueFunction function, that is able to transfer a mapping (from field to value)
    *     onto a specific instance of the targeted entry class
-   * @param <V> Type of the {@link Value}, that will be contained in each time series, timely
-   *     located entry
-   * @return An {@link IndividualTimeSeries} with {@link TimeBasedValue} of type {@code V}.
+   * @throws SourceException If the file cannot be read properly
+   * @return An option onto an individual time series
    */
-  private <V extends Value> IndividualTimeSeries<V> buildIndividualTimeSeries(
-      TimeSeriesReadingData data,
-      Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction) {
-    Set<TimeBasedValue<V>> timeBasedValues =
-        filterEmptyOptionals(
-                buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, data.getReader())
-                    .map(fieldToValueFunction))
-            .collect(Collectors.toSet());
+  private IndividualTimeSeries<V> buildIndividualTimeSeries(
+      UUID timeSeriesUuid,
+      String filePath,
+      Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction)
+      throws SourceException {
+    try (BufferedReader reader = connector.initReader(filePath)) {
+      Set<TimeBasedValue<V>> timeBasedValues =
+          filterEmptyOptionals(
+                  buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+                      .map(fieldToValueFunction))
+              .collect(Collectors.toSet());
 
-    return new IndividualTimeSeries<>(data.getUuid(), timeBasedValues);
+      return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
+    } catch (FileNotFoundException e) {
+      throw new SourceException("Unable to find a file with path '" + filePath + "'.", e);
+    } catch (IOException e) {
+      throw new SourceException("Error during reading of file'" + filePath + "'.", e);
+    }
   }
 
   /**
@@ -180,10 +207,9 @@ public class CsvTimeSeriesSource extends CsvDataSource implements TimeSeriesSour
    * @param fieldToValues Mapping from field id to values
    * @param valueClass Class of the desired underlying value
    * @param factory Factory to process the "flat" information
-   * @param <V> Type of the underlying value
    * @return Optional simple time based value
    */
-  private <V extends Value> Optional<TimeBasedValue<V>> buildTimeBasedValue(
+  private Optional<TimeBasedValue<V>> buildTimeBasedValue(
       Map<String, String> fieldToValues,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {

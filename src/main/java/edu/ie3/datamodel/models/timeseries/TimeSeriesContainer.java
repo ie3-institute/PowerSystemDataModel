@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /** Container class to hold different types of individual time series */
+@Deprecated
 public class TimeSeriesContainer {
   private final Set<IndividualTimeSeries<EnergyPriceValue>> energyPrice;
   private final Set<IndividualTimeSeries<HeatAndSValue>> heatAndApparentPower;

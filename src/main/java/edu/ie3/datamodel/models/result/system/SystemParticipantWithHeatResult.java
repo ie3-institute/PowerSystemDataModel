@@ -5,36 +5,32 @@
 */
 package edu.ie3.datamodel.models.result.system;
 
-import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Abstract class that holds values common to all other result entities */
-public abstract class SystemParticipantResult extends ResultEntity {
-
-  /** active power output normally provided in MW */
-  private ComparableQuantity<Power> p;
-
-  /** reactive power output normally provided in MVAr */
-  private ComparableQuantity<Power> q;
+/** Abstract class that holds values common to result entities having heat result */
+public abstract class SystemParticipantWithHeatResult extends SystemParticipantResult {
+  /** The thermal power output normally provided in MW */
+  private final ComparableQuantity<Power> qDot;
 
   /**
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
+   * @param qDot thermal power output normally provided in MW
    */
-  public SystemParticipantResult(
+  public SystemParticipantWithHeatResult(
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q) {
-    super(time, inputModel);
-    this.p = p;
-    this.q = q;
+      ComparableQuantity<Power> q,
+      ComparableQuantity<Power> qDot) {
+    super(time, inputModel, p, q);
+    this.qDot = qDot;
   }
 
   /**
@@ -44,44 +40,27 @@ public abstract class SystemParticipantResult extends ResultEntity {
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
+   * @param qDot thermal power output normally provided in MW
    */
-  public SystemParticipantResult(
+  public SystemParticipantWithHeatResult(
       UUID uuid,
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
-      ComparableQuantity<Power> q) {
-    super(uuid, time, inputModel);
-    this.p = p;
-    this.q = q;
+      ComparableQuantity<Power> q,
+      ComparableQuantity<Power> qDot) {
+    super(uuid, time, inputModel, p, q);
+    this.qDot = qDot;
   }
 
   /**
-   * Active power output of the decentralised energy resource asset. Convention: Generated powers
+   * Thermal power output of the decentralised energy resource asset. Convention: Generated powers
    * are given in negative values.
    *
-   * @return Active power output in MW.
+   * @return Thermal power output in MW.
    */
-  public ComparableQuantity<Power> getP() {
-    return p;
-  }
-
-  public void setP(ComparableQuantity<Power> p) {
-    this.p = p;
-  }
-
-  /**
-   * Reactive power output of the decentralised energy resource asset. Convention: Generated powers
-   * are given in negative values.
-   *
-   * @return Reactive power output in MVAr.
-   */
-  public ComparableQuantity<Power> getQ() {
-    return q;
-  }
-
-  public void setQ(ComparableQuantity<Power> q) {
-    this.q = q;
+  public ComparableQuantity<Power> getqDot() {
+    return qDot;
   }
 
   @Override
@@ -89,18 +68,18 @@ public abstract class SystemParticipantResult extends ResultEntity {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    SystemParticipantResult that = (SystemParticipantResult) o;
-    return p.equals(that.p) && q.equals(that.q);
+    SystemParticipantWithHeatResult that = (SystemParticipantWithHeatResult) o;
+    return qDot.equals(that.qDot);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), p, q);
+    return Objects.hash(super.hashCode(), qDot);
   }
 
   @Override
   public String toString() {
-    return "SystemParticipantResult{"
+    return "SystemParticipantWithHeatResult{"
         + "uuid="
         + getUuid()
         + ", time="
@@ -108,9 +87,11 @@ public abstract class SystemParticipantResult extends ResultEntity {
         + ", inputModel="
         + getInputModel()
         + ", p="
-        + p
+        + getP()
         + ", q="
-        + q
+        + getQ()
+        + ", qDot="
+        + getqDot()
         + '}';
   }
 }
