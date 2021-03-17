@@ -8,7 +8,6 @@ package edu.ie3.datamodel.utils.validation
 import static edu.ie3.datamodel.models.StandardUnits.*
 import static edu.ie3.util.quantities.PowerSystemUnits.*
 
-import org.locationtech.jts.geom.Point
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
@@ -44,8 +43,8 @@ class ConnectorValidationUtilsTest extends Specification {
 		noExceptionThrown()
 	}
 
-	def static testCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))
-	def static invalidLineLengthNotMatchingCoordinateDistances = new LineInput(
+	static testCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))
+	static invalidLineLengthNotMatchingCoordinateDistances = new LineInput(
 	UUID.fromString("92ec3bcf-1777-4d38-af67-0bf8c9fa73c7"),
 	"test_line_FtoG",
 	GridTestData.profBroccoli,

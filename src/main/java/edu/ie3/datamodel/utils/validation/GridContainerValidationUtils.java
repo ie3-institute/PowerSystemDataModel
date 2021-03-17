@@ -22,6 +22,14 @@ import java.util.stream.Stream;
 
 public class GridContainerValidationUtils extends ValidationUtils {
 
+  private static String duplicateUuidsString(String simpleName, Optional<String> exceptionString) {
+    return "The provided entities in '"
+        + simpleName
+        + "' contains duplicate UUIDs. "
+        + "This is not allowed!\nDuplicated uuids:\n\n"
+        + exceptionString;
+  }
+
   /** Private Constructor as this class is not meant to be instantiated */
   private GridContainerValidationUtils() {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
@@ -33,15 +41,14 @@ public class GridContainerValidationUtils extends ValidationUtils {
    * @param gridContainer Grid model to check
    */
   protected static void check(GridContainer gridContainer) {
+    checkNonNull(gridContainer, "grid container");
+
+    /* sanity check to ensure distinct UUIDs */
     Optional<String> exceptionString =
         checkForDuplicateUuids(new HashSet<>(gridContainer.allEntitiesAsList()));
     if (exceptionString.isPresent()) {
       throw new InvalidGridException(
-          "The provided entities in '"
-              + gridContainer.getClass().getSimpleName()
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
+          duplicateUuidsString(gridContainer.getClass().getSimpleName(), exceptionString));
     }
 
     checkRawGridElements(gridContainer.getRawGrid());
@@ -68,11 +75,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         checkForDuplicateUuids(new HashSet<>(rawGridElements.allEntitiesAsList()));
     if (exceptionString.isPresent()) {
       throw new InvalidGridException(
-          "The provided entities in '"
-              + rawGridElements.getClass().getSimpleName()
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
+          duplicateUuidsString(rawGridElements.getClass().getSimpleName(), exceptionString));
     }
 
     /* Checking nodes */
@@ -156,11 +159,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
             new HashSet<>(systemParticipants.allEntitiesAsList()));
     if (exceptionString.isPresent()) {
       throw new InvalidGridException(
-          "The provided entities in '"
-              + systemParticipants.getClass().getSimpleName()
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
+          duplicateUuidsString(systemParticipants.getClass().getSimpleName(), exceptionString));
     }
 
     systemParticipants
@@ -247,11 +246,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         checkForDuplicateUuids(new HashSet<>(graphicElements.allEntitiesAsList()));
     if (exceptionString.isPresent()) {
       throw new InvalidGridException(
-          "The provided entities in '"
-              + graphicElements.getClass().getSimpleName()
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
+          duplicateUuidsString(graphicElements.getClass().getSimpleName(), exceptionString));
     }
 
     graphicElements

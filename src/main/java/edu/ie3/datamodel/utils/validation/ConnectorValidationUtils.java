@@ -20,17 +20,17 @@ import tech.units.indriya.unit.Units;
 
 public class ConnectorValidationUtils extends ValidationUtils {
 
-  /** Private Constructor as this class is not meant to be instantiated */
-  private ConnectorValidationUtils() {
-    throw new IllegalStateException("Don't try and instantiate a Utility class.");
-  }
-
   // allowed deviation of coordinates in degree for line position check
   private static final double allowedCoordinateError = 0.000001d;
   // allowed deviation of length in meters for line length
   private static final double allowedLengthError = 1d;
   // allowed deviation of voltage in kV for transformer checks
   private static final double allowedVoltageError = 1d;
+
+  /** Private Constructor as this class is not meant to be instantiated */
+  private ConnectorValidationUtils() {
+    throw new IllegalStateException("Don't try and instantiate a Utility class.");
+  }
 
   /**
    * Validates a connector if: <br>

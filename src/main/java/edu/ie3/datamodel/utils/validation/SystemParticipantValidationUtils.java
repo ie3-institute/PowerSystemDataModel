@@ -12,7 +12,6 @@ import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
-import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType;
 import javax.measure.Quantity;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
@@ -62,8 +61,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       checkStorage((StorageInput) systemParticipant);
     else if (WecInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkWec((WecInput) systemParticipant);
-    else if (EvcsInput.class.isAssignableFrom(systemParticipant.getClass()))
-      checkEvcs((EvcsInput) systemParticipant);
+    else if (EvcsInput.class.isAssignableFrom(systemParticipant.getClass())) checkEvcs();
     else throw new ValidationException(notImplementedString(systemParticipant));
   }
 
@@ -369,25 +367,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         new Quantity<?>[] {wecTypeInput.getRotorArea(), wecTypeInput.getHubHeight()}, wecTypeInput);
   }
 
-  /**
-   * Validates a EvcsInput if: <br>
-   * - {@link SystemParticipantValidationUtils#checkEvcsType(ChargingPointType)} confirms a valid
-   * type properties
-   *
-   * @param evcsInput EvcsInput to validate
-   */
-  private static void checkEvcs(EvcsInput evcsInput) {
-    // TODO: Implement when class is finished
-  }
-
-  /**
-   * Validates a ChargingPointType if: <br>
-   * - ...
-   *
-   * @param evcsTypeInput ChargingPointType to validate
-   */
-  private static void checkEvcsType(ChargingPointType evcsTypeInput) {
-    // TODO: Implement when class is finished
+  /** Validates a EvcsInput */
+  private static void checkEvcs() {
+    // TODO: Implement when class is finished + implement check for Evcs type
   }
 
   /**

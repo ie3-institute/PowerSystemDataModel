@@ -5,9 +5,9 @@
  */
 package edu.ie3.datamodel.utils
 
-import edu.ie3.util.quantities.QuantityUtil
-
 import static edu.ie3.util.quantities.PowerSystemUnits.*
+
+import edu.ie3.util.quantities.QuantityUtil
 
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.geo.GeoUtils
