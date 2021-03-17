@@ -213,10 +213,5 @@ The following different values are available:
 | :code:`WeatherValue`          | Combination of irradiance, temperature and wind information      |
 +-------------------------------+------------------------------------------------------------------+
 
-***********
-Validation Utils
-***********
-The methods in ValidationUtils can be used to check that created input objects are valid, meaning their parameters have valid values and they are correctly connected.
-
 .. include:: ValidationUtils.rst
 
