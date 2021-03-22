@@ -133,7 +133,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		ThermalHouseInput       || "test_grid" + File.separator + "input" + File.separator + "thermal"
 	}
 
-	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid file paths for all input assets models"() {
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid file paths for all system input assets models"() {
 		given: "a naming strategy without pre- or suffixes"
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
@@ -155,11 +155,26 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		LoadInput               || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "load_input"
 		StorageInput            || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "storage_input"
 		HpInput                 || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "hp_input"
+		EvcsInput               || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "evcs_input"
+	}
+
+	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid file paths for all other input assets models"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
+
+		when:
+		def res = strategy.getFilePath(modelClass)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass              || expectedString
 		LineInput               || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "line_input"
 		SwitchInput             || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "switch_input"
 		NodeInput               || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "node_input"
 		MeasurementUnitInput    || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "measurement_unit_input"
-		EvcsInput               || "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "evcs_input"
 		Transformer2WInput      || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "transformer_2_w_input"
 		Transformer3WInput      || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "transformer_3_w_input"
 		CylindricalStorageInput || "test_grid" + File.separator + "input" + File.separator + "thermal" + File.separator + "cylindrical_storage_input"

@@ -121,6 +121,14 @@ public class EntityPersistenceNamingStrategy {
                 + suffix);
   }
 
+  public Pattern getLoadProfileTimeSeriesPattern() {
+    return loadProfileTimeSeriesPattern;
+  }
+
+  public Pattern getIndividualTimeSeriesPattern() {
+    return individualTimeSeriesPattern;
+  }
+
   /**
    * Prepares the prefix by appending an underscore and bringing it to lower case
    *
@@ -436,17 +444,13 @@ public class EntityPersistenceNamingStrategy {
     /* Remove the file ending (ending limited to 255 chars, which is the max file name allowed in NTFS and ext4) */
     String withoutEnding = fileName.replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
 
-    if (getIndividualTimeSeriesPattern().matcher(withoutEnding).matches())
+    if (individualTimeSeriesPattern.matcher(withoutEnding).matches())
       return extractIndividualTimesSeriesMetaInformation(withoutEnding);
-    else if (getLoadProfileTimeSeriesPattern().matcher(withoutEnding).matches())
+    else if (loadProfileTimeSeriesPattern.matcher(withoutEnding).matches())
       return extractLoadProfileTimesSeriesMetaInformation(withoutEnding);
     else
       throw new IllegalArgumentException(
           "Unknown format of '" + fileName + "'. Cannot extract meta information.");
-  }
-
-  public Pattern getIndividualTimeSeriesPattern() {
-    return individualTimeSeriesPattern;
   }
 
   /**
@@ -457,7 +461,7 @@ public class EntityPersistenceNamingStrategy {
    */
   private IndividualTimeSeriesMetaInformation extractIndividualTimesSeriesMetaInformation(
       String fileName) {
-    Matcher matcher = getIndividualTimeSeriesPattern().matcher(fileName);
+    Matcher matcher = individualTimeSeriesPattern.matcher(fileName);
     if (!matcher.matches())
       throw new IllegalArgumentException(
           "Cannot extract meta information on individual time series from '" + fileName + "'.");
@@ -474,10 +478,6 @@ public class EntityPersistenceNamingStrategy {
         UUID.fromString(matcher.group("uuid")), columnScheme);
   }
 
-  public Pattern getLoadProfileTimeSeriesPattern() {
-    return loadProfileTimeSeriesPattern;
-  }
-
   /**
    * Extracts meta information from a valid file name for a load profile time series
    *
@@ -486,7 +486,7 @@ public class EntityPersistenceNamingStrategy {
    */
   private LoadProfileTimeSeriesMetaInformation extractLoadProfileTimesSeriesMetaInformation(
       String fileName) {
-    Matcher matcher = getLoadProfileTimeSeriesPattern().matcher(fileName);
+    Matcher matcher = loadProfileTimeSeriesPattern.matcher(fileName);
     if (!matcher.matches())
       throw new IllegalArgumentException(
           "Cannot extract meta information on load profile time series from '" + fileName + "'.");
