@@ -5,9 +5,6 @@
  */
 package edu.ie3.datamodel.io.naming
 
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
-import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
@@ -36,7 +33,6 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
-import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
@@ -47,9 +43,7 @@ import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import java.nio.file.Paths
 import java.time.ZonedDateTime
-import java.util.regex.Pattern
 
 class EntityPersistenceNamingStrategyTest extends Specification {
 
