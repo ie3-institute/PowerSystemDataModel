@@ -45,7 +45,7 @@ import tech.units.indriya.quantity.Quantities
 
 import java.time.ZonedDateTime
 
-class EntityPersistenceNamingStrategyTest extends Specification {
+class EntityPersistenceNamingStrategyTest2 extends Specification {
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffix should return valid file name for individual time series" () {
 		given:

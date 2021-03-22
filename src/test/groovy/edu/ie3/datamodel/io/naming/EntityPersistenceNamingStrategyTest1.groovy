@@ -65,7 +65,7 @@ import java.nio.file.Paths
 import java.time.ZonedDateTime
 import java.util.regex.Pattern
 
-class EntityPersistenceNamingStrategyPreTest extends Specification {
+class EntityPersistenceNamingStrategyTest1 extends Specification {
 
 	def "The uuid pattern actually matches a valid uuid"() {
 		given:
