@@ -253,7 +253,7 @@ public class CsvFileConnector implements DataConnector {
    * @throws FileNotFoundException If the file is not present
    */
   public BufferedReader initIdCoordinateReader() throws FileNotFoundException {
-    String filePath = entityPersistenceNamingStrategy.getIdCoordinateFileName();
+    String filePath = entityPersistenceNamingStrategy.getIdCoordinateEntityName();
     return initReader(filePath);
   }
 

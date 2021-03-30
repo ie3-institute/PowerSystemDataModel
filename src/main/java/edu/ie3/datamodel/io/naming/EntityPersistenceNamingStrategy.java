@@ -177,7 +177,7 @@ public class EntityPersistenceNamingStrategy {
    * @return The file name
    */
   public Optional<String> getFileName(Class<? extends UniqueEntity> cls) {
-    Optional<String> inputEntityFileName = getInputEntityFileName(cls);
+    Optional<String> inputEntityFileName = getInputEntityName(cls);
     if (inputEntityFileName.isPresent()) return inputEntityFileName;
     if (ResultEntity.class.isAssignableFrom(cls))
       return getResultEntityName(cls.asSubclass(ResultEntity.class));
@@ -186,36 +186,36 @@ public class EntityPersistenceNamingStrategy {
   }
 
   /**
-   * Get the the file name for all {@link InputEntity}s
+   * Get the name for all {@link InputEntity}s
    *
-   * @param cls Targeted class of the given file
-   * @return The file name
+   * @param cls Targeted class of the given entity
+   * @return The entity name
    */
-  public Optional<String> getInputEntityFileName(Class<? extends UniqueEntity> cls) {
+  public Optional<String> getInputEntityName(Class<? extends UniqueEntity> cls) {
     if (AssetTypeInput.class.isAssignableFrom(cls))
       return getTypeEntityName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))
-      return getAssetInputFileName(cls.asSubclass(AssetInput.class));
+      return getAssetInputEntityName(cls.asSubclass(AssetInput.class));
     if (CharacteristicInput.class.isAssignableFrom(cls))
-      return getAssetCharacteristicsFileName(cls.asSubclass(CharacteristicInput.class));
+      return getAssetCharacteristicsEntityName(cls.asSubclass(CharacteristicInput.class));
     if (cls.equals(RandomLoadParameters.class)) {
       String loadParamString = camelCaseToSnakeCase(cls.getSimpleName());
       return Optional.of(addPrefixAndSuffix(loadParamString.concat("_input")));
     }
     if (GraphicInput.class.isAssignableFrom(cls))
-      return getGraphicsInputFileName(cls.asSubclass(GraphicInput.class));
+      return getGraphicsInputEntityName(cls.asSubclass(GraphicInput.class));
     if (OperatorInput.class.isAssignableFrom(cls))
-      return getOperatorInputFileName(cls.asSubclass(OperatorInput.class));
+      return getOperatorInputEntityName(cls.asSubclass(OperatorInput.class));
     if (TimeSeriesMappingSource.MappingEntry.class.isAssignableFrom(cls))
-      return getTimeSeriesMappingFileName();
+      return getTimeSeriesMappingEntityName();
     return Optional.empty();
   }
 
   /**
-   * Get the the file name for all {@link ResultEntity}s
+   * Get the entity name for all {@link ResultEntity}s
    *
-   * @param resultEntityClass the result entity class a filename string should be generated from
-   * @return the filename string
+   * @param resultEntityClass the result entity class an entity name string should be generated from
+   * @return the entity name string
    */
   public Optional<String> getResultEntityName(Class<? extends ResultEntity> resultEntityClass) {
     String resultEntityString =
@@ -224,10 +224,10 @@ public class EntityPersistenceNamingStrategy {
   }
 
   /**
-   * Get the the entity name for all {@link AssetTypeInput}s
+   * Get the entity name for all {@link AssetTypeInput}s
    *
-   * @param typeClass the asset type class a entity name string should be generated from
-   * @return the filename string
+   * @param typeClass the asset type class an entity name string should be generated from
+   * @return the entity name string
    */
   public Optional<String> getTypeEntityName(Class<? extends AssetTypeInput> typeClass) {
     String assetTypeString = camelCaseToSnakeCase(typeClass.getSimpleName());
@@ -235,24 +235,24 @@ public class EntityPersistenceNamingStrategy {
   }
 
   /**
-   * Get the the file name for all {@link AssetInput}s
+   * Get the entity name for all {@link AssetInput}s
    *
-   * @param assetInputClass the asset input class a filename string should be generated from
-   * @return the filename string
+   * @param assetInputClass the asset input class an entity name string should be generated from
+   * @return the entity name string
    */
-  public Optional<String> getAssetInputFileName(Class<? extends AssetInput> assetInputClass) {
+  public Optional<String> getAssetInputEntityName(Class<? extends AssetInput> assetInputClass) {
     String assetInputString = camelCaseToSnakeCase(assetInputClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetInputString));
   }
 
   /**
-   * Get the the file name for all {@link CharacteristicInput}s
+   * Get the entity name for all {@link CharacteristicInput}s
    *
-   * @param assetCharClass the asset characteristics class a filename string should be generated
+   * @param assetCharClass the asset characteristics class an entity name string should be generated
    *     from
-   * @return the filename string
+   * @return the entity name string
    */
-  public Optional<String> getAssetCharacteristicsFileName(
+  public Optional<String> getAssetCharacteristicsEntityName(
       Class<? extends CharacteristicInput> assetCharClass) {
     String assetCharString = camelCaseToSnakeCase(assetCharClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetCharString));
@@ -290,33 +290,33 @@ public class EntityPersistenceNamingStrategy {
   }
 
   /**
-   * Get the the file name for all {@link GraphicInput}s
+   * Get the entity name for all {@link GraphicInput}s
    *
-   * @param graphicClass the graphic input class a filename string should be generated from
-   * @return the filename string
+   * @param graphicClass the graphic input class an entity name string should be generated from
+   * @return the entity name string
    */
-  public Optional<String> getGraphicsInputFileName(Class<? extends GraphicInput> graphicClass) {
+  public Optional<String> getGraphicsInputEntityName(Class<? extends GraphicInput> graphicClass) {
     String assetInputString = camelCaseToSnakeCase(graphicClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetInputString));
   }
 
   /**
-   * Get the the file name for all {@link OperatorInput}s
+   * Get the entity name for all {@link OperatorInput}s
    *
-   * @param operatorClass the asset input class a filename string should be generated from
-   * @return the filename string
+   * @param operatorClass the asset input class an entity name string should be generated from
+   * @return the entity name string
    */
-  public Optional<String> getOperatorInputFileName(Class<? extends OperatorInput> operatorClass) {
+  public Optional<String> getOperatorInputEntityName(Class<? extends OperatorInput> operatorClass) {
     String assetInputString = camelCaseToSnakeCase(operatorClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetInputString));
   }
 
   /**
-   * Get the file name for time series mapping
+   * Get the entity name for time series mapping
    *
-   * @return The file name string
+   * @return The entity name string
    */
-  public Optional<String> getTimeSeriesMappingFileName() {
+  public Optional<String> getTimeSeriesMappingEntityName() {
     return Optional.of(addPrefixAndSuffix("time_series_mapping"));
   }
 
@@ -492,11 +492,11 @@ public class EntityPersistenceNamingStrategy {
   }
 
   /**
-   * Get the the file name for coordinates
+   * Get the entity name for coordinates
    *
-   * @return the filename string
+   * @return the entity name string
    */
-  public String getIdCoordinateFileName() {
+  public String getIdCoordinateEntityName() {
     return addPrefixAndSuffix("coordinates");
   }
 }
