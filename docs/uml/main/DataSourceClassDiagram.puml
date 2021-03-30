@@ -24,7 +24,7 @@ interface ThermalSource {
     {abstract} Set<ThermalStorageInput> getThermalStorages()
     {abstract} Set<ThermalStorageInput> getThermalStorages(Set<OperatorInput>, Set<ThermalBusInput>)
     {abstract} Set<ThermalHouseInput> getThermalHouses()
-    {abstract} Set<ThermalHouseInput> getThermalHouses(Set<OperatorInput> operators, Set<ThermalBusInput>)
+    {abstract} Set<ThermalHouseInput> getThermalHouses(Set<OperatorInput>, Set<ThermalBusInput>)
     {abstract} Set<CylindricalStorageInput> getCylindricStorages()
     {abstract} Set<CylindricalStorageInput> getCylindricStorages(Set<OperatorInput>, Set<ThermalBusInput>)
 }
@@ -47,7 +47,7 @@ interface RawGridSource {
 }
 DataSource <|-- RawGridSource
 
-interface SystemParticipantsSource{
+interface SystemParticipantSource{
     {abstract} Optional<SystemParticipants> getSystemParticipants()
     {abstract} Set<BmInput> getBmPlants()
     {abstract} Set<BmInput> getBmPlants(Set<NodeInput>, Set<OperatorInput>, Set<BmTypeInput>)
@@ -60,7 +60,7 @@ interface SystemParticipantsSource{
     {abstract} Set<FixedFeedInInput> getFixedFeedIns()
     {abstract} Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput>, Set<OperatorInput>)
     {abstract} Set<HpInput> getHeatPumps()
-    {abstract} Set<HpInput> getHeatPumps(nodes, Set<OperatorInput>, Set<HpTypeInput>, Set<ThermalBusInput>)
+    {abstract} Set<HpInput> getHeatPumps(Set<NodeInput>, Set<OperatorInput>, Set<HpTypeInput>, Set<ThermalBusInput>)
     {abstract} Set<LoadInput> getLoads()
     {abstract} Set<LoadInput> getLoads(Set<NodeInput>, Set<OperatorInput>)
     {abstract} Set<PvInput> getPvPlants()
@@ -70,7 +70,7 @@ interface SystemParticipantsSource{
     {abstract} Set<WecInput> getWecPlants()
     {abstract} Set<WecInput> getWecPlants(Set<NodeInput>, Set<OperatorInput>, Set<WecTypeInput>)
 }
-DataSource <|-- SystemParticipantsSource
+DataSource <|-- SystemParticipantSource
 
 interface GraphicSource {
     {abstract} Optional<GraphicElements> getGraphicElements()
@@ -99,15 +99,15 @@ class CsvTimeSeriesMappingSource {
     - TimeSeriesMappingFactory mappingFactory
     - Map<UUID, UUID> mapping
 }
-CsvTimeSeriesMappingSource <|.. TimeSeriesMappingSource
-CsvTimeSeriesMappingSource <|-- CsvDataSource
+TimeSeriesMappingSource <|.. CsvTimeSeriesMappingSource
+CsvDataSource <|-- CsvTimeSeriesMappingSource
 
 interface TimeSeriesSource<V extends Value> {
     {abstract} IndividualTimeSeries<V> getTimeSeries()
     {abstract} IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime>))
     {abstract} Optional<V> getValue(ZonedDateTime)
 }
-TimeSeriesSource <|-- DataSource
+DataSource <|-- TimeSeriesSource
 
 class CsvTimeSeriesSource<V extends Value> {
     - IndividualTimeSeries<V> timeSeries
@@ -115,8 +115,8 @@ class CsvTimeSeriesSource<V extends Value> {
     - IndividualTimeSeries<V> buildIndividualTimeSeries(\n\tUUID,\n\tfilePath,\n\tFunction<Map<String, String>,\n\tOptional<TimeBasedValue<V>>>)
     - Optional<TimeBasedValue<V>> buildTimeBasedValue(\n\tMap<String, String>,\n\tClass<V>,\n\tTimeBasedSimpleValueFactory<V>)
 }
-CsvTimeSeriesSource <|.. TimeSeriesSource
-CsvTimeSeriesSource <|-- CsvDataSource
+TimeSeriesSource <|.. CsvTimeSeriesSource
+CsvDataSource <|-- CsvTimeSeriesSource
 
 interface DataConnector {
     {abstract} shutdown()
@@ -178,9 +178,10 @@ Class CsvSystemParticipantSource {
     - PvInputFactory pvInputFactory
     - StorageInputFactory storageInputFactory
     - WecInputFactory wecInputFactory
+    - EvcsInputFactory evcsInputFactory
     + CsvSystemParticipantSource(String, String, FileNamingStrategy, TypeSource, ThermalSource, RawGridSource)
 }
-SystemParticipantsSource <|.. CsvSystemParticipantSource
+SystemParticipantSource <|.. CsvSystemParticipantSource
 CsvDataSource <|-- CsvSystemParticipantSource
 
 Class CsvGraphicSource {
@@ -197,7 +198,7 @@ Class CsvFileConnector {
     - Map<Class<? extends UniqueEntity>, BufferedCsvWriter> entityWriters
     - Map<UUID, BufferedCsvWriter> timeSeriesWriters
     - FileNamingStrategy fileNamingStrategy
-    - String baseFolderName
+    - String baseDirectoryName
     - {static} String FILE_ENDING
     + CsvFileConnector(String, FileNamingStrategy)
     + BufferedCsvWriter getOrInitWriter(Class<? extends UniqueEntity>, String[], String)
