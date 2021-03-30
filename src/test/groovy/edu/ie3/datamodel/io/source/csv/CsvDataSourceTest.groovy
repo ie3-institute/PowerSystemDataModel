@@ -66,6 +66,36 @@ class CsvDataSourceTest extends Specification {
 
 	DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, fileNamingStrategy)
 
+	def "A csv data source returns empty optional, when looking for a specific uuid"() {
+		given:
+		def entities = null
+		def uuid = UUID.randomUUID().toString()
+
+		when:
+		def actual = dummyCsvSource.findFirstEntityByUuid(uuid, entities)
+
+		then:
+		!actual.present
+	}
+
+	def "A csv data source is able to find the correct first entity by uuid"() {
+		given:
+		def uuid = UUID.randomUUID()
+		def queriedOperator = new OperatorInput(uuid, "b")
+		def entities = Arrays.asList(
+				new OperatorInput(UUID.randomUUID(), "a"),
+				queriedOperator,
+				new OperatorInput(UUID.randomUUID(), "c")
+				)
+
+		when:
+		def actual = dummyCsvSource.findFirstEntityByUuid(uuid.toString(), entities)
+
+		then:
+		actual.present
+		actual.get() == queriedOperator
+	}
+
 	def "A DataSource should contain a valid connector after initialization"() {
 		expect:
 		dummyCsvSource.connector != null
