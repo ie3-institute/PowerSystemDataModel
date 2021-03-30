@@ -272,7 +272,7 @@ class InfluxDbSinkIT extends Specification {
 	//Always return an empty Optional for results
 	class EmptyFileNamingStrategy extends EntityPersistenceNamingStrategy {
 		@Override
-		Optional<String> getResultEntityFileName(Class<? extends ResultEntity> resultEntityClass) {
+		Optional<String> getResultEntityName(Class<? extends ResultEntity> resultEntityClass) {
 			return Optional.empty()
 		}
 

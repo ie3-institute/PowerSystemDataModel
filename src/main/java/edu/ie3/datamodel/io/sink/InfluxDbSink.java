@@ -109,7 +109,7 @@ public class InfluxDbSink implements OutputDataSink {
    */
   private Optional<Point> transformToPoint(ResultEntity entity) {
     Optional<String> measurementName =
-        entityPersistenceNamingStrategy.getResultEntityFileName(entity.getClass());
+        entityPersistenceNamingStrategy.getResultEntityName(entity.getClass());
     if (!measurementName.isPresent())
       log.warn(
           "I could not get a measurement name for class {}. I am using its simple name instead.",

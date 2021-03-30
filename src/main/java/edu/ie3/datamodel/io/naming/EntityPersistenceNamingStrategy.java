@@ -180,7 +180,7 @@ public class EntityPersistenceNamingStrategy {
     Optional<String> inputEntityFileName = getInputEntityFileName(cls);
     if (inputEntityFileName.isPresent()) return inputEntityFileName;
     if (ResultEntity.class.isAssignableFrom(cls))
-      return getResultEntityFileName(cls.asSubclass(ResultEntity.class));
+      return getResultEntityName(cls.asSubclass(ResultEntity.class));
     logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
     return Optional.empty();
   }
@@ -193,7 +193,7 @@ public class EntityPersistenceNamingStrategy {
    */
   public Optional<String> getInputEntityFileName(Class<? extends UniqueEntity> cls) {
     if (AssetTypeInput.class.isAssignableFrom(cls))
-      return getTypeFileName(cls.asSubclass(AssetTypeInput.class));
+      return getTypeEntityName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))
       return getAssetInputFileName(cls.asSubclass(AssetInput.class));
     if (CharacteristicInput.class.isAssignableFrom(cls))
@@ -217,17 +217,19 @@ public class EntityPersistenceNamingStrategy {
    * @param resultEntityClass the result entity class a filename string should be generated from
    * @return the filename string
    */
-  public Optional<String> getResultEntityFileName(Class<? extends ResultEntity> resultEntityClass) {
-    return Optional.of(buildResultEntityString(resultEntityClass));
+  public Optional<String> getResultEntityName(Class<? extends ResultEntity> resultEntityClass) {
+    String resultEntityString =
+        camelCaseToSnakeCase(resultEntityClass.getSimpleName().replace("Result", ""));
+    return Optional.of(addPrefixAndSuffix(resultEntityString.concat(RES_ENTITY_SUFFIX)));
   }
 
   /**
-   * Get the the file name for all {@link AssetTypeInput}s
+   * Get the the entity name for all {@link AssetTypeInput}s
    *
-   * @param typeClass the asset type class a filename string should be generated from
+   * @param typeClass the asset type class a entity name string should be generated from
    * @return the filename string
    */
-  public Optional<String> getTypeFileName(Class<? extends AssetTypeInput> typeClass) {
+  public Optional<String> getTypeEntityName(Class<? extends AssetTypeInput> typeClass) {
     String assetTypeString = camelCaseToSnakeCase(typeClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetTypeString));
   }
@@ -241,12 +243,6 @@ public class EntityPersistenceNamingStrategy {
   public Optional<String> getAssetInputFileName(Class<? extends AssetInput> assetInputClass) {
     String assetInputString = camelCaseToSnakeCase(assetInputClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetInputString));
-  }
-
-  private String buildResultEntityString(Class<? extends ResultEntity> resultEntityClass) {
-    String resultEntityString =
-        camelCaseToSnakeCase(resultEntityClass.getSimpleName().replace("Result", ""));
-    return addPrefixAndSuffix(resultEntityString.concat(RES_ENTITY_SUFFIX));
   }
 
   /**
