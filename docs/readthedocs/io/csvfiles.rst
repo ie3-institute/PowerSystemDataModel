@@ -4,8 +4,8 @@ csv files
 
 Naming of files
 ===============
-A naming strategy provides a mapping between model classes and the names of the data sinks, in which the serialized
-representation of several objects of this class can be found.
+A naming strategy provides a mapping between model classes and the human readable names of those entities to be used
+within e.g. the data sinks, in which the serialized representation of several objects of this class can be found.
 Currently we offer two different, pre-defined naming strategies, which you might extend to fit your needs:
 
 1. **EntityPersistenceNamingStrategy**:
@@ -22,8 +22,7 @@ Default naming strategy
 =======================
 There is a default mapping from model class to naming of data sinks in the case you would like to use csv files for
 (de-)serialization of models.
-You may extend / alter the naming with pre- or suffix by calling :code:
-`new EntityPersistenceNamingStrategy("prefix","suffix")`.
+You may extend / alter the naming with pre- or suffix by calling :code: `new EntityPersistenceNamingStrategy("prefix","suffix")`.
 
 Input
 -----

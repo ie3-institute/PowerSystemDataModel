@@ -31,10 +31,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Provides an easy to use standard way to name files, tables or any other data sink that is used in
- * order to persist entities. Normal use cases are e.g., I/O operations with .csv files or
- * databases. If a folder structure is required for file based I/O operations, one might consider
- * using {@link HierarchicFileNamingStrategy}
+ * Provides an easy to use standard way to name files, tables or any other persistent representation
+ * of models. Normal use cases are e.g., I/O operations with .csv files or databases. If a folder
+ * structure is required for file based I/O operations, one might consider using {@link
+ * HierarchicFileNamingStrategy}
  *
  * @version 0.1
  * @since 03.02.20
