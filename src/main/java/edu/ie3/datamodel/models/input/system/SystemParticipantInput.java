@@ -32,7 +32,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    */
-  public SystemParticipantInput(
+  protected SystemParticipantInput(
       UUID uuid,
       String id,
       OperatorInput operator,
@@ -52,7 +52,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    */
-  public SystemParticipantInput(
+  protected SystemParticipantInput(
       UUID uuid, String id, NodeInput node, ReactivePowerCharacteristic qCharacteristics) {
     super(uuid, id);
     this.node = node;

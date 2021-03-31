@@ -7,10 +7,10 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
@@ -64,9 +64,12 @@ public abstract class CsvDataSource {
    */
   @Deprecated private boolean notYetLoggedWarning = true;
 
-  public CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+  public CsvDataSource(
+      String csvSep,
+      String folderPath,
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
     this.csvSep = csvSep;
-    this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
+    this.connector = new CsvFileConnector(folderPath, entityPersistenceNamingStrategy);
   }
 
   /**

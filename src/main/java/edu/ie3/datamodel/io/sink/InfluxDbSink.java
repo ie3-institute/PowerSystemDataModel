@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.sink;
 
 import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
-import edu.ie3.datamodel.io.csv.FileNamingStrategy;
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -33,18 +33,20 @@ public class InfluxDbSink implements OutputDataSink {
   private static final String FIELD_NAME_INPUT = "inputModel";
 
   private final InfluxDbConnector connector;
-  private final FileNamingStrategy fileNamingStrategy;
+  private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
   private final ProcessorProvider processorProvider;
 
   /**
    * Initializes a new InfluxDbWeatherSource
    *
    * @param connector needed for database connection
-   * @param fileNamingStrategy needed to create measurement names for entities
+   * @param entityPersistenceNamingStrategy needed to create measurement names for entities
    */
-  public InfluxDbSink(InfluxDbConnector connector, FileNamingStrategy fileNamingStrategy) {
+  public InfluxDbSink(
+      InfluxDbConnector connector,
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
     this.connector = connector;
-    this.fileNamingStrategy = fileNamingStrategy;
+    this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
     this.processorProvider =
         new ProcessorProvider(
             ProcessorProvider.allResultEntityProcessors(),
@@ -52,12 +54,12 @@ public class InfluxDbSink implements OutputDataSink {
   }
 
   /**
-   * Initializes a new InfluxDbWeatherSource with a default FileNamingStrategy
+   * Initializes a new InfluxDbWeatherSource with a default EntityPersistenceNamingStrategy
    *
    * @param connector needed for database connection
    */
   public InfluxDbSink(InfluxDbConnector connector) {
-    this(connector, new FileNamingStrategy());
+    this(connector, new EntityPersistenceNamingStrategy());
   }
 
   @Override
@@ -100,14 +102,14 @@ public class InfluxDbSink implements OutputDataSink {
   /**
    * Transforms a ResultEntity to an influxDB data point. <br>
    * As the equivalent to a relational table, the influxDB measurement point will be named using the
-   * given FileNamingStrategy if possible, or the class name otherwise. All special characters in
-   * the measurement name will be replaced by underscores.
+   * given EntityPersistenceNamingStrategy if possible, or the class name otherwise. All special
+   * characters in the measurement name will be replaced by underscores.
    *
    * @param entity the entity to transform
    */
   private Optional<Point> transformToPoint(ResultEntity entity) {
     Optional<String> measurementName =
-        fileNamingStrategy.getResultEntityFileName(entity.getClass());
+        entityPersistenceNamingStrategy.getResultEntityName(entity.getClass());
     if (!measurementName.isPresent())
       log.warn(
           "I could not get a measurement name for class {}. I am using its simple name instead.",
@@ -158,15 +160,15 @@ public class InfluxDbSink implements OutputDataSink {
   /**
    * Transforms a timeSeries to influxDB data points, one point for each value. <br>
    * As the equivalent to a relational table, the influxDB measurement point will be named using the
-   * given FileNamingStrategy if possible, or the class name otherwise. All special characters in
-   * the measurement name will be replaced by underscores.
+   * given EntityPersistenceNamingStrategy if possible, or the class name otherwise. All special
+   * characters in the measurement name will be replaced by underscores.
    *
    * @param timeSeries the time series to transform
    */
   private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
       TimeSeries<E, V> timeSeries) {
     if (timeSeries.getEntries().isEmpty()) return Collections.emptySet();
-    Optional<String> measurementName = fileNamingStrategy.getFileName(timeSeries);
+    Optional<String> measurementName = entityPersistenceNamingStrategy.getEntityName(timeSeries);
     if (!measurementName.isPresent()) {
       String valueClassName =
           timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName();
@@ -223,8 +225,9 @@ public class InfluxDbSink implements OutputDataSink {
 
   /**
    * Transforms an entity to an influxDB data point. <br>
-   * The measurement point will be named by the given FileNamingStrategy if possible, or the class
-   * name otherwise. All special characters in the measurement name will be replaced by underscores.
+   * The measurement point will be named by the given EntityPersistenceNamingStrategy if possible,
+   * or the class name otherwise. All special characters in the measurement name will be replaced by
+   * underscores.
    *
    * @param entity the entity of which influxDB points will be extracted
    * @param <C> bounded to be all unique entities, but logs an error and returns an empty Set if it

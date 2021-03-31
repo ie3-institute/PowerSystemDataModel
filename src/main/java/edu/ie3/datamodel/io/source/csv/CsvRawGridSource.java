@@ -5,9 +5,9 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.csv.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.*;
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -54,9 +54,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   public CsvRawGridSource(
       String csvSep,
       String gridFolderPath,
-      FileNamingStrategy fileNamingStrategy,
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
       TypeSource typeSource) {
-    super(csvSep, gridFolderPath, fileNamingStrategy);
+    super(csvSep, gridFolderPath, entityPersistenceNamingStrategy);
     this.typeSource = typeSource;
 
     // init factories

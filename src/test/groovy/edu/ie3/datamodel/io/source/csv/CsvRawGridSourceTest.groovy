@@ -27,8 +27,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 	CsvRawGridSource source
 
 	def setupSpec() {
-		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-		source = new CsvRawGridSource(csvSep, gridFolderPath, fileNamingStrategy, typeSource)
+		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, entityPersistenceNamingStrategy)
+		source = new CsvRawGridSource(csvSep, gridFolderPath, entityPersistenceNamingStrategy, typeSource)
 	}
 
 	def "The CsvRawGridSource is able to convert single valid AssetInputEntityData to ConnectorInputEntityData"() {
@@ -742,8 +742,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "The CsvRawGridSource returns an empty Optional, if one mandatory element for the RawGridElements is missing"() {
 		given: "a source pointing to malformed grid data"
-		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-		source = new CsvRawGridSource(csvSep, gridFolderPath+"_malformed", fileNamingStrategy, typeSource)
+		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, entityPersistenceNamingStrategy)
+		source = new CsvRawGridSource(csvSep, gridFolderPath + "_malformed", entityPersistenceNamingStrategy, typeSource)
 
 		when: "loading a total grid structure from file"
 		def actual = source.getGridData()
@@ -754,8 +754,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "The CsvRawGridSource returns an empty Optional, if the RawGridElements contain no single element"() {
 		given: "a source pointing to malformed grid data"
-		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-		source = new CsvRawGridSource(csvSep, gridFolderPath+"_empty", fileNamingStrategy, typeSource)
+		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, entityPersistenceNamingStrategy)
+		source = new CsvRawGridSource(csvSep, gridFolderPath + "_empty", entityPersistenceNamingStrategy, typeSource)
 
 		when: "loading a total grid structure from file"
 		def actual = source.getGridData()
