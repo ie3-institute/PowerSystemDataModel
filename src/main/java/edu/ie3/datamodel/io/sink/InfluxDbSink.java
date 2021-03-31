@@ -168,7 +168,7 @@ public class InfluxDbSink implements OutputDataSink {
   private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
       TimeSeries<E, V> timeSeries) {
     if (timeSeries.getEntries().isEmpty()) return Collections.emptySet();
-    Optional<String> measurementName = entityPersistenceNamingStrategy.getFileName(timeSeries);
+    Optional<String> measurementName = entityPersistenceNamingStrategy.getEntityName(timeSeries);
     if (!measurementName.isPresent()) {
       String valueClassName =
           timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName();

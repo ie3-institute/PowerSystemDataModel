@@ -366,7 +366,7 @@ public class CsvFileConnector implements DataConnector {
     String directoryPath = entityPersistenceNamingStrategy.getDirectoryPath(timeSeries).orElse("");
     String fileName =
         entityPersistenceNamingStrategy
-            .getFileName(timeSeries)
+            .getEntityName(timeSeries)
             .orElseThrow(
                 () ->
                     new ConnectorException(
@@ -389,7 +389,7 @@ public class CsvFileConnector implements DataConnector {
     String directoryPath = entityPersistenceNamingStrategy.getDirectoryPath(clz).orElse("");
     String fileName =
         entityPersistenceNamingStrategy
-            .getFileName(clz)
+            .getEntityName(clz)
             .orElseThrow(
                 () ->
                     new ConnectorException(

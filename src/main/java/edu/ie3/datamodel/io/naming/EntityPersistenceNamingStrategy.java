@@ -155,14 +155,32 @@ public class EntityPersistenceNamingStrategy {
    *
    * @param cls Targeted class of the given file
    * @return An optional sub path to the actual file
+   * @deprecated This class should foremost provide namings for the entities and nothing around file
+   *     naming or pathing in specific. This method will be moved from this class, when <a
+   *     href="https://github.com/ie3-institute/PowerSystemDataModel/issues/315">this issue</a> is
+   *     addressed
    */
+  @Deprecated
   public Optional<String> getFilePath(Class<? extends UniqueEntity> cls) {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        getFileName(cls).orElseGet(() -> ""), getDirectoryPath(cls).orElseGet(() -> ""));
+        getEntityName(cls).orElseGet(() -> ""), getDirectoryPath(cls).orElseGet(() -> ""));
   }
 
+  /**
+   * Compose a full file path from directory name and file name. Additionally perform some checks,
+   * like if the file name itself actually is available
+   *
+   * @param fileName File name
+   * @param subDirectories Sub directory path
+   * @return Concatenation of sub directory structure and file name
+   * @deprecated This class should foremost provide namings for the entities and nothing around file
+   *     naming or pathing in specific. This method will be moved from this class, when <a
+   *     href="https://github.com/ie3-institute/PowerSystemDataModel/issues/315">this issue</a> is
+   *     addressed
+   */
+  @Deprecated
   private Optional<String> getFilePath(String fileName, String subDirectories) {
     if (fileName.isEmpty()) return Optional.empty();
     if (!subDirectories.isEmpty())
@@ -171,14 +189,14 @@ public class EntityPersistenceNamingStrategy {
   }
 
   /**
-   * Returns the file name (and only the file name without any directories and extension).
+   * Returns the name of the entity, that should be used for persistence.
    *
    * @param cls Targeted class of the given file
-   * @return The file name
+   * @return The name of the entity
    */
-  public Optional<String> getFileName(Class<? extends UniqueEntity> cls) {
-    Optional<String> inputEntityFileName = getInputEntityName(cls);
-    if (inputEntityFileName.isPresent()) return inputEntityFileName;
+  public Optional<String> getEntityName(Class<? extends UniqueEntity> cls) {
+    if (InputEntity.class.isAssignableFrom(cls))
+      return getInputEntityName(cls.asSubclass(InputEntity.class));
     if (ResultEntity.class.isAssignableFrom(cls))
       return getResultEntityName(cls.asSubclass(ResultEntity.class));
     logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
@@ -191,14 +209,12 @@ public class EntityPersistenceNamingStrategy {
    * @param cls Targeted class of the given entity
    * @return The entity name
    */
-  public Optional<String> getInputEntityName(Class<? extends UniqueEntity> cls) {
+  public Optional<String> getInputEntityName(Class<? extends InputEntity> cls) {
     if (AssetTypeInput.class.isAssignableFrom(cls))
       return getTypeEntityName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))
       return getAssetInputEntityName(cls.asSubclass(AssetInput.class));
-    if (CharacteristicInput.class.isAssignableFrom(cls))
-      return getAssetCharacteristicsEntityName(cls.asSubclass(CharacteristicInput.class));
-    if (cls.equals(RandomLoadParameters.class)) {
+    if (RandomLoadParameters.class.isAssignableFrom(cls)) {
       String loadParamString = camelCaseToSnakeCase(cls.getSimpleName());
       return Optional.of(addPrefixAndSuffix(loadParamString.concat("_input")));
     }
@@ -208,6 +224,7 @@ public class EntityPersistenceNamingStrategy {
       return getOperatorInputEntityName(cls.asSubclass(OperatorInput.class));
     if (TimeSeriesMappingSource.MappingEntry.class.isAssignableFrom(cls))
       return getTimeSeriesMappingEntityName();
+    logger.error("The class '{}' is not covered for input entity naming.", cls);
     return Optional.empty();
   }
 
@@ -346,7 +363,7 @@ public class EntityPersistenceNamingStrategy {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        getFileName(timeSeries).orElseGet(() -> ""),
+        getEntityName(timeSeries).orElseGet(() -> ""),
         getDirectoryPath(timeSeries).orElseGet(() -> ""));
   }
 
@@ -361,7 +378,7 @@ public class EntityPersistenceNamingStrategy {
    * @return A file name for this particular time series
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      Optional<String> getFileName(T timeSeries) {
+      Optional<String> getEntityName(T timeSeries) {
     if (timeSeries instanceof IndividualTimeSeries) {
       Optional<E> maybeFirstElement = timeSeries.getEntries().stream().findFirst();
       if (maybeFirstElement.isPresent()) {

@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.naming
 
 import edu.ie3.datamodel.io.csv.DefaultDirectoryHierarchy
-import edu.ie3.datamodel.io.naming.HierarchicFileNamingStrategy
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity
@@ -63,7 +62,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
 
 		when:
-		def res = strategy.getFileName(String)
+		def res = strategy.getEntityName(String)
 
 		then:
 		!res.present
@@ -431,7 +430,7 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		def timeSeries = Mock(RepetitiveTimeSeries)
 
 		when:
-		def fileName = strategy.getFileName(timeSeries)
+		def fileName = strategy.getEntityName(timeSeries)
 
 		then:
 		!fileName.present

@@ -33,8 +33,6 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.WecInput
-import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
-import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput
@@ -327,7 +325,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(String)
+		Optional<String> res = strategy.getEntityName(String)
 
 		then:
 		!res.present
@@ -338,7 +336,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(modelClass)
+		Optional<String> res = strategy.getEntityName(modelClass)
 
 		then:
 		res.present
@@ -369,7 +367,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("prefix", "suffix")
 
 		when:
-		Optional<String> res = strategy.getFileName(modelClass)
+		Optional<String> res = strategy.getEntityName(modelClass)
 
 		then:
 		res.present
@@ -400,7 +398,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(modelClass)
+		Optional<String> res = strategy.getEntityName(modelClass)
 
 		then:
 		res.present
@@ -428,29 +426,12 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		ThermalHouseInput       || "thermal_house_input"
 	}
 
-	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all asset characteristics models"() {
-		given: "a naming strategy without pre- or suffixes"
-		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
-
-		when:
-		Optional<String> res = strategy.getFileName(modelClass)
-
-		then:
-		res.present
-		res.get() == expectedString
-
-		where:
-		modelClass             || expectedString
-		WecCharacteristicInput || "wec_characteristic_input"
-		EvCharacteristicInput  || "ev_characteristic_input"
-	}
-
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all input types models"() {
 		given: "a naming strategy without pre- or suffixes"
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(modelClass)
+		Optional<String> res = strategy.getEntityName(modelClass)
 
 		then:
 		res.present
@@ -475,7 +456,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(modelClass)
+		Optional<String> res = strategy.getEntityName(modelClass)
 
 		then:
 		res.present
@@ -491,7 +472,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(modelClass)
+		Optional<String> res = strategy.getEntityName(modelClass)
 
 		then:
 		res.present
@@ -514,7 +495,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		timeSeries.entries >> entries
 
 		when:
-		Optional<String> actual = strategy.getFileName(timeSeries)
+		Optional<String> actual = strategy.getEntityName(timeSeries)
 
 		then:
 		!actual.present
@@ -529,7 +510,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		timeSeries.entries >> entries
 
 		when:
-		Optional<String> actual = strategy.getFileName(timeSeries)
+		Optional<String> actual = strategy.getEntityName(timeSeries)
 
 		then:
 		!actual.present
@@ -545,7 +526,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		timeSeries.entries >> entries
 
 		when:
-		Optional<String> actual = strategy.getFileName(timeSeries)
+		Optional<String> actual = strategy.getEntityName(timeSeries)
 
 		then:
 		actual.present
@@ -566,7 +547,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		timeSeries.entries >> entries
 
 		when:
-		Optional<String> actual = strategy.getFileName(timeSeries)
+		Optional<String> actual = strategy.getEntityName(timeSeries)
 
 		then:
 		actual.present
@@ -585,7 +566,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		timeSeries.type >> type
 
 		when:
-		Optional<String> actual = strategy.getFileName(timeSeries)
+		Optional<String> actual = strategy.getEntityName(timeSeries)
 
 		then:
 		actual.present
@@ -602,7 +583,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		RepetitiveTimeSeries timeSeries = Mock(RepetitiveTimeSeries)
 
 		when:
-		Optional<String> fileName = entityPersistenceNamingStrategy.getFileName(timeSeries)
+		Optional<String> fileName = entityPersistenceNamingStrategy.getEntityName(timeSeries)
 
 		then:
 		!fileName.present
@@ -613,7 +594,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(TimeSeriesMappingSource.MappingEntry)
+		Optional<String> res = strategy.getEntityName(TimeSeriesMappingSource.MappingEntry)
 
 		then:
 		res.present
@@ -625,7 +606,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("prefix", "suffix")
 
 		when:
-		Optional<String> res = strategy.getFileName(TimeSeriesMappingSource.MappingEntry)
+		Optional<String> res = strategy.getEntityName(TimeSeriesMappingSource.MappingEntry)
 
 		then:
 		res.present
@@ -650,8 +631,6 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		HpTypeInput              || Optional.empty()
 		StorageTypeInput         || Optional.empty()
 		WecTypeInput             || Optional.empty()
-		WecCharacteristicInput   || Optional.empty()
-		EvCharacteristicInput    || Optional.empty()
 	}
 
 	def "A simple file naming strategy does return empty sub directory path for other system model input classes"() {
@@ -872,8 +851,6 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 
 		where:
 		modelClass               || expectedString
-		WecCharacteristicInput   || "wec_characteristic_input"
-		EvCharacteristicInput    || "ev_characteristic_input"
 		BmTypeInput              || "bm_type_input"
 		ChpTypeInput             || "chp_type_input"
 		EvTypeInput              || "ev_type_input"

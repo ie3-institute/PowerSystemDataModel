@@ -73,7 +73,7 @@ class InfluxDbSinkIT extends Specification {
 		when:
 		sink.persist(lineResult1)
 		sink.flush()
-		def key = entityPersistenceNamingStrategy.getFileName(LineResult).get().trim().replaceAll("\\W", "_")
+		def key = entityPersistenceNamingStrategy.getEntityName(LineResult).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def fieldMap = parsedResults.get(key).first()
@@ -125,8 +125,8 @@ class InfluxDbSinkIT extends Specification {
 		]
 		when:
 		sink.persistAll(entities)
-		def key_line = entityPersistenceNamingStrategy.getFileName(LineResult).get().trim().replaceAll("\\W", "_")
-		def key_chp = entityPersistenceNamingStrategy.getFileName(ChpResult).get().trim().replaceAll("\\W", "_")
+		def key_line = entityPersistenceNamingStrategy.getEntityName(LineResult).get().trim().replaceAll("\\W", "_")
+		def key_chp = entityPersistenceNamingStrategy.getEntityName(ChpResult).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key_line + ", " + key_chp))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def lineResults = parsedResults.get(key_line)
@@ -154,7 +154,7 @@ class InfluxDbSinkIT extends Specification {
 		IndividualTimeSeries<PValue> timeSeries = new IndividualTimeSeries(UUID.randomUUID(), [p1, p2, p3] as Set<TimeBasedValue>)
 		when:
 		sink.persistTimeSeries(timeSeries)
-		def key = entityPersistenceNamingStrategy.getFileName(timeSeries).get().trim().replaceAll("\\W", "_")
+		def key = entityPersistenceNamingStrategy.getEntityName(timeSeries).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def pValuesMap = parsedResults.get(key)
@@ -277,7 +277,7 @@ class InfluxDbSinkIT extends Specification {
 		}
 
 		@Override
-		<T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value> Optional<String> getFileName(T timeSeries) {
+		<T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value> Optional<String> getEntityName(T timeSeries) {
 			return Optional.empty()
 		}
 	}
