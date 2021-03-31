@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.io.csv
+package edu.ie3.datamodel.io.naming
 
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
@@ -23,10 +23,22 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
-import edu.ie3.datamodel.models.input.system.*
-import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
-import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
-import edu.ie3.datamodel.models.input.system.type.*
+import edu.ie3.datamodel.models.input.system.BmInput
+import edu.ie3.datamodel.models.input.system.ChpInput
+import edu.ie3.datamodel.models.input.system.EvInput
+import edu.ie3.datamodel.models.input.system.EvcsInput
+import edu.ie3.datamodel.models.input.system.FixedFeedInInput
+import edu.ie3.datamodel.models.input.system.HpInput
+import edu.ie3.datamodel.models.input.system.LoadInput
+import edu.ie3.datamodel.models.input.system.PvInput
+import edu.ie3.datamodel.models.input.system.StorageInput
+import edu.ie3.datamodel.models.input.system.WecInput
+import edu.ie3.datamodel.models.input.system.type.BmTypeInput
+import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
+import edu.ie3.datamodel.models.input.system.type.EvTypeInput
+import edu.ie3.datamodel.models.input.system.type.HpTypeInput
+import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
+import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.result.NodeResult
@@ -34,7 +46,15 @@ import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
-import edu.ie3.datamodel.models.result.system.*
+import edu.ie3.datamodel.models.result.system.BmResult
+import edu.ie3.datamodel.models.result.system.ChpResult
+import edu.ie3.datamodel.models.result.system.EvResult
+import edu.ie3.datamodel.models.result.system.EvcsResult
+import edu.ie3.datamodel.models.result.system.FixedFeedInResult
+import edu.ie3.datamodel.models.result.system.LoadResult
+import edu.ie3.datamodel.models.result.system.PvResult
+import edu.ie3.datamodel.models.result.system.StorageResult
+import edu.ie3.datamodel.models.result.system.WecResult
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.IntValue
@@ -51,12 +71,11 @@ import java.nio.file.Paths
 import java.time.ZonedDateTime
 import java.util.regex.Pattern
 
-@Deprecated
-class FileNamingStrategyTest extends Specification {
+class EntityPersistenceNamingStrategyTest extends Specification {
 
 	def "The uuid pattern actually matches a valid uuid"() {
 		given:
-		def pattern = Pattern.compile(FileNamingStrategy.UUID_STRING)
+		def pattern = Pattern.compile(EntityPersistenceNamingStrategy.UUID_STRING)
 		def uuidString = UUID.randomUUID().toString()
 
 		when:
@@ -68,7 +87,7 @@ class FileNamingStrategyTest extends Specification {
 
 	def "The pattern for an individual time series file name actually matches a valid file name and extracts the correct groups"() {
 		given:
-		def fns = new FileNamingStrategy()
+		def fns = new EntityPersistenceNamingStrategy()
 		def validFileName = "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 
 		when:
@@ -87,7 +106,7 @@ class FileNamingStrategyTest extends Specification {
 
 	def "The pattern for a repetitive load profile time series file name actually matches a valid file name and extracts the correct groups"() {
 		given:
-		def fns = new FileNamingStrategy()
+		def fns = new EntityPersistenceNamingStrategy()
 		def validFileName = "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 
 		when:
@@ -106,7 +125,7 @@ class FileNamingStrategyTest extends Specification {
 
 	def "Trying to extract time series meta information throws an Exception, if it is provided a malformed string"() {
 		given:
-		def fns = new FileNamingStrategy()
+		def fns = new EntityPersistenceNamingStrategy()
 		def path = Paths.get("/bla/foo")
 
 		when:
@@ -119,7 +138,7 @@ class FileNamingStrategyTest extends Specification {
 
 	def "Trying to extract individual time series meta information throws an Exception, if it is provided a malformed string"() {
 		given:
-		def fns = new FileNamingStrategy()
+		def fns = new EntityPersistenceNamingStrategy()
 		def fileName = "foo"
 
 		when:
@@ -132,7 +151,7 @@ class FileNamingStrategyTest extends Specification {
 
 	def "Trying to extract load profile time series meta information throws an Exception, if it is provided a malformed string"() {
 		given:
-		def fns = new FileNamingStrategy()
+		def fns = new EntityPersistenceNamingStrategy()
 		def fileName = "foo"
 
 		when:
@@ -143,9 +162,9 @@ class FileNamingStrategyTest extends Specification {
 		ex.message == "Cannot extract meta information on load profile time series from 'foo'."
 	}
 
-	def "The FileNamingStrategy extracts correct meta information from a valid individual time series file name"() {
+	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid individual time series file name"() {
 		given:
-		def fns = new FileNamingStrategy()
+		def fns = new EntityPersistenceNamingStrategy()
 		def path = Paths.get(pathString)
 
 		when:
@@ -169,9 +188,9 @@ class FileNamingStrategyTest extends Specification {
 		"/bla/foo/its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.WEATHER
 	}
 
-	def "The FileNamingStrategy extracts correct meta information from a valid individual time series file name with pre- and suffix"() {
+	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid individual time series file name with pre- and suffix"() {
 		given:
-		def fns = new FileNamingStrategy("prefix", "suffix")
+		def fns = new EntityPersistenceNamingStrategy("prefix", "suffix")
 		def path = Paths.get(pathString)
 
 		when:
@@ -195,9 +214,9 @@ class FileNamingStrategyTest extends Specification {
 		"/bla/foo/prefix_its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.WEATHER
 	}
 
-	def "The FileNamingStrategy throw an IllegalArgumentException, if the column scheme is malformed."() {
+	def "The EntityPersistenceNamingStrategy throw an IllegalArgumentException, if the column scheme is malformed."() {
 		given:
-		def fns = new FileNamingStrategy()
+		def fns = new EntityPersistenceNamingStrategy()
 		def path = Paths.get("/bla/foo/its_whoops_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv")
 
 		when:
@@ -208,9 +227,9 @@ class FileNamingStrategyTest extends Specification {
 		ex.message == "Cannot parse 'whoops' to valid column scheme."
 	}
 
-	def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name"() {
+	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid load profile time series file name"() {
 		given:
-		def fns = new FileNamingStrategy()
+		def fns = new EntityPersistenceNamingStrategy()
 		def path = Paths.get("/bla/foo/lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304.csv")
 
 		when:
@@ -224,9 +243,9 @@ class FileNamingStrategyTest extends Specification {
 		}
 	}
 
-	def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name with pre- and suffix"() {
+	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid load profile time series file name with pre- and suffix"() {
 		given:
-		def fns = new FileNamingStrategy("prefix", "suffix")
+		def fns = new EntityPersistenceNamingStrategy("prefix", "suffix")
 		def path = Paths.get("/bla/foo/prefix_lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304_suffix.csv")
 
 		when:
@@ -240,9 +259,9 @@ class FileNamingStrategyTest extends Specification {
 		}
 	}
 
-	def "The FileNamingStrategy is able to prepare the prefix properly"() {
+	def "The EntityPersistenceNamingStrategy is able to prepare the prefix properly"() {
 		when:
-		String actual = FileNamingStrategy.preparePrefix(prefix)
+		String actual = EntityPersistenceNamingStrategy.preparePrefix(prefix)
 
 		then:
 		actual == expected
@@ -257,9 +276,9 @@ class FileNamingStrategyTest extends Specification {
 		"ABC123_" 	|| "abc123_"
 	}
 
-	def "The FileNamingStrategy is able to prepare the suffix properly"() {
+	def "The EntityPersistenceNamingStrategy is able to prepare the suffix properly"() {
 		when:
-		String actual = FileNamingStrategy.prepareSuffix(prefix)
+		String actual = EntityPersistenceNamingStrategy.prepareSuffix(prefix)
 
 		then:
 		actual == suffix
@@ -274,50 +293,50 @@ class FileNamingStrategyTest extends Specification {
 		"_ABC123" || "_abc123"
 	}
 
-	def "A FileNamingStrategy should recognize if empty strings are passed in the prefix/suffix constructor and don't add underlines then"() {
-		given: "a file naming strategy"
-		FileNamingStrategy strategy = new FileNamingStrategy("", "")
+	def "A EntityPersistenceNamingStrategy should recognize if empty strings are passed in the prefix/suffix constructor and don't add underlines then"() {
+		given: "a naming strategy"
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("", "")
 
 		expect:
 		strategy.prefix == ""
 		strategy.suffix == ""
 	}
 
-	def "A FileNamingStrategy should correctly append and prepend underscores"() {
-		given: "a file naming strategy"
-		FileNamingStrategy strategy = new FileNamingStrategy("bla", "foo")
+	def "A EntityPersistenceNamingStrategy should correctly append and prepend underscores"() {
+		given: "a naming strategy"
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("bla", "foo")
 
 		expect:
 		strategy.prefix == "bla_"
 		strategy.suffix == "_foo"
 	}
 
-	def "A FileNamingStrategy should correctly append underscore, when only prefix is set"() {
-		given: "a file naming strategy"
-		FileNamingStrategy strategy = new FileNamingStrategy("bla")
+	def "A EntityPersistenceNamingStrategy should correctly append underscore, when only prefix is set"() {
+		given: "a naming strategy"
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("bla")
 
 		expect:
 		strategy.prefix == "bla_"
 		strategy.suffix == ""
 	}
 
-	def "A FileNamingStrategy should return an empty optional on a invalid class"() {
-		given: "a file naming strategy"
-		FileNamingStrategy strategy = new FileNamingStrategy()
+	def "A EntityPersistenceNamingStrategy should return an empty optional on a invalid class"() {
+		given: "a naming strategy"
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(String)
+		Optional<String> res = strategy.getEntityName(String)
 
 		then:
 		!res.present
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all result models"() {
-		given: "a file naming strategy without pre- or suffixes"
-		FileNamingStrategy strategy = new FileNamingStrategy()
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all result models"() {
+		given: "a naming strategy without pre- or suffixes"
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(modelClass)
+		Optional<String> res = strategy.getEntityName(modelClass)
 
 		then:
 		res.present
@@ -343,12 +362,12 @@ class FileNamingStrategyTest extends Specification {
 		ThermalHouseResult       || "thermal_house_res"
 	}
 
-	def "A FileNamingStrategy with pre- and suffixes should return valid strings for all result models"() {
-		given: "a file naming strategy with pre- or suffixes"
-		FileNamingStrategy strategy = new FileNamingStrategy("prefix", "suffix")
+	def "A EntityPersistenceNamingStrategy with pre- and suffixes should return valid strings for all result models"() {
+		given: "a naming strategy with pre- or suffixes"
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("prefix", "suffix")
 
 		when:
-		Optional<String> res = strategy.getFileName(modelClass)
+		Optional<String> res = strategy.getEntityName(modelClass)
 
 		then:
 		res.present
@@ -374,12 +393,12 @@ class FileNamingStrategyTest extends Specification {
 		ThermalHouseResult       || "prefix_thermal_house_res_suffix"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all input assets models"() {
-		given: "a file naming strategy without pre- or suffixes"
-		FileNamingStrategy strategy = new FileNamingStrategy()
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all input assets models"() {
+		given: "a naming strategy without pre- or suffixes"
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(modelClass)
+		Optional<String> res = strategy.getEntityName(modelClass)
 
 		then:
 		res.present
@@ -407,29 +426,12 @@ class FileNamingStrategyTest extends Specification {
 		ThermalHouseInput       || "thermal_house_input"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all asset characteristics models"() {
-		given: "a file naming strategy without pre- or suffixes"
-		FileNamingStrategy strategy = new FileNamingStrategy()
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all input types models"() {
+		given: "a naming strategy without pre- or suffixes"
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(modelClass)
-
-		then:
-		res.present
-		res.get() == expectedString
-
-		where:
-		modelClass             || expectedString
-		WecCharacteristicInput || "wec_characteristic_input"
-		EvCharacteristicInput  || "ev_characteristic_input"
-	}
-
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for all input types models"() {
-		given: "a file naming strategy without pre- or suffixes"
-		FileNamingStrategy strategy = new FileNamingStrategy()
-
-		when:
-		Optional<String> res = strategy.getFileName(modelClass)
+		Optional<String> res = strategy.getEntityName(modelClass)
 
 		then:
 		res.present
@@ -449,12 +451,12 @@ class FileNamingStrategyTest extends Specification {
 		WecTypeInput           || "wec_type_input"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for a Load Parameter Model"() {
-		given: "a file naming strategy without pre- or suffixes"
-		FileNamingStrategy strategy = new FileNamingStrategy()
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for a Load Parameter Model"() {
+		given: "a naming strategy without pre- or suffixes"
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(modelClass)
+		Optional<String> res = strategy.getEntityName(modelClass)
 
 		then:
 		res.present
@@ -465,12 +467,12 @@ class FileNamingStrategyTest extends Specification {
 		RandomLoadParameters || "random_load_parameters_input"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for a graphic input Model"() {
-		given: "a file naming strategy without pre- or suffixes"
-		FileNamingStrategy strategy = new FileNamingStrategy()
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for a graphic input Model"() {
+		given: "a naming strategy without pre- or suffixes"
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(modelClass)
+		Optional<String> res = strategy.getEntityName(modelClass)
 
 		then:
 		res.present
@@ -482,9 +484,9 @@ class FileNamingStrategyTest extends Specification {
 		LineGraphicInput || "line_graphic_input"
 	}
 
-	def "A FileNamingStrategy without pre- or suffix should return empty Optional, if the content of the time series is not covered"() {
+	def "A EntityPersistenceNamingStrategy without pre- or suffix should return empty Optional, if the content of the time series is not covered"() {
 		given:
-		FileNamingStrategy strategy = new FileNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 		def entries = [
 			new TimeBasedValue(ZonedDateTime.now(), new IntValue(5))
 		] as SortedSet
@@ -493,30 +495,30 @@ class FileNamingStrategyTest extends Specification {
 		timeSeries.entries >> entries
 
 		when:
-		Optional<String> actual = strategy.getFileName(timeSeries)
+		Optional<String> actual = strategy.getEntityName(timeSeries)
 
 		then:
 		!actual.present
 	}
 
-	def "A FileNamingStrategy without pre- or suffix should return empty Optional, if the time series is empty"() {
+	def "A EntityPersistenceNamingStrategy without pre- or suffix should return empty Optional, if the time series is empty"() {
 		given:
-		FileNamingStrategy strategy = new FileNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 		def entries = [] as SortedSet
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> UUID.randomUUID()
 		timeSeries.entries >> entries
 
 		when:
-		Optional<String> actual = strategy.getFileName(timeSeries)
+		Optional<String> actual = strategy.getEntityName(timeSeries)
 
 		then:
 		!actual.present
 	}
 
-	def "A FileNamingStrategy without pre- or suffix should return valid file name for individual time series" () {
+	def "A EntityPersistenceNamingStrategy without pre- or suffix should return valid file name for individual time series" () {
 		given:
-		FileNamingStrategy strategy = new FileNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 		def entries = [
 			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
@@ -524,7 +526,7 @@ class FileNamingStrategyTest extends Specification {
 		timeSeries.entries >> entries
 
 		when:
-		Optional<String> actual = strategy.getFileName(timeSeries)
+		Optional<String> actual = strategy.getEntityName(timeSeries)
 
 		then:
 		actual.present
@@ -535,9 +537,9 @@ class FileNamingStrategyTest extends Specification {
 		IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 	}
 
-	def "A FileNamingStrategy with pre- or suffix should return valid file name for individual time series" () {
+	def "A EntityPersistenceNamingStrategy with pre- or suffix should return valid file name for individual time series" () {
 		given:
-		FileNamingStrategy strategy = new FileNamingStrategy("aa", "zz")
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("aa", "zz")
 		def entries = [] as SortedSet
 		entries.add(new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR))))
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
@@ -545,7 +547,7 @@ class FileNamingStrategyTest extends Specification {
 		timeSeries.entries >> entries
 
 		when:
-		Optional<String> actual = strategy.getFileName(timeSeries)
+		Optional<String> actual = strategy.getEntityName(timeSeries)
 
 		then:
 		actual.present
@@ -556,15 +558,15 @@ class FileNamingStrategyTest extends Specification {
 		IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
 	}
 
-	def "A FileNamingStrategy without pre- or suffix should return valid file name for load profile input" () {
+	def "A EntityPersistenceNamingStrategy without pre- or suffix should return valid file name for load profile input" () {
 		given:
-		FileNamingStrategy strategy = new FileNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 		LoadProfileInput timeSeries = Mock(LoadProfileInput)
 		timeSeries.uuid >> uuid
-		timeSeries.getType() >> type
+		timeSeries.type >> type
 
 		when:
-		Optional<String> actual = strategy.getFileName(timeSeries)
+		Optional<String> actual = strategy.getEntityName(timeSeries)
 
 		then:
 		actual.present
@@ -575,45 +577,45 @@ class FileNamingStrategyTest extends Specification {
 		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewLoadProfile.G3 || "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
-	def "A FileNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {
+	def "A EntityPersistenceNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {
 		given:
-		FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+		EntityPersistenceNamingStrategy entityPersistenceNamingStrategy = new EntityPersistenceNamingStrategy()
 		RepetitiveTimeSeries timeSeries = Mock(RepetitiveTimeSeries)
 
 		when:
-		Optional<String> fileName = fileNamingStrategy.getFileName(timeSeries)
+		Optional<String> fileName = entityPersistenceNamingStrategy.getEntityName(timeSeries)
 
 		then:
 		!fileName.present
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid strings for time series mapping"() {
-		given: "a file naming strategy without pre- or suffixes"
-		FileNamingStrategy strategy = new FileNamingStrategy()
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for time series mapping"() {
+		given: "a naming strategy without pre- or suffixes"
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
-		Optional<String> res = strategy.getFileName(TimeSeriesMappingSource.MappingEntry)
+		Optional<String> res = strategy.getEntityName(TimeSeriesMappingSource.MappingEntry)
 
 		then:
 		res.present
 		res.get() == "time_series_mapping"
 	}
 
-	def "A FileNamingStrategy with pre- and suffix should return valid strings for time series mapping"() {
-		given: "a file naming strategy without pre- or suffixes"
-		FileNamingStrategy strategy = new FileNamingStrategy("prefix", "suffix")
+	def "A EntityPersistenceNamingStrategy with pre- and suffix should return valid strings for time series mapping"() {
+		given: "a naming strategy without pre- or suffixes"
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("prefix", "suffix")
 
 		when:
-		Optional<String> res = strategy.getFileName(TimeSeriesMappingSource.MappingEntry)
+		Optional<String> res = strategy.getEntityName(TimeSeriesMappingSource.MappingEntry)
 
 		then:
 		res.present
 		res.get() == "prefix_time_series_mapping_suffix"
 	}
 
-	def "A simple file naming strategy does return empty sub directory path for any model input class"() {
-		given: "a file naming strategy without pre- or suffixes"
-		def strategy = new FileNamingStrategy()
+	def "A simple file naming strategy does return empty sub directory path for system type and characteristic model input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
 
 		when:
 		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
@@ -622,46 +624,113 @@ class FileNamingStrategyTest extends Specification {
 		actual == expected
 
 		where:
-		modelClass                           || expected
-		FixedFeedInInput                     || Optional.empty()
-		PvInput                              || Optional.empty()
-		WecInput                             || Optional.empty()
-		ChpInput                             || Optional.empty()
-		BmInput                              || Optional.empty()
-		EvInput                              || Optional.empty()
-		LoadInput                            || Optional.empty()
-		StorageInput                         || Optional.empty()
-		HpInput                              || Optional.empty()
-		LineInput                            || Optional.empty()
-		SwitchInput                          || Optional.empty()
-		NodeInput                            || Optional.empty()
-		MeasurementUnitInput                 || Optional.empty()
-		EvcsInput                            || Optional.empty()
-		Transformer2WInput                   || Optional.empty()
-		Transformer3WInput                   || Optional.empty()
-		CylindricalStorageInput              || Optional.empty()
-		ThermalHouseInput                    || Optional.empty()
-		BmTypeInput                          || Optional.empty()
-		ChpTypeInput                         || Optional.empty()
-		EvTypeInput                          || Optional.empty()
-		HpTypeInput                          || Optional.empty()
-		LineTypeInput                        || Optional.empty()
-		StorageTypeInput                     || Optional.empty()
-		Transformer2WTypeInput               || Optional.empty()
-		Transformer3WTypeInput               || Optional.empty()
-		WecTypeInput                         || Optional.empty()
-		WecTypeInput                         || Optional.empty()
-		RandomLoadParameters                 || Optional.empty()
-		NodeGraphicInput                     || Optional.empty()
-		LineGraphicInput                     || Optional.empty()
-		WecCharacteristicInput               || Optional.empty()
-		EvCharacteristicInput                || Optional.empty()
-		TimeSeriesMappingSource.MappingEntry || Optional.empty()
+		modelClass               || expected
+		BmTypeInput              || Optional.empty()
+		ChpTypeInput             || Optional.empty()
+		EvTypeInput              || Optional.empty()
+		HpTypeInput              || Optional.empty()
+		StorageTypeInput         || Optional.empty()
+		WecTypeInput             || Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for other system model input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		actual == expected
+
+		where:
+		modelClass               || expected
+		FixedFeedInInput         || Optional.empty()
+		PvInput                  || Optional.empty()
+		WecInput                 || Optional.empty()
+		ChpInput                 || Optional.empty()
+		BmInput                  || Optional.empty()
+		EvInput                  || Optional.empty()
+		LoadInput                || Optional.empty()
+		StorageInput             || Optional.empty()
+		HpInput                  || Optional.empty()
+		EvcsInput                || Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for connector model input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		actual == expected
+
+		where:
+		modelClass               || expected
+		LineInput                || Optional.empty()
+		SwitchInput              || Optional.empty()
+		Transformer2WInput       || Optional.empty()
+		Transformer3WInput       || Optional.empty()
+		LineTypeInput            || Optional.empty()
+		Transformer2WTypeInput   || Optional.empty()
+		Transformer3WTypeInput   || Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for graphics model input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		actual == expected
+
+		where:
+		modelClass               || expected
+		NodeGraphicInput         || Optional.empty()
+		LineGraphicInput         || Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for thermal model input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		actual == expected
+
+		where:
+		modelClass               || expected
+		CylindricalStorageInput  || Optional.empty()
+		ThermalHouseInput        || Optional.empty()
+	}
+
+	def "A simple file naming strategy does return empty sub directory path for any other model classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		actual == expected
+
+		where:
+		modelClass               || expected
+		NodeInput                || Optional.empty()
+		MeasurementUnitInput     || Optional.empty()
+		RandomLoadParameters     || Optional.empty()
+		TimeSeriesMappingSource.MappingEntry  || Optional.empty()
 	}
 
 	def "A simple file naming strategy does return empty sub directory path for any result class"() {
-		given: "a file naming strategy without pre- or suffixes"
-		def strategy = new FileNamingStrategy()
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
 
 		when:
 		def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
@@ -690,8 +759,8 @@ class FileNamingStrategyTest extends Specification {
 	}
 
 	def "A simple file naming strategy does return empty sub directory path for load profile time series"() {
-		given: "a file naming strategy without pre- or suffixes"
-		def strategy = new FileNamingStrategy()
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
 		def timeSeries = Mock(LoadProfileInput)
 
 		when:
@@ -702,8 +771,8 @@ class FileNamingStrategyTest extends Specification {
 	}
 
 	def "A simple file naming strategy does return empty sub directory path for individual time series"() {
-		given: "a file naming strategy without pre- or suffixes"
-		def strategy = new FileNamingStrategy()
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
 		def timeSeries = Mock(IndividualTimeSeries)
 
 		when:
@@ -713,9 +782,9 @@ class FileNamingStrategyTest extends Specification {
 		actual == Optional.empty()
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for all input classes"() {
-		given: "a file naming strategy without pre- or suffixes"
-		def strategy = new FileNamingStrategy()
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all connector input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
 
 		when:
 		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
@@ -726,7 +795,83 @@ class FileNamingStrategyTest extends Specification {
 
 		where:
 		modelClass               || expectedString
-		WecCharacteristicInput   || "wec_characteristic_input"
+		LineInput                || "line_input"
+		SwitchInput              || "switch_input"
+		Transformer2WInput       || "transformer_2_w_input"
+		Transformer3WInput       || "transformer_3_w_input"
+		LineTypeInput            || "line_type_input"
+		Transformer2WTypeInput   || "transformer_2_w_type_input"
+		Transformer3WTypeInput   || "transformer_3_w_type_input"
+	}
+
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all graphics input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass               || expectedString
+		NodeGraphicInput         || "node_graphic_input"
+		LineGraphicInput         || "line_graphic_input"
+	}
+
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all thermal input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass               || expectedString
+		CylindricalStorageInput  || "cylindrical_storage_input"
+		ThermalHouseInput        || "thermal_house_input"
+	}
+
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all system characteristic and type input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass               || expectedString
+		BmTypeInput              || "bm_type_input"
+		ChpTypeInput             || "chp_type_input"
+		EvTypeInput              || "ev_type_input"
+		HpTypeInput              || "hp_type_input"
+		StorageTypeInput         || "storage_type_input"
+		WecTypeInput             || "wec_type_input"
+	}
+
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all other system input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass               || expectedString
 		FixedFeedInInput         || "fixed_feed_in_input"
 		PvInput                  || "pv_input"
 		WecInput                 || "wec_input"
@@ -736,33 +881,29 @@ class FileNamingStrategyTest extends Specification {
 		LoadInput                || "load_input"
 		StorageInput             || "storage_input"
 		HpInput                  || "hp_input"
-		LineInput                || "line_input"
-		SwitchInput              || "switch_input"
-		NodeInput                || "node_input"
-		MeasurementUnitInput     || "measurement_unit_input"
 		EvcsInput                || "evcs_input"
-		Transformer2WInput       || "transformer_2_w_input"
-		Transformer3WInput       || "transformer_3_w_input"
-		CylindricalStorageInput  || "cylindrical_storage_input"
-		ThermalHouseInput        || "thermal_house_input"
-		EvCharacteristicInput    || "ev_characteristic_input"
-		BmTypeInput              || "bm_type_input"
-		ChpTypeInput             || "chp_type_input"
-		EvTypeInput              || "ev_type_input"
-		HpTypeInput              || "hp_type_input"
-		LineTypeInput            || "line_type_input"
-		StorageTypeInput         || "storage_type_input"
-		Transformer2WTypeInput   || "transformer_2_w_type_input"
-		Transformer3WTypeInput   || "transformer_3_w_type_input"
-		WecTypeInput             || "wec_type_input"
-		WecTypeInput             || "wec_type_input"
-		NodeGraphicInput         || "node_graphic_input"
-		LineGraphicInput         || "line_graphic_input"
 	}
 
-	def "A FileNamingStrategy without pre- or suffixes should return valid file paths for all result classes"() {
-		given: "a file naming strategy without pre- or suffixes"
-		def strategy = new FileNamingStrategy()
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all other input classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
+
+		when:
+		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
+
+		then:
+		res.present
+		res.get() == expectedString
+
+		where:
+		modelClass               || expectedString
+		NodeInput                || "node_input"
+		MeasurementUnitInput     || "measurement_unit_input"
+	}
+
+	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid file paths for all result classes"() {
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
 
 		when:
 		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
@@ -792,8 +933,8 @@ class FileNamingStrategyTest extends Specification {
 	}
 
 	def "A simple file naming strategy does return valid file path for load profile time series"() {
-		given: "a file naming strategy without pre- or suffixes"
-		def strategy = new FileNamingStrategy()
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
 		def timeSeries = Mock(LoadProfileInput)
 		timeSeries.uuid >> uuid
 		timeSeries.type >> type
@@ -811,8 +952,8 @@ class FileNamingStrategyTest extends Specification {
 	}
 
 	def "A simple file naming strategy does return valid file path for individual time series"() {
-		given: "a file naming strategy without pre- or suffixes"
-		def strategy = new FileNamingStrategy()
+		given: "a naming strategy without pre- or suffixes"
+		def strategy = new EntityPersistenceNamingStrategy()
 		def entries = [
 			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
 		def timeSeries = Mock(IndividualTimeSeries)

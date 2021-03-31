@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.io.csv.FileNamingStrategy
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
@@ -85,7 +85,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 					new ResultEntityProcessor(PvResult),
 					new ResultEntityProcessor(EvResult)
 				], [] as Map),
-				new FileNamingStrategy(),
+				new EntityPersistenceNamingStrategy(),
 				true,
 				",")
 		csvFileSink.shutdown()
@@ -157,7 +157,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 					new InputEntityProcessor(ThermalBusInput),
 					new InputEntityProcessor(LineTypeInput)
 				], [] as Map),
-				new FileNamingStrategy(),
+				new EntityPersistenceNamingStrategy(),
 				false,
 				",")
 
@@ -214,7 +214,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
 		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
 				new ProcessorProvider([], timeSeriesProcessorMap),
-				new FileNamingStrategy(),
+				new EntityPersistenceNamingStrategy(),
 				false,
 				",")
 
@@ -288,7 +288,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 				new ProcessorProvider(
 				ProcessorProvider.allEntityProcessors(),
 				new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>()),
-				new FileNamingStrategy(),
+				new EntityPersistenceNamingStrategy(),
 				false,
 				",")
 
@@ -308,7 +308,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		def csvFileSink = new CsvFileSink(
 				testBaseFolderPath,
 				new ProcessorProvider(),
-				new FileNamingStrategy(),
+				new EntityPersistenceNamingStrategy(),
 				false,
 				",")
 

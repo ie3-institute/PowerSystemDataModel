@@ -6,8 +6,8 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.connectors.CsvFileConnector
-import edu.ie3.datamodel.io.csv.FileNamingStrategy
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import spock.lang.Shared
 import spock.lang.Specification
@@ -17,7 +17,7 @@ class CsvTimeSeriesMappingSourceIT extends Specification implements CsvTestDataM
 	TimeSeriesMappingSource source
 
 	def setupSpec() {
-		source = new CsvTimeSeriesMappingSource(";", timeSeriesFolderPath, new FileNamingStrategy())
+		source = new CsvTimeSeriesMappingSource(";", timeSeriesFolderPath, new EntityPersistenceNamingStrategy())
 	}
 
 	def "The csv time series mapping source is able to provide a valid time series mapping from files"() {

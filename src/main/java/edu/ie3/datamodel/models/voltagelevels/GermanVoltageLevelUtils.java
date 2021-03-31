@@ -22,6 +22,8 @@ import tech.units.indriya.quantity.Quantities;
 public class GermanVoltageLevelUtils {
   protected static final Logger logger = LoggerFactory.getLogger(GermanVoltageLevelUtils.class);
 
+  private static final String MS = "Mittelspannung";
+
   public static final CommonVoltageLevel LV =
       new CommonVoltageLevel(
           "Niederspannung",
@@ -31,21 +33,21 @@ public class GermanVoltageLevelUtils {
               Quantities.getQuantity(0d, KILOVOLT), Quantities.getQuantity(10d, KILOVOLT)));
   public static final CommonVoltageLevel MV_10KV =
       new CommonVoltageLevel(
-          "Mittelspannung",
+          MS,
           Quantities.getQuantity(10d, KILOVOLT),
           new HashSet<>(Arrays.asList("ms", "mv", "ms_10kv", "mv_10kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(10d, KILOVOLT), Quantities.getQuantity(20d, KILOVOLT)));
   public static final CommonVoltageLevel MV_20KV =
       new CommonVoltageLevel(
-          "Mittelspannung",
+          MS,
           Quantities.getQuantity(20d, KILOVOLT),
           new HashSet<>(Arrays.asList("ms", "mv", "ms_20kv", "mv_20kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(20d, KILOVOLT), Quantities.getQuantity(30d, KILOVOLT)));
   public static final CommonVoltageLevel MV_30KV =
       new CommonVoltageLevel(
-          "Mittelspannung",
+          MS,
           Quantities.getQuantity(30d, KILOVOLT),
           new HashSet<>(Arrays.asList("ms", "mv", "ms_30kv", "mv_30kV")),
           new RightOpenInterval<>(
