@@ -9,7 +9,7 @@ within e.g. the data sinks, in which the serialized representation of several ob
 Currently we offer two different, pre-defined naming strategies, which you might extend to fit your needs:
 
 1. **EntityPersistenceNamingStrategy**:
-   A basic naming strategy that is able to add prefix and suffix to the names of the data sinks. A flat folder structure
+   A basic naming strategy that is able to add prefix and suffix to the names of the entities. A flat folder structure
    is considered. For more details see `Default naming strategy`_.
 2. **HierarchicFileNamingStrategy**:
    An extended version of the EntityPersistenceNamingStrategy. Additionally, the `Default directory hierarchy`_ is taken
@@ -20,9 +20,9 @@ strategy you like into :code:`CsvDataSource` and :code:`CsvFileSink`.
 
 Default naming strategy
 =======================
-There is a default mapping from model class to naming of data sinks in the case you would like to use csv files for
+There is a default mapping from model class to naming of entities in the case you would like to use csv files for
 (de-)serialization of models.
-You may extend / alter the naming with pre- or suffix by calling :code: `new EntityPersistenceNamingStrategy("prefix","suffix")`.
+You may extend / alter the naming with pre- or suffix by calling :code:`new EntityPersistenceNamingStrategy("prefix","suffix")`.
 
 Input
 -----
