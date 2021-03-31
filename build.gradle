@@ -4,7 +4,7 @@ plugins {
 	id 'maven-publish'
 	id 'signing'
 	id 'pmd' // code check, working on source code
-	id 'com.diffplug.spotless' version '5.11.0'//code format
+	id 'com.diffplug.spotless' version '5.11.1'//code format
 	id 'com.github.spotbugs' version '4.7.0' // code check, working on byte code
 	id 'com.github.onslip.gradle-one-jar' version '1.0.6' // pack a self contained jar
 	id 'de.undercouch.download' version '4.1.1'
@@ -66,7 +66,7 @@ dependencies {
 	// testing
 	testCompile 'org.junit.jupiter:junit-jupiter:5.7.1'
 	testCompile 'org.spockframework:spock-core:2.0-groovy-3.0-SNAPSHOT'
-	testCompile 'org.objenesis:objenesis:3.1' // Mock creation with constructor parameters
+	testCompile 'org.objenesis:objenesis:3.2' // Mock creation with constructor parameters
 
 	// Testcontainers (Docker Framework for testing)
 	testCompile "org.testcontainers:testcontainers:$testcontainersVersion"
