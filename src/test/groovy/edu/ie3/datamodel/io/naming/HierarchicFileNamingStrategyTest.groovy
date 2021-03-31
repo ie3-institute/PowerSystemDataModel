@@ -22,8 +22,6 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.*
-import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput
-import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
@@ -178,40 +176,6 @@ class HierarchicFileNamingStrategyTest extends Specification {
 		Transformer3WInput      || "test_grid" + File.separator + "input" + File.separator + "grid" + File.separator + "transformer_3_w_input"
 		CylindricalStorageInput || "test_grid" + File.separator + "input" + File.separator + "thermal" + File.separator + "cylindrical_storage_input"
 		ThermalHouseInput       || "test_grid" + File.separator + "input" + File.separator + "thermal" + File.separator + "thermal_house_input"
-	}
-
-	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid directory paths for all asset characteristics models"() {
-		given: "a naming strategy without pre- or suffixes"
-		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
-
-		when:
-		def res = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
-
-		then:
-		res.present
-		res.get() == expectedString
-
-		where:
-		modelClass             || expectedString
-		WecCharacteristicInput || "test_grid" + File.separator + "input" + File.separator + "global"
-		EvCharacteristicInput  || "test_grid" + File.separator + "input" + File.separator + "global"
-	}
-
-	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid file paths for all asset characteristics models"() {
-		given: "a naming strategy without pre- or suffixes"
-		def strategy = new HierarchicFileNamingStrategy(defaultHierarchy)
-
-		when:
-		def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
-
-		then:
-		res.present
-		res.get() == expectedString
-
-		where:
-		modelClass             || expectedString
-		WecCharacteristicInput || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "wec_characteristic_input"
-		EvCharacteristicInput  || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "ev_characteristic_input"
 	}
 
 	def "A HierarchicFileNamingStrategy without pre- or suffixes should return valid directory paths for all input types models"() {
