@@ -332,6 +332,7 @@ public abstract class CsvDataSource {
    */
   protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
       String entityUuid, Collection<T> entities) {
+    if (entities == null) return Optional.empty();
     return entities.stream()
         .parallel()
         .filter(uniqueEntity -> uniqueEntity.getUuid().toString().equalsIgnoreCase(entityUuid))
