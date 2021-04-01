@@ -5,9 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.InputEntity;
-import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 
 public abstract class GridContainer implements InputContainer<InputEntity> {
@@ -30,7 +28,6 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     this.rawGrid = rawGrid;
     this.systemParticipants = systemParticipants;
     this.graphics = graphics;
-    validate();
   }
 
   @Override
@@ -40,23 +37,6 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(graphics.allEntitiesAsList());
     return Collections.unmodifiableList(allEntities);
-  }
-
-  @Override
-  public final void validate() {
-    // sanity check to ensure distinct UUIDs
-    Optional<String> exceptionString =
-        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
-    if (exceptionString.isPresent()) {
-      throw new InvalidGridException(
-          "The provided entities in '"
-              + this.getClass().getSimpleName()
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
-    }
-
-    ValidationUtils.checkGrid(this);
   }
 
   /**

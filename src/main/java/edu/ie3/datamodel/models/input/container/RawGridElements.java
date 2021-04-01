@@ -5,12 +5,10 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
-import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,18 +40,6 @@ public class RawGridElements implements InputContainer<AssetInput> {
     this.transformer3Ws = transformer3Ws;
     this.switches = switches;
     this.measurementUnits = measurementUnits;
-
-    // sanity check to ensure distinct UUIDs
-    Optional<String> exceptionString =
-        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
-    if (exceptionString.isPresent()) {
-      throw new InvalidGridException(
-          "The provided entities in '"
-              + this.getClass().getSimpleName()
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
-    }
   }
 
   /**
@@ -133,18 +119,6 @@ public class RawGridElements implements InputContainer<AssetInput> {
             .filter(gridElement -> gridElement instanceof MeasurementUnitInput)
             .map(measurementUnitInput -> (MeasurementUnitInput) measurementUnitInput)
             .collect(Collectors.toSet());
-
-    // sanity check to ensure distinct UUIDs
-    Optional<String> exceptionString =
-        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
-    if (exceptionString.isPresent()) {
-      throw new InvalidGridException(
-          "The provided entities in '"
-              + this.getClass().getSimpleName()
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
-    }
   }
 
   @Override
@@ -157,11 +131,6 @@ public class RawGridElements implements InputContainer<AssetInput> {
     allEntities.addAll(switches);
     allEntities.addAll(measurementUnits);
     return Collections.unmodifiableList(allEntities);
-  }
-
-  @Override
-  public void validate() {
-    ValidationUtils.checkRawGridElements(this);
   }
 
   /** @return unmodifiable ; of all three winding transformers in this grid */

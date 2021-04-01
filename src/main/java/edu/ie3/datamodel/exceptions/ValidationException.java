@@ -5,12 +5,13 @@
 */
 package edu.ie3.datamodel.exceptions;
 
-public class InvalidGridException extends ValidationException {
-  public InvalidGridException(String message) {
-    super(message);
+public class ValidationException extends IllegalArgumentException {
+
+  public ValidationException(String s) {
+    super(s);
   }
 
-  public InvalidGridException(String message, Throwable cause) {
+  public ValidationException(String message, Throwable cause) {
     super(message, cause);
   }
 }

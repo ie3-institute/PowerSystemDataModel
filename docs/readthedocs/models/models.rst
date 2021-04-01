@@ -210,5 +210,8 @@ The following different values are available:
 +-------------------------------+------------------------------------------------------------------+
 | :code:`WindValue`             | Combination of wind direction and wind velocity                  |
 +-------------------------------+------------------------------------------------------------------+
-| :code:`WeatherValue`          | Combination of irradiance, temperature and wind information     |
+| :code:`WeatherValue`          | Combination of irradiance, temperature and wind information      |
 +-------------------------------+------------------------------------------------------------------+
+
+.. include:: ValidationUtils.rst
+

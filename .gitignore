@@ -241,3 +241,5 @@ docs/readthedocs/_build
 **/*.pdf
 **/*.synctex.gz
 **/*.synctex(busy)
+
+docs/javadoc

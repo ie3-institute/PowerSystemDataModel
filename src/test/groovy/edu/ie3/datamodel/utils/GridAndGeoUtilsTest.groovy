@@ -5,13 +5,19 @@
  */
 package edu.ie3.datamodel.utils
 
+import static edu.ie3.util.quantities.PowerSystemUnits.*
+
+import edu.ie3.util.quantities.QuantityUtil
+
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.geo.GeoUtils
-import edu.ie3.util.quantities.PowerSystemUnits
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
+import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
+
+import javax.measure.quantity.Length
 
 class GridAndGeoUtilsTest extends Specification {
 
@@ -102,7 +108,7 @@ class GridAndGeoUtilsTest extends Specification {
 		def nodeB = GridTestData.nodeB
 
 		expect:
-		GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB) == Quantities.getQuantity(0.91356787076109815268517, PowerSystemUnits.KILOMETRE)
+		GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB) == Quantities.getQuantity(0.91356787076109815268517, KILOMETRE)
 	}
 
 	def "The GridAndGeoUtils should get the CoordinateDistances between a base point and a collection of other points correctly"() {
@@ -122,5 +128,20 @@ class GridAndGeoUtilsTest extends Specification {
 		]
 		expect:
 		GridAndGeoUtils.getCoordinateDistances(basePoint, points) == new TreeSet(coordinateDistances)
+	}
+
+	def "TotalLengthOfLineString correctly calculates the total length of lineString correctly"() {
+		given:
+		LineString lineString = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createLineString([
+			new Coordinate(22.69962d, 11.13038d, 0),
+			new Coordinate(20.84247d, 28.14743d, 0),
+			new Coordinate(24.21942d, 12.04265d, 0)] as Coordinate[])
+
+		when:
+		ComparableQuantity<Length> y = GridAndGeoUtils.totalLengthOfLineString(lineString)
+
+		then:
+		QuantityUtil.isEquivalentAbs(y, Quantities.getQuantity(3463.37, KILOMETRE), 10)
+		// Value from Google Maps, error range of +-10 km
 	}
 }

@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   reading time series from csv files (including a container object to hold the different types of time series)
 -   reading mapping from participant uuid to time series uuid including a mapping object for easy access to time series
 -   Couchbase, SQL and CSV connectors and sources for weather data
+-   added validation utils that can be used to check whether objects have valid values (no usage implemented yet)
 -   added `SystemParticipantWithHeatResult` with thermal power variable to be used by heat plant result models
 
 ### Changed

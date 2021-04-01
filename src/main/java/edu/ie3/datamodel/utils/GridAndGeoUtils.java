@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.utils;
 
+import static edu.ie3.util.quantities.PowerSystemUnits.*;
+
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
@@ -16,6 +18,7 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 /** This class offers some useful methods for handling geographical problems related to grids */
 public class GridAndGeoUtils extends GeoUtils {
@@ -173,5 +176,26 @@ public class GridAndGeoUtils extends GeoUtils {
     return coordinates.stream()
         .map(coordinate -> new CoordinateDistance(baseCoordinate, coordinate))
         .collect(Collectors.toCollection(TreeSet::new));
+  }
+
+  /**
+   * Calculates the total length of a LineString through building the sum of the distances between
+   * all points of LineString using {@link #calcHaversine(double, double, double, double)}
+   *
+   * @param lineString the line string which length shall be calculated
+   * @return The total length of the line string
+   */
+  public static ComparableQuantity<Length> totalLengthOfLineString(LineString lineString) {
+    ComparableQuantity<Length> y = Quantities.getQuantity(0, KILOMETRE);
+    for (int i = 0; i < lineString.getNumPoints() - 1; i++) {
+      y =
+          y.add(
+              calcHaversine(
+                  lineString.getCoordinateN(i).getX(),
+                  lineString.getCoordinateN(i).getY(),
+                  lineString.getCoordinateN(i + 1).getX(),
+                  lineString.getCoordinateN(i + 1).getY()));
+    }
+    return y;
   }
 }
