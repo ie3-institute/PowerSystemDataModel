@@ -35,7 +35,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements WeatherSourceTest
 
 	def setupSpec() {
 		// Copy sql import script into docker
-		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/psdm/weather.sql")
+		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/cosmo/weather.sql")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather.sql")
 		// Execute import script
 		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")

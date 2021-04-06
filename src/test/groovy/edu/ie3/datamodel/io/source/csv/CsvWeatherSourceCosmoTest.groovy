@@ -5,18 +5,12 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
-
-import static edu.ie3.datamodel.models.StandardUnits.SOLAR_IRRADIANCE
-import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
-import static edu.ie3.datamodel.models.StandardUnits.WIND_DIRECTION
-import static edu.ie3.datamodel.models.StandardUnits.WIND_VELOCITY
-
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
-import edu.ie3.datamodel.models.value.SolarIrradianceValue
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.value.SolarIrradianceValue
 import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.datamodel.models.value.WindValue
@@ -30,6 +24,8 @@ import org.locationtech.jts.geom.Point
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
+
+import static edu.ie3.datamodel.models.StandardUnits.*
 
 class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta, WeatherSourceTestHelper {
 
@@ -111,14 +107,14 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
 		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
-			"uuid"              : "71a79f59-eebf-40c1-8358-ba7414077d57",
-			"time"              : "2020-10-16T12:40:42Z",
-			"coordinate"        : "5",
-			"directirradiation" : "1.234",
-			"diffuseirradiation": "5.678",
-			"temperature"       : "9.1011",
-			"windvelocity"      : "12.1314",
-			"winddirection"     : "15.1617"
+			"uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
+			"time"             : "2020-10-16T12:40:42Z",
+			"coordinateid"     : "5",
+			"directirradiance" : "1.234",
+			"diffuseirradiance": "5.678",
+			"temperature"      : "9.1011",
+			"windvelocity"     : "12.1314",
+			"winddirection"    : "15.1617"
 		]
 		def expectedValue = new TimeBasedValue(
 				UUID.fromString("71a79f59-eebf-40c1-8358-ba7414077d57"),
@@ -155,14 +151,14 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
 		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
-			"uuid"              : "71a79f59-eebf-40c1-8358-ba7414077d57",
-			"time"              : "2020-10-16T12:40:42Z",
-			"coordinate"        : "",
-			"directirradiation" : "1.234",
-			"diffuseirradiation": "5.678",
-			"temperature"       : "9.1011",
-			"windvelocity"      : "12.1314",
-			"winddirection"     : "15.1617"
+			"uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
+			"time"             : "2020-10-16T12:40:42Z",
+			"coordinateid"     : "",
+			"directirradiance" : "1.234",
+			"diffuseirradiance": "5.678",
+			"temperature"      : "9.1011",
+			"windvelocity"     : "12.1314",
+			"winddirection"    : "15.1617"
 		]
 
 		when:
@@ -180,13 +176,13 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
 		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
-			"uuid"              : "71a79f59-eebf-40c1-8358-ba7414077d57",
-			"time"              : "2020-10-16T12:40:42Z",
-			"directirradiation" : "1.234",
-			"diffuseirradiation": "5.678",
-			"temperature"       : "9.1011",
-			"windvelocity"      : "12.1314",
-			"winddirection"     : "15.1617"
+			"uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
+			"time"             : "2020-10-16T12:40:42Z",
+			"directirradiance" : "1.234",
+			"diffuseirradiance": "5.678",
+			"temperature"      : "9.1011",
+			"windvelocity"     : "12.1314",
+			"winddirection"    : "15.1617"
 		]
 
 		when:
@@ -203,14 +199,14 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
 		def source = new CsvWeatherSource(";", timeSeriesFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
-			"uuid"              : "71a79f59-eebf-40c1-8358-ba7414077d57",
-			"time"              : "2020-10-16T12:40:42Z",
-			"coordinate"        : "6",
-			"directirradiation" : "1.234",
-			"diffuseirradiation": "5.678",
-			"temperature"       : "9.1011",
-			"windvelocity"      : "12.1314",
-			"winddirection"     : "15.1617"
+			"uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
+			"time"             : "2020-10-16T12:40:42Z",
+			"coordinateid"     : "6",
+			"directirradiance" : "1.234",
+			"diffuseirradiance": "5.678",
+			"temperature"      : "9.1011",
+			"windvelocity"     : "12.1314",
+			"winddirection"    : "15.1617"
 		]
 
 		when:
