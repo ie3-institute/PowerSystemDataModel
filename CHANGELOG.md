@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   updated Indriya to version 2.1.2 to include fixes for serialization
 -   Reworking the time series source (one source per time series, distinct mapping source, factory pattern)
 -   BREAKING: Moved methods `buildSafe{Coord,Point,LineString,LineStringBetweenCoords,LineStringBetweenPoints}`, `totalLengthOfLineString` from `GridAndGeoUtils` to `GeoUtils`
--   BREAKING: Moved `CoordinateDistance` to _PowerSystemUtils_
+-   BREAKING: Moved `CoordinateDistance` to [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
 
 ### Fixed
 -   InfluxDbConnector now keeps session instead of creating a new one each call
