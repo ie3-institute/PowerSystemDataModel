@@ -37,11 +37,11 @@ class CouchbaseWeatherSourcePsdmIT extends Specification implements WeatherSourc
 	@Shared
 	CouchbaseWeatherSource source
 
-	static String coordinateIdColumnName = "coordinate"
+	static String coordinateIdColumnName = "coordinate_id"
 
 	def setupSpec() {
 		// Copy import file with json array of documents into docker
-		MountableFile couchbaseWeatherJsonsFile = MountableFile.forClasspathResource("/testcontainersFiles/couchbase/weather.json")
+		MountableFile couchbaseWeatherJsonsFile = MountableFile.forClasspathResource("/testcontainersFiles/couchbase/cosmo/weather.json")
 		couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather.json")
 
 		// create an index for the document keys
