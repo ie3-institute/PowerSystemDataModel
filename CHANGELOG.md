@@ -28,15 +28,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   deprecated `TarballUtils`
 -   updated Indriya to version 2.1.2 to include fixes for serialization
 -   Reworking the time series source (one source per time series, distinct mapping source, factory pattern)
+-   BREAKING: Moved methods `buildSafe{Coord,Point,LineString,LineStringBetweenCoords,LineStringBetweenPoints}`, `totalLengthOfLineString` from `GridAndGeoUtils` to `GeoUtils`
+-   BREAKING: Moved `CoordinateDistance` to _PowerSystemUtils_
 
 ### Fixed
-- InfluxDbConnector now keeps session instead of creating a new one each call
+-   InfluxDbConnector now keeps session instead of creating a new one each call
 (resolves [#247](https://github.com/ie3-institute/PowerSystemDataModel/issues/247)
 and [#248](https://github.com/ie3-institute/PowerSystemDataModel/issues/248))
-- BREAKING: fix invalid application of solar irradiance / irradiation ([#266](https://github.com/ie3-institute/PowerSystemDataModel/issues/266))
-- BREAKING: deleted `IrradiationValue` as it is invalid and no longer required
-- added copy builder implementations for thermal input models `CylindricalStorageInput`, `ThermalBusInput` and `ThermalHouseInput`
-- the sample code for reading and writing model data from respectively to csv files documented in the Sphinx documentation is fixed
+-   BREAKING: fix invalid application of solar irradiance / irradiation ([#266](https://github.com/ie3-institute/PowerSystemDataModel/issues/266))
+-   BREAKING: deleted `IrradiationValue` as it is invalid and no longer required
+-   added copy builder implementations for thermal input models `CylindricalStorageInput`, `ThermalBusInput` and `ThermalHouseInput`
+-   the sample code for reading and writing model data from respectively to csv files documented in the Sphinx documentation is fixed
 
 ## [1.1.0] - 2020-09-15
 
@@ -74,3 +76,6 @@ coordinates or multiple exactly equal coordinates possible
 ### Fixed
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
+
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/6a49bc514be8859ebd29a3595cd58cd000498f1e...1.1.0
