@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.utils
 
+import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import spock.lang.Specification
 
@@ -16,8 +17,8 @@ class CoordinateDistanceTest extends Specification {
 		def pointB = GeoUtils.xyToPoint(50d, 7d)
 		def expectedDistance = GeoUtils.calcHaversine(pointA.y, pointA.x, pointB.y, pointB.x)
 		when:
-		CoordinateDistance coordinateDistance = new CoordinateDistance(pointA, pointB)
-		CoordinateDistance expectedCoordinateDistance = new CoordinateDistance(coordinateDistance.coordinateA, coordinateDistance.coordinateB, expectedDistance)
+		def coordinateDistance = new CoordinateDistance(pointA, pointB)
+		def expectedCoordinateDistance = new CoordinateDistance(coordinateDistance.coordinateA, coordinateDistance.coordinateB, expectedDistance)
 		then:
 		coordinateDistance.distance == expectedDistance
 		// this equals can not be replaced with the == operator as this would cause equals not to be called

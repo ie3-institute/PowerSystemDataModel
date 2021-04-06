@@ -5,8 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.utils.CoordinateDistance;
 import edu.ie3.datamodel.utils.GridAndGeoUtils;
+import edu.ie3.util.geo.CoordinateDistance;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Point;
