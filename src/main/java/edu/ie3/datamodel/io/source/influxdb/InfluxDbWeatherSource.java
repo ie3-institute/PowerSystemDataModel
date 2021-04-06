@@ -205,7 +205,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   private String createCoordinateConstraintString(int coordinateId) {
-    return "coordinate='" + coordinateId + "'";
+    return "coordinate_id='" + coordinateId + "'";
   }
 
   /**

@@ -8,17 +8,17 @@ package edu.ie3.datamodel.io.factory.timeseries
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
-import edu.ie3.test.common.PsdmWeatherTestData
+import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.util.TimeUtil
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-class PsdmTimeBasedWeatherValueFactoryTest extends Specification {
+class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
 	def "A PsdmTimeBasedWeatherValueFactory should be able to create time series with missing values"() {
 		given:
-		def factory = new PsdmTimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
-		def coordinate = PsdmWeatherTestData.COORDINATE_193186
+		def factory = new CosmoTimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
+		def coordinate = CosmoWeatherTestData.COORDINATE_193186
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
 
 		Map<String, String> parameter = [
@@ -50,8 +50,8 @@ class PsdmTimeBasedWeatherValueFactoryTest extends Specification {
 
 	def "A PsdmTimeBasedWeatherValueFactory should be able to create time series values"() {
 		given:
-		def factory = new PsdmTimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
-		def coordinate = PsdmWeatherTestData.COORDINATE_193186
+		def factory = new CosmoTimeBasedWeatherValueFactory("yyyy-MM-dd HH:mm:ss")
+		def coordinate = CosmoWeatherTestData.COORDINATE_193186
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
 
 		Map<String, String> parameter = [
