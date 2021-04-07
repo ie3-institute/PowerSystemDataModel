@@ -5,10 +5,12 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.factory.input.ThermalBusInputFactory
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.test.common.GridTestData as gtd
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Shared
@@ -49,7 +51,7 @@ class CsvDataSourceTest extends Specification {
 		}
 
 		String[] parseCsvRow(
-				String csvRow,String csvSep) {
+				String csvRow, String csvSep) {
 			return super.parseCsvRow(csvRow, csvSep)
 		}
 
@@ -65,18 +67,6 @@ class CsvDataSourceTest extends Specification {
 	EntityPersistenceNamingStrategy entityPersistenceNamingStrategy = new EntityPersistenceNamingStrategy()
 
 	DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, entityPersistenceNamingStrategy)
-
-	def "A csv data source returns empty optional, when looking for a specific uuid"() {
-		given:
-		def entities = null
-		def uuid = UUID.randomUUID().toString()
-
-		when:
-		def actual = dummyCsvSource.findFirstEntityByUuid(uuid, entities)
-
-		then:
-		!actual.present
-	}
 
 	def "A csv data source is able to find the correct first entity by uuid"() {
 		given:
@@ -287,14 +277,14 @@ class CsvDataSourceTest extends Specification {
 			"6.0",
 			"thats \"good\""
 		]
-		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0"                                                                                                                                                                                                                                                                                                                                               || [
+		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0"                                                                                                                                                                                                                                                                                                                                                       || [
 			"1",
 			"abc",
 			"def",
 			"He said \"test, test\" and was happy",
 			"5.0"
 		]
-		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\",\"obviously, yet.\", 5.0"                                                                                                                                                                                                                                                                                                                                               || [
+		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\",\"obviously, yet.\", 5.0"                                                                                                                                                                                                                                                                                                                                   || [
 			"1",
 			"abc",
 			"def",
@@ -302,20 +292,20 @@ class CsvDataSourceTest extends Specification {
 			"obviously, yet.",
 			"5.0"
 		]
-		","    | "1,abc,def,\"He said \"\"test, test\"\"\", 5.0"                                                                                                                                                                                                                                                                                                                                               || [
+		","    | "1,abc,def,\"He said \"\"test, test\"\"\", 5.0"                                                                                                                                                                                                                                                                                                                                                                     || [
 			"1",
 			"abc",
 			"def",
 			"He said \"test, test\"",
 			"5.0"
 		]
-		","    | "1,abc,def,\"He said \"\"test, test\"\"\""                                                                                                                                                                                                                                                                                                                                               || [
+		","    | "1,abc,def,\"He said \"\"test, test\"\"\""                                                                                                                                                                                                                                                                                                                                                                          || [
 			"1",
 			"abc",
 			"def",
 			"He said \"test, test\""
 		]
-		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\""                                                                                                                                                                                                                                                                                                                                               || [
+		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\""                                                                                                                                                                                                                                                                                                    || [
 			"1",
 			"abc",
 			"def",
@@ -323,7 +313,7 @@ class CsvDataSourceTest extends Specification {
 			"5.0",
 			"... and felt like a \"genius\" with this."
 		]
-		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\","                                                                                                                                                                                                                                                                                                                                               || [
+		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\","                                                                                                                                                                                                                                                                                                   || [
 			"1",
 			"abc",
 			"def",
@@ -452,8 +442,8 @@ class CsvDataSourceTest extends Specification {
 		where:
 		noOfEntities || distinctSize || firstElement
 		0            || 0            || null
-		10           || 1            || ["uuid"        : "4ca90220-74c2-4369-9afa-a18bf068840d",
-			"geo_position": "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+		10           || 1            || ["uuid"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
+			"geo_position"  : "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
 			"id"            : "node_a",
 			"operates_until": "2020-03-25T15:11:31Z[UTC]",
 			"operates_from" : "2020-03-24T15:11:31Z[UTC]",
@@ -497,7 +487,7 @@ class CsvDataSourceTest extends Specification {
 		]
 
 		when:
-		def allRows = [nodeInputRow1, nodeInputRow2]*10
+		def allRows = [nodeInputRow1, nodeInputRow2]* 10
 		def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
 
 		then:
@@ -521,6 +511,25 @@ class CsvDataSourceTest extends Specification {
 		[]| ["bla": "foo"]                                   || false           || null
 		[gtd.transformerTypeBtoD]| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || true            || gtd.transformerTypeBtoD
 		[sptd.chpTypeInput]| ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"] || true            || sptd.chpTypeInput
+	}
+
+	def "A CsvDataSource should not throw an exception but assume NO_OPERATOR_ASSIGNED if the operator field is missing in the headline"() {
+
+		given:
+		def thermalBusInputFieldsToAttributesMap = [
+			"uuid"          : "0d95d7f2-49fb-4d49-8636-383a5220384e",
+			"id"            : "test_thermalBusInput",
+			"operatesuntil": "2020-03-25T15:11:31Z[UTC]",
+			"operatesfrom" : "2020-03-24T15:11:31Z[UTC]"
+		]
+
+		when:
+		def thermalBusInputEntity = new ThermalBusInputFactory().get(dummyCsvSource.assetInputEntityDataStream(ThermalBusInput, thermalBusInputFieldsToAttributesMap, Collections.emptyList()))
+
+		then:
+		noExceptionThrown() // no NPE should be thrown
+		thermalBusInputEntity.present
+		thermalBusInputEntity.get().operator.id == OperatorInput.NO_OPERATOR_ASSIGNED.id // operator id should be set accordingly
 	}
 
 }

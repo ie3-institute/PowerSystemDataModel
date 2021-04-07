@@ -242,18 +242,27 @@ public abstract class CsvDataSource {
       String operatorUuid,
       String entityClassName,
       String requestEntityUuid) {
-    return operatorUuid.trim().isEmpty()
-        ? OperatorInput.NO_OPERATOR_ASSIGNED
-        : findFirstEntityByUuid(operatorUuid, operators)
-            .orElseGet(
-                () -> {
-                  log.debug(
-                      "Cannot find operator with uuid '{}' for element '{}' and uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
-                      operatorUuid,
-                      entityClassName,
-                      requestEntityUuid);
-                  return OperatorInput.NO_OPERATOR_ASSIGNED;
-                });
+    if (operatorUuid == null) {
+      log.warn(
+          "Input file for class '{}' is missing the 'operator' field. "
+              + "This is okay, but you should consider fixing the file by adding the field. "
+              + "Defaulting to 'NO OPERATOR ASSIGNED'",
+          entityClassName);
+      return OperatorInput.NO_OPERATOR_ASSIGNED;
+    } else {
+      return operatorUuid.trim().isEmpty()
+          ? OperatorInput.NO_OPERATOR_ASSIGNED
+          : findFirstEntityByUuid(operatorUuid, operators)
+              .orElseGet(
+                  () -> {
+                    log.debug(
+                        "Cannot find operator with uuid '{}' for element '{}' and uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
+                        operatorUuid,
+                        entityClassName,
+                        requestEntityUuid);
+                    return OperatorInput.NO_OPERATOR_ASSIGNED;
+                  });
+    }
   }
 
   /**
@@ -266,7 +275,7 @@ public abstract class CsvDataSource {
    *
    * }</pre>
    *
-   * ...
+   * <p>...
    *
    * @param entityClass entity class that should be used as they key in the provided counter map
    * @param invalidElementsCounterMap a map that counts the number of empty optionals and maps it to
@@ -332,7 +341,6 @@ public abstract class CsvDataSource {
    */
   protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
       String entityUuid, Collection<T> entities) {
-    if (entities == null) return Optional.empty();
     return entities.stream()
         .parallel()
         .filter(uniqueEntity -> uniqueEntity.getUuid().toString().equalsIgnoreCase(entityUuid))
@@ -390,10 +398,7 @@ public abstract class CsvDataSource {
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
       return distinctRowsWithLog(
-              allRows,
-              fieldToValues -> fieldToValues.get("uuid"),
-              entityClass.getSimpleName(),
-              "UUID")
+          allRows, fieldToValues -> fieldToValues.get("uuid"), entityClass.getSimpleName(), "UUID")
           .parallelStream();
     } catch (IOException e) {
       log.warn(
@@ -452,8 +457,7 @@ public abstract class CsvDataSource {
 
     /* Check for rows with the same key based on the provided key extractor function */
     Set<Map<String, String>> distinctIdSet =
-        allRowsSet
-            .parallelStream()
+        allRowsSet.parallelStream()
             .filter(ValidationUtils.distinctByKey(keyExtractor))
             .collect(Collectors.toSet());
     if (distinctIdSet.size() != allRowsSet.size()) {

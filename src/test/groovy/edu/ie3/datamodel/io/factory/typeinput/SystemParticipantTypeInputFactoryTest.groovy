@@ -312,7 +312,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 				"pmin -> 7,\n" +
 				"srated -> 5,\n" +
 				"uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of StorageTypeInput. \n" +
-				"The following fields (without complex objects e.g. nodes) to be passed to a constructor of 'StorageTypeInput' are possible (NOT case-sensitive!):\n" +
+				"The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'StorageTypeInput' are possible (NOT case-sensitive!):\n" +
 				"0: [activepowergradient, capex, cosphirated, dod, estorage, eta, id, lifecycle, lifetime, opex, pmax, srated, uuid]\n"
 	}
 }

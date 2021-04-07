@@ -144,7 +144,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
               + "}"
               + " are invalid for instance of "
               + data.getTargetClass().getSimpleName()
-              + ". \nThe following fields (without complex objects e.g. nodes) to be passed to a constructor of '"
+              + ". \nThe following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of '"
               + data.getTargetClass().getSimpleName()
               + "' are possible (NOT case-sensitive!):\n"
               + possibleOptions);
