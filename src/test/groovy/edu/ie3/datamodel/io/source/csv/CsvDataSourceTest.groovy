@@ -487,7 +487,7 @@ class CsvDataSourceTest extends Specification {
 		]
 
 		when:
-		def allRows = [nodeInputRow1, nodeInputRow2]* 10
+		def allRows = [nodeInputRow1, nodeInputRow2] * 10
 		def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
 
 		then:
