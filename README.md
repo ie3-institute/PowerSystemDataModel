@@ -4,6 +4,7 @@
 [![codecov](https://codecov.io/gh/ie3-institute/PowerSystemDataModel/branch/master/graph/badge.svg)](https://codecov.io/gh/ie3-institute/PowerSystemDataModel)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d1d73fb87e084904993f968178274835)](https://www.codacy.com/gh/ie3-institute/PowerSystemDataModel?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ie3-institute/PowerSystemDatamodel&amp;utm_campaign=Badge_Grade)
 [![License](https://img.shields.io/github/license/ie3-institute/powersystemdatamodel)](https://github.com/ie3-institute/powersystemdatamodel/blob/master/LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.ie3-institute/PowerSystemDataModel.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.ie3-institute%22%20AND%20a:%22PowerSystemDataModel%22)
 
 Provides an extensive data model capable of modelling energy systems with high granularity e.g. for bottom-up simulations. Additionally, useful functions to process, augment and furnish model i/o information is provided. Effective handling of geographic information related to power grids is also possible. Currently, i/o processing capabilities are provided for *.csv* files.
 
