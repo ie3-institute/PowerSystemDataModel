@@ -5,143 +5,61 @@
  */
 package edu.ie3.datamodel.utils
 
+import edu.ie3.util.geo.GeoUtils
+import edu.ie3.util.quantities.QuantityUtil
+import spock.lang.Shared
+
 import static edu.ie3.util.quantities.PowerSystemUnits.*
 
-import edu.ie3.util.quantities.QuantityUtil
-
 import edu.ie3.test.common.GridTestData
-import edu.ie3.util.geo.GeoUtils
-import org.locationtech.jts.geom.Coordinate
-import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
-import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
-import javax.measure.quantity.Length
-
 class GridAndGeoUtilsTest extends Specification {
+	@Shared
+	double testingTolerance = 1E-12
 
-	def "The GridAndGeoUtils should build a line string with two exact equal geo coordinates correctly avoiding the known bug in jts geometry"() {
-		given:
-		def line = GridTestData.geoJsonReader.read(lineString) as LineString
-
+	def "Grid and geo utils refuse instantiation"() {
 		when:
-		def safeLineString = GridAndGeoUtils.buildSafeLineString(line)
-		def actualCoordinates = safeLineString.getCoordinates()
+		new GridAndGeoUtils()
 
 		then:
-		coordinates.length == actualCoordinates.length
-		for(int cnt = 0; cnt < coordinates.length; cnt++){
-			coordinates[cnt] == actualCoordinates[cnt]
-		}
-
-		where:
-		lineString                                                                                                                            | coordinates
-		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228]]}"                                           | [
-			new Coordinate(7.4111110000001, 51.4922800000001),
-			new Coordinate(7.411111, 51.49228)
-		] as Coordinate[]
-		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228]]}" | [
-			new Coordinate(7.4111110000001, 51.4922800000001),
-			new Coordinate(7.411111, 51.49228)
-		] as Coordinate[]
-		"{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.311111, 51.49228],[7.511111, 51.49228]]}" | [
-			new Coordinate(7.411111, 51.49228),
-			new Coordinate(7.311111, 51.49228),
-			new Coordinate(7.511111, 51.49228)
-		] as Coordinate[]
+		def e = thrown(IllegalStateException)
+		e.message == "Utility classes cannot be instantiated"
 	}
 
-	def "The GridAngGeoUtils maintain the correct order of coordinates, when overhauling a given LineString"() {
-		/* Remark: This test might even NOT fail, if the method is implemented incorrectly (utilizing a HashSet to
-		 * maintain uniqueness). For detailed explanation cf. comment in method's implementation. */
-		given:
-		def coordinates = [
-			new Coordinate(51.49292, 7.41197),
-			new Coordinate(51.49333, 7.41183),
-			new Coordinate(51.49341, 7.41189),
-			new Coordinate(51.49391, 7.41172),
-			new Coordinate(51.49404, 7.41279)
-		] as Coordinate[]
-		def lineString = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createLineString(coordinates)
-
-		when:
-		def actual = GridAndGeoUtils.buildSafeLineString(lineString).coordinates
-
-		then:
-		coordinates.length == actual.length
-		for(int cnt = 0; cnt < coordinates.length; cnt++){
-			coordinates[cnt] == actual[cnt]
-		}
-	}
-
-	def "The GridAndGeoUtils should only modify a provided Coordinate as least as possible"() {
-		given:
-		def coord = new Coordinate(1, 1, 0)
-
-		expect:
-		GridAndGeoUtils.buildSafeCoord(coord) == new Coordinate(1.0000000000001, 1.0000000000001, 1.0E-13)
-	}
-
-	def "The GridAndGeoUtils should build a safe instance of a LineString between two provided coordinates correctly"() {
-
-		expect:
-		GridAndGeoUtils.buildSafeLineStringBetweenCoords(coordA, coordB) == resLineString
-		// do not change or remove the following line, it is NOT equal to the line above in this case!
-		GridAndGeoUtils.buildSafeLineStringBetweenCoords(coordA, coordB).equals(resLineString)
-
-		where:
-		coordA                  | coordB                  || resLineString
-		new Coordinate(1, 1, 0) | new Coordinate(1, 1, 0) || GeoUtils.DEFAULT_GEOMETRY_FACTORY.createLineString([
-			new Coordinate(1.0000000000001, 1.0000000000001, 1.0E-13),
-			new Coordinate(1, 1, 0)] as Coordinate[])
-		new Coordinate(1, 1, 0) | new Coordinate(2, 2, 0) || GeoUtils.DEFAULT_GEOMETRY_FACTORY.createLineString([
-			new Coordinate(1, 1, 0),
-			new Coordinate(2, 2, 0)] as Coordinate[])
-
-	}
-
-	def "The GridAndGeoUtils should calculate distance between two nodes correctly"() {
-
+	def "The grid and geo utils should calculate distance between two nodes correctly"() {
 		given:
 		def nodeA = GridTestData.nodeA
 		def nodeB = GridTestData.nodeB
-
-		expect:
-		GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB) == Quantities.getQuantity(0.91356787076109815268517, KILOMETRE)
-	}
-
-	def "The GridAndGeoUtils should get the CoordinateDistances between a base point and a collection of other points correctly"() {
-		given:
-		def basePoint = GeoUtils.xyToPoint(49d, 7d)
-		def points = [
-			GeoUtils.xyToPoint(50d, 7d),
-			GeoUtils.xyToPoint(50d, 7.1d),
-			GeoUtils.xyToPoint(49d, 7.1d),
-			GeoUtils.xyToPoint(52d, 9d)
-		]
-		def coordinateDistances = [
-			new CoordinateDistance(basePoint, points[0]),
-			new CoordinateDistance(basePoint, points[1]),
-			new CoordinateDistance(basePoint, points[2]),
-			new CoordinateDistance(basePoint, points[3])
-		]
-		expect:
-		GridAndGeoUtils.getCoordinateDistances(basePoint, points) == new TreeSet(coordinateDistances)
-	}
-
-	def "TotalLengthOfLineString correctly calculates the total length of lineString correctly"() {
-		given:
-		LineString lineString = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createLineString([
-			new Coordinate(22.69962d, 11.13038d, 0),
-			new Coordinate(20.84247d, 28.14743d, 0),
-			new Coordinate(24.21942d, 12.04265d, 0)] as Coordinate[])
+		def expectedDistance = Quantities.getQuantity(0.91356787076109815268517, KILOMETRE)
 
 		when:
-		ComparableQuantity<Length> y = GridAndGeoUtils.totalLengthOfLineString(lineString)
+		def actualDistance = GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB)
 
 		then:
-		QuantityUtil.isEquivalentAbs(y, Quantities.getQuantity(3463.37, KILOMETRE), 10)
-		// Value from Google Maps, error range of +-10 km
+		QuantityUtil.isEquivalentAbs(expectedDistance, actualDistance, testingTolerance)
+	}
+
+	def "The grid and geo utils build a correct line string between nodes with disjoint coordinates"() {
+		given:
+		def expectedLineString = GeoUtils.buildSafeLineStringBetweenPoints(GridTestData.nodeA.geoPosition, GridTestData.nodeB.geoPosition)
+
+		when:
+		def actualLineString = GridAndGeoUtils.buildSafeLineStringBetweenNodes(GridTestData.nodeA, GridTestData.nodeB)
+
+		then:
+		actualLineString == expectedLineString
+	}
+
+	def "The grid and geo utils build a correct line string between nodes with same coordinates"() {
+		given:
+		def expectedLineString = GeoUtils.buildSafeLineStringBetweenPoints(GridTestData.nodeA.geoPosition, GridTestData.nodeA.geoPosition)
+
+		when:
+		def actualLineString = GridAndGeoUtils.buildSafeLineStringBetweenNodes(GridTestData.nodeA, GridTestData.nodeA)
+
+		then:
+		actualLineString == expectedLineString
 	}
 }

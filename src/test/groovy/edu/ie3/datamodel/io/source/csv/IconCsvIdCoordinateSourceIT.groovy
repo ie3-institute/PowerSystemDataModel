@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.factory.timeseries.IconIdCoordinateFactory
-import edu.ie3.datamodel.utils.CoordinateDistance
+import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import spock.lang.Shared
 import spock.lang.Specification
