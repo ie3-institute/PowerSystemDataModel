@@ -242,18 +242,27 @@ public abstract class CsvDataSource {
       String operatorUuid,
       String entityClassName,
       String requestEntityUuid) {
-    return operatorUuid.trim().isEmpty()
-        ? OperatorInput.NO_OPERATOR_ASSIGNED
-        : findFirstEntityByUuid(operatorUuid, operators)
-            .orElseGet(
-                () -> {
-                  log.debug(
-                      "Cannot find operator with uuid '{}' for element '{}' and uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
-                      operatorUuid,
-                      entityClassName,
-                      requestEntityUuid);
-                  return OperatorInput.NO_OPERATOR_ASSIGNED;
-                });
+    if (operatorUuid == null) {
+      log.warn(
+          "Input file for class '{}' is missing the 'operator' field. "
+              + "This is okay, but you should consider fixing the file by adding the field. "
+              + "Defaulting to 'NO OPERATOR ASSIGNED'",
+          entityClassName);
+      return OperatorInput.NO_OPERATOR_ASSIGNED;
+    } else {
+      return operatorUuid.trim().isEmpty()
+          ? OperatorInput.NO_OPERATOR_ASSIGNED
+          : findFirstEntityByUuid(operatorUuid, operators)
+              .orElseGet(
+                  () -> {
+                    log.debug(
+                        "Cannot find operator with uuid '{}' for element '{}' and uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
+                        operatorUuid,
+                        entityClassName,
+                        requestEntityUuid);
+                    return OperatorInput.NO_OPERATOR_ASSIGNED;
+                  });
+    }
   }
 
   /**
@@ -263,10 +272,7 @@ public abstract class CsvDataSource {
    *
    * <pre>{@code
    * Collection.stream().filter(isPresentCollectIfNot(NodeInput.class, new ConcurrentHashMap<>()))
-   *
    * }</pre>
-   *
-   * ...
    *
    * @param entityClass entity class that should be used as they key in the provided counter map
    * @param invalidElementsCounterMap a map that counts the number of empty optionals and maps it to
@@ -332,7 +338,6 @@ public abstract class CsvDataSource {
    */
   protected <T extends UniqueEntity> Optional<T> findFirstEntityByUuid(
       String entityUuid, Collection<T> entities) {
-    if (entities == null) return Optional.empty();
     return entities.stream()
         .parallel()
         .filter(uniqueEntity -> uniqueEntity.getUuid().toString().equalsIgnoreCase(entityUuid))

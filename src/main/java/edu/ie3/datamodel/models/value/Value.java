@@ -5,5 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import java.io.Serializable;
+
 /** Describes any class that represents a value */
-public interface Value {}
+public interface Value extends Serializable {}

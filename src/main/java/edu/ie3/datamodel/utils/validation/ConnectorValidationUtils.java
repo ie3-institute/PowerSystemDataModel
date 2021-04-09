@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.datamodel.utils.GridAndGeoUtils;
+import edu.ie3.util.geo.GeoUtils;
 import edu.ie3.util.quantities.QuantityUtil;
 import javax.measure.Quantity;
 import tech.units.indriya.quantity.Quantities;
@@ -338,7 +338,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
             || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION)
         && !QuantityUtil.isEquivalentAbs(
             line.getLength(),
-            GridAndGeoUtils.totalLengthOfLineString(line.getGeoPosition()),
+            GeoUtils.totalLengthOfLineString(line.getGeoPosition()),
             allowedLengthError))
       throw new InvalidEntityException(
           "Line length does not equal calculated distances between points building the line", line);
