@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.couchbase
 
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
+import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -37,7 +38,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 	@Shared
 	CouchbaseWeatherSource source
 
-	static String coordinateIdColumnName = "coordinateid"
+	static String coordinateIdColumnName = TimeBasedWeatherValueFactory.COORDINATE_ID_NAMING.flatCase()
 
 	def setupSpec() {
 		// Copy import file with json array of documents into docker
@@ -63,7 +64,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 
 		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ssxxx"))
-		source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory)
+		source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, weatherFactory)
 	}
 
 	def "The test container can establish a valid connection"() {
