@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.StringUtils;
 import edu.ie3.util.interval.ClosedInterval;
+import edu.ie3.util.naming.NamingConvention;
 import java.sql.*;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -31,10 +32,15 @@ public class SqlWeatherSource implements WeatherSource {
 
   private static final String DEFAULT_WEATHER_FETCHING_ERROR = "Error while fetching weather";
   private static final String WHERE = " WHERE ";
+  private static final NamingConvention DEFAULT_NAMING_CONVENTION = NamingConvention.SNAKE;
 
+  private final NamingConvention namingConvention;
   private final SqlConnector connector;
   private final IdCoordinateSource idCoordinateSource;
-  private final String factoryCoordinateFieldName;
+  /* The column name represents the name of the column in the chosen naming convention. However, the field name is in
+   * flat case always, as this is, what the factory expects. */
+  private final String coordinateIdColumnName;
+  private final String coordinateIdFieldName;
   private final TimeBasedWeatherValueFactory weatherFactory;
 
   /**
@@ -64,7 +70,9 @@ public class SqlWeatherSource implements WeatherSource {
     this.connector = connector;
     this.idCoordinateSource = idCoordinateSource;
     this.weatherFactory = weatherFactory;
-    this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
+    this.namingConvention = DEFAULT_NAMING_CONVENTION;
+    this.coordinateIdColumnName = weatherFactory.getCoordinateIdFieldString(namingConvention);
+    this.coordinateIdFieldName = weatherFactory.getCoordinateIdFieldString();
 
     String dbTimeColumnName =
         getDbColumnName(weatherFactory.getTimeFieldString(), connector, weatherTableName)
@@ -76,25 +84,15 @@ public class SqlWeatherSource implements WeatherSource {
                             + "' in provided weather data configuration."
                             + "Please ensure that the database connection is working and the column names are correct!"));
 
-    String dbCoordColumnName =
-        getDbColumnName(factoryCoordinateFieldName, connector, weatherTableName)
-            .orElseThrow(
-                () ->
-                    new InvalidWeatherColumnNameException(
-                        "Cannot find column for '"
-                            + factoryCoordinateFieldName
-                            + "' in provided weather data configuration."
-                            + "Please ensure that the database connection is working and the column names are correct!"));
-
     // setup queries
     this.queryTimeInterval =
         createQueryStringForTimeInterval(schemaName, weatherTableName, dbTimeColumnName);
     this.queryTimeAndCoordinate =
         createQueryStringForTimeAndCoordinate(
-            schemaName, weatherTableName, dbTimeColumnName, dbCoordColumnName);
+            schemaName, weatherTableName, dbTimeColumnName, coordinateIdColumnName);
     this.queryTimeIntervalAndCoordinates =
         createQueryStringForTimeIntervalAndCoordinates(
-            schemaName, weatherTableName, dbTimeColumnName, dbCoordColumnName);
+            schemaName, weatherTableName, dbTimeColumnName, coordinateIdColumnName);
   }
 
   @Override
@@ -327,7 +325,7 @@ public class SqlWeatherSource implements WeatherSource {
    */
   private Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(
       Map<String, String> fieldMap) {
-    String coordinateValue = fieldMap.remove(factoryCoordinateFieldName);
+    String coordinateValue = fieldMap.remove(coordinateIdFieldName);
     fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     int coordinateId = Integer.parseInt(coordinateValue);
     Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
