@@ -272,10 +272,7 @@ public abstract class CsvDataSource {
    *
    * <pre>{@code
    * Collection.stream().filter(isPresentCollectIfNot(NodeInput.class, new ConcurrentHashMap<>()))
-   *
    * }</pre>
-   *
-   * <p>...</p>
    *
    * @param entityClass entity class that should be used as they key in the provided counter map
    * @param invalidElementsCounterMap a map that counts the number of empty optionals and maps it to
