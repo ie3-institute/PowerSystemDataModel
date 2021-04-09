@@ -53,12 +53,40 @@ public class SqlWeatherSource implements WeatherSource {
   private final String queryTimeIntervalAndCoordinates;
 
   /**
+   * Initializes a new SqlWeatherSource. Uses {@link SqlWeatherSource#DEFAULT_NAMING_CONVENTION} as
+   * naming convention.
+   *
+   * @param connector the connector needed for database connection
+   * @param idCoordinateSource a coordinate source to map ids to points
+   * @param schemaName the database schema to use
+   * @param weatherTableName the name of the table containing weather data
+   * @param weatherFactory instance of a time based weather value factory
+   * @deprecated Use {@link SqlWeatherSource#SqlWeatherSource(SqlConnector, IdCoordinateSource,
+   *     String, String, NamingConvention, TimeBasedWeatherValueFactory)} instead
+   */
+  @Deprecated
+  public SqlWeatherSource(
+      SqlConnector connector,
+      IdCoordinateSource idCoordinateSource,
+      String schemaName,
+      String weatherTableName,
+      TimeBasedWeatherValueFactory weatherFactory) {
+    this(
+        connector,
+        idCoordinateSource,
+        schemaName,
+        weatherTableName,
+        DEFAULT_NAMING_CONVENTION,
+        weatherFactory);
+  }
+  /**
    * Initializes a new SqlWeatherSource
    *
    * @param connector the connector needed for database connection
    * @param idCoordinateSource a coordinate source to map ids to points
    * @param schemaName the database schema to use
    * @param weatherTableName the name of the table containing weather data
+   * @param namingConvention the (case) convention, how columns are named
    * @param weatherFactory instance of a time based weather value factory
    */
   public SqlWeatherSource(
@@ -66,11 +94,12 @@ public class SqlWeatherSource implements WeatherSource {
       IdCoordinateSource idCoordinateSource,
       String schemaName,
       String weatherTableName,
+      NamingConvention namingConvention,
       TimeBasedWeatherValueFactory weatherFactory) {
     this.connector = connector;
     this.idCoordinateSource = idCoordinateSource;
     this.weatherFactory = weatherFactory;
-    this.namingConvention = DEFAULT_NAMING_CONVENTION;
+    this.namingConvention = namingConvention;
     this.coordinateIdColumnName = weatherFactory.getCoordinateIdFieldString(namingConvention);
     this.coordinateIdFieldName = weatherFactory.getCoordinateIdFieldString();
 
