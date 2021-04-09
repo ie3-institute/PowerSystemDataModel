@@ -26,7 +26,6 @@ import tech.units.indriya.ComparableQuantity;
  * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
  */
 public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
-  private static final String COORDINATE = "coordinateid";
   private static final String DIFFUSE_IRRADIANCE = "diffuseirradiance";
   private static final String DIRECT_IRRADIANCE = "directirradiance";
   private static final String TEMPERATURE = "temperature";
@@ -43,11 +42,6 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
 
   public CosmoTimeBasedWeatherValueFactory() {
     super();
-  }
-
-  @Override
-  public String getCoordinateIdFieldString() {
-    return COORDINATE;
   }
 
   @Override
