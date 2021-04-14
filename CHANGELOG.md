@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   BREAKING: Moved methods `buildSafe{Coord,Point,LineString,LineStringBetweenCoords,LineStringBetweenPoints}`, `totalLengthOfLineString` from `GridAndGeoUtils` to `GeoUtils` in [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
 -   BREAKING: Moved `CoordinateDistance` to [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
 -   BREAKING: Weather source
-	-   Adapted data scheme (COSMO: `"coordinate"` to `"coordinate id"`, `"irradiation"` to `"irradiance"`)
+	-   Adapted data scheme (COSMO: `"coordinate"` to `"coordinate id"`, `"irradiation"` to `"irradiance"`, ICON: `"datum"` to `"coordinate"`)
 	-   Harmonized the source of coordinate id column name across implementations of `WeatherSource`
 	-   Get field name in different casing (to actually get the column name in database, file, ...)
 
