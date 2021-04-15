@@ -196,6 +196,7 @@ node {
 
                 // call codecov.io
                 withCredentials([string(credentialsId: codeCovTokenId, variable: 'codeCovToken')]) {
+                    env
                     sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
                 }
 
