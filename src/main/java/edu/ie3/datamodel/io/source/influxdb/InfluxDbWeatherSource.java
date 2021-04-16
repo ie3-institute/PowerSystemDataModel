@@ -51,6 +51,8 @@ public class InfluxDbWeatherSource implements WeatherSource {
    * @param weatherValueFactory instance of a time based weather value factory
    * @deprecated Use {@link InfluxDbWeatherSource#InfluxDbWeatherSource(InfluxDbConnector,
    *     IdCoordinateSource, NamingConvention, TimeBasedWeatherValueFactory)}
+   * @throws SourceException If the time stamp pattern used by the factory is not compliant with RFC
+   *     3339 standard
    */
   @Deprecated
   public InfluxDbWeatherSource(
@@ -69,6 +71,8 @@ public class InfluxDbWeatherSource implements WeatherSource {
    *     types
    * @param namingConvention the naming convention used for features
    * @param weatherValueFactory instance of a time based weather value factory
+   * @throws SourceException If the time stamp pattern used by the factory is not compliant with RFC
+   *     3339 standard
    */
   public InfluxDbWeatherSource(
       InfluxDbConnector connector,
