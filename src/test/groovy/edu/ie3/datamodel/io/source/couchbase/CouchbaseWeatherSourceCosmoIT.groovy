@@ -63,8 +63,9 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 				"--dataset", "file:///home/weather.json")
 
 		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
-		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ssxxx"))
-		source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, weatherFactory)
+		def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
+		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern))
+		source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, weatherFactory, dtfPattern)
 	}
 
 	def "The test container can establish a valid connection"() {

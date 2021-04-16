@@ -46,6 +46,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
   private final CouchbaseConnector connector;
   private final IdCoordinateSource coordinateSource;
   private final String coordinateIdColumnName;
+  private final String timeStampPattern;
 
   /**
    * Instantiate a weather source utilising a connection to a couchbase instance obtained via the
@@ -57,13 +58,20 @@ public class CouchbaseWeatherSource implements WeatherSource {
    * @param coordinateSource Source to obtain actual coordinates from
    * @param weatherFactory Factory to transfer field to value mapping into actual java object
    *     instances
+   * @param timeStampPattern Pattern of time stamps to parse
    */
   public CouchbaseWeatherSource(
       CouchbaseConnector connector,
       IdCoordinateSource coordinateSource,
-      TimeBasedWeatherValueFactory weatherFactory) {
+      TimeBasedWeatherValueFactory weatherFactory,
+      String timeStampPattern) {
     this(
-        connector, coordinateSource, DEFAULT_KEY_PREFIX, DEFAULT_NAMING_CONVENTION, weatherFactory);
+        connector,
+        coordinateSource,
+        DEFAULT_KEY_PREFIX,
+        DEFAULT_TIMESTAMP_PATTERN,
+        DEFAULT_NAMING_CONVENTION,
+        weatherFactory);
   }
 
   /**
@@ -76,7 +84,8 @@ public class CouchbaseWeatherSource implements WeatherSource {
    * @param weatherFactory Factory to transfer field to value mapping into actual java object
    *     instances
    * @deprecated Use {@link CouchbaseWeatherSource#CouchbaseWeatherSource(CouchbaseConnector,
-   *     IdCoordinateSource, String, NamingConvention, TimeBasedWeatherValueFactory)} instead
+   *     IdCoordinateSource, String, String, NamingConvention, TimeBasedWeatherValueFactory)}
+   *     instead
    */
   @Deprecated
   public CouchbaseWeatherSource(
@@ -84,7 +93,13 @@ public class CouchbaseWeatherSource implements WeatherSource {
       IdCoordinateSource coordinateSource,
       String keyPrefix,
       TimeBasedWeatherValueFactory weatherFactory) {
-    this(connector, coordinateSource, keyPrefix, DEFAULT_NAMING_CONVENTION, weatherFactory);
+    this(
+        connector,
+        coordinateSource,
+        keyPrefix,
+        DEFAULT_TIMESTAMP_PATTERN,
+        DEFAULT_NAMING_CONVENTION,
+        weatherFactory);
   }
 
   /**
@@ -94,6 +109,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
    * @param connector Connector, that establishes the connection to the couchbase instance
    * @param coordinateSource Source to obtain actual coordinates from
    * @param keyPrefix Prefix of entries, that belong to weather
+   * @param timeStampPattern Pattern of time stamps to parse
    * @param namingConvention the (case) convention, how columns are named
    * @param weatherFactory Factory to transfer field to value mapping into actual java object
    *     instances
@@ -102,12 +118,14 @@ public class CouchbaseWeatherSource implements WeatherSource {
       CouchbaseConnector connector,
       IdCoordinateSource coordinateSource,
       String keyPrefix,
+      String timeStampPattern,
       NamingConvention namingConvention,
       TimeBasedWeatherValueFactory weatherFactory) {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
     this.keyPrefix = keyPrefix;
     this.weatherFactory = weatherFactory;
+    this.timeStampPattern = timeStampPattern;
     this.coordinateIdColumnName = weatherFactory.getCoordinateIdFieldString(namingConvention);
   }
 
@@ -186,7 +204,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
   public String generateWeatherKey(ZonedDateTime time, Integer coordinateId) {
     String key = keyPrefix + "::";
     key += coordinateId + "::";
-    key += time.format(DateTimeFormatter.ofPattern(DEFAULT_TIMESTAMP_PATTERN));
+    key += time.format(DateTimeFormatter.ofPattern(timeStampPattern));
     return key;
   }
 
