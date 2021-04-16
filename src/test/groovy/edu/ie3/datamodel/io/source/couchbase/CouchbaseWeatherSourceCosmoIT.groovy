@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
-import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
 import org.testcontainers.couchbase.BucketDefinition
@@ -22,8 +21,6 @@ import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
-
-import java.time.ZoneId
 
 @Testcontainers
 class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSourceTestHelper {
@@ -63,9 +60,8 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 				"--dataset", "file:///home/weather.json")
 
 		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
-		def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
-		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(dtfPattern)
-		source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, weatherFactory, dtfPattern)
+		def weatherFactory = new CosmoTimeBasedWeatherValueFactory("yyyy-MM-dd'T'HH:mm:ssxxx")
+		source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, weatherFactory)
 	}
 
 	def "The test container can establish a valid connection"() {
@@ -109,7 +105,6 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
 		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
 	}
-
 
 
 	def "A CouchbaseWeatherSource can read all weather data in a given time interval"() {

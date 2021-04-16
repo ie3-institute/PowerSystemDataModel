@@ -12,7 +12,6 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.test.common.IconWeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
-import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import org.testcontainers.couchbase.BucketDefinition
 import org.testcontainers.couchbase.CouchbaseContainer
@@ -20,8 +19,6 @@ import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
-
-import java.time.ZoneId
 
 @Testcontainers
 class CouchbaseWeatherSourceIconIT extends Specification implements WeatherSourceTestHelper {
@@ -61,9 +58,8 @@ class CouchbaseWeatherSourceIconIT extends Specification implements WeatherSourc
 				"--dataset", "file:///home/weather.json")
 
 		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
-		def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
-		def weatherFactory = new IconTimeBasedWeatherValueFactory(dtfPattern)
-		source = new CouchbaseWeatherSource(connector, IconWeatherTestData.coordinateSource, weatherFactory, dtfPattern)
+		def weatherFactory = new IconTimeBasedWeatherValueFactory("yyyy-MM-dd'T'HH:mm:ssxxx")
+		source = new CouchbaseWeatherSource(connector, IconWeatherTestData.coordinateSource, weatherFactory)
 	}
 
 	def "The test container can establish a valid connection"() {
