@@ -36,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	-   Get field name in different casing (to actually get the column name in database, file, ...)
 	-   Force user to provide time stamp pattern to `CouchbaseWeatherSource` to ensure harmonized querying
 	-   Use naming convention dependent field names from factories within `InfluxDBWeatherSource`
+	-   Check, if time stamp pattern is [RFC 3339](https://tools.ietf.org/html/rfc3339) compliant, as this is the output of InfluxDB
+	-   Use factory's time stamp pattern to build queries within `CouchbaseWeatherSource`
 
 ### Fixed
 -   InfluxDbConnector now keeps session instead of creating a new one each call
