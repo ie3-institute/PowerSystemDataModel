@@ -29,6 +29,7 @@ public abstract class TimeBasedWeatherValueFactory
   }
 
   /**
+   * @param timeUtil The time util to use
    * @deprecated Use {@link TimeBasedWeatherValueFactory#TimeBasedWeatherValueFactory(String)}
    *     instead
    */

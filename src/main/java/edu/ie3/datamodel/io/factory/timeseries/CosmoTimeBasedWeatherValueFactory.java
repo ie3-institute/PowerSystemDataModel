@@ -34,6 +34,7 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   private static final String WIND_VELOCITY = "windvelocity";
 
   /**
+   * @param timeUtil The time util to use
    * @deprecated Use {@link
    *     CosmoTimeBasedWeatherValueFactory#CosmoTimeBasedWeatherValueFactory(String)} instead
    */

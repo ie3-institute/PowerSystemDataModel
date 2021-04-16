@@ -35,6 +35,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   private static final String WIND_VELOCITY_V = "v131m";
 
   /**
+   * @param timeUtil The time util to use
    * @deprecated Use {@link
    *     IconTimeBasedWeatherValueFactory#IconTimeBasedWeatherValueFactory(String)} instead
    */
