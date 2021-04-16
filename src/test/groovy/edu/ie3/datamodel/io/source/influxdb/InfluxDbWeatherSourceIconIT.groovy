@@ -5,18 +5,16 @@
  */
 package edu.ie3.datamodel.io.source.influxdb
 
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
-import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.IconWeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
 import edu.ie3.util.naming.NamingConvention
-import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
@@ -41,27 +39,41 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 		influxDbContainer.copyFileToContainer(influxWeatherImportFile, "/home/weather.txt")
 		def execResult = influxDbContainer.execInContainer("influx", "-import", "-path=/home/weather.txt", "-precision=ms")
 		println "Command \"influx -import -path=/home/weather.txt -precision=ms\" returned:"
-		if(!execResult.stderr.isEmpty()) println execResult.getStderr()
-		if(!execResult.stdout.isEmpty()) println execResult.getStdout()
+		if (!execResult.stderr.isEmpty()) println execResult.getStderr()
+		if (!execResult.stdout.isEmpty()) println execResult.getStdout()
 
-		def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
+		def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
 		def weatherFactory = new IconTimeBasedWeatherValueFactory("yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
 		source = new InfluxDbWeatherSource(connector, IconWeatherTestData.coordinateSource, NamingConvention.SNAKE, weatherFactory)
 	}
 
+	def "The source refuses instantiation with not compliant time stamp pattern in factory"() {
+		given:
+		def unCompliantPattern = "yyyy-MM-dd"
+		def weatherFactory = new IconTimeBasedWeatherValueFactory(unCompliantPattern)
+		def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
+
+		when:
+		new InfluxDbWeatherSource(connector, IconWeatherTestData.coordinateSource, NamingConvention.SNAKE, weatherFactory)
+
+		then:
+		def exception = thrown(SourceException)
+		exception.message == "The given factory uses a time stamp pattern '" + unCompliantPattern + "', that is not compliant with RFC 3339 standard. This causes, that InfluxDB results cannot be parsed. Please use 'yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z''."
+	}
+
 	def "The test container can establish a valid connection"() {
 		when:
-		def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
+		def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
 		then:
 		connector.connectionValid
 	}
 
 	def "An InfluxDbWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
 		given:
-		def expectedTimeBasedValue = new TimeBasedValue(IconWeatherTestData.TIME_15H , IconWeatherTestData.WEATHER_VALUE_67775_15H)
+		def expectedTimeBasedValue = new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H)
 
 		when:
-		def optTimeBasedValue = source.getWeather(IconWeatherTestData.TIME_15H , IconWeatherTestData.COORDINATE_67775)
+		def optTimeBasedValue = source.getWeather(IconWeatherTestData.TIME_15H, IconWeatherTestData.COORDINATE_67775)
 
 		then:
 		optTimeBasedValue.present
@@ -74,15 +86,15 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 			IconWeatherTestData.COORDINATE_67775,
 			IconWeatherTestData.COORDINATE_67776
 		]
-		def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_16H , IconWeatherTestData.TIME_17H)
+		def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_16H, IconWeatherTestData.TIME_17H)
 		def timeseries67775 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(IconWeatherTestData.TIME_16H , IconWeatherTestData.WEATHER_VALUE_67775_16H),
-					new TimeBasedValue(IconWeatherTestData.TIME_17H , IconWeatherTestData.WEATHER_VALUE_67775_17H)]
+					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67775_16H),
+					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)]
 				as Set<TimeBasedValue>)
 		def timeseries67776 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(IconWeatherTestData.TIME_16H , IconWeatherTestData.WEATHER_VALUE_67776_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67776_16H)] as Set<TimeBasedValue>)
 
 		when:
 		def coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
@@ -95,16 +107,16 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
 	def "An InfluxDbWeatherSource can read all weather data in a given time interval"() {
 		given:
-		def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H , IconWeatherTestData.TIME_17H)
+		def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
 		def timeseries_67775 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(IconWeatherTestData.TIME_15H ,IconWeatherTestData.WEATHER_VALUE_67775_15H),
-					new TimeBasedValue(IconWeatherTestData.TIME_16H ,IconWeatherTestData.WEATHER_VALUE_67775_16H),
-					new TimeBasedValue(IconWeatherTestData.TIME_17H ,IconWeatherTestData.WEATHER_VALUE_67775_17H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H),
+					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67775_16H),
+					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)] as Set<TimeBasedValue>)
 		def timeseries_67776 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(IconWeatherTestData.TIME_15H ,IconWeatherTestData.WEATHER_VALUE_67776_15H),
-					new TimeBasedValue(IconWeatherTestData.TIME_16H ,IconWeatherTestData.WEATHER_VALUE_67776_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67776_15H),
+					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67776_16H)] as Set<TimeBasedValue>)
 
 		when:
 		def coordinateToTimeSeries = source.getWeather(timeInterval)
@@ -119,13 +131,13 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 		def validCoordinate = IconWeatherTestData.COORDINATE_67775
 		def invalidCoordinate = GeoUtils.xyToPoint(48d, 7d)
 		def time = IconWeatherTestData.TIME_15H
-		def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H , IconWeatherTestData.TIME_17H)
+		def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
 		def emptyTimeSeries = new IndividualTimeSeries(UUID.randomUUID(), Collections.emptySet())
 		def timeseries_67775 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(IconWeatherTestData.TIME_15H ,IconWeatherTestData.WEATHER_VALUE_67775_15H),
-					new TimeBasedValue(IconWeatherTestData.TIME_16H ,IconWeatherTestData.WEATHER_VALUE_67775_16H),
-					new TimeBasedValue(IconWeatherTestData.TIME_17H ,IconWeatherTestData.WEATHER_VALUE_67775_17H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H),
+					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67775_16H),
+					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)] as Set<TimeBasedValue>)
 
 		when:
 		def coordinateAtDate = source.getWeather(time, invalidCoordinate)

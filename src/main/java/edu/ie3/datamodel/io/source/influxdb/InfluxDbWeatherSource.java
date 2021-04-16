@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.influxdb;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -27,6 +28,8 @@ import org.locationtech.jts.geom.Point;
 
 /** InfluxDB Source for weather data */
 public class InfluxDbWeatherSource implements WeatherSource {
+  private static final String RFC3339_PATTERN_STRING = "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'";
+
   private static final String BASIC_QUERY_STRING = "Select * from weather";
   private static final String WHERE = " where ";
   private static final String MEASUREMENT_NAME_WEATHER = "weather";
@@ -53,12 +56,9 @@ public class InfluxDbWeatherSource implements WeatherSource {
   public InfluxDbWeatherSource(
       InfluxDbConnector connector,
       IdCoordinateSource coordinateSource,
-      TimeBasedWeatherValueFactory weatherValueFactory) {
-    this.connector = connector;
-    this.coordinateSource = coordinateSource;
-    this.namingConvention = DEFAULT_NAMING_CONVENTION;
-    this.weatherValueFactory = weatherValueFactory;
-    this.coordinateIdFieldName = weatherValueFactory.getCoordinateIdFieldString();
+      TimeBasedWeatherValueFactory weatherValueFactory)
+      throws SourceException {
+    this(connector, coordinateSource, DEFAULT_NAMING_CONVENTION, weatherValueFactory);
   }
 
   /**
@@ -74,12 +74,36 @@ public class InfluxDbWeatherSource implements WeatherSource {
       InfluxDbConnector connector,
       IdCoordinateSource coordinateSource,
       NamingConvention namingConvention,
-      TimeBasedWeatherValueFactory weatherValueFactory) {
+      TimeBasedWeatherValueFactory weatherValueFactory)
+      throws SourceException {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
     this.namingConvention = namingConvention;
     this.weatherValueFactory = weatherValueFactory;
+    if (!isTimestampPatternCompliant(weatherValueFactory.getTimeStampPattern()))
+      throw new SourceException(
+          "The given factory uses a time stamp pattern '"
+              + weatherValueFactory.getTimeStampPattern()
+              + "', that is not compliant with RFC 3339 standard. This causes, that InfluxDB results cannot be parsed. Please use '"
+              + RFC3339_PATTERN_STRING
+              + "'.");
     this.coordinateIdFieldName = weatherValueFactory.getCoordinateIdFieldString();
+  }
+
+  /**
+   * InfluxDB outputs the time of an entry formatted with the RFC3339 standard. Therefore, it is
+   * important, that the factory to build entities, is able to parse such kind of a String. This
+   * method checks, if a given time stamp pattern complies the given standard.
+   *
+   * @see <a
+   *     href="https://docs.influxdata.com/influxdb/v2.0/reference/glossary/#rfc3339-timestamp">InfluxDB
+   *     documentation</a>
+   * @see <a href="https://tools.ietf.org/html/rfc3339">RFC 3339 standard</a>
+   * @param pattern The pattern to check
+   * @return true, if it complies the RFC 3339 standard
+   */
+  private boolean isTimestampPatternCompliant(String pattern) {
+    return pattern.equals(RFC3339_PATTERN_STRING);
   }
 
   @Override

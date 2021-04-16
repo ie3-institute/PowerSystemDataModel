@@ -61,4 +61,8 @@ public abstract class TimeBasedValueFactory<D extends TimeBasedValueData<V>, V e
     super(valueClasses);
     timeUtil = new TimeUtil(timeZone, locale, timeStampPattern);
   }
+
+  public String getTimeStampPattern() {
+    return timeUtil.getDtfPattern();
+  }
 }
