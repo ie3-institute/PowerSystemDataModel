@@ -43,7 +43,7 @@ class SqlWeatherSourceIconIT extends Specification implements WeatherSourceTestH
 		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-		def weatherFactory = new IconTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
+		def weatherFactory = new IconTimeBasedWeatherValueFactory(TimeUtil.withDefaults.getDtfPattern())
 		source = new SqlWeatherSource(connector, IconWeatherTestData.coordinateSource, schemaName, weatherTableName, namingConvention, weatherFactory)
 	}
 

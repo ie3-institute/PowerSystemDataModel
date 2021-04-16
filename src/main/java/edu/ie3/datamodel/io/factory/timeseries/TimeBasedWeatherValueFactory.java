@@ -9,7 +9,6 @@ import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
 import edu.ie3.util.naming.Naming;
 import edu.ie3.util.naming.NamingConvention;
-import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -18,24 +17,24 @@ import java.util.*;
  */
 public abstract class TimeBasedWeatherValueFactory
     extends TimeBasedValueFactory<TimeBasedWeatherValueData, WeatherValue> {
-  protected static final String UUID = "uuid";
-  protected static final String TIME = "time";
   /* Hold a case agnostic representation of the composite word "coordinate id", that allows for later case conversion */
   protected static final Naming COORDINATE_ID_NAMING = Naming.from("coordinate", "id");
 
-  protected final TimeUtil timeUtil;
-
   protected TimeBasedWeatherValueFactory() {
-    this("yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'");
+    super(WeatherValue.class);
   }
 
   protected TimeBasedWeatherValueFactory(String timePattern) {
-    this(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern));
+    super(timePattern, WeatherValue.class);
   }
 
+  /**
+   * @deprecated Use {@link TimeBasedWeatherValueFactory#TimeBasedWeatherValueFactory(String)}
+   *     instead
+   */
+  @Deprecated
   protected TimeBasedWeatherValueFactory(TimeUtil timeUtil) {
-    super(WeatherValue.class);
-    this.timeUtil = timeUtil;
+    super(timeUtil.getDtfPattern(), WeatherValue.class);
   }
 
   /**

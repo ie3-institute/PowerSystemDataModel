@@ -11,7 +11,6 @@ import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Angle;
@@ -35,6 +34,11 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   private static final String WIND_VELOCITY_U = "u131m";
   private static final String WIND_VELOCITY_V = "v131m";
 
+  /**
+   * @deprecated Use {@link
+   *     IconTimeBasedWeatherValueFactory#IconTimeBasedWeatherValueFactory(String)} instead
+   */
+  @Deprecated
   public IconTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
   }
@@ -44,7 +48,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   }
 
   public IconTimeBasedWeatherValueFactory() {
-    super(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss"));
+    super("yyyy-MM-dd HH:mm:ss");
   }
 
   @Override

@@ -64,7 +64,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 
 		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
 		def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
-		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern))
+		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(dtfPattern)
 		source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, weatherFactory, dtfPattern)
 	}
 

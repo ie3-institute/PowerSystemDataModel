@@ -62,7 +62,7 @@ class CouchbaseWeatherSourceIconIT extends Specification implements WeatherSourc
 
 		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
 		def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
-		def weatherFactory = new IconTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern))
+		def weatherFactory = new IconTimeBasedWeatherValueFactory(dtfPattern)
 		source = new CouchbaseWeatherSource(connector, IconWeatherTestData.coordinateSource, weatherFactory, dtfPattern)
 	}
 

@@ -23,7 +23,8 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to
- * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
+ * value mapping in the typical column scheme used by German Federal Meteorological Service's COSMO
+ * model
  */
 public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
   private static final String DIFFUSE_IRRADIANCE = "diffuseirradiance";
@@ -32,6 +33,11 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   private static final String WIND_DIRECTION = "winddirection";
   private static final String WIND_VELOCITY = "windvelocity";
 
+  /**
+   * @deprecated Use {@link
+   *     CosmoTimeBasedWeatherValueFactory#CosmoTimeBasedWeatherValueFactory(String)} instead
+   */
+  @Deprecated
   public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
   }

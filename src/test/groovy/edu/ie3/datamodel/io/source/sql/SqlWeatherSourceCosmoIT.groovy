@@ -43,7 +43,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements WeatherSourceTest
 		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
+		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(TimeUtil.withDefaults.getDtfPattern())
 		source = new SqlWeatherSource(connector, CosmoWeatherTestData.coordinateSource, schemaName, weatherTableName, namingConvention, weatherFactory)
 	}
 

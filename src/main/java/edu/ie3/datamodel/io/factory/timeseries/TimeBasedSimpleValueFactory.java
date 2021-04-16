@@ -11,15 +11,11 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
-import edu.ie3.util.TimeUtil;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
 public class TimeBasedSimpleValueFactory<V extends Value>
     extends TimeBasedValueFactory<SimpleTimeBasedValueData<V>, V> {
-  private static final String UUID = "uuid";
-  private static final String TIME = "time";
   /* Energy price */
   private static final String PRICE = "price";
   /* Energy / Power */
@@ -27,15 +23,12 @@ public class TimeBasedSimpleValueFactory<V extends Value>
   private static final String REACTIVE_POWER = "q";
   private static final String HEAT_DEMAND = "heatdemand";
 
-  private final TimeUtil timeUtil;
-
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses) {
-    this(valueClasses, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'");
+    super("yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'", valueClasses);
   }
 
   public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses, String timePattern) {
-    super(valueClasses);
-    timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern);
+    super(timePattern, valueClasses);
   }
 
   @Override
