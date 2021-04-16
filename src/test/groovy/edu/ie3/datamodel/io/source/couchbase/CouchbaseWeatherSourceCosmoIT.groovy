@@ -32,7 +32,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 	BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")
 
 	@Shared
-	CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:latest").withBucket(bucketDefinition)
+	CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:6.0.2").withBucket(bucketDefinition)
 	.withExposedPorts(8091, 8092, 8093, 8094, 11210)
 
 	@Shared
