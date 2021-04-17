@@ -51,6 +51,6 @@ public class OlmCharacteristicInput extends CharacteristicInput<Speed, Dimension
 
   @Override
   public String toString() {
-    return "OlmCharacteristicInput{" + "points=" + points + '}';
+    return "OlmCharacteristicInput{" + "points=" + getPoints() + '}';
   }
 }

@@ -19,14 +19,14 @@ import java.util.*;
  */
 public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
     extends UniqueEntity {
-  protected final Set<E> entries;
+  private final Set<E> entries;
 
-  public TimeSeries(Set<E> entries) {
+  protected TimeSeries(Set<E> entries) {
     super();
     this.entries = Collections.unmodifiableSet(entries);
   }
 
-  public TimeSeries(UUID uuid, Set<E> entries) {
+  protected TimeSeries(UUID uuid, Set<E> entries) {
     super(uuid);
     this.entries = Collections.unmodifiableSet(entries);
   }

@@ -52,6 +52,6 @@ public class CosPhiFixed extends ReactivePowerCharacteristic {
 
   @Override
   public String toString() {
-    return "cosPhiFixed{" + "points=" + points + '}';
+    return "cosPhiFixed{" + "points=" + getPoints() + '}';
   }
 }

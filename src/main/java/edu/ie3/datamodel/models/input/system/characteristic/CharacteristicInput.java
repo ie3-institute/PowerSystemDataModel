@@ -23,7 +23,7 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
   protected final String characteristicPrefix;
   protected final int decimalPlaces;
 
-  protected final SortedSet<CharacteristicPoint<A, O>> points;
+  private final SortedSet<CharacteristicPoint<A, O>> points;
 
   /**
    * Constructor for the abstract class
@@ -32,14 +32,14 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
    * @param characteristicPrefix Prefix, that prepends the actual characteristic
    * @param decimalPlaces Desired amount of decimal places when de-serializing the characteristic
    */
-  public CharacteristicInput(
+  protected CharacteristicInput(
       SortedSet<CharacteristicPoint<A, O>> points, String characteristicPrefix, int decimalPlaces) {
     this.points = Collections.unmodifiableSortedSet(points);
     this.characteristicPrefix = characteristicPrefix;
     this.decimalPlaces = decimalPlaces;
   }
 
-  public CharacteristicInput(
+  protected CharacteristicInput(
       String input,
       Unit<A> abscissaUnit,
       Unit<O> ordinateUnit,
