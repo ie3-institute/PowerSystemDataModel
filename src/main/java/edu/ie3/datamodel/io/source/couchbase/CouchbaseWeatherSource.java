@@ -43,7 +43,6 @@ public class CouchbaseWeatherSource implements WeatherSource {
   private final TimeBasedWeatherValueFactory weatherFactory;
 
   private final String keyPrefix;
-  private final NamingConvention namingConvention;
   private final CouchbaseConnector connector;
   private final IdCoordinateSource coordinateSource;
   private final String coordinateIdColumnName;
@@ -109,7 +108,6 @@ public class CouchbaseWeatherSource implements WeatherSource {
     this.coordinateSource = coordinateSource;
     this.keyPrefix = keyPrefix;
     this.weatherFactory = weatherFactory;
-    this.namingConvention = namingConvention;
     this.coordinateIdColumnName = weatherFactory.getCoordinateIdFieldString(namingConvention);
   }
 
