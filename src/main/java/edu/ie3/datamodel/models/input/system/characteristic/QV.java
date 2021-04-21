@@ -38,6 +38,6 @@ public class QV extends ReactivePowerCharacteristic {
 
   @Override
   public String toString() {
-    return "QV{" + "points=" + points + '}';
+    return "QV{" + "points=" + getPoints() + '}';
   }
 }

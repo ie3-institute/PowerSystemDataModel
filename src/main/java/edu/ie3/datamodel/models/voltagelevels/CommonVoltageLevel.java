@@ -16,7 +16,7 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Class with extended information to describe common voltage levels in energy systems. */
 public class CommonVoltageLevel extends VoltageLevel {
-  protected final Set<String> synonymousIds;
+  private final Set<String> synonymousIds;
   protected final RightOpenInterval<ComparableQuantity<ElectricPotential>> voltageRange;
 
   /**

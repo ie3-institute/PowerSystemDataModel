@@ -34,6 +34,6 @@ public class WecCharacteristicInput extends CharacteristicInput<Speed, Dimension
 
   @Override
   public String toString() {
-    return "WecCharacteristicInput{" + "points=" + points + '}';
+    return "WecCharacteristicInput{" + "points=" + getPoints() + '}';
   }
 }
