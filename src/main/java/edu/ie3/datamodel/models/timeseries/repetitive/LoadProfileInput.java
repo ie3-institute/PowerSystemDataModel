@@ -23,7 +23,7 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
     super(uuid, values);
     this.type = type;
     this.dayOfWeekToHourlyValues =
-        entries.stream()
+        getEntries().stream()
             .collect(
                 Collectors.groupingBy(
                     LoadProfileEntry::getDayOfWeek,
@@ -52,11 +52,6 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
 
   public StandardLoadProfile getType() {
     return type;
-  }
-
-  @Override
-  public Set<LoadProfileEntry> getEntries() {
-    return entries;
   }
 
   @Override

@@ -41,6 +41,6 @@ public class EvCharacteristicInput extends CharacteristicInput<Power, Dimensionl
 
   @Override
   public String toString() {
-    return "EvCharacteristicInput{" + "points=" + points + '}';
+    return "EvCharacteristicInput{" + "points=" + getPoints() + '}';
   }
 }
