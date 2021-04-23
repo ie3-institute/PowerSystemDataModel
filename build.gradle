@@ -83,7 +83,7 @@ dependencies {
 	// Databases
 	compile 'org.influxdb:influxdb-java:2.21'
 	compile 'com.couchbase.client:java-client:3.1.4'
-	runtimeOnly 'org.postgresql:postgresql:42.2.19' // postgresql jdbc driver required during runtime
+	runtimeOnly 'org.postgresql:postgresql:42.2.20' // postgresql jdbc driver required during runtime
 
 
 	compile 'commons-io:commons-io:2.8.0' // I/O functionalities
