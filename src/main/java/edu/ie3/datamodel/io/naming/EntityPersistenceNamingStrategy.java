@@ -155,7 +155,7 @@ public class EntityPersistenceNamingStrategy {
    *
    * @param cls Targeted class of the given file
    * @return An optional sub path to the actual file
-   * @deprecated This class should foremost provide namings for the entities and nothing around file
+   * @deprecated This class should foremost provide namings for the entities and nothing around file // TODO Niklas
    *     naming or pathing in specific. This method will be moved from this class, when <a
    *     href="https://github.com/ie3-institute/PowerSystemDataModel/issues/315">this issue</a> is
    *     addressed
@@ -175,7 +175,7 @@ public class EntityPersistenceNamingStrategy {
    * @param fileName File name
    * @param subDirectories Sub directory path
    * @return Concatenation of sub directory structure and file name
-   * @deprecated This class should foremost provide namings for the entities and nothing around file
+   * @deprecated This class should foremost provide namings for the entities and nothing around file // TODO Niklas
    *     naming or pathing in specific. This method will be moved from this class, when <a
    *     href="https://github.com/ie3-institute/PowerSystemDataModel/issues/315">this issue</a> is
    *     addressed
@@ -199,6 +199,8 @@ public class EntityPersistenceNamingStrategy {
       return getInputEntityName(cls.asSubclass(InputEntity.class));
     if (ResultEntity.class.isAssignableFrom(cls))
       return getResultEntityName(cls.asSubclass(ResultEntity.class));
+    if (CharacteristicInput.class.isAssignableFrom(cls))
+      return getAssetCharacteristicsEntityName(cls.asSubclass(CharacteristicInput.class));
     logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
     return Optional.empty();
   }
@@ -214,10 +216,8 @@ public class EntityPersistenceNamingStrategy {
       return getTypeEntityName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))
       return getAssetInputEntityName(cls.asSubclass(AssetInput.class));
-    if (RandomLoadParameters.class.isAssignableFrom(cls)) {
-      String loadParamString = camelCaseToSnakeCase(cls.getSimpleName());
-      return Optional.of(addPrefixAndSuffix(loadParamString.concat("_input")));
-    }
+    if (RandomLoadParameters.class.isAssignableFrom(cls))
+      return getRandomLoadParametersEntityName(cls.asSubclass(RandomLoadParameters.class));
     if (GraphicInput.class.isAssignableFrom(cls))
       return getGraphicsInputEntityName(cls.asSubclass(GraphicInput.class));
     if (OperatorInput.class.isAssignableFrom(cls))
@@ -273,6 +273,19 @@ public class EntityPersistenceNamingStrategy {
       Class<? extends CharacteristicInput> assetCharClass) {
     String assetCharString = camelCaseToSnakeCase(assetCharClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetCharString));
+  }
+
+  /**
+   * Get the entity name for all {@link RandomLoadParameters}
+   *
+   * @param randomLoadParamClass the random load parameters class an entity name string should be generated
+   *     from
+   * @return the entity name string
+   */
+  public Optional<String> getRandomLoadParametersEntityName(
+          Class<? extends RandomLoadParameters> randomLoadParamClass) {
+    String loadParamString = camelCaseToSnakeCase(randomLoadParamClass.getSimpleName());
+    return Optional.of(addPrefixAndSuffix(loadParamString.concat("_input")));
   }
 
   /**
