@@ -9,7 +9,7 @@ public abstract class FileNamingStrategy {
 
   private final DefaultDirectoryHierarchy defaultDirectoryHierarchy;
 
-  private final String fileExtension;
+  private final String fileExtension = "csv";
 
   public FileNamingStrategy(EntityPersistenceNamingStrategy entityPersistenceNamingStrategy, DefaultDirectoryHierarchy defaultDirectoryHierarchy, String fileExtension) {
     this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
