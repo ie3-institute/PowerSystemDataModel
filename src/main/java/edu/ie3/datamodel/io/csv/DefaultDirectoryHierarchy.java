@@ -45,7 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Default directory hierarchy for input models */
-public class DefaultDirectoryHierarchy implements FileHierarchy {
+public class DefaultDirectoryHierarchy implements DirectoryNamingStrategy {
   private static final Logger logger = LoggerFactory.getLogger(DefaultDirectoryHierarchy.class);
 
   /** Use the unix file separator here. */

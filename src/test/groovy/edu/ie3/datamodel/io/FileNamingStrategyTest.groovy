@@ -1,35 +1,40 @@
 package edu.ie3.datamodel.io
 
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.csv.DefaultDirectoryHierarchy
+import edu.ie3.datamodel.io.csv.FlatDirectoryHierarchy
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import edu.ie3.datamodel.models.result.system.LoadResult
 import spock.lang.Specification
 
 import java.nio.file.Paths
 
-class FileNamingStrategyTest extends Specification{
+class FileNamingStrategyTest extends Specification {
 
-    def "The FileNamingStrategy extracts correct meta information from a valid individual time series file name"() {
+    def "The FileNamingStrategy ..."() {
         given:
-        def fns = new edu.ie3.datamodel.io.csv.FileNamingStrategy()
-        def path = Paths.get(pathString)
+        def ens = new EntityPersistenceNamingStrategy()
+        def dns = new DefaultDirectoryHierarchy("/foo/test/", "testGrid")
+        def fns = new FileNamingStrategy(ens, dns, ".csv")
+        def path = Paths.get("/bla/foo/")
 
         when:
-        def metaInformation = fns.extractTimeSeriesMetaInformation(path)
+        def filePath = fns.getFilePath(LoadResult)
 
         then:
-        IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
-        (metaInformation as IndividualTimeSeriesMetaInformation).with {
-            assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
-            assert it.columnScheme == expectedColumnScheme
-        }
+        filePath == "/bla/foo/xyz.csv"
+    }
 
-        where:
-        pathString || expectedColumnScheme
-        "/bla/foo/its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.ENERGY_PRICE
-        "/bla/foo/its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.ACTIVE_POWER
-        "/bla/foo/its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.APPARENT_POWER
-        "/bla/foo/its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.HEAT_DEMAND
-        "/bla/foo/its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
-        "/bla/foo/its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
-        "/bla/foo/its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.WEATHER
+    def "The FileNamingStrategy ... flat"() {
+        given:
+        def ens = new EntityPersistenceNamingStrategy()
+        def fns = new FileNamingStrategy(ens)
+
+        when:
+        def filePath = fns.getFilePath(LoadResult)
+
+        then:
+        filePath == "/bla/foo/xyz.csv"
+    }
+
+
 }
