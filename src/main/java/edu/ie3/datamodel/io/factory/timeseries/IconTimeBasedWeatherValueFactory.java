@@ -11,7 +11,6 @@ import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Angle;
@@ -29,14 +28,18 @@ import tech.units.indriya.unit.Units;
  */
 public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
   /* Redefine the column names to meet the icon specifications */
-  private static final String COORDINATE = "coordinateid";
-  private static final String TIME = "datum";
   private static final String DIFFUSE_IRRADIANCE = "aswdifdS";
   private static final String DIRECT_IRRADIANCE = "aswdirS";
   private static final String TEMPERATURE = "t2m";
   private static final String WIND_VELOCITY_U = "u131m";
   private static final String WIND_VELOCITY_V = "v131m";
 
+  /**
+   * @param timeUtil The time util to use
+   * @deprecated Use {@link
+   *     IconTimeBasedWeatherValueFactory#IconTimeBasedWeatherValueFactory(String)} instead
+   */
+  @Deprecated
   public IconTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
   }
@@ -46,12 +49,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   }
 
   public IconTimeBasedWeatherValueFactory() {
-    super(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss"));
-  }
-
-  @Override
-  public String getCoordinateIdFieldString() {
-    return COORDINATE;
+    super("yyyy-MM-dd HH:mm:ss");
   }
 
   @Override

@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import static edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory.*;
-
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
@@ -25,31 +23,32 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to
- * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
+ * value mapping in the typical column scheme used by German Federal Meteorological Service's COSMO
+ * model
  */
-public class PsdmTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
-  private static final String COORDINATE = "coordinate";
-  private static final String DIFFUSE_IRRADIANCE = "diffuseirradiation";
-  private static final String DIRECT_IRRADIANCE = "directirradiation";
+public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
+  private static final String DIFFUSE_IRRADIANCE = "diffuseirradiance";
+  private static final String DIRECT_IRRADIANCE = "directirradiance";
   private static final String TEMPERATURE = "temperature";
   private static final String WIND_DIRECTION = "winddirection";
   private static final String WIND_VELOCITY = "windvelocity";
 
-  public PsdmTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
+  /**
+   * @param timeUtil The time util to use
+   * @deprecated Use {@link
+   *     CosmoTimeBasedWeatherValueFactory#CosmoTimeBasedWeatherValueFactory(String)} instead
+   */
+  @Deprecated
+  public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
     super(timeUtil);
   }
 
-  public PsdmTimeBasedWeatherValueFactory(String timePattern) {
+  public CosmoTimeBasedWeatherValueFactory(String timePattern) {
     super(timePattern);
   }
 
-  public PsdmTimeBasedWeatherValueFactory() {
+  public CosmoTimeBasedWeatherValueFactory() {
     super();
-  }
-
-  @Override
-  public String getCoordinateIdFieldString() {
-    return COORDINATE;
   }
 
   @Override
