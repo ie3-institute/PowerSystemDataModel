@@ -23,6 +23,7 @@ public class SubGridGate implements Serializable {
    * Creates a sub grid gate from two winding transformer.
    *
    * @param transformer Two winding transformer to create gate for
+   * @return A {@link SubGridGate} with given transformer and its nodes
    */
   public static SubGridGate fromTransformer2W(Transformer2WInput transformer) {
     return new SubGridGate(transformer, transformer.getNodeA(), transformer.getNodeB());
@@ -34,6 +35,8 @@ public class SubGridGate implements Serializable {
    *
    * @param transformer Three winding transformer to create gate for
    * @param inferiorPort Choose, which 1-to-1-gate should be created
+   * @return A {@link SubGridGate} with transformer, its higher voltage node and either the medium
+   *     or low voltage node
    */
   public static SubGridGate fromTransformer3W(
       Transformer3WInput transformer, ConnectorPort inferiorPort) {
