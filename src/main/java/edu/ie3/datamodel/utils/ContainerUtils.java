@@ -450,7 +450,7 @@ public class ContainerUtils {
                             + "' ("
                             + transformer.getUuid()
                             + ") cannot be determined.")),
-                SubGridGate.fromTransformer3W(transformer, ConnectorPort.C));
+            SubGridGate.fromTransformer3W(transformer, ConnectorPort.C));
       } catch (TopologyException e) {
         throw new InvalidGridException(
             "Cannot build sub grid topology graph, as the sub grids, that are connected by transformer '"

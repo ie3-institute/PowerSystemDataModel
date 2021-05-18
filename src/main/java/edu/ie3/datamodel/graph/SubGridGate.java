@@ -32,24 +32,25 @@ public class SubGridGate implements Serializable {
    * Creates a sub grid gate from three winding transformer. Define, which of the two superior sub
    * grids should be taken by the inferior port flag.
    *
-   * @param transformer   Three winding transformer to create gate for
-   * @param inferiorPort  Choose, which 1-to-1-gate should be created
+   * @param transformer Three winding transformer to create gate for
+   * @param inferiorPort Choose, which 1-to-1-gate should be created
    */
-  public static SubGridGate fromTransformer3W(Transformer3WInput transformer, ConnectorPort inferiorPort){
+  public static SubGridGate fromTransformer3W(
+      Transformer3WInput transformer, ConnectorPort inferiorPort) {
     switch (inferiorPort) {
-    case B:
-      return new SubGridGate(transformer, transformer.getNodeA(), transformer.getNodeB());
-    case C:
-      return new SubGridGate(transformer, transformer.getNodeA(), transformer.getNodeC());
-    default:
-      throw new IllegalArgumentException(
-              "Only port "
-                      + ConnectorPort.B
-                      + " or "
-                      + ConnectorPort.C
-                      + " can be "
-                      + "chosen as inferior port.");
-  }
+      case B:
+        return new SubGridGate(transformer, transformer.getNodeA(), transformer.getNodeB());
+      case C:
+        return new SubGridGate(transformer, transformer.getNodeA(), transformer.getNodeC());
+      default:
+        throw new IllegalArgumentException(
+            "Only port "
+                + ConnectorPort.B
+                + " or "
+                + ConnectorPort.C
+                + " can be "
+                + "chosen as inferior port.");
+    }
   }
 
   private final TransformerInput link;
@@ -59,9 +60,9 @@ public class SubGridGate implements Serializable {
   /**
    * Create a {@link SubGridGate}
    *
-   * @param link          Model, that physically represents the gate
-   * @param superiorNode  Upstream node of the gate
-   * @param inferiorNode  Downstream node of the gate
+   * @param link Model, that physically represents the gate
+   * @param superiorNode Upstream node of the gate
+   * @param inferiorNode Downstream node of the gate
    */
   public SubGridGate(TransformerInput link, NodeInput superiorNode, NodeInput inferiorNode) {
     this.link = link;
@@ -88,7 +89,8 @@ public class SubGridGate implements Serializable {
    *
    * @param transformer3W Three winding transformer to create gate for
    * @param inferiorPort Choose, which 1-to-1-gate should be created
-   * @deprecated Use {@link SubGridGate#fromTransformer3W(Transformer3WInput, ConnectorPort)} instead
+   * @deprecated Use {@link SubGridGate#fromTransformer3W(Transformer3WInput, ConnectorPort)}
+   *     instead
    */
   @Deprecated
   public SubGridGate(Transformer3WInput transformer3W, ConnectorPort inferiorPort) {
