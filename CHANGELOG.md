@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Reworking the time series source (one source per time series, distinct mapping source, factory pattern)
 -   BREAKING: Moved methods `buildSafe{Coord,Point,LineString,LineStringBetweenCoords,LineStringBetweenPoints}`, `totalLengthOfLineString` from `GridAndGeoUtils` to `GeoUtils` in [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
 -   BREAKING: Moved `CoordinateDistance` to [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
+-   Factory methods for `SubGridGate`
 
 ### Fixed
 -   InfluxDbConnector now keeps session instead of creating a new one each call
