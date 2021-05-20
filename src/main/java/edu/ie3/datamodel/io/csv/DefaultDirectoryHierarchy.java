@@ -18,7 +18,6 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
-import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
@@ -262,7 +261,6 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 WecTypeInput.class,
                 OperatorInput.class,
                 WecCharacteristicInput.class,
-                EvCharacteristicInput.class,
                 RandomLoadParameters.class,
                 LoadProfileInput.class)
             .collect(Collectors.toSet())),

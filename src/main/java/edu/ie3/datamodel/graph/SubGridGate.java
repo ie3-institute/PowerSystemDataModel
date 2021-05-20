@@ -73,50 +73,6 @@ public class SubGridGate implements Serializable {
     this.inferiorNode = inferiorNode;
   }
 
-  /**
-   * Creates a sub grid gate from two winding transformer.
-   *
-   * @param transformer2w Two winding transformer to create gate for
-   * @deprecated Use {@link SubGridGate#fromTransformer2W(Transformer2WInput)} instead
-   */
-  @Deprecated
-  public SubGridGate(Transformer2WInput transformer2w) {
-    this.link = transformer2w;
-    this.superiorNode = transformer2w.getNodeA();
-    this.inferiorNode = transformer2w.getNodeB();
-  }
-
-  /**
-   * Creates a sub grid gate from three winding transformer. Define, which of the two superior sub
-   * grids should be taken by the inferior port flag.
-   *
-   * @param transformer3W Three winding transformer to create gate for
-   * @param inferiorPort Choose, which 1-to-1-gate should be created
-   * @deprecated Use {@link SubGridGate#fromTransformer3W(Transformer3WInput, ConnectorPort)}
-   *     instead
-   */
-  @Deprecated
-  public SubGridGate(Transformer3WInput transformer3W, ConnectorPort inferiorPort) {
-    this.link = transformer3W;
-    this.superiorNode = transformer3W.getNodeA();
-    switch (inferiorPort) {
-      case B:
-        this.inferiorNode = transformer3W.getNodeB();
-        break;
-      case C:
-        this.inferiorNode = transformer3W.getNodeC();
-        break;
-      default:
-        throw new IllegalArgumentException(
-            "Only port "
-                + ConnectorPort.B
-                + " or "
-                + ConnectorPort.C
-                + " can be "
-                + "chosen as inferior port.");
-    }
-  }
-
   public TransformerInput getLink() {
     return link;
   }

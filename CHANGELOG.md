@@ -31,6 +31,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   BREAKING: Moved methods `buildSafe{Coord,Point,LineString,LineStringBetweenCoords,LineStringBetweenPoints}`, `totalLengthOfLineString` from `GridAndGeoUtils` to `GeoUtils` in [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
 -   BREAKING: Moved `CoordinateDistance` to [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
 -   Factory methods for `SubGridGate`
+-   BREAKING: Inheritance hierarchy of exceptions all around entity validation
+
+### Removed
+-   BREAKING: Removed deprecated code parts
+	-   Intermingled builder pattern and constructors in `SubGridGate`
+	-   `TarballUtils` that have been transferred to `FileIOUtils` in [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
+	-   `FileNamingStrategy` that has been transferred to `EntityPersistenceNamingStrategy`
+	-   `EvCharacteristicInput` and `TimeSeriesContainer` that shouldn't be used anymore
 
 ### Fixed
 -   InfluxDbConnector now keeps session instead of creating a new one each call

@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
-import edu.ie3.datamodel.utils.GridAndGeoUtils;
+import edu.ie3.util.geo.GeoUtils;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Length;
@@ -64,7 +64,7 @@ public class LineInput extends ConnectorInput implements HasType {
     super(uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices);
     this.type = type;
     this.length = length.to(StandardUnits.LINE_LENGTH);
-    this.geoPosition = GridAndGeoUtils.buildSafeLineString(geoPosition);
+    this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
   }
 
@@ -94,7 +94,7 @@ public class LineInput extends ConnectorInput implements HasType {
     super(uuid, id, nodeA, nodeB, parallelDevices);
     this.type = type;
     this.length = length;
-    this.geoPosition = GridAndGeoUtils.buildSafeLineString(geoPosition);
+    this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
   }
 
