@@ -1,8 +1,8 @@
 edu.ie3.datamodel.exceptions
 edu.ie3.datamodel.graph
-edu.ie3.datamodel.io
 edu.ie3.datamodel.io.connectors
 edu.ie3.datamodel.io.csv
+edu.ie3.datamodel.io.csv.timeseries
 edu.ie3.datamodel.io.extractor
 edu.ie3.datamodel.io.factory
 edu.ie3.datamodel.io.factory.input
@@ -11,14 +11,17 @@ edu.ie3.datamodel.io.factory.input.participant
 edu.ie3.datamodel.io.factory.result
 edu.ie3.datamodel.io.factory.timeseries
 edu.ie3.datamodel.io.factory.typeinput
+edu.ie3.datamodel.io.naming
 edu.ie3.datamodel.io.processor
 edu.ie3.datamodel.io.processor.input
 edu.ie3.datamodel.io.processor.result
 edu.ie3.datamodel.io.processor.timeseries
 edu.ie3.datamodel.io.sink
 edu.ie3.datamodel.io.source
+edu.ie3.datamodel.io.source.couchbase
 edu.ie3.datamodel.io.source.csv
 edu.ie3.datamodel.io.source.influxdb
+edu.ie3.datamodel.io.source.sql
 edu.ie3.datamodel.models
 edu.ie3.datamodel.models.input
 edu.ie3.datamodel.models.input.connector
@@ -28,6 +31,7 @@ edu.ie3.datamodel.models.input.graphics
 edu.ie3.datamodel.models.input.system
 edu.ie3.datamodel.models.input.system.characteristic
 edu.ie3.datamodel.models.input.system.type
+edu.ie3.datamodel.models.input.system.type.chargingpoint
 edu.ie3.datamodel.models.input.thermal
 edu.ie3.datamodel.models.result
 edu.ie3.datamodel.models.result.connector
@@ -39,3 +43,4 @@ edu.ie3.datamodel.models.timeseries.repetitive
 edu.ie3.datamodel.models.value
 edu.ie3.datamodel.models.voltagelevels
 edu.ie3.datamodel.utils
+edu.ie3.datamodel.utils.validation
