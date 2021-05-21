@@ -104,8 +104,8 @@ node {
             // test the project
             stage('run tests') {
 
-                println(gradle('--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain ' +
-                        'spotbugsTest test jacocoTestReport jacocoTestCoverageVerification', projectName))
+                gradle('--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain ' +
+                        'spotbugsTest test jacocoTestReport jacocoTestCoverageVerification', projectName)
 
                 // due to an issue with openjdk-8 we use openjdk-11 for javadocs generation
                 sh(script: """set +x && cd $projectName""" + ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/opt/java/openjdk''', returnStdout: true)
