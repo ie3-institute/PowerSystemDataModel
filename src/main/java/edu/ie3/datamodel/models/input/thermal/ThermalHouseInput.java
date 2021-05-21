@@ -69,6 +69,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
     return ethCapa;
   }
 
+  @Override
   public ThermalHouseInputCopyBuilder copy() {
     return new ThermalHouseInputCopyBuilder(this);
   }

@@ -10,6 +10,7 @@ import com.couchbase.client.java.AsyncCollection;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.Collection;
 import com.couchbase.client.java.kv.GetResult;
+import com.couchbase.client.java.kv.MutationResult;
 import com.couchbase.client.java.query.QueryResult;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -132,8 +133,9 @@ public class CouchbaseConnector implements DataConnector {
    *
    * @param key the key for the document
    * @param content the document content
+   * @return future of the persisting result
    */
-  public void persist(String key, Object content) {
-    getSession().async().insert(key, content);
+  public CompletableFuture<MutationResult> persist(String key, Object content) {
+    return getSession().async().insert(key, content);
   }
 }

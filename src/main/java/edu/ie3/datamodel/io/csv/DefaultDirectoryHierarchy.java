@@ -94,7 +94,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
     resultTree =
         Paths.get(
             FilenameUtils.concat(
-                projectDirectory.toString(), SubDirectories.Constants.RESULT_SUB_TREEE));
+                projectDirectory.toString(), SubDirectories.Constants.RESULT_SUB_TREE));
   }
 
   /**
@@ -237,7 +237,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 NodeInput.class)
             .collect(Collectors.toSet())),
     GRID_RESULT(
-        Constants.RESULT_SUB_TREEE + FILE_SEPARATOR + "grid" + FILE_SEPARATOR,
+        Constants.RESULT_SUB_TREE + FILE_SEPARATOR + "grid" + FILE_SEPARATOR,
         false,
         Stream.of(
                 LineResult.class,
@@ -280,7 +280,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 WecInput.class)
             .collect(Collectors.toSet())),
     PARTICIPANTS_RESULTS(
-        Constants.RESULT_SUB_TREEE + FILE_SEPARATOR + "participants" + FILE_SEPARATOR,
+        Constants.RESULT_SUB_TREE + FILE_SEPARATOR + "participants" + FILE_SEPARATOR,
         false,
         Stream.of(
                 BmResult.class,
@@ -304,7 +304,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
         false,
         Stream.of(ThermalUnitInput.class, ThermalBusInput.class).collect(Collectors.toSet())),
     THERMAL_RESULTS(
-        Constants.RESULT_SUB_TREEE + FILE_SEPARATOR + "thermal" + FILE_SEPARATOR,
+        Constants.RESULT_SUB_TREE + FILE_SEPARATOR + "thermal" + FILE_SEPARATOR,
         false,
         Stream.of(ThermalUnitResult.class).collect(Collectors.toSet())),
     GRAPHICS(
@@ -330,12 +330,12 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
     SubDirectories(String relPath, boolean mandatory, Set<Class<?>> relevantClasses) {
       this.relPath = relPath;
       this.mandatory = mandatory;
-      this.relevantClasses = relevantClasses;
+      this.relevantClasses = Collections.unmodifiableSet(relevantClasses);
     }
 
     private static class Constants {
       private static final String INPUT_SUB_TREE = "input";
-      private static final String RESULT_SUB_TREEE = "results";
+      private static final String RESULT_SUB_TREE = "results";
     }
   }
 }

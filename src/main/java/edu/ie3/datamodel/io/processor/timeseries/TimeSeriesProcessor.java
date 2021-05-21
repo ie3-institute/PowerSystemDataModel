@@ -77,7 +77,7 @@ public class TimeSeriesProcessor<
     if (!eligibleKeys.contains(timeSeriesKey))
       throw new EntityProcessorException(
           "Cannot register time series combination '"
-              + timeSeriesKey.toString()
+              + timeSeriesKey
               + "' with entity processor '"
               + this.getClass().getSimpleName()
               + "'. Eligible combinations: "
