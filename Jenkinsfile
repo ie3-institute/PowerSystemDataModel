@@ -104,8 +104,8 @@ node {
             // test the project
             stage('run tests') {
 
-                gradle('--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain ' +
-                        'spotbugsTest test jacocoTestReport jacocoTestCoverageVerification', projectName)
+                println(gradle('--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain ' +
+                        'spotbugsTest test jacocoTestReport jacocoTestCoverageVerification', projectName))
 
                 // due to an issue with openjdk-8 we use openjdk-11 for javadocs generation
                 sh(script: """set +x && cd $projectName""" + ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/opt/java/openjdk''', returnStdout: true)
@@ -150,7 +150,7 @@ node {
                          */
                         sh(
                                 script: """set +x && cd $projectName""" +
-                                ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/opt/java/openjdk''',
+                                        ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/opt/java/openjdk''',
                                 returnStdout: true
                         )
 
@@ -706,8 +706,7 @@ def getBranchType(String branchName) {
     def main_pattern = ".*main"
     if (branchName =~ feature_pattern || branchName =~ dependabot_pattern) {
         return "feature"
-    } else
-    if (branchName =~ release_pattern) {
+    } else if (branchName =~ release_pattern) {
         return "release"
     } else if (branchName =~ main_pattern) {
         return "main"
