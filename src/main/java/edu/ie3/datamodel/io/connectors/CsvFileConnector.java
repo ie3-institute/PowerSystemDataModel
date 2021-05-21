@@ -264,7 +264,10 @@ public class CsvFileConnector implements DataConnector {
    * @return A set of relative paths to time series files, with respect to the base folder path
    */
   private Set<String> getIndividualTimeSeriesFilePaths() {
-    Path baseDirectoryPath = Paths.get(FilenameUtils.getPath(baseDirectoryName));
+    Path baseDirectoryPath =
+        Paths.get(
+            FilenameUtils.getFullPath(baseDirectoryName)
+                + FilenameUtils.getName(baseDirectoryName));
     try (Stream<Path> pathStream = Files.walk(baseDirectoryPath)) {
       return pathStream
           .map(baseDirectoryPath::relativize)
