@@ -221,28 +221,76 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
-   * Initialises the readers for time series with the specified column schemes. They are given back
-   * grouped by the column scheme in order to allow for accounting the different content types.
+   * Receive the information for specific time series They are given back grouped by the column
+   * scheme in order to allow for accounting the different content types.
    *
    * @param columnSchemes the column schemes to initialize readers for. If no scheme is given, all
    *     possible readers will be initialized.
-   * @return A mapping from column type to respective readers
-   * @deprecated Don't use {@link TimeSeriesReadingData}, as it contains a reader, that might not be
-   *     closed
+   * @return A mapping from column scheme to the individual time series meta information
    */
-  @Deprecated
-  public Map<ColumnScheme, Set<TimeSeriesReadingData>> initTimeSeriesReader(
-      ColumnScheme... columnSchemes) {
+  public Map<ColumnScheme, Set<CsvIndividualTimeSeriesMetaInformation>>
+      getCsvIndividualTimeSeriesMetaInformation(ColumnScheme... columnSchemes) {
     return getIndividualTimeSeriesFilePaths()
         .parallelStream()
         .map(
             pathString -> {
               String filePathWithoutEnding = removeFileEnding(pathString);
-              return buildReadingData(filePathWithoutEnding, columnSchemes);
+              return buildCsvTimeSeriesMetaInformation(filePathWithoutEnding, columnSchemes);
             })
         .filter(Optional::isPresent)
         .map(Optional::get)
-        .collect(Collectors.groupingBy(TimeSeriesReadingData::getColumnScheme, Collectors.toSet()));
+        .collect(
+            Collectors.groupingBy(
+                CsvIndividualTimeSeriesMetaInformation::getColumnScheme, Collectors.toSet()));
+  }
+
+  /**
+   * Compose the needed information for reading in a single time series. If the file points to a
+   * non-individual time series or a time series of a column scheme other than the specified ones,
+   * or the initialisation of the reader does not work, an empty {@link Optional} is given back
+   *
+   * @param filePathString String describing the path to the time series file
+   * @param columnSchemes the allowed column schemes. If no scheme is specified, all schemes are
+   *     allowed.
+   * @return An {@link Optional} to {@link IndividualTimeSeriesMetaInformation}
+   */
+  private Optional<CsvIndividualTimeSeriesMetaInformation> buildCsvTimeSeriesMetaInformation(
+      String filePathString, ColumnScheme... columnSchemes) {
+    try {
+      FileNameMetaInformation metaInformation =
+          entityPersistenceNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
+      if (!IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())) {
+        log.error(
+            "The time series file '{}' does not represent an individual time series.",
+            filePathString);
+        return Optional.empty();
+      }
+
+      IndividualTimeSeriesMetaInformation individualMetaInformation =
+          (IndividualTimeSeriesMetaInformation) metaInformation;
+
+      // If no column schemes are specified, we will include all. If there a specified schemes, we
+      // check if the file's column scheme matches any of them
+      if (columnSchemes != null
+          && columnSchemes.length > 0
+          && Stream.of(columnSchemes)
+              .noneMatch(scheme -> scheme.equals(individualMetaInformation.getColumnScheme()))) {
+        log.warn(
+            "The column scheme of the time series file {} does not match any of the specified column schemes ({}), so it will not be processed.",
+            filePathString,
+            columnSchemes);
+        return Optional.empty();
+      }
+      return Optional.of(
+          new CsvIndividualTimeSeriesMetaInformation(
+              individualMetaInformation.getUuid(),
+              individualMetaInformation.getColumnScheme(),
+              filePathString));
+    } catch (IllegalArgumentException e) {
+      log.error(
+          "Error during extraction of meta information from file name '{}'.", filePathString, e);
+      return Optional.empty();
+    }
   }
 
   /**
@@ -284,63 +332,6 @@ public class CsvFileConnector implements DataConnector {
     } catch (IOException e) {
       log.error("Unable to determine time series files readers for time series.", e);
       return Collections.emptySet();
-    }
-  }
-
-  /**
-   * Compose the needed information for reading in a single time series. If the file points to a
-   * non-individual time series or a time series of a column scheme other than the specified ones,
-   * or the initialisation of the reader does not work, an empty {@link Optional} is given back
-   *
-   * @param filePathString String describing the path to the time series file
-   * @param columnSchemes the allowed column schemes. If no scheme is specified, all schemes are
-   *     allowed.
-   * @return An {@link Optional} to {@link TimeSeriesReadingData}
-   * @deprecated Don't use {@link TimeSeriesReadingData}, as it contains a reader, that might not be
-   *     closed
-   */
-  @Deprecated
-  private Optional<TimeSeriesReadingData> buildReadingData(
-      String filePathString, ColumnScheme... columnSchemes) {
-    try {
-      FileNameMetaInformation metaInformation =
-          entityPersistenceNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
-      if (!IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())) {
-        log.error(
-            "The time series file '{}' does not represent an individual time series.",
-            filePathString);
-        return Optional.empty();
-      }
-
-      IndividualTimeSeriesMetaInformation individualMetaInformation =
-          (IndividualTimeSeriesMetaInformation) metaInformation;
-
-      // If no column schemes are specified, we will include all. If there a specified schemes, we
-      // check if the file's column scheme matches any of them
-      if (columnSchemes != null
-          && columnSchemes.length > 0
-          && Stream.of(columnSchemes)
-              .noneMatch(scheme -> scheme.equals(individualMetaInformation.getColumnScheme()))) {
-        log.warn(
-            "The column scheme of the time series file {} does not match any of the specified column schemes ({}), so it will not be processed.",
-            filePathString,
-            columnSchemes);
-        return Optional.empty();
-      }
-
-      BufferedReader reader = initReader(filePathString);
-      return Optional.of(
-          new TimeSeriesReadingData(
-              individualMetaInformation.getUuid(),
-              individualMetaInformation.getColumnScheme(),
-              reader));
-    } catch (FileNotFoundException e) {
-      log.error("Cannot init the writer for time series file path '{}'.", filePathString, e);
-      return Optional.empty();
-    } catch (IllegalArgumentException e) {
-      log.error(
-          "Error during extraction of meta information from file name '{}'.", filePathString, e);
-      return Optional.empty();
     }
   }
 
@@ -412,63 +403,6 @@ public class CsvFileConnector implements DataConnector {
                 log.error("Error during CsvFileConnector shutdown process.", e);
               }
             });
-  }
-
-  /**
-   * Class to bundle all information, that are necessary to read a single time series
-   *
-   * @deprecated Use the {@link CsvIndividualTimeSeriesMetaInformation} and build reader on demand
-   */
-  @Deprecated
-  public static class TimeSeriesReadingData {
-    private final UUID uuid;
-    private final ColumnScheme columnScheme;
-    private final BufferedReader reader;
-
-    public TimeSeriesReadingData(UUID uuid, ColumnScheme columnScheme, BufferedReader reader) {
-      this.uuid = uuid;
-      this.columnScheme = columnScheme;
-      this.reader = reader;
-    }
-
-    public UUID getUuid() {
-      return uuid;
-    }
-
-    public ColumnScheme getColumnScheme() {
-      return columnScheme;
-    }
-
-    public BufferedReader getReader() {
-      return reader;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (!(o instanceof TimeSeriesReadingData)) return false;
-      TimeSeriesReadingData that = (TimeSeriesReadingData) o;
-      return uuid.equals(that.uuid)
-          && columnScheme == that.columnScheme
-          && reader.equals(that.reader);
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(uuid, columnScheme, reader);
-    }
-
-    @Override
-    public String toString() {
-      return "TimeSeriesReadingData{"
-          + "uuid="
-          + uuid
-          + ", columnScheme="
-          + columnScheme
-          + ", reader="
-          + reader
-          + '}';
-    }
   }
 
   /** Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file */
