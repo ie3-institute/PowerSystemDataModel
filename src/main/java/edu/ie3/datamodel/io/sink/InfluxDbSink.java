@@ -143,7 +143,7 @@ public class InfluxDbSink implements OutputDataSink {
       entityFieldData.remove(FIELD_NAME_TIME);
       return Optional.of(
           Point.measurement(transformToMeasurementName(measurementName))
-              .time((entity).getTime().toInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
+              .time(entity.getTime().toInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
               .tag("input_model", entityFieldData.remove(FIELD_NAME_INPUT))
               .tag("scenario", connector.getScenarioName())
               .fields(Collections.unmodifiableMap(entityFieldData))
