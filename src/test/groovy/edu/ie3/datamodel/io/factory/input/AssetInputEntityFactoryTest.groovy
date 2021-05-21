@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -26,7 +26,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def expectedClasses = [TestAssetInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "An AssetInputFactory should parse a valid operated AssetInput correctly (no operation time provided)"() {
@@ -40,7 +40,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present
@@ -66,7 +66,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present
@@ -93,7 +93,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present
@@ -121,7 +121,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present
@@ -147,7 +147,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def inputClass = TestAssetInput
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
 		then:
 		input.present
@@ -171,7 +171,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def inputClass = TestAssetInput
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
 		then:
 		input.present
@@ -197,7 +197,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def inputClass = TestAssetInput
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
 		then:
 		input.present
@@ -224,7 +224,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def inputClass = TestAssetInput
 
 		when:
-		Optional<TestAssetInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass))
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
 		then:
 		input.present
@@ -251,7 +251,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		def inputClass = TestAssetInput
 
 		when:
-		inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass))
+		inputFactory.get(new AssetInputEntityData(parameter, inputClass))
 
 		then:
 		FactoryException ex = thrown()
@@ -260,14 +260,14 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 				"{operatesfrom -> 2019-01-01T00:00:00+01:00[Europe/Berlin],\n" +
 				"operatesuntil -> 2019-12-31T00:00:00+01:00[Europe/Berlin],\n" +
 				"uuid -> 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7} are invalid for instance of TestAssetInput. \n" +
-				"The following fields to be passed to a constructor of 'TestAssetInput' are possible (NOT case-sensitive!):\n" +
+				"The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'TestAssetInput' are possible (NOT case-sensitive!):\n" +
 				"0: [id, uuid]\n" +
 				"1: [id, operatesfrom, uuid]\n" +
 				"2: [id, operatesuntil, uuid]\n" +
 				"3: [id, operatesfrom, operatesuntil, uuid]\n"
 	}
 
-	private class TestAssetInput extends AssetInput {
+	private static class TestAssetInput extends AssetInput {
 		TestAssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
 			super(uuid, id, operator, operationTime)
 		}
@@ -275,11 +275,11 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		@Override
 		UniqueEntityBuilder copy() {
 			throw new NotImplementedException(
-			"Copying of " + this.getClass().getSimpleName() + " entities is not supported yet!")
+			"Copying of " + this.getClass().simpleName + " entities is not supported yet!")
 		}
 	}
 
-	private class TestAssetInputFactory extends AssetInputEntityFactory<TestAssetInput, AssetInputEntityData> {
+	private static class TestAssetInputFactory extends AssetInputEntityFactory<TestAssetInput, AssetInputEntityData> {
 		TestAssetInputFactory() {
 			super(TestAssetInput)
 		}

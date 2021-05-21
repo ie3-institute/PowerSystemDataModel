@@ -1,34 +1,22 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.io.processor.timeseries
 
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
-import edu.ie3.datamodel.models.value.HeatAndPValue
-import edu.ie3.datamodel.models.value.HeatAndSValue
-import edu.ie3.datamodel.models.value.HeatDemandValue
-import edu.ie3.datamodel.models.value.IrradiationValue
-import edu.ie3.datamodel.models.value.PValue
-import edu.ie3.datamodel.models.value.SValue
-import edu.ie3.datamodel.models.value.WeatherValue
-import edu.ie3.datamodel.models.value.WindValue
-
-import static tec.uom.se.unit.Units.METRE
-
-import java.lang.reflect.Method
 import edu.ie3.datamodel.exceptions.EntityProcessorException
 import edu.ie3.datamodel.io.processor.Processor
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.value.EnergyPriceValue
-import edu.ie3.datamodel.models.value.TemperatureValue
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
+import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
+import edu.ie3.datamodel.models.value.*
 import edu.ie3.test.common.TimeSeriesTestData
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+
+import java.lang.reflect.Method
 
 class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestData {
 	def "A TimeSeriesProcessor is instantiated correctly"() {
@@ -147,15 +135,15 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 		actual == individualWindTimeSeriesProcessed
 	}
 
-	def "A TimeSeriesProcessors handles a complete time series with IrradiationValues correctly"() {
+	def "A TimeSeriesProcessors handles a complete time series with IrradianceValues correctly"() {
 		given:
-		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, IrradiationValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, IrradiationValue)
+		TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue,SolarIrradianceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, SolarIrradianceValue)
 
 		when:
-		Set<Map<String, String>> actual = processor.handleTimeSeries(individualIrradiationTimeSeries)
+		Set<Map<String, String>> actual = processor.handleTimeSeries(individualIrradianceTimeSeries)
 
 		then:
-		actual == individualIrradiationTimeSeriesProcessed
+		actual == individualIrradianceTimeSeriesProcessed
 	}
 
 	def "A TimeSeriesProcessors handles a complete time series with WeatherValues correctly"() {

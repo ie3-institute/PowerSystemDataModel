@@ -1,15 +1,9 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.io.factory.input
-
-import edu.ie3.datamodel.utils.GridAndGeoUtils
-import org.locationtech.jts.geom.LineString
-
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.METRE_PER_SECOND
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
@@ -17,13 +11,18 @@ import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
+import edu.ie3.datamodel.utils.GridAndGeoUtils
 import edu.ie3.test.helper.FactoryTestHelper
+import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import javax.measure.quantity.Speed
 import java.time.ZonedDateTime
+
+import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 	def "A LineInputFactory should contain exactly the expected class for parsing"() {
@@ -32,7 +31,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [LineInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A LineInputFactory should parse a valid LineInput correctly"() {
@@ -57,7 +56,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(LineTypeInput)
 
 		when:
-		Optional<LineInput> input = inputFactory.getEntity(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<LineInput> input = inputFactory.get(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present
@@ -108,7 +107,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(LineTypeInput)
 
 		when:
-		Optional<LineInput> input = inputFactory.getEntity(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<LineInput> input = inputFactory.get(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present
@@ -159,7 +158,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(LineTypeInput)
 
 		when:
-		Optional<LineInput> input = inputFactory.getEntity(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
+		Optional<LineInput> input = inputFactory.get(new TypedConnectorInputEntityData<LineTypeInput>(parameter, inputClass, operatorInput, nodeInputA, nodeInputB, typeInput))
 
 		then:
 		input.present

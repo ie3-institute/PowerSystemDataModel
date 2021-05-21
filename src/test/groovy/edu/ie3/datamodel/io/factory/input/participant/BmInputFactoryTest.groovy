@@ -1,11 +1,9 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.io.factory.input.participant
-
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
@@ -15,10 +13,12 @@ import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
+
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class BmInputFactoryTest extends Specification implements FactoryTestHelper {
 	def "A BmInputFactory should contain exactly the expected class for parsing"() {
@@ -27,7 +27,7 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [BmInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A BmInputFactory should parse a valid BmInput correctly"() {
@@ -49,7 +49,7 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(BmTypeInput)
 
 		when:
-		Optional<BmInput> input = inputFactory.getEntity(
+		Optional<BmInput> input = inputFactory.get(
 				new SystemParticipantTypedEntityData<BmTypeInput>(parameter, inputClass,operatorInput, nodeInput, typeInput))
 
 		then:

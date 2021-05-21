@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -12,11 +12,11 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.measure.quantity.ElectricPotential;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Class with extended information to describe common voltage levels in energy systems. */
 public class CommonVoltageLevel extends VoltageLevel {
-  protected final Set<String> synonymousIds;
+  private final Set<String> synonymousIds;
   protected final RightOpenInterval<ComparableQuantity<ElectricPotential>> voltageRange;
 
   /**

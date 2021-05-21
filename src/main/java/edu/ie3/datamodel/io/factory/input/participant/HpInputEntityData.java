@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -36,5 +36,23 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
 
   public ThermalBusInput getThermalBusInput() {
     return thermalBusInput;
+  }
+
+  @Override
+  public String toString() {
+    return "HpInputEntityData{"
+        + "thermalBusInput="
+        + thermalBusInput.getUuid()
+        + ", typeInput="
+        + getTypeInput().getUuid()
+        + ", node="
+        + getNode().getUuid()
+        + ", operatorInput="
+        + getOperatorInput().getUuid()
+        + ", fieldsToValues="
+        + getFieldsToValues()
+        + ", targetClass="
+        + getTargetClass()
+        + '}';
   }
 }

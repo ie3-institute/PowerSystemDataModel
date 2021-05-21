@@ -1,20 +1,21 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.SystemParticipantSource;
 import edu.ie3.datamodel.io.source.ThermalSource;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.*;
+import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
@@ -25,7 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.commons.lang3.NotImplementedException;
 
 /**
  * Source that provides the capability to build entities of type {@link SystemParticipantInput} as
@@ -62,15 +62,16 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   private final PvInputFactory pvInputFactory;
   private final StorageInputFactory storageInputFactory;
   private final WecInputFactory wecInputFactory;
+  private final EvcsInputFactory evcsInputFactory;
 
   public CsvSystemParticipantSource(
       String csvSep,
       String participantsFolderPath,
-      FileNamingStrategy fileNamingStrategy,
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
       TypeSource typeSource,
       ThermalSource thermalSource,
       RawGridSource rawGridSource) {
-    super(csvSep, participantsFolderPath, fileNamingStrategy);
+    super(csvSep, participantsFolderPath, entityPersistenceNamingStrategy);
     this.typeSource = typeSource;
     this.rawGridSource = rawGridSource;
     this.thermalSource = thermalSource;
@@ -85,6 +86,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     this.pvInputFactory = new PvInputFactory();
     this.storageInputFactory = new StorageInputFactory();
     this.wecInputFactory = new WecInputFactory();
+    this.evcsInputFactory = new EvcsInputFactory();
   }
 
   /** {@inheritDoc} */
@@ -263,7 +265,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   /** {@inheritDoc} */
   @Override
   public Set<EvcsInput> getEvCS() {
-    throw new NotImplementedException("Ev Charging Stations are not implemented yet!");
+    Set<OperatorInput> operators = typeSource.getOperators();
+    return getEvCS(rawGridSource.getNodes(operators), operators);
   }
 
   /**
@@ -280,8 +283,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    throw new NotImplementedException("Ev Charging Stations are not implemented yet!");
+    return filterEmptyOptionals(
+            nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators))
+        .collect(Collectors.toSet());
   }
+
   /** {@inheritDoc} */
   @Override
   public Set<BmInput> getBmPlants() {
@@ -415,7 +421,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             nodeAssetInputEntityDataStream(
                 assetInputEntityDataStream(entityClass, operators), nodes),
             types)
-        .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
+        .map(dataOpt -> dataOpt.flatMap(factory::get));
   }
   /** {@inheritDoc} */
   @Override
@@ -469,7 +475,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                 types),
             thermalStorages,
             thermalBuses)
-        .map(dataOpt -> dataOpt.flatMap(chpInputFactory::getEntity));
+        .map(dataOpt -> dataOpt.flatMap(chpInputFactory::get));
   }
   /** {@inheritDoc} */
   @Override
@@ -516,7 +522,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                     assetInputEntityDataStream(HpInput.class, operators), nodes),
                 types),
             thermalBuses)
-        .map(dataOpt -> dataOpt.flatMap(hpInputFactory::getEntity));
+        .map(dataOpt -> dataOpt.flatMap(hpInputFactory::get));
   }
 
   /**
@@ -563,7 +569,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
               return new SystemParticipantTypedEntityData<>(
                   fieldsToAttributes,
-                  nodeAssetInputEntityData.getEntityClass(),
+                  nodeAssetInputEntityData.getTargetClass(),
                   nodeAssetInputEntityData.getOperatorInput(),
                   nodeAssetInputEntityData.getNode(),
                   assetType);
@@ -628,7 +634,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     // log a warning
     if (!hpInputEntityDataOpt.isPresent()) {
       logSkippingWarning(
-          typedEntityData.getEntityClass().getSimpleName(),
+          typedEntityData.getTargetClass().getSimpleName(),
           saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
           saveMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
           "thermalBus: " + saveMapGet(fieldsToAttributes, THERMAL_BUS, FIELDS_TO_VALUES_MAP));
@@ -699,7 +705,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       }
 
       logSkippingWarning(
-          typedEntityData.getEntityClass().getSimpleName(),
+          typedEntityData.getTargetClass().getSimpleName(),
           saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
           saveMapGet(fieldsToAttributes, "id", FIELDS_TO_VALUES_MAP),
           sB.toString());

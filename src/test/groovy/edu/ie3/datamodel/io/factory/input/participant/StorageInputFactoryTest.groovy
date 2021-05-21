@@ -1,11 +1,9 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.io.factory.input.participant
-
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -14,10 +12,12 @@ import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
+
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class StorageInputFactoryTest extends Specification implements FactoryTestHelper {
 	def "A StorageInputFactory should contain exactly the expected class for parsing"() {
@@ -26,7 +26,7 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
 		def expectedClasses = [StorageInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A StorageInputFactory should parse a valid StorageInput correctly"() {
@@ -45,7 +45,7 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
 		def typeInput = Mock(StorageTypeInput)
 
 		when:
-		Optional<StorageInput> input = inputFactory.getEntity(
+		Optional<StorageInput> input = inputFactory.get(
 				new SystemParticipantTypedEntityData<StorageTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
 		then:

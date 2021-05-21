@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.*;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput} */
 public class Transformer2WTypeInput extends AssetTypeInput {
@@ -185,7 +185,11 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   @Override
   public String toString() {
     return "Transformer2WTypeInput{"
-        + "rSc="
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", rSc="
         + rSc
         + ", xSc="
         + xSc

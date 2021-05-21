@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -10,10 +10,10 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
-import edu.ie3.util.quantities.dep.interfaces.HeatCapacity;
-import edu.ie3.util.quantities.dep.interfaces.ThermalConductance;
+import edu.ie3.util.quantities.interfaces.HeatCapacity;
+import edu.ie3.util.quantities.interfaces.ThermalConductance;
 import java.util.UUID;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class ThermalHouseInputFactory
     extends AssetInputEntityFactory<ThermalHouseInput, ThermalUnitInputEntityData> {

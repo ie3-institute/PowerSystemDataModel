@@ -1,19 +1,22 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.graph.SubGridTopologyGraph;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Model class to hold input models for more than one galvanically separated subnet */
 public class JointGridContainer extends GridContainer {
   /** A graph describing the subnet dependencies */
   private final SubGridTopologyGraph subGridTopologyGraph;
+
+  private static final Logger logger = LoggerFactory.getLogger(JointGridContainer.class);
 
   public JointGridContainer(
       String gridName,
@@ -46,9 +49,10 @@ public class JointGridContainer extends GridContainer {
    * @param subGridTopologyGraph The graph to check
    */
   private void checkSubGridTopologyGraph(SubGridTopologyGraph subGridTopologyGraph) {
-    if (subGridTopologyGraph.vertexSet().size() == 1)
-      throw new InvalidGridException(
+    if (subGridTopologyGraph.vertexSet().size() == 1) {
+      logger.warn(
           "This joint grid model only contains one single grid. Consider using SubGridContainer.");
+    }
   }
 
   public SubGridTopologyGraph getSubGridTopologyGraph() {

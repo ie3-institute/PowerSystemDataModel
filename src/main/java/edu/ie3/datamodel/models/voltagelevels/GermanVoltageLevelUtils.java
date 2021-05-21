@@ -1,11 +1,11 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.voltagelevels;
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLT;
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
 
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.util.interval.RightOpenInterval;
@@ -16,11 +16,13 @@ import java.util.Set;
 import javax.measure.quantity.ElectricPotential;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.quantity.Quantities;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 public class GermanVoltageLevelUtils {
   protected static final Logger logger = LoggerFactory.getLogger(GermanVoltageLevelUtils.class);
+
+  private static final String MS = "Mittelspannung";
 
   public static final CommonVoltageLevel LV =
       new CommonVoltageLevel(
@@ -31,21 +33,21 @@ public class GermanVoltageLevelUtils {
               Quantities.getQuantity(0d, KILOVOLT), Quantities.getQuantity(10d, KILOVOLT)));
   public static final CommonVoltageLevel MV_10KV =
       new CommonVoltageLevel(
-          "Mittelspannung",
+          MS,
           Quantities.getQuantity(10d, KILOVOLT),
           new HashSet<>(Arrays.asList("ms", "mv", "ms_10kv", "mv_10kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(10d, KILOVOLT), Quantities.getQuantity(20d, KILOVOLT)));
   public static final CommonVoltageLevel MV_20KV =
       new CommonVoltageLevel(
-          "Mittelspannung",
+          MS,
           Quantities.getQuantity(20d, KILOVOLT),
           new HashSet<>(Arrays.asList("ms", "mv", "ms_20kv", "mv_20kV")),
           new RightOpenInterval<>(
               Quantities.getQuantity(20d, KILOVOLT), Quantities.getQuantity(30d, KILOVOLT)));
   public static final CommonVoltageLevel MV_30KV =
       new CommonVoltageLevel(
-          "Mittelspannung",
+          MS,
           Quantities.getQuantity(30d, KILOVOLT),
           new HashSet<>(Arrays.asList("ms", "mv", "ms_30kv", "mv_30kV")),
           new RightOpenInterval<>(

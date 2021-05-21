@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -23,21 +23,16 @@ import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.datamodel.utils.GridAndGeoUtils
-import edu.ie3.util.quantities.dep.PowerSystemUnits
+import edu.ie3.util.quantities.PowerSystemUnits
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.io.ParseException
 import org.locationtech.jts.io.geojson.GeoJsonReader
-import tec.uom.se.quantity.Quantities
-import tec.uom.se.unit.MetricPrefix
+import tech.units.indriya.quantity.Quantities
 
+import javax.measure.MetricPrefix
 import java.util.stream.Collectors
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLT
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
-import static tec.uom.se.unit.Units.OHM
-import static tec.uom.se.unit.Units.PERCENT
-import static tec.uom.se.unit.Units.SIEMENS
+import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 /**
  * //ToDo: Class Description

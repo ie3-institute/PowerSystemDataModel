@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -12,12 +12,12 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
-import edu.ie3.datamodel.utils.GridAndGeoUtils;
+import edu.ie3.util.geo.GeoUtils;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Describes an electrical grid line that connects two {@link
@@ -64,7 +64,7 @@ public class LineInput extends ConnectorInput implements HasType {
     super(uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices);
     this.type = type;
     this.length = length.to(StandardUnits.LINE_LENGTH);
-    this.geoPosition = GridAndGeoUtils.buildSafeLineString(geoPosition);
+    this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
   }
 
@@ -94,7 +94,7 @@ public class LineInput extends ConnectorInput implements HasType {
     super(uuid, id, nodeA, nodeB, parallelDevices);
     this.type = type;
     this.length = length;
-    this.geoPosition = GridAndGeoUtils.buildSafeLineString(geoPosition);
+    this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
   }
 
@@ -139,8 +139,22 @@ public class LineInput extends ConnectorInput implements HasType {
   @Override
   public String toString() {
     return "LineInput{"
-        + "type="
-        + type
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", nodeA="
+        + getNodeA().getUuid()
+        + ", nodeB="
+        + getNodeB().getUuid()
+        + ", noOfParallelDevices="
+        + getParallelDevices()
+        + ", type="
+        + type.getUuid()
         + ", length="
         + length
         + ", geoPosition="

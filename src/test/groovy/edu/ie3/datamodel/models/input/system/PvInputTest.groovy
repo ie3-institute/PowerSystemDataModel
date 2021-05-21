@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -7,11 +7,11 @@ package edu.ie3.datamodel.models.input.system
 
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
-import static tec.uom.se.unit.Units.PERCENT
+import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
+import static tech.units.indriya.unit.Units.PERCENT
 
 
 class PvInputTest extends Specification {

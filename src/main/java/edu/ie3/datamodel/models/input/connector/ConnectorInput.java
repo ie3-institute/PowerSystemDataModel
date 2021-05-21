@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -102,10 +102,18 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
   @Override
   public String toString() {
     return "ConnectorInput{"
-        + "nodeA="
-        + nodeA
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", nodeA="
+        + nodeA.getUuid()
         + ", nodeB="
-        + nodeB
+        + nodeB.getUuid()
         + ", noOfParallelDevices="
         + parallelDevices
         + '}';

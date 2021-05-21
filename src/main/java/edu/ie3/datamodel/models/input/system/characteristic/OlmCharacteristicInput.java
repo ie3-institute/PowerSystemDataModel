@@ -1,13 +1,13 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU;
+import static edu.ie3.util.quantities.PowerSystemUnits.PU;
 import static java.util.Collections.unmodifiableSortedSet;
-import static tec.uom.se.unit.Units.METRE_PER_SECOND;
+import static tech.units.indriya.unit.Units.METRE_PER_SECOND;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -15,7 +15,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Speed;
-import tec.uom.se.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 /** Characteristic for overhead line monitoring */
 public class OlmCharacteristicInput extends CharacteristicInput<Speed, Dimensionless> {
@@ -51,6 +51,6 @@ public class OlmCharacteristicInput extends CharacteristicInput<Speed, Dimension
 
   @Override
   public String toString() {
-    return "OlmCharacteristicInput{" + "points=" + points + '}';
+    return "OlmCharacteristicInput{" + "points=" + getPoints() + '}';
   }
 }

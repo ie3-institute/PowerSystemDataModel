@@ -1,12 +1,12 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.graphics;
 
 import edu.ie3.datamodel.models.input.InputEntity;
-import edu.ie3.datamodel.utils.GridAndGeoUtils;
+import edu.ie3.util.geo.GeoUtils;
 import java.util.Objects;
 import java.util.UUID;
 import org.locationtech.jts.geom.LineString;
@@ -29,7 +29,7 @@ public abstract class GraphicInput extends InputEntity {
     this.path =
         path == null
             ? null // can be null for NodeGraphicInput entities
-            : GridAndGeoUtils.buildSafeLineString(path);
+            : GeoUtils.buildSafeLineString(path);
   }
 
   public String getGraphicLayer() {
@@ -56,7 +56,14 @@ public abstract class GraphicInput extends InputEntity {
 
   @Override
   public String toString() {
-    return "GraphicInput{" + "graphicLayer='" + graphicLayer + '\'' + ", path=" + path + '}';
+    return "GraphicInput{"
+        + "uuid="
+        + getUuid()
+        + ", graphicLayer="
+        + graphicLayer
+        + ", path="
+        + path
+        + '}';
   }
 
   /**

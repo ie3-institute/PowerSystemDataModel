@@ -1,29 +1,31 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.utils.ValidationUtils;
+import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,9 +64,12 @@ public abstract class CsvDataSource {
    */
   @Deprecated private boolean notYetLoggedWarning = true;
 
-  public CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+  public CsvDataSource(
+      String csvSep,
+      String folderPath,
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
     this.csvSep = csvSep;
-    this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
+    this.connector = new CsvFileConnector(folderPath, entityPersistenceNamingStrategy);
   }
 
   /**
@@ -237,18 +242,27 @@ public abstract class CsvDataSource {
       String operatorUuid,
       String entityClassName,
       String requestEntityUuid) {
-    return operatorUuid.trim().isEmpty()
-        ? OperatorInput.NO_OPERATOR_ASSIGNED
-        : findFirstEntityByUuid(operatorUuid, operators)
-            .orElseGet(
-                () -> {
-                  log.debug(
-                      "Cannot find operator with uuid '{}' for element '{}' and uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
-                      operatorUuid,
-                      entityClassName,
-                      requestEntityUuid);
-                  return OperatorInput.NO_OPERATOR_ASSIGNED;
-                });
+    if (operatorUuid == null) {
+      log.warn(
+          "Input file for class '{}' is missing the 'operator' field. "
+              + "This is okay, but you should consider fixing the file by adding the field. "
+              + "Defaulting to 'NO OPERATOR ASSIGNED'",
+          entityClassName);
+      return OperatorInput.NO_OPERATOR_ASSIGNED;
+    } else {
+      return operatorUuid.trim().isEmpty()
+          ? OperatorInput.NO_OPERATOR_ASSIGNED
+          : findFirstEntityByUuid(operatorUuid, operators)
+              .orElseGet(
+                  () -> {
+                    log.debug(
+                        "Cannot find operator with uuid '{}' for element '{}' and uuid '{}'. Defaulting to 'NO OPERATOR ASSIGNED'.",
+                        operatorUuid,
+                        entityClassName,
+                        requestEntityUuid);
+                    return OperatorInput.NO_OPERATOR_ASSIGNED;
+                  });
+    }
   }
 
   /**
@@ -258,10 +272,7 @@ public abstract class CsvDataSource {
    *
    * <pre>{@code
    * Collection.stream().filter(isPresentCollectIfNot(NodeInput.class, new ConcurrentHashMap<>()))
-   *
    * }</pre>
-   *
-   * ...
    *
    * @param entityClass entity class that should be used as they key in the provided counter map
    * @param invalidElementsCounterMap a map that counts the number of empty optionals and maps it to
@@ -334,10 +345,8 @@ public abstract class CsvDataSource {
   }
 
   /**
-   * Tries to open a file reader from the connector based on the provided entity class, reads the
-   * first line (considered to be the headline with headline fields) and returns a stream of
-   * (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since the
-   * returning stream is a parallel stream, the order of the elements cannot be guaranteed.
+   * Tries to open a file reader from the connector based on the provided entity class and hands it
+   * over for further processing.
    *
    * @param entityClass the entity class that should be build and that is used to get the
    *     corresponding reader
@@ -347,8 +356,28 @@ public abstract class CsvDataSource {
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
+    try {
+      return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
+    } catch (FileNotFoundException e) {
+      log.warn(
+          "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+    }
+    return Stream.empty();
+  }
 
-    try (BufferedReader reader = connector.initReader(entityClass)) {
+  /**
+   * Reads the first line (considered to be the headline with headline fields) and returns a stream
+   * of (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since
+   * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
+   *
+   * @param entityClass the entity class that should be build
+   * @param bufferedReader the reader to use
+   * @return a parallel stream of maps, where each map represents one row of the csv file with the
+   *     mapping (fieldName to fieldValue)
+   */
+  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+      Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
+    try (BufferedReader reader = bufferedReader) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
 
       // sanity check for headline
@@ -364,8 +393,12 @@ public abstract class CsvDataSource {
       // returning the original one
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
-      return distinctRowsWithLog(entityClass, allRows).parallelStream();
-
+      return distinctRowsWithLog(
+              allRows,
+              fieldToValues -> fieldToValues.get("uuid"),
+              entityClass.getSimpleName(),
+              "UUID")
+          .parallelStream();
     } catch (IOException e) {
       log.warn(
           "Cannot read file to build entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
@@ -388,47 +421,55 @@ public abstract class CsvDataSource {
   }
 
   /**
-   * Returns a collection of maps each representing a row in csv file that can be used to built an
-   * instance of a {@link UniqueEntity}. The uniqueness of each row is doubled checked by a) that no
-   * duplicated rows are returned that are full (1:1) matches and b) that no rows are returned that
-   * have the same UUID but different field values. As the later case (b) is destroying the contract
-   * of UUIDs an empty set is returned to indicate that these data cannot be processed safely and
-   * the error is logged. For case a), only the duplicates are filtered out an a set with unique
-   * rows is returned.
+   * Returns a collection of maps each representing a row in csv file that can be used to built one
+   * entity. The uniqueness of each row is doubled checked by a) that no duplicated rows are
+   * returned that are full (1:1) matches and b) that no rows are returned that have the same
+   * composite key, which gets extracted by the provided extractor. As both cases destroy uniqueness
+   * constraints, an empty set is returned to indicate that these data cannot be processed safely
+   * and the error is logged. For case a), only the duplicates are filtered out and a set with
+   * unique rows is returned.
    *
-   * @param entityClass the entity class that should be built based on the provided (fieldName to
-   *     fieldValue) collection
    * @param allRows collection of rows of a csv file an entity should be built from
-   * @param <T> type of the entity
+   * @param keyExtractor Function, that extracts the key from field to value mapping, that is meant
+   *     to be unique
+   * @param entityDescriptor Colloquial descriptor of the entity, the data is foreseen for (for
+   *     debug String)
+   * @param keyDescriptor Colloquial descriptor of the key, that is meant to be unique (for debug
+   *     String)
    * @return either a set containing only unique rows or an empty set if at least two rows with the
    *     same UUID but different field values exist
    */
-  private <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
-      Class<T> entityClass, Collection<Map<String, String>> allRows) {
+  protected Set<Map<String, String>> distinctRowsWithLog(
+      Collection<Map<String, String>> allRows,
+      final Function<Map<String, String>, String> keyExtractor,
+      String entityDescriptor,
+      String keyDescriptor) {
     Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
-    // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial
+    // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
+    // case a)
     if (allRows.size() != allRowsSet.size()) {
       log.warn(
-          "File with '{}' entities contains {} exact duplicated rows. File cleanup is recommended!",
-          entityClass.getSimpleName(),
+          "File with {} contains {} exact duplicated rows. File cleanup is recommended!",
+          entityDescriptor,
           (allRows.size() - allRowsSet.size()));
     }
 
-    // check for rows that match exactly by their UUID, but have different fields -> crucial, we
-    // allow only unique UUID entities
-    Set<Map<String, String>> distinctUuidRowSet =
+    /* Check for rows with the same key based on the provided key extractor function */
+    Set<Map<String, String>> distinctIdSet =
         allRowsSet
             .parallelStream()
-            .filter(ValidationUtils.distinctByKey(x -> x.get("uuid")))
+            .filter(ValidationUtils.distinctByKey(keyExtractor))
             .collect(Collectors.toSet());
-    if (distinctUuidRowSet.size() != allRowsSet.size()) {
-      allRowsSet.removeAll(distinctUuidRowSet);
-      String affectedUuids =
-          allRowsSet.stream().map(row -> row.get("uuid")).collect(Collectors.joining(",\n"));
+    if (distinctIdSet.size() != allRowsSet.size()) {
+      allRowsSet.removeAll(distinctIdSet);
+      String affectedCoordinateIds =
+          allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
-          "'{}' entities with duplicated UUIDs, but different field values found! Please review the corresponding input file!\nAffected UUIDs:\n{}",
-          entityClass.getSimpleName(),
-          affectedUuids);
+          "'{}' entities with duplicated {} key, but different field values found! Please review the "
+              + "corresponding input file!\nAffected primary keys:\n{}",
+          entityDescriptor,
+          keyDescriptor,
+          affectedCoordinateIds);
       // if this happens, we return an empty set to prevent further processing
       return new HashSet<>();
     }
@@ -538,7 +579,7 @@ public abstract class CsvDataSource {
               // log a warning
               if (!node.isPresent()) {
                 logSkippingWarning(
-                    assetInputEntityData.getEntityClass().getSimpleName(),
+                    assetInputEntityData.getTargetClass().getSimpleName(),
                     fieldsToAttributes.get("uuid"),
                     fieldsToAttributes.get("id"),
                     NODE + ": " + nodeUuid);
@@ -551,7 +592,7 @@ public abstract class CsvDataSource {
               return Optional.of(
                   new NodeAssetInputEntityData(
                       fieldsToAttributes,
-                      assetInputEntityData.getEntityClass(),
+                      assetInputEntityData.getTargetClass(),
                       assetInputEntityData.getOperatorInput(),
                       node.get()));
             });
@@ -567,7 +608,7 @@ public abstract class CsvDataSource {
    *     entities
    * @param operators a collection of {@link OperatorInput} entities should be used to build the
    *     entities
-   * @param <T> type of the entity that should be build
+   * @param <T> Type of the {@link AssetInput} to expect
    * @return stream of optionals of the entities that has been built by the factor or empty
    *     optionals if the entity could not have been build
    */
@@ -577,6 +618,6 @@ public abstract class CsvDataSource {
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators) {
     return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
-        .map(dataOpt -> dataOpt.flatMap(factory::getEntity));
+        .map(dataOpt -> dataOpt.flatMap(factory::get));
   }
 }

@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents calculation results of {@link
@@ -24,17 +24,17 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
   /**
    * Constructs the result with
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param energy Currently stored energy
    * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
    */
   public ThermalStorageResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Energy> energy,
       ComparableQuantity<Power> qDot) {
-    super(timestamp, inputModel, qDot);
+    super(time, inputModel, qDot);
     this.energy = energy.to(StandardUnits.ENERGY_RESULT);
   }
 
@@ -43,18 +43,18 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param energy Currently stored energy
    * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
    */
   public ThermalStorageResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Energy> energy,
       ComparableQuantity<Power> qDot) {
-    super(uuid, timestamp, inputModel, qDot);
+    super(uuid, time, inputModel, qDot);
     this.energy = energy.to(StandardUnits.ENERGY_RESULT);
   }
 
@@ -82,6 +82,17 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
 
   @Override
   public String toString() {
-    return "ThermalStorageResult{" + "energy=" + energy + '}';
+    return "ThermalStorageResult{"
+        + "uuid="
+        + getUuid()
+        + ", time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + ", qDot="
+        + getqDot()
+        + ", energy="
+        + energy
+        + '}';
   }
 }

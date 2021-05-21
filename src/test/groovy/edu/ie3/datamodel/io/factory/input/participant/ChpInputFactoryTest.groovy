@@ -1,11 +1,9 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.io.factory.input.participant
-
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -16,10 +14,12 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
+
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
 	def "A ChpInputFactory should contain exactly the expected class for parsing"() {
@@ -28,7 +28,7 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [ChpInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A ChpInputFactory should parse a valid ChpInput correctly"() {
@@ -50,7 +50,7 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
 		def thermalStorageInput = Mock(ThermalStorageInput)
 
 		when:
-		Optional<ChpInput> input = inputFactory.getEntity(
+		Optional<ChpInput> input = inputFactory.get(
 				new ChpInputEntityData(parameter, operatorInput, nodeInput, typeInput, thermalBusInput, thermalStorageInput))
 
 		then:

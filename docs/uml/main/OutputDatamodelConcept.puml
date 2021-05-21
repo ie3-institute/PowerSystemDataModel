@@ -18,7 +18,7 @@ package models {
 
     package result {
         abstract class ResultEntity{
-            + timestamp: ZonedDateTime
+            + time: ZonedDateTime
             + inputModel: UUID
         }
         UniqueEntity <|-- ResultEntity
@@ -82,11 +82,16 @@ package models {
             class PvResult
             SystemParticipantResult  <|-- PvResult
 
+            abstract class SystemParticipantWithHeatResult{
+                - qDot: ComparableQuantity<Power>
+            }
+            SystemParticipantResult  <|-- SystemParticipantWithHeatResult
+
             class ChpResult
-            SystemParticipantResult <|-- ChpResult
+            SystemParticipantWithHeatResult <|-- ChpResult
 
             class HpResult
-            SystemParticipantResult <|-- HpResult
+            SystemParticipantWithHeatResult <|-- HpResult
 
             class WecResult
             SystemParticipantResult <|-- WecResult

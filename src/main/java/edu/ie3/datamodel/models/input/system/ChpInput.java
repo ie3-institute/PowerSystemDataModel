@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -134,12 +134,25 @@ public class ChpInput extends SystemParticipantInput
   @Override
   public String toString() {
     return "ChpInput{"
-        + "thermalBus="
-        + thermalBus
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + getNode().getUuid()
+        + ", qCharacteristics='"
+        + getqCharacteristics()
+        + '\''
+        + ", thermalBus="
+        + thermalBus.getUuid()
         + ", type="
-        + type
+        + type.getUuid()
         + ", thermalStorage="
-        + thermalStorage
+        + thermalStorage.getUuid()
         + ", marketReaction="
         + marketReaction
         + '}';

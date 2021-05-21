@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -9,13 +9,15 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.result.connector.*;
-import edu.ie3.util.TimeTools;
+import edu.ie3.datamodel.models.result.connector.ConnectorResult;
+import edu.ie3.datamodel.models.result.connector.LineResult;
+import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
+import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult> {
 
@@ -34,16 +36,16 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   @Override
   protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
     /// all result models have the same constructor except StorageResult
-    Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG);
+    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
-    final Class<? extends UniqueEntity> entityClass = simpleEntityData.getEntityClass();
+    final Class<? extends UniqueEntity> entityClass = simpleEntityData.getTargetClass();
     if (entityClass.equals(Transformer2WResult.class)) {
-      minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, TAPPOS);
+      minConstructorParams = newSet(TIME, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, TAPPOS);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     } else if (entityClass.equals(Transformer3WResult.class)) {
       minConstructorParams =
-          newSet(TIMESTAMP, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, ICMAG, ICANG, TAPPOS);
+          newSet(TIME, INPUT_MODEL, IAMAG, IAANG, IBMAG, IBANG, ICMAG, ICANG, TAPPOS);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
@@ -52,9 +54,9 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
 
   @Override
   protected ConnectorResult buildModel(SimpleEntityData data) {
-    final Class<? extends UniqueEntity> entityClass = data.getEntityClass();
+    final Class<? extends UniqueEntity> entityClass = data.getTargetClass();
+    ZonedDateTime time = TIME_UTIL.toZonedDateTime(data.getField(TIME));
 
-    ZonedDateTime timestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
     UUID inputModel = data.getUUID(INPUT_MODEL);
     ComparableQuantity<ElectricCurrent> iAMag =
         data.getQuantity(IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
@@ -68,8 +70,8 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
 
     if (entityClass.equals(LineResult.class))
       return uuidOpt
-          .map(uuid -> new LineResult(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng))
-          .orElseGet(() -> new LineResult(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng));
+          .map(uuid -> new LineResult(uuid, time, inputModel, iAMag, iAAng, iBMag, iBAng))
+          .orElseGet(() -> new LineResult(time, inputModel, iAMag, iAAng, iBMag, iBAng));
     else if (entityClass.equals(Transformer2WResult.class)) {
       final int tapPos = data.getInt(TAPPOS);
 
@@ -77,11 +79,9 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
           .map(
               uuid ->
                   new Transformer2WResult(
-                      uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos))
+                      uuid, time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos))
           .orElseGet(
-              () ->
-                  new Transformer2WResult(
-                      timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos));
+              () -> new Transformer2WResult(time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos));
     } else if (entityClass.equals(Transformer3WResult.class)) {
       ComparableQuantity<ElectricCurrent> iCMag =
           data.getQuantity(ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
@@ -93,20 +93,11 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
           .map(
               uuid ->
                   new Transformer3WResult(
-                      uuid,
-                      timestamp,
-                      inputModel,
-                      iAMag,
-                      iAAng,
-                      iBMag,
-                      iBAng,
-                      iCMag,
-                      iCAng,
-                      tapPos))
+                      uuid, time, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos))
           .orElseGet(
               () ->
                   new Transformer3WResult(
-                      timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos));
+                      time, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos));
     } else throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
   }
 }

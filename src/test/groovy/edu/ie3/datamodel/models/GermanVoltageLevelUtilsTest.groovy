@@ -1,16 +1,16 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.models
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLT
-import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
-
 import edu.ie3.datamodel.models.voltagelevels.CommonVoltageLevel
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
+
+import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
 
 class GermanVoltageLevelUtilsTest extends Specification {
 

@@ -1,11 +1,12 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
@@ -17,11 +18,12 @@ import javax.measure.Unit;
  * @param <A> Type of quantity, that applies to the abscissa
  * @param <O> Type of quantity, that applies to the ordinate
  */
-public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quantity<O>> {
+public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quantity<O>>
+    implements Serializable {
   protected final String characteristicPrefix;
   protected final int decimalPlaces;
 
-  protected final SortedSet<CharacteristicPoint<A, O>> points;
+  private final SortedSet<CharacteristicPoint<A, O>> points;
 
   /**
    * Constructor for the abstract class
@@ -30,14 +32,14 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
    * @param characteristicPrefix Prefix, that prepends the actual characteristic
    * @param decimalPlaces Desired amount of decimal places when de-serializing the characteristic
    */
-  public CharacteristicInput(
+  protected CharacteristicInput(
       SortedSet<CharacteristicPoint<A, O>> points, String characteristicPrefix, int decimalPlaces) {
     this.points = Collections.unmodifiableSortedSet(points);
     this.characteristicPrefix = characteristicPrefix;
     this.decimalPlaces = decimalPlaces;
   }
 
-  public CharacteristicInput(
+  protected CharacteristicInput(
       String input,
       Unit<A> abscissaUnit,
       Unit<O> ordinateUnit,

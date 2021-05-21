@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -8,15 +8,15 @@ package edu.ie3.datamodel.io.factory.typeinput;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
-import edu.ie3.util.quantities.dep.interfaces.SpecificConductance;
-import edu.ie3.util.quantities.dep.interfaces.SpecificResistance;
+import edu.ie3.util.quantities.interfaces.SpecificConductance;
+import edu.ie3.util.quantities.interfaces.SpecificResistance;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeInput> {
   private static final String B = "b";

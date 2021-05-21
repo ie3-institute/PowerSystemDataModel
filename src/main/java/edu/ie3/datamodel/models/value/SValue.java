@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -7,8 +7,9 @@ package edu.ie3.datamodel.models.value;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import java.util.Objects;
+import java.util.Optional;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes a apparent power value as a pair of active and reactive power */
 public class SValue extends PValue {
@@ -24,19 +25,20 @@ public class SValue extends PValue {
    */
   public SValue(ComparableQuantity<Power> p, ComparableQuantity<Power> q) {
     super(p);
-    this.q = q.to(StandardUnits.REACTIVE_POWER_IN);
+    this.q = q == null ? null : q.to(StandardUnits.REACTIVE_POWER_IN);
   }
 
-  public ComparableQuantity<Power> getQ() {
-    return q;
+  public Optional<ComparableQuantity<Power>> getQ() {
+    return Optional.ofNullable(q);
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    SValue that = (SValue) o;
-    return q.equals(that.q);
+    if (!super.equals(o)) return false;
+    SValue sValue = (SValue) o;
+    return Objects.equals(q, sValue.q);
   }
 
   @Override
@@ -46,6 +48,6 @@ public class SValue extends PValue {
 
   @Override
   public String toString() {
-    return "SValue{" + "q=" + q + '}';
+    return "SValue{" + "p=" + getP() + ", q=" + q + '}';
   }
 }

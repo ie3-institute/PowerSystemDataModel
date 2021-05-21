@@ -1,21 +1,22 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import java.io.Serializable;
 import java.util.Locale;
 import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.quantity.Quantities;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 /** Class to describe one point of a given {@link CharacteristicInput} */
 public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
-    implements Comparable<CharacteristicPoint<A, O>> {
+    implements Comparable<CharacteristicPoint<A, O>>, Serializable {
   public static final String REQUIRED_FORMAT = "(%d,%d)";
 
   private final ComparableQuantity<A> x;

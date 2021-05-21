@@ -1,13 +1,11 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
-
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -15,10 +13,12 @@ import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
+
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 	def "A PvInputFactory should contain exactly the expected class for parsing"() {
@@ -27,7 +27,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [PvInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A PvInputFactory should parse a valid PvInput correctly"() {
@@ -54,7 +54,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<PvInput> input = inputFactory.getEntity(
+		Optional<PvInput> input = inputFactory.get(
 				new NodeAssetInputEntityData(parameter, inputClass, operatorInput, nodeInput))
 
 		then:

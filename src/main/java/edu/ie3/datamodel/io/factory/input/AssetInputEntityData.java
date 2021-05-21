@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * Data used for the construction of {@link edu.ie3.datamodel.models.input.AssetInput} entities.
  * This data object can include additional information about the {@link OperatorInput}, which cannot
- * be provided through the attribute map.
+ * be provided through the attribute map as it is a complex shared entity.
  */
 public class AssetInputEntityData extends EntityData {
   private final OperatorInput operator;
@@ -68,10 +68,10 @@ public class AssetInputEntityData extends EntityData {
     return "AssetInputEntityData{"
         + "fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + ", operatorInput="
-        + operator
-        + "} ";
+        + operator.getUuid()
+        + '}';
   }
 }

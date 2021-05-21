@@ -1,19 +1,18 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.models.input.connector
 
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
-import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.io.geojson.GeoJsonReader
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
-import tec.uom.se.unit.Units
+import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
 
 class LineInputTest extends Specification {
 
@@ -79,5 +78,24 @@ class LineInputTest extends Specification {
 			assert nodeB == GridTestData.nodeC
 			assert length == Quantities.getQuantity(10, Units.METRE)
 		}
+	}
+
+	def "toString test"() {
+		expect:
+		def line = GridTestData.lineAtoB
+
+		line.toString() ==
+				"LineInput{" +
+				"uuid=92ec3bcf-1777-4d38-af67-0bf7c9fa73c7" +
+				", id=test_line_AtoB" +
+				", operator=f15105c4-a2de-4ab8-a621-4bc98e372d92" +
+				", operationTime=OperationTime{startDate=2020-03-24T15:11:31Z[UTC], endDate=2020-03-25T15:11:31Z[UTC], isLimited=true}" +
+				", nodeA=4ca90220-74c2-4369-9afa-a18bf068840d" +
+				", nodeB=47d29df0-ba2d-4d23-8e75-c82229c5c758" +
+				", noOfParallelDevices=2" +
+				", type=3bed3eb3-9790-4874-89b5-a5434d408088" +
+				", length=0.003 km" +
+				", geoPosition=LINESTRING (7.411111 51.492528, 7.414116 51.484136)" +
+				", olmCharacteristic=OlmCharacteristicInput{points=[CharacteristicCoordinate{x=0 m/s, y=1 PU}]}}"
 	}
 }

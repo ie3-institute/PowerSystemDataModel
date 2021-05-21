@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -20,7 +20,7 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
 		def expectedClasses = [Transformer3WInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A Transformer3WInputFactory should parse a valid Transformer3WInput correctly"() {
@@ -40,7 +40,7 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
 		def typeInput = Mock(Transformer3WTypeInput)
 
 		when:
-		Optional<Transformer3WInput> input = inputFactory.getEntity(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
+		Optional<Transformer3WInput> input = inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
 
 		then:
 		input.present

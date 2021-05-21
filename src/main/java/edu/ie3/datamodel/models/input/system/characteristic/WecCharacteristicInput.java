@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -34,6 +34,6 @@ public class WecCharacteristicInput extends CharacteristicInput<Speed, Dimension
 
   @Override
   public String toString() {
-    return "WecCharacteristicInput{" + "points=" + points + '}';
+    return "WecCharacteristicInput{" + "points=" + getPoints() + '}';
   }
 }

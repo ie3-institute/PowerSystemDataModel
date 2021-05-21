@@ -1,19 +1,19 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.util.quantities.dep.interfaces.Currency;
-import edu.ie3.util.quantities.dep.interfaces.EnergyPrice;
-import edu.ie3.util.quantities.dep.interfaces.SpecificEnergy;
+import edu.ie3.util.quantities.interfaces.Currency;
+import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import edu.ie3.util.quantities.interfaces.SpecificEnergy;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput} */
 public class EvTypeInput extends SystemParticipantTypeInput {
@@ -70,6 +70,23 @@ public class EvTypeInput extends SystemParticipantTypeInput {
 
   @Override
   public String toString() {
-    return "EvTypeInput{" + "eStorage=" + eStorage + ", eCons=" + eCons + '}';
+    return "EvTypeInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + "capex="
+        + getCapex()
+        + ", opex="
+        + getOpex()
+        + ", sRated="
+        + getsRated()
+        + ", cosphiRated="
+        + getCosPhiRated()
+        + "eStorage="
+        + eStorage
+        + ", eCons="
+        + eCons
+        + '}';
   }
 }

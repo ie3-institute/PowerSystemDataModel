@@ -1,15 +1,15 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputFactory;
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.source.GraphicSource;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
@@ -49,10 +49,10 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
   public CsvGraphicSource(
       String csvSep,
       String folderPath,
-      FileNamingStrategy fileNamingStrategy,
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
       TypeSource typeSource,
       RawGridSource rawGridSource) {
-    super(csvSep, folderPath, fileNamingStrategy);
+    super(csvSep, folderPath, entityPersistenceNamingStrategy);
     this.typeSource = typeSource;
     this.rawGridSource = rawGridSource;
 
@@ -80,14 +80,14 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
     Set<NodeGraphicInput> nodeGraphics =
         buildNodeGraphicEntityData(nodes)
-            .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::getEntity))
+            .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get))
             .filter(isPresentCollectIfNot(NodeGraphicInput.class, nonBuildEntities))
             .map(Optional::get)
             .collect(Collectors.toSet());
 
     Set<LineGraphicInput> lineGraphics =
         buildLineGraphicEntityData(lines)
-            .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::getEntity))
+            .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get))
             .filter(isPresentCollectIfNot(LineGraphicInput.class, nonBuildEntities))
             .map(Optional::get)
             .collect(Collectors.toSet());
@@ -118,7 +118,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
   public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) {
     return filterEmptyOptionals(
             buildNodeGraphicEntityData(nodes)
-                .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::getEntity)))
+                .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get)))
         .collect(Collectors.toSet());
   }
 
@@ -143,7 +143,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
     return filterEmptyOptionals(
             buildLineGraphicEntityData(lines)
-                .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::getEntity)))
+                .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get)))
         .collect(Collectors.toSet());
   }
 

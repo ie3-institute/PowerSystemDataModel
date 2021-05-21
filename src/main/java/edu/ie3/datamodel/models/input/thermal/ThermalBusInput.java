@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -9,7 +9,6 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.UUID;
-import org.apache.commons.lang3.NotImplementedException;
 
 /** A thermal bus, to which different {@link ThermalUnitInput} units may be connected */
 public class ThermalBusInput extends AssetInput {
@@ -37,8 +36,30 @@ public class ThermalBusInput extends AssetInput {
   }
 
   @Override
-  public UniqueEntityBuilder copy() {
-    throw new NotImplementedException(
-        "Copying of " + this.getClass().getSimpleName() + " entities is not supported yet!");
+  public ThermalBusInputCopyBuilder copy() {
+    return new ThermalBusInputCopyBuilder(this);
+  }
+
+  /**
+   * A builder pattern based approach to create copies of {@link ThermalBusInput} entities with
+   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * ThermalBusInput}
+   */
+  public static class ThermalBusInputCopyBuilder
+      extends AssetInput.AssetInputCopyBuilder<ThermalBusInputCopyBuilder> {
+
+    private ThermalBusInputCopyBuilder(ThermalBusInput entity) {
+      super(entity);
+    }
+
+    @Override
+    public ThermalBusInput build() {
+      return new ThermalBusInput(getUuid(), getId(), getOperator(), getOperationTime());
+    }
+
+    @Override
+    protected ThermalBusInputCopyBuilder childInstance() {
+      return this;
+    }
   }
 }

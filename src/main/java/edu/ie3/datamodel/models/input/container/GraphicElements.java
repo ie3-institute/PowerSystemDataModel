@@ -1,15 +1,13 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
-import edu.ie3.datamodel.utils.ValidationUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,18 +36,6 @@ public class GraphicElements implements InputContainer<GraphicInput> {
         graphicElements.stream()
             .flatMap(graphics -> graphics.lineGraphics.stream())
             .collect(Collectors.toSet());
-
-    // sanity check for distinct uuids
-    Optional<String> exceptionString =
-        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
-    if (exceptionString.isPresent()) {
-      throw new InvalidGridException(
-          "The provided entities in '"
-              + this.getClass().getSimpleName()
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
-    }
   }
 
   /**
@@ -73,18 +59,6 @@ public class GraphicElements implements InputContainer<GraphicInput> {
             .filter(graphic -> graphic instanceof LineGraphicInput)
             .map(graphic -> (LineGraphicInput) graphic)
             .collect(Collectors.toSet());
-
-    // sanity check for distinct uuids
-    Optional<String> exceptionString =
-        ValidationUtils.checkForDuplicateUuids(new HashSet<>(this.allEntitiesAsList()));
-    if (exceptionString.isPresent()) {
-      throw new InvalidGridException(
-          "The provided entities in '"
-              + this.getClass().getSimpleName()
-              + "' contains duplicate UUIDs. "
-              + "This is not allowed!\nDuplicated uuids:\n\n"
-              + exceptionString);
-    }
   }
 
   @Override
@@ -93,12 +67,6 @@ public class GraphicElements implements InputContainer<GraphicInput> {
     allEntities.addAll(nodeGraphics);
     allEntities.addAll(lineGraphics);
     return Collections.unmodifiableList(allEntities);
-  }
-
-  @Override
-  public void validate() {
-    throw new UnsupportedOperationException(
-        "Graphic elements cannot be validated without raw grid elements.");
   }
 
   /** @return unmodifiable Set of all node graphic data for this grid */

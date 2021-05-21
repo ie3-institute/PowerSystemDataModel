@@ -1,11 +1,12 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.io.processor.input;
 
 import edu.ie3.datamodel.io.processor.EntityProcessor;
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
@@ -38,6 +39,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               /* InputEntity */
               OperatorInput.class,
               RandomLoadParameters.class,
+              TimeSeriesMappingSource.MappingEntry.class,
               /* - AssetInput */
               NodeInput.class,
               LineInput.class,
@@ -45,12 +47,12 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               Transformer3WInput.class,
               SwitchInput.class,
               MeasurementUnitInput.class,
-              EvcsInput.class,
               ThermalBusInput.class,
               /* -- SystemParticipantInput */
               ChpInput.class,
               BmInput.class,
               EvInput.class,
+              EvcsInput.class,
               FixedFeedInInput.class,
               HpInput.class,
               LoadInput.class,

@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -19,7 +19,7 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
 		def expectedClasses = [LineTypeInput]
 
 		expect:
-		typeInputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		typeInputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A LineTypeInputFactory should parse a valid LineTypeInput correctly"() {
@@ -38,7 +38,7 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
 		def typeInputClass = LineTypeInput
 
 		when:
-		Optional<LineTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
+		Optional<LineTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
 		then:
 		typeInput.present

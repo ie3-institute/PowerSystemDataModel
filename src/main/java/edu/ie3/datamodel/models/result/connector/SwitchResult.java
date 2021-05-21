@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -21,12 +21,12 @@ public class SwitchResult extends ResultEntity {
   /**
    * Standard constructor with automatic uuid generation.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param closed true if switch is closed, false if switch is open
    */
-  public SwitchResult(ZonedDateTime timestamp, UUID inputModel, boolean closed) {
-    super(timestamp, inputModel);
+  public SwitchResult(ZonedDateTime time, UUID inputModel, boolean closed) {
+    super(time, inputModel);
     this.closed = closed;
   }
 
@@ -35,12 +35,12 @@ public class SwitchResult extends ResultEntity {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param closed true if switch is closed, false if switch is open
    */
-  public SwitchResult(UUID uuid, ZonedDateTime timestamp, UUID inputModel, boolean closed) {
-    super(uuid, timestamp, inputModel);
+  public SwitchResult(UUID uuid, ZonedDateTime time, UUID inputModel, boolean closed) {
+    super(uuid, time, inputModel);
     this.closed = closed;
   }
 
@@ -68,6 +68,15 @@ public class SwitchResult extends ResultEntity {
 
   @Override
   public String toString() {
-    return "SwitchResult{" + "closed=" + closed + '}';
+    return "SwitchResult{"
+        + "uuid="
+        + getUuid()
+        + ", time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + "closed="
+        + closed
+        + '}';
   }
 }

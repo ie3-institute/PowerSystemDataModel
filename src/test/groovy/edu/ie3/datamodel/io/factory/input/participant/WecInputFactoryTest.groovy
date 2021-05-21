@@ -1,11 +1,9 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.io.factory.input.participant
-
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -14,10 +12,12 @@ import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Dimensionless
 import java.time.ZonedDateTime
+
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class WecInputFactoryTest extends Specification implements FactoryTestHelper {
 	def "A WecInputFactoryTest should contain exactly the expected class for parsing"() {
@@ -26,7 +26,7 @@ class WecInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [WecInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A WecInputFactory should parse a valid WecInput correctly"() {
@@ -46,7 +46,7 @@ class WecInputFactoryTest extends Specification implements FactoryTestHelper {
 		def typeInput = Mock(WecTypeInput)
 
 		when:
-		Optional<WecInput> input = inputFactory.getEntity(
+		Optional<WecInput> input = inputFactory.get(
 				new SystemParticipantTypedEntityData<WecTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
 		then:

@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -200,7 +200,7 @@ public class ContainerUtils {
   public static SystemParticipants filterForSubnet(SystemParticipants input, int subnet) {
     Set<BmInput> bmPlants = filterParticipants(input.getBmPlants(), subnet);
     Set<ChpInput> chpPlants = filterParticipants(input.getChpPlants(), subnet);
-    /* Electric vehicle charging systems are currently dummy implementations without nodal reverence */
+    Set<EvcsInput> evcsInputs = filterParticipants(input.getEvCS(), subnet);
     Set<EvInput> evs = filterParticipants(input.getEvs(), subnet);
     Set<FixedFeedInInput> fixedFeedIns = filterParticipants(input.getFixedFeedIns(), subnet);
     Set<HpInput> heatpumps = filterParticipants(input.getHeatPumps(), subnet);
@@ -212,7 +212,7 @@ public class ContainerUtils {
     return new SystemParticipants(
         bmPlants,
         chpPlants,
-        new HashSet<>(),
+        evcsInputs,
         evs,
         fixedFeedIns,
         heatpumps,
@@ -420,7 +420,7 @@ public class ContainerUtils {
         mutableGraph.addEdge(
             subGridContainers.containerA,
             subGridContainers.containerB,
-            new SubGridGate(transformer));
+            SubGridGate.fromTransformer2W(transformer));
       } catch (TopologyException e) {
         throw new InvalidGridException(
             "Cannot build sub grid topology graph, as the sub grids, that are connected by transformer '"
@@ -439,7 +439,7 @@ public class ContainerUtils {
         mutableGraph.addEdge(
             subGridContainers.containerA,
             subGridContainers.containerB,
-            new SubGridGate(transformer, ConnectorPort.B));
+            SubGridGate.fromTransformer3W(transformer, ConnectorPort.B));
         mutableGraph.addEdge(
             subGridContainers.containerA,
             subGridContainers.maybeContainerC.orElseThrow(
@@ -450,7 +450,7 @@ public class ContainerUtils {
                             + "' ("
                             + transformer.getUuid()
                             + ") cannot be determined.")),
-            new SubGridGate(transformer, ConnectorPort.C));
+            SubGridGate.fromTransformer3W(transformer, ConnectorPort.C));
       } catch (TopologyException e) {
         throw new InvalidGridException(
             "Cannot build sub grid topology graph, as the sub grids, that are connected by transformer '"
@@ -554,7 +554,7 @@ public class ContainerUtils {
                     rawGridElements.getLines().parallelStream(),
                     rawGridElements.getTransformer2Ws().parallelStream()),
                 rawGridElements.getTransformer3Ws().parallelStream())
-            .flatMap(connector -> ((ConnectorInput) connector).allNodes().parallelStream())
+            .flatMap(connector -> connector.allNodes().parallelStream())
             .collect(Collectors.toSet());
     return traverseAlongSwitchChain(startNode, rawGridElements.getSwitches(), possibleJunctions);
   }
@@ -821,7 +821,8 @@ public class ContainerUtils {
             newNodes,
             subGridContainer.getRawGrid().getLines(),
             newTrafos2w,
-            newTrafos3wToInternalNode.keySet(),
+            // HashSet$KeySet is not serializable, thus create new set
+            new HashSet<>(newTrafos3wToInternalNode.keySet()),
             subGridContainer.getRawGrid().getSwitches(),
             subGridContainer.getRawGrid().getMeasurementUnits()),
         subGridContainer.getSystemParticipants(),

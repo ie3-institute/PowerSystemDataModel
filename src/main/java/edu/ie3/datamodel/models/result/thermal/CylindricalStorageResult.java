@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -13,7 +13,7 @@ import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Respresents the results of {@link CylindricalStorageInput} */
 public class CylindricalStorageResult extends ThermalStorageResult {
@@ -23,19 +23,19 @@ public class CylindricalStorageResult extends ThermalStorageResult {
   /**
    * Constructs the result with
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param energy Currently stored energy
    * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
    * @param fillLevel Fill level of the storage
    */
   public CylindricalStorageResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Energy> energy,
       ComparableQuantity<Power> qDot,
       ComparableQuantity<Dimensionless> fillLevel) {
-    super(timestamp, inputModel, energy, qDot);
+    super(time, inputModel, energy, qDot);
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }
 
@@ -44,7 +44,7 @@ public class CylindricalStorageResult extends ThermalStorageResult {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param energy Currently stored energy
    * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
@@ -52,12 +52,12 @@ public class CylindricalStorageResult extends ThermalStorageResult {
    */
   public CylindricalStorageResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Energy> energy,
       ComparableQuantity<Power> qDot,
       ComparableQuantity<Dimensionless> fillLevel) {
-    super(uuid, timestamp, inputModel, energy, qDot);
+    super(uuid, time, inputModel, energy, qDot);
     this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
   }
 
@@ -85,6 +85,19 @@ public class CylindricalStorageResult extends ThermalStorageResult {
 
   @Override
   public String toString() {
-    return "CylindricalStorageResult{" + "fillLevel=" + fillLevel + '}';
+    return "CylindricalStorageResult{"
+        + "uuid="
+        + getUuid()
+        + ", time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + ", qDot="
+        + getqDot()
+        + ", energy="
+        + getEnergy()
+        + ", fillLevel="
+        + fillLevel
+        + '}';
   }
 }

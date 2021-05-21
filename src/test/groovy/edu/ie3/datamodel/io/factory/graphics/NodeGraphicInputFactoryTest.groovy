@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -22,7 +22,7 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
 		def expectedClasses = [NodeGraphicInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A NodeGraphicInputFactory should parse a valid NodeGraphicInput correctly"() {
@@ -39,7 +39,7 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
 		def nodeInput = Mock(NodeInput)
 
 		when:
-		Optional<NodeGraphicInput> input = inputFactory.getEntity(
+		Optional<NodeGraphicInput> input = inputFactory.get(
 				new NodeGraphicInputEntityData(parameter, nodeInput))
 
 		then:
@@ -68,7 +68,7 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
 		def nodeInput = Mock(NodeInput)
 
 		when:
-		Optional<NodeGraphicInput> input = inputFactory.getEntity(
+		Optional<NodeGraphicInput> input = inputFactory.get(
 				new NodeGraphicInputEntityData(parameter, nodeInput))
 
 		then:

@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link
@@ -20,7 +20,7 @@ public class Transformer2WResult extends TransformerResult {
   /**
    * Standard constructor with automatic uuid generation.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
    * @param iAAng electric current angle @ Port A in degree
@@ -29,14 +29,14 @@ public class Transformer2WResult extends TransformerResult {
    * @param tapPos Current position of the tap changer
    */
   public Transformer2WResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
       ComparableQuantity<Angle> iAAng,
       ComparableQuantity<ElectricCurrent> iBMag,
       ComparableQuantity<Angle> iBAng,
       int tapPos) {
-    super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+    super(time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
   }
 
   /**
@@ -44,7 +44,7 @@ public class Transformer2WResult extends TransformerResult {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
    * @param iAAng electric current angle @ Port A in degree
@@ -54,13 +54,35 @@ public class Transformer2WResult extends TransformerResult {
    */
   public Transformer2WResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
       ComparableQuantity<Angle> iAAng,
       ComparableQuantity<ElectricCurrent> iBMag,
       ComparableQuantity<Angle> iBAng,
       int tapPos) {
-    super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+    super(uuid, time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+  }
+
+  @Override
+  public String toString() {
+    return "Transformer2WResult{"
+        + "uuid="
+        + getUuid()
+        + ", time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + ", iAMag="
+        + getiAMag()
+        + ", iAAng="
+        + getiAAng()
+        + ", iBMag="
+        + getiBMag()
+        + ", iBAng="
+        + getiBAng()
+        + ", tapPos="
+        + getTapPos()
+        + '}';
   }
 }

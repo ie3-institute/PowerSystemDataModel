@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries;
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -18,7 +19,7 @@ import java.util.Arrays;
  * <p>If you intend to provide distinct values, create either an {@link IndividualTimeSeries} or
  * {@link RepetitiveTimeSeries} and assign it to the model via mapping to the model.
  */
-public interface StandardLoadProfile {
+public interface StandardLoadProfile extends Serializable {
   /** @return The identifying String */
   String getKey();
 

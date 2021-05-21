@@ -1,25 +1,29 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.FileNamingStrategy
+import edu.ie3.datamodel.io.factory.input.ThermalBusInputFactory
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.test.common.SystemParticipantTestData as sptd
+import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.test.common.GridTestData as gtd
+import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Shared
 import spock.lang.Specification
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.LongAdder
+import java.util.function.Function
 import java.util.stream.Collectors
 
-
 class CsvDataSourceTest extends Specification {
+	@Shared
+	Function<Map<String, String>, String> uuidExtractor = { fieldToValues -> fieldToValues.get("uuid") }
 
 	// Using a groovy bug to gain access to private methods in superclass:
 	// by default, we cannot access private methods with parameters from abstract parent classes, introducing a
@@ -27,8 +31,8 @@ class CsvDataSourceTest extends Specification {
 	// methods in a public or protected method makes them available for testing
 	private final class DummyCsvSource extends CsvDataSource {
 
-		DummyCsvSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
-			super(csvSep, folderPath, fileNamingStrategy)
+		DummyCsvSource(String csvSep, String folderPath, EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+			super(csvSep, folderPath, entityPersistenceNamingStrategy)
 		}
 
 		Map<String, String> buildFieldsToAttributes(
@@ -43,11 +47,11 @@ class CsvDataSourceTest extends Specification {
 
 		def <T extends UniqueEntity> Set<Map<String, String>> distinctRowsWithLog(
 				Class<T> entityClass, Collection<Map<String, String>> allRows) {
-			return super.distinctRowsWithLog(entityClass, allRows)
+			return super.distinctRowsWithLog(allRows, uuidExtractor, entityClass.simpleName, "UUID")
 		}
 
 		String[] parseCsvRow(
-				String csvRow,String csvSep) {
+				String csvRow, String csvSep) {
 			return super.parseCsvRow(csvRow, csvSep)
 		}
 
@@ -60,15 +64,33 @@ class CsvDataSourceTest extends Specification {
 	@Shared
 	String csvSep = ","
 	String testBaseFolderPath = new File(getClass().getResource('/testGridFiles').toURI()).getAbsolutePath()
-	FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+	EntityPersistenceNamingStrategy entityPersistenceNamingStrategy = new EntityPersistenceNamingStrategy()
 
-	DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, fileNamingStrategy)
+	DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, entityPersistenceNamingStrategy)
+
+	def "A csv data source is able to find the correct first entity by uuid"() {
+		given:
+		def uuid = UUID.randomUUID()
+		def queriedOperator = new OperatorInput(uuid, "b")
+		def entities = Arrays.asList(
+				new OperatorInput(UUID.randomUUID(), "a"),
+				queriedOperator,
+				new OperatorInput(UUID.randomUUID(), "c")
+				)
+
+		when:
+		def actual = dummyCsvSource.findFirstEntityByUuid(uuid.toString(), entities)
+
+		then:
+		actual.present
+		actual.get() == queriedOperator
+	}
 
 	def "A DataSource should contain a valid connector after initialization"() {
 		expect:
 		dummyCsvSource.connector != null
-		dummyCsvSource.connector.baseFolderName == testBaseFolderPath
-		dummyCsvSource.connector.fileNamingStrategy == fileNamingStrategy
+		dummyCsvSource.connector.baseDirectoryName == testBaseFolderPath
+		dummyCsvSource.connector.entityPersistenceNamingStrategy == entityPersistenceNamingStrategy
 		dummyCsvSource.connector.entityWriters.isEmpty()
 
 	}
@@ -255,14 +277,14 @@ class CsvDataSourceTest extends Specification {
 			"6.0",
 			"thats \"good\""
 		]
-		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0"                                                                                                                                                                                                                                                                                                                                               || [
+		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0"                                                                                                                                                                                                                                                                                                                                                       || [
 			"1",
 			"abc",
 			"def",
 			"He said \"test, test\" and was happy",
 			"5.0"
 		]
-		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\",\"obviously, yet.\", 5.0"                                                                                                                                                                                                                                                                                                                                               || [
+		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\",\"obviously, yet.\", 5.0"                                                                                                                                                                                                                                                                                                                                   || [
 			"1",
 			"abc",
 			"def",
@@ -270,20 +292,20 @@ class CsvDataSourceTest extends Specification {
 			"obviously, yet.",
 			"5.0"
 		]
-		","    | "1,abc,def,\"He said \"\"test, test\"\"\", 5.0"                                                                                                                                                                                                                                                                                                                                               || [
+		","    | "1,abc,def,\"He said \"\"test, test\"\"\", 5.0"                                                                                                                                                                                                                                                                                                                                                                     || [
 			"1",
 			"abc",
 			"def",
 			"He said \"test, test\"",
 			"5.0"
 		]
-		","    | "1,abc,def,\"He said \"\"test, test\"\"\""                                                                                                                                                                                                                                                                                                                                               || [
+		","    | "1,abc,def,\"He said \"\"test, test\"\"\""                                                                                                                                                                                                                                                                                                                                                                          || [
 			"1",
 			"abc",
 			"def",
 			"He said \"test, test\""
 		]
-		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\""                                                                                                                                                                                                                                                                                                                                               || [
+		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\""                                                                                                                                                                                                                                                                                                    || [
 			"1",
 			"abc",
 			"def",
@@ -291,7 +313,7 @@ class CsvDataSourceTest extends Specification {
 			"5.0",
 			"... and felt like a \"genius\" with this."
 		]
-		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\","                                                                                                                                                                                                                                                                                                                                               || [
+		","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\","                                                                                                                                                                                                                                                                                                   || [
 			"1",
 			"abc",
 			"def",
@@ -411,7 +433,7 @@ class CsvDataSourceTest extends Specification {
 
 		when:
 		def allRows = [nodeInputRow]* noOfEntities
-		def distinctRows = dummyCsvSource.distinctRowsWithLog(NodeInput, allRows)
+		def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
 
 		then:
 		distinctRows.size() == distinctSize
@@ -465,8 +487,8 @@ class CsvDataSourceTest extends Specification {
 		]
 
 		when:
-		def allRows = [nodeInputRow1, nodeInputRow2]*10
-		def distinctRows = dummyCsvSource.distinctRowsWithLog(NodeInput, allRows)
+		def allRows = [nodeInputRow1, nodeInputRow2]* 10
+		def distinctRows = dummyCsvSource.distinctRowsWithLog(allRows, uuidExtractor, NodeInput.simpleName, "UUID")
 
 		then:
 		distinctRows.size() == 0
@@ -489,6 +511,25 @@ class CsvDataSourceTest extends Specification {
 		[]| ["bla": "foo"]                                   || false           || null
 		[gtd.transformerTypeBtoD]| ["type": "202069a7-bcf8-422c-837c-273575220c8a"] || true            || gtd.transformerTypeBtoD
 		[sptd.chpTypeInput]| ["type": "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8"] || true            || sptd.chpTypeInput
+	}
+
+	def "A CsvDataSource should not throw an exception but assume NO_OPERATOR_ASSIGNED if the operator field is missing in the headline"() {
+
+		given:
+		def thermalBusInputFieldsToAttributesMap = [
+			"uuid"          : "0d95d7f2-49fb-4d49-8636-383a5220384e",
+			"id"            : "test_thermalBusInput",
+			"operatesuntil": "2020-03-25T15:11:31Z[UTC]",
+			"operatesfrom" : "2020-03-24T15:11:31Z[UTC]"
+		]
+
+		when:
+		def thermalBusInputEntity = new ThermalBusInputFactory().get(dummyCsvSource.assetInputEntityDataStream(ThermalBusInput, thermalBusInputFieldsToAttributesMap, Collections.emptyList()))
+
+		then:
+		noExceptionThrown() // no NPE should be thrown
+		thermalBusInputEntity.present
+		thermalBusInputEntity.get().operator.id == OperatorInput.NO_OPERATOR_ASSIGNED.id // operator id should be set accordingly
 	}
 
 }

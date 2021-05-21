@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 public class Transformer3WResult extends TransformerResult {
 
@@ -21,7 +21,7 @@ public class Transformer3WResult extends TransformerResult {
   private ComparableQuantity<Angle> iCAng;
 
   /**
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
    * @param iAAng electric current angle @ Port A in degree
@@ -32,7 +32,7 @@ public class Transformer3WResult extends TransformerResult {
    * @param tapPos the current position of the transformers tap changer
    */
   public Transformer3WResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
       ComparableQuantity<Angle> iAAng,
@@ -41,7 +41,7 @@ public class Transformer3WResult extends TransformerResult {
       ComparableQuantity<ElectricCurrent> iCMag,
       ComparableQuantity<Angle> iCAng,
       int tapPos) {
-    super(timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+    super(time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     this.iCMag = iCMag;
     this.iCAng = iCAng;
   }
@@ -49,7 +49,7 @@ public class Transformer3WResult extends TransformerResult {
   /**
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
    * @param iAAng electric current angle @ Port A in degree
@@ -61,7 +61,7 @@ public class Transformer3WResult extends TransformerResult {
    */
   public Transformer3WResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
       ComparableQuantity<Angle> iAAng,
@@ -70,7 +70,7 @@ public class Transformer3WResult extends TransformerResult {
       ComparableQuantity<ElectricCurrent> iCMag,
       ComparableQuantity<Angle> iCAng,
       int tapPos) {
-    super(uuid, timestamp, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+    super(uuid, time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     this.iCMag = iCMag;
     this.iCAng = iCAng;
   }
@@ -107,6 +107,27 @@ public class Transformer3WResult extends TransformerResult {
 
   @Override
   public String toString() {
-    return "Transformer3WResult{" + "iCMag=" + iCMag + ", iCAng=" + iCAng + '}';
+    return "Transformer3WResult{"
+        + "uuid="
+        + getUuid()
+        + ", time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + ", iAMag="
+        + getiAMag()
+        + ", iAAng="
+        + getiAAng()
+        + ", iBMag="
+        + getiBMag()
+        + ", iBAng="
+        + getiBAng()
+        + ", tapPos="
+        + getTapPos()
+        + ", iCMag="
+        + iCMag
+        + ", iCAng="
+        + iCAng
+        + '}';
   }
 }

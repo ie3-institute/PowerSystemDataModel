@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -20,7 +20,7 @@ class MeasurementUnitInputFactoryTest extends Specification implements FactoryTe
 		def expectedClasses = [MeasurementUnitInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A MeasurementUnitInputFactory should parse a valid MeasurementUnitInput correctly"() {
@@ -38,7 +38,7 @@ class MeasurementUnitInputFactoryTest extends Specification implements FactoryTe
 		def nodeInput = Mock(NodeInput)
 
 		when:
-		Optional<MeasurementUnitInput> input = inputFactory.getEntity(new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
+		Optional<MeasurementUnitInput> input = inputFactory.get(new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
 
 		then:
 		input.present

@@ -1,13 +1,13 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.ThermalUnitInputEntityData
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput
@@ -21,8 +21,8 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvThermalSource should return ThermalBuses from valid and invalid input data as expected"() {
 		given:
-		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
-		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityPersistenceNamingStrategy())
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, entityPersistenceNamingStrategy, csvTypeSource)
 		def operators = csvTypeSource.operators
 
 		//test method when no operators are provided as constructor parameters
@@ -50,8 +50,8 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvThermalSource should return a CylindricalStorageInput from valid and invalid input data as expected"() {
 		given:
-		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
-		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityPersistenceNamingStrategy())
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, entityPersistenceNamingStrategy, csvTypeSource)
 		def operators = csvTypeSource.operators
 		def thermalBuses = csvThermalSource.thermalBuses
 
@@ -93,8 +93,8 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvThermalSource should build thermal unit input entity from valid and invalid input data as expected"() {
 		given:
-		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
-		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityPersistenceNamingStrategy())
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, entityPersistenceNamingStrategy, csvTypeSource)
 		def operator = new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "testOperator")
 		def validFieldsToAttributes = [
 			"uuid"			: "717af017-cc69-406f-b452-e022d7fb516a",
@@ -111,7 +111,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 		then:
 		resultingDataOpt.size() == 1
-		resultingDataOpt.first().isPresent() == resultIsPresent
+		resultingDataOpt.first().present == resultIsPresent
 		resultingDataOpt.first().ifPresent({ resultingData ->
 			assert (resultingData == expectedThermalUnitInputEntityData)
 		})
@@ -135,8 +135,8 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvThermalSource should return a ThermalHouseInput from valid and invalid input data as expected"() {
 		given:
-		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
-		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityPersistenceNamingStrategy())
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, entityPersistenceNamingStrategy, csvTypeSource)
 		def operators = csvTypeSource.operators
 		def thermalBuses = csvThermalSource.thermalBuses
 

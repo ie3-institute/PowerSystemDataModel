@@ -1,11 +1,11 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.system.characteristic;
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU;
+import static edu.ie3.util.quantities.PowerSystemUnits.PU;
 import static java.util.Collections.unmodifiableSortedSet;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.measure.quantity.Dimensionless;
-import tec.uom.se.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 /**
  * Characteristic denoting a power factor, that is dependent on the current power consumption or
@@ -52,6 +52,6 @@ public class CosPhiFixed extends ReactivePowerCharacteristic {
 
   @Override
   public String toString() {
-    return "cosPhiFixed{" + "points=" + points + '}';
+    return "cosPhiFixed{" + "points=" + getPoints() + '}';
   }
 }

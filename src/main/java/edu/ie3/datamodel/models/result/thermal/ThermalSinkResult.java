@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -8,7 +8,7 @@ package edu.ie3.datamodel.models.result.thermal;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link
@@ -19,13 +19,12 @@ public abstract class ThermalSinkResult extends ThermalUnitResult {
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param qDot thermal heat demand of the sink
    */
-  public ThermalSinkResult(
-      ZonedDateTime timestamp, UUID inputModel, ComparableQuantity<Power> qDot) {
-    super(timestamp, inputModel, qDot);
+  public ThermalSinkResult(ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
+    super(time, inputModel, qDot);
   }
 
   /**
@@ -33,12 +32,12 @@ public abstract class ThermalSinkResult extends ThermalUnitResult {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param qDot thermal heat demand of the sink
    */
   public ThermalSinkResult(
-      UUID uuid, ZonedDateTime timestamp, UUID inputModel, ComparableQuantity<Power> qDot) {
-    super(uuid, timestamp, inputModel, qDot);
+      UUID uuid, ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
+    super(uuid, time, inputModel, qDot);
   }
 }

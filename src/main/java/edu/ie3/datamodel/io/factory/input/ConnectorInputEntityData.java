@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -69,14 +69,14 @@ public class ConnectorInputEntityData extends AssetInputEntityData {
     return "ConnectorInputEntityData{"
         + "fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + ", operatorInput="
-        + getOperatorInput()
+        + getOperatorInput().getUuid()
         + ", nodeA="
-        + nodeA
+        + nodeA.getUuid()
         + ", nodeB="
-        + nodeB
+        + nodeB.getUuid()
         + '}';
   }
 }

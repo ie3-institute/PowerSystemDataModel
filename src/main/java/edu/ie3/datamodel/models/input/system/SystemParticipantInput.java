@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -32,7 +32,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    */
-  public SystemParticipantInput(
+  protected SystemParticipantInput(
       UUID uuid,
       String id,
       OperatorInput operator,
@@ -52,7 +52,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    */
-  public SystemParticipantInput(
+  protected SystemParticipantInput(
       UUID uuid, String id, NodeInput node, ReactivePowerCharacteristic qCharacteristics) {
     super(uuid, id);
     this.node = node;
@@ -93,8 +93,16 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
   @Override
   public String toString() {
     return "SystemParticipantInput{"
-        + "node="
-        + node
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + node.getUuid()
         + ", qCharacteristics='"
         + qCharacteristics
         + '\''

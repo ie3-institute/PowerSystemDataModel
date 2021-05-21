@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -86,7 +86,23 @@ public class EvInput extends SystemParticipantInput implements HasType {
 
   @Override
   public String toString() {
-    return "EvInput{" + "type=" + type + '}';
+    return "EvInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", node="
+        + getNode().getUuid()
+        + ", qCharacteristics='"
+        + getqCharacteristics()
+        + '\''
+        + ", type="
+        + type.getUuid()
+        + '}';
   }
 
   /**

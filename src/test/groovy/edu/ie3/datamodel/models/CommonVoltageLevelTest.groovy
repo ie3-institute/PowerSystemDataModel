@@ -1,19 +1,19 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.models
-
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLT
-import static tec.uom.se.unit.Units.VOLT
 
 import edu.ie3.datamodel.exceptions.VoltageLevelException
 import edu.ie3.datamodel.models.voltagelevels.CommonVoltageLevel
 import edu.ie3.util.interval.RightOpenInterval
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
+
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT
+import static tech.units.indriya.unit.Units.VOLT
 
 class CommonVoltageLevelTest extends Specification {
 	@Shared
@@ -55,6 +55,6 @@ class CommonVoltageLevelTest extends Specification {
 
 		then:
 		VoltageLevelException ex = thrown()
-		ex.message == "The provided id \"HS\" and rated voltage \"500.0 V\" could possibly meet the voltage level \"Niederspannung\" (Interval [0.0 kV, 10.0 kV)), but are inconsistent."
+		ex.message == "The provided id \"HS\" and rated voltage \"500 V\" could possibly meet the voltage level \"Niederspannung\" (Interval [0 kV, 10 kV)), but are inconsistent."
 	}
 }

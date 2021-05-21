@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -36,6 +36,7 @@ public abstract class TimeSeriesEntry<V extends Value> extends UniqueEntity {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
+
     TimeSeriesEntry<?> entry = (TimeSeriesEntry<?>) o;
     return value.equals(entry.value);
   }

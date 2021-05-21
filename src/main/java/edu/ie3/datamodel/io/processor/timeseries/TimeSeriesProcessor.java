@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -38,7 +38,7 @@ public class TimeSeriesProcessor<
               new TimeSeriesProcessorKey(
                   IndividualTimeSeries.class, TimeBasedValue.class, WindValue.class),
               new TimeSeriesProcessorKey(
-                  IndividualTimeSeries.class, TimeBasedValue.class, IrradiationValue.class),
+                  IndividualTimeSeries.class, TimeBasedValue.class, SolarIrradianceValue.class),
               new TimeSeriesProcessorKey(
                   IndividualTimeSeries.class, TimeBasedValue.class, WeatherValue.class),
               new TimeSeriesProcessorKey(
@@ -77,7 +77,7 @@ public class TimeSeriesProcessor<
     if (!eligibleKeys.contains(timeSeriesKey))
       throw new EntityProcessorException(
           "Cannot register time series combination '"
-              + timeSeriesKey.toString()
+              + timeSeriesKey
               + "' with entity processor '"
               + this.getClass().getSimpleName()
               + "'. Eligible combinations: "
@@ -134,20 +134,21 @@ public class TimeSeriesProcessor<
                   Stream.concat(
                       Stream.concat(
                           mapFieldNameToGetter(
-                                  valueClass, Arrays.asList("irradiation", "temperature", "wind"))
+                                  valueClass,
+                                  Arrays.asList("solarIrradiance", "temperature", "wind"))
                               .entrySet().stream()
                               .map(
                                   entry ->
                                       new AbstractMap.SimpleEntry<>(
                                           entry.getKey(),
                                           new FieldSourceToMethod(VALUE, entry.getValue()))),
-                          mapFieldNameToGetter(IrradiationValue.class).entrySet().stream()
+                          mapFieldNameToGetter(SolarIrradianceValue.class).entrySet().stream()
                               .map(
                                   entry ->
                                       new AbstractMap.SimpleEntry<>(
                                           entry.getKey(),
                                           new FieldSourceToMethod(
-                                              WEATHER_IRRADIATION, entry.getValue())))),
+                                              WEATHER_IRRADIANCE, entry.getValue())))),
                       mapFieldNameToGetter(TemperatureValue.class).entrySet().stream()
                           .map(
                               entry ->
@@ -235,8 +236,8 @@ public class TimeSeriesProcessor<
     if (entry.getValue() instanceof WeatherValue) {
       WeatherValue weatherValue = (WeatherValue) entry.getValue();
 
-      Map<String, Method> irradiationFieldToMethod = extractFieldToMethod(WEATHER_IRRADIATION);
-      valueResult.putAll(processObject(weatherValue.getIrradiation(), irradiationFieldToMethod));
+      Map<String, Method> irradianceFieldToMethod = extractFieldToMethod(WEATHER_IRRADIANCE);
+      valueResult.putAll(processObject(weatherValue.getSolarIrradiance(), irradianceFieldToMethod));
 
       Map<String, Method> temperatureFieldToMethod = extractFieldToMethod(WEATHER_TEMPERATURE);
       valueResult.putAll(processObject(weatherValue.getTemperature(), temperatureFieldToMethod));

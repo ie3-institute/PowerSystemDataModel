@@ -1,22 +1,22 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.io.factory.result;
+
+import static tech.units.indriya.unit.Units.PERCENT;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.system.*;
-import edu.ie3.util.TimeTools;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
-import tec.uom.se.unit.Units;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Factory class for creating {@link SystemParticipantResult} entities from provided {@link
@@ -46,17 +46,17 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   @Override
   protected List<Set<String>> getFields(SimpleEntityData data) {
     /// all result models have the same constructor except StorageResult
-    Set<String> minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, POWER, REACTIVE_POWER);
+    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, POWER, REACTIVE_POWER);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
-    if (data.getEntityClass().equals(StorageResult.class)
-        || data.getEntityClass().equals(EvResult.class)) {
-      minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, POWER, REACTIVE_POWER, SOC);
+    if (data.getTargetClass().equals(StorageResult.class)
+        || data.getTargetClass().equals(EvResult.class)) {
+      minConstructorParams = newSet(TIME, INPUT_MODEL, POWER, REACTIVE_POWER, SOC);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
-    if (data.getEntityClass().equals(HpResult.class)) {
-      minConstructorParams = newSet(TIMESTAMP, INPUT_MODEL, POWER, REACTIVE_POWER, Q_DOT);
+    if (SystemParticipantWithHeatResult.class.isAssignableFrom(data.getTargetClass())) {
+      minConstructorParams = expandSet(minConstructorParams, Q_DOT);
       optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
     }
 
@@ -65,9 +65,9 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
 
   @Override
   protected SystemParticipantResult buildModel(SimpleEntityData data) {
-    Class<? extends UniqueEntity> entityClass = data.getEntityClass();
+    Class<? extends UniqueEntity> entityClass = data.getTargetClass();
 
-    ZonedDateTime zdtTimestamp = TimeTools.toZonedDateTime(data.getField(TIMESTAMP));
+    ZonedDateTime zdtTime = TIME_UTIL.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Power> p = data.getQuantity(POWER, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> q =
@@ -77,49 +77,55 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
 
     if (entityClass.equals(LoadResult.class)) {
       return uuidOpt
-          .map(uuid -> new LoadResult(uuid, zdtTimestamp, inputModelUuid, p, q))
-          .orElseGet(() -> new LoadResult(zdtTimestamp, inputModelUuid, p, q));
+          .map(uuid -> new LoadResult(uuid, zdtTime, inputModelUuid, p, q))
+          .orElseGet(() -> new LoadResult(zdtTime, inputModelUuid, p, q));
     } else if (entityClass.equals(FixedFeedInResult.class)) {
       return uuidOpt
-          .map(uuid -> new FixedFeedInResult(uuid, zdtTimestamp, inputModelUuid, p, q))
-          .orElseGet(() -> new FixedFeedInResult(zdtTimestamp, inputModelUuid, p, q));
+          .map(uuid -> new FixedFeedInResult(uuid, zdtTime, inputModelUuid, p, q))
+          .orElseGet(() -> new FixedFeedInResult(zdtTime, inputModelUuid, p, q));
     } else if (entityClass.equals(BmResult.class)) {
       return uuidOpt
-          .map(uuid -> new BmResult(uuid, zdtTimestamp, inputModelUuid, p, q))
-          .orElseGet(() -> new BmResult(zdtTimestamp, inputModelUuid, p, q));
+          .map(uuid -> new BmResult(uuid, zdtTime, inputModelUuid, p, q))
+          .orElseGet(() -> new BmResult(zdtTime, inputModelUuid, p, q));
     } else if (entityClass.equals(PvResult.class)) {
       return uuidOpt
-          .map(uuid -> new PvResult(uuid, zdtTimestamp, inputModelUuid, p, q))
-          .orElseGet(() -> new PvResult(zdtTimestamp, inputModelUuid, p, q));
+          .map(uuid -> new PvResult(uuid, zdtTime, inputModelUuid, p, q))
+          .orElseGet(() -> new PvResult(zdtTime, inputModelUuid, p, q));
     } else if (entityClass.equals(EvcsResult.class)) {
       return uuidOpt
-          .map(uuid -> new EvcsResult(uuid, zdtTimestamp, inputModelUuid, p, q))
-          .orElseGet(() -> new EvcsResult(zdtTimestamp, inputModelUuid, p, q));
-    } else if (entityClass.equals(ChpResult.class)) {
-      return uuidOpt
-          .map(uuid -> new ChpResult(uuid, zdtTimestamp, inputModelUuid, p, q))
-          .orElseGet(() -> new ChpResult(zdtTimestamp, inputModelUuid, p, q));
+          .map(uuid -> new EvcsResult(uuid, zdtTime, inputModelUuid, p, q))
+          .orElseGet(() -> new EvcsResult(zdtTime, inputModelUuid, p, q));
+    } else if (SystemParticipantWithHeatResult.class.isAssignableFrom(entityClass)) {
+      /* The following classes all have a heat component as well */
+      ComparableQuantity<Power> qDot = data.getQuantity(Q_DOT, StandardUnits.Q_DOT_RESULT);
+
+      if (entityClass.equals(ChpResult.class)) {
+        return uuidOpt
+            .map(uuid -> new ChpResult(uuid, zdtTime, inputModelUuid, p, q, qDot))
+            .orElseGet(() -> new ChpResult(zdtTime, inputModelUuid, p, q, qDot));
+      } else if (entityClass.equals(HpResult.class)) {
+        return uuidOpt
+            .map(uuid -> new HpResult(uuid, zdtTime, inputModelUuid, p, q, qDot))
+            .orElseGet(() -> new HpResult(zdtTime, inputModelUuid, p, q, qDot));
+      } else {
+        throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
+      }
     } else if (entityClass.equals(WecResult.class)) {
       return uuidOpt
-          .map(uuid -> new WecResult(uuid, zdtTimestamp, inputModelUuid, p, q))
-          .orElseGet(() -> new WecResult(zdtTimestamp, inputModelUuid, p, q));
-    } else if (entityClass.equals(HpResult.class)) {
-      ComparableQuantity<Power> qDotQuantity = data.getQuantity(Q_DOT, StandardUnits.Q_DOT_RESULT);
-      return uuidOpt
-          .map(uuid -> new HpResult(uuid, zdtTimestamp, inputModelUuid, p, q, qDotQuantity))
-          .orElseGet(() -> new HpResult(zdtTimestamp, inputModelUuid, p, q, qDotQuantity));
+          .map(uuid -> new WecResult(uuid, zdtTime, inputModelUuid, p, q))
+          .orElseGet(() -> new WecResult(zdtTime, inputModelUuid, p, q));
     } else if (entityClass.equals(EvResult.class)) {
-      ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, Units.PERCENT);
+      ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, PERCENT);
 
       return uuidOpt
-          .map(uuid -> new EvResult(uuid, zdtTimestamp, inputModelUuid, p, q, socQuantity))
-          .orElseGet(() -> new EvResult(zdtTimestamp, inputModelUuid, p, q, socQuantity));
+          .map(uuid -> new EvResult(uuid, zdtTime, inputModelUuid, p, q, socQuantity))
+          .orElseGet(() -> new EvResult(zdtTime, inputModelUuid, p, q, socQuantity));
     } else if (entityClass.equals(StorageResult.class)) {
-      ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, Units.PERCENT);
+      ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, PERCENT);
 
       return uuidOpt
-          .map(uuid -> new StorageResult(uuid, zdtTimestamp, inputModelUuid, p, q, socQuantity))
-          .orElseGet(() -> new StorageResult(zdtTimestamp, inputModelUuid, p, q, socQuantity));
+          .map(uuid -> new StorageResult(uuid, zdtTime, inputModelUuid, p, q, socQuantity))
+          .orElseGet(() -> new StorageResult(zdtTime, inputModelUuid, p, q, socQuantity));
     } else {
       throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
     }

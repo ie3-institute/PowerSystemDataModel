@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -52,7 +52,7 @@ public class FieldSourceToMethod {
     TIMESERIES,
     ENTRY,
     VALUE,
-    WEATHER_IRRADIATION,
+    WEATHER_IRRADIANCE,
     WEATHER_TEMPERATURE,
     WEATHER_WIND
   }

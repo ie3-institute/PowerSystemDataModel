@@ -4,22 +4,21 @@ plugins {
 	id 'maven-publish'
 	id 'signing'
 	id 'pmd' // code check, working on source code
-	id 'com.github.spotbugs' version '4.3.0' // code check, working on byte code
-	id 'com.diffplug.gradle.spotless' version '3.27.1'//code format
-	id 'com.github.onslip.gradle-one-jar' version '1.0.5' // pack a self contained jar
-	id 'de.undercouch.download' version '4.0.4'
-	id 'kr.motd.sphinx' version '2.9.0' // documentation generation
+	id 'com.diffplug.spotless' version '5.12.5'//code format
+	id 'com.github.spotbugs' version '4.7.1' // code check, working on byte code
+	id 'com.github.onslip.gradle-one-jar' version '1.0.6' // pack a self contained jar
+	id 'de.undercouch.download' version '4.1.1'
+	id 'kr.motd.sphinx' version '2.10.1' // documentation generation
 	id 'jacoco' // java code coverage plugin
-	id "org.sonarqube" version "2.8" // sonarqube
+	id "org.sonarqube" version "3.2.0" // sonarqube
 	id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
 }
 
 ext {
 	//version (changing these should be considered thoroughly!)
 	javaVersion = JavaVersion.VERSION_1_8
-	unitsOfMeasurementVersion = '1.0.10'
 	tscfgVersion = '0.9.9'
-	testcontainersVersion = '1.14.1'
+	testcontainersVersion = '1.15.3'
 
 	scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -43,7 +42,7 @@ apply from: scriptsLocation + 'vcs.gradle'
 apply from: scriptsLocation + 'semVer.gradle'
 
 repositories {
-	jcenter() //searches in bintray's repository 'jCenter', which contains Maven Central
+	mavenCentral() //searches in bintray's repository 'jCenter', which contains Maven Central
 	maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
 
 	// sonatype snapshot repo
@@ -53,34 +52,42 @@ repositories {
 
 dependencies {
 	//	 ie³ power system utils
-	compile 'com.github.ie3-institute:PowerSystemUtils:1.3.2'
+	compile 'com.github.ie3-institute:PowerSystemUtils:1.5.2'
 
-	compile "tec.uom:uom-se:$unitsOfMeasurementVersion"
+	implementation 'tech.units:indriya:2.1.2'
 
 	// JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
-	compile 'org.locationtech.jts:jts-core:1.16.1'
-	compile 'org.locationtech.jts.io:jts-io-common:1.16.1'
+	compile 'org.locationtech.jts:jts-core:1.18.1'
+	compile 'org.locationtech.jts.io:jts-io-common:1.18.1'
 
 	// Graphs
-	compile 'org.jgrapht:jgrapht-core:1.3.1'
+	compile 'org.jgrapht:jgrapht-core:1.4.0'
 
 	// testing
-	testCompile 'org.junit.jupiter:junit-jupiter:5.5.2'
-	testCompile 'org.spockframework:spock-core:2.0-M3-groovy-3.0'
-	testCompile 'org.objenesis:objenesis:3.1' // Mock creation with constructor parameters
+	testCompile 'org.junit.jupiter:junit-jupiter:5.7.2'
+	testCompile 'org.spockframework:spock-core:2.0-groovy-3.0'
+	testCompile 'org.objenesis:objenesis:3.2' // Mock creation with constructor parameters
 
-	// Testcontainers (Docker Framework for testing)
+	// testcontainers (docker framework for testing)
 	testCompile "org.testcontainers:testcontainers:$testcontainersVersion"
 	testCompile "org.testcontainers:spock:$testcontainersVersion"
 	testCompile "org.testcontainers:influxdb:$testcontainersVersion"
+	testCompile "org.testcontainers:postgresql:$testcontainersVersion"
+	testCompile "org.testcontainers:couchbase:$testcontainersVersion"
 
 	// logging
-	compile 'org.apache.logging.log4j:log4j-api:+' // log4j
-	compile 'org.apache.logging.log4j:log4j-core:+' // log4j
-	compile 'org.apache.logging.log4j:log4j-slf4j-impl:+' // log4j -> slf4j
+	compile 'org.apache.logging.log4j:log4j-api:2.14.1' // log4j
+	compile 'org.apache.logging.log4j:log4j-core:2.14.1' // log4j
+	compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.14.1' // log4j -> slf4j
 
-	//InfluxDb
-	compile 'org.influxdb:influxdb-java:2.17'
+	// Databases
+	compile 'org.influxdb:influxdb-java:2.21'
+	compile 'com.couchbase.client:java-client:3.1.5'
+	runtimeOnly 'org.postgresql:postgresql:42.2.20' // postgresql jdbc driver required during runtime
+
+
+	compile 'commons-io:commons-io:2.8.0' // I/O functionalities
+	compile 'org.apache.commons:commons-compress:1.20' // I/O functionalities
 }
 
 wrapper {

@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -11,7 +11,7 @@ import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
-import tec.uom.se.ComparableQuantity
+import tech.units.indriya.ComparableQuantity
 
 import javax.measure.quantity.ElectricPotential
 import java.time.ZonedDateTime
@@ -23,7 +23,7 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
 		def expectedClasses = [NodeInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A NodeInputFactory should parse a valid NodeInput correctly"() {
@@ -45,7 +45,7 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
 		def operatorInput = Mock(OperatorInput)
 
 		when:
-		Optional<NodeInput> input = inputFactory.getEntity(new AssetInputEntityData(parameter, inputClass, operatorInput))
+		Optional<NodeInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
 
 		then:
 		input.present

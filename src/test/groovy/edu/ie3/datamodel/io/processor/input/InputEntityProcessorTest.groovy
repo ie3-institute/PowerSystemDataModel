@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -19,33 +19,19 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
-import edu.ie3.datamodel.models.input.system.BmInput
-import edu.ie3.datamodel.models.input.system.ChpInput
-import edu.ie3.datamodel.models.input.system.EvInput
-import edu.ie3.datamodel.models.input.system.FixedFeedInInput
-import edu.ie3.datamodel.models.input.system.HpInput
-import edu.ie3.datamodel.models.input.system.LoadInput
-import edu.ie3.datamodel.models.input.system.PvInput
-import edu.ie3.datamodel.models.input.system.StorageInput
-import edu.ie3.datamodel.models.input.system.WecInput
-import edu.ie3.datamodel.models.input.system.type.BmTypeInput
-import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
-import edu.ie3.datamodel.models.input.system.type.EvTypeInput
-import edu.ie3.datamodel.models.input.system.type.HpTypeInput
-import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
-import edu.ie3.datamodel.models.input.system.type.WecTypeInput
+import edu.ie3.datamodel.models.input.system.*
+import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.TypeTestData
-import edu.ie3.util.TimeTools
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 /**
  * Testing the function of processors
@@ -54,9 +40,6 @@ import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
  * @since 24.03.20
  */
 class InputEntityProcessorTest extends Specification {
-	static {
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-	}
 
 	def "A InputEntityProcessor should de-serialize a provided NodeInput correctly"() {
 		given:
@@ -285,6 +268,18 @@ class InputEntityProcessorTest extends Specification {
 			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"thermalBus"      : SystemParticipantTestData.hpInput.thermalBus.uuid.toString(),
 			"type"            : SystemParticipantTestData.hpInput.type.uuid.toString()
+		]
+		EvcsInput | SystemParticipantTestData.evcsInput || [
+			"uuid"            : SystemParticipantTestData.evcsInput.uuid.toString(),
+			"id"              : SystemParticipantTestData.evcsInput.id,
+			"node"            : SystemParticipantTestData.evcsInput.node.uuid.toString(),
+			"operatesUntil"   : SystemParticipantTestData.evcsInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
+			"operatesFrom"    : SystemParticipantTestData.evcsInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
+			"operator"        : SystemParticipantTestData.evcsInput.operator.uuid.toString(),
+			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+			"type"            : SystemParticipantTestData.evcsInput.type.toString(),
+			"cosPhiRated"     : SystemParticipantTestData.evcsInput.cosPhiRated.toString(),
+			"chargingPoints"     : SystemParticipantTestData.evcsInput.chargingPoints.toString()
 		]
 	}
 

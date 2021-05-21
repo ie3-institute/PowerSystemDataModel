@@ -1,44 +1,33 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.utils
 
-import edu.ie3.datamodel.graph.DistanceWeightedGraph
-import edu.ie3.datamodel.models.input.connector.SwitchInput
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput
-import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
-import edu.ie3.test.common.GridTestData
-
-import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
 import edu.ie3.datamodel.exceptions.InvalidGridException
+import edu.ie3.datamodel.graph.DistanceWeightedGraph
 import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
-import edu.ie3.datamodel.models.input.container.GraphicElements
-import edu.ie3.datamodel.models.input.container.GridContainer
-import edu.ie3.datamodel.models.input.container.JointGridContainer
-import edu.ie3.datamodel.models.input.container.RawGridElements
-import edu.ie3.datamodel.models.input.container.SubGridContainer
-import edu.ie3.datamodel.models.input.container.SystemParticipants
-import edu.ie3.util.TimeTools
-import tec.uom.se.quantity.Quantities
+import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.container.*
+import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
+import edu.ie3.test.common.ComplexTopology
+import edu.ie3.test.common.GridTestData
+import spock.lang.Shared
+import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
 
 import java.time.ZoneId
 
-import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
-import edu.ie3.test.common.ComplexTopology
-import spock.lang.Shared
-import spock.lang.Specification
+import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
+import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class ContainerUtilsTest extends Specification {
-	static {
-		TimeTools.initialize(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd HH:mm:ss")
-	}
 
 	@Shared
 	GridContainer complexTopology = ComplexTopology.grid
@@ -276,10 +265,10 @@ class ContainerUtilsTest extends Specification {
 		then:
 		InvalidGridException ex = thrown()
 		ex.message == "There are 2 voltage levels apparent, although only one is expected. Following voltage levels" +
-				" are present: CommonVoltageLevel{id='Mittelspannung', nominalVoltage=10.0 kV, synonymousIds=" +
-				"[Mittelspannung, ms, ms_10kv, mv, mv_10kV], voltageRange=Interval [10.0 kV, 20.0 kV)}, " +
-				"CommonVoltageLevel{id='Mittelspannung', nominalVoltage=20.0 kV, synonymousIds=[Mittelspannung, ms, " +
-				"ms_20kv, mv, mv_20kV], voltageRange=Interval [20.0 kV, 30.0 kV)}"
+				" are present: CommonVoltageLevel{id='Mittelspannung', nominalVoltage=10 kV, synonymousIds=" +
+				"[Mittelspannung, ms, ms_10kv, mv, mv_10kV], voltageRange=Interval [10 kV, 20 kV)}, CommonVoltageLevel" +
+				"{id='Mittelspannung', nominalVoltage=20 kV, synonymousIds=[Mittelspannung, ms, ms_20kv, mv, mv_20kV], " +
+				"voltageRange=Interval [20 kV, 30 kV)}"
 	}
 
 	def "The container util determines the set of subnet number correctly"() {
@@ -444,7 +433,7 @@ class ContainerUtilsTest extends Specification {
 		Optional<DistanceWeightedGraph> resultingGraphOpt = ContainerUtils.getDistanceTopologyGraph(grid)
 
 		then:
-		resultingGraphOpt.isPresent()
+		resultingGraphOpt.present
 		DistanceWeightedGraph resultingGraph = resultingGraphOpt.get()
 
 		resultingGraph.vertexSet() == ComplexTopology.grid.getRawGrid().getNodes()

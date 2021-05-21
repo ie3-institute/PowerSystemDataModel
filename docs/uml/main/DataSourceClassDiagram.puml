@@ -1,0 +1,212 @@
+@startuml
+
+note "Assuming all classes to implement \nthe abstract methods of their interfaces\n\n" as generalNotes
+
+interface DataSource
+
+interface TypeSource {
+    {abstract} Set<Transformer2WTypeInput> getTransformer2WTypes()
+    {abstract} Set<Transformer3WTypeInput> getTransformer3WTypes()
+    {abstract} Set<OperatorInput> getOperators()
+    {abstract} Set<LineTypeInput> getLineTypes()
+    {abstract} Set<BmTypeInput> getBmTypes()
+    {abstract} Set<ChpTypeInput> getChpTypes()
+    {abstract} Set<HpTypeInput> getHpTypes()
+    {abstract} Set<StorageTypeInput> getStorageTypes()
+    {abstract} Set<WecTypeInput> getWecTypes()
+    {abstract} Set<EvTypeInput> getEvTypes()
+}
+DataSource <|-- TypeSource
+
+interface ThermalSource {
+    {abstract} Set<ThermalBusInput> getThermalBuses()
+    {abstract} Set<ThermalBusInput> getThermalBuses(Set<OperatorInput>)
+    {abstract} Set<ThermalStorageInput> getThermalStorages()
+    {abstract} Set<ThermalStorageInput> getThermalStorages(Set<OperatorInput>, Set<ThermalBusInput>)
+    {abstract} Set<ThermalHouseInput> getThermalHouses()
+    {abstract} Set<ThermalHouseInput> getThermalHouses(Set<OperatorInput>, Set<ThermalBusInput>)
+    {abstract} Set<CylindricalStorageInput> getCylindricStorages()
+    {abstract} Set<CylindricalStorageInput> getCylindricStorages(Set<OperatorInput>, Set<ThermalBusInput>)
+}
+DataSource <|-- ThermalSource
+
+interface RawGridSource {
+    {abstract} Optional<RawGridElements> getGridData()
+    {abstract} Set<NodeInput> getNodes()
+    {abstract} Set<NodeInput> getNodes(Set<OperatorInput>)
+    {abstract} Set<LineInput> getLines()
+    {abstract} Set<LineInput> getLines(Set<NodeInput>, Set<LineTypeInput>, Set<OperatorInput>)
+    {abstract} Set<Transformer2WInput> get2WTransformers()
+    {abstract} Set<Transformer2WInput> get2WTransformers(Set<NodeInput>, Set<Transformer2WTypeInput>, Set<OperatorInput>)
+    {abstract} Set<Transformer3WInput> get3WTransformers()
+    {abstract} Set<Transformer3WInput> get3WTransformers(Set<NodeInput>, Set<Transformer3WTypeInput>, Set<OperatorInput>)
+    {abstract} Set<SwitchInput> getSwitches()
+    {abstract} Set<SwitchInput> getSwitches(Set<NodeInput>, Set<OperatorInput>)
+    {abstract} Set<MeasurementUnitInput> getMeasurementUnits()
+    {abstract} Set<MeasurementUnitInput> getMeasurementUnits(Set<NodeInput>, Set<OperatorInput>)
+}
+DataSource <|-- RawGridSource
+
+interface SystemParticipantSource{
+    {abstract} Optional<SystemParticipants> getSystemParticipants()
+    {abstract} Set<BmInput> getBmPlants()
+    {abstract} Set<BmInput> getBmPlants(Set<NodeInput>, Set<OperatorInput>, Set<BmTypeInput>)
+    {abstract} Set<ChpInput> getChpPlants()
+    {abstract} Set<ChpInput> getChpPlants(Set<NodeInput>, Set<OperatorInput>, Set<ChpTypeInput>, Set<ThermalBusInput>, Set<ThermalStorageInput>)
+    {abstract} Set<EvInput> getEvs()
+    {abstract} Set<EvInput> getEvs(Set<NodeInput>, Set<OperatorInput>, Set<EvTypeInput>)
+    {abstract} Set<EvcsInput> getEvCS()
+    {abstract} Set<EvcsInput> getEvCS(Set<NodeInput>, Set<OperatorInput>)
+    {abstract} Set<FixedFeedInInput> getFixedFeedIns()
+    {abstract} Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput>, Set<OperatorInput>)
+    {abstract} Set<HpInput> getHeatPumps()
+    {abstract} Set<HpInput> getHeatPumps(Set<NodeInput>, Set<OperatorInput>, Set<HpTypeInput>, Set<ThermalBusInput>)
+    {abstract} Set<LoadInput> getLoads()
+    {abstract} Set<LoadInput> getLoads(Set<NodeInput>, Set<OperatorInput>)
+    {abstract} Set<PvInput> getPvPlants()
+    {abstract} Set<PvInput> getPvPlants(Set<NodeInput>, Set<OperatorInput>)
+    {abstract} Set<StorageInput> getStorages()
+    {abstract} Set<StorageInput> getStorages(Set<NodeInput>, Set<OperatorInput>, Set<StorageTypeInput>)
+    {abstract} Set<WecInput> getWecPlants()
+    {abstract} Set<WecInput> getWecPlants(Set<NodeInput>, Set<OperatorInput>, Set<WecTypeInput>)
+}
+DataSource <|-- SystemParticipantSource
+
+interface GraphicSource {
+    {abstract} Optional<GraphicElements> getGraphicElements()
+    {abstract} Set<NodeGraphicInput> getNodeGraphicInput()
+    {abstract} Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput>)
+    {abstract} Set<LineGraphicInput> getLineGraphicInput()
+    {abstract} Set<LineGraphicInput> getLineGraphicInput(Set<LineInput>)
+}
+DataSource <|-- GraphicSource
+
+interface WeatherSource {
+    {abstract} Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(ClosedInterval<ZonedDateTime>)
+    {abstract} Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(ClosedInterval<ZonedDateTime>, Collection<Point>)
+    {abstract} WeatherValue getWeather(ZonedDateTime date, Point coordinate)
+}
+DataSource <|-- WeatherSource
+
+interface TimeSeriesMappingSource {
+    {abstract} Map<UUID, UUID> getMapping()
+    Optional<UUID> getTimeSeriesUuid(UUID)
+    {abstract} Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(UUID)
+}
+DataSource <|-- TimeSeriesMappingSource
+
+class CsvTimeSeriesMappingSource {
+    - TimeSeriesMappingFactory mappingFactory
+    - Map<UUID, UUID> mapping
+}
+TimeSeriesMappingSource <|.. CsvTimeSeriesMappingSource
+CsvDataSource <|-- CsvTimeSeriesMappingSource
+
+interface TimeSeriesSource<V extends Value> {
+    {abstract} IndividualTimeSeries<V> getTimeSeries()
+    {abstract} IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime>))
+    {abstract} Optional<V> getValue(ZonedDateTime)
+}
+DataSource <|-- TimeSeriesSource
+
+class CsvTimeSeriesSource<V extends Value> {
+    - IndividualTimeSeries<V> timeSeries
+    + {static} CsvTimeSeriesSource<? extends Value> getSource(\n\tString,\n\tString,\n\tEntityPersistenceNamingStrategy,\n\tCsvFileConnector.CsvIndividualTimeSeriesMetaInformation)
+    - IndividualTimeSeries<V> buildIndividualTimeSeries(\n\tUUID,\n\tfilePath,\n\tFunction<Map<String, String>,\n\tOptional<TimeBasedValue<V>>>)
+    - Optional<TimeBasedValue<V>> buildTimeBasedValue(\n\tMap<String, String>,\n\tClass<V>,\n\tTimeBasedSimpleValueFactory<V>)
+}
+TimeSeriesSource <|.. CsvTimeSeriesSource
+CsvDataSource <|-- CsvTimeSeriesSource
+
+interface DataConnector {
+    {abstract} shutdown()
+}
+
+' Implementations
+
+Abstract Class CsvDataSource {
+    - String csvSep
+    # CsvFileConnector connector
+    + CsvDataSource(String, String, EntityPersistenceNamingStrategy)
+}
+DataSource <|.. CsvDataSource
+
+Class CsvTypeSource {
+    - OperatorInputFactory operatorInputFactory
+    - Transformer2WTypeInputFactory transformer2WTypeInputFactory
+    - LineTypeInputFactory lineTypeInputFactory
+    - Transformer3WTypeInputFactory transformer3WTypeInputFactory
+    - SystemParticipantTypeInputFactory systemParticipantTypeInputFactory
+    + CsvTypeSource(String, String, EntityPersistenceNamingStrategy)
+}
+TypeSource <|.. CsvTypeSource
+CsvDataSource <|-- CsvTypeSource
+
+Class CsvThermalSource {
+    - TypeSource typeSource
+    - ThermalBusInputFactory thermalBusInputFactory
+    - CylindricalStorageInputFactory cylindricalStorageInputFactory
+    - ThermalHouseInputFactory thermalHouseInputFactory
+    + CsvThermalSource(String, String, EntityPersistenceNamingStrategy, TypeSource)
+}
+ThermalSource <|.. CsvThermalSource
+CsvDataSource <|-- CsvThermalSource
+
+Class CsvRawGridSource {
+    - TypeSource typeSource
+    - NodeInputFactory nodeInputFactory
+    - LineInputFactory lineInputFactory
+    - Transformer2WInputFactory transformer2WInputFactory
+    - Transformer3WInputFactory transformer3WInputFactory
+    - SwitchInputFactory switchInputFactory
+    - MeasurementUnitInputFactory measurementUnitInputFactory
+    + CsvRawGridSource(String, String, EntityPersistenceNamingStrategy, TypeSource)
+}
+RawGridSource <|.. CsvRawGridSource
+CsvDataSource <|-- CsvRawGridSource
+
+Class CsvSystemParticipantSource {
+    - TypeSource typeSource
+    - RawGridSource rawGridSource
+    - ThermalSource thermalSource
+    - BmInputFactory bmInputFactory
+    - ChpInputFactory chpInputFactory
+    - EvInputFactory evInputFactory
+    - FixedFeedInInputFactory fixedFeedInInputFactory
+    - HpInputFactory hpInputFactory
+    - LoadInputFactory loadInputFactory
+    - PvInputFactory pvInputFactory
+    - StorageInputFactory storageInputFactory
+    - WecInputFactory wecInputFactory
+    - EvcsInputFactory evcsInputFactory
+    + CsvSystemParticipantSource(String, String, EntityPersistenceNamingStrategy, TypeSource, ThermalSource, RawGridSource)
+}
+SystemParticipantSource <|.. CsvSystemParticipantSource
+CsvDataSource <|-- CsvSystemParticipantSource
+
+Class CsvGraphicSource {
+    - TypeSource typeSource
+    - RawGridSource rawGridSource
+    - LineGraphicInputFactory lineGraphicInputFactory
+    - NodeGraphicInputFactory nodeGraphicInputFactory
+    + CsvGraphicSource(String, String, EntityPersistenceNamingStrategy, TypeSource, RawGridSource)
+}
+GraphicSource <|.. CsvGraphicSource
+CsvDataSource <|-- CsvGraphicSource
+
+Class CsvFileConnector {
+    - Map<Class<? extends UniqueEntity>, BufferedCsvWriter> entityWriters
+    - Map<UUID, BufferedCsvWriter> timeSeriesWriters
+    - EntityPersistenceNamingStrategy entityPersistenceNamingStrategy
+    - String baseDirectoryName
+    - {static} String FILE_ENDING
+    + CsvFileConnector(String, EntityPersistenceNamingStrategy)
+    + BufferedCsvWriter getOrInitWriter(Class<? extends UniqueEntity>, String[], String)
+    + BufferedCsvWriter getOrInitWriter(T, String[], String)
+    + BufferedCsvWriter initWriter(String, CsvFileDefinition)
+    + BufferedReader initReader(Class<? extends UniqueEntity>)
+    - CsvFileDefinition buildFileDefinition(T, String[], String)
+    - CsvFileDefinition buildFileDefinition(Class<? extends UniqueEntity>, String[], String)
+}
+DataConnector <|.. CsvFileConnector
+@enduml

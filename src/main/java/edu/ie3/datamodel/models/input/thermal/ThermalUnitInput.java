@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -65,6 +65,48 @@ public abstract class ThermalUnitInput extends AssetInput implements HasThermalB
 
   @Override
   public String toString() {
-    return "ThermalUnitInput{" + "bus=" + thermalBus + '}';
+    return "ThermalUnitInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", bus="
+        + thermalBus.getUuid()
+        + '}';
+  }
+
+  /**
+   * Abstract class for all builders that build child entities of abstract class {@link
+   * ThermalUnitInput}
+   */
+  protected abstract static class ThermalUnitInputCopyBuilder<
+          T extends ThermalUnitInput.ThermalUnitInputCopyBuilder<T>>
+      extends AssetInputCopyBuilder<T> {
+
+    private ThermalBusInput thermalBus;
+
+    protected ThermalUnitInputCopyBuilder(ThermalUnitInput entity) {
+      super(entity);
+      this.thermalBus = entity.getThermalBus();
+    }
+
+    public T thermalBus(ThermalBusInput thermalBus) {
+      this.thermalBus = thermalBus;
+      return childInstance();
+    }
+
+    protected ThermalBusInput getThermalBus() {
+      return thermalBus;
+    }
+
+    @Override
+    public abstract ThermalUnitInput build();
+
+    @Override
+    protected abstract T childInstance();
   }
 }

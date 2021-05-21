@@ -1,11 +1,12 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models;
 
 import edu.ie3.util.interval.ClosedInterval;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -16,7 +17,7 @@ import java.util.Optional;
  * Time for which something is operated, can be limited to a time frame with one or two bounds or
  * not limited which is by definition equal to always on
  */
-public class OperationTime {
+public class OperationTime implements Serializable {
 
   /** Date of operation start */
   private ZonedDateTime startDate;

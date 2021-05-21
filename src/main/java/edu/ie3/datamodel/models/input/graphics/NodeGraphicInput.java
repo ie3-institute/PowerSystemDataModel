@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -60,7 +60,14 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
 
   @Override
   public String toString() {
-    return "NodeGraphicInput{" + "node=" + node + ", point=" + point + '}';
+    return "NodeGraphicInput{"
+        + "uuid="
+        + getUuid()
+        + ", node="
+        + node.getUuid()
+        + ", point="
+        + point
+        + '}';
   }
 
   @Override

@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -9,7 +9,7 @@ import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
-import edu.ie3.datamodel.utils.GridAndGeoUtils;
+import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
 import org.locationtech.jts.geom.LineString;
 
@@ -62,7 +62,7 @@ public abstract class GraphicInputFactory<T extends GraphicInput, D extends Enti
     final LineString path =
         data.getLineString(PATH_LINE_STRING)
             .orElse(
-                GridAndGeoUtils.buildSafeLineStringBetweenCoords(
+                GeoUtils.buildSafeLineStringBetweenCoords(
                     NodeInput.DEFAULT_GEO_POSITION.getCoordinate(),
                     NodeInput.DEFAULT_GEO_POSITION.getCoordinate()));
 

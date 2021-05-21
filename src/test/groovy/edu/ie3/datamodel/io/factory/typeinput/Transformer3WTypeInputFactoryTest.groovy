@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -19,7 +19,7 @@ class Transformer3WTypeInputFactoryTest extends Specification implements Factory
 		def expectedClasses = [Transformer3WTypeInput]
 
 		expect:
-		typeInputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		typeInputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A Transformer3WTypeInputFactory should parse a valid Transformer2WTypeInput correctly"() {
@@ -51,7 +51,7 @@ class Transformer3WTypeInputFactoryTest extends Specification implements Factory
 		def typeInputClass = Transformer3WTypeInput
 
 		when:
-		Optional<Transformer3WTypeInput> typeInput = typeInputFactory.getEntity(new SimpleEntityData(parameter, typeInputClass))
+		Optional<Transformer3WTypeInput> typeInput = typeInputFactory.get(new SimpleEntityData(parameter, typeInputClass))
 
 		then:
 		typeInput.present

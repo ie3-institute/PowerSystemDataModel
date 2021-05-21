@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -7,15 +7,15 @@ package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
-import edu.ie3.util.quantities.dep.interfaces.Currency;
-import edu.ie3.util.quantities.dep.interfaces.EnergyPrice;
+import edu.ie3.util.quantities.interfaces.Currency;
+import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput} */
 public class WecTypeInput extends SystemParticipantTypeInput {
@@ -96,6 +96,16 @@ public class WecTypeInput extends SystemParticipantTypeInput {
     return "WecTypeInput{"
         + "uuid="
         + getUuid()
+        + ", id="
+        + getId()
+        + "capex="
+        + getCapex()
+        + ", opex="
+        + getOpex()
+        + ", sRated="
+        + getsRated()
+        + ", cosphiRated="
+        + getCosPhiRated()
         + ", cpCharacteristic="
         + cpCharacteristic
         + ", etaConv="

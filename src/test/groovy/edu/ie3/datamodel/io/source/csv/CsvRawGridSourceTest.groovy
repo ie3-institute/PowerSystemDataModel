@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -27,8 +27,8 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 	CsvRawGridSource source
 
 	def setupSpec() {
-		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-		source = new CsvRawGridSource(csvSep, gridFolderPath, fileNamingStrategy, typeSource)
+		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, entityPersistenceNamingStrategy)
+		source = new CsvRawGridSource(csvSep, gridFolderPath, entityPersistenceNamingStrategy, typeSource)
 	}
 
 	def "The CsvRawGridSource is able to convert single valid AssetInputEntityData to ConnectorInputEntityData"() {
@@ -61,10 +61,10 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		def connectorDataOption = source.buildUntypedConnectorInputEntityData(validAssetEntityInputData, nodes)
 
 		then: "everything is fine"
-		connectorDataOption.isPresent()
+		connectorDataOption.present
 		connectorDataOption.get().with {
 			assert fieldsToValues == expectedFieldsToAttributes
-			assert entityClass == SwitchInput
+			assert targetClass == SwitchInput
 			assert nodeA == rgtd.nodeA
 			assert nodeB == rgtd.nodeB
 		}
@@ -91,7 +91,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		def connectorDataOption = source.buildUntypedConnectorInputEntityData(validAssetEntityInputData, nodes)
 
 		then: "it returns en empty Optional"
-		!connectorDataOption.isPresent()
+		!connectorDataOption.present
 	}
 
 
@@ -284,7 +284,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		def actual = source.findAndAddType(validConnectorEntityData, availableTypes)
 
 		then: "everything is fine"
-		!actual.isPresent()
+		!actual.present
 	}
 
 	def "The CsvRawGridSource is able to convert a stream of valid ConnectorInputEntityData to TypedConnectorInputEntityData"() {
@@ -442,7 +442,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 		def actual = source.addThirdNode(typedEntityData, availableNodes)
 
 		then: "everything is fine"
-		!actual.isPresent()
+		!actual.present
 	}
 
 	def "The CsvRawGridSource is able to add the third node for a three winding transformer to a stream of candidates"() {
@@ -722,7 +722,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 				)
 
 		then: "all elements are there"
-		actual.isPresent()
+		actual.present
 		actual.get().with {
 			/* It's okay, to only test the uuids, because content is tested with the other test mehtods */
 			assert nodes.size() == expected.nodes.size()
@@ -742,25 +742,25 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "The CsvRawGridSource returns an empty Optional, if one mandatory element for the RawGridElements is missing"() {
 		given: "a source pointing to malformed grid data"
-		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-		source = new CsvRawGridSource(csvSep, gridFolderPath+"_malformed", fileNamingStrategy, typeSource)
+		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, entityPersistenceNamingStrategy)
+		source = new CsvRawGridSource(csvSep, gridFolderPath + "_malformed", entityPersistenceNamingStrategy, typeSource)
 
 		when: "loading a total grid structure from file"
 		def actual = source.getGridData()
 
 		then: "the optional is empty"
-		!actual.isPresent()
+		!actual.present
 	}
 
 	def "The CsvRawGridSource returns an empty Optional, if the RawGridElements contain no single element"() {
 		given: "a source pointing to malformed grid data"
-		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-		source = new CsvRawGridSource(csvSep, gridFolderPath+"_empty", fileNamingStrategy, typeSource)
+		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, entityPersistenceNamingStrategy)
+		source = new CsvRawGridSource(csvSep, gridFolderPath + "_empty", entityPersistenceNamingStrategy, typeSource)
 
 		when: "loading a total grid structure from file"
 		def actual = source.getGridData()
 
 		then: "the optional is empty"
-		!actual.isPresent()
+		!actual.present
 	}
 }

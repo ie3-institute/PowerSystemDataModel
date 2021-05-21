@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Representation of a result with regard to a thermal unit */
 public abstract class ThermalUnitResult extends ResultEntity {
@@ -25,13 +25,12 @@ public abstract class ThermalUnitResult extends ResultEntity {
   /**
    * Constructor for the thermal result with
    *
-   * @param timestamp The time, the result is related to
+   * @param time The time, the result is related to
    * @param inputModel The input model's UUID, the result is related to
    * @param qDot Average thermal power exchanged with the unit
    */
-  public ThermalUnitResult(
-      ZonedDateTime timestamp, UUID inputModel, ComparableQuantity<Power> qDot) {
-    super(timestamp, inputModel);
+  public ThermalUnitResult(ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
+    super(time, inputModel);
     this.qDot = qDot;
   }
 
@@ -39,13 +38,13 @@ public abstract class ThermalUnitResult extends ResultEntity {
    * Constructor for the thermal result with
    *
    * @param uuid The uuid of this result
-   * @param timestamp The time, the result is related to
+   * @param time The time, the result is related to
    * @param inputModel The input model's UUID, the result is related to
    * @param qDot Average thermal power exchanged with the unit
    */
   public ThermalUnitResult(
-      UUID uuid, ZonedDateTime timestamp, UUID inputModel, ComparableQuantity<Power> qDot) {
-    super(uuid, timestamp, inputModel);
+      UUID uuid, ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
+    super(uuid, time, inputModel);
     this.qDot = qDot;
   }
 
@@ -73,6 +72,15 @@ public abstract class ThermalUnitResult extends ResultEntity {
 
   @Override
   public String toString() {
-    return "ThermalUnitResult{" + "qDot=" + qDot + '}';
+    return "ThermalUnitResult{"
+        + "uuid="
+        + getUuid()
+        + ", time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + ", qDot="
+        + qDot
+        + '}';
   }
 }

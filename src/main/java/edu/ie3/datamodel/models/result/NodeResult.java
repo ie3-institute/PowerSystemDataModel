@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput} */
 public class NodeResult extends ResultEntity {
@@ -24,17 +24,17 @@ public class NodeResult extends ResultEntity {
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
    *
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param vMag voltage magnitude @ this node in p.u.
    * @param vAng voltage angle @ this node in degree
    */
   public NodeResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Dimensionless> vMag,
       ComparableQuantity<Angle> vAng) {
-    super(timestamp, inputModel);
+    super(time, inputModel);
     this.vMag = vMag;
     this.vAng = vAng;
   }
@@ -44,18 +44,18 @@ public class NodeResult extends ResultEntity {
    *
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param vMag Dimensionless voltage magnitude
    * @param vAng Voltage angle in degrees
    */
   public NodeResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Dimensionless> vMag,
       ComparableQuantity<Angle> vAng) {
-    super(uuid, timestamp, inputModel);
+    super(uuid, time, inputModel);
     this.vMag = vMag;
     this.vAng = vAng;
   }
@@ -92,6 +92,17 @@ public class NodeResult extends ResultEntity {
 
   @Override
   public String toString() {
-    return "NodeResult{" + "vMag=" + vMag + ", vAng=" + vAng + '}';
+    return "NodeResult{"
+        + "uuid="
+        + getUuid()
+        + ", time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + ", vMag="
+        + vMag
+        + ", vAng="
+        + vAng
+        + '}';
   }
 }

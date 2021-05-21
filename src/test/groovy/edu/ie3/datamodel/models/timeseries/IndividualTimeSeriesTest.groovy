@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -61,7 +61,7 @@ class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestDa
 		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC")))
 
 		then:
-		expected.isPresent()
+		expected.present
 		expected.get().time == actual.get().time
 		expected.get().value.value == actual.get().value.value
 	}
@@ -74,7 +74,7 @@ class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestDa
 		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getPreviousTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")))
 
 		then:
-		expected.isPresent()
+		expected.present
 		expected.get().time == actual.get().time
 		expected.get().value.value == actual.get().value.value
 	}
@@ -92,7 +92,7 @@ class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestDa
 		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 10, 0, 0, ZoneId.of("UTC")))
 
 		then:
-		expected.isPresent()
+		expected.present
 		expected.get().time == actual.get().time
 		expected.get().value.value == actual.get().value.value
 	}
@@ -105,7 +105,7 @@ class IndividualTimeSeriesTest extends Specification implements TimeSeriesTestDa
 		Optional<TimeBasedValue<IntValue>> actual = individualIntTimeSeries.getNextTimeBasedValue(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")))
 
 		then:
-		expected.isPresent()
+		expected.present
 		expected.get().time == actual.get().time
 		expected.get().value.value == actual.get().value.value
 	}

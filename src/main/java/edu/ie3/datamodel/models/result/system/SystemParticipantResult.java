@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -10,31 +10,29 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /** Abstract class that holds values common to all other result entities */
 public abstract class SystemParticipantResult extends ResultEntity {
 
-  /**
-   * @param p active power output normally provided in MW
-   * @param q reactive power output normally provided in MVAr
-   */
+  /** active power output normally provided in MW */
   private ComparableQuantity<Power> p;
 
+  /** reactive power output normally provided in MVAr */
   private ComparableQuantity<Power> q;
 
   /**
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
    */
   public SystemParticipantResult(
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q) {
-    super(timestamp, inputModel);
+    super(time, inputModel);
     this.p = p;
     this.q = q;
   }
@@ -42,18 +40,18 @@ public abstract class SystemParticipantResult extends ResultEntity {
   /**
    * @param uuid uuid of this result entity, for automatic uuid generation use primary constructor
    *     above
-   * @param timestamp date and time when the result is produced
+   * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
    */
   public SystemParticipantResult(
       UUID uuid,
-      ZonedDateTime timestamp,
+      ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q) {
-    super(uuid, timestamp, inputModel);
+    super(uuid, time, inputModel);
     this.p = p;
     this.q = q;
   }
@@ -102,6 +100,17 @@ public abstract class SystemParticipantResult extends ResultEntity {
 
   @Override
   public String toString() {
-    return "SystemParticipantResult{" + "p=" + p + ", q=" + q + '}';
+    return "SystemParticipantResult{"
+        + "uuid="
+        + getUuid()
+        + ", time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + ", p="
+        + p
+        + ", q="
+        + q
+        + '}';
   }
 }

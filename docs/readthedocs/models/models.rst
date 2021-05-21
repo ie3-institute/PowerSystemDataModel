@@ -48,6 +48,38 @@ Harmonized Units System
   Same applies for interpreting the obtained results.
   In all models physical values are transferred to standard units on instantiation.
 
+Equality Checks
+  To represent quantities in the models within an acceptable accuracy, the JSR 385 reference implementation
+  `Indriya <https://github.com/unitsofmeasurement/indriya>`_ is used. Comparing quantity objects or objects holding quantity
+  instances is not as trivial as it might seem, because there might be different understandings about the equality of
+  quantities (e.g. there is a big difference between two instances being equal or equivalent). After long discussions how to
+  treat quantities in the entity :code:`equals()` method, we agreed on the following rules to be applied:
+    - equality check is done by calling :code:`Objects.equals(<QuantityInstanceA>, <QuantityInstanceB>)` or
+      :code:`<QuantityInstanceA>.equals(<QuantityInstanceB>)`.
+      Using :code:`Objects.equals(<QuantityInstanceA>, <QuantityInstanceB>)` is necessary especially for time series data.
+      As in contrast to all other places, quantity time series from real world data sometimes are not complete and
+      hence contain missing values. To represent missing values this is the only place where the usage of :code:`null`
+      is a valid choice and hence needs to be treated accordingly. Please remember that his is only allowed in very few
+      places and you should try to avoid using :code:`null` for quantities or any other constructor parameter whenever possible!
+    - equality is given if, and only if, the quantities value object and unit are exactly equal. Value objects can become
+      e.g. :code:`BigDecimal` or :code:`Double` instances. It is important, that the object type is also the same, otherwise
+      the entities :code:`equals()` method returns false. This behavior is in sync with the equals implementation
+      of the indriya library. Hence, you should ensure that your code always pass in the same kind of a quantity instance
+      with the same underlying number format and type. For this purpose you should especially be aware of the unit conversion
+      method :code:`AbstractQuantity.to(Quantity)` which may return seemingly unexpected types, e.g. if called on a quantity
+      with a :code:`double` typed value, it may return a quantity with a value of either :code:`Double` type or :code:`BigDecimal` type.
+    - for now, there is no default way to compare entities in a 'number equality' way provided. E.g. a line with a length
+      of 1km compared to a line with a length of 1000m is actually of the same length, but calling :code:`LineA.equals(LineB)`
+      would return :code:`false` as the equality check does NOT convert units. If you want to compare two entity instances
+      based on their equivalence you have (for now) check for each quantity manually using their :code:`isEquivalentTo()`
+      method. If you think you would benefit from a standard method that allows entity equivalence check, please consider
+      handing in an issue `here <https://github.com/ie3-institute/PowerSystemDataModel/issues>`_.
+      Furthermore, the current existing implementation of :code:`isEquivalentTo()` in indriya does not allow the provision of
+      a tolerance threshold that might be necessary when comparing values from floating point operations. We consider
+      providing such a method in our `PowerSystemUtils <https://github.com/ie3-institute/PowerSystemUtils>`_ library.
+      If you think you would benefit from such a method, please consider handing in an issue
+      `here <https://github.com/ie3-institute/PowerSystemUtils/issues>`_.
+
 *****
 Input
 *****
@@ -157,26 +189,29 @@ Repetitive Time Series
 To be as flexible, as possible, the actual content of the time series is given as children of the :code:`Value` class.
 The following different values are available:
 
-+--------------------------+------------------------------------------------------------------+
-| Value Class              | Purpose                                                          |
-+==========================+==================================================================+
-| :code:`PValue`           | Electrical active power                                          |
-+--------------------------+------------------------------------------------------------------+
-| :code:`SValue`           | Electrical active and reactive power                             |
-+--------------------------+------------------------------------------------------------------+
-| :code:`HeatAndPValue`    | | Combination of thermal power (e.g. in kW)                      |
-|                          | | and electrical active power (e.g. in kW)                       |
-+--------------------------+------------------------------------------------------------------+
-| :code:`HeatAndSValue`    | | Combination of thermal power (e.g. in kW)                      |
-|                          | | and electrical active and reactive power (e.g. in kW and kVAr) |
-+--------------------------+------------------------------------------------------------------+
-| :code:`EnergyPriceValue` | Wholesale market price (e.g. in € / MWh)                         |
-+--------------------------+------------------------------------------------------------------+
-| :code:`IrradiationValue` | Combination of diffuse and direct solar irradiation              |
-+--------------------------+------------------------------------------------------------------+
-| :code:`TemperatureValue` | Temperature information                                          |
-+--------------------------+------------------------------------------------------------------+
-| :code:`WindValue`        | Combination of wind direction and wind velocity                  |
-+--------------------------+------------------------------------------------------------------+
-| :code:`WeatherValue`     | Combination of irradiation, temperature and wind information     |
-+--------------------------+------------------------------------------------------------------+
++-------------------------------+------------------------------------------------------------------+
+| Value Class                   | Purpose                                                          |
++===============================+==================================================================+
+| :code:`PValue`                | Electrical active power                                          |
++-------------------------------+------------------------------------------------------------------+
+| :code:`SValue`                | Electrical active and reactive power                             |
++-------------------------------+------------------------------------------------------------------+
+| :code:`HeatAndPValue`         | | Combination of thermal power (e.g. in kW)                      |
+|                               | | and electrical active power (e.g. in kW)                       |
++-------------------------------+------------------------------------------------------------------+
+| :code:`HeatAndSValue`         | | Combination of thermal power (e.g. in kW)                      |
+|                               | | and electrical active and reactive power (e.g. in kW and kVAr) |
++-------------------------------+------------------------------------------------------------------+
+| :code:`EnergyPriceValue`      | Wholesale market price (e.g. in € / MWh)                         |
++-------------------------------+------------------------------------------------------------------+
+| :code:`SolarIrradianceValue`  | Combination of diffuse and direct solar irradiance               |
++-------------------------------+------------------------------------------------------------------+
+| :code:`TemperatureValue`      | Temperature information                                          |
++-------------------------------+------------------------------------------------------------------+
+| :code:`WindValue`             | Combination of wind direction and wind velocity                  |
++-------------------------------+------------------------------------------------------------------+
+| :code:`WeatherValue`          | Combination of irradiance, temperature and wind information      |
++-------------------------------+------------------------------------------------------------------+
+
+.. include:: ValidationUtils.rst
+

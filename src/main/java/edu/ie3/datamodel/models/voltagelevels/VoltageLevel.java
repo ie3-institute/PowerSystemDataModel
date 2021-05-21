@@ -1,19 +1,20 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.voltagelevels;
 
+import java.io.Serializable;
 import javax.measure.quantity.ElectricPotential;
-import tec.uom.se.ComparableQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Definition of a concrete voltage level. Here, only voltage levels with one rated voltage are
  * covered. Don't mix it up with "Netzebenen" in D-A-CH area, which also cover the transformation
  * levels.
  */
-public class VoltageLevel {
+public class VoltageLevel implements Serializable {
   protected final String id;
   protected final ComparableQuantity<ElectricPotential> nominalVoltage;
 

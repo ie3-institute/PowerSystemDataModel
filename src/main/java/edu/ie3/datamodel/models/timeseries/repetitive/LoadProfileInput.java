@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -23,7 +23,7 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
     super(uuid, values);
     this.type = type;
     this.dayOfWeekToHourlyValues =
-        entries.stream()
+        getEntries().stream()
             .collect(
                 Collectors.groupingBy(
                     LoadProfileEntry::getDayOfWeek,
@@ -55,11 +55,6 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
   }
 
   @Override
-  public Set<LoadProfileEntry> getEntries() {
-    return entries;
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
@@ -76,7 +71,9 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
   @Override
   public String toString() {
     return "LoadProfileInput{"
-        + "type="
+        + "uuid="
+        + getUuid()
+        + ", type="
         + type
         + ", dayOfWeekToHourlyValues="
         + dayOfWeekToHourlyValues

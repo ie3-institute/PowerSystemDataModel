@@ -1,12 +1,12 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.result.ResultEntity
@@ -25,9 +25,8 @@ import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.spock.Testcontainers
 import spock.lang.Shared
 import spock.lang.Specification
-import tec.uom.se.quantity.Quantities
+import tech.units.indriya.quantity.Quantities
 
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -35,16 +34,16 @@ import java.time.ZonedDateTime
 class InfluxDbSinkIT extends Specification {
 
 	@Shared
-	InfluxDBContainer influxDbContainer = new InfluxDBContainer()
+	InfluxDBContainer influxDbContainer = new InfluxDBContainer("1.8.4")
 	.withAuthEnabled(false)
 	.withDatabase("test_out")
-	.withExposedPorts(8086)
+	.withExposedPorts(8086) as InfluxDBContainer
 
 	@Shared
 	InfluxDbConnector connector
 
 	@Shared
-	FileNamingStrategy fileNamingStrategy
+	EntityPersistenceNamingStrategy entityPersistenceNamingStrategy
 
 	@Shared
 	InfluxDbSink sink
@@ -52,7 +51,7 @@ class InfluxDbSinkIT extends Specification {
 	def setupSpec() {
 		connector = new InfluxDbConnector(influxDbContainer.url,"test_out", "test_scenario")
 		sink = new InfluxDbSink(connector)
-		fileNamingStrategy = new FileNamingStrategy()
+		entityPersistenceNamingStrategy = new EntityPersistenceNamingStrategy()
 	}
 
 
@@ -73,7 +72,8 @@ class InfluxDbSinkIT extends Specification {
 				null)
 		when:
 		sink.persist(lineResult1)
-		def key = fileNamingStrategy.getFileName(LineResult.class).get().trim().replaceAll("\\W", "_");
+		sink.flush()
+		def key = entityPersistenceNamingStrategy.getEntityName(LineResult).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def fieldMap = parsedResults.get(key).first()
@@ -108,11 +108,14 @@ class InfluxDbSinkIT extends Specification {
 		def chpResult1 = new ChpResult(ZonedDateTime.of(2020, 5, 3, 14, 18, 0, 0, ZoneId.of("UTC")),
 				UUID.randomUUID(),
 				Quantities.getQuantity(42.24, StandardUnits.ACTIVE_POWER_RESULT),
-				Quantities.getQuantity(-42.24, StandardUnits.REACTIVE_POWER_RESULT))
+				Quantities.getQuantity(-42.24, StandardUnits.REACTIVE_POWER_RESULT),
+				Quantities.getQuantity(1.01, StandardUnits.Q_DOT_RESULT)
+				)
 		def chpResult2 = new ChpResult(ZonedDateTime.of(2020, 5, 3, 14, 19, 0, 0, ZoneId.of("UTC")),
 				UUID.randomUUID(),
 				Quantities.getQuantity(24.42, StandardUnits.ACTIVE_POWER_RESULT),
-				Quantities.getQuantity(-24.42, StandardUnits.REACTIVE_POWER_RESULT))
+				Quantities.getQuantity(-24.42, StandardUnits.REACTIVE_POWER_RESULT),
+				Quantities.getQuantity(1.01, StandardUnits.Q_DOT_RESULT))
 		def entities = [
 			lineResult1,
 			lineResult2,
@@ -122,8 +125,8 @@ class InfluxDbSinkIT extends Specification {
 		]
 		when:
 		sink.persistAll(entities)
-		def key_line = fileNamingStrategy.getFileName(LineResult.class).get().trim().replaceAll("\\W", "_");
-		def key_chp = fileNamingStrategy.getFileName(ChpResult.class).get().trim().replaceAll("\\W", "_");
+		def key_line = entityPersistenceNamingStrategy.getEntityName(LineResult).get().trim().replaceAll("\\W", "_")
+		def key_chp = entityPersistenceNamingStrategy.getEntityName(ChpResult).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key_line + ", " + key_chp))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def lineResults = parsedResults.get(key_line)
@@ -151,7 +154,7 @@ class InfluxDbSinkIT extends Specification {
 		IndividualTimeSeries<PValue> timeSeries = new IndividualTimeSeries(UUID.randomUUID(), [p1, p2, p3] as Set<TimeBasedValue>)
 		when:
 		sink.persistTimeSeries(timeSeries)
-		def key = fileNamingStrategy.getFileName(timeSeries).get().trim().replaceAll("\\W", "_");
+		def key = entityPersistenceNamingStrategy.getEntityName(timeSeries).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def pValuesMap = parsedResults.get(key)
@@ -177,12 +180,14 @@ class InfluxDbSinkIT extends Specification {
 				new PValue(Quantities.getQuantity(5d, StandardUnits.ACTIVE_POWER_IN)))
 		IndividualTimeSeries<PValue> timeSeries = new IndividualTimeSeries(UUID.randomUUID(), [p1] as Set<TimeBasedValue>)
 
-		def sinkWithEmptyNamingStrategy = new InfluxDbSink(connector, new EmptyFileNamingStrategy());
+		def sinkWithEmptyNamingStrategy = new InfluxDbSink(connector, new EmptyFileNamingStrategy())
 		when:
 		sinkWithEmptyNamingStrategy.persist(lineResult1)
 		sinkWithEmptyNamingStrategy.persist(timeSeries)
-		def key_lineresult = lineResult1.getClass().getSimpleName();
-		def key_timeseries = timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName()
+		sinkWithEmptyNamingStrategy.flush()
+
+		def key_lineresult = lineResult1.getClass().simpleName
+		def key_timeseries = timeSeries.getEntries().iterator().next().getValue().getClass().simpleName
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key_lineresult))
 		def parsedResults_lineresult = InfluxDbConnector.parseQueryResult(queryResult)
 		def fieldMap_lineresult = parsedResults_lineresult.get(key_lineresult).first()
@@ -211,10 +216,20 @@ class InfluxDbSinkIT extends Specification {
 		queryResult.getResults().get(0).getSeries() == null
 	}
 
+	def "An InfluxDbSink should terminate the corresponding session inside its connector correctly"() {
+		when:
+		sink.shutdown()
+
+		then:
+		// after shutdown the batch processor must be disabled and empty
+		!sink.connector.getSession().batchEnabled
+		sink.connector.getSession().batchProcessor.queue.isEmpty()
+	}
+
 
 	static def mapMatchesLineResultEntity(Map<String, String> fieldMap, LineResult lineResult) {
 		def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
-		timeUtil.toZonedDateTime(fieldMap.get("time")) == lineResult.getTimestamp()
+		timeUtil.toZonedDateTime(fieldMap.get("time")) == lineResult.getTime()
 		fieldMap.get("uuid") == lineResult.getUuid().toString()
 		fieldMap.get("input_model") == lineResult.getInputModel().toString()
 		def iAMagStr = fieldMap.get("iAMag")
@@ -234,7 +249,7 @@ class InfluxDbSinkIT extends Specification {
 
 	static def mapMatchesChpResultEntity(Map<String, String> fieldMap, ChpResult chpResult) {
 		def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
-		timeUtil.toZonedDateTime(fieldMap.get("time")) == chpResult.getTimestamp()
+		timeUtil.toZonedDateTime(fieldMap.get("time")) == chpResult.getTime()
 		fieldMap.get("uuid") == chpResult.getUuid().toString()
 		fieldMap.get("input_model") == chpResult.getInputModel().toString()
 		def pStr = fieldMap.get("p")
@@ -250,20 +265,20 @@ class InfluxDbSinkIT extends Specification {
 		timeUtil.toZonedDateTime(fieldMap.get("time")) == pVal.getTime()
 		fieldMap.get("uuid") == pVal.getUuid().toString()
 		def pStr = fieldMap.get("p")
-		if(pStr== null || pStr.empty) pVal.getValue().getP() == null
-		else Double.parseDouble(pStr) == pVal.getValue().getP().getValue()
+		if(pStr == null || pStr.empty) pVal.getValue().getP() == Optional.empty()
+		else Double.parseDouble(pStr) == pVal.getValue().getP().get().getValue()
 	}
 
 	//Always return an empty Optional for results
-	class EmptyFileNamingStrategy extends FileNamingStrategy {
+	class EmptyFileNamingStrategy extends EntityPersistenceNamingStrategy {
 		@Override
-		Optional<String> getResultEntityFileName(Class<? extends ResultEntity> resultEntityClass) {
-			return Optional.empty();
+		Optional<String> getResultEntityName(Class<? extends ResultEntity> resultEntityClass) {
+			return Optional.empty()
 		}
 
 		@Override
-		<T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value> Optional<String> getFileName(T timeSeries) {
-			return Optional.empty();
+		<T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value> Optional<String> getEntityName(T timeSeries) {
+			return Optional.empty()
 		}
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -68,15 +68,15 @@ public class SystemParticipantTypedEntityData<T extends SystemParticipantTypeInp
   public String toString() {
     return "SystemParticipantTypedEntityData{"
         + "typeInput="
-        + typeInput
+        + typeInput.getUuid()
         + ", node="
-        + getNode()
+        + getNode().getUuid()
         + ", operatorInput="
-        + getOperatorInput()
+        + getOperatorInput().getUuid()
         + ", fieldsToValues="
         + getFieldsToValues()
-        + ", entityClass="
-        + getEntityClass()
+        + ", targetClass="
+        + getTargetClass()
         + '}';
   }
 

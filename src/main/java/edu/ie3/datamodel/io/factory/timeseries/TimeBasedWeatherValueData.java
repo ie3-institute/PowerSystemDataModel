@@ -1,17 +1,18 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
+import edu.ie3.datamodel.models.value.WeatherValue;
 import java.util.Map;
-import java.util.Objects;
+import javax.measure.Quantity;
+import javax.measure.Unit;
 import org.locationtech.jts.geom.Point;
+import tech.units.indriya.ComparableQuantity;
 
-public class TimeBasedWeatherValueData extends EntityData {
+public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> {
 
   private final Point coordinate;
 
@@ -22,12 +23,17 @@ public class TimeBasedWeatherValueData extends EntityData {
    * @param coordinate coordinate for this WeatherValue
    */
   public TimeBasedWeatherValueData(Map<String, String> fieldsToAttributes, Point coordinate) {
-    super(fieldsToAttributes, TimeBasedValue.class);
+    super(fieldsToAttributes, WeatherValue.class);
     this.coordinate = coordinate;
   }
 
   public Point getCoordinate() {
     return coordinate;
+  }
+
+  @Override
+  public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit) {
+    return getField(field).isEmpty() ? null : super.getQuantity(field, unit);
   }
 
   @Override
@@ -37,7 +43,7 @@ public class TimeBasedWeatherValueData extends EntityData {
     if (!super.equals(o)) return false;
 
     TimeBasedWeatherValueData that = (TimeBasedWeatherValueData) o;
-    return Objects.equals(coordinate, that.coordinate);
+    return coordinate.equals(that.coordinate);
   }
 
   @Override
@@ -45,5 +51,17 @@ public class TimeBasedWeatherValueData extends EntityData {
     int result = super.hashCode();
     result = 31 * result + (coordinate != null ? coordinate.hashCode() : 0);
     return result;
+  }
+
+  @Override
+  public String toString() {
+    return "TimeBasedWeatherValueData{"
+        + "fieldsToAttributes="
+        + getFieldsToValues()
+        + ", targetClass="
+        + getTargetClass()
+        + ", coordinate="
+        + coordinate
+        + '}';
   }
 }

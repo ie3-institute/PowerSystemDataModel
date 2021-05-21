@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -20,7 +20,7 @@ class SwitchInputFactoryTest extends Specification implements FactoryTestHelper 
 		def expectedClasses = [SwitchInput]
 
 		expect:
-		inputFactory.classes() == Arrays.asList(expectedClasses.toArray())
+		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
 	}
 
 	def "A SwitchInputFactory should parse a valid SwitchInput correctly"() {
@@ -39,7 +39,7 @@ class SwitchInputFactoryTest extends Specification implements FactoryTestHelper 
 		def nodeInputB = Mock(NodeInput)
 
 		when:
-		Optional<SwitchInput> input = inputFactory.getEntity(new ConnectorInputEntityData(parameter, inputClass, operatorInput, nodeInputA, nodeInputB))
+		Optional<SwitchInput> input = inputFactory.get(new ConnectorInputEntityData(parameter, inputClass, operatorInput, nodeInputA, nodeInputB))
 
 		then:
 		input.present

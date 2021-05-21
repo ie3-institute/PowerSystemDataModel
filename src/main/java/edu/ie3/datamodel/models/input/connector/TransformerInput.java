@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -97,7 +97,26 @@ public abstract class TransformerInput extends ConnectorInput {
 
   @Override
   public String toString() {
-    return "TransformerInput{" + "tapPos=" + tapPos + ", autoTap=" + autoTap + '}';
+    return "TransformerInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", nodeA="
+        + getNodeA().getUuid()
+        + ", nodeB="
+        + getNodeB().getUuid()
+        + ", noOfParallelDevices="
+        + getParallelDevices()
+        + ", tapPos="
+        + tapPos
+        + ", autoTap="
+        + autoTap
+        + '}';
   }
 
   /**

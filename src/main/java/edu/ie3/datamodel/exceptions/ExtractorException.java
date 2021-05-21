@@ -1,12 +1,12 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.exceptions;
 
 /**
- * Exception that should be used whenevery something invalid happens in a implementation of a {@link
+ * Exception that should be used whenever something invalid happens in a implementation of a {@link
  * edu.ie3.datamodel.io.connectors.DataConnector}
  *
  * @version 0.1

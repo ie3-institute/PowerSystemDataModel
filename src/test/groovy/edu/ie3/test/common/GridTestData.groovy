@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
@@ -21,21 +21,13 @@ import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.util.TimeUtil
-import edu.ie3.util.quantities.dep.PowerSystemUnits
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.io.geojson.GeoJsonReader
-import tec.uom.se.quantity.Quantities
-import tec.uom.se.unit.MetricPrefix
-import tec.uom.se.unit.Units
+import tech.units.indriya.quantity.Quantities
 
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLT
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.KILOVOLTAMPERE
-import static edu.ie3.util.quantities.dep.PowerSystemUnits.PU
-import static tec.uom.se.unit.Units.OHM
-import static tec.uom.se.unit.Units.PERCENT
-import static tec.uom.se.unit.Units.SIEMENS
+import static edu.ie3.datamodel.models.StandardUnits.*
+import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 /**
  * This class contains a collection of different model instances that can be used for testing purposes.
@@ -44,7 +36,7 @@ import static tec.uom.se.unit.Units.SIEMENS
  */
 class GridTestData {
 
-	private static final GeoJsonReader geoJsonReader = new GeoJsonReader()
+	public static final GeoJsonReader geoJsonReader = new GeoJsonReader()
 
 	public static final OperationTime defaultOperationTime = OperationTime.builder().
 	withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31")).
@@ -58,15 +50,15 @@ class GridTestData {
 	public static final Transformer2WTypeInput transformerTypeBtoD = new Transformer2WTypeInput(
 	UUID.fromString("202069a7-bcf8-422c-837c-273575220c8a"),
 	"HS-MS_1",
-	Quantities.getQuantity(45.375, OHM),
-	Quantities.getQuantity(102.759, OHM),
-	Quantities.getQuantity(20000d, KILOVOLTAMPERE),
-	Quantities.getQuantity(110d, KILOVOLT),
-	Quantities.getQuantity(20d, KILOVOLT),
-	Quantities.getQuantity(0d, MetricPrefix.MICRO(SIEMENS)),
-	Quantities.getQuantity(0d, MetricPrefix.MICRO(SIEMENS)),
-	Quantities.getQuantity(1.5, PERCENT),
-	Quantities.getQuantity(0d, DEGREE_GEOM),
+	Quantities.getQuantity(45.375d, IMPEDANCE),
+	Quantities.getQuantity(102.759d, IMPEDANCE),
+	Quantities.getQuantity(20000d, ACTIVE_POWER_IN),
+	Quantities.getQuantity(110d, RATED_VOLTAGE_MAGNITUDE),
+	Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE),
+	Quantities.getQuantity(0d, ADMITTANCE),
+	Quantities.getQuantity(0d, ADMITTANCE),
+	Quantities.getQuantity(1.5d, DV_TAP),
+	Quantities.getQuantity(0d, DPHI_TAP),
 	false,
 	0,
 	-10,
@@ -75,15 +67,15 @@ class GridTestData {
 	private static final Transformer2WTypeInput transformerTypeBtoE = new Transformer2WTypeInput(
 	UUID.fromString("ac30443b-29e7-4635-b399-1062cfb3ffda"),
 	"transformer_type_gedfi89fc7c895076ff25ec6d3b2e7ab9a1b24b37f73ecf30f895005d766a8d8d2774aa",
-	Quantities.getQuantity(0d, OHM),
-	Quantities.getQuantity(51.72750115394592, OHM),
-	Quantities.getQuantity(40000d, KILOVOLTAMPERE),
-	Quantities.getQuantity(110d, KILOVOLT),
-	Quantities.getQuantity(10d, KILOVOLT),
-	Quantities.getQuantity(0d, MetricPrefix.MICRO(SIEMENS)),
-	Quantities.getQuantity(0d, MetricPrefix.MICRO(SIEMENS)),
-	Quantities.getQuantity(1.777780055999756, PERCENT),
-	Quantities.getQuantity(0d, DEGREE_GEOM),
+	Quantities.getQuantity(0d, IMPEDANCE),
+	Quantities.getQuantity(51.72750115394592d, IMPEDANCE),
+	Quantities.getQuantity(40000d, ACTIVE_POWER_IN),
+	Quantities.getQuantity(110d, RATED_VOLTAGE_MAGNITUDE),
+	Quantities.getQuantity(10d, RATED_VOLTAGE_MAGNITUDE),
+	Quantities.getQuantity(0d, ADMITTANCE),
+	Quantities.getQuantity(0d, ADMITTANCE),
+	Quantities.getQuantity(1.777780055999756d, DV_TAP),
+	Quantities.getQuantity(0d, DPHI_TAP),
 	false,
 	10,
 	1,
@@ -93,15 +85,15 @@ class GridTestData {
 	private static final Transformer2WTypeInput transformerTypeCtoE = new Transformer2WTypeInput(
 	UUID.fromString("8441dd78-c528-4e63-830d-52d341131432"),
 	"no_shunt_elements_mv-mv",
-	Quantities.getQuantity(1.5, OHM),
-	Quantities.getQuantity(15.5, OHM),
-	Quantities.getQuantity(250d, KILOVOLTAMPERE),
-	Quantities.getQuantity(20d, KILOVOLT),
-	Quantities.getQuantity(10d, KILOVOLT),
-	Quantities.getQuantity(0d, MetricPrefix.MICRO(SIEMENS)),
-	Quantities.getQuantity(0d, MetricPrefix.MICRO(SIEMENS)),
-	Quantities.getQuantity(1.5, PERCENT),
-	Quantities.getQuantity(0d, DEGREE_GEOM),
+	Quantities.getQuantity(1.5d, IMPEDANCE),
+	Quantities.getQuantity(15.5d, IMPEDANCE),
+	Quantities.getQuantity(250d, ACTIVE_POWER_IN),
+	Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE),
+	Quantities.getQuantity(10d, RATED_VOLTAGE_MAGNITUDE),
+	Quantities.getQuantity(0d, ADMITTANCE),
+	Quantities.getQuantity(0d, ADMITTANCE),
+	Quantities.getQuantity(1.5d, DV_TAP),
+	Quantities.getQuantity(0d, DPHI_TAP),
 	false,
 	0,
 	-5,
@@ -111,15 +103,15 @@ class GridTestData {
 	private static final Transformer2WTypeInput transformerTypeCtoX = new Transformer2WTypeInput(
 	UUID.fromString("08559390-d7c0-4427-a2dc-97ba312ae0ac"),
 	"MS-NS_1",
-	Quantities.getQuantity(10.078, OHM),
-	Quantities.getQuantity(23.312, OHM),
-	Quantities.getQuantity(630d, KILOVOLTAMPERE),
-	Quantities.getQuantity(20d, KILOVOLT),
-	Quantities.getQuantity(0.4, KILOVOLT),
-	Quantities.getQuantity(0d, MetricPrefix.MICRO(SIEMENS)),
-	Quantities.getQuantity(0d, MetricPrefix.MICRO(SIEMENS)),
-	Quantities.getQuantity(0.5, PERCENT),
-	Quantities.getQuantity(0d, DEGREE_GEOM),
+	Quantities.getQuantity(10.078d, IMPEDANCE),
+	Quantities.getQuantity(23.312d, IMPEDANCE),
+	Quantities.getQuantity(630d, ACTIVE_POWER_IN),
+	Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE),
+	Quantities.getQuantity(0.4d, RATED_VOLTAGE_MAGNITUDE),
+	Quantities.getQuantity(0d, ADMITTANCE),
+	Quantities.getQuantity(0d, ADMITTANCE),
+	Quantities.getQuantity(0.5d, DV_TAP),
+	Quantities.getQuantity(0d, DPHI_TAP),
 	false,
 	0,
 	-10,
@@ -129,22 +121,22 @@ class GridTestData {
 	public static final Transformer3WTypeInput transformerTypeAtoBtoC = new Transformer3WTypeInput(
 	UUID.fromString("5b0ee546-21fb-4a7f-a801-5dbd3d7bb356"),
 	"HöS-HS-MS_1",
-	Quantities.getQuantity(120000d, KILOVOLTAMPERE),
-	Quantities.getQuantity(60000d, KILOVOLTAMPERE),
-	Quantities.getQuantity(40000d, KILOVOLTAMPERE),
-	Quantities.getQuantity(380d, KILOVOLT),
-	Quantities.getQuantity(110d, KILOVOLT),
-	Quantities.getQuantity(20d, KILOVOLT),
-	Quantities.getQuantity(0.3, OHM),
-	Quantities.getQuantity(0.025, OHM),
-	Quantities.getQuantity(0.0008, OHM),
-	Quantities.getQuantity(1d, OHM),
-	Quantities.getQuantity(0.08, OHM),
-	Quantities.getQuantity(0.003, OHM),
-	Quantities.getQuantity(40, MetricPrefix.MICRO(SIEMENS)),
-	Quantities.getQuantity(1d, MetricPrefix.MICRO(SIEMENS)),
-	Quantities.getQuantity(1.5, PERCENT),
-	Quantities.getQuantity(0d, DEGREE_GEOM),
+	Quantities.getQuantity(120000d, ACTIVE_POWER_IN),
+	Quantities.getQuantity(60000d, ACTIVE_POWER_IN),
+	Quantities.getQuantity(40000d, ACTIVE_POWER_IN),
+	Quantities.getQuantity(380d, RATED_VOLTAGE_MAGNITUDE),
+	Quantities.getQuantity(110d, RATED_VOLTAGE_MAGNITUDE),
+	Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE),
+	Quantities.getQuantity(0.3d, IMPEDANCE),
+	Quantities.getQuantity(0.025d, IMPEDANCE),
+	Quantities.getQuantity(0.0008d, IMPEDANCE),
+	Quantities.getQuantity(1d, IMPEDANCE),
+	Quantities.getQuantity(0.08d, IMPEDANCE),
+	Quantities.getQuantity(0.003d, IMPEDANCE),
+	Quantities.getQuantity(40000d, ADMITTANCE),
+	Quantities.getQuantity(1000d, ADMITTANCE),
+	Quantities.getQuantity(1.5d, DV_TAP),
+	Quantities.getQuantity(0d, DPHI_TAP),
 	0,
 	-10,
 	10
@@ -155,7 +147,7 @@ class GridTestData {
 	"node_a",
 	profBroccoli,
 	defaultOperationTime,
-	Quantities.getQuantity(1d, PU),
+	Quantities.getQuantity(1d, TARGET_VOLTAGE_MAGNITUDE),
 	true,
 	geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.411111, 51.492528] }") as Point,
 	GermanVoltageLevelUtils.EHV_380KV,
@@ -164,7 +156,7 @@ class GridTestData {
 	public static final NodeInput nodeB = new NodeInput(
 	UUID.fromString("47d29df0-ba2d-4d23-8e75-c82229c5c758"), "node_b", OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited(),
-	Quantities.getQuantity(1d, PU),
+	Quantities.getQuantity(1d, TARGET_VOLTAGE_MAGNITUDE),
 	false,
 	NodeInput.DEFAULT_GEO_POSITION,
 	GermanVoltageLevelUtils.HV,
@@ -173,7 +165,7 @@ class GridTestData {
 	public static final NodeInput nodeC = new NodeInput(
 	UUID.fromString("bd837a25-58f3-44ac-aa90-c6b6e3cd91b2"), "node_c", OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited(),
-	Quantities.getQuantity(1d, PU),
+	Quantities.getQuantity(1d, TARGET_VOLTAGE_MAGNITUDE),
 	false,
 	NodeInput.DEFAULT_GEO_POSITION,
 	GermanVoltageLevelUtils.MV_20KV,
@@ -190,7 +182,7 @@ class GridTestData {
 	public static final NodeInput nodeD = new NodeInput(
 	UUID.fromString("6e0980e0-10f2-4e18-862b-eb2b7c90509b"), "node_d", OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited(),
-	Quantities.getQuantity(1d, PU),
+	Quantities.getQuantity(1d, TARGET_VOLTAGE_MAGNITUDE),
 	false,
 	NodeInput.DEFAULT_GEO_POSITION,
 	GermanVoltageLevelUtils.MV_20KV,
@@ -208,7 +200,7 @@ class GridTestData {
 	"node_e",
 	OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited(),
-	Quantities.getQuantity(1d, PU),
+	Quantities.getQuantity(1d, TARGET_VOLTAGE_MAGNITUDE),
 	false,
 	NodeInput.DEFAULT_GEO_POSITION,
 	GermanVoltageLevelUtils.MV_10KV,
@@ -219,7 +211,7 @@ class GridTestData {
 	"node_f",
 	OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited(),
-	Quantities.getQuantity(1d, PU),
+	Quantities.getQuantity(1d, TARGET_VOLTAGE_MAGNITUDE),
 	false,
 	NodeInput.DEFAULT_GEO_POSITION,
 	GermanVoltageLevelUtils.LV,
@@ -230,7 +222,7 @@ class GridTestData {
 	"node_g",
 	OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited(),
-	Quantities.getQuantity(1d, PU),
+	Quantities.getQuantity(1d, TARGET_VOLTAGE_MAGNITUDE),
 	false,
 	NodeInput.DEFAULT_GEO_POSITION,
 	GermanVoltageLevelUtils.LV,
@@ -327,12 +319,12 @@ class GridTestData {
 	public static final LineTypeInput lineTypeInputCtoD = new LineTypeInput(
 	UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
 	"lineType_AtoB",
-	Quantities.getQuantity(0.00000000322, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
-	Quantities.getQuantity(0, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
-	Quantities.getQuantity(0.437, PowerSystemUnits.OHM_PER_KILOMETRE),
-	Quantities.getQuantity(0.356, PowerSystemUnits.OHM_PER_KILOMETRE),
-	Quantities.getQuantity(300, PowerSystemUnits.AMPERE),
-	Quantities.getQuantity(20, KILOVOLT)
+	Quantities.getQuantity(0.00322d, ADMITTANCE_PER_LENGTH),
+	Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+	Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
+	Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
+	Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
+	Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
 
 	)
 
@@ -345,7 +337,7 @@ class GridTestData {
 	nodeD,
 	2,
 	lineTypeInputCtoD,
-	Quantities.getQuantity(3, Units.METRE),
+	Quantities.getQuantity(0.003d, LINE_LENGTH),
 	geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}") as LineString,
 	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
 	)
@@ -365,8 +357,22 @@ class GridTestData {
 	nodeB,
 	2,
 	lineTypeInputCtoD,
-	Quantities.getQuantity(3, Units.METRE),
+	Quantities.getQuantity(0.003d, LINE_LENGTH),
 	geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}") as LineString,
+	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
+	)
+
+	public static final LineInput lineFtoG = new LineInput(
+	UUID.fromString("92ec3bcf-1777-4d38-af67-0bf8c9fa73c7"),
+	"test_line_FtoG",
+	profBroccoli,
+	defaultOperationTime,
+	nodeF,
+	nodeG,
+	2,
+	lineTypeInputCtoD,
+	Quantities.getQuantity(0.003d, LINE_LENGTH),
+	geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.4116482, 51.4843281], [7.4116482, 51.4843281]]}") as LineString,
 	OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
 	)
 

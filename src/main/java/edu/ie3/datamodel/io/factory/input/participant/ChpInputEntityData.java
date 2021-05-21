@@ -1,5 +1,5 @@
 /*
- * © 2020. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -62,5 +62,25 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), thermalBusInput, thermalStorageInput);
+  }
+
+  @Override
+  public String toString() {
+    return "ChpInputEntityData{"
+        + "thermalBusInput="
+        + thermalBusInput.getUuid()
+        + ", thermalStorageInput="
+        + thermalStorageInput.getUuid()
+        + ", typeInput="
+        + getTypeInput().getUuid()
+        + ", node="
+        + getNode().getUuid()
+        + ", operatorInput="
+        + getOperatorInput().getUuid()
+        + ", fieldsToValues="
+        + getFieldsToValues()
+        + ", targetClass="
+        + getTargetClass()
+        + '}';
   }
 }
