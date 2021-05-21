@@ -118,7 +118,7 @@ public class CsvFileConnector implements DataConnector {
     if (directories.isFile())
       throw new ConnectorException("Directory '" + directories + "' already exists and is a file!");
     if (!directories.exists() && !directories.mkdirs())
-      throw new IOException("Unable to create directory tree '" + directories.toString() + "'");
+      throw new IOException("Unable to create directory tree '" + directories + "'");
 
     File pathFile = new File(fullPath);
     boolean append = pathFile.exists();
@@ -264,7 +264,7 @@ public class CsvFileConnector implements DataConnector {
    * @return A set of relative paths to time series files, with respect to the base folder path
    */
   private Set<String> getIndividualTimeSeriesFilePaths() {
-    Path baseDirectoryPath = Paths.get(baseDirectoryName);
+    Path baseDirectoryPath = Paths.get(FilenameUtils.getPath(baseDirectoryName));
     try (Stream<Path> pathStream = Files.walk(baseDirectoryPath)) {
       return pathStream
           .map(baseDirectoryPath::relativize)
