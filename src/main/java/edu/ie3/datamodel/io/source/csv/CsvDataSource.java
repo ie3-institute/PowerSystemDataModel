@@ -356,11 +356,16 @@ public abstract class CsvDataSource {
    */
   protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
-    try {
-      return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
+    try (BufferedReader reader = connector.initReader(entityClass)) {
+      return buildStreamWithFieldsToAttributesMap(entityClass, reader);
     } catch (FileNotFoundException e) {
       log.warn(
           "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
+    } catch (IOException e) {
+      log.warn(
+          "Unable to close stream from file for entity '{}': {}",
+          entityClass.getSimpleName(),
+          e.getMessage());
     }
 
     return Stream.empty();
