@@ -387,7 +387,7 @@ def gradle(String command, String relativeProjectDir) {
 }
 
 def determineSonarqubeGradleCmd(String sonarqubeProjectKey, String currentBranchName, String targetBranchName, String orgName, String projectName, String relativeGitDir) {
-    String prBaseBranch = targetBranchName == null "dev" : targetBranchName
+    String prBaseBranch = targetBranchName == null ? "dev" : targetBranchName
     switch (currentBranchName) {
         case "main":
             return "sonarqube -Dsonar.branch.name=main -Dsonar.projectKey=$sonarqubeProjectKey"
