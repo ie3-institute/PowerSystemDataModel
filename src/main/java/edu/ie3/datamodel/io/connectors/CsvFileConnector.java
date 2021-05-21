@@ -221,7 +221,7 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
-   * Receive the information for specific time series They are given back grouped by the column
+   * Receive the information for specific time series. They are given back grouped by the column
    * scheme in order to allow for accounting the different content types.
    *
    * @param columnSchemes the column schemes to initialize readers for. If no scheme is given, all
@@ -242,6 +242,46 @@ public class CsvFileConnector implements DataConnector {
         .collect(
             Collectors.groupingBy(
                 CsvIndividualTimeSeriesMetaInformation::getColumnScheme, Collectors.toSet()));
+  }
+
+  /**
+   * Removes the file ending from input string
+   *
+   * @param input String to manipulate
+   * @return input without possible ending
+   */
+  private String removeFileEnding(String input) {
+    return input.replaceAll(FILE_ENDING + "$", "");
+  }
+
+  /**
+   * Returns a set of relative paths strings to time series files, with respect to the base folder
+   * path
+   *
+   * @return A set of relative paths to time series files, with respect to the base folder path
+   */
+  private Set<String> getIndividualTimeSeriesFilePaths() {
+    Path baseDirectoryPath =
+        Paths.get(
+            FilenameUtils.getFullPath(baseDirectoryName)
+                + FilenameUtils.getName(baseDirectoryName));
+    try (Stream<Path> pathStream = Files.walk(baseDirectoryPath)) {
+      return pathStream
+          .map(baseDirectoryPath::relativize)
+          .filter(
+              path -> {
+                String withoutEnding = removeFileEnding(path.toString());
+                return entityPersistenceNamingStrategy
+                    .getIndividualTimeSeriesPattern()
+                    .matcher(withoutEnding)
+                    .matches();
+              })
+          .map(Path::toString)
+          .collect(Collectors.toSet());
+    } catch (IOException e) {
+      log.error("Unable to determine time series files readers for time series.", e);
+      return Collections.emptySet();
+    }
   }
 
   /**
@@ -303,46 +343,6 @@ public class CsvFileConnector implements DataConnector {
   public BufferedReader initIdCoordinateReader() throws FileNotFoundException {
     String filePath = entityPersistenceNamingStrategy.getIdCoordinateEntityName();
     return initReader(filePath);
-  }
-
-  /**
-   * Returns a set of relative paths strings to time series files, with respect to the base folder
-   * path
-   *
-   * @return A set of relative paths to time series files, with respect to the base folder path
-   */
-  private Set<String> getIndividualTimeSeriesFilePaths() {
-    Path baseDirectoryPath =
-        Paths.get(
-            FilenameUtils.getFullPath(baseDirectoryName)
-                + FilenameUtils.getName(baseDirectoryName));
-    try (Stream<Path> pathStream = Files.walk(baseDirectoryPath)) {
-      return pathStream
-          .map(baseDirectoryPath::relativize)
-          .filter(
-              path -> {
-                String withoutEnding = removeFileEnding(path.toString());
-                return entityPersistenceNamingStrategy
-                    .getIndividualTimeSeriesPattern()
-                    .matcher(withoutEnding)
-                    .matches();
-              })
-          .map(Path::toString)
-          .collect(Collectors.toSet());
-    } catch (IOException e) {
-      log.error("Unable to determine time series files readers for time series.", e);
-      return Collections.emptySet();
-    }
-  }
-
-  /**
-   * Removes the file ending from input string
-   *
-   * @param input String to manipulate
-   * @return input without possible ending
-   */
-  private String removeFileEnding(String input) {
-    return input.replaceAll(FILE_ENDING + "$", "");
   }
 
   /**
