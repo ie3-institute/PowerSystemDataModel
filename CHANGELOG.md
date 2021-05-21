@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+## [2.0.0] - 2021-05-21
+
 ### Added
 -   definition for a default input file directory structure
 -   tarball utils to extract and compress files
@@ -86,5 +88,6 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/1.1.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/1.1.0...2.0.0
 [1.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/6a49bc514be8859ebd29a3595cd58cd000498f1e...1.1.0
