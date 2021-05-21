@@ -48,14 +48,12 @@ public class GraphicElements implements InputContainer<GraphicInput> {
 
     /* init sets */
     this.nodeGraphics =
-        graphics
-            .parallelStream()
+        graphics.parallelStream()
             .filter(graphic -> graphic instanceof NodeGraphicInput)
             .map(graphic -> (NodeGraphicInput) graphic)
             .collect(Collectors.toSet());
     this.lineGraphics =
-        graphics
-            .parallelStream()
+        graphics.parallelStream()
             .filter(graphic -> graphic instanceof LineGraphicInput)
             .map(graphic -> (LineGraphicInput) graphic)
             .collect(Collectors.toSet());
