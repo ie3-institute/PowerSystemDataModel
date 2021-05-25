@@ -46,11 +46,16 @@ repositories {
 	maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
 
 	// sonatype snapshot repo
-	maven { url 'http://oss.sonatype.org/content/repositories/snapshots' }
+	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 
 }
 
 dependencies {
+	constraints {
+		implementation( 'junit:junit:4.13.2+' ){
+			because "CVE-2020-15250 - Temporary folder vulnerability - https://github.com/advisories/GHSA-269g-pwp5-87pp"
+		}
+	}
 	//	 ie³ power system utils
 	compile 'com.github.ie3-institute:PowerSystemUtils:1.5.3'
 
