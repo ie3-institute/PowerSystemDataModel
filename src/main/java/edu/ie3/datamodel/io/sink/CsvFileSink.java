@@ -13,7 +13,7 @@ import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
 import edu.ie3.datamodel.io.extractor.Extractor;
 import edu.ie3.datamodel.io.extractor.NestedEntity;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.EntityNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -59,7 +59,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   private final String csvSep;
 
   public CsvFileSink(String baseFolderPath) {
-    this(baseFolderPath, new EntityPersistenceNamingStrategy(), false, ",");
+    this(baseFolderPath, new EntityNamingStrategy(), false, ",");
   }
 
   /**
@@ -68,7 +68,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * starting several sinks and use them for specific entities.
    *
    * @param baseFolderPath the base folder path where the files should be put into
-   * @param entityPersistenceNamingStrategy the data sink naming strategy that should be used
+   * @param entityNamingStrategy the data sink naming strategy that should be used
    * @param initFiles true if the files should be created during initialization (might create files,
    *     that only consist of a headline, because no data will be written into them), false
    *     otherwise
@@ -76,15 +76,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    */
   public CsvFileSink(
       String baseFolderPath,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
+      EntityNamingStrategy entityNamingStrategy,
       boolean initFiles,
       String csvSep) {
-    this(
-        baseFolderPath,
-        new ProcessorProvider(),
-        entityPersistenceNamingStrategy,
-        initFiles,
-        csvSep);
+    this(baseFolderPath, new ProcessorProvider(), entityNamingStrategy, initFiles, csvSep);
   }
 
   /**
@@ -98,7 +93,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    *
    * @param baseFolderPath the base folder path where the files should be put into
    * @param processorProvider the processor provided that should be used for entity de-serialization
-   * @param entityPersistenceNamingStrategy the data sink naming strategy that should be used
+   * @param entityNamingStrategy the data sink naming strategy that should be used
    * @param initFiles true if the files should be created during initialization (might create files,
    *     that only consist of a headline, because no data will be written into them), false
    *     otherwise
@@ -107,12 +102,12 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   public CsvFileSink(
       String baseFolderPath,
       ProcessorProvider processorProvider,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
+      EntityNamingStrategy entityNamingStrategy,
       boolean initFiles,
       String csvSep) {
     this.csvSep = csvSep;
     this.processorProvider = processorProvider;
-    this.connector = new CsvFileConnector(baseFolderPath, entityPersistenceNamingStrategy);
+    this.connector = new CsvFileConnector(baseFolderPath, entityNamingStrategy);
 
     if (initFiles) initFiles(processorProvider, connector);
   }

@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.csv;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.EntityNamingStrategy;
 import edu.ie3.datamodel.io.naming.HierarchicFileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -41,7 +41,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @version 0.1
  * @since 03.02.20
- * @deprecated replaced by {@link EntityPersistenceNamingStrategy}
+ * @deprecated replaced by {@link EntityNamingStrategy}
  */
 @Deprecated
 public class FileNamingStrategy {
@@ -123,12 +123,12 @@ public class FileNamingStrategy {
   }
 
   /**
-   * Create a {@link EntityPersistenceNamingStrategy} from a {@link FileNamingStrategy}
+   * Create a {@link EntityNamingStrategy} from a {@link FileNamingStrategy}
    *
-   * @return an instance of {@link EntityPersistenceNamingStrategy}
+   * @return an instance of {@link EntityNamingStrategy}
    */
-  public EntityPersistenceNamingStrategy asEntityPersistenceNamingStrategy() {
-    return new EntityPersistenceNamingStrategy(this.prefix, this.suffix);
+  public EntityNamingStrategy asEntityPersistenceNamingStrategy() {
+    return new EntityNamingStrategy(this.prefix, this.suffix);
   }
 
   /**

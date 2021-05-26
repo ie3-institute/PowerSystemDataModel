@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.ThermalUnitInputEntityData
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import edu.ie3.datamodel.io.naming.EntityNamingStrategy
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput
@@ -21,7 +21,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvThermalSource should return ThermalBuses from valid and invalid input data as expected"() {
 		given:
-		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityPersistenceNamingStrategy())
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
 		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, entityPersistenceNamingStrategy, csvTypeSource)
 		def operators = csvTypeSource.operators
 
@@ -50,7 +50,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvThermalSource should return a CylindricalStorageInput from valid and invalid input data as expected"() {
 		given:
-		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityPersistenceNamingStrategy())
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
 		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, entityPersistenceNamingStrategy, csvTypeSource)
 		def operators = csvTypeSource.operators
 		def thermalBuses = csvThermalSource.thermalBuses
@@ -93,7 +93,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvThermalSource should build thermal unit input entity from valid and invalid input data as expected"() {
 		given:
-		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityPersistenceNamingStrategy())
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
 		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, entityPersistenceNamingStrategy, csvTypeSource)
 		def operator = new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "testOperator")
 		def validFieldsToAttributes = [
@@ -135,7 +135,7 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvThermalSource should return a ThermalHouseInput from valid and invalid input data as expected"() {
 		given:
-		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityPersistenceNamingStrategy())
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
 		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, entityPersistenceNamingStrategy, csvTypeSource)
 		def operators = csvTypeSource.operators
 		def thermalBuses = csvThermalSource.thermalBuses

@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.sink
 
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import edu.ie3.datamodel.io.naming.EntityNamingStrategy
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.result.ResultEntity
@@ -43,7 +43,7 @@ class InfluxDbSinkIT extends Specification {
 	InfluxDbConnector connector
 
 	@Shared
-	EntityPersistenceNamingStrategy entityPersistenceNamingStrategy
+	EntityNamingStrategy entityPersistenceNamingStrategy
 
 	@Shared
 	InfluxDbSink sink
@@ -51,7 +51,7 @@ class InfluxDbSinkIT extends Specification {
 	def setupSpec() {
 		connector = new InfluxDbConnector(influxDbContainer.url,"test_out", "test_scenario")
 		sink = new InfluxDbSink(connector)
-		entityPersistenceNamingStrategy = new EntityPersistenceNamingStrategy()
+		entityPersistenceNamingStrategy = new EntityNamingStrategy()
 	}
 
 
@@ -270,7 +270,7 @@ class InfluxDbSinkIT extends Specification {
 	}
 
 	//Always return an empty Optional for results
-	class EmptyFileNamingStrategy extends EntityPersistenceNamingStrategy {
+	class EmptyFileNamingStrategy extends EntityNamingStrategy {
 		@Override
 		Optional<String> getResultEntityName(Class<? extends ResultEntity> resultEntityClass) {
 			return Optional.empty()

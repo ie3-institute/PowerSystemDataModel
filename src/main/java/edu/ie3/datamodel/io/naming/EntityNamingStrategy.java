@@ -32,17 +32,14 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Provides an easy to use standard way to name files, tables or any other persistent representation
- * of models. Normal use cases are e.g., I/O operations with .csv files or databases. If a folder
- * structure is required for file based I/O operations, one might consider using {@link
- * HierarchicFileNamingStrategy}
+ * of models. Normal use cases are e.g., I/O operations with .csv files or databases.
  *
  * @version 0.1
  * @since 03.02.20
  */
-public class EntityPersistenceNamingStrategy {
+public class EntityNamingStrategy {
 
-  protected static final Logger logger =
-      LogManager.getLogger(EntityPersistenceNamingStrategy.class);
+  protected static final Logger logger = LogManager.getLogger(EntityNamingStrategy.class);
 
   private static final String UUID_STRING =
       "[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}";
@@ -82,7 +79,7 @@ public class EntityPersistenceNamingStrategy {
    * Constructor for building the names of the data sinks without provided entities with prefix and
    * suffix
    */
-  public EntityPersistenceNamingStrategy() {
+  public EntityNamingStrategy() {
     this("", "");
   }
 
@@ -91,7 +88,7 @@ public class EntityPersistenceNamingStrategy {
    *
    * @param prefix Prefix of the data sinks
    */
-  public EntityPersistenceNamingStrategy(String prefix) {
+  public EntityNamingStrategy(String prefix) {
     this(prefix, "");
   }
 
@@ -101,7 +98,7 @@ public class EntityPersistenceNamingStrategy {
    * @param prefix Prefix of the data sinks
    * @param suffix Suffixes of the data sinks
    */
-  public EntityPersistenceNamingStrategy(String prefix, String suffix) {
+  public EntityNamingStrategy(String prefix, String suffix) {
     this.prefix = preparePrefix(prefix);
     this.suffix = prepareSuffix(suffix);
 
@@ -155,12 +152,12 @@ public class EntityPersistenceNamingStrategy {
    *
    * @param cls Targeted class of the given file
    * @return An optional sub path to the actual file
-   * @deprecated This class should foremost provide namings for the entities and nothing around file // TODO Niklas
-   *     naming or pathing in specific. This method will be moved from this class, when <a
-   *     href="https://github.com/ie3-institute/PowerSystemDataModel/issues/315">this issue</a> is
-   *     addressed
+   * @deprecated This class should foremost provide namings for the entities and nothing around file
+   *     // TODO Niklas naming or pathing in specific. This method will be moved from this class,
+   *     when <a href="https://github.com/ie3-institute/PowerSystemDataModel/issues/315">this
+   *     issue</a> is addressed
    */
-  @Deprecated
+  @Deprecated // TODO: wurde in FileNamingStrategy übernommen -> hier entfernen
   public Optional<String> getFilePath(Class<? extends UniqueEntity> cls) {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
@@ -175,12 +172,12 @@ public class EntityPersistenceNamingStrategy {
    * @param fileName File name
    * @param subDirectories Sub directory path
    * @return Concatenation of sub directory structure and file name
-   * @deprecated This class should foremost provide namings for the entities and nothing around file // TODO Niklas
-   *     naming or pathing in specific. This method will be moved from this class, when <a
-   *     href="https://github.com/ie3-institute/PowerSystemDataModel/issues/315">this issue</a> is
-   *     addressed
+   * @deprecated This class should foremost provide namings for the entities and nothing around file
+   *     // TODO Niklas naming or pathing in specific. This method will be moved from this class,
+   *     when <a href="https://github.com/ie3-institute/PowerSystemDataModel/issues/315">this
+   *     issue</a> is addressed
    */
-  @Deprecated
+  @Deprecated // TODO: wurde in FileNamingStrategy übernommen -> hier entfernen
   private Optional<String> getFilePath(String fileName, String subDirectories) {
     if (fileName.isEmpty()) return Optional.empty();
     if (!subDirectories.isEmpty())
@@ -278,12 +275,12 @@ public class EntityPersistenceNamingStrategy {
   /**
    * Get the entity name for all {@link RandomLoadParameters}
    *
-   * @param randomLoadParamClass the random load parameters class an entity name string should be generated
-   *     from
+   * @param randomLoadParamClass the random load parameters class an entity name string should be
+   *     generated from
    * @return the entity name string
    */
   public Optional<String> getRandomLoadParametersEntityName(
-          Class<? extends RandomLoadParameters> randomLoadParamClass) {
+      Class<? extends RandomLoadParameters> randomLoadParamClass) {
     String loadParamString = camelCaseToSnakeCase(randomLoadParamClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(loadParamString.concat("_input")));
   }
@@ -357,6 +354,7 @@ public class EntityPersistenceNamingStrategy {
    * @param cls Targeted class of the given file
    * @return An optional sub directory path
    */
+  @Deprecated // TODO: wurde in FileNamingStrategy übernommen -> hier entfernen
   public Optional<String> getDirectoryPath(Class<? extends UniqueEntity> cls) {
     return Optional.empty();
   }
@@ -371,6 +369,7 @@ public class EntityPersistenceNamingStrategy {
    * @param timeSeries Time series to derive naming information from
    * @return An optional sub path to the actual file
    */
+  @Deprecated // TODO: wurde in FileNamingStrategy übernommen -> hier entfernen
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<String> getFilePath(T timeSeries) {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
@@ -440,6 +439,7 @@ public class EntityPersistenceNamingStrategy {
    * @param timeSeries Time series to derive naming information from
    * @return An optional sub directory path
    */
+  @Deprecated // TODO: Entfernen
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<String> getDirectoryPath(T timeSeries) {
     return Optional.empty();

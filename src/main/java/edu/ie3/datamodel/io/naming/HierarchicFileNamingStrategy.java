@@ -21,9 +21,12 @@ import org.apache.commons.io.FilenameUtils;
 /**
  * A naming strategy, that takes hierarchic order of sub folders into account. For the standard
  * structure that can be found in the documentation {@link DefaultDirectoryHierarchy} can be used
+ *
+ * @deprecated will be replaced by {@link edu.ie3.datamodel.io.FileNamingStrategy} and {@link
+ *     DefaultDirectoryHierarchy}
  */
-public class HierarchicFileNamingStrategy extends EntityPersistenceNamingStrategy {
-  private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
+public class HierarchicFileNamingStrategy extends EntityNamingStrategy {
+  @Deprecated private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
   private static final String FILE_SEPARATOR_REPLACEMENT =
       File.separator.equals("\\") ? "\\\\" : "/";
 
@@ -44,6 +47,7 @@ public class HierarchicFileNamingStrategy extends EntityPersistenceNamingStrateg
   }
 
   @Override
+  @Deprecated
   public Pattern getIndividualTimeSeriesPattern() {
     String subDirectory = hierarchy.getSubDirectory(IndividualTimeSeries.class).orElse("");
     return subDirectory.isEmpty()
@@ -53,6 +57,7 @@ public class HierarchicFileNamingStrategy extends EntityPersistenceNamingStrateg
   }
 
   @Override
+  @Deprecated
   public Pattern getLoadProfileTimeSeriesPattern() {
     String subDirectory = hierarchy.getSubDirectory(LoadProfileInput.class).orElse("");
     return subDirectory.isEmpty()
@@ -68,7 +73,7 @@ public class HierarchicFileNamingStrategy extends EntityPersistenceNamingStrateg
    * @param cls Targeted class of the given file
    * @return An optional sub directory path
    */
-  @Override
+  @Deprecated
   public Optional<String> getDirectoryPath(Class<? extends UniqueEntity> cls) {
     Optional<String> maybeDirectoryName = hierarchy.getSubDirectory(cls);
     String directoryPath;
@@ -87,7 +92,7 @@ public class HierarchicFileNamingStrategy extends EntityPersistenceNamingStrateg
     }
   }
 
-  @Override
+  @Deprecated
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<String> getDirectoryPath(T timeSeries) {
     Optional<String> maybeDirectoryName = hierarchy.getSubDirectory(timeSeries.getClass());

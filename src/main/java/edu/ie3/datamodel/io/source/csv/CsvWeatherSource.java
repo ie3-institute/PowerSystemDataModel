@@ -10,7 +10,7 @@ import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.EntityNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -43,8 +43,7 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    *
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
-   * @param entityPersistenceNamingStrategy strategy for the naming of time series files / data
-   *     sinks
+   * @param entityNamingStrategy strategy for the naming of time series files / data sinks
    * @param weatherFactory factory to transfer field to value mapping into actual java object
    *     instances
    * @param coordinateFactory factory to build coordinate id to coordinate mapping
@@ -52,15 +51,14 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
   public CsvWeatherSource(
       String csvSep,
       String folderPath,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
+      EntityNamingStrategy entityNamingStrategy,
       TimeBasedWeatherValueFactory weatherFactory,
       IdCoordinateFactory coordinateFactory) {
     this(
         csvSep,
         folderPath,
-        entityPersistenceNamingStrategy,
-        new CsvIdCoordinateSource(
-            csvSep, folderPath, entityPersistenceNamingStrategy, coordinateFactory),
+        entityNamingStrategy,
+        new CsvIdCoordinateSource(csvSep, folderPath, entityNamingStrategy, coordinateFactory),
         weatherFactory);
   }
 
@@ -70,8 +68,7 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    *
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
-   * @param entityPersistenceNamingStrategy strategy for the naming of time series files / data
-   *     sinks
+   * @param entityNamingStrategy strategy for the naming of time series files / data sinks
    * @param coordinateSource a coordinate source to map ids to points
    * @param weatherFactory factory to transfer field to value mapping into actual java object
    *     instances
@@ -79,10 +76,10 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
   public CsvWeatherSource(
       String csvSep,
       String folderPath,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
+      EntityNamingStrategy entityNamingStrategy,
       IdCoordinateSource coordinateSource,
       TimeBasedWeatherValueFactory weatherFactory) {
-    super(csvSep, folderPath, entityPersistenceNamingStrategy);
+    super(csvSep, folderPath, entityNamingStrategy);
     this.coordinateSource = coordinateSource;
     this.weatherFactory = weatherFactory;
 

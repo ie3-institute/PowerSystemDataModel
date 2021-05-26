@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.factory.input.ThermalBusInputFactory
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import edu.ie3.datamodel.io.naming.EntityNamingStrategy
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -31,7 +31,7 @@ class CsvDataSourceTest extends Specification {
 	// methods in a public or protected method makes them available for testing
 	private final class DummyCsvSource extends CsvDataSource {
 
-		DummyCsvSource(String csvSep, String folderPath, EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+		DummyCsvSource(String csvSep, String folderPath, EntityNamingStrategy entityPersistenceNamingStrategy) {
 			super(csvSep, folderPath, entityPersistenceNamingStrategy)
 		}
 
@@ -64,7 +64,7 @@ class CsvDataSourceTest extends Specification {
 	@Shared
 	String csvSep = ","
 	String testBaseFolderPath = new File(getClass().getResource('/testGridFiles').toURI()).getAbsolutePath()
-	EntityPersistenceNamingStrategy entityPersistenceNamingStrategy = new EntityPersistenceNamingStrategy()
+	EntityNamingStrategy entityPersistenceNamingStrategy = new EntityNamingStrategy()
 
 	DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, entityPersistenceNamingStrategy)
 
@@ -90,7 +90,7 @@ class CsvDataSourceTest extends Specification {
 		expect:
 		dummyCsvSource.connector != null
 		dummyCsvSource.connector.baseDirectoryName == testBaseFolderPath
-		dummyCsvSource.connector.entityPersistenceNamingStrategy == entityPersistenceNamingStrategy
+		dummyCsvSource.connector.entityNamingStrategy == entityPersistenceNamingStrategy
 		dummyCsvSource.connector.entityWriters.isEmpty()
 
 	}

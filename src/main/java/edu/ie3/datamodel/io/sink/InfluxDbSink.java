@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.sink;
 
 import edu.ie3.datamodel.exceptions.SinkException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.EntityNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -33,20 +33,18 @@ public class InfluxDbSink implements OutputDataSink {
   private static final String FIELD_NAME_INPUT = "inputModel";
 
   private final InfluxDbConnector connector;
-  private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
+  private final EntityNamingStrategy entityNamingStrategy;
   private final ProcessorProvider processorProvider;
 
   /**
    * Initializes a new InfluxDbWeatherSource
    *
    * @param connector needed for database connection
-   * @param entityPersistenceNamingStrategy needed to create measurement names for entities
+   * @param entityNamingStrategy needed to create measurement names for entities
    */
-  public InfluxDbSink(
-      InfluxDbConnector connector,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+  public InfluxDbSink(InfluxDbConnector connector, EntityNamingStrategy entityNamingStrategy) {
     this.connector = connector;
-    this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
+    this.entityNamingStrategy = entityNamingStrategy;
     this.processorProvider =
         new ProcessorProvider(
             ProcessorProvider.allResultEntityProcessors(),
@@ -59,7 +57,7 @@ public class InfluxDbSink implements OutputDataSink {
    * @param connector needed for database connection
    */
   public InfluxDbSink(InfluxDbConnector connector) {
-    this(connector, new EntityPersistenceNamingStrategy());
+    this(connector, new EntityNamingStrategy());
   }
 
   @Override
@@ -108,8 +106,7 @@ public class InfluxDbSink implements OutputDataSink {
    * @param entity the entity to transform
    */
   private Optional<Point> transformToPoint(ResultEntity entity) {
-    Optional<String> measurementName =
-        entityPersistenceNamingStrategy.getResultEntityName(entity.getClass());
+    Optional<String> measurementName = entityNamingStrategy.getResultEntityName(entity.getClass());
     if (!measurementName.isPresent())
       log.warn(
           "I could not get a measurement name for class {}. I am using its simple name instead.",
@@ -168,7 +165,7 @@ public class InfluxDbSink implements OutputDataSink {
   private <E extends TimeSeriesEntry<V>, V extends Value> Set<Point> transformToPoints(
       TimeSeries<E, V> timeSeries) {
     if (timeSeries.getEntries().isEmpty()) return Collections.emptySet();
-    Optional<String> measurementName = entityPersistenceNamingStrategy.getEntityName(timeSeries);
+    Optional<String> measurementName = entityNamingStrategy.getEntityName(timeSeries);
     if (!measurementName.isPresent()) {
       String valueClassName =
           timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName();
