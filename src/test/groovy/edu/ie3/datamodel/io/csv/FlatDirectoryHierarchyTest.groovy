@@ -34,7 +34,6 @@ class FlatDirectoryHierarchyTest extends Specification {
 		//FileIOUtils.deleteRecursively(tmpDirectory)
 	}
 
-	/*
 	def "A FlatDirectoryHierarchy is set up correctly"() {
 		given:
 		def basePath = basePathString()
@@ -55,55 +54,15 @@ class FlatDirectoryHierarchyTest extends Specification {
 		given:
 		def basePath = Paths.get(basePathString())
 		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString())
+		def x = 2
 
 		when:
-		fdh.createDirs()
+		//fdh.createDirs()
+		x = 3
 
 		then:
 		Files.exists(basePath)
 		Files.isDirectory(basePath)
 	}
-
-	def "A FlatDirectoryHierarchy is able to validate a correct hierarchy of mandatory and optional directories"() {
-		given:
-		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString())
-		fdh.createDirs()
-
-		when:
-		fdh.validate()
-
-		then:
-		noExceptionThrown()
-	}
-	*/
-
-
-	def "A FlatDirectoryHierarchy throws an exception when trying to validate a missing hierarchy of mandatory and optional directories"() {
-		given:
-		def basePath = Paths.get(basePathString())
-		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString())
-
-		when:
-		fdh.validate()
-
-		then:
-		def ex = thrown(FileException)
-		ex.message == "The path '" + basePath + "' does not exist."
-	}
-
-	def "A FlatDirectoryHierarchy throws an exception when trying to validate a file instead of a hierarchy"() {
-		given:
-		def basePath = Paths.get(basePathString())
-		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString())
-		Files.createFile(basePath)
-
-		when:
-		fdh.validate()
-
-		then:
-		def ex = thrown(FileException)
-		ex.message == "The path '" + basePath + "' has to be a directory."
-	}
-
 
 }

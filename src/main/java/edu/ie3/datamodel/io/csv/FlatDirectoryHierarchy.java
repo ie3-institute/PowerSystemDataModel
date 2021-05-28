@@ -18,42 +18,12 @@ import org.apache.commons.io.FilenameUtils;
 /** Default directory hierarchy for input models */
 public class FlatDirectoryHierarchy implements DirectoryHierarchy {
 
-  /** Use the unix file separator here. */
-  protected static final String FILE_SEPARATOR = File.separator;
-
-  /** The project's directory, which is the same as the {@code baseDirectory} for a flat hierarchy. */
-  private final Path projectDirectory;
-
-  public FlatDirectoryHierarchy(String baseDirectory) {
-    /* Prepare the base path */
-    String baseDirectoryNormalized =
-        FilenameUtils.normalizeNoEndSeparator(baseDirectory, true) + FILE_SEPARATOR;
-    this.projectDirectory =
-        Paths.get(
-                baseDirectoryNormalized
-                    + FILE_SEPARATOR)
-            .toAbsolutePath();
-  }
 
   /**
-   * Checks, if the project directory is okay.
+   * Empty constructor.
    *
-   * @throws FileException if not
    */
-  public void validate() throws FileException {
-    if (!Files.exists(projectDirectory))
-      throw new FileException("The path '" + projectDirectory + "' does not exist.");
-    if (!Files.isDirectory(projectDirectory))
-      throw new FileException("The path '" + projectDirectory + "' has to be a directory.");
-  }
-
-  /**
-   * Creates project directory of this flat directory hierarchy.
-   *
-   * @throws IOException If the creation of the project directory is not possible
-   */
-  public void createDirs() throws IOException {
-    Files.createDirectories(projectDirectory);
+  public FlatDirectoryHierarchy() {
   }
 
   /**
