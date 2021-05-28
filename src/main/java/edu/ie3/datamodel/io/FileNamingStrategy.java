@@ -37,7 +37,6 @@ public class FileNamingStrategy {
   private final EntityNamingStrategy entityNamingStrategy;
   private final DirectoryHierarchy directoryHierarchy;
 
-
   /**
    * Constructor for building the file naming strategy.
    *
@@ -51,22 +50,20 @@ public class FileNamingStrategy {
   }
 
   /**
-   * Constructor for building the file naming strategy.
-   * Since no directory hierarchy is provided, a flat directory hierarchy is used.
+   * Constructor for building the file naming strategy. Since no directory hierarchy is provided, a
+   * flat directory hierarchy is used.
    *
    * @param entityNamingStrategy entity naming strategy
    */
-  public FileNamingStrategy(
-          EntityNamingStrategy entityNamingStrategy) {
+  public FileNamingStrategy(EntityNamingStrategy entityNamingStrategy) {
     this.entityNamingStrategy = entityNamingStrategy;
     this.directoryHierarchy = new FlatDirectoryHierarchy();
   }
 
   /**
-   * Constructor for building the file naming strategy.
-   * Since no entity naming strategy is provided, the entity naming strategy is used.
-   * Since no directory hierarchy is provided, a flat directory hierarchy is used.
-   *
+   * Constructor for building the file naming strategy. Since no entity naming strategy is provided,
+   * the entity naming strategy is used. Since no directory hierarchy is provided, a flat directory
+   * hierarchy is used.
    */
   public FileNamingStrategy() {
     this.entityNamingStrategy = new EntityNamingStrategy();
@@ -118,8 +115,7 @@ public class FileNamingStrategy {
   private Optional<String> getFilePath(String fileName, String subDirectories) {
     if (fileName.isEmpty()) return Optional.empty();
     if (!subDirectories.isEmpty())
-      return Optional.of(
-          FilenameUtils.concat(subDirectories, fileName));
+      return Optional.of(FilenameUtils.concat(subDirectories, fileName));
     else return Optional.of(fileName);
   }
 
@@ -236,8 +232,7 @@ public class FileNamingStrategy {
    * @return A file name for this particular time series
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-  Optional<String> getEntityName(T timeSeries) {
+      Optional<String> getEntityName(T timeSeries) {
     return entityNamingStrategy.getEntityName(timeSeries);
   }
-
 }

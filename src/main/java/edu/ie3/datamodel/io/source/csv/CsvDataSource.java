@@ -64,8 +64,7 @@ public abstract class CsvDataSource {
    */
   @Deprecated private boolean notYetLoggedWarning = true;
 
-  public CsvDataSource(
-      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+  public CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
