@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io
 import edu.ie3.datamodel.io.csv.DefaultDirectoryHierarchy
 import edu.ie3.datamodel.io.csv.FlatDirectoryHierarchy
 import edu.ie3.datamodel.io.naming.EntityNamingStrategy
-import edu.ie3.datamodel.io.naming.HierarchicFileNamingStrategy
+
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity
