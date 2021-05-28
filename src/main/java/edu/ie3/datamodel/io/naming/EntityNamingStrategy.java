@@ -147,45 +147,6 @@ public class EntityNamingStrategy {
   }
 
   /**
-   * Get the full path to the file with regard to some (not explicitly specified) base directory.
-   * The path does NOT start or end with any of the known file separators or file extension.
-   *
-   * @param cls Targeted class of the given file
-   * @return An optional sub path to the actual file
-   * @deprecated This class should foremost provide namings for the entities and nothing around file
-   *     // TODO Niklas naming or pathing in specific. This method will be moved from this class,
-   *     when <a href="https://github.com/ie3-institute/PowerSystemDataModel/issues/315">this
-   *     issue</a> is addressed
-   */
-  @Deprecated // TODO: wurde in FileNamingStrategy übernommen -> hier entfernen
-  public Optional<String> getFilePath(Class<? extends UniqueEntity> cls) {
-    // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
-    // details
-    return getFilePath(
-        getEntityName(cls).orElseGet(() -> ""), getDirectoryPath(cls).orElseGet(() -> ""));
-  }
-
-  /**
-   * Compose a full file path from directory name and file name. Additionally perform some checks,
-   * like if the file name itself actually is available
-   *
-   * @param fileName File name
-   * @param subDirectories Sub directory path
-   * @return Concatenation of sub directory structure and file name
-   * @deprecated This class should foremost provide namings for the entities and nothing around file
-   *     // TODO Niklas naming or pathing in specific. This method will be moved from this class,
-   *     when <a href="https://github.com/ie3-institute/PowerSystemDataModel/issues/315">this
-   *     issue</a> is addressed
-   */
-  @Deprecated // TODO: wurde in FileNamingStrategy übernommen -> hier entfernen
-  private Optional<String> getFilePath(String fileName, String subDirectories) {
-    if (fileName.isEmpty()) return Optional.empty();
-    if (!subDirectories.isEmpty())
-      return Optional.of(FilenameUtils.concat(subDirectories, fileName));
-    else return Optional.of(fileName);
-  }
-
-  /**
    * Returns the name of the entity, that should be used for persistence.
    *
    * @param cls Targeted class of the given file
@@ -348,38 +309,6 @@ public class EntityNamingStrategy {
   }
 
   /**
-   * Returns the sub directory structure with regard to some (not explicitly specified) base
-   * directory. The path does NOT start or end with any of the known file separators.
-   *
-   * @param cls Targeted class of the given file
-   * @return An optional sub directory path
-   */
-  @Deprecated // TODO: wurde in FileNamingStrategy übernommen -> hier entfernen
-  public Optional<String> getDirectoryPath(Class<? extends UniqueEntity> cls) {
-    return Optional.empty();
-  }
-
-  /**
-   * Get the full path to the file with regard to some (not explicitly specified) base directory.
-   * The path does NOT start or end with any of the known file separators or file extension.
-   *
-   * @param <T> Type of the time series
-   * @param <E> Type of the entry in the time series
-   * @param <V> Type of the value, that is carried by the time series entry
-   * @param timeSeries Time series to derive naming information from
-   * @return An optional sub path to the actual file
-   */
-  @Deprecated // TODO: wurde in FileNamingStrategy übernommen -> hier entfernen
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      Optional<String> getFilePath(T timeSeries) {
-    // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
-    // details
-    return getFilePath(
-        getEntityName(timeSeries).orElseGet(() -> ""),
-        getDirectoryPath(timeSeries).orElseGet(() -> ""));
-  }
-
-  /**
    * Builds a file name (and only the file name without any directories and extension) of the given
    * information.
    *
@@ -427,22 +356,6 @@ public class EntityNamingStrategy {
       logger.error("There is no naming strategy defined for {}", timeSeries);
       return Optional.empty();
     }
-  }
-
-  /**
-   * Returns the sub directory structure with regard to some (not explicitly specified) base
-   * directory. The path does NOT start or end with any of the known file separators.
-   *
-   * @param <T> Type of the time series
-   * @param <E> Type of the entry in the time series
-   * @param <V> Type of the value, that is carried by the time series entry
-   * @param timeSeries Time series to derive naming information from
-   * @return An optional sub directory path
-   */
-  @Deprecated // TODO: Entfernen
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      Optional<String> getDirectoryPath(T timeSeries) {
-    return Optional.empty();
   }
 
   /**
