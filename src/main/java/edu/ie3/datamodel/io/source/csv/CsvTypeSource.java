@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
@@ -12,7 +13,6 @@ import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer3WTypeInputFactory;
-import edu.ie3.datamodel.io.naming.EntityNamingStrategy;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -41,8 +41,8 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
   private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
 
   public CsvTypeSource(
-      String csvSep, String typeFolderPath, EntityNamingStrategy entityNamingStrategy) {
-    super(csvSep, typeFolderPath, entityNamingStrategy);
+      String csvSep, String typeFolderPath, FileNamingStrategy fileNamingStrategy) {
+    super(csvSep, typeFolderPath, fileNamingStrategy);
 
     // init factories
     operatorInputFactory = new OperatorInputFactory();

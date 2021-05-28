@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.io;
 
 import edu.ie3.datamodel.io.csv.DirectoryHierarchy;
+import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
+import edu.ie3.datamodel.io.csv.FlatDirectoryHierarchy;
 import edu.ie3.datamodel.io.naming.EntityNamingStrategy;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
@@ -21,8 +23,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A naming strategy, that combines an {@link EntityNamingStrategy} for naming entities, a {@link
- * DirectoryHierarchy} for a folder structure, and a file extension.
+ * A naming strategy, that combines an {@link EntityNamingStrategy} for naming entities and a {@link
+ * DirectoryHierarchy} for a folder structure.
  */
 public class FileNamingStrategy {
 
@@ -34,28 +36,10 @@ public class FileNamingStrategy {
 
   private final EntityNamingStrategy entityNamingStrategy;
   private final DirectoryHierarchy directoryHierarchy;
-  private final String fileExtension;
-  private final String defaultFileExtension = "";
+
 
   /**
-   * Constructor for building the file naming strategy
-   *
-   * @param entityNamingStrategy entity naming strategy
-   * @param directoryHierarchy directory hierarchy
-   * @param fileExtension file extension
-   */
-  public FileNamingStrategy(
-      EntityNamingStrategy entityNamingStrategy,
-      DirectoryHierarchy directoryHierarchy,
-      String fileExtension) {
-    this.entityNamingStrategy = entityNamingStrategy;
-    this.directoryHierarchy = directoryHierarchy;
-    this.fileExtension = fileExtension;
-  }
-
-  /**
-   * Constructor for building the file naming strategy. Since no file extension is provided, the
-   * default file extension is used.
+   * Constructor for building the file naming strategy.
    *
    * @param entityNamingStrategy entity naming strategy
    * @param directoryHierarchy directory hierarchy
@@ -64,7 +48,29 @@ public class FileNamingStrategy {
       EntityNamingStrategy entityNamingStrategy, DirectoryHierarchy directoryHierarchy) {
     this.entityNamingStrategy = entityNamingStrategy;
     this.directoryHierarchy = directoryHierarchy;
-    this.fileExtension = defaultFileExtension;
+  }
+
+  /**
+   * Constructor for building the file naming strategy.
+   * Since no directory hierarchy is provided, a flat directory hierarchy is used.
+   *
+   * @param entityNamingStrategy entity naming strategy
+   */
+  public FileNamingStrategy(
+          EntityNamingStrategy entityNamingStrategy) {
+    this.entityNamingStrategy = entityNamingStrategy;
+    this.directoryHierarchy = new FlatDirectoryHierarchy();
+  }
+
+  /**
+   * Constructor for building the file naming strategy.
+   * Since no entity naming strategy is provided, the entity naming strategy is used.
+   * Since no directory hierarchy is provided, a flat directory hierarchy is used.
+   *
+   */
+  public FileNamingStrategy() {
+    this.entityNamingStrategy = new EntityNamingStrategy();
+    this.directoryHierarchy = new FlatDirectoryHierarchy();
   }
 
   /**
@@ -113,8 +119,8 @@ public class FileNamingStrategy {
     if (fileName.isEmpty()) return Optional.empty();
     if (!subDirectories.isEmpty())
       return Optional.of(
-          FilenameUtils.concat(subDirectories, fileName)); // TODO: .concat(fileExtension) ?
-    else return Optional.of(fileName); // TODO: .concat(fileExtension) ?
+          FilenameUtils.concat(subDirectories, fileName));
+    else return Optional.of(fileName);
   }
 
   /**
@@ -188,4 +194,50 @@ public class FileNamingStrategy {
             FilenameUtils.concat(
                 subDirectory, entityNamingStrategy.getLoadProfileTimeSeriesPattern().pattern()));
   }
+
+  /**
+   * Extracts meta information from a file name, of a time series. Here, a file name <u>without</u>
+   * leading path has to be provided
+   *
+   * @param fileName File name
+   * @return The meeting meta information
+   */
+  public FileNameMetaInformation extractTimeSeriesMetaInformation(String fileName) {
+    return entityNamingStrategy.extractTimeSeriesMetaInformation(fileName);
+  }
+
+  /**
+   * Get the entity name for coordinates
+   *
+   * @return the entity name string
+   */
+  public String getIdCoordinateEntityName() {
+    return entityNamingStrategy.getIdCoordinateEntityName();
+  }
+
+  /**
+   * Returns the name of the entity, that should be used for persistence.
+   *
+   * @param cls Targeted class of the given file
+   * @return The name of the entity
+   */
+  public Optional<String> getEntityName(Class<? extends UniqueEntity> cls) {
+    return entityNamingStrategy.getEntityName(cls);
+  }
+
+  /**
+   * Builds a file name (and only the file name without any directories and extension) of the given
+   * information.
+   *
+   * @param <T> Type of the time series
+   * @param <E> Type of the entry in the time series
+   * @param <V> Type of the value, that is carried by the time series entry
+   * @param timeSeries Time series to derive naming information from
+   * @return A file name for this particular time series
+   */
+  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
+  Optional<String> getEntityName(T timeSeries) {
+    return entityNamingStrategy.getEntityName(timeSeries);
+  }
+
 }

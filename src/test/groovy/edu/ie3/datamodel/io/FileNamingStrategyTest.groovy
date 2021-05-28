@@ -81,7 +81,7 @@ class FileNamingStrategyTest extends Specification {
 	def setup() {
 		def tmpPath = Files.createTempDirectory("psdm_file_naming_strategy")
 		defaultHierarchy = new DefaultDirectoryHierarchy(tmpPath.toString(), "test_grid")
-		flatHierarchy = new FlatDirectoryHierarchy(tmpPath.toString(), "test_grid")
+		flatHierarchy = new FlatDirectoryHierarchy()
 		simpleEntityNaming = new EntityNamingStrategy()
 	}
 
@@ -772,7 +772,7 @@ class FileNamingStrategyTest extends Specification {
 		def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
 
 		when:
-		def actual = strategy.getIndividualTimeSeriesPattern()
+		def actual = strategy.getIndividualTimeSeriesPattern().pattern()
 
 		then:
 		actual == "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series" + File.separator + "its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
@@ -784,7 +784,7 @@ class FileNamingStrategyTest extends Specification {
 		def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
 
 		when:
-		def actual = strategy.getLoadProfileTimeSeriesPattern()
+		def actual = strategy.getLoadProfileTimeSeriesPattern().pattern()
 
 		then:
 		actual == "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
@@ -796,7 +796,7 @@ class FileNamingStrategyTest extends Specification {
 		def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
 
 		when:
-		def actual = strategy.getIndividualTimeSeriesPattern()
+		def actual = strategy.getIndividualTimeSeriesPattern().pattern()
 
 		then:
 		actual.toString() == "its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
@@ -807,7 +807,7 @@ class FileNamingStrategyTest extends Specification {
 		def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
 
 		when:
-		def actual = strategy.getLoadProfileTimeSeriesPattern()
+		def actual = strategy.getLoadProfileTimeSeriesPattern().pattern()
 
 		then:
 		actual.toString() == "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"

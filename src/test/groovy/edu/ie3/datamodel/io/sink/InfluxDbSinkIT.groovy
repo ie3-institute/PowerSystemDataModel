@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.sink
 
+import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
 import edu.ie3.datamodel.io.naming.EntityNamingStrategy
 import edu.ie3.datamodel.models.StandardUnits
@@ -43,7 +44,7 @@ class InfluxDbSinkIT extends Specification {
 	InfluxDbConnector connector
 
 	@Shared
-	EntityNamingStrategy entityPersistenceNamingStrategy
+	FileNamingStrategy fileNamingStrategy
 
 	@Shared
 	InfluxDbSink sink
@@ -51,7 +52,7 @@ class InfluxDbSinkIT extends Specification {
 	def setupSpec() {
 		connector = new InfluxDbConnector(influxDbContainer.url,"test_out", "test_scenario")
 		sink = new InfluxDbSink(connector)
-		entityPersistenceNamingStrategy = new EntityNamingStrategy()
+		fileNamingStrategy = new FileNamingStrategy()
 	}
 
 
@@ -73,7 +74,7 @@ class InfluxDbSinkIT extends Specification {
 		when:
 		sink.persist(lineResult1)
 		sink.flush()
-		def key = entityPersistenceNamingStrategy.getEntityName(LineResult).get().trim().replaceAll("\\W", "_")
+		def key = fileNamingStrategy.getEntityName(LineResult).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def fieldMap = parsedResults.get(key).first()
@@ -125,8 +126,8 @@ class InfluxDbSinkIT extends Specification {
 		]
 		when:
 		sink.persistAll(entities)
-		def key_line = entityPersistenceNamingStrategy.getEntityName(LineResult).get().trim().replaceAll("\\W", "_")
-		def key_chp = entityPersistenceNamingStrategy.getEntityName(ChpResult).get().trim().replaceAll("\\W", "_")
+		def key_line = fileNamingStrategy.getEntityName(LineResult).get().trim().replaceAll("\\W", "_")
+		def key_chp = fileNamingStrategy.getEntityName(ChpResult).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key_line + ", " + key_chp))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def lineResults = parsedResults.get(key_line)
@@ -154,7 +155,7 @@ class InfluxDbSinkIT extends Specification {
 		IndividualTimeSeries<PValue> timeSeries = new IndividualTimeSeries(UUID.randomUUID(), [p1, p2, p3] as Set<TimeBasedValue>)
 		when:
 		sink.persistTimeSeries(timeSeries)
-		def key = entityPersistenceNamingStrategy.getEntityName(timeSeries).get().trim().replaceAll("\\W", "_")
+		def key = fileNamingStrategy.getEntityName(timeSeries).get().trim().replaceAll("\\W", "_")
 		def queryResult = connector.getSession().query(new Query("SELECT * FROM " + key))
 		def parsedResults = InfluxDbConnector.parseQueryResult(queryResult)
 		def pValuesMap = parsedResults.get(key)

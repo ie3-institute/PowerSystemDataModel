@@ -5,15 +5,8 @@
 */
 package edu.ie3.datamodel.io.csv;
 
-import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.models.UniqueEntity;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
-import org.apache.commons.io.FilenameUtils;
 
 /** Default directory hierarchy for input models */
 public class FlatDirectoryHierarchy implements DirectoryHierarchy {

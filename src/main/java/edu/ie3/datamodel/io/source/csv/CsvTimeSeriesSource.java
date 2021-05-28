@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.naming.EntityNamingStrategy;
@@ -33,7 +34,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    *
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
-   * @param entityNamingStrategy strategy for the naming of time series files / data sinks
+   * @param fileNamingStrategy strategy for the file naming of time series files / data sinks
    * @param metaInformation The given meta information
    * @throws SourceException If the given meta information are not supported
    * @return The source
@@ -41,7 +42,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
   public static CsvTimeSeriesSource<? extends Value> getSource(
       String csvSep,
       String folderPath,
-      EntityNamingStrategy entityNamingStrategy,
+      FileNamingStrategy fileNamingStrategy,
       CsvFileConnector.CsvIndividualTimeSeriesMetaInformation metaInformation)
       throws SourceException {
     switch (metaInformation.getColumnScheme()) {
@@ -51,7 +52,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
         return new CsvTimeSeriesSource<>(
             csvSep,
             folderPath,
-            entityNamingStrategy,
+            fileNamingStrategy,
             metaInformation.getUuid(),
             metaInformation.getFullFilePath(),
             PValue.class,
@@ -62,7 +63,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
         return new CsvTimeSeriesSource<>(
             csvSep,
             folderPath,
-            entityNamingStrategy,
+            fileNamingStrategy,
             metaInformation.getUuid(),
             metaInformation.getFullFilePath(),
             SValue.class,
@@ -73,7 +74,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
         return new CsvTimeSeriesSource<>(
             csvSep,
             folderPath,
-            entityNamingStrategy,
+            fileNamingStrategy,
             metaInformation.getUuid(),
             metaInformation.getFullFilePath(),
             EnergyPriceValue.class,
@@ -84,7 +85,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
         return new CsvTimeSeriesSource<>(
             csvSep,
             folderPath,
-            entityNamingStrategy,
+            fileNamingStrategy,
             metaInformation.getUuid(),
             metaInformation.getFullFilePath(),
             HeatAndSValue.class,
@@ -95,7 +96,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
         return new CsvTimeSeriesSource<>(
             csvSep,
             folderPath,
-            entityNamingStrategy,
+            fileNamingStrategy,
             metaInformation.getUuid(),
             metaInformation.getFullFilePath(),
             HeatAndPValue.class,
@@ -106,7 +107,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
         return new CsvTimeSeriesSource<>(
             csvSep,
             folderPath,
-            entityNamingStrategy,
+            fileNamingStrategy,
             metaInformation.getUuid(),
             metaInformation.getFullFilePath(),
             HeatDemandValue.class,
@@ -122,7 +123,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    *
    * @param csvSep the separator string for csv columns
    * @param folderPath path to the folder holding the time series files
-   * @param entityNamingStrategy strategy for the naming of time series files / data sinks
+   * @param fileNamingStrategy strategy for the file naming of time series files / data sinks
    * @param timeSeriesUuid Unique identifier of the time series
    * @param filePath Path of the file, excluding extension and being relative to {@code folderPath}
    * @param valueClass Class of the value
@@ -131,12 +132,12 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
   public CsvTimeSeriesSource(
       String csvSep,
       String folderPath,
-      EntityNamingStrategy entityNamingStrategy,
+      FileNamingStrategy fileNamingStrategy,
       UUID timeSeriesUuid,
       String filePath,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
-    super(csvSep, folderPath, entityNamingStrategy);
+    super(csvSep, folderPath, fileNamingStrategy);
 
     /* Read in the full time series */
     try {

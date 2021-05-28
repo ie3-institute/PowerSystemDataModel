@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.naming.EntityNamingStrategy
+import edu.ie3.datamodel.io.FileNamingStrategy
 
 /**
  * Holds meta data for csv tests e.g. file and folder paths
@@ -23,5 +23,5 @@ trait CsvTestDataMeta {
 	static String coordinatesFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("coordinates")
 
 	static String csvSep = ","
-	static EntityNamingStrategy entityPersistenceNamingStrategy = new EntityNamingStrategy()
+	static FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
 }

@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.naming.EntityNamingStrategy
+import edu.ie3.datamodel.io.FileNamingStrategy
 
 import static edu.ie3.datamodel.models.StandardUnits.ENERGY_PRICE
 
@@ -32,7 +32,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(5) >> defaultCoordinate
 		def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-		def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new EntityNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1", EnergyPriceValue, factory)
+		def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1", EnergyPriceValue, factory)
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
 		def timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
 		def fieldToValue = [
@@ -59,7 +59,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 		def metaInformation = new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"), ColumnScheme.WEATHER, "its_weather_8bc9120d-fb9b-4484-b4e3-0cdadf0feea9")
 
 		when:
-		CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, entityPersistenceNamingStrategy, metaInformation)
+		CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, fileNamingStrategy, metaInformation)
 
 		then:
 		def e = thrown(SourceException)
@@ -71,7 +71,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 		def metaInformation = new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(uuid, columnScheme, path)
 
 		when:
-		def actual = CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, entityPersistenceNamingStrategy, metaInformation)
+		def actual = CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, fileNamingStrategy, metaInformation)
 
 		then:
 		actual.timeSeries.entries.size() == amountOfEntries

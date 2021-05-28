@@ -5,10 +5,10 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
-import edu.ie3.datamodel.io.naming.EntityNamingStrategy;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.SystemParticipantSource;
 import edu.ie3.datamodel.io.source.ThermalSource;
@@ -67,11 +67,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public CsvSystemParticipantSource(
       String csvSep,
       String participantsFolderPath,
-      EntityNamingStrategy entityNamingStrategy,
+      FileNamingStrategy fileNamingStrategy,
       TypeSource typeSource,
       ThermalSource thermalSource,
       RawGridSource rawGridSource) {
-    super(csvSep, participantsFolderPath, entityNamingStrategy);
+    super(csvSep, participantsFolderPath, fileNamingStrategy);
     this.typeSource = typeSource;
     this.rawGridSource = rawGridSource;
     this.thermalSource = thermalSource;

@@ -20,9 +20,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvGraphicSource should provide an instance of GraphicElements based on valid input data correctly"() {
 		given:
-		def typeSource = new CsvTypeSource(csvSep, typeFolderPath, entityPersistenceNamingStrategy)
-		def rawGridSource = new CsvRawGridSource(csvSep, gridFolderPath, entityPersistenceNamingStrategy, typeSource)
-		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, entityPersistenceNamingStrategy, typeSource, rawGridSource)
+		def typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
+		def rawGridSource = new CsvRawGridSource(csvSep, gridFolderPath, fileNamingStrategy, typeSource)
+		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, typeSource, rawGridSource)
 
 		when:
 		def graphicElementsOpt = csvGraphicSource.getGraphicElements()
@@ -38,9 +38,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvGraphicSource should process invalid input data as expected when requested to provide an instance of GraphicElements"() {
 		given:
-		def typeSource = new CsvTypeSource(csvSep, typeFolderPath, entityPersistenceNamingStrategy)
+		def typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
 		def rawGridSource =
-				new CsvRawGridSource(csvSep, gridFolderPath, entityPersistenceNamingStrategy, typeSource) {
+				new CsvRawGridSource(csvSep, gridFolderPath, fileNamingStrategy, typeSource) {
 					@Override
 					Set<NodeInput> getNodes() {
 						return Collections.emptySet()
@@ -52,7 +52,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 					}
 				}
 
-		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, entityPersistenceNamingStrategy, typeSource, rawGridSource)
+		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, typeSource, rawGridSource)
 
 		when:
 		def graphicElementsOpt = csvGraphicSource.getGraphicElements()
@@ -64,7 +64,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvGraphicSource should read and handle a valid node graphics file as expected"() {
 		given:
-		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, entityPersistenceNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
+		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
 		def expectedNodeGraphicD = new NodeGraphicInput(
 				gtd.nodeGraphicD.uuid,
 				gtd.nodeGraphicD.graphicLayer,
@@ -92,7 +92,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvGraphicSource should read and handle a valid line graphics file as expected"() {
 		given:
-		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, entityPersistenceNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
+		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
 
 		when:
 		def lineGraphics = csvGraphicSource.getLineGraphicInput([gtd.lineCtoD] as Set)
@@ -104,7 +104,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvGraphicSource should build node graphic entity data from valid and invalid input data correctly"() {
 		given:
-		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, entityPersistenceNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
+		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
 		def fieldsToAttributesMap = [
 			"uuid"         : "09aec636-791b-45aa-b981-b14edf171c4c",
 			"graphic_layer": "main",
@@ -138,7 +138,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvGraphicSource should build line graphic entity data from valid and invalid input data correctly"() {
 		given:
-		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, entityPersistenceNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
+		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvRawGridSource))
 		def fieldsToAttributesMap = [
 			"uuid"         : "ece86139-3238-4a35-9361-457ecb4258b0",
 			"graphic_layer": "main",

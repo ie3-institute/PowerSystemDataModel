@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.naming.EntityNamingStrategy
+import edu.ie3.datamodel.io.FileNamingStrategy
 import edu.ie3.datamodel.models.input.OperatorInput
 import spock.lang.Specification
 import edu.ie3.test.common.GridTestData as gtd
@@ -16,7 +16,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvTypeSource should read and handle valid 2W Transformer type file as expected"() {
 		given:
-		def typeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 
 		expect:
 		def transformer2WTypes = typeSource.transformer2WTypes
@@ -45,7 +45,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 				UUID.fromString("f15105c4-a2de-4ab8-a621-4bc98e372d92"), "Univ.-Prof. Dr. rer. hort. Klaus-Dieter Brokkoli")
 		def secondOperator = new OperatorInput(
 				UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator")
-		def typeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 
 		expect:
 		def operators = typeSource.operators
@@ -57,7 +57,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvTypeSource should read and handle valid line type file as expected"() {
 		given:
-		def typeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 
 		expect:
 		def lineTypes = typeSource.lineTypes
@@ -73,7 +73,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvTypeSource should read and handle valid 3W Transformer type file as expected"() {
 		given:
-		def typeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 
 		expect:
 		def transformer3WTypes = typeSource.transformer3WTypes
@@ -102,7 +102,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvTypeSource should read and handle valid bm type file as expected"() {
 		given:
-		def typeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 
 		expect:
 		def bmTypes = typeSource.bmTypes
@@ -117,7 +117,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvTypeSource should read and handle valid chp type file as expected"() {
 		given:
-		def typeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 
 		expect:
 		def chpTypes = typeSource.chpTypes
@@ -134,7 +134,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvTypeSource should read and handle valid hp type file as expected"() {
 		given:
-		def typeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 
 		expect:
 		def hpTypes = typeSource.hpTypes
@@ -149,7 +149,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvTypeSource should read and handle valid storage type file as expected"() {
 		given:
-		def typeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 
 		expect:
 		def storageTypes = typeSource.storageTypes
@@ -170,7 +170,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvTypeSource should read and handle valid wec type file as expected"() {
 		given:
-		def typeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 
 		expect:
 		def wecTypes = typeSource.wecTypes
@@ -192,7 +192,7 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvTypeSource should read and handle valid ev type file as expected"() {
 		given:
-		def typeSource = new CsvTypeSource(",", typeFolderPath, new EntityNamingStrategy())
+		def typeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
 
 		expect:
 		def evTypes = typeSource.evTypes

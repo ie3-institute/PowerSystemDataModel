@@ -5,8 +5,8 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.io.FileNamingStrategy;
 import edu.ie3.datamodel.io.factory.input.*;
-import edu.ie3.datamodel.io.naming.EntityNamingStrategy;
 import edu.ie3.datamodel.io.source.ThermalSource;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -46,9 +46,9 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public CsvThermalSource(
       String csvSep,
       String thermalUnitsFolderPath,
-      EntityNamingStrategy entityNamingStrategy,
+      FileNamingStrategy fileNamingStrategy,
       TypeSource typeSource) {
-    super(csvSep, thermalUnitsFolderPath, entityNamingStrategy);
+    super(csvSep, thermalUnitsFolderPath, fileNamingStrategy);
     this.typeSource = typeSource;
 
     // init factories
