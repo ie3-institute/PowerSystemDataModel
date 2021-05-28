@@ -26,21 +26,21 @@ class FlatDirectoryHierarchyTest extends Specification {
 		tmpDirectory = Files.createTempDirectory("psdm_flat_input_hierarchy")
 	}
 
-	def basePathString(String gridName) {
-		FilenameUtils.concat(tmpDirectory.toString(), gridName)
+	def basePathString() {
+		tmpDirectory.toString()
 	}
 
 	def cleanup() {
-		FileIOUtils.deleteRecursively(tmpDirectory)
+		//FileIOUtils.deleteRecursively(tmpDirectory)
 	}
 
+	/*
 	def "A FlatDirectoryHierarchy is set up correctly"() {
 		given:
-		def gridName = "test_grid"
-		def basePath = basePathString(gridName)
+		def basePath = basePathString()
 
 		when:
-		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString(), gridName)
+		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString())
 
 		then:
 		try {
@@ -53,9 +53,8 @@ class FlatDirectoryHierarchyTest extends Specification {
 
 	def "A FlatDirectoryHierarchy is able to create a correct flat hierarchy of directories"() {
 		given:
-		def gridName = "test_grid"
-		def basePath = Paths.get(basePathString(gridName))
-		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString(), gridName)
+		def basePath = Paths.get(basePathString())
+		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString())
 
 		when:
 		fdh.createDirs()
@@ -67,8 +66,7 @@ class FlatDirectoryHierarchyTest extends Specification {
 
 	def "A FlatDirectoryHierarchy is able to validate a correct hierarchy of mandatory and optional directories"() {
 		given:
-		def gridName = "test_grid"
-		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString(), gridName)
+		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString())
 		fdh.createDirs()
 
 		when:
@@ -77,12 +75,13 @@ class FlatDirectoryHierarchyTest extends Specification {
 		then:
 		noExceptionThrown()
 	}
+	*/
+
 
 	def "A FlatDirectoryHierarchy throws an exception when trying to validate a missing hierarchy of mandatory and optional directories"() {
 		given:
-		def gridName = "test_grid"
-		def basePath = Paths.get(basePathString(gridName))
-		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString(), gridName)
+		def basePath = Paths.get(basePathString())
+		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString())
 
 		when:
 		fdh.validate()
@@ -94,9 +93,8 @@ class FlatDirectoryHierarchyTest extends Specification {
 
 	def "A FlatDirectoryHierarchy throws an exception when trying to validate a file instead of a hierarchy"() {
 		given:
-		def gridName = "test_grid"
-		def basePath = Paths.get(basePathString(gridName))
-		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString(), gridName)
+		def basePath = Paths.get(basePathString())
+		def fdh = new FlatDirectoryHierarchy(tmpDirectory.toString())
 		Files.createFile(basePath)
 
 		when:
@@ -106,4 +104,6 @@ class FlatDirectoryHierarchyTest extends Specification {
 		def ex = thrown(FileException)
 		ex.message == "The path '" + basePath + "' has to be a directory."
 	}
+
+
 }

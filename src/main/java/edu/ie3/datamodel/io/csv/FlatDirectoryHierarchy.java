@@ -21,23 +21,22 @@ public class FlatDirectoryHierarchy implements DirectoryHierarchy {
   /** Use the unix file separator here. */
   protected static final String FILE_SEPARATOR = File.separator;
 
-  /** The project's directory beneath the {@code baseDirectory} */
+  /** The project's directory, which is the same as the {@code baseDirectory} for a flat hierarchy. */
   private final Path projectDirectory;
 
-  public FlatDirectoryHierarchy(String baseDirectory, String gridName) {
+  public FlatDirectoryHierarchy(String baseDirectory) {
     /* Prepare the base path */
     String baseDirectoryNormalized =
         FilenameUtils.normalizeNoEndSeparator(baseDirectory, true) + FILE_SEPARATOR;
     this.projectDirectory =
         Paths.get(
                 baseDirectoryNormalized
-                    + FilenameUtils.normalizeNoEndSeparator(gridName, true)
                     + FILE_SEPARATOR)
             .toAbsolutePath();
   }
 
   /**
-   * Checks, if the project directory beneath the base directory is okay.
+   * Checks, if the project directory is okay.
    *
    * @throws FileException if not
    */
