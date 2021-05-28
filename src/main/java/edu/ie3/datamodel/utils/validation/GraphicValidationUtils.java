@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
-import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
@@ -24,10 +23,10 @@ public class GraphicValidationUtils extends ValidationUtils {
    * - its graphic layer is not null <br>
    *
    * <p>A "distribution" method, that forwards the check request to specific implementations to
-   * fulfill the checking task, based on the class of the given object. If an unknown class is
-   * handed in, a {@link ValidationException} is thrown.
+   * fulfill the checking task, based on the class of the given object.
    *
    * @param graphicInput GraphicInput to validate
+   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
   protected static void check(GraphicInput graphicInput) {
     checkNonNull(graphicInput, "a graphic input");

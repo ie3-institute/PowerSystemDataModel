@@ -8,7 +8,7 @@ package edu.ie3.datamodel.utils.validation;
 import static edu.ie3.datamodel.models.StandardUnits.*;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
-import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.exceptions.NotImplementedException;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
@@ -31,10 +31,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - its qCharacteristics are not null
    *
    * <p>A "distribution" method, that forwards the check request to specific implementations to
-   * fulfill the checking task, based on the class of the given object. If an unknown class is
-   * handed in, a {@link ValidationException} is thrown.
+   * fulfill the checking task, based on the class of the given object.
    *
    * @param systemParticipant systemParticipant to validate
+   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
   protected static void check(SystemParticipantInput systemParticipant) {
     checkNonNull(systemParticipant, "a system participant");
@@ -62,7 +62,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     else if (WecInput.class.isAssignableFrom(systemParticipant.getClass()))
       checkWec((WecInput) systemParticipant);
     else if (EvcsInput.class.isAssignableFrom(systemParticipant.getClass())) checkEvcs();
-    else throw new ValidationException(notImplementedString(systemParticipant));
+    else throw checkNotImplementedException(systemParticipant);
   }
 
   /**
@@ -74,10 +74,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * - cosphiRated is between zero and one
    *
    * <p>A "distribution" method, that forwards the check request to specific implementations to
-   * fulfill the checking task, based on the class of the given object. If an unknown class is
-   * handed in, a {@link ValidationException} is thrown.
+   * fulfill the checking task, based on the class of the given object.
    *
    * @param systemParticipantTypeInput systemParticipant Type to validate
+   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
   protected static void checkType(SystemParticipantTypeInput systemParticipantTypeInput) {
     checkNonNull(systemParticipantTypeInput, "a system participant type");
@@ -107,7 +107,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       checkStorageType((StorageTypeInput) systemParticipantTypeInput);
     else if (WecTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass()))
       checkWecType((WecTypeInput) systemParticipantTypeInput);
-    else throw new ValidationException(notImplementedString(systemParticipantTypeInput));
+    else throw checkNotImplementedException(systemParticipantTypeInput);
   }
 
   /**
@@ -369,7 +369,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
 
   /** Validates a EvcsInput */
   private static void checkEvcs() {
-    // TODO: Implement when class is finished + implement check for Evcs type
+    throw new NotImplementedException(
+        String.format(
+            "Validation of '%s' is currently not supported.", EvcsInput.class.getSimpleName()));
   }
 
   /**

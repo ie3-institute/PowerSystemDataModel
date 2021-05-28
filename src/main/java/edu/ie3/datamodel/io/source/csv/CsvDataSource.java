@@ -360,7 +360,6 @@ public abstract class CsvDataSource {
       log.warn(
           "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
-
     return Stream.empty();
   }
 

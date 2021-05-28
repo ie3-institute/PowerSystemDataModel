@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
-import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
@@ -21,11 +20,11 @@ import tech.units.indriya.unit.Units;
 public class ConnectorValidationUtils extends ValidationUtils {
 
   // allowed deviation of coordinates in degree for line position check
-  private static final double allowedCoordinateError = 0.000001d;
+  private static final double ALLOWED_COORDINATE_ERROR = 0.000001d;
   // allowed deviation of length in meters for line length
-  private static final double allowedLengthError = 1d;
+  private static final double ALLOWED_LENGTH_ERROR = 1d;
   // allowed deviation of voltage in kV for transformer checks
-  private static final double allowedVoltageError = 1d;
+  private static final double ALLOWED_VOLTAGE_ERROR = 1d;
 
   /** Private Constructor as this class is not meant to be instantiated */
   private ConnectorValidationUtils() {
@@ -36,10 +35,10 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * Validates a connector if: <br>
    * - it is not null <br>
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
-   * the checking task, based on the class of the given object. If an unknown class is handed in, a
-   * {@link ValidationException} is thrown.
+   * the checking task, based on the class of the given object.
    *
    * @param connector Connector to validate
+   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
   protected static void check(ConnectorInput connector) {
     checkNonNull(connector, "a connector");
@@ -53,7 +52,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
       checkTransformer3W((Transformer3WInput) connector);
     else if (SwitchInput.class.isAssignableFrom(connector.getClass()))
       checkSwitch((SwitchInput) connector);
-    else throw new ValidationException(notImplementedString(connector));
+    else throw checkNotImplementedException(connector);
   }
 
   /**
@@ -311,18 +310,18 @@ public class ConnectorValidationUtils extends ValidationUtils {
   private static void coordinatesOfLineEqualCoordinatesOfNodes(LineInput line) {
     if (!(line.getGeoPosition()
             .getStartPoint()
-            .isWithinDistance(line.getNodeA().getGeoPosition(), allowedCoordinateError)
+            .isWithinDistance(line.getNodeA().getGeoPosition(), ALLOWED_COORDINATE_ERROR)
         || line.getGeoPosition()
             .getEndPoint()
-            .isWithinDistance(line.getNodeA().getGeoPosition(), allowedCoordinateError)))
+            .isWithinDistance(line.getNodeA().getGeoPosition(), ALLOWED_COORDINATE_ERROR)))
       throw new InvalidEntityException(
           "Coordinates of start and end point do not match coordinates of connected nodes", line);
     if (!(line.getGeoPosition()
             .getStartPoint()
-            .isWithinDistance(line.getNodeB().getGeoPosition(), allowedCoordinateError)
+            .isWithinDistance(line.getNodeB().getGeoPosition(), ALLOWED_COORDINATE_ERROR)
         || line.getGeoPosition()
             .getEndPoint()
-            .isWithinDistance(line.getNodeB().getGeoPosition(), allowedCoordinateError)))
+            .isWithinDistance(line.getNodeB().getGeoPosition(), ALLOWED_COORDINATE_ERROR)))
       throw new InvalidEntityException(
           "Coordinates of start and end point do not match coordinates of connected nodes", line);
   }
@@ -339,7 +338,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
         && !QuantityUtil.isEquivalentAbs(
             line.getLength(),
             GeoUtils.totalLengthOfLineString(line.getGeoPosition()),
-            allowedLengthError))
+            ALLOWED_LENGTH_ERROR))
       throw new InvalidEntityException(
           "Line length does not equal calculated distances between points building the line", line);
   }
@@ -380,11 +379,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (!QuantityUtil.isEquivalentAbs(
             transformer2W.getType().getvRatedA(),
             transformer2W.getNodeA().getVoltLvl().getNominalVoltage(),
-            allowedVoltageError)
+            ALLOWED_VOLTAGE_ERROR)
         || !QuantityUtil.isEquivalentAbs(
             transformer2W.getType().getvRatedB(),
             transformer2W.getNodeB().getVoltLvl().getNominalVoltage(),
-            allowedVoltageError))
+            ALLOWED_VOLTAGE_ERROR))
       throw new InvalidEntityException(
           "Rated voltages of "
               + transformer2W.getClass().getSimpleName()
@@ -402,15 +401,15 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if (!QuantityUtil.isEquivalentAbs(
             transformer3W.getType().getvRatedA(),
             transformer3W.getNodeA().getVoltLvl().getNominalVoltage(),
-            allowedVoltageError)
+            ALLOWED_VOLTAGE_ERROR)
         || !QuantityUtil.isEquivalentAbs(
             transformer3W.getType().getvRatedB(),
             transformer3W.getNodeB().getVoltLvl().getNominalVoltage(),
-            allowedVoltageError)
+            ALLOWED_VOLTAGE_ERROR)
         || !QuantityUtil.isEquivalentAbs(
             transformer3W.getType().getvRatedC(),
             transformer3W.getNodeC().getVoltLvl().getNominalVoltage(),
-            allowedVoltageError))
+            ALLOWED_VOLTAGE_ERROR))
       throw new InvalidEntityException(
           "Rated voltages of "
               + transformer3W.getClass().getSimpleName()

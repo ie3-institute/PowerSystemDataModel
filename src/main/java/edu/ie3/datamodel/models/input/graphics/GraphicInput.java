@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.models.input.graphics;
 
 import edu.ie3.datamodel.models.input.InputEntity;
-import edu.ie3.datamodel.utils.GridAndGeoUtils;
+import edu.ie3.util.geo.GeoUtils;
 import java.util.Objects;
 import java.util.UUID;
 import org.locationtech.jts.geom.LineString;
@@ -29,7 +29,7 @@ public abstract class GraphicInput extends InputEntity {
     this.path =
         path == null
             ? null // can be null for NodeGraphicInput entities
-            : GridAndGeoUtils.buildSafeLineString(path);
+            : GeoUtils.buildSafeLineString(path);
   }
 
   public String getGraphicLayer() {

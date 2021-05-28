@@ -420,7 +420,7 @@ public class ContainerUtils {
         mutableGraph.addEdge(
             subGridContainers.containerA,
             subGridContainers.containerB,
-            new SubGridGate(transformer));
+            SubGridGate.fromTransformer2W(transformer));
       } catch (TopologyException e) {
         throw new InvalidGridException(
             "Cannot build sub grid topology graph, as the sub grids, that are connected by transformer '"
@@ -439,7 +439,7 @@ public class ContainerUtils {
         mutableGraph.addEdge(
             subGridContainers.containerA,
             subGridContainers.containerB,
-            new SubGridGate(transformer, ConnectorPort.B));
+            SubGridGate.fromTransformer3W(transformer, ConnectorPort.B));
         mutableGraph.addEdge(
             subGridContainers.containerA,
             subGridContainers.maybeContainerC.orElseThrow(
@@ -450,7 +450,7 @@ public class ContainerUtils {
                             + "' ("
                             + transformer.getUuid()
                             + ") cannot be determined.")),
-            new SubGridGate(transformer, ConnectorPort.C));
+            SubGridGate.fromTransformer3W(transformer, ConnectorPort.C));
       } catch (TopologyException e) {
         throw new InvalidGridException(
             "Cannot build sub grid topology graph, as the sub grids, that are connected by transformer '"

@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import edu.ie3.datamodel.exceptions.NotImplementedException
+
 import static edu.ie3.datamodel.models.StandardUnits.ADMITTANCE_PER_LENGTH
 import static edu.ie3.datamodel.models.StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
 import static edu.ie3.datamodel.models.StandardUnits.RATED_VOLTAGE_MAGNITUDE
@@ -12,7 +14,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
-import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -109,7 +110,7 @@ class ValidationUtilsTest extends Specification {
 
 		where:
 		invalidObject          || expectedException
-		new Coordinate(10, 10) || new ValidationException("Cannot validate object of class '" + invalidObject.getClass().getSimpleName() + "', as no routine is implemented.")
+		new Coordinate(10, 10) || new NotImplementedException("Cannot validate object of class '" + invalidObject.getClass().getSimpleName() + "', as no routine is implemented.")
 	}
 
 	def "The validation check method recognizes all potential errors for an asset"() {
@@ -123,7 +124,7 @@ class ValidationUtilsTest extends Specification {
 
 		where:
 		invalidAsset                                                            	    || expectedException
-		null 																			|| new ValidationException("Expected an object, but got nothing. :-(")
+		null 																			|| new InvalidEntityException("Expected an object, but got nothing. :-(", new NullPointerException())
 		GridTestData.nodeA.copy().id(null).build()										|| new InvalidEntityException("No ID assigned", invalidAsset)
 		GridTestData.nodeA.copy().operationTime(null).build()							|| new InvalidEntityException("Operation time of the asset is not defined", invalidAsset)
 		GridTestData.nodeA.copy().operationTime(OperationTime.builder().
@@ -203,5 +204,41 @@ class ValidationUtilsTest extends Specification {
 		then:
 		InvalidEntityException ex = thrown()
 		ex.message == "Entity is invalid because of: The following quantities have to be positive: 0 μS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0 μS/km, g=0 μS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
+	}
+
+	def "Checking an unsupported asset leads to an exception"() {
+		given:
+		def invalidAsset = new InvalidAssetInput()
+
+		when:
+		ValidationUtils.checkAsset(invalidAsset)
+
+		then:
+		def e = thrown(NotImplementedException)
+		e.message == "Cannot validate object of class 'InvalidAssetInput', as no routine is implemented."
+	}
+
+	def "Checking an unsupported asset type leads to an exception"() {
+		given:
+		def invalidAssetType = new InvalidAssetTypeInput()
+
+		when:
+		ValidationUtils.checkAssetType(invalidAssetType)
+
+		then:
+		def e = thrown(NotImplementedException)
+		e.message == "Cannot validate object of class 'InvalidAssetTypeInput', as no routine is implemented."
+	}
+
+	def "Checking an asset type input without an id leads to an exception"() {
+		given:
+		def invalidAssetType = new InvalidAssetTypeInput(UUID.randomUUID(), null)
+
+		when:
+		ValidationUtils.checkAssetType(invalidAssetType)
+
+		then:
+		def e = thrown(InvalidEntityException)
+		e.message.startsWith("Entity is invalid because of: No ID assigned [AssetTypeInput")
 	}
 }

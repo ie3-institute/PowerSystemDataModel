@@ -21,6 +21,7 @@ import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.TimeSeriesUtil;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -92,15 +93,16 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @return a map of coordinates to their time series
    */
   private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
-    /* Get only weather time series reader */
-    Map<ColumnScheme, Set<CsvFileConnector.TimeSeriesReadingData>> colTypeToReadingData =
-        connector.initTimeSeriesReader(ColumnScheme.WEATHER);
+    /* Get only weather time series meta information */
+    Map<ColumnScheme, Set<CsvFileConnector.CsvIndividualTimeSeriesMetaInformation>>
+        colTypeToMetaData =
+            connector.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER);
 
     /* Reading in weather time series */
-    Set<CsvFileConnector.TimeSeriesReadingData> weatherReadingData =
-        colTypeToReadingData.get(ColumnScheme.WEATHER);
+    Set<CsvFileConnector.CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
+        colTypeToMetaData.get(ColumnScheme.WEATHER);
 
-    return readWeatherTimeSeries(weatherReadingData);
+    return readWeatherTimeSeries(weatherCsvMetaInformation, connector);
   }
 
   @Override
@@ -148,35 +150,43 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
   /**
    * Reads weather data to time series and maps them coordinate wise
    *
-   * @param weatherReadingData Data needed for reading
+   * @param weatherMetaInformation Data needed for reading
    * @return time series mapped to the represented coordinate
    */
   private Map<Point, IndividualTimeSeries<WeatherValue>> readWeatherTimeSeries(
-      Set<CsvFileConnector.TimeSeriesReadingData> weatherReadingData) {
+      Set<CsvFileConnector.CsvIndividualTimeSeriesMetaInformation> weatherMetaInformation,
+      CsvFileConnector connector) {
     final Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
     Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> fieldToValueFunction =
         this::buildWeatherValue;
-
     /* Reading in weather time series */
-    for (CsvFileConnector.TimeSeriesReadingData data : weatherReadingData) {
-      filterEmptyOptionals(
-              buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, data.getReader())
-                  .map(fieldToValueFunction))
-          .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
-          .forEach(
-              (point, timeBasedValues) -> {
-                // We have to generate a random UUID as we'd risk running into duplicate key issues
-                // otherwise
-                IndividualTimeSeries<WeatherValue> timeSeries =
-                    new IndividualTimeSeries<>(UUID.randomUUID(), new HashSet<>(timeBasedValues));
-                if (weatherTimeSeries.containsKey(point)) {
-                  IndividualTimeSeries<WeatherValue> mergedTimeSeries =
-                      mergeTimeSeries(weatherTimeSeries.get(point), timeSeries);
-                  weatherTimeSeries.put(point, mergedTimeSeries);
-                } else {
-                  weatherTimeSeries.put(point, timeSeries);
-                }
-              });
+    for (CsvFileConnector.CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
+      // we need a reader for each file
+      try (BufferedReader reader = connector.initReader(data.getFullFilePath())) {
+        filterEmptyOptionals(
+                buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+                    .map(fieldToValueFunction))
+            .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
+            .forEach(
+                (point, timeBasedValues) -> {
+                  // We have to generate a random UUID as we'd risk running into duplicate key
+                  // issues
+                  // otherwise
+                  IndividualTimeSeries<WeatherValue> timeSeries =
+                      new IndividualTimeSeries<>(UUID.randomUUID(), new HashSet<>(timeBasedValues));
+                  if (weatherTimeSeries.containsKey(point)) {
+                    IndividualTimeSeries<WeatherValue> mergedTimeSeries =
+                        mergeTimeSeries(weatherTimeSeries.get(point), timeSeries);
+                    weatherTimeSeries.put(point, mergedTimeSeries);
+                  } else {
+                    weatherTimeSeries.put(point, timeSeries);
+                  }
+                });
+      } catch (FileNotFoundException e) {
+        log.error("Cannot read file {}. File not found!", data.getFullFilePath());
+      } catch (IOException e) {
+        log.error("Cannot read file {}. Exception: {}", data.getFullFilePath(), e);
+      }
     }
     return weatherTimeSeries;
   }

@@ -115,39 +115,28 @@ class CsvFileConnectorTest extends Specification {
 		actual == expected
 	}
 
-	def "The csv file connector returns empty Optional of TimeSeriesReadingData when pointed to non-individual time series"() {
+	def "The csv file connector returns empty Optional of CsvTimeSeriesMetaInformation when pointed to non-individual time series"() {
 		given:
 		def pathString = "lpts_h0_53990eea-1b5d-47e8-9134-6d8de36604bf"
 
 		when:
-		def actual = cfc.buildReadingData(pathString)
+		def actual = cfc.buildCsvTimeSeriesMetaInformation(pathString)
 
 		then:
 		!actual.present
 	}
 
-	def "The csv file connector returns empty Optional of TimeSeriesReadingData when pointed to non-existing file"() {
-		given:
-		def pathString = "its_pq_32f38421-f7fd-4295-8f9a-3a54b4e7dba9"
-
-		when:
-		def actual = cfc.buildReadingData(pathString)
-
-		then:
-		!actual.present
-	}
-
-	def "The csv file connector is able to build correct reading information from valid input"() {
+	def "The csv file connector is able to build correct meta information from valid input"() {
 		given:
 		def pathString = "its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf"
-		def expected = new CsvFileConnector.TimeSeriesReadingData(
+		def expected = new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(
 				UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf"),
 				ColumnScheme.APPARENT_POWER,
-				Mock(BufferedReader)
+				""
 				)
 
 		when:
-		def actual = cfc.buildReadingData(pathString)
+		def actual = cfc.buildCsvTimeSeriesMetaInformation(pathString)
 
 		then:
 		actual.present
@@ -156,17 +145,6 @@ class CsvFileConnectorTest extends Specification {
 			assert columnScheme == expected.columnScheme
 			/* Don't check the reader explicitly */
 		}
-	}
-
-	def "The csv file connector is able to init readers for all time series files"() {
-		when:
-		def actual = cfc.initTimeSeriesReader()
-
-		then:
-		actual.size() == 5
-		def energyPriceEntries = actual.get(ColumnScheme.ENERGY_PRICE)
-		Objects.nonNull(energyPriceEntries)
-		energyPriceEntries.size() == 2
 	}
 
 	def "The csv file connector throws an Exception, if the foreseen file cannot be found"() {
