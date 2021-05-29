@@ -10,5 +10,6 @@ import java.util.Optional;
 
 public interface DirectoryHierarchy extends FileHierarchy {
 
+  @Override
   Optional<String> getSubDirectory(Class<? extends UniqueEntity> cls, String fileSeparator);
 }
