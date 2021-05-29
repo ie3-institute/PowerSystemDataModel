@@ -6,9 +6,9 @@
 package edu.ie3.datamodel.io.connectors
 
 import edu.ie3.datamodel.exceptions.ConnectorException
-import edu.ie3.datamodel.io.FileNamingStrategy
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.csv.CsvFileDefinition
-import edu.ie3.datamodel.io.csv.DefaultDirectoryHierarchy
+import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.EntityNamingStrategy
 import edu.ie3.datamodel.models.StandardUnits

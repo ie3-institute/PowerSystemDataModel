@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.FileNamingStrategy
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 
 import static edu.ie3.datamodel.models.StandardUnits.ENERGY_PRICE
 

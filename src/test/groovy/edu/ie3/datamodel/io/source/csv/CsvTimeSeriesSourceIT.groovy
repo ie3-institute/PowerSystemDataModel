@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.exceptions.SourceException
-import edu.ie3.datamodel.io.FileNamingStrategy
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.value.HeatAndPValue

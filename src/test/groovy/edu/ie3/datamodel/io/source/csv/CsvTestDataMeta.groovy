@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.FileNamingStrategy
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 
 /**
  * Holds meta data for csv tests e.g. file and folder paths

@@ -3,12 +3,12 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.io
+package edu.ie3.datamodel.io.naming
 
-import edu.ie3.datamodel.io.csv.DefaultDirectoryHierarchy
-import edu.ie3.datamodel.io.csv.FlatDirectoryHierarchy
+import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy
+import edu.ie3.datamodel.io.naming.FlatDirectoryHierarchy
 import edu.ie3.datamodel.io.naming.EntityNamingStrategy
-
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity

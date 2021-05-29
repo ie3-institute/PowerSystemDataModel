@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.io.csv;
+package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.models.UniqueEntity;
 import java.io.File;
