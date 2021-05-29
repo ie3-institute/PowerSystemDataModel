@@ -10,7 +10,6 @@ import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.BdewLoadProfile
-import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.RandomLoadParameters

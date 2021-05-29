@@ -772,7 +772,7 @@ class FileNamingStrategyTest extends Specification {
 		def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
 
 		when:
-		def actual = strategy.getIndividualTimeSeriesPattern().pattern()
+		def actual = strategy.individualTimeSeriesPattern().pattern()
 
 		then:
 		actual == "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series" + File.separator + "its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
@@ -784,7 +784,7 @@ class FileNamingStrategyTest extends Specification {
 		def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
 
 		when:
-		def actual = strategy.getLoadProfileTimeSeriesPattern().pattern()
+		def actual = strategy.loadProfileTimeSeriesPattern().pattern()
 
 		then:
 		actual == "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"

@@ -41,6 +41,6 @@ class FlatDirectoryHierarchyTest extends Specification {
 		Files.exists(basePath)
 		Files.isDirectory(basePath)
 
-		fdh.getSubDirectory(BmInput) == Optional.empty();
+		fdh.getSubDirectory(BmInput) == Optional.empty()
 	}
 }

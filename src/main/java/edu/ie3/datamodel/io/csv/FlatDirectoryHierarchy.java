@@ -11,9 +11,6 @@ import java.util.Optional;
 /** Default directory hierarchy for input models */
 public class FlatDirectoryHierarchy implements DirectoryHierarchy {
 
-  /** Empty constructor. */
-  public FlatDirectoryHierarchy() {}
-
   /**
    * Gives empty sub directory.
    *
