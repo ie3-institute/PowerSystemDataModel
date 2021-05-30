@@ -27,10 +27,13 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
 		given: "a system participant input type factory and model data"
 		def inputFactory = new ThermalHouseInputFactory()
 		Map<String, String> parameter = [
-			"uuid"     : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"id"       : "TestID",
-			"ethlosses": "3",
-			"ethcapa"  : "4"
+			"uuid"     				: "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"id"       				: "TestID",
+			"ethlosses"				: "3",
+			"ethcapa"  				: "4",
+			"desiredTemperature" 	: "5",
+			"upperTemperatureLimit" : "6",
+			"lowerTemperatureLimit" : "7"
 		]
 		def inputClass = ThermalHouseInput
 		def thermalBusInput = Mock(ThermalBusInput)
