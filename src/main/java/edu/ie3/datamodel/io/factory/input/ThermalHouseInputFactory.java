@@ -15,10 +15,15 @@ import edu.ie3.util.quantities.interfaces.ThermalConductance;
 import java.util.UUID;
 import tech.units.indriya.ComparableQuantity;
 
+import javax.measure.quantity.Temperature;
+
 public class ThermalHouseInputFactory
     extends AssetInputEntityFactory<ThermalHouseInput, ThermalUnitInputEntityData> {
   private static final String ETH_LOSSES = "ethlosses";
   private static final String ETH_CAPA = "ethcapa";
+  private static final String DESIRED_TEMPERATURE = "desiredTemperature";
+  private static final String UPPER_TEMPERATURE_LIMIT = "upperTemperatureLimit";
+  private static final String LOWER_TEMPERATURE_LIMIT = "lowerTemperatureLimit";
 
   public ThermalHouseInputFactory() {
     super(ThermalHouseInput.class);
@@ -26,7 +31,7 @@ public class ThermalHouseInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {ETH_LOSSES, ETH_CAPA};
+    return new String[] {ETH_LOSSES, ETH_CAPA, DESIRED_TEMPERATURE, UPPER_TEMPERATURE_LIMIT, LOWER_TEMPERATURE_LIMIT};
   }
 
   @Override
@@ -41,6 +46,13 @@ public class ThermalHouseInputFactory
         data.getQuantity(ETH_LOSSES, StandardUnits.THERMAL_TRANSMISSION);
     final ComparableQuantity<HeatCapacity> ethCapa =
         data.getQuantity(ETH_CAPA, StandardUnits.HEAT_CAPACITY);
-    return new ThermalHouseInput(uuid, id, operator, operationTime, busInput, ethLosses, ethCapa);
+    final ComparableQuantity<Temperature> desiredTemperature =
+        data.getQuantity(DESIRED_TEMPERATURE, StandardUnits.TEMPERATURE);
+    final ComparableQuantity<Temperature> upperTemperatureLimit =
+        data.getQuantity(UPPER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE);
+    final ComparableQuantity<Temperature> lowerTemperatureLimit =
+        data.getQuantity(LOWER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE);
+    return new ThermalHouseInput(uuid, id, operator, operationTime, busInput, ethLosses, ethCapa, desiredTemperature,
+            upperTemperatureLimit, lowerTemperatureLimit);
   }
 }
