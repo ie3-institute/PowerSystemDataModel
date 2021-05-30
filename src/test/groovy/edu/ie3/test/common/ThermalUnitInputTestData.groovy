@@ -35,7 +35,7 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
 	private static final ComparableQuantity<HeatCapacity> ethCapa = Quantities.getQuantity(20, StandardUnits.HEAT_CAPACITY)
 	private static final ComparableQuantity<Temperature> desiredTemperature = Quantities.getQuantity(20, StandardUnits.TEMPERATURE)
 	private static final ComparableQuantity<Temperature> upperTemperatureLimit = Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
-	private static final ComparableQuantity<Temperature> lowerTemperatureLimit = Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
+	private static final ComparableQuantity<Temperature> lowerTemperatureLimit = Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
 	public static final thermalHouseInput = new ThermalHouseInput(
 	thermalUnitUuid,
 	"test_thermalHouseInput",

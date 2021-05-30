@@ -38,6 +38,9 @@ class ThermalUnitValidationUtilsTest extends Specification {
 	// Specific data for thermal house input
 	private static final ComparableQuantity<ThermalConductance> thermalConductance = Quantities.getQuantity(10, StandardUnits.THERMAL_TRANSMISSION)
 	private static final ComparableQuantity<HeatCapacity> ethCapa = Quantities.getQuantity(20, StandardUnits.HEAT_CAPACITY)
+	private static final ComparableQuantity<Temperature> desiredTemperature = Quantities.getQuantity(20, StandardUnits.TEMPERATURE)
+	private static final ComparableQuantity<Temperature> upperTemperatureLimit = Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
+	private static final ComparableQuantity<Temperature> lowerTemperatureLimit = Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
 
 	// Specific data for thermal cylindric storage input
 	private static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)
@@ -70,8 +73,11 @@ class ThermalUnitValidationUtilsTest extends Specification {
 
 		where:
 		invalidThermalHouse                                                                                          || expectedException
-		new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-10, StandardUnits.THERMAL_TRANSMISSION), ethCapa) || new InvalidEntityException("The following quantities have to be zero or positive: -10 kW/K", invalidThermalHouse)
-		new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, Quantities.getQuantity(0, StandardUnits.HEAT_CAPACITY)) || new InvalidEntityException("The following quantities have to be positive: 0 kWh/K", invalidThermalHouse)
+		new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-10, StandardUnits.THERMAL_TRANSMISSION), ethCapa, desiredTemperature, upperTemperatureLimit, lowerTemperatureLimit) || new InvalidEntityException("The following quantities have to be zero or positive: -10 kW/K", invalidThermalHouse)
+		new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, Quantities.getQuantity(0, StandardUnits.HEAT_CAPACITY), desiredTemperature, upperTemperatureLimit, lowerTemperatureLimit) || new InvalidEntityException("The following quantities have to be positive: 0 kWh/K", invalidThermalHouse)
+		new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, ethCapa, Quantities.getQuantity(0, StandardUnits.TEMPERATURE), upperTemperatureLimit, lowerTemperatureLimit) || new InvalidEntityException("Desired temperature must be higher than lower temperature limit and lower than upper temperature limit", invalidThermalHouse)
+		new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, ethCapa, desiredTemperature, Quantities.getQuantity(0, StandardUnits.TEMPERATURE), lowerTemperatureLimit) || new InvalidEntityException("Desired temperature must be higher than lower temperature limit and lower than upper temperature limit", invalidThermalHouse)
+		new ThermalHouseInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, thermalConductance, ethCapa, desiredTemperature, upperTemperatureLimit, Quantities.getQuantity(30, StandardUnits.TEMPERATURE)) || new InvalidEntityException("Desired temperature must be higher than lower temperature limit and lower than upper temperature limit", invalidThermalHouse)
 	}
 
 	// Thermal Cylindrical Storage
