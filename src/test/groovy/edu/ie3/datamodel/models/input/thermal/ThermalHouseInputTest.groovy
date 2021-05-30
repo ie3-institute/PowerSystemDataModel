@@ -17,7 +17,11 @@ class ThermalHouseInputTest extends Specification {
 
 		when:
 		def alteredUnit = thermalHouseInput.copy().ethLosses(ThermalUnitInputTestData.thermalConductance)
-				.ethCapa(ThermalUnitInputTestData.ethCapa).thermalBus(ThermalUnitInputTestData.thermalBus).build()
+				.ethCapa(ThermalUnitInputTestData.ethCapa)
+				.desiredTemperature(ThermalUnitInputTestData.desiredTemperature)
+				.upperTemperatureLimit(ThermalUnitInputTestData.upperTemperatureLimit)
+				.lowerTemperatureLimit(ThermalUnitInputTestData.lowerTemperatureLimit)
+				.thermalBus(ThermalUnitInputTestData.thermalBus).build()
 
 
 		then:
@@ -29,6 +33,9 @@ class ThermalHouseInputTest extends Specification {
 			assert thermalBus == thermalHouseInput.thermalBus
 			assert ethLosses == ThermalUnitInputTestData.thermalConductance
 			assert ethCapa == ThermalUnitInputTestData.ethCapa
+			assert desiredTemperature == ThermalUnitInputTestData.desiredTemperature
+			assert upperTemperatureLimit == ThermalUnitInputTestData.upperTemperatureLimit
+			assert lowerTemperatureLimit == ThermalUnitInputTestData.lowerTemperatureLimit
 		}
 	}
 }
