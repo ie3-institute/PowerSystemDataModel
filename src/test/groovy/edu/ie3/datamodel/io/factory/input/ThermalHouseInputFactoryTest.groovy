@@ -49,6 +49,9 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
 			assert thermalBus == thermalBusInput
 			assert ethLosses == getQuant(parameter["ethlosses"], StandardUnits.THERMAL_TRANSMISSION)
 			assert ethCapa == getQuant(parameter["ethcapa"], StandardUnits.HEAT_CAPACITY)
+			assert desiredTemperature == getQuant(parameter["desiredTemperature"], StandardUnits.TEMPERATURE)
+			assert upperTemperatureLimit == getQuant(parameter["upperTemperatureLimit"], StandardUnits.TEMPERATURE)
+			assert lowerTemperatureLimit == getQuant(parameter["lowerTemperatureLimit"], StandardUnits.TEMPERATURE)
 		}
 	}
 }

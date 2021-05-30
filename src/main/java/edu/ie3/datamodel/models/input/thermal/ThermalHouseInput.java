@@ -12,9 +12,8 @@ import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalConductance;
 import java.util.Objects;
 import java.util.UUID;
-import tech.units.indriya.ComparableQuantity;
-
 import javax.measure.quantity.Temperature;
+import tech.units.indriya.ComparableQuantity;
 
 /** Quite simple thermal model of a house to serve as a heat sink */
 public class ThermalHouseInput extends ThermalSinkInput {
@@ -95,11 +94,17 @@ public class ThermalHouseInput extends ThermalSinkInput {
     return ethCapa;
   }
 
-  public ComparableQuantity<Temperature> getDesiredTemperature() { return desiredTemperature; }
+  public ComparableQuantity<Temperature> getDesiredTemperature() {
+    return desiredTemperature;
+  }
 
-  public ComparableQuantity<Temperature> getUpperTemperatureLimit() { return upperTemperatureLimit; }
+  public ComparableQuantity<Temperature> getUpperTemperatureLimit() {
+    return upperTemperatureLimit;
+  }
 
-  public ComparableQuantity<Temperature> getLowerTemperatureLimit() { return lowerTemperatureLimit; }
+  public ComparableQuantity<Temperature> getLowerTemperatureLimit() {
+    return lowerTemperatureLimit;
+  }
 
   @Override
   public ThermalHouseInputCopyBuilder copy() {
@@ -112,10 +117,11 @@ public class ThermalHouseInput extends ThermalSinkInput {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     ThermalHouseInput that = (ThermalHouseInput) o;
-    return ethLosses.equals(that.ethLosses) && ethCapa.equals(that.ethCapa)
-            && desiredTemperature.equals(that.desiredTemperature)
-            && upperTemperatureLimit.equals(that.upperTemperatureLimit)
-            && lowerTemperatureLimit.equals(that.lowerTemperatureLimit);
+    return ethLosses.equals(that.ethLosses)
+        && ethCapa.equals(that.ethCapa)
+        && desiredTemperature.equals(that.desiredTemperature)
+        && upperTemperatureLimit.equals(that.upperTemperatureLimit)
+        && lowerTemperatureLimit.equals(that.lowerTemperatureLimit);
   }
 
   @Override
@@ -198,17 +204,20 @@ public class ThermalHouseInput extends ThermalSinkInput {
       return this;
     }
 
-    public ThermalHouseInputCopyBuilder desiredTemperature(ComparableQuantity<Temperature> desiredTemperature) {
+    public ThermalHouseInputCopyBuilder desiredTemperature(
+        ComparableQuantity<Temperature> desiredTemperature) {
       this.desiredTemperature = desiredTemperature;
       return this;
     }
 
-    public ThermalHouseInputCopyBuilder upperTemperatureLimit(ComparableQuantity<Temperature> upperTemperatureLimit) {
+    public ThermalHouseInputCopyBuilder upperTemperatureLimit(
+        ComparableQuantity<Temperature> upperTemperatureLimit) {
       this.upperTemperatureLimit = upperTemperatureLimit;
       return this;
     }
 
-    public ThermalHouseInputCopyBuilder lowerTemperatureLimit(ComparableQuantity<Temperature> lowerTemperatureLimit) {
+    public ThermalHouseInputCopyBuilder lowerTemperatureLimit(
+        ComparableQuantity<Temperature> lowerTemperatureLimit) {
       this.lowerTemperatureLimit = lowerTemperatureLimit;
       return this;
     }
