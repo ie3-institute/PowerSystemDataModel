@@ -88,10 +88,6 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
         new Quantity<?>[] {thermalHouseInput.getEthLosses()}, thermalHouseInput);
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {thermalHouseInput.getEthCapa()}, thermalHouseInput);
-    if (thermalHouseInput.getLowerTemperatureLimit().isGreaterThan(thermalHouseInput.getUpperTemperatureLimit()))
-      throw new InvalidEntityException(
-              "Lower temperature limit cannot be higher than the upper temperature limit",
-              thermalHouseInput);
     if (thermalHouseInput.getLowerTemperatureLimit().isGreaterThan(thermalHouseInput.getDesiredTemperature())
             || thermalHouseInput.getUpperTemperatureLimit().isLessThan(thermalHouseInput.getDesiredTemperature()))
       throw new InvalidEntityException(
