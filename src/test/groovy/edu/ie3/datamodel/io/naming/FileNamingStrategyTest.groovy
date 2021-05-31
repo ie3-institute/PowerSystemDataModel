@@ -5,10 +5,6 @@
  */
 package edu.ie3.datamodel.io.naming
 
-import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy
-import edu.ie3.datamodel.io.naming.FlatDirectoryHierarchy
-import edu.ie3.datamodel.io.naming.EntityNamingStrategy
-import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity
@@ -765,26 +761,23 @@ class FileNamingStrategyTest extends Specification {
 		IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 	}
 
-
-	//TODO: Fix me!
 	def "A FileNamingStrategy with DefaultHierarchy returns correct individual time series file name pattern"() {
-		given: "a naming strategy without pre- or suffixes"
+		given:
 		def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
 
 		when:
-		def actual = strategy.individualTimeSeriesPattern().pattern()
+		def actual = strategy.individualTimeSeriesPattern.pattern()
 
 		then:
 		actual == "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series" + File.separator + "its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 
-	//TODO: Fix me!
 	def "A FileNamingStrategy with DefaultHierarchy returns correct load profile time series file name pattern"() {
-		given: "a naming strategy without pre- or suffixes"
+		given:
 		def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
 
 		when:
-		def actual = strategy.loadProfileTimeSeriesPattern().pattern()
+		def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
 		then:
 		actual == "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
@@ -792,25 +785,25 @@ class FileNamingStrategyTest extends Specification {
 
 
 	def "A FileNamingStrategy with FlatHierarchy returns correct individual time series file name pattern"() {
-		given: "a naming strategy without pre- or suffixes"
+		given:
 		def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
 
 		when:
-		def actual = strategy.getIndividualTimeSeriesPattern().pattern()
+		def actual = strategy.individualTimeSeriesPattern.pattern()
 
 		then:
-		actual.toString() == "its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+		actual == "its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 
 	def "A FileNamingStrategy with FlatHierarchy returns correct load profile time series file name pattern"() {
-		given: "a naming strategy without pre- or suffixes"
+		given:
 		def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
 
 		when:
-		def actual = strategy.getLoadProfileTimeSeriesPattern().pattern()
+		def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
 		then:
-		actual.toString() == "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+		actual == "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 
 }

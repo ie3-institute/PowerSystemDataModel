@@ -175,8 +175,9 @@ public class FileNamingStrategy {
     return subDirectory.isEmpty()
         ? entityNamingStrategy.getIndividualTimeSeriesPattern()
         : Pattern.compile(
-            FilenameUtils.concat(
-                subDirectory, entityNamingStrategy.getIndividualTimeSeriesPattern().pattern()));
+            subDirectory.replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT)
+                + FILE_SEPARATOR_REPLACEMENT
+                + entityNamingStrategy.getIndividualTimeSeriesPattern().pattern());
   }
 
   public Pattern getLoadProfileTimeSeriesPattern() {
@@ -184,8 +185,9 @@ public class FileNamingStrategy {
     return subDirectory.isEmpty()
         ? entityNamingStrategy.getLoadProfileTimeSeriesPattern()
         : Pattern.compile(
-            FilenameUtils.concat(
-                subDirectory, entityNamingStrategy.getLoadProfileTimeSeriesPattern().pattern()));
+            subDirectory.replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT)
+                + FILE_SEPARATOR_REPLACEMENT
+                + entityNamingStrategy.getLoadProfileTimeSeriesPattern().pattern());
   }
 
   /**
