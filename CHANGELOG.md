@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Changed
+-   separated entity and file naming and introduced a new FileNamingStrategy taking an EntityNamingStrategy and a DirectoryHierarchy as arguments
+
 ## [2.0.0] - 2021-05-21
 
 ### Added
