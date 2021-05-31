@@ -783,7 +783,6 @@ class FileNamingStrategyTest extends Specification {
 		actual == "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 
-
 	def "A FileNamingStrategy with FlatHierarchy returns correct individual time series file name pattern"() {
 		given:
 		def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
