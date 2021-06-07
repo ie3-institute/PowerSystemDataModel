@@ -25,7 +25,7 @@ On `Maven central <https://search.maven.org/artifact/com.github.ie3-institute/Po
    <dependency>
      <groupId>com.github.ie3-institute</groupId>
      <artifactId>PowerSystemDataModel</artifactId>
-     <version>1.1.0</version>
+     <version>2.0.0</version>
    </dependency>
 
 Snapshot releases
