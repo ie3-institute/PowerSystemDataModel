@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.naming;
 
+import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
@@ -78,8 +79,7 @@ public class FileNamingStrategy {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        entityNamingStrategy.getEntityName(cls).orElseGet(() -> ""),
-        getDirectoryPath(cls).orElseGet(() -> ""));
+        entityNamingStrategy.getEntityName(cls).orElse(""), getDirectoryPath(cls).orElse(""));
   }
 
   /**
@@ -97,8 +97,8 @@ public class FileNamingStrategy {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        entityNamingStrategy.getEntityName(timeSeries).orElseGet(() -> ""),
-        getDirectoryPath(timeSeries).orElseGet(() -> ""));
+        entityNamingStrategy.getEntityName(timeSeries).orElse(""),
+        getDirectoryPath(timeSeries).orElse(""));
   }
 
   /**
@@ -132,11 +132,11 @@ public class FileNamingStrategy {
     } else {
       /* Make sure, the directory path does not start or end with file separator and in between the separator is harmonized */
       directoryPath =
-          maybeDirectoryName
-              .get()
-              .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
-              .replaceAll(FILE_SEPARATOR_REGEX + "$", "")
-              .replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT);
+          IoUtil.harmonizeFileSeparator(
+              maybeDirectoryName
+                  .get()
+                  .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
+                  .replaceAll(FILE_SEPARATOR_REGEX + "$", ""));
       return Optional.of(directoryPath);
     }
   }
@@ -161,33 +161,49 @@ public class FileNamingStrategy {
     } else {
       /* Make sure, the directory path does not start or end with file separator and in between the separator is harmonized */
       directoryPath =
-          maybeDirectoryName
-              .get()
-              .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
-              .replaceAll(FILE_SEPARATOR_REGEX + "$", "")
-              .replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT);
+          IoUtil.harmonizeFileSeparator(
+              maybeDirectoryName
+                  .get()
+                  .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
+                  .replaceAll(FILE_SEPARATOR_REGEX + "$", ""));
       return Optional.of(directoryPath);
     }
   }
 
   public Pattern getIndividualTimeSeriesPattern() {
     String subDirectory = directoryHierarchy.getSubDirectory(IndividualTimeSeries.class).orElse("");
-    return subDirectory.isEmpty()
-        ? entityNamingStrategy.getIndividualTimeSeriesPattern()
-        : Pattern.compile(
-            subDirectory.replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT)
-                + FILE_SEPARATOR_REPLACEMENT
-                + entityNamingStrategy.getIndividualTimeSeriesPattern().pattern());
+
+    if (subDirectory.isEmpty()) {
+      return entityNamingStrategy.getIndividualTimeSeriesPattern();
+    } else {
+      /* Build the pattern by joining the sub directory with the file name pattern, harmonizing file separators and
+       * finally escaping them */
+      String joined =
+          FilenameUtils.concat(
+              subDirectory, entityNamingStrategy.getIndividualTimeSeriesPattern().pattern());
+      String harmonized = IoUtil.harmonizeFileSeparator(joined);
+      String escaped = harmonized.replace("\\", "\\\\");
+
+      return Pattern.compile(escaped);
+    }
   }
 
   public Pattern getLoadProfileTimeSeriesPattern() {
     String subDirectory = directoryHierarchy.getSubDirectory(LoadProfileInput.class).orElse("");
-    return subDirectory.isEmpty()
-        ? entityNamingStrategy.getLoadProfileTimeSeriesPattern()
-        : Pattern.compile(
-            subDirectory.replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT)
-                + FILE_SEPARATOR_REPLACEMENT
-                + entityNamingStrategy.getLoadProfileTimeSeriesPattern().pattern());
+
+    if (subDirectory.isEmpty()) {
+      return entityNamingStrategy.getLoadProfileTimeSeriesPattern();
+    } else {
+      /* Build the pattern by joining the sub directory with the file name pattern, harmonizing file separators and
+       * finally escaping them */
+      String joined =
+          FilenameUtils.concat(
+              subDirectory, entityNamingStrategy.getLoadProfileTimeSeriesPattern().pattern());
+      String harmonized = IoUtil.harmonizeFileSeparator(joined);
+      String escaped = harmonized.replace("\\", "\\\\");
+
+      return Pattern.compile(escaped);
+    }
   }
 
   /**

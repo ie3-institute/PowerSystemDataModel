@@ -761,6 +761,8 @@ class FileNamingStrategyTest extends Specification {
 		IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 	}
 
+	String escapedFileSeparator = File.separator == "\\" ? "\\\\" : File.separator
+
 	def "A FileNamingStrategy with DefaultHierarchy returns correct individual time series file name pattern"() {
 		given:
 		def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
@@ -769,7 +771,7 @@ class FileNamingStrategyTest extends Specification {
 		def actual = strategy.individualTimeSeriesPattern.pattern()
 
 		then:
-		actual == "test_grid" + File.separator + "input" + File.separator + "participants" + File.separator + "time_series" + File.separator + "its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+		actual == "test_grid" + escapedFileSeparator + "input" + escapedFileSeparator + "participants" + escapedFileSeparator + "time_series" + escapedFileSeparator + "its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 
 	def "A FileNamingStrategy with DefaultHierarchy returns correct load profile time series file name pattern"() {
@@ -780,7 +782,7 @@ class FileNamingStrategyTest extends Specification {
 		def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
 		then:
-		actual == "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+		actual == "test_grid" + escapedFileSeparator + "input" + escapedFileSeparator + "global" + escapedFileSeparator + "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
 	}
 
 	def "A FileNamingStrategy with FlatHierarchy returns correct individual time series file name pattern"() {

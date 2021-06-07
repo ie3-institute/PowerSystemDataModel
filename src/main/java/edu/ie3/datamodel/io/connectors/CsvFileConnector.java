@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.connectors;
 
 import edu.ie3.datamodel.exceptions.ConnectorException;
+import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.*;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
@@ -45,9 +46,6 @@ public class CsvFileConnector implements DataConnector {
   private final String baseDirectoryName;
 
   private static final String FILE_ENDING = ".csv";
-  private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
-  private static final String FILE_SEPARATOR_REPLACEMENT =
-      File.separator.equals("\\") ? "\\\\" : "/";
 
   public CsvFileConnector(String baseDirectoryName, FileNamingStrategy fileNamingStrategy) {
     this.baseDirectoryName = baseDirectoryName;
@@ -106,8 +104,7 @@ public class CsvFileConnector implements DataConnector {
   private BufferedCsvWriter initWriter(String baseDirectory, CsvFileDefinition fileDefinition)
       throws ConnectorException, IOException {
     /* Join the full DIRECTORY path (excluding file name) */
-    String baseDirectoryHarmonized =
-        baseDirectory.replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT);
+    String baseDirectoryHarmonized = IoUtil.harmonizeFileSeparator(baseDirectory);
     String fullDirectoryPath =
         FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getDirectoryPath());
     String fullPath = FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getFilePath());
@@ -202,8 +199,7 @@ public class CsvFileConnector implements DataConnector {
    */
   private Map<UUID, CsvIndividualTimeSeriesMetaInformation>
       buildIndividualTimeSeriesMetaInformation() {
-    return getIndividualTimeSeriesFilePaths()
-        .parallelStream()
+    return getIndividualTimeSeriesFilePaths().parallelStream()
         .map(
             filePath -> {
               /* Extract meta information from file path and enhance it with the file path itself */
@@ -227,8 +223,7 @@ public class CsvFileConnector implements DataConnector {
    */
   public Map<ColumnScheme, Set<CsvIndividualTimeSeriesMetaInformation>>
       getCsvIndividualTimeSeriesMetaInformation(ColumnScheme... columnSchemes) {
-    return getIndividualTimeSeriesFilePaths()
-        .parallelStream()
+    return getIndividualTimeSeriesFilePaths().parallelStream()
         .map(
             pathString -> {
               String filePathWithoutEnding = removeFileEnding(pathString);

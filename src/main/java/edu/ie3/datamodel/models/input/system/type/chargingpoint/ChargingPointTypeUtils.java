@@ -142,7 +142,8 @@ public class ChargingPointTypeUtils {
                       Stream.concat(
                           Stream.of(type.getId().toLowerCase()),
                           type.getSynonymousIds().stream().map(String::toLowerCase))
-                          .collect(Collectors.toMap(Function.identity(), v -> type)).entrySet()
+                          .collect(Collectors.toMap(Function.identity(), v -> type))
+                          .entrySet()
                           .stream())
               .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
