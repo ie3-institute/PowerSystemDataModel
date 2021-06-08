@@ -25,7 +25,6 @@ import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
 import edu.ie3.test.common.SystemParticipantTestData as sptd
-import org.apache.commons.lang3.NotImplementedException
 import spock.lang.Specification
 
 class CsvSystemParticipantSourceTest extends Specification implements CsvTestDataMeta {
@@ -45,7 +44,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 		then:
 		systemParticipantsOpt.present
 		systemParticipantsOpt.ifPresent({ systemParticipants ->
-			assert (systemParticipants.allEntitiesAsList().size() == 9)
+			assert (systemParticipants.allEntitiesAsList().size() == 10)
 			assert (systemParticipants.getPvPlants().first().uuid == sptd.pvInput.uuid)
 			assert (systemParticipants.getBmPlants().first().uuid == sptd.bmInput.uuid)
 			assert (systemParticipants.getChpPlants().first().uuid == sptd.chpInput.uuid)
@@ -55,7 +54,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 			assert (systemParticipants.getLoads().first().uuid == sptd.loadInput.uuid)
 			assert (systemParticipants.getWecPlants().first().uuid == sptd.wecInput.uuid)
 			assert (systemParticipants.getStorages().first().uuid == sptd.storageInput.uuid)
-			assert (systemParticipants.getEvCS() == [] as Set)
+			assert (systemParticipants.getEvCS().first().uuid == sptd.evcsInput.uuid)
 		})
 	}
 
