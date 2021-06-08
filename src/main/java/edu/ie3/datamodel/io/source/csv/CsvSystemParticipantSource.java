@@ -153,6 +153,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             .filter(isPresentCollectIfNot(EvInput.class, nonBuildEntities))
             .map(Optional::get)
             .collect(Collectors.toSet());
+    Set<EvcsInput> evcs =
+        nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators)
+            .filter(isPresentCollectIfNot(EvcsInput.class, nonBuildEntities))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
     Set<ChpInput> chpInputs =
         chpInputStream(nodes, operators, chpTypes, thermalBuses, thermalStorages)
             .filter(isPresentCollectIfNot(ChpInput.class, nonBuildEntities))
@@ -175,7 +180,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
         new SystemParticipants(
             bmInputs,
             chpInputs,
-            Collections.emptySet(),
+            evcs,
             evs,
             fixedFeedInInputs,
             hpInputs,
