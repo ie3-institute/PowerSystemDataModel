@@ -8,8 +8,8 @@ package edu.ie3.datamodel.io;
 import java.io.File;
 
 public class IoUtil {
-  private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
-  private static final String FILE_SEPARATOR_REPLACEMENT =
+  public static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
+  public static final String FILE_SEPARATOR_REPLACEMENT =
       File.separator.equals("\\") ? "\\\\" : "/";
 
   private IoUtil() {

@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
-import java.io.File;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
@@ -27,10 +26,6 @@ import org.apache.logging.log4j.Logger;
 public class FileNamingStrategy {
 
   protected static final Logger logger = LogManager.getLogger(FileNamingStrategy.class);
-
-  private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
-  private static final String FILE_SEPARATOR_REPLACEMENT =
-      File.separator.equals("\\") ? "\\\\" : "/";
 
   private final EntityNamingStrategy entityNamingStrategy;
   private final DirectoryHierarchy directoryHierarchy;
@@ -135,8 +130,8 @@ public class FileNamingStrategy {
           IoUtil.harmonizeFileSeparator(
               maybeDirectoryName
                   .get()
-                  .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
-                  .replaceAll(FILE_SEPARATOR_REGEX + "$", ""));
+                  .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
+                  .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", ""));
       return Optional.of(directoryPath);
     }
   }
@@ -164,8 +159,8 @@ public class FileNamingStrategy {
           IoUtil.harmonizeFileSeparator(
               maybeDirectoryName
                   .get()
-                  .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
-                  .replaceAll(FILE_SEPARATOR_REGEX + "$", ""));
+                  .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
+                  .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", ""));
       return Optional.of(directoryPath);
     }
   }

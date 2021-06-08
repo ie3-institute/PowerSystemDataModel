@@ -391,7 +391,10 @@ public abstract class CsvDataSource {
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
       return distinctRowsWithLog(
-          allRows, fieldToValues -> fieldToValues.get("uuid"), entityClass.getSimpleName(), "UUID")
+              allRows,
+              fieldToValues -> fieldToValues.get("uuid"),
+              entityClass.getSimpleName(),
+              "UUID")
           .parallelStream();
     } catch (IOException e) {
       log.warn(
@@ -450,7 +453,8 @@ public abstract class CsvDataSource {
 
     /* Check for rows with the same key based on the provided key extractor function */
     Set<Map<String, String>> distinctIdSet =
-        allRowsSet.parallelStream()
+        allRowsSet
+            .parallelStream()
             .filter(ValidationUtils.distinctByKey(keyExtractor))
             .collect(Collectors.toSet());
     if (distinctIdSet.size() != allRowsSet.size()) {
