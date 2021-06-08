@@ -33,9 +33,9 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
 	// thermal house input
 	private static final ComparableQuantity<ThermalConductance> thermalConductance = Quantities.getQuantity(10, StandardUnits.THERMAL_TRANSMISSION)
 	private static final ComparableQuantity<HeatCapacity> ethCapa = Quantities.getQuantity(20, StandardUnits.HEAT_CAPACITY)
-	private static final ComparableQuantity<Temperature> desiredTemperature = Quantities.getQuantity(20, StandardUnits.TEMPERATURE)
-	private static final ComparableQuantity<Temperature> upperTemperatureLimit = Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
-	private static final ComparableQuantity<Temperature> lowerTemperatureLimit = Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
+	private static final ComparableQuantity<Temperature> DESIRED_TEMPERATURE = Quantities.getQuantity(20, StandardUnits.TEMPERATURE)
+	private static final ComparableQuantity<Temperature> UPPER_TEMPERATURE_LIMIT = Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
+	private static final ComparableQuantity<Temperature> LOWER_TEMPERATURE_LIMIT = Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
 	public static final thermalHouseInput = new ThermalHouseInput(
 	thermalUnitUuid,
 	"test_thermalHouseInput",
@@ -44,9 +44,9 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
 	thermalBus,
 	thermalConductance,
 	ethCapa,
-	desiredTemperature,
-	upperTemperatureLimit,
-	lowerTemperatureLimit)
+	DESIRED_TEMPERATURE,
+	UPPER_TEMPERATURE_LIMIT,
+	LOWER_TEMPERATURE_LIMIT)
 
 	// thermal cylindric storage input
 	private static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)

@@ -18,9 +18,9 @@ class ThermalHouseInputTest extends Specification {
 		when:
 		def alteredUnit = thermalHouseInput.copy().ethLosses(ThermalUnitInputTestData.thermalConductance)
 				.ethCapa(ThermalUnitInputTestData.ethCapa)
-				.desiredTemperature(ThermalUnitInputTestData.desiredTemperature)
-				.upperTemperatureLimit(ThermalUnitInputTestData.upperTemperatureLimit)
-				.lowerTemperatureLimit(ThermalUnitInputTestData.lowerTemperatureLimit)
+				.desiredTemperature(ThermalUnitInputTestData.DESIRED_TEMPERATURE)
+				.upperTemperatureLimit(ThermalUnitInputTestData.UPPER_TEMPERATURE_LIMIT)
+				.lowerTemperatureLimit(ThermalUnitInputTestData.LOWER_TEMPERATURE_LIMIT)
 				.thermalBus(ThermalUnitInputTestData.thermalBus).build()
 
 
@@ -33,9 +33,9 @@ class ThermalHouseInputTest extends Specification {
 			assert thermalBus == thermalHouseInput.thermalBus
 			assert ethLosses == ThermalUnitInputTestData.thermalConductance
 			assert ethCapa == ThermalUnitInputTestData.ethCapa
-			assert desiredTemperature == ThermalUnitInputTestData.desiredTemperature
-			assert upperTemperatureLimit == ThermalUnitInputTestData.upperTemperatureLimit
-			assert lowerTemperatureLimit == ThermalUnitInputTestData.lowerTemperatureLimit
+			assert desiredTemperature == ThermalUnitInputTestData.DESIRED_TEMPERATURE
+			assert upperTemperatureLimit == ThermalUnitInputTestData.UPPER_TEMPERATURE_LIMIT
+			assert lowerTemperatureLimit == ThermalUnitInputTestData.LOWER_TEMPERATURE_LIMIT
 		}
 	}
 }
