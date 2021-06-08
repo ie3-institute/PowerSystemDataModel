@@ -33,10 +33,10 @@ public class CsvFileDefinition {
     /* Remove all file separators at the beginning and end of a directory path and ensure harmonized file separator */
     this.directoryPath =
         Objects.nonNull(directoryPath)
-            ? directoryPath
-                .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
-                .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", "")
-                .replaceAll(IoUtil.FILE_SEPARATOR_REGEX, IoUtil.FILE_SEPARATOR_REPLACEMENT)
+            ? IoUtil.harmonizeFileSeparator(
+                directoryPath
+                    .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
+                    .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", ""))
             : "";
 
     /* Check the given information of the file name */

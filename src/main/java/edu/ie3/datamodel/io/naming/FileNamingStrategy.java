@@ -74,7 +74,7 @@ public class FileNamingStrategy {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        entityNamingStrategy.getEntityName(cls).orElse(""), getDirectoryPath(cls).orElse(""));
+        getEntityName(cls).orElseGet(() -> ""), getDirectoryPath(cls).orElseGet(() -> ""));
   }
 
   /**
@@ -92,8 +92,8 @@ public class FileNamingStrategy {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        entityNamingStrategy.getEntityName(timeSeries).orElse(""),
-        getDirectoryPath(timeSeries).orElse(""));
+        entityNamingStrategy.getEntityName(timeSeries).orElseGet(() -> ""),
+        getDirectoryPath(timeSeries).orElseGet(() -> ""));
   }
 
   /**
@@ -120,19 +120,17 @@ public class FileNamingStrategy {
    */
   public Optional<String> getDirectoryPath(Class<? extends UniqueEntity> cls) {
     Optional<String> maybeDirectoryName = directoryHierarchy.getSubDirectory(cls);
-    String directoryPath;
     if (!maybeDirectoryName.isPresent()) {
       logger.debug("Cannot determine directory name for class '{}'.", cls);
       return Optional.empty();
     } else {
       /* Make sure, the directory path does not start or end with file separator and in between the separator is harmonized */
-      directoryPath =
+      return Optional.of(
           IoUtil.harmonizeFileSeparator(
               maybeDirectoryName
                   .get()
                   .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
-                  .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", ""));
-      return Optional.of(directoryPath);
+                  .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", "")));
     }
   }
 
@@ -149,19 +147,17 @@ public class FileNamingStrategy {
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<String> getDirectoryPath(T timeSeries) {
     Optional<String> maybeDirectoryName = directoryHierarchy.getSubDirectory(timeSeries.getClass());
-    String directoryPath;
     if (!maybeDirectoryName.isPresent()) {
       logger.debug("Cannot determine directory name for time series '{}'.", timeSeries);
       return Optional.empty();
     } else {
       /* Make sure, the directory path does not start or end with file separator and in between the separator is harmonized */
-      directoryPath =
+      return Optional.of(
           IoUtil.harmonizeFileSeparator(
               maybeDirectoryName
                   .get()
                   .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
-                  .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", ""));
-      return Optional.of(directoryPath);
+                  .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", "")));
     }
   }
 
