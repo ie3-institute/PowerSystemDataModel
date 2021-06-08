@@ -171,6 +171,8 @@ public class FileNamingStrategy {
   /**
    * Returns the pattern to identify individual time series in this instance of the file naming
    * strategy considering the {@link EntityPersistenceNamingStrategy} and {@link FileHierarchy}.
+   *
+   * @return An individual time series pattern
    */
   public Pattern getIndividualTimeSeriesPattern() {
     String subDirectory = fileHierarchy.getSubDirectory(IndividualTimeSeries.class).orElse("");
@@ -194,6 +196,8 @@ public class FileNamingStrategy {
   /**
    * Returns the pattern to identify load profile time series in this instance of the file naming
    * strategy considering the {@link EntityPersistenceNamingStrategy} and {@link FileHierarchy}.
+   *
+   * @return A load profile time series pattern
    */
   public Pattern getLoadProfileTimeSeriesPattern() {
     String subDirectory = fileHierarchy.getSubDirectory(LoadProfileInput.class).orElse("");
