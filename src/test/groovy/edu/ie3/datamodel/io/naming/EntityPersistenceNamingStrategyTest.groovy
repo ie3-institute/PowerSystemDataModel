@@ -66,11 +66,11 @@ import tech.units.indriya.quantity.Quantities
 import java.time.ZonedDateTime
 import java.util.regex.Pattern
 
-class EntityNamingStrategyTest extends Specification {
+class EntityPersistenceNamingStrategyTest extends Specification {
 
 	def "The uuid pattern actually matches a valid uuid"() {
 		given:
-		def pattern = Pattern.compile(EntityNamingStrategy.UUID_STRING)
+		def pattern = Pattern.compile(EntityPersistenceNamingStrategy.UUID_STRING)
 		def uuidString = UUID.randomUUID().toString()
 
 		when:
@@ -82,7 +82,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "The pattern for an individual time series file name actually matches a valid file name and extracts the correct groups"() {
 		given:
-		def fns = new EntityNamingStrategy()
+		def fns = new EntityPersistenceNamingStrategy()
 		def validFileName = "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 
 		when:
@@ -101,7 +101,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "The pattern for a repetitive load profile time series file name actually matches a valid file name and extracts the correct groups"() {
 		given:
-		def fns = new EntityNamingStrategy()
+		def fns = new EntityPersistenceNamingStrategy()
 		def validFileName = "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 
 		when:
@@ -120,7 +120,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "The EntityPersistenceNamingStrategy is able to prepare the prefix properly"() {
 		when:
-		String actual = EntityNamingStrategy.preparePrefix(prefix)
+		String actual = EntityPersistenceNamingStrategy.preparePrefix(prefix)
 
 		then:
 		actual == expected
@@ -137,7 +137,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "The EntityPersistenceNamingStrategy is able to prepare the suffix properly"() {
 		when:
-		String actual = EntityNamingStrategy.prepareSuffix(prefix)
+		String actual = EntityPersistenceNamingStrategy.prepareSuffix(prefix)
 
 		then:
 		actual == suffix
@@ -154,7 +154,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy should recognize if empty strings are passed in the prefix/suffix constructor and don't add underlines then"() {
 		given: "a naming strategy"
-		EntityNamingStrategy strategy = new EntityNamingStrategy("", "")
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("", "")
 
 		expect:
 		strategy.prefix == ""
@@ -163,7 +163,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy should correctly append and prepend underscores"() {
 		given: "a naming strategy"
-		EntityNamingStrategy strategy = new EntityNamingStrategy("bla", "foo")
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("bla", "foo")
 
 		expect:
 		strategy.prefix == "bla_"
@@ -172,7 +172,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy should correctly append underscore, when only prefix is set"() {
 		given: "a naming strategy"
-		EntityNamingStrategy strategy = new EntityNamingStrategy("bla")
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("bla")
 
 		expect:
 		strategy.prefix == "bla_"
@@ -181,7 +181,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy should return an empty optional on a invalid class"() {
 		given: "a naming strategy"
-		EntityNamingStrategy strategy = new EntityNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
 		Optional<String> res = strategy.getEntityName(String)
@@ -192,7 +192,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all result models"() {
 		given: "a naming strategy without pre- or suffixes"
-		EntityNamingStrategy strategy = new EntityNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
 		Optional<String> res = strategy.getEntityName(modelClass)
@@ -223,7 +223,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy with pre- and suffixes should return valid strings for all result models"() {
 		given: "a naming strategy with pre- or suffixes"
-		EntityNamingStrategy strategy = new EntityNamingStrategy("prefix", "suffix")
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("prefix", "suffix")
 
 		when:
 		Optional<String> res = strategy.getEntityName(modelClass)
@@ -254,7 +254,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all input assets models"() {
 		given: "a naming strategy without pre- or suffixes"
-		EntityNamingStrategy strategy = new EntityNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
 		Optional<String> res = strategy.getEntityName(modelClass)
@@ -287,7 +287,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all input types models"() {
 		given: "a naming strategy without pre- or suffixes"
-		EntityNamingStrategy strategy = new EntityNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
 		Optional<String> res = strategy.getEntityName(modelClass)
@@ -312,7 +312,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for a Load Parameter Model"() {
 		given: "a naming strategy without pre- or suffixes"
-		EntityNamingStrategy strategy = new EntityNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
 		Optional<String> res = strategy.getEntityName(modelClass)
@@ -328,7 +328,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for a graphic input Model"() {
 		given: "a naming strategy without pre- or suffixes"
-		EntityNamingStrategy strategy = new EntityNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
 		Optional<String> res = strategy.getEntityName(modelClass)
@@ -345,7 +345,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffix should return empty Optional, if the content of the time series is not covered"() {
 		given:
-		EntityNamingStrategy strategy = new EntityNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 		def entries = [
 			new TimeBasedValue(ZonedDateTime.now(), new IntValue(5))
 		] as SortedSet
@@ -362,7 +362,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffix should return empty Optional, if the time series is empty"() {
 		given:
-		EntityNamingStrategy strategy = new EntityNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 		def entries = [] as SortedSet
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> UUID.randomUUID()
@@ -377,7 +377,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffix should return valid file name for individual time series" () {
 		given:
-		EntityNamingStrategy strategy = new EntityNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 		def entries = [
 			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
@@ -398,7 +398,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy with pre- or suffix should return valid file name for individual time series" () {
 		given:
-		EntityNamingStrategy strategy = new EntityNamingStrategy("aa", "zz")
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("aa", "zz")
 		def entries = [] as SortedSet
 		entries.add(new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR))))
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
@@ -419,7 +419,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffix should return valid file name for load profile input" () {
 		given:
-		EntityNamingStrategy strategy = new EntityNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 		LoadProfileInput timeSeries = Mock(LoadProfileInput)
 		timeSeries.uuid >> uuid
 		timeSeries.type >> type
@@ -438,7 +438,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {
 		given:
-		EntityNamingStrategy entityPersistenceNamingStrategy = new EntityNamingStrategy()
+		EntityPersistenceNamingStrategy entityPersistenceNamingStrategy = new EntityPersistenceNamingStrategy()
 		RepetitiveTimeSeries timeSeries = Mock(RepetitiveTimeSeries)
 
 		when:
@@ -450,7 +450,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for time series mapping"() {
 		given: "a naming strategy without pre- or suffixes"
-		EntityNamingStrategy strategy = new EntityNamingStrategy()
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 
 		when:
 		Optional<String> res = strategy.getEntityName(TimeSeriesMappingSource.MappingEntry)
@@ -462,7 +462,7 @@ class EntityNamingStrategyTest extends Specification {
 
 	def "A EntityPersistenceNamingStrategy with pre- and suffix should return valid strings for time series mapping"() {
 		given: "a naming strategy without pre- or suffixes"
-		EntityNamingStrategy strategy = new EntityNamingStrategy("prefix", "suffix")
+		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("prefix", "suffix")
 
 		when:
 		Optional<String> res = strategy.getEntityName(TimeSeriesMappingSource.MappingEntry)

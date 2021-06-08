@@ -30,9 +30,10 @@ import org.apache.logging.log4j.Logger;
  * @version 0.1
  * @since 03.02.20
  */
-public class EntityNamingStrategy {
+public class EntityPersistenceNamingStrategy {
 
-  protected static final Logger logger = LogManager.getLogger(EntityNamingStrategy.class);
+  protected static final Logger logger =
+      LogManager.getLogger(EntityPersistenceNamingStrategy.class);
 
   private static final String UUID_STRING =
       "[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}";
@@ -72,7 +73,7 @@ public class EntityNamingStrategy {
    * Constructor for building the names of the data sinks without provided entities with prefix and
    * suffix
    */
-  public EntityNamingStrategy() {
+  public EntityPersistenceNamingStrategy() {
     this("", "");
   }
 
@@ -81,7 +82,7 @@ public class EntityNamingStrategy {
    *
    * @param prefix Prefix of the data sinks
    */
-  public EntityNamingStrategy(String prefix) {
+  public EntityPersistenceNamingStrategy(String prefix) {
     this(prefix, "");
   }
 
@@ -91,7 +92,7 @@ public class EntityNamingStrategy {
    * @param prefix Prefix of the data sinks
    * @param suffix Suffixes of the data sinks
    */
-  public EntityNamingStrategy(String prefix, String suffix) {
+  public EntityPersistenceNamingStrategy(String prefix, String suffix) {
     this.prefix = preparePrefix(prefix);
     this.suffix = prepareSuffix(suffix);
 

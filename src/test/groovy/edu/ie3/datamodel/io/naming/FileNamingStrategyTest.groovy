@@ -76,13 +76,13 @@ class FileNamingStrategyTest extends Specification {
 	@Shared
 	DefaultDirectoryHierarchy defaultHierarchy
 	FlatDirectoryHierarchy flatHierarchy
-	EntityNamingStrategy simpleEntityNaming
+	EntityPersistenceNamingStrategy simpleEntityNaming
 
 	def setup() {
 		def tmpPath = Files.createTempDirectory("psdm_file_naming_strategy")
 		defaultHierarchy = new DefaultDirectoryHierarchy(tmpPath.toString(), "test_grid")
 		flatHierarchy = new FlatDirectoryHierarchy()
-		simpleEntityNaming = new EntityNamingStrategy()
+		simpleEntityNaming = new EntityPersistenceNamingStrategy()
 	}
 
 
@@ -402,7 +402,7 @@ class FileNamingStrategyTest extends Specification {
 
 	def "A FileNamingStrategy with DefaultHierarchy and with pre- or suffix should return valid file path for individual time series"() {
 		given:
-		def strategy = new FileNamingStrategy(new EntityNamingStrategy("aa", "zz"), defaultHierarchy)
+		def strategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy("aa", "zz"), defaultHierarchy)
 		def entries = [
 			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
@@ -466,7 +466,7 @@ class FileNamingStrategyTest extends Specification {
 
 	def "A FileNamingStrategy with DefaultHierarchy and pre- and suffix should return valid file path for time series mapping"() {
 		given: "a file naming strategy without pre- or suffixes"
-		def strategy = new FileNamingStrategy(new EntityNamingStrategy("prefix", "suffix"), defaultHierarchy)
+		def strategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), defaultHierarchy)
 
 		when:
 		def res = strategy.getFilePath(TimeSeriesMappingSource.MappingEntry)
@@ -878,7 +878,7 @@ class FileNamingStrategyTest extends Specification {
 
 	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid individual time series file name with pre- and suffix"() {
 		given:
-		def fns = new FileNamingStrategy(new EntityNamingStrategy("prefix", "suffix"), flatHierarchy)
+		def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), flatHierarchy)
 		def path = Paths.get(pathString)
 
 		when:
@@ -933,7 +933,7 @@ class FileNamingStrategyTest extends Specification {
 
 	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid load profile time series file name with pre- and suffix"() {
 		given:
-		def fns = new FileNamingStrategy(new EntityNamingStrategy("prefix", "suffix"), flatHierarchy)
+		def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), flatHierarchy)
 		def path = Paths.get("/bla/foo/prefix_lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304_suffix.csv")
 
 		when:
