@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.io.naming
 
+import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity
@@ -64,6 +67,7 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 import java.nio.file.Files
+import java.nio.file.Paths
 import java.time.ZonedDateTime
 
 class FileNamingStrategyTest extends Specification {
@@ -805,6 +809,142 @@ class FileNamingStrategyTest extends Specification {
 
 		then:
 		actual == "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12})"
+	}
+
+	def "Trying to extract time series meta information throws an Exception, if it is provided a malformed string"() {
+		given:
+		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
+		def path = Paths.get("/bla/foo")
+
+		when:
+		fns.extractTimeSeriesMetaInformation(path)
+
+		then:
+		def ex = thrown(IllegalArgumentException)
+		ex.message == "Unknown format of 'foo'. Cannot extract meta information."
+	}
+
+	def "Trying to extract individual time series meta information throws an Exception, if it is provided a malformed string"() {
+		given:
+		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
+		def fileName = "foo"
+
+		when:
+		fns.extractIndividualTimesSeriesMetaInformation(fileName)
+
+		then:
+		def ex = thrown(IllegalArgumentException)
+		ex.message == "Cannot extract meta information on individual time series from 'foo'."
+	}
+
+	def "Trying to extract load profile time series meta information throws an Exception, if it is provided a malformed string"() {
+		given:
+		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
+		def fileName = "foo"
+
+		when:
+		fns.extractLoadProfileTimesSeriesMetaInformation(fileName)
+
+		then:
+		def ex = thrown(IllegalArgumentException)
+		ex.message == "Cannot extract meta information on load profile time series from 'foo'."
+	}
+
+	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid individual time series file name"() {
+		given:
+		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
+		def path = Paths.get(pathString)
+
+		when:
+		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
+
+		then:
+		IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as IndividualTimeSeriesMetaInformation).with {
+			assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
+			assert it.columnScheme == expectedColumnScheme
+		}
+
+		where:
+		pathString || expectedColumnScheme
+		"/bla/foo/its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.ENERGY_PRICE
+		"/bla/foo/its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.ACTIVE_POWER
+		"/bla/foo/its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.APPARENT_POWER
+		"/bla/foo/its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.HEAT_DEMAND
+		"/bla/foo/its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
+		"/bla/foo/its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
+		"/bla/foo/its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.WEATHER
+	}
+
+	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid individual time series file name with pre- and suffix"() {
+		given:
+		def fns = new FileNamingStrategy(new EntityNamingStrategy("prefix", "suffix"), flatHierarchy)
+		def path = Paths.get(pathString)
+
+		when:
+		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
+
+		then:
+		IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as IndividualTimeSeriesMetaInformation).with {
+			assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
+			assert it.columnScheme == expectedColumnScheme
+		}
+
+		where:
+		pathString || expectedColumnScheme
+		"/bla/foo/prefix_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.ENERGY_PRICE
+		"/bla/foo/prefix_its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.ACTIVE_POWER
+		"/bla/foo/prefix_its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.APPARENT_POWER
+		"/bla/foo/prefix_its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.HEAT_DEMAND
+		"/bla/foo/prefix_its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
+		"/bla/foo/prefix_its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
+		"/bla/foo/prefix_its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.WEATHER
+	}
+
+	def "The EntityPersistenceNamingStrategy throw an IllegalArgumentException, if the column scheme is malformed."() {
+		given:
+		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
+		def path = Paths.get("/bla/foo/its_whoops_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv")
+
+		when:
+		fns.extractTimeSeriesMetaInformation(path)
+
+		then:
+		def ex = thrown(IllegalArgumentException)
+		ex.message == "Cannot parse 'whoops' to valid column scheme."
+	}
+
+	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid load profile time series file name"() {
+		given:
+		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
+		def path = Paths.get("/bla/foo/lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304.csv")
+
+		when:
+		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
+
+		then:
+		LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as LoadProfileTimeSeriesMetaInformation).with {
+			assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
+			assert profile == "g3"
+		}
+	}
+
+	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid load profile time series file name with pre- and suffix"() {
+		given:
+		def fns = new FileNamingStrategy(new EntityNamingStrategy("prefix", "suffix"), flatHierarchy)
+		def path = Paths.get("/bla/foo/prefix_lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304_suffix.csv")
+
+		when:
+		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
+
+		then:
+		LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as LoadProfileTimeSeriesMetaInformation).with {
+			assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
+			assert profile == "g3"
+		}
 	}
 
 }

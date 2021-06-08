@@ -9,7 +9,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import java.util.Optional;
 
 /** Default directory hierarchy for input models */
-public class FlatDirectoryHierarchy implements DirectoryHierarchy {
+public class FlatDirectoryHierarchy implements FileHierarchy {
 
   /**
    * Gives empty sub directory.

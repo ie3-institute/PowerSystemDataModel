@@ -7,13 +7,20 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
+import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
+
+import java.nio.file.Path;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
@@ -21,25 +28,25 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * A naming strategy, that combines an {@link EntityNamingStrategy} for naming entities and a {@link
- * DirectoryHierarchy} for a folder structure.
+ * FileHierarchy} for a folder structure.
  */
 public class FileNamingStrategy {
 
-  protected static final Logger logger = LogManager.getLogger(FileNamingStrategy.class);
+  private static final Logger logger = LogManager.getLogger(FileNamingStrategy.class);
 
   private final EntityNamingStrategy entityNamingStrategy;
-  private final DirectoryHierarchy directoryHierarchy;
+  private final FileHierarchy fileHierarchy;
 
   /**
    * Constructor for building the file naming strategy.
    *
    * @param entityNamingStrategy entity naming strategy
-   * @param directoryHierarchy directory hierarchy
+   * @param fileHierarchy directory hierarchy
    */
   public FileNamingStrategy(
-      EntityNamingStrategy entityNamingStrategy, DirectoryHierarchy directoryHierarchy) {
+      EntityNamingStrategy entityNamingStrategy, FileHierarchy fileHierarchy) {
     this.entityNamingStrategy = entityNamingStrategy;
-    this.directoryHierarchy = directoryHierarchy;
+    this.fileHierarchy = fileHierarchy;
   }
 
   /**
@@ -50,7 +57,7 @@ public class FileNamingStrategy {
    */
   public FileNamingStrategy(EntityNamingStrategy entityNamingStrategy) {
     this.entityNamingStrategy = entityNamingStrategy;
-    this.directoryHierarchy = new FlatDirectoryHierarchy();
+    this.fileHierarchy = new FlatDirectoryHierarchy();
   }
 
   /**
@@ -60,7 +67,7 @@ public class FileNamingStrategy {
    */
   public FileNamingStrategy() {
     this.entityNamingStrategy = new EntityNamingStrategy();
-    this.directoryHierarchy = new FlatDirectoryHierarchy();
+    this.fileHierarchy = new FlatDirectoryHierarchy();
   }
 
   /**
@@ -119,7 +126,7 @@ public class FileNamingStrategy {
    * @return An optional sub directory path
    */
   public Optional<String> getDirectoryPath(Class<? extends UniqueEntity> cls) {
-    Optional<String> maybeDirectoryName = directoryHierarchy.getSubDirectory(cls);
+    Optional<String> maybeDirectoryName = fileHierarchy.getSubDirectory(cls);
     if (!maybeDirectoryName.isPresent()) {
       logger.debug("Cannot determine directory name for class '{}'.", cls);
       return Optional.empty();
@@ -146,7 +153,7 @@ public class FileNamingStrategy {
    */
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<String> getDirectoryPath(T timeSeries) {
-    Optional<String> maybeDirectoryName = directoryHierarchy.getSubDirectory(timeSeries.getClass());
+    Optional<String> maybeDirectoryName = fileHierarchy.getSubDirectory(timeSeries.getClass());
     if (!maybeDirectoryName.isPresent()) {
       logger.debug("Cannot determine directory name for time series '{}'.", timeSeries);
       return Optional.empty();
@@ -161,8 +168,12 @@ public class FileNamingStrategy {
     }
   }
 
+  /**
+   * Returns the pattern to identify individual time series in this instance of the file naming strategy considering
+   * the {@link EntityNamingStrategy} and {@link FileHierarchy}.
+   */
   public Pattern getIndividualTimeSeriesPattern() {
-    String subDirectory = directoryHierarchy.getSubDirectory(IndividualTimeSeries.class).orElse("");
+    String subDirectory = fileHierarchy.getSubDirectory(IndividualTimeSeries.class).orElse("");
 
     if (subDirectory.isEmpty()) {
       return entityNamingStrategy.getIndividualTimeSeriesPattern();
@@ -179,8 +190,12 @@ public class FileNamingStrategy {
     }
   }
 
+  /**
+   * Returns the pattern to identify load profile time series in this instance of the file naming strategy considering
+   * the {@link EntityNamingStrategy} and {@link FileHierarchy}.
+   */
   public Pattern getLoadProfileTimeSeriesPattern() {
-    String subDirectory = directoryHierarchy.getSubDirectory(LoadProfileInput.class).orElse("");
+    String subDirectory = fileHierarchy.getSubDirectory(LoadProfileInput.class).orElse("");
 
     if (subDirectory.isEmpty()) {
       return entityNamingStrategy.getLoadProfileTimeSeriesPattern();
@@ -198,6 +213,20 @@ public class FileNamingStrategy {
   }
 
   /**
+   * Extracts meta information from a file name, of a time series.
+   *
+   * @param path Path to the file
+   * @return The meeting meta information
+   */
+  public FileNameMetaInformation extractTimeSeriesMetaInformation(Path path) {
+    /* Extract file name from possibly fully qualified path */
+    Path fileName = path.getFileName();
+    if (fileName == null)
+      throw new IllegalArgumentException("Unable to extract file name from path '" + path + "'.");
+    return extractTimeSeriesMetaInformation(fileName.toString());
+  }
+
+  /**
    * Extracts meta information from a file name, of a time series. Here, a file name <u>without</u>
    * leading path has to be provided
    *
@@ -205,7 +234,58 @@ public class FileNamingStrategy {
    * @return The meeting meta information
    */
   public FileNameMetaInformation extractTimeSeriesMetaInformation(String fileName) {
-    return entityNamingStrategy.extractTimeSeriesMetaInformation(fileName);
+    /* Remove the file ending (ending limited to 255 chars, which is the max file name allowed in NTFS and ext4) */
+    String withoutEnding = fileName.replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
+
+    if (getIndividualTimeSeriesPattern().matcher(withoutEnding).matches())
+      return extractIndividualTimesSeriesMetaInformation(withoutEnding);
+    else if (getLoadProfileTimeSeriesPattern().matcher(withoutEnding).matches())
+      return extractLoadProfileTimesSeriesMetaInformation(withoutEnding);
+    else
+      throw new IllegalArgumentException(
+              "Unknown format of '" + fileName + "'. Cannot extract meta information.");
+  }
+
+  /**
+   * Extracts meta information from a valid file name for a individual time series
+   *
+   * @param fileName File name to extract information from
+   * @return Meta information form individual time series file name
+   */
+  private IndividualTimeSeriesMetaInformation extractIndividualTimesSeriesMetaInformation(
+          String fileName) {
+    Matcher matcher = getIndividualTimeSeriesPattern().matcher(fileName);
+    if (!matcher.matches())
+      throw new IllegalArgumentException(
+              "Cannot extract meta information on individual time series from '" + fileName + "'.");
+
+    String columnSchemeKey = matcher.group("columnScheme");
+    ColumnScheme columnScheme =
+            ColumnScheme.parse(columnSchemeKey)
+                    .orElseThrow(
+                            () ->
+                                    new IllegalArgumentException(
+                                            "Cannot parse '" + columnSchemeKey + "' to valid column scheme."));
+
+    return new IndividualTimeSeriesMetaInformation(
+            UUID.fromString(matcher.group("uuid")), columnScheme);
+  }
+
+  /**
+   * Extracts meta information from a valid file name for a load profile time series
+   *
+   * @param fileName File name to extract information from
+   * @return Meta information form load profile time series file name
+   */
+  private LoadProfileTimeSeriesMetaInformation extractLoadProfileTimesSeriesMetaInformation(
+          String fileName) {
+    Matcher matcher = getLoadProfileTimeSeriesPattern().matcher(fileName);
+    if (!matcher.matches())
+      throw new IllegalArgumentException(
+              "Cannot extract meta information on load profile time series from '" + fileName + "'.");
+
+    return new LoadProfileTimeSeriesMetaInformation(
+            UUID.fromString(matcher.group("uuid")), matcher.group("profile"));
   }
 
   /**

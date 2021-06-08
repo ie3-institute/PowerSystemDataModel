@@ -5,10 +5,7 @@
 */
 package edu.ie3.datamodel.io.naming;
 
-import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
@@ -21,10 +18,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.StringUtils;
-import java.nio.file.Path;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -355,82 +349,6 @@ public class EntityNamingStrategy {
       logger.error("There is no naming strategy defined for {}", timeSeries);
       return Optional.empty();
     }
-  }
-
-  /**
-   * Extracts meta information from a file name, of a time series.
-   *
-   * @param path Path to the file
-   * @return The meeting meta information
-   */
-  public FileNameMetaInformation extractTimeSeriesMetaInformation(Path path) {
-    /* Extract file name from possibly fully qualified path */
-    Path fileName = path.getFileName();
-    if (fileName == null)
-      throw new IllegalArgumentException("Unable to extract file name from path '" + path + "'.");
-    return extractTimeSeriesMetaInformation(fileName.toString());
-  }
-
-  /**
-   * Extracts meta information from a file name, of a time series. Here, a file name <u>without</u>
-   * leading path has to be provided
-   *
-   * @param fileName File name
-   * @return The meeting meta information
-   */
-  public FileNameMetaInformation extractTimeSeriesMetaInformation(String fileName) {
-    /* Remove the file ending (ending limited to 255 chars, which is the max file name allowed in NTFS and ext4) */
-    String withoutEnding = fileName.replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
-
-    if (individualTimeSeriesPattern.matcher(withoutEnding).matches())
-      return extractIndividualTimesSeriesMetaInformation(withoutEnding);
-    else if (loadProfileTimeSeriesPattern.matcher(withoutEnding).matches())
-      return extractLoadProfileTimesSeriesMetaInformation(withoutEnding);
-    else
-      throw new IllegalArgumentException(
-          "Unknown format of '" + fileName + "'. Cannot extract meta information.");
-  }
-
-  /**
-   * Extracts meta information from a valid file name for a individual time series
-   *
-   * @param fileName File name to extract information from
-   * @return Meta information form individual time series file name
-   */
-  private IndividualTimeSeriesMetaInformation extractIndividualTimesSeriesMetaInformation(
-      String fileName) {
-    Matcher matcher = individualTimeSeriesPattern.matcher(fileName);
-    if (!matcher.matches())
-      throw new IllegalArgumentException(
-          "Cannot extract meta information on individual time series from '" + fileName + "'.");
-
-    String columnSchemeKey = matcher.group("columnScheme");
-    ColumnScheme columnScheme =
-        ColumnScheme.parse(columnSchemeKey)
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        "Cannot parse '" + columnSchemeKey + "' to valid column scheme."));
-
-    return new IndividualTimeSeriesMetaInformation(
-        UUID.fromString(matcher.group("uuid")), columnScheme);
-  }
-
-  /**
-   * Extracts meta information from a valid file name for a load profile time series
-   *
-   * @param fileName File name to extract information from
-   * @return Meta information form load profile time series file name
-   */
-  private LoadProfileTimeSeriesMetaInformation extractLoadProfileTimesSeriesMetaInformation(
-      String fileName) {
-    Matcher matcher = loadProfileTimeSeriesPattern.matcher(fileName);
-    if (!matcher.matches())
-      throw new IllegalArgumentException(
-          "Cannot extract meta information on load profile time series from '" + fileName + "'.");
-
-    return new LoadProfileTimeSeriesMetaInformation(
-        UUID.fromString(matcher.group("uuid")), matcher.group("profile"));
   }
 
   /**
