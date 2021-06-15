@@ -5,8 +5,10 @@
  */
 package edu.ie3.datamodel.models.input.thermal
 
+import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.test.common.ThermalUnitInputTestData
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
 
 
 class ThermalHouseInputTest extends Specification {
@@ -37,5 +39,18 @@ class ThermalHouseInputTest extends Specification {
             assert upperTemperatureLimit == ThermalUnitInputTestData.UPPER_TEMPERATURE_LIMIT
             assert lowerTemperatureLimit == ThermalUnitInputTestData.LOWER_TEMPERATURE_LIMIT
         }
+    }
+
+    def "The equals methods for a ThermalHouseInput works as expected"() {
+        given:
+        def thermalHouseInput1 = ThermalUnitInputTestData.thermalHouseInput
+        def thermalHouseInput2 = ThermalUnitInputTestData.thermalHouseInput
+        def thermalHouseInput3 = ThermalUnitInputTestData.thermalHouseInput.copy().
+                ethLosses(Quantities.getQuantity(100, StandardUnits.THERMAL_TRANSMISSION))
+
+        expect:
+        thermalHouseInput1.equals(thermalHouseInput2)
+        !thermalHouseInput1.equals(thermalHouseInput3)
+
     }
 }
