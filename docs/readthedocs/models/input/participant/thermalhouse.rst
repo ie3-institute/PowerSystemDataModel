@@ -22,7 +22,7 @@ Attributes, Units and Remarks
 +-----------------------+---------+---------------------------------+
 | ethCapa               | kWh / K | Thermal capacity                |
 +-----------------------+---------+---------------------------------+
-| targetTemperature    | °C      | Desired target temperature      |
+| targetTemperature     | °C      | Desired target temperature      |
 +-----------------------+---------+---------------------------------+
 | upperTemperatureLimit | °C      | Upper temperature boundary      |
 +-----------------------+---------+---------------------------------+
