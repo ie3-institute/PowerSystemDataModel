@@ -48,6 +48,7 @@ class ThermalHouseInputTest extends Specification {
 
 		expect:
 		thermalHouseInput1.equals(thermalHouseInput2)
+		!thermalHouseInput1.equals(null)
 	}
 
 	def "A ThermalHouseInput without operator and operation time is created as expected"() {
