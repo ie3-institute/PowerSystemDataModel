@@ -22,7 +22,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
   /** Thermal capacity of the included thermal house model (typically in kWh/K) */
   private final ComparableQuantity<HeatCapacity> ethCapa;
   /** Desired target temperature of the thermal house model (typically in °C) */
-  private final ComparableQuantity<Temperature> desiredTemperature;
+  private final ComparableQuantity<Temperature> targetTemperature;
   /** Upper boundary temperature of the thermal house model (typically in °C) */
   private final ComparableQuantity<Temperature> upperTemperatureLimit;
   /** Lower boundary temperature of the thermal house model (typically in °C) */
@@ -75,7 +75,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
       ThermalBusInput bus,
       ComparableQuantity<ThermalConductance> ethLosses,
       ComparableQuantity<HeatCapacity> ethCapa,
-      ComparableQuantity<Temperature> desiredTemperature,
+      ComparableQuantity<Temperature> targetTemperature,
       ComparableQuantity<Temperature> upperTemperatureLimit,
       ComparableQuantity<Temperature> lowerTemperatureLimit) {
     super(uuid, id, operator, operationTime, bus);
@@ -152,7 +152,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
         + ethLosses
         + ", ethCapa="
         + ethCapa
-        + ", desiredTemperature="
+        + ", targetTemperature="
         + desiredTemperature
         + ", upperTemperatureLimit="
         + upperTemperatureLimit

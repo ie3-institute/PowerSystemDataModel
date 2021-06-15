@@ -6,8 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
-### Changed
--   added desired temperature boundaries to `ThermalHouseInput`
+### Added
+-   added target temperature including tolerance boundaries to `ThermalHouseInput`
 
 ### Fixed
 - `CsvSystemParticipantSource#getSystemParticipants()` now correctly returns electric vehicle charging station input models [PR#370](https://github.com/ie3-institute/PowerSystemDataModel/pull/370)
