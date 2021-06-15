@@ -7,13 +7,8 @@ package edu.ie3.datamodel.models.input.thermal
 
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.test.common.ThermalUnitInputTestData
-import edu.ie3.util.quantities.interfaces.HeatCapacity
-import edu.ie3.util.quantities.interfaces.ThermalConductance
 import spock.lang.Specification
-import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
-
-import javax.measure.quantity.Temperature
 
 
 class ThermalHouseInputTest extends Specification {
