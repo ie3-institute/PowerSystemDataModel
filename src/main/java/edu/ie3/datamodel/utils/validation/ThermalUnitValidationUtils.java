@@ -2,19 +2,16 @@
  * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
- */
+*/
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.models.input.thermal.*;
-
 import javax.measure.Quantity;
 
 public class ThermalUnitValidationUtils extends ValidationUtils {
 
-  /**
-   * Private Constructor as this class is not meant to be instantiated
-   */
+  /** Private Constructor as this class is not meant to be instantiated */
   private ThermalUnitValidationUtils() {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
@@ -88,18 +85,18 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
   private static void checkThermalHouse(ThermalHouseInput thermalHouseInput) {
     checkNonNull(thermalHouseInput, "a thermal house");
     detectNegativeQuantities(
-            new Quantity<?>[]{thermalHouseInput.getEthLosses()}, thermalHouseInput);
+        new Quantity<?>[] {thermalHouseInput.getEthLosses()}, thermalHouseInput);
     detectZeroOrNegativeQuantities(
-            new Quantity<?>[]{thermalHouseInput.getEthCapa()}, thermalHouseInput);
+        new Quantity<?>[] {thermalHouseInput.getEthCapa()}, thermalHouseInput);
     if (thermalHouseInput
             .getLowerTemperatureLimit()
             .isGreaterThan(thermalHouseInput.getTargetTemperature())
-            || thermalHouseInput
+        || thermalHouseInput
             .getUpperTemperatureLimit()
             .isLessThan(thermalHouseInput.getTargetTemperature()))
       throw new InvalidEntityException(
-              "Target temperature must be higher than lower temperature limit and lower than upper temperature limit",
-              thermalHouseInput);
+          "Target temperature must be higher than lower temperature limit and lower than upper temperature limit",
+          thermalHouseInput);
   }
 
   /**
@@ -118,21 +115,21 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     // Check if inlet temperature is higher/equal to outlet temperature
     if (cylindricalStorageInput.getInletTemp().isLessThan(cylindricalStorageInput.getReturnTemp()))
       throw new InvalidEntityException(
-              "Inlet temperature of the cylindrical storage cannot be lower than outlet temperature",
-              cylindricalStorageInput);
+          "Inlet temperature of the cylindrical storage cannot be lower than outlet temperature",
+          cylindricalStorageInput);
     // Check if minimum permissible storage volume is lower than overall available storage volume
     if (cylindricalStorageInput
-            .getStorageVolumeLvlMin()
-            .isGreaterThan(cylindricalStorageInput.getStorageVolumeLvl()))
+        .getStorageVolumeLvlMin()
+        .isGreaterThan(cylindricalStorageInput.getStorageVolumeLvl()))
       throw new InvalidEntityException(
-              "Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume",
-              cylindricalStorageInput);
+          "Minimum permissible storage volume of the cylindrical storage cannot be higher than overall available storage volume",
+          cylindricalStorageInput);
     detectZeroOrNegativeQuantities(
-            new Quantity<?>[]{
-                    cylindricalStorageInput.getStorageVolumeLvl(),
-                    cylindricalStorageInput.getStorageVolumeLvlMin(),
-                    cylindricalStorageInput.getC()
-            },
-            cylindricalStorageInput);
+        new Quantity<?>[] {
+          cylindricalStorageInput.getStorageVolumeLvl(),
+          cylindricalStorageInput.getStorageVolumeLvlMin(),
+          cylindricalStorageInput.getC()
+        },
+        cylindricalStorageInput);
   }
 }

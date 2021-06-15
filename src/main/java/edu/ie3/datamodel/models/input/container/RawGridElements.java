@@ -84,38 +84,32 @@ public class RawGridElements implements InputContainer<AssetInput> {
 
     /* init sets */
     this.nodes =
-        rawGridElements
-            .parallelStream()
+        rawGridElements.parallelStream()
             .filter(gridElement -> gridElement instanceof NodeInput)
             .map(nodeInput -> (NodeInput) nodeInput)
             .collect(Collectors.toSet());
     this.lines =
-        rawGridElements
-            .parallelStream()
+        rawGridElements.parallelStream()
             .filter(gridElement -> gridElement instanceof LineInput)
             .map(lineInput -> (LineInput) lineInput)
             .collect(Collectors.toSet());
     this.transformer2Ws =
-        rawGridElements
-            .parallelStream()
+        rawGridElements.parallelStream()
             .filter(gridElement -> gridElement instanceof Transformer2WInput)
             .map(trafo2wInput -> (Transformer2WInput) trafo2wInput)
             .collect(Collectors.toSet());
     this.transformer3Ws =
-        rawGridElements
-            .parallelStream()
+        rawGridElements.parallelStream()
             .filter(gridElement -> gridElement instanceof Transformer3WInput)
             .map(trafo3wInput -> (Transformer3WInput) trafo3wInput)
             .collect(Collectors.toSet());
     this.switches =
-        rawGridElements
-            .parallelStream()
+        rawGridElements.parallelStream()
             .filter(gridElement -> gridElement instanceof SwitchInput)
             .map(switchInput -> (SwitchInput) switchInput)
             .collect(Collectors.toSet());
     this.measurementUnits =
-        rawGridElements
-            .parallelStream()
+        rawGridElements.parallelStream()
             .filter(gridElement -> gridElement instanceof MeasurementUnitInput)
             .map(measurementUnitInput -> (MeasurementUnitInput) measurementUnitInput)
             .collect(Collectors.toSet());
