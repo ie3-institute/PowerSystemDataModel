@@ -60,7 +60,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 			"uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
 			"operatesfrom" : operatesfrom,
 			"operatesuntil": operatesuntil,
-			"id"  : "TestID"git
+			"id"  : "TestID"
 		]
 		def inputClass = TestAssetInput
 		def operatorInput = Mock(OperatorInput)
