@@ -81,7 +81,7 @@ class FileNamingStrategyTest extends Specification {
 	def setup() {
 		def tmpPath = Files.createTempDirectory("psdm_file_naming_strategy")
 		defaultHierarchy = new DefaultDirectoryHierarchy(tmpPath.toString(), "test_grid")
-		flatHierarchy = new FlatDirectoryHierarchy(tmpPath.toString())
+		flatHierarchy = new FlatDirectoryHierarchy()
 		simpleEntityNaming = new EntityPersistenceNamingStrategy()
 	}
 
@@ -945,6 +945,29 @@ class FileNamingStrategyTest extends Specification {
 			assert uuid == UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304")
 			assert profile == "g3"
 		}
+	}
+
+
+	def "The FileNamingStrategy with FlatHierarchy returns the Id Coordinate file path correctly"() {
+		def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), flatHierarchy)
+
+		when:
+		def idFilePath = fns.getIdCoordinateFilePath()
+
+		then:
+		idFilePath.present
+		idFilePath.get() == "prefix_coordinates_suffix"
+	}
+
+	def "The FileNamingStrategy with DefaultHierarchy returns the Id Coordinate file path correctly"() {
+		def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), defaultHierarchy)
+
+		when:
+		def idFilePath = fns.getIdCoordinateFilePath()
+
+		then:
+		idFilePath.present
+		idFilePath.get() ==  defaultHierarchy.baseDirectory.get() + File.separator + "prefix_coordinates_suffix"
 	}
 
 }

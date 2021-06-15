@@ -55,9 +55,9 @@ public class FileNamingStrategy {
    *
    * @param entityPersistenceNamingStrategy entity naming strategy
    */
-  public FileNamingStrategy(EntityPersistenceNamingStrategy entityPersistenceNamingStrategy, String basePath) {
+  public FileNamingStrategy(EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
     this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
-    this.fileHierarchy = new FlatDirectoryHierarchy(basePath);
+    this.fileHierarchy = new FlatDirectoryHierarchy();
   }
 
   /**
@@ -65,9 +65,9 @@ public class FileNamingStrategy {
    * the entity naming strategy is used. Since no directory hierarchy is provided, a flat directory
    * hierarchy is used.
    */
-  public FileNamingStrategy(String basePath) {
+  public FileNamingStrategy() {
     this.entityPersistenceNamingStrategy = new EntityPersistenceNamingStrategy();
-    this.fileHierarchy = new FlatDirectoryHierarchy(basePath);
+    this.fileHierarchy = new FlatDirectoryHierarchy();
   }
 
   /**

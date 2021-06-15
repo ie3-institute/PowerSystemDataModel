@@ -18,19 +18,6 @@ import java.util.stream.Collectors;
 /** Default directory hierarchy for input models */
 public class FlatDirectoryHierarchy implements FileHierarchy {
 
-  /** Use the unix file separator here. */
-  protected static final String FILE_SEPARATOR = File.separator;
-
-  /** Base directory for this specific grid model. The base path should be a directory. */
-  private final Path baseDirectory;
-
-  public FlatDirectoryHierarchy(String baseDirectory) {
-    /* Prepare the base path */
-    String baseDirectoryNormalized =
-            FilenameUtils.normalizeNoEndSeparator(baseDirectory, true) + FILE_SEPARATOR;
-    this.baseDirectory = Paths.get(baseDirectoryNormalized).toAbsolutePath();
-  }
-
   /**
    * Gives empty sub directory.
    *
@@ -45,12 +32,12 @@ public class FlatDirectoryHierarchy implements FileHierarchy {
 
 
   /**
-   * Gives the {@link #baseDirectory}).
+   * Gives the baseDirectory, which is Empty.
    *
    * @return An Option to the base directory as a string
    */
   @Override
   public Optional<String> getBaseDirectory() {
-    return Optional.of(this.baseDirectory.toString());
+    return Optional.empty();
   }
 }
