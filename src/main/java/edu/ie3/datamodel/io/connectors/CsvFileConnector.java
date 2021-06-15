@@ -2,7 +2,7 @@
  * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
- */
+*/
 package edu.ie3.datamodel.io.connectors;
 
 import edu.ie3.datamodel.exceptions.ConnectorException;
@@ -14,7 +14,6 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -23,7 +22,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +37,7 @@ public class CsvFileConnector implements DataConnector {
   private static final Logger log = LogManager.getLogger(CsvFileConnector.class);
 
   private final Map<Class<? extends UniqueEntity>, BufferedCsvWriter> entityWriters =
-          new HashMap<>();
+      new HashMap<>();
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
   // ATTENTION: Do not finalize. It's meant for lazy evaluation.
   private Map<UUID, CsvIndividualTimeSeriesMetaInformation> individualTimeSeriesMetaInformation;
@@ -49,17 +47,17 @@ public class CsvFileConnector implements DataConnector {
   private static final String FILE_ENDING = ".csv";
   private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
   private static final String FILE_SEPARATOR_REPLACEMENT =
-          File.separator.equals("\\") ? "\\\\" : "/";
+      File.separator.equals("\\") ? "\\\\" : "/";
 
   public CsvFileConnector(
-          String baseDirectoryName, EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+      String baseDirectoryName, EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
     this.baseDirectoryName = baseDirectoryName;
     this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
   }
 
   public synchronized BufferedCsvWriter getOrInitWriter(
-          Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep)
-          throws ConnectorException {
+      Class<? extends UniqueEntity> clz, String[] headerElements, String csvSep)
+      throws ConnectorException {
     /* Try to the the right writer */
     BufferedCsvWriter predefinedWriter = entityWriters.get(clz);
     if (predefinedWriter != null) return predefinedWriter;
@@ -73,12 +71,12 @@ public class CsvFileConnector implements DataConnector {
       return newWriter;
     } catch (ConnectorException | IOException e) {
       throw new ConnectorException(
-              "Can neither find suitable writer nor build the correct one in CsvFileConnector.", e);
+          "Can neither find suitable writer nor build the correct one in CsvFileConnector.", e);
     }
   }
 
   public synchronized <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-  BufferedCsvWriter getOrInitWriter(T timeSeries, String[] headerElements, String csvSep)
+      BufferedCsvWriter getOrInitWriter(T timeSeries, String[] headerElements, String csvSep)
           throws ConnectorException {
     /* Try to the the right writer */
     BufferedCsvWriter predefinedWriter = timeSeriesWriters.get(timeSeries.getUuid());
@@ -93,26 +91,26 @@ public class CsvFileConnector implements DataConnector {
       return newWriter;
     } catch (ConnectorException | IOException e) {
       throw new ConnectorException(
-              "Can neither find suitable writer nor build the correct one in CsvFileConnector.", e);
+          "Can neither find suitable writer nor build the correct one in CsvFileConnector.", e);
     }
   }
 
   /**
    * Initializes a writer with the given base folder and file definition
    *
-   * @param baseDirectory  Base directory, where the file hierarchy should start
+   * @param baseDirectory Base directory, where the file hierarchy should start
    * @param fileDefinition Definition of the files shape
    * @return an initialized buffered writer
    * @throws ConnectorException If the base folder is a file
-   * @throws IOException        If the writer cannot be initialized correctly
+   * @throws IOException If the writer cannot be initialized correctly
    */
   private BufferedCsvWriter initWriter(String baseDirectory, CsvFileDefinition fileDefinition)
-          throws ConnectorException, IOException {
+      throws ConnectorException, IOException {
     /* Join the full DIRECTORY path (excluding file name) */
     String baseDirectoryHarmonized =
-            baseDirectory.replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT);
+        baseDirectory.replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT);
     String fullDirectoryPath =
-            FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getDirectoryPath());
+        FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getDirectoryPath());
     String fullPath = FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getFilePath());
 
     /* Create missing directories */
@@ -125,15 +123,15 @@ public class CsvFileConnector implements DataConnector {
     File pathFile = new File(fullPath);
     boolean append = pathFile.exists();
     BufferedCsvWriter writer =
-            new BufferedCsvWriter(
-                    fullPath, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep(), append);
+        new BufferedCsvWriter(
+            fullPath, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep(), append);
     if (!append) {
       writer.writeFileHeader();
     } else {
       log.warn(
-              "File '{}' already exist. Will append new content WITHOUT new header! Full path: {}",
-              fileDefinition.getFileName(),
-              pathFile.getAbsolutePath());
+          "File '{}' already exist. Will append new content WITHOUT new header! Full path: {}",
+          fileDefinition.getFileName(),
+          pathFile.getAbsolutePath());
     }
     return writer;
   }
@@ -151,19 +149,19 @@ public class CsvFileConnector implements DataConnector {
     String filePath = null;
     try {
       filePath =
-              entityPersistenceNamingStrategy
-                      .getFilePath(clz)
-                      .orElseThrow(
-                              () ->
-                                      new ConnectorException(
-                                              "Cannot find a naming strategy for class '"
-                                                      + clz.getSimpleName()
-                                                      + "'."));
+          entityPersistenceNamingStrategy
+              .getFilePath(clz)
+              .orElseThrow(
+                  () ->
+                      new ConnectorException(
+                          "Cannot find a naming strategy for class '"
+                              + clz.getSimpleName()
+                              + "'."));
     } catch (ConnectorException e) {
       log.error(
-              "Cannot get reader for entity '{}' as no file naming strategy for this file exists. Exception: {}",
-              clz::getSimpleName,
-              () -> e);
+          "Cannot get reader for entity '{}' as no file naming strategy for this file exists. Exception: {}",
+          clz::getSimpleName,
+          () -> e);
     }
     return initReader(filePath);
   }
@@ -179,7 +177,7 @@ public class CsvFileConnector implements DataConnector {
   public BufferedReader initReader(String filePath) throws FileNotFoundException {
     File fullPath = new File(baseDirectoryName + File.separator + filePath + FILE_ENDING);
     return new BufferedReader(
-            new InputStreamReader(new FileInputStream(fullPath), StandardCharsets.UTF_8), 16384);
+        new InputStreamReader(new FileInputStream(fullPath), StandardCharsets.UTF_8), 16384);
   }
 
   /**
@@ -192,7 +190,7 @@ public class CsvFileConnector implements DataConnector {
    * @return An option on the queried information
    */
   public Optional<IndividualTimeSeriesMetaInformation> getIndividualTimeSeriesMetaInformation(
-          UUID timeSeriesUuid) {
+      UUID timeSeriesUuid) {
     if (Objects.isNull(individualTimeSeriesMetaInformation))
       individualTimeSeriesMetaInformation = buildIndividualTimeSeriesMetaInformation();
 
@@ -205,20 +203,20 @@ public class CsvFileConnector implements DataConnector {
    * @return Mapping from time series uuid to it's meta information.
    */
   private Map<UUID, CsvIndividualTimeSeriesMetaInformation>
-  buildIndividualTimeSeriesMetaInformation() {
+      buildIndividualTimeSeriesMetaInformation() {
     return getIndividualTimeSeriesFilePaths().parallelStream()
-            .map(
-                    filePath -> {
-                      /* Extract meta information from file path and enhance it with the file path itself */
-                      String filePathWithoutEnding = removeFileEnding(filePath);
-                      IndividualTimeSeriesMetaInformation metaInformation =
-                              (IndividualTimeSeriesMetaInformation)
-                                      entityPersistenceNamingStrategy.extractTimeSeriesMetaInformation(
-                                              filePathWithoutEnding);
-                      return new CsvIndividualTimeSeriesMetaInformation(
-                              metaInformation, filePathWithoutEnding);
-                    })
-            .collect(Collectors.toMap(FileNameMetaInformation::getUuid, v -> v));
+        .map(
+            filePath -> {
+              /* Extract meta information from file path and enhance it with the file path itself */
+              String filePathWithoutEnding = removeFileEnding(filePath);
+              IndividualTimeSeriesMetaInformation metaInformation =
+                  (IndividualTimeSeriesMetaInformation)
+                      entityPersistenceNamingStrategy.extractTimeSeriesMetaInformation(
+                          filePathWithoutEnding);
+              return new CsvIndividualTimeSeriesMetaInformation(
+                  metaInformation, filePathWithoutEnding);
+            })
+        .collect(Collectors.toMap(FileNameMetaInformation::getUuid, v -> v));
   }
 
   /**
@@ -226,22 +224,22 @@ public class CsvFileConnector implements DataConnector {
    * scheme in order to allow for accounting the different content types.
    *
    * @param columnSchemes the column schemes to initialize readers for. If no scheme is given, all
-   *                      possible readers will be initialized.
+   *     possible readers will be initialized.
    * @return A mapping from column scheme to the individual time series meta information
    */
   public Map<ColumnScheme, Set<CsvIndividualTimeSeriesMetaInformation>>
-  getCsvIndividualTimeSeriesMetaInformation(ColumnScheme... columnSchemes) {
+      getCsvIndividualTimeSeriesMetaInformation(ColumnScheme... columnSchemes) {
     return getIndividualTimeSeriesFilePaths().parallelStream()
-            .map(
-                    pathString -> {
-                      String filePathWithoutEnding = removeFileEnding(pathString);
-                      return buildCsvTimeSeriesMetaInformation(filePathWithoutEnding, columnSchemes);
-                    })
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(
-                    Collectors.groupingBy(
-                            CsvIndividualTimeSeriesMetaInformation::getColumnScheme, Collectors.toSet()));
+        .map(
+            pathString -> {
+              String filePathWithoutEnding = removeFileEnding(pathString);
+              return buildCsvTimeSeriesMetaInformation(filePathWithoutEnding, columnSchemes);
+            })
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(
+            Collectors.groupingBy(
+                CsvIndividualTimeSeriesMetaInformation::getColumnScheme, Collectors.toSet()));
   }
 
   /**
@@ -262,22 +260,22 @@ public class CsvFileConnector implements DataConnector {
    */
   private Set<String> getIndividualTimeSeriesFilePaths() {
     Path baseDirectoryPath =
-            Paths.get(
-                    FilenameUtils.getFullPath(baseDirectoryName)
-                            + FilenameUtils.getName(baseDirectoryName));
+        Paths.get(
+            FilenameUtils.getFullPath(baseDirectoryName)
+                + FilenameUtils.getName(baseDirectoryName));
     try (Stream<Path> pathStream = Files.walk(baseDirectoryPath)) {
       return pathStream
-              .map(baseDirectoryPath::relativize)
-              .filter(
-                      path -> {
-                        String withoutEnding = removeFileEnding(path.toString());
-                        return entityPersistenceNamingStrategy
-                                .getIndividualTimeSeriesPattern()
-                                .matcher(withoutEnding)
-                                .matches();
-                      })
-              .map(Path::toString)
-              .collect(Collectors.toSet());
+          .map(baseDirectoryPath::relativize)
+          .filter(
+              path -> {
+                String withoutEnding = removeFileEnding(path.toString());
+                return entityPersistenceNamingStrategy
+                    .getIndividualTimeSeriesPattern()
+                    .matcher(withoutEnding)
+                    .matches();
+              })
+          .map(Path::toString)
+          .collect(Collectors.toSet());
     } catch (IOException e) {
       log.error("Unable to determine time series files readers for time series.", e);
       return Collections.emptySet();
@@ -290,45 +288,45 @@ public class CsvFileConnector implements DataConnector {
    * or the initialisation of the reader does not work, an empty {@link Optional} is given back
    *
    * @param filePathString String describing the path to the time series file
-   * @param columnSchemes  the allowed column schemes. If no scheme is specified, all schemes are
-   *                       allowed.
+   * @param columnSchemes the allowed column schemes. If no scheme is specified, all schemes are
+   *     allowed.
    * @return An {@link Optional} to {@link IndividualTimeSeriesMetaInformation}
    */
   private Optional<CsvIndividualTimeSeriesMetaInformation> buildCsvTimeSeriesMetaInformation(
-          String filePathString, ColumnScheme... columnSchemes) {
+      String filePathString, ColumnScheme... columnSchemes) {
     try {
       FileNameMetaInformation metaInformation =
-              entityPersistenceNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
+          entityPersistenceNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
       if (!IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())) {
         log.error(
-                "The time series file '{}' does not represent an individual time series.",
-                filePathString);
+            "The time series file '{}' does not represent an individual time series.",
+            filePathString);
         return Optional.empty();
       }
 
       IndividualTimeSeriesMetaInformation individualMetaInformation =
-              (IndividualTimeSeriesMetaInformation) metaInformation;
+          (IndividualTimeSeriesMetaInformation) metaInformation;
 
       // If no column schemes are specified, we will include all. If there a specified schemes, we
       // check if the file's column scheme matches any of them
       if (columnSchemes != null
-              && columnSchemes.length > 0
-              && Stream.of(columnSchemes)
+          && columnSchemes.length > 0
+          && Stream.of(columnSchemes)
               .noneMatch(scheme -> scheme.equals(individualMetaInformation.getColumnScheme()))) {
         log.warn(
-                "The column scheme of the time series file {} does not match any of the specified column schemes ({}), so it will not be processed.",
-                filePathString,
-                columnSchemes);
+            "The column scheme of the time series file {} does not match any of the specified column schemes ({}), so it will not be processed.",
+            filePathString,
+            columnSchemes);
         return Optional.empty();
       }
       return Optional.of(
-              new CsvIndividualTimeSeriesMetaInformation(
-                      individualMetaInformation.getUuid(),
-                      individualMetaInformation.getColumnScheme(),
-                      filePathString));
+          new CsvIndividualTimeSeriesMetaInformation(
+              individualMetaInformation.getUuid(),
+              individualMetaInformation.getColumnScheme(),
+              filePathString));
     } catch (IllegalArgumentException e) {
       log.error(
-              "Error during extraction of meta information from file name '{}'.", filePathString, e);
+          "Error during extraction of meta information from file name '{}'.", filePathString, e);
       return Optional.empty();
     }
   }
@@ -348,78 +346,76 @@ public class CsvFileConnector implements DataConnector {
   /**
    * Builds a new file definition consisting of file name and head line elements
    *
-   * @param timeSeries       Time series to derive naming information from
+   * @param timeSeries Time series to derive naming information from
    * @param headLineElements Array of head line elements
-   * @param csvSep           Separator for csv columns
+   * @param csvSep Separator for csv columns
    * @return A suitable file definition
    * @throws ConnectorException If the definition cannot be determined
    */
   private <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-  CsvFileDefinition buildFileDefinition(T timeSeries, String[] headLineElements, String csvSep)
+      CsvFileDefinition buildFileDefinition(T timeSeries, String[] headLineElements, String csvSep)
           throws ConnectorException {
     String directoryPath = entityPersistenceNamingStrategy.getDirectoryPath(timeSeries).orElse("");
     String fileName =
-            entityPersistenceNamingStrategy
-                    .getEntityName(timeSeries)
-                    .orElseThrow(
-                            () ->
-                                    new ConnectorException(
-                                            "Cannot determine the file name for time series '" + timeSeries + "'."));
+        entityPersistenceNamingStrategy
+            .getEntityName(timeSeries)
+            .orElseThrow(
+                () ->
+                    new ConnectorException(
+                        "Cannot determine the file name for time series '" + timeSeries + "'."));
     return new CsvFileDefinition(fileName, directoryPath, headLineElements, csvSep);
   }
 
   /**
    * Builds a new file definition consisting of file name and head line elements
    *
-   * @param clz              Class that is meant to be de-serialized into this file
+   * @param clz Class that is meant to be de-serialized into this file
    * @param headLineElements Array of head line elements
-   * @param csvSep           Separator for csv columns
+   * @param csvSep Separator for csv columns
    * @return A suitable file definition
    * @throws ConnectorException If the definition cannot be determined
    */
   private CsvFileDefinition buildFileDefinition(
-          Class<? extends UniqueEntity> clz, String[] headLineElements, String csvSep)
-          throws ConnectorException {
+      Class<? extends UniqueEntity> clz, String[] headLineElements, String csvSep)
+      throws ConnectorException {
     String directoryPath = entityPersistenceNamingStrategy.getDirectoryPath(clz).orElse("");
     String fileName =
-            entityPersistenceNamingStrategy
-                    .getEntityName(clz)
-                    .orElseThrow(
-                            () ->
-                                    new ConnectorException(
-                                            "Cannot determine the file name for class '" + clz.getSimpleName() + "'."));
+        entityPersistenceNamingStrategy
+            .getEntityName(clz)
+            .orElseThrow(
+                () ->
+                    new ConnectorException(
+                        "Cannot determine the file name for class '" + clz.getSimpleName() + "'."));
     return new CsvFileDefinition(fileName, directoryPath, headLineElements, csvSep);
   }
 
   @Override
   public void shutdown() {
     Stream.of(entityWriters.values(), timeSeriesWriters.values())
-            .flatMap(Collection::stream)
-            .forEach(
-                    bufferedWriter -> {
-                      try {
-                        bufferedWriter.close();
-                      } catch (IOException e) {
-                        log.error("Error during CsvFileConnector shutdown process.", e);
-                      }
-                    });
+        .flatMap(Collection::stream)
+        .forEach(
+            bufferedWriter -> {
+              try {
+                bufferedWriter.close();
+              } catch (IOException e) {
+                log.error("Error during CsvFileConnector shutdown process.", e);
+              }
+            });
   }
 
-  /**
-   * Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file
-   */
+  /** Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file */
   public static class CsvIndividualTimeSeriesMetaInformation
-          extends IndividualTimeSeriesMetaInformation {
+      extends IndividualTimeSeriesMetaInformation {
     private final String fullFilePath;
 
     public CsvIndividualTimeSeriesMetaInformation(
-            UUID uuid, ColumnScheme columnScheme, String fullFilePath) {
+        UUID uuid, ColumnScheme columnScheme, String fullFilePath) {
       super(uuid, columnScheme);
       this.fullFilePath = fullFilePath;
     }
 
     public CsvIndividualTimeSeriesMetaInformation(
-            IndividualTimeSeriesMetaInformation metaInformation, String fullFilePath) {
+        IndividualTimeSeriesMetaInformation metaInformation, String fullFilePath) {
       this(metaInformation.getUuid(), metaInformation.getColumnScheme(), fullFilePath);
     }
 
@@ -444,14 +440,14 @@ public class CsvFileConnector implements DataConnector {
     @Override
     public String toString() {
       return "CsvIndividualTimeSeriesMetaInformation{"
-              + "uuid="
-              + getUuid()
-              + ", columnScheme="
-              + getColumnScheme()
-              + ", fullFilePath='"
-              + fullFilePath
-              + '\''
-              + '}';
+          + "uuid="
+          + getUuid()
+          + ", columnScheme="
+          + getColumnScheme()
+          + ", fullFilePath='"
+          + fullFilePath
+          + '\''
+          + '}';
     }
   }
 }
