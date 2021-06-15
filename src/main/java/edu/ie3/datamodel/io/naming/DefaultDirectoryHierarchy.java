@@ -192,6 +192,16 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
   }
 
   /**
+   * Gives the {@link #baseDirectory}).
+   *
+   * @return An Option to the base directory as a string
+   */
+  @Override
+  public Optional<String> getBaseDirectory() {
+     return Optional.of(this.baseDirectory.toString());
+  }
+
+  /**
    * Gives the correct sub directory (w.r.t. {@link #baseDirectory}) for the provided class.
    *
    * @param cls Class to define the sub directory for

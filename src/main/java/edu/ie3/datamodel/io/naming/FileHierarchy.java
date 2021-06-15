@@ -34,4 +34,12 @@ public interface FileHierarchy {
   default Optional<String> getSubDirectory(Class<? extends UniqueEntity> cls) {
     return getSubDirectory(cls, File.separator);
   }
+
+  /**
+   * Determines the base directory.
+   *
+   * @return An option to the base directory
+   */
+  Optional<String> getBaseDirectory();
+
 }

@@ -55,9 +55,9 @@ public class FileNamingStrategy {
    *
    * @param entityPersistenceNamingStrategy entity naming strategy
    */
-  public FileNamingStrategy(EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+  public FileNamingStrategy(EntityPersistenceNamingStrategy entityPersistenceNamingStrategy, String basePath) {
     this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
-    this.fileHierarchy = new FlatDirectoryHierarchy();
+    this.fileHierarchy = new FlatDirectoryHierarchy(basePath);
   }
 
   /**
@@ -65,9 +65,9 @@ public class FileNamingStrategy {
    * the entity naming strategy is used. Since no directory hierarchy is provided, a flat directory
    * hierarchy is used.
    */
-  public FileNamingStrategy() {
+  public FileNamingStrategy(String basePath) {
     this.entityPersistenceNamingStrategy = new EntityPersistenceNamingStrategy();
-    this.fileHierarchy = new FlatDirectoryHierarchy();
+    this.fileHierarchy = new FlatDirectoryHierarchy(basePath);
   }
 
   /**
@@ -301,6 +301,19 @@ public class FileNamingStrategy {
    */
   public String getIdCoordinateEntityName() {
     return entityPersistenceNamingStrategy.getIdCoordinateEntityName();
+  }
+
+  /**
+   * Get the full path to the id coordinate file with regard to some (not explicitly specified) base directory.
+   * The path does NOT start or end with any of the known file separators or file extension.
+   *
+   * @return An optional sub path to the id coordinate file
+   */
+  public Optional<String> getIdCoordinateFilePath() {
+    // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
+    // details
+    return getFilePath(
+            getIdCoordinateEntityName(), fileHierarchy.getBaseDirectory().orElseGet(() -> ""));
   }
 
   /**

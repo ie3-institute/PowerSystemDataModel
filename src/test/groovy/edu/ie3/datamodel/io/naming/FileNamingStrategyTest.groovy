@@ -81,7 +81,7 @@ class FileNamingStrategyTest extends Specification {
 	def setup() {
 		def tmpPath = Files.createTempDirectory("psdm_file_naming_strategy")
 		defaultHierarchy = new DefaultDirectoryHierarchy(tmpPath.toString(), "test_grid")
-		flatHierarchy = new FlatDirectoryHierarchy()
+		flatHierarchy = new FlatDirectoryHierarchy(tmpPath.toString())
 		simpleEntityNaming = new EntityPersistenceNamingStrategy()
 	}
 
