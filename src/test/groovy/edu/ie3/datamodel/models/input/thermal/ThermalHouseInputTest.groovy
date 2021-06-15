@@ -7,8 +7,13 @@ package edu.ie3.datamodel.models.input.thermal
 
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.test.common.ThermalUnitInputTestData
+import edu.ie3.util.quantities.interfaces.HeatCapacity
+import edu.ie3.util.quantities.interfaces.ThermalConductance
 import spock.lang.Specification
+import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
+
+import javax.measure.quantity.Temperature
 
 
 class ThermalHouseInputTest extends Specification {
@@ -45,11 +50,26 @@ class ThermalHouseInputTest extends Specification {
 		given:
 		def thermalHouseInput1 = ThermalUnitInputTestData.thermalHouseInput
 		def thermalHouseInput2 = ThermalUnitInputTestData.thermalHouseInput
-		def thermalHouseInput3 = ThermalUnitInputTestData.thermalHouseInput.copy().
-				ethLosses(Quantities.getQuantity(100, StandardUnits.THERMAL_TRANSMISSION))
 
 		expect:
 		thermalHouseInput1.equals(thermalHouseInput2)
-		!thermalHouseInput1.equals(thermalHouseInput3)
+	}
+
+	def "A ThermalHouseInput without operator and operation time is created as expected"() {
+		given:
+		def thermalHouseInput = new ThermalHouseInput(
+				UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a"),
+				"test_thermalHouseInput",
+				ThermalUnitInputTestData.thermalBus,
+				Quantities.getQuantity(10, StandardUnits.THERMAL_TRANSMISSION),
+				Quantities.getQuantity(20, StandardUnits.HEAT_CAPACITY),
+				Quantities.getQuantity(20, StandardUnits.TEMPERATURE),
+				Quantities.getQuantity(25, StandardUnits.TEMPERATURE),
+				Quantities.getQuantity(15, StandardUnits.TEMPERATURE))
+
+		expect:
+		thermalHouseInput.targetTemperature == Quantities.getQuantity(20, StandardUnits.TEMPERATURE)
+		thermalHouseInput.upperTemperatureLimit == Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
+		thermalHouseInput.lowerTemperatureLimit == Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
 	}
 }
