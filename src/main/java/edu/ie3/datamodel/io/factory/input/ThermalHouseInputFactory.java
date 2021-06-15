@@ -31,7 +31,7 @@ public class ThermalHouseInputFactory
   @Override
   protected String[] getAdditionalFields() {
     return new String[] {
-      ETH_LOSSES, ETH_CAPA, DESIRED_TEMPERATURE, UPPER_TEMPERATURE_LIMIT, LOWER_TEMPERATURE_LIMIT
+      ETH_LOSSES, ETH_CAPA, TARGET_TEMPERATURE, UPPER_TEMPERATURE_LIMIT, LOWER_TEMPERATURE_LIMIT
     };
   }
 
@@ -47,8 +47,8 @@ public class ThermalHouseInputFactory
         data.getQuantity(ETH_LOSSES, StandardUnits.THERMAL_TRANSMISSION);
     final ComparableQuantity<HeatCapacity> ethCapa =
         data.getQuantity(ETH_CAPA, StandardUnits.HEAT_CAPACITY);
-    final ComparableQuantity<Temperature> desiredTemperature =
-        data.getQuantity(DESIRED_TEMPERATURE, StandardUnits.TEMPERATURE);
+    final ComparableQuantity<Temperature> targetTemperature =
+        data.getQuantity(TARGET_TEMPERATURE, StandardUnits.TEMPERATURE);
     final ComparableQuantity<Temperature> upperTemperatureLimit =
         data.getQuantity(UPPER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE);
     final ComparableQuantity<Temperature> lowerTemperatureLimit =
@@ -61,7 +61,7 @@ public class ThermalHouseInputFactory
         busInput,
         ethLosses,
         ethCapa,
-        desiredTemperature,
+        targetTemperature,
         upperTemperatureLimit,
         lowerTemperatureLimit);
   }

@@ -11,31 +11,31 @@ import spock.lang.Specification
 
 class ThermalHouseInputTest extends Specification {
 
-	def "A ThermalHouseInput copy method should work as expected"() {
-		given:
-		def thermalHouseInput = ThermalUnitInputTestData.thermalHouseInput
+    def "A ThermalHouseInput copy method should work as expected"() {
+        given:
+        def thermalHouseInput = ThermalUnitInputTestData.thermalHouseInput
 
-		when:
-		def alteredUnit = thermalHouseInput.copy().ethLosses(ThermalUnitInputTestData.thermalConductance)
-				.ethCapa(ThermalUnitInputTestData.ethCapa)
-				.desiredTemperature(ThermalUnitInputTestData.DESIRED_TEMPERATURE)
-				.upperTemperatureLimit(ThermalUnitInputTestData.UPPER_TEMPERATURE_LIMIT)
-				.lowerTemperatureLimit(ThermalUnitInputTestData.LOWER_TEMPERATURE_LIMIT)
-				.thermalBus(ThermalUnitInputTestData.thermalBus).build()
+        when:
+        def alteredUnit = thermalHouseInput.copy().ethLosses(ThermalUnitInputTestData.thermalConductance)
+                .ethCapa(ThermalUnitInputTestData.ethCapa)
+                .targetTemperature(ThermalUnitInputTestData.TARGET_TEMPERATURE)
+                .upperTemperatureLimit(ThermalUnitInputTestData.UPPER_TEMPERATURE_LIMIT)
+                .lowerTemperatureLimit(ThermalUnitInputTestData.LOWER_TEMPERATURE_LIMIT)
+                .thermalBus(ThermalUnitInputTestData.thermalBus).build()
 
 
-		then:
-		alteredUnit.with {
-			assert uuid == thermalHouseInput.uuid
-			assert id == thermalHouseInput.id
-			assert operator == thermalHouseInput.operator
-			assert operationTime == thermalHouseInput.operationTime
-			assert thermalBus == thermalHouseInput.thermalBus
-			assert ethLosses == ThermalUnitInputTestData.thermalConductance
-			assert ethCapa == ThermalUnitInputTestData.ethCapa
-			assert desiredTemperature == ThermalUnitInputTestData.DESIRED_TEMPERATURE
-			assert upperTemperatureLimit == ThermalUnitInputTestData.UPPER_TEMPERATURE_LIMIT
-			assert lowerTemperatureLimit == ThermalUnitInputTestData.LOWER_TEMPERATURE_LIMIT
-		}
-	}
+        then:
+        alteredUnit.with {
+            assert uuid == thermalHouseInput.uuid
+            assert id == thermalHouseInput.id
+            assert operator == thermalHouseInput.operator
+            assert operationTime == thermalHouseInput.operationTime
+            assert thermalBus == thermalHouseInput.thermalBus
+            assert ethLosses == ThermalUnitInputTestData.thermalConductance
+            assert ethCapa == ThermalUnitInputTestData.ethCapa
+            assert targetTemperature == ThermalUnitInputTestData.TARGET_TEMPERATURE
+            assert upperTemperatureLimit == ThermalUnitInputTestData.UPPER_TEMPERATURE_LIMIT
+            assert lowerTemperatureLimit == ThermalUnitInputTestData.LOWER_TEMPERATURE_LIMIT
+        }
+    }
 }

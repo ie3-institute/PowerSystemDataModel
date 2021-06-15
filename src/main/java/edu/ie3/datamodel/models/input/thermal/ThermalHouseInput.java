@@ -34,7 +34,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
    * @param bus Thermal bus, the model is connected to
    * @param ethLosses Thermal, transitional losses of the included thermal house model
    * @param ethCapa Thermal capacity of the included thermal house model
-   * @param desiredTemperature Desired target temperature of the thermal house model
+   * @param targetTemperature Desired target temperature of the thermal house model
    * @param upperTemperatureLimit Upper boundary temperature of the thermal house model
    * @param lowerTemperatureLimit Lower boundary temperature of the thermal house model
    */
@@ -44,13 +44,13 @@ public class ThermalHouseInput extends ThermalSinkInput {
       ThermalBusInput bus,
       ComparableQuantity<ThermalConductance> ethLosses,
       ComparableQuantity<HeatCapacity> ethCapa,
-      ComparableQuantity<Temperature> desiredTemperature,
+      ComparableQuantity<Temperature> targetTemperature,
       ComparableQuantity<Temperature> upperTemperatureLimit,
       ComparableQuantity<Temperature> lowerTemperatureLimit) {
     super(uuid, id, bus);
     this.ethLosses = ethLosses.to(StandardUnits.THERMAL_TRANSMISSION);
     this.ethCapa = ethCapa.to(StandardUnits.HEAT_CAPACITY);
-    this.desiredTemperature = desiredTemperature.to(StandardUnits.TEMPERATURE);
+    this.targetTemperature = targetTemperature.to(StandardUnits.TEMPERATURE);
     this.upperTemperatureLimit = upperTemperatureLimit.to(StandardUnits.TEMPERATURE);
     this.lowerTemperatureLimit = lowerTemperatureLimit.to(StandardUnits.TEMPERATURE);
   }
@@ -63,7 +63,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
    * @param bus Thermal bus, the model is connected to
    * @param ethLosses Thermal, transitional losses of the included thermal house model
    * @param ethCapa Thermal capacity of the included thermal house model
-   * @param desiredTemperature Desired target temperature of the thermal house model
+   * @param targetTemperature Desired target temperature of the thermal house model
    * @param upperTemperatureLimit Upper boundary temperature of the thermal house model
    * @param lowerTemperatureLimit Lower boundary temperature of the thermal house model
    */
@@ -81,7 +81,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
     super(uuid, id, operator, operationTime, bus);
     this.ethLosses = ethLosses.to(StandardUnits.THERMAL_TRANSMISSION);
     this.ethCapa = ethCapa.to(StandardUnits.HEAT_CAPACITY);
-    this.desiredTemperature = desiredTemperature.to(StandardUnits.TEMPERATURE);
+    this.targetTemperature = targetTemperature.to(StandardUnits.TEMPERATURE);
     this.upperTemperatureLimit = upperTemperatureLimit.to(StandardUnits.TEMPERATURE);
     this.lowerTemperatureLimit = lowerTemperatureLimit.to(StandardUnits.TEMPERATURE);
   }
@@ -94,8 +94,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
     return ethCapa;
   }
 
-  public ComparableQuantity<Temperature> getDesiredTemperature() {
-    return desiredTemperature;
+  public ComparableQuantity<Temperature> getTargetTemperature() {
+    return targetTemperature;
   }
 
   public ComparableQuantity<Temperature> getUpperTemperatureLimit() {
@@ -119,7 +119,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
     ThermalHouseInput that = (ThermalHouseInput) o;
     return ethLosses.equals(that.ethLosses)
         && ethCapa.equals(that.ethCapa)
-        && desiredTemperature.equals(that.desiredTemperature)
+        && targetTemperature.equals(that.targetTemperature)
         && upperTemperatureLimit.equals(that.upperTemperatureLimit)
         && lowerTemperatureLimit.equals(that.lowerTemperatureLimit);
   }
@@ -130,7 +130,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
         super.hashCode(),
         ethLosses,
         ethCapa,
-        desiredTemperature,
+        targetTemperature,
         upperTemperatureLimit,
         lowerTemperatureLimit);
   }
@@ -153,7 +153,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
         + ", ethCapa="
         + ethCapa
         + ", targetTemperature="
-        + desiredTemperature
+        + targetTemperature
         + ", upperTemperatureLimit="
         + upperTemperatureLimit
         + ", lowerTemperatureLimit="
@@ -171,7 +171,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
 
     private ComparableQuantity<ThermalConductance> ethLosses;
     private ComparableQuantity<HeatCapacity> ethCapa;
-    private ComparableQuantity<Temperature> desiredTemperature;
+    private ComparableQuantity<Temperature> targetTemperature;
     private ComparableQuantity<Temperature> upperTemperatureLimit;
     private ComparableQuantity<Temperature> lowerTemperatureLimit;
 
@@ -179,7 +179,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
       super(entity);
       this.ethLosses = entity.getEthLosses();
       this.ethCapa = entity.getEthCapa();
-      this.desiredTemperature = entity.getDesiredTemperature();
+      this.targetTemperature = entity.getTargetTemperature();
       this.upperTemperatureLimit = entity.getUpperTemperatureLimit();
       this.lowerTemperatureLimit = entity.getLowerTemperatureLimit();
     }
@@ -194,7 +194,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
           getThermalBus(),
           ethLosses,
           ethCapa,
-          desiredTemperature,
+          targetTemperature,
           upperTemperatureLimit,
           lowerTemperatureLimit);
     }
@@ -210,9 +210,9 @@ public class ThermalHouseInput extends ThermalSinkInput {
       return this;
     }
 
-    public ThermalHouseInputCopyBuilder desiredTemperature(
-        ComparableQuantity<Temperature> desiredTemperature) {
-      this.desiredTemperature = desiredTemperature;
+    public ThermalHouseInputCopyBuilder targetTemperature(
+        ComparableQuantity<Temperature> targetTemperature) {
+      this.targetTemperature = targetTemperature;
       return this;
     }
 
