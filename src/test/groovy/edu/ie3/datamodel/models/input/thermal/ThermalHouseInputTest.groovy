@@ -45,8 +45,9 @@ class ThermalHouseInputTest extends Specification {
 		given:
 		def thermalHouseInput1 = ThermalUnitInputTestData.thermalHouseInput
 		def thermalHouseInput2 = ThermalUnitInputTestData.thermalHouseInput
-		def changedEthLosses = Quantities.getQuantity(100, StandardUnits.THERMAL_TRANSMISSION)
-		def thermalHouseInput3 = ThermalUnitInputTestData.thermalHouseInput.copy().ethLosses(changedEthLosses)
+		def changedLowerTemperature = Quantities.getQuantity(-100, StandardUnits.TEMPERATURE)
+		def thermalHouseInput3 = ThermalUnitInputTestData.thermalHouseInput.copy()
+				.lowerTemperatureLimit(changedLowerTemperature).build()
 		def otherObject = "otherObject"
 
 		expect:
