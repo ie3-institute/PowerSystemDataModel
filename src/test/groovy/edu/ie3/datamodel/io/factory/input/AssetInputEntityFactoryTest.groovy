@@ -53,6 +53,39 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 		}
 	}
 
+	def "An AssetInputFactory should parse a valid operated AssetInput correctly (with nulls and empty strings)"() {
+		given: "a system participant input type factory and model data"
+		def inputFactory = new TestAssetInputFactory()
+		Map<String, String> parameter = [
+			"uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"operatesfrom" : operatesfrom,
+			"operatesuntil": operatesuntil,
+			"id"  : "TestID"
+		]
+		def inputClass = TestAssetInput
+		def operatorInput = Mock(OperatorInput)
+
+		when:
+		Optional<TestAssetInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
+
+		then:
+		input.present
+		input.get().getClass() == inputClass
+		((TestAssetInput) input.get()).with {
+			assert uuid == UUID.fromString(parameter["uuid"])
+			assert operationTime == OperationTime.notLimited()
+			assert operator == operatorInput
+			assert id == parameter["id"]
+		}
+
+		where:
+		operatesfrom	|  operatesuntil
+		null		    |  null
+		"" 				|  null
+		null			|  ""
+		"" 				|  ""
+	}
+
 	def "An AssetInputFactory should parse a valid operated AssetInput correctly (operation start time provided)"() {
 		given: "a system participant input type factory and model data"
 		def inputFactory = new TestAssetInputFactory()
