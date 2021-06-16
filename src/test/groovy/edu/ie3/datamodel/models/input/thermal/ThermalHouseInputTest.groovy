@@ -45,10 +45,15 @@ class ThermalHouseInputTest extends Specification {
 		given:
 		def thermalHouseInput1 = ThermalUnitInputTestData.thermalHouseInput
 		def thermalHouseInput2 = ThermalUnitInputTestData.thermalHouseInput
+		def changedEthLosses = Quantities.getQuantity(100, StandardUnits.THERMAL_TRANSMISSION)
+		def thermalHouseInput3 = ThermalUnitInputTestData.thermalHouseInput.copy().ethLosses(changedEthLosses)
+		def otherObject = "otherObject"
 
 		expect:
 		thermalHouseInput1.equals(thermalHouseInput2)
 		!thermalHouseInput1.equals(null)
+		!thermalHouseInput1.equals(thermalHouseInput3)
+		!thermalHouseInput1.equals(otherObject)
 	}
 
 	def "A ThermalHouseInput without operator and operation time is created as expected"() {
