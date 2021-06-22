@@ -18,6 +18,7 @@ trait CsvTestDataMeta {
 	static String typeFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("types")
 	static String gridFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("grid")
 	static String participantsFolderPath =  testParticipantsBaseFolderPath.concat(File.separator).concat("participants")
+	static String resultEntitiesFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("results")
 	static String timeSeriesFolderPath =  testTimeSeriesBaseFolderPath
 	static String thermalFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("thermal")
 	static String coordinatesFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("coordinates")
