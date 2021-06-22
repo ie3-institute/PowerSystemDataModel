@@ -10,7 +10,7 @@ plugins {
 	id 'de.undercouch.download' version '4.1.1'
 	id 'kr.motd.sphinx' version '2.10.1' // documentation generation
 	id 'jacoco' // java code coverage plugin
-	id "org.sonarqube" version "3.2.0" // sonarqube
+	id "org.sonarqube" version "3.3" // sonarqube
 	id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
 }
 
@@ -83,10 +83,10 @@ dependencies {
 	// Databases
 	compile 'org.influxdb:influxdb-java:2.21'
 	compile 'com.couchbase.client:java-client:3.1.6'
-	runtimeOnly 'org.postgresql:postgresql:42.2.20' // postgresql jdbc driver required during runtime
+	runtimeOnly 'org.postgresql:postgresql:42.2.22' // postgresql jdbc driver required during runtime
 
 
-	compile 'commons-io:commons-io:2.9.0' // I/O functionalities
+	compile 'commons-io:commons-io:2.10.0' // I/O functionalities
 	compile 'org.apache.commons:commons-compress:1.20' // I/O functionalities
 }
 
