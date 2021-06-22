@@ -6,14 +6,7 @@
 package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.models.UniqueEntity;
-import org.apache.commons.io.FilenameUtils;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /** Default directory hierarchy for input models */
 public class FlatDirectoryHierarchy implements FileHierarchy {
@@ -29,7 +22,6 @@ public class FlatDirectoryHierarchy implements FileHierarchy {
   public Optional<String> getSubDirectory(Class<? extends UniqueEntity> cls, String fileSeparator) {
     return Optional.empty();
   }
-
 
   /**
    * Gives the baseDirectory, which is Empty.

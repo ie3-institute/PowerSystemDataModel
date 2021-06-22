@@ -198,7 +198,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
    */
   @Override
   public Optional<String> getBaseDirectory() {
-     return Optional.of(this.baseDirectory.toString());
+    return Optional.of(this.baseDirectory.toString());
   }
 
   /**

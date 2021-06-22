@@ -41,5 +41,4 @@ public interface FileHierarchy {
    * @return An option to the base directory
    */
   Optional<String> getBaseDirectory();
-
 }
