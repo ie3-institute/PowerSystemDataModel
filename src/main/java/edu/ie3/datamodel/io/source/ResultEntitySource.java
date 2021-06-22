@@ -17,15 +17,14 @@ import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import java.util.Set;
 
 /**
- * Interface that provides the capability to build entities of type
- * {@link ResultEntity} container from .csv files.
+ * Interface that provides the capability to build entities of type {@link ResultEntity} container
+ * from .csv files.
  *
  * @version 0.1
  * @since 22 June 2021
  */
 public interface ResultEntitySource {
 
-  // Grid
   /**
    * Returns a unique set of {@link NodeResult} instances.
    *
@@ -41,8 +40,9 @@ public interface ResultEntitySource {
    * Returns a unique set of {@link SwitchResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link SwitchResult} which has to be checked manually,
-   * as {@link SwitchResult#equals(Object)} is NOT restricted on the uuid of {@link SwitchResult}.
+   * java.util.UUID} uniqueness of the provided {@link SwitchResult} which has to be checked
+   * manually, as {@link SwitchResult#equals(Object)} is NOT restricted on the uuid of {@link
+   * SwitchResult}.
    *
    * @return a set of object and uuid unique {@link SwitchResult} entities
    */
@@ -63,8 +63,9 @@ public interface ResultEntitySource {
    * Returns a unique set of {@link Transformer2WResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link Transformer2WResult} which has to be checked manually,
-   * as {@link Transformer2WResult#equals(Object)} is NOT restricted on the uuid of {@link Transformer2WResult}.
+   * java.util.UUID} uniqueness of the provided {@link Transformer2WResult} which has to be checked
+   * manually, as {@link Transformer2WResult#equals(Object)} is NOT restricted on the uuid of {@link
+   * Transformer2WResult}.
    *
    * @return a set of object and uuid unique {@link Transformer2WResult} entities
    */
@@ -74,14 +75,14 @@ public interface ResultEntitySource {
    * Returns a unique set of {@link Transformer3WResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link Transformer3WResult} which has to be checked manually,
-   * as {@link Transformer3WResult#equals(Object)} is NOT restricted on the uuid of {@link Transformer3WResult}.
+   * java.util.UUID} uniqueness of the provided {@link Transformer3WResult} which has to be checked
+   * manually, as {@link Transformer3WResult#equals(Object)} is NOT restricted on the uuid of {@link
+   * Transformer3WResult}.
    *
    * @return a set of object and uuid unique {@link Transformer3WResult} entities
    */
   Set<Transformer3WResult> getTransformer3WResultResults();
 
-  // System Participants
   /**
    * Returns a unique set of {@link LoadResult} instances.
    *
@@ -108,8 +109,9 @@ public interface ResultEntitySource {
    * Returns a unique set of {@link FixedFeedInResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link FixedFeedInResult} which has to be checked manually,
-   * as {@link FixedFeedInResult#equals(Object)} is NOT restricted on the uuid of {@link FixedFeedInResult}.
+   * java.util.UUID} uniqueness of the provided {@link FixedFeedInResult} which has to be checked
+   * manually, as {@link FixedFeedInResult#equals(Object)} is NOT restricted on the uuid of {@link
+   * FixedFeedInResult}.
    *
    * @return a set of object and uuid unique {@link FixedFeedInResult} entities
    */
@@ -152,8 +154,9 @@ public interface ResultEntitySource {
    * Returns a unique set of {@link StorageResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link StorageResult} which has to be checked manually,
-   * as {@link StorageResult#equals(Object)} is NOT restricted on the uuid of {@link StorageResult}.
+   * java.util.UUID} uniqueness of the provided {@link StorageResult} which has to be checked
+   * manually, as {@link StorageResult#equals(Object)} is NOT restricted on the uuid of {@link
+   * StorageResult}.
    *
    * @return a set of object and uuid unique {@link StorageResult} entities
    */
@@ -196,8 +199,9 @@ public interface ResultEntitySource {
    * Returns a unique set of {@link CylindricalStorageResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link CylindricalStorageResult} which has to be checked manually,
-   * as {@link CylindricalStorageResult#equals(Object)} is NOT restricted on the uuid of {@link CylindricalStorageResult}.
+   * java.util.UUID} uniqueness of the provided {@link CylindricalStorageResult} which has to be
+   * checked manually, as {@link CylindricalStorageResult#equals(Object)} is NOT restricted on the
+   * uuid of {@link CylindricalStorageResult}.
    *
    * @return a set of object and uuid unique {@link CylindricalStorageResult} entities
    */
@@ -207,8 +211,9 @@ public interface ResultEntitySource {
    * Returns a unique set of {@link ThermalHouseResult} instances.
    *
    * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link ThermalHouseResult} which has to be checked manually,
-   * as {@link ThermalHouseResult#equals(Object)} is NOT restricted on the uuid of {@link ThermalHouseResult}.
+   * java.util.UUID} uniqueness of the provided {@link ThermalHouseResult} which has to be checked
+   * manually, as {@link ThermalHouseResult#equals(Object)} is NOT restricted on the uuid of {@link
+   * ThermalHouseResult}.
    *
    * @return a set of object and uuid unique {@link ThermalHouseResult} entities
    */

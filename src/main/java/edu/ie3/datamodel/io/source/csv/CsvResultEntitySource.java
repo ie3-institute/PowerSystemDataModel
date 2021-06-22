@@ -5,13 +5,10 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.SimpleEntityFactory;
 import edu.ie3.datamodel.io.factory.result.*;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.source.ResultEntitySource;
-import edu.ie3.datamodel.models.input.container.SystemParticipants;
-import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.result.connector.LineResult;
@@ -26,14 +23,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Source that provides the capability to build entities of type
- * {@link ResultEntity} container from .csv files.
+ * Source that provides the capability to build entities of type {@link ResultEntity} container from
+ * .csv files.
  *
  * <p>This source is <b>not buffered</b> which means each call on a getter method always tries to
  * read all data is necessary to return the requested objects in a hierarchical cascading way.
- *
- * <p>If performance is an issue, it is recommended to read the data cascading starting with reading
- * nodes and then using the getters with arguments to avoid reading the same data multiple times.
  *
  * <p>The resulting sets are always unique on object <b>and</b> UUID base (with distinct UUIDs).
  *
@@ -151,23 +145,14 @@ public class CsvResultEntitySource extends CsvDataSource implements ResultEntity
 
   private <T extends ResultEntity> Set<T> getResultEntities(
       Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory) {
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
-            .map(
-                    fieldsToAttributes -> {
-                      SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
-                      return (Optional<T>) factory.get(data);
-                    })
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-//    return filterEmptyOptionals(
-//            simpleEntityDataStream(entityClass)
-//                .map(
-//                    entityData ->
-//                        factory
-//                            .get(entityData)
-//                            .flatMap(loadResult -> cast(entityClass, loadResult))))
-//        .collect(Collectors.toSet());
+    return filterEmptyOptionals(
+            simpleEntityDataStream(entityClass)
+                .map(
+                    entityData ->
+                        factory
+                            .get(entityData)
+                            .flatMap(loadResult -> cast(entityClass, loadResult))))
+        .collect(Collectors.toSet());
   }
 
   private <T extends ResultEntity> Optional<T> cast(

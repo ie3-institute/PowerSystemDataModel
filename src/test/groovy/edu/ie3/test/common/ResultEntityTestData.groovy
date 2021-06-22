@@ -1,6 +1,11 @@
+/*
+ * © 2021. TU Dortmund University,
+ * Institute of Energy Systems, Energy Efficiency and Energy Economics,
+ * Research group Distribution grid planning and operation
+ */
 package edu.ie3.test.common
 
 class ResultEntityTestData {
 
-    public static final int wecResultsSize = 1000;
+	public static final int wecResultsSize = 1000
 }
