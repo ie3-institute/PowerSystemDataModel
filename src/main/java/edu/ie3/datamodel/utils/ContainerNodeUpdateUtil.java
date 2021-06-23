@@ -207,9 +207,7 @@ public class ContainerNodeUpdateUtil {
       SystemParticipants systemParticipants, Map<NodeInput, NodeInput> oldToNewNodes) {
 
     List<SystemParticipantInput> sysParts =
-        systemParticipants
-            .allEntitiesAsList()
-            .parallelStream()
+        systemParticipants.allEntitiesAsList().parallelStream()
             .map(
                 sysPart -> {
                   if (oldToNewNodes.containsKey(sysPart.getNode())) {

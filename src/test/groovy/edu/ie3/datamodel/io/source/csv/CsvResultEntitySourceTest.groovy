@@ -17,21 +17,21 @@ class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta
 				resultEntitiesFolderPath, entityPersistenceNamingStrategy)
 
 		when:
-		def wecResults = csvResultEntitySource.getWecResults() // existent
-		def pvResults = csvResultEntitySource.getPvResults() // existent
-		def bmResults = csvResultEntitySource.getBmResults() // existent
-		def chpResults = csvResultEntitySource.getChpResults() // non-existent
+		def wecResults = csvResultEntitySource.wecResults // existent
+		def pvResults = csvResultEntitySource.pvResults // existent
+		def bmResults = csvResultEntitySource.bmResults // existent
+		def chpResults = csvResultEntitySource.chpResults // non-existent
 
 		then:
-		wecResults.size() == retd.wecResultsSize
-		pvResults.size() == retd.pvResultsSize
-		bmResults.size() == retd.bmResultsSize
-		chpResults.isEmpty()
+		wecResults.size() == retd.WEC_RESULT_SIZE
+		pvResults.size() == retd.PV_RESULT_SIZE
+		bmResults.size() == retd.BM_RESULT_SIZE
+		chpResults.empty
 
-		bmResults.first().getUuid() == retd.bmResultUuid
-		bmResults.first().getInputModel() == retd.bmInputModelUuid
-		bmResults.first().getP() == retd.bmActivePower
-		bmResults.first().getQ() == retd.bmReactivePower
-		bmResults.first().getTime() == retd.bmZonedDateTime
+		bmResults.first().uuid == retd.BM_UUID
+		bmResults.first().inputModel == retd.BM_INPUT_MODEL
+		bmResults.first().p == retd.BM_ACTIVE_POWER
+		bmResults.first().q == retd.BM_REACTIVE_POWER
+		bmResults.first().time == retd.BM_TIME
 	}
 }
