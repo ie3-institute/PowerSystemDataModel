@@ -17,9 +17,21 @@ class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta
 				resultEntitiesFolderPath, entityPersistenceNamingStrategy)
 
 		when:
-		def wecResults = csvResultEntitySource.getWecResults()
+		def wecResults = csvResultEntitySource.getWecResults() // existent
+		def pvResults = csvResultEntitySource.getPvResults() // existent
+		def bmResults = csvResultEntitySource.getBmResults() // existent
+		def chpResults = csvResultEntitySource.getChpResults() // non-existent
 
 		then:
 		wecResults.size() == retd.wecResultsSize
+		pvResults.size() == retd.pvResultsSize
+		bmResults.size() == retd.bmResultsSize
+		chpResults.isEmpty()
+
+		bmResults.first().getUuid() == retd.bmResultUuid
+		bmResults.first().getInputModel() == retd.bmInputModelUuid
+		bmResults.first().getP() == retd.bmActivePower
+		bmResults.first().getQ() == retd.bmReactivePower
+		bmResults.first().getTime() == retd.bmZonedDateTime
 	}
 }
