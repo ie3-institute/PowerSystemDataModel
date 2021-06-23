@@ -520,7 +520,8 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		given:
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
 		def entries = [
-			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
+			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))
+		] as SortedSet
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> uuid
 		timeSeries.entries >> entries
@@ -955,7 +956,8 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		given: "a naming strategy without pre- or suffixes"
 		def strategy = new EntityPersistenceNamingStrategy()
 		def entries = [
-			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
+			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))
+		] as SortedSet
 		def timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> uuid
 		timeSeries.entries >> entries
