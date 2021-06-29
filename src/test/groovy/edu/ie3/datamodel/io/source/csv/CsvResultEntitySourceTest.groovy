@@ -17,16 +17,27 @@ class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta
 				resultEntitiesFolderPath, entityPersistenceNamingStrategy)
 
 		when:
-		def wecResults = csvResultEntitySource.wecResults // existent
-		def pvResults = csvResultEntitySource.pvResults // existent
-		def bmResults = csvResultEntitySource.bmResults // existent
-		def chpResults = csvResultEntitySource.chpResults // non-existent
+		// existent
+		def wecResults = csvResultEntitySource.wecResults
+		def pvResults = csvResultEntitySource.pvResults
+		def bmResults = csvResultEntitySource.bmResults
+		def fixedFeedInResults = csvResultEntitySource.fixedFeedInResults
+		// non-existent (empty)
+		def chpResults = csvResultEntitySource.chpResults
+		def hpResults = csvResultEntitySource.hpResults
+		def evResults = csvResultEntitySource.evResults
+		def evcsResults = csvResultEntitySource.evcsResults
+		def loadResults = csvResultEntitySource.loadResults
+		def storageResults = csvResultEntitySource.storageResults
+		def thermalHouseResults = csvResultEntitySource.thermalHouseResults
 
 		then:
 		wecResults.size() == retd.WEC_RESULT_SIZE
 		pvResults.size() == retd.PV_RESULT_SIZE
 		bmResults.size() == retd.BM_RESULT_SIZE
-		chpResults.empty
+		fixedFeedInResults.size() == retd.FIXED_FEED_IN_SIZE
+		chpResults.empty && hpResults.empty && evResults.empty && evcsResults.empty &&
+				loadResults.empty && storageResults.empty && thermalHouseResults.empty
 
 		bmResults.first().uuid == retd.BM_UUID
 		bmResults.first().inputModel == retd.BM_INPUT_MODEL
