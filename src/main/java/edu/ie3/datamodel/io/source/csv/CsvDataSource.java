@@ -626,9 +626,9 @@ public abstract class CsvDataSource {
   /**
    * TODO JH
    *
-   * @param entityClass
-   * @param <T>
-   * @return
+   * @param entityClass the entity class that should be build
+   * @param <T> Type of the {@link ResultEntity} to expect
+   * @return stream of {@link SimpleEntityData}
    */
   protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
       Class<T> entityClass) {
