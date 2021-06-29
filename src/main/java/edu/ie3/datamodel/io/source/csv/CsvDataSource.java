@@ -624,9 +624,8 @@ public abstract class CsvDataSource {
   }
 
   /**
-   *
-   * Returns a stream of {@link SimpleEntityData} for result entity classes, using
-   * a fields-to-attributes map.
+   * Returns a stream of {@link SimpleEntityData} for result entity classes, using a
+   * fields-to-attributes map.
    *
    * @param entityClass the entity class that should be build
    * @param <T> Type of the {@link ResultEntity} to expect
