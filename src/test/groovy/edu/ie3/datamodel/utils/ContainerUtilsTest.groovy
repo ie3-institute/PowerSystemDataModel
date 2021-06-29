@@ -47,34 +47,46 @@ class ContainerUtilsTest extends Specification {
 		1      || [
 			ComplexTopology.nodeA,
 			ComplexTopology.nodeB,
-			ComplexTopology.nodeC] as Set || [] as Set              || [
-			ComplexTopology.transformerAtoBtoC] as Set
+			ComplexTopology.nodeC
+		] as Set || [] as Set              || [
+			ComplexTopology.transformerAtoBtoC
+		] as Set
 		2      || [
 			ComplexTopology.nodeA,
 			ComplexTopology.nodeB,
-			ComplexTopology.nodeC] as Set || [] as Set              || [
-			ComplexTopology.transformerAtoBtoC] as Set
+			ComplexTopology.nodeC
+		] as Set || [] as Set              || [
+			ComplexTopology.transformerAtoBtoC
+		] as Set
 		3      || [
 			ComplexTopology.nodeA,
 			ComplexTopology.nodeB,
-			ComplexTopology.nodeC] as Set || [] as Set              || [
-			ComplexTopology.transformerAtoBtoC] as Set
+			ComplexTopology.nodeC
+		] as Set || [] as Set              || [
+			ComplexTopology.transformerAtoBtoC
+		] as Set
 		4      || [
 			ComplexTopology.nodeB,
-			ComplexTopology.nodeD] as Set || [
-			ComplexTopology.transformerBtoD] as Set                 || [] as Set
+			ComplexTopology.nodeD
+		] as Set || [
+			ComplexTopology.transformerBtoD
+		] as Set                 || [] as Set
 		5      || [
 			ComplexTopology.nodeB,
 			ComplexTopology.nodeC,
-			ComplexTopology.nodeE] as Set || [
+			ComplexTopology.nodeE
+		] as Set || [
 			ComplexTopology.transformerBtoE,
-			ComplexTopology.transformerCtoE] as Set                 || [] as Set
+			ComplexTopology.transformerCtoE
+		] as Set                 || [] as Set
 		6      || [
 			ComplexTopology.nodeC,
 			ComplexTopology.nodeF,
-			ComplexTopology.nodeG] as Set || [
+			ComplexTopology.nodeG
+		] as Set || [
 			ComplexTopology.transformerCtoF,
-			ComplexTopology.transformerCtoG] as Set                 || [] as Set
+			ComplexTopology.transformerCtoG
+		] as Set                 || [] as Set
 	}
 
 	def "The container utils are able to derive the predominant voltage level in a setup w/o switchgear"() {

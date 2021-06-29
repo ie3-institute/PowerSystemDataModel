@@ -157,11 +157,14 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 		thermalStorages                               | thermalBuses                       | fieldsToAttributes                                                                                               || resultIsPresent | resultData
 		[] as List                                    | [] as List                         | ["thermalBus": "0d95d7f2-49fb-4d49-8636-383a5220384e", "thermalStorage": "8851813b-3a7d-4fee-874b-4df9d724e4b3"] || false           | null
 		[
-			sptd.chpInput.thermalStorage] as List | [sptd.chpInput.thermalBus] as List | ["bla": "foo"]                                                                                                   || false           | null
+			sptd.chpInput.thermalStorage
+		] as List | [sptd.chpInput.thermalBus] as List | ["bla": "foo"]                                                                                                   || false           | null
 		[
-			sptd.chpInput.thermalStorage] as List | [sptd.chpInput.thermalBus] as List | [:]                                                                                                              || false           | null
+			sptd.chpInput.thermalStorage
+		] as List | [sptd.chpInput.thermalBus] as List | [:]                                                                                                              || false           | null
 		[
-			sptd.chpInput.thermalStorage] as List | [sptd.chpInput.thermalBus] as List | ["thermalBus": "0d95d7f2-49fb-4d49-8636-383a5220384e", "thermalStorage": "8851813b-3a7d-4fee-874b-4df9d724e4b3"] || true            | new ChpInputEntityData([:], sptd.chpInput.operator, sptd.chpInput.node, sptd.chpTypeInput, sptd.chpInput.thermalBus, sptd.chpInput.thermalStorage)
+			sptd.chpInput.thermalStorage
+		] as List | [sptd.chpInput.thermalBus] as List | ["thermalBus": "0d95d7f2-49fb-4d49-8636-383a5220384e", "thermalStorage": "8851813b-3a7d-4fee-874b-4df9d724e4b3"] || true            | new ChpInputEntityData([:], sptd.chpInput.operator, sptd.chpInput.node, sptd.chpTypeInput, sptd.chpInput.thermalBus, sptd.chpInput.thermalStorage)
 	}
 
 	def "A CsvSystemParticipantSource should return data from a valid heat pump input file as expected"() {
@@ -199,9 +202,11 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 		where:
 		nodes                | operators                | types                | thermalBuses               | thermalStorages || resultingSize || resultingSet
 		[sptd.chpInput.node]| [sptd.chpInput.operator]| [sptd.chpInput.type]| [sptd.chpInput.thermalBus]| [
-			sptd.chpInput.thermalStorage] as List                                                                         || 1             || [sptd.chpInput]
+			sptd.chpInput.thermalStorage
+		] as List                                                                         || 1             || [sptd.chpInput]
 		[sptd.chpInput.node]| []| [sptd.chpInput.type]| [sptd.chpInput.thermalBus]| [
-			sptd.chpInput.thermalStorage] as List                                                                         || 1             || [
+			sptd.chpInput.thermalStorage
+		] as List                                                                         || 1             || [
 			new ChpInput(sptd.chpInput.uuid, sptd.chpInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.chpInput.operationTime, sptd.chpInput.node, sptd.chpInput.thermalBus, sptd.chpInput.qCharacteristics, sptd.chpInput.type, sptd.chpInput.thermalStorage, sptd.chpInput.marketReaction)
 		]
 		[]| []| []| []| [] as List      || 0             || []
@@ -367,12 +372,14 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 		where:
 		nodes                        | operators        || resultingSize || resultingSet
 		[sptd.fixedFeedInInput.node]| [
-			sptd.fixedFeedInInput.operator] as List || 1             || [sptd.fixedFeedInInput]
+			sptd.fixedFeedInInput.operator
+		] as List || 1             || [sptd.fixedFeedInInput]
 		[sptd.fixedFeedInInput.node]| [] as List       || 1             || [
 			new FixedFeedInInput(sptd.fixedFeedInInput.uuid, sptd.fixedFeedInInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics, sptd.fixedFeedInInput.sRated, sptd.fixedFeedInInput.cosPhiRated)
 		]
 		[]| [
-			sptd.fixedFeedInInput.operator] as List || 0             || []
+			sptd.fixedFeedInInput.operator
+		] as List || 0             || []
 		[]| [] as List       || 0             || []
 	}
 }

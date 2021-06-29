@@ -27,14 +27,16 @@ class ComplexTopology extends GridTestData {
 		nodeD,
 		nodeE,
 		nodeF,
-		nodeG] as Set,
+		nodeG
+	] as Set,
 	[] as Set,
 	[
 		transformerBtoD,
 		transformerBtoE,
 		transformerCtoE,
 		transformerCtoF,
-		transformerCtoG] as Set,
+		transformerCtoG
+	] as Set,
 	[transformerAtoBtoC] as Set,
 	[] as Set,
 	[] as Set)
@@ -174,7 +176,8 @@ class ComplexTopology extends GridTestData {
 				[] as Set,
 				[
 					transformerBtoE,
-					transformerCtoE] as Set,
+					transformerCtoE
+				] as Set,
 				[] as Set,
 				[] as Set,
 				[] as Set),
@@ -202,7 +205,8 @@ class ComplexTopology extends GridTestData {
 				[] as Set,
 				[
 					transformerCtoF,
-					transformerCtoG] as Set,
+					transformerCtoG
+				] as Set,
 				[] as Set,
 				[] as Set,
 				[] as Set),

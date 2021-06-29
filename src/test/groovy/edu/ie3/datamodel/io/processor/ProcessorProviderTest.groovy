@@ -164,7 +164,8 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 			"inputModel",
 			"p",
 			"q",
-			"time"] as String[]
+			"time"
+		] as String[]
 
 		when:
 		provider.getHeaderElements(WecResult)
@@ -188,7 +189,8 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 		headerResults == [
 			"uuid",
 			"price",
-			"time"] as String[]
+			"time"
+		] as String[]
 
 		when:
 		provider.getHeaderElements(new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, IntValue))
