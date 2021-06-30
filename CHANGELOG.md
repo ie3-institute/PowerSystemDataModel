@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+- added `ResultEntitySource` interface
+- added `CsvResultEntitySource` implementation to read `ResultEntity` instances from .csv files
+
 ### Fixed
 - `CsvSystemParticipantSource#getSystemParticipants()` now correctly returns electric vehicle charging station input models [PR#370](https://github.com/ie3-institute/PowerSystemDataModel/pull/370)
 

@@ -29,7 +29,8 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 			"latrot",
 			"longrot",
 			"latgeo",
-			"longgeo"] as Set
+			"longgeo"
+		] as Set
 		def validSimpleFactoryData = new SimpleFactoryData([
 			"tid": "1",
 			"id": "106580",

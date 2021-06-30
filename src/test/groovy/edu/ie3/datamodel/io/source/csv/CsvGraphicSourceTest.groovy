@@ -87,7 +87,8 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 		nodeGraphics.size() == 2
 		nodeGraphics == [
 			expectedNodeGraphicC,
-			expectedNodeGraphicD] as Set
+			expectedNodeGraphicD
+		] as Set
 	}
 
 	def "A CsvGraphicSource should read and handle a valid line graphics file as expected"() {
