@@ -383,7 +383,8 @@ class FileNamingStrategyTest extends Specification {
 		given:
 		def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
 		def entries = [
-			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
+			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))
+		] as SortedSet
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> uuid
 		timeSeries.entries >> entries
@@ -404,7 +405,8 @@ class FileNamingStrategyTest extends Specification {
 		given:
 		def strategy = new FileNamingStrategy(new EntityPersistenceNamingStrategy("aa", "zz"), defaultHierarchy)
 		def entries = [
-			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
+			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))
+		] as SortedSet
 		IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> uuid
 		timeSeries.entries >> entries
@@ -748,7 +750,8 @@ class FileNamingStrategyTest extends Specification {
 		given: "a naming strategy without pre- or suffixes"
 		def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
 		def entries = [
-			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))] as SortedSet
+			new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))
+		] as SortedSet
 		def timeSeries = Mock(IndividualTimeSeries)
 		timeSeries.uuid >> uuid
 		timeSeries.entries >> entries

@@ -156,7 +156,8 @@ class ExtractorTest extends Specification {
 		expect:
 		Extractor.extractElements(sampleFixedFeedInput) as Set == [
 			sptd.fixedFeedInInput.node,
-			sptd.fixedFeedInInput.node.operator] as Set
+			sptd.fixedFeedInInput.node.operator
+		] as Set
 	}
 
 	def "An Extractor should not extract an operator that is marked as not assigned and not throw an exception if the resulting list empty"() {

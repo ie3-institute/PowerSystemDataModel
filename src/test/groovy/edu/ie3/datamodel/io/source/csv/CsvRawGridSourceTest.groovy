@@ -714,8 +714,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 				[
 					GridTestData.transformerAtoBtoC
 				] as Set,
-				[rgtd.switchAtoB
-				] as Set,
+				[rgtd.switchAtoB] as Set,
 				[
 					rgtd.measurementUnitInput
 				] as Set

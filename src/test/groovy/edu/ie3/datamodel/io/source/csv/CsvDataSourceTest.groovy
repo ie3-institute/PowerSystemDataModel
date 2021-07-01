@@ -107,7 +107,8 @@ class CsvDataSourceTest extends Specification {
 			"opex",
 			"s_rated",
 			"olmcharacteristic",
-			"cosPhiFixed"] as String[]
+			"cosPhiFixed"
+		] as String[]
 		def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,olm:{(0.0,1.0)},cosPhiFixed:{(0.0,1.0)}"
 
 		expect:
@@ -337,7 +338,8 @@ class CsvDataSourceTest extends Specification {
 			"opex",
 			"s_rated",
 			"olmcharacteristic",
-			"cosPhiFixed"] as String[]
+			"cosPhiFixed"
+		] as String[]
 		def validCsvRow = "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,50.0,25.0,\"olm:{(0.0,1.0)}\","
 
 		expect:
@@ -366,7 +368,8 @@ class CsvDataSourceTest extends Specification {
 			"eta_conv",
 			"id",
 			"opex",
-			"s_rated"] as String[]
+			"s_rated"
+		] as String[]
 
 		expect:
 		dummyCsvSource.buildFieldsToAttributes(invalidCsvRow, validHeadline) == [:]
