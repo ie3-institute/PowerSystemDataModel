@@ -5,10 +5,7 @@
 */
 package edu.ie3.datamodel.io.naming;
 
-import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;
@@ -21,20 +18,14 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.StringUtils;
-import java.nio.file.Path;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * Provides an easy to use standard way to name files, tables or any other persistent representation
- * of models. Normal use cases are e.g., I/O operations with .csv files or databases. If a folder
- * structure is required for file based I/O operations, one might consider using {@link
- * HierarchicFileNamingStrategy}
+ * of models. Normal use cases are e.g., I/O operations with .csv files or databases.
  *
  * @version 0.1
  * @since 03.02.20
@@ -150,45 +141,6 @@ public class EntityPersistenceNamingStrategy {
   }
 
   /**
-   * Get the full path to the file with regard to some (not explicitly specified) base directory.
-   * The path does NOT start or end with any of the known file separators or file extension.
-   *
-   * @param cls Targeted class of the given file
-   * @return An optional sub path to the actual file
-   * @deprecated This class should foremost provide namings for the entities and nothing around file
-   *     naming or pathing in specific. This method will be moved from this class, when <a
-   *     href="https://github.com/ie3-institute/PowerSystemDataModel/issues/315">this issue</a> is
-   *     addressed
-   */
-  @Deprecated
-  public Optional<String> getFilePath(Class<? extends UniqueEntity> cls) {
-    // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
-    // details
-    return getFilePath(
-        getEntityName(cls).orElseGet(() -> ""), getDirectoryPath(cls).orElseGet(() -> ""));
-  }
-
-  /**
-   * Compose a full file path from directory name and file name. Additionally perform some checks,
-   * like if the file name itself actually is available
-   *
-   * @param fileName File name
-   * @param subDirectories Sub directory path
-   * @return Concatenation of sub directory structure and file name
-   * @deprecated This class should foremost provide namings for the entities and nothing around file
-   *     naming or pathing in specific. This method will be moved from this class, when <a
-   *     href="https://github.com/ie3-institute/PowerSystemDataModel/issues/315">this issue</a> is
-   *     addressed
-   */
-  @Deprecated
-  private Optional<String> getFilePath(String fileName, String subDirectories) {
-    if (fileName.isEmpty()) return Optional.empty();
-    if (!subDirectories.isEmpty())
-      return Optional.of(FilenameUtils.concat(subDirectories, fileName));
-    else return Optional.of(fileName);
-  }
-
-  /**
    * Returns the name of the entity, that should be used for persistence.
    *
    * @param cls Targeted class of the given file
@@ -199,6 +151,8 @@ public class EntityPersistenceNamingStrategy {
       return getInputEntityName(cls.asSubclass(InputEntity.class));
     if (ResultEntity.class.isAssignableFrom(cls))
       return getResultEntityName(cls.asSubclass(ResultEntity.class));
+    if (CharacteristicInput.class.isAssignableFrom(cls))
+      return getAssetCharacteristicsEntityName(cls.asSubclass(CharacteristicInput.class));
     logger.error("There is no naming strategy defined for {}", cls.getSimpleName());
     return Optional.empty();
   }
@@ -214,10 +168,8 @@ public class EntityPersistenceNamingStrategy {
       return getTypeEntityName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))
       return getAssetInputEntityName(cls.asSubclass(AssetInput.class));
-    if (RandomLoadParameters.class.isAssignableFrom(cls)) {
-      String loadParamString = camelCaseToSnakeCase(cls.getSimpleName());
-      return Optional.of(addPrefixAndSuffix(loadParamString.concat("_input")));
-    }
+    if (RandomLoadParameters.class.isAssignableFrom(cls))
+      return getRandomLoadParametersEntityName(cls.asSubclass(RandomLoadParameters.class));
     if (GraphicInput.class.isAssignableFrom(cls))
       return getGraphicsInputEntityName(cls.asSubclass(GraphicInput.class));
     if (OperatorInput.class.isAssignableFrom(cls))
@@ -273,6 +225,19 @@ public class EntityPersistenceNamingStrategy {
       Class<? extends CharacteristicInput> assetCharClass) {
     String assetCharString = camelCaseToSnakeCase(assetCharClass.getSimpleName());
     return Optional.of(addPrefixAndSuffix(assetCharString));
+  }
+
+  /**
+   * Get the entity name for all {@link RandomLoadParameters}
+   *
+   * @param randomLoadParamClass the random load parameters class an entity name string should be
+   *     generated from
+   * @return the entity name string
+   */
+  public Optional<String> getRandomLoadParametersEntityName(
+      Class<? extends RandomLoadParameters> randomLoadParamClass) {
+    String loadParamString = camelCaseToSnakeCase(randomLoadParamClass.getSimpleName());
+    return Optional.of(addPrefixAndSuffix(loadParamString.concat("_input")));
   }
 
   /**
@@ -338,36 +303,6 @@ public class EntityPersistenceNamingStrategy {
   }
 
   /**
-   * Returns the sub directory structure with regard to some (not explicitly specified) base
-   * directory. The path does NOT start or end with any of the known file separators.
-   *
-   * @param cls Targeted class of the given file
-   * @return An optional sub directory path
-   */
-  public Optional<String> getDirectoryPath(Class<? extends UniqueEntity> cls) {
-    return Optional.empty();
-  }
-
-  /**
-   * Get the full path to the file with regard to some (not explicitly specified) base directory.
-   * The path does NOT start or end with any of the known file separators or file extension.
-   *
-   * @param <T> Type of the time series
-   * @param <E> Type of the entry in the time series
-   * @param <V> Type of the value, that is carried by the time series entry
-   * @param timeSeries Time series to derive naming information from
-   * @return An optional sub path to the actual file
-   */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      Optional<String> getFilePath(T timeSeries) {
-    // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
-    // details
-    return getFilePath(
-        getEntityName(timeSeries).orElseGet(() -> ""),
-        getDirectoryPath(timeSeries).orElseGet(() -> ""));
-  }
-
-  /**
    * Builds a file name (and only the file name without any directories and extension) of the given
    * information.
    *
@@ -415,97 +350,6 @@ public class EntityPersistenceNamingStrategy {
       logger.error("There is no naming strategy defined for {}", timeSeries);
       return Optional.empty();
     }
-  }
-
-  /**
-   * Returns the sub directory structure with regard to some (not explicitly specified) base
-   * directory. The path does NOT start or end with any of the known file separators.
-   *
-   * @param <T> Type of the time series
-   * @param <E> Type of the entry in the time series
-   * @param <V> Type of the value, that is carried by the time series entry
-   * @param timeSeries Time series to derive naming information from
-   * @return An optional sub directory path
-   */
-  public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
-      Optional<String> getDirectoryPath(T timeSeries) {
-    return Optional.empty();
-  }
-
-  /**
-   * Extracts meta information from a file name, of a time series.
-   *
-   * @param path Path to the file
-   * @return The meeting meta information
-   */
-  public FileNameMetaInformation extractTimeSeriesMetaInformation(Path path) {
-    /* Extract file name from possibly fully qualified path */
-    Path fileName = path.getFileName();
-    if (fileName == null)
-      throw new IllegalArgumentException("Unable to extract file name from path '" + path + "'.");
-    return extractTimeSeriesMetaInformation(fileName.toString());
-  }
-
-  /**
-   * Extracts meta information from a file name, of a time series. Here, a file name <u>without</u>
-   * leading path has to be provided
-   *
-   * @param fileName File name
-   * @return The meeting meta information
-   */
-  public FileNameMetaInformation extractTimeSeriesMetaInformation(String fileName) {
-    /* Remove the file ending (ending limited to 255 chars, which is the max file name allowed in NTFS and ext4) */
-    String withoutEnding = fileName.replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
-
-    if (individualTimeSeriesPattern.matcher(withoutEnding).matches())
-      return extractIndividualTimesSeriesMetaInformation(withoutEnding);
-    else if (loadProfileTimeSeriesPattern.matcher(withoutEnding).matches())
-      return extractLoadProfileTimesSeriesMetaInformation(withoutEnding);
-    else
-      throw new IllegalArgumentException(
-          "Unknown format of '" + fileName + "'. Cannot extract meta information.");
-  }
-
-  /**
-   * Extracts meta information from a valid file name for a individual time series
-   *
-   * @param fileName File name to extract information from
-   * @return Meta information form individual time series file name
-   */
-  private IndividualTimeSeriesMetaInformation extractIndividualTimesSeriesMetaInformation(
-      String fileName) {
-    Matcher matcher = individualTimeSeriesPattern.matcher(fileName);
-    if (!matcher.matches())
-      throw new IllegalArgumentException(
-          "Cannot extract meta information on individual time series from '" + fileName + "'.");
-
-    String columnSchemeKey = matcher.group("columnScheme");
-    ColumnScheme columnScheme =
-        ColumnScheme.parse(columnSchemeKey)
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        "Cannot parse '" + columnSchemeKey + "' to valid column scheme."));
-
-    return new IndividualTimeSeriesMetaInformation(
-        UUID.fromString(matcher.group("uuid")), columnScheme);
-  }
-
-  /**
-   * Extracts meta information from a valid file name for a load profile time series
-   *
-   * @param fileName File name to extract information from
-   * @return Meta information form load profile time series file name
-   */
-  private LoadProfileTimeSeriesMetaInformation extractLoadProfileTimesSeriesMetaInformation(
-      String fileName) {
-    Matcher matcher = loadProfileTimeSeriesPattern.matcher(fileName);
-    if (!matcher.matches())
-      throw new IllegalArgumentException(
-          "Cannot extract meta information on load profile time series from '" + fileName + "'.");
-
-    return new LoadProfileTimeSeriesMetaInformation(
-        UUID.fromString(matcher.group("uuid")), matcher.group("profile"));
   }
 
   /**

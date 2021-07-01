@@ -5,7 +5,11 @@
  */
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
+import static tech.units.indriya.unit.Units.PERCENT
+
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor
@@ -51,10 +55,6 @@ import tech.units.indriya.quantity.Quantities
 import javax.measure.Quantity
 import javax.measure.quantity.Power
 
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
-import static tech.units.indriya.unit.Units.PERCENT
-
 class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
 	@Shared
@@ -85,7 +85,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 					new ResultEntityProcessor(PvResult),
 					new ResultEntityProcessor(EvResult)
 				], [] as Map),
-				new EntityPersistenceNamingStrategy(),
+				new FileNamingStrategy(),
 				true,
 				",")
 		csvFileSink.shutdown()
@@ -157,7 +157,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 					new InputEntityProcessor(ThermalBusInput),
 					new InputEntityProcessor(LineTypeInput)
 				], [] as Map),
-				new EntityPersistenceNamingStrategy(),
+				new FileNamingStrategy(),
 				false,
 				",")
 
@@ -214,7 +214,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 
 		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
 				new ProcessorProvider([], timeSeriesProcessorMap),
-				new EntityPersistenceNamingStrategy(),
+				new FileNamingStrategy(),
 				false,
 				",")
 
@@ -288,7 +288,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 				new ProcessorProvider(
 				ProcessorProvider.allEntityProcessors(),
 				new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value>, TimeSeriesEntry<Value>, Value>>()),
-				new EntityPersistenceNamingStrategy(),
+				new FileNamingStrategy(),
 				false,
 				",")
 
@@ -308,7 +308,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		def csvFileSink = new CsvFileSink(
 				testBaseFolderPath,
 				new ProcessorProvider(),
-				new EntityPersistenceNamingStrategy(),
+				new FileNamingStrategy(),
 				false,
 				",")
 

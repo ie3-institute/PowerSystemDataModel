@@ -7,10 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+-   added `ResultEntitySource` interface
+-   added `CsvResultEntitySource` implementation to read `ResultEntity` instances from .csv files
 -   added target temperature including tolerance boundaries to `ThermalHouseInput`
 
+### Changed
+-   separated entity and file naming and introduced a new FileNamingStrategy taking an EntityNamingStrategy and a FileHierarchy as arguments
+
 ### Fixed
-- `CsvSystemParticipantSource#getSystemParticipants()` now correctly returns electric vehicle charging station input models [PR#370](https://github.com/ie3-institute/PowerSystemDataModel/pull/370)
+-   `CsvSystemParticipantSource#getSystemParticipants()` now correctly returns electric vehicle charging station input models [PR#370](https://github.com/ie3-institute/PowerSystemDataModel/pull/370)
 
 ## [2.0.0] - 2021-05-21
 
