@@ -13,8 +13,7 @@ class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta
 
 	def "A CsvResultEntitySource should read a csv and extract entities correctly"() {
 		given:
-		def csvResultEntitySource = new CsvResultEntitySource(csvSep,
-				resultEntitiesFolderPath, entityPersistenceNamingStrategy)
+		def csvResultEntitySource = new CsvResultEntitySource(csvSep, resultEntitiesFolderPath, fileNamingStrategy)
 
 		when:
 		// existent

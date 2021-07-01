@@ -11,7 +11,7 @@ import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
@@ -66,12 +66,9 @@ public abstract class CsvDataSource {
    */
   @Deprecated private boolean notYetLoggedWarning = true;
 
-  public CsvDataSource(
-      String csvSep,
-      String folderPath,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+  public CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
-    this.connector = new CsvFileConnector(folderPath, entityPersistenceNamingStrategy);
+    this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
 
   /**

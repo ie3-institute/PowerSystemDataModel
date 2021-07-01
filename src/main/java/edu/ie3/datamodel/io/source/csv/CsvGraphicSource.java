@@ -9,7 +9,7 @@ import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputFactory;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.GraphicSource;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
@@ -49,10 +49,10 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
   public CsvGraphicSource(
       String csvSep,
       String folderPath,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
+      FileNamingStrategy fileNamingStrategy,
       TypeSource typeSource,
       RawGridSource rawGridSource) {
-    super(csvSep, folderPath, entityPersistenceNamingStrategy);
+    super(csvSep, folderPath, fileNamingStrategy);
     this.typeSource = typeSource;
     this.rawGridSource = rawGridSource;
 

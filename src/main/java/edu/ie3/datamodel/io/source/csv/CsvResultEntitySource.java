@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.factory.SimpleEntityFactory;
 import edu.ie3.datamodel.io.factory.result.*;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.ResultEntitySource;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.ResultEntity;
@@ -43,10 +43,8 @@ public class CsvResultEntitySource extends CsvDataSource implements ResultEntity
   private final ConnectorResultFactory connectorResultFactory;
 
   public CsvResultEntitySource(
-      String csvSep,
-      String folderPath,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
-    super(csvSep, folderPath, entityPersistenceNamingStrategy);
+      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+    super(csvSep, folderPath, fileNamingStrategy);
 
     // init factories
     this.systemParticipantResultFactory = new SystemParticipantResultFactory();
