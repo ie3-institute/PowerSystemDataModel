@@ -101,6 +101,9 @@ package models {
             class ThermalHouseInput {
                 - ethCapa: ComparableQuantity<HeatCapacity> [kWh/K]
                 - ethLosses: ComparableQuantity<ThermalConductance> [kW/K]
+                - targetTemperature: ComparableQuantity<Temperature> [°C]
+                - upperTemperatureLimit: ComparableQuantity<Temperature> [°C]
+                - lowerTemperatureLimit: ComparableQuantity<Temperature> [°C]
             }
             ThermalHouseInput --|> ThermalSinkInput
 

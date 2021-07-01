@@ -76,7 +76,9 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * Validates a thermalHouseInput if: <br>
    * - it is not null <br>
    * - its thermal losses are not negative <br>
-   * - its thermal capacity is positive
+   * - its thermal capacity is positive <br>
+   * - its upper temperature limit is higher than the lower temperature limit <br>
+   * - its target temperature lies between the upper und lower limit temperatures
    *
    * @param thermalHouseInput ThermalHouseInput to validate
    */
@@ -86,6 +88,15 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
         new Quantity<?>[] {thermalHouseInput.getEthLosses()}, thermalHouseInput);
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {thermalHouseInput.getEthCapa()}, thermalHouseInput);
+    if (thermalHouseInput
+            .getLowerTemperatureLimit()
+            .isGreaterThan(thermalHouseInput.getTargetTemperature())
+        || thermalHouseInput
+            .getUpperTemperatureLimit()
+            .isLessThan(thermalHouseInput.getTargetTemperature()))
+      throw new InvalidEntityException(
+          "Target temperature must be higher than lower temperature limit and lower than upper temperature limit",
+          thermalHouseInput);
   }
 
   /**

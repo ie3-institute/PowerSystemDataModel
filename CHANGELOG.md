@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
-- added `ResultEntitySource` interface
-- added `CsvResultEntitySource` implementation to read `ResultEntity` instances from .csv files
+-   added `ResultEntitySource` interface
+-   added `CsvResultEntitySource` implementation to read `ResultEntity` instances from .csv files
+-   added target temperature including tolerance boundaries to `ThermalHouseInput`
 
 ### Changed
 -   separated entity and file naming and introduced a new FileNamingStrategy taking an EntityNamingStrategy and a FileHierarchy as arguments

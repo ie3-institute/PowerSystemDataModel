@@ -154,6 +154,9 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		resultingThermalHouseWoOperator.first().thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
 		resultingThermalHouseWoOperator.first().ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
 		resultingThermalHouseWoOperator.first().ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
+		resultingThermalHouseWoOperator.first().targetTemperature == ThermalUnitInputTestData.thermalHouseInput.targetTemperature
+		resultingThermalHouseWoOperator.first().upperTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.upperTemperatureLimit
+		resultingThermalHouseWoOperator.first().lowerTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.lowerTemperatureLimit
 
 		//test method when operators and thermal buses are provided as constructor parameters
 		when:
@@ -169,6 +172,9 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		resultingThermalHouseWoOperator.first().thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
 		resultingThermalHouse.first().ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
 		resultingThermalHouse.first().ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
+		resultingThermalHouse.first().targetTemperature == ThermalUnitInputTestData.thermalHouseInput.targetTemperature
+		resultingThermalHouse.first().upperTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.upperTemperatureLimit
+		resultingThermalHouse.first().lowerTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.lowerTemperatureLimit
 
 	}
 }
