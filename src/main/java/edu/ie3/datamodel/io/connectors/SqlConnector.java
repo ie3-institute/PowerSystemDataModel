@@ -9,8 +9,8 @@ import edu.ie3.util.StringUtils;
 import edu.ie3.util.TimeUtil;
 import java.sql.*;
 import java.util.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implements a DataConnector for a native SQL connection to a relational database. It was
@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  * other databases.
  */
 public class SqlConnector implements DataConnector {
-  private static final Logger log = LogManager.getLogger(SqlConnector.class);
+  public static final Logger log = LoggerFactory.getLogger(SqlConnector.class);
 
   private final String jdbcUrl;
   private final Properties connectionProps;

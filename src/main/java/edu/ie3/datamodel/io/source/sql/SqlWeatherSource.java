@@ -21,13 +21,13 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** SQL source for weather data */
 public class SqlWeatherSource implements WeatherSource {
-  private static final Logger logger = LogManager.getLogger(SqlWeatherSource.class);
+  public static final Logger logger = LoggerFactory.getLogger(SqlWeatherSource.class);
 
   private static final String DEFAULT_WEATHER_FETCHING_ERROR = "Error while fetching weather";
   private static final String WHERE = " WHERE ";

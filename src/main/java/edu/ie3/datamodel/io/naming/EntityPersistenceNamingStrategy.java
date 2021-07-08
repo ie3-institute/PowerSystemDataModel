@@ -27,8 +27,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides an easy to use standard way to name files, tables or any other persistent representation
@@ -42,7 +42,7 @@ import org.apache.logging.log4j.Logger;
 public class EntityPersistenceNamingStrategy {
 
   protected static final Logger logger =
-      LogManager.getLogger(EntityPersistenceNamingStrategy.class);
+      LoggerFactory.getLogger(EntityPersistenceNamingStrategy.class);
 
   private static final String UUID_STRING =
       "[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}";

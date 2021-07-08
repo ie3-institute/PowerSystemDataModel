@@ -12,8 +12,8 @@ import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple utility class that can be used by sinks to extract nested elements (e.g. nodes, types)
@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public final class Extractor {
 
-  private static final Logger log = LogManager.getLogger(Extractor.class);
+  private static final Logger log = LoggerFactory.getLogger(Extractor.class);
 
   private Extractor() {
     throw new IllegalStateException("Utility classes cannot be instantiated");
@@ -78,8 +78,8 @@ public final class Extractor {
                 } catch (ExtractorException e) {
                   log.error(
                       "An error occurred during extraction of nested entity '{}':{}",
-                      () -> element.getClass().getSimpleName(),
-                      () -> e);
+                      element.getClass().getSimpleName(),
+                      e);
                 }
               }
             });
