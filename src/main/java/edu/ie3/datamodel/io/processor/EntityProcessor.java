@@ -13,8 +13,8 @@ import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Internal API Interface for EntityProcessors. Main purpose is to 'de-serialize' models into a
@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<T> {
 
-  public static final Logger log = LogManager.getLogger(EntityProcessor.class);
+  public static final Logger log = LoggerFactory.getLogger(EntityProcessor.class);
   protected final String[] headerElements;
   private final SortedMap<String, Method> fieldNameToMethod;
 

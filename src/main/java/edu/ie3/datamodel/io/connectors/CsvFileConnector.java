@@ -23,8 +23,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides the connector (here: buffered writer) for specific files to be used by a {@link
@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
  * @since 19.03.20
  */
 public class CsvFileConnector implements DataConnector {
-  private static final Logger log = LogManager.getLogger(CsvFileConnector.class);
+  private static final Logger log = LoggerFactory.getLogger(CsvFileConnector.class);
 
   private final Map<Class<? extends UniqueEntity>, BufferedCsvWriter> entityWriters =
       new HashMap<>();
@@ -160,8 +160,8 @@ public class CsvFileConnector implements DataConnector {
     } catch (ConnectorException e) {
       log.error(
           "Cannot get reader for entity '{}' as no file naming strategy for this file exists. Exception: {}",
-          clz::getSimpleName,
-          () -> e);
+          clz.getSimpleName(),
+          e);
     }
     return initReader(filePath);
   }

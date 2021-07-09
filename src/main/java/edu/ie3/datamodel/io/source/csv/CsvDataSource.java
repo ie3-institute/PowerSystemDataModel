@@ -32,8 +32,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parent class of all .csv file related sources containing methods and fields consumed by allmost
@@ -44,7 +44,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class CsvDataSource {
 
-  protected static final Logger log = LogManager.getLogger(CsvDataSource.class);
+  protected static final Logger log = LoggerFactory.getLogger(CsvDataSource.class);
 
   // general fields
   protected final String csvSep;
@@ -136,9 +136,9 @@ public abstract class CsvDataSource {
     } catch (Exception e) {
       log.error(
           "Cannot build fields to attributes map for row '{}' with headline '{}'.\nException: {}",
-          csvRow::trim,
-          () -> String.join(",", headline),
-          () -> e);
+          csvRow.trim(),
+          String.join(",", headline),
+          e);
     }
     return insensitiveFieldsToAttributes;
   }

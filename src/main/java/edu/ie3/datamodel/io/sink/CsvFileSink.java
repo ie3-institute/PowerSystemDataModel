@@ -36,8 +36,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Sink that provides all capabilities to write {@link UniqueEntity}s to .csv-files. Be careful
@@ -51,7 +51,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class CsvFileSink implements InputDataSink, OutputDataSink {
 
-  private static final Logger log = LogManager.getLogger(CsvFileSink.class);
+  private static final Logger log = LoggerFactory.getLogger(CsvFileSink.class);
 
   private final CsvFileConnector connector;
   private final ProcessorProvider processorProvider;
@@ -294,10 +294,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
             try {
               writer.write(csvEntityFieldData(data));
             } catch (IOException e) {
-              log.error(
-                  "Cannot write the following entity data: '{}'. Exception: {}",
-                  () -> data,
-                  () -> e);
+              log.error("Cannot write the following entity data: '{}'. Exception: {}", data, e);
             } catch (SinkException e) {
               log.error("Exception occurred during processing the provided data fields: ", e);
             }
@@ -350,8 +347,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     } catch (SinkException e) {
       log.error(
           "Cannot persist provided entity '{}'. Exception: {}",
-          () -> entity.getClass().getSimpleName(),
-          () -> e);
+          entity.getClass().getSimpleName(),
+          e);
     }
   }
 
