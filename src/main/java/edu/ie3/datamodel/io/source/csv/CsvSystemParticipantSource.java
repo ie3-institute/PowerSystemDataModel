@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.SystemParticipantSource;
 import edu.ie3.datamodel.io.source.ThermalSource;
@@ -67,11 +67,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   public CsvSystemParticipantSource(
       String csvSep,
       String participantsFolderPath,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
+      FileNamingStrategy fileNamingStrategy,
       TypeSource typeSource,
       ThermalSource thermalSource,
       RawGridSource rawGridSource) {
-    super(csvSep, participantsFolderPath, entityPersistenceNamingStrategy);
+    super(csvSep, participantsFolderPath, fileNamingStrategy);
     this.typeSource = typeSource;
     this.rawGridSource = rawGridSource;
     this.thermalSource = thermalSource;
@@ -153,6 +153,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             .filter(isPresentCollectIfNot(EvInput.class, nonBuildEntities))
             .map(Optional::get)
             .collect(Collectors.toSet());
+    Set<EvcsInput> evcs =
+        nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators)
+            .filter(isPresentCollectIfNot(EvcsInput.class, nonBuildEntities))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
     Set<ChpInput> chpInputs =
         chpInputStream(nodes, operators, chpTypes, thermalBuses, thermalStorages)
             .filter(isPresentCollectIfNot(ChpInput.class, nonBuildEntities))
@@ -175,7 +180,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
         new SystemParticipants(
             bmInputs,
             chpInputs,
-            Collections.emptySet(),
+            evcs,
             evs,
             fixedFeedInInputs,
             hpInputs,

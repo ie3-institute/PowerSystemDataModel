@@ -4,13 +4,13 @@ plugins {
 	id 'maven-publish'
 	id 'signing'
 	id 'pmd' // code check, working on source code
-	id 'com.diffplug.spotless' version '5.12.5'//code format
-	id 'com.github.spotbugs' version '4.7.1' // code check, working on byte code
+	id 'com.diffplug.spotless' version '5.14.0'//code format
+	id 'com.github.spotbugs' version '4.7.2' // code check, working on byte code
 	id 'com.github.onslip.gradle-one-jar' version '1.0.6' // pack a self contained jar
-	id 'de.undercouch.download' version '4.1.1'
+	id 'de.undercouch.download' version '4.1.2'
 	id 'kr.motd.sphinx' version '2.10.1' // documentation generation
 	id 'jacoco' // java code coverage plugin
-	id "org.sonarqube" version "3.2.0" // sonarqube
+	id "org.sonarqube" version "3.3" // sonarqube
 	id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
 }
 
@@ -52,7 +52,7 @@ repositories {
 
 dependencies {
 	//	 ie³ power system utils
-	compile 'com.github.ie3-institute:PowerSystemUtils:1.5.2'
+	compile 'com.github.ie3-institute:PowerSystemUtils:1.5.3'
 
 	implementation 'tech.units:indriya:2.1.2'
 
@@ -82,11 +82,11 @@ dependencies {
 
 	// Databases
 	compile 'org.influxdb:influxdb-java:2.21'
-	compile 'com.couchbase.client:java-client:3.1.5'
-	runtimeOnly 'org.postgresql:postgresql:42.2.20' // postgresql jdbc driver required during runtime
+	compile 'com.couchbase.client:java-client:3.1.6'
+	runtimeOnly 'org.postgresql:postgresql:42.2.22' // postgresql jdbc driver required during runtime
 
 
-	compile 'commons-io:commons-io:2.8.0' // I/O functionalities
+	compile 'commons-io:commons-io:2.10.0' // I/O functionalities
 	compile 'org.apache.commons:commons-compress:1.20' // I/O functionalities
 }
 

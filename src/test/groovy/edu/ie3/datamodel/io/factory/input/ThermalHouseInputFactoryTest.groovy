@@ -27,10 +27,13 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
 		given: "a system participant input type factory and model data"
 		def inputFactory = new ThermalHouseInputFactory()
 		Map<String, String> parameter = [
-			"uuid"     : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"id"       : "TestID",
-			"ethlosses": "3",
-			"ethcapa"  : "4"
+			"uuid"                 : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+			"id"                   : "TestID",
+			"ethlosses"            : "3",
+			"ethcapa"              : "4",
+			"targetTemperature"    : "5",
+			"upperTemperatureLimit": "6",
+			"lowerTemperatureLimit": "7"
 		]
 		def inputClass = ThermalHouseInput
 		def thermalBusInput = Mock(ThermalBusInput)
@@ -49,6 +52,9 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
 			assert thermalBus == thermalBusInput
 			assert ethLosses == getQuant(parameter["ethlosses"], StandardUnits.THERMAL_TRANSMISSION)
 			assert ethCapa == getQuant(parameter["ethcapa"], StandardUnits.HEAT_CAPACITY)
+			assert targetTemperature == getQuant(parameter["targetTemperature"], StandardUnits.TEMPERATURE)
+			assert upperTemperatureLimit == getQuant(parameter["upperTemperatureLimit"], StandardUnits.TEMPERATURE)
+			assert lowerTemperatureLimit == getQuant(parameter["lowerTemperatureLimit"], StandardUnits.TEMPERATURE)
 		}
 	}
 }

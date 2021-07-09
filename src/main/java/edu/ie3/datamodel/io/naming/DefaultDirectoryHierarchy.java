@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.io.csv;
+package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
@@ -189,6 +189,16 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
         Files.createDirectories(directoryPath);
       }
     }
+  }
+
+  /**
+   * Gives the {@link #baseDirectory}).
+   *
+   * @return An Option to the base directory as a string
+   */
+  @Override
+  public Optional<String> getBaseDirectory() {
+    return Optional.of(this.baseDirectory.toString());
   }
 
   /**

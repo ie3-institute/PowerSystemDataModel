@@ -13,12 +13,16 @@ import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalConductance;
 import java.util.UUID;
+import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 
 public class ThermalHouseInputFactory
     extends AssetInputEntityFactory<ThermalHouseInput, ThermalUnitInputEntityData> {
   private static final String ETH_LOSSES = "ethlosses";
   private static final String ETH_CAPA = "ethcapa";
+  private static final String TARGET_TEMPERATURE = "targetTemperature";
+  private static final String UPPER_TEMPERATURE_LIMIT = "upperTemperatureLimit";
+  private static final String LOWER_TEMPERATURE_LIMIT = "lowerTemperatureLimit";
 
   public ThermalHouseInputFactory() {
     super(ThermalHouseInput.class);
@@ -26,7 +30,9 @@ public class ThermalHouseInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {ETH_LOSSES, ETH_CAPA};
+    return new String[] {
+      ETH_LOSSES, ETH_CAPA, TARGET_TEMPERATURE, UPPER_TEMPERATURE_LIMIT, LOWER_TEMPERATURE_LIMIT
+    };
   }
 
   @Override
@@ -41,6 +47,22 @@ public class ThermalHouseInputFactory
         data.getQuantity(ETH_LOSSES, StandardUnits.THERMAL_TRANSMISSION);
     final ComparableQuantity<HeatCapacity> ethCapa =
         data.getQuantity(ETH_CAPA, StandardUnits.HEAT_CAPACITY);
-    return new ThermalHouseInput(uuid, id, operator, operationTime, busInput, ethLosses, ethCapa);
+    final ComparableQuantity<Temperature> targetTemperature =
+        data.getQuantity(TARGET_TEMPERATURE, StandardUnits.TEMPERATURE);
+    final ComparableQuantity<Temperature> upperTemperatureLimit =
+        data.getQuantity(UPPER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE);
+    final ComparableQuantity<Temperature> lowerTemperatureLimit =
+        data.getQuantity(LOWER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE);
+    return new ThermalHouseInput(
+        uuid,
+        id,
+        operator,
+        operationTime,
+        busInput,
+        ethLosses,
+        ethCapa,
+        targetTemperature,
+        upperTemperatureLimit,
+        lowerTemperatureLimit);
   }
 }

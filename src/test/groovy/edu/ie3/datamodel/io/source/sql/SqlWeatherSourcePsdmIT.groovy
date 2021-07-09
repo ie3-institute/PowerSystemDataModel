@@ -65,11 +65,13 @@ class SqlWeatherSourcePsdmIT extends Specification implements WeatherSourceTestH
 		def timeSeries193186 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(PsdmWeatherTestData.TIME_16H, PsdmWeatherTestData.WEATHER_VALUE_193186_16H),
-					new TimeBasedValue(PsdmWeatherTestData.TIME_17H, PsdmWeatherTestData.WEATHER_VALUE_193186_17H)]
+					new TimeBasedValue(PsdmWeatherTestData.TIME_17H, PsdmWeatherTestData.WEATHER_VALUE_193186_17H)
+				]
 				as Set<TimeBasedValue>)
 		def timeSeries193187 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(PsdmWeatherTestData.TIME_16H, PsdmWeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(PsdmWeatherTestData.TIME_16H, PsdmWeatherTestData.WEATHER_VALUE_193187_16H)
+				] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
 		then:
@@ -87,14 +89,17 @@ class SqlWeatherSourcePsdmIT extends Specification implements WeatherSourceTestH
 				[
 					new TimeBasedValue(PsdmWeatherTestData.TIME_15H, PsdmWeatherTestData.WEATHER_VALUE_193186_15H),
 					new TimeBasedValue(PsdmWeatherTestData.TIME_16H, PsdmWeatherTestData.WEATHER_VALUE_193186_16H),
-					new TimeBasedValue(PsdmWeatherTestData.TIME_17H, PsdmWeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(PsdmWeatherTestData.TIME_17H, PsdmWeatherTestData.WEATHER_VALUE_193186_17H)
+				] as Set<TimeBasedValue>)
 		def timeSeries193187 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(PsdmWeatherTestData.TIME_15H, PsdmWeatherTestData.WEATHER_VALUE_193187_15H),
-					new TimeBasedValue(PsdmWeatherTestData.TIME_16H, PsdmWeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(PsdmWeatherTestData.TIME_16H, PsdmWeatherTestData.WEATHER_VALUE_193187_16H)
+				] as Set<TimeBasedValue>)
 		def timeSeries193188 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(PsdmWeatherTestData.TIME_15H, PsdmWeatherTestData.WEATHER_VALUE_193188_15H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(PsdmWeatherTestData.TIME_15H, PsdmWeatherTestData.WEATHER_VALUE_193188_15H)
+				] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
 		then:
