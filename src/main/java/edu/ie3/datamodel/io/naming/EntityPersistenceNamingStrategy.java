@@ -20,7 +20,6 @@ import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.StringUtils;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
