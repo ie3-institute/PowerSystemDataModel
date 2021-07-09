@@ -43,6 +43,27 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
         HpResult.class);
   }
 
+  /**
+   * Create a new factory to build {@link SystemParticipantResult}s and utilize the given date time
+   * formatter pattern to parse date time strings
+   *
+   * @param dtfPattern Pattern to parse date time strings
+   */
+  public SystemParticipantResultFactory(String dtfPattern) {
+    super(
+        dtfPattern,
+        LoadResult.class,
+        FixedFeedInResult.class,
+        BmResult.class,
+        PvResult.class,
+        ChpResult.class,
+        WecResult.class,
+        StorageResult.class,
+        EvcsResult.class,
+        EvResult.class,
+        HpResult.class);
+  }
+
   @Override
   protected List<Set<String>> getFields(SimpleEntityData data) {
     /// all result models have the same constructor except StorageResult
@@ -67,7 +88,7 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
   protected SystemParticipantResult buildModel(SimpleEntityData data) {
     Class<? extends UniqueEntity> entityClass = data.getTargetClass();
 
-    ZonedDateTime zdtTime = TIME_UTIL.toZonedDateTime(data.getField(TIME));
+    ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Power> p = data.getQuantity(POWER, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> q =

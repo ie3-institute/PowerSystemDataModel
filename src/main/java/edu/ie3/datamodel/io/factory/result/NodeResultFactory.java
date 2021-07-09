@@ -22,6 +22,16 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
     super(NodeResult.class);
   }
 
+  /**
+   * Create a new factory to build {@link NodeResult}s and utilize the given date time formatter
+   * pattern to parse date time strings
+   *
+   * @param dtfPattern Pattern to parse date time strings
+   */
+  public NodeResultFactory(String dtfPattern) {
+    super(dtfPattern, NodeResult.class);
+  }
+
   @Override
   protected List<Set<String>> getFields(SimpleEntityData entityData) {
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, VMAG, VANG);
@@ -32,7 +42,7 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
 
   @Override
   protected NodeResult buildModel(SimpleEntityData data) {
-    ZonedDateTime zdtTime = TIME_UTIL.toZonedDateTime(data.getField(TIME));
+    ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Dimensionless> vMagValue =
         data.getQuantity(VMAG, StandardUnits.VOLTAGE_MAGNITUDE);
