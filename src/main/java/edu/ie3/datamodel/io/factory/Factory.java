@@ -9,8 +9,8 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import java.util.*;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract factory class, that is able to transfer specific "flat" information in to actual model
@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  *     edu.ie3.datamodel.io.factory.timeseries.TimeBasedValueFactory})).
  */
 public abstract class Factory<C, D extends FactoryData, R> {
-  public static final Logger log = LogManager.getLogger(Factory.class);
+  public static final Logger log = LoggerFactory.getLogger(Factory.class);
 
   private final List<Class<? extends C>> supportedClasses;
 

@@ -19,8 +19,8 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Wrapper providing the class specific processor to convert an instance of a {@link UniqueEntity}
@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ProcessorProvider {
 
-  private static final Logger log = LogManager.getLogger(ProcessorProvider.class);
+  private static final Logger log = LoggerFactory.getLogger(ProcessorProvider.class);
 
   /** unmodifiable map of all processors that has been provided on construction */
   private final Map<Class<? extends UniqueEntity>, EntityProcessor<? extends UniqueEntity>>
