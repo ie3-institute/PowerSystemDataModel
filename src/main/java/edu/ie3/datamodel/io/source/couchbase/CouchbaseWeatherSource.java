@@ -26,13 +26,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Couchbase Source for weather data */
 public class CouchbaseWeatherSource implements WeatherSource {
-  private static final Logger logger = LogManager.getLogger(CouchbaseWeatherSource.class);
+  private static final Logger logger = LoggerFactory.getLogger(CouchbaseWeatherSource.class);
   private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
   /** The start of the document key, comparable to a table name in relational databases */
   private static final String DEFAULT_KEY_PREFIX = "weather";
@@ -112,7 +112,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
         try {
           jsonWeatherInputs = queryResult.rowsAsObject();
         } catch (DecodingFailureException ex) {
-          logger.error(ex);
+          logger.error("Querying weather inputs failed!", ex);
         }
         if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
           Set<TimeBasedValue<WeatherValue>> weatherInputs =
@@ -143,7 +143,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
       JsonObject jsonWeatherInput = getResult.contentAsObject();
       return toTimeBasedWeatherValue(jsonWeatherInput);
     } catch (DecodingFailureException ex) {
-      logger.error(ex);
+      logger.error("Decoding to TimeBasedWeatherValue failed!", ex);
       return Optional.empty();
     } catch (DocumentNotFoundException ex) {
       return Optional.empty();
