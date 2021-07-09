@@ -89,7 +89,7 @@ class OperationTimeTest {
   }
 
   @Test
-  private void getOperationLimit() {
+  protected void getOperationLimit() {
     Optional<ClosedInterval<ZonedDateTime>> optOperationLimit =
         LIMITED_OPERATION_TIME.getOperationLimit();
     assertTrue(optOperationLimit.isPresent());
