@@ -30,6 +30,16 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
     super(ThermalHouseResult.class, CylindricalStorageResult.class);
   }
 
+  /**
+   * Create a new factory to build {@link ThermalResultFactory}s and utilize the given date time
+   * formatter pattern to parse date time strings
+   *
+   * @param dtfPattern Pattern to parse date time strings
+   */
+  public ThermalResultFactory(String dtfPattern) {
+    super(dtfPattern, ThermalHouseResult.class, CylindricalStorageResult.class);
+  }
+
   @Override
   protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
     Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, Q_DOT);
@@ -48,7 +58,7 @@ public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult>
   protected ThermalUnitResult buildModel(SimpleEntityData data) {
     Class<? extends UniqueEntity> clazz = data.getTargetClass();
 
-    ZonedDateTime zdtTime = TIME_UTIL.toZonedDateTime(data.getField(TIME));
+    ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
     ComparableQuantity<Power> qDotQuantity = data.getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND);
     Optional<UUID> uuidOpt =
