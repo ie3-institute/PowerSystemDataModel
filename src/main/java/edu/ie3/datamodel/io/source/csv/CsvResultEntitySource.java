@@ -54,6 +54,18 @@ public class CsvResultEntitySource extends CsvDataSource implements ResultEntity
     this.connectorResultFactory = new ConnectorResultFactory();
   }
 
+  public CsvResultEntitySource(
+      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy, String dtfPattern) {
+    super(csvSep, folderPath, fileNamingStrategy);
+
+    // init factories
+    this.systemParticipantResultFactory = new SystemParticipantResultFactory(dtfPattern);
+    this.thermalResultFactory = new ThermalResultFactory(dtfPattern);
+    this.switchResultFactory = new SwitchResultFactory(dtfPattern);
+    this.nodeResultFactory = new NodeResultFactory(dtfPattern);
+    this.connectorResultFactory = new ConnectorResultFactory(dtfPattern);
+  }
+
   // Grid
   @Override
   public Set<NodeResult> getNodeResults() {
