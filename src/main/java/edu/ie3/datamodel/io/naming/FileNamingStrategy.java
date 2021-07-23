@@ -22,8 +22,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A naming strategy, that combines an {@link EntityPersistenceNamingStrategy} for naming entities
@@ -31,7 +31,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class FileNamingStrategy {
 
-  private static final Logger logger = LogManager.getLogger(FileNamingStrategy.class);
+  private static final Logger logger = LoggerFactory.getLogger(FileNamingStrategy.class);
 
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
   private final FileHierarchy fileHierarchy;
