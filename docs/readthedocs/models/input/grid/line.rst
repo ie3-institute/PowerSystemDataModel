@@ -59,11 +59,6 @@ Entity Model
 | geoPosition       | --   | | Line string of geographical locations describing the |
 |                   |      | | position of the line                                 |
 +-------------------+------+--------------------------------------------------------+
-| olmCharacteristic | --   | | Characteristic of possible overhead line monitoring  |
-|                   |      | | Can be given in the form of `olm:{<List of Pairs>}`. |
-|                   |      | | The pairs are wind velocity in x and permissible     |
-|                   |      | | loading in y.                                        |
-+-------------------+------+--------------------------------------------------------+
 
 Caveats
 ^^^^^^^
