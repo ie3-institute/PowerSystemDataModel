@@ -37,7 +37,6 @@ class ChargingPointTypeUtilsTest extends Specification {
 		ChargingPointType actual = parse(parsableString)
 
 		expect:
-		new ChargingPointType("FastCharger", Quantities.getQuantity(50, KILOVOLTAMPERE), ElectricCurrentType.DC).toString()
 		actual == expectedObj
 		actual.toString() == expectedString
 
