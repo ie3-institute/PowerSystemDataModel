@@ -5,11 +5,11 @@
  */
 package edu.ie3.datamodel.models.input.system.type.evcslocation
 
-import edu.ie3.datamodel.exceptions.ParsingException
-import spock.lang.Specification
-
 import static edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType.*
 import static edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationTypeUtils.*
+
+import edu.ie3.datamodel.exceptions.ParsingException
+import spock.lang.Specification
 
 class EvcsLocationTypeUtilsTest extends Specification {
 
