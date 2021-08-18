@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system
 
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils
+import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 
@@ -18,7 +19,9 @@ class EvcsInputTest extends Specification {
 		when:
 		def alteredEntity = evcsInput.copy()
 				.type(ChargingPointTypeUtils.TeslaSuperChargerV3)
-				.cosPhiRated(0.7d).chargingPoints(1).build()
+				.cosPhiRated(0.7d).chargingPoints(1)
+				.locationType(EvcsLocationType.CHARGING_HUB_HIGHWAY)
+				.build()
 
 		then:
 		alteredEntity.with {
@@ -30,6 +33,7 @@ class EvcsInputTest extends Specification {
 			assert type == ChargingPointTypeUtils.TeslaSuperChargerV3
 			assert cosPhiRated == 0.7d
 			assert chargingPoints == 1
+			assert locationType == EvcsLocationType.CHARGING_HUB_HIGHWAY
 		}
 	}
 }

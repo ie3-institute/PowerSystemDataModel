@@ -28,7 +28,6 @@ import edu.ie3.test.common.TypeTestData
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
@@ -279,7 +278,8 @@ class InputEntityProcessorTest extends Specification {
 			"qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"type"            : SystemParticipantTestData.evcsInput.type.toString(),
 			"cosPhiRated"     : SystemParticipantTestData.evcsInput.cosPhiRated.toString(),
-			"chargingPoints"     : SystemParticipantTestData.evcsInput.chargingPoints.toString()
+			"chargingPoints"  : SystemParticipantTestData.evcsInput.chargingPoints.toString(),
+			"locationType"    : SystemParticipantTestData.evcsInput.locationType.name()
 		]
 	}
 
