@@ -14,7 +14,7 @@ public class EvcsLocationTypeUtils {
 
   private static HashMap<String, EvcsLocationType> initMap() {
     final HashMap<String, EvcsLocationType> map = new HashMap<>(EvcsLocationType.values().length);
-    for (EvcsLocationType type : EvcsLocationType.values()) map.put(type.name(), type);
+    for (EvcsLocationType type : EvcsLocationType.values()) map.put(toKey(type.name()), type);
 
     return map;
   }
@@ -24,7 +24,12 @@ public class EvcsLocationTypeUtils {
   }
 
   public static EvcsLocationType parse(String parsableString) throws ParsingException {
-    if (nameToType.containsKey(parsableString)) return nameToType.get(parsableString);
-    else throw new ParsingException("EvcsLocationType '" + parsableString + "' does not exist.");
+    final String key = toKey(parsableString);
+    if (nameToType.containsKey(key)) return nameToType.get(key);
+    else throw new ParsingException("EvcsLocationType '" + key + "' does not exist.");
+  }
+
+  private static String toKey(String name) {
+    return name.toLowerCase().replaceAll("[-_]*", "");
   }
 }

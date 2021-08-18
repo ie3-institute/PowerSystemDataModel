@@ -28,7 +28,7 @@ class EvcsLocationTypeUtilsTest extends Specification {
 
 		expect:
 		parsed == expectedObj
-		parsed.name() == parsableString
+		parsed.name().toLowerCase().replaceAll("[-_]*", "") == parsableString.toLowerCase().replaceAll("[-_]*", "")
 
 		where:
 		parsableString           || expectedObj
@@ -38,19 +38,16 @@ class EvcsLocationTypeUtilsTest extends Specification {
 		"STREET"                 || STREET
 		"CHARGING_HUB_TOWN"      || CHARGING_HUB_TOWN
 		"CHARGING_HUB_HIGHWAY"   || CHARGING_HUB_HIGHWAY
+		"charging_hub_highway"   || CHARGING_HUB_HIGHWAY // lower case
+		"charginghubhighway"     || CHARGING_HUB_HIGHWAY // lower case without underscores
 	}
 
 	def "The EvcsLocationTypeUtils should throw exceptions as expected when invalid evcs location type string is provided"() {
 		when:
-		parse(invalidString)
+		parse("--invalid--")
 
 		then:
 		ParsingException ex = thrown()
-		ex.message == expectedExceptionMsg
-
-		where:
-
-		invalidString       || expectedExceptionMsg
-		"-- invalid --"     || "EvcsLocationType '-- invalid --' does not exist."
+		ex.message == "EvcsLocationType 'invalid' does not exist."
 	}
 }
