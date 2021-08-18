@@ -22,17 +22,14 @@ public class EvcsLocationTypeUtils {
     return map;
   }
 
-  /**
-   * This is a static utility class. Do not instantiate!
-   */
+  /** This is a static utility class. Do not instantiate! */
   private EvcsLocationTypeUtils() {
     throw new IllegalStateException("This is a factory class. Don't try to instantiate it.");
   }
 
   /**
-   * Parsing a location type string into one {@link EvcsLocationType}.
-   * Matching the string is case-insensitive and all - and _ are removed.
-   * Throws exception, if type does not exist.
+   * Parsing a location type string into one {@link EvcsLocationType}. Matching the string is
+   * case-insensitive and all - and _ are removed. Throws exception, if type does not exist.
    *
    * @param parsableString string to parse
    * @return corresponding EvcsLocationType
@@ -46,6 +43,7 @@ public class EvcsLocationTypeUtils {
 
   /**
    * Turns string to lower case and removes underscores and minuses.
+   *
    * @param name name to turn into key
    * @return key
    */
