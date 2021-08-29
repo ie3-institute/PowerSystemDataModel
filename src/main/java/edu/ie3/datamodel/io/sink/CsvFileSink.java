@@ -265,6 +265,36 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   @Override
   public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries) {
+    try {
+      BufferedCsvWriter writer = getWriterForTimeSeries(timeSeries);
+      persistTimeSeries(timeSeries, writer);
+    } catch (ProcessorProviderException e) {
+      log.error(
+          "Exception occurred during receiving of header elements. Cannot write this element.", e);
+    } catch (ConnectorException e) {
+      log.error("Exception occurred during acquisition of writer.", e);
+    }
+  }
+
+  /**
+   * Provide a suitable {@link BufferedCsvWriter} for the targeted time series
+   *
+   * @param timeSeries The time series to persist
+   * @param <E> Type of Entry within the time series
+   * @param <V> Actually carried value
+   * @return A suitable {@link BufferedCsvWriter}
+   * @throws ProcessorProviderException If there is no handling known for the given time series
+   * @throws ConnectorException If there is no suitable writer known for this time series
+   */
+  public <E extends TimeSeriesEntry<V>, V extends Value> BufferedCsvWriter getWriterForTimeSeries(
+      TimeSeries<E, V> timeSeries) throws ProcessorProviderException, ConnectorException {
+    TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
+    String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
+    return connector.getOrInitWriter(timeSeries, headerElements, csvSep);
+  }
+
+  public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
+      TimeSeries<E, V> timeSeries, BufferedCsvWriter writer) {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
 
     try {
@@ -281,9 +311,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                                   .map(TimeSeriesProcessorKey::toString)
                                   .collect(Collectors.joining(","))
                               + "]"));
-
-      String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
-      BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
       entityFieldData.forEach(
           data -> {
             try {
@@ -294,11 +321,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
               log.error("Exception occurred during processing the provided data fields: ", e);
             }
           });
-    } catch (ProcessorProviderException e) {
-      log.error(
-          "Exception occurred during receiving of header elements. Cannot write this element.", e);
-    } catch (ConnectorException e) {
-      log.error("Exception occurred during acquisition of writer.", e);
     } catch (SinkException e) {
       log.error("Exception occurred during processor request: ", e);
     }
