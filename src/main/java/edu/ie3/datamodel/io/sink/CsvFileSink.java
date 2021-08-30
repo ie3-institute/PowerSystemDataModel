@@ -266,7 +266,9 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries) {
     try {
-      BufferedCsvWriter writer = getWriterForTimeSeries(timeSeries);
+      TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
+      String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
+      BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
       persistTimeSeries(timeSeries, writer);
       connector.closeTimeSeriesWriter(timeSeries.getUuid());
     } catch (ProcessorProviderException e) {
@@ -279,24 +281,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     }
   }
 
-  /**
-   * Provide a suitable {@link BufferedCsvWriter} for the targeted time series
-   *
-   * @param timeSeries The time series to persist
-   * @param <E> Type of Entry within the time series
-   * @param <V> Actually carried value
-   * @return A suitable {@link BufferedCsvWriter}
-   * @throws ProcessorProviderException If there is no handling known for the given time series
-   * @throws ConnectorException If there is no suitable writer known for this time series
-   */
-  public <E extends TimeSeriesEntry<V>, V extends Value> BufferedCsvWriter getWriterForTimeSeries(
-      TimeSeries<E, V> timeSeries) throws ProcessorProviderException, ConnectorException {
-    TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
-    String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
-    return connector.getOrInitWriter(timeSeries, headerElements, csvSep);
-  }
-
-  public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
+  private <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries, BufferedCsvWriter writer) {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
 
