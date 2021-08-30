@@ -55,7 +55,7 @@ dependencies {
 	implementation 'tech.units:indriya:2.1.2'
 
 	// JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
-	implementation 'org.locationtech.jts:jts-core:1.18.1'
+	implementation 'org.locationtech.jts:jts-core:1.18.2'
 	implementation 'org.locationtech.jts.io:jts-io-common:1.18.1'
 
 	// Graphs
