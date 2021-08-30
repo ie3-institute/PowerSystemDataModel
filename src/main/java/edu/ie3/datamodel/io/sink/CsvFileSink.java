@@ -268,11 +268,14 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     try {
       BufferedCsvWriter writer = getWriterForTimeSeries(timeSeries);
       persistTimeSeries(timeSeries, writer);
+      connector.closeTimeSeriesWriter(timeSeries.getUuid());
     } catch (ProcessorProviderException e) {
       log.error(
           "Exception occurred during receiving of header elements. Cannot write this element.", e);
     } catch (ConnectorException e) {
       log.error("Exception occurred during acquisition of writer.", e);
+    } catch (IOException e) {
+      log.error("Exception occurred during closing of writer.", e);
     }
   }
 
