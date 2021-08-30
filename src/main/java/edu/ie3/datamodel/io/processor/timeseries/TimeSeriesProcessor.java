@@ -106,7 +106,8 @@ public class TimeSeriesProcessor<
       Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass) {
     /* Get the mapping from field name to getter method ignoring the getter for returning all entries */
     Map<String, FieldSourceToMethod> timeSeriesMapping =
-        mapFieldNameToGetter(timeSeriesClass, Arrays.asList("entries", "uuid", "type")).entrySet()
+        mapFieldNameToGetter(timeSeriesClass, Arrays.asList("entries", "uuid", "type"))
+            .entrySet()
             .stream()
             .collect(
                 Collectors.toMap(
@@ -136,7 +137,8 @@ public class TimeSeriesProcessor<
                           mapFieldNameToGetter(
                                   valueClass,
                                   Arrays.asList("solarIrradiance", "temperature", "wind"))
-                              .entrySet().stream()
+                              .entrySet()
+                              .stream()
                               .map(
                                   entry ->
                                       new AbstractMap.SimpleEntry<>(
