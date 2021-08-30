@@ -235,7 +235,8 @@ public class CsvFileConnector implements DataConnector {
    */
   private Map<UUID, CsvIndividualTimeSeriesMetaInformation>
       buildIndividualTimeSeriesMetaInformation() {
-    return getIndividualTimeSeriesFilePaths().parallelStream()
+    return getIndividualTimeSeriesFilePaths()
+        .parallelStream()
         .map(
             filePath -> {
               /* Extract meta information from file path and enhance it with the file path itself */
@@ -259,7 +260,8 @@ public class CsvFileConnector implements DataConnector {
    */
   public Map<ColumnScheme, Set<CsvIndividualTimeSeriesMetaInformation>>
       getCsvIndividualTimeSeriesMetaInformation(ColumnScheme... columnSchemes) {
-    return getIndividualTimeSeriesFilePaths().parallelStream()
+    return getIndividualTimeSeriesFilePaths()
+        .parallelStream()
         .map(
             pathString -> {
               String filePathWithoutEnding = removeFileEnding(pathString);
