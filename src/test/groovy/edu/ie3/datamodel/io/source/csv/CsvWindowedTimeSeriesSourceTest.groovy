@@ -132,4 +132,23 @@ class CsvWindowedTimeSeriesSourceTest extends Specification implements CsvTestDa
 
 		source.close()
 	}
+
+	def "The windowed time series source is able to determine all available time steps"() {
+		given:
+		def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+		def source = new CsvWindowedTimeSeriesSource(
+				";",
+				timeSeriesFolderPath,
+				"its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1",
+				new FileNamingStrategy(),
+				Duration.ofHours(2L),
+				EnergyPriceValue,
+				factory)
+
+		when:
+		def actual = source.availableTimeSteps
+
+		then:
+		actual.size() == 2
+	}
 }

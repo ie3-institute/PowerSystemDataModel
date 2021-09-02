@@ -11,14 +11,19 @@ import edu.ie3.datamodel.io.source.TimeSeriesSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.util.TimeUtil;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.Duration;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This csv source for {@link IndividualTimeSeries} utilizes the functionalities of a buffered file
@@ -31,9 +36,12 @@ import java.util.stream.Stream;
  */
 public class CsvWindowedTimeSeriesSource<V extends Value> extends CsvDataSource
     implements TimeSeriesSource<V>, AutoCloseable {
+  private static final Logger logger = LoggerFactory.getLogger(CsvWindowedTimeSeriesSource.class);
+
   private final Duration maximumForeSight;
   private ClosedInterval<ZonedDateTime> coveredInterval;
 
+  private final String filePath;
   private final BufferedReader reader;
   private final Stream<TimeBasedValue<V>> inputStream;
 
@@ -49,6 +57,7 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends CsvDataSource
       TimeBasedSimpleValueFactory<V> factory) {
     super(csvSep, folderPath, fileNamingStrategy);
     this.maximumForeSight = maximumForeSight;
+    this.filePath = filePath;
     try {
       this.reader = super.connector.initReader(filePath);
       this.inputStream =
@@ -199,6 +208,42 @@ public class CsvWindowedTimeSeriesSource<V extends Value> extends CsvDataSource
     } else {
       coveredInterval = new ClosedInterval<>(time, coveredInterval.getUpper());
     }
+  }
+
+  /**
+   * Determines all available time steps within the given time series
+   *
+   * @return A list of available {@link ZonedDateTime}s
+   */
+  public List<ZonedDateTime> getAvailableTimeSteps() {
+    return getAvailableTimeSteps("time", "yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'");
+  }
+
+  /**
+   * Determines all available time steps within the given time series
+   *
+   * @param timeField Field, where date time information is located
+   * @param timePattern Pattern of the date time strings
+   * @return A list of available {@link ZonedDateTime}s
+   */
+  public List<ZonedDateTime> getAvailableTimeSteps(String timeField, String timePattern) {
+    TimeUtil timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern);
+    try (BufferedReader reader = super.connector.initReader(this.filePath)) {
+      return buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+          .map(
+              fieldToValue ->
+                  Optional.ofNullable(fieldToValue.get(timeField)).map(timeUtil::toZonedDateTime))
+          .filter(Optional::isPresent)
+          .map(Optional::get)
+          .collect(Collectors.toList());
+    } catch (IOException e) {
+      logger.warn(
+          "Opening a reader for time series file '"
+              + filePath
+              + "' failed. Unable to determine available time steps.",
+          e);
+    }
+    return Collections.emptyList();
   }
 
   @Override
