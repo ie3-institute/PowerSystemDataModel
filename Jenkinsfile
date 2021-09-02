@@ -104,6 +104,8 @@ node {
             // test the project
             stage('run tests') {
 
+                sh 'java -version'
+
                 gradle('--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain ' +
                         'spotbugsTest test jacocoTestReport jacocoTestCoverageVerification', projectName)
 
