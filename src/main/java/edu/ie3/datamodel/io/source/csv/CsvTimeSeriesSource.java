@@ -199,22 +199,4 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
       throw new SourceException("Error during reading of file'" + filePath + "'.", e);
     }
   }
-
-  /**
-   * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
-   * need any additional information.
-   *
-   * @param fieldToValues Mapping from field id to values
-   * @param valueClass Class of the desired underlying value
-   * @param factory Factory to process the "flat" information
-   * @return Optional simple time based value
-   */
-  private Optional<TimeBasedValue<V>> buildTimeBasedValue(
-      Map<String, String> fieldToValues,
-      Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
-    SimpleTimeBasedValueData<V> factoryData =
-        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
-    return factory.get(factoryData);
-  }
 }
