@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- added `EvcsLocationType` support in `EvcsInput` and `EvcsInputFactory` [#406](https://github.com/ie3-institute/PowerSystemDataModel/issues/406)
 - Opportunity to close writer in `CsvFileSink`
 
 ### Fixed
-- adapted `LineInput` constructor to convert line length to `StandardUnits.LINE_LENGTH`
+- adapted `LineInput` constructor to convert line length to `StandardUnits.LINE_LENGTH` [#412](https://github.com/ie3-institute/PowerSystemDataModel/issues/412)
 
 ### Changed
 - Writers used to write time series are closed right away
