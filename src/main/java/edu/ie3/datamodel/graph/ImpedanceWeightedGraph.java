@@ -12,12 +12,8 @@ import javax.measure.quantity.ElectricResistance;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import tech.units.indriya.ComparableQuantity;
 
-/**
- * An impedance weighted graph that uses {@link edu.ie3.datamodel.graph.ImpedanceWeightedEdge}s as
- * edge type.
- */
-public class ImpedanceWeightedGraph
-    extends SimpleWeightedGraph<NodeInput, edu.ie3.datamodel.graph.ImpedanceWeightedEdge> {
+/** An impedance weighted graph that uses {@link ImpedanceWeightedEdge}s as edge type. */
+public class ImpedanceWeightedGraph extends SimpleWeightedGraph<NodeInput, ImpedanceWeightedEdge> {
 
   private static final long serialVersionUID = -2797654003980753342L;
 
@@ -46,8 +42,9 @@ public class ImpedanceWeightedGraph
 
   /**
    * The only purpose for overriding this method is to provide a better indication of the unit that
-   * is expected to be passed in. It is highly advised to use the {@link this.setWeightQuantity()}
-   * for safety purposes that the provided edge weight is correct.
+   * is expected to be passed in. It is highly advised to use the {@link
+   * this#setWeightQuantity(ImpedanceWeightedEdge, ComparableQuantity)} for safety purposes that the
+   * provided edge weight is correct.
    *
    * @param edge the edge whose weight should be altered
    * @param impedanceInOhm the weight of the {@link ImpedanceWeightedEdge} in ohm
