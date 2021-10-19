@@ -328,7 +328,7 @@ public class PvInput extends SystemParticipantInput {
           albedo,
           azimuth,
           etaConv,
-              elevationAngle,
+          elevationAngle,
           kG,
           kT,
           marketReaction,
