@@ -289,8 +289,10 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param pvInput PvInput to validate
    */
   private static void checkHeight(PvInput pvInput) {
-    if (pvInput.getHeight().isLessThan(Quantities.getQuantity(0d, SOLAR_HEIGHT))
-        || pvInput.getHeight().isGreaterThan(Quantities.getQuantity(90d, SOLAR_HEIGHT)))
+    if (pvInput.getElevationAngle().isLessThan(Quantities.getQuantity(0d, SOLAR_ELEVATION_ANGLE))
+        || pvInput
+            .getElevationAngle()
+            .isGreaterThan(Quantities.getQuantity(90d, SOLAR_ELEVATION_ANGLE)))
       throw new InvalidEntityException(
           "Tilted inclination from horizontal of "
               + pvInput.getClass().getSimpleName()

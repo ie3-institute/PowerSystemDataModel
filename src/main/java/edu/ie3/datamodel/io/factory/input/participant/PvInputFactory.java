@@ -53,7 +53,8 @@ public class PvInputFactory
     final ComparableQuantity<Angle> azimuth = data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH);
     final ComparableQuantity<Dimensionless> etaConv =
         data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
-    final ComparableQuantity<Angle> height = data.getQuantity(HEIGHT, StandardUnits.SOLAR_HEIGHT);
+    final ComparableQuantity<Angle> height =
+        data.getQuantity(HEIGHT, StandardUnits.SOLAR_ELEVATION_ANGLE);
     final double kG = data.getDouble(KG);
     final double kT = data.getDouble(KT);
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);

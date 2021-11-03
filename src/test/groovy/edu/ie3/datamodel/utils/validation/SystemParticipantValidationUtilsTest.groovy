@@ -359,7 +359,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 		SystemParticipantTestData.pvInput.copy().albedo(2).build()                                             || new InvalidEntityException("Albedo of the plant's surrounding of PvInput must be between 0 and 1", invalidPV)
 		SystemParticipantTestData.pvInput.copy().azimuth(Quantities.getQuantity(-100d, AZIMUTH)).build()       || new InvalidEntityException("Azimuth angle of PvInput must be between -90° (east) and 90° (west)", invalidPV)
 		SystemParticipantTestData.pvInput.copy().etaConv(Quantities.getQuantity(110d, EFFICIENCY)).build()     || new InvalidEntityException("Efficiency of the converter of PvInput must be between 0% and 100%", invalidPV)
-		SystemParticipantTestData.pvInput.copy().height(Quantities.getQuantity(100d, SOLAR_HEIGHT)).build()    || new InvalidEntityException("Tilted inclination from horizontal of PvInput must be between 0° and 90°", invalidPV)
+		SystemParticipantTestData.pvInput.copy().height(Quantities.getQuantity(100d, SOLAR_ELEVATION_ANGLE)).build() || new InvalidEntityException("Tilted inclination from horizontal of PvInput must be between 0° and 90°", invalidPV)
 		SystemParticipantTestData.pvInput.copy().cosPhiRated(2).build()                                        || new InvalidEntityException("Rated power factor of PvInput must be between 0 and 1", invalidPV)
 	}
 

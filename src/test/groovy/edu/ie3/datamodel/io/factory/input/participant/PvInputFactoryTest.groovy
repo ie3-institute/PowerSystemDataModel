@@ -78,7 +78,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert albedo == Double.parseDouble(parameter["albedo"])
 			assert azimuth == getQuant(parameter["azimuth"], StandardUnits.AZIMUTH)
 			assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
-			assert height == getQuant(parameter["height"], StandardUnits.SOLAR_HEIGHT)
+			assert height == getQuant(parameter["height"], StandardUnits.SOLAR_ELEVATION_ANGLE)
 			assert kG == Double.parseDouble(parameter["kg"])
 			assert kT == Double.parseDouble(parameter["kt"])
 			assert marketReaction

@@ -78,7 +78,7 @@ public class PvInput extends SystemParticipantInput {
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
-    this.elevationAngle = elevationAngle.to(StandardUnits.SOLAR_HEIGHT);
+    this.elevationAngle = elevationAngle.to(StandardUnits.SOLAR_ELEVATION_ANGLE);
     this.kG = kG;
     this.kT = kT;
     this.marketReaction = marketReaction;
@@ -121,7 +121,7 @@ public class PvInput extends SystemParticipantInput {
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
-    this.elevationAngle = elevationAngle.to(StandardUnits.SOLAR_HEIGHT);
+    this.elevationAngle = elevationAngle.to(StandardUnits.SOLAR_ELEVATION_ANGLE);
     this.kG = kG;
     this.kT = kT;
     this.marketReaction = marketReaction;
