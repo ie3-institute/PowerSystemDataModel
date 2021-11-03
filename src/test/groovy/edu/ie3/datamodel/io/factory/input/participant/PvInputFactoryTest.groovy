@@ -42,7 +42,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 			"albedo"          : "3",
 			"azimuth"         : "4",
 			"etaconv"         : "5",
-			"height"          : "6",
+			"elevationAngle"  : "6",
 			"kg"              : "7",
 			"kt"              : "8",
 			"marketreaction"  : "true",
@@ -78,7 +78,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 			assert albedo == Double.parseDouble(parameter["albedo"])
 			assert azimuth == getQuant(parameter["azimuth"], StandardUnits.AZIMUTH)
 			assert etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
-			assert elevationAngle == getQuant(parameter["elevationAngle"], StandardUnits.SOLAR_ELEVATION_ANGLE)
+			assert elevationAngle == getQuant(parameter["elevationangle"], StandardUnits.SOLAR_ELEVATION_ANGLE)
 			assert kG == Double.parseDouble(parameter["kg"])
 			assert kT == Double.parseDouble(parameter["kt"])
 			assert marketReaction
