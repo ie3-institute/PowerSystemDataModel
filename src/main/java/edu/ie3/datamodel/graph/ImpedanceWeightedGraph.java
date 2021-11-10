@@ -48,8 +48,11 @@ public class ImpedanceWeightedGraph extends SimpleWeightedGraph<NodeInput, Imped
    *
    * @param edge the edge whose weight should be altered
    * @param impedanceInOhm the weight of the {@link ImpedanceWeightedEdge} in ohm
+   * @deprecated Use {@link ImpedanceWeightedGraph#setWeightQuantity(ImpedanceWeightedEdge,
+   *     ComparableQuantity)} instead, as it provides means for proper unit handling
    */
   @Override
+  @Deprecated
   public void setEdgeWeight(ImpedanceWeightedEdge edge, double impedanceInOhm) {
     super.setEdgeWeight(edge, impedanceInOhm);
   }
