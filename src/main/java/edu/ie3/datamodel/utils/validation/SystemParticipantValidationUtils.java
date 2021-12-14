@@ -250,7 +250,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     checkAlbedo(pvInput);
     checkAzimuth(pvInput);
     isBetweenZeroAndHundredPercent(pvInput, pvInput.getEtaConv(), "Efficiency of the converter");
-    checkHeight(pvInput);
+    checkElevationAngle(pvInput);
     checkRatedPowerFactor(pvInput, pvInput.getCosPhiRated());
   }
 
@@ -288,7 +288,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *
    * @param pvInput PvInput to validate
    */
-  private static void checkHeight(PvInput pvInput) {
+  private static void checkElevationAngle(PvInput pvInput) {
     if (pvInput.getElevationAngle().isLessThan(Quantities.getQuantity(0d, SOLAR_ELEVATION_ANGLE))
         || pvInput
             .getElevationAngle()
