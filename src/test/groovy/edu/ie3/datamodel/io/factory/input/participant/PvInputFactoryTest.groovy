@@ -42,7 +42,7 @@ class PvInputFactoryTest extends Specification implements FactoryTestHelper {
 			"albedo"          : "3",
 			"azimuth"         : "4",
 			"etaconv"         : "5",
-			"elevationAngle"  : "6",
+			"elevationangle"  : "6",
 			"kg"              : "7",
 			"kt"              : "8",
 			"marketreaction"  : "true",
