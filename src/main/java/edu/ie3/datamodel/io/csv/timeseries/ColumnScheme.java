@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.csv.timeseries;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.StringUtils;
 import java.util.Arrays;
@@ -29,6 +30,27 @@ public enum ColumnScheme {
 
   public String getScheme() {
     return scheme;
+  }
+
+  public Class<? extends Value> getValueClass() throws SourceException {
+    switch (this) {
+      case ACTIVE_POWER:
+        return PValue.class;
+      case APPARENT_POWER:
+        return SValue.class;
+      case ENERGY_PRICE:
+        return EnergyPriceValue.class;
+      case APPARENT_POWER_AND_HEAT_DEMAND:
+        return HeatAndSValue.class;
+      case ACTIVE_POWER_AND_HEAT_DEMAND:
+        return HeatAndPValue.class;
+      case HEAT_DEMAND:
+        return HeatDemandValue.class;
+      case WEATHER:
+        return WeatherValue.class;
+      default:
+        throw new SourceException("Unknown column scheme '" + this + "'.");
+    }
   }
 
   public static Optional<ColumnScheme> parse(String key) {

@@ -80,8 +80,6 @@ class SqlWeatherSourcePsdmIT extends Specification implements WeatherSourceTestH
 		equalsIgnoreUUID(coordinateToTimeSeries.get(PsdmWeatherTestData.COORDINATE_193187), timeSeries193187)
 	}
 
-
-
 	def "A NativeSqlWeatherSource can read all weather data in a given time interval"() {
 		given:
 		def timeInterval = new ClosedInterval(PsdmWeatherTestData.TIME_15H, PsdmWeatherTestData.TIME_17H)
