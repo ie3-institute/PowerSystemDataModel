@@ -5,14 +5,10 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.*;
-
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
-import java.util.EnumSet;
 import java.util.Optional;
 
 /**
@@ -20,15 +16,6 @@ import java.util.Optional;
  * model
  */
 public interface TimeSeriesSource<V extends Value> extends DataSource {
-
-  EnumSet<ColumnScheme> acceptableSchemes =
-      EnumSet.of(
-          ACTIVE_POWER,
-          APPARENT_POWER,
-          ENERGY_PRICE,
-          APPARENT_POWER_AND_HEAT_DEMAND,
-          ACTIVE_POWER_AND_HEAT_DEMAND,
-          HEAT_DEMAND);
 
   /**
    * Obtain the full time series

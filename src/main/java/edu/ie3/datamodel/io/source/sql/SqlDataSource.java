@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.util.StringUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class SqlDataSource<T> {
 
-  protected static final Logger log = LoggerFactory.getLogger(CsvDataSource.class);
+  protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 
   private final SqlConnector connector;
 
@@ -99,7 +98,7 @@ public abstract class SqlDataSource<T> {
           .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
           .collect(Collectors.toList());
     } catch (SQLException e) {
-      log.error("Error during execution of query " + query, e);
+      log.error("Error during execution of query {}", query, e);
     }
 
     return Collections.emptyList();

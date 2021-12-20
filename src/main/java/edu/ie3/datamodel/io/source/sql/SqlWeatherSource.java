@@ -81,7 +81,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         executeQuery(
             queryTimeInterval,
-            (ps) -> {
+            ps -> {
               ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
               ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
             });
@@ -104,7 +104,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         executeQuery(
             queryTimeIntervalAndCoordinates,
-            (ps) -> {
+            ps -> {
               Array coordinateIdArr =
                   ps.getConnection().createArrayOf("integer", coordinateIds.toArray());
               ps.setArray(1, coordinateIdArr);
@@ -126,7 +126,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         executeQuery(
             queryTimeAndCoordinate,
-            (ps) -> {
+            ps -> {
               ps.setInt(1, coordinateId.get());
               ps.setTimestamp(2, Timestamp.from(date.toInstant()));
             });
@@ -221,6 +221,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
    * @param fieldMap the field to value map for one TimeBasedValue
    * @return an Optional of that TimeBasedValue
    */
+  @Override
   protected Optional<TimeBasedValue<WeatherValue>> createEntity(Map<String, String> fieldMap) {
     fieldMap.remove("tid");
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
