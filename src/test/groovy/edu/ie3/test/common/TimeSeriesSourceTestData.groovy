@@ -12,7 +12,12 @@ import tech.units.indriya.quantity.Quantities
 
 import java.time.ZonedDateTime
 
-interface TimeSeriesSourceTestData {
+final class  TimeSeriesSourceTestData {
+
+	private TimeSeriesSourceTestData() {
+		// restrict instantiation
+	}
+
 	public static final ZonedDateTime TIME_00MIN = ZonedDateTime.parse("2020-01-01T00:00:00Z[UTC]")
 	public static final ZonedDateTime TIME_15MIN = ZonedDateTime.parse("2020-01-01T00:15:00Z[UTC]")
 
