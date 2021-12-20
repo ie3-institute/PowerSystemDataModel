@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import static edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.*;
-import static edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.HEAT_DEMAND;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
