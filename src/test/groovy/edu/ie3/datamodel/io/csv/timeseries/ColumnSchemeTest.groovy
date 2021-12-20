@@ -47,19 +47,19 @@ class ColumnSchemeTest extends Specification {
 
 	def "Correct value classes are returned for all column schemes"() {
 		when:
-		def actual = columnScheme.getValueClass()
+		def actual = columnScheme.valueClass
 
 		then:
 		actual == expectedValueClass
 
 		where:
 		columnScheme || expectedValueClass
-		ColumnScheme.ENERGY_PRICE || EnergyPriceValue.class
-		ColumnScheme.ACTIVE_POWER || PValue.class
-		ColumnScheme.APPARENT_POWER || SValue.class
-		ColumnScheme.HEAT_DEMAND || HeatDemandValue.class
-		ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND || HeatAndPValue.class
-		ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND || HeatAndSValue.class
-		ColumnScheme.WEATHER || WeatherValue.class
+		ColumnScheme.ENERGY_PRICE || EnergyPriceValue
+		ColumnScheme.ACTIVE_POWER || PValue
+		ColumnScheme.APPARENT_POWER || SValue
+		ColumnScheme.HEAT_DEMAND || HeatDemandValue
+		ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND || HeatAndPValue
+		ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND || HeatAndSValue
+		ColumnScheme.WEATHER || WeatherValue
 	}
 }

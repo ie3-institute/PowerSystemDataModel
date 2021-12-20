@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.csv.timeseries;
 
-import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.StringUtils;
 import java.util.Arrays;
@@ -14,43 +13,28 @@ import java.util.Optional;
 
 /** Yet supported column schemes in individual time series */
 public enum ColumnScheme {
-  ENERGY_PRICE("c"),
-  ACTIVE_POWER("p"),
-  APPARENT_POWER("pq"),
-  HEAT_DEMAND("h"),
-  ACTIVE_POWER_AND_HEAT_DEMAND("ph"),
-  APPARENT_POWER_AND_HEAT_DEMAND("pqh"),
-  WEATHER("weather");
+  ENERGY_PRICE("c", EnergyPriceValue.class),
+  ACTIVE_POWER("p", PValue.class),
+  APPARENT_POWER("pq", SValue.class),
+  HEAT_DEMAND("h", HeatDemandValue.class),
+  ACTIVE_POWER_AND_HEAT_DEMAND("ph", HeatAndPValue.class),
+  APPARENT_POWER_AND_HEAT_DEMAND("pqh", HeatAndSValue.class),
+  WEATHER("weather", WeatherValue.class);
 
   private final String scheme;
+  private final Class<? extends Value> valueClass;
 
-  ColumnScheme(String scheme) {
+  ColumnScheme(String scheme, Class<? extends Value> valueClass) {
     this.scheme = scheme;
+    this.valueClass = valueClass;
   }
 
   public String getScheme() {
     return scheme;
   }
 
-  public Class<? extends Value> getValueClass() throws SourceException {
-    switch (this) {
-      case ACTIVE_POWER:
-        return PValue.class;
-      case APPARENT_POWER:
-        return SValue.class;
-      case ENERGY_PRICE:
-        return EnergyPriceValue.class;
-      case APPARENT_POWER_AND_HEAT_DEMAND:
-        return HeatAndSValue.class;
-      case ACTIVE_POWER_AND_HEAT_DEMAND:
-        return HeatAndPValue.class;
-      case HEAT_DEMAND:
-        return HeatDemandValue.class;
-      case WEATHER:
-        return WeatherValue.class;
-      default:
-        throw new SourceException("Unknown column scheme '" + this + "'.");
-    }
+  public Class<? extends Value> getValueClass() {
+    return valueClass;
   }
 
   public static Optional<ColumnScheme> parse(String key) {

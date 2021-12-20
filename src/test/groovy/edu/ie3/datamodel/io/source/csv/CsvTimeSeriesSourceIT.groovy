@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.test.common.TimeSeriesSourceTestData.*
+
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
@@ -12,8 +14,6 @@ import edu.ie3.datamodel.models.value.HeatAndPValue
 import edu.ie3.util.interval.ClosedInterval
 import spock.lang.Shared
 import spock.lang.Specification
-
-import static edu.ie3.test.common.TimeSeriesSourceTestData.*
 
 class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
