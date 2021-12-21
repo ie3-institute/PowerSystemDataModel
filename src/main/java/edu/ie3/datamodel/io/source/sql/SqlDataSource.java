@@ -67,6 +67,14 @@ public abstract class SqlDataSource<T> {
             + "Please ensure that the database connection is working and the column names are correct!");
   }
 
+  /**
+   * Interface for anonymous functions that are used as a parameter for {@link #executeQuery}.
+   *
+   * <p>For example, it can be defined this way: {@code ps -> ps.setInt(1, 2)}
+   *
+   * <p>(We cannot use {@link java.util.function.Function} here because it throws SQLException).
+   */
+  @FunctionalInterface
   interface AddParams {
     /**
      * Enhance a PreparedStatement by inserting parameters for wildcards

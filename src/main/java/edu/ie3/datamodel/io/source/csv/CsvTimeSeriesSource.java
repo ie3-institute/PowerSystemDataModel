@@ -5,11 +5,8 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
-import static edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.*;
-
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
@@ -29,15 +26,6 @@ import java.util.stream.Collectors;
 /** Source that is capable of providing information around time series from csv files. */
 public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
     implements TimeSeriesSource<V> {
-  private static final EnumSet<ColumnScheme> acceptableSchemes =
-      EnumSet.of(
-          ACTIVE_POWER,
-          APPARENT_POWER,
-          ENERGY_PRICE,
-          APPARENT_POWER_AND_HEAT_DEMAND,
-          ACTIVE_POWER_AND_HEAT_DEMAND,
-          HEAT_DEMAND);
-
   private final IndividualTimeSeries<V> timeSeries;
 
   /**
@@ -56,7 +44,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
       FileNamingStrategy fileNamingStrategy,
       CsvFileConnector.CsvIndividualTimeSeriesMetaInformation metaInformation)
       throws SourceException {
-    if (!acceptableSchemes.contains(metaInformation.getColumnScheme()))
+    if (!TimeSeriesSource.isSchemeAccepted(metaInformation.getColumnScheme()))
       throw new SourceException(
           "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
 
