@@ -7,9 +7,6 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -18,8 +15,6 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
 import edu.ie3.datamodel.models.value.Value;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -78,8 +73,7 @@ public class FileNamingStrategy {
   public Optional<String> getFilePath(Class<? extends UniqueEntity> cls) {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
-    return getFilePath(
-        getEntityName(cls).orElseGet(() -> ""), getDirectoryPath(cls).orElseGet(() -> ""));
+    return getFilePath(getEntityName(cls).orElse(""), getDirectoryPath(cls).orElse(""));
   }
 
   /**
@@ -97,8 +91,8 @@ public class FileNamingStrategy {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        entityPersistenceNamingStrategy.getEntityName(timeSeries).orElseGet(() -> ""),
-        getDirectoryPath(timeSeries).orElseGet(() -> ""));
+        entityPersistenceNamingStrategy.getEntityName(timeSeries).orElse(""),
+        getDirectoryPath(timeSeries).orElse(""));
   }
 
   /**
@@ -178,7 +172,7 @@ public class FileNamingStrategy {
     if (subDirectory.isEmpty()) {
       return entityPersistenceNamingStrategy.getIndividualTimeSeriesPattern();
     } else {
-      /* Build the pattern by joining the sub directory with the file name pattern, harmonizing file separators and
+      /* Build the pattern by joining the subdirectory with the file name pattern, harmonizing file separators and
        * finally escaping them */
       String joined =
           FilenameUtils.concat(
@@ -242,54 +236,14 @@ public class FileNamingStrategy {
     String withoutEnding = fileName.replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
 
     if (getIndividualTimeSeriesPattern().matcher(withoutEnding).matches())
-      return extractIndividualTimesSeriesMetaInformation(withoutEnding);
+      return entityPersistenceNamingStrategy.extractIndividualTimesSeriesMetaInformation(
+          withoutEnding);
     else if (getLoadProfileTimeSeriesPattern().matcher(withoutEnding).matches())
-      return extractLoadProfileTimesSeriesMetaInformation(withoutEnding);
+      return entityPersistenceNamingStrategy.extractLoadProfileTimesSeriesMetaInformation(
+          withoutEnding);
     else
       throw new IllegalArgumentException(
           "Unknown format of '" + fileName + "'. Cannot extract meta information.");
-  }
-
-  /**
-   * Extracts meta information from a valid file name for a individual time series
-   *
-   * @param fileName File name to extract information from
-   * @return Meta information form individual time series file name
-   */
-  private IndividualTimeSeriesMetaInformation extractIndividualTimesSeriesMetaInformation(
-      String fileName) {
-    Matcher matcher = getIndividualTimeSeriesPattern().matcher(fileName);
-    if (!matcher.matches())
-      throw new IllegalArgumentException(
-          "Cannot extract meta information on individual time series from '" + fileName + "'.");
-
-    String columnSchemeKey = matcher.group("columnScheme");
-    ColumnScheme columnScheme =
-        ColumnScheme.parse(columnSchemeKey)
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        "Cannot parse '" + columnSchemeKey + "' to valid column scheme."));
-
-    return new IndividualTimeSeriesMetaInformation(
-        UUID.fromString(matcher.group("uuid")), columnScheme);
-  }
-
-  /**
-   * Extracts meta information from a valid file name for a load profile time series
-   *
-   * @param fileName File name to extract information from
-   * @return Meta information form load profile time series file name
-   */
-  private LoadProfileTimeSeriesMetaInformation extractLoadProfileTimesSeriesMetaInformation(
-      String fileName) {
-    Matcher matcher = getLoadProfileTimeSeriesPattern().matcher(fileName);
-    if (!matcher.matches())
-      throw new IllegalArgumentException(
-          "Cannot extract meta information on load profile time series from '" + fileName + "'.");
-
-    return new LoadProfileTimeSeriesMetaInformation(
-        UUID.fromString(matcher.group("uuid")), matcher.group("profile"));
   }
 
   /**
@@ -311,8 +265,7 @@ public class FileNamingStrategy {
   public Optional<String> getIdCoordinateFilePath() {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
-    return getFilePath(
-        getIdCoordinateEntityName(), fileHierarchy.getBaseDirectory().orElseGet(() -> ""));
+    return getFilePath(getIdCoordinateEntityName(), fileHierarchy.getBaseDirectory().orElse(""));
   }
 
   /**

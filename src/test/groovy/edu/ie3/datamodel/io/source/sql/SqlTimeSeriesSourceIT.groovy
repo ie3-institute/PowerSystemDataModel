@@ -10,6 +10,7 @@ import static edu.ie3.test.common.TimeSeriesSourceTestData.*
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.value.*
 import edu.ie3.util.interval.ClosedInterval
 import org.testcontainers.containers.Container
@@ -63,16 +64,21 @@ class SqlTimeSeriesSourceIT extends Specification {
 		}
 
 		connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
+		def metaInformation = new IndividualTimeSeriesMetaInformation(
+				timeSeriesUuid,
+				ColumnScheme.ACTIVE_POWER
+				)
 
-		pSource = SqlTimeSeriesSource.getSource(connector, schemaName, pTableName, timeSeriesUuid, ColumnScheme.ACTIVE_POWER, "yyyy-MM-dd HH:mm:ss")
+		pSource = SqlTimeSeriesSource.getSource(connector, schemaName, pTableName, metaInformation, "yyyy-MM-dd HH:mm:ss")
 	}
 
 	def "The factory method in SqlTimeSeriesSource builds a time series source for all supported column types"() {
 		given:
+		def metaInformation = new IndividualTimeSeriesMetaInformation(uuid, columnScheme)
 		def timePattern = "yyyy-MM-dd HH:mm:ss"
 
 		when:
-		def actual = SqlTimeSeriesSource.getSource(connector, schemaName, tableName, uuid, columnScheme, timePattern)
+		def actual = SqlTimeSeriesSource.getSource(connector, schemaName, tableName, metaInformation, timePattern)
 
 		then:
 		actual.timeSeries.entries.size() == amountOfEntries
@@ -90,12 +96,14 @@ class SqlTimeSeriesSourceIT extends Specification {
 
 	def "The factory method in SqlTimeSeriesSource refuses to build time series with unsupported column type"() {
 		given:
-		def uuid = UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9")
-		def columnScheme = ColumnScheme.WEATHER
+		def metaInformation = new IndividualTimeSeriesMetaInformation(
+				UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"),
+				ColumnScheme.WEATHER
+				)
 		def timePattern = "yyyy-MM-dd HH:mm:ss"
 
 		when:
-		SqlTimeSeriesSource.getSource(connector, schemaName, "weather", uuid, columnScheme, timePattern)
+		SqlTimeSeriesSource.getSource(connector, schemaName, "weather", metaInformation, timePattern)
 
 		then:
 		def e = thrown(SourceException)

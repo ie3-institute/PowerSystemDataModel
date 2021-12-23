@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.source.sql
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
-import edu.ie3.datamodel.io.naming.FileNamingStrategy
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
@@ -52,7 +52,7 @@ class SqlTimeSeriesMappingSourceIT extends Specification {
 		}
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-		source = new SqlTimeSeriesMappingSource(connector, "public", new FileNamingStrategy())
+		source = new SqlTimeSeriesMappingSource(connector, "public", new EntityPersistenceNamingStrategy())
 	}
 
 	def "The sql time series mapping source returns empty optional on not covered model"() {

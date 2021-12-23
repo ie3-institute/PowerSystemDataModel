@@ -9,7 +9,7 @@ import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
-import edu.ie3.datamodel.io.naming.FileNamingStrategy;
+import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import java.util.Map;
 import java.util.Optional;
@@ -20,16 +20,18 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
     implements TimeSeriesMappingSource {
   private static final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
 
-  private final FileNamingStrategy fileNamingStrategy;
+  private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
   private final String queryFull;
 
   public SqlTimeSeriesMappingSource(
-      SqlConnector connector, String schemaName, FileNamingStrategy fileNamingStrategy) {
+      SqlConnector connector,
+      String schemaName,
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
     super(connector);
-    this.fileNamingStrategy = fileNamingStrategy;
+    this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
 
     final String tableName =
-        fileNamingStrategy
+        entityPersistenceNamingStrategy
             .getEntityName(MappingEntry.class)
             .orElseThrow(() -> new RuntimeException(""));
     this.queryFull = createBaseQueryString(schemaName, tableName);
@@ -45,10 +47,7 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
   public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
       UUID timeSeriesUuid) {
     return getDbTableName(null, "%" + timeSeriesUuid.toString())
-        .map(
-            tableName ->
-                (IndividualTimeSeriesMetaInformation)
-                    fileNamingStrategy.extractTimeSeriesMetaInformation(tableName));
+        .map(entityPersistenceNamingStrategy::extractIndividualTimesSeriesMetaInformation);
   }
 
   @Override
