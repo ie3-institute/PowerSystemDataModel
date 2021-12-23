@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+- SQL time series sources (`SqlTimeSeriesSource` and `SqlTimeSeriesMappingSource`)
+
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
     - Protected constructors for abstract classes

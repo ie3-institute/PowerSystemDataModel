@@ -59,9 +59,8 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
 
     String dbTimeColumnName =
-        getDbColumnName(weatherFactory.getTimeFieldString(), connector, weatherTableName);
-    String dbCoordColumnName =
-        getDbColumnName(factoryCoordinateFieldName, connector, weatherTableName);
+        getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
+    String dbCoordColumnName = getDbColumnName(factoryCoordinateFieldName, weatherTableName);
 
     // setup queries
     this.queryTimeInterval =
@@ -134,18 +133,6 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.get(0));
-  }
-
-  /**
-   * Creates a base query string without closing semicolon of the following pattern: <br>
-   * {@code SELECT * FROM <schema>.<table>}
-   *
-   * @param schemaName the name of the database schema
-   * @param weatherTableName the name of the database table
-   * @return basic query string without semicolon
-   */
-  private static String createBaseQueryString(String schemaName, String weatherTableName) {
-    return "SELECT * FROM " + schemaName + "." + weatherTableName;
   }
 
   /**

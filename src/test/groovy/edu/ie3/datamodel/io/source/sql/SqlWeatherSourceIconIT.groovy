@@ -15,6 +15,7 @@ import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
+import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
@@ -25,7 +26,7 @@ import spock.lang.Specification
 class SqlWeatherSourceIconIT extends Specification implements WeatherSourceTestHelper {
 
 	@Shared
-	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.9")
+	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.14")
 
 	@Shared
 	SqlWeatherSource source
@@ -38,7 +39,8 @@ class SqlWeatherSourceIconIT extends Specification implements WeatherSourceTestH
 		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/icon/weather.sql")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather.sql")
 		// Execute import script
-		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
+		Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
+		assert res.stderr.isEmpty()
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
 		def weatherFactory = new IconTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
