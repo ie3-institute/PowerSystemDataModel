@@ -49,6 +49,12 @@ repositories {
 }
 
 dependencies {
+	constraints {
+		implementation( 'junit:junit:4.13.2+'){
+			because "CVE-2020-15250 - Temporary folder vulnerability - https://github.com/advisories/GHSA-269g-pwp5-87pp"
+		}
+	}
+
 	//	 ie³ power system utils
 	implementation 'com.github.ie3-institute:PowerSystemUtils:1.6'
 
@@ -57,7 +63,10 @@ dependencies {
 	implementation 'com.github.johanneshiry:OSMonaut:v1.1.1' // tmp pbf parse
 
 	// JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
-	implementation 'org.locationtech.jts:jts-core:1.18.2'
+	implementation ('org.locationtech.jts:jts-core:1.18.2'){
+		exclude group: 'junit', module: 'junit'
+	}
+
 	implementation 'org.locationtech.jts.io:jts-io-common:1.18.2'
 
 	// Graphs
