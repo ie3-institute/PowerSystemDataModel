@@ -14,13 +14,15 @@ import edu.ie3.datamodel.models.value.SValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import spock.lang.Specification
 
+import static edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.*
+
 class ColumnSchemeTest extends Specification {
 	def "An unknown column scheme gets not parsed"() {
 		given:
 		def invalidColumnScheme = "what's this"
 
 		when:
-		def actual = ColumnScheme.parse(invalidColumnScheme)
+		def actual = parse(invalidColumnScheme)
 
 		then:
 		!actual.present
@@ -28,7 +30,7 @@ class ColumnSchemeTest extends Specification {
 
 	def "All known column schemes get parsed correctly"() {
 		when:
-		def actual = ColumnScheme.parse(input)
+		def actual = parse(input)
 
 		then:
 		actual.present
@@ -36,13 +38,13 @@ class ColumnSchemeTest extends Specification {
 
 		where:
 		input || expectedColumnScheme
-		"c" || ColumnScheme.ENERGY_PRICE
-		"p" || ColumnScheme.ACTIVE_POWER
-		"pq" || ColumnScheme.APPARENT_POWER
-		"h" || ColumnScheme.HEAT_DEMAND
-		"ph" || ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
-		"pqh" || ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
-		"weather" || ColumnScheme.WEATHER
+		"c" || ENERGY_PRICE
+		"p" || ACTIVE_POWER
+		"pq" || APPARENT_POWER
+		"h" || HEAT_DEMAND
+		"ph" || ACTIVE_POWER_AND_HEAT_DEMAND
+		"pqh" || APPARENT_POWER_AND_HEAT_DEMAND
+		"weather" || WEATHER
 	}
 
 	def "Correct value classes are returned for all column schemes"() {
@@ -54,12 +56,12 @@ class ColumnSchemeTest extends Specification {
 
 		where:
 		columnScheme || expectedValueClass
-		ColumnScheme.ENERGY_PRICE || EnergyPriceValue
-		ColumnScheme.ACTIVE_POWER || PValue
-		ColumnScheme.APPARENT_POWER || SValue
-		ColumnScheme.HEAT_DEMAND || HeatDemandValue
-		ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND || HeatAndPValue
-		ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND || HeatAndSValue
-		ColumnScheme.WEATHER || WeatherValue
+		ENERGY_PRICE || EnergyPriceValue
+		ACTIVE_POWER || PValue
+		APPARENT_POWER || SValue
+		HEAT_DEMAND || HeatDemandValue
+		ACTIVE_POWER_AND_HEAT_DEMAND || HeatAndPValue
+		APPARENT_POWER_AND_HEAT_DEMAND || HeatAndSValue
+		WEATHER || WeatherValue
 	}
 }
