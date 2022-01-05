@@ -54,6 +54,8 @@ dependencies {
 
 	implementation 'tech.units:indriya:2.1.2'
 
+	implementation 'com.github.johanneshiry:OSMonaut:v1.1.1' // tmp pbf parse
+
 	// JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
 	implementation 'org.locationtech.jts:jts-core:1.18.2'
 	implementation 'org.locationtech.jts.io:jts-io-common:1.18.2'
@@ -87,10 +89,6 @@ dependencies {
 	implementation 'org.apache.commons:commons-compress:1.21' // I/O functionalities
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
-}
-
-wrapper {
-	gradleVersion = '6.0.1'
 }
 
 tasks.withType(JavaCompile) {
