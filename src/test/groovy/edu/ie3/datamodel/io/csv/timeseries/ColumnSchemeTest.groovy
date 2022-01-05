@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.csv.timeseries
 
+import static edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.*
+
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.HeatAndPValue
 import edu.ie3.datamodel.models.value.HeatAndSValue
@@ -13,8 +15,6 @@ import edu.ie3.datamodel.models.value.PValue
 import edu.ie3.datamodel.models.value.SValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import spock.lang.Specification
-
-import static edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.*
 
 class ColumnSchemeTest extends Specification {
 	def "An unknown column scheme gets not parsed"() {
