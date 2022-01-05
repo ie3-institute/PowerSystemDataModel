@@ -1,5 +1,6 @@
 edu.ie3.datamodel.exceptions
 edu.ie3.datamodel.graph
+edu.ie3.datamodel.io
 edu.ie3.datamodel.io.connectors
 edu.ie3.datamodel.io.csv
 edu.ie3.datamodel.io.csv.timeseries
@@ -32,6 +33,7 @@ edu.ie3.datamodel.models.input.system
 edu.ie3.datamodel.models.input.system.characteristic
 edu.ie3.datamodel.models.input.system.type
 edu.ie3.datamodel.models.input.system.type.chargingpoint
+edu.ie3.datamodel.models.input.system.type.evcslocation
 edu.ie3.datamodel.models.input.thermal
 edu.ie3.datamodel.models.result
 edu.ie3.datamodel.models.result.connector
