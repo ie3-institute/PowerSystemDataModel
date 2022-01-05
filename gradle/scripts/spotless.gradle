@@ -10,19 +10,19 @@ spotless {
 	//sets a license header, removes unused imports and formats conforming to the google java format
 	java {
 		removeUnusedImports() // removes any unused imports
-		googleJavaFormat()
+		googleJavaFormat('1.13.0')
 		licenseHeader ie3LicHead
 	}
 
 
 	/* cf. https://github.com/diffplug/spotless/tree/master/plugin-gradle */
 	groovy {
-		licenseHeader ie3LicHead
-		excludeJava() // excludes all Java sources within the Groovy source dirs from formatting
-
+		target '**.groovy', 'Jenkinsfile'
+		licenseHeader "#!groovy\n\n" + ie3LicHead, "////////////////////////////////"
 		// the Groovy Eclipse formatter extends the Java Eclipse formatter,
 		// so it formats Java files by default (unless `excludeJava` is used).
 		greclipse()
+		indentWithSpaces 2
 	}
 
 	groovyGradle {

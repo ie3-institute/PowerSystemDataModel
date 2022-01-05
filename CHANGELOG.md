@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+## [2.1.0] - 2022-01-05
+
 ### Added
 - added `EvcsLocationType` support in `EvcsInput` and `EvcsInputFactory` [#406](https://github.com/ie3-institute/PowerSystemDataModel/issues/406)
 - Opportunity to close writer in `CsvFileSink`
@@ -117,7 +119,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.1...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.1.0...HEAD
+[2.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.1...2.1.0
 [2.0.1]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/1.1.0...2.0.0
 [1.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/6a49bc514be8859ebd29a3595cd58cd000498f1e...1.1.0

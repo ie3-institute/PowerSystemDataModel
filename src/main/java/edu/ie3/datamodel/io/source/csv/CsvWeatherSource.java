@@ -253,7 +253,7 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
                   .get(weatherFactory.getTimeFieldString())
                   .concat(fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
       return distinctRowsWithLog(
-              allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
+          allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
           .parallelStream();
 
     } catch (IOException e) {

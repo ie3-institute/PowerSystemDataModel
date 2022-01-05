@@ -106,62 +106,52 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
 
     /* init sets */
     this.bmPlants =
-        systemParticipants
-            .parallelStream()
+        systemParticipants.parallelStream()
             .filter(gridElement -> gridElement instanceof BmInput)
             .map(bmInput -> (BmInput) bmInput)
             .collect(Collectors.toSet());
     this.chpPlants =
-        systemParticipants
-            .parallelStream()
+        systemParticipants.parallelStream()
             .filter(gridElement -> gridElement instanceof ChpInput)
             .map(chpInput -> (ChpInput) chpInput)
             .collect(Collectors.toSet());
     this.evCS =
-        systemParticipants
-            .parallelStream()
+        systemParticipants.parallelStream()
             .filter(gridElement -> gridElement instanceof EvcsInput)
             .map(evcsInput -> (EvcsInput) evcsInput)
             .collect(Collectors.toSet());
     this.evs =
-        systemParticipants
-            .parallelStream()
+        systemParticipants.parallelStream()
             .filter(gridElement -> gridElement instanceof EvInput)
             .map(evInput -> (EvInput) evInput)
             .collect(Collectors.toSet());
     this.fixedFeedIns =
-        systemParticipants
-            .parallelStream()
+        systemParticipants.parallelStream()
             .filter(gridElement -> gridElement instanceof FixedFeedInInput)
             .map(fixedFeedInInpu -> (FixedFeedInInput) fixedFeedInInpu)
             .collect(Collectors.toSet());
     this.heatPumps =
-        systemParticipants
-            .parallelStream()
+        systemParticipants.parallelStream()
             .filter(gridElement -> gridElement instanceof HpInput)
             .map(hpInput -> (HpInput) hpInput)
             .collect(Collectors.toSet());
     this.loads =
-        systemParticipants
-            .parallelStream()
+        systemParticipants.parallelStream()
             .filter(gridElement -> gridElement instanceof LoadInput)
             .map(loadInput -> (LoadInput) loadInput)
             .collect(Collectors.toSet());
     this.pvPlants =
-        systemParticipants
-            .parallelStream()
+        systemParticipants.parallelStream()
             .filter(gridElement -> gridElement instanceof PvInput)
             .map(pvInput -> (PvInput) pvInput)
             .collect(Collectors.toSet());
     this.storages =
-        systemParticipants
-            .parallelStream()
+        systemParticipants.parallelStream()
             .filter(gridElement -> gridElement instanceof StorageInput)
             .map(storageInput -> (StorageInput) storageInput)
             .collect(Collectors.toSet());
     this.wecPlants =
-        systemParticipants
-            .parallelStream()
+        systemParticipants.parallelStream()
             .filter(gridElement -> gridElement instanceof WecInput)
             .map(wecInput -> (WecInput) wecInput)
             .collect(Collectors.toSet());
