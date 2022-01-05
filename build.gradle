@@ -85,6 +85,8 @@ dependencies {
 
 	implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
 	implementation 'org.apache.commons:commons-compress:1.21' // I/O functionalities
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
+
 }
 
 wrapper {
