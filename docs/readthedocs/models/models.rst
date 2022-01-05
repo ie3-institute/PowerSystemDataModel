@@ -80,6 +80,12 @@ Equality Checks
       If you think you would benefit from such a method, please consider handing in an issue
       `here <https://github.com/ie3-institute/PowerSystemUtils/issues>`_.
 
+Conditional Parameters
+  Some of the models have conditional parameters. When reading model data from a data source, their respective factories for building these 
+  models can handle nulls and empty Strings (as well as any combination of those) safely. E.g.: When given parameters for a line's 
+  :code:`operationTime` where :code:`operationStartTime` and :code:`operationEndTime` are both :code:`null` or :code:`""`, the 
+  factory will build an always-on line model.
+
 *****
 Input
 *****

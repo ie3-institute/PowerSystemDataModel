@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.csv;
 
-import java.io.File;
+import edu.ie3.datamodel.io.IoUtil;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -17,9 +17,6 @@ import org.slf4j.LoggerFactory;
 public class CsvFileDefinition {
   private static final Logger logger = LoggerFactory.getLogger(CsvFileDefinition.class);
 
-  private static final String FILE_SEPARATOR_REGEX = "[\\\\/]";
-  private static final String FILE_SEPARATOR_REPLACEMENT =
-      File.separator.equals("\\") ? "\\\\" : "/";
   private static final Pattern FILE_NAME_PATTERN =
       Pattern.compile(
           "^(?<fileName>[^\\\\/\\s.]{0,255})(?:\\.(?<extension>[a-zA-Z0-9]{0,10}(?:\\.[a-zA-Z0-9]{0,10})?))?$");
@@ -36,10 +33,10 @@ public class CsvFileDefinition {
     /* Remove all file separators at the beginning and end of a directory path and ensure harmonized file separator */
     this.directoryPath =
         Objects.nonNull(directoryPath)
-            ? directoryPath
-                .replaceFirst("^" + FILE_SEPARATOR_REGEX, "")
-                .replaceAll(FILE_SEPARATOR_REGEX + "$", "")
-                .replaceAll(FILE_SEPARATOR_REGEX, FILE_SEPARATOR_REPLACEMENT)
+            ? IoUtil.harmonizeFileSeparator(
+                directoryPath
+                    .replaceFirst("^" + IoUtil.FILE_SEPARATOR_REGEX, "")
+                    .replaceAll(IoUtil.FILE_SEPARATOR_REGEX + "$", ""))
             : "";
 
     /* Check the given information of the file name */

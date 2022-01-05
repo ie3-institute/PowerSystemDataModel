@@ -48,7 +48,9 @@ Entity Model
 +-------------------+------+--------------------------------------------------------+
 | nodeB             | --   |                                                        |
 +-------------------+------+--------------------------------------------------------+
-| parallelDevices   | --   | Amount of parallel devices of same attributes          |
+| parallelDevices   | --   | | overall amount of parallel lines to automatically    |
+|                   | --   | | construct (e.g. parallelDevices = 2 will build a     |
+|                   | --   | | total of two lines using the specified parameters)   |
 +-------------------+------+--------------------------------------------------------+
 | type              | --   |                                                        |
 +-------------------+------+--------------------------------------------------------+

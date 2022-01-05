@@ -43,7 +43,8 @@ public class LineInput extends ConnectorInput implements HasType {
    * @param operationTime Time for which the entity is operated
    * @param nodeA Grid node at one side of the line
    * @param nodeB Grid node at the other side of the line
-   * @param parallelDevices Amount of parallel lines
+   * @param parallelDevices overall amount of parallel lines to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two lines using the specified parameters)
    * @param type of line
    * @param length of this line
    * @param geoPosition Coordinates of this line
@@ -75,7 +76,8 @@ public class LineInput extends ConnectorInput implements HasType {
    * @param id of the asset
    * @param nodeA Grid node at one side of the line
    * @param nodeB Grid node at the other side of the line
-   * @param parallelDevices Amount of parallel lines
+   * @param parallelDevices overall amount of parallel lines to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two lines using the specified parameters)
    * @param type of line
    * @param length of this line
    * @param geoPosition Coordinates of this line
@@ -93,7 +95,7 @@ public class LineInput extends ConnectorInput implements HasType {
       OlmCharacteristicInput olmCharacteristic) {
     super(uuid, id, nodeA, nodeB, parallelDevices);
     this.type = type;
-    this.length = length;
+    this.length = length.to(StandardUnits.LINE_LENGTH);
     this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
   }

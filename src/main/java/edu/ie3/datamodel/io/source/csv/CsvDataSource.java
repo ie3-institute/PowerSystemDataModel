@@ -8,14 +8,16 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
@@ -64,12 +66,9 @@ public abstract class CsvDataSource {
    */
   @Deprecated private boolean notYetLoggedWarning = true;
 
-  public CsvDataSource(
-      String csvSep,
-      String folderPath,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+  public CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
-    this.connector = new CsvFileConnector(folderPath, entityPersistenceNamingStrategy);
+    this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
 
   /**
@@ -619,5 +618,19 @@ public abstract class CsvDataSource {
       Collection<OperatorInput> operators) {
     return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
         .map(dataOpt -> dataOpt.flatMap(factory::get));
+  }
+
+  /**
+   * Returns a stream of {@link SimpleEntityData} for result entity classes, using a
+   * fields-to-attributes map.
+   *
+   * @param entityClass the entity class that should be build
+   * @param <T> Type of the {@link ResultEntity} to expect
+   * @return stream of {@link SimpleEntityData}
+   */
+  protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
+      Class<T> entityClass) {
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
+        .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
   }
 }

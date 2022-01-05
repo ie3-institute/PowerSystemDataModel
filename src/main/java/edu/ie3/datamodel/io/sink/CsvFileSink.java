@@ -13,7 +13,7 @@ import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.BufferedCsvWriter;
 import edu.ie3.datamodel.io.extractor.Extractor;
 import edu.ie3.datamodel.io.extractor.NestedEntity;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -59,7 +59,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   private final String csvSep;
 
   public CsvFileSink(String baseFolderPath) {
-    this(baseFolderPath, new EntityPersistenceNamingStrategy(), false, ",");
+    this(baseFolderPath, new FileNamingStrategy(), false, ",");
   }
 
   /**
@@ -68,7 +68,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    * starting several sinks and use them for specific entities.
    *
    * @param baseFolderPath the base folder path where the files should be put into
-   * @param entityPersistenceNamingStrategy the data sink naming strategy that should be used
+   * @param fileNamingStrategy the data sink file naming strategy that should be used
    * @param initFiles true if the files should be created during initialization (might create files,
    *     that only consist of a headline, because no data will be written into them), false
    *     otherwise
@@ -76,15 +76,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    */
   public CsvFileSink(
       String baseFolderPath,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
+      FileNamingStrategy fileNamingStrategy,
       boolean initFiles,
       String csvSep) {
-    this(
-        baseFolderPath,
-        new ProcessorProvider(),
-        entityPersistenceNamingStrategy,
-        initFiles,
-        csvSep);
+    this(baseFolderPath, new ProcessorProvider(), fileNamingStrategy, initFiles, csvSep);
   }
 
   /**
@@ -98,7 +93,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
    *
    * @param baseFolderPath the base folder path where the files should be put into
    * @param processorProvider the processor provided that should be used for entity de-serialization
-   * @param entityPersistenceNamingStrategy the data sink naming strategy that should be used
+   * @param fileNamingStrategy the data sink file naming strategy that should be used
    * @param initFiles true if the files should be created during initialization (might create files,
    *     that only consist of a headline, because no data will be written into them), false
    *     otherwise
@@ -107,12 +102,12 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   public CsvFileSink(
       String baseFolderPath,
       ProcessorProvider processorProvider,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
+      FileNamingStrategy fileNamingStrategy,
       boolean initFiles,
       String csvSep) {
     this.csvSep = csvSep;
     this.processorProvider = processorProvider;
-    this.connector = new CsvFileConnector(baseFolderPath, entityPersistenceNamingStrategy);
+    this.connector = new CsvFileConnector(baseFolderPath, fileNamingStrategy);
 
     if (initFiles) initFiles(processorProvider, connector);
   }
@@ -270,6 +265,24 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   @Override
   public <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
       TimeSeries<E, V> timeSeries) {
+    try {
+      TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
+      String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
+      BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
+      persistTimeSeries(timeSeries, writer);
+      connector.closeTimeSeriesWriter(timeSeries.getUuid());
+    } catch (ProcessorProviderException e) {
+      log.error(
+          "Exception occurred during receiving of header elements. Cannot write this element.", e);
+    } catch (ConnectorException e) {
+      log.error("Exception occurred during acquisition of writer.", e);
+    } catch (IOException e) {
+      log.error("Exception occurred during closing of writer.", e);
+    }
+  }
+
+  private <E extends TimeSeriesEntry<V>, V extends Value> void persistTimeSeries(
+      TimeSeries<E, V> timeSeries, BufferedCsvWriter writer) {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
 
     try {
@@ -286,9 +299,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                                   .map(TimeSeriesProcessorKey::toString)
                                   .collect(Collectors.joining(","))
                               + "]"));
-
-      String[] headerElements = csvHeaderElements(processorProvider.getHeaderElements(key));
-      BufferedCsvWriter writer = connector.getOrInitWriter(timeSeries, headerElements, csvSep);
       entityFieldData.forEach(
           data -> {
             try {
@@ -299,11 +309,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
               log.error("Exception occurred during processing the provided data fields: ", e);
             }
           });
-    } catch (ProcessorProviderException e) {
-      log.error(
-          "Exception occurred during receiving of header elements. Cannot write this element.", e);
-    } catch (ConnectorException e) {
-      log.error("Exception occurred during acquisition of writer.", e);
     } catch (SinkException e) {
       log.error("Exception occurred during processor request: ", e);
     }

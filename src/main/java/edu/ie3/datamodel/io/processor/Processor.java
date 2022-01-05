@@ -212,6 +212,7 @@ public abstract class Processor<T> {
       case "String":
       case "DayOfWeek":
       case "ChargingPointType":
+      case "EvcsLocationType":
         resultStringBuilder.append(methodReturnObject.toString());
         break;
       case "Quantity":
