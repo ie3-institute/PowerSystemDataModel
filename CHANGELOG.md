@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - added `EvcsLocationType` support in `EvcsInput` and `EvcsInputFactory` [#406](https://github.com/ie3-institute/PowerSystemDataModel/issues/406)
 - Opportunity to close writer in `CsvFileSink`
+- `CsvWindowedTimeSeriesSource` that allows for efficient reading of a time series.
+It utilizes an open buffered reader (remember to close the source!).
+Each entry is only read on demand resp. put to a configurable buffer within the source itself.
 
 ### Fixed
 - adapted `LineInput` constructor to convert line length to `StandardUnits.LINE_LENGTH` [#412](https://github.com/ie3-institute/PowerSystemDataModel/issues/412)
