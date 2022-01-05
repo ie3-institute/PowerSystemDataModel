@@ -12,8 +12,8 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy
  */
 trait CsvTestDataMeta {
 
-	static String testParticipantsBaseFolderPath = new File(CsvTestDataMeta.class.getResource('/testGridFiles').toURI()).absolutePath
-	static String testTimeSeriesBaseFolderPath = new File(CsvTestDataMeta.class.getResource('/testTimeSeriesFiles').toURI()).absolutePath
+	static String testParticipantsBaseFolderPath = new File(CsvTestDataMeta.getResource('/testGridFiles').toURI()).absolutePath
+	static String testTimeSeriesBaseFolderPath = new File(CsvTestDataMeta.getResource('/testTimeSeriesFiles').toURI()).absolutePath
 	static String graphicsFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("graphics")
 	static String typeFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("types")
 	static String gridFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("grid")
