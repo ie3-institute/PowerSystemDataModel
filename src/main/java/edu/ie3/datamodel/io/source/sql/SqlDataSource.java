@@ -26,7 +26,7 @@ public abstract class SqlDataSource<T> {
 
   private final SqlConnector connector;
 
-  public SqlDataSource(SqlConnector connector) {
+  protected SqlDataSource(SqlConnector connector) {
     this.connector = connector;
   }
 
@@ -103,8 +103,8 @@ public abstract class SqlDataSource<T> {
 
       return fieldMaps.stream()
           .map(this::createEntity)
-          .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
-          .collect(Collectors.toList());
+          .flatMap(Optional::stream)
+          .toList();
     } catch (SQLException e) {
       log.error("Error during execution of query {}", query, e);
     }
