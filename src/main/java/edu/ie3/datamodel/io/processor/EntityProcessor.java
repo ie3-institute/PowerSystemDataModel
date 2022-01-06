@@ -75,31 +75,18 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
       Quantity<?> quantity, String fieldName) {
     Optional<String> normalizedQuantityValue = Optional.empty();
     switch (fieldName) {
-      case "energy":
-      case "eConsAnnual":
-      case "eStorage":
-        normalizedQuantityValue =
-            quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
-        break;
-      case "q":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
-        break;
-      case "p":
-      case "pMax":
-      case "pOwn":
-      case "pThermal":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
-        break;
-      default:
-        log.error(
-            "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
-            quantity,
-            fieldName);
-        break;
+      case "energy", "eConsAnnual", "eStorage" -> normalizedQuantityValue =
+          quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
+      case "q" -> normalizedQuantityValue =
+          quantityValToOptionalString(
+              quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
+      case "p", "pMax", "pOwn", "pThermal" -> normalizedQuantityValue =
+          quantityValToOptionalString(
+              quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
+      default -> log.error(
+          "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
+          quantity,
+          fieldName);
     }
     return normalizedQuantityValue;
   }

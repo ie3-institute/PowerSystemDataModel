@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Protected constructors for abstract classes
   - Use pattern matching
   - Remove unused imports
+  - Use enhanced switch statements
 - Create JavaDoc with java 17 instead of java 8
 
 ### Added
