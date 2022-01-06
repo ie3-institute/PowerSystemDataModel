@@ -15,8 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,10 +99,7 @@ public abstract class SqlDataSource<T> {
       ResultSet resultSet = ps.executeQuery();
       List<Map<String, String>> fieldMaps = connector.extractFieldMaps(resultSet);
 
-      return fieldMaps.stream()
-          .map(this::createEntity)
-          .flatMap(Optional::stream)
-          .toList();
+      return fieldMaps.stream().map(this::createEntity).flatMap(Optional::stream).toList();
     } catch (SQLException e) {
       log.error("Error during execution of query {}", query, e);
     }
