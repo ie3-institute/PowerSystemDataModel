@@ -64,7 +64,8 @@ public abstract class CsvDataSource {
    * @deprecated ensures downward compatibility with old csv data format. Can be removed when
    *     support for old csv format is removed. *
    */
-  @Deprecated private boolean notYetLoggedWarning = true;
+  @Deprecated(since = "1.1.0", forRemoval = true)
+  private boolean notYetLoggedWarning = true;
 
   protected CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
@@ -169,7 +170,7 @@ public abstract class CsvDataSource {
    * @return an array with one entry per column of the provided csv row string
    * @deprecated only left for downward compatibility. Will be removed in a major release
    */
-  @Deprecated
+  @Deprecated(since = "1.1.0", forRemoval = true)
   private String[] oldFieldVals(String csvSep, String csvRow) {
 
     /*geo json support*/
@@ -181,8 +182,8 @@ public abstract class CsvDataSource {
     final String charReplacement = "charRepl";
 
     /*removes double double quotes*/
-    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow.replaceAll("\"\"", "\""));
-    List<String> charList = extractMatchingStrings(charInputRegex, csvRow.replaceAll("\"\"", "\""));
+    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow.replace("\"\"", "\""));
+    List<String> charList = extractMatchingStrings(charInputRegex, csvRow.replace("\"\"", "\""));
 
     AtomicInteger geoCounter = new AtomicInteger(0);
     AtomicInteger charCounter = new AtomicInteger(0);
@@ -460,8 +461,10 @@ public abstract class CsvDataSource {
       String affectedCoordinateIds =
           allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
-          "'{}' entities with duplicated {} key, but different field values found! Please review the "
-              + "corresponding input file!\nAffected primary keys:\n{}",
+          """
+          '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
+          Affected primary keys:
+          {}""",
           entityDescriptor,
           keyDescriptor,
           affectedCoordinateIds);
