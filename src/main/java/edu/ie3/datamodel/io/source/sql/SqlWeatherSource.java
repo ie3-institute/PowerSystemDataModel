@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.source.sql;
 
-import edu.ie3.datamodel.exceptions.InvalidWeatherColumnNameException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -14,7 +13,6 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.util.StringUtils;
 import edu.ie3.util.interval.ClosedInterval;
 import java.sql.*;
 import java.time.ZonedDateTime;
@@ -22,17 +20,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** SQL source for weather data */
-public class SqlWeatherSource implements WeatherSource {
-  public static final Logger logger = LoggerFactory.getLogger(SqlWeatherSource.class);
-
-  private static final String DEFAULT_WEATHER_FETCHING_ERROR = "Error while fetching weather";
+public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>>
+    implements WeatherSource {
   private static final String WHERE = " WHERE ";
 
-  private final SqlConnector connector;
   private final IdCoordinateSource idCoordinateSource;
   private final String factoryCoordinateFieldName;
   private final TimeBasedWeatherValueFactory weatherFactory;
@@ -61,30 +54,15 @@ public class SqlWeatherSource implements WeatherSource {
       String schemaName,
       String weatherTableName,
       TimeBasedWeatherValueFactory weatherFactory) {
-    this.connector = connector;
+    super(connector);
     this.idCoordinateSource = idCoordinateSource;
     this.weatherFactory = weatherFactory;
     this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
 
     String dbTimeColumnName =
-        getDbColumnName(weatherFactory.getTimeFieldString(), connector, weatherTableName)
-            .orElseThrow(
-                () ->
-                    new InvalidWeatherColumnNameException(
-                        "Cannot find column for '"
-                            + weatherFactory.getTimeFieldString()
-                            + "' in provided weather data configuration."
-                            + "Please ensure that the database connection is working and the column names are correct!"));
-
+        getDbColumnName(weatherFactory.getTimeFieldString(), connector, weatherTableName);
     String dbCoordColumnName =
-        getDbColumnName(factoryCoordinateFieldName, connector, weatherTableName)
-            .orElseThrow(
-                () ->
-                    new InvalidWeatherColumnNameException(
-                        "Cannot find column for '"
-                            + factoryCoordinateFieldName
-                            + "' in provided weather data configuration."
-                            + "Please ensure that the database connection is working and the column names are correct!"));
+        getDbColumnName(factoryCoordinateFieldName, connector, weatherTableName);
 
     // setup queries
     this.queryTimeInterval =
@@ -100,100 +78,63 @@ public class SqlWeatherSource implements WeatherSource {
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
-    List<TimeBasedValue<WeatherValue>> timeBasedValues = Collections.emptyList();
-    try (PreparedStatement ps = connector.getConnection().prepareStatement(queryTimeInterval)) {
-      ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
-      ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
-      timeBasedValues = processWeatherQuery(ps);
-    } catch (SQLException e) {
-      logger.error(DEFAULT_WEATHER_FETCHING_ERROR, e);
-    }
+    List<TimeBasedValue<WeatherValue>> timeBasedValues =
+        executeQuery(
+            queryTimeInterval,
+            ps -> {
+              ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
+              ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
+            });
     return mapWeatherValuesToPoints(timeBasedValues);
   }
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
-    List<TimeBasedValue<WeatherValue>> timeBasedValues = Collections.emptyList();
     Set<Integer> coordinateIds =
         coordinates.stream()
             .map(idCoordinateSource::getId)
             .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
             .collect(Collectors.toSet());
     if (coordinateIds.isEmpty()) {
-      logger.warn("Unable to match coordinates to coordinate ID");
+      log.warn("Unable to match coordinates to coordinate ID");
       return Collections.emptyMap();
     }
-    try (PreparedStatement ps =
-        connector.getConnection().prepareStatement(queryTimeIntervalAndCoordinates)) {
-      Array coordinateIdArr = ps.getConnection().createArrayOf("integer", coordinateIds.toArray());
-      ps.setArray(1, coordinateIdArr);
-      ps.setTimestamp(2, Timestamp.from(timeInterval.getLower().toInstant()));
-      ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
-      timeBasedValues = processWeatherQuery(ps);
-    } catch (SQLException e) {
-      logger.error(DEFAULT_WEATHER_FETCHING_ERROR, e);
-    }
+
+    List<TimeBasedValue<WeatherValue>> timeBasedValues =
+        executeQuery(
+            queryTimeIntervalAndCoordinates,
+            ps -> {
+              Array coordinateIdArr =
+                  ps.getConnection().createArrayOf("integer", coordinateIds.toArray());
+              ps.setArray(1, coordinateIdArr);
+              ps.setTimestamp(2, Timestamp.from(timeInterval.getLower().toInstant()));
+              ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
+            });
+
     return mapWeatherValuesToPoints(timeBasedValues);
   }
 
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
-    List<TimeBasedValue<WeatherValue>> timeBasedValues = Collections.emptyList();
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (!coordinateId.isPresent()) {
-      logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
+      log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
       return Optional.empty();
     }
-    try (PreparedStatement ps =
-        connector.getConnection().prepareStatement(queryTimeAndCoordinate)) {
-      ps.setInt(1, coordinateId.get());
-      ps.setTimestamp(2, Timestamp.from(date.toInstant()));
-      timeBasedValues = processWeatherQuery(ps);
-    } catch (SQLException e) {
-      logger.error(DEFAULT_WEATHER_FETCHING_ERROR, e);
-    }
+
+    List<TimeBasedValue<WeatherValue>> timeBasedValues =
+        executeQuery(
+            queryTimeAndCoordinate,
+            ps -> {
+              ps.setInt(1, coordinateId.get());
+              ps.setTimestamp(2, Timestamp.from(date.toInstant()));
+            });
+
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
-      logger.warn("Retrieved more than one result value, using the first");
+      log.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.get(0));
-  }
-
-  /**
-   * Determine the corresponding database column name based on the provided factory field parameter
-   * name. Needed to support camel as well as snake case database column names.
-   *
-   * @param factoryColumnName the name of the field parameter set in the entity factory
-   * @param connector the sql connector of this source
-   * @param weatherTableName the table name where the weather is stored
-   * @return the column name that corresponds to the provided field parameter or an empty optional
-   *     if no matching column can be found
-   */
-  private Optional<String> getDbColumnName(
-      String factoryColumnName, SqlConnector connector, String weatherTableName) {
-
-    // get the column names from the database
-    Optional<String> dbColumnName = Optional.empty();
-    try {
-      ResultSet rs =
-          connector.getConnection().getMetaData().getColumns(null, null, weatherTableName, null);
-
-      while (rs.next()) {
-        String databaseColumnName = rs.getString("COLUMN_NAME");
-        if (StringUtils.snakeCaseToCamelCase(databaseColumnName)
-            .equalsIgnoreCase(factoryColumnName)) {
-          dbColumnName = Optional.of(databaseColumnName);
-          break;
-        }
-      }
-    } catch (SQLException ex) {
-      logger.error(
-          "Cannot connect to database to retrieve db column name for factory column name '{}' in weather table '{}'",
-          factoryColumnName,
-          weatherTableName,
-          ex);
-    }
-    return dbColumnName;
   }
 
   /**
@@ -275,43 +216,13 @@ public class SqlWeatherSource implements WeatherSource {
   }
 
   /**
-   * Executes the prepared statement and processes it to a list of time based values via field map
-   * extraction
-   *
-   * @param ps the prepared statement to execute
-   * @return processed results
-   * @throws SQLException if anything goes wrong in the execution of the query
-   */
-  private List<TimeBasedValue<WeatherValue>> processWeatherQuery(PreparedStatement ps)
-      throws SQLException {
-    try (ResultSet resultSet = ps.executeQuery()) {
-      List<Map<String, String>> fieldMaps = connector.extractFieldMaps(resultSet);
-      return toTimeBasedWeatherValues(fieldMaps);
-    }
-  }
-
-  /**
-   * Converts a collection of field to value maps into TimeBasedValues
-   *
-   * @param fieldMaps the field to value maps, one for each TimeBasedValue
-   * @return a list of TimeBasedValues
-   */
-  private List<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValues(
-      Collection<Map<String, String>> fieldMaps) {
-    return fieldMaps.stream()
-        .map(this::toTimeBasedWeatherValue)
-        .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
-        .collect(Collectors.toList());
-  }
-
-  /**
    * Converts a field to value map into a TimeBasedValue, removes the "tid"
    *
    * @param fieldMap the field to value map for one TimeBasedValue
    * @return an Optional of that TimeBasedValue
    */
-  private Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(
-      Map<String, String> fieldMap) {
+  @Override
+  protected Optional<TimeBasedValue<WeatherValue>> createEntity(Map<String, String> fieldMap) {
     fieldMap.remove("tid");
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
     if (!data.isPresent()) return Optional.empty();
@@ -332,7 +243,7 @@ public class SqlWeatherSource implements WeatherSource {
     int coordinateId = Integer.parseInt(coordinateValue);
     Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
     if (!coordinate.isPresent()) {
-      logger.warn("Unable to match coordinate ID {} to a point", coordinateId);
+      log.warn("Unable to match coordinate ID {} to a point", coordinateId);
       return Optional.empty();
     }
     return Optional.of(new TimeBasedWeatherValueData(fieldMap, coordinate.get()));
