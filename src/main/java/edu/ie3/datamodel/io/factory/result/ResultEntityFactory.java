@@ -26,12 +26,12 @@ abstract class ResultEntityFactory<T extends ResultEntity> extends SimpleEntityF
 
   protected final TimeUtil timeUtil;
 
-  public ResultEntityFactory(Class<? extends T>... allowedClasses) {
+  protected ResultEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
     timeUtil = TimeUtil.withDefaults;
   }
 
-  public ResultEntityFactory(String dtfPattern, Class<? extends T>... allowedClasses) {
+  protected ResultEntityFactory(String dtfPattern, Class<? extends T>... allowedClasses) {
     super(allowedClasses);
     timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern);
   }

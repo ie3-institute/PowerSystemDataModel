@@ -236,10 +236,10 @@ public class InfluxDbSink implements OutputDataSink {
   private <C extends UniqueEntity> Set<Point> extractPoints(C entity) {
     Set<Point> points = new HashSet<>();
     /* Distinguish between result models and time series */
-    if (entity instanceof ResultEntity) {
+    if (entity instanceof ResultEntity resultEntity) {
       try {
         points.add(
-            transformToPoint((ResultEntity) entity)
+            transformToPoint(resultEntity)
                 .orElseThrow(() -> new SinkException("Could not transform entity")));
       } catch (SinkException e) {
         log.error(
@@ -247,8 +247,7 @@ public class InfluxDbSink implements OutputDataSink {
             entity.getClass().getSimpleName(),
             e);
       }
-    } else if (entity instanceof TimeSeries) {
-      TimeSeries<?, ?> timeSeries = (TimeSeries<?, ?>) entity;
+    } else if (entity instanceof TimeSeries<?, ?> timeSeries) {
       points.addAll(transformToPoints(timeSeries));
     } else {
       log.error(

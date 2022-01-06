@@ -27,7 +27,7 @@ public abstract class SystemParticipantResult extends ResultEntity {
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
    */
-  public SystemParticipantResult(
+  protected SystemParticipantResult(
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
@@ -45,7 +45,7 @@ public abstract class SystemParticipantResult extends ResultEntity {
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
    */
-  public SystemParticipantResult(
+  protected SystemParticipantResult(
       UUID uuid,
       ZonedDateTime time,
       UUID inputModel,

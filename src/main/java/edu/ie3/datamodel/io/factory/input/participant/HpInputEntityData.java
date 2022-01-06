@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.input.system.HpInput;
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.Map;
+import java.util.Objects;
 
 public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeInput> {
   private final ThermalBusInput thermalBusInput;
@@ -36,6 +37,19 @@ public class HpInputEntityData extends SystemParticipantTypedEntityData<HpTypeIn
 
   public ThermalBusInput getThermalBusInput() {
     return thermalBusInput;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof HpInputEntityData that)) return false;
+    if (!super.equals(o)) return false;
+    return thermalBusInput.equals(that.thermalBusInput);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), thermalBusInput);
   }
 
   @Override

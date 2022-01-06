@@ -85,33 +85,33 @@ public class RawGridElements implements InputContainer<AssetInput> {
     /* init sets */
     this.nodes =
         rawGridElements.parallelStream()
-            .filter(gridElement -> gridElement instanceof NodeInput)
-            .map(nodeInput -> (NodeInput) nodeInput)
+            .filter(NodeInput.class::isInstance)
+            .map(NodeInput.class::cast)
             .collect(Collectors.toSet());
     this.lines =
         rawGridElements.parallelStream()
-            .filter(gridElement -> gridElement instanceof LineInput)
-            .map(lineInput -> (LineInput) lineInput)
+            .filter(LineInput.class::isInstance)
+            .map(LineInput.class::cast)
             .collect(Collectors.toSet());
     this.transformer2Ws =
         rawGridElements.parallelStream()
-            .filter(gridElement -> gridElement instanceof Transformer2WInput)
-            .map(trafo2wInput -> (Transformer2WInput) trafo2wInput)
+            .filter(Transformer2WInput.class::isInstance)
+            .map(Transformer2WInput.class::cast)
             .collect(Collectors.toSet());
     this.transformer3Ws =
         rawGridElements.parallelStream()
-            .filter(gridElement -> gridElement instanceof Transformer3WInput)
-            .map(trafo3wInput -> (Transformer3WInput) trafo3wInput)
+            .filter(Transformer3WInput.class::isInstance)
+            .map(Transformer3WInput.class::cast)
             .collect(Collectors.toSet());
     this.switches =
         rawGridElements.parallelStream()
-            .filter(gridElement -> gridElement instanceof SwitchInput)
-            .map(switchInput -> (SwitchInput) switchInput)
+            .filter(SwitchInput.class::isInstance)
+            .map(SwitchInput.class::cast)
             .collect(Collectors.toSet());
     this.measurementUnits =
         rawGridElements.parallelStream()
-            .filter(gridElement -> gridElement instanceof MeasurementUnitInput)
-            .map(measurementUnitInput -> (MeasurementUnitInput) measurementUnitInput)
+            .filter(MeasurementUnitInput.class::isInstance)
+            .map(MeasurementUnitInput.class::cast)
             .collect(Collectors.toSet());
   }
 

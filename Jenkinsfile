@@ -119,8 +119,7 @@ node {
         gradle('--refresh-dependencies clean spotlessCheck pmdMain pmdTest spotbugsMain ' +
             'spotbugsTest test jacocoTestReport jacocoTestCoverageVerification', projectName)
 
-        // due to an issue with openjdk-8 we use openjdk-11 for javadocs generation
-        sh(script: """set +x && cd $projectName""" + ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/opt/java/openjdk''', returnStdout: true)
+        sh(script: """set +x && cd $projectName""" + ''' set +x; ./gradlew clean javadoc''', returnStdout: true)
       }
 
       // sonarqube analysis
@@ -159,13 +158,11 @@ node {
           ]) {
 
             /*
-             * There is a known bug in JavaDoc generation in JDK 8. Therefore generate the JavaDoc with JDK
-             * 11 first and do the rest of the tasks with JDK 8. IMPORTANT: Do not issue 'clean' in the
-             * following task
+             * IMPORTANT: Do not issue 'clean' in the following task
              */
             sh(
                 script: """set +x && cd $projectName""" +
-                ''' set +x; ./gradlew clean javadoc -Dorg.gradle.java.home=/opt/java/openjdk''',
+                ''' set +x; ./gradlew clean javadoc''',
                 returnStdout: true
                 )
 
@@ -395,7 +392,7 @@ def deployJavaDocs(String projectName, String sshCredentialsId, String gitChecko
       "git config user.name 'Johannes Hiry' && " +
       "git fetch --depth=1 origin api-docs && " +
       "git checkout api-docs && " +
-      "cd .. && ./gradlew clean javadoc -Dorg.gradle.java.home=/opt/java/openjdk && " +
+      "cd .. && ./gradlew clean javadoc && " +
       "cp -R build/docs/javadoc/* tmp-api-docs && " +
       "cd tmp-api-docs &&" +
       "git add --all && git commit -m 'updated api-docs' && git push origin api-docs:api-docs" +

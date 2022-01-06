@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
-import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Point;
 
 /**
@@ -78,6 +77,6 @@ public interface IdCoordinateSource extends DataSource {
             (allCoordinates == null || allCoordinates.isEmpty())
                 ? getAllCoordinates()
                 : allCoordinates);
-    return sortedDistances.stream().limit(n).collect(Collectors.toList());
+    return sortedDistances.stream().limit(n).toList();
   }
 }

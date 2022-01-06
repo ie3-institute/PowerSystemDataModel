@@ -18,7 +18,6 @@ import java.sql.*;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
 
 /** SQL source for weather data */
@@ -94,7 +93,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     Set<Integer> coordinateIds =
         coordinates.stream()
             .map(idCoordinateSource::getId)
-            .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+            .flatMap(Optional::stream)
             .collect(Collectors.toSet());
     if (coordinateIds.isEmpty()) {
       log.warn("Unable to match coordinates to coordinate ID");
@@ -118,7 +117,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (!coordinateId.isPresent()) {
+    if (coordinateId.isEmpty()) {
       log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
       return Optional.empty();
     }
@@ -225,7 +224,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
   protected Optional<TimeBasedValue<WeatherValue>> createEntity(Map<String, String> fieldMap) {
     fieldMap.remove("tid");
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
-    if (!data.isPresent()) return Optional.empty();
+    if (data.isEmpty()) return Optional.empty();
     return weatherFactory.get(data.get());
   }
 
@@ -242,7 +241,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     int coordinateId = Integer.parseInt(coordinateValue);
     Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
-    if (!coordinate.isPresent()) {
+    if (coordinate.isEmpty()) {
       log.warn("Unable to match coordinate ID {} to a point", coordinateId);
       return Optional.empty();
     }

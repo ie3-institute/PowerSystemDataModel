@@ -147,7 +147,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
    */
   private void checkFurtherDirectoryElements() throws FileException {
     try (Stream<Path> apparentElementsStream = Files.list(projectDirectory)) {
-      for (Path apparentPath : apparentElementsStream.collect(Collectors.toList())) {
+      for (Path apparentPath : apparentElementsStream.toList()) {
         if (Files.isDirectory(apparentPath)
             && !subDirectories.containsKey(apparentPath)
             && apparentPath.compareTo(inputTree) != 0
@@ -219,7 +219,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                         .anyMatch(definedClass -> definedClass.isAssignableFrom(cls)))
             .findFirst();
 
-    if (!maybeSubDirectory.isPresent()) {
+    if (maybeSubDirectory.isEmpty()) {
       logger.debug("Don't know a fitting sub directory for class '{}'.", cls.getSimpleName());
       return Optional.empty();
     } else {
