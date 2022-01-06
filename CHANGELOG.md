@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reduced code smells
   - Protected constructors for abstract classes
   - Use pattern matching
+- Create JavaDoc with java 17 instead of java 8
 
 ### Added
 - added `EvcsLocationType` support in `EvcsInput` and `EvcsInputFactory` [#406](https://github.com/ie3-institute/PowerSystemDataModel/issues/406)
