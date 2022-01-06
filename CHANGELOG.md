@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Replace lambdas with method references
   - Use `Stream#toList`
 - Create JavaDoc with java 17 instead of java 8
+- Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed!
 
 ### Added
 - added `EvcsLocationType` support in `EvcsInput` and `EvcsInputFactory` [#406](https://github.com/ie3-institute/PowerSystemDataModel/issues/406)

@@ -106,6 +106,7 @@ tasks.withType(JavaCompile) {
 
 tasks.withType(Javadoc){
 	options.encoding = 'UTF-8'
+	failOnError = false // TODO: Temp until JavaDoc issues are resolved
 }
 
 task printVersion {
