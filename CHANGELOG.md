@@ -6,18 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
-## [2.1.0] - 2022-01-05
-
 ### Fixed
-- Reduced code smells
-  - Protected constructors for abstract classes
-  - Use pattern matching
-  - Remove unused imports
-  - Use enhanced switch statements
-  - Replace lambdas with method references
-  - Use `Stream#toList`
-- Create JavaDoc with java 17 instead of java 8
-- Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed!
+- Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
+    - Protected constructors for abstract classes
+    - Use pattern matching
+    - Remove unused imports
+    - Use enhanced switch statements
+    - Replace lambdas with method references
+    - Use `Stream#toList`
+- Fix JavaDoc creation
+    - Create JavaDoc with java 17 instead of java 8
+    - Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))
+
+## [2.1.0] - 2022-01-05
 
 ### Added
 - added `EvcsLocationType` support in `EvcsInput` and `EvcsInputFactory` [#406](https://github.com/ie3-institute/PowerSystemDataModel/issues/406)
