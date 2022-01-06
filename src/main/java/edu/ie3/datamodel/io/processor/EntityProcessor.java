@@ -37,7 +37,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
    *
    * @param registeredClass the class the entity processor should be able to handle
    */
-  public EntityProcessor(Class<? extends T> registeredClass) {
+  protected EntityProcessor(Class<? extends T> registeredClass) {
     super(registeredClass);
     this.fieldNameToMethod =
         mapFieldNameToGetter(registeredClass, Collections.singleton(NODE_INTERNAL));

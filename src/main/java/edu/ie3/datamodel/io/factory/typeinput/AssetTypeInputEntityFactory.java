@@ -22,7 +22,7 @@ abstract class AssetTypeInputEntityFactory<T extends AssetTypeInput>
   protected static final String ENTITY_UUID = "uuid";
   protected static final String ENTITY_ID = "id";
 
-  public AssetTypeInputEntityFactory(Class<? extends T>... allowedClasses) {
+  protected AssetTypeInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
 }

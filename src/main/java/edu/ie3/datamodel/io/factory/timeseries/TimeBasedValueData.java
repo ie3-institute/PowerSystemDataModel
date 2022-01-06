@@ -23,7 +23,7 @@ public abstract class TimeBasedValueData<V extends Value> extends FactoryData {
    * @param fieldsToAttributes attribute map: field name to value
    * @param valueClass Class of the underlying value
    */
-  public TimeBasedValueData(Map<String, String> fieldsToAttributes, Class<V> valueClass) {
+  protected TimeBasedValueData(Map<String, String> fieldsToAttributes, Class<V> valueClass) {
     super(fieldsToAttributes, valueClass);
   }
 

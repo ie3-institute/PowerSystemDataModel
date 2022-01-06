@@ -24,7 +24,7 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
    *
    * @param allowedClasses exactly the classes that this factory is allowed and able to build
    */
-  public EntityFactory(Class<? extends T>... allowedClasses) {
+  protected EntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
 }

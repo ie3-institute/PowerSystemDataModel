@@ -26,7 +26,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
 
   private final List<Class<? extends C>> supportedClasses;
 
-  public Factory(Class<? extends C>... supportedClasses) {
+  protected Factory(Class<? extends C>... supportedClasses) {
     this.supportedClasses = Arrays.asList(supportedClasses);
   }
 
