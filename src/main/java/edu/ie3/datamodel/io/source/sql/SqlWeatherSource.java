@@ -20,7 +20,6 @@ import java.sql.*;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,7 +117,7 @@ public class SqlWeatherSource implements WeatherSource {
     Set<Integer> coordinateIds =
         coordinates.stream()
             .map(idCoordinateSource::getId)
-            .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+            .flatMap(Optional::stream)
             .collect(Collectors.toSet());
     if (coordinateIds.isEmpty()) {
       logger.warn("Unable to match coordinates to coordinate ID");
@@ -141,7 +140,7 @@ public class SqlWeatherSource implements WeatherSource {
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues = Collections.emptyList();
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (!coordinateId.isPresent()) {
+    if (coordinateId.isEmpty()) {
       logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
       return Optional.empty();
     }
@@ -298,10 +297,7 @@ public class SqlWeatherSource implements WeatherSource {
    */
   private List<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValues(
       Collection<Map<String, String>> fieldMaps) {
-    return fieldMaps.stream()
-        .map(this::toTimeBasedWeatherValue)
-        .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
-        .collect(Collectors.toList());
+    return fieldMaps.stream().map(this::toTimeBasedWeatherValue).flatMap(Optional::stream).toList();
   }
 
   /**
@@ -314,7 +310,7 @@ public class SqlWeatherSource implements WeatherSource {
       Map<String, String> fieldMap) {
     fieldMap.remove("tid");
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
-    if (!data.isPresent()) return Optional.empty();
+    if (data.isEmpty()) return Optional.empty();
     return weatherFactory.get(data.get());
   }
 
@@ -331,7 +327,7 @@ public class SqlWeatherSource implements WeatherSource {
     fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     int coordinateId = Integer.parseInt(coordinateValue);
     Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
-    if (!coordinate.isPresent()) {
+    if (coordinate.isEmpty()) {
       logger.warn("Unable to match coordinate ID {} to a point", coordinateId);
       return Optional.empty();
     }

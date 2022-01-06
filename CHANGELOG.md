@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Remove unused imports
   - Use enhanced switch statements
   - Replace lambdas with method references
+  - Use `Stream#toList`
 - Create JavaDoc with java 17 instead of java 8
 
 ### Added

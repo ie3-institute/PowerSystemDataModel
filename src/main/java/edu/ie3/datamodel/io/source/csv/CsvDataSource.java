@@ -413,7 +413,7 @@ public abstract class CsvDataSource {
         .parallel()
         .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
         .filter(map -> !map.isEmpty())
-        .collect(Collectors.toList());
+        .toList();
   }
 
   /**
