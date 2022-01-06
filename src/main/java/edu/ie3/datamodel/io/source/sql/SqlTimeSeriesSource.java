@@ -23,6 +23,19 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
     implements TimeSeriesSource<V> {
   private static final String WHERE = " WHERE ";
 
+  private final UUID timeSeriesUuid;
+  private final Class<V> valueClass;
+  private final TimeBasedSimpleValueFactory<V> valueFactory;
+
+  /**
+   * Queries that are available within this source. Motivation to have them as field value is to
+   * avoid creating a new string each time, bc they're always the same.
+   */
+  private final String queryFull;
+
+  private final String queryTimeInterval;
+  private final String queryTime;
+
   /**
    * Factory method to build a source from given meta information
    *
@@ -64,19 +77,6 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
         connector, schemaName, tableName, timeSeriesUuid, valClass, valueFactory);
   }
 
-  private final UUID timeSeriesUuid;
-  private final Class<V> valueClass;
-  private final TimeBasedSimpleValueFactory<V> valueFactory;
-
-  /**
-   * Queries that are available within this source. Motivation to have them as field value is to
-   * avoid creating a new string each time, bc they're always the same.
-   */
-  private final String queryFull;
-
-  private final String queryTimeInterval;
-  private final String queryTime;
-
   /**
    * Initializes a new SqlTimeSeriesSource
    *
@@ -109,7 +109,7 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
 
   @Override
   public IndividualTimeSeries<V> getTimeSeries() {
-    List<TimeBasedValue<V>> timeBasedValues = executeQuery(queryFull, (ps) -> {});
+    List<TimeBasedValue<V>> timeBasedValues = executeQuery(queryFull, ps -> {});
     return new IndividualTimeSeries<>(timeSeriesUuid, new HashSet<>(timeBasedValues));
   }
 
@@ -118,7 +118,7 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
     List<TimeBasedValue<V>> timeBasedValues =
         executeQuery(
             queryTimeInterval,
-            (ps) -> {
+            ps -> {
               ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
               ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
             });
@@ -128,7 +128,7 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
   @Override
   public Optional<V> getValue(ZonedDateTime time) {
     List<TimeBasedValue<V>> timeBasedValues =
-        executeQuery(queryTime, (ps) -> ps.setTimestamp(1, Timestamp.from(time.toInstant())));
+        executeQuery(queryTime, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())));
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");

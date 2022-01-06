@@ -46,9 +46,9 @@ class SqlTimeSeriesMappingSourceIT extends Specification {
 				"its_pq_3fbfaa97-cff4-46d4-95ba-a95665e87c26.sql",
 				"its_pqh_46be1e57-e4ed-4ef7-95f1-b2b321cb2047.sql",
 				"time_series_mapping.sql")
-		for(String file: importFiles) {
+		for (String file: importFiles) {
 			Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/" + file)
-			assert res.stderr.isEmpty()
+			assert res.stderr.empty
 		}
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)

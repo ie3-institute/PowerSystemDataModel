@@ -40,7 +40,7 @@ class SqlWeatherSourceIconIT extends Specification implements WeatherSourceTestH
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather.sql")
 		// Execute import script
 		Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
-		assert res.stderr.isEmpty()
+		assert res.stderr.empty
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
 		def weatherFactory = new IconTimeBasedWeatherValueFactory(TimeUtil.withDefaults)

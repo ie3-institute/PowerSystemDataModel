@@ -39,7 +39,7 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
 
   @Override
   public Map<UUID, UUID> getMapping() {
-    return executeQuery(queryFull, (ps) -> {}).stream()
+    return executeQuery(queryFull, ps -> {}).stream()
         .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
   }
 
