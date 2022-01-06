@@ -41,8 +41,8 @@ public class ContainerNodeUpdateUtil {
    */
   public static GridContainer updateGridWithNodes(
       GridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) {
-    if (grid instanceof JointGridContainer) {
-      return updateGridWithNodes((JointGridContainer) grid, oldToNewNodes);
+    if (grid instanceof JointGridContainer jointGridContainer) {
+      return updateGridWithNodes(jointGridContainer, oldToNewNodes);
     } else {
       return updateGridWithNodes((SubGridContainer) grid, oldToNewNodes);
     }
@@ -216,7 +216,7 @@ public class ContainerNodeUpdateUtil {
                     return sysPart;
                   }
                 })
-            .collect(Collectors.toList());
+            .toList();
     return new SystemParticipants(sysParts);
   }
 

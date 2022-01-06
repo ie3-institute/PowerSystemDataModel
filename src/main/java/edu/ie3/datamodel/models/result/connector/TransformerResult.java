@@ -32,7 +32,7 @@ public abstract class TransformerResult extends ConnectorResult {
    * @param iBAng electric current angle @ Port B in degree
    * @param tapPos the current position of the transformers tap changer
    */
-  public TransformerResult(
+  protected TransformerResult(
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
@@ -55,7 +55,7 @@ public abstract class TransformerResult extends ConnectorResult {
    * @param iBAng electric current angle @ Port B in degree
    * @param tapPos the current position of the transformers tap changer
    */
-  public TransformerResult(
+  protected TransformerResult(
       UUID uuid,
       ZonedDateTime time,
       UUID inputModel,

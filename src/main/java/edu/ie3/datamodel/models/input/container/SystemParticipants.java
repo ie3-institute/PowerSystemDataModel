@@ -107,53 +107,53 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     /* init sets */
     this.bmPlants =
         systemParticipants.parallelStream()
-            .filter(gridElement -> gridElement instanceof BmInput)
-            .map(bmInput -> (BmInput) bmInput)
+            .filter(BmInput.class::isInstance)
+            .map(BmInput.class::cast)
             .collect(Collectors.toSet());
     this.chpPlants =
         systemParticipants.parallelStream()
-            .filter(gridElement -> gridElement instanceof ChpInput)
-            .map(chpInput -> (ChpInput) chpInput)
+            .filter(ChpInput.class::isInstance)
+            .map(ChpInput.class::cast)
             .collect(Collectors.toSet());
     this.evCS =
         systemParticipants.parallelStream()
-            .filter(gridElement -> gridElement instanceof EvcsInput)
-            .map(evcsInput -> (EvcsInput) evcsInput)
+            .filter(EvcsInput.class::isInstance)
+            .map(EvcsInput.class::cast)
             .collect(Collectors.toSet());
     this.evs =
         systemParticipants.parallelStream()
-            .filter(gridElement -> gridElement instanceof EvInput)
-            .map(evInput -> (EvInput) evInput)
+            .filter(EvInput.class::isInstance)
+            .map(EvInput.class::cast)
             .collect(Collectors.toSet());
     this.fixedFeedIns =
         systemParticipants.parallelStream()
-            .filter(gridElement -> gridElement instanceof FixedFeedInInput)
-            .map(fixedFeedInInpu -> (FixedFeedInInput) fixedFeedInInpu)
+            .filter(FixedFeedInInput.class::isInstance)
+            .map(FixedFeedInInput.class::cast)
             .collect(Collectors.toSet());
     this.heatPumps =
         systemParticipants.parallelStream()
-            .filter(gridElement -> gridElement instanceof HpInput)
-            .map(hpInput -> (HpInput) hpInput)
+            .filter(HpInput.class::isInstance)
+            .map(HpInput.class::cast)
             .collect(Collectors.toSet());
     this.loads =
         systemParticipants.parallelStream()
-            .filter(gridElement -> gridElement instanceof LoadInput)
-            .map(loadInput -> (LoadInput) loadInput)
+            .filter(LoadInput.class::isInstance)
+            .map(LoadInput.class::cast)
             .collect(Collectors.toSet());
     this.pvPlants =
         systemParticipants.parallelStream()
-            .filter(gridElement -> gridElement instanceof PvInput)
-            .map(pvInput -> (PvInput) pvInput)
+            .filter(PvInput.class::isInstance)
+            .map(PvInput.class::cast)
             .collect(Collectors.toSet());
     this.storages =
         systemParticipants.parallelStream()
-            .filter(gridElement -> gridElement instanceof StorageInput)
-            .map(storageInput -> (StorageInput) storageInput)
+            .filter(StorageInput.class::isInstance)
+            .map(StorageInput.class::cast)
             .collect(Collectors.toSet());
     this.wecPlants =
         systemParticipants.parallelStream()
-            .filter(gridElement -> gridElement instanceof WecInput)
-            .map(wecInput -> (WecInput) wecInput)
+            .filter(WecInput.class::isInstance)
+            .map(WecInput.class::cast)
             .collect(Collectors.toSet());
   }
 
