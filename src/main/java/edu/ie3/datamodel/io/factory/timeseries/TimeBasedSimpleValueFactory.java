@@ -38,6 +38,15 @@ public class TimeBasedSimpleValueFactory<V extends Value>
     timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, timePattern);
   }
 
+  /**
+   * Return the field name for the date time
+   *
+   * @return the field name for the date time
+   */
+  public String getTimeFieldString() {
+    return TIME;
+  }
+
   @Override
   protected TimeBasedValue<V> buildModel(SimpleTimeBasedValueData<V> data) {
     UUID uuid = data.getUUID(UUID);
