@@ -80,7 +80,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Validates a line type if: <br>
    * - it is not null <br>
-   * - B is greater/equal to 0 (Phase-to-ground susceptance per length) <br>
+   * - B is less than 0 (Phase-to-ground susceptance per length) <br>
    * - G is greater/equal to 0 (Phase-to-ground conductance per length) <br>
    * - R is greater 0 (Phase resistance per length) <br>
    * - X is greater 0 (Phase reactance per length) <br>
@@ -124,7 +124,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - rSc is greater 0 (short circuit resistance) <br>
    * - xSc is greater 0 (short circuit impedance) <br>
    * - gM is greater/equal to 0 (no load conductance) <br>
-   * - bM is greater/equal to 0 (no load susceptance) <br>
+   * - bM is less than to 0 <br>
    * - sRated is greater 0 (rated apparent power) <br>
    * - vRatedA is greater 0 (rated voltage at higher voltage terminal) <br>
    * - vRatedB is greater 0 (rated voltage at lower voltage terminal) <br>
@@ -153,6 +153,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
           transformer2WType.getxSc()
         },
         transformer2WType);
+    detectZeroOrPositiveQuantities(
+        new Quantity<?>[] {transformer2WType.getbM()}, transformer2WType);
     checkVoltageMagnitudeChangePerTapPosition(transformer2WType);
     checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer2WType);
     checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer2WType);
@@ -206,9 +208,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
   protected static void checkTransformer3WType(Transformer3WTypeInput transformer3WType) {
     checkNonNull(transformer3WType, "a three winding transformer type");
     detectNegativeQuantities(
-        new Quantity<?>[] {
-          transformer3WType.getgM(), transformer3WType.getbM(), transformer3WType.getdPhi()
-        },
+        new Quantity<?>[] {transformer3WType.getgM(), transformer3WType.getdPhi()},
         transformer3WType);
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {
@@ -220,6 +220,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
           transformer3WType.getxScA(), transformer3WType.getxScB(), transformer3WType.getxScC()
         },
         transformer3WType);
+    detectZeroOrPositiveQuantities(
+        new Quantity<?>[] {transformer3WType.getbM()}, transformer3WType);
     checkVoltageMagnitudeChangePerTapPosition(transformer3WType);
     checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer3WType);
     checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer3WType);
