@@ -27,7 +27,7 @@ public abstract class AssetInput extends InputEntity implements Operable {
    * @param operator Operator of the asset
    * @param operationTime Operation time limitation
    */
-  public AssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+  protected AssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
     super(uuid);
     this.operationTime = operationTime;
     this.operator = operator;

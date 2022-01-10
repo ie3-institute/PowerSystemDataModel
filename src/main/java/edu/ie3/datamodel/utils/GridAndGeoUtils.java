@@ -27,7 +27,7 @@ public class GridAndGeoUtils extends GeoUtils {
    * @return The equivalent straight line string
    * @deprecated Use {@link #buildSafeLineStringBetweenNodes(NodeInput, NodeInput)} instead
    */
-  @Deprecated
+  @Deprecated(since = "1.1.0", forRemoval = true)
   public static LineString buildLineStringBetweenNodes(NodeInput a, NodeInput b) {
     return buildSafeLineStringBetweenPoints(a.getGeoPosition(), b.getGeoPosition());
   }

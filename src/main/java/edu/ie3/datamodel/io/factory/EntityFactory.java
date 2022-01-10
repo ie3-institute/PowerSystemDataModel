@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.models.UniqueEntity;
-import java.util.*;
 
 /**
  * Universal factory class for creating entities with {@link EntityData} data objects.
@@ -24,7 +23,7 @@ public abstract class EntityFactory<T extends UniqueEntity, D extends EntityData
    *
    * @param allowedClasses exactly the classes that this factory is allowed and able to build
    */
-  public EntityFactory(Class<? extends T>... allowedClasses) {
+  protected EntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
 }

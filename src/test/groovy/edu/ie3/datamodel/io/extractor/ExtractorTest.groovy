@@ -21,7 +21,9 @@ class ExtractorTest extends Specification {
 	def "An Extractor should be able to extract an entity with nested elements correctly"() {
 
 		expect:
-		Extractor.extractElements(nestedEntity) as Set == expectedExtractedEntities as Set
+		println(nestedEntity)
+		def result = Extractor.extractElements(nestedEntity) as Set
+		result == expectedExtractedEntities as Set
 
 		where:
 		nestedEntity               || expectedExtractedEntities
@@ -107,13 +109,6 @@ class ExtractorTest extends Specification {
 		]
 
 		gtd.nodeGraphicC           || [gtd.nodeGraphicC.node]
-		new NodeGraphicInput(
-				gtd.nodeGraphicC.uuid,
-				gtd.nodeGraphicC.graphicLayer,
-				gtd.nodeGraphicC.path,
-				null,
-				gtd.nodeGraphicC.point
-				)          || [null]
 
 		gtd.measurementUnitInput   || [
 			gtd.measurementUnitInput.node,

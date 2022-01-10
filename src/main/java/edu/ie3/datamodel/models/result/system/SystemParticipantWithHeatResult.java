@@ -23,7 +23,7 @@ public abstract class SystemParticipantWithHeatResult extends SystemParticipantR
    * @param q reactive power output normally provided in MVAr
    * @param qDot thermal power output normally provided in MW
    */
-  public SystemParticipantWithHeatResult(
+  protected SystemParticipantWithHeatResult(
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
@@ -42,7 +42,7 @@ public abstract class SystemParticipantWithHeatResult extends SystemParticipantR
    * @param q reactive power output normally provided in MVAr
    * @param qDot thermal power output normally provided in MW
    */
-  public SystemParticipantWithHeatResult(
+  protected SystemParticipantWithHeatResult(
       UUID uuid,
       ZonedDateTime time,
       UUID inputModel,

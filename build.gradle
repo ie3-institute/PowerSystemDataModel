@@ -5,7 +5,7 @@ plugins {
 	id 'signing'
 	id 'pmd' // code check, working on source code
 	id 'com.diffplug.spotless' version '6.1.0'//code format
-	id 'com.github.spotbugs' version '5.0.3' // code check, working on byte code
+	id 'com.github.spotbugs' version '5.0.4' // code check, working on byte code
 	id 'de.undercouch.download' version '4.1.2'
 	id 'kr.motd.sphinx' version '2.10.1' // documentation generation
 	id 'jacoco' // java code coverage plugin
@@ -15,7 +15,7 @@ plugins {
 
 ext {
 	//version (changing these should be considered thoroughly!)
-	javaVersion = JavaVersion.VERSION_1_8
+	javaVersion = JavaVersion.VERSION_17
 	tscfgVersion = '0.9.9'
 	testcontainersVersion = '1.16.2'
 
@@ -49,13 +49,24 @@ repositories {
 }
 
 dependencies {
+	constraints {
+		implementation( 'junit:junit:4.13.2+'){
+			because "CVE-2020-15250 - Temporary folder vulnerability - https://github.com/advisories/GHSA-269g-pwp5-87pp"
+		}
+	}
+
 	//	 ie³ power system utils
-	implementation 'com.github.ie3-institute:PowerSystemUtils:1.5.3'
+	implementation 'com.github.ie3-institute:PowerSystemUtils:1.6'
 
 	implementation 'tech.units:indriya:2.1.2'
 
+	implementation 'com.github.johanneshiry:OSMonaut:v1.1.1' // tmp pbf parse
+
 	// JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
-	implementation 'org.locationtech.jts:jts-core:1.18.2'
+	implementation ('org.locationtech.jts:jts-core:1.18.2'){
+		exclude group: 'junit', module: 'junit'
+	}
+
 	implementation 'org.locationtech.jts.io:jts-io-common:1.18.2'
 
 	// Graphs
@@ -63,7 +74,7 @@ dependencies {
 
 	// testing
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
-	testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
+	testImplementation 'org.spockframework:spock-core:2.1-M2-groovy-3.0'
 	testImplementation 'org.objenesis:objenesis:3.2' // Mock creation with constructor parameters
 
 	// testcontainers (docker framework for testing)
@@ -85,10 +96,8 @@ dependencies {
 
 	implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
 	implementation 'org.apache.commons:commons-compress:1.21' // I/O functionalities
-}
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
-wrapper {
-	gradleVersion = '6.0.1'
 }
 
 tasks.withType(JavaCompile) {
@@ -97,6 +106,7 @@ tasks.withType(JavaCompile) {
 
 tasks.withType(Javadoc){
 	options.encoding = 'UTF-8'
+	failOnError = false // TODO: Temp until JavaDoc issues are resolved
 }
 
 task printVersion {

@@ -16,11 +16,11 @@ import java.util.UUID;
 /** Describes a TimeSeries with repetitive values that can be calculated from a pattern */
 public abstract class RepetitiveTimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
     extends TimeSeries<E, V> {
-  public RepetitiveTimeSeries(Set<E> entries) {
+  protected RepetitiveTimeSeries(Set<E> entries) {
     super(entries);
   }
 
-  public RepetitiveTimeSeries(UUID uuid, Set<E> entries) {
+  protected RepetitiveTimeSeries(UUID uuid, Set<E> entries) {
     super(uuid, entries);
   }
 
