@@ -73,7 +73,8 @@ public class FileNamingStrategy {
   public Optional<String> getFilePath(Class<? extends UniqueEntity> cls) {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
-    return getFilePath(getEntityName(cls).orElse(""), getDirectoryPath(cls).orElse(""));
+    return getFilePath(
+        getEntityName(cls).orElseGet(() -> ""), getDirectoryPath(cls).orElseGet(() -> ""));
   }
 
   /**
@@ -91,8 +92,8 @@ public class FileNamingStrategy {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
     return getFilePath(
-        entityPersistenceNamingStrategy.getEntityName(timeSeries).orElse(""),
-        getDirectoryPath(timeSeries).orElse(""));
+        entityPersistenceNamingStrategy.getEntityName(timeSeries).orElseGet(() -> ""),
+        getDirectoryPath(timeSeries).orElseGet(() -> ""));
   }
 
   /**
@@ -167,7 +168,8 @@ public class FileNamingStrategy {
    * @return An individual time series pattern
    */
   public Pattern getIndividualTimeSeriesPattern() {
-    String subDirectory = fileHierarchy.getSubDirectory(IndividualTimeSeries.class).orElse("");
+    String subDirectory =
+        fileHierarchy.getSubDirectory(IndividualTimeSeries.class).orElseGet(() -> "");
 
     if (subDirectory.isEmpty()) {
       return entityPersistenceNamingStrategy.getIndividualTimeSeriesPattern();
@@ -192,7 +194,7 @@ public class FileNamingStrategy {
    * @return A load profile time series pattern
    */
   public Pattern getLoadProfileTimeSeriesPattern() {
-    String subDirectory = fileHierarchy.getSubDirectory(LoadProfileInput.class).orElse("");
+    String subDirectory = fileHierarchy.getSubDirectory(LoadProfileInput.class).orElseGet(() -> "");
 
     if (subDirectory.isEmpty()) {
       return entityPersistenceNamingStrategy.getLoadProfileTimeSeriesPattern();
@@ -265,7 +267,8 @@ public class FileNamingStrategy {
   public Optional<String> getIdCoordinateFilePath() {
     // do not adapt orElseGet, see https://www.baeldung.com/java-optional-or-else-vs-or-else-get for
     // details
-    return getFilePath(getIdCoordinateEntityName(), fileHierarchy.getBaseDirectory().orElse(""));
+    return getFilePath(
+        getIdCoordinateEntityName(), fileHierarchy.getBaseDirectory().orElseGet(() -> ""));
   }
 
   /**

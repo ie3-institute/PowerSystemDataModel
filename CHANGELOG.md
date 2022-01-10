@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
-- SQL time series sources (`SqlTimeSeriesSource` and `SqlTimeSeriesMappingSource`)
+- SQL time series sources (`SqlTimeSeriesSource` and `SqlTimeSeriesMappingSource`) [#467](https://github.com/ie3-institute/PowerSystemDataModel/issues/467)
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
