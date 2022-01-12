@@ -472,7 +472,7 @@ class InputEntityProcessorTest extends Specification {
 			"xScB"    : "0.08",
 			"xScC"    : "0.003",
 			"gM"      : "40000.0",
-			"bM"      : "1000.0",
+			"bM"      : "-1000.0",
 			"dV"      : "1.5",
 			"dPhi"    : "0.0",
 			"tapNeutr": "0",
