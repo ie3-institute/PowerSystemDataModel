@@ -140,7 +140,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
     detectNegativeQuantities(
         new Quantity<?>[] {
           transformer2WType.getgM(),
-          transformer2WType.getbM(),
           transformer2WType.getdPhi(),
           transformer2WType.getrSc()
         },
