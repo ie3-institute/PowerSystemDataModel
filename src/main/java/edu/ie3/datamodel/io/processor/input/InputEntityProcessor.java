@@ -22,7 +22,6 @@ import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.measure.quantity.*;
 
 /**
  * Processes all {@link InputEntity}s and it's child classes

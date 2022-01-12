@@ -10,8 +10,6 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.util.quantities.QuantityUtil
 
-import javax.measure.Quantity
-
 trait WeatherSourceTestHelper {
 
 	static boolean equalsIgnoreUUID(IndividualTimeSeries<WeatherValue> ts1,

@@ -336,8 +336,7 @@ public class EntityPersistenceNamingStrategy {
         logger.error("Unable to determine content of time series {}", timeSeries);
         return Optional.empty();
       }
-    } else if (timeSeries instanceof LoadProfileInput) {
-      LoadProfileInput loadProfileInput = (LoadProfileInput) timeSeries;
+    } else if (timeSeries instanceof LoadProfileInput loadProfileInput) {
       return Optional.of(
           prefix
               .concat("lpts")
