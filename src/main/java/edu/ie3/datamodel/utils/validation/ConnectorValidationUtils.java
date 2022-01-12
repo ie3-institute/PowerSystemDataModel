@@ -139,9 +139,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     checkNonNull(transformer2WType, "a two winding transformer type");
     detectNegativeQuantities(
         new Quantity<?>[] {
-          transformer2WType.getgM(),
-          transformer2WType.getdPhi(),
-          transformer2WType.getrSc()
+          transformer2WType.getgM(), transformer2WType.getdPhi(), transformer2WType.getrSc()
         },
         transformer2WType);
     detectZeroOrNegativeQuantities(
