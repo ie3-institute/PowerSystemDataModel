@@ -124,7 +124,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - rSc is greater 0 (short circuit resistance) <br>
    * - xSc is greater 0 (short circuit impedance) <br>
    * - gM is greater/equal to 0 (no load conductance) <br>
-   * - bM is less than to 0 <br>
+   * - bM is less/equal to 0 <br>
    * - sRated is greater 0 (rated apparent power) <br>
    * - vRatedA is greater 0 (rated voltage at higher voltage terminal) <br>
    * - vRatedB is greater 0 (rated voltage at lower voltage terminal) <br>
@@ -153,8 +153,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
           transformer2WType.getxSc()
         },
         transformer2WType);
-    detectZeroOrPositiveQuantities(
-        new Quantity<?>[] {transformer2WType.getbM()}, transformer2WType);
+    detectPositiveQuantities(new Quantity<?>[] {transformer2WType.getbM()}, transformer2WType);
     checkVoltageMagnitudeChangePerTapPosition(transformer2WType);
     checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer2WType);
     checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer2WType);
@@ -195,7 +194,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - rScA, rScB, rScC are greater 0 (short circuit resistance in branches A,B,C) <br>
    * - xScA, xScB, xScC are greater 0 (short circuit impedance in branches A,B,C) <br>
    * - gM is greater/equal to 0 (no load conductance) <br>
-   * - bM is greater/equal to 0 (no load susceptance) <br>
+   * - bM is less/equal to 0 <br>
    * - sRatedA, sRatedB, sRatedC are greater 0 (rated apparent power in branches A,B,C) <br>
    * - vRatedA, vRatedB, vRatedC are greater 0 (rated voltage at higher node A,B,C) <br>
    * - dV is between 0% and 100% (voltage magnitude increase per tap position <br>
@@ -220,8 +219,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
           transformer3WType.getxScA(), transformer3WType.getxScB(), transformer3WType.getxScC()
         },
         transformer3WType);
-    detectZeroOrPositiveQuantities(
-        new Quantity<?>[] {transformer3WType.getbM()}, transformer3WType);
+    detectPositiveQuantities(new Quantity<?>[] {transformer3WType.getbM()}, transformer3WType);
     checkVoltageMagnitudeChangePerTapPosition(transformer3WType);
     checkMinimumTapPositionIsLowerThanMaximumTapPosition(transformer3WType);
     checkNeutralTapPositionLiesBetweenMinAndMaxTapPosition(transformer3WType);

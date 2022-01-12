@@ -193,9 +193,8 @@ public class ValidationUtils {
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
    */
-  protected static void detectZeroOrPositiveQuantities(
-      Quantity<?>[] quantities, UniqueEntity entity) {
-    Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() >= 0d;
+  protected static void detectPositiveQuantities(Quantity<?>[] quantities, UniqueEntity entity) {
+    Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() > 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be negative");
   }
