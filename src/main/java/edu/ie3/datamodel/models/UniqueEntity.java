@@ -16,11 +16,11 @@ public abstract class UniqueEntity implements Serializable {
 
   private final UUID uuid;
 
-  public UniqueEntity() {
+  protected UniqueEntity() {
     uuid = UUID.randomUUID();
   }
 
-  public UniqueEntity(UUID uuid) {
+  protected UniqueEntity(UUID uuid) {
     this.uuid = uuid == null ? UUID.randomUUID() : uuid;
   }
 

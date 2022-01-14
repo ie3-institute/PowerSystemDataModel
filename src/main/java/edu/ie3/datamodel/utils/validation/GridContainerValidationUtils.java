@@ -17,7 +17,6 @@ import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GridContainerValidationUtils extends ValidationUtils {
@@ -122,7 +121,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
                 transformer ->
                     ContainerUtils.traverseAlongSwitchChain(transformer.getNodeA(), rawGridElements)
                         .getLast())
-            .collect(Collectors.toList()));
+            .toList());
 
     rawGridElements
         .getSwitches()

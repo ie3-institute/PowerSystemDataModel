@@ -33,7 +33,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * @param parallelDevices overall amount of parallel devices to automatically construct (e.g.
    *     parallelDevices = 2 will build a total of two entities using the specified parameters)
    */
-  public ConnectorInput(
+  protected ConnectorInput(
       UUID uuid,
       String id,
       OperatorInput operator,
@@ -57,7 +57,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * @param parallelDevices overall amount of parallel devices to automatically construct (e.g.
    *     parallelDevices = 2 will build a total of two entities using the specified parameters)
    */
-  public ConnectorInput(
+  protected ConnectorInput(
       UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, int parallelDevices) {
     super(uuid, id);
     this.nodeA = nodeA;

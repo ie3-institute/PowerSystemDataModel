@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSeriesMappingSource {
   /* Available factories */
-  private final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
+  private static final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
 
   private final Map<UUID, UUID> mapping;
 
