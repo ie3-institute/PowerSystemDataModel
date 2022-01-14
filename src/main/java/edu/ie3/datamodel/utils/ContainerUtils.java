@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.utils;
 
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOMETRE;
-import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 import static tech.units.indriya.unit.Units.OHM;
@@ -27,11 +26,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import org.jgrapht.graph.DirectedMultigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 /** Offers functionality useful for grouping different models together */
 public class ContainerUtils {
@@ -226,61 +227,72 @@ public class ContainerUtils {
 
     if (connectorInput instanceof LineInput) {
       LineInput line = (LineInput) connectorInput;
-      graph.setEdgeWeight(
+      graph.setEdgeWeightQuantity(
           graph.getEdge(nodeA, nodeB),
           calcImpedance(line.getType().getR(), line.getType().getX(), line.getLength()));
     }
     if (connectorInput instanceof SwitchInput) {
       SwitchInput sw = (SwitchInput) connectorInput;
       // assumption: closed switch has a resistance of 1 OHM
-      if (sw.isClosed()) graph.setEdgeWeight(graph.getEdge(nodeA, nodeB), 1);
+      if (sw.isClosed())
+        graph.setEdgeWeightQuantity(graph.getEdge(nodeA, nodeB), Quantities.getQuantity(1d, OHM));
     }
     if (connectorInput instanceof Transformer2WInput) {
       Transformer2WInput trafo2w = (Transformer2WInput) connectorInput;
-      graph.setEdgeWeight(
+      graph.setEdgeWeightQuantity(
           graph.getEdge(nodeA, nodeB),
-          sqrt(
-              pow(trafo2w.getType().getrSc().to(OHM).getValue().doubleValue(), 2)
-                  + pow(trafo2w.getType().getxSc().to(OHM).getValue().doubleValue(), 2)));
+          calcImpedance(trafo2w.getType().getrSc(), trafo2w.getType().getxSc()));
     }
     if (connectorInput instanceof Transformer3WInput) {
       Transformer3WInput trafo3w = (Transformer3WInput) connectorInput;
       graph.addEdge(nodeA, trafo3w.getNodeC());
 
-      graph.setEdgeWeight(
+      graph.setEdgeWeightQuantity(
           graph.getEdge(nodeA, nodeB),
-          sqrt(
-              pow(
-                      trafo3w.getType().getrScA().to(OHM).getValue().doubleValue()
-                          + trafo3w.getType().getrScB().to(OHM).getValue().doubleValue(),
-                      2)
-                  + pow(
-                      trafo3w.getType().getxScA().to(OHM).getValue().doubleValue()
-                          + trafo3w.getType().getxScB().to(OHM).getValue().doubleValue(),
-                      2)));
+          calcImpedance(
+              trafo3w.getType().getrScA().add(trafo3w.getType().getrScB()),
+              trafo3w.getType().getxScA().add(trafo3w.getType().getxScB())));
 
-      graph.setEdgeWeight(
+      graph.setEdgeWeightQuantity(
           graph.getEdge(nodeA, trafo3w.getNodeC()),
-          sqrt(
-              pow(
-                      trafo3w.getType().getrScA().to(OHM).getValue().doubleValue()
-                          + trafo3w.getType().getrScC().to(OHM).getValue().doubleValue(),
-                      2)
-                  + pow(
-                      trafo3w.getType().getxScA().to(OHM).getValue().doubleValue()
-                          + trafo3w.getType().getxScC().to(OHM).getValue().doubleValue(),
-                      2)));
+          calcImpedance(
+              trafo3w.getType().getrScA().add(trafo3w.getType().getrScC()),
+              trafo3w.getType().getxScA().add(trafo3w.getType().getxScC())));
     }
   }
 
-  private static double calcImpedance(
+  /**
+   * Calculate the total magnitude of the complex impedance, defined by relative resistance,
+   * reactance and an equivalent length
+   *
+   * @param r Relative resistance
+   * @param x Relative reactance
+   * @param length Length of the element
+   * @return Magnitude of the complex impedance
+   */
+  private static ComparableQuantity<ElectricResistance> calcImpedance(
       ComparableQuantity<SpecificResistance> r,
       ComparableQuantity<SpecificResistance> x,
       ComparableQuantity<Length> length) {
-    return sqrt(
-            pow(r.to(OHM_PER_KILOMETRE).getValue().doubleValue(), 2)
-                + pow(x.to(OHM_PER_KILOMETRE).getValue().doubleValue(), 2))
-        * length.to(KILOMETRE).getValue().doubleValue();
+    return calcImpedance(
+        r.multiply(length.to(KILOMETRE)).asType(ElectricResistance.class).to(OHM),
+        x.multiply(length.to(KILOMETRE)).asType(ElectricResistance.class).to(OHM));
+  }
+
+  /**
+   * Calculate the magnitude of the complex impedance from given resistance and reactance
+   *
+   * @param r Resistance (real part of the complex impedance)
+   * @param x Reactance (complex part of the complex impedance)
+   * @return Magnitude of the complex impedance
+   */
+  private static ComparableQuantity<ElectricResistance> calcImpedance(
+      ComparableQuantity<ElectricResistance> r, ComparableQuantity<ElectricResistance> x) {
+    double zValue =
+        sqrt(
+            pow(r.to(OHM).getValue().doubleValue(), 2)
+                + pow(x.to(OHM).getValue().doubleValue(), 2));
+    return Quantities.getQuantity(zValue, OHM);
   }
 
   /**
