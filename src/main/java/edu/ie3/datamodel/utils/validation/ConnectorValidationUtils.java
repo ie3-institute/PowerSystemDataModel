@@ -124,7 +124,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - rSc is greater 0 (short circuit resistance) <br>
    * - xSc is greater 0 (short circuit impedance) <br>
    * - gM is greater/equal to 0 (no load conductance) <br>
-   * - bM is less/equal to 0 <br>
+   * - bM is less/equal to 0 (no load susceptance)<br>
    * - sRated is greater 0 (rated apparent power) <br>
    * - vRatedA is greater 0 (rated voltage at higher voltage terminal) <br>
    * - vRatedB is greater 0 (rated voltage at lower voltage terminal) <br>
