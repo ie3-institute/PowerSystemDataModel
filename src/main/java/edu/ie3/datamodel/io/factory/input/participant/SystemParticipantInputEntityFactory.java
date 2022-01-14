@@ -32,7 +32,7 @@ abstract class SystemParticipantInputEntityFactory<
 
   private static final String Q_CHARACTERISTICS = "qcharacteristics";
 
-  public SystemParticipantInputEntityFactory(Class<? extends T>... allowedClasses) {
+  protected SystemParticipantInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
 

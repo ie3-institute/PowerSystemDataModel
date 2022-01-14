@@ -31,7 +31,7 @@ abstract class ConnectorInputEntityFactory<
    */
   protected static final String PARALLEL_DEVICES = "paralleldevices";
 
-  public ConnectorInputEntityFactory(Class<? extends T>... allowedClasses) {
+  protected ConnectorInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
 

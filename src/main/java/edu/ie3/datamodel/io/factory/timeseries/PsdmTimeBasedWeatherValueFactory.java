@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import static edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory.*;
-
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;

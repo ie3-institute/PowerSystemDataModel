@@ -32,7 +32,7 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
    * @param sRated Rated apparent power
    * @param cosPhiRated Power factor for this type of system participant
    */
-  public SystemParticipantTypeInput(
+  protected SystemParticipantTypeInput(
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capex,

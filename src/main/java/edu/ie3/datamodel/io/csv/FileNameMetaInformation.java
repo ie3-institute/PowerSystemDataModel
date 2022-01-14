@@ -12,7 +12,7 @@ import java.util.UUID;
 public abstract class FileNameMetaInformation {
   private final UUID uuid;
 
-  public FileNameMetaInformation(UUID uuid) {
+  protected FileNameMetaInformation(UUID uuid) {
     this.uuid = uuid;
   }
 
@@ -23,8 +23,7 @@ public abstract class FileNameMetaInformation {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof FileNameMetaInformation)) return false;
-    FileNameMetaInformation that = (FileNameMetaInformation) o;
+    if (!(o instanceof FileNameMetaInformation that)) return false;
     return uuid.equals(that.uuid);
   }
 

@@ -29,7 +29,7 @@ public abstract class ThermalUnitResult extends ResultEntity {
    * @param inputModel The input model's UUID, the result is related to
    * @param qDot Average thermal power exchanged with the unit
    */
-  public ThermalUnitResult(ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
+  protected ThermalUnitResult(ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
     super(time, inputModel);
     this.qDot = qDot;
   }
@@ -42,7 +42,7 @@ public abstract class ThermalUnitResult extends ResultEntity {
    * @param inputModel The input model's UUID, the result is related to
    * @param qDot Average thermal power exchanged with the unit
    */
-  public ThermalUnitResult(
+  protected ThermalUnitResult(
       UUID uuid, ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
     super(uuid, time, inputModel);
     this.qDot = qDot;

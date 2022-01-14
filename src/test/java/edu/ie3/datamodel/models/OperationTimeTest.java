@@ -41,17 +41,17 @@ class OperationTimeTest {
   private static final OperationTime NOT_LIMITED_OPERATION = new OperationTime(null, null, false);
 
   @Test
-  protected void notLimited() {
+  void notLimited() {
     OperationTime notLimited = OperationTime.notLimited();
     assertEquals(NOT_LIMITED_OPERATION, notLimited);
     assertFalse(notLimited.isLimited());
-    assertTrue(!notLimited.getStartDate().isPresent());
-    assertTrue(!notLimited.getEndDate().isPresent());
+    assertFalse(notLimited.getStartDate().isPresent());
+    assertFalse(notLimited.getEndDate().isPresent());
     assertEquals(Optional.empty(), notLimited.getOperationLimit());
   }
 
   @Test
-  protected void getStartDate() {
+  void getStartDate() {
     Optional<ZonedDateTime> optStartDate = LIMITED_OPERATION_TIME.getStartDate();
     assertTrue(optStartDate.isPresent());
     ZonedDateTime startDate = optStartDate.get();
@@ -63,21 +63,21 @@ class OperationTimeTest {
     assertEquals(START_DATE, startDate);
 
     optStartDate = LIMITED_OPERATION_TIME_END_ONLY.getStartDate();
-    assertTrue(!optStartDate.isPresent());
+    assertFalse(optStartDate.isPresent());
 
     optStartDate = NOT_LIMITED_OPERATION.getStartDate();
-    assertTrue(!optStartDate.isPresent());
+    assertFalse(optStartDate.isPresent());
   }
 
   @Test
-  protected void getEndDate() {
+  void getEndDate() {
     Optional<ZonedDateTime> optEndDate = LIMITED_OPERATION_TIME.getEndDate();
     assertTrue(optEndDate.isPresent());
     ZonedDateTime endDate = optEndDate.get();
     assertEquals(END_DATE, endDate);
 
     optEndDate = LIMITED_OPERATION_TIME_START_ONLY.getEndDate();
-    assertTrue(!optEndDate.isPresent());
+    assertFalse(optEndDate.isPresent());
 
     optEndDate = LIMITED_OPERATION_TIME_END_ONLY.getEndDate();
     assertTrue(optEndDate.isPresent());
@@ -85,11 +85,11 @@ class OperationTimeTest {
     assertEquals(END_DATE, endDate);
 
     optEndDate = NOT_LIMITED_OPERATION.getEndDate();
-    assertTrue(!optEndDate.isPresent());
+    assertFalse(optEndDate.isPresent());
   }
 
   @Test
-  protected void getOperationLimit() {
+  void getOperationLimit() {
     Optional<ClosedInterval<ZonedDateTime>> optOperationLimit =
         LIMITED_OPERATION_TIME.getOperationLimit();
     assertTrue(optOperationLimit.isPresent());
@@ -107,11 +107,11 @@ class OperationTimeTest {
     assertEquals(new ClosedInterval<>(MIN_DATE, END_DATE), operationLimit);
 
     optOperationLimit = NOT_LIMITED_OPERATION.getOperationLimit();
-    assertTrue(!optOperationLimit.isPresent());
+    assertFalse(optOperationLimit.isPresent());
   }
 
   @Test
-  protected void includes() {
+  void includes() {
     assertTrue(LIMITED_OPERATION_TIME.includes(DATE_IN_INTERVAL));
     assertFalse(LIMITED_OPERATION_TIME.includes(DATE_BEFORE_INTERVAL));
     assertFalse(LIMITED_OPERATION_TIME.includes(DATE_AFTER_INTERVAL));

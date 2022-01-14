@@ -32,7 +32,7 @@ public abstract class TransformerInput extends ConnectorInput {
    * @param tapPos Tap Position of this transformer
    * @param autoTap True, if the tap position of the transformer is adapted automatically
    */
-  public TransformerInput(
+  protected TransformerInput(
       UUID uuid,
       OperationTime operationTime,
       OperatorInput operator,
@@ -59,7 +59,7 @@ public abstract class TransformerInput extends ConnectorInput {
    * @param tapPos Tap Position of this transformer
    * @param autoTap True, if the tap position of the transformer is adapted automatically
    */
-  public TransformerInput(
+  protected TransformerInput(
       UUID uuid,
       String id,
       NodeInput nodeA,

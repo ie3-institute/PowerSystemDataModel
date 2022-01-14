@@ -5,16 +5,15 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.test.common.TimeSeriesSourceTestData.*
+
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
-import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.value.HeatAndPValue
-import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import spock.lang.Shared
 import spock.lang.Specification
-import tech.units.indriya.quantity.Quantities
 
 class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
@@ -67,7 +66,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
 	def "A csv time series source is able to return a time series for a period of interest"() {
 		given:
-		def interval = new ClosedInterval(TimeUtil.withDefaults.toZonedDateTime("2020-01-01 00:15:00"), TimeUtil.withDefaults.toZonedDateTime("2020-01-01 00:15:00"))
+		def interval = new ClosedInterval(TIME_15MIN, TIME_15MIN)
 
 		when:
 		def actual = source.getTimeSeries(interval)
@@ -77,14 +76,11 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 	}
 
 	def "A csv time series source is able to return a single value, if it is covered"() {
-		given:
-		def time = TimeUtil.withDefaults.toZonedDateTime("2020-01-01 00:15:00")
-
 		when:
-		def actual = source.getValue(time)
+		def actual = source.getValue(TIME_15MIN)
 
 		then:
 		actual.present
-		actual.get() == new HeatAndPValue(Quantities.getQuantity(1250.0, StandardUnits.ACTIVE_POWER_IN), Quantities.getQuantity(12.0, StandardUnits.HEAT_DEMAND))
+		actual.get() == PH_VALUE_15MIN
 	}
 }
