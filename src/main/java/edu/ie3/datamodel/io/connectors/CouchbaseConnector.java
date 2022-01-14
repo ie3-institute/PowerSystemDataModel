@@ -14,7 +14,6 @@ import com.couchbase.client.java.kv.MutationResult;
 import com.couchbase.client.java.query.QueryResult;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
  * Implements a DataConnector for Couchbase. Couchbase is a JSON document based database. <br>
@@ -115,7 +114,7 @@ public class CouchbaseConnector implements DataConnector {
    */
   public List<CompletableFuture<GetResult>> bulkGet(List<String> keys) {
     final Collection session = getSession();
-    return keys.stream().map(key -> session.async().get(key)).collect(Collectors.toList());
+    return keys.stream().map(key -> session.async().get(key)).toList();
   }
 
   /**

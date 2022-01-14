@@ -827,32 +827,6 @@ class FileNamingStrategyTest extends Specification {
 		ex.message == "Unknown format of 'foo'. Cannot extract meta information."
 	}
 
-	def "Trying to extract individual time series meta information throws an Exception, if it is provided a malformed string"() {
-		given:
-		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
-		def fileName = "foo"
-
-		when:
-		fns.extractIndividualTimesSeriesMetaInformation(fileName)
-
-		then:
-		def ex = thrown(IllegalArgumentException)
-		ex.message == "Cannot extract meta information on individual time series from 'foo'."
-	}
-
-	def "Trying to extract load profile time series meta information throws an Exception, if it is provided a malformed string"() {
-		given:
-		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
-		def fileName = "foo"
-
-		when:
-		fns.extractLoadProfileTimesSeriesMetaInformation(fileName)
-
-		then:
-		def ex = thrown(IllegalArgumentException)
-		ex.message == "Cannot extract meta information on load profile time series from 'foo'."
-	}
-
 	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid individual time series file name"() {
 		given:
 		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)

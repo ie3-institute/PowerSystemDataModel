@@ -529,9 +529,8 @@ public class ContainerUtils {
     SubGridContainer containerB = subGrids.get(transformer.getNodeB().getSubnet());
 
     /* Get the sub grid container at port C, if this is a three winding transformer */
-    if (transformer instanceof Transformer3WInput) {
-      SubGridContainer containerC =
-          subGrids.get(((Transformer3WInput) transformer).getNodeC().getSubnet());
+    if (transformer instanceof Transformer3WInput transformer3WInput) {
+      SubGridContainer containerC = subGrids.get((transformer3WInput).getNodeC().getSubnet());
       return new TransformerSubGridContainers(containerA, containerB, containerC);
     } else return new TransformerSubGridContainers(containerA, containerB);
   }
@@ -576,9 +575,7 @@ public class ContainerUtils {
 
     /* Get the switch, that is connected to the starting node and determine the next node */
     List<SwitchInput> nextSwitches =
-        switches.stream()
-            .filter(switcher -> switcher.allNodes().contains(startNode))
-            .collect(Collectors.toList());
+        switches.stream().filter(switcher -> switcher.allNodes().contains(startNode)).toList();
     switch (nextSwitches.size()) {
       case 0:
         /* No further switch found -> Return the starting node */
