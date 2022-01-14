@@ -1,7 +1,12 @@
 test {
 	useJUnitPlatform()
 	testLogging {
-		events "skipped", "failed", "passed"
+		events "skipped", "failed"
+	}
+
+	// Improve logging for failed Spock tests
+	testLogging {
+		exceptionFormat "full"
 	}
 }
 
