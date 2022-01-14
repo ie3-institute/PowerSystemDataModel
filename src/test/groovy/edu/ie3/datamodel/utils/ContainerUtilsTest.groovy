@@ -544,7 +544,7 @@ class ContainerUtilsTest extends Specification {
 		}
 		/* Check impedance of line */
 		graph.getEdge(line.nodeA, line.nodeB).with {
-			assert weight == 0.0016909597866300668d
+			assert weight == 0.0016909597866300665d
 		}
 		/* Check impedance of switch */
 		graph.getEdge(swtchClosed.nodeA, swtchClosed.nodeB).with {
