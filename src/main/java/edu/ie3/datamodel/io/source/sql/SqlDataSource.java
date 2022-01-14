@@ -29,17 +29,27 @@ public abstract class SqlDataSource<T> {
   }
 
   /**
+   * Creates a base query string without closing semicolon of the following pattern: <br>
+   * {@code SELECT * FROM <schema>.<table>}
+   *
+   * @param schemaName the name of the database schema
+   * @param tableName the name of the database table
+   * @return basic query string without semicolon
+   */
+  protected static String createBaseQueryString(String schemaName, String tableName) {
+    return "SELECT * FROM " + schemaName + ".\"" + tableName + "\"";
+  }
+
+  /**
    * Determine the corresponding database column name based on the provided factory field parameter
    * name. Needed to support camel as well as snake case database column names.
    *
    * @param factoryColumnName the name of the field parameter set in the entity factory
-   * @param connector the sql connector of this source
    * @param tableName the table name where the data is stored
    * @return the column name that corresponds to the provided field parameter or an empty optional
    *     if no matching column can be found
    */
-  protected static String getDbColumnName(
-      String factoryColumnName, SqlConnector connector, String tableName) {
+  protected String getDbColumnName(String factoryColumnName, String tableName) {
     try {
       ResultSet rs =
           connector.getConnection().getMetaData().getColumns(null, null, tableName, null);
@@ -63,6 +73,29 @@ public abstract class SqlDataSource<T> {
             + factoryColumnName
             + "' in provided times series data configuration."
             + "Please ensure that the database connection is working and the column names are correct!");
+  }
+
+  /**
+   * Determine the corresponding table name based on the provided table name pattern.
+   *
+   * @param schemaPattern pattern of the schema to search in
+   * @param tableNamePattern pattern of the table name
+   * @return a matching table name, if one is found
+   */
+  protected Optional<String> getDbTableName(String schemaPattern, String tableNamePattern) {
+    try {
+      ResultSet rs =
+          connector
+              .getConnection()
+              .getMetaData()
+              .getTables(null, schemaPattern, tableNamePattern, null);
+      if (rs.next()) {
+        return Optional.of(rs.getString("TABLE_NAME"));
+      }
+    } catch (SQLException ex) {
+      log.error("Cannot connect to database to retrieve tables meta information", ex);
+    }
+    return Optional.empty();
   }
 
   /**

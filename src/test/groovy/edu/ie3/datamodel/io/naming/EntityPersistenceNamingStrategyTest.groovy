@@ -118,6 +118,32 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		matcher.group("uuid") == "bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
+	def "Trying to extract individual time series meta information throws an Exception, if it is provided a malformed string"() {
+		given:
+		def fns = new EntityPersistenceNamingStrategy()
+		def fileName = "foo"
+
+		when:
+		fns.extractIndividualTimesSeriesMetaInformation(fileName)
+
+		then:
+		def ex = thrown(IllegalArgumentException)
+		ex.message == "Cannot extract meta information on individual time series from 'foo'."
+	}
+
+	def "Trying to extract load profile time series meta information throws an Exception, if it is provided a malformed string"() {
+		given:
+		def fns = new EntityPersistenceNamingStrategy()
+		def fileName = "foo"
+
+		when:
+		fns.extractLoadProfileTimesSeriesMetaInformation(fileName)
+
+		then:
+		def ex = thrown(IllegalArgumentException)
+		ex.message == "Cannot extract meta information on load profile time series from 'foo'."
+	}
+
 	def "The EntityPersistenceNamingStrategy is able to prepare the prefix properly"() {
 		when:
 		String actual = EntityPersistenceNamingStrategy.preparePrefix(prefix)

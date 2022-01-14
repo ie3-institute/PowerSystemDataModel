@@ -17,7 +17,7 @@ public abstract class AssetTypeInput extends InputEntity {
    * @param uuid of the input entity
    * @param id of the asset
    */
-  public AssetTypeInput(UUID uuid, String id) {
+  protected AssetTypeInput(UUID uuid, String id) {
     super(uuid);
     this.id = id;
   }

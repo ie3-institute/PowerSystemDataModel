@@ -17,7 +17,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 public abstract class SimpleEntityFactory<T extends UniqueEntity>
     extends EntityFactory<T, SimpleEntityData> {
 
-  public SimpleEntityFactory(Class<? extends T>... allowedClasses) {
+  protected SimpleEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
   }
 }

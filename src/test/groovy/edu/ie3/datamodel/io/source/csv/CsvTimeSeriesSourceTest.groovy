@@ -13,12 +13,9 @@ import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.CsvFileConnector
 import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
-import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.*
 import edu.ie3.util.TimeUtil
-import edu.ie3.util.geo.GeoUtils
-import org.locationtech.jts.geom.Coordinate
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
@@ -28,9 +25,6 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "The csv time series source is able to build time based values from simple data"() {
 		given:
-		def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
-		def coordinateSource = Mock(IdCoordinateSource)
-		coordinateSource.getCoordinate(5) >> defaultCoordinate
 		def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
 		def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), "its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1", EnergyPriceValue, factory)
 		def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")

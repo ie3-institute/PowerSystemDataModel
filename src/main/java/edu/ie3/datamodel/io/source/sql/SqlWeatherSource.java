@@ -18,7 +18,6 @@ import java.sql.*;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
 
 /** SQL source for weather data */
@@ -60,9 +59,8 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
 
     String dbTimeColumnName =
-        getDbColumnName(weatherFactory.getTimeFieldString(), connector, weatherTableName);
-    String dbCoordColumnName =
-        getDbColumnName(factoryCoordinateFieldName, connector, weatherTableName);
+        getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
+    String dbCoordColumnName = getDbColumnName(factoryCoordinateFieldName, weatherTableName);
 
     // setup queries
     this.queryTimeInterval =
@@ -94,7 +92,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     Set<Integer> coordinateIds =
         coordinates.stream()
             .map(idCoordinateSource::getId)
-            .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+            .flatMap(Optional::stream)
             .collect(Collectors.toSet());
     if (coordinateIds.isEmpty()) {
       log.warn("Unable to match coordinates to coordinate ID");
@@ -118,7 +116,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (!coordinateId.isPresent()) {
+    if (coordinateId.isEmpty()) {
       log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
       return Optional.empty();
     }
@@ -135,18 +133,6 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.get(0));
-  }
-
-  /**
-   * Creates a base query string without closing semicolon of the following pattern: <br>
-   * {@code SELECT * FROM <schema>.<table>}
-   *
-   * @param schemaName the name of the database schema
-   * @param weatherTableName the name of the database table
-   * @return basic query string without semicolon
-   */
-  private static String createBaseQueryString(String schemaName, String weatherTableName) {
-    return "SELECT * FROM " + schemaName + "." + weatherTableName;
   }
 
   /**
@@ -225,7 +211,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
   protected Optional<TimeBasedValue<WeatherValue>> createEntity(Map<String, String> fieldMap) {
     fieldMap.remove("tid");
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
-    if (!data.isPresent()) return Optional.empty();
+    if (data.isEmpty()) return Optional.empty();
     return weatherFactory.get(data.get());
   }
 
@@ -242,7 +228,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     int coordinateId = Integer.parseInt(coordinateValue);
     Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
-    if (!coordinate.isPresent()) {
+    if (coordinate.isEmpty()) {
       log.warn("Unable to match coordinate ID {} to a point", coordinateId);
       return Optional.empty();
     }

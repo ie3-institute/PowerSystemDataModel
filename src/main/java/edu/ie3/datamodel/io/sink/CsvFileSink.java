@@ -126,8 +126,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
       persistIncludeNested((InputEntity) entity);
     } else if (entity instanceof ResultEntity) {
       write(entity);
-    } else if (entity instanceof TimeSeries) {
-      TimeSeries<?, ?> timeSeries = (TimeSeries<?, ?>) entity;
+    } else if (entity instanceof TimeSeries<?, ?> timeSeries) {
       persistTimeSeries(timeSeries);
     } else {
       log.error(
@@ -147,10 +146,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   @Override
   public <C extends InputEntity> void persistIncludeNested(C entity) {
-    if (entity instanceof NestedEntity) {
+    if (entity instanceof NestedEntity nestedEntity) {
       try {
         write(entity);
-        for (InputEntity ent : Extractor.extractElements((NestedEntity) entity)) {
+        for (InputEntity ent : Extractor.extractElements(nestedEntity)) {
           write(ent);
         }
       } catch (ExtractorException e) {

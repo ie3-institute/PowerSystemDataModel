@@ -29,7 +29,7 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
    * @param energy Currently stored energy
    * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
    */
-  public ThermalStorageResult(
+  protected ThermalStorageResult(
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Energy> energy,
@@ -48,7 +48,7 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
    * @param energy Currently stored energy
    * @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage
    */
-  public ThermalStorageResult(
+  protected ThermalStorageResult(
       UUID uuid,
       ZonedDateTime time,
       UUID inputModel,

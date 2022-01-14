@@ -235,9 +235,7 @@ public class TimeSeriesProcessor<
     Map<String, Method> valueFieldToMethod = extractFieldToMethod(VALUE);
     LinkedHashMap<String, String> valueResult = processObject(entry.getValue(), valueFieldToMethod);
     /* Treat WeatherValues specially, as they are nested ones */
-    if (entry.getValue() instanceof WeatherValue) {
-      WeatherValue weatherValue = (WeatherValue) entry.getValue();
-
+    if (entry.getValue() instanceof WeatherValue weatherValue) {
       Map<String, Method> irradianceFieldToMethod = extractFieldToMethod(WEATHER_IRRADIANCE);
       valueResult.putAll(processObject(weatherValue.getSolarIrradiance(), irradianceFieldToMethod));
 
