@@ -187,8 +187,7 @@ public class ValidationUtils {
         quantities, entity, predicate, "The following quantities have to be positive");
   }
   /**
-   * Goes through the provided quantities and reports those, that have zero or positive value via
-   * synoptic {@link UnsafeEntityException}
+   * Goes through the provided quantities and reports those, that have positive value via
    *
    * @param quantities Array of quantities to check
    * @param entity Unique entity holding the malformed quantities
