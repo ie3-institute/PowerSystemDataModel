@@ -191,7 +191,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * - rScA, rScB, rScC are greater 0 (short circuit resistance in branches A,B,C) <br>
    * - xScA, xScB, xScC are greater 0 (short circuit impedance in branches A,B,C) <br>
    * - gM is greater/equal to 0 (no load conductance) <br>
-   * - bM is less/equal to 0 <br>
+   * - bM is less/equal to 0 (no load susceptance) <br>
    * - sRatedA, sRatedB, sRatedC are greater 0 (rated apparent power in branches A,B,C) <br>
    * - vRatedA, vRatedB, vRatedC are greater 0 (rated voltage at higher node A,B,C) <br>
    * - dV is between 0% and 100% (voltage magnitude increase per tap position <br>
