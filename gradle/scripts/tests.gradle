@@ -1,7 +1,11 @@
 test {
 	useJUnitPlatform()
 	testLogging {
-		events "skipped", "failed", "passed"
+		events "skipped", "failed"
+	}
+
+	testLogging {
+		exceptionFormat "Full"
 	}
 }
 

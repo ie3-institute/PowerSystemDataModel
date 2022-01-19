@@ -134,7 +134,7 @@ class GridTestData {
 	Quantities.getQuantity(0.08d, IMPEDANCE),
 	Quantities.getQuantity(0.003d, IMPEDANCE),
 	Quantities.getQuantity(40000d, ADMITTANCE),
-	Quantities.getQuantity(1000d, ADMITTANCE),
+	Quantities.getQuantity(-1000d, ADMITTANCE),
 	Quantities.getQuantity(1.5d, DV_TAP),
 	Quantities.getQuantity(0d, DPHI_TAP),
 	0,
