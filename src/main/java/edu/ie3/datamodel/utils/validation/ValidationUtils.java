@@ -197,6 +197,7 @@ public class ValidationUtils {
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be negative");
   }
+
   /**
    * Goes through the provided quantities and reports those, that do fulfill the given predicate via
    * synoptic {@link UnsafeEntityException}

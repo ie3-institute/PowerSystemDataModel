@@ -80,7 +80,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Validates a line type if: <br>
    * - it is not null <br>
-   * - B is less than / equal to 0 (Phase-to-ground susceptance per length) <br>
+   * - B is greater/equal to 0 (Phase-to-ground susceptance per length) <br>
    * - G is greater/equal to 0 (Phase-to-ground conductance per length) <br>
    * - R is greater 0 (Phase resistance per length) <br>
    * - X is greater 0 (Phase reactance per length) <br>
