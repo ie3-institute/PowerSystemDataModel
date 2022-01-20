@@ -222,29 +222,24 @@ public class ContainerUtils {
     NodeInput nodeA = connectorInput.getNodeA();
     NodeInput nodeB = connectorInput.getNodeB();
     /* Add an edge if it is not a switch or the switch is closed */
-    if (!(connectorInput instanceof SwitchInput) || ((SwitchInput) connectorInput).isClosed())
+    if (!(connectorInput instanceof SwitchInput sw) || ((SwitchInput) connectorInput).isClosed())
       graph.addEdge(nodeA, nodeB);
 
-    if (connectorInput instanceof LineInput) {
-      LineInput line = (LineInput) connectorInput;
+    if (connectorInput instanceof LineInput line) {
       graph.setEdgeWeightQuantity(
           graph.getEdge(nodeA, nodeB),
           calcImpedance(line.getType().getR(), line.getType().getX(), line.getLength()));
     }
-    if (connectorInput instanceof SwitchInput) {
-      SwitchInput sw = (SwitchInput) connectorInput;
+    if (connectorInput instanceof SwitchInput sw && sw.isClosed()) {
       // assumption: closed switch has a resistance of 1 OHM
-      if (sw.isClosed())
-        graph.setEdgeWeightQuantity(graph.getEdge(nodeA, nodeB), Quantities.getQuantity(1d, OHM));
+      graph.setEdgeWeightQuantity(graph.getEdge(nodeA, nodeB), Quantities.getQuantity(1d, OHM));
     }
-    if (connectorInput instanceof Transformer2WInput) {
-      Transformer2WInput trafo2w = (Transformer2WInput) connectorInput;
+    if (connectorInput instanceof Transformer2WInput trafo2w) {
       graph.setEdgeWeightQuantity(
           graph.getEdge(nodeA, nodeB),
           calcImpedance(trafo2w.getType().getrSc(), trafo2w.getType().getxSc()));
     }
-    if (connectorInput instanceof Transformer3WInput) {
-      Transformer3WInput trafo3w = (Transformer3WInput) connectorInput;
+    if (connectorInput instanceof Transformer3WInput trafo3w) {
       graph.addEdge(nodeA, trafo3w.getNodeC());
 
       graph.setEdgeWeightQuantity(
