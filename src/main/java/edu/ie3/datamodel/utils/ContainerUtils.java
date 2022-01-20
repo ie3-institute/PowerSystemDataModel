@@ -232,7 +232,7 @@ public class ContainerUtils {
     }
     if (connectorInput instanceof SwitchInput sw && sw.isClosed()) {
       // assumption: closed switch has a resistance of 1 OHM
-        graph.setEdgeWeightQuantity(graph.getEdge(nodeA, nodeB), Quantities.getQuantity(1d, OHM));
+      graph.setEdgeWeightQuantity(graph.getEdge(nodeA, nodeB), Quantities.getQuantity(1d, OHM));
     }
     if (connectorInput instanceof Transformer2WInput trafo2w) {
       graph.setEdgeWeightQuantity(
