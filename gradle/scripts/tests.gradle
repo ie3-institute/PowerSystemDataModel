@@ -6,7 +6,7 @@ test {
 
 	// Improve logging for failed Spock tests
 	testLogging {
-		exceptionFormat "full"
+		exceptionFormat "Full"
 	}
 }
 

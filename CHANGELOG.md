@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Create JavaDoc with java 17 instead of java 8
     - Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))
 
+### Changed
+- BREAKING: Transformer's no load susceptance needs to be zero or negative to pass model validation [#378](https://github.com/ie3-institute/PowerSystemDataModel/issues/378)
+  - All input data sets for version < 3.0.0 need to be altered!
+
 ## [2.1.0] - 2022-01-05
 
 ### Added
