@@ -19,6 +19,7 @@ import edu.ie3.datamodel.models.input.container.*
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
 import edu.ie3.test.common.ComplexTopology
 import edu.ie3.test.common.GridTestData
+import edu.ie3.test.helper.DoubleTestHelper
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -533,22 +534,22 @@ class ContainerUtilsTest extends Specification {
 
 		/* Check impedance of two winding transformer */
 		graph.getEdge(transformer.nodeA, transformer.nodeB).with {
-			assert weight == 112.33121875062159d
+			assert DoubleTestHelper.equalsWithTolerance(weight, 112.33121875062159d, 1E-6)
 		}
 		/* Check impedance of three winding transformer */
 		graph.getEdge(transformer3w.nodeA, transformer3w.nodeB).with {
-			assert weight == 1.1278408575681236d
+			assert DoubleTestHelper.equalsWithTolerance(weight, 1.1278408575681236d, 1E-6)
 		}
 		graph.getEdge(transformer3w.nodeA, transformer3w.nodeC).with {
-			assert weight == 1.0471340124358486d
+			assert DoubleTestHelper.equalsWithTolerance(weight, 1.0471340124358486d, 1E-6)
 		}
 		/* Check impedance of line */
 		graph.getEdge(line.nodeA, line.nodeB).with {
-			assert weight == 0.0016909597866300665d
+			assert DoubleTestHelper.equalsWithTolerance(weight, 0.0016909597866300665d, 1E-6)
 		}
 		/* Check impedance of switch */
 		graph.getEdge(swtchClosed.nodeA, swtchClosed.nodeB).with {
-			assert weight == 1.0d
+			assert DoubleTestHelper.equalsWithTolerance(weight, 1.0d, 1E-6)
 		}
 	}
 
