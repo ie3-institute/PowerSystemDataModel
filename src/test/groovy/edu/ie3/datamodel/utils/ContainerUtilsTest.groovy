@@ -7,6 +7,7 @@ package edu.ie3.datamodel.utils
 
 import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.graph.DistanceWeightedGraph
+import edu.ie3.datamodel.graph.ImpedanceWeightedGraph
 import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
@@ -18,6 +19,7 @@ import edu.ie3.datamodel.models.input.container.*
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
 import edu.ie3.test.common.ComplexTopology
 import edu.ie3.test.common.GridTestData
+import edu.ie3.test.helper.DoubleTestHelper
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -439,25 +441,25 @@ class ContainerUtilsTest extends Specification {
 
 	def "The container utils build a valid distance weighted graph model correctly"(){
 		given:
-		JointGridContainer grid = ComplexTopology.grid
+		def grid = ComplexTopology.grid
 
 		when:
-		Optional<DistanceWeightedGraph> resultingGraphOpt = ContainerUtils.getDistanceTopologyGraph(grid)
+		def resultingGraphOpt = ContainerUtils.getDistanceTopologyGraph(grid)
 
 		then:
 		resultingGraphOpt.present
-		DistanceWeightedGraph resultingGraph = resultingGraphOpt.get()
+		def resultingGraph = resultingGraphOpt.get()
 
 		resultingGraph.vertexSet() == ComplexTopology.grid.getRawGrid().getNodes()
 
 		resultingGraph.edgeSet().size() == 7
 	}
 
-	def "The container utils build a valid istance of DistanceWeightedEdge during graph generation"(){
+	def "The container utils build a valid instance of DistanceWeightedEdge during graph generation"(){
 		given:
-		DistanceWeightedGraph graph = new DistanceWeightedGraph()
-		NodeInput nodeA = GridTestData.nodeA
-		NodeInput nodeB = GridTestData.nodeB
+		def graph = new DistanceWeightedGraph()
+		def nodeA = GridTestData.nodeA
+		def nodeB = GridTestData.nodeB
 
 		when:
 		graph.addVertex(nodeA)
@@ -472,8 +474,83 @@ class ContainerUtilsTest extends Specification {
 			assert source == nodeA
 			assert target == nodeB
 		}
+	}
 
+	def "The container utils build a valid impedance weighted graph model correctly"(){
+		given:
+		def grid = ComplexTopology.grid
 
+		when:
+		def resultingGraphOpt = ContainerUtils.getImpedanceTopologyGraph(grid)
+
+		then:
+		resultingGraphOpt.present
+		def resultingGraph = resultingGraphOpt.get()
+
+		resultingGraph.vertexSet() == ComplexTopology.grid.getRawGrid().getNodes()
+
+		resultingGraph.edgeSet().size() == 7
+	}
+
+	def "The container utils build a valid instance of ImpedanceWeightedEdge during graph generation"(){
+		given:
+		def graph = new ImpedanceWeightedGraph()
+
+		when:
+		/* Add a transformer */
+		def transformer = GridTestData.transformerBtoD
+		graph.addVertex(transformer.getNodeA())
+		graph.addVertex(transformer.getNodeB())
+		ContainerUtils.addImpedanceGraphEdge(graph, transformer)
+
+		and:
+		/* Add a line */
+		def line = GridTestData.lineCtoD
+		graph.addVertex(line.getNodeA())
+		graph.addVertex(line.getNodeB())
+		ContainerUtils.addImpedanceGraphEdge(graph, line)
+
+		and:
+		/* Add a closed switch */
+		def swtchClosed = new SwitchInput(UUID.randomUUID(), "test_switch", GridTestData.nodeD, GridTestData.nodeE, true)
+		graph.addVertex(swtchClosed.getNodeA())
+		graph.addVertex(swtchClosed.getNodeB())
+		ContainerUtils.addImpedanceGraphEdge(graph, swtchClosed)
+		def swtchOpen = new SwitchInput(UUID.randomUUID(), "test_switch", GridTestData.nodeE, GridTestData.nodeF, false)
+		graph.addVertex(swtchOpen.getNodeA())
+		graph.addVertex(swtchOpen.getNodeB())
+		ContainerUtils.addImpedanceGraphEdge(graph, swtchOpen)
+
+		and:
+		/* Add a three winding transformer */
+		def transformer3w = GridTestData.transformerAtoBtoC
+		graph.addVertex(transformer3w.getNodeA())
+		graph.addVertex(transformer3w.getNodeB())
+		ContainerUtils.addImpedanceGraphEdge(graph, transformer3w)
+
+		then:
+		graph.vertexSet().size() == 6
+		graph.edgeSet().size() == 5
+
+		/* Check impedance of two winding transformer */
+		graph.getEdge(transformer.nodeA, transformer.nodeB).with {
+			assert DoubleTestHelper.equalsWithTolerance(weight, 112.33121875062159d, 1E-6)
+		}
+		/* Check impedance of three winding transformer */
+		graph.getEdge(transformer3w.nodeA, transformer3w.nodeB).with {
+			assert DoubleTestHelper.equalsWithTolerance(weight, 1.1278408575681236d, 1E-6)
+		}
+		graph.getEdge(transformer3w.nodeA, transformer3w.nodeC).with {
+			assert DoubleTestHelper.equalsWithTolerance(weight, 1.0471340124358486d, 1E-6)
+		}
+		/* Check impedance of line */
+		graph.getEdge(line.nodeA, line.nodeB).with {
+			assert DoubleTestHelper.equalsWithTolerance(weight, 0.0016909597866300665d, 1E-6)
+		}
+		/* Check impedance of switch */
+		graph.getEdge(swtchClosed.nodeA, swtchClosed.nodeB).with {
+			assert DoubleTestHelper.equalsWithTolerance(weight, 1.0d, 1E-6)
+		}
 	}
 
 	/* TODO: Extend testing data so that,

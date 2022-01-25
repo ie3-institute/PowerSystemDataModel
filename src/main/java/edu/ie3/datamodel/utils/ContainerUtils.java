@@ -5,6 +5,11 @@
 */
 package edu.ie3.datamodel.utils;
 
+import static edu.ie3.util.quantities.PowerSystemUnits.KILOMETRE;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+import static tech.units.indriya.unit.Units.OHM;
+
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.TopologyException;
 import edu.ie3.datamodel.graph.*;
@@ -16,13 +21,18 @@ import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.util.quantities.interfaces.SpecificResistance;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.measure.quantity.ElectricResistance;
+import javax.measure.quantity.Length;
 import org.jgrapht.graph.DirectedMultigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 /** Offers functionality useful for grouping different models together */
 public class ContainerUtils {
@@ -129,6 +139,155 @@ public class ContainerUtils {
     graph.addEdge(nodeA, nodeB);
     graph.setEdgeWeight(
         graph.getEdge(nodeA, nodeB), GridAndGeoUtils.distanceBetweenNodes(nodeA, nodeB));
+  }
+
+  /**
+   * Returns the topology of the provided grid container as a {@link ImpedanceWeightedGraph} if the
+   * provided grid container's {@link RawGridElements} allows the creation of a valid topology graph
+   * or an empty optional otherwise.
+   *
+   * @param grid the grid container that should be converted into topology graph
+   * @return either an optional holding the impedance topology graph instance or an empty optional
+   */
+  public static Optional<ImpedanceWeightedGraph> getImpedanceTopologyGraph(GridContainer grid) {
+    return getImpedanceTopologyGraph(grid.getRawGrid());
+  }
+
+  /**
+   * Returns the topology of the provided {@link RawGridElements} as a {@link
+   * ImpedanceWeightedGraph}, if they allow the creation of a valid topology graph or an empty
+   * optional otherwise.
+   *
+   * @param rawGridElements raw grids elements as base of the distance weighted topology graph
+   * @return either an optional holding the impedance topology graph instance or an empty optional
+   */
+  public static Optional<ImpedanceWeightedGraph> getImpedanceTopologyGraph(
+      RawGridElements rawGridElements) {
+
+    ImpedanceWeightedGraph graph = new ImpedanceWeightedGraph();
+
+    try {
+      rawGridElements.getNodes().forEach(graph::addVertex);
+    } catch (NullPointerException ex) {
+      log.error("At least one node entity of provided RawGridElements is null. ", ex);
+      return Optional.empty();
+    }
+
+    try {
+      rawGridElements.getLines().forEach(line -> addImpedanceGraphEdge(graph, line));
+    } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
+      log.error("Error adding line edges to graph: ", ex);
+      return Optional.empty();
+    }
+
+    try {
+      rawGridElements
+          .getSwitches()
+          .forEach(
+              switchInput -> {
+                if (switchInput.isClosed()) addImpedanceGraphEdge(graph, switchInput);
+              });
+    } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
+      log.error("Error adding switch edges to graph: ", ex);
+      return Optional.empty();
+    }
+
+    try {
+      rawGridElements.getTransformer2Ws().forEach(trafo2w -> addImpedanceGraphEdge(graph, trafo2w));
+    } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
+      log.error("Error adding 2 winding transformer edges to graph: ", ex);
+      return Optional.empty();
+    }
+
+    try {
+      rawGridElements.getTransformer3Ws().forEach(trafo3w -> addImpedanceGraphEdge(graph, trafo3w));
+    } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
+      log.error("Error adding 3 winding transformer edges to graph: ", ex);
+      return Optional.empty();
+    }
+
+    // if we reached this point, we can safely return a valid graph
+    return Optional.of(graph);
+  }
+
+  /**
+   * Adds an {@link ImpedanceWeightedEdge} to the provided graph between the provided nodes a and b.
+   * By implementation of jGraphT this side effect cannot be removed. :(
+   *
+   * @param graph the graph to be altered
+   * @param connectorInput the connector input element
+   */
+  private static void addImpedanceGraphEdge(
+      ImpedanceWeightedGraph graph, ConnectorInput connectorInput) {
+    NodeInput nodeA = connectorInput.getNodeA();
+    NodeInput nodeB = connectorInput.getNodeB();
+    /* Add an edge if it is not a switch or the switch is closed */
+    if (!(connectorInput instanceof SwitchInput sw) || ((SwitchInput) connectorInput).isClosed())
+      graph.addEdge(nodeA, nodeB);
+
+    if (connectorInput instanceof LineInput line) {
+      graph.setEdgeWeightQuantity(
+          graph.getEdge(nodeA, nodeB),
+          calcImpedance(line.getType().getR(), line.getType().getX(), line.getLength()));
+    }
+    if (connectorInput instanceof SwitchInput sw && sw.isClosed()) {
+      // assumption: closed switch has a resistance of 1 OHM
+      graph.setEdgeWeightQuantity(graph.getEdge(nodeA, nodeB), Quantities.getQuantity(1d, OHM));
+    }
+    if (connectorInput instanceof Transformer2WInput trafo2w) {
+      graph.setEdgeWeightQuantity(
+          graph.getEdge(nodeA, nodeB),
+          calcImpedance(trafo2w.getType().getrSc(), trafo2w.getType().getxSc()));
+    }
+    if (connectorInput instanceof Transformer3WInput trafo3w) {
+      graph.addEdge(nodeA, trafo3w.getNodeC());
+
+      graph.setEdgeWeightQuantity(
+          graph.getEdge(nodeA, nodeB),
+          calcImpedance(
+              trafo3w.getType().getrScA().add(trafo3w.getType().getrScB()),
+              trafo3w.getType().getxScA().add(trafo3w.getType().getxScB())));
+
+      graph.setEdgeWeightQuantity(
+          graph.getEdge(nodeA, trafo3w.getNodeC()),
+          calcImpedance(
+              trafo3w.getType().getrScA().add(trafo3w.getType().getrScC()),
+              trafo3w.getType().getxScA().add(trafo3w.getType().getxScC())));
+    }
+  }
+
+  /**
+   * Calculate the total magnitude of the complex impedance, defined by relative resistance,
+   * reactance and an equivalent length
+   *
+   * @param r Relative resistance
+   * @param x Relative reactance
+   * @param length Length of the element
+   * @return Magnitude of the complex impedance
+   */
+  private static ComparableQuantity<ElectricResistance> calcImpedance(
+      ComparableQuantity<SpecificResistance> r,
+      ComparableQuantity<SpecificResistance> x,
+      ComparableQuantity<Length> length) {
+    return calcImpedance(
+        r.multiply(length.to(KILOMETRE)).asType(ElectricResistance.class).to(OHM),
+        x.multiply(length.to(KILOMETRE)).asType(ElectricResistance.class).to(OHM));
+  }
+
+  /**
+   * Calculate the magnitude of the complex impedance from given resistance and reactance
+   *
+   * @param r Resistance (real part of the complex impedance)
+   * @param x Reactance (complex part of the complex impedance)
+   * @return Magnitude of the complex impedance
+   */
+  private static ComparableQuantity<ElectricResistance> calcImpedance(
+      ComparableQuantity<ElectricResistance> r, ComparableQuantity<ElectricResistance> x) {
+    double zValue =
+        sqrt(
+            pow(r.to(OHM).getValue().doubleValue(), 2)
+                + pow(x.to(OHM).getValue().doubleValue(), 2));
+    return Quantities.getQuantity(zValue, OHM);
   }
 
   /**

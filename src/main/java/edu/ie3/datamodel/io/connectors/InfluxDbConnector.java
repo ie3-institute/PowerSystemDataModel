@@ -50,7 +50,7 @@ public class InfluxDbConnector implements DataConnector {
    * @param databaseName the name of the database the session should be set to
    * @param createDb true if the connector should create the database if it doesn't exist yet, false
    *     otherwise
-   * @param logLevel log level of the {@link InfluxDB.LogLevel} logger
+   * @param logLevel log level of the {@link org.influxdb.InfluxDB.LogLevel} logger
    * @param batchOptions write options to write batch operations
    */
   public InfluxDbConnector(

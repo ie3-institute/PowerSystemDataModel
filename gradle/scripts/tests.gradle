@@ -4,6 +4,7 @@ test {
 		events "skipped", "failed"
 	}
 
+	// Improve logging for failed Spock tests
 	testLogging {
 		exceptionFormat "Full"
 	}
