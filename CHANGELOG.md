@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - BREAKING: Transformer's no load susceptance needs to be zero or negative to pass model validation [#378](https://github.com/ie3-institute/PowerSystemDataModel/issues/378)
   - All input data sets for version < 3.0.0 need to be altered!
+- BREAKING: Comprehensive harmonization around weather sources [#267](https://github.com/ie3-institute/PowerSystemDataModel/issues/267)
+    - Adapted the expected column scheme
+      - DWD COSMO model
+        - `"coordinate"` to `"coordinate id"` (as composite word)
+        - `"diffuseirradiation"` to `"diffuse irradiance"` (as composite word)
+    - Harmonized the column name definition for coordinate id across implementations of `WeatherSource`
 
 ## [2.1.0] - 2022-01-05
 
@@ -55,10 +61,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - separated entity and file naming and introduced a new FileNamingStrategy taking an EntityNamingStrategy and a FileHierarchy as arguments
-- BREAKING: Weather source
-  - Adapted data scheme (COSMO: `"coordinate"` to `"coordinate id"`, `"irradiation"` to `"irradiance"`)
-  - Harmonized the source of coordinate id column name across implementations of `WeatherSource`
-  - Get field name in different casing (to actually get the column name in database, file, ...)
 
 ### Fixed
 -   `CsvSystemParticipantSource#getSystemParticipants()` now correctly returns electric vehicle charging station input models [PR#370](https://github.com/ie3-institute/PowerSystemDataModel/pull/370)
