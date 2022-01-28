@@ -15,13 +15,11 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.StringUtils;
 import edu.ie3.util.interval.ClosedInterval;
-
+import edu.ie3.util.naming.Naming;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import edu.ie3.util.naming.Naming;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
