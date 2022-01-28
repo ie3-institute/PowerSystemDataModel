@@ -5,9 +5,9 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.*;
+import static edu.ie3.datamodel.io.naming.timeseries.ColumnScheme.*;
 
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.interval.ClosedInterval;

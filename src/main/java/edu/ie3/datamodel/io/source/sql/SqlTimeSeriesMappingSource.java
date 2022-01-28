@@ -6,10 +6,10 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +47,14 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
   public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
       UUID timeSeriesUuid) {
     return getDbTableName(null, "%" + timeSeriesUuid.toString())
-        .map(entityPersistenceNamingStrategy::extractIndividualTimesSeriesMetaInformation);
+        .map(
+            tableName -> {
+              IndividualTimeSeriesMetaInformation metaInformation =
+                  entityPersistenceNamingStrategy.extractIndividualTimesSeriesMetaInformation(
+                      tableName);
+              return new SqlConnector.SqlIndividualTimeSeriesMetaInformation(
+                  metaInformation, tableName);
+            });
   }
 
   @Override

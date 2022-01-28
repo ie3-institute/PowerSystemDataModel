@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.input.InputEntity;
 import java.util.Map;
 import java.util.Objects;
@@ -64,9 +64,8 @@ public interface TimeSeriesMappingSource extends DataSource {
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (!(o instanceof MappingEntry)) return false;
+      if (!(o instanceof MappingEntry that)) return false;
       if (!super.equals(o)) return false;
-      MappingEntry that = (MappingEntry) o;
       return participant.equals(that.participant) && timeSeries.equals(that.timeSeries);
     }
 

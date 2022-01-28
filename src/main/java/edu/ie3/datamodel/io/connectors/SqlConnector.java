@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.connectors;
 
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.util.StringUtils;
 import edu.ie3.util.TimeUtil;
 import java.sql.*;
@@ -155,5 +157,52 @@ public class SqlConnector implements DataConnector {
       log.error("Exception at extracting ResultSet: ", e);
     }
     return insensitiveFieldsToAttributes;
+  }
+
+  /** Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file */
+  public static class SqlIndividualTimeSeriesMetaInformation
+      extends IndividualTimeSeriesMetaInformation {
+    private final String tableName;
+
+    public SqlIndividualTimeSeriesMetaInformation(
+        UUID uuid, ColumnScheme columnScheme, String tableName) {
+      super(uuid, columnScheme);
+      this.tableName = tableName;
+    }
+
+    public SqlIndividualTimeSeriesMetaInformation(
+        IndividualTimeSeriesMetaInformation metaInformation, String fullFilePath) {
+      this(metaInformation.getUuid(), metaInformation.getColumnScheme(), fullFilePath);
+    }
+
+    public String getTableName() {
+      return tableName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof SqlIndividualTimeSeriesMetaInformation that)) return false;
+      if (!super.equals(o)) return false;
+      return tableName.equals(that.tableName);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(super.hashCode(), tableName);
+    }
+
+    @Override
+    public String toString() {
+      return "SqlIndividualTimeSeriesMetaInformation{"
+          + "uuid="
+          + getUuid()
+          + ", columnScheme="
+          + getColumnScheme()
+          + ", tableName='"
+          + tableName
+          + '\''
+          + '}';
+    }
   }
 }

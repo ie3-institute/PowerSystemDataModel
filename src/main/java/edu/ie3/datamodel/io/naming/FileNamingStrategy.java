@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.IoUtil;
-import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -218,7 +217,7 @@ public class FileNamingStrategy {
    * @param path Path to the file
    * @return The meeting meta information
    */
-  public FileNameMetaInformation extractTimeSeriesMetaInformation(Path path) {
+  public DataSourceMetaInformation extractTimeSeriesMetaInformation(Path path) {
     /* Extract file name from possibly fully qualified path */
     Path fileName = path.getFileName();
     if (fileName == null)
@@ -233,7 +232,7 @@ public class FileNamingStrategy {
    * @param fileName File name
    * @return The meeting meta information
    */
-  public FileNameMetaInformation extractTimeSeriesMetaInformation(String fileName) {
+  public DataSourceMetaInformation extractTimeSeriesMetaInformation(String fileName) {
     /* Remove the file ending (ending limited to 255 chars, which is the max file name allowed in NTFS and ext4) */
     String withoutEnding = fileName.replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
 

@@ -11,7 +11,7 @@ import static edu.ie3.datamodel.models.StandardUnits.ENERGY_PRICE
 
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.CsvFileConnector
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.*

@@ -5,9 +5,9 @@
 */
 package edu.ie3.datamodel.io.naming;
 
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.*;

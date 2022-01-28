@@ -6,9 +6,8 @@
 package edu.ie3.datamodel.io.source.sql
 
 import edu.ie3.datamodel.io.connectors.SqlConnector
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
@@ -93,9 +92,10 @@ class SqlTimeSeriesMappingSourceIT extends Specification {
 	def "A sql time series mapping source returns correct meta information for an existing time series"() {
 		given:
 		def timeSeriesUuid = UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5")
-		def expected = new IndividualTimeSeriesMetaInformation(
+		def expected = new SqlConnector.SqlIndividualTimeSeriesMetaInformation(
 				timeSeriesUuid,
-				ColumnScheme.ACTIVE_POWER)
+				ColumnScheme.ACTIVE_POWER,
+				"its_p_9185b8c1-86ba-4a16-8dea-5ac898e8caa5")
 
 		when:
 		def actual = source.getTimeSeriesMetaInformation(timeSeriesUuid)

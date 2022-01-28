@@ -3,14 +3,14 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.io.csv.timeseries;
+package edu.ie3.datamodel.io.naming.timeseries;
 
-import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
+import edu.ie3.datamodel.io.naming.DataSourceMetaInformation;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Specific meta information, that can be derived from a load profile time series file */
-public class LoadProfileTimeSeriesMetaInformation extends FileNameMetaInformation {
+public class LoadProfileTimeSeriesMetaInformation extends DataSourceMetaInformation {
   private final String profile;
 
   public LoadProfileTimeSeriesMetaInformation(UUID uuid, String profile) {
@@ -25,9 +25,8 @@ public class LoadProfileTimeSeriesMetaInformation extends FileNameMetaInformatio
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof LoadProfileTimeSeriesMetaInformation)) return false;
+    if (!(o instanceof LoadProfileTimeSeriesMetaInformation that)) return false;
     if (!super.equals(o)) return false;
-    LoadProfileTimeSeriesMetaInformation that = (LoadProfileTimeSeriesMetaInformation) o;
     return profile.equals(that.profile);
   }
 

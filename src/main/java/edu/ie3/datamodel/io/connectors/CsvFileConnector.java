@@ -8,9 +8,10 @@ package edu.ie3.datamodel.io.connectors;
 import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.*;
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.DataSourceMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -246,7 +247,7 @@ public class CsvFileConnector implements DataConnector {
               return new CsvIndividualTimeSeriesMetaInformation(
                   metaInformation, filePathWithoutEnding);
             })
-        .collect(Collectors.toMap(FileNameMetaInformation::getUuid, v -> v));
+        .collect(Collectors.toMap(DataSourceMetaInformation::getUuid, v -> v));
   }
 
   /**
@@ -325,7 +326,7 @@ public class CsvFileConnector implements DataConnector {
   private Optional<CsvIndividualTimeSeriesMetaInformation> buildCsvTimeSeriesMetaInformation(
       String filePathString, ColumnScheme... columnSchemes) {
     try {
-      FileNameMetaInformation metaInformation =
+      DataSourceMetaInformation metaInformation =
           fileNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
       if (!IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())) {
         log.error(
@@ -456,9 +457,8 @@ public class CsvFileConnector implements DataConnector {
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (!(o instanceof CsvIndividualTimeSeriesMetaInformation)) return false;
+      if (!(o instanceof CsvIndividualTimeSeriesMetaInformation that)) return false;
       if (!super.equals(o)) return false;
-      CsvIndividualTimeSeriesMetaInformation that = (CsvIndividualTimeSeriesMetaInformation) o;
       return fullFilePath.equals(that.fullFilePath);
     }
 
