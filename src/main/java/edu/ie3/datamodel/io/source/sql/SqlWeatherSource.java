@@ -25,6 +25,7 @@ import org.locationtech.jts.geom.Point;
 public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>>
     implements WeatherSource {
   private static final String WHERE = " WHERE ";
+  /* Column names in sql come in "snake" case by default */
   private static final NamingConvention DEFAULT_NAMING_CONVENTION = NamingConvention.SNAKE;
 
   private final IdCoordinateSource idCoordinateSource;
@@ -52,7 +53,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
    * @deprecated Use {@link SqlWeatherSource#SqlWeatherSource(SqlConnector, IdCoordinateSource,
    *     String, String, NamingConvention, TimeBasedWeatherValueFactory)} instead
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   public SqlWeatherSource(
       SqlConnector connector,
       IdCoordinateSource idCoordinateSource,

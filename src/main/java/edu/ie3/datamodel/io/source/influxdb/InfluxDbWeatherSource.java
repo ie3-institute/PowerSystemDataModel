@@ -15,10 +15,13 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.StringUtils;
 import edu.ie3.util.interval.ClosedInterval;
+
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import edu.ie3.util.naming.Naming;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
@@ -31,7 +34,10 @@ public class InfluxDbWeatherSource implements WeatherSource {
   private static final String MEASUREMENT_NAME_WEATHER = "weather";
   private static final int MILLI_TO_NANO_FACTOR = 1000000;
 
+  /* Final name of the coordinate id field for use in factories */
   private final String coordinateIdFieldName;
+  /* Final name of the column within the database */
+  private final String coordinateIdColumnName = Naming.from("coordinate", "id").snakeCase();
   private final InfluxDbConnector connector;
   private final IdCoordinateSource coordinateSource;
   private final TimeBasedWeatherValueFactory weatherValueFactory;
@@ -162,16 +168,16 @@ public class InfluxDbWeatherSource implements WeatherSource {
                                   StringUtils.snakeCaseToCamelCase(entry.getKey()).toLowerCase(),
                               Map.Entry::getValue));
 
-              Optional<Point> coordinate =
-                  coordinateSource.getCoordinate(
-                      Integer.parseInt(flatCaseFields.remove(coordinateIdFieldName)));
-              if (!coordinate.isPresent()) return null;
+              /* Add a random UUID if necessary */
               flatCaseFields.putIfAbsent("uuid", UUID.randomUUID().toString());
 
-              return new TimeBasedWeatherValueData(flatCaseFields, coordinate.get());
-            })
-        .filter(Objects::nonNull)
-        .map(weatherValueFactory::get);
+              /* Get the corresponding coordinate id from map AND REMOVE THE ENTRY !!! */
+              int coordinateId = Integer.parseInt(flatCaseFields.remove(coordinateIdFieldName));
+              return coordinateSource
+                  .getCoordinate(coordinateId)
+                  .map(point -> new TimeBasedWeatherValueData(flatCaseFields, point))
+                  .flatMap(weatherValueFactory::get);
+            });
   }
 
   private String createQueryStringForCoordinateAndTimeInterval(
@@ -207,7 +213,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   private String createCoordinateConstraintString(int coordinateId) {
-    return "coordinate_id='" + coordinateId + "'";
+    return coordinateIdColumnName + "='" + coordinateId + "'";
   }
 
   /**

@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 public class CouchbaseWeatherSource implements WeatherSource {
   private static final Logger logger = LoggerFactory.getLogger(CouchbaseWeatherSource.class);
 
+  /* Column names in couchbase come in "flat" case by default */
   private static final NamingConvention DEFAULT_NAMING_CONVENTION = NamingConvention.FLAT;
   private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ssxxx";
   /** The start of the document key, comparable to a table name in relational databases */
@@ -45,6 +46,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
   private final String keyPrefix;
   private final CouchbaseConnector connector;
   private final IdCoordinateSource coordinateSource;
+  /* Final name of the column within the database */
   private final String coordinateIdColumnName;
 
   /**
@@ -78,7 +80,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
    * @deprecated Use {@link CouchbaseWeatherSource#CouchbaseWeatherSource(CouchbaseConnector,
    *     IdCoordinateSource, String, NamingConvention, TimeBasedWeatherValueFactory)} instead
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   public CouchbaseWeatherSource(
       CouchbaseConnector connector,
       IdCoordinateSource coordinateSource,
