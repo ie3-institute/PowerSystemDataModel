@@ -27,7 +27,8 @@ class IconIdCoordinateFactoryTest extends Specification {
 			"id",
 			"latitude",
 			"longitude",
-			"coordinatetype"] as Set
+			"coordinatetype"
+		] as Set
 		def validSimpleFactoryData = new SimpleFactoryData([
 			"id":"477295",
 			"latitude":"52.312",

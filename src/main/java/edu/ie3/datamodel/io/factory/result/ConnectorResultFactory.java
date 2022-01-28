@@ -33,6 +33,16 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
     super(LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
   }
 
+  /**
+   * Create a new factory to build {@link ConnectorResult}s and utilize the given date time
+   * formatter pattern to parse date time strings
+   *
+   * @param dtfPattern Pattern to parse date time strings
+   */
+  public ConnectorResultFactory(String dtfPattern) {
+    super(dtfPattern, LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
+  }
+
   @Override
   protected List<Set<String>> getFields(SimpleEntityData simpleEntityData) {
     /// all result models have the same constructor except StorageResult
@@ -55,7 +65,7 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
   @Override
   protected ConnectorResult buildModel(SimpleEntityData data) {
     final Class<? extends UniqueEntity> entityClass = data.getTargetClass();
-    ZonedDateTime time = TIME_UTIL.toZonedDateTime(data.getField(TIME));
+    ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
 
     UUID inputModel = data.getUUID(INPUT_MODEL);
     ComparableQuantity<ElectricCurrent> iAMag =

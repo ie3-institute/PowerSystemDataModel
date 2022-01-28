@@ -35,18 +35,26 @@ public class ValidationUtils {
     throw new IllegalStateException("Don't try and instantiate a Utility class.");
   }
 
-  protected static String notImplementedString(Object obj) {
-    return "Cannot validate object of class '"
-        + obj.getClass().getSimpleName()
-        + "', as no routine is implemented.";
+  /**
+   * Creates a new {@link NotImplementedException}, if there is no check available for the class of
+   * the given object
+   *
+   * @param obj Object, that cannot be checked
+   * @return Exception with predefined error string
+   */
+  protected static NotImplementedException checkNotImplementedException(Object obj) {
+    return new NotImplementedException(
+        String.format(
+            "Cannot validate object of class '%s', as no routine is implemented.",
+            obj.getClass().getSimpleName()));
   }
 
   /**
    * This is a "distribution" method, that forwards the check request to specific implementations to
-   * fulfill the checking task, based on the class of the given object. If an unknown class is
-   * handed in, a {@link ValidationException} is thrown.
+   * fulfill the checking task, based on the class of the given object.
    *
    * @param obj Object to check
+   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
   public static void check(Object obj) {
     checkNonNull(obj, "an object");
@@ -57,7 +65,7 @@ public class ValidationUtils {
       GraphicValidationUtils.check((GraphicInput) obj);
     else if (AssetTypeInput.class.isAssignableFrom(obj.getClass()))
       checkAssetType((AssetTypeInput) obj);
-    else throw new ValidationException(notImplementedString(obj));
+    else throw checkNotImplementedException(obj);
   }
 
   /**
@@ -67,10 +75,10 @@ public class ValidationUtils {
    * - its operation time is not null <br>
    * - in case operation time is limited, start time is before end time <br>
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
-   * the checking task, based on the class of the given object. If an unknown class is handed in, a
-   * {@link ValidationException} is thrown.
+   * the checking task, based on the class of the given object.
    *
    * @param assetInput AssetInput to check
+   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
   private static void checkAsset(AssetInput assetInput) {
     checkNonNull(assetInput, "an asset");
@@ -107,17 +115,17 @@ public class ValidationUtils {
       SystemParticipantValidationUtils.check((SystemParticipantInput) assetInput);
     else if (ThermalUnitInput.class.isAssignableFrom(assetInput.getClass()))
       ThermalUnitValidationUtils.check((ThermalUnitInput) assetInput);
-    else throw new ValidationException(notImplementedString(assetInput));
+    else throw checkNotImplementedException(assetInput);
   }
 
   /**
    * Validates an asset type if: <br>
    * - it is not null <br>
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
-   * the checking task, based on the class of the given object. If an unknown class is handed in, a
-   * {@link ValidationException} is thrown.
+   * the checking task, based on the class of the given object.
    *
    * @param assetTypeInput AssetTypeInput to check
+   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
   private static void checkAssetType(AssetTypeInput assetTypeInput) {
     checkNonNull(assetTypeInput, "an asset type");
@@ -136,7 +144,7 @@ public class ValidationUtils {
     else if (SystemParticipantTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
       SystemParticipantValidationUtils.checkType((SystemParticipantTypeInput) assetTypeInput);
     else {
-      throw new ValidationException(notImplementedString(assetTypeInput));
+      throw checkNotImplementedException(assetTypeInput);
     }
   }
 
@@ -148,7 +156,7 @@ public class ValidationUtils {
    */
   protected static void checkNonNull(Object obj, String expectedDescription) {
     if (obj == null)
-      throw new ValidationException(
+      throw new InvalidEntityException(
           "Expected " + expectedDescription + ", but got nothing. :-(", new NullPointerException());
   }
 
@@ -177,6 +185,17 @@ public class ValidationUtils {
     Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() <= 0d;
     detectMalformedQuantities(
         quantities, entity, predicate, "The following quantities have to be positive");
+  }
+  /**
+   * Goes through the provided quantities and reports those, that have positive value via
+   *
+   * @param quantities Array of quantities to check
+   * @param entity Unique entity holding the malformed quantities
+   */
+  protected static void detectPositiveQuantities(Quantity<?>[] quantities, UniqueEntity entity) {
+    Predicate<Quantity<?>> predicate = quantity -> quantity.getValue().doubleValue() > 0d;
+    detectMalformedQuantities(
+        quantities, entity, predicate, "The following quantities have to be negative");
   }
 
   /**

@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import edu.ie3.datamodel.exceptions.NotImplementedException
+
 import static edu.ie3.datamodel.models.StandardUnits.ADMITTANCE_PER_LENGTH
 import static edu.ie3.datamodel.models.StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
 import static edu.ie3.datamodel.models.StandardUnits.RATED_VOLTAGE_MAGNITUDE
@@ -12,7 +14,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
-import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -57,10 +58,12 @@ class ValidationUtilsTest extends Specification {
 			false,
 			null,
 			GermanVoltageLevelUtils.LV,
-			6)] as Set         || false
+			6)
+		] as Set         || false
 		[
 			GridTestData.nodeD,
-			GridTestData.nodeE] as Set || true
+			GridTestData.nodeE
+		] as Set || true
 		[] as Set                          || true
 	}
 
@@ -89,12 +92,14 @@ class ValidationUtilsTest extends Specification {
 			false,
 			null,
 			GermanVoltageLevelUtils.LV,
-			6)] as Set         || Optional.of("9e37ce48-9650-44ec-b888-c2fd182aff01: 2\n" +
+			6)
+		] as Set         || Optional.of("9e37ce48-9650-44ec-b888-c2fd182aff01: 2\n" +
 		" - NodeInput{uuid=9e37ce48-9650-44ec-b888-c2fd182aff01, id='node_f', operator=f15105c4-a2de-4ab8-a621-4bc98e372d92, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=1 PU, slack=false, geoPosition=null, voltLvl=CommonVoltageLevel{id='Niederspannung', nominalVoltage=0.4 kV, synonymousIds=[Niederspannung, lv, ns], voltageRange=Interval [0 kV, 10 kV)}, subnet=6}\n" +
 		" - NodeInput{uuid=9e37ce48-9650-44ec-b888-c2fd182aff01, id='node_g', operator=f15105c4-a2de-4ab8-a621-4bc98e372d92, operationTime=OperationTime{startDate=null, endDate=null, isLimited=false}, vTarget=1 PU, slack=false, geoPosition=null, voltLvl=CommonVoltageLevel{id='Niederspannung', nominalVoltage=0.4 kV, synonymousIds=[Niederspannung, lv, ns], voltageRange=Interval [0 kV, 10 kV)}, subnet=6}")
 		[
 			GridTestData.nodeD,
-			GridTestData.nodeE] as Set || Optional.empty()
+			GridTestData.nodeE
+		] as Set || Optional.empty()
 		[] as Set                          || Optional.empty()
 	}
 
@@ -109,7 +114,7 @@ class ValidationUtilsTest extends Specification {
 
 		where:
 		invalidObject          || expectedException
-		new Coordinate(10, 10) || new ValidationException("Cannot validate object of class '" + invalidObject.getClass().getSimpleName() + "', as no routine is implemented.")
+		new Coordinate(10, 10) || new NotImplementedException("Cannot validate object of class '" + invalidObject.getClass().getSimpleName() + "', as no routine is implemented.")
 	}
 
 	def "The validation check method recognizes all potential errors for an asset"() {
@@ -123,7 +128,7 @@ class ValidationUtilsTest extends Specification {
 
 		where:
 		invalidAsset                                                            	    || expectedException
-		null 																			|| new ValidationException("Expected an object, but got nothing. :-(")
+		null 																			|| new InvalidEntityException("Expected an object, but got nothing. :-(", new NullPointerException())
 		GridTestData.nodeA.copy().id(null).build()										|| new InvalidEntityException("No ID assigned", invalidAsset)
 		GridTestData.nodeA.copy().operationTime(null).build()							|| new InvalidEntityException("Operation time of the asset is not defined", invalidAsset)
 		GridTestData.nodeA.copy().operationTime(OperationTime.builder().
@@ -203,5 +208,41 @@ class ValidationUtilsTest extends Specification {
 		then:
 		InvalidEntityException ex = thrown()
 		ex.message == "Entity is invalid because of: The following quantities have to be positive: 0 μS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0 μS/km, g=0 μS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
+	}
+
+	def "Checking an unsupported asset leads to an exception"() {
+		given:
+		def invalidAsset = new InvalidAssetInput()
+
+		when:
+		ValidationUtils.checkAsset(invalidAsset)
+
+		then:
+		def e = thrown(NotImplementedException)
+		e.message == "Cannot validate object of class 'InvalidAssetInput', as no routine is implemented."
+	}
+
+	def "Checking an unsupported asset type leads to an exception"() {
+		given:
+		def invalidAssetType = new InvalidAssetTypeInput()
+
+		when:
+		ValidationUtils.checkAssetType(invalidAssetType)
+
+		then:
+		def e = thrown(NotImplementedException)
+		e.message == "Cannot validate object of class 'InvalidAssetTypeInput', as no routine is implemented."
+	}
+
+	def "Checking an asset type input without an id leads to an exception"() {
+		given:
+		def invalidAssetType = new InvalidAssetTypeInput(UUID.randomUUID(), null)
+
+		when:
+		ValidationUtils.checkAssetType(invalidAssetType)
+
+		then:
+		def e = thrown(InvalidEntityException)
+		e.message.startsWith("Entity is invalid because of: No ID assigned [AssetTypeInput")
 	}
 }

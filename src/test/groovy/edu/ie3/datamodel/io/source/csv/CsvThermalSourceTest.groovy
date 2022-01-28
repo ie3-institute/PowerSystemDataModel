@@ -5,9 +5,9 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
 import edu.ie3.datamodel.io.factory.input.ThermalUnitInputEntityData
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput
@@ -21,8 +21,8 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvThermalSource should return ThermalBuses from valid and invalid input data as expected"() {
 		given:
-		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityPersistenceNamingStrategy())
-		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, entityPersistenceNamingStrategy, csvTypeSource)
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
 		def operators = csvTypeSource.operators
 
 		//test method when no operators are provided as constructor parameters
@@ -50,8 +50,8 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvThermalSource should return a CylindricalStorageInput from valid and invalid input data as expected"() {
 		given:
-		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityPersistenceNamingStrategy())
-		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, entityPersistenceNamingStrategy, csvTypeSource)
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
 		def operators = csvTypeSource.operators
 		def thermalBuses = csvThermalSource.thermalBuses
 
@@ -93,8 +93,8 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvThermalSource should build thermal unit input entity from valid and invalid input data as expected"() {
 		given:
-		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityPersistenceNamingStrategy())
-		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, entityPersistenceNamingStrategy, csvTypeSource)
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
 		def operator = new OperatorInput(UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "testOperator")
 		def validFieldsToAttributes = [
 			"uuid"			: "717af017-cc69-406f-b452-e022d7fb516a",
@@ -135,8 +135,8 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "A CsvThermalSource should return a ThermalHouseInput from valid and invalid input data as expected"() {
 		given:
-		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new EntityPersistenceNamingStrategy())
-		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, entityPersistenceNamingStrategy, csvTypeSource)
+		def csvTypeSource = new CsvTypeSource(",", typeFolderPath, new FileNamingStrategy())
+		def csvThermalSource = new CsvThermalSource(csvSep, thermalFolderPath, fileNamingStrategy, csvTypeSource)
 		def operators = csvTypeSource.operators
 		def thermalBuses = csvThermalSource.thermalBuses
 
@@ -154,6 +154,9 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		resultingThermalHouseWoOperator.first().thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
 		resultingThermalHouseWoOperator.first().ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
 		resultingThermalHouseWoOperator.first().ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
+		resultingThermalHouseWoOperator.first().targetTemperature == ThermalUnitInputTestData.thermalHouseInput.targetTemperature
+		resultingThermalHouseWoOperator.first().upperTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.upperTemperatureLimit
+		resultingThermalHouseWoOperator.first().lowerTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.lowerTemperatureLimit
 
 		//test method when operators and thermal buses are provided as constructor parameters
 		when:
@@ -169,6 +172,9 @@ class CsvThermalSourceTest extends Specification implements CsvTestDataMeta {
 		resultingThermalHouseWoOperator.first().thermalBus == ThermalUnitInputTestData.thermalHouseInput.thermalBus
 		resultingThermalHouse.first().ethLosses == ThermalUnitInputTestData.thermalHouseInput.ethLosses
 		resultingThermalHouse.first().ethCapa == ThermalUnitInputTestData.thermalHouseInput.ethCapa
+		resultingThermalHouse.first().targetTemperature == ThermalUnitInputTestData.thermalHouseInput.targetTemperature
+		resultingThermalHouse.first().upperTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.upperTemperatureLimit
+		resultingThermalHouse.first().lowerTemperatureLimit == ThermalUnitInputTestData.thermalHouseInput.lowerTemperatureLimit
 
 	}
 }

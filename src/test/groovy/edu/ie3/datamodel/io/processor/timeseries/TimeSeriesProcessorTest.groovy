@@ -42,7 +42,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 			assert processor.headerElements == [
 				"uuid",
 				"price",
-				"time"] as String[]
+				"time"
+			] as String[]
 		}
 	}
 

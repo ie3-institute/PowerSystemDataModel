@@ -7,6 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- SQL time series sources (`SqlTimeSeriesSource` and `SqlTimeSeriesMappingSource`) [#467](https://github.com/ie3-institute/PowerSystemDataModel/issues/467)
+- Graph with impedance weighted edges including facilities to create it [#440](https://github.com/ie3-institute/PowerSystemDataModel/issues/440)
+
+### Fixed
+- Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
+    - Protected constructors for abstract classes
+    - Use pattern matching
+    - Remove unused imports
+    - Use enhanced switch statements
+    - Replace lambdas with method references
+    - Use `Stream#toList`
+    - Adapt visibility for JUnit 5
+- Fix JavaDoc creation
+    - Create JavaDoc with java 17 instead of java 8
+    - Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))
+
+### Changed
+- BREAKING: Transformer's no load susceptance needs to be zero or negative to pass model validation [#378](https://github.com/ie3-institute/PowerSystemDataModel/issues/378)
+  - All input data sets for version < 3.0.0 need to be altered!
+
+## [2.1.0] - 2022-01-05
+
+### Added
+- added `EvcsLocationType` support in `EvcsInput` and `EvcsInputFactory` [#406](https://github.com/ie3-institute/PowerSystemDataModel/issues/406)
+- Opportunity to close writer in `CsvFileSink`
+- Generified SQL data sources for future extensions
+
+### Fixed
+- adapted `LineInput` constructor to convert line length to `StandardUnits.LINE_LENGTH` [#412](https://github.com/ie3-institute/PowerSystemDataModel/issues/412)
+
+### Changed
+- Writers used to write time series are closed right away
+
+## [2.0.1] - 2021-07-08
+
+### Fixed
+- fix CHANGELOG.md
+- replace `LogManager` calls with `LogFactory` for facade logging support
+
+## [2.0.0] - 2021-05-21
+
+### Added
+-   added `ResultEntitySource` interface
+-   added `CsvResultEntitySource` implementation to read `ResultEntity` instances from .csv files
+-   added target temperature including tolerance boundaries to `ThermalHouseInput`
+
+### Changed
+- separated entity and file naming and introduced a new FileNamingStrategy taking an EntityNamingStrategy and a FileHierarchy as arguments
+- BREAKING: Weather source
+  - Adapted data scheme (COSMO: `"coordinate"` to `"coordinate id"`, `"irradiation"` to `"irradiance"`)
+  - Harmonized the source of coordinate id column name across implementations of `WeatherSource`
+  - Get field name in different casing (to actually get the column name in database, file, ...)
+
+### Fixed
+-   `CsvSystemParticipantSource#getSystemParticipants()` now correctly returns electric vehicle charging station input models [PR#370](https://github.com/ie3-institute/PowerSystemDataModel/pull/370)
+
+## [2.0.0] - 2021-05-21
+
+### Added
 -   definition for a default input file directory structure
 -   tarball utils to extract and compress files
 -   added electric vehicle charging station implementation ``EvcsInput``
@@ -30,10 +89,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Reworking the time series source (one source per time series, distinct mapping source, factory pattern)
 -   BREAKING: Moved methods `buildSafe{Coord,Point,LineString,LineStringBetweenCoords,LineStringBetweenPoints}`, `totalLengthOfLineString` from `GridAndGeoUtils` to `GeoUtils` in [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
 -   BREAKING: Moved `CoordinateDistance` to [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
--   BREAKING: Weather source
-	-   Adapted data scheme (COSMO: `"coordinate"` to `"coordinate id"`, `"irradiation"` to `"irradiance"`)
-	-   Harmonized the source of coordinate id column name across implementations of `WeatherSource`
-	-   Get field name in different casing (to actually get the column name in database, file, ...)
+-   Factory methods for `SubGridGate`
+-   BREAKING: Inheritance hierarchy of exceptions all around entity validation
+
+### Removed
+-   BREAKING: Removed deprecated code parts
+	-   Intermingled builder pattern and constructors in `SubGridGate`
+	-   `TarballUtils` that have been transferred to `FileIOUtils` in [_PowerSystemUtils_](https://github.com/ie3-institute/PowerSystemUtils)
+	-   `FileNamingStrategy` that has been transferred to `EntityPersistenceNamingStrategy`
+	-   `EvCharacteristicInput` and `TimeSeriesContainer` that shouldn't be used anymore
 
 ### Fixed
 -   InfluxDbConnector now keeps session instead of creating a new one each call
@@ -81,5 +145,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/1.1.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.1.0...HEAD
+[2.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.1...2.1.0
+[2.0.1]: https://github.com/ie3-institute/powersystemdatamodel/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/1.1.0...2.0.0
 [1.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/6a49bc514be8859ebd29a3595cd58cd000498f1e...1.1.0

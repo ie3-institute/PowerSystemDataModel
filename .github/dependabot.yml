@@ -1,0 +1,22 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  target-branch: dev
+  reviewers:
+  - ckittl
+  - johanneshiry
+  - t-ober
+  - sensarmad
+  ignore:
+  - dependency-name: org.spockframework:spock-core
+    versions:
+        - "2.1-groovy-3.0-SNAPSHOT"
+        - "2.1-groovy-2.5-SNAPSHOT"
+  - dependency-name: org.jgrapht:jgrapht-core
+    versions:
+    - ">= 1.5.a, < 1.6"

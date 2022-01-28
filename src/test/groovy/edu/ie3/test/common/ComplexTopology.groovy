@@ -27,14 +27,16 @@ class ComplexTopology extends GridTestData {
 		nodeD,
 		nodeE,
 		nodeF,
-		nodeG] as Set,
+		nodeG
+	] as Set,
 	[] as Set,
 	[
 		transformerBtoD,
 		transformerBtoE,
 		transformerCtoE,
 		transformerCtoF,
-		transformerCtoG] as Set,
+		transformerCtoG
+	] as Set,
 	[transformerAtoBtoC] as Set,
 	[] as Set,
 	[] as Set)
@@ -174,7 +176,8 @@ class ComplexTopology extends GridTestData {
 				[] as Set,
 				[
 					transformerBtoE,
-					transformerCtoE] as Set,
+					transformerCtoE
+				] as Set,
 				[] as Set,
 				[] as Set,
 				[] as Set),
@@ -202,7 +205,8 @@ class ComplexTopology extends GridTestData {
 				[] as Set,
 				[
 					transformerCtoF,
-					transformerCtoG] as Set,
+					transformerCtoG
+				] as Set,
 				[] as Set,
 				[] as Set,
 				[] as Set),
@@ -228,13 +232,13 @@ class ComplexTopology extends GridTestData {
 		/* Add all edges */
 		expectedSubGrids.values().forEach({ subGrid -> mutableGraph.addVertex(subGrid) })
 
-		mutableGraph.addEdge(expectedSubGrids.get(1), expectedSubGrids.get(2), new SubGridGate(transformerAtoBtoC, ConnectorPort.B))
-		mutableGraph.addEdge(expectedSubGrids.get(1), expectedSubGrids.get(3), new SubGridGate(transformerAtoBtoC, ConnectorPort.C))
-		mutableGraph.addEdge(expectedSubGrids.get(2), expectedSubGrids.get(4), new SubGridGate(transformerBtoD))
-		mutableGraph.addEdge(expectedSubGrids.get(2), expectedSubGrids.get(5), new SubGridGate(transformerBtoE))
-		mutableGraph.addEdge(expectedSubGrids.get(3), expectedSubGrids.get(5), new SubGridGate(transformerCtoE))
-		mutableGraph.addEdge(expectedSubGrids.get(3), expectedSubGrids.get(6), new SubGridGate(transformerCtoF))
-		mutableGraph.addEdge(expectedSubGrids.get(3), expectedSubGrids.get(6), new SubGridGate(transformerCtoG))
+		mutableGraph.addEdge(expectedSubGrids.get(1), expectedSubGrids.get(2), SubGridGate.fromTransformer3W(transformerAtoBtoC, ConnectorPort.B))
+		mutableGraph.addEdge(expectedSubGrids.get(1), expectedSubGrids.get(3), SubGridGate.fromTransformer3W(transformerAtoBtoC, ConnectorPort.C))
+		mutableGraph.addEdge(expectedSubGrids.get(2), expectedSubGrids.get(4), SubGridGate.fromTransformer2W(transformerBtoD))
+		mutableGraph.addEdge(expectedSubGrids.get(2), expectedSubGrids.get(5), SubGridGate.fromTransformer2W(transformerBtoE))
+		mutableGraph.addEdge(expectedSubGrids.get(3), expectedSubGrids.get(5), SubGridGate.fromTransformer2W(transformerCtoE))
+		mutableGraph.addEdge(expectedSubGrids.get(3), expectedSubGrids.get(6), SubGridGate.fromTransformer2W(transformerCtoF))
+		mutableGraph.addEdge(expectedSubGrids.get(3), expectedSubGrids.get(6), SubGridGate.fromTransformer2W(transformerCtoG))
 		expectedSubGridTopology = new SubGridTopologyGraph(mutableGraph)
 	}
 }

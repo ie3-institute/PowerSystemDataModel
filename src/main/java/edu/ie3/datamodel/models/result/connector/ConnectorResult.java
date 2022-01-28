@@ -38,7 +38,7 @@ public abstract class ConnectorResult extends ResultEntity {
    * @param iBMag electric current magnitude @ port B, normally provided in Ampere
    * @param iBAng electric current angle @ Port B in degree
    */
-  public ConnectorResult(
+  protected ConnectorResult(
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
@@ -64,7 +64,7 @@ public abstract class ConnectorResult extends ResultEntity {
    * @param iBMag electric current magnitude @ port B, normally provided in Ampere
    * @param iBAng electric current angle @ Port B in degree
    */
-  public ConnectorResult(
+  protected ConnectorResult(
       UUID uuid,
       ZonedDateTime time,
       UUID inputModel,

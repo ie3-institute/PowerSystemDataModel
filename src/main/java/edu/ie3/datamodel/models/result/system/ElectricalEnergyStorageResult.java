@@ -19,7 +19,7 @@ public abstract class ElectricalEnergyStorageResult extends SystemParticipantRes
   /** State of Charge (SoC) in % */
   private final ComparableQuantity<Dimensionless> soc;
 
-  public ElectricalEnergyStorageResult(
+  protected ElectricalEnergyStorageResult(
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
@@ -29,7 +29,7 @@ public abstract class ElectricalEnergyStorageResult extends SystemParticipantRes
     this.soc = soc.to(StandardUnits.SOC);
   }
 
-  public ElectricalEnergyStorageResult(
+  protected ElectricalEnergyStorageResult(
       UUID uuid,
       ZonedDateTime time,
       UUID inputModel,

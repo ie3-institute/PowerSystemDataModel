@@ -12,7 +12,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
-import edu.ie3.datamodel.utils.GridAndGeoUtils;
+import edu.ie3.util.geo.GeoUtils;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Length;
@@ -43,7 +43,8 @@ public class LineInput extends ConnectorInput implements HasType {
    * @param operationTime Time for which the entity is operated
    * @param nodeA Grid node at one side of the line
    * @param nodeB Grid node at the other side of the line
-   * @param parallelDevices Amount of parallel lines
+   * @param parallelDevices overall amount of parallel lines to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two lines using the specified parameters)
    * @param type of line
    * @param length of this line
    * @param geoPosition Coordinates of this line
@@ -64,7 +65,7 @@ public class LineInput extends ConnectorInput implements HasType {
     super(uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices);
     this.type = type;
     this.length = length.to(StandardUnits.LINE_LENGTH);
-    this.geoPosition = GridAndGeoUtils.buildSafeLineString(geoPosition);
+    this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
   }
 
@@ -75,7 +76,8 @@ public class LineInput extends ConnectorInput implements HasType {
    * @param id of the asset
    * @param nodeA Grid node at one side of the line
    * @param nodeB Grid node at the other side of the line
-   * @param parallelDevices Amount of parallel lines
+   * @param parallelDevices overall amount of parallel lines to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two lines using the specified parameters)
    * @param type of line
    * @param length of this line
    * @param geoPosition Coordinates of this line
@@ -93,8 +95,8 @@ public class LineInput extends ConnectorInput implements HasType {
       OlmCharacteristicInput olmCharacteristic) {
     super(uuid, id, nodeA, nodeB, parallelDevices);
     this.type = type;
-    this.length = length;
-    this.geoPosition = GridAndGeoUtils.buildSafeLineString(geoPosition);
+    this.length = length.to(StandardUnits.LINE_LENGTH);
+    this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
   }
 

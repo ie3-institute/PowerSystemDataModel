@@ -12,8 +12,8 @@ import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple utility class that can be used by sinks to extract nested elements (e.g. nodes, types)
@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public final class Extractor {
 
-  private static final Logger log = LogManager.getLogger(Extractor.class);
+  private static final Logger log = LoggerFactory.getLogger(Extractor.class);
 
   private Extractor() {
     throw new IllegalStateException("Utility classes cannot be instantiated");
@@ -33,23 +33,23 @@ public final class Extractor {
   public static Set<InputEntity> extractElements(NestedEntity nestedEntity)
       throws ExtractorException {
     CopyOnWriteArrayList<InputEntity> resultingList = new CopyOnWriteArrayList<>();
-    if (nestedEntity instanceof HasNodes) {
-      resultingList.addAll(((HasNodes) nestedEntity).allNodes());
+    if (nestedEntity instanceof HasNodes nestedHasNode) {
+      resultingList.addAll((nestedHasNode).allNodes());
     }
-    if (nestedEntity instanceof Operable) {
-      extractOperator((Operable) nestedEntity).ifPresent(resultingList::add);
+    if (nestedEntity instanceof Operable nestedOperable) {
+      extractOperator(nestedOperable).ifPresent(resultingList::add);
     }
-    if (nestedEntity instanceof HasType) {
-      resultingList.add(extractType((HasType) nestedEntity));
+    if (nestedEntity instanceof HasType nestedHasType) {
+      resultingList.add(extractType(nestedHasType));
     }
-    if (nestedEntity instanceof HasThermalBus) {
-      resultingList.add(((HasThermalBus) nestedEntity).getThermalBus());
+    if (nestedEntity instanceof HasThermalBus nestedHasThermalBus) {
+      resultingList.add((nestedHasThermalBus).getThermalBus());
     }
-    if (nestedEntity instanceof HasThermalStorage) {
-      resultingList.add(((HasThermalStorage) nestedEntity).getThermalStorage());
+    if (nestedEntity instanceof HasThermalStorage nestedHasThermalStorage) {
+      resultingList.add((nestedHasThermalStorage).getThermalStorage());
     }
-    if (nestedEntity instanceof HasLine) {
-      resultingList.add(((HasLine) nestedEntity).getLine());
+    if (nestedEntity instanceof HasLine nestedHasLine) {
+      resultingList.add((nestedHasLine).getLine());
     }
 
     if (resultingList.contains(null)) {
@@ -72,19 +72,19 @@ public final class Extractor {
         .parallel()
         .forEach(
             element -> {
-              if (element instanceof NestedEntity) {
+              if (element instanceof NestedEntity nestedElement) {
                 try {
-                  resultingList.addAll(extractElements((NestedEntity) element));
+                  resultingList.addAll(extractElements(nestedElement));
                 } catch (ExtractorException e) {
                   log.error(
                       "An error occurred during extraction of nested entity '{}':{}",
-                      () -> element.getClass().getSimpleName(),
-                      () -> e);
+                      element.getClass().getSimpleName(),
+                      e);
                 }
               }
             });
 
-    return Collections.unmodifiableSet(new HashSet<>(resultingList));
+    return Set.copyOf(resultingList);
   }
 
   public static AssetTypeInput extractType(HasType entityWithType) {

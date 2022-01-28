@@ -8,14 +8,16 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
@@ -32,8 +34,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parent class of all .csv file related sources containing methods and fields consumed by allmost
@@ -44,7 +46,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class CsvDataSource {
 
-  protected static final Logger log = LogManager.getLogger(CsvDataSource.class);
+  protected static final Logger log = LoggerFactory.getLogger(CsvDataSource.class);
 
   // general fields
   protected final String csvSep;
@@ -62,14 +64,12 @@ public abstract class CsvDataSource {
    * @deprecated ensures downward compatibility with old csv data format. Can be removed when
    *     support for old csv format is removed. *
    */
-  @Deprecated private boolean notYetLoggedWarning = true;
+  @Deprecated(since = "1.1.0", forRemoval = true)
+  private boolean notYetLoggedWarning = true;
 
-  public CsvDataSource(
-      String csvSep,
-      String folderPath,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
+  protected CsvDataSource(String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
     this.csvSep = csvSep;
-    this.connector = new CsvFileConnector(folderPath, entityPersistenceNamingStrategy);
+    this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
 
   /**
@@ -136,9 +136,9 @@ public abstract class CsvDataSource {
     } catch (Exception e) {
       log.error(
           "Cannot build fields to attributes map for row '{}' with headline '{}'.\nException: {}",
-          csvRow::trim,
-          () -> String.join(",", headline),
-          () -> e);
+          csvRow.trim(),
+          String.join(",", headline),
+          e);
     }
     return insensitiveFieldsToAttributes;
   }
@@ -170,7 +170,7 @@ public abstract class CsvDataSource {
    * @return an array with one entry per column of the provided csv row string
    * @deprecated only left for downward compatibility. Will be removed in a major release
    */
-  @Deprecated
+  @Deprecated(since = "1.1.0", forRemoval = true)
   private String[] oldFieldVals(String csvSep, String csvRow) {
 
     /*geo json support*/
@@ -182,8 +182,8 @@ public abstract class CsvDataSource {
     final String charReplacement = "charRepl";
 
     /*removes double double quotes*/
-    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow.replaceAll("\"\"", "\""));
-    List<String> charList = extractMatchingStrings(charInputRegex, csvRow.replaceAll("\"\"", "\""));
+    List<String> geoList = extractMatchingStrings(geoJsonRegex, csvRow.replace("\"\"", "\""));
+    List<String> charList = extractMatchingStrings(charInputRegex, csvRow.replace("\"\"", "\""));
 
     AtomicInteger geoCounter = new AtomicInteger(0);
     AtomicInteger charCounter = new AtomicInteger(0);
@@ -362,7 +362,6 @@ public abstract class CsvDataSource {
       log.warn(
           "Unable to find file for entity '{}': {}", entityClass.getSimpleName(), e.getMessage());
     }
-
     return Stream.empty();
   }
 
@@ -395,10 +394,7 @@ public abstract class CsvDataSource {
       Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
 
       return distinctRowsWithLog(
-              allRows,
-              fieldToValues -> fieldToValues.get("uuid"),
-              entityClass.getSimpleName(),
-              "UUID")
+          allRows, fieldToValues -> fieldToValues.get("uuid"), entityClass.getSimpleName(), "UUID")
           .parallelStream();
     } catch (IOException e) {
       log.warn(
@@ -418,7 +414,7 @@ public abstract class CsvDataSource {
         .parallel()
         .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
         .filter(map -> !map.isEmpty())
-        .collect(Collectors.toList());
+        .toList();
   }
 
   /**
@@ -457,8 +453,7 @@ public abstract class CsvDataSource {
 
     /* Check for rows with the same key based on the provided key extractor function */
     Set<Map<String, String>> distinctIdSet =
-        allRowsSet
-            .parallelStream()
+        allRowsSet.parallelStream()
             .filter(ValidationUtils.distinctByKey(keyExtractor))
             .collect(Collectors.toSet());
     if (distinctIdSet.size() != allRowsSet.size()) {
@@ -466,8 +461,10 @@ public abstract class CsvDataSource {
       String affectedCoordinateIds =
           allRowsSet.stream().map(keyExtractor).collect(Collectors.joining(",\n"));
       log.error(
-          "'{}' entities with duplicated {} key, but different field values found! Please review the "
-              + "corresponding input file!\nAffected primary keys:\n{}",
+          """
+          '{}' entities with duplicated {} key, but different field values found! Please review the corresponding input file!
+          Affected primary keys:
+          {}""",
           entityDescriptor,
           keyDescriptor,
           affectedCoordinateIds);
@@ -620,5 +617,19 @@ public abstract class CsvDataSource {
       Collection<OperatorInput> operators) {
     return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
         .map(dataOpt -> dataOpt.flatMap(factory::get));
+  }
+
+  /**
+   * Returns a stream of {@link SimpleEntityData} for result entity classes, using a
+   * fields-to-attributes map.
+   *
+   * @param entityClass the entity class that should be build
+   * @param <T> Type of the {@link ResultEntity} to expect
+   * @return stream of {@link SimpleEntityData}
+   */
+  protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
+      Class<T> entityClass) {
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
+        .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
   }
 }

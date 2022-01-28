@@ -30,9 +30,10 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * @param operationTime Time for which the entity is operated
    * @param nodeA Grid node at one side of the connector
    * @param nodeB Grid node at the other side of the connector
-   * @param parallelDevices Amount of parallel devices
+   * @param parallelDevices overall amount of parallel devices to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two entities using the specified parameters)
    */
-  public ConnectorInput(
+  protected ConnectorInput(
       UUID uuid,
       String id,
       OperatorInput operator,
@@ -53,9 +54,10 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * @param id of the asset
    * @param nodeA Grid node at one side of the connector
    * @param nodeB Grid node at the other side of the connector
-   * @param parallelDevices Amount of parallel devices
+   * @param parallelDevices overall amount of parallel devices to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two entities using the specified parameters)
    */
-  public ConnectorInput(
+  protected ConnectorInput(
       UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, int parallelDevices) {
     super(uuid, id);
     this.nodeA = nodeA;

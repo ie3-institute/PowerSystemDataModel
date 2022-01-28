@@ -64,32 +64,19 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
       Quantity<?> quantity, String fieldName) {
     Optional<String> normalizedQuantityValue = Optional.empty();
     switch (fieldName) {
-      case "energy":
-      case "eConsAnnual":
-      case "eStorage":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
-        break;
-      case "q":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT));
-        break;
-      case "p":
-      case "pMax":
-      case "pOwn":
-      case "pThermal":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT));
-        break;
-      default:
-        log.error(
-            "Cannot process quantity with value '{}' for field with name {} in result entity processing!",
-            quantity,
-            fieldName);
-        break;
+      case "energy", "eConsAnnual", "eStorage" -> normalizedQuantityValue =
+          quantityValToOptionalString(
+              quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
+      case "q" -> normalizedQuantityValue =
+          quantityValToOptionalString(
+              quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT));
+      case "p", "pMax", "pOwn", "pThermal" -> normalizedQuantityValue =
+          quantityValToOptionalString(
+              quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT));
+      default -> log.error(
+          "Cannot process quantity with value '{}' for field with name {} in result entity processing!",
+          quantity,
+          fieldName);
     }
     return normalizedQuantityValue;
   }

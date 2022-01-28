@@ -52,7 +52,7 @@ public class LoadInputFactory
     try {
       slp = StandardLoadProfile.parse(data.getField(SLP));
     } catch (ParsingException e) {
-      logger.error(
+      logger.warn(
           "Cannot parse the standard load profile \"{}\" of load \"{}\". Assign no load profile instead.",
           data.getField(SLP),
           id);

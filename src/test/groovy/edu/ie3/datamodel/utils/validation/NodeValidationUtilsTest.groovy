@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.voltagelevels.CommonVoltageLevel
 import edu.ie3.util.interval.RightOpenInterval
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
-import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.test.common.GridTestData
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -42,7 +41,7 @@ class NodeValidationUtilsTest extends Specification {
 
 		where:
 		invalidNode                                                            	    || expectedException
-		GridTestData.nodeA.copy().voltLvl(null).build()								|| new ValidationException("Expected a voltage level, but got nothing. :-(")
+		GridTestData.nodeA.copy().voltLvl(null).build()								|| new InvalidEntityException("Expected a voltage level, but got nothing. :-(", new NullPointerException())
 		GridTestData.nodeA.copy().voltLvl(new CommonVoltageLevel(
 				"null",
 				null,

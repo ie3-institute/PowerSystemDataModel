@@ -19,14 +19,14 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** InfluxDB Sink for result and time series data */
 public class InfluxDbSink implements OutputDataSink {
-  private static final Logger log = LogManager.getLogger(InfluxDbSink.class);
+  public static final Logger log = LoggerFactory.getLogger(InfluxDbSink.class);
   /** Field name for time */
   private static final String FIELD_NAME_TIME = "time";
   /** Field name for input model uuid field in result entities */
@@ -143,7 +143,7 @@ public class InfluxDbSink implements OutputDataSink {
       entityFieldData.remove(FIELD_NAME_TIME);
       return Optional.of(
           Point.measurement(transformToMeasurementName(measurementName))
-              .time((entity).getTime().toInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
+              .time(entity.getTime().toInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
               .tag("input_model", entityFieldData.remove(FIELD_NAME_INPUT))
               .tag("scenario", connector.getScenarioName())
               .fields(Collections.unmodifiableMap(entityFieldData))
@@ -151,8 +151,8 @@ public class InfluxDbSink implements OutputDataSink {
     } catch (SinkException e) {
       log.error(
           "Cannot persist provided entity '{}'. Exception: {}",
-          () -> entity.getClass().getSimpleName(),
-          () -> e);
+          entity.getClass().getSimpleName(),
+          e);
     }
     return Optional.empty();
   }
@@ -218,7 +218,7 @@ public class InfluxDbSink implements OutputDataSink {
         points.add(point);
       }
     } catch (SinkException e) {
-      log.error("Cannot persist provided time series '{}'. Exception: {}", () -> key, () -> e);
+      log.error("Cannot persist provided time series '{}'. Exception: {}", key, e);
     }
     return points;
   }
@@ -236,19 +236,18 @@ public class InfluxDbSink implements OutputDataSink {
   private <C extends UniqueEntity> Set<Point> extractPoints(C entity) {
     Set<Point> points = new HashSet<>();
     /* Distinguish between result models and time series */
-    if (entity instanceof ResultEntity) {
+    if (entity instanceof ResultEntity resultEntity) {
       try {
         points.add(
-            transformToPoint((ResultEntity) entity)
+            transformToPoint(resultEntity)
                 .orElseThrow(() -> new SinkException("Could not transform entity")));
       } catch (SinkException e) {
         log.error(
             "Cannot persist provided entity '{}'. Exception: {}",
-            () -> entity.getClass().getSimpleName(),
-            () -> e);
+            entity.getClass().getSimpleName(),
+            e);
       }
-    } else if (entity instanceof TimeSeries) {
-      TimeSeries<?, ?> timeSeries = (TimeSeries<?, ?>) entity;
+    } else if (entity instanceof TimeSeries<?, ?> timeSeries) {
       points.addAll(transformToPoints(timeSeries));
     } else {
       log.error(

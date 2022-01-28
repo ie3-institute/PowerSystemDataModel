@@ -18,6 +18,16 @@ public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
     super(SwitchResult.class);
   }
 
+  /**
+   * Create a new factory to build {@link SwitchResult}s and utilize the given date time formatter
+   * pattern to parse date time strings
+   *
+   * @param dtfPattern Pattern to parse date time strings
+   */
+  public SwitchResultFactory(String dtfPattern) {
+    super(dtfPattern, SwitchResult.class);
+  }
+
   @Override
   protected List<Set<String>> getFields(SimpleEntityData data) {
 
@@ -31,7 +41,7 @@ public class SwitchResultFactory extends ResultEntityFactory<SwitchResult> {
   protected SwitchResult buildModel(SimpleEntityData data) {
     Optional<UUID> uuidOpt =
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
-    ZonedDateTime time = TIME_UTIL.toZonedDateTime(data.getField(TIME));
+    ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModel = data.getUUID(INPUT_MODEL);
 
     final boolean closed = data.getBoolean(CLOSED);

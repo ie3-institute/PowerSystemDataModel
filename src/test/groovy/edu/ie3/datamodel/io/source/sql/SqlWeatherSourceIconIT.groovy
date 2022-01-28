@@ -16,6 +16,7 @@ import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import edu.ie3.util.naming.NamingConvention
 import org.locationtech.jts.geom.Point
+import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
@@ -26,7 +27,7 @@ import spock.lang.Specification
 class SqlWeatherSourceIconIT extends Specification implements WeatherSourceTestHelper {
 
 	@Shared
-	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.9")
+	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.14")
 
 	@Shared
 	SqlWeatherSource source
@@ -40,7 +41,8 @@ class SqlWeatherSourceIconIT extends Specification implements WeatherSourceTestH
 		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/icon/weather.sql")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather.sql")
 		// Execute import script
-		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
+		Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
+		assert res.stderr.empty
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
 		def weatherFactory = new IconTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
@@ -67,11 +69,13 @@ class SqlWeatherSourceIconIT extends Specification implements WeatherSourceTestH
 		def timeSeries67775 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67775_16H),
-					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)]
+					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
+				]
 				as Set<TimeBasedValue>)
 		def timeSeries67776 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67776_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67776_16H)
+				] as Set<TimeBasedValue>)
 
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
@@ -89,11 +93,13 @@ class SqlWeatherSourceIconIT extends Specification implements WeatherSourceTestH
 				[
 					new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H),
 					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67775_16H),
-					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
+				] as Set<TimeBasedValue>)
 		def timeSeries67776 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67776_15H),
-					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67776_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67776_16H)
+				] as Set<TimeBasedValue>)
 
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)

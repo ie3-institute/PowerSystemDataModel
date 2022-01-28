@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.io.csv;
+package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
@@ -18,7 +18,6 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
-import edu.ie3.datamodel.models.input.system.characteristic.EvCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
@@ -95,7 +94,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
     resultTree =
         Paths.get(
             FilenameUtils.concat(
-                projectDirectory.toString(), SubDirectories.Constants.RESULT_SUB_TREEE));
+                projectDirectory.toString(), SubDirectories.Constants.RESULT_SUB_TREE));
   }
 
   /**
@@ -148,7 +147,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
    */
   private void checkFurtherDirectoryElements() throws FileException {
     try (Stream<Path> apparentElementsStream = Files.list(projectDirectory)) {
-      for (Path apparentPath : apparentElementsStream.collect(Collectors.toList())) {
+      for (Path apparentPath : apparentElementsStream.toList()) {
         if (Files.isDirectory(apparentPath)
             && !subDirectories.containsKey(apparentPath)
             && apparentPath.compareTo(inputTree) != 0
@@ -193,6 +192,16 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
   }
 
   /**
+   * Gives the {@link #baseDirectory}).
+   *
+   * @return An Option to the base directory as a string
+   */
+  @Override
+  public Optional<String> getBaseDirectory() {
+    return Optional.of(this.baseDirectory.toString());
+  }
+
+  /**
    * Gives the correct sub directory (w.r.t. {@link #baseDirectory}) for the provided class.
    *
    * @param cls Class to define the sub directory for
@@ -210,7 +219,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                         .anyMatch(definedClass -> definedClass.isAssignableFrom(cls)))
             .findFirst();
 
-    if (!maybeSubDirectory.isPresent()) {
+    if (maybeSubDirectory.isEmpty()) {
       logger.debug("Don't know a fitting sub directory for class '{}'.", cls.getSimpleName());
       return Optional.empty();
     } else {
@@ -238,7 +247,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 NodeInput.class)
             .collect(Collectors.toSet())),
     GRID_RESULT(
-        Constants.RESULT_SUB_TREEE + FILE_SEPARATOR + "grid" + FILE_SEPARATOR,
+        Constants.RESULT_SUB_TREE + FILE_SEPARATOR + "grid" + FILE_SEPARATOR,
         false,
         Stream.of(
                 LineResult.class,
@@ -262,7 +271,6 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 WecTypeInput.class,
                 OperatorInput.class,
                 WecCharacteristicInput.class,
-                EvCharacteristicInput.class,
                 RandomLoadParameters.class,
                 LoadProfileInput.class)
             .collect(Collectors.toSet())),
@@ -282,7 +290,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 WecInput.class)
             .collect(Collectors.toSet())),
     PARTICIPANTS_RESULTS(
-        Constants.RESULT_SUB_TREEE + FILE_SEPARATOR + "participants" + FILE_SEPARATOR,
+        Constants.RESULT_SUB_TREE + FILE_SEPARATOR + "participants" + FILE_SEPARATOR,
         false,
         Stream.of(
                 BmResult.class,
@@ -306,7 +314,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
         false,
         Stream.of(ThermalUnitInput.class, ThermalBusInput.class).collect(Collectors.toSet())),
     THERMAL_RESULTS(
-        Constants.RESULT_SUB_TREEE + FILE_SEPARATOR + "thermal" + FILE_SEPARATOR,
+        Constants.RESULT_SUB_TREE + FILE_SEPARATOR + "thermal" + FILE_SEPARATOR,
         false,
         Stream.of(ThermalUnitResult.class).collect(Collectors.toSet())),
     GRAPHICS(
@@ -332,12 +340,12 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
     SubDirectories(String relPath, boolean mandatory, Set<Class<?>> relevantClasses) {
       this.relPath = relPath;
       this.mandatory = mandatory;
-      this.relevantClasses = relevantClasses;
+      this.relevantClasses = Collections.unmodifiableSet(relevantClasses);
     }
 
     private static class Constants {
       private static final String INPUT_SUB_TREE = "input";
-      private static final String RESULT_SUB_TREEE = "results";
+      private static final String RESULT_SUB_TREE = "results";
     }
   }
 }

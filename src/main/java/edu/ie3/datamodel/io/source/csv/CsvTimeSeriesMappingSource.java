@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import java.util.Map;
 import java.util.Optional;
@@ -17,15 +17,13 @@ import java.util.stream.Collectors;
 
 public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSeriesMappingSource {
   /* Available factories */
-  private final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
+  private static final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
 
   private final Map<UUID, UUID> mapping;
 
   public CsvTimeSeriesMappingSource(
-      String csvSep,
-      String folderPath,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
-    super(csvSep, folderPath, entityPersistenceNamingStrategy);
+      String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
+    super(csvSep, folderPath, fileNamingStrategy);
 
     /* Build the map */
     mapping =

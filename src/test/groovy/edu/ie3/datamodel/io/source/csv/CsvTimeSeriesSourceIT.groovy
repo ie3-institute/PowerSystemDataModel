@@ -5,16 +5,15 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.test.common.TimeSeriesSourceTestData.*
+
 import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
-import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.value.HeatAndPValue
-import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import spock.lang.Shared
 import spock.lang.Specification
-import tech.units.indriya.quantity.Quantities
 
 class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
@@ -26,7 +25,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
 	def setup() {
 		factory = new TimeBasedSimpleValueFactory<>(HeatAndPValue)
-		source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new EntityPersistenceNamingStrategy(), UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7"), "its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7", HeatAndPValue, factory)
+		source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7"), "its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7", HeatAndPValue, factory)
 	}
 
 	def "A csv time series source throw an Exception, if the file cannot be found"() {
@@ -57,7 +56,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
 	def "Construction a csv time series source with malicious parameters, leads to IllegalArgumentException"() {
 		when:
-		new CsvTimeSeriesSource(";", timeSeriesFolderPath, new EntityPersistenceNamingStrategy(), UUID.fromString("fbc59b5b-9307-4fb4-a406-c1f08f26fee5"), "file/not/found", HeatAndPValue, factory)
+		new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("fbc59b5b-9307-4fb4-a406-c1f08f26fee5"), "file/not/found", HeatAndPValue, factory)
 
 		then:
 		def e = thrown(IllegalArgumentException)
@@ -67,7 +66,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
 	def "A csv time series source is able to return a time series for a period of interest"() {
 		given:
-		def interval = new ClosedInterval(TimeUtil.withDefaults.toZonedDateTime("2020-01-01 00:15:00"), TimeUtil.withDefaults.toZonedDateTime("2020-01-01 00:15:00"))
+		def interval = new ClosedInterval(TIME_15MIN, TIME_15MIN)
 
 		when:
 		def actual = source.getTimeSeries(interval)
@@ -77,14 +76,11 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 	}
 
 	def "A csv time series source is able to return a single value, if it is covered"() {
-		given:
-		def time = TimeUtil.withDefaults.toZonedDateTime("2020-01-01 00:15:00")
-
 		when:
-		def actual = source.getValue(time)
+		def actual = source.getValue(TIME_15MIN)
 
 		then:
 		actual.present
-		actual.get() == new HeatAndPValue(Quantities.getQuantity(1250.0, StandardUnits.ACTIVE_POWER_IN), Quantities.getQuantity(12.0, StandardUnits.HEAT_DEMAND))
+		actual.get() == PH_VALUE_15MIN
 	}
 }

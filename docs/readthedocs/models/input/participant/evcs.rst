@@ -32,6 +32,8 @@ Entity Model
 +------------------+---------+--------------------------------------------------------------------------------------+
 | cosPhiRated      | --      | Rated power factor                                                                   |
 +------------------+---------+--------------------------------------------------------------------------------------+
+| locationType     | --      | :ref:`Charging station location types<location_types>`                               |
++------------------+---------+--------------------------------------------------------------------------------------+
 
 Type Model
 """"""""""""
@@ -48,11 +50,11 @@ The actual model definition for charging point types looks as follows:
 | Attribute              | Unit    | Remarks                                                                        |
 +========================+=========+================================================================================+
 | id                     | --      | Human readable identifier                                                      |
-+------------------------+---+-----+--------------------------------------------------------------------------------+
++------------------------+---------+--------------------------------------------------------------------------------+
 | sRated                 | kVA     | Rated apparent power                                                           |
-+------------------------+---+-----+--------------------------------------------------------------------------------+
++------------------------+---------+--------------------------------------------------------------------------------+
 | electricCurrentType    | --      | Electric current type                                                          |
-+------------------------+---+-----+--------------------------------------------------------------------------------+
++------------------------+---------+--------------------------------------------------------------------------------+
 |synonymousIds           | --      | Set of alternative human readable identifiers                                  |
 +------------------------+---------+--------------------------------------------------------------------------------+
 
@@ -116,6 +118,30 @@ Limitations
 - each charging station can hold one or more charging points. If more than one charging point is available
   all attributes (e.g. :code:`sRated` or :code:`connectionType`) are considered to be equal for all connection
   points
+
+.. _location_types:
+
+Location types
+^^^^^^^^^^^^^^
+
+Evcs location types describe the type of charging location of a charging station. Parsing of these types is case-insensitive
+and underscores and minuses are ignored, that means "charginghubtown" is parsed as type :code:`CHARGING_HUB_TOWN`.
+
++-------------------------------+-------------------+----------------------------------+
+| type name                     | public/private    | description                      |
++===============================+===================+==================================+
+| HOME                          | private           | Charging at home                 |
++-------------------------------+-------------------+----------------------------------+
+| WORK                          | private           | Charging at work                 |
++-------------------------------+-------------------+----------------------------------+
+| CUSTOMER_PARKING              | public            | Charging at store parking lots   |
++-------------------------------+-------------------+----------------------------------+
+| STREET                        | public            | Charging at street side          |
++-------------------------------+-------------------+----------------------------------+
+| CHARGING_HUB_TOWN             | public            | Charging at hub in town          |
++-------------------------------+-------------------+----------------------------------+
+| CHARGING_HUB_HIGHWAY          | public            | Charging at hub out of town      |
++-------------------------------+-------------------+----------------------------------+
 
 Caveats
 ^^^^^^^
