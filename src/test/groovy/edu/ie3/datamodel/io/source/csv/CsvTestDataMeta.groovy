@@ -20,7 +20,7 @@ trait CsvTestDataMeta {
 	static String participantsFolderPath =  testParticipantsBaseFolderPath.concat(File.separator).concat("participants")
 	static String resultEntitiesFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("results")
 	static String timeSeriesFolderPath =  testTimeSeriesBaseFolderPath
-	static String weatherFolderPath = new File(CsvTestDataMeta.getResource('/weather').toURI()).absolutePath
+	static String weatherFolderPath = new File(CsvTestDataMeta.getResource('weather').toURI()).absolutePath
 	static String cosmoWeatherFolderPath = weatherFolderPath.concat(File.separator).concat("cosmo")
 	static String iconWeatherFolderPath = weatherFolderPath.concat(File.separator).concat("icon")
 	static String thermalFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("thermal")
