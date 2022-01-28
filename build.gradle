@@ -70,7 +70,7 @@ dependencies {
 	implementation 'org.locationtech.jts.io:jts-io-common:1.18.2'
 
 	// Graphs
-	implementation 'org.jgrapht:jgrapht-core:1.4.0'
+	implementation 'org.jgrapht:jgrapht-core:1.5.1'
 
 	// testing
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
