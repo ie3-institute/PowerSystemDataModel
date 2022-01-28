@@ -17,6 +17,7 @@ import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.spock.Testcontainers
+import org.testcontainers.utility.DockerImageName
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
@@ -25,7 +26,7 @@ import spock.lang.Specification
 class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourceTestHelper {
 
 	@Shared
-	InfluxDBContainer influxDbContainer = new InfluxDBContainer("1.8.4")
+	InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb:1.8.10"))
 	.withAuthEnabled(false)
 	.withDatabase("test_weather")
 
@@ -112,9 +113,9 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourc
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
 		then:
 		coordinateToTimeSeries.keySet().size() == 3
-		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).getEntries(), timeseries_193186.getEntries())
-		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).getEntries(), timeseries_193187.getEntries())
-		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).getEntries(), timeseries_193188.getEntries())
+		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeseries_193186.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeseries_193187.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeseries_193188.entries)
 	}
 
 	def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to it's ID"() {
