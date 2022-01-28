@@ -21,9 +21,9 @@ class SqlIndividualTimeSeriesMetaInformationTest extends Specification {
         def sqlMetaInf = new SqlConnector.SqlIndividualTimeSeriesMetaInformation(randomUUID, columnScheme, tableName)
 
         then:
-        sqlMetaInf.getUuid() == randomUUID
-        sqlMetaInf.getColumnScheme() == columnScheme
-        sqlMetaInf.getTableName() == tableName
+        sqlMetaInf.uuid == randomUUID
+        sqlMetaInf.columnScheme == columnScheme
+        sqlMetaInf.tableName == tableName
     }
 
     def "SqlIndividualTimeSeriesMetaInformation is properly created with secondary constructor"() {
@@ -34,9 +34,9 @@ class SqlIndividualTimeSeriesMetaInformationTest extends Specification {
         def sqlMetaInf = new SqlConnector.SqlIndividualTimeSeriesMetaInformation(metaInf, tableName)
 
         then:
-        sqlMetaInf.getUuid() == randomUUID
-        sqlMetaInf.getColumnScheme() == columnScheme
-        sqlMetaInf.getTableName() == tableName
+        sqlMetaInf.uuid == randomUUID
+        sqlMetaInf.columnScheme == columnScheme
+        sqlMetaInf.tableName == tableName
     }
 
     def "SqlIndividualTimeSeriesMetaInformation returns a proper String representation"() {
