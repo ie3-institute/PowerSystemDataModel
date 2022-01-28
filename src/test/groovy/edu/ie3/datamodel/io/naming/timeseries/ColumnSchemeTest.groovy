@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.io.csv.timeseries
+package edu.ie3.datamodel.io.naming.timeseries
 
 import static edu.ie3.datamodel.io.naming.timeseries.ColumnScheme.*
 
