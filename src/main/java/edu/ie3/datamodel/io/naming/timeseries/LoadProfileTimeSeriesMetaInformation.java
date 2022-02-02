@@ -5,12 +5,12 @@
 */
 package edu.ie3.datamodel.io.naming.timeseries;
 
-import edu.ie3.datamodel.io.naming.DataSourceMetaInformation;
+import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import java.util.Objects;
 import java.util.UUID;
 
 /** Specific meta information, that can be derived from a load profile time series file */
-public class LoadProfileTimeSeriesMetaInformation extends DataSourceMetaInformation {
+public class LoadProfileTimeSeriesMetaInformation extends TimeSeriesMetaInformation {
   private final String profile;
 
   public LoadProfileTimeSeriesMetaInformation(UUID uuid, String profile) {

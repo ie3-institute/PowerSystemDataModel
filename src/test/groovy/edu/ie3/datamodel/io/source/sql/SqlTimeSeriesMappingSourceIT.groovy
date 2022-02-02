@@ -6,9 +6,9 @@
 package edu.ie3.datamodel.io.source.sql
 
 import edu.ie3.datamodel.io.connectors.SqlConnector
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
@@ -84,7 +84,7 @@ class SqlTimeSeriesMappingSourceIT extends Specification {
 		def timeSeriesUuid = UUID.fromString("f5eb3be5-98db-40de-85b0-243507636cd5")
 
 		when:
-		def actual = source.getTimeSeriesMetaInformation(timeSeriesUuid)
+		def actual = source.timeSeriesMetaInformation(timeSeriesUuid)
 
 		then:
 		!actual.present
@@ -98,7 +98,7 @@ class SqlTimeSeriesMappingSourceIT extends Specification {
 				ColumnScheme.ACTIVE_POWER)
 
 		when:
-		def actual = source.getTimeSeriesMetaInformation(timeSeriesUuid)
+		def actual = source.timeSeriesMetaInformation(timeSeriesUuid)
 
 		then:
 		actual.present

@@ -13,7 +13,7 @@ import java.util.UUID;
  * Specific meta information, that can be derived from a individual time series file
  *
  * @deprecated since 3.0. Use {@link
- *     edu.ie3.datamodel.io.naming.IndividualTimeSeriesMetaInformation} instead
+ *     edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation} instead
  */
 @Deprecated
 public class IndividualTimeSeriesMetaInformation extends FileNameMetaInformation {

@@ -5,13 +5,14 @@
 */
 package edu.ie3.datamodel.io.csv;
 
+import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import java.util.Objects;
 import java.util.UUID;
 
 /**
  * Meta information, that can be derived from a certain file name
  *
- * @deprecated since 3.0. Use {@link edu.ie3.datamodel.io.naming.DataSourceMetaInformation} instead
+ * @deprecated since 3.0. Use {@link TimeSeriesMetaInformation} instead
  */
 @Deprecated
 public abstract class FileNameMetaInformation {

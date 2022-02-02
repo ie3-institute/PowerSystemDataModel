@@ -8,8 +8,8 @@ package edu.ie3.datamodel.io.connectors;
 import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.*;
-import edu.ie3.datamodel.io.naming.DataSourceMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
+import edu.ie3.datamodel.io.naming.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -230,7 +230,15 @@ public class CsvFileConnector implements DataConnector {
         .map(edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation::new);
   }
 
-  // todo javadoc
+  /**
+   * Get time series meta information for a given uuid.
+   *
+   * <p>This method lazily evaluates the mapping from <i>all</i> time series files to their meta
+   * information.
+   *
+   * @param timeSeriesUuid The time series in question
+   * @return An option on the queried information
+   */
   public Optional<IndividualTimeSeriesMetaInformation> individualTimeSeriesMetaInformation(
       UUID timeSeriesUuid) {
     if (Objects.isNull(individualTimeSeriesMetaInformation))
@@ -257,7 +265,7 @@ public class CsvFileConnector implements DataConnector {
               return new edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation(
                   metaInformation, filePathWithoutEnding);
             })
-        .collect(Collectors.toMap(DataSourceMetaInformation::getUuid, v -> v));
+        .collect(Collectors.toMap(TimeSeriesMetaInformation::getUuid, v -> v));
   }
 
   /**
@@ -337,7 +345,7 @@ public class CsvFileConnector implements DataConnector {
   private Optional<edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>
       buildCsvTimeSeriesMetaInformation(String filePathString, ColumnScheme... columnSchemes) {
     try {
-      DataSourceMetaInformation metaInformation =
+      TimeSeriesMetaInformation metaInformation =
           fileNamingStrategy.timeSeriesMetaInformation(filePathString);
       if (!IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())) {
         log.error(
@@ -445,8 +453,12 @@ public class CsvFileConnector implements DataConnector {
             });
   }
 
-  /** Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file */
-  // todo JH javadocs
+  /**
+   * Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file
+   *
+   * @deprecated since 3.0. Use {@link
+   *     edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation} instead
+   */
   @Deprecated
   public static class CsvIndividualTimeSeriesMetaInformation
       extends edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation {

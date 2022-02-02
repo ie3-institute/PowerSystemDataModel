@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.input.InputEntity;
 import java.util.Map;
 import java.util.Objects;
@@ -39,8 +39,19 @@ public interface TimeSeriesMappingSource extends DataSource {
    *
    * @param timeSeriesUuid Unique identifier of the time series in question
    * @return An Option onto the meta information
+   * @deprecated since 3.0. Use {@link #timeSeriesMetaInformation(java.util.UUID)} instead
    */
-  Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(UUID timeSeriesUuid);
+  @Deprecated
+  Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
+      getTimeSeriesMetaInformation(UUID timeSeriesUuid);
+
+  /**
+   * Get an option on the given time series meta information
+   *
+   * @param timeSeriesUuid Unique identifier of the time series in question
+   * @return An Option onto the meta information
+   */
+  Optional<IndividualTimeSeriesMetaInformation> timeSeriesMetaInformation(UUID timeSeriesUuid);
 
   /** Class to represent one entry within the participant to time series mapping */
   class MappingEntry extends InputEntity {

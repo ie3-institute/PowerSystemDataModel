@@ -7,10 +7,10 @@ package edu.ie3.datamodel.io.source.sql
 
 import static edu.ie3.test.common.TimeSeriesSourceTestData.*
 
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.SqlConnector
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.value.*
 import edu.ie3.util.interval.ClosedInterval
 import org.testcontainers.containers.Container

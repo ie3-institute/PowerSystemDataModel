@@ -32,9 +32,8 @@ public class CsvIndividualTimeSeriesMetaInformation extends IndividualTimeSeries
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof CsvIndividualTimeSeriesMetaInformation)) return false;
+    if (!(o instanceof CsvIndividualTimeSeriesMetaInformation that)) return false;
     if (!super.equals(o)) return false;
-    CsvIndividualTimeSeriesMetaInformation that = (CsvIndividualTimeSeriesMetaInformation) o;
     return fullFilePath.equals(that.fullFilePath);
   }
 

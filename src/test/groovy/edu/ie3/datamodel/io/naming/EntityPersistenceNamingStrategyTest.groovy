@@ -124,7 +124,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		def fileName = "foo"
 
 		when:
-		fns.extractIndividualTimesSeriesMetaInformation(fileName)
+		fns.getIndividualTimesSeriesMetaInformation(fileName)
 
 		then:
 		def ex = thrown(IllegalArgumentException)
@@ -137,7 +137,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		def fileName = "foo"
 
 		when:
-		fns.extractLoadProfileTimesSeriesMetaInformation(fileName)
+		fns.getIndividualTimesSeriesMetaInformation(fileName)
 
 		then:
 		def ex = thrown(IllegalArgumentException)

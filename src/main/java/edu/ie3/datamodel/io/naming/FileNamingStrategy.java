@@ -122,7 +122,7 @@ public class FileNamingStrategy {
    */
   public Optional<String> getDirectoryPath(Class<? extends UniqueEntity> cls) {
     Optional<String> maybeDirectoryName = fileHierarchy.getSubDirectory(cls);
-    if (!maybeDirectoryName.isPresent()) {
+    if (maybeDirectoryName.isEmpty()) {
       logger.debug("Cannot determine directory name for class '{}'.", cls);
       return Optional.empty();
     } else {
@@ -149,7 +149,7 @@ public class FileNamingStrategy {
   public <T extends TimeSeries<E, V>, E extends TimeSeriesEntry<V>, V extends Value>
       Optional<String> getDirectoryPath(T timeSeries) {
     Optional<String> maybeDirectoryName = fileHierarchy.getSubDirectory(timeSeries.getClass());
-    if (!maybeDirectoryName.isPresent()) {
+    if (maybeDirectoryName.isEmpty()) {
       logger.debug("Cannot determine directory name for time series '{}'.", timeSeries);
       return Optional.empty();
     } else {
@@ -218,7 +218,8 @@ public class FileNamingStrategy {
    * Extracts meta information from a file name, of a time series.
    *
    * @param path Path to the file
-   * @return The meeting meta information // todo deprecated notice
+   * @return The meeting meta information
+   * @deprecated since 3.0. Use {@link #timeSeriesMetaInformation(Path)} instead.
    */
   @Deprecated
   public FileNameMetaInformation extractTimeSeriesMetaInformation(Path path) {
@@ -235,7 +236,7 @@ public class FileNamingStrategy {
    * @param path Path to the file
    * @return The meeting meta information
    */
-  public DataSourceMetaInformation timeSeriesMetaInformation(Path path) {
+  public TimeSeriesMetaInformation timeSeriesMetaInformation(Path path) {
     /* Extract file name from possibly fully qualified path */
     Path fileName = path.getFileName();
     if (fileName == null)
@@ -248,12 +249,13 @@ public class FileNamingStrategy {
    * leading path has to be provided
    *
    * @param fileName File name
-   * @return The meeting meta information // todo deprecated notice
+   * @return The meeting meta information
+   * @deprecated since 3.0. Use {@link #timeSeriesMetaInformation(String)} instead.
    */
   @Deprecated
   public FileNameMetaInformation extractTimeSeriesMetaInformation(String fileName) {
 
-    DataSourceMetaInformation meta = timeSeriesMetaInformation(fileName);
+    TimeSeriesMetaInformation meta = timeSeriesMetaInformation(fileName);
     if (meta instanceof IndividualTimeSeriesMetaInformation ind) {
       return new edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation(ind);
     } else if (meta instanceof LoadProfileTimeSeriesMetaInformation load) {
@@ -270,7 +272,7 @@ public class FileNamingStrategy {
    * @param fileName File name
    * @return The meeting meta information
    */
-  public DataSourceMetaInformation timeSeriesMetaInformation(String fileName) {
+  public TimeSeriesMetaInformation timeSeriesMetaInformation(String fileName) {
     /* Remove the file ending (ending limited to 255 chars, which is the max file name allowed in NTFS and ext4) */
     String withoutEnding = fileName.replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
 

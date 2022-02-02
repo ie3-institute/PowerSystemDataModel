@@ -9,10 +9,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Meta information, that describe a certain data source */
-public abstract class DataSourceMetaInformation {
+public abstract class TimeSeriesMetaInformation {
   private final UUID uuid;
 
-  protected DataSourceMetaInformation(UUID uuid) {
+  protected TimeSeriesMetaInformation(UUID uuid) {
     this.uuid = uuid;
   }
 
@@ -23,7 +23,7 @@ public abstract class DataSourceMetaInformation {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof DataSourceMetaInformation that)) return false;
+    if (!(o instanceof TimeSeriesMetaInformation that)) return false;
     return uuid.equals(that.uuid);
   }
 
@@ -34,6 +34,6 @@ public abstract class DataSourceMetaInformation {
 
   @Override
   public String toString() {
-    return "DataSourceMetaInformation{" + "uuid=" + uuid + '}';
+    return "TimeSeriesMetaInformation{" + "uuid=" + uuid + '}';
   }
 }

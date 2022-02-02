@@ -6,10 +6,10 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import java.util.Map;
 import java.util.Optional;
@@ -43,11 +43,20 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
         .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
   }
 
+  /** @deprecated since 3.0. Use {@link #timeSeriesMetaInformation(java.util.UUID)} instead */
   @Override
-  public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
-      UUID timeSeriesUuid) {
+  @Deprecated
+  public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
+      getTimeSeriesMetaInformation(UUID timeSeriesUuid) {
     return getDbTableName(null, "%" + timeSeriesUuid.toString())
         .map(entityPersistenceNamingStrategy::extractIndividualTimesSeriesMetaInformation);
+  }
+
+  @Override
+  public Optional<IndividualTimeSeriesMetaInformation> timeSeriesMetaInformation(
+      UUID timeSeriesUuid) {
+    return getDbTableName(null, "%" + timeSeriesUuid.toString())
+        .map(entityPersistenceNamingStrategy::getIndividualTimesSeriesMetaInformation);
   }
 
   @Override

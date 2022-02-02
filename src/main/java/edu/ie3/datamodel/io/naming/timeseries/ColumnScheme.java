@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-/** Yet supported column schemes in individual time series */
+/** Supported column schemes in individual time series */
 public enum ColumnScheme {
   ENERGY_PRICE("c", EnergyPriceValue.class),
   ACTIVE_POWER("p", PValue.class),

@@ -5,9 +5,9 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.*;
+import static edu.ie3.datamodel.io.naming.timeseries.ColumnScheme.*;
 
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.interval.ClosedInterval;
@@ -20,6 +20,25 @@ import java.util.Optional;
  * model
  */
 public interface TimeSeriesSource<V extends Value> extends DataSource {
+
+  /**
+   * Checks whether the given column scheme can be used with time series.
+   *
+   * @param scheme the column scheme to check
+   * @return whether the scheme is accepted or not
+   * @deprecated since 3.0
+   */
+  @Deprecated
+  static boolean isSchemeAccepted(edu.ie3.datamodel.io.csv.timeseries.ColumnScheme scheme) {
+    return EnumSet.of(
+            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ACTIVE_POWER,
+            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.APPARENT_POWER,
+            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ENERGY_PRICE,
+            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND,
+            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND,
+            edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.HEAT_DEMAND)
+        .contains(scheme);
+  }
 
   /**
    * Checks whether the given column scheme can be used with time series.

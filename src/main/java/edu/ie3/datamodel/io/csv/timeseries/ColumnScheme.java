@@ -11,8 +11,11 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-/** Yet supported column schemes in individual time series */
-// todo JH javadoc
+/**
+ * Yet supported column schemes in individual time series
+ *
+ * @deprecated since 3.0. Use {@link edu.ie3.datamodel.io.naming.timeseries.ColumnScheme} instead
+ */
 @Deprecated
 public enum ColumnScheme {
   ENERGY_PRICE("c", EnergyPriceValue.class),
