@@ -22,6 +22,7 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
 
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
   private final String queryFull;
+  private final String schemaName;
 
   public SqlTimeSeriesMappingSource(
       SqlConnector connector,
@@ -35,6 +36,8 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
             .getEntityName(MappingEntry.class)
             .orElseThrow(() -> new RuntimeException(""));
     this.queryFull = createBaseQueryString(schemaName, tableName);
+
+    this.schemaName = schemaName;
   }
 
   @Override
@@ -46,7 +49,7 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
   @Override
   public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
       UUID timeSeriesUuid) {
-    return getDbTableName(null, "%" + timeSeriesUuid.toString())
+    return getDbTableName(schemaName, "%" + timeSeriesUuid.toString())
         .map(
             tableName -> {
               IndividualTimeSeriesMetaInformation metaInformation =

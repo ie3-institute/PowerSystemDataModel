@@ -159,7 +159,10 @@ public class SqlConnector implements DataConnector {
     return insensitiveFieldsToAttributes;
   }
 
-  /** Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file */
+  /**
+   * Enhancing the {@link IndividualTimeSeriesMetaInformation} with the name of the table containing
+   * the time series
+   */
   public static class SqlIndividualTimeSeriesMetaInformation
       extends IndividualTimeSeriesMetaInformation {
     private final String tableName;

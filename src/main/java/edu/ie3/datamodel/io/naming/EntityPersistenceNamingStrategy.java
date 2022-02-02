@@ -42,9 +42,9 @@ public class EntityPersistenceNamingStrategy {
   private static final String UUID_STRING =
       "[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}";
   /**
-   * Regex to match the naming convention of a file for an individual time series. The column scheme
-   * is accessible via the named capturing group "columnScheme". The time series' UUID is accessible
-   * by the named capturing group "uuid"
+   * Regex to match the naming convention of a source for an individual time series. The column
+   * scheme is accessible via the named capturing group "columnScheme". The time series' UUID is
+   * accessible by the named capturing group "uuid"
    */
   private static final Pattern INDIVIDUAL_TIME_SERIES_PATTERN =
       Pattern.compile("its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>" + UUID_STRING + ")");
@@ -125,17 +125,18 @@ public class EntityPersistenceNamingStrategy {
   }
 
   /**
-   * Extracts meta information from a valid file name for an individual time series
+   * Extracts meta information from a valid source name for an individual time series
    *
-   * @param fileName File name to extract information from
-   * @return Meta information form individual time series file name
+   * @param sourceName Name of the source to extract information from, e.g. file name or SQL table
+   *     name
+   * @return Meta information form individual time series source name
    */
   public IndividualTimeSeriesMetaInformation extractIndividualTimesSeriesMetaInformation(
-      String fileName) {
-    Matcher matcher = getIndividualTimeSeriesPattern().matcher(fileName);
+      String sourceName) {
+    Matcher matcher = getIndividualTimeSeriesPattern().matcher(sourceName);
     if (!matcher.matches())
       throw new IllegalArgumentException(
-          "Cannot extract meta information on individual time series from '" + fileName + "'.");
+          "Cannot extract meta information on individual time series from '" + sourceName + "'.");
 
     String columnSchemeKey = matcher.group("columnScheme");
     ColumnScheme columnScheme =
@@ -189,7 +190,7 @@ public class EntityPersistenceNamingStrategy {
   /**
    * Returns the name of the entity, that should be used for persistence.
    *
-   * @param cls Targeted class of the given file
+   * @param cls Targeted class of the given entity
    * @return The name of the entity
    */
   public Optional<String> getEntityName(Class<? extends UniqueEntity> cls) {
