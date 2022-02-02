@@ -132,7 +132,7 @@ public class EntityPersistenceNamingStrategy {
    * @return Meta information form individual time series source name
    * @deprecated since 3.0. Use {@link #getIndividualTimesSeriesMetaInformation(String)} instead
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   public edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
       extractIndividualTimesSeriesMetaInformation(String sourceName) {
     Matcher matcher = getIndividualTimeSeriesPattern().matcher(sourceName);
@@ -184,7 +184,7 @@ public class EntityPersistenceNamingStrategy {
    * @return Meta information form load profile time series file name
    * @deprecated since 3.0. Use {@link #getLoadProfileTimesSeriesMetaInformation(String)} instead
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   public edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation
       extractLoadProfileTimesSeriesMetaInformation(String fileName) {
     Matcher matcher = getLoadProfileTimeSeriesPattern().matcher(fileName);

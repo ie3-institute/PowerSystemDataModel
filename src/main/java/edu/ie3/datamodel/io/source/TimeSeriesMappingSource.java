@@ -41,7 +41,7 @@ public interface TimeSeriesMappingSource extends DataSource {
    * @return An Option onto the meta information
    * @deprecated since 3.0. Use {@link #timeSeriesMetaInformation(java.util.UUID)} instead
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
       getTimeSeriesMetaInformation(UUID timeSeriesUuid);
 

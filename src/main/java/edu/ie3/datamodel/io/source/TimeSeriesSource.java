@@ -28,7 +28,7 @@ public interface TimeSeriesSource<V extends Value> extends DataSource {
    * @return whether the scheme is accepted or not
    * @deprecated since 3.0
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   static boolean isSchemeAccepted(edu.ie3.datamodel.io.csv.timeseries.ColumnScheme scheme) {
     return EnumSet.of(
             edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.ACTIVE_POWER,

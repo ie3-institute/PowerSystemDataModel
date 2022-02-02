@@ -48,7 +48,7 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
    * @throws SourceException if the column scheme is not supported
    * @deprecated since 3.0
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   public static SqlTimeSeriesSource<? extends Value> getSource(
       SqlConnector connector,
       String schemaName,

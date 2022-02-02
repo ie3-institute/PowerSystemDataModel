@@ -16,7 +16,7 @@ import java.util.Optional;
  *
  * @deprecated since 3.0. Use {@link edu.ie3.datamodel.io.naming.timeseries.ColumnScheme} instead
  */
-@Deprecated
+@Deprecated(since = "3.0", forRemoval = true)
 public enum ColumnScheme {
   ENERGY_PRICE("c", EnergyPriceValue.class),
   ACTIVE_POWER("p", PValue.class),

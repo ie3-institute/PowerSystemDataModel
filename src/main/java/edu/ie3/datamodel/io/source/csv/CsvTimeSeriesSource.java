@@ -39,7 +39,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    * @return The source
    * @deprecated since 3.0
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   public static CsvTimeSeriesSource<? extends Value> getSource(
       String csvSep,
       String folderPath,
@@ -57,7 +57,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
   }
 
   /** @deprecated since 3.0 */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   private static <T extends Value> CsvTimeSeriesSource<T> create(
       String csvSep,
       String folderPath,

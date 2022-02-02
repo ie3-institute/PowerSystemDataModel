@@ -14,7 +14,7 @@ import java.util.UUID;
  *
  * @deprecated since 3.0. Use {@link TimeSeriesMetaInformation} instead
  */
-@Deprecated
+@Deprecated(since = "3.0", forRemoval = true)
 public abstract class FileNameMetaInformation {
   private final UUID uuid;
 

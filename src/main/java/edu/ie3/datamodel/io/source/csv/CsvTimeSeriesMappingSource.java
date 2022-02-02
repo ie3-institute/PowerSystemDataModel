@@ -45,7 +45,7 @@ public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSer
 
   /** @deprecated since 3.0. Use {@link #timeSeriesMetaInformation(java.util.UUID)} instead */
   @Override
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
       getTimeSeriesMetaInformation(UUID timeSeriesUuid) {
     return connector.getIndividualTimeSeriesMetaInformation(timeSeriesUuid);

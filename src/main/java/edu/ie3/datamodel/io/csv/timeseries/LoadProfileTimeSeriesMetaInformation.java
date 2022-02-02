@@ -15,7 +15,7 @@ import java.util.UUID;
  * @deprecated since 3.0. Use {@link
  *     edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation} instead
  */
-@Deprecated
+@Deprecated(since = "3.0", forRemoval = true)
 public class LoadProfileTimeSeriesMetaInformation extends FileNameMetaInformation {
   private final String profile;
 

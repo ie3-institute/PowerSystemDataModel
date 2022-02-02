@@ -223,7 +223,7 @@ public class CsvFileConnector implements DataConnector {
    * @return An option on the queried information
    * @deprecated since 3.0. Use {@link #individualTimeSeriesMetaInformation(UUID)} instead
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
       getIndividualTimeSeriesMetaInformation(UUID timeSeriesUuid) {
     return individualTimeSeriesMetaInformation(timeSeriesUuid)
@@ -459,7 +459,7 @@ public class CsvFileConnector implements DataConnector {
    * @deprecated since 3.0. Use {@link
    *     edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation} instead
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   public static class CsvIndividualTimeSeriesMetaInformation
       extends edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation {
     private final String fullFilePath;

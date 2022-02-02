@@ -221,7 +221,7 @@ public class FileNamingStrategy {
    * @return The meeting meta information
    * @deprecated since 3.0. Use {@link #timeSeriesMetaInformation(Path)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   public FileNameMetaInformation extractTimeSeriesMetaInformation(Path path) {
     /* Extract file name from possibly fully qualified path */
     Path fileName = path.getFileName();
@@ -252,7 +252,7 @@ public class FileNamingStrategy {
    * @return The meeting meta information
    * @deprecated since 3.0. Use {@link #timeSeriesMetaInformation(String)} instead.
    */
-  @Deprecated
+  @Deprecated(since = "3.0", forRemoval = true)
   public FileNameMetaInformation extractTimeSeriesMetaInformation(String fileName) {
 
     TimeSeriesMetaInformation meta = timeSeriesMetaInformation(fileName);
