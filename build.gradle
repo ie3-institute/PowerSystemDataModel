@@ -4,7 +4,7 @@ plugins {
 	id 'maven-publish'
 	id 'signing'
 	id 'pmd' // code check, working on source code
-	id 'com.diffplug.spotless' version '6.2.0'//code format
+	id 'com.diffplug.spotless' version '6.2.1'//code format
 	id 'com.github.spotbugs' version '5.0.5' // code check, working on byte code
 	id 'de.undercouch.download' version '5.0.1'
 	id 'kr.motd.sphinx' version '2.10.1' // documentation generation
@@ -91,8 +91,8 @@ dependencies {
 
 	// Databases
 	implementation 'org.influxdb:influxdb-java:2.22'
-	implementation 'com.couchbase.client:java-client:3.2.4'
-	runtimeOnly 'org.postgresql:postgresql:42.3.1' // postgresql jdbc driver required during runtime
+	implementation 'com.couchbase.client:java-client:3.2.5'
+	runtimeOnly 'org.postgresql:postgresql:42.3.2' // postgresql jdbc driver required during runtime
 
 	implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
 	implementation 'org.apache.commons:commons-compress:1.21' // I/O functionalities
