@@ -6,11 +6,12 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -94,12 +95,11 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    */
   private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
     /* Get only weather time series meta information */
-    Map<ColumnScheme, Set<CsvFileConnector.CsvIndividualTimeSeriesMetaInformation>>
-        colTypeToMetaData =
-            connector.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER);
+    Map<ColumnScheme, Set<CsvIndividualTimeSeriesMetaInformation>> colTypeToMetaData =
+        connector.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER);
 
     /* Reading in weather time series */
-    Set<CsvFileConnector.CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
+    Set<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
         colTypeToMetaData.get(ColumnScheme.WEATHER);
 
     return readWeatherTimeSeries(weatherCsvMetaInformation, connector);
@@ -154,13 +154,13 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * @return time series mapped to the represented coordinate
    */
   private Map<Point, IndividualTimeSeries<WeatherValue>> readWeatherTimeSeries(
-      Set<CsvFileConnector.CsvIndividualTimeSeriesMetaInformation> weatherMetaInformation,
+      Set<CsvIndividualTimeSeriesMetaInformation> weatherMetaInformation,
       CsvFileConnector connector) {
     final Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
     Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> fieldToValueFunction =
         this::buildWeatherValue;
     /* Reading in weather time series */
-    for (CsvFileConnector.CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
+    for (CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
       // we need a reader for each file
       try (BufferedReader reader = connector.initReader(data.getFullFilePath())) {
         filterEmptyOptionals(

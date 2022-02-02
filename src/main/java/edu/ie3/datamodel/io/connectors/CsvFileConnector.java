@@ -8,9 +8,10 @@ package edu.ie3.datamodel.io.connectors;
 import edu.ie3.datamodel.exceptions.ConnectorException;
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.*;
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme;
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.DataSourceMetaInformation;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -41,7 +42,8 @@ public class CsvFileConnector implements DataConnector {
       new HashMap<>();
   private final Map<UUID, BufferedCsvWriter> timeSeriesWriters = new HashMap<>();
   // ATTENTION: Do not finalize. It's meant for lazy evaluation.
-  private Map<UUID, CsvIndividualTimeSeriesMetaInformation> individualTimeSeriesMetaInformation;
+  private Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>
+      individualTimeSeriesMetaInformation;
   private final FileNamingStrategy fileNamingStrategy;
   private final String baseDirectoryName;
 
@@ -219,8 +221,17 @@ public class CsvFileConnector implements DataConnector {
    *
    * @param timeSeriesUuid The time series in question
    * @return An option on the queried information
+   * @deprecated since 3.0. Use {@link #individualTimeSeriesMetaInformation(UUID)} instead
    */
-  public Optional<IndividualTimeSeriesMetaInformation> getIndividualTimeSeriesMetaInformation(
+  @Deprecated
+  public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
+      getIndividualTimeSeriesMetaInformation(UUID timeSeriesUuid) {
+    return individualTimeSeriesMetaInformation(timeSeriesUuid)
+        .map(edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation::new);
+  }
+
+  // todo javadoc
+  public Optional<IndividualTimeSeriesMetaInformation> individualTimeSeriesMetaInformation(
       UUID timeSeriesUuid) {
     if (Objects.isNull(individualTimeSeriesMetaInformation))
       individualTimeSeriesMetaInformation = buildIndividualTimeSeriesMetaInformation();
@@ -233,7 +244,7 @@ public class CsvFileConnector implements DataConnector {
    *
    * @return Mapping from time series uuid to it's meta information.
    */
-  private Map<UUID, CsvIndividualTimeSeriesMetaInformation>
+  private Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>
       buildIndividualTimeSeriesMetaInformation() {
     return getIndividualTimeSeriesFilePaths().parallelStream()
         .map(
@@ -242,11 +253,11 @@ public class CsvFileConnector implements DataConnector {
               String filePathWithoutEnding = removeFileEnding(filePath);
               IndividualTimeSeriesMetaInformation metaInformation =
                   (IndividualTimeSeriesMetaInformation)
-                      fileNamingStrategy.extractTimeSeriesMetaInformation(filePathWithoutEnding);
-              return new CsvIndividualTimeSeriesMetaInformation(
+                      fileNamingStrategy.timeSeriesMetaInformation(filePathWithoutEnding);
+              return new edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation(
                   metaInformation, filePathWithoutEnding);
             })
-        .collect(Collectors.toMap(FileNameMetaInformation::getUuid, v -> v));
+        .collect(Collectors.toMap(DataSourceMetaInformation::getUuid, v -> v));
   }
 
   /**
@@ -257,7 +268,7 @@ public class CsvFileConnector implements DataConnector {
    *     possible readers will be initialized.
    * @return A mapping from column scheme to the individual time series meta information
    */
-  public Map<ColumnScheme, Set<CsvIndividualTimeSeriesMetaInformation>>
+  public Map<ColumnScheme, Set<edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>>
       getCsvIndividualTimeSeriesMetaInformation(ColumnScheme... columnSchemes) {
     return getIndividualTimeSeriesFilePaths().parallelStream()
         .map(
@@ -269,7 +280,8 @@ public class CsvFileConnector implements DataConnector {
         .map(Optional::get)
         .collect(
             Collectors.groupingBy(
-                CsvIndividualTimeSeriesMetaInformation::getColumnScheme, Collectors.toSet()));
+                edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation::getColumnScheme,
+                Collectors.toSet()));
   }
 
   /**
@@ -322,11 +334,11 @@ public class CsvFileConnector implements DataConnector {
    *     allowed.
    * @return An {@link Optional} to {@link IndividualTimeSeriesMetaInformation}
    */
-  private Optional<CsvIndividualTimeSeriesMetaInformation> buildCsvTimeSeriesMetaInformation(
-      String filePathString, ColumnScheme... columnSchemes) {
+  private Optional<edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>
+      buildCsvTimeSeriesMetaInformation(String filePathString, ColumnScheme... columnSchemes) {
     try {
-      FileNameMetaInformation metaInformation =
-          fileNamingStrategy.extractTimeSeriesMetaInformation(filePathString);
+      DataSourceMetaInformation metaInformation =
+          fileNamingStrategy.timeSeriesMetaInformation(filePathString);
       if (!IndividualTimeSeriesMetaInformation.class.isAssignableFrom(metaInformation.getClass())) {
         log.error(
             "The time series file '{}' does not represent an individual time series.",
@@ -350,7 +362,7 @@ public class CsvFileConnector implements DataConnector {
         return Optional.empty();
       }
       return Optional.of(
-          new CsvIndividualTimeSeriesMetaInformation(
+          new edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation(
               individualMetaInformation.getUuid(),
               individualMetaInformation.getColumnScheme(),
               filePathString));
@@ -434,18 +446,23 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /** Enhancing the {@link IndividualTimeSeriesMetaInformation} with the full path to csv file */
+  // todo JH javadocs
+  @Deprecated
   public static class CsvIndividualTimeSeriesMetaInformation
-      extends IndividualTimeSeriesMetaInformation {
+      extends edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation {
     private final String fullFilePath;
 
     public CsvIndividualTimeSeriesMetaInformation(
-        UUID uuid, ColumnScheme columnScheme, String fullFilePath) {
+        UUID uuid,
+        edu.ie3.datamodel.io.csv.timeseries.ColumnScheme columnScheme,
+        String fullFilePath) {
       super(uuid, columnScheme);
       this.fullFilePath = fullFilePath;
     }
 
     public CsvIndividualTimeSeriesMetaInformation(
-        IndividualTimeSeriesMetaInformation metaInformation, String fullFilePath) {
+        edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation metaInformation,
+        String fullFilePath) {
       this(metaInformation.getUuid(), metaInformation.getColumnScheme(), fullFilePath);
     }
 

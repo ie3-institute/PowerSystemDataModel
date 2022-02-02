@@ -9,13 +9,33 @@ import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Specific meta information, that can be derived from a individual time series file */
+/**
+ * Specific meta information, that can be derived from a individual time series file
+ *
+ * @deprecated since 3.0. Use {@link
+ *     edu.ie3.datamodel.io.naming.IndividualTimeSeriesMetaInformation} instead
+ */
+@Deprecated
 public class IndividualTimeSeriesMetaInformation extends FileNameMetaInformation {
   private final ColumnScheme columnScheme;
 
   public IndividualTimeSeriesMetaInformation(UUID uuid, ColumnScheme columnScheme) {
     super(uuid);
     this.columnScheme = columnScheme;
+  }
+
+  public IndividualTimeSeriesMetaInformation(
+      edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
+          newMetaInformation) {
+    super(newMetaInformation.getUuid());
+    this.columnScheme =
+        ColumnScheme.parse(newMetaInformation.getColumnScheme().toString())
+            .orElseThrow(
+                () ->
+                    new RuntimeException(
+                        "Cannot convert new column scheme "
+                            + newMetaInformation.getColumnScheme().getScheme()
+                            + " to deprecated column scheme!"));
   }
 
   public ColumnScheme getColumnScheme() {

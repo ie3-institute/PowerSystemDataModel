@@ -7,6 +7,8 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.io.IoUtil;
 import edu.ie3.datamodel.io.csv.FileNameMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
@@ -216,8 +218,9 @@ public class FileNamingStrategy {
    * Extracts meta information from a file name, of a time series.
    *
    * @param path Path to the file
-   * @return The meeting meta information
+   * @return The meeting meta information // todo deprecated notice
    */
+  @Deprecated
   public FileNameMetaInformation extractTimeSeriesMetaInformation(Path path) {
     /* Extract file name from possibly fully qualified path */
     Path fileName = path.getFileName();
@@ -227,21 +230,54 @@ public class FileNamingStrategy {
   }
 
   /**
+   * Extracts meta information from a file name, of a time series.
+   *
+   * @param path Path to the file
+   * @return The meeting meta information
+   */
+  public DataSourceMetaInformation timeSeriesMetaInformation(Path path) {
+    /* Extract file name from possibly fully qualified path */
+    Path fileName = path.getFileName();
+    if (fileName == null)
+      throw new IllegalArgumentException("Unable to extract file name from path '" + path + "'.");
+    return timeSeriesMetaInformation(fileName.toString());
+  }
+
+  /**
+   * Extracts meta information from a file name, of a time series. Here, a file name <u>without</u>
+   * leading path has to be provided
+   *
+   * @param fileName File name
+   * @return The meeting meta information // todo deprecated notice
+   */
+  @Deprecated
+  public FileNameMetaInformation extractTimeSeriesMetaInformation(String fileName) {
+
+    DataSourceMetaInformation meta = timeSeriesMetaInformation(fileName);
+    if (meta instanceof IndividualTimeSeriesMetaInformation ind) {
+      return new edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation(ind);
+    } else if (meta instanceof LoadProfileTimeSeriesMetaInformation load) {
+      return new edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation(load);
+    } else
+      throw new IllegalArgumentException(
+          "Unknown format of '" + fileName + "'. Cannot extract meta information.");
+  }
+
+  /**
    * Extracts meta information from a file name, of a time series. Here, a file name <u>without</u>
    * leading path has to be provided
    *
    * @param fileName File name
    * @return The meeting meta information
    */
-  public FileNameMetaInformation extractTimeSeriesMetaInformation(String fileName) {
+  public DataSourceMetaInformation timeSeriesMetaInformation(String fileName) {
     /* Remove the file ending (ending limited to 255 chars, which is the max file name allowed in NTFS and ext4) */
     String withoutEnding = fileName.replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
 
     if (getIndividualTimeSeriesPattern().matcher(withoutEnding).matches())
-      return entityPersistenceNamingStrategy.extractIndividualTimesSeriesMetaInformation(
-          withoutEnding);
+      return entityPersistenceNamingStrategy.getIndividualTimesSeriesMetaInformation(withoutEnding);
     else if (getLoadProfileTimeSeriesPattern().matcher(withoutEnding).matches())
-      return entityPersistenceNamingStrategy.extractLoadProfileTimesSeriesMetaInformation(
+      return entityPersistenceNamingStrategy.getLoadProfileTimesSeriesMetaInformation(
           withoutEnding);
     else
       throw new IllegalArgumentException(
