@@ -52,7 +52,7 @@ public class ImpedanceWeightedGraph extends SimpleWeightedGraph<NodeInput, Imped
    *     ComparableQuantity)} instead, as it provides means for proper unit handling
    */
   @Override
-  @Deprecated(since = ("Deprecated since 2.1.0. See Javadocs for more information."))
+  @Deprecated(since = "Deprecated since 2.1.0. See Javadocs for more information.")
   public void setEdgeWeight(ImpedanceWeightedEdge edge, double impedanceInOhm) {
     super.setEdgeWeight(edge, impedanceInOhm);
   }
