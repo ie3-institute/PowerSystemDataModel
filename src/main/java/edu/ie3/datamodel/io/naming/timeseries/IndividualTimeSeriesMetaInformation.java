@@ -9,7 +9,7 @@ import edu.ie3.datamodel.io.naming.DataSourceMetaInformation;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Specific meta information, that can be derived from a individual time series file */
+/** Specific meta information, that can be derived from an individual time series file */
 public class IndividualTimeSeriesMetaInformation extends DataSourceMetaInformation {
   private final ColumnScheme columnScheme;
 

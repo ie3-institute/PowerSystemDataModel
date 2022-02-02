@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.naming;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Meta information, that can be derived from a data source */
+/** Meta information, that describe a certain data source */
 public abstract class DataSourceMetaInformation {
   private final UUID uuid;
 
