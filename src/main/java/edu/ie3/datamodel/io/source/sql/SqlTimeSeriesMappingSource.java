@@ -11,6 +11,7 @@ import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
+import edu.ie3.datamodel.io.sql.SqlIndividualTimeSeriesMetaInformation;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
 
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
   private final String queryFull;
+  private final String schemaName;
 
   public SqlTimeSeriesMappingSource(
       SqlConnector connector,
@@ -35,6 +37,8 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
             .getEntityName(MappingEntry.class)
             .orElseThrow(() -> new RuntimeException(""));
     this.queryFull = createBaseQueryString(schemaName, tableName);
+
+    this.schemaName = schemaName;
   }
 
   @Override
@@ -55,8 +59,14 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
   @Override
   public Optional<IndividualTimeSeriesMetaInformation> timeSeriesMetaInformation(
       UUID timeSeriesUuid) {
-    return getDbTableName(null, "%" + timeSeriesUuid.toString())
-        .map(entityPersistenceNamingStrategy::getIndividualTimesSeriesMetaInformation);
+    return getDbTableName(schemaName, "%" + timeSeriesUuid.toString())
+        .map(
+            tableName -> {
+              IndividualTimeSeriesMetaInformation metaInformation =
+                  entityPersistenceNamingStrategy.getIndividualTimesSeriesMetaInformation(
+                      tableName);
+              return new SqlIndividualTimeSeriesMetaInformation(metaInformation, tableName);
+            });
   }
 
   @Override

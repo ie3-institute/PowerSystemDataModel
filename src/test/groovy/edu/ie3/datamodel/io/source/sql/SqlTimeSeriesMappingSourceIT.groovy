@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.source.sql
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
-import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.sql.SqlIndividualTimeSeriesMetaInformation
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
@@ -24,6 +24,12 @@ class SqlTimeSeriesMappingSourceIT extends Specification {
 
 	@Shared
 	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.14")
+
+	@Shared
+	UUID timeSeriesUuidP = UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5")
+
+	@Shared
+	SqlConnector connector
 
 	@Shared
 	SqlTimeSeriesMappingSource source
@@ -51,7 +57,7 @@ class SqlTimeSeriesMappingSourceIT extends Specification {
 			assert res.stderr.empty
 		}
 
-		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
+		connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
 		source = new SqlTimeSeriesMappingSource(connector, "public", new EntityPersistenceNamingStrategy())
 	}
 
@@ -92,16 +98,27 @@ class SqlTimeSeriesMappingSourceIT extends Specification {
 
 	def "A sql time series mapping source returns correct meta information for an existing time series"() {
 		given:
-		def timeSeriesUuid = UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5")
-		def expected = new IndividualTimeSeriesMetaInformation(
-				timeSeriesUuid,
-				ColumnScheme.ACTIVE_POWER)
+		def expected = new SqlIndividualTimeSeriesMetaInformation(
+				timeSeriesUuidP,
+				ColumnScheme.ACTIVE_POWER,
+				"its_p_9185b8c1-86ba-4a16-8dea-5ac898e8caa5")
 
 		when:
-		def actual = source.timeSeriesMetaInformation(timeSeriesUuid)
+		def actual = source.timeSeriesMetaInformation(timeSeriesUuidP)
 
 		then:
 		actual.present
 		actual.get() == expected
+	}
+
+	def "A sql time series mapping source does not return meta information for time series that exists within a different scheme"() {
+		given:
+		def sourceOther = new SqlTimeSeriesMappingSource(connector, "notExisting", new EntityPersistenceNamingStrategy())
+
+		when:
+		def actual = sourceOther.timeSeriesMetaInformation(timeSeriesUuidP)
+
+		then:
+		!actual.present
 	}
 }

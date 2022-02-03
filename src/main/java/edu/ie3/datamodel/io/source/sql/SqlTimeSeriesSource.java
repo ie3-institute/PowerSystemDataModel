@@ -9,8 +9,8 @@ import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
-import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
+import edu.ie3.datamodel.io.sql.SqlIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
@@ -71,7 +71,6 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
    *
    * @param connector the connector needed for database connection
    * @param schemaName the database schema to use
-   * @param tableName the database table to use
    * @param metaInformation the time series meta information
    * @param timePattern the pattern of time values
    * @return a SqlTimeSeriesSource for given time series table
@@ -80,8 +79,7 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
   public static SqlTimeSeriesSource<? extends Value> getSource(
       SqlConnector connector,
       String schemaName,
-      String tableName,
-      IndividualTimeSeriesMetaInformation metaInformation,
+      SqlIndividualTimeSeriesMetaInformation metaInformation,
       String timePattern)
       throws SourceException {
     if (!TimeSeriesSource.isSchemeAccepted(metaInformation.getColumnScheme()))
@@ -91,7 +89,12 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
     Class<? extends Value> valClass = metaInformation.getColumnScheme().getValueClass();
 
     return create(
-        connector, schemaName, tableName, metaInformation.getUuid(), valClass, timePattern);
+        connector,
+        schemaName,
+        metaInformation.getTableName(),
+        metaInformation.getUuid(),
+        valClass,
+        timePattern);
   }
 
   private static <T extends Value> SqlTimeSeriesSource<T> create(

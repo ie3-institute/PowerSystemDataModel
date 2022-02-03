@@ -153,17 +153,18 @@ public class EntityPersistenceNamingStrategy {
   }
 
   /**
-   * Extracts meta information from a valid file name for an individual time series
+   * Extracts meta information from a valid source name for an individual time series
    *
-   * @param fileName File name to extract information from
-   * @return Meta information form individual time series file name
+   * @param sourceName Name of the source to extract information from, e.g. file name or SQL table
+   *     name
+   * @return Meta information form individual time series source name
    */
   public IndividualTimeSeriesMetaInformation getIndividualTimesSeriesMetaInformation(
-      String fileName) {
-    Matcher matcher = getIndividualTimeSeriesPattern().matcher(fileName);
+      String sourceName) {
+    Matcher matcher = getIndividualTimeSeriesPattern().matcher(sourceName);
     if (!matcher.matches())
       throw new IllegalArgumentException(
-          "Cannot extract meta information on individual time series from '" + fileName + "'.");
+          "Cannot extract meta information on individual time series from '" + sourceName + "'.");
 
     String columnSchemeKey = matcher.group("columnScheme");
     ColumnScheme columnScheme =
