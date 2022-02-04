@@ -18,12 +18,12 @@ import java.util.UUID;
 public abstract class TimeSeriesEntry<V extends Value> extends UniqueEntity {
   protected final V value;
 
-  public TimeSeriesEntry(UUID uuid, V value) {
+  protected TimeSeriesEntry(UUID uuid, V value) {
     super(uuid);
     this.value = value;
   }
 
-  public TimeSeriesEntry(V value) {
+  protected TimeSeriesEntry(V value) {
     this(UUID.randomUUID(), value);
   }
 

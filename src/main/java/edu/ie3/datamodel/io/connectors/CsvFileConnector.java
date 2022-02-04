@@ -133,6 +133,42 @@ public class CsvFileConnector implements DataConnector {
   }
 
   /**
+   * Closes a time series writer for the time series with given {@link UUID}
+   *
+   * @param uuid identifier of time series, whose writer is meant to be closed
+   * @throws IOException If closing of writer fails.
+   */
+  public synchronized void closeTimeSeriesWriter(UUID uuid) throws IOException {
+    Optional<BufferedCsvWriter> maybeWriter = Optional.ofNullable(timeSeriesWriters.get(uuid));
+    if (maybeWriter.isPresent()) {
+      log.debug("Remove reference to time series writer for UUID '{}'.", uuid);
+      timeSeriesWriters.remove(uuid);
+      maybeWriter.get().close();
+    } else {
+      log.warn("No writer found for time series '{}'.", uuid);
+    }
+  }
+
+  /**
+   * Close an entity writer for the given class
+   *
+   * @param clz Class, that the writer is able to persist
+   * @param <C> Type of class
+   * @throws IOException If closing of writer fails.
+   */
+  public synchronized <C extends Class<? extends UniqueEntity>> void closeEntityWriter(C clz)
+      throws IOException {
+    Optional<BufferedCsvWriter> maybeWriter = Optional.ofNullable(entityWriters.get(clz));
+    if (maybeWriter.isPresent()) {
+      log.debug("Remove reference to entity writer for class '{}'.", clz);
+      entityWriters.remove(clz);
+      maybeWriter.get().close();
+    } else {
+      log.warn("No writer found for class '{}'.", clz);
+    }
+  }
+
+  /**
    * Initializes a file reader for the given class that should be read in. The expected file name is
    * determined based on {@link FileNamingStrategy} of the this {@link CsvFileConnector} instance
    *
@@ -199,8 +235,7 @@ public class CsvFileConnector implements DataConnector {
    */
   private Map<UUID, CsvIndividualTimeSeriesMetaInformation>
       buildIndividualTimeSeriesMetaInformation() {
-    return getIndividualTimeSeriesFilePaths()
-        .parallelStream()
+    return getIndividualTimeSeriesFilePaths().parallelStream()
         .map(
             filePath -> {
               /* Extract meta information from file path and enhance it with the file path itself */
@@ -224,8 +259,7 @@ public class CsvFileConnector implements DataConnector {
    */
   public Map<ColumnScheme, Set<CsvIndividualTimeSeriesMetaInformation>>
       getCsvIndividualTimeSeriesMetaInformation(ColumnScheme... columnSchemes) {
-    return getIndividualTimeSeriesFilePaths()
-        .parallelStream()
+    return getIndividualTimeSeriesFilePaths().parallelStream()
         .map(
             pathString -> {
               String filePathWithoutEnding = removeFileEnding(pathString);

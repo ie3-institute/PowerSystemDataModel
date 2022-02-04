@@ -66,8 +66,8 @@ Entity Model
 | nodeB           | --   | Lower voltage node                                         |
 +-----------------+------+------------------------------------------------------------+
 | parallelDevices | --   | | overall amount of parallel transformers to automatically |
-|                 | --   | | construct (e.g. parallelDevices = 2 will build a         |
-|                 | --   | | total of two transformers using the specified parameters)|
+|                 |      | | construct (e.g. parallelDevices = 2 will build a         |
+|                 |      | | total of two transformers using the specified parameters)|
 +-----------------+------+------------------------------------------------------------+
 | type            | --   |                                                            |
 +-----------------+------+------------------------------------------------------------+

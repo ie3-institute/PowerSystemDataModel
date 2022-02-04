@@ -49,8 +49,8 @@ Entity Model
 | nodeB             | --   |                                                        |
 +-------------------+------+--------------------------------------------------------+
 | parallelDevices   | --   | | overall amount of parallel lines to automatically    |
-|                   | --   | | construct (e.g. parallelDevices = 2 will build a     |
-|                   | --   | | total of two lines using the specified parameters)   |
+|                   |      | | construct (e.g. parallelDevices = 2 will build a     |
+|                   |      | | total of two lines using the specified parameters)   |
 +-------------------+------+--------------------------------------------------------+
 | type              | --   |                                                        |
 +-------------------+------+--------------------------------------------------------+

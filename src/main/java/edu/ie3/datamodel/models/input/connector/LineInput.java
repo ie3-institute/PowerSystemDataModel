@@ -95,7 +95,7 @@ public class LineInput extends ConnectorInput implements HasType {
       OlmCharacteristicInput olmCharacteristic) {
     super(uuid, id, nodeA, nodeB, parallelDevices);
     this.type = type;
-    this.length = length;
+    this.length = length.to(StandardUnits.LINE_LENGTH);
     this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
   }

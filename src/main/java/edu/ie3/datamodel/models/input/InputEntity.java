@@ -11,7 +11,7 @@ import java.util.UUID;
 /** Functionless class to describe that all subclasses are input classes */
 public abstract class InputEntity extends UniqueEntity {
 
-  public InputEntity(UUID uuid) {
+  protected InputEntity(UUID uuid) {
     super(uuid);
   }
 }

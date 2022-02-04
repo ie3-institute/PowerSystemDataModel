@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.input.system.characteristic.QV
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils
+import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
@@ -305,9 +306,9 @@ class SystemParticipantTestData {
 	cosPhiFixed,
 	ChargingPointTypeUtils.HouseholdSocket,
 	4,
-	cosPhiRated
+	cosPhiRated,
+	EvcsLocationType.HOME
 	)
-
 
 	public static allParticipants = [
 		fixedFeedInInput,
