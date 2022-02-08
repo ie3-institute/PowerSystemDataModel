@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.sql
 
+import edu.ie3.test.helper.TestContainerHelper
+
 import static edu.ie3.test.common.TimeSeriesSourceTestData.*
 
 import edu.ie3.datamodel.exceptions.SourceException
@@ -20,11 +22,8 @@ import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
 
-import java.nio.file.Path
-import java.nio.file.Paths
-
 @Testcontainers
-class SqlTimeSeriesSourceIT extends Specification {
+class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper {
 
 	@Shared
 	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.14")
@@ -41,12 +40,8 @@ class SqlTimeSeriesSourceIT extends Specification {
 	static UUID timeSeriesUuid = UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5")
 
 	def setupSpec() {
-		URL url = getClass().getResource("timeseries/")
-		assert url != null
-		Path path = Paths.get(url.toURI())
-
 		// Copy sql import scripts into docker
-		MountableFile sqlImportFile = MountableFile.forHostPath(path)
+		MountableFile sqlImportFile = getMountableFile("timeseries/")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/")
 
 		// Execute import script

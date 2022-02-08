@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.PsdmWeatherTestData
+import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
@@ -25,13 +26,14 @@ import spock.lang.Specification
 import java.time.ZoneId
 
 @Testcontainers
-class CouchbaseWeatherSourcePsdmIT extends Specification implements WeatherSourceTestHelper {
+class CouchbaseWeatherSourcePsdmIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
 
 	@Shared
 	BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")
 
 	@Shared
-	CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:latest").withBucket(bucketDefinition)
+	CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:latest")
+	.withBucket(bucketDefinition)
 	.withExposedPorts(8091, 8092, 8093, 8094, 11210)
 
 	@Shared
@@ -41,7 +43,7 @@ class CouchbaseWeatherSourcePsdmIT extends Specification implements WeatherSourc
 
 	def setupSpec() {
 		// Copy import file with json array of documents into docker
-		MountableFile couchbaseWeatherJsonsFile = MountableFile.forClasspathResource("/testcontainersFiles/couchbase/weather.json")
+		MountableFile couchbaseWeatherJsonsFile = getMountableFile("weather/weather.json")
 		couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather.json")
 
 		// create an index for the document keys

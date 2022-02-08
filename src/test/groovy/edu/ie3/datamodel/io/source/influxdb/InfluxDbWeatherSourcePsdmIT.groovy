@@ -11,21 +11,23 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.PsdmWeatherTestData
+import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.spock.Testcontainers
+import org.testcontainers.utility.DockerImageName
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class InfluxDbWeatherSourcePsdmIT extends Specification implements WeatherSourceTestHelper {
+class InfluxDbWeatherSourcePsdmIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
 
 	@Shared
-	InfluxDBContainer influxDbContainer = new InfluxDBContainer("1.8.4")
+	InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb").withTag("1.8.4"))
 	.withAuthEnabled(false)
 	.withDatabase("test_weather")
 
@@ -35,7 +37,7 @@ class InfluxDbWeatherSourcePsdmIT extends Specification implements WeatherSource
 	def setupSpec() {
 		// Copy import file into docker and then import it via influx CLI
 		// more information on file format and usage here: https://docs.influxdata.com/influxdb/v1.7/tools/shell/#import-data-from-a-file-with-import
-		MountableFile influxWeatherImportFile = MountableFile.forClasspathResource("/testcontainersFiles/influxDb/weather.txt")
+		MountableFile influxWeatherImportFile = getMountableFile("weather/weather.txt")
 		influxDbContainer.copyFileToContainer(influxWeatherImportFile, "/home/weather.txt")
 		def execResult = influxDbContainer.execInContainer("influx", "-import", "-path=/home/weather.txt", "-precision=ms")
 		println "Command \"influx -import -path=/home/weather.txt -precision=ms\" returned:"
