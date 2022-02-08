@@ -26,7 +26,8 @@ public interface TimeSeriesSource<V extends Value> extends DataSource {
    *
    * @param scheme the column scheme to check
    * @return whether the scheme is accepted or not
-   * @deprecated since 3.0
+   * @deprecated since 3.0. Use {@link
+   *     #isSchemeAccepted(edu.ie3.datamodel.io.naming.timeseries.ColumnScheme)} instead.
    */
   @Deprecated(since = "3.0", forRemoval = true)
   static boolean isSchemeAccepted(edu.ie3.datamodel.io.csv.timeseries.ColumnScheme scheme) {

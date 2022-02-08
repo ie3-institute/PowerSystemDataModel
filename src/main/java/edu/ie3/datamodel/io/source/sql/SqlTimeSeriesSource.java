@@ -46,7 +46,9 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
    * @param timePattern the pattern of time values
    * @return a SqlTimeSeriesSource for given time series table
    * @throws SourceException if the column scheme is not supported
-   * @deprecated since 3.0
+   * @deprecated since 3.0. Use {@link #getSource(edu.ie3.datamodel.io.connectors.SqlConnector,
+   *     java.lang.String, edu.ie3.datamodel.io.sql.SqlIndividualTimeSeriesMetaInformation,
+   *     java.lang.String)} instead.
    */
   @Deprecated(since = "3.0", forRemoval = true)
   public static SqlTimeSeriesSource<? extends Value> getSource(

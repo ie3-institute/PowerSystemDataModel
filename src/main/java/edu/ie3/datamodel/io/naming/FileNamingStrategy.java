@@ -277,10 +277,9 @@ public class FileNamingStrategy {
     String withoutEnding = fileName.replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
 
     if (getIndividualTimeSeriesPattern().matcher(withoutEnding).matches())
-      return entityPersistenceNamingStrategy.getIndividualTimesSeriesMetaInformation(withoutEnding);
+      return entityPersistenceNamingStrategy.individualTimesSeriesMetaInformation(withoutEnding);
     else if (getLoadProfileTimeSeriesPattern().matcher(withoutEnding).matches())
-      return entityPersistenceNamingStrategy.getLoadProfileTimesSeriesMetaInformation(
-          withoutEnding);
+      return entityPersistenceNamingStrategy.loadProfileTimesSeriesMetaInformation(withoutEnding);
     else
       throw new IllegalArgumentException(
           "Unknown format of '" + fileName + "'. Cannot extract meta information.");

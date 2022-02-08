@@ -130,7 +130,7 @@ public class EntityPersistenceNamingStrategy {
    * @param sourceName Name of the source to extract information from, e.g. file name or SQL table
    *     name
    * @return Meta information form individual time series source name
-   * @deprecated since 3.0. Use {@link #getIndividualTimesSeriesMetaInformation(String)} instead
+   * @deprecated since 3.0. Use {@link #individualTimesSeriesMetaInformation(String)} instead
    */
   @Deprecated(since = "3.0", forRemoval = true)
   public edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
@@ -159,7 +159,7 @@ public class EntityPersistenceNamingStrategy {
    *     name
    * @return Meta information form individual time series source name
    */
-  public IndividualTimeSeriesMetaInformation getIndividualTimesSeriesMetaInformation(
+  public IndividualTimeSeriesMetaInformation individualTimesSeriesMetaInformation(
       String sourceName) {
     Matcher matcher = getIndividualTimeSeriesPattern().matcher(sourceName);
     if (!matcher.matches())
@@ -183,7 +183,7 @@ public class EntityPersistenceNamingStrategy {
    *
    * @param fileName File name to extract information from
    * @return Meta information form load profile time series file name
-   * @deprecated since 3.0. Use {@link #getLoadProfileTimesSeriesMetaInformation(String)} instead
+   * @deprecated since 3.0. Use {@link #loadProfileTimesSeriesMetaInformation(String)} instead
    */
   @Deprecated(since = "3.0", forRemoval = true)
   public edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation
@@ -203,7 +203,7 @@ public class EntityPersistenceNamingStrategy {
    * @param fileName File name to extract information from
    * @return Meta information form load profile time series file name
    */
-  public LoadProfileTimeSeriesMetaInformation getLoadProfileTimesSeriesMetaInformation(
+  public LoadProfileTimeSeriesMetaInformation loadProfileTimesSeriesMetaInformation(
       String fileName) {
     Matcher matcher = getLoadProfileTimeSeriesPattern().matcher(fileName);
     if (!matcher.matches())

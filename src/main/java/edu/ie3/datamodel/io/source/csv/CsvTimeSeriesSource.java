@@ -37,7 +37,9 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    * @param metaInformation The given meta information
    * @throws SourceException If the given meta information are not supported
    * @return The source
-   * @deprecated since 3.0
+   * @deprecated since 3.0. Use {@link CsvTimeSeriesSource#getSource(java.lang.String,
+   *     java.lang.String, edu.ie3.datamodel.io.naming.FileNamingStrategy,
+   *     edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation)} instead.
    */
   @Deprecated(since = "3.0", forRemoval = true)
   public static CsvTimeSeriesSource<? extends Value> getSource(

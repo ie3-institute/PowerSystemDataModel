@@ -52,7 +52,7 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
   @Deprecated(since = "3.0", forRemoval = true)
   public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
       getTimeSeriesMetaInformation(UUID timeSeriesUuid) {
-    return getDbTableName(null, "%" + timeSeriesUuid.toString())
+    return getDbTableName(schemaName, "%" + timeSeriesUuid.toString())
         .map(entityPersistenceNamingStrategy::extractIndividualTimesSeriesMetaInformation);
   }
 
@@ -63,8 +63,7 @@ public class SqlTimeSeriesMappingSource extends SqlDataSource<TimeSeriesMappingS
         .map(
             tableName -> {
               IndividualTimeSeriesMetaInformation metaInformation =
-                  entityPersistenceNamingStrategy.getIndividualTimesSeriesMetaInformation(
-                      tableName);
+                  entityPersistenceNamingStrategy.individualTimesSeriesMetaInformation(tableName);
               return new SqlIndividualTimeSeriesMetaInformation(metaInformation, tableName);
             });
   }
