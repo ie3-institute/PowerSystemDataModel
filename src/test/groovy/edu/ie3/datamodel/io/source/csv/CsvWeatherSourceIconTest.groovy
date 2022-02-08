@@ -35,7 +35,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 	def setupSpec() {
 		coordinateSource = WeatherTestData.coordinateSource
 		def weatherFactory = new IconTimeBasedWeatherValueFactory()
-		folderPath = new File(getClass().getResource('/weather/icon').toURI()).absolutePath
+		folderPath = new File(getClass().getResource('weather/icon').toURI()).absolutePath
 		source = new CsvWeatherSource(",", folderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 	}
 
