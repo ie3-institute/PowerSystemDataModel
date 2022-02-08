@@ -63,9 +63,12 @@ class CsvDataSourceTest extends Specification {
 
 	@Shared
 	String csvSep = ","
-	String testBaseFolderPath = new File(getClass().getResource('/testGridFiles').toURI()).getAbsolutePath()
+	@Shared
+	String testBaseFolderPath = "testBaseFolderPath" // does not have to exist for this test
+	@Shared
 	FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
 
+	@Shared
 	DummyCsvSource dummyCsvSource = new DummyCsvSource(csvSep, testBaseFolderPath, fileNamingStrategy)
 
 	def "A csv data source is able to find the correct first entity by uuid"() {

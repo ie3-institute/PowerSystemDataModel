@@ -33,7 +33,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 		given:
 		def typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
 		def thermalSource = new CsvThermalSource(csvSep, participantsFolderPath, fileNamingStrategy, typeSource)
-		def rawGridSource = new CsvRawGridSource(csvSep, gridFolderPath, fileNamingStrategy, typeSource)
+		def rawGridSource = new CsvRawGridSource(csvSep, gridDefaultFolderPath, fileNamingStrategy, typeSource)
 		def csvSystemParticipantSource = new CsvSystemParticipantSource(csvSep,
 				participantsFolderPath, fileNamingStrategy, typeSource,
 				thermalSource, rawGridSource)
@@ -63,10 +63,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 		def typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
 		def thermalSource = new CsvThermalSource(csvSep, participantsFolderPath, fileNamingStrategy, typeSource)
 		def rawGridSource = Spy(CsvRawGridSource, constructorArgs: [
-			csvSep,
-			gridFolderPath,
-			fileNamingStrategy,
-			typeSource
+				csvSep,
+				gridDefaultFolderPath,
+				fileNamingStrategy,
+				typeSource
 		]) {
 			// partly fake the return method of the csv raw grid source to always return empty node sets
 			// -> elements to build NodeGraphicInputs are missing

@@ -16,8 +16,9 @@ trait TestContainerHelper {
      */
     MountableFile getMountableFile(String resource) {
         URL url = getClass().getResource(resource)
-        if(url == null)
+        if (url == null) {
             throw new ResourceException("Resource '" + resource + "' was not found from " + getClass().toString())
+        }
         Path path = Paths.get(url.toURI())
 
         return MountableFile.forHostPath(path)

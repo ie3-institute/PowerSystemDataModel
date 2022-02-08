@@ -17,12 +17,15 @@ trait CsvTestDataMeta {
 	static String timeSeriesFolderPath = getResourceAbs("timeseries")
 	static String graphicsFolderPath = getResourceAbs("graphics")
 	static String typeFolderPath = getResourceAbs("types")
-	static String gridFolderPath = getResourceAbs("grid")
 	static String participantsFolderPath =  getResourceAbs("participants")
 	static String resultEntitiesFolderPath = getResourceAbs("results")
 	static String thermalFolderPath = getResourceAbs("thermal")
 	static String coordinatesIconFolderPath = getResourceAbs("coordinates_icon")
 	static String coordinatesCosmoFolderPath = getResourceAbs("coordinates_cosmo")
+
+	static String gridDefaultFolderPath = getResourceAbs("grid/grid_default")
+	static String gridMalformedFolderPath = getResourceAbs("grid/grid_malformed")
+	static String gridEmptyFolderPath = getResourceAbs("grid/grid_empty")
 
 	static String csvSep = ","
 	static FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
