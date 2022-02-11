@@ -22,7 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix JavaDoc creation
     - Create JavaDoc with java 17 instead of java 8
     - Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))
-- - `IdCoordinateSource.getNearestCoordinates` did previously look through an empty set and now actually considers all coordinates [#529](https://github.com/ie3-institute/PowerSystemDataModel/issues/529)
 
 ### Changed
 - BREAKING: Transformer's no load susceptance needs to be zero or negative to pass model validation [#378](https://github.com/ie3-institute/PowerSystemDataModel/issues/378)

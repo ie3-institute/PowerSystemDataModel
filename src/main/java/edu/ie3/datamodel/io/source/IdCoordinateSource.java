@@ -62,7 +62,7 @@ public interface IdCoordinateSource extends DataSource {
 
   /**
    * Returns the nearest n coordinate points to the given coordinate from a given collection of
-   * points
+   * points. If the set is empty or null we look through all coordinates.
    *
    * @param coordinate the coordinate to look up the nearest neighbours for
    * @param n how many neighbours to look up
@@ -74,7 +74,7 @@ public interface IdCoordinateSource extends DataSource {
     SortedSet<CoordinateDistance> sortedDistances =
         GeoUtils.getCoordinateDistances(
             coordinate,
-            (coordinates == null || coordinates.isEmpty()) ? getAllCoordinates() : coordinates);
+            (coordinates != null && !coordinates.isEmpty()) ? coordinates : getAllCoordinates());
     return sortedDistances.stream().limit(n).toList();
   }
 }
