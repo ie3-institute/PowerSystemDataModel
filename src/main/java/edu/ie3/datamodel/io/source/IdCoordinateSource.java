@@ -57,7 +57,7 @@ public interface IdCoordinateSource extends DataSource {
    * @return the n nearest coordinates to the given point
    */
   default List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
-    return getNearestCoordinates(coordinate, n, Collections.emptySet());
+    return getNearestCoordinates(coordinate, n, getAllCoordinates());
   }
 
   /**
@@ -66,17 +66,17 @@ public interface IdCoordinateSource extends DataSource {
    *
    * @param coordinate the coordinate to look up the nearest neighbours for
    * @param n how many neighbours to look up
-   * @param allCoordinates the collection of points, ideally containing all available coordinates
+   * @param coordinates the collection of points
    * @return the n nearest coordinates to the given point
    */
   default List<CoordinateDistance> getNearestCoordinates(
-      Point coordinate, int n, Collection<Point> allCoordinates) {
+      Point coordinate, int n, Collection<Point> coordinates) {
     SortedSet<CoordinateDistance> sortedDistances =
         GeoUtils.getCoordinateDistances(
             coordinate,
-            (allCoordinates == null || allCoordinates.isEmpty())
+            (coordinates == null || coordinates.isEmpty())
                 ? getAllCoordinates()
-                : allCoordinates);
+                : coordinates);
     return sortedDistances.stream().limit(n).toList();
   }
 }
