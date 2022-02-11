@@ -74,9 +74,7 @@ public interface IdCoordinateSource extends DataSource {
     SortedSet<CoordinateDistance> sortedDistances =
         GeoUtils.getCoordinateDistances(
             coordinate,
-            (coordinates == null || coordinates.isEmpty())
-                ? getAllCoordinates()
-                : coordinates);
+            (coordinates == null || coordinates.isEmpty()) ? getAllCoordinates() : coordinates);
     return sortedDistances.stream().limit(n).toList();
   }
 }
