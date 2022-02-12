@@ -38,10 +38,10 @@ class SqlWeatherSourcePsdmIT extends Specification implements TestContainerHelpe
 
 	def setupSpec() {
 		// Copy sql import script into docker
-		MountableFile sqlImportFile = getMountableFile("weather/weather_psdm.sql")
-		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather_psdm.sql")
+		MountableFile sqlImportFile = getMountableFile("weather/weather_cosmo.sql")
+		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather_cosmo.sql")
 		// Execute import script
-		Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather_psdm.sql")
+		Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather_cosmo.sql")
 		assert res.stderr.empty
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
