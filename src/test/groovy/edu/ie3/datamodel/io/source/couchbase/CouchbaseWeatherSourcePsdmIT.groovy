@@ -43,7 +43,7 @@ class CouchbaseWeatherSourcePsdmIT extends Specification implements TestContaine
 
 	def setupSpec() {
 		// Copy import file with json array of documents into docker
-		MountableFile couchbaseWeatherJsonsFile = getMountableFile("weather/weather.json")
+		MountableFile couchbaseWeatherJsonsFile = getMountableFile("_weather/weather.json")
 		couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather.json")
 
 		// create an index for the document keys

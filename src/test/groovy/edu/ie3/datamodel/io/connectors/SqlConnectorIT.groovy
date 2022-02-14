@@ -24,7 +24,7 @@ class SqlConnectorIT extends Specification implements TestContainerHelper {
 
 	def setupSpec() {
 		// Copy sql import script into docker
-		MountableFile sqlImportFile = getMountableFile("sql/connectorTest.sql")
+		MountableFile sqlImportFile = getMountableFile("_sql/connectorTest.sql")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/connectorTest.sql")
 		// Execute import script
 		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/connectorTest.sql")

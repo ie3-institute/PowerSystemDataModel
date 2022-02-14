@@ -37,7 +37,7 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
 
 	def setupSpec() {
 		// Copy sql import script into docker
-		MountableFile sqlImportFile = getMountableFile("weather/weather_icon.sql")
+		MountableFile sqlImportFile = getMountableFile("_weather/icon/weather.sql")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather_icon.sql")
 		// Execute import script
 		Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather_icon.sql")

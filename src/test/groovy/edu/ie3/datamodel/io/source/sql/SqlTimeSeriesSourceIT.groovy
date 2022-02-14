@@ -41,7 +41,7 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
 
 	def setupSpec() {
 		// Copy sql import scripts into docker
-		MountableFile sqlImportFile = getMountableFile("timeseries/")
+		MountableFile sqlImportFile = getMountableFile("_timeseries/")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/")
 
 		// Execute import script
