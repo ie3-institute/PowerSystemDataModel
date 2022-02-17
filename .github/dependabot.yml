@@ -13,6 +13,7 @@ updates:
   - t-ober
   - sensarmad
   - sebastian-peter
+  - danielfeismann
   ignore:
   - dependency-name: org.spockframework:spock-core
     versions:
