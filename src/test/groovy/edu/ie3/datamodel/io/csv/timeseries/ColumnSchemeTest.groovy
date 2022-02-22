@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.csv.timeseries
 
-import static edu.ie3.datamodel.io.csv.timeseries.ColumnScheme.*
+import static edu.ie3.datamodel.io.naming.timeseries.ColumnScheme.*
 
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.HeatAndPValue
