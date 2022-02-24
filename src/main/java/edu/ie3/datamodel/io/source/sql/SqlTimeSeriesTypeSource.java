@@ -36,7 +36,7 @@ public class SqlTimeSeriesTypeSource extends SqlDataSource<TimeSeriesTypeSource.
 
   private String createQueryFull(String schemaName) {
     Map<String, ColumnScheme> acceptedTableNames =
-        TimeSeriesUtils.ACCEPTED_COLUMN_SCHEMES.stream()
+        TimeSeriesUtils.getAcceptedColumnSchemes().stream()
             .collect(
                 Collectors.toMap(
                     namingStrategy::getTimeSeriesEntityName, columnScheme -> columnScheme));
@@ -55,7 +55,7 @@ public class SqlTimeSeriesTypeSource extends SqlDataSource<TimeSeriesTypeSource.
                                     + "."
                                     + tableName))
             .flatMap(Optional::stream)
-            .collect(Collectors.toList());
+            .toList();
 
     return String.join("\nUNION\n", selectQueries) + ";";
   }
