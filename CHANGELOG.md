@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - SQL time series sources (`SqlTimeSeriesSource` and `SqlTimeSeriesMappingSource`) [#467](https://github.com/ie3-institute/PowerSystemDataModel/issues/467)
+- SQL time series have a different structure than CSV counterparts [#545](https://github.com/ie3-institute/PowerSystemDataModel/issues/545)
 - Graph with impedance weighted edges including facilities to create it [#440](https://github.com/ie3-institute/PowerSystemDataModel/issues/440)
-- Introducing `SqlIndividualTimeSeriesMetaInformation` which provides sql table names [#513](https://github.com/ie3-institute/PowerSystemDataModel/issues/513)
+- `TimeSeriesTypeSource` providing a source for the mapping of time series uuids to column schemes (previously provided by `TimeSeriesMappingSource`) [#515](https://github.com/ie3-institute/PowerSystemDataModel/issues/515)
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
