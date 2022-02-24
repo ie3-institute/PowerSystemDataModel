@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.io.naming.timeseries.ColumnScheme.*;
-
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
@@ -48,14 +46,7 @@ public interface TimeSeriesSource<V extends Value> extends DataSource {
    * @return whether the scheme is accepted or not
    */
   static boolean isSchemeAccepted(ColumnScheme scheme) {
-    return EnumSet.of(
-            ACTIVE_POWER,
-            APPARENT_POWER,
-            ENERGY_PRICE,
-            APPARENT_POWER_AND_HEAT_DEMAND,
-            ACTIVE_POWER_AND_HEAT_DEMAND,
-            HEAT_DEMAND)
-        .contains(scheme);
+    return TimeSeriesConstants.ACCEPTED_COLUMN_SCHEMES.contains(scheme);
   }
 
   /**

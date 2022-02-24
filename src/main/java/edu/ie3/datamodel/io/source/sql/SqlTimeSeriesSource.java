@@ -9,8 +9,10 @@ import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
+import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
-import edu.ie3.datamodel.io.sql.SqlIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
@@ -46,9 +48,9 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
    * @param timePattern the pattern of time values
    * @return a SqlTimeSeriesSource for given time series table
    * @throws SourceException if the column scheme is not supported
-   * @deprecated since 3.0. Use {@link #getSource(edu.ie3.datamodel.io.connectors.SqlConnector,
-   *     java.lang.String, edu.ie3.datamodel.io.sql.SqlIndividualTimeSeriesMetaInformation,
-   *     java.lang.String)} instead.
+   * @deprecated since 3.0. Use {@link #createSource(SqlConnector, String, DatabaseNamingStrategy,
+   *     edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation, String)}
+   *     instead.
    */
   @Deprecated(since = "3.0", forRemoval = true)
   public static SqlTimeSeriesSource<? extends Value> getSource(
@@ -73,15 +75,17 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
    *
    * @param connector the connector needed for database connection
    * @param schemaName the database schema to use
+   * @param namingStrategy the database entity naming strategy to use
    * @param metaInformation the time series meta information
    * @param timePattern the pattern of time values
    * @return a SqlTimeSeriesSource for given time series table
    * @throws SourceException if the column scheme is not supported
    */
-  public static SqlTimeSeriesSource<? extends Value> getSource(
+  public static SqlTimeSeriesSource<? extends Value> createSource(
       SqlConnector connector,
       String schemaName,
-      SqlIndividualTimeSeriesMetaInformation metaInformation,
+      DatabaseNamingStrategy namingStrategy,
+      IndividualTimeSeriesMetaInformation metaInformation,
       String timePattern)
       throws SourceException {
     if (!TimeSeriesSource.isSchemeAccepted(metaInformation.getColumnScheme()))
@@ -91,14 +95,14 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
     Class<? extends Value> valClass = metaInformation.getColumnScheme().getValueClass();
 
     return create(
-        connector,
-        schemaName,
-        metaInformation.getTableName(),
-        metaInformation.getUuid(),
-        valClass,
-        timePattern);
+        connector, schemaName, namingStrategy, metaInformation.getUuid(), valClass, timePattern);
   }
 
+  /**
+   * @deprecated since 3.0. Use {@link #create(SqlConnector, String, DatabaseNamingStrategy, UUID,
+   *     Class, String)} instead
+   */
+  @Deprecated(since = "3.0", forRemoval = true)
   private static <T extends Value> SqlTimeSeriesSource<T> create(
       SqlConnector connector,
       String schemaName,
@@ -112,6 +116,19 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
         connector, schemaName, tableName, timeSeriesUuid, valClass, valueFactory);
   }
 
+  private static <T extends Value> SqlTimeSeriesSource<T> create(
+      SqlConnector connector,
+      String schemaName,
+      DatabaseNamingStrategy namingStrategy,
+      UUID timeSeriesUuid,
+      Class<T> valClass,
+      String timePattern) {
+    TimeBasedSimpleValueFactory<T> valueFactory =
+        new TimeBasedSimpleValueFactory<>(valClass, timePattern);
+    return new SqlTimeSeriesSource<>(
+        connector, schemaName, namingStrategy, timeSeriesUuid, valClass, valueFactory);
+  }
+
   /**
    * Initializes a new SqlTimeSeriesSource
    *
@@ -121,7 +138,10 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
    * @param timeSeriesUuid the uuid of the time series
    * @param valueClass the class of returned time series values
    * @param factory a factory that parses the input data
+   * @deprecated since 3.0. Use {@link #SqlTimeSeriesSource(SqlConnector,
+   *     String,DatabaseNamingStrategy, UUID, Class, TimeBasedSimpleValueFactory)} instead
    */
+  @Deprecated(since = "3.0", forRemoval = true)
   public SqlTimeSeriesSource(
       SqlConnector connector,
       String schemaName,
@@ -140,6 +160,37 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
     this.queryTimeInterval =
         createQueryStringForTimeInterval(schemaName, tableName, dbTimeColumnName);
     this.queryTime = createQueryStringForTime(schemaName, tableName, dbTimeColumnName);
+  }
+
+  /**
+   * Initializes a new SqlTimeSeriesSource
+   *
+   * @param connector the connector needed for database connection
+   * @param schemaName the database schema to use
+   * @param namingStrategy the naming strategy for database entities
+   * @param timeSeriesUuid the uuid of the time series
+   * @param valueClass the class of returned time series values
+   * @param factory a factory that parses the input data
+   */
+  public SqlTimeSeriesSource(
+      SqlConnector connector,
+      String schemaName,
+      DatabaseNamingStrategy namingStrategy,
+      UUID timeSeriesUuid,
+      Class<V> valueClass,
+      TimeBasedSimpleValueFactory<V> factory) {
+    super(connector);
+    this.timeSeriesUuid = timeSeriesUuid;
+    this.valueClass = valueClass;
+    this.valueFactory = factory;
+    final ColumnScheme columnScheme = ColumnScheme.parse(valueClass).orElseThrow();
+    final String tableName = namingStrategy.getTimeSeriesEntityName(columnScheme);
+
+    String dbTimeColumnName = getDbColumnName(factory.getTimeFieldString(), tableName);
+
+    this.queryFull = createQueryFull(schemaName, tableName);
+    this.queryTimeInterval = createQueryForTimeInterval(schemaName, tableName, dbTimeColumnName);
+    this.queryTime = createQueryForTime(schemaName, tableName, dbTimeColumnName);
   }
 
   @Override
@@ -178,9 +229,26 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
    * @return Optional simple time based value
    */
   protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
+    fieldToValues.remove("timeSeries");
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
     return valueFactory.get(factoryData);
+  }
+
+  /**
+   * Creates a base query to retrieve all entities for this time series: <br>
+   * {@code <base query> WHERE time_series = $timeSeriesUuid AND <time column> BETWEEN ? AND ?;}
+   *
+   * @param schemaName the name of the database schema
+   * @param tableName the name of the database table
+   * @return the query string
+   */
+  private String createQueryFull(String schemaName, String tableName) {
+    return createBaseQueryString(schemaName, tableName)
+        + WHERE
+        + "time_series = '"
+        + timeSeriesUuid.toString()
+        + "'";
   }
 
   /**
@@ -193,10 +261,32 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
    * @param timeColumnName the name of the column holding the timestamp info
    * @return the query string
    */
+  @Deprecated(since = "3.0", forRemoval = true)
   private static String createQueryStringForTimeInterval(
       String schemaName, String tableName, String timeColumnName) {
     return createBaseQueryString(schemaName, tableName)
         + WHERE
+        + timeColumnName
+        + " BETWEEN ? AND ?;";
+  }
+
+  /**
+   * Creates a base query to retrieve all entities for given time series uuid and in the given time
+   * frame with the following pattern: <br>
+   * {@code <base query> WHERE time_series = $timeSeriesUuid AND <time column> BETWEEN ? AND ?;}
+   *
+   * @param schemaName the name of the database schema
+   * @param tableName the name of the database table
+   * @param timeColumnName the name of the column holding the timestamp info
+   * @return the query string
+   */
+  private String createQueryForTimeInterval(
+      String schemaName, String tableName, String timeColumnName) {
+    return createBaseQueryString(schemaName, tableName)
+        + WHERE
+        + "time_series = '"
+        + timeSeriesUuid.toString()
+        + "' AND "
         + timeColumnName
         + " BETWEEN ? AND ?;";
   }
@@ -210,8 +300,29 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
    * @param timeColumnName the name of the column holding the timestamp info
    * @return the query string
    */
+  @Deprecated(since = "3.0", forRemoval = true)
   private String createQueryStringForTime(
       String schemaName, String weatherTableName, String timeColumnName) {
     return createBaseQueryString(schemaName, weatherTableName) + WHERE + timeColumnName + "=?;";
+  }
+
+  /**
+   * Creates a basic query to retrieve an entry for the given time series uuid and time with the
+   * following pattern: <br>
+   * {@code <base query> WHERE time_series = $timeSeriesUuid AND <time column>=?;}
+   *
+   * @param schemaName the name of the database schema
+   * @param tableName the name of the database table
+   * @param timeColumnName the name of the column holding the timestamp info
+   * @return the query string
+   */
+  private String createQueryForTime(String schemaName, String tableName, String timeColumnName) {
+    return createBaseQueryString(schemaName, tableName)
+        + WHERE
+        + "time_series = '"
+        + timeSeriesUuid.toString()
+        + "' AND "
+        + timeColumnName
+        + "=?;";
   }
 }
