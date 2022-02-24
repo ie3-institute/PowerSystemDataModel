@@ -10,9 +10,9 @@ import static edu.ie3.datamodel.io.naming.timeseries.ColumnScheme.*;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import java.util.EnumSet;
 
-public class TimeSeriesConstants {
-  private TimeSeriesConstants() {
-    // do not instantiate
+public class TimeSeriesUtils {
+  private TimeSeriesUtils() {
+    // prevent initialization
   }
 
   public static final EnumSet<ColumnScheme> ACCEPTED_COLUMN_SCHEMES =
@@ -23,4 +23,14 @@ public class TimeSeriesConstants {
           APPARENT_POWER_AND_HEAT_DEMAND,
           ACTIVE_POWER_AND_HEAT_DEMAND,
           HEAT_DEMAND);
+
+  /**
+   * Checks whether the given column scheme can be used with time series.
+   *
+   * @param scheme the column scheme to check
+   * @return whether the scheme is accepted or not
+   */
+  public static boolean isSchemeAccepted(ColumnScheme scheme) {
+    return ACCEPTED_COLUMN_SCHEMES.contains(scheme);
+  }
 }

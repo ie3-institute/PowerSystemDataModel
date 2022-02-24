@@ -11,8 +11,8 @@ import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesTypeFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
-import edu.ie3.datamodel.io.source.TimeSeriesConstants;
 import edu.ie3.datamodel.io.source.TimeSeriesTypeSource;
+import edu.ie3.datamodel.io.source.TimeSeriesUtils;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,7 +36,7 @@ public class SqlTimeSeriesTypeSource extends SqlDataSource<TimeSeriesTypeSource.
 
   private String createQueryFull(String schemaName) {
     Map<String, ColumnScheme> acceptedTableNames =
-        TimeSeriesConstants.ACCEPTED_COLUMN_SCHEMES.stream()
+        TimeSeriesUtils.ACCEPTED_COLUMN_SCHEMES.stream()
             .collect(
                 Collectors.toMap(
                     namingStrategy::getTimeSeriesEntityName, columnScheme -> columnScheme));

@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
+import edu.ie3.datamodel.io.source.TimeSeriesUtils;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
@@ -88,7 +89,7 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
       IndividualTimeSeriesMetaInformation metaInformation,
       String timePattern)
       throws SourceException {
-    if (!TimeSeriesSource.isSchemeAccepted(metaInformation.getColumnScheme()))
+    if (!TimeSeriesUtils.isSchemeAccepted(metaInformation.getColumnScheme()))
       throw new SourceException(
           "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
 

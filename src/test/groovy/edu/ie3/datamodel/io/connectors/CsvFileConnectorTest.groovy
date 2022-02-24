@@ -90,27 +90,7 @@ class CsvFileConnectorTest extends Specification {
 		]
 
 		when:
-		def actual = cfc.buildIndividualTimeSeriesMetaInformation()
-
-		then:
-		actual == expected
-	}
-
-	def "The csv file connector returns empty optional, if there is no meta information for queried time series"() {
-		when:
-		def actual = cfc.individualTimeSeriesMetaInformation(UUID.fromString("2602e863-3eb6-480e-b752-a3e653af74ec"))
-
-		then:
-		!actual.present
-	}
-
-	def "The csv file connector returns correct individual time series meta information"() {
-		given:
-		def timeSeriesUuid = UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")
-		def expected = Optional.of(new CsvIndividualTimeSeriesMetaInformation(timeSeriesUuid, ColumnScheme.ENERGY_PRICE, "its_c_b88dee50-5484-4136-901d-050d8c1c97d1"))
-
-		when:
-		def actual = cfc.individualTimeSeriesMetaInformation(timeSeriesUuid)
+		def actual = cfc.getIndividualTimeSeriesMetaInformation()
 
 		then:
 		actual == expected

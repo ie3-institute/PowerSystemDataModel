@@ -8,8 +8,10 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesTypeSource;
+import edu.ie3.datamodel.io.source.TimeSeriesUtils;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class CsvTimeSeriesTypeSource extends CsvDataSource implements TimeSeriesTypeSource {
 
@@ -20,6 +22,8 @@ public class CsvTimeSeriesTypeSource extends CsvDataSource implements TimeSeries
 
   @Override
   public Map<UUID, ? extends IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation() {
-    return connector.getIndividualTimeSeriesMetaInformation();
+    return connector.getIndividualTimeSeriesMetaInformation().entrySet().stream()
+        .filter(entry -> TimeSeriesUtils.isSchemeAccepted(entry.getValue().getColumnScheme()))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 }

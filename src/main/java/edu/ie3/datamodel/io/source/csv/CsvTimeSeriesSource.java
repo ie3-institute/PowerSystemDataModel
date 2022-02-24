@@ -10,6 +10,7 @@ import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
+import edu.ie3.datamodel.io.source.TimeSeriesUtils;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
@@ -94,7 +95,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
       FileNamingStrategy fileNamingStrategy,
       CsvIndividualTimeSeriesMetaInformation metaInformation)
       throws SourceException {
-    if (!TimeSeriesSource.isSchemeAccepted(metaInformation.getColumnScheme()))
+    if (!TimeSeriesUtils.isSchemeAccepted(metaInformation.getColumnScheme()))
       throw new SourceException(
           "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
 
