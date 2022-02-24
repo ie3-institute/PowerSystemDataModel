@@ -10,11 +10,13 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 /** A naming strategy for database entities */
 public class DatabaseNamingStrategy {
 
+  private static final String TIME_SERIES_PREFIX = "time_series_";
+
   public String getTimeSeriesPrefix() {
-    return "time_series_";
+    return TIME_SERIES_PREFIX;
   }
 
   public String getTimeSeriesEntityName(ColumnScheme columnScheme) {
-    return getTimeSeriesPrefix() + columnScheme.getScheme();
+    return TIME_SERIES_PREFIX + columnScheme.getScheme();
   }
 }
