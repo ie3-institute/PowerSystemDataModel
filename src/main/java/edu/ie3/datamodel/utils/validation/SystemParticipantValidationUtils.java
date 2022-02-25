@@ -238,9 +238,9 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * Validates a PvInput if: <br>
    * - its rated apparent power is not negative <br>
    * - its albedo value of the plant's surrounding is between 0 and 1 <br>
-   * - its inclination in a compass direction (azimuth) is is between -90° and 90° <br>
-   * - its efficiency of the asset's inverter (etaConv) is is between 0% and 100% <br>
-   * - its tilted inclination from horizontal (height) is is between 0° and 90° <br>
+   * - its inclination in a compass direction (azimuth) is between -90° and 90° <br>
+   * - its efficiency of the asset's inverter (etaConv) is between 0% and 100% <br>
+   * - its tilted inclination from horizontal (elevation angle) is between 0° and 90° <br>
    * - its rated power factor is between 0 and 1
    *
    * @param pvInput PvInput to validate
