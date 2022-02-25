@@ -3,7 +3,7 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.io.csv.timeseries;
+package edu.ie3.datamodel.io.naming.timeseries;
 
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.StringUtils;
@@ -11,12 +11,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * Yet supported column schemes in individual time series
- *
- * @deprecated since 3.0. Use {@link edu.ie3.datamodel.io.naming.timeseries.ColumnScheme} instead
- */
-@Deprecated(since = "3.0", forRemoval = true)
+/** Supported column schemes in individual time series */
 public enum ColumnScheme {
   ENERGY_PRICE("c", EnergyPriceValue.class),
   ACTIVE_POWER("p", PValue.class),
@@ -29,7 +24,6 @@ public enum ColumnScheme {
   private final String scheme;
   private final Class<? extends Value> valueClass;
 
-  @Deprecated
   ColumnScheme(String scheme, Class<? extends Value> valueClass) {
     this.scheme = scheme;
     this.valueClass = valueClass;

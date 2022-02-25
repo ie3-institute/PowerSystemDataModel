@@ -4,8 +4,8 @@ plugins {
 	id 'maven-publish'
 	id 'signing'
 	id 'pmd' // code check, working on source code
-	id 'com.diffplug.spotless' version '6.2.2'//code format
-	id 'com.github.spotbugs' version '5.0.5' // code check, working on byte code
+	id 'com.diffplug.spotless' version '6.3.0'//code format
+	id 'com.github.spotbugs' version '5.0.6' // code check, working on byte code
 	id 'de.undercouch.download' version '5.0.1'
 	id 'kr.motd.sphinx' version '2.10.1' // documentation generation
 	id 'jacoco' // java code coverage plugin
@@ -58,7 +58,7 @@ dependencies {
 	//	 ie³ power system utils
 	implementation 'com.github.ie3-institute:PowerSystemUtils:1.6'
 
-	implementation 'tech.units:indriya:2.1.2'
+	implementation 'tech.units:indriya:2.1.3'
 
 	implementation 'com.github.johanneshiry:OSMonaut:v1.1.1' // tmp pbf parse
 
@@ -92,7 +92,7 @@ dependencies {
 	// Databases
 	implementation 'org.influxdb:influxdb-java:2.22'
 	implementation 'com.couchbase.client:java-client:3.2.5'
-	runtimeOnly 'org.postgresql:postgresql:42.3.2' // postgresql jdbc driver required during runtime
+	runtimeOnly 'org.postgresql:postgresql:42.3.3' // postgresql jdbc driver required during runtime
 
 	implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
 	implementation 'org.apache.commons:commons-compress:1.21' // I/O functionalities

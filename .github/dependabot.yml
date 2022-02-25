@@ -12,11 +12,13 @@ updates:
   - johanneshiry
   - t-ober
   - sensarmad
+  - sebastian-peter
+  - danielfeismann
   ignore:
   - dependency-name: org.spockframework:spock-core
     versions:
         - "2.1-groovy-3.0-SNAPSHOT"
         - "2.1-groovy-2.5-SNAPSHOT"
-  - dependency-name: org.jgrapht:jgrapht-core
-    versions:
-    - ">= 1.5.a, < 1.6"
+        - "2.2-groovy-4.0-SNAPSHOT"
+        - "2.2-groovy-3.0-SNAPSHOT"
+        - "2.2-groovy-2.5-SNAPSHOT"
