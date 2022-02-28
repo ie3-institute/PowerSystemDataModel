@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.models.input;
 
-import edu.ie3.datamodel.models.input.system.BmInput;
-
 import java.util.Objects;
 import java.util.UUID;
 

@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import java.util.*;
 import java.util.stream.Collectors;

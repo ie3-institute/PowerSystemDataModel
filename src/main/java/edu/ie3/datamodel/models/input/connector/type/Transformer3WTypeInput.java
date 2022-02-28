@@ -10,8 +10,6 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.*;
-
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput} */

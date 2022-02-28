@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input.system.type.chargingpoint;
 
 import edu.ie3.datamodel.models.ElectricCurrentType;
-import edu.ie3.datamodel.models.input.system.BmInput;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import java.io.Serializable;
 import java.util.*;

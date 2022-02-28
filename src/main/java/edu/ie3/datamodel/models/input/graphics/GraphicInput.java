@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input.graphics;
 
 import edu.ie3.datamodel.models.input.InputEntity;
-import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Objects;
 import java.util.UUID;

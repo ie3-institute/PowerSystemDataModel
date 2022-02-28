@@ -9,8 +9,6 @@ import edu.ie3.datamodel.io.extractor.HasThermalBus;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.BmInput;
-
 import java.util.Objects;
 import java.util.UUID;
 

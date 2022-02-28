@@ -6,8 +6,6 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.input.InputEntity;
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
-
 import java.util.*;
 
 public abstract class GridContainer implements InputContainer<InputEntity> {

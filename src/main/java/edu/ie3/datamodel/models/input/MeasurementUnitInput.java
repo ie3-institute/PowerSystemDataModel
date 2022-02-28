@@ -7,8 +7,6 @@ package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.system.BmInput;
-
 import java.util.*;
 
 /** Model of a measuring unit attached to a certain {@link NodeInput}. */

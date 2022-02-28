@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.input.system.BmInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Objects;

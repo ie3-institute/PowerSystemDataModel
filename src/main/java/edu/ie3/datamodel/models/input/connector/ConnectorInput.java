@@ -10,8 +10,6 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
-
 import java.util.*;
 
 /** Describes an asset that connects two {@link NodeInput}s */

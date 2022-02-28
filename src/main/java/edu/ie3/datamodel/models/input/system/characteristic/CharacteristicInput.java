@@ -6,8 +6,6 @@
 package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.models.input.system.BmInput;
-
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;

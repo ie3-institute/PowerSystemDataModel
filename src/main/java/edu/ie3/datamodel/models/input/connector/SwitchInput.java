@@ -8,8 +8,6 @@ package edu.ie3.datamodel.models.input.connector;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
-
 import java.util.Objects;
 import java.util.UUID;
 

@@ -13,8 +13,6 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import java.util.*;
-
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import tech.units.indriya.quantity.Quantities;
 
 /**
