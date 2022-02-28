@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.models.input.system.BmInput;
+
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -130,8 +132,7 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    CharacteristicInput<?, ?> that = (CharacteristicInput<?, ?>) o;
+    if (!(o instanceof CharacteristicInput<?, ?> that)) return false;
     return decimalPlaces == that.decimalPlaces
         && characteristicPrefix.equals(that.characteristicPrefix)
         && points.equals(that.points);

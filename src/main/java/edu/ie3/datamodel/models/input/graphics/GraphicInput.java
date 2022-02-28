@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.graphics;
 
 import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Objects;
 import java.util.UUID;
@@ -43,9 +44,8 @@ public abstract class GraphicInput extends InputEntity {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof GraphicInput that)) return false;
     if (!super.equals(o)) return false;
-    GraphicInput that = (GraphicInput) o;
     return graphicLayer.equals(that.graphicLayer) && Objects.equals(path, that.path);
   }
 

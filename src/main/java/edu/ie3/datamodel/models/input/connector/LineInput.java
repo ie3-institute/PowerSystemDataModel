@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Objects;
@@ -124,9 +125,8 @@ public class LineInput extends ConnectorInput implements HasType {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof LineInput lineInput)) return false;
     if (!super.equals(o)) return false;
-    LineInput lineInput = (LineInput) o;
     return type.equals(lineInput.type)
         && length.equals(lineInput.length)
         && geoPosition.equals(lineInput.geoPosition)

@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.models.input.system.BmInput;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -127,9 +129,8 @@ public class RandomLoadParameters extends InputEntity {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof RandomLoadParameters that)) return false;
     if (!super.equals(o)) return false;
-    RandomLoadParameters that = (RandomLoadParameters) o;
     return Objects.equals(quarterHour, that.quarterHour)
         && Objects.equals(kWd, that.kWd)
         && Objects.equals(kSa, that.kSa)

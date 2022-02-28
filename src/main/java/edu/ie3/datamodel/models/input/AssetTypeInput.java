@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.models.input.system.BmInput;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,9 +31,8 @@ public abstract class AssetTypeInput extends InputEntity {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof AssetTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    AssetTypeInput that = (AssetTypeInput) o;
     return Objects.equals(id, that.id);
   }
 

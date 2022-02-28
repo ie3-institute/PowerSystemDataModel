@@ -10,6 +10,8 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -89,9 +91,8 @@ public class Transformer2WInput extends TransformerInput implements HasType {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof Transformer2WInput that)) return false;
     if (!super.equals(o)) return false;
-    Transformer2WInput that = (Transformer2WInput) o;
     return type.equals(that.type);
   }
 

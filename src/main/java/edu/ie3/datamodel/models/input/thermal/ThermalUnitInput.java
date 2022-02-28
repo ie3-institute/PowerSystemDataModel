@@ -9,6 +9,8 @@ import edu.ie3.datamodel.io.extractor.HasThermalBus;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.BmInput;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -52,9 +54,8 @@ public abstract class ThermalUnitInput extends AssetInput implements HasThermalB
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof ThermalUnitInput that)) return false;
     if (!super.equals(o)) return false;
-    ThermalUnitInput that = (ThermalUnitInput) o;
     return thermalBus.equals(that.thermalBus);
   }
 

@@ -10,6 +10,8 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
+
 import java.util.*;
 
 /** Describes an asset that connects two {@link NodeInput}s */
@@ -88,9 +90,8 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof ConnectorInput that)) return false;
     if (!super.equals(o)) return false;
-    ConnectorInput that = (ConnectorInput) o;
     return parallelDevices == that.parallelDevices
         && nodeA.equals(that.nodeA)
         && nodeB.equals(that.nodeB);

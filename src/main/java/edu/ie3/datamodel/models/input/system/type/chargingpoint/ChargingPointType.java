@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system.type.chargingpoint;
 
 import edu.ie3.datamodel.models.ElectricCurrentType;
+import edu.ie3.datamodel.models.input.system.BmInput;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import java.io.Serializable;
 import java.util.*;
@@ -66,8 +67,7 @@ public class ChargingPointType implements Serializable {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    ChargingPointType that = (ChargingPointType) o;
+    if (!(o instanceof ChargingPointType that)) return false;
     return id.equals(that.id)
         && sRated.equals(that.sRated)
         && electricCurrentType == that.electricCurrentType

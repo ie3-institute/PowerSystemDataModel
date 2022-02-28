@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
 import java.util.Objects;
@@ -85,9 +86,8 @@ public class LineTypeInput extends AssetTypeInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof LineTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    LineTypeInput that = (LineTypeInput) o;
     return b.equals(that.b)
         && g.equals(that.g)
         && r.equals(that.r)

@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.graph.SubGridTopologyGraph;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -62,9 +63,8 @@ public class JointGridContainer extends GridContainer {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof JointGridContainer that)) return false;
     if (!super.equals(o)) return false;
-    JointGridContainer that = (JointGridContainer) o;
     return subGridTopologyGraph.equals(that.subGridTopologyGraph);
   }
 

@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.input.system.BmInput;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -104,9 +105,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof StorageTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    StorageTypeInput that = (StorageTypeInput) o;
     return lifeCycle == that.lifeCycle
         && eStorage.equals(that.eStorage)
         && pMax.equals(that.pMax)

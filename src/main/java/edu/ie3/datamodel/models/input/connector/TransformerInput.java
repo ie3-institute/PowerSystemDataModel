@@ -8,6 +8,8 @@ package edu.ie3.datamodel.models.input.connector;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -86,9 +88,8 @@ public abstract class TransformerInput extends ConnectorInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof TransformerInput that)) return false;
     if (!super.equals(o)) return false;
-    TransformerInput that = (TransformerInput) o;
     return tapPos == that.tapPos && autoTap == that.autoTap;
   }
 

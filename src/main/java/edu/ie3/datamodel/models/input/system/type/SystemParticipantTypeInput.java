@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.models.input.system.BmInput;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
@@ -65,9 +66,8 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof SystemParticipantTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    SystemParticipantTypeInput that = (SystemParticipantTypeInput) o;
     return Double.compare(that.cosPhiRated, cosPhiRated) == 0
         && capex.equals(that.capex)
         && opex.equals(that.opex)

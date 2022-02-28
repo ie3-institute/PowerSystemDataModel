@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
+
 import java.util.*;
 
 public abstract class GridContainer implements InputContainer<InputEntity> {
@@ -62,8 +64,7 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    GridContainer that = (GridContainer) o;
+    if (!(o instanceof GridContainer that)) return false;
     return gridName.equals(that.gridName)
         && rawGrid.equals(that.rawGrid)
         && systemParticipants.equals(that.systemParticipants)

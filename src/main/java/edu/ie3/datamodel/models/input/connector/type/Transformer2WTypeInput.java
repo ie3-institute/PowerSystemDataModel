@@ -10,6 +10,8 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.*;
+
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput} */
@@ -145,9 +147,8 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof Transformer2WTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    Transformer2WTypeInput that = (Transformer2WTypeInput) o;
     return tapSide == that.tapSide
         && tapNeutr == that.tapNeutr
         && tapMin == that.tapMin

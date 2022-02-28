@@ -8,6 +8,8 @@ package edu.ie3.datamodel.models.input.connector;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -64,9 +66,8 @@ public class SwitchInput extends ConnectorInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof SwitchInput that)) return false;
     if (!super.equals(o)) return false;
-    SwitchInput that = (SwitchInput) o;
     return Objects.equals(closed, that.closed);
   }
 

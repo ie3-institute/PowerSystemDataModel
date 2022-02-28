@@ -7,6 +7,8 @@ package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.input.system.BmInput;
+
 import java.util.*;
 
 /** Model of a measuring unit attached to a certain {@link NodeInput}. */
@@ -105,9 +107,8 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof MeasurementUnitInput that)) return false;
     if (!super.equals(o)) return false;
-    MeasurementUnitInput that = (MeasurementUnitInput) o;
     return Objects.equals(node, that.node)
         && Objects.equals(vMag, that.vMag)
         && Objects.equals(vAng, that.vAng)

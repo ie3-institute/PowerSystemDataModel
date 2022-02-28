@@ -9,6 +9,8 @@ import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -160,8 +162,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    RawGridElements that = (RawGridElements) o;
+    if (!(o instanceof RawGridElements that)) return false;
     return nodes.equals(that.nodes)
         && lines.equals(that.lines)
         && transformer2Ws.equals(that.transformer2Ws)

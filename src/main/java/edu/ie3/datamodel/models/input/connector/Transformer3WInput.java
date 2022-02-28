@@ -13,6 +13,8 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import java.util.*;
+
+import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import tech.units.indriya.quantity.Quantities;
 
 /**
@@ -239,9 +241,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof Transformer3WInput that)) return false;
     if (!super.equals(o)) return false;
-    Transformer3WInput that = (Transformer3WInput) o;
     return Objects.equals(type, that.type) && Objects.equals(nodeC, that.nodeC);
   }
 

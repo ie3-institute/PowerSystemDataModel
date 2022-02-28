@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.input.system.BmInput;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
@@ -74,9 +75,8 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof ChpTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    ChpTypeInput that = (ChpTypeInput) o;
     return etaEl.equals(that.etaEl)
         && etaThermal.equals(that.etaThermal)
         && pThermal.equals(that.pThermal)
