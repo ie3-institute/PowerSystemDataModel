@@ -124,9 +124,8 @@ public class NodeInput extends AssetInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof NodeInput nodeInput)) return false;
     if (!super.equals(o)) return false;
-    NodeInput nodeInput = (NodeInput) o;
     return slack == nodeInput.slack
         && subnet == nodeInput.subnet
         && Objects.equals(vTarget, nodeInput.vTarget)

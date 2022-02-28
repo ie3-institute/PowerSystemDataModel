@@ -78,9 +78,8 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof SystemParticipantInput that)) return false;
     if (!super.equals(o)) return false;
-    SystemParticipantInput that = (SystemParticipantInput) o;
     return Objects.equals(node, that.node)
         && Objects.equals(qCharacteristics, that.qCharacteristics);
   }

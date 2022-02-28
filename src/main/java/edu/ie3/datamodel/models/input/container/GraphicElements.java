@@ -80,8 +80,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    GraphicElements that = (GraphicElements) o;
+    if (!(o instanceof GraphicElements that)) return false;
     return nodeGraphics.equals(that.nodeGraphics) && lineGraphics.equals(that.lineGraphics);
   }
 
