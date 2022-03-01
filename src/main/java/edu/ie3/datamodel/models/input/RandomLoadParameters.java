@@ -127,9 +127,8 @@ public class RandomLoadParameters extends InputEntity {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof RandomLoadParameters that)) return false;
     if (!super.equals(o)) return false;
-    RandomLoadParameters that = (RandomLoadParameters) o;
     return Objects.equals(quarterHour, that.quarterHour)
         && Objects.equals(kWd, that.kWd)
         && Objects.equals(kSa, that.kSa)

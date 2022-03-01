@@ -172,9 +172,8 @@ public class PvInput extends SystemParticipantInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof PvInput pvInput)) return false;
     if (!super.equals(o)) return false;
-    PvInput pvInput = (PvInput) o;
     return Double.compare(pvInput.albedo, albedo) == 0
         && Double.compare(pvInput.kG, kG) == 0
         && Double.compare(pvInput.kT, kT) == 0

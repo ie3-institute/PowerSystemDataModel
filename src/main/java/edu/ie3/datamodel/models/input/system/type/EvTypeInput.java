@@ -57,9 +57,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof EvTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    EvTypeInput that = (EvTypeInput) o;
     return eStorage.equals(that.eStorage) && eCons.equals(that.eCons);
   }
 
