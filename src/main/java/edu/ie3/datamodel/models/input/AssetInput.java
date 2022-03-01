@@ -63,9 +63,8 @@ public abstract class AssetInput extends InputEntity implements Operable {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof AssetInput that)) return false;
     if (!super.equals(o)) return false;
-    AssetInput that = (AssetInput) o;
     return Objects.equals(operationTime, that.operationTime)
         && Objects.equals(operator, that.operator)
         && Objects.equals(id, that.id);

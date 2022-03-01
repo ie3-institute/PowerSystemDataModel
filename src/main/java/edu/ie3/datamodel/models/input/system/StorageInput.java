@@ -73,9 +73,8 @@ public class StorageInput extends SystemParticipantInput implements HasType {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof StorageInput that)) return false;
     if (!super.equals(o)) return false;
-    StorageInput that = (StorageInput) o;
     return Objects.equals(type, that.type);
   }
 

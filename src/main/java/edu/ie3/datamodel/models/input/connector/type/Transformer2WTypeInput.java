@@ -145,9 +145,8 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof Transformer2WTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    Transformer2WTypeInput that = (Transformer2WTypeInput) o;
     return tapSide == that.tapSide
         && tapNeutr == that.tapNeutr
         && tapMin == that.tapMin

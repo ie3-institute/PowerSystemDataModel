@@ -62,8 +62,7 @@ public abstract class GridContainer implements InputContainer<InputEntity> {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    GridContainer that = (GridContainer) o;
+    if (!(o instanceof GridContainer that)) return false;
     return gridName.equals(that.gridName)
         && rawGrid.equals(that.rawGrid)
         && systemParticipants.equals(that.systemParticipants)

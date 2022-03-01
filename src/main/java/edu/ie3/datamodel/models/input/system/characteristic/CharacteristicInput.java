@@ -130,8 +130,7 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    CharacteristicInput<?, ?> that = (CharacteristicInput<?, ?>) o;
+    if (!(o instanceof CharacteristicInput<?, ?> that)) return false;
     return decimalPlaces == that.decimalPlaces
         && characteristicPrefix.equals(that.characteristicPrefix)
         && points.equals(that.points);

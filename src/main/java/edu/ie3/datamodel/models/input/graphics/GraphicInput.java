@@ -43,9 +43,8 @@ public abstract class GraphicInput extends InputEntity {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof GraphicInput that)) return false;
     if (!super.equals(o)) return false;
-    GraphicInput that = (GraphicInput) o;
     return graphicLayer.equals(that.graphicLayer) && Objects.equals(path, that.path);
   }
 

@@ -114,9 +114,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof ThermalHouseInput that)) return false;
     if (!super.equals(o)) return false;
-    ThermalHouseInput that = (ThermalHouseInput) o;
     return ethLosses.equals(that.ethLosses)
         && ethCapa.equals(that.ethCapa)
         && targetTemperature.equals(that.targetTemperature)
