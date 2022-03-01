@@ -199,9 +199,8 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof Transformer3WTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    Transformer3WTypeInput that = (Transformer3WTypeInput) o;
     return tapNeutr == that.tapNeutr
         && tapMin == that.tapMin
         && tapMax == that.tapMax

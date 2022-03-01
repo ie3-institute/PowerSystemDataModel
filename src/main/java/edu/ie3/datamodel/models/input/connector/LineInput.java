@@ -124,9 +124,8 @@ public class LineInput extends ConnectorInput implements HasType {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof LineInput lineInput)) return false;
     if (!super.equals(o)) return false;
-    LineInput lineInput = (LineInput) o;
     return type.equals(lineInput.type)
         && length.equals(lineInput.length)
         && geoPosition.equals(lineInput.geoPosition)
