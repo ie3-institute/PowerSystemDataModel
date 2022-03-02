@@ -73,9 +73,8 @@ public class EvInput extends SystemParticipantInput implements HasType {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof EvInput evInput)) return false;
     if (!super.equals(o)) return false;
-    EvInput evInput = (EvInput) o;
     return Objects.equals(type, evInput.type);
   }
 

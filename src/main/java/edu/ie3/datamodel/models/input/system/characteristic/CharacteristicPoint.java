@@ -110,8 +110,7 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    CharacteristicPoint<?, ?> that = (CharacteristicPoint<?, ?>) o;
+    if (!(o instanceof CharacteristicPoint<?, ?> that)) return false;
     return Objects.equals(x, that.x) && Objects.equals(y, that.y);
   }
 

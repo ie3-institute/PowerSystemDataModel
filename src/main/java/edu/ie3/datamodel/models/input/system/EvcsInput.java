@@ -161,9 +161,8 @@ public class EvcsInput extends SystemParticipantInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof EvcsInput evcsInput)) return false;
     if (!super.equals(o)) return false;
-    EvcsInput evcsInput = (EvcsInput) o;
     return chargingPoints == evcsInput.chargingPoints
         && Double.compare(evcsInput.cosPhiRated, cosPhiRated) == 0
         && type.equals(evcsInput.type)

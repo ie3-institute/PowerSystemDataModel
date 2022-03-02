@@ -226,8 +226,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    SystemParticipants that = (SystemParticipants) o;
+    if (!(o instanceof SystemParticipants that)) return false;
     return Objects.equals(bmPlants, that.bmPlants)
         && Objects.equals(chpPlants, that.chpPlants)
         && Objects.equals(evCS, that.evCS)
