@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - SQL time series sources (`SqlTimeSeriesSource` and `SqlTimeSeriesMappingSource`) [#467](https://github.com/ie3-institute/PowerSystemDataModel/issues/467)
 - Graph with impedance weighted edges including facilities to create it [#440](https://github.com/ie3-institute/PowerSystemDataModel/issues/440)
+- Introducing `SqlIndividualTimeSeriesMetaInformation` which provides sql table names [#513](https://github.com/ie3-institute/PowerSystemDataModel/issues/513)
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
@@ -26,6 +27,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - BREAKING: Transformer's no load susceptance needs to be zero or negative to pass model validation [#378](https://github.com/ie3-institute/PowerSystemDataModel/issues/378)
   - All input data sets for version < 3.0.0 need to be altered!
+- Deprecating (as part of [#513](https://github.com/ie3-institute/PowerSystemDataModel/issues/513)): 
+  - `edu.ie3.datamodel.io.csv.timeseries.ColumnScheme`
+  - `edu.ie3.datamodel.io.csv.FileNameMetaInformation`
+  - `edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation`
+  - `edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation`
+  - `edu.ie3.datamodel.io.connectors.CsvFileConnector.CsvIndividualTimeSeriesMetaInformation`
+  - and related methods
 - BREAKING: Comprehensive harmonization around weather sources [#267](https://github.com/ie3-institute/PowerSystemDataModel/issues/267)
     - Adapted the expected column scheme
       - DWD COSMO model
@@ -61,7 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   added target temperature including tolerance boundaries to `ThermalHouseInput`
 
 ### Changed
-- separated entity and file naming and introduced a new FileNamingStrategy taking an EntityNamingStrategy and a FileHierarchy as arguments
+-   separated entity and file naming and introduced a new FileNamingStrategy taking an EntityNamingStrategy and a FileHierarchy as arguments
 
 ### Fixed
 -   `CsvSystemParticipantSource#getSystemParticipants()` now correctly returns electric vehicle charging station input models [PR#370](https://github.com/ie3-institute/PowerSystemDataModel/pull/370)

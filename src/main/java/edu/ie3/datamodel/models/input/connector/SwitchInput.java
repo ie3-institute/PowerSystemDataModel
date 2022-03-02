@@ -64,9 +64,8 @@ public class SwitchInput extends ConnectorInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof SwitchInput that)) return false;
     if (!super.equals(o)) return false;
-    SwitchInput that = (SwitchInput) o;
     return Objects.equals(closed, that.closed);
   }
 

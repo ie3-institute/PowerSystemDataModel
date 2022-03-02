@@ -82,11 +82,11 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 
 	def "The pattern for an individual time series file name actually matches a valid file name and extracts the correct groups"() {
 		given:
-		def fns = new EntityPersistenceNamingStrategy()
+		def ens = new EntityPersistenceNamingStrategy()
 		def validFileName = "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
 
 		when:
-		def matcher = fns.individualTimeSeriesPattern.matcher(validFileName)
+		def matcher = ens.individualTimeSeriesPattern.matcher(validFileName)
 
 		then: "the pattern matches"
 		matcher.matches()
@@ -101,11 +101,11 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 
 	def "The pattern for a repetitive load profile time series file name actually matches a valid file name and extracts the correct groups"() {
 		given:
-		def fns = new EntityPersistenceNamingStrategy()
+		def ens = new EntityPersistenceNamingStrategy()
 		def validFileName = "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 
 		when:
-		def matcher = fns.loadProfileTimeSeriesPattern.matcher(validFileName)
+		def matcher = ens.loadProfileTimeSeriesPattern.matcher(validFileName)
 
 		then: "the pattern matches"
 		matcher.matches()
@@ -120,11 +120,11 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 
 	def "Trying to extract individual time series meta information throws an Exception, if it is provided a malformed string"() {
 		given:
-		def fns = new EntityPersistenceNamingStrategy()
+		def ens = new EntityPersistenceNamingStrategy()
 		def fileName = "foo"
 
 		when:
-		fns.extractIndividualTimesSeriesMetaInformation(fileName)
+		ens.individualTimesSeriesMetaInformation(fileName)
 
 		then:
 		def ex = thrown(IllegalArgumentException)
@@ -133,11 +133,11 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 
 	def "Trying to extract load profile time series meta information throws an Exception, if it is provided a malformed string"() {
 		given:
-		def fns = new EntityPersistenceNamingStrategy()
+		def ens = new EntityPersistenceNamingStrategy()
 		def fileName = "foo"
 
 		when:
-		fns.extractLoadProfileTimesSeriesMetaInformation(fileName)
+		ens.loadProfileTimesSeriesMetaInformation(fileName)
 
 		then:
 		def ex = thrown(IllegalArgumentException)
