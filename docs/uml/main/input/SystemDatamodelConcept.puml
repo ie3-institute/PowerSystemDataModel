@@ -233,7 +233,7 @@ package models {
                 - albedo: Double
                 - azimuth: ComparableQuantity<Angle> [°]
                 - etaConv: ComparableQuantity<Dimensionless> [%]
-                - height: ComparableQuantity<Angle> [°]
+                - elevationAngle: ComparableQuantity<Angle> [°]
                 - kG: Double
                 - kT: Double
                 - marketReaction: Boolean
