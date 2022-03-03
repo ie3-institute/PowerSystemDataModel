@@ -44,7 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - `directirradiation` to `directirradiance`
       - ICON model:
         - `"datum"` to `"time"`
-	-   Get field name in different casing (to actually get the column name in database, file, ...)
 	-   Force user to provide time stamp pattern to `CouchbaseWeatherSource` to ensure harmonized querying
 
 ## [2.1.0] - 2022-01-05
