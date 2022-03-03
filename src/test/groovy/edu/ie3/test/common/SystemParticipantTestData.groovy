@@ -71,7 +71,7 @@ class SystemParticipantTestData {
 	// PV
 	private static final double albedo = 0.20000000298023224d
 	private static final ComparableQuantity<Angle> azimuth = Quantities.getQuantity(-8.926613807678223d, AZIMUTH)
-	private static final ComparableQuantity<Angle> height = Quantities.getQuantity(41.01871871948242d, SOLAR_HEIGHT)
+	private static final ComparableQuantity<Angle> elevationAngle = Quantities.getQuantity(41.01871871948242d, SOLAR_ELEVATION_ANGLE)
 	private static double kT = 1d
 	private static double kG = 0.8999999761581421d
 	public static final PvInput pvInput = new PvInput(
@@ -84,7 +84,7 @@ class SystemParticipantTestData {
 	albedo,
 	azimuth,
 	etaConv,
-	height,
+	elevationAngle,
 	kG,
 	kT,
 	false,

@@ -99,7 +99,7 @@ public class StandardUnits {
   /** Orientation of a pv panel with regard to the north-south line in degree_geom */
   public static final Unit<Angle> AZIMUTH = DEGREE_GEOM;
   /** Elevation of a pv panel with regard to the plane in degree_geom */
-  public static final Unit<Angle> SOLAR_HEIGHT = DEGREE_GEOM;
+  public static final Unit<Angle> SOLAR_ELEVATION_ANGLE = DEGREE_GEOM;
   /** Direction of the wind in degree geom */
   public static final Unit<Angle> WIND_DIRECTION = DEGREE_GEOM;
   /** Velocity of the wind in metre per second */
