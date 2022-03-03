@@ -47,20 +47,23 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
 			[
 				TimeBasedSimpleValueFactory.UUID,
 				TIME,
-				PRICE] as Set
+				PRICE
+			] as Set
 		]
 		SValue           || [
 			[
 				TimeBasedSimpleValueFactory.UUID,
 				TIME,
 				ACTIVE_POWER,
-				REACTIVE_POWER] as Set
+				REACTIVE_POWER
+			] as Set
 		]
 		PValue || [
 			[
 				TimeBasedSimpleValueFactory.UUID,
 				TIME,
-				ACTIVE_POWER] as Set
+				ACTIVE_POWER
+			] as Set
 		]
 		HeatAndSValue || [
 			[
@@ -68,20 +71,23 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
 				TIME,
 				ACTIVE_POWER,
 				REACTIVE_POWER,
-				HEAT_DEMAND] as Set
+				HEAT_DEMAND
+			] as Set
 		]
 		HeatAndPValue || [
 			[
 				TimeBasedSimpleValueFactory.UUID,
 				TIME,
 				ACTIVE_POWER,
-				HEAT_DEMAND] as Set
+				HEAT_DEMAND
+			] as Set
 		]
 		HeatDemandValue || [
 			[
 				TimeBasedSimpleValueFactory.UUID,
 				TIME,
-				HEAT_DEMAND] as Set
+				HEAT_DEMAND
+			] as Set
 		]
 	}
 

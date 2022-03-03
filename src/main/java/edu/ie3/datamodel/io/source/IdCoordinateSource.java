@@ -5,10 +5,9 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.utils.GridAndGeoUtils;
 import edu.ie3.util.geo.CoordinateDistance;
+import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
-import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Point;
 
 /**
@@ -73,11 +72,11 @@ public interface IdCoordinateSource extends DataSource {
   default List<CoordinateDistance> getNearestCoordinates(
       Point coordinate, int n, Collection<Point> allCoordinates) {
     SortedSet<CoordinateDistance> sortedDistances =
-        GridAndGeoUtils.getCoordinateDistances(
+        GeoUtils.getCoordinateDistances(
             coordinate,
             (allCoordinates == null || allCoordinates.isEmpty())
                 ? getAllCoordinates()
                 : allCoordinates);
-    return sortedDistances.stream().limit(n).collect(Collectors.toList());
+    return sortedDistances.stream().limit(n).toList();
   }
 }

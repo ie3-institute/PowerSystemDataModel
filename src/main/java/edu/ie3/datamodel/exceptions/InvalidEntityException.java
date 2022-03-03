@@ -20,4 +20,8 @@ public class InvalidEntityException extends ValidationException {
       String faultDescription, Throwable cause, UniqueEntity invalidEntity) {
     super("Entity is invalid because of: " + faultDescription + " [" + invalidEntity + "]", cause);
   }
+
+  public InvalidEntityException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

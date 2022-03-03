@@ -5,8 +5,10 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import static edu.ie3.datamodel.models.StandardUnits.*
+
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
@@ -25,8 +27,6 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import static edu.ie3.datamodel.models.StandardUnits.*
-
 class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta, WeatherSourceTestHelper {
 
 	@Shared
@@ -38,7 +38,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 	def setupSpec() {
 		coordinateSource = CosmoWeatherTestData.coordinateSource
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
-		source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
+		source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 	}
 
 	def "A CsvWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
@@ -105,7 +105,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
-		def source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
+		def source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
 			"time"             : "2020-10-16T12:40:42Z",
@@ -149,7 +149,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
-		def source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
+		def source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
 			"time"             : "2020-10-16T12:40:42Z",
@@ -174,7 +174,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
-		def source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
+		def source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
 			"time"             : "2020-10-16T12:40:42Z",
@@ -197,7 +197,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> Optional.empty()
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
-		def source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
+		def source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
 			"time"             : "2020-10-16T12:40:42Z",

@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.couchbase
 
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
-import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -38,7 +37,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 	@Shared
 	CouchbaseWeatherSource source
 
-	static String coordinateIdColumnName = TimeBasedWeatherValueFactory.COORDINATE_ID_NAMING.flatCase()
+	static String coordinateIdColumnName = "coordinateid"
 
 	def setupSpec() {
 		// Copy import file with json array of documents into docker
@@ -65,7 +64,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
 		def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern))
-		source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, weatherFactory, dtfPattern)
+		source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, coordinateIdColumnName, "weather", dtfPattern, weatherFactory)
 	}
 
 	def "The test container can establish a valid connection"() {
@@ -97,11 +96,13 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 		def timeSeries193186 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193186_16H),
-					new TimeBasedValue(CosmoWeatherTestData.TIME_17H, CosmoWeatherTestData.WEATHER_VALUE_193186_17H)]
+					new TimeBasedValue(CosmoWeatherTestData.TIME_17H, CosmoWeatherTestData.WEATHER_VALUE_193186_17H)
+				]
 				as Set<TimeBasedValue>)
 		def timeSeries193187 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193187_16H)
+				] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
 		then:
@@ -119,14 +120,17 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 				[
 					new TimeBasedValue(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.WEATHER_VALUE_193186_15H),
 					new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193186_16H),
-					new TimeBasedValue(CosmoWeatherTestData.TIME_17H, CosmoWeatherTestData.WEATHER_VALUE_193186_17H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(CosmoWeatherTestData.TIME_17H, CosmoWeatherTestData.WEATHER_VALUE_193186_17H)
+				] as Set<TimeBasedValue>)
 		def timeSeries193187 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.WEATHER_VALUE_193187_15H),
-					new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193187_16H)
+				] as Set<TimeBasedValue>)
 		def timeSeries193188 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.WEATHER_VALUE_193188_15H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.WEATHER_VALUE_193188_15H)
+				] as Set<TimeBasedValue>)
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
 		then:

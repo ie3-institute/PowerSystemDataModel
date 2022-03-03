@@ -3,6 +3,11 @@ test {
 	testLogging {
 		events "skipped", "failed"
 	}
+
+	// Improve logging for failed Spock tests
+	testLogging {
+		exceptionFormat "Full"
+	}
 }
 
 task unitTest(type: Test) {

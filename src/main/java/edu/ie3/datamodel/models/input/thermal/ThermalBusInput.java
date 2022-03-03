@@ -35,6 +35,7 @@ public class ThermalBusInput extends AssetInput {
     super(uuid, id);
   }
 
+  @Override
   public ThermalBusInputCopyBuilder copy() {
     return new ThermalBusInputCopyBuilder(this);
   }

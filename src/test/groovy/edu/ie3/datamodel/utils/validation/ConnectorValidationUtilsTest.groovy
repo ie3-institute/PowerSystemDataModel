@@ -32,6 +32,15 @@ import tech.units.indriya.quantity.Quantities
 
 class ConnectorValidationUtilsTest extends Specification {
 
+	def "Instantiating a ConnectorValidationUtil leads to an exception"() {
+		when:
+		new ConnectorValidationUtils()
+
+		then:
+		def e = thrown(IllegalStateException)
+		e.message == "Don't try and instantiate a Utility class."
+	}
+
 	def "Smoke Test: Correct line throws no exception"() {
 		given:
 		def line = GridTestData.lineFtoG
@@ -254,5 +263,4 @@ class ConnectorValidationUtilsTest extends Specification {
 		invalidSwitch           || expectedException
 		GridTestData.switchAtoB || new InvalidEntityException("Switch connects two different voltage levels", invalidSwitch)
 	}
-
 }

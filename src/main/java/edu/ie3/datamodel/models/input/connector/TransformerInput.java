@@ -27,11 +27,12 @@ public abstract class TransformerInput extends ConnectorInput {
    * @param id of the asset
    * @param nodeA Grid node at the high voltage winding
    * @param nodeB Grid node at the low voltage winding
-   * @param parallelDevices Amount of parallel transformers
+   * @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two transformers using the specified parameters)
    * @param tapPos Tap Position of this transformer
    * @param autoTap True, if the tap position of the transformer is adapted automatically
    */
-  public TransformerInput(
+  protected TransformerInput(
       UUID uuid,
       OperationTime operationTime,
       OperatorInput operator,
@@ -53,11 +54,12 @@ public abstract class TransformerInput extends ConnectorInput {
    * @param id of the asset
    * @param nodeA Grid node at the high voltage winding
    * @param nodeB Grid node at the low voltage winding
-   * @param parallelDevices Amount of parallel transformers
+   * @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two transformers using the specified parameters)
    * @param tapPos Tap Position of this transformer
    * @param autoTap True, if the tap position of the transformer is adapted automatically
    */
-  public TransformerInput(
+  protected TransformerInput(
       UUID uuid,
       String id,
       NodeInput nodeA,
@@ -84,9 +86,8 @@ public abstract class TransformerInput extends ConnectorInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof TransformerInput that)) return false;
     if (!super.equals(o)) return false;
-    TransformerInput that = (TransformerInput) o;
     return tapPos == that.tapPos && autoTap == that.autoTap;
   }
 

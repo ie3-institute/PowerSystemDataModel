@@ -14,27 +14,19 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.interval.ClosedInterval;
-import edu.ie3.util.naming.NamingConvention;
 import java.sql.*;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.locationtech.jts.geom.Point;
 
 /** SQL source for weather data */
-public class SqlWeatherSource implements WeatherSource {
-  private static final Logger logger = LogManager.getLogger(SqlWeatherSource.class);
-
-  private static final String DEFAULT_WEATHER_FETCHING_ERROR = "Error while fetching weather";
+public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>>
+    implements WeatherSource {
   private static final String WHERE = " WHERE ";
-  private static final NamingConvention DEFAULT_NAMING_CONVENTION = NamingConvention.SNAKE;
 
-  private final SqlConnector connector;
   private final IdCoordinateSource idCoordinateSource;
-  private final String coordinateIdFieldName;
+  private final String factoryCoordinateFieldName;
   private final TimeBasedWeatherValueFactory weatherFactory;
 
   /**
@@ -47,40 +39,12 @@ public class SqlWeatherSource implements WeatherSource {
   private final String queryTimeIntervalAndCoordinates;
 
   /**
-   * Initializes a new SqlWeatherSource. Uses {@link SqlWeatherSource#DEFAULT_NAMING_CONVENTION} as
-   * naming convention.
-   *
-   * @param connector the connector needed for database connection
-   * @param idCoordinateSource a coordinate source to map ids to points
-   * @param schemaName the database schema to use
-   * @param weatherTableName the name of the table containing weather data
-   * @param weatherFactory instance of a time based weather value factory
-   * @deprecated Use {@link SqlWeatherSource#SqlWeatherSource(SqlConnector, IdCoordinateSource,
-   *     String, String, NamingConvention, TimeBasedWeatherValueFactory)} instead
-   */
-  @Deprecated
-  public SqlWeatherSource(
-      SqlConnector connector,
-      IdCoordinateSource idCoordinateSource,
-      String schemaName,
-      String weatherTableName,
-      TimeBasedWeatherValueFactory weatherFactory) {
-    this(
-        connector,
-        idCoordinateSource,
-        schemaName,
-        weatherTableName,
-        DEFAULT_NAMING_CONVENTION,
-        weatherFactory);
-  }
-  /**
    * Initializes a new SqlWeatherSource
    *
    * @param connector the connector needed for database connection
    * @param idCoordinateSource a coordinate source to map ids to points
    * @param schemaName the database schema to use
    * @param weatherTableName the name of the table containing weather data
-   * @param namingConvention the (case) convention, how columns are named
    * @param weatherFactory instance of a time based weather value factory
    */
   public SqlWeatherSource(
@@ -88,98 +52,87 @@ public class SqlWeatherSource implements WeatherSource {
       IdCoordinateSource idCoordinateSource,
       String schemaName,
       String weatherTableName,
-      NamingConvention namingConvention,
       TimeBasedWeatherValueFactory weatherFactory) {
-    this.connector = connector;
+    super(connector);
     this.idCoordinateSource = idCoordinateSource;
     this.weatherFactory = weatherFactory;
-    this.coordinateIdFieldName = weatherFactory.getCoordinateIdFieldString();
-    String coordinateIdColumnName = weatherFactory.getCoordinateIdFieldString(namingConvention);
-    String dbTimeColumnName = weatherFactory.getTimeFieldString();
+    this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
+
+    String dbTimeColumnName =
+        getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
+    String dbCoordinateIdColumnName = getDbColumnName(factoryCoordinateFieldName, weatherTableName);
 
     // setup queries
     this.queryTimeInterval =
         createQueryStringForTimeInterval(schemaName, weatherTableName, dbTimeColumnName);
     this.queryTimeAndCoordinate =
         createQueryStringForTimeAndCoordinate(
-            schemaName, weatherTableName, dbTimeColumnName, coordinateIdColumnName);
+            schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
     this.queryTimeIntervalAndCoordinates =
         createQueryStringForTimeIntervalAndCoordinates(
-            schemaName, weatherTableName, dbTimeColumnName, coordinateIdColumnName);
+            schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
   }
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval) {
-    List<TimeBasedValue<WeatherValue>> timeBasedValues = Collections.emptyList();
-    try (PreparedStatement ps = connector.getConnection().prepareStatement(queryTimeInterval)) {
-      ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
-      ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
-      timeBasedValues = processWeatherQuery(ps);
-    } catch (SQLException e) {
-      logger.error(DEFAULT_WEATHER_FETCHING_ERROR, e);
-    }
+    List<TimeBasedValue<WeatherValue>> timeBasedValues =
+        executeQuery(
+            queryTimeInterval,
+            ps -> {
+              ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
+              ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
+            });
     return mapWeatherValuesToPoints(timeBasedValues);
   }
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
-    List<TimeBasedValue<WeatherValue>> timeBasedValues = Collections.emptyList();
     Set<Integer> coordinateIds =
         coordinates.stream()
             .map(idCoordinateSource::getId)
-            .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+            .flatMap(Optional::stream)
             .collect(Collectors.toSet());
     if (coordinateIds.isEmpty()) {
-      logger.warn("Unable to match coordinates to coordinate ID");
+      log.warn("Unable to match coordinates to coordinate ID");
       return Collections.emptyMap();
     }
-    try (PreparedStatement ps =
-        connector.getConnection().prepareStatement(queryTimeIntervalAndCoordinates)) {
-      Array coordinateIdArr = ps.getConnection().createArrayOf("integer", coordinateIds.toArray());
-      ps.setArray(1, coordinateIdArr);
-      ps.setTimestamp(2, Timestamp.from(timeInterval.getLower().toInstant()));
-      ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
-      timeBasedValues = processWeatherQuery(ps);
-    } catch (SQLException e) {
-      logger.error(DEFAULT_WEATHER_FETCHING_ERROR, e);
-    }
+
+    List<TimeBasedValue<WeatherValue>> timeBasedValues =
+        executeQuery(
+            queryTimeIntervalAndCoordinates,
+            ps -> {
+              Array coordinateIdArr =
+                  ps.getConnection().createArrayOf("integer", coordinateIds.toArray());
+              ps.setArray(1, coordinateIdArr);
+              ps.setTimestamp(2, Timestamp.from(timeInterval.getLower().toInstant()));
+              ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
+            });
+
     return mapWeatherValuesToPoints(timeBasedValues);
   }
 
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
-    List<TimeBasedValue<WeatherValue>> timeBasedValues = Collections.emptyList();
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (!coordinateId.isPresent()) {
-      logger.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
+    if (coordinateId.isEmpty()) {
+      log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
       return Optional.empty();
     }
-    try (PreparedStatement ps =
-        connector.getConnection().prepareStatement(queryTimeAndCoordinate)) {
-      ps.setInt(1, coordinateId.get());
-      ps.setTimestamp(2, Timestamp.from(date.toInstant()));
-      timeBasedValues = processWeatherQuery(ps);
-    } catch (SQLException e) {
-      logger.error(DEFAULT_WEATHER_FETCHING_ERROR, e);
-    }
+
+    List<TimeBasedValue<WeatherValue>> timeBasedValues =
+        executeQuery(
+            queryTimeAndCoordinate,
+            ps -> {
+              ps.setInt(1, coordinateId.get());
+              ps.setTimestamp(2, Timestamp.from(date.toInstant()));
+            });
+
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
-      logger.warn("Retrieved more than one result value, using the first");
+      log.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.get(0));
-  }
-
-  /**
-   * Creates a base query string without closing semicolon of the following pattern: <br>
-   * {@code SELECT * FROM <schema>.<table>}
-   *
-   * @param schemaName the name of the database schema
-   * @param weatherTableName the name of the database table
-   * @return basic query string without semicolon
-   */
-  private static String createBaseQueryString(String schemaName, String weatherTableName) {
-    return "SELECT * FROM " + schemaName + "." + weatherTableName;
   }
 
   /**
@@ -249,46 +202,16 @@ public class SqlWeatherSource implements WeatherSource {
   }
 
   /**
-   * Executes the prepared statement and processes it to a list of time based values via field map
-   * extraction
-   *
-   * @param ps the prepared statement to execute
-   * @return processed results
-   * @throws SQLException if anything goes wrong in the execution of the query
-   */
-  private List<TimeBasedValue<WeatherValue>> processWeatherQuery(PreparedStatement ps)
-      throws SQLException {
-    try (ResultSet resultSet = ps.executeQuery()) {
-      List<Map<String, String>> fieldMaps = connector.extractFieldMaps(resultSet);
-      return toTimeBasedWeatherValues(fieldMaps);
-    }
-  }
-
-  /**
-   * Converts a collection of field to value maps into TimeBasedValues
-   *
-   * @param fieldMaps the field to value maps, one for each TimeBasedValue
-   * @return a list of TimeBasedValues
-   */
-  private List<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValues(
-      Collection<Map<String, String>> fieldMaps) {
-    return fieldMaps.stream()
-        .map(this::toTimeBasedWeatherValue)
-        .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
-        .collect(Collectors.toList());
-  }
-
-  /**
    * Converts a field to value map into a TimeBasedValue, removes the "tid"
    *
    * @param fieldMap the field to value map for one TimeBasedValue
    * @return an Optional of that TimeBasedValue
    */
-  private Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(
-      Map<String, String> fieldMap) {
+  @Override
+  protected Optional<TimeBasedValue<WeatherValue>> createEntity(Map<String, String> fieldMap) {
     fieldMap.remove("tid");
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
-    if (!data.isPresent()) return Optional.empty();
+    if (data.isEmpty()) return Optional.empty();
     return weatherFactory.get(data.get());
   }
 
@@ -301,12 +224,12 @@ public class SqlWeatherSource implements WeatherSource {
    */
   private Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(
       Map<String, String> fieldMap) {
-    String coordinateValue = fieldMap.remove(coordinateIdFieldName);
+    String coordinateValue = fieldMap.remove(factoryCoordinateFieldName);
     fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     int coordinateId = Integer.parseInt(coordinateValue);
     Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
-    if (!coordinate.isPresent()) {
-      logger.warn("Unable to match coordinate ID {} to a point", coordinateId);
+    if (coordinate.isEmpty()) {
+      log.warn("Unable to match coordinate ID {} to a point", coordinateId);
       return Optional.empty();
     }
     return Optional.of(new TimeBasedWeatherValueData(fieldMap, coordinate.get()));

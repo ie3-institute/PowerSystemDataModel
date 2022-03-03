@@ -85,9 +85,8 @@ public class LineTypeInput extends AssetTypeInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof LineTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    LineTypeInput that = (LineTypeInput) o;
     return b.equals(that.b)
         && g.equals(that.g)
         && r.equals(that.r)

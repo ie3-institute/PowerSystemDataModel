@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.utils.validation;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
-import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.thermal.*;
 import javax.measure.Quantity;
 
@@ -21,10 +20,10 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
    * Validates a thermal unit if: <br>
    * - it is not null <br>
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
-   * the checking task, based on the class of the given object. If an unknown class is handed in, a
-   * {@link ValidationException} is thrown.
+   * the checking task, based on the class of the given object.
    *
    * @param thermalUnitInput ThermalUnitInput to validate
+   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
   protected static void check(ThermalUnitInput thermalUnitInput) {
     checkNonNull(thermalUnitInput, "a thermal unit");
@@ -34,17 +33,17 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
       checkThermalSink((ThermalSinkInput) thermalUnitInput);
     else if (ThermalStorageInput.class.isAssignableFrom(thermalUnitInput.getClass()))
       checkThermalStorage((ThermalStorageInput) thermalUnitInput);
-    else throw new ValidationException(notImplementedString(thermalUnitInput));
+    else throw checkNotImplementedException(thermalUnitInput);
   }
 
   /**
    * Validates a thermalSinkInput if: <br>
    * - it is not null <br>
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
-   * the checking task, based on the class of the given object. If an unknown class is handed in, a
-   * {@link ValidationException} is thrown.
+   * the checking task, based on the class of the given object.
    *
    * @param thermalSinkInput ThermalSinkInput to validate
+   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
   private static void checkThermalSink(ThermalSinkInput thermalSinkInput) {
     checkNonNull(thermalSinkInput, "a thermal sink");
@@ -52,17 +51,17 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     // Further checks for subclasses
     if (ThermalHouseInput.class.isAssignableFrom(thermalSinkInput.getClass()))
       checkThermalHouse((ThermalHouseInput) thermalSinkInput);
-    else throw new ValidationException(notImplementedString(thermalSinkInput));
+    else throw checkNotImplementedException(thermalSinkInput);
   }
 
   /**
    * Validates a thermalStorageInput if: <br>
    * - it is not null <br>
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
-   * the checking task, based on the class of the given object. If an unknown class is handed in, a
-   * {@link ValidationException} is thrown.
+   * the checking task, based on the class of the given object.
    *
    * @param thermalStorageInput ThermalStorageInput to validate
+   * @throws edu.ie3.datamodel.exceptions.NotImplementedException if an unknown class is handed in
    */
   private static void checkThermalStorage(ThermalStorageInput thermalStorageInput) {
     checkNonNull(thermalStorageInput, "a thermal storage");
@@ -70,14 +69,16 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
     // Further checks for subclasses
     if (CylindricalStorageInput.class.isAssignableFrom(thermalStorageInput.getClass()))
       checkCylindricalStorage((CylindricalStorageInput) thermalStorageInput);
-    else throw new ValidationException(notImplementedString(thermalStorageInput));
+    else throw checkNotImplementedException(thermalStorageInput);
   }
 
   /**
    * Validates a thermalHouseInput if: <br>
    * - it is not null <br>
    * - its thermal losses are not negative <br>
-   * - its thermal capacity is positive
+   * - its thermal capacity is positive <br>
+   * - its upper temperature limit is higher than the lower temperature limit <br>
+   * - its target temperature lies between the upper und lower limit temperatures
    *
    * @param thermalHouseInput ThermalHouseInput to validate
    */
@@ -87,6 +88,15 @@ public class ThermalUnitValidationUtils extends ValidationUtils {
         new Quantity<?>[] {thermalHouseInput.getEthLosses()}, thermalHouseInput);
     detectZeroOrNegativeQuantities(
         new Quantity<?>[] {thermalHouseInput.getEthCapa()}, thermalHouseInput);
+    if (thermalHouseInput
+            .getLowerTemperatureLimit()
+            .isGreaterThan(thermalHouseInput.getTargetTemperature())
+        || thermalHouseInput
+            .getUpperTemperatureLimit()
+            .isLessThan(thermalHouseInput.getTargetTemperature()))
+      throw new InvalidEntityException(
+          "Target temperature must be higher than lower temperature limit and lower than upper temperature limit",
+          thermalHouseInput);
   }
 
   /**

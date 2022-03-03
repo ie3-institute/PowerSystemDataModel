@@ -37,7 +37,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
    * @param nodeA The higher voltage node
    * @param nodeB The middle voltage node
    * @param nodeC The lower voltage node
-   * @param parallelDevices Amount of singular transformers
+   * @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two transformers using the specified parameters)
    * @param type of 3W transformer
    * @param tapPos Tap Position of this transformer
    * @param autoTap true, if there is an automated regulation activated for this transformer
@@ -85,7 +86,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
    * @param nodeA The higher voltage node
    * @param nodeB The middle voltage node
    * @param nodeC The lower voltage node
-   * @param parallelDevices Amount of singular transformers
+   * @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two transformers using the specified parameters)
    * @param type of 3W transformer
    * @param tapPos Tap Position of this transformer
    * @param autoTap true, if there is an automated regulation activated for this transformer
@@ -136,7 +138,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
    * @param nodeA The higher voltage node
    * @param nodeB The middle voltage node
    * @param nodeC The lower voltage node
-   * @param parallelDevices Amount of singular transformers
+   * @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two transformers using the specified parameters)
    * @param type of 3W transformer
    * @param tapPos Tap Position of this transformer
    * @param autoTap true, if there is an automated regulation activated for this transformer
@@ -177,7 +180,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
    * @param nodeA The higher voltage node
    * @param nodeB The middle voltage node
    * @param nodeC The lower voltage node
-   * @param parallelDevices Amount of singular transformers
+   * @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two transformers using the specified parameters)
    * @param type of 3W transformer
    * @param tapPos Tap Position of this transformer
    * @param autoTap true, if there is an automated regulation activated for this transformer
@@ -235,9 +239,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof Transformer3WInput that)) return false;
     if (!super.equals(o)) return false;
-    Transformer3WInput that = (Transformer3WInput) o;
     return Objects.equals(type, that.type) && Objects.equals(nodeC, that.nodeC);
   }
 

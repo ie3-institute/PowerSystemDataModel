@@ -118,9 +118,8 @@ public class ChpInput extends SystemParticipantInput
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof ChpInput chpInput)) return false;
     if (!super.equals(o)) return false;
-    ChpInput chpInput = (ChpInput) o;
     return marketReaction == chpInput.marketReaction
         && thermalBus.equals(chpInput.thermalBus)
         && type.equals(chpInput.type);

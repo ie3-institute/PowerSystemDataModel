@@ -106,64 +106,54 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
 
     /* init sets */
     this.bmPlants =
-        systemParticipants
-            .parallelStream()
-            .filter(gridElement -> gridElement instanceof BmInput)
-            .map(bmInput -> (BmInput) bmInput)
+        systemParticipants.parallelStream()
+            .filter(BmInput.class::isInstance)
+            .map(BmInput.class::cast)
             .collect(Collectors.toSet());
     this.chpPlants =
-        systemParticipants
-            .parallelStream()
-            .filter(gridElement -> gridElement instanceof ChpInput)
-            .map(chpInput -> (ChpInput) chpInput)
+        systemParticipants.parallelStream()
+            .filter(ChpInput.class::isInstance)
+            .map(ChpInput.class::cast)
             .collect(Collectors.toSet());
     this.evCS =
-        systemParticipants
-            .parallelStream()
-            .filter(gridElement -> gridElement instanceof EvcsInput)
-            .map(evcsInput -> (EvcsInput) evcsInput)
+        systemParticipants.parallelStream()
+            .filter(EvcsInput.class::isInstance)
+            .map(EvcsInput.class::cast)
             .collect(Collectors.toSet());
     this.evs =
-        systemParticipants
-            .parallelStream()
-            .filter(gridElement -> gridElement instanceof EvInput)
-            .map(evInput -> (EvInput) evInput)
+        systemParticipants.parallelStream()
+            .filter(EvInput.class::isInstance)
+            .map(EvInput.class::cast)
             .collect(Collectors.toSet());
     this.fixedFeedIns =
-        systemParticipants
-            .parallelStream()
-            .filter(gridElement -> gridElement instanceof FixedFeedInInput)
-            .map(fixedFeedInInpu -> (FixedFeedInInput) fixedFeedInInpu)
+        systemParticipants.parallelStream()
+            .filter(FixedFeedInInput.class::isInstance)
+            .map(FixedFeedInInput.class::cast)
             .collect(Collectors.toSet());
     this.heatPumps =
-        systemParticipants
-            .parallelStream()
-            .filter(gridElement -> gridElement instanceof HpInput)
-            .map(hpInput -> (HpInput) hpInput)
+        systemParticipants.parallelStream()
+            .filter(HpInput.class::isInstance)
+            .map(HpInput.class::cast)
             .collect(Collectors.toSet());
     this.loads =
-        systemParticipants
-            .parallelStream()
-            .filter(gridElement -> gridElement instanceof LoadInput)
-            .map(loadInput -> (LoadInput) loadInput)
+        systemParticipants.parallelStream()
+            .filter(LoadInput.class::isInstance)
+            .map(LoadInput.class::cast)
             .collect(Collectors.toSet());
     this.pvPlants =
-        systemParticipants
-            .parallelStream()
-            .filter(gridElement -> gridElement instanceof PvInput)
-            .map(pvInput -> (PvInput) pvInput)
+        systemParticipants.parallelStream()
+            .filter(PvInput.class::isInstance)
+            .map(PvInput.class::cast)
             .collect(Collectors.toSet());
     this.storages =
-        systemParticipants
-            .parallelStream()
-            .filter(gridElement -> gridElement instanceof StorageInput)
-            .map(storageInput -> (StorageInput) storageInput)
+        systemParticipants.parallelStream()
+            .filter(StorageInput.class::isInstance)
+            .map(StorageInput.class::cast)
             .collect(Collectors.toSet());
     this.wecPlants =
-        systemParticipants
-            .parallelStream()
-            .filter(gridElement -> gridElement instanceof WecInput)
-            .map(wecInput -> (WecInput) wecInput)
+        systemParticipants.parallelStream()
+            .filter(WecInput.class::isInstance)
+            .map(WecInput.class::cast)
             .collect(Collectors.toSet());
   }
 
@@ -236,8 +226,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    SystemParticipants that = (SystemParticipants) o;
+    if (!(o instanceof SystemParticipants that)) return false;
     return Objects.equals(bmPlants, that.bmPlants)
         && Objects.equals(chpPlants, that.chpPlants)
         && Objects.equals(evCS, that.evCS)

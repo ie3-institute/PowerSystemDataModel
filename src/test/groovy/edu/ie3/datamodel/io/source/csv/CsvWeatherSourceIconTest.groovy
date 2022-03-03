@@ -5,8 +5,8 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
@@ -32,7 +32,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 	def setupSpec() {
 		coordinateSource = WeatherTestData.coordinateSource
 		def weatherFactory = new IconTimeBasedWeatherValueFactory()
-		source = new CsvWeatherSource(",", iconWeatherFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
+		source = new CsvWeatherSource(",", iconWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 	}
 
 	def "A CsvWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
@@ -57,7 +57,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 		def timeSeries67775 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67775_16H),
-					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)]
+					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
+				]
 				as Set<TimeBasedValue>)
 		def timeSeries67776 = new IndividualTimeSeries(null,
 				[
@@ -81,11 +82,13 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 				[
 					new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H),
 					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67775_16H),
-					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
+				] as Set<TimeBasedValue>)
 		def timeSeries67776 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67776_15H),
-					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67776_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67776_16H)
+				] as Set<TimeBasedValue>)
 
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
@@ -102,7 +105,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> { args -> args[0] == 67775 ? Optional.of(expectedCoordinate) : Optional.empty() }
 		def weatherFactory = new IconTimeBasedWeatherValueFactory()
-		def source = new CsvWeatherSource(",", iconWeatherFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
+		def source = new CsvWeatherSource(",", iconWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = new TreeMap<>(String.CASE_INSENSITIVE_ORDER)
 		fieldToValues.putAll(
 				[
@@ -149,7 +152,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 		given:
 		def coordinateSource = new WeatherTestData.DummyIdCoordinateSource()
 		def weatherFactory = new IconTimeBasedWeatherValueFactory()
-		def source = new CsvWeatherSource(",", iconWeatherFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
+		def source = new CsvWeatherSource(",", iconWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"datum"       : "2019-08-01 01:00:00",
 			"albRad"      : "13.015240669",
@@ -193,7 +196,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 		given:
 		def coordinateSource = new WeatherTestData.DummyIdCoordinateSource()
 		def weatherFactory = new IconTimeBasedWeatherValueFactory()
-		def source = new CsvWeatherSource(",", iconWeatherFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
+		def source = new CsvWeatherSource(",", iconWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"datum"   : "2019-08-01 01:00:00",
 			"albRad"  : "13.015240669",
@@ -236,7 +239,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 		given:
 		def coordinateSource = new WeatherTestData.DummyIdCoordinateSource()
 		def weatherFactory = new IconTimeBasedWeatherValueFactory()
-		def source = new CsvWeatherSource(",", iconWeatherFolderPath, new EntityPersistenceNamingStrategy(), coordinateSource, weatherFactory)
+		def source = new CsvWeatherSource(",", iconWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"datum"       : "2019-08-01 01:00:00",
 			"albrad"      : "13.015240669",

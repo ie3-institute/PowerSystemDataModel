@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
+import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,9 +32,9 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
   public CsvIdCoordinateSource(
       String csvSep,
       String folderPath,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy,
+      FileNamingStrategy fileNamingStrategy,
       IdCoordinateFactory factory) {
-    super(csvSep, folderPath, entityPersistenceNamingStrategy);
+    super(csvSep, folderPath, fileNamingStrategy);
 
     this.factory = factory;
 
@@ -123,7 +123,7 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
                   .get(factory.getLatField())
                   .concat(fieldToValues.get(factory.getLonField()));
       return distinctRowsWithLog(
-              withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
+          withDistinctCoordinateId, coordinateExtractor, "coordinate id mapping", "coordinate")
           .parallelStream();
     } catch (IOException e) {
       log.error("Cannot read the file for coordinate id to coordinate mapping.", e);

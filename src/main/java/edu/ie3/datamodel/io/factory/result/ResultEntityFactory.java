@@ -8,6 +8,8 @@ package edu.ie3.datamodel.io.factory.result;
 import edu.ie3.datamodel.io.factory.SimpleEntityFactory;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.util.TimeUtil;
+import java.time.ZoneId;
+import java.util.Locale;
 
 /**
  * Internal API for building {@link ResultEntity}s. This additional abstraction layer is necessary
@@ -22,9 +24,15 @@ abstract class ResultEntityFactory<T extends ResultEntity> extends SimpleEntityF
   protected static final String TIME = "time";
   protected static final String INPUT_MODEL = "inputModel";
 
-  protected static final TimeUtil TIME_UTIL = TimeUtil.withDefaults;
+  protected final TimeUtil timeUtil;
 
-  public ResultEntityFactory(Class<? extends T>... allowedClasses) {
+  protected ResultEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);
+    timeUtil = TimeUtil.withDefaults;
+  }
+
+  protected ResultEntityFactory(String dtfPattern, Class<? extends T>... allowedClasses) {
+    super(allowedClasses);
+    timeUtil = new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern);
   }
 }

@@ -5,9 +5,9 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
-import edu.ie3.datamodel.io.connectors.CsvFileConnector
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
-import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.naming.FileNamingStrategy
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import spock.lang.Shared
 import spock.lang.Specification
@@ -17,7 +17,7 @@ class CsvTimeSeriesMappingSourceIT extends Specification implements CsvTestDataM
 	TimeSeriesMappingSource source
 
 	def setupSpec() {
-		source = new CsvTimeSeriesMappingSource(";", timeSeriesFolderPath, new EntityPersistenceNamingStrategy())
+		source = new CsvTimeSeriesMappingSource(";", timeSeriesFolderPath, new FileNamingStrategy())
 	}
 
 	def "The csv time series mapping source is able to provide a valid time series mapping from files"() {
@@ -68,7 +68,7 @@ class CsvTimeSeriesMappingSourceIT extends Specification implements CsvTestDataM
 		def timeSeriesUuid = UUID.fromString("f5eb3be5-98db-40de-85b0-243507636cd5")
 
 		when:
-		def actual = source.getTimeSeriesMetaInformation(timeSeriesUuid)
+		def actual = source.timeSeriesMetaInformation(timeSeriesUuid)
 
 		then:
 		!actual.present
@@ -77,13 +77,13 @@ class CsvTimeSeriesMappingSourceIT extends Specification implements CsvTestDataM
 	def "A csv time series mapping source returns correct meta information for an existing time series"() {
 		given:
 		def timeSeriesUuid = UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26")
-		def expected = new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(
+		def expected = new CsvIndividualTimeSeriesMetaInformation(
 				timeSeriesUuid,
 				ColumnScheme.APPARENT_POWER,
 				"its_pq_3fbfaa97-cff4-46d4-95ba-a95665e87c26")
 
 		when:
-		def actual = source.getTimeSeriesMetaInformation(timeSeriesUuid)
+		def actual = source.timeSeriesMetaInformation(timeSeriesUuid)
 
 		then:
 		actual.present

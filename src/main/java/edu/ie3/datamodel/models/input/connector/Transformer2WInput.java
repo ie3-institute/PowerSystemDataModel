@@ -30,7 +30,8 @@ public class Transformer2WInput extends TransformerInput implements HasType {
    * @param operationTime Time for which the entity is operated
    * @param nodeA higher voltage node
    * @param nodeB lower voltage node
-   * @param parallelDevices Amount of singular transformers
+   * @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two transformers using the specified parameters)
    * @param type of 2W transformer
    * @param tapPos Tap position of this transformer
    * @param autoTap True, if the tap position of the transformer is adapted automatically
@@ -57,7 +58,8 @@ public class Transformer2WInput extends TransformerInput implements HasType {
    * @param id of the asset
    * @param nodeA higher voltage node
    * @param nodeB lower voltage node
-   * @param parallelDevices Amount of singular transformers
+   * @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two transformers using the specified parameters)
    * @param type of 2W transformer
    * @param tapPos Tap position of this transformer
    * @param autoTap True, if the tap position of the transformer is adapted automatically
@@ -87,9 +89,8 @@ public class Transformer2WInput extends TransformerInput implements HasType {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof Transformer2WInput that)) return false;
     if (!super.equals(o)) return false;
-    Transformer2WInput that = (Transformer2WInput) o;
     return type.equals(that.type);
   }
 

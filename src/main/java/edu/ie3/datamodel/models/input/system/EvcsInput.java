@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType;
+import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -24,6 +25,9 @@ public class EvcsInput extends SystemParticipantInput {
   /** Rated power factor */
   private final double cosPhiRated;
 
+  /** Evcs location type */
+  private final EvcsLocationType locationType;
+
   /**
    * @param uuid Unique identifier
    * @param id Human readable identifier
@@ -34,6 +38,7 @@ public class EvcsInput extends SystemParticipantInput {
    * @param type type of the charging points available to this charging station
    * @param chargingPoints number of charging points available at this charging station
    * @param cosPhiRated rated cos phi
+   * @param locationType the location type
    */
   public EvcsInput(
       UUID uuid,
@@ -44,11 +49,13 @@ public class EvcsInput extends SystemParticipantInput {
       ReactivePowerCharacteristic qCharacteristics,
       ChargingPointType type,
       int chargingPoints,
-      double cosPhiRated) {
+      double cosPhiRated,
+      EvcsLocationType locationType) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.type = type;
     this.chargingPoints = chargingPoints;
     this.cosPhiRated = cosPhiRated;
+    this.locationType = locationType;
   }
 
   /**
@@ -60,6 +67,7 @@ public class EvcsInput extends SystemParticipantInput {
    * @param qCharacteristics Description of a reactive power characteristic
    * @param type type of the charging points available to this charging station
    * @param cosPhiRated rated cos phi
+   * @param locationType the location type
    */
   public EvcsInput(
       UUID uuid,
@@ -69,8 +77,19 @@ public class EvcsInput extends SystemParticipantInput {
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       ChargingPointType type,
-      double cosPhiRated) {
-    this(uuid, id, operator, operationTime, node, qCharacteristics, type, 1, cosPhiRated);
+      double cosPhiRated,
+      EvcsLocationType locationType) {
+    this(
+        uuid,
+        id,
+        operator,
+        operationTime,
+        node,
+        qCharacteristics,
+        type,
+        1,
+        cosPhiRated,
+        locationType);
   }
   /**
    * @param uuid Unique identifier
@@ -80,6 +99,7 @@ public class EvcsInput extends SystemParticipantInput {
    * @param type type of the charging points available to this charging station
    * @param chargingPoints number of charging points available at this charging station
    * @param cosPhiRated rated cos phi
+   * @param locationType the location type
    */
   public EvcsInput(
       UUID uuid,
@@ -88,11 +108,13 @@ public class EvcsInput extends SystemParticipantInput {
       ReactivePowerCharacteristic qCharacteristics,
       ChargingPointType type,
       int chargingPoints,
-      double cosPhiRated) {
+      double cosPhiRated,
+      EvcsLocationType locationType) {
     super(uuid, id, node, qCharacteristics);
     this.type = type;
     this.chargingPoints = chargingPoints;
     this.cosPhiRated = cosPhiRated;
+    this.locationType = locationType;
   }
 
   /**
@@ -102,6 +124,7 @@ public class EvcsInput extends SystemParticipantInput {
    * @param qCharacteristics Description of a reactive power characteristic
    * @param type type of the charging points available to this charging station
    * @param cosPhiRated rated cos phi
+   * @param locationType the location type
    */
   public EvcsInput(
       UUID uuid,
@@ -109,8 +132,9 @@ public class EvcsInput extends SystemParticipantInput {
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       ChargingPointType type,
-      double cosPhiRated) {
-    this(uuid, id, node, qCharacteristics, type, 1, cosPhiRated);
+      double cosPhiRated,
+      EvcsLocationType locationType) {
+    this(uuid, id, node, qCharacteristics, type, 1, cosPhiRated, locationType);
   }
 
   public ChargingPointType getType() {
@@ -125,6 +149,10 @@ public class EvcsInput extends SystemParticipantInput {
     return cosPhiRated;
   }
 
+  public EvcsLocationType getLocationType() {
+    return locationType;
+  }
+
   @Override
   public EvcsInputCopyBuilder copy() {
     return new EvcsInputCopyBuilder(this);
@@ -133,17 +161,17 @@ public class EvcsInput extends SystemParticipantInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof EvcsInput evcsInput)) return false;
     if (!super.equals(o)) return false;
-    EvcsInput evcsInput = (EvcsInput) o;
     return chargingPoints == evcsInput.chargingPoints
         && Double.compare(evcsInput.cosPhiRated, cosPhiRated) == 0
-        && type.equals(evcsInput.type);
+        && type.equals(evcsInput.type)
+        && locationType.equals(evcsInput.locationType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), type, chargingPoints, cosPhiRated);
+    return Objects.hash(super.hashCode(), type, chargingPoints, cosPhiRated, locationType);
   }
 
   @Override
@@ -160,6 +188,8 @@ public class EvcsInput extends SystemParticipantInput {
         + chargingPoints
         + ", cosPhiRated="
         + cosPhiRated
+        + ", locationType="
+        + locationType
         + ", node="
         + getNode()
         + "} "
@@ -179,12 +209,14 @@ public class EvcsInput extends SystemParticipantInput {
     private ChargingPointType type;
     private int chargingPoints;
     private double cosPhiRated;
+    private EvcsLocationType locationType;
 
     public EvcsInputCopyBuilder(EvcsInput entity) {
       super(entity);
       this.type = entity.type;
       this.chargingPoints = entity.chargingPoints;
       this.cosPhiRated = entity.cosPhiRated;
+      this.locationType = entity.locationType;
     }
 
     public EvcsInputCopyBuilder type(ChargingPointType type) {
@@ -202,6 +234,11 @@ public class EvcsInput extends SystemParticipantInput {
       return this;
     }
 
+    public EvcsInputCopyBuilder locationType(EvcsLocationType locationType) {
+      this.locationType = locationType;
+      return this;
+    }
+
     @Override
     public EvcsInput build() {
       return new EvcsInput(
@@ -213,7 +250,8 @@ public class EvcsInput extends SystemParticipantInput {
           getqCharacteristics(),
           type,
           chargingPoints,
-          cosPhiRated);
+          cosPhiRated,
+          locationType);
     }
 
     @Override

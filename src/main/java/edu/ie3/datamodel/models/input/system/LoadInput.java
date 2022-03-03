@@ -209,9 +209,8 @@ public class LoadInput extends SystemParticipantInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof LoadInput loadInput)) return false;
     if (!super.equals(o)) return false;
-    LoadInput loadInput = (LoadInput) o;
     return dsm == loadInput.dsm
         && Double.compare(loadInput.cosPhiRated, cosPhiRated) == 0
         && eConsAnnual.equals(loadInput.eConsAnnual)

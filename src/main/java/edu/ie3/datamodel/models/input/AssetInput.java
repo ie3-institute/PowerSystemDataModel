@@ -27,7 +27,7 @@ public abstract class AssetInput extends InputEntity implements Operable {
    * @param operator Operator of the asset
    * @param operationTime Operation time limitation
    */
-  public AssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+  protected AssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
     super(uuid);
     this.operationTime = operationTime;
     this.operator = operator;
@@ -63,9 +63,8 @@ public abstract class AssetInput extends InputEntity implements Operable {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof AssetInput that)) return false;
     if (!super.equals(o)) return false;
-    AssetInput that = (AssetInput) o;
     return Objects.equals(operationTime, that.operationTime)
         && Objects.equals(operator, that.operator)
         && Objects.equals(id, that.id);

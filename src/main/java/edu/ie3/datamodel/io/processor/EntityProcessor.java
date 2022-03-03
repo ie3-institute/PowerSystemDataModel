@@ -13,8 +13,8 @@ import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Internal API Interface for EntityProcessors. Main purpose is to 'de-serialize' models into a
@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<T> {
 
-  public static final Logger log = LogManager.getLogger(EntityProcessor.class);
+  public static final Logger log = LoggerFactory.getLogger(EntityProcessor.class);
   protected final String[] headerElements;
   private final SortedMap<String, Method> fieldNameToMethod;
 
@@ -37,7 +37,7 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
    *
    * @param registeredClass the class the entity processor should be able to handle
    */
-  public EntityProcessor(Class<? extends T> registeredClass) {
+  protected EntityProcessor(Class<? extends T> registeredClass) {
     super(registeredClass);
     this.fieldNameToMethod =
         mapFieldNameToGetter(registeredClass, Collections.singleton(NODE_INTERNAL));
@@ -75,31 +75,18 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
       Quantity<?> quantity, String fieldName) {
     Optional<String> normalizedQuantityValue = Optional.empty();
     switch (fieldName) {
-      case "energy":
-      case "eConsAnnual":
-      case "eStorage":
-        normalizedQuantityValue =
-            quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
-        break;
-      case "q":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
-        break;
-      case "p":
-      case "pMax":
-      case "pOwn":
-      case "pThermal":
-        normalizedQuantityValue =
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
-        break;
-      default:
-        log.error(
-            "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
-            quantity,
-            fieldName);
-        break;
+      case "energy", "eConsAnnual", "eStorage" -> normalizedQuantityValue =
+          quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
+      case "q" -> normalizedQuantityValue =
+          quantityValToOptionalString(
+              quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
+      case "p", "pMax", "pOwn", "pThermal" -> normalizedQuantityValue =
+          quantityValToOptionalString(
+              quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
+      default -> log.error(
+          "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
+          quantity,
+          fieldName);
     }
     return normalizedQuantityValue;
   }

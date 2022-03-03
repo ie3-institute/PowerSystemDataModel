@@ -104,9 +104,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof StorageTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    StorageTypeInput that = (StorageTypeInput) o;
     return lifeCycle == that.lifeCycle
         && eStorage.equals(that.eStorage)
         && pMax.equals(that.pMax)

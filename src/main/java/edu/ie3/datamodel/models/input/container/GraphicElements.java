@@ -48,15 +48,13 @@ public class GraphicElements implements InputContainer<GraphicInput> {
 
     /* init sets */
     this.nodeGraphics =
-        graphics
-            .parallelStream()
-            .filter(graphic -> graphic instanceof NodeGraphicInput)
-            .map(graphic -> (NodeGraphicInput) graphic)
+        graphics.parallelStream()
+            .filter(NodeGraphicInput.class::isInstance)
+            .map(NodeGraphicInput.class::cast)
             .collect(Collectors.toSet());
     this.lineGraphics =
-        graphics
-            .parallelStream()
-            .filter(graphic -> graphic instanceof LineGraphicInput)
+        graphics.parallelStream()
+            .filter(LineGraphicInput.class::isInstance)
             .map(graphic -> (LineGraphicInput) graphic)
             .collect(Collectors.toSet());
   }
@@ -82,8 +80,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    GraphicElements that = (GraphicElements) o;
+    if (!(o instanceof GraphicElements that)) return false;
     return nodeGraphics.equals(that.nodeGraphics) && lineGraphics.equals(that.lineGraphics);
   }
 

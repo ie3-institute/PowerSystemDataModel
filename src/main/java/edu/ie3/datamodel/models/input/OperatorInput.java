@@ -39,9 +39,8 @@ public class OperatorInput extends InputEntity {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof OperatorInput that)) return false;
     if (!super.equals(o)) return false;
-    OperatorInput that = (OperatorInput) o;
     return Objects.equals(id, that.id);
   }
 

@@ -5,13 +5,12 @@
 */
 package edu.ie3.datamodel.exceptions;
 
-public class ValidationException extends IllegalArgumentException {
-
-  public ValidationException(String s) {
+public abstract class ValidationException extends RuntimeException {
+  protected ValidationException(String s) {
     super(s);
   }
 
-  public ValidationException(String message, Throwable cause) {
-    super(message, cause);
+  protected ValidationException(String s, Throwable throwable) {
+    super(s, throwable);
   }
 }

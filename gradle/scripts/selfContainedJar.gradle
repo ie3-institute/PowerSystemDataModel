@@ -1,6 +1,0 @@
-// OneJar is plugin for building self contained JARs (JARs with all needed dependencies)
-
-tasks.register('selfContainedJar', OneJar){
-	mainClass = mainClass
-	archiveName = 'powersystemdatamodel_selfcontained.jar'
-}
