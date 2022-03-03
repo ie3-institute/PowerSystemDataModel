@@ -37,10 +37,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - and related methods
 - BREAKING: Comprehensive harmonization around weather sources [#267](https://github.com/ie3-institute/PowerSystemDataModel/issues/267)
     - Adapted the expected column scheme
+      - General weather model
+        - `coordinate` to `coordinateid`
       - DWD COSMO model
-        - `"coordinate"` to `"coordinate id"` (as composite word)
-        - `"diffuseirradiation"` to `"diffuse irradiance"` (as composite word)
-    - Harmonized the column name definition for coordinate id across implementations of `WeatherSource`
+        - `diffuseirradiation` to `diffuseirradiance`
+        - `directirradiation` to `directirradiance`
 
 ## [2.1.0] - 2022-01-05
 

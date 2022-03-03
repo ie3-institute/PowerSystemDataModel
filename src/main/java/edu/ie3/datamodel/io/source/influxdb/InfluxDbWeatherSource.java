@@ -30,7 +30,11 @@ public class InfluxDbWeatherSource implements WeatherSource {
   private static final String WHERE = " where ";
   private static final String MEASUREMENT_NAME_WEATHER = "weather";
   private static final int MILLI_TO_NANO_FACTOR = 1000000;
-  private final String coordinateIdColumnName;
+
+  /* Final name of the coordinate id field for use in factories */
+  private final String coordinateIdFieldName;
+  /* Final name of the column within the database */
+  private static final String coordinateIdColumnName = "coordinate_id";
   private final InfluxDbConnector connector;
   private final IdCoordinateSource coordinateSource;
   private final TimeBasedWeatherValueFactory weatherValueFactory;
@@ -50,7 +54,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
     this.weatherValueFactory = weatherValueFactory;
-    this.coordinateIdColumnName = weatherValueFactory.getCoordinateIdFieldString();
+    this.coordinateIdFieldName = weatherValueFactory.getCoordinateIdFieldString();
   }
 
   @Override
@@ -113,7 +117,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   public IndividualTimeSeries<WeatherValue> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Point coordinate) {
     Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
-    if (!coordinateId.isPresent()) {
+    if (coordinateId.isEmpty()) {
       return new IndividualTimeSeries<>(UUID.randomUUID(), Collections.emptySet());
     }
     try (InfluxDB session = connector.getSession()) {
@@ -130,7 +134,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
-    if (!coordinateId.isPresent()) {
+    if (coordinateId.isEmpty()) {
       return Optional.empty();
     }
     try (InfluxDB session = connector.getSession()) {
@@ -165,7 +169,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
               flatCaseFields.putIfAbsent("uuid", UUID.randomUUID().toString());
 
               /* Get the corresponding coordinate id from map AND REMOVE THE ENTRY !!! */
-              int coordinateId = Integer.parseInt(flatCaseFields.remove(coordinateIdColumnName));
+              int coordinateId = Integer.parseInt(flatCaseFields.remove(coordinateIdFieldName));
               return coordinateSource
                   .getCoordinate(coordinateId)
                   .map(point -> new TimeBasedWeatherValueData(flatCaseFields, point))
