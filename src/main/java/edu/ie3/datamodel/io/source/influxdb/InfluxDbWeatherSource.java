@@ -32,9 +32,6 @@ public class InfluxDbWeatherSource implements WeatherSource {
   private static final String COORDINATE_ID_COLUMN_NAME = "coordinate_id";
   private static final int MILLI_TO_NANO_FACTOR = 1000000;
 
-  /* Final name of the coordinate id field for use in factories */
-  private final String coordinateIdFieldName;
-  /* Final name of the column within the database */
   private final InfluxDbConnector connector;
   private final IdCoordinateSource coordinateSource;
   private final TimeBasedWeatherValueFactory weatherValueFactory;
@@ -54,7 +51,6 @@ public class InfluxDbWeatherSource implements WeatherSource {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
     this.weatherValueFactory = weatherValueFactory;
-    this.coordinateIdFieldName = weatherValueFactory.getCoordinateIdFieldString();
   }
 
   @Override
@@ -145,14 +141,15 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   /**
-   * Parses an influxQL QueryResult and then transforms them into a Stream of optional
-   * TimeBasedValue&lt;WeatherValue&gt;, with a present Optional value, if the transformation was
-   * successful and an empty optional otherwise.
+   * Parses an influxQL QueryResult and then transforms it into a Stream of optional
+   * TimeBasedValue&lt;WeatherValue&gt;, with a present Optional value if the transformation was
+   * successful and an empty Optional otherwise.
    */
   private Stream<Optional<TimeBasedValue<WeatherValue>>> optTimeBasedValueStream(
       QueryResult queryResult) {
     Map<String, Set<Map<String, String>>> measurementsMap =
         InfluxDbConnector.parseQueryResult(queryResult, MEASUREMENT_NAME_WEATHER);
+    final String coordinateIdFieldName = weatherValueFactory.getCoordinateIdFieldString();
     return measurementsMap.get(MEASUREMENT_NAME_WEATHER).stream()
         .map(
             fieldToValue -> {
