@@ -14,7 +14,6 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.interval.ClosedInterval;
-import edu.ie3.util.naming.NamingConvention;
 import java.sql.*;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -25,8 +24,6 @@ import org.locationtech.jts.geom.Point;
 public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>>
     implements WeatherSource {
   private static final String WHERE = " WHERE ";
-  /* Column names in sql come in "snake" case by default */
-  private static final NamingConvention DEFAULT_NAMING_CONVENTION = NamingConvention.SNAKE;
 
   private final IdCoordinateSource idCoordinateSource;
   private final String factoryCoordinateFieldName;
@@ -42,40 +39,12 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
   private final String queryTimeIntervalAndCoordinates;
 
   /**
-   * Initializes a new SqlWeatherSource. Uses {@link SqlWeatherSource#DEFAULT_NAMING_CONVENTION} as
-   * naming convention.
-   *
-   * @param connector the connector needed for database connection
-   * @param idCoordinateSource a coordinate source to map ids to points
-   * @param schemaName the database schema to use
-   * @param weatherTableName the name of the table containing weather data
-   * @param weatherFactory instance of a time based weather value factory
-   * @deprecated Use {@link SqlWeatherSource#SqlWeatherSource(SqlConnector, IdCoordinateSource,
-   *     String, String, NamingConvention, TimeBasedWeatherValueFactory)} instead
-   */
-  @Deprecated(since = "3.0", forRemoval = true)
-  public SqlWeatherSource(
-      SqlConnector connector,
-      IdCoordinateSource idCoordinateSource,
-      String schemaName,
-      String weatherTableName,
-      TimeBasedWeatherValueFactory weatherFactory) {
-    this(
-        connector,
-        idCoordinateSource,
-        schemaName,
-        weatherTableName,
-        DEFAULT_NAMING_CONVENTION,
-        weatherFactory);
-  }
-  /**
    * Initializes a new SqlWeatherSource
    *
    * @param connector the connector needed for database connection
    * @param idCoordinateSource a coordinate source to map ids to points
    * @param schemaName the database schema to use
    * @param weatherTableName the name of the table containing weather data
-   * @param namingConvention the (case) convention, how columns are named
    * @param weatherFactory instance of a time based weather value factory
    */
   public SqlWeatherSource(
@@ -83,27 +52,25 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
       IdCoordinateSource idCoordinateSource,
       String schemaName,
       String weatherTableName,
-      NamingConvention namingConvention,
       TimeBasedWeatherValueFactory weatherFactory) {
     super(connector);
     this.idCoordinateSource = idCoordinateSource;
     this.weatherFactory = weatherFactory;
     this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
 
-    /* Determine the correct column names in database */
-    String coordinateIdColumnName = weatherFactory.getCoordinateIdFieldString(namingConvention);
     String dbTimeColumnName =
         getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
+    String dbCoordinateIdColumnName = getDbColumnName(factoryCoordinateFieldName, weatherTableName);
 
     // setup queries
     this.queryTimeInterval =
         createQueryStringForTimeInterval(schemaName, weatherTableName, dbTimeColumnName);
     this.queryTimeAndCoordinate =
         createQueryStringForTimeAndCoordinate(
-            schemaName, weatherTableName, dbTimeColumnName, coordinateIdColumnName);
+            schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
     this.queryTimeIntervalAndCoordinates =
         createQueryStringForTimeIntervalAndCoordinates(
-            schemaName, weatherTableName, dbTimeColumnName, coordinateIdColumnName);
+            schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
   }
 
   @Override

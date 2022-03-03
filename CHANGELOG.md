@@ -40,7 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - `"coordinate"` to `"coordinate id"` (as composite word)
         - `"diffuseirradiation"` to `"diffuse irradiance"` (as composite word)
     - Harmonized the column name definition for coordinate id across implementations of `WeatherSource`
-      - Allows for different case conventions based on the used data source technology
 
 ## [2.1.0] - 2022-01-05
 

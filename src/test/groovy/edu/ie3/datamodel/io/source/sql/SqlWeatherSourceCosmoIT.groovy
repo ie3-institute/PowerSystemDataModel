@@ -14,7 +14,6 @@ import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
-import edu.ie3.util.naming.NamingConvention
 import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
@@ -33,7 +32,6 @@ class SqlWeatherSourceCosmoIT extends Specification implements WeatherSourceTest
 
 	static String schemaName = "public"
 	static String weatherTableName = "weather"
-	static NamingConvention namingConvention = NamingConvention.SNAKE
 
 	def setupSpec() {
 		// Copy sql import script into docker
@@ -44,7 +42,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements WeatherSourceTest
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
-		source = new SqlWeatherSource(connector, CosmoWeatherTestData.coordinateSource, schemaName, weatherTableName, namingConvention, weatherFactory)
+		source = new SqlWeatherSource(connector, CosmoWeatherTestData.coordinateSource, schemaName, weatherTableName, weatherFactory)
 	}
 
 	def "A NativeSqlWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {

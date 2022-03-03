@@ -38,7 +38,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 	@Shared
 	CouchbaseWeatherSource source
 
-	static String coordinateIdColumnName = TimeBasedWeatherValueFactory.COORDINATE_ID_NAMING.flatCase()
+	static String coordinateIdColumnName = TimeBasedWeatherValueFactory.COORDINATE_ID.flatCase()
 
 	def setupSpec() {
 		// Copy import file with json array of documents into docker

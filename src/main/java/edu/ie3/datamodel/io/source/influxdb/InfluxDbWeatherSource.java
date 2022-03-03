@@ -15,7 +15,6 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.StringUtils;
 import edu.ie3.util.interval.ClosedInterval;
-import edu.ie3.util.naming.Naming;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,11 +30,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   private static final String WHERE = " where ";
   private static final String MEASUREMENT_NAME_WEATHER = "weather";
   private static final int MILLI_TO_NANO_FACTOR = 1000000;
-
-  /* Final name of the coordinate id field for use in factories */
-  private final String coordinateIdFieldName;
-  /* Final name of the column within the database */
-  private final String coordinateIdColumnName = Naming.from("coordinate", "id").snakeCase();
+  private final String coordinateIdColumnName;
   private final InfluxDbConnector connector;
   private final IdCoordinateSource coordinateSource;
   private final TimeBasedWeatherValueFactory weatherValueFactory;
@@ -55,7 +50,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
     this.weatherValueFactory = weatherValueFactory;
-    this.coordinateIdFieldName = weatherValueFactory.getCoordinateIdFieldString();
+    this.coordinateIdColumnName = weatherValueFactory.getCoordinateIdFieldString();
   }
 
   @Override
@@ -170,7 +165,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
               flatCaseFields.putIfAbsent("uuid", UUID.randomUUID().toString());
 
               /* Get the corresponding coordinate id from map AND REMOVE THE ENTRY !!! */
-              int coordinateId = Integer.parseInt(flatCaseFields.remove(coordinateIdFieldName));
+              int coordinateId = Integer.parseInt(flatCaseFields.remove(coordinateIdColumnName));
               return coordinateSource
                   .getCoordinate(coordinateId)
                   .map(point -> new TimeBasedWeatherValueData(flatCaseFields, point))
