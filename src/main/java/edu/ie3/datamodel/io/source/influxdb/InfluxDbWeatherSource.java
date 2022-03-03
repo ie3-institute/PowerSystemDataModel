@@ -28,6 +28,7 @@ import org.locationtech.jts.geom.Point;
 public class InfluxDbWeatherSource implements WeatherSource {
   private static final String BASIC_QUERY_STRING = "Select * from weather";
   private static final String WHERE = " where ";
+  private static final String AND = " and ";
   private static final String MEASUREMENT_NAME_WEATHER = "weather";
   private static final String COORDINATE_ID_COLUMN_NAME = "coordinate_id";
   private static final int MILLI_TO_NANO_FACTOR = 1000000;
@@ -179,7 +180,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
     return BASIC_QUERY_STRING
         + WHERE
         + createCoordinateConstraintString(coordinateId)
-        + " and "
+        + AND
         + createTimeConstraint(timeInterval);
   }
 
@@ -187,7 +188,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
     return BASIC_QUERY_STRING
         + WHERE
         + createCoordinateConstraintString(coordinateId)
-        + " and "
+        + AND
         + createTimeConstraint(date);
   }
 
@@ -199,7 +200,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
     return weatherValueFactory.getTimeFieldString()
         + " >= "
         + timeInterval.getLower().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR
-        + " and "
+        + AND
         + weatherValueFactory.getTimeFieldString()
         + " <= "
         + timeInterval.getUpper().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
