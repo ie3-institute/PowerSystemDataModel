@@ -173,7 +173,7 @@ class InputEntityProcessorTest extends Specification {
 			"azimuth"         : SystemParticipantTestData.pvInput.azimuth.to(StandardUnits.AZIMUTH).getValue().doubleValue().toString(),
 			"cosPhiRated"     : SystemParticipantTestData.pvInput.cosPhiRated.toString(),
 			"etaConv"         : SystemParticipantTestData.pvInput.etaConv.getValue().doubleValue().toString(),
-			"height"          : SystemParticipantTestData.pvInput.height.getValue().doubleValue().toString(),
+			"elevationAngle"  : SystemParticipantTestData.pvInput.elevationAngle.getValue().doubleValue().toString(),
 			"id"              : SystemParticipantTestData.pvInput.id,
 			"kG"              : SystemParticipantTestData.pvInput.kG.toString(),
 			"kT"              : SystemParticipantTestData.pvInput.kT.toString(),

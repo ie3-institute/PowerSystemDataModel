@@ -5,13 +5,13 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 
 import static edu.ie3.datamodel.models.StandardUnits.ENERGY_PRICE
 
 import edu.ie3.datamodel.exceptions.SourceException
-import edu.ie3.datamodel.io.connectors.CsvFileConnector
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.*
@@ -50,7 +50,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "The factory method in csv time series source refuses to build time series with unsupported column type"() {
 		given:
-		def metaInformation = new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"), ColumnScheme.WEATHER, "its_weather_8bc9120d-fb9b-4484-b4e3-0cdadf0feea9")
+		def metaInformation = new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"), ColumnScheme.WEATHER, "its_weather_8bc9120d-fb9b-4484-b4e3-0cdadf0feea9")
 
 		when:
 		CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, fileNamingStrategy, metaInformation)
@@ -62,7 +62,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
 
 	def "The factory method in csv time series source builds a time series source for all supported column types"() {
 		given:
-		def metaInformation = new CsvFileConnector.CsvIndividualTimeSeriesMetaInformation(uuid, columnScheme, path)
+		def metaInformation = new CsvIndividualTimeSeriesMetaInformation(uuid, columnScheme, path)
 
 		when:
 		def actual = CsvTimeSeriesSource.getSource(";", timeSeriesFolderPath, fileNamingStrategy, metaInformation)

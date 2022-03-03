@@ -11,8 +11,8 @@ import static edu.ie3.test.common.TimeSeriesSourceTestData.*
 
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.SqlConnector
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.sql.SqlIndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.models.value.*
 import edu.ie3.util.interval.ClosedInterval
 import org.testcontainers.containers.Container
@@ -59,21 +59,22 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
 		}
 
 		connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-		def metaInformation = new IndividualTimeSeriesMetaInformation(
+		def metaInformation = new SqlIndividualTimeSeriesMetaInformation(
 				timeSeriesUuid,
-				ColumnScheme.ACTIVE_POWER
+				ColumnScheme.ACTIVE_POWER,
+				pTableName
 				)
 
-		pSource = SqlTimeSeriesSource.getSource(connector, schemaName, pTableName, metaInformation, "yyyy-MM-dd HH:mm:ss")
+		pSource = SqlTimeSeriesSource.getSource(connector, schemaName, metaInformation, "yyyy-MM-dd HH:mm:ss")
 	}
 
 	def "The factory method in SqlTimeSeriesSource builds a time series source for all supported column types"() {
 		given:
-		def metaInformation = new IndividualTimeSeriesMetaInformation(uuid, columnScheme)
+		def metaInformation = new SqlIndividualTimeSeriesMetaInformation(uuid, columnScheme, tableName)
 		def timePattern = "yyyy-MM-dd HH:mm:ss"
 
 		when:
-		def actual = SqlTimeSeriesSource.getSource(connector, schemaName, tableName, metaInformation, timePattern)
+		def actual = SqlTimeSeriesSource.getSource(connector, schemaName, metaInformation, timePattern)
 
 		then:
 		actual.timeSeries.entries.size() == amountOfEntries
@@ -91,14 +92,15 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
 
 	def "The factory method in SqlTimeSeriesSource refuses to build time series with unsupported column type"() {
 		given:
-		def metaInformation = new IndividualTimeSeriesMetaInformation(
+		def metaInformation = new SqlIndividualTimeSeriesMetaInformation(
 				UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"),
-				ColumnScheme.WEATHER
+				ColumnScheme.WEATHER,
+				"weather"
 				)
 		def timePattern = "yyyy-MM-dd HH:mm:ss"
 
 		when:
-		SqlTimeSeriesSource.getSource(connector, schemaName, "weather", metaInformation, timePattern)
+		SqlTimeSeriesSource.getSource(connector, schemaName, metaInformation, timePattern)
 
 		then:
 		def e = thrown(SourceException)

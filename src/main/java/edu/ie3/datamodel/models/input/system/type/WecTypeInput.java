@@ -77,9 +77,8 @@ public class WecTypeInput extends SystemParticipantTypeInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof WecTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    WecTypeInput that = (WecTypeInput) o;
     return cpCharacteristic.equals(that.cpCharacteristic)
         && etaConv.equals(that.etaConv)
         && rotorArea.equals(that.rotorArea)

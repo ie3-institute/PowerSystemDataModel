@@ -27,7 +27,7 @@ public class PvInput extends SystemParticipantInput {
   /** Efficiency of converter (typically in %) */
   private final ComparableQuantity<Dimensionless> etaConv;
   /** Tilted inclination from horizontal (typically in °) */
-  private final ComparableQuantity<Angle> height;
+  private final ComparableQuantity<Angle> elevationAngle;
   /** Generator correction factor merging different technical influences */
   private final double kG;
   /** Temperature correction factor */
@@ -51,7 +51,7 @@ public class PvInput extends SystemParticipantInput {
    * @param albedo Albedo value (typically a value between 0 and 1)
    * @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)
    * @param etaConv Efficiency of converter (typically in %)
-   * @param height Tilted inclination from horizontal (typically in °)
+   * @param elevationAngle Tilted inclination from horizontal (typically in °)
    * @param kG Generator correction factor merging different technical influences
    * @param kT Generator correction factor merging different technical influences
    * @param marketReaction Is this asset market oriented?
@@ -68,7 +68,7 @@ public class PvInput extends SystemParticipantInput {
       double albedo,
       ComparableQuantity<Angle> azimuth,
       ComparableQuantity<Dimensionless> etaConv,
-      ComparableQuantity<Angle> height,
+      ComparableQuantity<Angle> elevationAngle,
       double kG,
       double kT,
       boolean marketReaction,
@@ -78,7 +78,7 @@ public class PvInput extends SystemParticipantInput {
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
-    this.height = height.to(StandardUnits.SOLAR_HEIGHT);
+    this.elevationAngle = elevationAngle.to(StandardUnits.SOLAR_ELEVATION_ANGLE);
     this.kG = kG;
     this.kT = kT;
     this.marketReaction = marketReaction;
@@ -96,7 +96,7 @@ public class PvInput extends SystemParticipantInput {
    * @param albedo Albedo value (typically a value between 0 and 1)
    * @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)
    * @param etaConv Efficiency of converter (typically in %)
-   * @param height Tilted inclination from horizontal (typically in °)
+   * @param elevationAngle Tilted inclination from horizontal (typically in °)
    * @param kG Generator correction factor merging different technical influences
    * @param kT Generator correction factor merging different technical influences
    * @param marketReaction Is this asset market oriented?
@@ -111,7 +111,7 @@ public class PvInput extends SystemParticipantInput {
       double albedo,
       ComparableQuantity<Angle> azimuth,
       ComparableQuantity<Dimensionless> etaConv,
-      ComparableQuantity<Angle> height,
+      ComparableQuantity<Angle> elevationAngle,
       double kG,
       double kT,
       boolean marketReaction,
@@ -121,7 +121,7 @@ public class PvInput extends SystemParticipantInput {
     this.albedo = albedo;
     this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
     this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
-    this.height = height.to(StandardUnits.SOLAR_HEIGHT);
+    this.elevationAngle = elevationAngle.to(StandardUnits.SOLAR_ELEVATION_ANGLE);
     this.kG = kG;
     this.kT = kT;
     this.marketReaction = marketReaction;
@@ -141,8 +141,8 @@ public class PvInput extends SystemParticipantInput {
     return etaConv;
   }
 
-  public ComparableQuantity<Angle> getHeight() {
-    return height;
+  public ComparableQuantity<Angle> getElevationAngle() {
+    return elevationAngle;
   }
 
   public boolean isMarketReaction() {
@@ -172,9 +172,8 @@ public class PvInput extends SystemParticipantInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof PvInput pvInput)) return false;
     if (!super.equals(o)) return false;
-    PvInput pvInput = (PvInput) o;
     return Double.compare(pvInput.albedo, albedo) == 0
         && Double.compare(pvInput.kG, kG) == 0
         && Double.compare(pvInput.kT, kT) == 0
@@ -182,7 +181,7 @@ public class PvInput extends SystemParticipantInput {
         && Double.compare(pvInput.cosPhiRated, cosPhiRated) == 0
         && azimuth.equals(pvInput.azimuth)
         && etaConv.equals(pvInput.etaConv)
-        && height.equals(pvInput.height)
+        && elevationAngle.equals(pvInput.elevationAngle)
         && sRated.equals(pvInput.sRated);
   }
 
@@ -193,7 +192,7 @@ public class PvInput extends SystemParticipantInput {
         albedo,
         azimuth,
         etaConv,
-        height,
+        elevationAngle,
         kG,
         kT,
         marketReaction,
@@ -223,8 +222,8 @@ public class PvInput extends SystemParticipantInput {
         + azimuth
         + ", etaConv="
         + etaConv
-        + ", height="
-        + height
+        + ", elevationAngle="
+        + elevationAngle
         + ", kG="
         + kG
         + ", kT="
@@ -251,7 +250,7 @@ public class PvInput extends SystemParticipantInput {
     private double albedo;
     private ComparableQuantity<Angle> azimuth;
     private ComparableQuantity<Dimensionless> etaConv;
-    private ComparableQuantity<Angle> height;
+    private ComparableQuantity<Angle> elevationAngle;
     private double kG;
     private double kT;
     private boolean marketReaction;
@@ -263,7 +262,7 @@ public class PvInput extends SystemParticipantInput {
       this.albedo = entity.getAlbedo();
       this.azimuth = entity.getAzimuth();
       this.etaConv = entity.getEtaConv();
-      this.height = entity.getHeight();
+      this.elevationAngle = entity.getElevationAngle();
       this.kG = entity.getkG();
       this.kT = entity.getkT();
       this.marketReaction = entity.isMarketReaction();
@@ -286,8 +285,8 @@ public class PvInput extends SystemParticipantInput {
       return this;
     }
 
-    public PvInputCopyBuilder height(ComparableQuantity<Angle> height) {
-      this.height = height;
+    public PvInputCopyBuilder elevationAngle(ComparableQuantity<Angle> elevationAngle) {
+      this.elevationAngle = elevationAngle;
       return this;
     }
 
@@ -328,7 +327,7 @@ public class PvInput extends SystemParticipantInput {
           albedo,
           azimuth,
           etaConv,
-          height,
+          elevationAngle,
           kG,
           kT,
           marketReaction,

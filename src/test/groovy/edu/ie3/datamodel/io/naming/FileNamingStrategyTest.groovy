@@ -5,9 +5,9 @@
  */
 package edu.ie3.datamodel.io.naming
 
-import edu.ie3.datamodel.io.csv.timeseries.ColumnScheme
-import edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation
-import edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
+import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity
@@ -820,7 +820,7 @@ class FileNamingStrategyTest extends Specification {
 		def path = Paths.get("/bla/foo")
 
 		when:
-		fns.extractTimeSeriesMetaInformation(path)
+		fns.timeSeriesMetaInformation(path)
 
 		then:
 		def ex = thrown(IllegalArgumentException)
@@ -833,7 +833,7 @@ class FileNamingStrategyTest extends Specification {
 		def path = Paths.get(pathString)
 
 		when:
-		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
+		def metaInformation = fns.timeSeriesMetaInformation(path)
 
 		then:
 		IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
@@ -859,7 +859,7 @@ class FileNamingStrategyTest extends Specification {
 		def path = Paths.get(pathString)
 
 		when:
-		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
+		def metaInformation = fns.timeSeriesMetaInformation(path)
 
 		then:
 		IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
@@ -885,7 +885,7 @@ class FileNamingStrategyTest extends Specification {
 		def path = Paths.get("/bla/foo/its_whoops_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv")
 
 		when:
-		fns.extractTimeSeriesMetaInformation(path)
+		fns.timeSeriesMetaInformation(path)
 
 		then:
 		def ex = thrown(IllegalArgumentException)
@@ -898,7 +898,7 @@ class FileNamingStrategyTest extends Specification {
 		def path = Paths.get("/bla/foo/lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304.csv")
 
 		when:
-		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
+		def metaInformation = fns.timeSeriesMetaInformation(path)
 
 		then:
 		LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
@@ -914,7 +914,7 @@ class FileNamingStrategyTest extends Specification {
 		def path = Paths.get("/bla/foo/prefix_lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304_suffix.csv")
 
 		when:
-		def metaInformation = fns.extractTimeSeriesMetaInformation(path)
+		def metaInformation = fns.timeSeriesMetaInformation(path)
 
 		then:
 		LoadProfileTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())

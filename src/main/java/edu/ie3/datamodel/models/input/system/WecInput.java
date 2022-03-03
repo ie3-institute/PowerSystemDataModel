@@ -86,9 +86,8 @@ public class WecInput extends SystemParticipantInput implements HasType {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof WecInput wecInput)) return false;
     if (!super.equals(o)) return false;
-    WecInput wecInput = (WecInput) o;
     return Objects.equals(type, wecInput.type)
         && Objects.equals(marketReaction, wecInput.marketReaction);
   }
