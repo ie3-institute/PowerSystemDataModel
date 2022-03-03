@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))
 
 ### Changed
+- BREAKING: PvInput Model parameter name height changed to elevationAngle [#393](https://github.com/ie3-institute/PowerSystemDataModel/issues/393) :warning:
 - BREAKING: Transformer's no load susceptance needs to be zero or negative to pass model validation [#378](https://github.com/ie3-institute/PowerSystemDataModel/issues/378)
   - All input data sets for version < 3.0.0 need to be altered!
 - Deprecating (as part of [#513](https://github.com/ie3-institute/PowerSystemDataModel/issues/513)): 
