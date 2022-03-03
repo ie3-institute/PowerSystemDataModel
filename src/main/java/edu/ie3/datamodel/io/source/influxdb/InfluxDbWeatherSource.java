@@ -29,12 +29,12 @@ public class InfluxDbWeatherSource implements WeatherSource {
   private static final String BASIC_QUERY_STRING = "Select * from weather";
   private static final String WHERE = " where ";
   private static final String MEASUREMENT_NAME_WEATHER = "weather";
+  private static final String COORDINATE_ID_COLUMN_NAME = "coordinate_id";
   private static final int MILLI_TO_NANO_FACTOR = 1000000;
 
   /* Final name of the coordinate id field for use in factories */
   private final String coordinateIdFieldName;
   /* Final name of the column within the database */
-  private static final String coordinateIdColumnName = "coordinate_id";
   private final InfluxDbConnector connector;
   private final IdCoordinateSource coordinateSource;
   private final TimeBasedWeatherValueFactory weatherValueFactory;
@@ -210,7 +210,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   private String createCoordinateConstraintString(int coordinateId) {
-    return coordinateIdColumnName + "='" + coordinateId + "'";
+    return COORDINATE_ID_COLUMN_NAME + "='" + coordinateId + "'";
   }
 
   /**
