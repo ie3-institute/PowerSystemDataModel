@@ -25,7 +25,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,7 +155,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
           Set<TimeBasedValue<WeatherValue>> weatherInputs =
               jsonWeatherInputs.stream()
                   .map(this::toTimeBasedWeatherValue)
-                  .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+                  .flatMap(Optional::stream)
                   .collect(Collectors.toSet());
           IndividualTimeSeries<WeatherValue> weatherTimeSeries =
               new IndividualTimeSeries<>(null, weatherInputs);

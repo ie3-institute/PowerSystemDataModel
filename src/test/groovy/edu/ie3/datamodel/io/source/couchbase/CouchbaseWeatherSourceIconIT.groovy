@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.source.couchbase
 
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
-import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.test.common.IconWeatherTestData
@@ -36,7 +35,7 @@ class CouchbaseWeatherSourceIconIT extends Specification implements WeatherSourc
 	@Shared
 	CouchbaseWeatherSource source
 
-	static String coordinateIdColumnName = TimeBasedWeatherValueFactory.COORDINATE_ID_NAMING.flatCase()
+	static String coordinateIdColumnName = "coordinateid"
 
 	def setupSpec() {
 		// Copy import file with json array of documents into docker
@@ -62,8 +61,9 @@ class CouchbaseWeatherSourceIconIT extends Specification implements WeatherSourc
 
 		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
 		def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
+		def keyPrefix = "weather"
 		def weatherFactory = new IconTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern))
-		source = new CouchbaseWeatherSource(connector, IconWeatherTestData.coordinateSource, weatherFactory, dtfPattern)
+		source = new CouchbaseWeatherSource(connector, IconWeatherTestData.coordinateSource, coordinateIdColumnName, keyPrefix, dtfPattern, weatherFactory)
 	}
 
 	def "The test container can establish a valid connection"() {

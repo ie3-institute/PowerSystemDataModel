@@ -6,19 +6,16 @@
 package edu.ie3.datamodel.io.source.influxdb
 
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
-import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.IconWeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
-import edu.ie3.util.naming.NamingConvention
-import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.spock.Testcontainers
+import org.testcontainers.utility.DockerImageName
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
@@ -27,7 +24,7 @@ import spock.lang.Specification
 class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSourceTestHelper {
 
 	@Shared
-	InfluxDBContainer influxDbContainer = new InfluxDBContainer("1.8.4")
+	InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb:1.8.10"))
 	.withAuthEnabled(false)
 	.withDatabase("test_weather")
 
@@ -46,7 +43,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
 		def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
 		def weatherFactory = new IconTimeBasedWeatherValueFactory("yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
-		source = new InfluxDbWeatherSource(connector, IconWeatherTestData.coordinateSource, NamingConvention.SNAKE, weatherFactory)
+		source = new InfluxDbWeatherSource(connector, IconWeatherTestData.coordinateSource, weatherFactory)
 	}
 
 	def "The test container can establish a valid connection"() {

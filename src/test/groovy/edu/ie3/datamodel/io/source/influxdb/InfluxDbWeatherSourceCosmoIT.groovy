@@ -14,7 +14,6 @@ import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
-import edu.ie3.util.naming.NamingConvention
 import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.spock.Testcontainers
@@ -46,7 +45,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourc
 
 		def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
-		source = new InfluxDbWeatherSource(connector, CosmoWeatherTestData.coordinateSource, NamingConvention.SNAKE, weatherFactory)
+		source = new InfluxDbWeatherSource(connector, CosmoWeatherTestData.coordinateSource, weatherFactory)
 	}
 
 
