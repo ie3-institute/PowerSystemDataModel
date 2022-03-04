@@ -42,7 +42,6 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourc
 
 		String[] command = ["influx", "-import", "-path=/home/weather.txt", "-precision=ms"]
 		def execResult = influxDbContainer.execInContainer(command)
-		println "Command \"influx -import -path=/home/weather.txt -precision=ms\" returned:"
 		if (!execResult.stderr.empty) {
 			throw new IllegalStateException("Command '" + String.join(" ", command) + "' failed:\n" + execResult.stderr)
 		}
