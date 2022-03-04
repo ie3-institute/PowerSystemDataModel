@@ -31,7 +31,7 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 	BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")
 
 	@Shared
-	CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:latest").withBucket(bucketDefinition)
+	CouchbaseContainer couchbaseContainer = new CouchbaseContainer("couchbase/server:6.0.2").withBucket(bucketDefinition)
 	.withExposedPorts(8091, 8092, 8093, 8094, 11210)
 
 	@Shared
@@ -62,8 +62,9 @@ class CouchbaseWeatherSourceCosmoIT extends Specification implements WeatherSour
 				"--dataset", "file:///home/weather.json")
 
 		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
-		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, "yyyy-MM-dd'T'HH:mm:ssxxx"))
-		source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory)
+		def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"
+		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(new TimeUtil(ZoneId.of("UTC"), Locale.GERMANY, dtfPattern))
+		source = new CouchbaseWeatherSource(connector, CosmoWeatherTestData.coordinateSource, coordinateIdColumnName, weatherFactory, dtfPattern)
 	}
 
 	def "The test container can establish a valid connection"() {
