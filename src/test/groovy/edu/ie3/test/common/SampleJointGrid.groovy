@@ -75,7 +75,7 @@ class SampleJointGrid extends SystemParticipantTestData {
 				SystemParticipantTestData.albedo,
 				SystemParticipantTestData.azimuth,
 				SystemParticipantTestData.etaConv,
-				SystemParticipantTestData.height,
+				SystemParticipantTestData.elevationAngle,
 				SystemParticipantTestData.kG,
 				SystemParticipantTestData.kT,
 				false,

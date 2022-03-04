@@ -28,9 +28,11 @@ import org.locationtech.jts.geom.Point;
 public class InfluxDbWeatherSource implements WeatherSource {
   private static final String BASIC_QUERY_STRING = "Select * from weather";
   private static final String WHERE = " where ";
+  private static final String AND = " and ";
   private static final String MEASUREMENT_NAME_WEATHER = "weather";
+  private static final String COORDINATE_ID_COLUMN_NAME = "coordinate_id";
   private static final int MILLI_TO_NANO_FACTOR = 1000000;
-  private final String coordinateIdColumnName;
+
   private final InfluxDbConnector connector;
   private final IdCoordinateSource coordinateSource;
   private final TimeBasedWeatherValueFactory weatherValueFactory;
@@ -50,7 +52,6 @@ public class InfluxDbWeatherSource implements WeatherSource {
     this.connector = connector;
     this.coordinateSource = coordinateSource;
     this.weatherValueFactory = weatherValueFactory;
-    this.coordinateIdColumnName = weatherValueFactory.getCoordinateIdFieldString();
   }
 
   @Override
@@ -113,7 +114,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   public IndividualTimeSeries<WeatherValue> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Point coordinate) {
     Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
-    if (!coordinateId.isPresent()) {
+    if (coordinateId.isEmpty()) {
       return new IndividualTimeSeries<>(UUID.randomUUID(), Collections.emptySet());
     }
     try (InfluxDB session = connector.getSession()) {
@@ -130,7 +131,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
   @Override
   public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
     Optional<Integer> coordinateId = coordinateSource.getId(coordinate);
-    if (!coordinateId.isPresent()) {
+    if (coordinateId.isEmpty()) {
       return Optional.empty();
     }
     try (InfluxDB session = connector.getSession()) {
@@ -141,35 +142,37 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   /**
-   * Parses an influxQL QueryResult and then transforms them into a Stream of optional
-   * TimeBasedValue&lt;WeatherValue&gt;, with a present Optional value, if the transformation was
-   * successful and an empty optional otherwise.
+   * Parses an influxQL QueryResult and then transforms it into a Stream of optional
+   * TimeBasedValue&lt;WeatherValue&gt;, with a present Optional value if the transformation was
+   * successful and an empty Optional otherwise.
    */
   private Stream<Optional<TimeBasedValue<WeatherValue>>> optTimeBasedValueStream(
       QueryResult queryResult) {
     Map<String, Set<Map<String, String>>> measurementsMap =
         InfluxDbConnector.parseQueryResult(queryResult, MEASUREMENT_NAME_WEATHER);
+    final String coordinateIdFieldName = weatherValueFactory.getCoordinateIdFieldString();
     return measurementsMap.get(MEASUREMENT_NAME_WEATHER).stream()
         .map(
             fieldToValue -> {
-              Optional<Point> coordinate =
-                  coordinateSource.getCoordinate(
-                      Integer.parseInt(fieldToValue.remove(coordinateIdColumnName)));
-              if (!coordinate.isPresent()) return null;
-              fieldToValue.putIfAbsent("uuid", UUID.randomUUID().toString());
-
-              /* The factory expects camel case id's for fields -> Convert the keys */
-              Map<String, String> camelCaseFields =
+              /* The factory expects flat case id's for fields -> Convert the keys */
+              Map<String, String> flatCaseFields =
                   fieldToValue.entrySet().stream()
                       .collect(
                           Collectors.toMap(
-                              entry -> StringUtils.snakeCaseToCamelCase(entry.getKey()),
+                              entry ->
+                                  StringUtils.snakeCaseToCamelCase(entry.getKey()).toLowerCase(),
                               Map.Entry::getValue));
 
-              return new TimeBasedWeatherValueData(camelCaseFields, coordinate.get());
-            })
-        .filter(Objects::nonNull)
-        .map(weatherValueFactory::get);
+              /* Add a random UUID if necessary */
+              flatCaseFields.putIfAbsent("uuid", UUID.randomUUID().toString());
+
+              /* Get the corresponding coordinate id from map AND REMOVE THE ENTRY !!! */
+              int coordinateId = Integer.parseInt(flatCaseFields.remove(coordinateIdFieldName));
+              return coordinateSource
+                  .getCoordinate(coordinateId)
+                  .map(point -> new TimeBasedWeatherValueData(flatCaseFields, point))
+                  .flatMap(weatherValueFactory::get);
+            });
   }
 
   private String createQueryStringForCoordinateAndTimeInterval(
@@ -177,7 +180,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
     return BASIC_QUERY_STRING
         + WHERE
         + createCoordinateConstraintString(coordinateId)
-        + " and "
+        + AND
         + createTimeConstraint(timeInterval);
   }
 
@@ -185,7 +188,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
     return BASIC_QUERY_STRING
         + WHERE
         + createCoordinateConstraintString(coordinateId)
-        + " and "
+        + AND
         + createTimeConstraint(date);
   }
 
@@ -194,18 +197,23 @@ public class InfluxDbWeatherSource implements WeatherSource {
   }
 
   private String createTimeConstraint(ClosedInterval<ZonedDateTime> timeInterval) {
-    return "time >= "
+    return weatherValueFactory.getTimeFieldString()
+        + " >= "
         + timeInterval.getLower().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR
-        + " and time <= "
+        + AND
+        + weatherValueFactory.getTimeFieldString()
+        + " <= "
         + timeInterval.getUpper().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
   }
 
   private String createTimeConstraint(ZonedDateTime date) {
-    return "time=" + date.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
+    return weatherValueFactory.getTimeFieldString()
+        + "="
+        + date.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
   }
 
   private String createCoordinateConstraintString(int coordinateId) {
-    return "coordinate='" + coordinateId + "'";
+    return COORDINATE_ID_COLUMN_NAME + "='" + coordinateId + "'";
   }
 
   /**

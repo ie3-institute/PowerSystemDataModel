@@ -40,7 +40,7 @@ apply from: scriptsLocation + 'vcs.gradle'
 apply from: scriptsLocation + 'semVer.gradle'
 
 repositories {
-	mavenCentral() //searches in bintray's repository 'jCenter', which contains Maven Central
+	mavenCentral() // searches in Sonatype's repository 'Maven Central'
 	maven { url 'https://www.jitpack.io' } // allows github repos as dependencies
 
 	// sonatype snapshot repo
@@ -74,7 +74,7 @@ dependencies {
 
 	// testing
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
-	testImplementation 'org.spockframework:spock-core:2.1-M2-groovy-3.0'
+	testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
 	testImplementation 'org.objenesis:objenesis:3.2' // Mock creation with constructor parameters
 
 	// testcontainers (docker framework for testing)
@@ -91,7 +91,7 @@ dependencies {
 
 	// Databases
 	implementation 'org.influxdb:influxdb-java:2.22'
-	implementation 'com.couchbase.client:java-client:3.2.5'
+	implementation 'com.couchbase.client:java-client:3.2.6'
 	runtimeOnly 'org.postgresql:postgresql:42.3.3' // postgresql jdbc driver required during runtime
 
 	implementation 'commons-io:commons-io:2.11.0' // I/O functionalities

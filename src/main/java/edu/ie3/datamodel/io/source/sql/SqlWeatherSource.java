@@ -60,17 +60,17 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
 
     String dbTimeColumnName =
         getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
-    String dbCoordColumnName = getDbColumnName(factoryCoordinateFieldName, weatherTableName);
+    String dbCoordinateIdColumnName = getDbColumnName(factoryCoordinateFieldName, weatherTableName);
 
     // setup queries
     this.queryTimeInterval =
         createQueryStringForTimeInterval(schemaName, weatherTableName, dbTimeColumnName);
     this.queryTimeAndCoordinate =
         createQueryStringForTimeAndCoordinate(
-            schemaName, weatherTableName, dbTimeColumnName, dbCoordColumnName);
+            schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
     this.queryTimeIntervalAndCoordinates =
         createQueryStringForTimeIntervalAndCoordinates(
-            schemaName, weatherTableName, dbTimeColumnName, dbCoordColumnName);
+            schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
   }
 
   @Override
