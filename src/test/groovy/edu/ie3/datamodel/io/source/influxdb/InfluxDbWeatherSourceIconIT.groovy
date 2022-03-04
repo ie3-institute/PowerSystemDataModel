@@ -41,7 +41,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 		String[] command = ["influx", "-import", "-path=/home/weather.txt", "-precision=ms"]
 		def execResult = influxDbContainer.execInContainer(command)
 		if (!execResult.stderr.empty) {
-			throw new RuntimeException("Command '" + String.join(" ", command) + "' failed:\n" + execResult.getStderr())
+			throw new IllegalStateException("Command '" + String.join(" ", command) + "' failed:\n" + execResult.stderr)
 		}
 
 		def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
@@ -51,7 +51,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
 	def "The test container can establish a valid connection"() {
 		when:
-		def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
+		def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
 		then:
 		connector.connectionValid
 	}
@@ -121,11 +121,11 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 		def time = IconWeatherTestData.TIME_15H
 		def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H , IconWeatherTestData.TIME_17H)
 		def emptyTimeSeries = new IndividualTimeSeries(UUID.randomUUID(), Collections.emptySet())
-		def timeseries_67775 = new IndividualTimeSeries(null,
+		def timeseries67775 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(IconWeatherTestData.TIME_15H ,IconWeatherTestData.WEATHER_VALUE_67775_15H),
-					new TimeBasedValue(IconWeatherTestData.TIME_16H ,IconWeatherTestData.WEATHER_VALUE_67775_16H),
-					new TimeBasedValue(IconWeatherTestData.TIME_17H ,IconWeatherTestData.WEATHER_VALUE_67775_17H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H),
+					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67775_16H),
+					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)] as Set<TimeBasedValue>)
 
 		when:
 		def coordinateAtDate = source.getWeather(time, invalidCoordinate)
@@ -139,6 +139,6 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 		coordinateAtDate == Optional.empty()
 		equalsIgnoreUUID(coordinateInInterval, emptyTimeSeries)
 		coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
-		equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries_67775)
+		equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries67775)
 	}
 }

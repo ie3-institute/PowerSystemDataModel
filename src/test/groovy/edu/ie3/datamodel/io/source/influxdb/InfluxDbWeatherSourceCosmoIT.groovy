@@ -44,7 +44,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourc
 		def execResult = influxDbContainer.execInContainer(command)
 		println "Command \"influx -import -path=/home/weather.txt -precision=ms\" returned:"
 		if (!execResult.stderr.empty) {
-			throw new RuntimeException("Command '" + String.join(" ", command) + "' failed:\n" + execResult.getStderr())
+			throw new IllegalStateException("Command '" + String.join(" ", command) + "' failed:\n" + execResult.stderr)
 		}
 
 		def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
