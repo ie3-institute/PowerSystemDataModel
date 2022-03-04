@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.CosmoWeatherTestData
+import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
@@ -23,7 +24,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourceTestHelper {
+class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourceTestHelper, TestContainerHelper {
 
 	@Shared
 	InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb:1.8.10"))
@@ -36,14 +37,17 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourc
 	def setupSpec() {
 		// Copy import file into docker and then import it via influx CLI
 		// more information on file format and usage here: https://docs.influxdata.com/influxdb/v1.7/tools/shell/#import-data-from-a-file-with-import
-		MountableFile influxWeatherImportFile = MountableFile.forClasspathResource("/testcontainersFiles/influxDb/cosmo/weather.txt")
+		MountableFile influxWeatherImportFile = getMountableFile("/testcontainersFiles/influxDb/cosmo/weather.txt")
 		influxDbContainer.copyFileToContainer(influxWeatherImportFile, "/home/weather.txt")
-		def execResult = influxDbContainer.execInContainer("influx", "-import", "-path=/home/weather.txt", "-precision=ms")
-		println "Command \"influx -import -path=/home/weather.txt -precision=ms\" returned:"
-		if(!execResult.stderr.isEmpty()) println execResult.getStderr()
-		if(!execResult.stdout.isEmpty()) println execResult.getStdout()
 
-		def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
+		String[] command = ["influx", "-import", "-path=/home/weather.txt", "-precision=ms"]
+		def execResult = influxDbContainer.execInContainer(command)
+		println "Command \"influx -import -path=/home/weather.txt -precision=ms\" returned:"
+		if (!execResult.stderr.empty) {
+			throw new RuntimeException("Command '" + String.join(" ", command) + "' failed:\n" + execResult.getStderr())
+		}
+
+		def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
 		source = new InfluxDbWeatherSource(connector, CosmoWeatherTestData.coordinateSource, weatherFactory)
 	}

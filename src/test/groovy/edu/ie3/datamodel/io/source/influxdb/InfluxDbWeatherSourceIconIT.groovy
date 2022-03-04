@@ -10,6 +10,7 @@ import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.test.common.IconWeatherTestData
+import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
@@ -21,7 +22,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSourceTestHelper {
+class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSourceTestHelper, TestContainerHelper {
 
 	@Shared
 	InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb:1.8.10"))
@@ -34,14 +35,16 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 	def setupSpec() {
 		// Copy import file into docker and then import it via influx CLI
 		// more information on file format and usage here: https://docs.influxdata.com/influxdb/v1.7/tools/shell/#import-data-from-a-file-with-import
-		MountableFile influxWeatherImportFile = MountableFile.forClasspathResource("/testcontainersFiles/influxDb/icon/weather.txt")
+		MountableFile influxWeatherImportFile = getMountableFile("/testcontainersFiles/influxDb/icon/weather.txt")
 		influxDbContainer.copyFileToContainer(influxWeatherImportFile, "/home/weather.txt")
-		def execResult = influxDbContainer.execInContainer("influx", "-import", "-path=/home/weather.txt", "-precision=ms")
-		println "Command \"influx -import -path=/home/weather.txt -precision=ms\" returned:"
-		if(!execResult.stderr.isEmpty()) println execResult.getStderr()
-		if(!execResult.stdout.isEmpty()) println execResult.getStdout()
 
-		def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
+		String[] command = ["influx", "-import", "-path=/home/weather.txt", "-precision=ms"]
+		def execResult = influxDbContainer.execInContainer(command)
+		if (!execResult.stderr.empty) {
+			throw new RuntimeException("Command '" + String.join(" ", command) + "' failed:\n" + execResult.getStderr())
+		}
+
+		def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
 		def weatherFactory = new IconTimeBasedWeatherValueFactory("yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
 		source = new InfluxDbWeatherSource(connector, IconWeatherTestData.coordinateSource, weatherFactory)
 	}
@@ -93,23 +96,23 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 	def "An InfluxDbWeatherSource can read all weather data in a given time interval"() {
 		given:
 		def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H , IconWeatherTestData.TIME_17H)
-		def timeseries_67775 = new IndividualTimeSeries(null,
+		def timeseries67775 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(IconWeatherTestData.TIME_15H ,IconWeatherTestData.WEATHER_VALUE_67775_15H),
-					new TimeBasedValue(IconWeatherTestData.TIME_16H ,IconWeatherTestData.WEATHER_VALUE_67775_16H),
-					new TimeBasedValue(IconWeatherTestData.TIME_17H ,IconWeatherTestData.WEATHER_VALUE_67775_17H)] as Set<TimeBasedValue>)
-		def timeseries_67776 = new IndividualTimeSeries(null,
+					new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H),
+					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67775_16H),
+					new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)] as Set<TimeBasedValue>)
+		def timeseries67776 = new IndividualTimeSeries(null,
 				[
-					new TimeBasedValue(IconWeatherTestData.TIME_15H ,IconWeatherTestData.WEATHER_VALUE_67776_15H),
-					new TimeBasedValue(IconWeatherTestData.TIME_16H ,IconWeatherTestData.WEATHER_VALUE_67776_16H)] as Set<TimeBasedValue>)
+					new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67776_15H),
+					new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67776_16H)] as Set<TimeBasedValue>)
 
 		when:
 		def coordinateToTimeSeries = source.getWeather(timeInterval)
 
 		then:
 		coordinateToTimeSeries.keySet().size() == 2
-		equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).getEntries(), timeseries_67775.getEntries())
-		equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).getEntries(), timeseries_67776.getEntries())
+		equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeseries67775.entries)
+		equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeseries67776.entries)
 	}
 
 	def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to it's ID"() {
