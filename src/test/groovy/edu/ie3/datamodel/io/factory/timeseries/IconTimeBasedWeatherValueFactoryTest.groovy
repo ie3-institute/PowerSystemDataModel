@@ -76,7 +76,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 		def coordinate = CosmoWeatherTestData.COORDINATE_67775
 
 		def parameter = [
-			"datum"        : "2019-08-01 01:00:00",
+			"time"        : "2019-08-01 01:00:00",
 			"albRad"      : "13.015240669",
 			"asobS"       : "3.555093673828124",
 			"aswdifdS"    : "1.8088226191406245",
@@ -98,7 +98,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 			"w20m"        : "-0.0100060345167524",
 			"w216m"       : "-0.030348050471342078",
 			"w65m"        : "-0.01817112027569893",
-			"z0"           : "0.955323922526438",
+			"z0"          : "0.955323922526438",
 			"coordinateId": "67775",
 			"p131m"       : "",
 			"p20m"        : "",
