@@ -22,6 +22,7 @@ trait CsvTestDataMeta {
 	static String thermalFolderPath = getResourceAbs("_thermal")
 	static String coordinatesIconFolderPath = getResourceAbs("_coordinates/icon")
 	static String coordinatesCosmoFolderPath = getResourceAbs("_coordinates/cosmo")
+	static String weatherCosmoFolderPath = getResourceAbs("_weather/cosmo")
 	static String weatherIconFolderPath = getResourceAbs("_weather/icon")
 
 	static String gridDefaultFolderPath = getResourceAbs("_grid/default")

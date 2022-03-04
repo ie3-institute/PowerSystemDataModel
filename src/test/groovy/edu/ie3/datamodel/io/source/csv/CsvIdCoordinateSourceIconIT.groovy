@@ -14,7 +14,7 @@ import spock.lang.Specification
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
-class IconCsvIdCoordinateSourceIT extends Specification implements CsvTestDataMeta {
+class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMeta {
 
 	@Shared
 	CsvIdCoordinateSource source

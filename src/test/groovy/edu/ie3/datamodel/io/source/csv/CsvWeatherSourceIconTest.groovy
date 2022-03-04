@@ -189,7 +189,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 		def actual = source.buildWeatherValue(fieldToValues)
 
 		then:
-		!actual.present
+		actual.empty
 	}
 
 	def "The CsvWeatherSource returns no WeatherValue, if the coordinate field is missing"() {
@@ -232,7 +232,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 		def actual = source.buildWeatherValue(fieldToValues)
 
 		then:
-		!actual.present
+		actual.empty
 	}
 
 	def "The CsvWeatherSource returns no WeatherValue, if the coordinate cannot be obtained"() {
@@ -276,6 +276,6 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 		def actual = source.buildWeatherValue(fieldToValues)
 
 		then:
-		!actual.present
+		actual.empty
 	}
 }

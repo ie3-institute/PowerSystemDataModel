@@ -35,6 +35,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `edu.ie3.datamodel.io.csv.timeseries.LoadProfileTimeSeriesMetaInformation`
   - `edu.ie3.datamodel.io.connectors.CsvFileConnector.CsvIndividualTimeSeriesMetaInformation`
   - and related methods
+- BREAKING: Comprehensive harmonization around weather sources [#267](https://github.com/ie3-institute/PowerSystemDataModel/issues/267)
+    - Adapted the expected column scheme
+      - General weather model
+        - `coordinate` to `coordinateid`
+      - DWD COSMO model
+        - `diffuseirradiation` to `diffuseirradiance`
+        - `directirradiation` to `directirradiance`
+      - ICON model:
+        - `"datum"` to `"time"`
+	-   Force user to provide time stamp pattern to `CouchbaseWeatherSource` to ensure harmonized querying
 
 ## [2.1.0] - 2022-01-05
 

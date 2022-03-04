@@ -60,7 +60,7 @@ Equality Checks
     Using :code:`Objects.equals(<QuantityInstanceA>, <QuantityInstanceB>)` is necessary especially for time series data.
     As in contrast to all other places, quantity time series from real world data sometimes are not complete and
     hence contain missing values. To represent missing values this is the only place where the usage of :code:`null`
-    is a valid choice and hence needs to be treated accordingly. Please remember that his is only allowed in very few
+    is a valid choice and hence needs to be treated accordingly. Please remember that this is only allowed in very few
     places and you should try to avoid using :code:`null` for quantities or any other constructor parameter whenever possible!
   - equality is given if, and only if, the quantities value object and unit are exactly equal. Value objects can become
     e.g. :code:`BigDecimal` or :code:`Double` instances. It is important, that the object type is also the same, otherwise

@@ -18,6 +18,7 @@ public abstract class TimeBasedWeatherValueFactory
     extends TimeBasedValueFactory<TimeBasedWeatherValueData, WeatherValue> {
   protected static final String UUID = "uuid";
   protected static final String TIME = "time";
+  protected static final String COORDINATE_ID = "coordinateid";
 
   protected final TimeUtil timeUtil;
 
@@ -39,7 +40,9 @@ public abstract class TimeBasedWeatherValueFactory
    *
    * @return the field name for the coordinate id
    */
-  public abstract String getCoordinateIdFieldString();
+  public String getCoordinateIdFieldString() {
+    return COORDINATE_ID;
+  }
 
   /**
    * Return the field name for the date time

@@ -25,6 +25,7 @@ class IconWeatherTestData extends WeatherTestData {
 	Quantities.getQuantity(270.45278309919627, StandardUnits.WIND_DIRECTION),
 	Quantities.getQuantity(3.76601470961371, StandardUnits.WIND_VELOCITY)
 	)
+
 	public static final WeatherValue WEATHER_VALUE_67775_16H = new WeatherValue(
 	COORDINATE_67775,
 	Quantities.getQuantity(204.38963365625, StandardUnits.SOLAR_IRRADIANCE),
@@ -33,6 +34,7 @@ class IconWeatherTestData extends WeatherTestData {
 	Quantities.getQuantity(278.144331776102, StandardUnits.WIND_DIRECTION),
 	Quantities.getQuantity(4.05744164637287, StandardUnits.WIND_VELOCITY)
 	)
+
 	public static final WeatherValue WEATHER_VALUE_67775_17H = new WeatherValue(
 	COORDINATE_67775,
 	Quantities.getQuantity(175.039569078125, StandardUnits.SOLAR_IRRADIANCE),
@@ -50,6 +52,7 @@ class IconWeatherTestData extends WeatherTestData {
 	Quantities.getQuantity(245.604554131632, StandardUnits.WIND_DIRECTION),
 	Quantities.getQuantity(4.39390441381814, StandardUnits.WIND_VELOCITY)
 	)
+
 	public static final WeatherValue WEATHER_VALUE_67776_16H = new WeatherValue(
 	COORDINATE_67776,
 	Quantities.getQuantity(091.70939132297, StandardUnits.SOLAR_IRRADIANCE),
