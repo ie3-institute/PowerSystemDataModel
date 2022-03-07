@@ -90,7 +90,7 @@ class CsvFileConnectorTest extends Specification {
 		]
 
 		when:
-		def actual = cfc.getIndividualTimeSeriesMetaInformation()
+		def actual = cfc.individualTimeSeriesMetaInformation
 
 		then:
 		actual == expected

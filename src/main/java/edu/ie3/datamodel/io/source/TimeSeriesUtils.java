@@ -12,10 +12,6 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public class TimeSeriesUtils {
-  private TimeSeriesUtils() {
-    // prevent initialization
-  }
-
   private static final Set<ColumnScheme> ACCEPTED_COLUMN_SCHEMES =
       EnumSet.of(
           ACTIVE_POWER,
@@ -24,6 +20,10 @@ public class TimeSeriesUtils {
           APPARENT_POWER_AND_HEAT_DEMAND,
           ACTIVE_POWER_AND_HEAT_DEMAND,
           HEAT_DEMAND);
+
+  private TimeSeriesUtils() {
+    // prevent initialization
+  }
 
   /**
    * Returns set of column schemes that are accepted with {@link TimeSeriesSource}
