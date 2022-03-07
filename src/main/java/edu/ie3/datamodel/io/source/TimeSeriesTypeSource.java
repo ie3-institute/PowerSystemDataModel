@@ -42,10 +42,9 @@ public interface TimeSeriesTypeSource extends DataSource {
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (!(o instanceof TypeEntry that)) return false;
       if (!super.equals(o)) return false;
-      TypeEntry typeEntry = (TypeEntry) o;
-      return columnScheme == typeEntry.columnScheme;
+      return columnScheme == that.columnScheme;
     }
 
     @Override
