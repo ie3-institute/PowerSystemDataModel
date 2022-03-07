@@ -22,7 +22,7 @@ public class PvInputFactory
   private static final String ALBEDO = "albedo";
   private static final String AZIMUTH = "azimuth";
   private static final String ETA_CONV = "etaconv";
-  private static final String HEIGHT = "height";
+  private static final String ELEVATION_ANGLE = "elevationangle";
   private static final String KG = "kg";
   private static final String KT = "kt";
   private static final String MARKET_REACTION = "marketreaction";
@@ -36,7 +36,7 @@ public class PvInputFactory
   @Override
   protected String[] getAdditionalFields() {
     return new String[] {
-      ALBEDO, AZIMUTH, ETA_CONV, HEIGHT, KG, KT, MARKET_REACTION, S_RATED, COS_PHI_RATED
+      ALBEDO, AZIMUTH, ETA_CONV, ELEVATION_ANGLE, KG, KT, MARKET_REACTION, S_RATED, COS_PHI_RATED
     };
   }
 
@@ -53,7 +53,8 @@ public class PvInputFactory
     final ComparableQuantity<Angle> azimuth = data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH);
     final ComparableQuantity<Dimensionless> etaConv =
         data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
-    final ComparableQuantity<Angle> height = data.getQuantity(HEIGHT, StandardUnits.SOLAR_HEIGHT);
+    final ComparableQuantity<Angle> elevationAngle =
+        data.getQuantity(ELEVATION_ANGLE, StandardUnits.SOLAR_ELEVATION_ANGLE);
     final double kG = data.getDouble(KG);
     final double kT = data.getDouble(KT);
     final boolean marketReaction = data.getBoolean(MARKET_REACTION);
@@ -70,7 +71,7 @@ public class PvInputFactory
         albedo,
         azimuth,
         etaConv,
-        height,
+        elevationAngle,
         kG,
         kT,
         marketReaction,
