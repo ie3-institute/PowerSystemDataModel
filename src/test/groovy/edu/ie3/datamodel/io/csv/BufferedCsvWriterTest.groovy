@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.csv
 
+import edu.ie3.datamodel.exceptions.FileException
 import edu.ie3.datamodel.exceptions.SinkException
 import edu.ie3.util.io.FileIOUtils
 import org.apache.commons.io.FilenameUtils
@@ -77,5 +78,34 @@ class BufferedCsvWriterTest extends Specification {
 		then:
 		def e = thrown(SinkException)
 		e.message == "The provided data does not meet the pre-defined head line elements 'a,b,c'."
+	}
+
+	def "The buffered csv writer writes out content in the order specified by the headline elements"() {
+		given:
+		def targetFile = FilenameUtils.concat(tmpDirectory.toString(), "order_test.csv")
+		def writer = new BufferedCsvWriter(targetFile, ["c", "b", "a"] as String[], ",", false)
+		writer.writeFileHeader()
+		def content = [
+				"c": "z",
+				"a": "x",
+				"b": "y"
+		]
+
+		when:
+		writer.write(content)
+		writer.close()
+		/* Read in the content */
+		def writtenContent = ""
+		def headline = ""
+		try(BufferedReader reader = new BufferedReader(new FileReader(targetFile))) {
+			headline = reader.readLine()
+			writtenContent = reader.readLine()
+		} catch (Exception e) {
+			throw new FileException("Unable to read content of test file '"+targetFile+"'.", e)
+		}
+
+		then:
+		headline == "c,b,a"
+		writtenContent == "z,y,x"
 	}
 }
