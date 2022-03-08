@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class extends the {@link BufferedWriter} and adds information about the file shape of the
@@ -83,9 +85,7 @@ public class BufferedCsvWriter extends BufferedWriter {
               + String.join(",", headLineElements)
               + "'.");
 
-    String[] entries =
-        Arrays.stream(headLineElements).map(entityFieldData::get).toArray(String[]::new);
-    writeOneLine(entries);
+    writeOneLine(Arrays.stream(headLineElements).map(entityFieldData::get));
   }
 
   /**
@@ -104,15 +104,18 @@ public class BufferedCsvWriter extends BufferedWriter {
    * @throws IOException If writing is not possible
    */
   private void writeOneLine(String[] entries) throws IOException {
-    for (int i = 0; i < entries.length; i++) {
-      String attribute = entries[i];
-      super.append(attribute);
-      if (i + 1 < entries.length) {
-        super.append(csvSep);
-      } else {
-        super.append("\n");
-      }
-    }
+    writeOneLine(Arrays.stream(entries));
+  }
+
+  /**
+   * Write one line to the csv file
+   *
+   * @param entries Stream of entries to write
+   * @throws IOException If writing is not possible
+   */
+  private void writeOneLine(Stream<String> entries) throws IOException {
+    super.append(entries.collect(Collectors.joining(csvSep)));
+    super.append("\n");
     flush();
   }
 

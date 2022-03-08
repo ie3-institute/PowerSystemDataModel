@@ -83,12 +83,12 @@ class BufferedCsvWriterTest extends Specification {
 	def "The buffered csv writer writes out content in the order specified by the headline elements"() {
 		given:
 		def targetFile = FilenameUtils.concat(tmpDirectory.toString(), "order_test.csv")
-		def writer = new BufferedCsvWriter(targetFile, ["c", "b", "a"] as String[], ",", false)
+		def writer = new BufferedCsvWriter(targetFile, ["third_header", "second_header", "first_header"] as String[], ",", false)
 		writer.writeFileHeader()
 		def content = [
-				"c": "z",
-				"a": "x",
-				"b": "y"
+				"third_header": "third_value",
+				"first_header": "first_value",
+				"second_header": "second_value"
 		]
 
 		when:
@@ -105,7 +105,7 @@ class BufferedCsvWriterTest extends Specification {
 		}
 
 		then:
-		headline == "c,b,a"
-		writtenContent == "z,y,x"
+		headline == "third_header,second_header,first_header"
+		writtenContent == "third_value,second_value,first_value"
 	}
 }
