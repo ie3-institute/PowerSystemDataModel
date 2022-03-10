@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class extends the {@link BufferedWriter} and adds information about the file shape of the
@@ -27,10 +29,11 @@ public class BufferedCsvWriter extends BufferedWriter {
       "Direct appending is prohibited. Use write instead.";
 
   /**
-   * Build a new CsvBufferedWriter
+   * Build a new CsvBufferedWriter. The order of headline elements given in this constructor defines
+   * the order of columns in file
    *
    * @param filePath String representation of the full path to the target file
-   * @param headLineElements Elements of the csv head line
+   * @param headLineElements Elements of the csv headline
    * @param csvSep csv separator char
    * @param append true to append to an existing file, false to overwrite an existing file (if any),
    *     if no file exists, a new one will be created in both cases
@@ -47,7 +50,8 @@ public class BufferedCsvWriter extends BufferedWriter {
   /**
    * Build a new CsvBufferedWriter. This is a "convenience" Constructor. The absolute file path is
    * assembled by concatenation of {@code baseFolder} and {@code fileDefinition}'s file path
-   * information.
+   * information. The order of headline elements in {@code fileDefinition} defines the order of
+   * columns in file
    *
    * @param baseFolder Base folder, from where the file hierarchy should start
    * @param fileDefinition The foreseen shape of the file
@@ -73,7 +77,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    */
   public synchronized void write(Map<String, String> entityFieldData)
       throws IOException, SinkException {
-    /* Check against eligible head line elements */
+    /* Check against eligible headline elements */
     if (entityFieldData.size() != headLineElements.length
         || !entityFieldData.keySet().containsAll(Arrays.asList(headLineElements)))
       throw new SinkException(
@@ -81,8 +85,7 @@ public class BufferedCsvWriter extends BufferedWriter {
               + String.join(",", headLineElements)
               + "'.");
 
-    String[] entries = entityFieldData.values().toArray(new String[0]);
-    writeOneLine(entries);
+    writeOneLine(Arrays.stream(headLineElements).map(entityFieldData::get));
   }
 
   /**
@@ -101,15 +104,18 @@ public class BufferedCsvWriter extends BufferedWriter {
    * @throws IOException If writing is not possible
    */
   private void writeOneLine(String[] entries) throws IOException {
-    for (int i = 0; i < entries.length; i++) {
-      String attribute = entries[i];
-      super.append(attribute);
-      if (i + 1 < entries.length) {
-        super.append(csvSep);
-      } else {
-        super.append("\n");
-      }
-    }
+    writeOneLine(Arrays.stream(entries));
+  }
+
+  /**
+   * Write one line to the csv file
+   *
+   * @param entries Stream of entries to write
+   * @throws IOException If writing is not possible
+   */
+  private void writeOneLine(Stream<String> entries) throws IOException {
+    super.append(entries.collect(Collectors.joining(csvSep)));
+    super.append("\n");
     flush();
   }
 
