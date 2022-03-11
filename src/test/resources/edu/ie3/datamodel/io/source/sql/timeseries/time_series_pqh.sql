@@ -5,13 +5,14 @@ CREATE TABLE public.time_series_pqh
     time timestamp with time zone NOT NULL,
     p double precision NOT NULL,
     q double precision NOT NULL,
-    heat_demand double precision NOT NULL,
-    UNIQUE(time_series, time)
+    heat_demand double precision NOT NULL
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
 
 CREATE INDEX time_series_pqh_series_id ON time_series_pqh USING hash (time_series);
+
+CREATE UNIQUE INDEX time_series_pqh_series_time ON time_series_pqh USING  btree (time_series, time);
 
 INSERT INTO
     public.time_series_pqh (uuid, time_series, time, p, q, heat_demand)

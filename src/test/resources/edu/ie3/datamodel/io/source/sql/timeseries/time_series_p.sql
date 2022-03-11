@@ -3,13 +3,14 @@ CREATE TABLE public.time_series_p
     uuid uuid PRIMARY KEY,
     time_series uuid NOT NULL,
     time timestamp with time zone NOT NULL,
-    p double precision NOT NULL,
-    UNIQUE(time_series, time)
+    p double precision NOT NULL
 )
     WITHOUT OIDS
     TABLESPACE pg_default;
 
 CREATE INDEX time_series_p_series_id ON time_series_p USING hash (time_series);
+
+CREATE UNIQUE INDEX time_series_p_series_time ON time_series_p USING  btree (time_series, time);
 
 INSERT INTO
     public.time_series_p (uuid, time_series, time, p)
