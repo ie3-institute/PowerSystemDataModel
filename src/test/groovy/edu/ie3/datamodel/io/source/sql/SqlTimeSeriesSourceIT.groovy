@@ -41,7 +41,7 @@ class SqlTimeSeriesSourceIT extends Specification {
 
 	static String schemaName = "public"
 
-	static UUID timeSeriesUuid = UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5")
+	static UUID pTimeSeriesUuid = UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5")
 
 	def setupSpec() {
 		URL url = getClass().getResource("timeseries/")
@@ -67,7 +67,7 @@ class SqlTimeSeriesSourceIT extends Specification {
 
 		connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
 		def metaInformation = new IndividualTimeSeriesMetaInformation(
-				timeSeriesUuid,
+				pTimeSeriesUuid,
 				ColumnScheme.ACTIVE_POWER
 				)
 
@@ -82,11 +82,12 @@ class SqlTimeSeriesSourceIT extends Specification {
 		def timePattern = "yyyy-MM-dd HH:mm:ss"
 
 		when:
-		def actual = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, timePattern)
+		def source = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, timePattern)
+		def timeSeries = source.timeSeries
 
 		then:
-		actual.timeSeries.entries.size() == amountOfEntries
-		actual.timeSeries.entries[0].value.class == valueClass
+		timeSeries.entries.size() == amountOfEntries
+		timeSeries.entries[0].value.class == valueClass
 
 		where:
 		uuid                                                    | columnScheme                                || amountOfEntries | valueClass
@@ -116,11 +117,11 @@ class SqlTimeSeriesSourceIT extends Specification {
 
 	def "A SqlTimeSeriesSource can read and correctly parse a single value for a specific date"() {
 		when:
-		def optTimeBasedValue = pSource.getValue(TIME_00MIN)
+		def value = pSource.getValue(TIME_00MIN)
 
 		then:
-		optTimeBasedValue.present
-		optTimeBasedValue.get() == P_VALUE_00MIN
+		value.present
+		value.get() == P_VALUE_00MIN
 	}
 
 	def "A SqlTimeSeriesSource can read multiple time series values for a time interval"() {
@@ -128,19 +129,19 @@ class SqlTimeSeriesSourceIT extends Specification {
 		def timeInterval = new ClosedInterval(TIME_00MIN, TIME_15MIN)
 
 		when:
-		def actualTimeSeries = pSource.getTimeSeries(timeInterval)
+		def timeSeries = pSource.getTimeSeries(timeInterval)
 
 		then:
-		actualTimeSeries.uuid == timeSeriesUuid
-		actualTimeSeries.entries.size() == 2
+		timeSeries.uuid == pTimeSeriesUuid
+		timeSeries.entries.size() == 2
 	}
 
 	def "A SqlTimeSeriesSource can read all value data"() {
 		when:
-		def actualTimeSeries = pSource.timeSeries
+		def timeSeries = pSource.timeSeries
 
 		then:
-		actualTimeSeries.uuid == timeSeriesUuid
-		actualTimeSeries.entries.size() == 2
+		timeSeries.uuid == pTimeSeriesUuid
+		timeSeries.entries.size() == 2
 	}
 }
