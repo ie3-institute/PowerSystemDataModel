@@ -16,6 +16,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Factory that creates {@link TimeSeriesTypeSource.TypeEntry} entities from source field mappings
+ */
 public class TimeSeriesTypeFactory
     extends EntityFactory<TimeSeriesTypeSource.TypeEntry, SimpleEntityData> {
   private static final String TIME_SERIES = "timeSeries";

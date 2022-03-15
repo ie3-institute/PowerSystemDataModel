@@ -137,8 +137,7 @@ public class BufferedCsvWriter extends BufferedWriter {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof BufferedCsvWriter)) return false;
-    BufferedCsvWriter that = (BufferedCsvWriter) o;
+    if (!(o instanceof BufferedCsvWriter that)) return false;
     return Arrays.equals(headLineElements, that.headLineElements) && csvSep.equals(that.csvSep);
   }
 

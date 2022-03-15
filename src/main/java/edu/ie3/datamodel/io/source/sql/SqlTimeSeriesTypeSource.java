@@ -12,29 +12,38 @@ import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesTypeSource;
-import edu.ie3.datamodel.io.source.TimeSeriesUtils;
+import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/** SQL implementation for retrieving {@link TimeSeriesTypeSource} from the SQL scheme */
 public class SqlTimeSeriesTypeSource extends SqlDataSource<TimeSeriesTypeSource.TypeEntry>
     implements TimeSeriesTypeSource {
 
   private static final TimeSeriesTypeFactory mappingFactory = new TimeSeriesTypeFactory();
 
-  private final String queryFull;
+  /** Query to retrieve information on all time series that are available */
+  private final String queryComplete;
+
   private final DatabaseNamingStrategy namingStrategy;
 
-  protected SqlTimeSeriesTypeSource(
+  public SqlTimeSeriesTypeSource(
       SqlConnector connector, String schemaName, DatabaseNamingStrategy namingStrategy) {
     super(connector);
     this.namingStrategy = namingStrategy;
 
-    this.queryFull = createQueryFull(schemaName);
+    this.queryComplete = createQueryComplete(schemaName);
   }
 
-  private String createQueryFull(String schemaName) {
+  /**
+   * Creates a query that retrieves all time series uuid from existing time series tables.
+   *
+   * @param schemaName schema that the time series reside in
+   * @return query String
+   */
+  private String createQueryComplete(String schemaName) {
     Map<String, ColumnScheme> acceptedTableNames =
         TimeSeriesUtils.getAcceptedColumnSchemes().stream()
             .collect(
@@ -62,7 +71,7 @@ public class SqlTimeSeriesTypeSource extends SqlDataSource<TimeSeriesTypeSource.
 
   @Override
   public Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation() {
-    return executeQuery(queryFull, ps -> {}).stream()
+    return executeQuery(queryComplete, ps -> {}).stream()
         .collect(
             Collectors.toMap(
                 TypeEntry::getTimeSeries,

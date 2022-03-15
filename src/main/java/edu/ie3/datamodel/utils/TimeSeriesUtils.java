@@ -5,15 +5,31 @@
 */
 package edu.ie3.datamodel.utils;
 
+import static edu.ie3.datamodel.io.naming.timeseries.ColumnScheme.*;
+import static edu.ie3.datamodel.io.naming.timeseries.ColumnScheme.HEAT_DEMAND;
+
+import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
+import edu.ie3.datamodel.io.source.TimeSeriesSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class TimeSeriesUtil {
+public class TimeSeriesUtils {
+  private static final Set<ColumnScheme> ACCEPTED_COLUMN_SCHEMES =
+      EnumSet.of(
+          ACTIVE_POWER,
+          APPARENT_POWER,
+          ENERGY_PRICE,
+          APPARENT_POWER_AND_HEAT_DEMAND,
+          ACTIVE_POWER_AND_HEAT_DEMAND,
+          HEAT_DEMAND);
+
   /** Private Constructor as this class is not meant to be instantiated */
-  private TimeSeriesUtil() {
+  private TimeSeriesUtils() {
     throw new IllegalStateException("Utility classes cannot be instantiated");
   }
 
@@ -33,5 +49,24 @@ public class TimeSeriesUtil {
             .parallel()
             .filter(value -> timeInterval.includes(value.getTime()))
             .collect(Collectors.toSet()));
+  }
+
+  /**
+   * Returns set of column schemes that are accepted with {@link TimeSeriesSource}
+   *
+   * @return set of accepted column schemes
+   */
+  public static Set<ColumnScheme> getAcceptedColumnSchemes() {
+    return ACCEPTED_COLUMN_SCHEMES;
+  }
+
+  /**
+   * Checks whether the given column scheme can be used with time series.
+   *
+   * @param scheme the column scheme to check
+   * @return whether the scheme is accepted or not
+   */
+  public static boolean isSchemeAccepted(ColumnScheme scheme) {
+    return ACCEPTED_COLUMN_SCHEMES.contains(scheme);
   }
 }

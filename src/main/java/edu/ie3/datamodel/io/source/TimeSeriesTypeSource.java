@@ -12,13 +12,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+/** Source for all available time series with their {@link UUID} and {@link ColumnScheme} */
 public interface TimeSeriesTypeSource extends DataSource {
 
   /**
    * Get a mapping from time series {@link UUID} to its meta information {@link
    * IndividualTimeSeriesMetaInformation}
    *
-   * @return That mapping
+   * @return that mapping
    */
   Map<UUID, ? extends IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation();
 
