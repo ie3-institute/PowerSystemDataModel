@@ -11,10 +11,7 @@ import edu.ie3.util.StringUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,26 +73,29 @@ public abstract class SqlDataSource<T> {
   }
 
   /**
-   * Determine the corresponding table name based on the provided table name pattern.
+   * Determine the corresponding table names based on the provided table name pattern.
    *
    * @param schemaPattern pattern of the schema to search in
    * @param tableNamePattern pattern of the table name
-   * @return a matching table name, if one is found
+   * @return matching table names
    */
-  protected Optional<String> getDbTableName(String schemaPattern, String tableNamePattern) {
+  protected List<String> getDbTables(String schemaPattern, String tableNamePattern) {
+    LinkedList<String> tableNames = new LinkedList<>();
+
     try {
       ResultSet rs =
           connector
               .getConnection()
               .getMetaData()
               .getTables(null, schemaPattern, tableNamePattern, null);
-      if (rs.next()) {
-        return Optional.of(rs.getString("TABLE_NAME"));
+      while (rs.next()) {
+        String tableName = rs.getString("TABLE_NAME");
+        if (tableName != null) tableNames.add(tableName);
       }
     } catch (SQLException ex) {
       log.error("Cannot connect to database to retrieve tables meta information", ex);
     }
-    return Optional.empty();
+    return tableNames;
   }
 
   /**

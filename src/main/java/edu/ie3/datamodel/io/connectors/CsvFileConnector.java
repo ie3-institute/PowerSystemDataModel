@@ -221,30 +221,32 @@ public class CsvFileConnector implements DataConnector {
    *
    * @param timeSeriesUuid The time series in question
    * @return An option on the queried information
-   * @deprecated since 3.0. Use {@link #individualTimeSeriesMetaInformation(UUID)} instead
+   * @deprecated since 3.0. Use {@link #getIndividualTimeSeriesMetaInformation()} instead
    */
   @Deprecated(since = "3.0", forRemoval = true)
   public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
       getIndividualTimeSeriesMetaInformation(UUID timeSeriesUuid) {
-    return individualTimeSeriesMetaInformation(timeSeriesUuid)
+    if (Objects.isNull(individualTimeSeriesMetaInformation))
+      individualTimeSeriesMetaInformation = buildIndividualTimeSeriesMetaInformation();
+
+    return Optional.ofNullable(individualTimeSeriesMetaInformation.get(timeSeriesUuid))
         .map(edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation::new);
   }
 
   /**
-   * Get time series meta information for a given uuid.
+   * Get time series meta information
    *
    * <p>This method lazily evaluates the mapping from <i>all</i> time series files to their meta
    * information.
    *
-   * @param timeSeriesUuid The time series in question
-   * @return An option on the queried information
+   * @return All time series meta information
    */
-  public Optional<IndividualTimeSeriesMetaInformation> individualTimeSeriesMetaInformation(
-      UUID timeSeriesUuid) {
+  public Map<UUID, edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation>
+      getIndividualTimeSeriesMetaInformation() {
     if (Objects.isNull(individualTimeSeriesMetaInformation))
       individualTimeSeriesMetaInformation = buildIndividualTimeSeriesMetaInformation();
 
-    return Optional.ofNullable(individualTimeSeriesMetaInformation.get(timeSeriesUuid));
+    return individualTimeSeriesMetaInformation;
   }
 
   /**
@@ -485,9 +487,8 @@ public class CsvFileConnector implements DataConnector {
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (!(o instanceof CsvIndividualTimeSeriesMetaInformation)) return false;
+      if (!(o instanceof CsvIndividualTimeSeriesMetaInformation that)) return false;
       if (!super.equals(o)) return false;
-      CsvIndividualTimeSeriesMetaInformation that = (CsvIndividualTimeSeriesMetaInformation) o;
       return fullFilePath.equals(that.fullFilePath);
     }
 

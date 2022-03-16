@@ -17,7 +17,7 @@ import java.sql.SQLException
 @Testcontainers
 class SqlConnectorIT extends Specification implements TestContainerHelper {
 	@Shared
-	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.9")
+	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
 
 	@Shared
 	SqlConnector connector

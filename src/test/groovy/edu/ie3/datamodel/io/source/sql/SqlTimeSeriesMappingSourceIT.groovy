@@ -7,8 +7,6 @@ package edu.ie3.datamodel.io.source.sql
 
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
-import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
-import edu.ie3.datamodel.io.sql.SqlIndividualTimeSeriesMetaInformation
 import edu.ie3.test.helper.TestContainerHelper
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
@@ -21,10 +19,7 @@ import spock.lang.Specification
 class SqlTimeSeriesMappingSourceIT extends Specification implements TestContainerHelper {
 
 	@Shared
-	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.14")
-
-	@Shared
-	UUID timeSeriesUuidP = UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5")
+	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
 
 	@Shared
 	SqlConnector connector
@@ -38,14 +33,7 @@ class SqlTimeSeriesMappingSourceIT extends Specification implements TestContaine
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/")
 
 		// Execute import script
-		Iterable<String> importFiles = Arrays.asList(
-				"its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1.sql",
-				"its_h_c8fe6547-fd85-4fdf-a169-e4da6ce5c3d0.sql",
-				"its_p_9185b8c1-86ba-4a16-8dea-5ac898e8caa5.sql",
-				"its_ph_76c9d846-797c-4f07-b7ec-2245f679f5c7.sql",
-				"its_pq_3fbfaa97-cff4-46d4-95ba-a95665e87c26.sql",
-				"its_pqh_46be1e57-e4ed-4ef7-95f1-b2b321cb2047.sql",
-				"time_series_mapping.sql")
+		Iterable<String> importFiles = Arrays.asList("time_series_mapping.sql")
 		for (String file: importFiles) {
 			Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/" + file)
 			assert res.stderr.empty
@@ -77,42 +65,5 @@ class SqlTimeSeriesMappingSourceIT extends Specification implements TestContaine
 		then:
 		actual.present
 		actual.get() == expectedUuid
-	}
-
-	def "A sql time series mapping source returns empty optional on meta information for non existing time series"() {
-		given:
-		def timeSeriesUuid = UUID.fromString("f5eb3be5-98db-40de-85b0-243507636cd5")
-
-		when:
-		def actual = source.timeSeriesMetaInformation(timeSeriesUuid)
-
-		then:
-		!actual.present
-	}
-
-	def "A sql time series mapping source returns correct meta information for an existing time series"() {
-		given:
-		def expected = new SqlIndividualTimeSeriesMetaInformation(
-				timeSeriesUuidP,
-				ColumnScheme.ACTIVE_POWER,
-				"its_p_9185b8c1-86ba-4a16-8dea-5ac898e8caa5")
-
-		when:
-		def actual = source.timeSeriesMetaInformation(timeSeriesUuidP)
-
-		then:
-		actual.present
-		actual.get() == expected
-	}
-
-	def "A sql time series mapping source does not return meta information for time series that exists within a different scheme"() {
-		given:
-		def sourceOther = new SqlTimeSeriesMappingSource(connector, "notExisting", new EntityPersistenceNamingStrategy())
-
-		when:
-		def actual = sourceOther.timeSeriesMetaInformation(timeSeriesUuidP)
-
-		then:
-		!actual.present
 	}
 }

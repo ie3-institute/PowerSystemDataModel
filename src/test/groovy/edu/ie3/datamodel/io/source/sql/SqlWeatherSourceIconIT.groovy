@@ -27,7 +27,7 @@ import spock.lang.Specification
 class SqlWeatherSourceIconIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
 
 	@Shared
-	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.14")
+	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
 
 	@Shared
 	SqlWeatherSource source
