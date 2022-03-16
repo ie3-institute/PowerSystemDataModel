@@ -43,8 +43,8 @@ public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSer
   }
 
   /**
-   * @deprecated since 3.0. Use {@link CsvTimeSeriesTypeSource#getTimeSeriesMetaInformation()}
-   *     instead
+   * @deprecated since 3.0. Use {@link
+   *     CsvTimeSeriesMetaInformationSource#getTimeSeriesMetaInformation()} instead
    */
   @Override
   @Deprecated(since = "3.0", forRemoval = true)

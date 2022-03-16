@@ -38,7 +38,8 @@ public interface TimeSeriesMappingSource extends DataSource {
    *
    * @param timeSeriesUuid Unique identifier of the time series in question
    * @return An Option onto the meta information
-   * @deprecated since 3.0. Use {@link TimeSeriesTypeSource#getTimeSeriesMetaInformation()} instead
+   * @deprecated since 3.0. Use {@link
+   *     TimeSeriesMetaInformationSource#getTimeSeriesMetaInformation()} instead
    */
   @Deprecated(since = "3.0", forRemoval = true)
   Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>

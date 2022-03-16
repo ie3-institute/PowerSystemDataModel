@@ -20,7 +20,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 @Testcontainers
-class SqlTimeSeriesTypeSourceIT extends Specification {
+class SqlTimeSeriesMetaInformationSourceIT extends Specification {
 
 	@Shared
 	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
@@ -29,7 +29,7 @@ class SqlTimeSeriesTypeSourceIT extends Specification {
 	SqlConnector connector
 
 	@Shared
-	SqlTimeSeriesTypeSource source
+	SqlTimeSeriesMetaInformationSource source
 
 	def setupSpec() {
 		URL url = getClass().getResource("timeseries/")
@@ -54,10 +54,10 @@ class SqlTimeSeriesTypeSourceIT extends Specification {
 		}
 
 		connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-		source = new SqlTimeSeriesTypeSource(connector, "public", new DatabaseNamingStrategy())
+		source = new SqlTimeSeriesMetaInformationSource(connector, "public", new DatabaseNamingStrategy())
 	}
 
-	def "The sql time series type source returns a correct mapping of time series"() {
+	def "The SQL time series meta information source returns a correct mapping of time series"() {
 		when:
 		def expectedTimeSeries = Set.of(
 				new IndividualTimeSeriesMetaInformation(UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), ColumnScheme.ENERGY_PRICE),
@@ -77,5 +77,34 @@ class SqlTimeSeriesTypeSourceIT extends Specification {
 			it.key == it.value.uuid &&
 					expectedTimeSeries.contains(it.value)
 		}
+	}
+
+	def "The SQL time series meta information source returns correct meta information for a given time series UUID"() {
+		when:
+		def timeSeriesUuid = UUID.fromString(uuid)
+		def result = source.getTimeSeriesMetaInformation(timeSeriesUuid)
+
+		then:
+		result.present
+		result.get().columnScheme.scheme == columnScheme
+
+		where:
+		uuid                                   || columnScheme
+		"2fcb3e53-b94a-4b96-bea4-c469e499f1a1" || "c"
+		"76c9d846-797c-4f07-b7ec-2245f679f5c7" || "ph"
+		"c8fe6547-fd85-4fdf-a169-e4da6ce5c3d0" || "h"
+		"9185b8c1-86ba-4a16-8dea-5ac898e8caa5" || "p"
+		"3fbfaa97-cff4-46d4-95ba-a95665e87c26" || "pq"
+		"46be1e57-e4ed-4ef7-95f1-b2b321cb2047" || "pqh"
+		"b669e4bf-a351-4067-860d-d5f224b62247" || "p"
+	}
+
+	def "The SQL time series meta information source returns an empty optional for an unknown time series UUID"() {
+		when:
+		def timeSeriesUuid = UUID.fromString("e9c13f5f-31da-44ea-abb7-59f616c3da16")
+		def result = source.getTimeSeriesMetaInformation(timeSeriesUuid)
+
+		then:
+		result.empty
 	}
 }
