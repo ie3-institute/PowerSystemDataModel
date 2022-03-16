@@ -19,7 +19,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.datamodel.utils.TimeSeriesUtil;
+import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -144,7 +144,7 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
         .collect(
             Collectors.toMap(
                 Map.Entry::getKey,
-                entry -> TimeSeriesUtil.trimTimeSeriesToInterval(entry.getValue(), timeInterval)));
+                entry -> TimeSeriesUtils.trimTimeSeriesToInterval(entry.getValue(), timeInterval)));
   }
 
   /**

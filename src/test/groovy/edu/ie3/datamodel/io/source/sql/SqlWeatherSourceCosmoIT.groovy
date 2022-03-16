@@ -25,7 +25,7 @@ import spock.lang.Specification
 class SqlWeatherSourceCosmoIT extends Specification implements WeatherSourceTestHelper {
 
 	@Shared
-	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.9")
+	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
 
 	@Shared
 	SqlWeatherSource source

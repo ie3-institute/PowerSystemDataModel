@@ -13,7 +13,7 @@ import edu.ie3.datamodel.io.source.TimeSeriesSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
-import edu.ie3.datamodel.utils.TimeSeriesUtil;
+import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -94,7 +94,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
       FileNamingStrategy fileNamingStrategy,
       CsvIndividualTimeSeriesMetaInformation metaInformation)
       throws SourceException {
-    if (!TimeSeriesSource.isSchemeAccepted(metaInformation.getColumnScheme()))
+    if (!TimeSeriesUtils.isSchemeAccepted(metaInformation.getColumnScheme()))
       throw new SourceException(
           "Unsupported column scheme '" + metaInformation.getColumnScheme() + "'.");
 
@@ -164,7 +164,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
 
   @Override
   public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
-    return TimeSeriesUtil.trimTimeSeriesToInterval(timeSeries, timeInterval);
+    return TimeSeriesUtils.trimTimeSeriesToInterval(timeSeries, timeInterval);
   }
 
   @Override
