@@ -66,7 +66,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 		def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, GeoUtils.xyToPoint(88d, 89d))
 
 		then:
-		!optTimeBasedValue.present
+		optTimeBasedValue.empty
 	}
 
 	def "A SqlWeatherSource can read multiple timeseries values for multiple coordinates"() {
