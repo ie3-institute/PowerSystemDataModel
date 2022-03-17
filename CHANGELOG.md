@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SQL time series sources (`SqlTimeSeriesSource` and `SqlTimeSeriesMappingSource`) [#467](https://github.com/ie3-institute/PowerSystemDataModel/issues/467)
 - SQL time series have a different structure than CSV counterparts [#545](https://github.com/ie3-institute/PowerSystemDataModel/issues/545)
 - Graph with impedance weighted edges including facilities to create it [#440](https://github.com/ie3-institute/PowerSystemDataModel/issues/440)
-- `TimeSeriesTypeSource` providing a source for the mapping of time series uuids to column schemes (previously provided by `TimeSeriesMappingSource`) [#515](https://github.com/ie3-institute/PowerSystemDataModel/issues/515)
+- `TimeSeriesMetaInformationSource` providing a source for the mapping of time series uuids to column schemes (previously provided by `TimeSeriesMappingSource`) [#515](https://github.com/ie3-institute/PowerSystemDataModel/issues/515), [#565](https://github.com/ie3-institute/PowerSystemDataModel/issues/565)
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Create JavaDoc with java 17 instead of java 8
     - Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))
 - `BufferedCsvWriter` writes columns in the order, that the headline elements are defined [#434](https://github.com/ie3-institute/PowerSystemDataModel/issues/393)
+-  Cleaned up `IndividualTimeSeriesMetaInformation`-related methods in `CsvFileConnector` [#544](https://github.com/ie3-institute/PowerSystemDataModel/issues/544)
 
 ### Changed
 - BREAKING: PvInput Model parameter name height changed to elevationAngle [#393](https://github.com/ie3-institute/PowerSystemDataModel/issues/393) :warning:
