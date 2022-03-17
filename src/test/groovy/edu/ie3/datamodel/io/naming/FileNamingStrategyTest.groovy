@@ -827,7 +827,7 @@ class FileNamingStrategyTest extends Specification {
 		ex.message == "Unknown format of 'foo'. Cannot extract meta information."
 	}
 
-	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid individual time series file name"() {
+	def "The FileNamingStrategy extracts correct meta information from a valid time series file name"() {
 		given:
 		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
 		def path = Paths.get(pathString)
@@ -843,17 +843,17 @@ class FileNamingStrategyTest extends Specification {
 		}
 
 		where:
-		pathString || expectedColumnScheme
-		"/bla/foo/its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.ENERGY_PRICE
-		"/bla/foo/its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.ACTIVE_POWER
-		"/bla/foo/its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.APPARENT_POWER
-		"/bla/foo/its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.HEAT_DEMAND
-		"/bla/foo/its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
-		"/bla/foo/its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
+		pathString                                                      || expectedColumnScheme
+		"/bla/foo/its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"       || ColumnScheme.ENERGY_PRICE
+		"/bla/foo/its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"       || ColumnScheme.ACTIVE_POWER
+		"/bla/foo/its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"      || ColumnScheme.APPARENT_POWER
+		"/bla/foo/its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"       || ColumnScheme.HEAT_DEMAND
+		"/bla/foo/its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"      || ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
+		"/bla/foo/its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"     || ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
 		"/bla/foo/its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.WEATHER
 	}
 
-	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid individual time series file name with pre- and suffix"() {
+	def "The FileNamingStrategy extracts correct meta information from a valid time series file name with pre- and suffix"() {
 		given:
 		def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), flatHierarchy)
 		def path = Paths.get(pathString)
@@ -869,17 +869,55 @@ class FileNamingStrategyTest extends Specification {
 		}
 
 		where:
-		pathString || expectedColumnScheme
-		"/bla/foo/prefix_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.ENERGY_PRICE
-		"/bla/foo/prefix_its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.ACTIVE_POWER
-		"/bla/foo/prefix_its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.APPARENT_POWER
-		"/bla/foo/prefix_its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.HEAT_DEMAND
-		"/bla/foo/prefix_its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
-		"/bla/foo/prefix_its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
+		pathString                                                                    || expectedColumnScheme
+		"/bla/foo/prefix_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv"       || ColumnScheme.ENERGY_PRICE
+		"/bla/foo/prefix_its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv"       || ColumnScheme.ACTIVE_POWER
+		"/bla/foo/prefix_its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv"      || ColumnScheme.APPARENT_POWER
+		"/bla/foo/prefix_its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv"       || ColumnScheme.HEAT_DEMAND
+		"/bla/foo/prefix_its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv"      || ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
+		"/bla/foo/prefix_its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv"     || ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
 		"/bla/foo/prefix_its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276_suffix.csv" || ColumnScheme.WEATHER
 	}
 
-	def "The EntityPersistenceNamingStrategy throw an IllegalArgumentException, if the column scheme is malformed."() {
+	def "The FileNamingStrategy extracts correct meta information from a valid individual time series file name"() {
+		given:
+		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
+
+		when:
+		def metaInformation = fns.individualTimeSeriesMetaInformation(fileName)
+
+		then:
+		IndividualTimeSeriesMetaInformation.isAssignableFrom(metaInformation.getClass())
+		(metaInformation as IndividualTimeSeriesMetaInformation).with {
+			assert it.uuid == UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276")
+			assert it.columnScheme == expectedColumnScheme
+		}
+
+		where:
+		fileName                                               || expectedColumnScheme
+		"its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"       || ColumnScheme.ENERGY_PRICE
+		"its_p_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"       || ColumnScheme.ACTIVE_POWER
+		"its_pq_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"      || ColumnScheme.APPARENT_POWER
+		"its_h_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"       || ColumnScheme.HEAT_DEMAND
+		"its_ph_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"      || ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND
+		"its_pqh_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"     || ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND
+		"its_weather_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv" || ColumnScheme.WEATHER
+	}
+
+	def "The FileNamingStrategy throw an IllegalArgumentException, if the time series file path is malformed."() {
+		given:
+		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
+		def path = "erroneous_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv"
+
+		when:
+		fns.individualTimeSeriesMetaInformation(path)
+
+		then:
+		def ex = thrown(IllegalArgumentException)
+		ex.message == "Cannot extract meta information on individual time series from 'erroneous_4881fda2-bcee-4f4f-a5bb-6a09bf785276'."
+	}
+
+	def "The FileNamingStrategy throw an IllegalArgumentException, if the column scheme is malformed."() {
 		given:
 		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
 		def path = Paths.get("/bla/foo/its_whoops_4881fda2-bcee-4f4f-a5bb-6a09bf785276.csv")
@@ -892,7 +930,7 @@ class FileNamingStrategyTest extends Specification {
 		ex.message == "Cannot parse 'whoops' to valid column scheme."
 	}
 
-	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid load profile time series file name"() {
+	def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name"() {
 		given:
 		def fns = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
 		def path = Paths.get("/bla/foo/lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304.csv")
@@ -908,7 +946,7 @@ class FileNamingStrategyTest extends Specification {
 		}
 	}
 
-	def "The EntityPersistenceNamingStrategy extracts correct meta information from a valid load profile time series file name with pre- and suffix"() {
+	def "The FileNamingStrategy extracts correct meta information from a valid load profile time series file name with pre- and suffix"() {
 		given:
 		def fns = new FileNamingStrategy(new EntityPersistenceNamingStrategy("prefix", "suffix"), flatHierarchy)
 		def path = Paths.get("/bla/foo/prefix_lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304_suffix.csv")

@@ -20,7 +20,7 @@ public interface TimeSeriesMetaInformationSource extends DataSource {
    *
    * @return that mapping
    */
-  Map<UUID, ? extends IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation();
+  Map<UUID, IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation();
 
   /**
    * Get an option on the given time series meta information
