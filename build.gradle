@@ -85,9 +85,10 @@ dependencies {
 	testImplementation "org.testcontainers:couchbase:$testcontainersVersion"
 
 	// logging
-	implementation 'org.apache.logging.log4j:log4j-api:2.17.1' // log4j
-	implementation 'org.apache.logging.log4j:log4j-core:2.17.1' // log4j
-	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.1' // log4j -> slf4j
+	implementation platform('org.apache.logging.log4j:log4j-bom:2.17.2')
+	implementation 'org.apache.logging.log4j:log4j-api' // log4j
+	implementation 'org.apache.logging.log4j:log4j-core' // log4j
+	implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
 	// Databases
 	implementation 'org.influxdb:influxdb-java:2.22'
