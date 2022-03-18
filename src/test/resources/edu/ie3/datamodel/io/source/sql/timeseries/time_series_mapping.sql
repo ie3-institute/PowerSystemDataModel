@@ -4,9 +4,7 @@ CREATE TABLE public.time_series_mapping
     participant uuid,
     time_series uuid
 )
-    WITH (
-        OIDS = FALSE
-    )
+    WITHOUT OIDS
     TABLESPACE pg_default;
 
 INSERT INTO
