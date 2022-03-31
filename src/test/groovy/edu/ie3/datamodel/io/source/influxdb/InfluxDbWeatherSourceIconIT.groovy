@@ -14,6 +14,7 @@ import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
+import org.testcontainers.containers.Container
 import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.DockerImageName
@@ -25,7 +26,7 @@ import spock.lang.Specification
 class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSourceTestHelper, TestContainerHelper {
 
 	@Shared
-	InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb:1.8.10"))
+	InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb").withTag("1.8.10"))
 	.withAuthEnabled(false)
 	.withDatabase("test_weather")
 
@@ -35,14 +36,11 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 	def setupSpec() {
 		// Copy import file into docker and then import it via influx CLI
 		// more information on file format and usage here: https://docs.influxdata.com/influxdb/v1.7/tools/shell/#import-data-from-a-file-with-import
-		MountableFile influxWeatherImportFile = getMountableFile("/testcontainersFiles/influxDb/icon/weather.txt")
-		influxDbContainer.copyFileToContainer(influxWeatherImportFile, "/home/weather.txt")
+		MountableFile influxWeatherImportFile = getMountableFile("_weather/icon/weather.txt")
+		influxDbContainer.copyFileToContainer(influxWeatherImportFile, "/home/weather_icon.txt")
 
-		String[] command = ["influx", "-import", "-path=/home/weather.txt", "-precision=ms"]
-		def execResult = influxDbContainer.execInContainer(command)
-		if (!execResult.stderr.empty) {
-			throw new IllegalStateException("Command '" + String.join(" ", command) + "' failed:\n" + execResult.stderr)
-		}
+		Container.ExecResult res = influxDbContainer.execInContainer("influx", "-import", "-path=/home/weather_icon.txt", "-precision=ms")
+		assert res.stderr.empty
 
 		def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
 		def weatherFactory = new IconTimeBasedWeatherValueFactory("yyyy-MM-dd'T'HH:mm:ss[.S[S][S]]'Z'")
@@ -52,6 +50,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 	def "The test container can establish a valid connection"() {
 		when:
 		def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
+
 		then:
 		connector.connectionValid
 	}
@@ -116,6 +115,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 	}
 
 	def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to it's ID"() {
+		given:
 		def validCoordinate = IconWeatherTestData.COORDINATE_67775
 		def invalidCoordinate = GeoUtils.xyToPoint(48d, 7d)
 		def time = IconWeatherTestData.TIME_15H

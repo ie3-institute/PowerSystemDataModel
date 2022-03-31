@@ -21,7 +21,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 	def "A CsvGraphicSource should provide an instance of GraphicElements based on valid input data correctly"() {
 		given:
 		def typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-		def rawGridSource = new CsvRawGridSource(csvSep, gridFolderPath, fileNamingStrategy, typeSource)
+		def rawGridSource = new CsvRawGridSource(csvSep, gridDefaultFolderPath, fileNamingStrategy, typeSource)
 		def csvGraphicSource = new CsvGraphicSource(csvSep, graphicsFolderPath, fileNamingStrategy, typeSource, rawGridSource)
 
 		when:
@@ -40,7 +40,7 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
 		given:
 		def typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
 		def rawGridSource =
-				new CsvRawGridSource(csvSep, gridFolderPath, fileNamingStrategy, typeSource) {
+				new CsvRawGridSource(csvSep, gridDefaultFolderPath, fileNamingStrategy, typeSource) {
 					@Override
 					Set<NodeInput> getNodes() {
 						return Collections.emptySet()

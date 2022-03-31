@@ -13,11 +13,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class CosmoWeatherTestData extends WeatherTestData {
-
 	public static final ZonedDateTime TIME_15H = ZonedDateTime.of(2020, 04, 28, 15, 0, 0, 0, ZoneId.of("UTC"))
 	public static final ZonedDateTime TIME_16H = ZonedDateTime.of(2020, 04, 28, 16, 0, 0, 0, ZoneId.of("UTC"))
 	public static final ZonedDateTime TIME_17H = ZonedDateTime.of(2020, 04, 28, 17, 0, 0, 0, ZoneId.of("UTC"))
-
 
 	public static final WeatherValue WEATHER_VALUE_193186_15H = new WeatherValue(
 	COORDINATE_193186,
@@ -27,6 +25,7 @@ class CosmoWeatherTestData extends WeatherTestData {
 	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
 	Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY)
 	)
+
 	public static final WeatherValue WEATHER_VALUE_193186_16H = new WeatherValue(
 	COORDINATE_193186,
 	Quantities.getQuantity(282.672d, StandardUnits.SOLAR_IRRADIANCE),
@@ -35,6 +34,7 @@ class CosmoWeatherTestData extends WeatherTestData {
 	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
 	Quantities.getQuantity(1.662d, StandardUnits.WIND_VELOCITY)
 	)
+
 	public static final WeatherValue WEATHER_VALUE_193186_17H = new WeatherValue(
 	COORDINATE_193186,
 	Quantities.getQuantity(282.673d, StandardUnits.SOLAR_IRRADIANCE),
@@ -52,6 +52,7 @@ class CosmoWeatherTestData extends WeatherTestData {
 	Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
 	Quantities.getQuantity(1.76103506088257d, StandardUnits.WIND_VELOCITY)
 	)
+
 	public static final WeatherValue WEATHER_VALUE_193187_16H = new WeatherValue(
 	COORDINATE_193187,
 	Quantities.getQuantity(283.672d, StandardUnits.SOLAR_IRRADIANCE),
