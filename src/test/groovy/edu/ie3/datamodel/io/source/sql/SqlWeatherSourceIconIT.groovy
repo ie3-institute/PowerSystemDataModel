@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.IconWeatherTestData
+import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
@@ -23,7 +24,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class SqlWeatherSourceIconIT extends Specification implements WeatherSourceTestHelper {
+class SqlWeatherSourceIconIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
 
 	@Shared
 	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
@@ -36,10 +37,10 @@ class SqlWeatherSourceIconIT extends Specification implements WeatherSourceTestH
 
 	def setupSpec() {
 		// Copy sql import script into docker
-		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/icon/weather.sql")
-		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather.sql")
+		MountableFile sqlImportFile = getMountableFile("_weather/icon/weather.sql")
+		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather_icon.sql")
 		// Execute import script
-		Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
+		Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather_icon.sql")
 		assert res.stderr.empty
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)

@@ -11,10 +11,13 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.CosmoWeatherTestData
+import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
+import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
+import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
@@ -22,7 +25,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class SqlWeatherSourceCosmoIT extends Specification implements WeatherSourceTestHelper {
+class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
 
 	@Shared
 	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
@@ -35,27 +38,38 @@ class SqlWeatherSourceCosmoIT extends Specification implements WeatherSourceTest
 
 	def setupSpec() {
 		// Copy sql import script into docker
-		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/cosmo/weather.sql")
-		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather.sql")
+		MountableFile sqlImportFile = getMountableFile("_weather/cosmo/weather.sql")
+		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/weather_cosmo.sql")
 		// Execute import script
-		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather.sql")
+		Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/weather_cosmo.sql")
+		assert res.stderr.empty
 
 		def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory(TimeUtil.withDefaults)
 		source = new SqlWeatherSource(connector, CosmoWeatherTestData.coordinateSource, schemaName, weatherTableName, weatherFactory)
 	}
 
-	def "A NativeSqlWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
+	def "A SqlWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
 		given:
 		def expectedTimeBasedValue = new TimeBasedValue(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.WEATHER_VALUE_193186_15H)
+
 		when:
 		def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.COORDINATE_193186)
+
 		then:
 		optTimeBasedValue.present
 		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue )
 	}
 
-	def "A NativeSqlWeatherSource can read multiple timeseries values for multiple coordinates"() {
+	def "A SqlWeatherSource returns nothing for an invalid coordinate"() {
+		when:
+		def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, GeoUtils.xyToPoint(88d, 89d))
+
+		then:
+		optTimeBasedValue.empty
+	}
+
+	def "A SqlWeatherSource can read multiple timeseries values for multiple coordinates"() {
 		given:
 		def coordinates = [
 			CosmoWeatherTestData.COORDINATE_193186,
@@ -70,17 +84,32 @@ class SqlWeatherSourceCosmoIT extends Specification implements WeatherSourceTest
 		def timeSeries193187 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
+
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
+
 		then:
 		coordinateToTimeSeries.keySet().size() == 2
 		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
 		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
 	}
 
+	def "A SqlWeatherSource returns nothing for invalid coordinates"() {
+		given:
+		def coordinates = [
+				GeoUtils.xyToPoint(88d, 89d),
+				GeoUtils.xyToPoint(89d, 89d)
+		]
+		def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.TIME_17H)
 
+		when:
+		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
 
-	def "A NativeSqlWeatherSource can read all weather data in a given time interval"() {
+		then:
+		coordinateToTimeSeries.keySet().empty
+	}
+
+	def "A SqlWeatherSource can read all weather data in a given time interval"() {
 		given:
 		def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
 		def timeSeries193186 = new IndividualTimeSeries(null,
@@ -95,8 +124,10 @@ class SqlWeatherSourceCosmoIT extends Specification implements WeatherSourceTest
 		def timeSeries193188 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.WEATHER_VALUE_193188_15H)] as Set<TimeBasedValue>)
+
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
+
 		then:
 		coordinateToTimeSeries.keySet().size() == 3
 		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)

@@ -10,20 +10,20 @@ import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.test.common.IconWeatherTestData
+import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import org.testcontainers.couchbase.BucketDefinition
 import org.testcontainers.couchbase.CouchbaseContainer
 import org.testcontainers.spock.Testcontainers
-import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
 
 import java.time.ZoneId
 
 @Testcontainers
-class CouchbaseWeatherSourceIconIT extends Specification implements WeatherSourceTestHelper {
+class CouchbaseWeatherSourceIconIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
 
 	@Shared
 	BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")
@@ -39,8 +39,8 @@ class CouchbaseWeatherSourceIconIT extends Specification implements WeatherSourc
 
 	def setupSpec() {
 		// Copy import file with json array of documents into docker
-		def couchbaseWeatherJsonsFile = MountableFile.forClasspathResource("/testcontainersFiles/couchbase/icon/weather.json")
-		couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather.json")
+		def couchbaseWeatherJsonsFile = getMountableFile("_weather/icon/weather.json")
+		couchbaseContainer.copyFileToContainer(couchbaseWeatherJsonsFile, "/home/weather_icon.json")
 
 		// create an index for the document keys
 		couchbaseContainer.execInContainer("cbq",
@@ -57,7 +57,7 @@ class CouchbaseWeatherSourceIconIT extends Specification implements WeatherSourc
 				"--password", couchbaseContainer.password,
 				"--format", "list",
 				"--generate-key", "weather::%" + coordinateIdColumnName + "%::%time%",
-				"--dataset", "file:///home/weather.json")
+				"--dataset", "file:///home/weather_icon.json")
 
 		def connector = new CouchbaseConnector(couchbaseContainer.connectionString, bucketDefinition.name, couchbaseContainer.username, couchbaseContainer.password)
 		def dtfPattern = "yyyy-MM-dd'T'HH:mm:ssxxx"

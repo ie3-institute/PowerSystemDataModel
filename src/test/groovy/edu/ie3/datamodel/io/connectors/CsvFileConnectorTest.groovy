@@ -53,8 +53,7 @@ class CsvFileConnectorTest extends Specification {
 			"its_p_fcf0b851-a836-4bde-8090-f44c382ed226.csv",
 			"its_pqh_5022a70e-a58f-4bac-b8ec-1c62376c216b.csv",
 			"its_c_b88dee50-5484-4136-901d-050d8c1c97d1.csv",
-			"its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b.csv",
-			"its_weather_085d98ee-09a2-4de4-b119-83949690d7b6.csv"
+			"its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b.csv"
 		]
 		pathsToIgnore = [
 			"file_to_be_ignored.txt"
@@ -85,8 +84,7 @@ class CsvFileConnectorTest extends Specification {
 			(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, "its_p_fcf0b851-a836-4bde-8090-f44c382ed226"),
 			(UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("5022a70e-a58f-4bac-b8ec-1c62376c216b"), ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND, "its_pqh_5022a70e-a58f-4bac-b8ec-1c62376c216b"),
 			(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, "its_c_b88dee50-5484-4136-901d-050d8c1c97d1"),
-			(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, "its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"),
-			(UUID.fromString("085d98ee-09a2-4de4-b119-83949690d7b6")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("085d98ee-09a2-4de4-b119-83949690d7b6"), ColumnScheme.WEATHER, "its_weather_085d98ee-09a2-4de4-b119-83949690d7b6")
+			(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, "its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")
 		]
 
 		when:

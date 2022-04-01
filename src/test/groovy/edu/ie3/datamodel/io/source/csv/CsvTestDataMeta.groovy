@@ -7,25 +7,32 @@ package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 
+import java.nio.file.Paths
+
 /**
  * Holds meta data for csv tests e.g. file and folder paths
  */
 trait CsvTestDataMeta {
 
-	static String testParticipantsBaseFolderPath = new File(CsvTestDataMeta.getResource('/testGridFiles').toURI()).absolutePath
-	static String testTimeSeriesBaseFolderPath = new File(CsvTestDataMeta.getResource('/testTimeSeriesFiles').toURI()).absolutePath
-	static String graphicsFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("graphics")
-	static String typeFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("types")
-	static String gridFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("grid")
-	static String participantsFolderPath =  testParticipantsBaseFolderPath.concat(File.separator).concat("participants")
-	static String resultEntitiesFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("results")
-	static String timeSeriesFolderPath =  testTimeSeriesBaseFolderPath
-	static String weatherFolderPath = new File(CsvTestDataMeta.getResource('weather').toURI()).absolutePath
-	static String cosmoWeatherFolderPath = weatherFolderPath.concat(File.separator).concat("cosmo")
-	static String iconWeatherFolderPath = weatherFolderPath.concat(File.separator).concat("icon")
-	static String thermalFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("thermal")
-	static String coordinatesFolderPath = testParticipantsBaseFolderPath.concat(File.separator).concat("coordinates")
+	static String timeSeriesFolderPath = getResourceAbs("_timeseries")
+	static String graphicsFolderPath = getResourceAbs("_graphics")
+	static String typeFolderPath = getResourceAbs("_types")
+	static String participantsFolderPath =  getResourceAbs("_participants")
+	static String resultEntitiesFolderPath = getResourceAbs("_results")
+	static String thermalFolderPath = getResourceAbs("_thermal")
+	static String coordinatesIconFolderPath = getResourceAbs("_coordinates/icon")
+	static String coordinatesCosmoFolderPath = getResourceAbs("_coordinates/cosmo")
+	static String weatherCosmoFolderPath = getResourceAbs("_weather/cosmo")
+	static String weatherIconFolderPath = getResourceAbs("_weather/icon")
+
+	static String gridDefaultFolderPath = getResourceAbs("_grid/default")
+	static String gridMalformedFolderPath = getResourceAbs("_grid/malformed")
+	static String gridEmptyFolderPath = getResourceAbs("_grid/empty")
 
 	static String csvSep = ","
 	static FileNamingStrategy fileNamingStrategy = new FileNamingStrategy()
+
+	static String getResourceAbs(String directory) {
+		return Paths.get(CsvTestDataMeta.getResource(directory).toURI()).toString()
+	}
 }
