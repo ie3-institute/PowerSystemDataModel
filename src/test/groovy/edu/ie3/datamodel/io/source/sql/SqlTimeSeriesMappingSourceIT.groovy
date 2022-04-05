@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.sql
 
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import edu.ie3.test.helper.TestContainerHelper
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
@@ -14,11 +15,8 @@ import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
 
-import java.nio.file.Path
-import java.nio.file.Paths
-
 @Testcontainers
-class SqlTimeSeriesMappingSourceIT extends Specification {
+class SqlTimeSeriesMappingSourceIT extends Specification implements TestContainerHelper {
 
 	@Shared
 	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
@@ -30,12 +28,8 @@ class SqlTimeSeriesMappingSourceIT extends Specification {
 	SqlTimeSeriesMappingSource source
 
 	def setupSpec() {
-		URL url = getClass().getResource("timeseries/")
-		assert url != null
-		Path path = Paths.get(url.toURI())
-
 		// Copy sql import script into docker
-		MountableFile sqlImportFile = MountableFile.forHostPath(path)
+		MountableFile sqlImportFile = getMountableFile("_timeseries/")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/")
 
 		// Execute import script

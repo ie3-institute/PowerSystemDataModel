@@ -28,7 +28,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 
 	def setupSpec() {
 		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-		source = new CsvRawGridSource(csvSep, gridFolderPath, fileNamingStrategy, typeSource)
+		source = new CsvRawGridSource(csvSep, gridDefaultFolderPath, fileNamingStrategy, typeSource)
 	}
 
 	def "The CsvRawGridSource is able to convert single valid AssetInputEntityData to ConnectorInputEntityData"() {
@@ -742,7 +742,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 	def "The CsvRawGridSource returns an empty Optional, if one mandatory element for the RawGridElements is missing"() {
 		given: "a source pointing to malformed grid data"
 		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-		source = new CsvRawGridSource(csvSep, gridFolderPath + "_malformed", fileNamingStrategy, typeSource)
+		source = new CsvRawGridSource(csvSep, gridMalformedFolderPath, fileNamingStrategy, typeSource)
 
 		when: "loading a total grid structure from file"
 		def actual = source.getGridData()
@@ -754,7 +754,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
 	def "The CsvRawGridSource returns an empty Optional, if the RawGridElements contain no single element"() {
 		given: "a source pointing to malformed grid data"
 		CsvTypeSource typeSource = new CsvTypeSource(csvSep, typeFolderPath, fileNamingStrategy)
-		source = new CsvRawGridSource(csvSep, gridFolderPath + "_empty", fileNamingStrategy, typeSource)
+		source = new CsvRawGridSource(csvSep, gridEmptyFolderPath, fileNamingStrategy, typeSource)
 
 		when: "loading a total grid structure from file"
 		def actual = source.getGridData()

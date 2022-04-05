@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.connectors
 
+import edu.ie3.test.helper.TestContainerHelper
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
@@ -14,7 +15,7 @@ import spock.lang.Specification
 import java.sql.SQLException
 
 @Testcontainers
-class SqlConnectorIT extends Specification {
+class SqlConnectorIT extends Specification implements TestContainerHelper {
 	@Shared
 	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
 
@@ -23,7 +24,7 @@ class SqlConnectorIT extends Specification {
 
 	def setupSpec() {
 		// Copy sql import script into docker
-		MountableFile sqlImportFile = MountableFile.forClasspathResource("/testcontainersFiles/sql/connector/connectorTest.sql")
+		MountableFile sqlImportFile = getMountableFile("_sql/connectorTest.sql")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/connectorTest.sql")
 		// Execute import script
 		postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/connectorTest.sql")

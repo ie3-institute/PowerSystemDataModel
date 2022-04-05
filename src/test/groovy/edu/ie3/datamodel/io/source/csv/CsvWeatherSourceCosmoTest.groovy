@@ -38,14 +38,16 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 	def setupSpec() {
 		coordinateSource = CosmoWeatherTestData.coordinateSource
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
-		source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
+		source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 	}
 
 	def "A CsvWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
 		given:
 		def expectedTimeBasedValue = new TimeBasedValue(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.WEATHER_VALUE_193186_15H)
+
 		when:
 		def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.COORDINATE_193186)
+
 		then:
 		optTimeBasedValue.present
 		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
@@ -66,8 +68,10 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def timeSeries193187 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193187_16H)] as Set<TimeBasedValue>)
+
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
+
 		then:
 		coordinateToTimeSeries.keySet().size() == 2
 		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
@@ -90,8 +94,10 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def timeSeries193188 = new IndividualTimeSeries(null,
 				[
 					new TimeBasedValue(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.WEATHER_VALUE_193188_15H)] as Set<TimeBasedValue>)
+
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
+
 		then:
 		coordinateToTimeSeries.keySet().size() == 3
 		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
@@ -105,7 +111,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
-		def source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
+		def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
 			"time"             : "2020-10-16T12:40:42Z",
@@ -149,7 +155,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
-		def source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
+		def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
 			"time"             : "2020-10-16T12:40:42Z",
@@ -165,7 +171,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def actual = source.buildWeatherValue(fieldToValues)
 
 		then:
-		!actual.present
+		actual.empty
 	}
 
 	def "The CsvWeatherSource returns no WeatherValue, if the coordinate field is missing"() {
@@ -174,7 +180,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
-		def source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
+		def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
 			"time"             : "2020-10-16T12:40:42Z",
@@ -189,7 +195,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def actual = source.buildWeatherValue(fieldToValues)
 
 		then:
-		!actual.present
+		actual.empty
 	}
 
 	def "The CsvWeatherSource returns no WeatherValue, if the coordinate cannot be obtained"() {
@@ -197,7 +203,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def coordinateSource = Mock(IdCoordinateSource)
 		coordinateSource.getCoordinate(_) >> Optional.empty()
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
-		def source = new CsvWeatherSource(";", cosmoWeatherFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
+		def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
 		def fieldToValues = [
 			"uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
 			"time"             : "2020-10-16T12:40:42Z",
@@ -213,6 +219,6 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 		def actual = source.buildWeatherValue(fieldToValues)
 
 		then:
-		!actual.present
+		actual.empty
 	}
 }

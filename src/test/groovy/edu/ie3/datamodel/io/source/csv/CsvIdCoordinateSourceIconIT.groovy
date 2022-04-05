@@ -20,7 +20,7 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
 	CsvIdCoordinateSource source
 
 	def setupSpec() {
-		source = new CsvIdCoordinateSource(csvSep, coordinatesFolderPath + "_icon", fileNamingStrategy, new IconIdCoordinateFactory())
+		source = new CsvIdCoordinateSource(csvSep, coordinatesIconFolderPath, fileNamingStrategy, new IconIdCoordinateFactory())
 	}
 
 	def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {

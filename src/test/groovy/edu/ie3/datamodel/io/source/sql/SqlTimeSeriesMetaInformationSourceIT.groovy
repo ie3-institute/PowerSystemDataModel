@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
+import edu.ie3.test.helper.TestContainerHelper
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
@@ -16,11 +17,8 @@ import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
 
-import java.nio.file.Path
-import java.nio.file.Paths
-
 @Testcontainers
-class SqlTimeSeriesMetaInformationSourceIT extends Specification {
+class SqlTimeSeriesMetaInformationSourceIT extends Specification implements TestContainerHelper {
 
 	@Shared
 	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
@@ -32,12 +30,8 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification {
 	SqlTimeSeriesMetaInformationSource source
 
 	def setupSpec() {
-		URL url = getClass().getResource("timeseries/")
-		assert url != null
-		Path path = Paths.get(url.toURI())
-
 		// Copy sql import script into docker
-		MountableFile sqlImportFile = MountableFile.forHostPath(path)
+		MountableFile sqlImportFile = getMountableFile("_timeseries/")
 		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/")
 
 		// Execute import script
@@ -47,7 +41,7 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification {
 				"time_series_p.sql",
 				"time_series_ph.sql",
 				"time_series_pq.sql",
-				"time_series_pqh.sql",)
+				"time_series_pqh.sql")
 		for (String file: importFiles) {
 			Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/" + file)
 			assert res.stderr.empty

@@ -16,6 +16,7 @@ import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
+import org.testcontainers.containers.Container
 import org.testcontainers.containers.InfluxDBContainer
 import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.DockerImageName
@@ -24,10 +25,10 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourceTestHelper, TestContainerHelper {
+class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
 
 	@Shared
-	InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb:1.8.10"))
+	InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb").withTag("1.8.10"))
 	.withAuthEnabled(false)
 	.withDatabase("test_weather")
 
@@ -37,24 +38,21 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourc
 	def setupSpec() {
 		// Copy import file into docker and then import it via influx CLI
 		// more information on file format and usage here: https://docs.influxdata.com/influxdb/v1.7/tools/shell/#import-data-from-a-file-with-import
-		MountableFile influxWeatherImportFile = getMountableFile("/testcontainersFiles/influxDb/cosmo/weather.txt")
-		influxDbContainer.copyFileToContainer(influxWeatherImportFile, "/home/weather.txt")
+		MountableFile influxWeatherImportFile = getMountableFile("_weather/cosmo/weather.txt")
+		influxDbContainer.copyFileToContainer(influxWeatherImportFile, "/home/weather_cosmo.txt")
 
-		String[] command = ["influx", "-import", "-path=/home/weather.txt", "-precision=ms"]
-		def execResult = influxDbContainer.execInContainer(command)
-		if (!execResult.stderr.empty) {
-			throw new IllegalStateException("Command '" + String.join(" ", command) + "' failed:\n" + execResult.stderr)
-		}
+		Container.ExecResult res = influxDbContainer.execInContainer("influx", "-import", "-path=/home/weather_cosmo.txt", "-precision=ms")
+		assert res.stderr.empty
 
 		def connector = new InfluxDbConnector(influxDbContainer.url, "test_weather", "test_scenario")
 		def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
 		source = new InfluxDbWeatherSource(connector, CosmoWeatherTestData.coordinateSource, weatherFactory)
 	}
 
-
 	def "The test container can establish a valid connection"() {
 		when:
 		def connector = new InfluxDbConnector(influxDbContainer.url,"test_weather", "test_scenario")
+
 		then:
 		connector.connectionValid
 	}
@@ -62,8 +60,10 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourc
 	def "An InfluxDbWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
 		given:
 		def expectedTimeBasedValue = new TimeBasedValue(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.WEATHER_VALUE_193186_15H)
+
 		when:
 		def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.COORDINATE_193186)
+
 		then:
 		optTimeBasedValue.present
 		equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
@@ -86,8 +86,10 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourc
 				[
 					new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193187_16H)
 				] as Set<TimeBasedValue>)
+
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
+
 		then:
 		coordinateToTimeSeries.keySet().size() == 2
 		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeseries_193186)
@@ -112,8 +114,10 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourc
 				[
 					new TimeBasedValue(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.WEATHER_VALUE_193188_15H)
 				] as Set<TimeBasedValue>)
+
 		when:
 		Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
+
 		then:
 		coordinateToTimeSeries.keySet().size() == 3
 		equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeseries_193186.entries)
@@ -122,6 +126,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourc
 	}
 
 	def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to it's ID"() {
+		given:
 		def validCoordinate = CosmoWeatherTestData.COORDINATE_193186
 		def invalidCoordinate = GeoUtils.xyToPoint(48d, 7d)
 		def time = CosmoWeatherTestData.TIME_15H
@@ -133,6 +138,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements WeatherSourc
 					new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193186_16H),
 					new TimeBasedValue(CosmoWeatherTestData.TIME_17H, CosmoWeatherTestData.WEATHER_VALUE_193186_17H)
 				] as Set<TimeBasedValue>)
+
 		when:
 		def coordinateAtDate = source.getWeather(time, invalidCoordinate)
 		def coordinateInInterval = source.getWeather(timeInterval, invalidCoordinate)
