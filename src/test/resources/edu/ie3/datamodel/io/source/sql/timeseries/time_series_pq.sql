@@ -12,7 +12,8 @@ CREATE TABLE public.time_series_pq
 CREATE INDEX time_series_pq_series_id ON time_series_pq USING hash (time_series);
 
 -- Order of columns is important when using btree: https://www.postgresql.org/docs/14/indexes-multicolumn.html
--- time_series at first since we at most use an equality constraint on time_series and a range query on time
+-- Column time_series needs to placed as the first argument since we at most use an equality constraint on
+-- time_series and a range query on time.
 CREATE UNIQUE INDEX time_series_pq_series_time ON time_series_pq USING btree (time_series, time);
 
 INSERT INTO
