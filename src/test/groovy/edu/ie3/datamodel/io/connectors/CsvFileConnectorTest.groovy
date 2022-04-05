@@ -99,13 +99,13 @@ class CsvFileConnectorTest extends Specification {
 		def expected = [
 				(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, "its_c_b88dee50-5484-4136-901d-050d8c1c97d1"),
 				(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, "its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"),
-				(UUID.fromString("085d98ee-09a2-4de4-b119-83949690d7b6")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("085d98ee-09a2-4de4-b119-83949690d7b6"), ColumnScheme.WEATHER, "its_weather_085d98ee-09a2-4de4-b119-83949690d7b6")
+				(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, "its_p_fcf0b851-a836-4bde-8090-f44c382ed226")
 		]
 
 		when:
 		def actual = cfc.getCsvIndividualTimeSeriesMetaInformation(
 				ColumnScheme.ENERGY_PRICE,
-				ColumnScheme.WEATHER
+				ColumnScheme.ACTIVE_POWER
 		)
 
 		then:
