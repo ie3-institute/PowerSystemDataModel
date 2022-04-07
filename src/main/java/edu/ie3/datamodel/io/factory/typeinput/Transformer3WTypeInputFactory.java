@@ -83,14 +83,14 @@ public class Transformer3WTypeInputFactory
         data.getQuantity(V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     ComparableQuantity<ElectricPotential> vRatedC =
         data.getQuantity(V_RATED_C, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    ComparableQuantity<ElectricResistance> rScA = data.getQuantity(R_SC_A, StandardUnits.IMPEDANCE);
-    ComparableQuantity<ElectricResistance> rScB = data.getQuantity(R_SC_B, StandardUnits.IMPEDANCE);
-    ComparableQuantity<ElectricResistance> rScC = data.getQuantity(R_SC_C, StandardUnits.IMPEDANCE);
-    ComparableQuantity<ElectricResistance> xScA = data.getQuantity(X_SC_A, StandardUnits.IMPEDANCE);
-    ComparableQuantity<ElectricResistance> xScB = data.getQuantity(X_SC_B, StandardUnits.IMPEDANCE);
-    ComparableQuantity<ElectricResistance> xScC = data.getQuantity(X_SC_C, StandardUnits.IMPEDANCE);
-    ComparableQuantity<ElectricConductance> gM = data.getQuantity(G_M, StandardUnits.ADMITTANCE);
-    ComparableQuantity<ElectricConductance> bM = data.getQuantity(B_M, StandardUnits.ADMITTANCE);
+    ComparableQuantity<ElectricResistance> rScA = data.getQuantity(R_SC_A, StandardUnits.RESISTANCE);
+    ComparableQuantity<ElectricResistance> rScB = data.getQuantity(R_SC_B, StandardUnits.RESISTANCE);
+    ComparableQuantity<ElectricResistance> rScC = data.getQuantity(R_SC_C, StandardUnits.RESISTANCE);
+    ComparableQuantity<ElectricResistance> xScA = data.getQuantity(X_SC_A, StandardUnits.REACTANCE);
+    ComparableQuantity<ElectricResistance> xScB = data.getQuantity(X_SC_B, StandardUnits.REACTANCE);
+    ComparableQuantity<ElectricResistance> xScC = data.getQuantity(X_SC_C, StandardUnits.REACTANCE);
+    ComparableQuantity<ElectricConductance> gM = data.getQuantity(G_M, StandardUnits.CONDUCTANCE);
+    ComparableQuantity<ElectricConductance> bM = data.getQuantity(B_M, StandardUnits.SUSCEPTANCE);
     ComparableQuantity<Dimensionless> dV = data.getQuantity(D_V, StandardUnits.DV_TAP);
     ComparableQuantity<Angle> dPhi = data.getQuantity(D_PHI, StandardUnits.DPHI_TAP);
     int tapNeutr = data.getInt(TAP_NEUTR);

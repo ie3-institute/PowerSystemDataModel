@@ -40,12 +40,28 @@ public class StandardUnits {
   public static final Unit<Angle> ELECTRIC_CURRENT_ANGLE = DEGREE_GEOM;
   /** Impedance in Ω */
   public static final Unit<ElectricResistance> IMPEDANCE = OHM;
+  /** Resistance in Ω */
+  public static final Unit<ElectricResistance> RESISTANCE = OHM;
+  /** Reactance in Ω */
+  public static final Unit<ElectricResistance> REACTANCE = OHM;
   /** Impedance per length (mainly for lines) in Ω/km */
   public static final Unit<SpecificResistance> IMPEDANCE_PER_LENGTH = OHM_PER_KILOMETRE;
+  /** Resistance per length (mainly for lines) in Ω/km */
+  public static final Unit<SpecificResistance> RESISTANCE_PER_LENGTH = OHM_PER_KILOMETRE;
+  /** Reactance per length (mainly for lines) in Ω/km */
+  public static final Unit<SpecificResistance> REACTANCE_PER_LENGTH = OHM_PER_KILOMETRE;
   /** Admittance in nS */
+  public static final Unit<ElectricConductance> CONDUCTANCE = MetricPrefix.NANO(SIEMENS);
+  /** Conductance in nS */
+  public static final Unit<ElectricConductance> SUSCEPTANCE = MetricPrefix.NANO(SIEMENS);
+  /** Susceptance in nS */
   public static final Unit<ElectricConductance> ADMITTANCE = MetricPrefix.NANO(SIEMENS);
   /** Admittance per length (mainly for lines) in µS/km */
   public static final Unit<SpecificConductance> ADMITTANCE_PER_LENGTH = MICRO_SIEMENS_PER_KILOMETRE;
+  /** Conductance per length (mainly for lines) in µS/km */
+  public static final Unit<SpecificConductance> CONDUCTANCE_PER_LENGTH = MICRO_SIEMENS_PER_KILOMETRE;
+  /** Susceptance per length (mainly for lines) in µS/km */
+  public static final Unit<SpecificConductance> SUSCEPTANCE_PER_LENGTH = MICRO_SIEMENS_PER_KILOMETRE;
   /** Target voltage magnitude in p.U. */
   public static final Unit<Dimensionless> TARGET_VOLTAGE_MAGNITUDE = PU;
   /** Voltage magnitude (mainly for result purposes) in p.U. */
