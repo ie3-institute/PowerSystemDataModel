@@ -59,9 +59,11 @@ public class StandardUnits {
   /** Admittance per length (mainly for lines) in µS/km */
   public static final Unit<SpecificConductance> ADMITTANCE_PER_LENGTH = MICRO_SIEMENS_PER_KILOMETRE;
   /** Conductance per length (mainly for lines) in µS/km */
-  public static final Unit<SpecificConductance> CONDUCTANCE_PER_LENGTH = MICRO_SIEMENS_PER_KILOMETRE;
+  public static final Unit<SpecificConductance> CONDUCTANCE_PER_LENGTH =
+      MICRO_SIEMENS_PER_KILOMETRE;
   /** Susceptance per length (mainly for lines) in µS/km */
-  public static final Unit<SpecificConductance> SUSCEPTANCE_PER_LENGTH = MICRO_SIEMENS_PER_KILOMETRE;
+  public static final Unit<SpecificConductance> SUSCEPTANCE_PER_LENGTH =
+      MICRO_SIEMENS_PER_KILOMETRE;
   /** Target voltage magnitude in p.U. */
   public static final Unit<Dimensionless> TARGET_VOLTAGE_MAGNITUDE = PU;
   /** Voltage magnitude (mainly for result purposes) in p.U. */

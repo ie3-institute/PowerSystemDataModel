@@ -83,9 +83,12 @@ public class Transformer3WTypeInputFactory
         data.getQuantity(V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     ComparableQuantity<ElectricPotential> vRatedC =
         data.getQuantity(V_RATED_C, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    ComparableQuantity<ElectricResistance> rScA = data.getQuantity(R_SC_A, StandardUnits.RESISTANCE);
-    ComparableQuantity<ElectricResistance> rScB = data.getQuantity(R_SC_B, StandardUnits.RESISTANCE);
-    ComparableQuantity<ElectricResistance> rScC = data.getQuantity(R_SC_C, StandardUnits.RESISTANCE);
+    ComparableQuantity<ElectricResistance> rScA =
+        data.getQuantity(R_SC_A, StandardUnits.RESISTANCE);
+    ComparableQuantity<ElectricResistance> rScB =
+        data.getQuantity(R_SC_B, StandardUnits.RESISTANCE);
+    ComparableQuantity<ElectricResistance> rScC =
+        data.getQuantity(R_SC_C, StandardUnits.RESISTANCE);
     ComparableQuantity<ElectricResistance> xScA = data.getQuantity(X_SC_A, StandardUnits.REACTANCE);
     ComparableQuantity<ElectricResistance> xScB = data.getQuantity(X_SC_B, StandardUnits.REACTANCE);
     ComparableQuantity<ElectricResistance> xScC = data.getQuantity(X_SC_C, StandardUnits.REACTANCE);
