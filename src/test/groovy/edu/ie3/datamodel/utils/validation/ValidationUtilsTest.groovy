@@ -5,13 +5,14 @@
  */
 package edu.ie3.datamodel.utils.validation
 
-import edu.ie3.datamodel.exceptions.NotImplementedException
-
-import static edu.ie3.datamodel.models.StandardUnits.ADMITTANCE_PER_LENGTH
+import static edu.ie3.datamodel.models.StandardUnits.CONDUCTANCE_PER_LENGTH
 import static edu.ie3.datamodel.models.StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
 import static edu.ie3.datamodel.models.StandardUnits.RATED_VOLTAGE_MAGNITUDE
+import static edu.ie3.datamodel.models.StandardUnits.SUSCEPTANCE_PER_LENGTH
 import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
+
+import edu.ie3.datamodel.exceptions.NotImplementedException
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.models.OperationTime
@@ -141,8 +142,8 @@ class ValidationUtilsTest extends Specification {
 		def asset = new LineTypeInput(
 				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
 				"lineType_AtoB",
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(0d, SUSCEPTANCE_PER_LENGTH),
+				Quantities.getQuantity(0d, CONDUCTANCE_PER_LENGTH),
 				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
 				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
 				Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
@@ -151,8 +152,8 @@ class ValidationUtilsTest extends Specification {
 		def invalidAsset = new LineTypeInput(
 				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
 				"lineType_AtoB",
-				Quantities.getQuantity(-1d, ADMITTANCE_PER_LENGTH), // invalid value
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(-1d, SUSCEPTANCE_PER_LENGTH), // invalid value
+				Quantities.getQuantity(0d, CONDUCTANCE_PER_LENGTH),
 				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
 				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
 				Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
@@ -178,8 +179,8 @@ class ValidationUtilsTest extends Specification {
 		def asset = new LineTypeInput(
 				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
 				"lineType_AtoB",
-				Quantities.getQuantity(1d, ADMITTANCE_PER_LENGTH),
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(1d, SUSCEPTANCE_PER_LENGTH),
+				Quantities.getQuantity(0d, CONDUCTANCE_PER_LENGTH),
 				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
 				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
 				Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
@@ -188,8 +189,8 @@ class ValidationUtilsTest extends Specification {
 		def invalidAsset = new LineTypeInput(
 				UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
 				"lineType_AtoB",
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH), // invalid value
-				Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+				Quantities.getQuantity(0d, SUSCEPTANCE_PER_LENGTH), // invalid value
+				Quantities.getQuantity(0d, CONDUCTANCE_PER_LENGTH),
 				Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
 				Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
 				Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),

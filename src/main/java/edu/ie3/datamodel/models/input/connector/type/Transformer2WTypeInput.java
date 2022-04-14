@@ -75,13 +75,13 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       int tapMin,
       int tapMax) {
     super(uuid, id);
-    this.rSc = rSc.to(StandardUnits.IMPEDANCE);
-    this.xSc = xSc.to(StandardUnits.IMPEDANCE);
+    this.rSc = rSc.to(StandardUnits.RESISTANCE);
+    this.xSc = xSc.to(StandardUnits.REACTANCE);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    this.gM = gM.to(StandardUnits.ADMITTANCE);
-    this.bM = bM.to(StandardUnits.ADMITTANCE);
+    this.gM = gM.to(StandardUnits.CONDUCTANCE);
+    this.bM = bM.to(StandardUnits.SUSCEPTANCE);
     this.dV = dV.to(StandardUnits.DV_TAP);
     this.dPhi = dPhi.to(StandardUnits.DPHI_TAP);
     this.tapSide = tapSide;
