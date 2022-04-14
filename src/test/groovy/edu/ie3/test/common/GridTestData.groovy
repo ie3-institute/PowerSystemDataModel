@@ -319,8 +319,8 @@ class GridTestData {
 	public static final LineTypeInput lineTypeInputCtoD = new LineTypeInput(
 	UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
 	"lineType_AtoB",
-	Quantities.getQuantity(0.00322d, ADMITTANCE_PER_LENGTH),
-	Quantities.getQuantity(0d, ADMITTANCE_PER_LENGTH),
+	Quantities.getQuantity(0.00322d, CONDUCTANCE_PER_LENGTH),
+	Quantities.getQuantity(0d, SUSCEPTANCE_PER_LENGTH),
 	Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
 	Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
 	Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
