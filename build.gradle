@@ -17,7 +17,7 @@ ext {
 	//version (changing these should be considered thoroughly!)
 	javaVersion = JavaVersion.VERSION_17
 	tscfgVersion = '0.9.9'
-	testcontainersVersion = '1.17.0'
+	testcontainersVersion = '1.17.1'
 
 	scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
