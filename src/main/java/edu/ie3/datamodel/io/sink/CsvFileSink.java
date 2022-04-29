@@ -324,19 +324,19 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     LinkedHashMap<String, String> entityFieldData;
     try {
       entityFieldData =
-              processorProvider
-                .handleEntity(entity)
-                .map(this::csvEntityFieldData)
-                .orElseThrow(
-                    () ->
-                        new SinkException(
-                            "Cannot persist entity of type '"
-                                + entity.getClass().getSimpleName()
-                                + "'. This sink can only process the following entities: ["
-                                + processorProvider.getRegisteredClasses().stream()
-                                    .map(Class::getSimpleName)
-                                    .collect(Collectors.joining(","))
-                                + "]"));
+          processorProvider
+              .handleEntity(entity)
+              .map(this::csvEntityFieldData)
+              .orElseThrow(
+                  () ->
+                      new SinkException(
+                          "Cannot persist entity of type '"
+                              + entity.getClass().getSimpleName()
+                              + "'. This sink can only process the following entities: ["
+                              + processorProvider.getRegisteredClasses().stream()
+                                  .map(Class::getSimpleName)
+                                  .collect(Collectors.joining(","))
+                              + "]"));
 
       String[] headerElements = processorProvider.getHeaderElements(entity.getClass());
       BufferedCsvWriter writer =
