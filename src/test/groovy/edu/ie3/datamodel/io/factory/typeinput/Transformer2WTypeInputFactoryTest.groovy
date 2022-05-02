@@ -54,13 +54,13 @@ class Transformer2WTypeInputFactoryTest extends Specification implements Factory
 		typeInput.get().with {
 			assert uuid == UUID.fromString(parameter["uuid"])
 			assert id == parameter["id"]
-			assert rSc == getQuant(parameter["rsc"], StandardUnits.IMPEDANCE)
-			assert xSc == getQuant(parameter["xsc"], StandardUnits.IMPEDANCE)
+			assert rSc == getQuant(parameter["rsc"], StandardUnits.RESISTANCE)
+			assert xSc == getQuant(parameter["xsc"], StandardUnits.REACTANCE)
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
 			assert vRatedA == getQuant(parameter["vrateda"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
 			assert vRatedB == getQuant(parameter["vratedb"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
-			assert gM == getQuant(parameter["gm"], StandardUnits.ADMITTANCE)
-			assert bM == getQuant(parameter["bm"], StandardUnits.ADMITTANCE)
+			assert gM == getQuant(parameter["gm"], StandardUnits.CONDUCTANCE)
+			assert bM == getQuant(parameter["bm"], StandardUnits.SUSCEPTANCE)
 			assert dV == getQuant(parameter["dv"], StandardUnits.DV_TAP)
 			assert dPhi == getQuant(parameter["dphi"], StandardUnits.DPHI_TAP)
 			assert tapSide == (parameter["tapside"].trim() == "1") || parameter["tapside"].trim() == "true"

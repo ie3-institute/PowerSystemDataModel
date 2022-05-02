@@ -326,6 +326,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
       entityFieldData =
           processorProvider
               .handleEntity(entity)
+              .map(this::csvEntityFieldData)
               .orElseThrow(
                   () ->
                       new SinkException(

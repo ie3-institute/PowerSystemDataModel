@@ -46,10 +46,10 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
 		((LineTypeInput) typeInput.get()).with {
 			assert uuid == UUID.fromString(parameter["uuid"])
 			assert id == parameter["id"]
-			assert b == getQuant(parameter["b"], StandardUnits.ADMITTANCE_PER_LENGTH)
-			assert g == getQuant(parameter["g"], StandardUnits.ADMITTANCE_PER_LENGTH)
-			assert r == getQuant(parameter["r"], StandardUnits.IMPEDANCE_PER_LENGTH)
-			assert x == getQuant(parameter["x"], StandardUnits.IMPEDANCE_PER_LENGTH)
+			assert b == getQuant(parameter["b"], StandardUnits.SUSCEPTANCE_PER_LENGTH)
+			assert g == getQuant(parameter["g"], StandardUnits.CONDUCTANCE_PER_LENGTH)
+			assert r == getQuant(parameter["r"], StandardUnits.RESISTANCE_PER_LENGTH)
+			assert x == getQuant(parameter["x"], StandardUnits.REACTANCE_PER_LENGTH)
 			assert iMax == getQuant(parameter["imax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
 			assert vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
 		}

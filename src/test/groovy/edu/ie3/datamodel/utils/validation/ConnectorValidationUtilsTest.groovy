@@ -142,13 +142,13 @@ class ConnectorValidationUtilsTest extends Specification {
 	// Data for valid transformer2WType
 	private static final UUID uuid = UUID.fromString("202069a7-bcf8-422c-837c-273575220c8a")
 	private static final String id = "HS-MS_1"
-	private static final ComparableQuantity<ElectricResistance> rSc = Quantities.getQuantity(45.375d, IMPEDANCE)
-	private static final ComparableQuantity<ElectricResistance> xSc = Quantities.getQuantity(102.759d, IMPEDANCE)
+	private static final ComparableQuantity<ElectricResistance> rSc = Quantities.getQuantity(45.375d, RESISTANCE)
+	private static final ComparableQuantity<ElectricResistance> xSc = Quantities.getQuantity(102.759d, REACTANCE)
 	private static final ComparableQuantity<Power> sRated = Quantities.getQuantity(20000d, ACTIVE_POWER_IN)
 	private static final ComparableQuantity<ElectricPotential> vRatedA = Quantities.getQuantity(110d, RATED_VOLTAGE_MAGNITUDE)
 	private static final ComparableQuantity<ElectricPotential> vRatedB = Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
-	private static final ComparableQuantity<ElectricConductance> gM = Quantities.getQuantity(0d, ADMITTANCE)
-	private static final ComparableQuantity<ElectricConductance> bM = Quantities.getQuantity(0d, ADMITTANCE)
+	private static final ComparableQuantity<ElectricConductance> gM = Quantities.getQuantity(0d, CONDUCTANCE)
+	private static final ComparableQuantity<ElectricConductance> bM = Quantities.getQuantity(0d, SUSCEPTANCE)
 	private static final ComparableQuantity<Dimensionless> dV = Quantities.getQuantity(1.5d, DV_TAP)
 	private static final ComparableQuantity<Angle> dPhi = Quantities.getQuantity(0d, DPHI_TAP)
 	private static final boolean tapSide = false
@@ -216,12 +216,12 @@ class ConnectorValidationUtilsTest extends Specification {
 	private static final ComparableQuantity<Power> sRatedB = Quantities.getQuantity(60000d, ACTIVE_POWER_IN)
 	private static final ComparableQuantity<Power> sRatedC = Quantities.getQuantity(40000d, ACTIVE_POWER_IN)
 	private static final ComparableQuantity<ElectricPotential> vRatedC = Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
-	private static final ComparableQuantity<ElectricResistance> rScA = Quantities.getQuantity(0.3d, IMPEDANCE)
-	private static final ComparableQuantity<ElectricResistance> rScB = Quantities.getQuantity(0.025d, IMPEDANCE)
-	private static final ComparableQuantity<ElectricResistance> rScC = Quantities.getQuantity(0.0080d, IMPEDANCE)
-	private static final ComparableQuantity<ElectricResistance> xScA = Quantities.getQuantity(1d, IMPEDANCE)
-	private static final ComparableQuantity<ElectricResistance> xScB = Quantities.getQuantity(0.08d, IMPEDANCE)
-	private static final ComparableQuantity<ElectricResistance> xScC = Quantities.getQuantity(0.003d, IMPEDANCE)
+	private static final ComparableQuantity<ElectricResistance> rScA = Quantities.getQuantity(0.3d, RESISTANCE)
+	private static final ComparableQuantity<ElectricResistance> rScB = Quantities.getQuantity(0.025d, RESISTANCE)
+	private static final ComparableQuantity<ElectricResistance> rScC = Quantities.getQuantity(0.0080d, RESISTANCE)
+	private static final ComparableQuantity<ElectricResistance> xScA = Quantities.getQuantity(1d, REACTANCE)
+	private static final ComparableQuantity<ElectricResistance> xScB = Quantities.getQuantity(0.08d, REACTANCE)
+	private static final ComparableQuantity<ElectricResistance> xScC = Quantities.getQuantity(0.003d, REACTANCE)
 
 	def "ConnectorValidationUtils.checkTransformer3WType recognizes all potential errors for a transformer3W type"() {
 		when:
