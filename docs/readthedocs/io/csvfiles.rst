@@ -210,7 +210,7 @@ There is one source for each of the containers, respectively.
 .. figure:: http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ie3-institute/PowerSystemDataModel/dev/docs/uml/main/DataSourceClassDiagram.puml
    :align: center
    :alt: Class diagram of data sources
-   :width: 650
+
 
    Class diagram of data sources
 
