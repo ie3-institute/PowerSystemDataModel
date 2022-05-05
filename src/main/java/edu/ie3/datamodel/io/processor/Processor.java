@@ -8,10 +8,7 @@ package edu.ie3.datamodel.io.processor;
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.factory.input.NodeInputFactory;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
-import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.StandardLoadProfile;
-import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.*;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
@@ -273,6 +270,9 @@ public abstract class Processor<T> {
           "ReactivePowerCharacteristic",
           "CharacteristicInput" -> resultStringBuilder.append(
           ((CharacteristicInput<?, ?>) methodReturnObject).deSerialize());
+      case "UUID[]" -> resultStringBuilder.append(processUUIDArray((UUID[]) methodReturnObject));
+      case "ControlStrategy" -> resultStringBuilder.append(
+          ((ControlStrategy) methodReturnObject).getKey());
       default -> throw new EntityProcessorException(
           "Unable to process value for attribute/field '"
               + fieldName
@@ -332,6 +332,28 @@ public abstract class Processor<T> {
   }
 
   /**
+   * This method should handle all quantities that are model processor specific e.g. we need to
+   * handle active power p different for {@link edu.ie3.datamodel.models.result.ResultEntity}s and
+   * {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}s Hence from the
+   * generalized method {@link #handleQuantity(Quantity, String)}, this allows for the specific
+   * handling of child implementations. See the implementation @ {@link ResultEntityProcessor} for
+   * details.
+   *
+   * @param quantity the quantity that should be processed
+   * @param fieldName the field name the quantity is set to
+   * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
+   *     or empty if an error occurred during processing
+   */
+  protected abstract Optional<String> handleProcessorSpecificQuantity(
+      Quantity<?> quantity, String fieldName);
+
+  protected String processUUIDArray(UUID[] uuids) {
+    StringBuilder strb = new StringBuilder();
+    for (UUID uuid : uuids) strb.append(uuid.toString()).append(" ");
+    return strb.toString().strip();
+  }
+
+  /**
    * Handling of elements of type {@link OperationTime}
    *
    * @param operationTime the operation time that should be processed
@@ -366,22 +388,6 @@ public abstract class Processor<T> {
   protected String processZonedDateTime(ZonedDateTime zonedDateTime) {
     return zonedDateTime.toString();
   }
-
-  /**
-   * This method should handle all quantities that are model processor specific e.g. we need to
-   * handle active power p different for {@link edu.ie3.datamodel.models.result.ResultEntity}s and
-   * {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}s Hence from the
-   * generalized method {@link #handleQuantity(Quantity, String)}, this allows for the specific
-   * handling of child implementations. See the implementation @ {@link ResultEntityProcessor} for
-   * details.
-   *
-   * @param quantity the quantity that should be processed
-   * @param fieldName the field name the quantity is set to
-   * @return an optional string with the normalized to {@link StandardUnits} value of the quantity
-   *     or empty if an error occurred during processing
-   */
-  protected abstract Optional<String> handleProcessorSpecificQuantity(
-      Quantity<?> quantity, String fieldName);
 
   /**
    * Converts a given quantity to String by extracting the value and applying the toString method to

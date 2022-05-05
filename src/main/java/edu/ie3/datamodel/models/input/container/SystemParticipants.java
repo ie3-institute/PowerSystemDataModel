@@ -235,6 +235,10 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return Collections.unmodifiableSet(wecPlants);
   }
 
+  public Set<EmInput> getEmSystems() {
+    return Collections.unmodifiableSet(emSystems);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

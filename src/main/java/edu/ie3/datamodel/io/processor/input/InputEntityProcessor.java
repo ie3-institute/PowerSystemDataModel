@@ -58,6 +58,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
               PvInput.class,
               StorageInput.class,
               WecInput.class,
+              EmInput.class,
               /* -- ThermalUnitInput */
               ThermalHouseInput.class,
               CylindricalStorageInput.class,

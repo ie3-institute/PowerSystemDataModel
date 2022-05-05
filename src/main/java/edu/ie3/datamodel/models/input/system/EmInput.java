@@ -23,7 +23,7 @@ public class EmInput extends SystemParticipantInput {
   /** Reference to the control strategy to be used for this model */
   private final ControlStrategy controlStrategy;
   /**
-   * Constructor for an operated load
+   * Constructor for an operated energy management system
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -49,7 +49,7 @@ public class EmInput extends SystemParticipantInput {
   }
 
   /**
-   * Constructor for an operated load
+   * Constructor for an operated energy management system
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -76,7 +76,7 @@ public class EmInput extends SystemParticipantInput {
   }
 
   /**
-   * Constructor for an operated load
+   * Constructor for an operated energy management system
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -98,7 +98,7 @@ public class EmInput extends SystemParticipantInput {
   }
 
   /**
-   * Constructor for an operated load
+   * Constructor for an operated energy management system
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -138,8 +138,7 @@ public class EmInput extends SystemParticipantInput {
     if (this == o) return true;
     if (!(o instanceof EmInput emInput)) return false;
     if (!super.equals(o)) return false;
-    return connectedAssets == emInput.connectedAssets
-        && controlStrategy == emInput.controlStrategy;
+    return connectedAssets == emInput.connectedAssets && controlStrategy == emInput.controlStrategy;
   }
 
   @Override
@@ -149,7 +148,7 @@ public class EmInput extends SystemParticipantInput {
 
   @Override
   public String toString() {
-    return "LoadInput{"
+    return "EmInput{"
         + "uuid="
         + getUuid()
         + ", id='"
