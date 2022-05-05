@@ -4,9 +4,9 @@ plugins {
 	id 'maven-publish'
 	id 'signing'
 	id 'pmd' // code check, working on source code
-	id 'com.diffplug.spotless' version '6.5.1'//code format
+	id 'com.diffplug.spotless' version '6.5.2'//code format
 	id 'com.github.spotbugs' version '5.0.6' // code check, working on byte code
-	id 'de.undercouch.download' version '5.0.5'
+	id 'de.undercouch.download' version '5.1.0'
 	id 'kr.motd.sphinx' version '2.10.1' // documentation generation
 	id 'jacoco' // java code coverage plugin
 	id "org.sonarqube" version "3.3" // sonarqube
@@ -93,7 +93,7 @@ dependencies {
 	// Databases
 	implementation 'org.influxdb:influxdb-java:2.22'
 	implementation 'com.couchbase.client:java-client:3.3.0'
-	runtimeOnly 'org.postgresql:postgresql:42.3.4' // postgresql jdbc driver required during runtime
+	runtimeOnly 'org.postgresql:postgresql:42.3.5' // postgresql jdbc driver required during runtime
 
 	implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
 	implementation 'org.apache.commons:commons-compress:1.21' // I/O functionalities
