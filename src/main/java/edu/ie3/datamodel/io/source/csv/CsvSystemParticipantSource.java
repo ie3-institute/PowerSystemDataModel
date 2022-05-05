@@ -172,7 +172,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             .collect(Collectors.toSet());
     Set<EmInput> emInputs =
         nodeAssetEntityStream(EmInput.class, emInputFactory, nodes, operators)
-            .filter(isPresentCollectIfNot(LoadInput.class, nonBuildEntities))
+            .filter(isPresentCollectIfNot(EmInput.class, nonBuildEntities))
             .map(Optional::get)
             .collect(Collectors.toSet());
 

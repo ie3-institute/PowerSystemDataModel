@@ -21,6 +21,7 @@ import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.BmInput
 import edu.ie3.datamodel.models.input.system.ChpInput
+import edu.ie3.datamodel.models.input.system.EmInput
 import edu.ie3.datamodel.models.input.system.EvInput
 import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput
@@ -309,6 +310,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		Transformer3WInput      || "transformer_3_w_input"
 		CylindricalStorageInput || "cylindrical_storage_input"
 		ThermalHouseInput       || "thermal_house_input"
+		EmInput					|| "em_input"
 	}
 
 	def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all input types models"() {

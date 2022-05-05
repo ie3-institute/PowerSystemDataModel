@@ -53,7 +53,7 @@ public class EmInputFactory
           id);
       controlStrategy = ControlStrategy.DefaultControlStrategies.NO_CONTROL_STRATEGY;
     }
-    final UUID[] connectedAssets = data.getUUIDs(CONNECTED_ASSETS);
+    final UUID[] connectedAssets = data.getUUIDs(data.getField(CONNECTED_ASSETS));
     return new EmInput(
         uuid,
         id,

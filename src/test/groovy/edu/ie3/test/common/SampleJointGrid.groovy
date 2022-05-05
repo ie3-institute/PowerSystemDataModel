@@ -132,7 +132,8 @@ class SampleJointGrid extends SystemParticipantTestData {
 				new HashSet<>(Arrays.asList(loadInput, loadInput1)),
 				Collections.singleton(pvInput),
 				Collections.singleton(storageInput),
-				Collections.emptySet())
+				Collections.emptySet(),
+		Collections.emptySet())
 	}
 
 	private static RawGridElements jointSampleRawGridElements() throws ParseException {

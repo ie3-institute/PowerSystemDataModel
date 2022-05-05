@@ -310,6 +310,18 @@ class SystemParticipantTestData {
 	EvcsLocationType.HOME
 	)
 
+	// Energy Management
+	public static final emInput = new EmInput(
+		UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
+		"test_emInput",
+			operator,
+			operationTime,
+			participantNode,
+			cosPhiFixed,
+			new UUID[]{loadInput.getUuid(), pvInput.getUuid()},
+			"self_optimization"
+	)
+
 	public static allParticipants = [
 		fixedFeedInInput,
 		pvInput,
@@ -319,7 +331,8 @@ class SystemParticipantTestData {
 		wecInput,
 		evInput,
 		chpInput,
-		hpInput
+		hpInput,
+		emInput
 	]
 
 }
