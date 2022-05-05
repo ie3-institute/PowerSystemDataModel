@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
-public class EnergyManagementInput extends SystemParticipantInput {
+public class EmInput extends SystemParticipantInput {
 
   /** Reference via UUID to all SystemParticipantInputs connected to this model */
   private final UUID[] connectedAssets;
@@ -34,7 +34,7 @@ public class EnergyManagementInput extends SystemParticipantInput {
    * @param connectedAssets array of all connected assets
    * @param controlStrategy control strategy used for this model
    */
-  public EnergyManagementInput(
+  public EmInput(
       UUID uuid,
       String id,
       OperatorInput operator,
@@ -61,7 +61,7 @@ public class EnergyManagementInput extends SystemParticipantInput {
    * @param emControlStrategy {@link edu.ie3.datamodel.models.EmControlStrategy} control strategy
    *     key
    */
-  public EnergyManagementInput(
+  public EmInput(
       UUID uuid,
       String id,
       OperatorInput operator,
@@ -85,7 +85,7 @@ public class EnergyManagementInput extends SystemParticipantInput {
    * @param connectedAssets array of all connected assets
    * @param controlStrategy control strategy used for this model
    */
-  public EnergyManagementInput(
+  public EmInput(
       UUID uuid,
       String id,
       NodeInput node,
@@ -108,7 +108,7 @@ public class EnergyManagementInput extends SystemParticipantInput {
    * @param emControlStrategy {@link edu.ie3.datamodel.models.EmControlStrategy} control strategy
    *     key
    */
-  public EnergyManagementInput(
+  public EmInput(
       UUID uuid,
       String id,
       NodeInput node,
@@ -136,10 +136,10 @@ public class EnergyManagementInput extends SystemParticipantInput {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof EnergyManagementInput energyManagementInput)) return false;
+    if (!(o instanceof EmInput emInput)) return false;
     if (!super.equals(o)) return false;
-    return connectedAssets == energyManagementInput.connectedAssets
-        && controlStrategy == energyManagementInput.controlStrategy;
+    return connectedAssets == emInput.connectedAssets
+        && controlStrategy == emInput.controlStrategy;
   }
 
   @Override
@@ -176,7 +176,7 @@ public class EnergyManagementInput extends SystemParticipantInput {
 
     private ControlStrategy controlStrategy;
 
-    protected EnergyManagementInputCopyBuilder(EnergyManagementInput entity) {
+    protected EnergyManagementInputCopyBuilder(EmInput entity) {
       super(entity);
       this.connectedAssets = entity.getConnectedAssets();
       this.controlStrategy = entity.getControlStrategy();
@@ -194,7 +194,7 @@ public class EnergyManagementInput extends SystemParticipantInput {
 
     @Override
     public SystemParticipantInput build() {
-      return new EnergyManagementInput(
+      return new EmInput(
           getUuid(),
           getId(),
           getOperator(),

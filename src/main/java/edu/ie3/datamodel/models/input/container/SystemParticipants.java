@@ -24,7 +24,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   private final Set<PvInput> pvPlants;
   private final Set<StorageInput> storages;
   private final Set<WecInput> wecPlants;
-  private final Set<EnergyManagementInput> emSystems;
+  private final Set<EmInput> emSystems;
 
   public SystemParticipants(
       Set<BmInput> bmPlants,
@@ -37,7 +37,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
       Set<PvInput> pvPlants,
       Set<StorageInput> storages,
       Set<WecInput> wecPlants,
-      Set<EnergyManagementInput> emSystems) {
+      Set<EmInput> emSystems) {
     this.bmPlants = bmPlants;
     this.chpPlants = chpPlants;
     this.evCS = evCS;
@@ -164,8 +164,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
             .collect(Collectors.toSet());
     this.emSystems =
         systemParticipants.parallelStream()
-            .filter(EnergyManagementInput.class::isInstance)
-            .map(EnergyManagementInput.class::cast)
+            .filter(EmInput.class::isInstance)
+            .map(EmInput.class::cast)
             .collect(Collectors.toSet());
   }
 

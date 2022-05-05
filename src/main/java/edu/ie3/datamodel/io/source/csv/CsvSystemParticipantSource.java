@@ -170,8 +170,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             .filter(isPresentCollectIfNot(HpInput.class, nonBuildEntities))
             .map(Optional::get)
             .collect(Collectors.toSet());
-    Set<EnergyManagementInput> emInputs =
-        nodeAssetEntityStream(EnergyManagementInput.class, emInputFactory, nodes, operators)
+    Set<EmInput> emInputs =
+        nodeAssetEntityStream(EmInput.class, emInputFactory, nodes, operators)
             .filter(isPresentCollectIfNot(LoadInput.class, nonBuildEntities))
             .map(Optional::get)
             .collect(Collectors.toSet());
@@ -743,7 +743,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   /** {@inheritDoc} */
   @Override
-  public Set<EnergyManagementInput> getEms() {
+  public Set<EmInput> getEms() {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getEms(rawGridSource.getNodes(operators), operators);
   }
@@ -761,9 +761,9 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
    */
   @Override
-  public Set<EnergyManagementInput> getEms(Set<NodeInput> nodes, Set<OperatorInput> operators) {
+  public Set<EmInput> getEms(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     return filterEmptyOptionals(
-            nodeAssetEntityStream(EnergyManagementInput.class, emInputFactory, nodes, operators))
+            nodeAssetEntityStream(EmInput.class, emInputFactory, nodes, operators))
         .collect(Collectors.toSet());
   }
 }

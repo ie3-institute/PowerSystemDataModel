@@ -391,7 +391,7 @@ public interface SystemParticipantSource extends DataSource {
       Set<HpTypeInput> types,
       Set<ThermalBusInput> thermalBuses);
 
-  Set<EnergyManagementInput> getEms();
+  Set<EmInput> getEms();
 
-  Set<EnergyManagementInput> getEms(Set<NodeInput> nodes, Set<OperatorInput> operators);
+  Set<EmInput> getEms(Set<NodeInput> nodes, Set<OperatorInput> operators);
 }

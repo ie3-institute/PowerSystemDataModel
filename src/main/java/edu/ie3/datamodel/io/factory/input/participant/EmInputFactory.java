@@ -11,14 +11,14 @@ import edu.ie3.datamodel.models.ControlStrategy;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.EnergyManagementInput;
+import edu.ie3.datamodel.models.input.system.EmInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EmInputFactory
-    extends SystemParticipantInputEntityFactory<EnergyManagementInput, NodeAssetInputEntityData> {
+    extends SystemParticipantInputEntityFactory<EmInput, NodeAssetInputEntityData> {
   private static final Logger logger = LoggerFactory.getLogger(EmInputFactory.class);
 
   private static final String CONNECTED_ASSETS = "connectedassets";
@@ -26,7 +26,7 @@ public class EmInputFactory
   private static final String CONTROL_STRATEGY = "controlstrategy";
 
   public EmInputFactory() {
-    super(EnergyManagementInput.class);
+    super(EmInput.class);
   }
 
   @Override
@@ -35,7 +35,7 @@ public class EmInputFactory
   }
 
   @Override
-  protected EnergyManagementInput buildModel(
+  protected EmInput buildModel(
       NodeAssetInputEntityData data,
       UUID uuid,
       String id,
@@ -54,7 +54,7 @@ public class EmInputFactory
       controlStrategy = ControlStrategy.DefaultControlStrategies.NO_CONTROL_STRATEGY;
     }
     final UUID[] connectedAssets = data.getUUIDs(CONNECTED_ASSETS);
-    return new EnergyManagementInput(
+    return new EmInput(
         uuid,
         id,
         operator,
