@@ -63,6 +63,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   private final StorageInputFactory storageInputFactory;
   private final WecInputFactory wecInputFactory;
   private final EvcsInputFactory evcsInputFactory;
+  private final EmInputFactory emInputFactory;
 
   public CsvSystemParticipantSource(
       String csvSep,
@@ -87,6 +88,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     this.storageInputFactory = new StorageInputFactory();
     this.wecInputFactory = new WecInputFactory();
     this.evcsInputFactory = new EvcsInputFactory();
+    this.emInputFactory = new EmInputFactory();
   }
 
   /** {@inheritDoc} */
@@ -168,6 +170,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             .filter(isPresentCollectIfNot(HpInput.class, nonBuildEntities))
             .map(Optional::get)
             .collect(Collectors.toSet());
+    Set<EnergyManagementInput> emInputs =
+        nodeAssetEntityStream(EnergyManagementInput.class, emInputFactory, nodes, operators)
+            .filter(isPresentCollectIfNot(LoadInput.class, nonBuildEntities))
+            .map(Optional::get)
+            .collect(Collectors.toSet());
 
     // if we found invalid elements return an empty optional and log the problems
     if (!nonBuildEntities.isEmpty()) {
@@ -187,7 +194,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             loads,
             pvInputs,
             storages,
-            wecInputs));
+            wecInputs,
+            emInputs));
   }
 
   /** {@inheritDoc} */
@@ -731,5 +739,31 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             typedEntityData.getTypeInput(),
             thermalBus.get(),
             thermalStorage.get()));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Set<EnergyManagementInput> getEms() {
+    Set<OperatorInput> operators = typeSource.getOperators();
+    return getEms(rawGridSource.getNodes(operators), operators);
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * <p>If the set of {@link NodeInput} entities is not exhaustive for all available {@link
+   * LoadInput} entities (e.g. a {@link NodeInput} entity is missing) or if an error during the
+   * building process occurs, the entity that misses something will be skipped (which can be seen as
+   * a filtering functionality), but all entities that are able to be built will be returned anyway
+   * and the elements that couldn't have been built are logged.
+   *
+   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
+   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
+   */
+  @Override
+  public Set<EnergyManagementInput> getEms(Set<NodeInput> nodes, Set<OperatorInput> operators) {
+    return filterEmptyOptionals(
+            nodeAssetEntityStream(EnergyManagementInput.class, emInputFactory, nodes, operators))
+        .collect(Collectors.toSet());
   }
 }

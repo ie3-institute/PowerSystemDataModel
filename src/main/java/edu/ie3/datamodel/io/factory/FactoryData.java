@@ -137,6 +137,26 @@ public abstract class FactoryData {
     }
   }
 
+  /**
+   * Parses and returns an array of UUIDs from field value of given field name. Throws {@link
+   * FactoryException} if field does not exist or parsing fails.
+   *
+   * @param field field name
+   * @return UUID
+   */
+  public UUID[] getUUIDs(String field) {
+    try {
+      String[] uuidFields = field.split(" ");
+      return (UUID[]) Arrays.stream(uuidFields).map(this::getUUID).toArray();
+    } catch (IllegalArgumentException iae) {
+      throw new FactoryException(
+          String.format(
+              "Exception while trying to parse UUIDs of field \"%s\" with value \"%s\"",
+              field, getField(field)),
+          iae);
+    }
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
