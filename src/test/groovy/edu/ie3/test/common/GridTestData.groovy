@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
+import edu.ie3.datamodel.models.input.container.SystemParticipants
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput

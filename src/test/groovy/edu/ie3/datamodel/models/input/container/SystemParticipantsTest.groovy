@@ -15,19 +15,7 @@ class SystemParticipantsTest extends Specification {
 
 	def "A valid collection of asset entities can be used to build a valid instance of SystemParticipants"() {
 		given:
-		def systemParticipants = new SystemParticipants(
-				Collections.singleton(SystemParticipantTestData.bmInput),
-				Collections.singleton(SystemParticipantTestData.chpInput),
-				Collections.emptySet(),
-				Collections.singleton(SystemParticipantTestData.evInput),
-				Collections.singleton(SystemParticipantTestData.fixedFeedInInput),
-				Collections.singleton(SystemParticipantTestData.hpInput),
-				Collections.singleton(SystemParticipantTestData.loadInput),
-				Collections.singleton(SystemParticipantTestData.pvInput),
-				Collections.singleton(SystemParticipantTestData.storageInput),
-				Collections.singleton(SystemParticipantTestData.wecInput)
-				)
-
+		def systemParticipants = SystemParticipantTestData.getEmptySystemParticipants()
 		when:
 		def newlyCreatedSystemParticipants = new SystemParticipants(systemParticipants.allEntitiesAsList())
 

@@ -70,7 +70,7 @@ public class EmInput extends SystemParticipantInput {
       ReactivePowerCharacteristic qCharacteristics,
       UUID[] connectedAssets,
       String emControlStrategy) {
-    super(uuid, id, node, qCharacteristics);
+    super(uuid, id, operator, operationTime, node, qCharacteristics);
     this.connectedAssets = connectedAssets;
     this.controlStrategy = EmControlStrategy.get(emControlStrategy);
   }
@@ -130,7 +130,7 @@ public class EmInput extends SystemParticipantInput {
 
   @Override
   public SystemParticipantInputCopyBuilder<?> copy() {
-    return new EnergyManagementInputCopyBuilder(this);
+    return new EmInputCopyBuilder(this);
   }
 
   @Override
@@ -168,25 +168,25 @@ public class EmInput extends SystemParticipantInput {
         + controlStrategy;
   }
 
-  public static class EnergyManagementInputCopyBuilder
-      extends SystemParticipantInputCopyBuilder<EnergyManagementInputCopyBuilder> {
+  public static class EmInputCopyBuilder
+      extends SystemParticipantInputCopyBuilder<EmInputCopyBuilder> {
 
     private UUID[] connectedAssets;
 
     private ControlStrategy controlStrategy;
 
-    protected EnergyManagementInputCopyBuilder(EmInput entity) {
+    protected EmInputCopyBuilder(EmInput entity) {
       super(entity);
       this.connectedAssets = entity.getConnectedAssets();
       this.controlStrategy = entity.getControlStrategy();
     }
 
-    public EnergyManagementInputCopyBuilder connectedAssets(UUID[] connectedAssets) {
+    public EmInputCopyBuilder connectedAssets(UUID[] connectedAssets) {
       this.connectedAssets = connectedAssets;
       return this;
     }
 
-    public EnergyManagementInputCopyBuilder controlStrategy(ControlStrategy controlStrategy) {
+    public EmInputCopyBuilder controlStrategy(ControlStrategy controlStrategy) {
       this.controlStrategy = controlStrategy;
       return this;
     }
@@ -205,7 +205,7 @@ public class EmInput extends SystemParticipantInput {
     }
 
     @Override
-    protected EnergyManagementInputCopyBuilder childInstance() {
+    protected EmInputCopyBuilder childInstance() {
       return this;
     }
   }

@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardLoadProfile
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.container.SystemParticipants
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiP
@@ -34,26 +35,26 @@ import static edu.ie3.datamodel.models.StandardUnits.*
 class SystemParticipantTestData {
 
 	// general participant data
-	private static final OperationTime operationTime = OperationTime.builder()
+	static final OperationTime operationTime = OperationTime.builder()
 	.withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-24 15:11:31"))
 	.withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
-	private static final OperatorInput operator = new OperatorInput(
+	static final OperatorInput operator = new OperatorInput(
 	UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator")
 	private static final NodeInput participantNode = GridTestData.nodeA
 
 	// general type data
-	private static final CosPhiFixed cosPhiFixed = new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}")
+	static final CosPhiFixed cosPhiFixed = new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}")
 	private static final CosPhiP cosPhiP = new CosPhiP("cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}")
 	private static final QV qV = new QV("qV:{(0.9,-0.3),(0.95,0.0),(1.05,0.0),(1.1,0.3)}")
 	public static final String cosPhiFixedDeSerialized = "cosPhiFixed:{(0.00,0.95)}"
 	public static final String cosPhiPDeSerialized = "cosPhiP:{(0.00,1.00),(0.90,1.00),(1.20,-0.30)}"
 	public static final String qVDeSerialized = "qV:{(0.90,-0.30),(0.95,0.00),(1.05,0.00),(1.10,0.30)}"
-	private static final ComparableQuantity<Power> sRated = Quantities.getQuantity(25d, ACTIVE_POWER_IN)
-	private static final double cosPhiRated = 0.95
+	static final ComparableQuantity<Power> sRated = Quantities.getQuantity(25d, ACTIVE_POWER_IN)
+	static final double cosPhiRated = 0.95
 	private static final UUID typeUuid = UUID.fromString("5ebd8f7e-dedb-4017-bb86-6373c4b68eb8")
 	private static final ComparableQuantity<Currency> capex = Quantities.getQuantity(100d, CAPEX)
 	private static final ComparableQuantity<EnergyPrice> opex = Quantities.getQuantity(50d, ENERGY_PRICE)
-	private static final ComparableQuantity<Dimensionless> etaConv = Quantities.getQuantity(98d, EFFICIENCY)
+	static final ComparableQuantity<Dimensionless> etaConv = Quantities.getQuantity(98d, EFFICIENCY)
 
 
 	// FixedFeedInput
@@ -69,11 +70,11 @@ class SystemParticipantTestData {
 	)
 
 	// PV
-	private static final double albedo = 0.20000000298023224d
-	private static final ComparableQuantity<Angle> azimuth = Quantities.getQuantity(-8.926613807678223d, AZIMUTH)
-	private static final ComparableQuantity<Angle> elevationAngle = Quantities.getQuantity(41.01871871948242d, SOLAR_ELEVATION_ANGLE)
-	private static double kT = 1d
-	private static double kG = 0.8999999761581421d
+	static final double albedo = 0.20000000298023224d
+	static final ComparableQuantity<Angle> azimuth = Quantities.getQuantity(-8.926613807678223d, AZIMUTH)
+	static final ComparableQuantity<Angle> elevationAngle = Quantities.getQuantity(41.01871871948242d, SOLAR_ELEVATION_ANGLE)
+	static double kT = 1d
+	static double kG = 0.8999999761581421d
 	public static final PvInput pvInput = new PvInput(
 	UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
 	"test_pvInput",
@@ -225,8 +226,8 @@ class SystemParticipantTestData {
 	)
 
 	// Load
-	private static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, ENERGY_IN)
-	private static final StandardLoadProfile standardLoadProfile = BdewLoadProfile.H0
+	static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, ENERGY_IN)
+	static final StandardLoadProfile standardLoadProfile = BdewLoadProfile.H0
 	public static final LoadInput loadInput = new LoadInput(
 	UUID.fromString("eaf77f7e-9001-479f-94ca-7fb657766f5f"),
 	"test_loadInput",
@@ -334,5 +335,20 @@ class SystemParticipantTestData {
 		hpInput,
 		emInput
 	]
+
+	static SystemParticipants getEmptySystemParticipants() {
+		return new SystemParticipants(
+				[] as Set,
+				[] as Set,
+				[] as Set,
+				[] as Set,
+				[] as Set,
+				[] as Set,
+				[] as Set,
+				[] as Set,
+				[] as Set,
+				[] as Set,
+				[] as Set)
+	}
 
 }

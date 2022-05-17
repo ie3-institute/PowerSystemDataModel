@@ -68,58 +68,58 @@ class SampleJointGrid extends SystemParticipantTestData {
 				new PvInput(
 				UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
 				"test_pvInput",
-				SystemParticipantTestData.operator,
-				SystemParticipantTestData.operationTime,
+						operator,
+						operationTime,
 				participantNode,
-				SystemParticipantTestData.cosPhiFixed,
-				SystemParticipantTestData.albedo,
-				SystemParticipantTestData.azimuth,
-				SystemParticipantTestData.etaConv,
-				SystemParticipantTestData.elevationAngle,
-				SystemParticipantTestData.kG,
-				SystemParticipantTestData.kT,
+						cosPhiFixed,
+						albedo,
+						azimuth,
+						etaConv,
+						elevationAngle,
+						kG,
+						kT,
 				false,
-				SystemParticipantTestData.sRated,
-				SystemParticipantTestData.cosPhiRated)
+						sRated,
+						cosPhiRated)
 
 		// Load
 		final LoadInput loadInput =
 				new LoadInput(
 				UUID.fromString("eaf77f7e-9001-479f-94ca-7fb657766f5f"),
 				"test_loadInput",
-				SystemParticipantTestData.operator,
-				SystemParticipantTestData.operationTime,
+						operator,
+						operationTime,
 				participantNode,
-				SystemParticipantTestData.cosPhiFixed,
-				SystemParticipantTestData.standardLoadProfile,
+						cosPhiFixed,
+						standardLoadProfile,
 				false,
-				SystemParticipantTestData.eConsAnnual,
-				SystemParticipantTestData.sRated,
-				SystemParticipantTestData.cosPhiRated)
+						eConsAnnual,
+						sRated,
+						cosPhiRated)
 
 		final LoadInput loadInput1 =
 				new LoadInput(
 				UUID.fromString("eaf77f7e-9001-479f-94ca-7fb657766f6f"),
 				"test_loadInput1",
-				SystemParticipantTestData.operator,
-				SystemParticipantTestData.operationTime,
+						operator,
+						operationTime,
 				participantNode,
-				SystemParticipantTestData.cosPhiFixed,
-				SystemParticipantTestData.standardLoadProfile,
+						cosPhiFixed,
+						standardLoadProfile,
 				false,
-				SystemParticipantTestData.eConsAnnual,
-				SystemParticipantTestData.sRated,
-				SystemParticipantTestData.cosPhiRated)
+						eConsAnnual,
+						sRated,
+						cosPhiRated)
 
 		// Storage
 		final StorageInput storageInput =
 				new StorageInput(
 				UUID.fromString("06b58276-8350-40fb-86c0-2414aa4a0452"),
 				"test_storageInput",
-				SystemParticipantTestData.operator,
-				SystemParticipantTestData.operationTime,
+						operator,
+						operationTime,
 				participantNode,
-				SystemParticipantTestData.cosPhiFixed,
+						cosPhiFixed,
 				storageTypeInput)
 
 		return new SystemParticipants(
@@ -156,10 +156,9 @@ class SampleJointGrid extends SystemParticipantTestData {
 	"nodeA",
 	OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited(),
-	Quantities.getQuantity(1, PowerSystemUnits.PU),
+	Quantities.getQuantity(1, PU),
 	false,
-	(Point)
-	geoJsonReader.read(
+	(Point) geoJsonReader.read(
 	"{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
 	GermanVoltageLevelUtils.LV,
 	1)
@@ -170,10 +169,9 @@ class SampleJointGrid extends SystemParticipantTestData {
 	"nodeB",
 	OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited(),
-	Quantities.getQuantity(1, PowerSystemUnits.PU),
+	Quantities.getQuantity(1, PU),
 	false,
-	(Point)
-	geoJsonReader.read(
+	(Point) geoJsonReader.read(
 	"{ \"type\": \"Point\", \"coordinates\": [6.593358228545043, 49.377139554965595] }"),
 	GermanVoltageLevelUtils.LV,
 	1)
@@ -184,10 +182,9 @@ class SampleJointGrid extends SystemParticipantTestData {
 	"nodeC",
 	OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited(),
-	Quantities.getQuantity(1, PowerSystemUnits.PU),
+	Quantities.getQuantity(1, PU),
 	false,
-	(Point)
-	geoJsonReader.read(
+	(Point) geoJsonReader.read(
 	"{ \"type\": \"Point\", \"coordinates\": [6.592850044965246, 49.37684839141148] }"),
 	GermanVoltageLevelUtils.LV,
 	1)
@@ -196,11 +193,11 @@ class SampleJointGrid extends SystemParticipantTestData {
 	new LineTypeInput(
 	UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
 	"lineType_AtoB",
-	Quantities.getQuantity(191.636993408203, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
-	Quantities.getQuantity(0, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
-	Quantities.getQuantity(0.253899991512299, PowerSystemUnits.OHM_PER_KILOMETRE),
-	Quantities.getQuantity(0.0691149979829788, PowerSystemUnits.OHM_PER_KILOMETRE),
-	Quantities.getQuantity(265, PowerSystemUnits.AMPERE),
+	Quantities.getQuantity(191.636993408203, SIEMENS_PER_KILOMETRE),
+	Quantities.getQuantity(0, SIEMENS_PER_KILOMETRE),
+	Quantities.getQuantity(0.253899991512299, OHM_PER_KILOMETRE),
+	Quantities.getQuantity(0.0691149979829788, OHM_PER_KILOMETRE),
+	Quantities.getQuantity(265, AMPERE),
 	Quantities.getQuantity(0.4, KILOVOLT))
 
 	public static final LineInput lineAB =
@@ -254,8 +251,7 @@ class SampleJointGrid extends SystemParticipantTestData {
 	OperationTime.notLimited(),
 	Quantities.getQuantity(1, PowerSystemUnits.PU),
 	false,
-	(Point)
-	geoJsonReader.read(
+	(Point) geoJsonReader.read(
 	"{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
 	GermanVoltageLevelUtils.MV_10KV,
 	2)
@@ -266,10 +262,9 @@ class SampleJointGrid extends SystemParticipantTestData {
 	"nodeE",
 	OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited(),
-	Quantities.getQuantity(1, PowerSystemUnits.PU),
+	Quantities.getQuantity(1, PU),
 	false,
-	(Point)
-	geoJsonReader.read(
+	(Point) geoJsonReader.read(
 	"{ \"type\": \"Point\", \"coordinates\": [6.572286813887139, 49.39770699548332] }"),
 	GermanVoltageLevelUtils.MV_10KV,
 	2)
@@ -280,10 +275,9 @@ class SampleJointGrid extends SystemParticipantTestData {
 	"nodeF",
 	OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited(),
-	Quantities.getQuantity(1, PowerSystemUnits.PU),
+	Quantities.getQuantity(1, PU),
 	false,
-	(Point)
-	geoJsonReader.read(
+	(Point) geoJsonReader.read(
 	"{ \"type\": \"Point\", \"coordinates\": [6.572286813887139, 49.38770799548332] }"),
 	GermanVoltageLevelUtils.MV_10KV,
 	2)
@@ -295,10 +289,9 @@ class SampleJointGrid extends SystemParticipantTestData {
 	"nodeG",
 	OperatorInput.NO_OPERATOR_ASSIGNED,
 	OperationTime.notLimited(),
-	Quantities.getQuantity(1, PowerSystemUnits.PU),
+	Quantities.getQuantity(1, PU),
 	false,
-	(Point)
-	geoJsonReader.read(
+	(Point) geoJsonReader.read(
 	"{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
 	GermanVoltageLevelUtils.HV,
 	4)
@@ -307,11 +300,11 @@ class SampleJointGrid extends SystemParticipantTestData {
 	new LineTypeInput(
 	UUID.fromString("4bed3eb3-9790-4874-89b5-a5434d408088"),
 	"lineType_AtoB",
-	Quantities.getQuantity(191.636993408203, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
-	Quantities.getQuantity(0, PowerSystemUnits.SIEMENS_PER_KILOMETRE),
-	Quantities.getQuantity(0.207000002264977, PowerSystemUnits.OHM_PER_KILOMETRE),
-	Quantities.getQuantity(0.0691149979829788, PowerSystemUnits.OHM_PER_KILOMETRE),
-	Quantities.getQuantity(300, PowerSystemUnits.AMPERE),
+	Quantities.getQuantity(191.636993408203, SIEMENS_PER_KILOMETRE),
+	Quantities.getQuantity(0, SIEMENS_PER_KILOMETRE),
+	Quantities.getQuantity(0.207000002264977, OHM_PER_KILOMETRE),
+	Quantities.getQuantity(0.0691149979829788, OHM_PER_KILOMETRE),
+	Quantities.getQuantity(300, AMPERE),
 	Quantities.getQuantity(10, KILOVOLT))
 
 	public static final LineInput lineDE =
