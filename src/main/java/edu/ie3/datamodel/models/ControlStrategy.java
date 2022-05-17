@@ -16,7 +16,7 @@ public interface ControlStrategy extends Serializable {
     if (key == null || key.isEmpty())
       return ControlStrategy.DefaultControlStrategies.NO_CONTROL_STRATEGY;
 
-    String filterKey = key.toLowerCase().replaceAll("-", "_");
+    String filterKey = key.toLowerCase().replace("-", "_");
     return Arrays.stream(EmControlStrategy.values())
         .filter(profile -> profile.getKey().equals(filterKey))
         .findFirst()
