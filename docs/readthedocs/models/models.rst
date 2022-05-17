@@ -136,7 +136,7 @@ Participant Related Models
 Default Input Directory Hierarchy
 ===============================
 
-.. figure:: ../docs/uml/main/input/DefaultInputDirectoryHierarchy.uml
+.. figure:: PowerSystemDataModel/docs/uml/main/input/DefaultInputDirectoryHierarchy.uml
    :align: center
    :alt: Default input directory hierarchy
 
