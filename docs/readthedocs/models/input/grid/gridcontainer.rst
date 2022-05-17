@@ -100,6 +100,12 @@ This sub container simply holds:
    * :ref:`schematic node graphics<node_graphic_model>`
    * :ref:`schematic line graphics<line_graphic_model>`
 
+Container Concept
+"""""""""""""""""
+   .. figure:: ../docs/uml/main/input/ModelContainerConcept.puml
+      :align: center
+      :alt: Model container concept
+
 Caveats
 ^^^^^^^
 Nothing - at least not known.
