@@ -129,7 +129,7 @@ public class EmInput extends SystemParticipantInput {
   }
 
   @Override
-  public SystemParticipantInputCopyBuilder<?> copy() {
+  public EmInputCopyBuilder copy() {
     return new EmInputCopyBuilder(this);
   }
 
@@ -192,7 +192,7 @@ public class EmInput extends SystemParticipantInput {
     }
 
     @Override
-    public SystemParticipantInput build() {
+    public EmInput build() {
       return new EmInput(
           getUuid(),
           getId(),
