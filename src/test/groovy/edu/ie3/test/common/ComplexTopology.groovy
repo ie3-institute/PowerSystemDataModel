@@ -14,7 +14,6 @@ import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SubGridContainer
 import edu.ie3.datamodel.models.input.container.SystemParticipants
 import org.jgrapht.graph.DirectedMultigraph
-import org.jgrapht.graph.SimpleDirectedGraph
 
 import static edu.ie3.test.common.SystemParticipantTestData.emptySystemParticipants
 
