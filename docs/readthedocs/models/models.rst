@@ -132,6 +132,14 @@ Participant Related Models
    input/participant/thermalhouse
    input/participant/cylindricalstorage
 
+
+Default Input Directory Hierarchy
+===============================
+
+.. uml:: http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ie3-institute/PowerSystemDataModel/dev/docs/uml/main/input/DefaultInputDirectoryHierarchy.puml
+   :align: center
+   :alt: Default Input Directory Hierarchy
+
 ******
 Result
 ******
