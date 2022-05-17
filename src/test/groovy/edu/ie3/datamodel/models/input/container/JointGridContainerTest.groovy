@@ -29,6 +29,7 @@ class JointGridContainerTest extends Specification {
 	[] as Set,
 	[] as Set,
 	[] as Set,
+	[] as Set,
 	[] as Set)
 
 	private static final GraphicElements GRAPHIC_ELEMENTS = new GraphicElements(
