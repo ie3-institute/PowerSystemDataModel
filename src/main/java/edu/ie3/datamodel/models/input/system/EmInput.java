@@ -138,7 +138,8 @@ public class EmInput extends SystemParticipantInput {
     if (this == o) return true;
     if (!(o instanceof EmInput emInput)) return false;
     if (!super.equals(o)) return false;
-    return connectedAssets == emInput.connectedAssets && controlStrategy == emInput.controlStrategy;
+    return Arrays.equals(connectedAssets, emInput.connectedAssets)
+        && controlStrategy == emInput.controlStrategy;
   }
 
   @Override
@@ -165,7 +166,8 @@ public class EmInput extends SystemParticipantInput {
         + ", connectedAssets="
         + Arrays.toString(connectedAssets)
         + ", controlStrategy="
-        + controlStrategy;
+        + controlStrategy
+        + '}';
   }
 
   public static class EmInputCopyBuilder

@@ -55,6 +55,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 			assert (systemParticipants.getWecPlants().first().uuid == sptd.wecInput.uuid)
 			assert (systemParticipants.getStorages().first().uuid == sptd.storageInput.uuid)
 			assert (systemParticipants.getEvCS().first().uuid == sptd.evcsInput.uuid)
+			assert (systemParticipants.getEmSystems().first().uuid == sptd.emInput.uuid)
 		})
 	}
 
@@ -381,5 +382,22 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 			sptd.fixedFeedInInput.operator
 		] as List || 0             || []
 		[]| [] as List       || 0             || []
+	}
+
+	def "A CsvSystemParticipantSource should return data from valid em input file as expected"() {
+		given:
+		def csvSystemParticipantSource = new CsvSystemParticipantSource(csvSep, participantsFolderPath,
+				fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvThermalSource), Mock(CsvRawGridSource))
+
+		expect:
+		def sysParts = csvSystemParticipantSource.getEmSystems(nodes as Set, operators as Set)
+		sysParts.size() == resultingSize
+		sysParts == resultingSet as Set
+
+		where:
+		nodes               | operators               || resultingSize || resultingSet
+		[sptd.emInput.node] | [sptd.emInput.operator] || 1             || [sptd.emInput]
+		[]                  | [sptd.pvInput.operator] || 0             || []
+		[]					| []					  || 0             || []
 	}
 }

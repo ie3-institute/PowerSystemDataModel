@@ -743,9 +743,9 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   /** {@inheritDoc} */
   @Override
-  public Set<EmInput> getEms() {
+  public Set<EmInput> getEmSystems() {
     Set<OperatorInput> operators = typeSource.getOperators();
-    return getEms(rawGridSource.getNodes(operators), operators);
+    return getEmSystems(rawGridSource.getNodes(operators), operators);
   }
 
   /**
@@ -761,7 +761,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
    */
   @Override
-  public Set<EmInput> getEms(Set<NodeInput> nodes, Set<OperatorInput> operators) {
+  public Set<EmInput> getEmSystems(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     return filterEmptyOptionals(
             nodeAssetEntityStream(EmInput.class, emInputFactory, nodes, operators))
         .collect(Collectors.toSet());

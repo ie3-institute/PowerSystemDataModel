@@ -48,6 +48,29 @@ class EmInputTest extends Specification {
 
     def "The EmInput to String method work as expected"() {
 
+        given:
+        def emInputToString = SystemParticipantTestData.emInput.toString()
+
+        expect:
+        emInputToString == "EmInput{" +
+            "uuid=" +
+            SystemParticipantTestData.emInput.getUuid() +
+            ", id='"
+            + SystemParticipantTestData.emInput.getId()
+            + ", operator="
+            + SystemParticipantTestData.emInput.getOperator().getUuid()
+            + ", operationTime="
+            + SystemParticipantTestData.emInput.getOperationTime()
+            + ", node="
+            + SystemParticipantTestData.emInput.getNode().getUuid()
+            + ", qCharacteristics='"
+            + SystemParticipantTestData.emInput.getqCharacteristics()
+            + '\''
+            + ", connectedAssets="
+            + Arrays.toString(SystemParticipantTestData.emInput.connectedAssets)
+            + ", controlStrategy="
+            + SystemParticipantTestData.emInput.controlStrategy
+            + '}'
     }
 
     def "A EmInput copy method should work as expected"() {
