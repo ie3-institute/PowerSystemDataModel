@@ -23,7 +23,7 @@ class EmInputTest extends Specification {
             assert uuid == emInput.uuid
             assert operationTime == emInput.operationTime
             assert operator == emInput.operator
-            assert id == "newId"
+            assert id == emInput.id
             assert qCharacteristics == emInput.qCharacteristics
             assert connectedAssets == newConnectedAssets
             assert controlStrategy == NO_CONTROL_STRATEGY
