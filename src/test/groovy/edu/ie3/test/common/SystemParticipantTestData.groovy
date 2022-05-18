@@ -40,7 +40,7 @@ class SystemParticipantTestData {
 	.withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25 15:11:31")).build()
 	static final OperatorInput operator = new OperatorInput(
 	UUID.fromString("8f9682df-0744-4b58-a122-f0dc730f6510"), "TestOperator")
-	private static final NodeInput participantNode = GridTestData.nodeA
+	public static final NodeInput participantNode = GridTestData.nodeA
 
 	// general type data
 	static final CosPhiFixed cosPhiFixed = new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}")
@@ -312,6 +312,8 @@ class SystemParticipantTestData {
 	)
 
 	// Energy Management
+	public static final UUID[] connectedAssets = new UUID[]{loadInput.getUuid(), pvInput.getUuid()}
+	public static final String emControlStrategy = "self_optimization"
 	public static final emInput = new EmInput(
 		UUID.fromString("977157f4-25e5-4c72-bf34-440edc778792"),
 		"test_emInput",
@@ -319,8 +321,8 @@ class SystemParticipantTestData {
 			operationTime,
 			participantNode,
 			cosPhiFixed,
-			new UUID[]{loadInput.getUuid(), pvInput.getUuid()},
-			"self_optimization"
+			connectedAssets,
+			emControlStrategy
 	)
 
 	public static allParticipants = [
