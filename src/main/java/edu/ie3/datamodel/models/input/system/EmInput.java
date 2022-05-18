@@ -162,7 +162,6 @@ public class EmInput extends SystemParticipantInput {
         + getNode().getUuid()
         + ", qCharacteristics='"
         + getqCharacteristics()
-        + '\''
         + ", connectedAssets="
         + Arrays.toString(connectedAssets)
         + ", controlStrategy="
