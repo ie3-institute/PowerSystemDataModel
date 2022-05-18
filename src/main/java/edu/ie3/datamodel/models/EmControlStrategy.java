@@ -27,7 +27,7 @@ public enum EmControlStrategy implements ControlStrategy {
                 new IllegalArgumentException(
                     "No predefined energy management control strategy '"
                         + key
-                        + "' found. Please provide one of the following keys:"
+                        + "' found. Please provide one of the following keys: "
                         + Arrays.stream(EmControlStrategy.values())
                             .map(EmControlStrategy::getKey)
                             .collect(Collectors.joining(", "))));

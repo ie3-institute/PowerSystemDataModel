@@ -12,7 +12,7 @@ class EmInputTest extends Specification {
     def "A EmInput copy method should work as expected"() {
         given:
         def emInput = SystemParticipantTestData.emInput
-        def newConnectedAssets = [UUID.randomUUID()] as UUID[]
+        def newConnectedAssets = [UUID.randomUUID(), UUID.randomUUID()] as UUID[]
 
 
         when:
