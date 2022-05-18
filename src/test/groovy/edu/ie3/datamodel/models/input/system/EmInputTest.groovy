@@ -1,10 +1,9 @@
 package edu.ie3.datamodel.models.input.system
 
+import static edu.ie3.datamodel.models.ControlStrategy.DefaultControlStrategies.NO_CONTROL_STRATEGY
 import edu.ie3.datamodel.models.ControlStrategy
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
-
-import static edu.ie3.datamodel.models.ControlStrategy.DefaultControlStrategies.NO_CONTROL_STRATEGY
 
 
 class EmInputTest extends Specification {
@@ -26,7 +25,7 @@ class EmInputTest extends Specification {
             assert id == "test_emInput"
             assert qCharacteristics == SystemParticipantTestData.cosPhiFixed
             assert connectedAssets ==  SystemParticipantTestData.connectedAssets
-            assert controlStrategy.getKey() == SystemParticipantTestData.emControlStrategy
+            assert controlStrategy.key == SystemParticipantTestData.emControlStrategy
 
         }
     }
@@ -54,17 +53,17 @@ class EmInputTest extends Specification {
         expect:
         emInputToString == "EmInput{" +
             "uuid=" +
-            SystemParticipantTestData.emInput.getUuid() +
+            SystemParticipantTestData.emInput.uuid +
             ", id='" +
-            SystemParticipantTestData.emInput.getId() +
+            SystemParticipantTestData.emInput.id +
             ", operator=" +
-            SystemParticipantTestData.emInput.getOperator().getUuid() +
+            SystemParticipantTestData.emInput.operator.uuid +
             ", operationTime=" +
-            SystemParticipantTestData.emInput.getOperationTime() +
+            SystemParticipantTestData.emInput.operationTime +
             ", node=" +
-            SystemParticipantTestData.emInput.getNode().getUuid() +
+            SystemParticipantTestData.emInput.node.uuid +
             ", qCharacteristics='" +
-            SystemParticipantTestData.emInput.getqCharacteristics() +
+            SystemParticipantTestData.emInput.qCharacteristics +
             ", connectedAssets=" +
             Arrays.toString(SystemParticipantTestData.emInput.connectedAssets) +
             ", controlStrategy=" +

@@ -5,13 +5,11 @@
  */
 package edu.ie3.datamodel.io.sink
 
-import edu.ie3.datamodel.models.input.system.EmInput
-import edu.ie3.datamodel.models.input.system.LoadInput
-
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static tech.units.indriya.unit.Units.PERCENT
-
+import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
+import edu.ie3.datamodel.models.input.system.EmInput
+import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor

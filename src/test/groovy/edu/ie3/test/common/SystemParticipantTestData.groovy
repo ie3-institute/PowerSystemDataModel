@@ -5,6 +5,7 @@
  */
 package edu.ie3.test.common
 
+import static edu.ie3.datamodel.models.StandardUnits.*
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardLoadProfile
@@ -29,7 +30,6 @@ import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.*
 
-import static edu.ie3.datamodel.models.StandardUnits.*
 
 
 class SystemParticipantTestData {

@@ -13,7 +13,7 @@ class SystemParticipantsTest extends Specification {
 
 	def "A valid collection of asset entities can be used to build a valid instance of SystemParticipants"() {
 		given:
-		def systemParticipants = SystemParticipantTestData.getEmptySystemParticipants()
+		def systemParticipants = SystemParticipantTestData.emptySystemParticipants
 		when:
 		def newlyCreatedSystemParticipants = new SystemParticipants(systemParticipants.allEntitiesAsList())
 
