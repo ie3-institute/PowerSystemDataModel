@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.models.input.container
 
-import static edu.ie3.test.common.SystemParticipantTestData.getEmptySystemParticipants
+import static edu.ie3.test.common.SystemParticipantTestData.emptySystemParticipants
 import edu.ie3.test.common.GridTestData
 import spock.lang.Specification
 
