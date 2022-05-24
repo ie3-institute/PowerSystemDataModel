@@ -119,10 +119,10 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
 	def "The CsvIdCoordinateSource is able to return the nearest n coordinates in a collection" () {
 		given:
 		def allCoordinates = [
-			GeoUtils.buildPoint(1d, 39d),
-			GeoUtils.buildPoint(2d, 40d),
-			GeoUtils.buildPoint(1d, 40d),
-			GeoUtils.buildPoint(2d, 39d)
+			GeoUtils.buildPoint(39d, 1d),
+			GeoUtils.buildPoint(40d, 2d),
+			GeoUtils.buildPoint(40d, 1d),
+			GeoUtils.buildPoint(39d, 2d)
 		]
 
 		def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
