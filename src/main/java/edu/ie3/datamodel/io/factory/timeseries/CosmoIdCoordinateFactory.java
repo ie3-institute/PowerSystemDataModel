@@ -28,7 +28,7 @@ public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
     int coordinateId = data.getInt(COORDINATE_ID);
     double lat = data.getDouble(LAT_GEO);
     double lon = data.getDouble(LONG_GEO);
-    return Pair.of(coordinateId, GeoUtils.xyToPoint(lon, lat));
+    return Pair.of(coordinateId, GeoUtils.buildPoint(lon, lat));
   }
 
   @Override
