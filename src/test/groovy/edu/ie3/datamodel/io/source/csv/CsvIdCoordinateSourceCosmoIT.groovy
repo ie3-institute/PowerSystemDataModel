@@ -40,7 +40,7 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
 	def "The CsvIdCoordinateSource is able to look up a specific point or an empty Optional otherwise" () {
 		given:
 		def knownCoordinateId = 106582
-		def expectedPointA = Optional.of(GeoUtils.xyToPoint(1.438028, 39.617161))
+		def expectedPointA = Optional.of(GeoUtils.buildPoint(1.438028, 39.617161))
 		def unknownCoordinateId = 42
 
 		when: "looking up a known coordinate id"
@@ -59,9 +59,9 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
 	def "The CsvIdCoordinateSource is able to look up specified points" () {
 		int[] ids = 106580..106582
 		def expectedCoordinates = [
-			GeoUtils.xyToPoint(1.279336, 39.602772),
-			GeoUtils.xyToPoint(1.358673, 39.610001),
-			GeoUtils.xyToPoint(1.438028, 39.617161)
+			GeoUtils.buildPoint(1.279336, 39.602772),
+			GeoUtils.buildPoint(1.358673, 39.610001),
+			GeoUtils.buildPoint(1.438028, 39.617161)
 		].toSet()
 
 		when:
@@ -72,9 +72,9 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
 	}
 
 	def "The CsvIdCoordinateSource is able to return a specific ID or an empty Optional otherwise" () {
-		def knownCoordinate = GeoUtils.xyToPoint(1.279336, 39.602772)
+		def knownCoordinate = GeoUtils.buildPoint(1.279336, 39.602772)
 		def expectedIdForA = Optional.of(106580)
-		def unknownCoordinate = GeoUtils.xyToPoint(14.39335, 48.035011)
+		def unknownCoordinate = GeoUtils.buildPoint(14.39335, 48.035011)
 
 		when: "looking up an id of a known coordinate"
 		def actualIdForA = source.getId(knownCoordinate)
@@ -103,10 +103,10 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
 	def "The CsvIdCoordinateSource is able to return all available coordinates" () {
 		given:
 		def expectedCoordinates = [
-			GeoUtils.xyToPoint(1.279336, 39.602772),
-			GeoUtils.xyToPoint(1.358673, 39.610001),
-			GeoUtils.xyToPoint(1.438028, 39.617161),
-			GeoUtils.xyToPoint(1.5174021, 39.624249)
+			GeoUtils.buildPoint(1.279336, 39.602772),
+			GeoUtils.buildPoint(1.358673, 39.610001),
+			GeoUtils.buildPoint(1.438028, 39.617161),
+			GeoUtils.buildPoint(1.5174021, 39.624249)
 		].toSet()
 
 		when:
@@ -119,13 +119,13 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
 	def "The CsvIdCoordinateSource is able to return the nearest n coordinates in a collection" () {
 		given:
 		def allCoordinates = [
-			GeoUtils.xyToPoint(1d, 39d),
-			GeoUtils.xyToPoint(2d, 40d),
-			GeoUtils.xyToPoint(1d, 40d),
-			GeoUtils.xyToPoint(2d, 39d)
+			GeoUtils.buildPoint(1d, 39d),
+			GeoUtils.buildPoint(2d, 40d),
+			GeoUtils.buildPoint(1d, 40d),
+			GeoUtils.buildPoint(2d, 39d)
 		]
 
-		def basePoint = GeoUtils.xyToPoint(1.438029, 39.617162)
+		def basePoint = GeoUtils.buildPoint(1.438029, 39.617162)
 		def expectedDistances = [
 			new CoordinateDistance(basePoint, allCoordinates[2]),
 			new CoordinateDistance(basePoint, allCoordinates[1])
@@ -142,7 +142,7 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
 		given:
 		def n = 2
 		def allCoordinates = source.allCoordinates
-		def basePoint = GeoUtils.xyToPoint(1.438029, 39.617162)
+		def basePoint = GeoUtils.buildPoint(1.438029, 39.617162)
 		def expectedDistances = source.getNearestCoordinates(basePoint, n, allCoordinates)
 
 		when:

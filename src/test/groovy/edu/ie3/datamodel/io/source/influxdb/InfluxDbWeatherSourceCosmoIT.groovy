@@ -128,7 +128,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
 	def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to it's ID"() {
 		given:
 		def validCoordinate = CosmoWeatherTestData.COORDINATE_193186
-		def invalidCoordinate = GeoUtils.xyToPoint(48d, 7d)
+		def invalidCoordinate = GeoUtils.buildPoint(48d, 7d)
 		def time = CosmoWeatherTestData.TIME_15H
 		def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
 		def emptyTimeSeries = new IndividualTimeSeries(UUID.randomUUID(), Collections.emptySet())
