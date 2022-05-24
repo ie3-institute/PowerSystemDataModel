@@ -28,7 +28,7 @@ public class IconIdCoordinateFactory extends IdCoordinateFactory {
     int coordinateId = data.getInt(COORDINATE_ID);
     double lat = data.getDouble(LAT);
     double lon = data.getDouble(LONG);
-    return Pair.of(coordinateId, GeoUtils.buildPoint(lon, lat));
+    return Pair.of(coordinateId, GeoUtils.buildPoint(lat, lon));
   }
 
   @Override

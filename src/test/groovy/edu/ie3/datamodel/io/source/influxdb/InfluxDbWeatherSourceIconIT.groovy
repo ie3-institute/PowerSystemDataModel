@@ -117,7 +117,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 	def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to it's ID"() {
 		given:
 		def validCoordinate = IconWeatherTestData.COORDINATE_67775
-		def invalidCoordinate = GeoUtils.buildPoint(48d, 7d)
+		def invalidCoordinate = GeoUtils.buildPoint(7d, 48d)
 		def time = IconWeatherTestData.TIME_15H
 		def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H , IconWeatherTestData.TIME_17H)
 		def emptyTimeSeries = new IndividualTimeSeries(UUID.randomUUID(), Collections.emptySet())

@@ -63,7 +63,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
 	def "A SqlWeatherSource returns nothing for an invalid coordinate"() {
 		when:
-		def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, GeoUtils.buildPoint(88d, 89d))
+		def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, GeoUtils.buildPoint(89d, 88d))
 
 		then:
 		optTimeBasedValue.empty
@@ -97,7 +97,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 	def "A SqlWeatherSource returns nothing for invalid coordinates"() {
 		given:
 		def coordinates = [
-				GeoUtils.buildPoint(88d, 89d),
+				GeoUtils.buildPoint(89d, 88d),
 				GeoUtils.buildPoint(89d, 89d)
 		]
 		def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.TIME_17H)

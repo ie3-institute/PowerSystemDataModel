@@ -28,7 +28,7 @@ public class NodeInput extends AssetInput {
   private final Point geoPosition;
 
   /** Use this default value if geoPosition is unknown */
-  public static final Point DEFAULT_GEO_POSITION = GeoUtils.buildPoint(7.4116482, 51.4843281);
+  public static final Point DEFAULT_GEO_POSITION = GeoUtils.buildPoint(51.4843281, 7.4116482);
 
   /** Voltage level of this node */
   private final VoltageLevel voltLvl;
