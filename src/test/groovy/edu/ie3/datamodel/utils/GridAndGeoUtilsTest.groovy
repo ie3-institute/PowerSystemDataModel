@@ -25,7 +25,7 @@ class GridAndGeoUtilsTest extends Specification {
 
 		then:
 		def e = thrown(IllegalStateException)
-		e.message == "Utility classes cannot be instantiated"
+		e.message == "Utility classes cannot be instantiated."
 	}
 
 	def "The grid and geo utils should calculate distance between two nodes correctly"() {
