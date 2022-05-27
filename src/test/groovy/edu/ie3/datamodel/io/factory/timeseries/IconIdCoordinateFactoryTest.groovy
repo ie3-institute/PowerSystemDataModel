@@ -66,7 +66,7 @@ class IconIdCoordinateFactoryTest extends Specification {
 			"latitude":"52.312",
 			"longitude":"12.812",
 			"coordinatetype":"ICON"] as Map<String, String>, Pair)
-		Pair<Integer, Point> expectedPair = Pair.of(477295, GeoUtils.xyToPoint(12.812, 52.312))
+		Pair<Integer, Point> expectedPair = Pair.of(477295, GeoUtils.buildPoint(52.312, 12.812))
 
 		when:
 		def actual = factory.get(validSimpleFactoryData)

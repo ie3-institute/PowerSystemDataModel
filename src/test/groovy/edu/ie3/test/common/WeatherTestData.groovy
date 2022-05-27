@@ -18,11 +18,11 @@ abstract class WeatherTestData {
 		@Override
 		Optional<Point> getCoordinate(int id) {
 			switch (id) {
-				case 193186: return Optional.of(GeoUtils.xyToPoint(49d, 7d))
-				case 193187: return Optional.of(GeoUtils.xyToPoint(49d, 8d))
-				case 193188: return Optional.of(GeoUtils.xyToPoint(50d, 7d))
-				case 67775: return Optional.of(GeoUtils.xyToPoint(50d, 8d))
-				case 67776: return Optional.of(GeoUtils.xyToPoint(51d, 7d))
+				case 193186: return Optional.of(GeoUtils.buildPoint(7d, 49d))
+				case 193187: return Optional.of(GeoUtils.buildPoint(8d, 49d))
+				case 193188: return Optional.of(GeoUtils.buildPoint(7d, 50d))
+				case 67775: return Optional.of(GeoUtils.buildPoint(8d, 50d))
+				case 67776: return Optional.of(GeoUtils.buildPoint(7d, 51d))
 			}
 			return Optional.empty()
 		}
@@ -53,11 +53,11 @@ abstract class WeatherTestData {
 		@Override
 		Collection<Point> getAllCoordinates() {
 			return [
-				GeoUtils.xyToPoint(49d, 7d),
-				GeoUtils.xyToPoint(49d, 8d),
-				GeoUtils.xyToPoint(50d, 7d),
-				GeoUtils.xyToPoint(50d, 8d),
-				GeoUtils.xyToPoint(51d, 7d)
+				GeoUtils.buildPoint(7d, 49d),
+				GeoUtils.buildPoint(8d, 49d),
+				GeoUtils.buildPoint(7d, 50d),
+				GeoUtils.buildPoint(8d, 50d),
+				GeoUtils.buildPoint(7d, 51d)
 			]
 		}
 	}
