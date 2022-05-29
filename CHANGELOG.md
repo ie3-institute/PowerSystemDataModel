@@ -47,7 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - `directirradiation` to `directirradiance`
       - ICON model:
         - `"datum"` to `"time"`
-	-   Force user to provide time stamp pattern to `CouchbaseWeatherSource` to ensure harmonized querying
+    - Force user to provide time stamp pattern to `CouchbaseWeatherSource` to ensure harmonized querying
+- BREAKING: Updating PowerSystemUtils dependency to 2.0-SNAPSHOT [#595](https://github.com/ie3-institute/PowerSystemDataModel/issues/595)
 
 ## [2.1.0] - 2022-01-05
 

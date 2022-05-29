@@ -16,7 +16,7 @@ public class GridAndGeoUtils extends GeoUtils {
 
   /** Private Constructor as this class is not meant to be instantiated */
   private GridAndGeoUtils() {
-    throw new IllegalStateException("Utility classes cannot be instantiated");
+    throw new IllegalStateException("Utility classes cannot be instantiated.");
   }
 
   /**
