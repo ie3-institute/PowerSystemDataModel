@@ -11,7 +11,7 @@ import java.time.DayOfWeek;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Unique entry to a {@link LoadProfileInput} */
+/** Unique entry to a {@link StandardLoadProfile} */
 public class LoadProfileEntry extends TimeSeriesEntry<PValue> {
   private final DayOfWeek dayOfWeek;
   private final int quarterHourOfDay;

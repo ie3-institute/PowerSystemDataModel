@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * Wasserwirtschaft; engl.Federal Association of the Energy and Water Industry). For more details
  * see https://www.bdew.de/energie/standardlastprofile-strom/
  */
-public enum BdewLoadProfile implements LoadProfile {
+public enum BdewStandardLoadProfile implements StandardLoadProfile {
   H0("h0"), // Households
   L0("l0"), // Agricultural enterprises without further differentiation
   L1("l1"), // Agricultural enterprises with dairy sector
@@ -28,7 +28,7 @@ public enum BdewLoadProfile implements LoadProfile {
 
   private final String key;
 
-  BdewLoadProfile(String key) {
+  BdewStandardLoadProfile(String key) {
     this.key = key.toLowerCase();
   }
 
@@ -39,8 +39,8 @@ public enum BdewLoadProfile implements LoadProfile {
    * @return The corresponding bdew load profile or throw {@link IllegalArgumentException}, if no
    *     matching load profile can be found
    */
-  public static BdewLoadProfile get(String key) {
-    return Arrays.stream(BdewLoadProfile.values())
+  public static BdewStandardLoadProfile get(String key) {
+    return Arrays.stream(BdewStandardLoadProfile.values())
         .filter(loadProfile -> loadProfile.key.equalsIgnoreCase(key))
         .findFirst()
         .orElseThrow(
@@ -49,8 +49,8 @@ public enum BdewLoadProfile implements LoadProfile {
                     "No predefined bdew load profile with key '"
                         + key
                         + "' found. Please provide one of the following keys:"
-                        + Arrays.stream(BdewLoadProfile.values())
-                            .map(BdewLoadProfile::getKey)
+                        + Arrays.stream(BdewStandardLoadProfile.values())
+                            .map(BdewStandardLoadProfile::getKey)
                             .collect(Collectors.joining(", "))));
   }
 

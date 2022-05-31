@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.timeseries.repetitive;
 
 import static java.time.temporal.ChronoUnit.HOURS;
 
-import edu.ie3.datamodel.models.LoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
@@ -15,11 +14,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 // TODO This is a sample implementation, please implement a real scenario
-public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PValue> {
-  private final LoadProfile type;
+public class StandardLoadProfile extends RepetitiveTimeSeries<LoadProfileEntry, PValue> {
+  private final edu.ie3.datamodel.models.StandardLoadProfile type;
   private final Map<DayOfWeek, Map<Integer, PValue>> dayOfWeekToHourlyValues;
 
-  public LoadProfileInput(UUID uuid, LoadProfile type, Set<LoadProfileEntry> values) {
+  public StandardLoadProfile(UUID uuid, edu.ie3.datamodel.models.StandardLoadProfile type, Set<LoadProfileEntry> values) {
     super(uuid, values);
     this.type = type;
     this.dayOfWeekToHourlyValues =
@@ -31,7 +30,7 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
                         LoadProfileEntry::getQuarterHourOfDay, LoadProfileEntry::getValue)));
   }
 
-  public LoadProfileInput(LoadProfile type, Set<LoadProfileEntry> values) {
+  public StandardLoadProfile(edu.ie3.datamodel.models.StandardLoadProfile type, Set<LoadProfileEntry> values) {
     this(UUID.randomUUID(), type, values);
   }
 
@@ -50,7 +49,7 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
     return Optional.of(time.plus(1, HOURS));
   }
 
-  public LoadProfile getType() {
+  public edu.ie3.datamodel.models.StandardLoadProfile getType() {
     return type;
   }
 
@@ -59,7 +58,7 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
-    LoadProfileInput that = (LoadProfileInput) o;
+    StandardLoadProfile that = (StandardLoadProfile) o;
     return type.equals(that.type) && dayOfWeekToHourlyValues.equals(that.dayOfWeekToHourlyValues);
   }
 

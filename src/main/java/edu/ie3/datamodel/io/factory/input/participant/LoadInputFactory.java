@@ -7,7 +7,7 @@ package edu.ie3.datamodel.io.factory.input.participant;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
-import edu.ie3.datamodel.models.LoadProfile;
+import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -48,15 +48,15 @@ public class LoadInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    LoadProfile slp;
+    StandardLoadProfile slp;
     try {
-      slp = LoadProfile.parse(data.getField(SLP));
+      slp = StandardLoadProfile.parse(data.getField(SLP));
     } catch (ParsingException e) {
       logger.warn(
           "Cannot parse the standard load profile \"{}\" of load \"{}\". Assign no load profile instead.",
           data.getField(SLP),
           id);
-      slp = LoadProfile.DefaultLoadProfiles.NO_STANDARD_LOAD_PROFILE;
+      slp = StandardLoadProfile.DefaultStandardLoadProfiles.NO_STANDARD_LOAD_PROFILE;
     }
     final boolean dsm = data.getBoolean(DSM);
     final ComparableQuantity<Energy> eConsAnnual =

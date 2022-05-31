@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.naming
 
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
-import edu.ie3.datamodel.models.BdewLoadProfile
+import edu.ie3.datamodel.models.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.RandomLoadParameters
@@ -56,7 +56,7 @@ import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
+import edu.ie3.datamodel.models.timeseries.repetitive.StandardLoadProfile
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.util.quantities.PowerSystemUnits
@@ -447,7 +447,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 	def "A EntityPersistenceNamingStrategy without pre- or suffix should return valid file name for load profile input" () {
 		given:
 		EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
-		LoadProfileInput timeSeries = Mock(LoadProfileInput)
+		StandardLoadProfile timeSeries = Mock(StandardLoadProfile)
 		timeSeries.uuid >> uuid
 		timeSeries.type >> type
 
@@ -460,7 +460,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 
 		where:
 		clazz            | uuid                                                    | type               || expectedFileName
-		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewLoadProfile.G3 || "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
+		StandardLoadProfile | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
 	def "A EntityPersistenceNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {

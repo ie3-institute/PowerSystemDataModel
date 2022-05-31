@@ -11,7 +11,7 @@ package edu.ie3.datamodel.models;
  * more details see <a
  * href="https://www.bdew.de/media/documents/LPuVe-Praxisleitfaden.pdf">here</a>.
  */
-public enum NbwTemperatureDependantLoadProfile implements LoadProfile {
+public enum NbwTemperatureDependantStandardLoadProfile implements StandardLoadProfile {
   // heat pumps
   EP1("ep1"),
 
@@ -20,7 +20,7 @@ public enum NbwTemperatureDependantLoadProfile implements LoadProfile {
 
   private final String key;
 
-  NbwTemperatureDependantLoadProfile(String key) {
+  NbwTemperatureDependantStandardLoadProfile(String key) {
     this.key = key.toLowerCase();
   }
 

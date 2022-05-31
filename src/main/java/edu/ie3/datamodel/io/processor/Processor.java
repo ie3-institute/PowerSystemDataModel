@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.processor;
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.factory.input.NodeInputFactory;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
-import edu.ie3.datamodel.models.LoadProfile;
+import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
@@ -242,7 +242,7 @@ public abstract class Processor<T> {
       case "Point", "LineString" -> resultStringBuilder.append(
           geoJsonWriter.write((Geometry) methodReturnObject));
       case "StandardLoadProfile" -> resultStringBuilder.append(
-          ((LoadProfile) methodReturnObject).getKey());
+          ((StandardLoadProfile) methodReturnObject).getKey());
       case "AssetTypeInput",
           "BmTypeInput",
           "ChpTypeInput",

@@ -13,7 +13,7 @@ import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput;
+import edu.ie3.datamodel.models.timeseries.repetitive.StandardLoadProfile;
 import edu.ie3.datamodel.models.value.Value;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -196,7 +196,7 @@ public class FileNamingStrategy {
    * @return A load profile time series pattern
    */
   public Pattern getLoadProfileTimeSeriesPattern() {
-    String subDirectory = fileHierarchy.getSubDirectory(LoadProfileInput.class).orElseGet(() -> "");
+    String subDirectory = fileHierarchy.getSubDirectory(StandardLoadProfile.class).orElseGet(() -> "");
 
     if (subDirectory.isEmpty()) {
       return entityPersistenceNamingStrategy.getLoadProfileTimeSeriesPattern();

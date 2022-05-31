@@ -20,24 +20,24 @@ import java.util.stream.Stream;
  * <p>If you intend to provide distinct values, create either an {@link IndividualTimeSeries} or
  * {@link RepetitiveTimeSeries} and assign it to the model via mapping to the model.
  */
-public interface LoadProfile extends Serializable {
+public interface StandardLoadProfile extends Serializable {
   /** @return The identifying String */
   String getKey();
 
   /**
-   * Parses the given key to {@link LoadProfile}.
+   * Parses the given key to {@link StandardLoadProfile}.
    *
    * @param key Key to parse
-   * @return Matching {@link LoadProfile}
+   * @return Matching {@link StandardLoadProfile}
    * @throws ParsingException If key cannot be parsed
    */
-  static LoadProfile parse(String key) throws ParsingException {
-    if (key == null || key.isEmpty()) return DefaultLoadProfiles.NO_STANDARD_LOAD_PROFILE;
+  static StandardLoadProfile parse(String key) throws ParsingException {
+    if (key == null || key.isEmpty()) return DefaultStandardLoadProfiles.NO_STANDARD_LOAD_PROFILE;
 
     String filterKey = key.toLowerCase().replaceAll("[-_]*", "");
     return Stream.concat(
-            Arrays.stream(BdewLoadProfile.values()),
-            Arrays.stream(NbwTemperatureDependantLoadProfile.values()))
+            Arrays.stream(BdewStandardLoadProfile.values()),
+            Arrays.stream(NbwTemperatureDependantStandardLoadProfile.values()))
         .filter(profile -> profile.getKey().equals(filterKey))
         .findFirst()
         .orElseThrow(
@@ -46,7 +46,7 @@ public interface LoadProfile extends Serializable {
                     "Cannot parse \"" + key + "\" to a valid bdew standard load profile"));
   }
 
-  enum DefaultLoadProfiles implements LoadProfile {
+  enum DefaultStandardLoadProfiles implements StandardLoadProfile {
     NO_STANDARD_LOAD_PROFILE;
 
     @Override

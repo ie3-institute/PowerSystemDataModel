@@ -11,7 +11,7 @@ import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
+import edu.ie3.datamodel.models.timeseries.repetitive.StandardLoadProfile
 import edu.ie3.datamodel.models.value.*
 import edu.ie3.test.common.TimeSeriesTestData
 import spock.lang.Specification
@@ -215,7 +215,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
 	def "A TimeSeriesProcessors handles a complete LoadProfileInput correctly"() {
 		given:
-		TimeSeriesProcessor<LoadProfileInput, LoadProfileEntry, PValue> processor = new TimeSeriesProcessor<>(LoadProfileInput, LoadProfileEntry, PValue)
+		TimeSeriesProcessor<StandardLoadProfile, LoadProfileEntry, PValue> processor = new TimeSeriesProcessor<>(StandardLoadProfile, LoadProfileEntry, PValue)
 
 		when:
 		Set<Map<String, String>> actual = processor.handleTimeSeries(loadProfileInput)

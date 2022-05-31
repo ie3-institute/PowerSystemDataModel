@@ -43,7 +43,7 @@ import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
-import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileInput
+import edu.ie3.datamodel.models.timeseries.repetitive.StandardLoadProfile
 import edu.ie3.datamodel.models.value.*
 import edu.ie3.test.common.TimeSeriesTestData
 import edu.ie3.util.TimeUtil
@@ -138,7 +138,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, HeatAndPValue),
 			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, SValue),
 			new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, HeatAndSValue),
-			new TimeSeriesProcessorKey(LoadProfileInput, LoadProfileEntry, PValue)
+			new TimeSeriesProcessorKey(StandardLoadProfile, LoadProfileEntry, PValue)
 		] as Set
 
 		when:
