@@ -10,31 +10,34 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
- * Giving reference to a known standard load profile to apply to a {@link
- * edu.ie3.datamodel.models.input.system.LoadInput}. This interface does nothing more, than giving a
- * reference, the values have to be provided by the simulator using the models.
+ * Giving reference to a known standard load profile or temperature dependant load profile to apply
+ * to a {@link edu.ie3.datamodel.models.input.system.LoadInput}. This interface does nothing more,
+ * than giving a reference, the values have to be provided by the simulator using the models.
  *
  * <p>If you intend to provide distinct values, create either an {@link IndividualTimeSeries} or
  * {@link RepetitiveTimeSeries} and assign it to the model via mapping to the model.
  */
-public interface StandardLoadProfile extends Serializable {
+public interface LoadProfile extends Serializable {
   /** @return The identifying String */
   String getKey();
 
   /**
-   * Parses the given key to {@link StandardLoadProfile}.
+   * Parses the given key to {@link LoadProfile}.
    *
    * @param key Key to parse
-   * @return Matching {@link StandardLoadProfile}
+   * @return Matching {@link LoadProfile}
    * @throws ParsingException If key cannot be parsed
    */
-  static StandardLoadProfile parse(String key) throws ParsingException {
+  static LoadProfile parse(String key) throws ParsingException {
     if (key == null || key.isEmpty()) return DefaultLoadProfiles.NO_STANDARD_LOAD_PROFILE;
 
     String filterKey = key.toLowerCase().replaceAll("[-_]*", "");
-    return Arrays.stream(BdewLoadProfile.values())
+    return Stream.concat(
+            Arrays.stream(BdewLoadProfile.values()),
+            Arrays.stream(NbwTemperatureDependantLoadProfile.values()))
         .filter(profile -> profile.getKey().equals(filterKey))
         .findFirst()
         .orElseThrow(
@@ -43,7 +46,7 @@ public interface StandardLoadProfile extends Serializable {
                     "Cannot parse \"" + key + "\" to a valid bdew standard load profile"));
   }
 
-  enum DefaultLoadProfiles implements StandardLoadProfile {
+  enum DefaultLoadProfiles implements LoadProfile {
     NO_STANDARD_LOAD_PROFILE;
 
     @Override

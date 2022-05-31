@@ -7,7 +7,7 @@ package edu.ie3.datamodel.models.timeseries.repetitive;
 
 import static java.time.temporal.ChronoUnit.HOURS;
 
-import edu.ie3.datamodel.models.StandardLoadProfile;
+import edu.ie3.datamodel.models.LoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 
 // TODO This is a sample implementation, please implement a real scenario
 public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PValue> {
-  private final StandardLoadProfile type;
+  private final LoadProfile type;
   private final Map<DayOfWeek, Map<Integer, PValue>> dayOfWeekToHourlyValues;
 
-  public LoadProfileInput(UUID uuid, StandardLoadProfile type, Set<LoadProfileEntry> values) {
+  public LoadProfileInput(UUID uuid, LoadProfile type, Set<LoadProfileEntry> values) {
     super(uuid, values);
     this.type = type;
     this.dayOfWeekToHourlyValues =
@@ -31,7 +31,7 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
                         LoadProfileEntry::getQuarterHourOfDay, LoadProfileEntry::getValue)));
   }
 
-  public LoadProfileInput(StandardLoadProfile type, Set<LoadProfileEntry> values) {
+  public LoadProfileInput(LoadProfile type, Set<LoadProfileEntry> values) {
     this(UUID.randomUUID(), type, values);
   }
 
@@ -50,7 +50,7 @@ public class LoadProfileInput extends RepetitiveTimeSeries<LoadProfileEntry, PVa
     return Optional.of(time.plus(1, HOURS));
   }
 
-  public StandardLoadProfile getType() {
+  public LoadProfile getType() {
     return type;
   }
 

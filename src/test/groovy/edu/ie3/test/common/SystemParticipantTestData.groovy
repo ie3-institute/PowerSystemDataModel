@@ -7,7 +7,7 @@ package edu.ie3.test.common
 
 import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.OperationTime
-import edu.ie3.datamodel.models.StandardLoadProfile
+import edu.ie3.datamodel.models.LoadProfile
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.*
@@ -226,7 +226,7 @@ class SystemParticipantTestData {
 
 	// Load
 	private static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, ENERGY_IN)
-	private static final StandardLoadProfile standardLoadProfile = BdewLoadProfile.H0
+	private static final LoadProfile standardLoadProfile = BdewLoadProfile.H0
 	public static final LoadInput loadInput = new LoadInput(
 	UUID.fromString("eaf77f7e-9001-479f-94ca-7fb657766f5f"),
 	"test_loadInput",

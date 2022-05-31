@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * Wasserwirtschaft; engl.Federal Association of the Energy and Water Industry). For more details
  * see https://www.bdew.de/energie/standardlastprofile-strom/
  */
-public enum BdewLoadProfile implements StandardLoadProfile {
+public enum BdewLoadProfile implements LoadProfile {
   H0("h0"), // Households
   L0("l0"), // Agricultural enterprises without further differentiation
   L1("l1"), // Agricultural enterprises with dairy sector

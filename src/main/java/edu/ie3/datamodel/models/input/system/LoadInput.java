@@ -6,8 +6,8 @@
 package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.models.BdewLoadProfile;
+import edu.ie3.datamodel.models.LoadProfile;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -28,7 +28,7 @@ public class LoadInput extends SystemParticipantInput {
    * via an external mapping (e.g. by providing a global time series for a specific load profile) to
    * this model
    */
-  private final StandardLoadProfile standardLoadProfile;
+  private final LoadProfile loadProfile;
   /** True, if demand side management is activated for this load */
   private final boolean dsm;
   /** Annually consumed energy (typically in kWh) */
@@ -47,7 +47,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param standardLoadProfile Standard load profile to use for this model
+   * @param loadProfile Standard load profile to use for this model
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
@@ -60,13 +60,13 @@ public class LoadInput extends SystemParticipantInput {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      StandardLoadProfile standardLoadProfile,
+      LoadProfile loadProfile,
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
     super(uuid, id, operator, operationTime, node, qCharacteristics);
-    this.standardLoadProfile = standardLoadProfile;
+    this.loadProfile = loadProfile;
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
@@ -122,7 +122,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param standardLoadProfile Standard load profile to use for this model
+   * @param loadProfile Standard load profile to use for this model
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
@@ -133,13 +133,13 @@ public class LoadInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      StandardLoadProfile standardLoadProfile,
+      LoadProfile loadProfile,
       boolean dsm,
       ComparableQuantity<Energy> eConsAnnual,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
     super(uuid, id, node, qCharacteristics);
-    this.standardLoadProfile = standardLoadProfile;
+    this.loadProfile = loadProfile;
     this.dsm = dsm;
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
@@ -182,8 +182,8 @@ public class LoadInput extends SystemParticipantInput {
         cosPhiRated);
   }
 
-  public StandardLoadProfile getStandardLoadProfile() {
-    return standardLoadProfile;
+  public LoadProfile getStandardLoadProfile() {
+    return loadProfile;
   }
 
   public boolean isDsm() {
@@ -259,7 +259,7 @@ public class LoadInput extends SystemParticipantInput {
   public static class LoadInputCopyBuilder
       extends SystemParticipantInputCopyBuilder<LoadInputCopyBuilder> {
 
-    private StandardLoadProfile standardLoadProfile;
+    private LoadProfile loadProfile;
     private boolean dsm;
     private ComparableQuantity<Energy> eConsAnnual;
     private ComparableQuantity<Power> sRated;
@@ -267,15 +267,15 @@ public class LoadInput extends SystemParticipantInput {
 
     private LoadInputCopyBuilder(LoadInput entity) {
       super(entity);
-      this.standardLoadProfile = entity.getStandardLoadProfile();
+      this.loadProfile = entity.getStandardLoadProfile();
       this.dsm = entity.isDsm();
       this.eConsAnnual = entity.geteConsAnnual();
       this.sRated = entity.getsRated();
       this.cosPhiRated = entity.getCosPhiRated();
     }
 
-    public LoadInputCopyBuilder standardLoadProfile(StandardLoadProfile standardLoadProfile) {
-      this.standardLoadProfile = standardLoadProfile;
+    public LoadInputCopyBuilder standardLoadProfile(LoadProfile loadProfile) {
+      this.loadProfile = loadProfile;
       return this;
     }
 
@@ -308,7 +308,7 @@ public class LoadInput extends SystemParticipantInput {
           getOperationTime(),
           getNode(),
           getqCharacteristics(),
-          standardLoadProfile,
+          loadProfile,
           dsm,
           eConsAnnual,
           sRated,
