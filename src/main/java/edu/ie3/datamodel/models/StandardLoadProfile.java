@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * Giving reference to a known standard load profile to apply to a {@link
@@ -34,7 +35,9 @@ public interface StandardLoadProfile extends Serializable {
     if (key == null || key.isEmpty()) return DefaultLoadProfiles.NO_STANDARD_LOAD_PROFILE;
 
     String filterKey = key.toLowerCase().replaceAll("[-_]*", "");
-    return Arrays.stream(BdewLoadProfile.values())
+    return Stream.concat(
+            Arrays.stream(BdewLoadProfile.values()),
+            Arrays.stream(TemperatureDependantLoadProfile.values()))
         .filter(profile -> profile.getKey().equals(filterKey))
         .findFirst()
         .orElseThrow(

@@ -83,6 +83,8 @@ class StandardLoadProfileTest extends Specification {
 		"G6"    || BdewLoadProfile.G6
 		"G-6"   || BdewLoadProfile.G6
 		"G_6"   || BdewLoadProfile.G6
+		"ep1"   || TemperatureDependantLoadProfile.EP1
+		"ez2"   || TemperatureDependantLoadProfile.EZ2
 		""      || StandardLoadProfile.DefaultLoadProfiles.NO_STANDARD_LOAD_PROFILE
 		null    || StandardLoadProfile.DefaultLoadProfiles.NO_STANDARD_LOAD_PROFILE
 	}
