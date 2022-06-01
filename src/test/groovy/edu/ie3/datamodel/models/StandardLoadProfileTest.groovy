@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models
 
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
+import edu.ie3.datamodel.models.profile.LoadProfile
 import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile
 import edu.ie3.datamodel.models.profile.StandardLoadProfile
 import spock.lang.Specification
@@ -13,7 +14,7 @@ import spock.lang.Specification
 class StandardLoadProfileTest extends Specification {
 	def "Standard load profiles are parsed correctly from correct input" () {
 		when:
-		StandardLoadProfile actual = StandardLoadProfile.parse(key)
+		LoadProfile actual = LoadProfile.parse(key)
 
 		then:
 		actual == expected
@@ -88,7 +89,7 @@ class StandardLoadProfileTest extends Specification {
 		"G_6"   || BdewStandardLoadProfile.G6
 		"ep1"   || NbwTemperatureDependantLoadProfile.EP1
 		"ez2"   || NbwTemperatureDependantLoadProfile.EZ2
-		""      || StandardLoadProfile.DefaultLoadProfiles.NO_STANDARD_LOAD_PROFILE
-		null    || StandardLoadProfile.DefaultLoadProfiles.NO_STANDARD_LOAD_PROFILE
+		""      || LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE
+		null    || LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE
 	}
 }
