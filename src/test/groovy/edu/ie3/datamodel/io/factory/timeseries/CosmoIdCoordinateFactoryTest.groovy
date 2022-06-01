@@ -77,7 +77,7 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 			"latrot": "-10",
 			"longrot": "-6.8125"
 		] as Map<String, String>, Pair)
-		Pair<Integer, Point> expectedPair = Pair.of(106580, GeoUtils.xyToPoint(1.279336, 39.602772))
+		Pair<Integer, Point> expectedPair = Pair.of(106580, GeoUtils.buildPoint(39.602772, 1.279336))
 
 		when:
 		def actual = factory.get(validSimpleFactoryData)

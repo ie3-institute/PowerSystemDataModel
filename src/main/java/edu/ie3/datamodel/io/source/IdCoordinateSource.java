@@ -72,7 +72,7 @@ public interface IdCoordinateSource extends DataSource {
   default List<CoordinateDistance> getNearestCoordinates(
       Point coordinate, int n, Collection<Point> coordinates) {
     SortedSet<CoordinateDistance> sortedDistances =
-        GeoUtils.getCoordinateDistances(
+        GeoUtils.calcOrderedCoordinateDistances(
             coordinate,
             (coordinates != null && !coordinates.isEmpty()) ? coordinates : getAllCoordinates());
     return sortedDistances.stream().limit(n).toList();
