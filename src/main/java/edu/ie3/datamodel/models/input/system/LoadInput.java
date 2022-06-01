@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.system;
 
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.*;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -72,48 +73,50 @@ public class LoadInput extends SystemParticipantInput {
     this.cosPhiRated = cosPhiRated;
   }
 
-  //  /**
-  //   * Constructor for an operated load
-  //   *
-  //   * @param uuid of the input entity
-  //   * @param operationTime Time for which the entity is operated
-  //   * @param operator of the asset
-  //   * @param id of the asset
-  //   * @param node the asset is connected to
-  //   * @param qCharacteristics Description of a reactive power characteristic
-  //   * @param loadProfileKey load profile key corresponding to {@link BdewStandardLoadProfile} or
-  //   *     {@link edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile}
-  //   * @param dsm True, if demand side management is activated for this load
-  //   * @param eConsAnnual Annually consumed energy (typically in kWh)
-  //   * @param sRated Rated apparent power (in kVA)
-  //   * @param cosPhiRated Rated power factor
-  //   */
-  //  public LoadInput(
-  //      UUID uuid,
-  //      OperationTime operationTime,
-  //      OperatorInput operator,
-  //      String id,
-  //      NodeInput node,
-  //      ReactivePowerCharacteristic qCharacteristics,
-  //      String loadProfileKey,
-  //      boolean dsm,
-  //      ComparableQuantity<Energy> eConsAnnual,
-  //      ComparableQuantity<Power> sRated,
-  //      double cosPhiRated) {
-  //
-  //    this(
-  //        uuid,
-  //        id,
-  //        operator,
-  //        operationTime,
-  //        node,
-  //        qCharacteristics,
-  //        BdewStandardLoadProfile.get(bdewStandardLoadProfile),
-  //        dsm,
-  //        eConsAnnual,
-  //        sRated,
-  //        cosPhiRated);
-  //  }
+  /**
+   * Constructor for an operated load
+   *
+   * @param uuid of the input entity
+   * @param operationTime Time for which the entity is operated
+   * @param operator of the asset
+   * @param id of the asset
+   * @param node the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param loadProfileKey load profile key corresponding to {@link
+   *     edu.ie3.datamodel.models.profile.BdewStandardLoadProfile} or {@link
+   *     edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile}
+   * @param dsm True, if demand side management is activated for this load
+   * @param eConsAnnual Annually consumed energy (typically in kWh)
+   * @param sRated Rated apparent power (in kVA)
+   * @param cosPhiRated Rated power factor
+   */
+  public LoadInput(
+      UUID uuid,
+      OperationTime operationTime,
+      OperatorInput operator,
+      String id,
+      NodeInput node,
+      ReactivePowerCharacteristic qCharacteristics,
+      String loadProfileKey,
+      boolean dsm,
+      ComparableQuantity<Energy> eConsAnnual,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated)
+      throws ParsingException {
+
+    this(
+        uuid,
+        id,
+        operator,
+        operationTime,
+        node,
+        qCharacteristics,
+        LoadProfile.parse(loadProfileKey),
+        dsm,
+        eConsAnnual,
+        sRated,
+        cosPhiRated);
+  }
 
   /**
    * Constructor for an operated, always on load
@@ -146,40 +149,43 @@ public class LoadInput extends SystemParticipantInput {
     this.cosPhiRated = cosPhiRated;
   }
 
-  //  /**
-  //   * Constructor for an operated, always on load
-  //   *
-  //   * @param uuid of the input entity
-  //   * @param id of the asset
-  //   * @param node the asset is connected to
-  //   * @param qCharacteristics Description of a reactive power characteristic
-  //   * @param bdewStandardLoadProfile {@link BdewStandardLoadProfile} load profile key
-  //   * @param dsm True, if demand side management is activated for this load
-  //   * @param eConsAnnual Annually consumed energy (typically in kWh)
-  //   * @param sRated Rated apparent power (in kVA)
-  //   * @param cosPhiRated Rated power factor
-  //   */
-  //  public LoadInput(
-  //      UUID uuid,
-  //      String id,
-  //      NodeInput node,
-  //      ReactivePowerCharacteristic qCharacteristics,
-  //      String bdewStandardLoadProfile,
-  //      boolean dsm,
-  //      ComparableQuantity<Energy> eConsAnnual,
-  //      ComparableQuantity<Power> sRated,
-  //      double cosPhiRated) {
-  //    this(
-  //        uuid,
-  //        id,
-  //        node,
-  //        qCharacteristics,
-  //        BdewStandardLoadProfile.get(bdewStandardLoadProfile),
-  //        dsm,
-  //        eConsAnnual,
-  //        sRated,
-  //        cosPhiRated);
-  //  }
+  /**
+   * Constructor for an operated, always on load
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param node the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param loadProfileKey load profile key corresponding to {@link
+   *     edu.ie3.datamodel.models.profile.BdewStandardLoadProfile} or {@link
+   *     edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile}
+   * @param dsm True, if demand side management is activated for this load
+   * @param eConsAnnual Annually consumed energy (typically in kWh)
+   * @param sRated Rated apparent power (in kVA)
+   * @param cosPhiRated Rated power factor
+   */
+  public LoadInput(
+      UUID uuid,
+      String id,
+      NodeInput node,
+      ReactivePowerCharacteristic qCharacteristics,
+      String loadProfileKey,
+      boolean dsm,
+      ComparableQuantity<Energy> eConsAnnual,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated)
+      throws ParsingException {
+    this(
+        uuid,
+        id,
+        node,
+        qCharacteristics,
+        LoadProfile.parse(loadProfileKey),
+        dsm,
+        eConsAnnual,
+        sRated,
+        cosPhiRated);
+  }
 
   public LoadProfile getLoadProfile() {
     return loadProfile;

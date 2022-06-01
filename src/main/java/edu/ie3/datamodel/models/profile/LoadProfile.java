@@ -32,8 +32,7 @@ public interface LoadProfile extends Serializable {
         .findFirst()
         .orElseThrow(
             () ->
-                new ParsingException(
-                    "Cannot parse \"" + key + "\" to a valid bdew standard load profile"));
+                new ParsingException("Cannot parse \"" + key + "\" to a valid known load profile"));
   }
 
   enum DefaultLoadProfiles implements StandardLoadProfile {
