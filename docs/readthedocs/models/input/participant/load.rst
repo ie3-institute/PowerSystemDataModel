@@ -22,7 +22,7 @@ Attributes, Units and Remarks
 +---------------------+---------+--------------------------------------------------------------------------------------+
 | qCharacteristics    | --      | :ref:`Reactive power characteristic<participant_general_q_characteristic>` to follow |
 +---------------------+---------+--------------------------------------------------------------------------------------+
-| loadProfile | --      | :ref:`Load profile<load_lp>` as model behaviour                            |
+| loadProfile         | --      | :ref:`Load profile<load_lp>` as model behaviour                                      |
 +---------------------+---------+--------------------------------------------------------------------------------------+
 | dsm                 | --      | Whether the load is able to follow demand side management signals                    |
 +---------------------+---------+--------------------------------------------------------------------------------------+
