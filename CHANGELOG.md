@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SQL time series have a different structure than CSV counterparts [#545](https://github.com/ie3-institute/PowerSystemDataModel/issues/545)
 - Graph with impedance weighted edges including facilities to create it [#440](https://github.com/ie3-institute/PowerSystemDataModel/issues/440)
 - `TimeSeriesTypeSource` providing a source for the mapping of time series uuids to column schemes (previously provided by `TimeSeriesMappingSource`) [#515](https://github.com/ie3-institute/PowerSystemDataModel/issues/515)
-- `TemperatureDependantLoadProfile`s for depiction of profile behavior of night storage heating and heat pumps
+- `TemperatureDependantLoadProfile`s for depiction of profile behavior of night storage heating and heat pumps [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - `"datum"` to `"time"`
     - Force user to provide time stamp pattern to `CouchbaseWeatherSource` to ensure harmonized querying
 - BREAKING: Updating PowerSystemUtils dependency to 2.0-SNAPSHOT [#595](https://github.com/ie3-institute/PowerSystemDataModel/issues/595)
+- BREAKING: Generified the `LoadInput` attribute `standardLoadProfile` to `loadProfile` as it should also address the newly added `TemperatureDependantLoadProfile`s [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
 
 ## [2.1.0] - 2022-01-05
 
