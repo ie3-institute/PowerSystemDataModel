@@ -5,7 +5,7 @@
  */
 package edu.ie3.test.common
 
-import edu.ie3.datamodel.models.BdewLoadProfile
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.TimeSeries
@@ -456,7 +456,7 @@ trait TimeSeriesTestData {
 
 	LoadProfileInput loadProfileInput =  new LoadProfileInput(
 	UUID.fromString("b56853fe-b800-4c18-b324-db1878b22a28"),
-	BdewLoadProfile.G2,
+	BdewStandardLoadProfile.G2,
 	[
 		new LoadProfileEntry(
 		UUID.fromString("587b71d8-84ac-4dc1-a30a-aff82d4d6d25"),

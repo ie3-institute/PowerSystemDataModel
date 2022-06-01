@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.input.participant
 
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
-import edu.ie3.datamodel.models.BdewLoadProfile
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
@@ -38,7 +38,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 			"uuid"               : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
 			"id"                 : "TestID",
 			"qcharacteristics"   : "cosPhiFixed:{(0.0,1.0)}",
-			"standardloadprofile": "G-4",
+			"loadprofile": "G-4",
 			"dsm"                : "true",
 			"econsannual"        : "3",
 			"srated"             : "4",
@@ -66,7 +66,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 					new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
 				] as TreeSet)
 			}
-			assert standardLoadProfile == BdewLoadProfile.G4
+			assert loadProfile == BdewStandardLoadProfile.G4
 			assert dsm
 			assert eConsAnnual == getQuant(parameter["econsannual"], StandardUnits.ENERGY_IN)
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
