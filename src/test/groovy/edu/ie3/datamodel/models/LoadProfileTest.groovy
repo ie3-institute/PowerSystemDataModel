@@ -8,7 +8,6 @@ package edu.ie3.datamodel.models
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.profile.LoadProfile
 import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile
-import edu.ie3.datamodel.models.profile.StandardLoadProfile
 import spock.lang.Specification
 
 class LoadProfileTest extends Specification {
