@@ -5,9 +5,6 @@
 */
 package edu.ie3.datamodel.models.profile;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 /**
  * German standard electricity load profiles, defined by the bdew (Bundesverband der Energie- und
  * Wasserwirtschaft; engl.Federal Association of the Energy and Water Industry). For more details
@@ -40,18 +37,7 @@ public enum BdewStandardLoadProfile implements StandardLoadProfile {
    *     matching load profile can be found
    */
   public static BdewStandardLoadProfile get(String key) {
-    return Arrays.stream(BdewStandardLoadProfile.values())
-        .filter(loadProfile -> loadProfile.key.equalsIgnoreCase(key))
-        .findFirst()
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "No predefined bdew load profile with key '"
-                        + key
-                        + "' found. Please provide one of the following keys:"
-                        + Arrays.stream(BdewStandardLoadProfile.values())
-                            .map(BdewStandardLoadProfile::getKey)
-                            .collect(Collectors.joining(", "))));
+    return (BdewStandardLoadProfile) LoadProfile.getProfile(BdewStandardLoadProfile.values(), key);
   }
 
   @Override

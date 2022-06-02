@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.profile;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public interface LoadProfile extends Serializable {
@@ -33,6 +34,21 @@ public interface LoadProfile extends Serializable {
         .orElseThrow(
             () ->
                 new ParsingException("Cannot parse \"" + key + "\" to a valid known load profile"));
+  }
+
+  static LoadProfile getProfile(LoadProfile[] profiles, String key) {
+    return Arrays.stream(profiles)
+        .filter(loadProfile -> loadProfile.getKey().equalsIgnoreCase(key))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    "No predefined load profile with key '"
+                        + key
+                        + "' found. Please provide one of the following keys:"
+                        + Arrays.stream(profiles)
+                            .map(LoadProfile::getKey)
+                            .collect(Collectors.joining(", "))));
   }
 
   enum DefaultLoadProfiles implements StandardLoadProfile {

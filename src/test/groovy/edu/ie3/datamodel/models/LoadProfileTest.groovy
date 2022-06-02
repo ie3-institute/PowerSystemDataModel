@@ -11,8 +11,8 @@ import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile
 import edu.ie3.datamodel.models.profile.StandardLoadProfile
 import spock.lang.Specification
 
-class StandardLoadProfileTest extends Specification {
-	def "Standard load profiles are parsed correctly from correct input" () {
+class LoadProfileTest extends Specification {
+	def "Load profiles are parsed correctly from correct input" () {
 		when:
 		LoadProfile actual = LoadProfile.parse(key)
 
@@ -91,5 +91,32 @@ class StandardLoadProfileTest extends Specification {
 		"ez2"   || NbwTemperatureDependantLoadProfile.EZ2
 		""      || LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE
 		null    || LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE
+	}
+
+	def "BDEW load profiles can be gotten by their key"() {
+		when:
+		BdewStandardLoadProfile actual = BdewStandardLoadProfile.get(key)
+
+		then:
+		actual == expected
+
+		where:
+		key     || expected
+		"h0"    || BdewStandardLoadProfile.H0
+		"l0"    || BdewStandardLoadProfile.L0
+		"g1"    || BdewStandardLoadProfile.G1
+	}
+
+	def "Nbw temperature dependant load profiles can be gotten by their key"() {
+		when:
+		NbwTemperatureDependantLoadProfile actual = NbwTemperatureDependantLoadProfile.get(key)
+
+		then:
+		actual == expected
+
+		where:
+		key     || expected
+		"ep1"    || NbwTemperatureDependantLoadProfile.EP1
+		"ez2"    || NbwTemperatureDependantLoadProfile.EZ2
 	}
 }
