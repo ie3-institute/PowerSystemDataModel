@@ -36,7 +36,8 @@ public interface LoadProfile extends Serializable {
                 new ParsingException("Cannot parse \"" + key + "\" to a valid known load profile"));
   }
 
-  /** Looks for load profile with given key and returns it.
+  /**
+   * Looks for load profile with given key and returns it.
    *
    * @param profiles we search within
    * @param key to look for

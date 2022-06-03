@@ -18,7 +18,8 @@ import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries;
  */
 public interface StandardLoadProfile extends LoadProfile {
 
-  /** Returns standard load profile corresponding to the given key.
+  /**
+   * Returns standard load profile corresponding to the given key.
    *
    * @param key to look for
    * @return the matching standard load profile
