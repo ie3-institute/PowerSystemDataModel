@@ -12,6 +12,11 @@ package edu.ie3.datamodel.models.profile;
  */
 public interface TemperatureDependantLoadProfile extends LoadProfile {
 
+  /** Returns temperature dependant load profile corresponding to the given key.
+   *
+   * @param key to look for
+   * @return the matching temperature dependant load profile
+   */
   static TemperatureDependantLoadProfile parse(String key) {
     return (NbwTemperatureDependantLoadProfile)
         LoadProfile.getProfile(NbwTemperatureDependantLoadProfile.values(), key);
