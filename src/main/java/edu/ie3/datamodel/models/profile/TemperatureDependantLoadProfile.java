@@ -10,4 +10,10 @@ package edu.ie3.datamodel.models.profile;
  * on the VDN description for interruptable loads. For more details see <a
  * href="https://www.bdew.de/media/documents/LPuVe-Praxisleitfaden.pdf">here</a>.
  */
-public interface TemperatureDependantLoadProfile extends LoadProfile {}
+public interface TemperatureDependantLoadProfile extends LoadProfile {
+
+  static TemperatureDependantLoadProfile parse(String key) {
+    return (NbwTemperatureDependantLoadProfile)
+        LoadProfile.getProfile(NbwTemperatureDependantLoadProfile.values(), key);
+  }
+}
