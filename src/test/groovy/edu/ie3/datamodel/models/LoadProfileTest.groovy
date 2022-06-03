@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models
 
 import edu.ie3.datamodel.exceptions.ParsingException
-import edu.ie3.datamodel.exceptions.SinkException
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.profile.LoadProfile
 import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile
@@ -133,7 +132,7 @@ class LoadProfileTest extends Specification {
 
 	def "Throws an exception when encountering an unknown key"() {
 		when:
-		LoadProfile actual = LoadProfile.parse("not_a_key")
+		LoadProfile.parse("not_a_key")
 
 		then:
 		def e = thrown(ParsingException)
