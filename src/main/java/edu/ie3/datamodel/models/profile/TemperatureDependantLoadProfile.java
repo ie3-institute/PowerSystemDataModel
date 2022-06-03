@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.profile;
 
+import edu.ie3.datamodel.exceptions.ParsingException;
+
 /**
  * Temperature dependant load profiles for night storage heating and heat pumps . The profiles rely
  * on the VDN description for interruptable loads. For more details see <a
@@ -18,8 +20,7 @@ public interface TemperatureDependantLoadProfile extends LoadProfile {
    * @param key to look for
    * @return the matching temperature dependant load profile
    */
-  static TemperatureDependantLoadProfile parse(String key) {
-    return (NbwTemperatureDependantLoadProfile)
-        LoadProfile.getProfile(NbwTemperatureDependantLoadProfile.values(), key);
+  static TemperatureDependantLoadProfile parse(String key) throws ParsingException {
+    return LoadProfile.getProfile(NbwTemperatureDependantLoadProfile.values(), key);
   }
 }

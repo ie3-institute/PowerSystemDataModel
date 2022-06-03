@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.profile;
 
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries;
 
@@ -24,7 +25,7 @@ public interface StandardLoadProfile extends LoadProfile {
    * @param key to look for
    * @return the matching standard load profile
    */
-  static StandardLoadProfile parse(String key) {
-    return (StandardLoadProfile) LoadProfile.getProfile(BdewStandardLoadProfile.values(), key);
+  static StandardLoadProfile parse(String key) throws ParsingException {
+    return LoadProfile.getProfile(BdewStandardLoadProfile.values(), key);
   }
 }

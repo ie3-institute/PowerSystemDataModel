@@ -3,14 +3,9 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.models
+package edu.ie3.datamodel.models.profile
 
 import edu.ie3.datamodel.exceptions.ParsingException
-import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
-import edu.ie3.datamodel.models.profile.LoadProfile
-import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile
-import edu.ie3.datamodel.models.profile.StandardLoadProfile
-import edu.ie3.datamodel.models.profile.TemperatureDependantLoadProfile
 import spock.lang.Specification
 
 class LoadProfileTest extends Specification {
@@ -189,6 +184,6 @@ class LoadProfileTest extends Specification {
 
 		then:
 		def e = thrown(ParsingException)
-		e.message == "Cannot parse \"not_a_key\" to a valid known load profile"
+		e.message == "No predefined load profile with key 'not_a_key' found. Please provide one of the following keys: h0, l0, l1, l2, g0, g1, g2, g3, g4, g5, g6, ep1, ez2"
 	}
 }
