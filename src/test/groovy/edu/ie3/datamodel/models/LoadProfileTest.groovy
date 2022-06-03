@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.models
 
+import edu.ie3.datamodel.exceptions.ParsingException
+import edu.ie3.datamodel.exceptions.SinkException
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.profile.LoadProfile
 import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile
@@ -100,10 +102,16 @@ class LoadProfileTest extends Specification {
 		actual == expected
 
 		where:
-		key     || expected
-		"h0"    || BdewStandardLoadProfile.H0
-		"l0"    || BdewStandardLoadProfile.L0
-		"g1"    || BdewStandardLoadProfile.G1
+		key      || expected
+		"h0"     || BdewStandardLoadProfile.H0
+		"h-0"    || BdewStandardLoadProfile.H0
+		"h_0"    || BdewStandardLoadProfile.H0
+		"l0"     || BdewStandardLoadProfile.L0
+		"l-0"    || BdewStandardLoadProfile.L0
+		"l_0"    || BdewStandardLoadProfile.L0
+		"g1"     || BdewStandardLoadProfile.G1
+		"g-1"    || BdewStandardLoadProfile.G1
+		"g_1"    || BdewStandardLoadProfile.G1
 	}
 
 	def "Nbw temperature dependant load profiles can be gotten by their key"() {
@@ -114,8 +122,21 @@ class LoadProfileTest extends Specification {
 		actual == expected
 
 		where:
-		key     || expected
-		"ep1"    || NbwTemperatureDependantLoadProfile.EP1
-		"ez2"    || NbwTemperatureDependantLoadProfile.EZ2
+		key       || expected
+		"ep1"     || NbwTemperatureDependantLoadProfile.EP1
+		"ep_1"    || NbwTemperatureDependantLoadProfile.EP1
+		"ep_1"    || NbwTemperatureDependantLoadProfile.EP1
+		"ez2"     || NbwTemperatureDependantLoadProfile.EZ2
+		"ez-2"    || NbwTemperatureDependantLoadProfile.EZ2
+		"ez_2"    || NbwTemperatureDependantLoadProfile.EZ2
+	}
+
+	def "Throws an exception when encountering an unknown key"() {
+		when:
+		LoadProfile actual = LoadProfile.parse("not_a_key")
+
+		then:
+		def e = thrown(ParsingException)
+		e.message == "Cannot parse \"not_a_key\" to a valid known load profile"
 	}
 }

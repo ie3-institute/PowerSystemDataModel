@@ -25,7 +25,7 @@ public interface LoadProfile extends Serializable {
   static LoadProfile parse(String key) throws ParsingException {
     if (key == null || key.isEmpty()) return LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
 
-    String filterKey = key.toLowerCase().replaceAll("[-_]*", "");
+    String filterKey = getUniformKey(key);
     return Stream.concat(
             Arrays.stream(BdewStandardLoadProfile.values()),
             Arrays.stream(NbwTemperatureDependantLoadProfile.values()))
@@ -38,7 +38,7 @@ public interface LoadProfile extends Serializable {
 
   static LoadProfile getProfile(LoadProfile[] profiles, String key) {
     return Arrays.stream(profiles)
-        .filter(loadProfile -> loadProfile.getKey().equalsIgnoreCase(key))
+        .filter(loadProfile -> loadProfile.getKey().equalsIgnoreCase(getUniformKey(key)))
         .findFirst()
         .orElseThrow(
             () ->
@@ -51,7 +51,11 @@ public interface LoadProfile extends Serializable {
                             .collect(Collectors.joining(", "))));
   }
 
-  enum DefaultLoadProfiles implements StandardLoadProfile {
+  private static String getUniformKey(String key) {
+    return key.toLowerCase().replaceAll("[-_]*", "");
+  }
+
+  enum DefaultLoadProfiles implements LoadProfile {
     NO_LOAD_PROFILE;
 
     @Override

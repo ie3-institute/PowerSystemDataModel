@@ -47,7 +47,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param loadProfile load profile to use for this model
+   * @param loadProfile Load profile to use for this model
    * @param dsm True, if demand side management is activated for this load
    * @param eConsAnnual Annually consumed energy (typically in kWh)
    * @param sRated Rated apparent power (in kVA)
@@ -82,7 +82,7 @@ public class LoadInput extends SystemParticipantInput {
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param loadProfileKey load profile key corresponding to {@link
+   * @param loadProfileKey Load profile key corresponding to {@link
    *     edu.ie3.datamodel.models.profile.BdewStandardLoadProfile} or {@link
    *     edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile}
    * @param dsm True, if demand side management is activated for this load
@@ -219,6 +219,7 @@ public class LoadInput extends SystemParticipantInput {
     return dsm == loadInput.dsm
         && Double.compare(loadInput.cosPhiRated, cosPhiRated) == 0
         && eConsAnnual.equals(loadInput.eConsAnnual)
+        && loadProfile.equals(loadInput.loadProfile)
         && sRated.equals(loadInput.sRated);
   }
 

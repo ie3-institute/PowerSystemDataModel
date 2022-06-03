@@ -438,7 +438,7 @@ class FileNamingStrategyTest extends Specification {
 		actual.get() == expectedFileName
 
 		where:
-		clazz            | uuid                                                    | type               || expectedFileName
+		clazz            | uuid                                                    | type                       || expectedFileName
 		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
