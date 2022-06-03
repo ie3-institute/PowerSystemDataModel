@@ -9,11 +9,23 @@ import edu.ie3.datamodel.exceptions.ParsingException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import org.apache.commons.lang3.ArrayUtils;
 
 public interface LoadProfile extends Serializable {
   /** @return The identifying String */
   String getKey();
+
+  static LoadProfile parse(LoadProfile[] profiles, String key) throws ParsingException {
+    if (key == null || key.isEmpty()) return LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
+
+    String filterKey = getUniformKey(key);
+    return Arrays.stream(profiles)
+        .filter(profile -> profile.getKey().equals(filterKey))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new ParsingException("Cannot parse \"" + key + "\" to a valid known load profile"));
+  }
 
   /**
    * Parses the given key to {@link StandardLoadProfile}.
@@ -23,17 +35,10 @@ public interface LoadProfile extends Serializable {
    * @throws ParsingException If key cannot be parsed
    */
   static LoadProfile parse(String key) throws ParsingException {
-    if (key == null || key.isEmpty()) return LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
-
-    String filterKey = getUniformKey(key);
-    return Stream.concat(
-            Arrays.stream(BdewStandardLoadProfile.values()),
-            Arrays.stream(NbwTemperatureDependantLoadProfile.values()))
-        .filter(profile -> profile.getKey().equals(filterKey))
-        .findFirst()
-        .orElseThrow(
-            () ->
-                new ParsingException("Cannot parse \"" + key + "\" to a valid known load profile"));
+    return parse(
+        ArrayUtils.addAll(
+            BdewStandardLoadProfile.values(), NbwTemperatureDependantLoadProfile.values()),
+        key);
   }
 
   static LoadProfile getProfile(LoadProfile[] profiles, String key) {
