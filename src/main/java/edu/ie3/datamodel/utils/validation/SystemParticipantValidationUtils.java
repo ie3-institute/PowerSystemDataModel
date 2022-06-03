@@ -227,7 +227,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param loadInput LoadInput to validate
    */
   private static void checkLoad(LoadInput loadInput) {
-    if (loadInput.getStandardLoadProfile() == null)
+    if (loadInput.getLoadProfile() == null)
       throw new InvalidEntityException("No standard load profile defined for load", loadInput);
     detectNegativeQuantities(
         new Quantity<?>[] {loadInput.getsRated(), loadInput.geteConsAnnual()}, loadInput);
