@@ -51,10 +51,10 @@ If no matching standard load profile is known, :code:`LoadProfile#NO_LOAD_PROFIL
 To assist the user in marking the desired load profile, the enum :code:`BdewLoadProfile` provides a collection of
 commonly known German standard electricity load profiles, defined by the bdew (Bundesverband der Energie- und
 Wasserwirtschaft; engl. Federal Association of the Energy and Water Industry). For more details see
-`the corresponding website (german only) <https://www.bdew.de/energie/standardlastprofile-strom/>`_.
+`the corresponding website (German only) <https://www.bdew.de/energie/standardlastprofile-strom/>`_.
 
 Furthermore there are :code:`TemperatureDependantLoadProfiles` which can be used to note usage of load profiles for night heating storages or heat pumps for example.
 The profiles rely on the VDN description for interruptable loads.
-For more details see `here (german only) <https://www.bdew.de/media/documents/LPuVe-Praxisleitfaden.pdf/>`_.
+For more details see `here (German only) <https://www.bdew.de/media/documents/LPuVe-Praxisleitfaden.pdf/>`_.
 :code:`NbwTemperatureDependantLoadProfiles` provides sample temperature dependant load profiles that can be used.
 The `NbwTemperatureDependantLoadProfiles` consists of load profiles "ep1" for heat pumps and "ez2" for night storage heating.
