@@ -6,6 +6,9 @@
 package edu.ie3.datamodel.models.profile;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import tech.units.indriya.ComparableQuantity;
+
+import javax.measure.quantity.Temperature;
 
 /**
  * Temperature dependant load profiles for night storage heating and heat pumps . The profiles rely
@@ -13,6 +16,30 @@ import edu.ie3.datamodel.exceptions.ParsingException;
  * href="https://www.bdew.de/media/documents/LPuVe-Praxisleitfaden.pdf">here</a>.
  */
 public interface TemperatureDependantLoadProfile extends LoadProfile {
+
+  /**
+   * Maximum temperature to which load profiles are scaled. If temperature is higher the
+   * load profile according to the reference temperature is used.
+   *
+   * @return the reference temperature
+   */
+  ComparableQuantity<Temperature> getReferenceTemperature();
+
+  /**
+   * Minimum temperature to which load profiles are scaled. If temperature is lower the
+   * load profile according to the reference temperature is used.
+   *
+   * @return the reference temperature
+   */
+  ComparableQuantity<Temperature> getMinTemperature();
+
+  /**
+   * Downscaling of load profiles gets limited to the limiting constant. For more information
+   * see the official VDN description.
+   *
+   * @return the limiting constant
+   */
+  int getLimitingConstant();
 
   /**
    * Returns temperature dependant load profile corresponding to the given key.
