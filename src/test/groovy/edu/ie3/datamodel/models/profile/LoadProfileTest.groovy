@@ -6,12 +6,7 @@
 package edu.ie3.datamodel.models.profile
 
 import edu.ie3.datamodel.exceptions.ParsingException
-import edu.ie3.datamodel.models.StandardUnits
 import spock.lang.Specification
-import tech.units.indriya.ComparableQuantity
-import tech.units.indriya.quantity.Quantities
-
-import javax.measure.quantity.Temperature
 
 class LoadProfileTest extends Specification {
 	def "Load profiles are parsed correctly from correct input" () {
