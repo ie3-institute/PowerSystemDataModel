@@ -3,12 +3,9 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.models
+package edu.ie3.datamodel.models.profile
 
 import edu.ie3.datamodel.exceptions.ParsingException
-import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
-import edu.ie3.datamodel.models.profile.LoadProfile
-import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile
 import spock.lang.Specification
 
 class LoadProfileTest extends Specification {
@@ -93,6 +90,40 @@ class LoadProfileTest extends Specification {
 		null    || LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE
 	}
 
+	def "Standard load profiles can be parsed correctly"() {
+		when:
+		StandardLoadProfile actual = StandardLoadProfile.parse(key)
+
+		then:
+		actual == expected
+
+		where:
+		key     || expected
+		"h0"    || BdewStandardLoadProfile.H0
+		"h-0"   || BdewStandardLoadProfile.H0
+		"h_0"   || BdewStandardLoadProfile.H0
+		"H0"    || BdewStandardLoadProfile.H0
+		"H-0"   || BdewStandardLoadProfile.H0
+		"H_0"   || BdewStandardLoadProfile.H0
+	}
+
+	def "Tempearture dependent load profiles can be parsed correctly"() {
+		when:
+		TemperatureDependantLoadProfile actual = TemperatureDependantLoadProfile.parse(key)
+
+		then:
+		actual == expected
+
+		where:
+		key       || expected
+		"ep1"     || NbwTemperatureDependantLoadProfile.EP1
+		"ep_1"    || NbwTemperatureDependantLoadProfile.EP1
+		"ep_1"    || NbwTemperatureDependantLoadProfile.EP1
+		"ez2"     || NbwTemperatureDependantLoadProfile.EZ2
+		"ez-2"    || NbwTemperatureDependantLoadProfile.EZ2
+		"ez_2"    || NbwTemperatureDependantLoadProfile.EZ2
+	}
+
 	def "BDEW load profiles can be gotten by their key"() {
 		when:
 		BdewStandardLoadProfile actual = BdewStandardLoadProfile.get(key)
@@ -111,6 +142,23 @@ class LoadProfileTest extends Specification {
 		"g1"     || BdewStandardLoadProfile.G1
 		"g-1"    || BdewStandardLoadProfile.G1
 		"g_1"    || BdewStandardLoadProfile.G1
+	}
+
+	def "Nbw temperature dependant load profiles can be parsed correctly"() {
+		when:
+		NbwTemperatureDependantLoadProfile actual = NbwTemperatureDependantLoadProfile.get(key)
+
+		then:
+		actual == expected
+
+		where:
+		key       || expected
+		"ep1"     || NbwTemperatureDependantLoadProfile.EP1
+		"ep_1"    || NbwTemperatureDependantLoadProfile.EP1
+		"ep_1"    || NbwTemperatureDependantLoadProfile.EP1
+		"ez2"     || NbwTemperatureDependantLoadProfile.EZ2
+		"ez-2"    || NbwTemperatureDependantLoadProfile.EZ2
+		"ez_2"    || NbwTemperatureDependantLoadProfile.EZ2
 	}
 
 	def "Nbw temperature dependant load profiles can be gotten by their key"() {
@@ -136,6 +184,6 @@ class LoadProfileTest extends Specification {
 
 		then:
 		def e = thrown(ParsingException)
-		e.message == "Cannot parse \"not_a_key\" to a valid known load profile"
+		e.message == "No predefined load profile with key 'not_a_key' found. Please provide one of the following keys: h0, l0, l1, l2, g0, g1, g2, g3, g4, g5, g6, ep1, ez2"
 	}
 }

@@ -9,7 +9,6 @@ import edu.ie3.datamodel.exceptions.ParsingException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public interface LoadProfile extends Serializable {
   /** @return The identifying String */
@@ -25,27 +24,35 @@ public interface LoadProfile extends Serializable {
   static LoadProfile parse(String key) throws ParsingException {
     if (key == null || key.isEmpty()) return LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
 
-    String filterKey = getUniformKey(key);
-    return Stream.concat(
-            Arrays.stream(BdewStandardLoadProfile.values()),
-            Arrays.stream(NbwTemperatureDependantLoadProfile.values()))
-        .filter(profile -> profile.getKey().equals(filterKey))
-        .findFirst()
-        .orElseThrow(
-            () ->
-                new ParsingException("Cannot parse \"" + key + "\" to a valid known load profile"));
+    return LoadProfile.getProfile(getAllProfiles(), key);
   }
 
-  static LoadProfile getProfile(LoadProfile[] profiles, String key) {
+  static LoadProfile[] getAllProfiles() {
+    final LoadProfile[][] all =
+        new LoadProfile[][] {
+          BdewStandardLoadProfile.values(), NbwTemperatureDependantLoadProfile.values()
+        };
+
+    return Arrays.stream(all).flatMap(Arrays::stream).toArray(LoadProfile[]::new);
+  }
+
+  /**
+   * Looks for load profile with given key and returns it.
+   *
+   * @param profiles we search within
+   * @param key to look for
+   * @return the matching load profile
+   */
+  static <T extends LoadProfile> T getProfile(T[] profiles, String key) throws ParsingException {
     return Arrays.stream(profiles)
         .filter(loadProfile -> loadProfile.getKey().equalsIgnoreCase(getUniformKey(key)))
         .findFirst()
         .orElseThrow(
             () ->
-                new IllegalArgumentException(
+                new ParsingException(
                     "No predefined load profile with key '"
                         + key
-                        + "' found. Please provide one of the following keys:"
+                        + "' found. Please provide one of the following keys: "
                         + Arrays.stream(profiles)
                             .map(LoadProfile::getKey)
                             .collect(Collectors.joining(", "))));
