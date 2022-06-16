@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import java.util.*;
 
-public class ThermalContainer implements InputContainer<ThermalUnitInput> {
+public class ThermalUnits implements InputContainer<ThermalUnitInput> {
 
   private final Set<ThermalHouseInput> houses;
 
@@ -22,7 +22,7 @@ public class ThermalContainer implements InputContainer<ThermalUnitInput> {
    * @param houses Available houses
    * @param storages Available storage
    */
-  public ThermalContainer(
+  public ThermalUnits(
       Collection<ThermalHouseInput> houses, Collection<ThermalStorageInput> storages) {
     this.houses = new HashSet<>(houses);
     this.storages = new HashSet<>(storages);
@@ -48,7 +48,7 @@ public class ThermalContainer implements InputContainer<ThermalUnitInput> {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    ThermalContainer that = (ThermalContainer) o;
+    ThermalUnits that = (ThermalUnits) o;
     return houses.equals(that.houses) && storages.equals(that.storages);
   }
 
