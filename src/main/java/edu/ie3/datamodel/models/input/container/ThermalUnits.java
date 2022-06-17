@@ -10,12 +10,8 @@ import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import java.util.*;
 
-public class ThermalUnits implements InputContainer<ThermalUnitInput> {
-
-  private final Set<ThermalHouseInput> houses;
-
-  private final Set<ThermalStorageInput> storages;
-
+public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInput> storages)
+    implements InputContainer<ThermalUnitInput> {
   /**
    * Container to group together all {@link ThermalUnitInput}s
    *
@@ -24,16 +20,7 @@ public class ThermalUnits implements InputContainer<ThermalUnitInput> {
    */
   public ThermalUnits(
       Collection<ThermalHouseInput> houses, Collection<ThermalStorageInput> storages) {
-    this.houses = new HashSet<>(houses);
-    this.storages = new HashSet<>(storages);
-  }
-
-  public Set<ThermalHouseInput> getHouses() {
-    return houses;
-  }
-
-  public Set<ThermalStorageInput> getStorages() {
-    return storages;
+    this(new HashSet<>(houses), new HashSet<>(storages));
   }
 
   @Override
@@ -45,15 +32,7 @@ public class ThermalUnits implements InputContainer<ThermalUnitInput> {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    ThermalUnits that = (ThermalUnits) o;
-    return houses.equals(that.houses) && storages.equals(that.storages);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(houses, storages);
+  public String toString() {
+    return "ThermalUnits{" + "#houses=" + houses.size() + ", #storages=" + storages.size() + '}';
   }
 }

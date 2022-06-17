@@ -16,7 +16,7 @@ public abstract class ThermalInput extends AssetInput {
     super(uuid, id, operator, operationTime);
   }
 
-  public ThermalInput(UUID uuid, String id) {
+  protected ThermalInput(UUID uuid, String id) {
     super(uuid, id);
   }
 }
