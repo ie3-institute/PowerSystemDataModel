@@ -63,11 +63,11 @@ dependencies {
 	implementation 'com.github.johanneshiry:OSMonaut:v1.1.1' // tmp pbf parse
 
 	// JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
-	implementation ('org.locationtech.jts:jts-core:1.18.2'){
+	implementation ('org.locationtech.jts:jts-core:1.19.0'){
 		exclude group: 'junit', module: 'junit'
 	}
 
-	implementation 'org.locationtech.jts.io:jts-io-common:1.18.2'
+	implementation 'org.locationtech.jts.io:jts-io-common:1.19.0'
 
 	// Graphs
 	implementation 'org.jgrapht:jgrapht-core:1.5.1'
