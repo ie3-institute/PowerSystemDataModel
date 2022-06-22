@@ -67,7 +67,7 @@ dependencies {
 		exclude group: 'junit', module: 'junit'
 	}
 
-	implementation 'org.locationtech.jts.io:jts-io-common:1.18.2'
+	implementation 'org.locationtech.jts.io:jts-io-common:1.19.0'
 
 	// Graphs
 	implementation 'org.jgrapht:jgrapht-core:1.5.1'
