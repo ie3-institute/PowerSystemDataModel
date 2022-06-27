@@ -3,17 +3,16 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.models;
+package edu.ie3.datamodel.models.profile;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import edu.ie3.datamodel.exceptions.ParsingException;
 
 /**
  * German standard electricity load profiles, defined by the bdew (Bundesverband der Energie- und
  * Wasserwirtschaft; engl.Federal Association of the Energy and Water Industry). For more details
- * see https://www.bdew.de/energie/standardlastprofile-strom/
+ * see <a href="https://www.bdew.de/energie/standardlastprofile-strom/">here</a>.
  */
-public enum BdewLoadProfile implements StandardLoadProfile {
+public enum BdewStandardLoadProfile implements StandardLoadProfile {
   H0("h0"), // Households
   L0("l0"), // Agricultural enterprises without further differentiation
   L1("l1"), // Agricultural enterprises with dairy sector
@@ -28,7 +27,7 @@ public enum BdewLoadProfile implements StandardLoadProfile {
 
   private final String key;
 
-  BdewLoadProfile(String key) {
+  BdewStandardLoadProfile(String key) {
     this.key = key.toLowerCase();
   }
 
@@ -39,19 +38,8 @@ public enum BdewLoadProfile implements StandardLoadProfile {
    * @return The corresponding bdew load profile or throw {@link IllegalArgumentException}, if no
    *     matching load profile can be found
    */
-  public static BdewLoadProfile get(String key) {
-    return Arrays.stream(BdewLoadProfile.values())
-        .filter(loadProfile -> loadProfile.key.equalsIgnoreCase(key))
-        .findFirst()
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "No predefined bdew load profile with key '"
-                        + key
-                        + "' found. Please provide one of the following keys:"
-                        + Arrays.stream(BdewLoadProfile.values())
-                            .map(BdewLoadProfile::getKey)
-                            .collect(Collectors.joining(", "))));
+  public static BdewStandardLoadProfile get(String key) throws ParsingException {
+    return LoadProfile.getProfile(BdewStandardLoadProfile.values(), key);
   }
 
   @Override

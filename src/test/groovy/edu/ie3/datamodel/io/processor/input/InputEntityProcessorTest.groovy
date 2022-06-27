@@ -245,7 +245,7 @@ class InputEntityProcessorTest extends Specification {
 			"operator"           : SystemParticipantTestData.loadInput.operator.uuid.toString(),
 			"qCharacteristics"   : SystemParticipantTestData.cosPhiFixedDeSerialized,
 			"sRated"             : SystemParticipantTestData.loadInput.sRated.getValue().doubleValue().toString(),
-			"standardLoadProfile": SystemParticipantTestData.loadInput.standardLoadProfile.key
+			"loadProfile"		 : SystemParticipantTestData.loadInput.loadProfile.key
 		]
 		StorageInput     | SystemParticipantTestData.storageInput     || [
 			"uuid"            : SystemParticipantTestData.storageInput.uuid.toString(),
