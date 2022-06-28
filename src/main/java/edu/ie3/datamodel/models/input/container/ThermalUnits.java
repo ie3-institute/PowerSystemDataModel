@@ -10,14 +10,14 @@ import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
 import java.util.*;
 
+/**
+ * Container to group together all {@link ThermalUnitInput}s
+ *
+ * @param houses Available houses
+ * @param storages Available storage
+ */
 public record ThermalUnits(Set<ThermalHouseInput> houses, Set<ThermalStorageInput> storages)
     implements InputContainer<ThermalUnitInput> {
-  /**
-   * Container to group together all {@link ThermalUnitInput}s
-   *
-   * @param houses Available houses
-   * @param storages Available storage
-   */
   public ThermalUnits(
       Collection<ThermalHouseInput> houses, Collection<ThermalStorageInput> storages) {
     this(new HashSet<>(houses), new HashSet<>(storages));
