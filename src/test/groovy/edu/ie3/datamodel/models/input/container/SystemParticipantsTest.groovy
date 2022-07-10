@@ -5,11 +5,8 @@
  */
 package edu.ie3.datamodel.models.input.container
 
-import edu.ie3.datamodel.models.input.system.BmInput
-import edu.ie3.test.common.ComplexTopology
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
-
 
 class SystemParticipantsTest extends Specification {
 

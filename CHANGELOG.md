@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Graph with impedance weighted edges including facilities to create it [#440](https://github.com/ie3-institute/PowerSystemDataModel/issues/440)
 - `TimeSeriesTypeSource` providing a source for the mapping of time series uuids to column schemes (previously provided by `TimeSeriesMappingSource`) [#515](https://github.com/ie3-institute/PowerSystemDataModel/issues/515)
 - `TemperatureDependantLoadProfile`s for depiction of profile behavior of night storage heating and heat pumps [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
+- `ThermalUnits` as a container to hold all thermal units [#134](https://github.com/ie3-institute/PowerSystemDataModel/issues/134)
+- `ThermalInput` as a distinct abstract class for all thermal models
+- `ThermalGrid` as a container for a completly connected thermal grid
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
