@@ -46,8 +46,8 @@ public class EntityPersistenceNamingStrategy {
    * scheme is accessible via the named capturing group "columnScheme". The time series' UUID is
    * accessible by the named capturing group "uuid"
    */
-  private static final Pattern INDIVIDUAL_TIME_SERIES_PATTERN =
-      Pattern.compile("its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>" + UUID_STRING + ")");
+  private static final String INDIVIDUAL_TIME_SERIES_PATTERN =
+      "its_(?<columnScheme>[a-zA-Z]{1,11})_(?<uuid>" + UUID_STRING + ")";
 
   /**
    * Pattern to identify individual time series in this instance of the naming strategy (takes care
@@ -59,8 +59,8 @@ public class EntityPersistenceNamingStrategy {
    * Regex to match the naming convention of a file for a repetitive load profile time series. The
    * profile is accessible via the named capturing group "profile", the uuid by the group "uuid"
    */
-  private static final Pattern LOAD_PROFILE_TIME_SERIES =
-      Pattern.compile("lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>" + UUID_STRING + ")");
+  private static final String LOAD_PROFILE_TIME_SERIES =
+      "lpts_(?<profile>[a-zA-Z][0-9])_(?<uuid>" + UUID_STRING + ")";
 
   /**
    * Pattern to identify load profile time series in this instance of the naming strategy (takes
@@ -104,14 +104,14 @@ public class EntityPersistenceNamingStrategy {
         Pattern.compile(
             prefix
                 + (prefix.isEmpty() ? "" : "_")
-                + INDIVIDUAL_TIME_SERIES_PATTERN.pattern()
+                + INDIVIDUAL_TIME_SERIES_PATTERN
                 + (suffix.isEmpty() ? "" : "_")
                 + suffix);
     this.loadProfileTimeSeriesPattern =
         Pattern.compile(
             prefix
                 + (prefix.isEmpty() ? "" : "_")
-                + LOAD_PROFILE_TIME_SERIES.pattern()
+                + LOAD_PROFILE_TIME_SERIES
                 + (suffix.isEmpty() ? "" : "_")
                 + suffix);
   }

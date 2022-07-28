@@ -40,7 +40,7 @@ public abstract class AssetInput extends InputEntity implements Operable {
    * @param uuid Unique identifier
    * @param id Human readable identifier
    */
-  public AssetInput(UUID uuid, String id) {
+  protected AssetInput(UUID uuid, String id) {
     this(uuid, id, OperatorInput.NO_OPERATOR_ASSIGNED, OperationTime.notLimited());
   }
 
