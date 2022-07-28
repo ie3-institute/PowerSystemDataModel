@@ -12,13 +12,13 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.TransformerInput;
 import edu.ie3.datamodel.models.input.container.SubGridContainer;
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * Defines gates between {@link SubGridContainer}s and serves as edge definition for {@link
  * SubGridTopologyGraph}
  */
-public class SubGridGate implements Serializable {
+public record SubGridGate(TransformerInput link, NodeInput superiorNode, NodeInput inferiorNode)
+    implements Serializable {
   /**
    * Creates a sub grid gate from two winding transformer.
    *
@@ -40,47 +40,30 @@ public class SubGridGate implements Serializable {
    */
   public static SubGridGate fromTransformer3W(
       Transformer3WInput transformer, ConnectorPort inferiorPort) {
-    switch (inferiorPort) {
-      case B:
-        return new SubGridGate(transformer, transformer.getNodeA(), transformer.getNodeB());
-      case C:
-        return new SubGridGate(transformer, transformer.getNodeA(), transformer.getNodeC());
-      default:
-        throw new IllegalArgumentException(
-            "Only port "
-                + ConnectorPort.B
-                + " or "
-                + ConnectorPort.C
-                + " can be "
-                + "chosen as inferior port.");
-    }
+    return switch (inferiorPort) {
+      case B -> new SubGridGate(transformer, transformer.getNodeA(), transformer.getNodeB());
+      case C -> new SubGridGate(transformer, transformer.getNodeA(), transformer.getNodeC());
+      default -> throw new IllegalArgumentException(
+          "Only port "
+              + ConnectorPort.B
+              + " or "
+              + ConnectorPort.C
+              + " can be "
+              + "chosen as inferior port.");
+    };
   }
 
-  private final TransformerInput link;
-  private final NodeInput superiorNode;
-  private final NodeInput inferiorNode;
-
-  /**
-   * Create a {@link SubGridGate}
-   *
-   * @param link Model, that physically represents the gate
-   * @param superiorNode Upstream node of the gate
-   * @param inferiorNode Downstream node of the gate
-   */
-  public SubGridGate(TransformerInput link, NodeInput superiorNode, NodeInput inferiorNode) {
-    this.link = link;
-    this.superiorNode = superiorNode;
-    this.inferiorNode = inferiorNode;
-  }
-
+  @Deprecated(since = "3.0")
   public TransformerInput getLink() {
     return link;
   }
 
+  @Deprecated(since = "3.0")
   public NodeInput getSuperiorNode() {
     return superiorNode;
   }
 
+  @Deprecated(since = "3.0")
   public NodeInput getInferiorNode() {
     return inferiorNode;
   }
@@ -91,21 +74,6 @@ public class SubGridGate implements Serializable {
 
   public int getInferiorSubGrid() {
     return inferiorNode.getSubnet();
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    SubGridGate that = (SubGridGate) o;
-    return link.equals(that.link)
-        && superiorNode.equals(that.superiorNode)
-        && inferiorNode.equals(that.inferiorNode);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(link, superiorNode, inferiorNode);
   }
 
   @Override

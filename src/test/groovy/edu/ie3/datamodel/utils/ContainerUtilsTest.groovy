@@ -24,8 +24,6 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import java.time.ZoneId
-
 import static edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils.*
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
@@ -140,20 +138,20 @@ class ContainerUtilsTest extends Specification {
 
 		def switchAB = Mock(SwitchInput)
 		switchAB.getUuid() >> UUID.fromString("f076f7b5-3d17-401a-a11e-7b310f866649")
-		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		switchAB.allNodes() >> List.of(nodeA, nodeB)
 
 		def switchBC = Mock(SwitchInput)
 		switchBC.getUuid() >> UUID.fromString("1bfd0c52-7122-4677-a075-6c97a691d4b4")
-		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		switchBC.allNodes() >> List.of(nodeB, nodeC)
 
 		def switchCD = Mock(SwitchInput)
 		switchCD.getUuid() >> UUID.fromString("01e6828b-8b7c-4d21-85cd-20891b64d530")
-		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+		switchCD.allNodes() >> List.of(nodeC, nodeD)
 
 		def transformerDE = Mock(Transformer2WInput)
 		transformerDE.getUuid() >> UUID.fromString("8ec5667a-437e-43ac-b6f4-948810c785be")
 		transformerDE.getNodeA() >> nodeD
-		transformerDE.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeD, nodeE))
+		transformerDE.allNodes() >> List.of(nodeD, nodeE)
 
 		def rawGridElements = new RawGridElements([
 			nodeA,
@@ -210,22 +208,22 @@ class ContainerUtilsTest extends Specification {
 
 		def switchAB = Mock(SwitchInput)
 		switchAB.getUuid() >> UUID.fromString("f076f7b5-3d17-401a-a11e-7b310f866649")
-		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		switchAB.allNodes() >> List.of(nodeA, nodeB)
 
 		def switchBC = Mock(SwitchInput)
 		switchBC.getUuid() >> UUID.fromString("1bfd0c52-7122-4677-a075-6c97a691d4b4")
-		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		switchBC.allNodes() >> List.of(nodeB, nodeC)
 
 		def switchCD = Mock(SwitchInput)
 		switchCD.getUuid() >> UUID.fromString("01e6828b-8b7c-4d21-85cd-20891b64d530")
-		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+		switchCD.allNodes() >> List.of(nodeC, nodeD)
 
 		def transformerDEF = Mock(Transformer3WInput)
 		transformerDEF.getUuid() >> UUID.fromString("8ec5667a-437e-43ac-b6f4-948810c785be")
 		transformerDEF.getNodeA() >> nodeD
 		transformerDEF.getNodeB() >> nodeE
 		transformerDEF.getNodeC() >> nodeF
-		transformerDEF.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeD, nodeE, nodeF))
+		transformerDEF.allNodes() >> List.of(nodeD, nodeE, nodeF)
 
 		def rawGridElements = new RawGridElements([
 			nodeA,
@@ -567,15 +565,15 @@ class ContainerUtilsTest extends Specification {
 		def switchAB = Mock(SwitchInput)
 		switchAB.getNodeA() >> nodeA
 		switchAB.getNodeB() >> nodeB
-		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		switchAB.allNodes() >> List.of(nodeA, nodeB)
 		def switchBC = Mock(SwitchInput)
 		switchBC.getNodeA() >> nodeB
 		switchBC.getNodeB() >> nodeC
-		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		switchBC.allNodes() >> List.of(nodeB, nodeC)
 		def switchCD = Mock(SwitchInput)
 		switchCD.getNodeA() >> nodeC
 		switchCD.getNodeB() >> nodeD
-		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+		switchCD.allNodes() >> List.of(nodeC, nodeD)
 
 		def switches = new HashSet<SwitchInput>()
 		switches.add(switchAB)
@@ -607,15 +605,15 @@ class ContainerUtilsTest extends Specification {
 		def switchAB = Mock(SwitchInput)
 		switchAB.getNodeA() >> nodeA
 		switchAB.getNodeB() >> nodeB
-		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		switchAB.allNodes() >> List.of(nodeA, nodeB)
 		def switchBC = Mock(SwitchInput)
 		switchBC.getNodeA() >> nodeB
 		switchBC.getNodeB() >> nodeC
-		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		switchBC.allNodes() >> List.of(nodeB, nodeC)
 		def switchCD = Mock(SwitchInput)
 		switchCD.getNodeA() >> nodeC
 		switchCD.getNodeB() >> nodeD
-		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+		switchCD.allNodes() >> List.of(nodeC, nodeD)
 
 		def switches = new HashSet<SwitchInput>()
 		switches.add(switchAB)
@@ -664,15 +662,15 @@ class ContainerUtilsTest extends Specification {
 		def switchAB = Mock(SwitchInput)
 		switchAB.getNodeA() >> nodeA
 		switchAB.getNodeB() >> nodeB
-		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		switchAB.allNodes() >> List.of(nodeA, nodeB)
 		def switchBC = Mock(SwitchInput)
 		switchBC.getNodeA() >> nodeB
 		switchBC.getNodeB() >> nodeC
-		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		switchBC.allNodes() >> List.of(nodeB, nodeC)
 		def switchCA = Mock(SwitchInput)
 		switchCA.getNodeA() >> nodeC
 		switchCA.getNodeB() >> nodeA
-		switchCA.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeA))
+		switchCA.allNodes() >> List.of(nodeC, nodeA)
 
 		def switches = new HashSet<SwitchInput>()
 		switches.add(switchAB)
@@ -700,15 +698,15 @@ class ContainerUtilsTest extends Specification {
 		def switchAB = Mock(SwitchInput)
 		switchAB.getNodeA() >> nodeA
 		switchAB.getNodeB() >> nodeB
-		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		switchAB.allNodes() >> List.of(nodeA, nodeB)
 		def switchBC = Mock(SwitchInput)
 		switchBC.getNodeA() >> nodeB
 		switchBC.getNodeB() >> nodeC
-		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		switchBC.allNodes() >> List.of(nodeB, nodeC)
 		def switchBD = Mock(SwitchInput)
 		switchBD.getNodeA() >> nodeB
 		switchBD.getNodeB() >> nodeD
-		switchBD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeD))
+		switchBD.allNodes() >> List.of(nodeB, nodeD)
 
 		def switches = new HashSet<SwitchInput>()
 		switches.add(switchAB)
@@ -718,7 +716,7 @@ class ContainerUtilsTest extends Specification {
 		def possibleJunctions = new HashSet<NodeInput>()
 
 		when:
-		def actual = ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
+		ContainerUtils.traverseAlongSwitchChain(nodeA, switches, possibleJunctions)
 
 		then:
 		IllegalArgumentException ex = thrown()
@@ -739,7 +737,7 @@ class ContainerUtilsTest extends Specification {
 		transformer.getUuid() >> UUID.fromString("ddcdd72a-5f97-4bef-913b-d32d31216e27")
 		transformer.getNodeA() >> nodeD
 		transformer.getNodeB() >> nodeE
-		transformer.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeD, nodeE))
+		transformer.allNodes() >> List.of(nodeD, nodeE)
 
 		def rawGridElements = new RawGridElements([nodeD, nodeE, transformer])
 
@@ -781,17 +779,17 @@ class ContainerUtilsTest extends Specification {
 		transformer.getUuid() >> UUID.fromString("ddcdd72a-5f97-4bef-913b-d32d31216e27")
 		transformer.getNodeA() >> nodeD
 		transformer.getNodeB() >> nodeE
-		transformer.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeD, nodeE))
+		transformer.allNodes() >> List.of(nodeD, nodeE)
 
 		def switchAB = Mock(SwitchInput)
 		switchAB.getUuid() >> UUID.fromString("5fcb8705-1436-4fbe-97b3-d2dcaf6a783b")
-		switchAB.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeA, nodeB))
+		switchAB.allNodes() >> List.of(nodeA, nodeB)
 		def switchBC = Mock(SwitchInput)
 		switchBC.getUuid() >> UUID.fromString("4ca81b0b-e06d-408e-a991-de140f4e229b")
-		switchBC.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeB, nodeC))
+		switchBC.allNodes() >> List.of(nodeB, nodeC)
 		def switchCD = Mock(SwitchInput)
 		switchCD.getUuid() >> UUID.fromString("92ce075e-9e3b-4ee6-89b6-19e6372fba01")
-		switchCD.allNodes() >> Collections.unmodifiableList(Arrays.asList(nodeC, nodeD))
+		switchCD.allNodes() >> List.of(nodeC, nodeD)
 
 		def rawGridElements = new RawGridElements([
 			nodeA,

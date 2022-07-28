@@ -14,19 +14,15 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CsvFileDefinition {
+public record CsvFileDefinition(
+    String fileName, String directoryPath, String[] headLineElements, String csvSep) {
   private static final Logger logger = LoggerFactory.getLogger(CsvFileDefinition.class);
 
   private static final Pattern FILE_NAME_PATTERN =
       Pattern.compile(
           "^(?<fileName>[^\\\\/\\s.]{0,255})(?:\\.(?<extension>[a-zA-Z0-9]{0,10}(?:\\.[a-zA-Z0-9]{0,10})?))?$");
 
-  protected static final String FILE_EXTENSION = "csv";
-
-  private final String directoryPath;
-  private final String fileName;
-  private final String[] headLineElements;
-  private final String csvSep;
+  private static final String FILE_EXTENSION = "csv";
 
   public CsvFileDefinition(
       String fileName, String directoryPath, String[] headLineElements, String csvSep) {
@@ -60,11 +56,13 @@ public class CsvFileDefinition {
     this.csvSep = csvSep;
   }
 
+  @Deprecated(since = "3.0")
   public String getDirectoryPath() {
     return directoryPath;
   }
 
   /** @return The file name including extension */
+  @Deprecated(since = "3.0")
   public String getFileName() {
     return fileName;
   }
@@ -77,30 +75,14 @@ public class CsvFileDefinition {
     return !directoryPath.isEmpty() ? FilenameUtils.concat(directoryPath, fileName) : fileName;
   }
 
+  @Deprecated(since = "3.0")
   public String[] getHeadLineElements() {
     return headLineElements;
   }
 
+  @Deprecated(since = "3.0")
   public String getCsvSep() {
     return csvSep;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof CsvFileDefinition)) return false;
-    CsvFileDefinition that = (CsvFileDefinition) o;
-    return directoryPath.equals(that.directoryPath)
-        && fileName.equals(that.fileName)
-        && Arrays.equals(headLineElements, that.headLineElements)
-        && csvSep.equals(that.csvSep);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = Objects.hash(directoryPath, fileName, csvSep);
-    result = 31 * result + Arrays.hashCode(headLineElements);
-    return result;
   }
 
   @Override
