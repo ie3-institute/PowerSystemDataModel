@@ -86,6 +86,25 @@ public record CsvFileDefinition(
   }
 
   @Override
+  public boolean equals(Object o) {
+    // equals implementation is required here because
+    // records' equals method and array fields don't play together nicely
+    if (this == o) return true;
+    if (!(o instanceof CsvFileDefinition that)) return false;
+    return directoryPath.equals(that.directoryPath)
+        && fileName.equals(that.fileName)
+        && Arrays.equals(headLineElements, that.headLineElements)
+        && csvSep.equals(that.csvSep);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Objects.hash(directoryPath, fileName, csvSep);
+    result = 31 * result + Arrays.hashCode(headLineElements);
+    return result;
+  }
+
+  @Override
   public String toString() {
     return "CsvFileDefinition{"
         + "directoryPath='"
