@@ -176,7 +176,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
     // if the node is not present we return an empty element and
     // log a warning
-    if (!node.isPresent()) {
+    if (node.isEmpty()) {
       logSkippingWarning(
           NodeGraphicInput.class.getSimpleName(),
           fieldsToAttributes.get("uuid"),
@@ -221,7 +221,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
     // if the node is not present we return an empty element and
     // log a warning
-    if (!line.isPresent()) {
+    if (line.isEmpty()) {
       logSkippingWarning(
           LineGraphicInput.class.getSimpleName(),
           fieldsToAttributes.get("uuid"),

@@ -79,7 +79,7 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
   public Collection<Point> getCoordinates(int... ids) {
     return Arrays.stream(ids)
         .mapToObj(this::getCoordinate)
-        .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 

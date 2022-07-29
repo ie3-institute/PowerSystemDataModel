@@ -45,9 +45,8 @@ public class IndividualTimeSeriesMetaInformation extends FileNameMetaInformation
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof IndividualTimeSeriesMetaInformation)) return false;
+    if (!(o instanceof IndividualTimeSeriesMetaInformation that)) return false;
     if (!super.equals(o)) return false;
-    IndividualTimeSeriesMetaInformation that = (IndividualTimeSeriesMetaInformation) o;
     return columnScheme == that.columnScheme;
   }
 

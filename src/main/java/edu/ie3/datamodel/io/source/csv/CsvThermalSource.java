@@ -194,7 +194,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
 
     // if the type is not present we return an empty element and
     // log a warning
-    if (!thermalBus.isPresent()) {
+    if (thermalBus.isEmpty()) {
       logSkippingWarning(
           assetInputEntityData.getTargetClass().getSimpleName(),
           fieldsToAttributes.get("uuid"),

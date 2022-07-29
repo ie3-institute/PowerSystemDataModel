@@ -389,12 +389,12 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
     // if nodeA or nodeB are not present we return an empty element and log a
     // warning
-    if (!nodeA.isPresent() || !nodeB.isPresent()) {
+    if (nodeA.isEmpty() || nodeB.isEmpty()) {
       String debugString =
           Stream.of(
                   new AbstractMap.SimpleEntry<>(nodeA, NODE_A + ": " + nodeAUuid),
                   new AbstractMap.SimpleEntry<>(nodeB, NODE_B + ": " + nodeBUuid))
-              .filter(entry -> !entry.getKey().isPresent())
+              .filter(entry -> entry.getKey().isEmpty())
               .map(AbstractMap.SimpleEntry::getValue)
               .collect(Collectors.joining("\n"));
 
@@ -522,7 +522,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
     // if nodeC is not present we return an empty element and
     // log a warning
-    if (!nodeC.isPresent()) {
+    if (nodeC.isEmpty()) {
       logSkippingWarning(
           typeEntityData.getTargetClass().getSimpleName(),
           fieldsToAttributes.get("uuid"),

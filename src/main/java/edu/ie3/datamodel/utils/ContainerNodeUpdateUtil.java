@@ -603,21 +603,10 @@ public class ContainerNodeUpdateUtil {
    * updates when updating the transformers. Hence, for further processing it is advised to use the
    * updatedOldToNewNodes instead of the original ones.
    */
-  private static class TransformerNodeUpdateResult {
-    private final Set<Transformer2WInput> updatedTransformer2WInputs;
-    private final Set<Transformer3WInput> updatedTransformer3WInputs;
-
-    private final Map<NodeInput, NodeInput> updatedOldToNewNodes;
-
-    public TransformerNodeUpdateResult(
-        Set<Transformer2WInput> updatedTransformer2WInputs,
-        Set<Transformer3WInput> updatedTransformer3WInputs,
-        Map<NodeInput, NodeInput> updatedOldToNewNodes) {
-      this.updatedTransformer2WInputs = updatedTransformer2WInputs;
-      this.updatedTransformer3WInputs = updatedTransformer3WInputs;
-      this.updatedOldToNewNodes = updatedOldToNewNodes;
-    }
-  }
+  private record TransformerNodeUpdateResult(
+      Set<Transformer2WInput> updatedTransformer2WInputs,
+      Set<Transformer3WInput> updatedTransformer3WInputs,
+      Map<NodeInput, NodeInput> updatedOldToNewNodes) {}
 
   /**
    * Class that is used to provide data after calling {@link
@@ -626,30 +615,12 @@ public class ContainerNodeUpdateUtil {
    * Hence, for further processing it is advised to use the updatedOldToNewNodes instead of the
    * original ones
    */
-  private static class RawGridElementsNodeUpdateResult {
-    private final RawGridElements rawGridElements;
-    private final Map<NodeInput, NodeInput> updatedOldToNewNodes;
-
-    public RawGridElementsNodeUpdateResult(
-        RawGridElements rawGridElements, Map<NodeInput, NodeInput> updatedOldToNewNodes) {
-      this.rawGridElements = rawGridElements;
-      this.updatedOldToNewNodes = updatedOldToNewNodes;
-    }
-  }
+  private record RawGridElementsNodeUpdateResult(
+      RawGridElements rawGridElements, Map<NodeInput, NodeInput> updatedOldToNewNodes) {}
 
   /** Wrapper class for updated entities hold by an instance of {@link GridContainer} */
-  private static class UpdatedEntities {
-    private final RawGridElements rawGridElements;
-    private final SystemParticipants systemParticipants;
-    private final GraphicElements graphicElements;
-
-    public UpdatedEntities(
-        RawGridElements rawGridElements,
-        SystemParticipants systemParticipants,
-        GraphicElements graphicElements) {
-      this.rawGridElements = rawGridElements;
-      this.systemParticipants = systemParticipants;
-      this.graphicElements = graphicElements;
-    }
-  }
+  private record UpdatedEntities(
+      RawGridElements rawGridElements,
+      SystemParticipants systemParticipants,
+      GraphicElements graphicElements) {}
 }

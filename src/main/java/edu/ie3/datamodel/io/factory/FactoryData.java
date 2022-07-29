@@ -140,8 +140,7 @@ public abstract class FactoryData {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof FactoryData)) return false;
-    FactoryData that = (FactoryData) o;
+    if (!(o instanceof FactoryData that)) return false;
     return fieldsToAttributes.equals(that.fieldsToAttributes)
         && targetClass.equals(that.targetClass);
   }
