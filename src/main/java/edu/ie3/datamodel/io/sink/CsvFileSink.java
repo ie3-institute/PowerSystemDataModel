@@ -122,8 +122,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   @Override
   public <T extends UniqueEntity> void persist(T entity) {
     /* Distinguish between "regular" input / result models and time series */
-    if (entity instanceof InputEntity) {
-      persistIncludeNested((InputEntity) entity);
+    if (entity instanceof InputEntity inputEntity) {
+      persistIncludeNested(inputEntity);
     } else if (entity instanceof ResultEntity) {
       write(entity);
     } else if (entity instanceof TimeSeries<?, ?> timeSeries) {

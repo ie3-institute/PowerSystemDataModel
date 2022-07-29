@@ -222,7 +222,7 @@ public class ContainerUtils {
     NodeInput nodeA = connectorInput.getNodeA();
     NodeInput nodeB = connectorInput.getNodeB();
     /* Add an edge if it is not a switch or the switch is closed */
-    if (!(connectorInput instanceof SwitchInput sw) || ((SwitchInput) connectorInput).isClosed())
+    if (!(connectorInput instanceof SwitchInput sw) || sw.isClosed())
       graph.addEdge(nodeA, nodeB);
 
     if (connectorInput instanceof LineInput line) {
@@ -645,8 +645,7 @@ public class ContainerUtils {
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (!(o instanceof TransformerSubGridContainers)) return false;
-      TransformerSubGridContainers that = (TransformerSubGridContainers) o;
+      if (!(o instanceof TransformerSubGridContainers that)) return false;
       return containerA.equals(that.containerA)
           && containerB.equals(that.containerB)
           && maybeContainerC.equals(that.maybeContainerC);

@@ -345,7 +345,7 @@ public class EntityPersistenceNamingStrategy {
     /* Separate all lower case letters, that are followed by a capital or a digit by underscore */
     String regularCamelCaseRegex = "([a-z])([A-Z0-9]+)";
     /* Separate all digits, that are followed by a letter by underscore */
-    String numberLetterCamelCaseRegex = "([0-9])([a-zA-Z]+)";
+    String numberLetterCamelCaseRegex = "(\\d)([a-zA-Z]+)";
     /* Separate two or more capitals, that are not at the beginning of the string by underscore */
     String specialCamelCaseRegex = "((?<!^)[A-Z])([A-Z]+)";
     return camelCaseString

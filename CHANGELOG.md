@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Turn some classes into records
     - Making abstract classes' constructor protected
     - Improving some RegExs
+    - Miscellaneous code smells
 - Fix JavaDoc creation
     - Create JavaDoc with java 17 instead of java 8
     - Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))

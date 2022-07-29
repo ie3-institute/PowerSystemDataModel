@@ -158,7 +158,7 @@ public class CsvFileConnector implements DataConnector {
    * @param <C> Type of class
    * @throws IOException If closing of writer fails.
    */
-  public synchronized <C extends Class<? extends UniqueEntity>> void closeEntityWriter(C clz)
+  public synchronized <C extends UniqueEntity> void closeEntityWriter(Class<C> clz)
       throws IOException {
     Optional<BufferedCsvWriter> maybeWriter = Optional.ofNullable(entityWriters.get(clz));
     if (maybeWriter.isPresent()) {
