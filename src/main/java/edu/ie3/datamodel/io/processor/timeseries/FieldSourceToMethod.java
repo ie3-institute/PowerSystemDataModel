@@ -13,11 +13,13 @@ import java.lang.reflect.Method;
  */
 public record FieldSourceToMethod(FieldSource source, Method method) {
 
+  /** @deprecated since 3.0. Use {@link #source()} instead */
   @Deprecated(since = "3.0")
   public FieldSource getSource() {
     return source;
   }
 
+  /** @deprecated since 3.0. Use {@link #method()} instead */
   @Deprecated(since = "3.0")
   public Method getMethod() {
     return method;
