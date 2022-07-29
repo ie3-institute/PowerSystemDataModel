@@ -174,11 +174,11 @@ public abstract class CsvDataSource {
   private String[] oldFieldVals(String csvSep, String csvRow) {
 
     /*geo json support*/
-    final String geoJsonRegex = "[\\{].+?\\}\\}\\}";
+    final String geoJsonRegex = "\\{.+?}}}";
     final String geoReplacement = "geoJSON";
 
     /*characteristic input support */
-    final String charInputRegex = "(cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{.+?\\}";
+    final String charInputRegex = "(cP:|olm:|cosPhiFixed:|cosPhiP:|qV:)\\{[^}]++}";
     final String charReplacement = "charRepl";
 
     /*removes double double quotes*/
@@ -497,7 +497,7 @@ public abstract class CsvDataSource {
 
     // if the type is not present we return an empty element and
     // log a warning
-    if (!assetType.isPresent()) {
+    if (assetType.isEmpty()) {
       logSkippingWarning(
           skippedClassString,
           saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
@@ -575,7 +575,7 @@ public abstract class CsvDataSource {
 
               // if the node is not present we return an empty element and
               // log a warning
-              if (!node.isPresent()) {
+              if (node.isEmpty()) {
                 logSkippingWarning(
                     assetInputEntityData.getTargetClass().getSimpleName(),
                     fieldsToAttributes.get("uuid"),

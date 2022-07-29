@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `TemperatureDependantLoadProfile`s for depiction of profile behavior of night storage heating and heat pumps [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
 - `ThermalUnits` as a container to hold all thermal units [#134](https://github.com/ie3-institute/PowerSystemDataModel/issues/134)
 - `ThermalInput` as a distinct abstract class for all thermal models
-- `ThermalGrid` as a container for a completly connected thermal grid
+- `ThermalGrid` as a container for a completely connected thermal grid
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Use direct assignment with switch/case structures
     - Turn some classes into records
     - Making abstract classes' constructor protected
+    - Improving some RegExs
 - Fix JavaDoc creation
     - Create JavaDoc with java 17 instead of java 8
     - Let JavDoc pass, if there are warnings **ATTENTION:** Should be removed, when JavaDoc is fixed! (cf. Issue [#494](https://github.com/ie3-institute/PowerSystemDataModel/issues/494))
