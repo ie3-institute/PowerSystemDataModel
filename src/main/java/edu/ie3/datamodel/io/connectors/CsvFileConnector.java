@@ -286,8 +286,7 @@ public class CsvFileConnector implements DataConnector {
               String filePathWithoutEnding = removeFileEnding(pathString);
               return buildCsvTimeSeriesMetaInformation(filePathWithoutEnding, columnSchemes);
             })
-        .filter(Optional::isPresent)
-        .map(Optional::get)
+        .flatMap(Optional::stream)
         .collect(
             Collectors.groupingBy(
                 edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation::getColumnScheme,

@@ -210,9 +210,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return filterEmptyOptionals(
-            nodeAssetEntityStream(
-                FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators))
+    return nodeAssetEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -237,8 +236,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<PvInput> getPvPlants(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return filterEmptyOptionals(
-            nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators))
+    return nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -263,8 +262,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<LoadInput> getLoads(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return filterEmptyOptionals(
-            nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators))
+    return nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
   /** {@inheritDoc} */
@@ -288,8 +287,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return filterEmptyOptionals(
-            nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators))
+    return nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -316,8 +315,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<BmInput> getBmPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<BmTypeInput> types) {
-    return filterEmptyOptionals(
-            typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, types))
+    return typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, types)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
   /** {@inheritDoc} */
@@ -343,8 +342,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<StorageInput> getStorages(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<StorageTypeInput> types) {
-    return filterEmptyOptionals(
-            typedEntityStream(StorageInput.class, storageInputFactory, nodes, operators, types))
+    return typedEntityStream(StorageInput.class, storageInputFactory, nodes, operators, types)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
   /** {@inheritDoc} */
@@ -370,8 +369,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<WecInput> getWecPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types) {
-    return filterEmptyOptionals(
-            typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, types))
+    return typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, types)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
   /** {@inheritDoc} */
@@ -397,8 +396,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<EvInput> getEvs(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types) {
-    return filterEmptyOptionals(
-            typedEntityStream(EvInput.class, evInputFactory, nodes, operators, types))
+    return typedEntityStream(EvInput.class, evInputFactory, nodes, operators, types)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -462,8 +461,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       Set<ThermalBusInput> thermalBuses,
       Set<ThermalStorageInput> thermalStorages) {
 
-    return filterEmptyOptionals(
-            chpInputStream(nodes, operators, types, thermalBuses, thermalStorages))
+    return chpInputStream(nodes, operators, types, thermalBuses, thermalStorages)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -512,7 +511,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       Set<OperatorInput> operators,
       Set<HpTypeInput> types,
       Set<ThermalBusInput> thermalBuses) {
-    return filterEmptyOptionals(hpInputStream(nodes, operators, types, thermalBuses))
+    return hpInputStream(nodes, operators, types, thermalBuses)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 

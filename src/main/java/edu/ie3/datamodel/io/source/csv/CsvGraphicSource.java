@@ -116,9 +116,9 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
    */
   @Override
   public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) {
-    return filterEmptyOptionals(
-            buildNodeGraphicEntityData(nodes)
-                .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get)))
+    return buildNodeGraphicEntityData(nodes)
+        .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get))
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -140,10 +140,9 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
    */
   @Override
   public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) {
-
-    return filterEmptyOptionals(
-            buildLineGraphicEntityData(lines)
-                .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get)))
+    return buildLineGraphicEntityData(lines)
+        .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get))
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 

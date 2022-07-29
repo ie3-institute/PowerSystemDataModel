@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Turn some classes into records
     - Making abstract classes' constructor protected
     - Improving some RegExs
+    - Replacing `filter(Optional::isPresent).map(Optional::get)` on streams with `flatMap(Optional::stream)`
     - Miscellaneous code smells
 - Fix JavaDoc creation
     - Create JavaDoc with java 17 instead of java 8

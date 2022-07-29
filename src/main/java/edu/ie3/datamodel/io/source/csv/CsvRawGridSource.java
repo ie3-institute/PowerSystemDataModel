@@ -156,8 +156,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    */
   @Override
   public Set<NodeInput> getNodes(Set<OperatorInput> operators) {
-    return filterEmptyOptionals(
-            assetInputEntityDataStream(NodeInput.class, operators).map(nodeInputFactory::get))
+    return assetInputEntityDataStream(NodeInput.class, operators)
+        .map(nodeInputFactory::get)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -184,8 +185,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   @Override
   public Set<LineInput> getLines(
       Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators) {
-    return filterEmptyOptionals(
-            typedEntityStream(LineInput.class, lineInputFactory, nodes, operators, lineTypeInputs))
+    return typedEntityStream(LineInput.class, lineInputFactory, nodes, operators, lineTypeInputs)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -214,13 +215,13 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Set<NodeInput> nodes,
       Set<Transformer2WTypeInput> transformer2WTypes,
       Set<OperatorInput> operators) {
-    return filterEmptyOptionals(
-            typedEntityStream(
-                Transformer2WInput.class,
-                transformer2WInputFactory,
-                nodes,
-                operators,
-                transformer2WTypes))
+    return typedEntityStream(
+            Transformer2WInput.class,
+            transformer2WInputFactory,
+            nodes,
+            operators,
+            transformer2WTypes)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -249,9 +250,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Set<NodeInput> nodes,
       Set<Transformer3WTypeInput> transformer3WTypeInputs,
       Set<OperatorInput> operators) {
-
-    return filterEmptyOptionals(
-            transformer3WEntityStream(nodes, transformer3WTypeInputs, operators))
+    return transformer3WEntityStream(nodes, transformer3WTypeInputs, operators)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -290,10 +290,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    */
   @Override
   public Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-
-    return filterEmptyOptionals(
-            untypedConnectorInputEntityStream(
-                SwitchInput.class, switchInputFactory, nodes, operators))
+    return untypedConnectorInputEntityStream(
+            SwitchInput.class, switchInputFactory, nodes, operators)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -330,9 +329,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   @Override
   public Set<MeasurementUnitInput> getMeasurementUnits(
       Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return filterEmptyOptionals(
-            nodeAssetEntityStream(
-                MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators))
+    return nodeAssetEntityStream(
+            MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 

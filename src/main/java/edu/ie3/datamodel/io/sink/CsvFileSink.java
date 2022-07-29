@@ -234,8 +234,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 wecPlants)
             .flatMap(Collection::stream)
             .map(Extractor::extractOperator)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
+            .flatMap(Optional::stream)
             .collect(Collectors.toSet());
 
     // persist all entities

@@ -322,10 +322,6 @@ public abstract class CsvDataSource {
         missingElementsString);
   }
 
-  protected <T extends UniqueEntity> Stream<T> filterEmptyOptionals(Stream<Optional<T>> elements) {
-    return elements.filter(Optional::isPresent).map(Optional::get);
-  }
-
   /**
    * Returns an {@link Optional} of the first {@link UniqueEntity} element of this collection
    * matching the provided UUID or an empty {@code Optional} if no matching entity can be found.
