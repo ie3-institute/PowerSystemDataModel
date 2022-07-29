@@ -210,13 +210,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 storages,
                 wecPlants)
             .flatMap(Collection::stream)
-            .map(
-                entityWithType ->
-                    Extractor.extractType(
-                        entityWithType)) // DON'T TOUCH THIS! NO, not even, if your editor suggests
-            // to replace lambda with method reference!
-            // This will break the sink! Due to a bug in java 8 this *CANNOT* be replaced with
-            // method reference!
+            .map(Extractor::extractType)
             .collect(Collectors.toSet());
 
     // extract operators
