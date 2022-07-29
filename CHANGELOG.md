@@ -163,6 +163,7 @@ coordinates or multiple exactly equal coordinates possible
 - ``CsvDataSource`` now parses valid RFC 4180 rows correctly (invalid, old syntax is still supported but deprecated!)
 -   Consolidate test tasks. `gradle allTests` is now replaced by `gradle test`. Only unit tests can be run with `gradle unitTest`.
 - Changed projects toString() methods for readability/completeness
+- Adapted to changes in PowerSystemUnits in PowerSystemUtils [#631](https://github.com/ie3-institute/PowerSystemDataModel/issues/631)
 
 ### Fixed
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
