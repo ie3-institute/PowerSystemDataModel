@@ -73,9 +73,9 @@ public class ContainerNodeUpdateUtil {
 
     return new JointGridContainer(
         grid.getGridName(),
-        updatedEntities.rawGridElements,
-        updatedEntities.systemParticipants,
-        updatedEntities.graphicElements);
+        updatedEntities.rawGridElements(),
+        updatedEntities.systemParticipants(),
+        updatedEntities.graphicElements());
   }
 
   /**
@@ -108,9 +108,9 @@ public class ContainerNodeUpdateUtil {
     return new SubGridContainer(
         grid.getGridName(),
         grid.getSubnet(),
-        updatedEntities.rawGridElements,
-        updatedEntities.systemParticipants,
-        updatedEntities.graphicElements);
+        updatedEntities.rawGridElements(),
+        updatedEntities.systemParticipants(),
+        updatedEntities.graphicElements());
   }
 
   /**
@@ -131,9 +131,9 @@ public class ContainerNodeUpdateUtil {
     /* RawGridElements */
     RawGridElementsNodeUpdateResult rawGridUpdateResult =
         updateRawGridElementsWithNodes(rawGridElements, oldToNewNodes);
-    RawGridElements updatedRawGridElements = rawGridUpdateResult.rawGridElements;
+    RawGridElements updatedRawGridElements = rawGridUpdateResult.rawGridElements();
 
-    Map<NodeInput, NodeInput> updatedOldToNewNodes = rawGridUpdateResult.updatedOldToNewNodes;
+    Map<NodeInput, NodeInput> updatedOldToNewNodes = rawGridUpdateResult.updatedOldToNewNodes();
 
     /* SystemParticipants */
     SystemParticipants updatedSystemParticipants =
@@ -242,12 +242,12 @@ public class ContainerNodeUpdateUtil {
             oldToNewNodes);
 
     Set<Transformer3WInput> updatedTrafo3wInputs =
-        transformerNodeUpdateResult.updatedTransformer3WInputs;
+        transformerNodeUpdateResult.updatedTransformer3WInputs();
     Set<Transformer2WInput> updatedTrafo2wInputs =
-        transformerNodeUpdateResult.updatedTransformer2WInputs;
+        transformerNodeUpdateResult.updatedTransformer2WInputs();
 
     Map<NodeInput, NodeInput> updatedOldToNewNodes =
-        transformerNodeUpdateResult.updatedOldToNewNodes;
+        transformerNodeUpdateResult.updatedOldToNewNodes();
 
     /* update nodes */
     Set<NodeInput> updatedNodeSet =
