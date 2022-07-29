@@ -222,8 +222,7 @@ public class ContainerUtils {
     NodeInput nodeA = connectorInput.getNodeA();
     NodeInput nodeB = connectorInput.getNodeB();
     /* Add an edge if it is not a switch or the switch is closed */
-    if (!(connectorInput instanceof SwitchInput sw) || sw.isClosed())
-      graph.addEdge(nodeA, nodeB);
+    if (!(connectorInput instanceof SwitchInput sw) || sw.isClosed()) graph.addEdge(nodeA, nodeB);
 
     if (connectorInput instanceof LineInput line) {
       graph.setEdgeWeightQuantity(
