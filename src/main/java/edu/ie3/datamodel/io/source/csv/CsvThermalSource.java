@@ -104,14 +104,13 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   /** {@inheritDoc} */
   @Override
   public Set<ThermalHouseInput> getThermalHouses() {
-
-    return (assetInputEntityDataStream(ThermalHouseInput.class, typeSource.getOperators())
+    return assetInputEntityDataStream(ThermalHouseInput.class, typeSource.getOperators())
         .flatMap(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
                     .map(dataOpt -> dataOpt.flatMap(thermalHouseInputFactory::get))
                     .flatMap(Optional::stream))
-        .collect(Collectors.toSet()));
+        .collect(Collectors.toSet());
   }
 
   /**

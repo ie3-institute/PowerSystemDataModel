@@ -687,7 +687,7 @@ public class ContainerUtils {
 
     /* Get the sub grid container at port C, if this is a three winding transformer */
     if (transformer instanceof Transformer3WInput transformer3WInput) {
-      SubGridContainer containerC = subGrids.get((transformer3WInput).getNodeC().getSubnet());
+      SubGridContainer containerC = subGrids.get(transformer3WInput.getNodeC().getSubnet());
       return new TransformerSubGridContainers(containerA, containerB, containerC);
     } else return new TransformerSubGridContainers(containerA, containerB);
   }

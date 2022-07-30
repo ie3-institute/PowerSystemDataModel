@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Improving some RegExs
     - Replacing `filter(Optional::isPresent).map(Optional::get)` on streams with `flatMap(Optional::stream)`
     - instanceof variable declarations
+    - Removing unnecessary parentheses
     - Miscellaneous code smells
 - Fix JavaDoc creation
     - Create JavaDoc with java 17 instead of java 8
