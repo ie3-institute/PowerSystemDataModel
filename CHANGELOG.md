@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SQL time series have a different structure than CSV counterparts [#545](https://github.com/ie3-institute/PowerSystemDataModel/issues/545)
 - Graph with impedance weighted edges including facilities to create it [#440](https://github.com/ie3-institute/PowerSystemDataModel/issues/440)
 - `TimeSeriesTypeSource` providing a source for the mapping of time series uuids to column schemes (previously provided by `TimeSeriesMappingSource`) [#515](https://github.com/ie3-institute/PowerSystemDataModel/issues/515)
+- `TemperatureDependantLoadProfile`s for depiction of profile behavior of night storage heating and heat pumps [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
+- `ThermalUnits` as a container to hold all thermal units [#134](https://github.com/ie3-institute/PowerSystemDataModel/issues/134)
+- `ThermalInput` as a distinct abstract class for all thermal models
+- `ThermalGrid` as a container for a completly connected thermal grid
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
@@ -48,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - `"datum"` to `"time"`
     - Force user to provide time stamp pattern to `CouchbaseWeatherSource` to ensure harmonized querying
 - BREAKING: Updating PowerSystemUtils dependency to 2.0-SNAPSHOT [#595](https://github.com/ie3-institute/PowerSystemDataModel/issues/595)
+- BREAKING: Generified the `LoadInput` attribute `standardLoadProfile` to `loadProfile` as it should also address the newly added `TemperatureDependantLoadProfile`s [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
 
 ## [2.1.0] - 2022-01-05
 
@@ -158,6 +163,7 @@ coordinates or multiple exactly equal coordinates possible
 - ``CsvDataSource`` now parses valid RFC 4180 rows correctly (invalid, old syntax is still supported but deprecated!)
 -   Consolidate test tasks. `gradle allTests` is now replaced by `gradle test`. Only unit tests can be run with `gradle unitTest`.
 - Changed projects toString() methods for readability/completeness
+- Adapted to changes in PowerSystemUnits in PowerSystemUtils [#631](https://github.com/ie3-institute/PowerSystemDataModel/issues/631)
 
 ### Fixed
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities

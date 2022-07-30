@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.models.input.system
 
-import edu.ie3.datamodel.models.BdewLoadProfile
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
@@ -23,7 +23,7 @@ class LoadInputTest extends Specification {
 		def loadInput = SystemParticipantTestData.loadInput
 
 		when:
-		def alteredUnit = loadInput.copy().standardLoadProfile(BdewLoadProfile.G0).dsm(true)
+		def alteredUnit = loadInput.copy().loadprofile(BdewStandardLoadProfile.G0).dsm(true)
 				.eConsAnnual(Quantities.getQuantity(6000, KILOWATTHOUR)).sRated(Quantities.getQuantity(0d, KILOVOLTAMPERE))
 				.cosPhiRated(0.8).node(GridTestData.nodeG)
 				.qCharacteristics(CosPhiFixed.CONSTANT_CHARACTERISTIC).build()
@@ -34,7 +34,7 @@ class LoadInputTest extends Specification {
 			assert operationTime == loadInput.operationTime
 			assert operator == loadInput.operator
 			assert id == loadInput.id
-			assert standardLoadProfile == BdewLoadProfile.G0
+			assert loadProfile == BdewStandardLoadProfile.G0
 			assert dsm
 			assert node == GridTestData.nodeG
 			assert qCharacteristics == CosPhiFixed.CONSTANT_CHARACTERISTIC

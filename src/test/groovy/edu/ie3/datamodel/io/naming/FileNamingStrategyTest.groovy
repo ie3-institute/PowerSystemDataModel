@@ -9,7 +9,7 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileTimeSeriesMetaInformation
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
-import edu.ie3.datamodel.models.BdewLoadProfile
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -438,8 +438,8 @@ class FileNamingStrategyTest extends Specification {
 		actual.get() == expectedFileName
 
 		where:
-		clazz            | uuid                                                    | type               || expectedFileName
-		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewLoadProfile.G3 || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
+		clazz            | uuid                                                    | type                       || expectedFileName
+		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || "test_grid" + File.separator + "input" + File.separator + "global" + File.separator + "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
 	def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid directory path for time series mapping"() {
@@ -743,7 +743,7 @@ class FileNamingStrategyTest extends Specification {
 
 		where:
 		clazz            | uuid                                                    | type               || expectedFilePath
-		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewLoadProfile.G3 || "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
+		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
 	def "A FileNamingStrategy with FlatHierarchy does return valid file path for individual time series"() {

@@ -6,13 +6,14 @@
 package edu.ie3.datamodel.io.factory.input.participant
 
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData
-import edu.ie3.datamodel.models.BdewLoadProfile
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
+import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -33,21 +34,21 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 
 	def "A LoadInputFactory should parse a valid LoadInput correctly"() {
 		given: "a system participant input type factory and model data"
-		def inputFactory = new LoadInputFactory()
-		Map<String, String> parameter = [
-			"uuid"               : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"id"                 : "TestID",
-			"qcharacteristics"   : "cosPhiFixed:{(0.0,1.0)}",
-			"standardloadprofile": "G-4",
-			"dsm"                : "true",
-			"econsannual"        : "3",
-			"srated"             : "4",
-			"cosphirated"        : "5"
-		]
 		def inputClass = LoadInput
 		def nodeInput = Mock(NodeInput)
 
 		when:
+		def inputFactory = new LoadInputFactory()
+		Map<String, String> parameter = [
+				"uuid"               : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+				"id"                 : "TestID",
+				"qcharacteristics"   : "cosPhiFixed:{(0.0,1.0)}",
+				"loadprofile"	     : profileKey,
+				"dsm"                : "true",
+				"econsannual"        : "3",
+				"srated"             : "4",
+				"cosphirated"        : "5"
+		]
 		Optional<LoadInput> input = inputFactory.get(
 				new NodeAssetInputEntityData(parameter, inputClass, nodeInput))
 
@@ -66,11 +67,16 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 					new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
 				] as TreeSet)
 			}
-			assert standardLoadProfile == BdewLoadProfile.G4
+			assert loadProfile == profile
 			assert dsm
 			assert eConsAnnual == getQuant(parameter["econsannual"], StandardUnits.ENERGY_IN)
 			assert sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
 			assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
 		}
+
+		where:
+		profileKey || profile
+		"G-4"      || BdewStandardLoadProfile.G4
+		"ep1"      || NbwTemperatureDependantLoadProfile.EP1
 	}
 }
