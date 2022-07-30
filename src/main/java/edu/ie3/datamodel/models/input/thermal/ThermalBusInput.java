@@ -11,7 +11,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.UUID;
 
 /** A thermal bus, to which different {@link ThermalUnitInput} units may be connected */
-public class ThermalBusInput extends AssetInput {
+public class ThermalBusInput extends ThermalInput {
   /**
    * Constructor for an operated thermal bus
    *
