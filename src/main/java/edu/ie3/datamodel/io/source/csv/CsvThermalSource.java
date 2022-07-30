@@ -129,25 +129,25 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<ThermalHouseInput> getThermalHouses(
       Set<OperatorInput> operators, Set<ThermalBusInput> thermalBuses) {
 
-    return (assetInputEntityDataStream(ThermalHouseInput.class, operators)
+    return assetInputEntityDataStream(ThermalHouseInput.class, operators)
         .map(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
                     .map(dataOpt -> dataOpt.flatMap(thermalHouseInputFactory::get)))
         .flatMap(elements -> elements.flatMap(Optional::stream))
-        .collect(Collectors.toSet()));
+        .collect(Collectors.toSet());
   }
   /** {@inheritDoc} */
   @Override
   public Set<CylindricalStorageInput> getCylindricStorages() {
 
-    return (assetInputEntityDataStream(CylindricalStorageInput.class, typeSource.getOperators())
+    return assetInputEntityDataStream(CylindricalStorageInput.class, typeSource.getOperators())
         .map(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
                     .map(dataOpt -> dataOpt.flatMap(cylindricalStorageInputFactory::get)))
         .flatMap(elements -> elements.flatMap(Optional::stream))
-        .collect(Collectors.toSet()));
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -166,13 +166,13 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<CylindricalStorageInput> getCylindricStorages(
       Set<OperatorInput> operators, Set<ThermalBusInput> thermalBuses) {
 
-    return (assetInputEntityDataStream(CylindricalStorageInput.class, operators)
+    return assetInputEntityDataStream(CylindricalStorageInput.class, operators)
         .map(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
                     .map(dataOpt -> dataOpt.flatMap(cylindricalStorageInputFactory::get)))
         .flatMap(elements -> elements.flatMap(Optional::stream))
-        .collect(Collectors.toSet()));
+        .collect(Collectors.toSet());
   }
 
   private Stream<Optional<ThermalUnitInputEntityData>> buildThermalUnitInputEntityData(
