@@ -274,7 +274,7 @@ public class FileNamingStrategy {
    */
   public TimeSeriesMetaInformation timeSeriesMetaInformation(String fileName) {
     /* Remove the file ending (ending limited to 255 chars, which is the max file name allowed in NTFS and ext4) */
-    String withoutEnding = fileName.replaceAll("(?:\\.[^\\\\/\\s]{1,255}){1,2}$", "");
+    String withoutEnding = removeFileNameEnding(fileName);
 
     if (getIndividualTimeSeriesPattern().matcher(withoutEnding).matches())
       return entityPersistenceNamingStrategy.individualTimesSeriesMetaInformation(withoutEnding);
@@ -283,6 +283,15 @@ public class FileNamingStrategy {
     else
       throw new IllegalArgumentException(
           "Unknown format of '" + fileName + "'. Cannot extract meta information.");
+  }
+
+  public IndividualTimeSeriesMetaInformation individualTimeSeriesMetaInformation(String fileName) {
+    return entityPersistenceNamingStrategy.individualTimesSeriesMetaInformation(
+        removeFileNameEnding(fileName));
+  }
+
+  public static String removeFileNameEnding(String fileName) {
+    return fileName.replaceAll("(?:\\.[^.\\\\/\\s]{1,255}){1,2}$", "");
   }
 
   /**
