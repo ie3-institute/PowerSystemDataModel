@@ -14,16 +14,14 @@ Therefore, the I/O-package is structured as highly modular.
 
 
 Data sink structure
-"""""""""""""""""""
-
-   .. figure:: ../../../_static/figures/uml/DataSinkClassDiagram.png
-      :align: center
-      :alt: Diagram of input data deployment
+===================
+.. figure:: ../_static/figures/uml/DataSinkClassDiagram.png
+   :align: center
+   :alt: Class diagram of data sink classes
 
 
 Data deployment
-"""""""""""""""
-
-   .. figure:: ../../../_static/figures/uml/InputDataDeployment.png
-      :align: center
-      :alt: Diagram of input data deployment
+===============
+.. figure:: ../_static/figures/uml/InputDataDeployment.png
+   :align: center
+   :alt: Diagram of input data deployment
