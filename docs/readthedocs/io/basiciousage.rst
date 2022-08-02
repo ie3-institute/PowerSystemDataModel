@@ -16,7 +16,7 @@ Therefore, the I/O-package is structured as highly modular.
 Data sink structure
 ===================
 
-.. plantuml:: DataSinkClassDiagram.puml
+ .. plantuml:: ../docs/uml/main/ModelContainerConcept.puml
    :align: center
    :alt: Class diagram of data sink classes
    :width: 650
@@ -25,7 +25,7 @@ Data sink structure
 Data deployment
 ===============
 
-.. plantuml:: InputDataDeployment.puml
+ .. plantuml:: ../docs/uml/main/ModelContainerConcept.puml
    :align: center
    :alt: Diagram of input data deployment
    :width: 650
