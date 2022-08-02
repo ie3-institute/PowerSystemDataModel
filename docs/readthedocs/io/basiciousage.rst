@@ -10,3 +10,22 @@ Therefore, the I/O-package is structured as highly modular.
 
    influxdb
    csvfiles
+
+
+
+Data sink structure
+===================
+
+.. figure:: ../docs/uml/main/DataSinkClassDiagram.puml
+   :align: center
+   :alt: Class diagram of data sink classes
+   :width: 650
+
+
+Data deployment
+===============
+
+.. figure:: ../docs/uml/main/InputDataDeployment.puml
+   :align: center
+   :alt: Diagram of input data deployment
+   :width: 650

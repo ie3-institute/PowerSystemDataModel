@@ -132,11 +132,6 @@ Participant Related Models
    input/participant/thermalhouse
    input/participant/cylindricalstorage
 
-
-    .. uml:: ./dev/docs/uml/main/input/DefaultInputDirectoryHierarchy.puml
-      :align: center
-      :alt: Default input directory hierarchy
-
 ******
 Result
 ******
@@ -176,11 +171,6 @@ Participant Related Models
    result/participant/thermalhouse
    result/participant/cylindricalstorage
    result/participant/systemparticipant
-
-
-    .. uml:: ./dev/docs/uml/main/input/DefaultResultDirectoryHierarchy.puml
-      :align: center
-      :alt: Default result directory hierarchy
 
 ***********
 Time Series
