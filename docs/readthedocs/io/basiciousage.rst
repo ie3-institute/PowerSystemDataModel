@@ -19,7 +19,7 @@ Data sink structure
    .. figure:: ../../../_static/figures/uml/DataSinkClassDiagram.png
       :align: center
       :alt: Diagram of input data deployment
-      :width: 650
+
 
 Data deployment
 ===============
@@ -27,4 +27,3 @@ Data deployment
    .. figure:: ../../../_static/figures/uml/InputDataDeployment.png
       :align: center
       :alt: Diagram of input data deployment
-      :width: 650
