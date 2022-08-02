@@ -88,42 +88,28 @@ class CsvFileConnectorTest extends Specification {
 		]
 
 		when:
-		def actual = cfc.individualTimeSeriesMetaInformation
+		def actual = cfc.getCsvIndividualTimeSeriesMetaInformation()
 
 		then:
 		actual == expected
 	}
 
-	def "The csv file connector returns empty Optional of CsvTimeSeriesMetaInformation when pointed to non-individual time series"() {
+	def "The csv file connector is able to build correct uuid to meta information mapping when restricting column schemes"() {
 		given:
-		def pathString = "lpts_h0_53990eea-1b5d-47e8-9134-6d8de36604bf"
+		def expected = [
+				(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("b88dee50-5484-4136-901d-050d8c1c97d1"), ColumnScheme.ENERGY_PRICE, "its_c_b88dee50-5484-4136-901d-050d8c1c97d1"),
+				(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"), ColumnScheme.ENERGY_PRICE, "its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b"),
+				(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226")): new CsvIndividualTimeSeriesMetaInformation(UUID.fromString("fcf0b851-a836-4bde-8090-f44c382ed226"), ColumnScheme.ACTIVE_POWER, "its_p_fcf0b851-a836-4bde-8090-f44c382ed226")
+		]
 
 		when:
-		def actual = cfc.buildCsvTimeSeriesMetaInformation(pathString)
+		def actual = cfc.getCsvIndividualTimeSeriesMetaInformation(
+				ColumnScheme.ENERGY_PRICE,
+				ColumnScheme.ACTIVE_POWER
+		)
 
 		then:
-		!actual.present
-	}
-
-	def "The csv file connector is able to build correct meta information from valid input"() {
-		given:
-		def pathString = "its_pq_53990eea-1b5d-47e8-9134-6d8de36604bf"
-		def expected = new CsvIndividualTimeSeriesMetaInformation(
-				UUID.fromString("53990eea-1b5d-47e8-9134-6d8de36604bf"),
-				ColumnScheme.APPARENT_POWER,
-				""
-				)
-
-		when:
-		def actual = cfc.buildCsvTimeSeriesMetaInformation(pathString)
-
-		then:
-		actual.present
-		actual.get().with {
-			assert uuid == expected.uuid
-			assert columnScheme == expected.columnScheme
-			/* Don't check the reader explicitly */
-		}
+		actual == expected
 	}
 
 	def "The csv file connector throws an Exception, if the foreseen file cannot be found"() {

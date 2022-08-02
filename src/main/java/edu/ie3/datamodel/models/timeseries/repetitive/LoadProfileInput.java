@@ -7,7 +7,7 @@ package edu.ie3.datamodel.models.timeseries.repetitive;
 
 import static java.time.temporal.ChronoUnit.HOURS;
 
-import edu.ie3.datamodel.models.StandardLoadProfile;
+import edu.ie3.datamodel.models.profile.StandardLoadProfile;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;

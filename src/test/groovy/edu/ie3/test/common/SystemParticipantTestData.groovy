@@ -5,10 +5,7 @@
  */
 package edu.ie3.test.common
 
-import static edu.ie3.datamodel.models.StandardUnits.*
-import edu.ie3.datamodel.models.BdewLoadProfile
 import edu.ie3.datamodel.models.OperationTime
-import edu.ie3.datamodel.models.StandardLoadProfile
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.container.SystemParticipants
@@ -23,6 +20,8 @@ import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
+import edu.ie3.datamodel.models.profile.StandardLoadProfile
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.*
 import tech.units.indriya.ComparableQuantity
@@ -30,7 +29,7 @@ import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.*
 
-
+import static edu.ie3.datamodel.models.StandardUnits.*
 
 class SystemParticipantTestData {
 
@@ -226,8 +225,8 @@ class SystemParticipantTestData {
 	)
 
 	// Load
-	static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, ENERGY_IN)
-	static final StandardLoadProfile standardLoadProfile = BdewLoadProfile.H0
+	private static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, ENERGY_IN)
+	private static final StandardLoadProfile standardLoadProfile = BdewStandardLoadProfile.H0
 	public static final LoadInput loadInput = new LoadInput(
 	UUID.fromString("eaf77f7e-9001-479f-94ca-7fb657766f5f"),
 	"test_loadInput",

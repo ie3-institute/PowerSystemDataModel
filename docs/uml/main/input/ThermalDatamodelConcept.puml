@@ -86,13 +86,16 @@ package models {
         package system {}
 
         package thermal {
+            abstract class ThermalInput
+            ThermalInput --|> AssetInput
+
             class ThermalBusInput
-            ThermalBusInput --|> AssetInput
+            ThermalBusInput --|> ThermalInput
 
             abstract class ThermalUnitInput {
                 - thermalBus: ThermalBusInput
             }
-            ThermalUnitInput --|> AssetInput
+            ThermalUnitInput --|> ThermalInput
             ThermalUnitInput ..|> HasThermalBus
 
             abstract class ThermalSinkInput

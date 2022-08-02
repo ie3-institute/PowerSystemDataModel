@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.naming
 
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
-import edu.ie3.datamodel.models.BdewLoadProfile
+import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.RandomLoadParameters
@@ -461,8 +461,8 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 		actual.get() == expectedFileName
 
 		where:
-		clazz            | uuid                                                    | type               || expectedFileName
-		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewLoadProfile.G3 || "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
+		clazz            | uuid                                                    | type                       || expectedFileName
+		LoadProfileInput | UUID.fromString("bee0a8b6-4788-4f18-bf72-be52035f7304") | BdewStandardLoadProfile.G3 || "lpts_g3_bee0a8b6-4788-4f18-bf72-be52035f7304"
 	}
 
 	def "A EntityPersistenceNamingStrategy returns empty Optional, when there is no naming defined for a given time series class"() {

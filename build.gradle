@@ -4,12 +4,12 @@ plugins {
 	id 'maven-publish'
 	id 'signing'
 	id 'pmd' // code check, working on source code
-	id 'com.diffplug.spotless' version '6.6.1'//code format
-	id 'com.github.spotbugs' version '5.0.7' // code check, working on byte code
+	id 'com.diffplug.spotless' version '6.9.0'//code format
+	id 'com.github.spotbugs' version '5.0.9' // code check, working on byte code
 	id 'de.undercouch.download' version '5.1.0'
 	id 'kr.motd.sphinx' version '2.10.1' // documentation generation
 	id 'jacoco' // java code coverage plugin
-	id "org.sonarqube" version "3.3" // sonarqube
+	id "org.sonarqube" version "3.4.0.2513" // sonarqube
 	id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
 }
 
@@ -17,7 +17,7 @@ ext {
 	//version (changing these should be considered thoroughly!)
 	javaVersion = JavaVersion.VERSION_17
 	tscfgVersion = '0.9.9'
-	testcontainersVersion = '1.17.2'
+	testcontainersVersion = '1.17.3'
 
 	scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -63,19 +63,19 @@ dependencies {
 	implementation 'com.github.johanneshiry:OSMonaut:v1.1.1' // tmp pbf parse
 
 	// JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
-	implementation ('org.locationtech.jts:jts-core:1.18.2'){
+	implementation ('org.locationtech.jts:jts-core:1.19.0'){
 		exclude group: 'junit', module: 'junit'
 	}
 
-	implementation 'org.locationtech.jts.io:jts-io-common:1.18.2'
+	implementation 'org.locationtech.jts.io:jts-io-common:1.19.0'
 
 	// Graphs
 	implementation 'org.jgrapht:jgrapht-core:1.5.1'
 
 	// testing
-	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
 	testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
-	testImplementation 'org.objenesis:objenesis:3.2' // Mock creation with constructor parameters
+	testImplementation 'org.objenesis:objenesis:3.3' // Mock creation with constructor parameters
 
 	// testcontainers (docker framework for testing)
 	testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
@@ -85,15 +85,15 @@ dependencies {
 	testImplementation "org.testcontainers:couchbase:$testcontainersVersion"
 
 	// logging
-	implementation platform('org.apache.logging.log4j:log4j-bom:2.17.2')
+	implementation platform('org.apache.logging.log4j:log4j-bom:2.18.0')
 	implementation 'org.apache.logging.log4j:log4j-api' // log4j
 	implementation 'org.apache.logging.log4j:log4j-core' // log4j
 	implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
 	// Databases
-	implementation 'org.influxdb:influxdb-java:2.22'
-	implementation 'com.couchbase.client:java-client:3.3.0'
-	runtimeOnly 'org.postgresql:postgresql:42.3.6' // postgresql jdbc driver required during runtime
+	implementation 'org.influxdb:influxdb-java:2.23'
+	implementation 'com.couchbase.client:java-client:3.3.2'
+	runtimeOnly 'org.postgresql:postgresql:42.4.0' // postgresql jdbc driver required during runtime
 
 	implementation 'commons-io:commons-io:2.11.0' // I/O functionalities
 	implementation 'org.apache.commons:commons-compress:1.21' // I/O functionalities
