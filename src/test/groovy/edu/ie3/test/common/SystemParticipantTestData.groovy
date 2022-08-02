@@ -225,8 +225,8 @@ class SystemParticipantTestData {
 	)
 
 	// Load
-	private static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, ENERGY_IN)
-	private static final StandardLoadProfile standardLoadProfile = BdewStandardLoadProfile.H0
+	protected static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, ENERGY_IN)
+	protected static final StandardLoadProfile standardLoadProfile = BdewStandardLoadProfile.H0
 	public static final LoadInput loadInput = new LoadInput(
 	UUID.fromString("eaf77f7e-9001-479f-94ca-7fb657766f5f"),
 	"test_loadInput",
