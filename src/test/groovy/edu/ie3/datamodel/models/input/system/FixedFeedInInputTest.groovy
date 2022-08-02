@@ -13,22 +13,22 @@ import tech.units.indriya.quantity.Quantities
 
 class FixedFeedInInputTest extends Specification {
 
-	def "A FixedFeedInInput copy method should work as expected"() {
-		given:
-		def ffIn = SystemParticipantTestData.fixedFeedInInput
+  def "A FixedFeedInInput copy method should work as expected"() {
+    given:
+    def ffIn = SystemParticipantTestData.fixedFeedInInput
 
-		when:
-		def alteredUnit = ffIn.copy().sRated(Quantities.getQuantity(10d, PowerSystemUnits.VOLTAMPERE)).cosPhiRated(0.8d).build()
+    when:
+    def alteredUnit = ffIn.copy().sRated(Quantities.getQuantity(10d, PowerSystemUnits.VOLTAMPERE)).cosPhiRated(0.8d).build()
 
-		then:
-		alteredUnit.with {
-			assert uuid == ffIn.uuid
-			assert operationTime == ffIn.operationTime
-			assert operator == ffIn.operator
-			assert id == ffIn.id
-			assert qCharacteristics == ffIn.qCharacteristics
-			assert sRated == Quantities.getQuantity(10d, PowerSystemUnits.VOLTAMPERE)
-			assert cosPhiRated == 0.8d
-		}
-	}
+    then:
+    alteredUnit.with {
+      assert uuid == ffIn.uuid
+      assert operationTime == ffIn.operationTime
+      assert operator == ffIn.operator
+      assert id == ffIn.id
+      assert qCharacteristics == ffIn.qCharacteristics
+      assert sRated == Quantities.getQuantity(10d, PowerSystemUnits.VOLTAMPERE)
+      assert cosPhiRated == 0.8d
+    }
+  }
 }

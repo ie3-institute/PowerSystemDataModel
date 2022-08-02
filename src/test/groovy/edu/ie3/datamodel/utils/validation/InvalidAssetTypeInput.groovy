@@ -8,11 +8,11 @@ package edu.ie3.datamodel.utils.validation
 import edu.ie3.datamodel.models.input.AssetTypeInput
 
 class InvalidAssetTypeInput extends AssetTypeInput {
-	InvalidAssetTypeInput(UUID uuid, String id) {
-		super(uuid, id)
-	}
+  InvalidAssetTypeInput(UUID uuid, String id) {
+    super(uuid, id)
+  }
 
-	InvalidAssetTypeInput() {
-		super(UUID.randomUUID(), "invalid_asset_type")
-	}
+  InvalidAssetTypeInput() {
+    super(UUID.randomUUID(), "invalid_asset_type")
+  }
 }

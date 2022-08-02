@@ -11,24 +11,24 @@ import spock.lang.Specification
 
 class MeasurementUnitInputTest extends Specification {
 
-	def "A MeasurementUnitInput copy method should work as expected"() {
-		given:
-		def unit = GridTestData.measurementUnitInput
+  def "A MeasurementUnitInput copy method should work as expected"() {
+    given:
+    def unit = GridTestData.measurementUnitInput
 
-		when:
-		def alteredUnit = unit.copy().node(GridTestData.nodeB).vMag(false).vAng(false).p(false).q(false).build()
+    when:
+    def alteredUnit = unit.copy().node(GridTestData.nodeB).vMag(false).vAng(false).p(false).q(false).build()
 
-		then:
-		alteredUnit.with {
-			assert uuid == unit.uuid
-			assert operationTime == unit.operationTime
-			assert operator == unit.operator
-			assert id == unit.id
-			assert node == GridTestData.nodeB
-			assert !getVMag()
-			assert !getVAng()
-			assert !getP()
-			assert !getQ()
-		}
-	}
+    then:
+    alteredUnit.with {
+      assert uuid == unit.uuid
+      assert operationTime == unit.operationTime
+      assert operator == unit.operator
+      assert id == unit.id
+      assert node == GridTestData.nodeB
+      assert !getVMag()
+      assert !getVAng()
+      assert !getP()
+      assert !getQ()
+    }
+  }
 }

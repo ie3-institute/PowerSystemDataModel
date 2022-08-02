@@ -12,14 +12,14 @@ import tech.units.indriya.quantity.Quantities
 import javax.measure.Unit
 
 trait FactoryTestHelper {
-	private static final GeoJsonReader GEOJSON_READER = new GeoJsonReader()
-	static final TimeUtil TIME_UTIL = TimeUtil.withDefaults
+  private static final GeoJsonReader GEOJSON_READER = new GeoJsonReader()
+  static final TimeUtil TIME_UTIL = TimeUtil.withDefaults
 
-	static getQuant(String parameter, Unit unit) {
-		return Quantities.getQuantity(Double.parseDouble(parameter), unit)
-	}
+  static getQuant(String parameter, Unit unit) {
+    return Quantities.getQuantity(Double.parseDouble(parameter), unit)
+  }
 
-	static getGeometry(String value) {
-		return GEOJSON_READER.read(value)
-	}
+  static getGeometry(String value) {
+    return GEOJSON_READER.read(value)
+  }
 }

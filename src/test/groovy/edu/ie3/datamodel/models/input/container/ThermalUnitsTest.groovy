@@ -11,18 +11,21 @@ import spock.lang.Specification
 
 class ThermalUnitsTest extends Specification {
 
-    def "A ThermalUnits object compiles the correct list of all entities"() {
-        given:
-            def thermalHouses = [Mock(ThermalHouseInput), Mock(ThermalHouseInput)]
-            def thermalStorages = [Mock(CylindricalStorageInput)]
-            def thermalUnits = new ThermalUnits(thermalHouses, thermalStorages)
+  def "A ThermalUnits object compiles the correct list of all entities"() {
+    given:
+    def thermalHouses = [
+      Mock(ThermalHouseInput),
+      Mock(ThermalHouseInput)
+    ]
+    def thermalStorages = [Mock(CylindricalStorageInput)]
+    def thermalUnits = new ThermalUnits(thermalHouses, thermalStorages)
 
-        when:
-            def actualAllEntities = thermalUnits.allEntitiesAsList()
+    when:
+    def actualAllEntities = thermalUnits.allEntitiesAsList()
 
-        then:
-            actualAllEntities.size() == thermalHouses.size() + thermalStorages.size()
-            actualAllEntities.containsAll(thermalHouses)
-            actualAllEntities.containsAll(thermalStorages)
-    }
+    then:
+    actualAllEntities.size() == thermalHouses.size() + thermalStorages.size()
+    actualAllEntities.containsAll(thermalHouses)
+    actualAllEntities.containsAll(thermalStorages)
+  }
 }

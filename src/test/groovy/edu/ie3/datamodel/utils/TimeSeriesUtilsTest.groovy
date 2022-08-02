@@ -13,36 +13,36 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class TimeSeriesUtilsTest extends Specification implements TimeSeriesTestData {
-	def "A time series util is able to trim an individual time series to a given interval"() {
-		given:
-		def interval = new ClosedInterval(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), ZonedDateTime.of(1990, 1, 1, 0, 30, 0, 0, ZoneId.of("UTC")))
+  def "A time series util is able to trim an individual time series to a given interval"() {
+    given:
+    def interval = new ClosedInterval(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), ZonedDateTime.of(1990, 1, 1, 0, 30, 0, 0, ZoneId.of("UTC")))
 
-		when:
-		def actual = TimeSeriesUtils.trimTimeSeriesToInterval(individualIntTimeSeries, interval)
+    when:
+    def actual = TimeSeriesUtils.trimTimeSeriesToInterval(individualIntTimeSeries, interval)
 
-		then:
-		actual.entries.size() == 2
-	}
+    then:
+    actual.entries.size() == 2
+  }
 
-	def "A time series util returns an empty time series, if the interval is not covered"() {
-		given:
-		def interval = new ClosedInterval(ZonedDateTime.of(1990, 12, 1, 0, 15, 0, 0, ZoneId.of("UTC")), ZonedDateTime.of(1990, 12, 1, 0, 30, 0, 0, ZoneId.of("UTC")))
+  def "A time series util returns an empty time series, if the interval is not covered"() {
+    given:
+    def interval = new ClosedInterval(ZonedDateTime.of(1990, 12, 1, 0, 15, 0, 0, ZoneId.of("UTC")), ZonedDateTime.of(1990, 12, 1, 0, 30, 0, 0, ZoneId.of("UTC")))
 
-		when:
-		def actual = TimeSeriesUtils.trimTimeSeriesToInterval(individualIntTimeSeries, interval)
+    when:
+    def actual = TimeSeriesUtils.trimTimeSeriesToInterval(individualIntTimeSeries, interval)
 
-		then:
-		actual.entries.size() == 0
-	}
+    then:
+    actual.entries.size() == 0
+  }
 
-	def "A time series util returns only that parts of the time series, that are covered by the interval"() {
-		given:
-		def interval = new ClosedInterval(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), ZonedDateTime.of(1990, 1, 1, 1, 45, 0, 0, ZoneId.of("UTC")))
+  def "A time series util returns only that parts of the time series, that are covered by the interval"() {
+    given:
+    def interval = new ClosedInterval(ZonedDateTime.of(1990, 1, 1, 0, 15, 0, 0, ZoneId.of("UTC")), ZonedDateTime.of(1990, 1, 1, 1, 45, 0, 0, ZoneId.of("UTC")))
 
-		when:
-		def actual = TimeSeriesUtils.trimTimeSeriesToInterval(individualIntTimeSeries, interval)
+    when:
+    def actual = TimeSeriesUtils.trimTimeSeriesToInterval(individualIntTimeSeries, interval)
 
-		then:
-		actual.entries.size() == 2
-	}
+    then:
+    actual.entries.size() == 2
+  }
 }

@@ -11,20 +11,20 @@ import spock.lang.Specification
 
 class LineGraphicInputTest extends Specification {
 
-	def "A LineGraphicInput copy method should work as expected"() {
-		given:
-		def lineGraphic = GridTestData.lineGraphicCtoD
+  def "A LineGraphicInput copy method should work as expected"() {
+    given:
+    def lineGraphic = GridTestData.lineGraphicCtoD
 
-		when:
-		def alteredUnit = lineGraphic.copy().line(GridTestData.lineAtoB).graphicLayer("second").build()
+    when:
+    def alteredUnit = lineGraphic.copy().line(GridTestData.lineAtoB).graphicLayer("second").build()
 
 
-		then:
-		alteredUnit.with {
-			assert uuid == lineGraphic.uuid
-			assert graphicLayer == "second"
-			assert path == lineGraphic.path
-			assert line == GridTestData.lineAtoB
-		}
-	}
+    then:
+    alteredUnit.with {
+      assert uuid == lineGraphic.uuid
+      assert graphicLayer == "second"
+      assert path == lineGraphic.path
+      assert line == GridTestData.lineAtoB
+    }
+  }
 }

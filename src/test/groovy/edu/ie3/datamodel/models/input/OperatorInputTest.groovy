@@ -11,18 +11,18 @@ import spock.lang.Specification
 
 class OperatorInputTest extends Specification {
 
-	def "An OperatorInput copy method should work as expected"() {
-		given:
-		def operator = GridTestData.profBroccoli
+  def "An OperatorInput copy method should work as expected"() {
+    given:
+    def operator = GridTestData.profBroccoli
 
-		when:
-		def alteredUuid = UUID.randomUUID()
-		def alteredUnit = operator.copy().uuid(alteredUuid).id("Univ.-Prof. Dr.-Ing. Christian Rehtanz").build()
+    when:
+    def alteredUuid = UUID.randomUUID()
+    def alteredUnit = operator.copy().uuid(alteredUuid).id("Univ.-Prof. Dr.-Ing. Christian Rehtanz").build()
 
-		then:
-		alteredUnit.with {
-			assert uuid == alteredUuid
-			assert id == "Univ.-Prof. Dr.-Ing. Christian Rehtanz"
-		}
-	}
+    then:
+    alteredUnit.with {
+      assert uuid == alteredUuid
+      assert id == "Univ.-Prof. Dr.-Ing. Christian Rehtanz"
+    }
+  }
 }
