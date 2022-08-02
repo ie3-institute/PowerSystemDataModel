@@ -102,7 +102,7 @@ This sub container simply holds:
 
 Container Concept
 """""""""""""""""
-   .. uml:: ./dev/docs/uml/main/input/ModelContainerConcept.puml
+   .. plantuml:: ModelContainerConcept.puml
       :align: center
       :alt: Model container concept
 
