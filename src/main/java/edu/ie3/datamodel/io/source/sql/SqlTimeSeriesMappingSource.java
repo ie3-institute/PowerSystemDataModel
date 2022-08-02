@@ -45,8 +45,8 @@ public class SqlTimeSeriesMappingSource
   }
 
   /**
-   * @deprecated since 3.0. Use {@link SqlTimeSeriesTypeSource#getTimeSeriesMetaInformation()}
-   *     instead
+   * @deprecated since 3.0. Use {@link
+   *     SqlTimeSeriesMetaInformationSource#getTimeSeriesMetaInformation()} instead
    */
   @Override
   @Deprecated(since = "3.0", forRemoval = true)
