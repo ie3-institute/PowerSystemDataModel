@@ -67,20 +67,20 @@ class SampleJointGrid extends SystemParticipantTestData {
 		final PvInput pvInput =
 				new PvInput(
 				UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
-				"test_pvInput",
-						operator,
-						operationTime,
+			"test_pvInput",
+				operator,
+				operationTime,
 				participantNode,
-						cosPhiFixed,
-						albedo,
-						azimuth,
-						etaConv,
-						elevationAngle,
-						kG,
-						kT,
-				false,
-						sRated,
-						cosPhiRated)
+				cosPhiFixed,
+				albedo,
+				azimuth,
+				etaConv,
+				elevationAngle,
+				kG,
+				kT,
+		false,
+				sRated,
+				cosPhiRated)
 
 		// Load
 		final LoadInput loadInput =
