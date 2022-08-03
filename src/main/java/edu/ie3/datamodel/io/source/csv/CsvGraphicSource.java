@@ -116,9 +116,9 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
    */
   @Override
   public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) {
-    return filterEmptyOptionals(
-            buildNodeGraphicEntityData(nodes)
-                .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get)))
+    return buildNodeGraphicEntityData(nodes)
+        .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get))
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -140,10 +140,9 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
    */
   @Override
   public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) {
-
-    return filterEmptyOptionals(
-            buildLineGraphicEntityData(lines)
-                .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get)))
+    return buildLineGraphicEntityData(lines)
+        .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get))
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 
@@ -177,7 +176,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
     // if the node is not present we return an empty element and
     // log a warning
-    if (!node.isPresent()) {
+    if (node.isEmpty()) {
       logSkippingWarning(
           NodeGraphicInput.class.getSimpleName(),
           fieldsToAttributes.get("uuid"),
@@ -222,7 +221,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
     // if the node is not present we return an empty element and
     // log a warning
-    if (!line.isPresent()) {
+    if (line.isEmpty()) {
       logSkippingWarning(
           LineGraphicInput.class.getSimpleName(),
           fieldsToAttributes.get("uuid"),

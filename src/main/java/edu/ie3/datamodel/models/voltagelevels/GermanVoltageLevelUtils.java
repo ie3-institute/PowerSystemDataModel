@@ -10,7 +10,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.util.interval.RightOpenInterval;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.measure.quantity.ElectricPotential;
@@ -75,8 +74,7 @@ public class GermanVoltageLevelUtils {
               Quantities.getQuantity(380d, KILOVOLT), Quantities.getQuantity(560d, KILOVOLT)));
 
   private static final Set<CommonVoltageLevel> germanVoltageLevels =
-      Collections.unmodifiableSet(
-          new HashSet<>(Arrays.asList(LV, MV_10KV, MV_20KV, MV_30KV, HV, EHV_220KV, EHV_380KV)));
+      Set.of(LV, MV_10KV, MV_20KV, MV_30KV, HV, EHV_220KV, EHV_380KV);
 
   private GermanVoltageLevelUtils() {
     throw new IllegalStateException("This is a factory class. Don't try to instantiate it.");

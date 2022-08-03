@@ -19,8 +19,6 @@ import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,47 +31,46 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
 
   /** The entities that can be used within this processor */
   public static final List<Class<? extends InputEntity>> eligibleEntityClasses =
-      Collections.unmodifiableList(
-          Arrays.asList(
-              /* InputEntity */
-              OperatorInput.class,
-              RandomLoadParameters.class,
-              TimeSeriesMappingSource.MappingEntry.class,
-              /* - AssetInput */
-              NodeInput.class,
-              LineInput.class,
-              Transformer2WInput.class,
-              Transformer3WInput.class,
-              SwitchInput.class,
-              MeasurementUnitInput.class,
-              ThermalBusInput.class,
-              /* -- SystemParticipantInput */
-              ChpInput.class,
-              BmInput.class,
-              EvInput.class,
-              EvcsInput.class,
-              FixedFeedInInput.class,
-              HpInput.class,
-              LoadInput.class,
-              PvInput.class,
-              StorageInput.class,
-              WecInput.class,
-              /* -- ThermalUnitInput */
-              ThermalHouseInput.class,
-              CylindricalStorageInput.class,
-              /* - GraphicInput */
-              NodeGraphicInput.class,
-              LineGraphicInput.class,
-              /* - AssetTypeInput */
-              BmTypeInput.class,
-              ChpTypeInput.class,
-              EvTypeInput.class,
-              HpTypeInput.class,
-              LineTypeInput.class,
-              Transformer2WTypeInput.class,
-              Transformer3WTypeInput.class,
-              StorageTypeInput.class,
-              WecTypeInput.class));
+      List.of(
+          /* InputEntity */
+          OperatorInput.class,
+          RandomLoadParameters.class,
+          TimeSeriesMappingSource.MappingEntry.class,
+          /* - AssetInput */
+          NodeInput.class,
+          LineInput.class,
+          Transformer2WInput.class,
+          Transformer3WInput.class,
+          SwitchInput.class,
+          MeasurementUnitInput.class,
+          ThermalBusInput.class,
+          /* -- SystemParticipantInput */
+          ChpInput.class,
+          BmInput.class,
+          EvInput.class,
+          EvcsInput.class,
+          FixedFeedInInput.class,
+          HpInput.class,
+          LoadInput.class,
+          PvInput.class,
+          StorageInput.class,
+          WecInput.class,
+          /* -- ThermalUnitInput */
+          ThermalHouseInput.class,
+          CylindricalStorageInput.class,
+          /* - GraphicInput */
+          NodeGraphicInput.class,
+          LineGraphicInput.class,
+          /* - AssetTypeInput */
+          BmTypeInput.class,
+          ChpTypeInput.class,
+          EvTypeInput.class,
+          HpTypeInput.class,
+          LineTypeInput.class,
+          Transformer2WTypeInput.class,
+          Transformer3WTypeInput.class,
+          StorageTypeInput.class,
+          WecTypeInput.class);
 
   public InputEntityProcessor(Class<? extends InputEntity> registeredClass) {
     super(registeredClass);

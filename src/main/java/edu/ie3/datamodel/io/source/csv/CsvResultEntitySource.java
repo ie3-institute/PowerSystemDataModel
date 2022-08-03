@@ -155,13 +155,11 @@ public class CsvResultEntitySource extends CsvDataSource implements ResultEntity
 
   private <T extends ResultEntity> Set<T> getResultEntities(
       Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory) {
-    return filterEmptyOptionals(
-            simpleEntityDataStream(entityClass)
-                .map(
-                    entityData ->
-                        factory
-                            .get(entityData)
-                            .flatMap(loadResult -> cast(entityClass, loadResult))))
+    return simpleEntityDataStream(entityClass)
+        .map(
+            entityData ->
+                factory.get(entityData).flatMap(loadResult -> cast(entityClass, loadResult)))
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 

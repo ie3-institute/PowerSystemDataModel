@@ -275,7 +275,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
 
   @Override
   public List<NodeInput> allNodes() {
-    return Collections.unmodifiableList(Arrays.asList(getNodeA(), getNodeB(), nodeC));
+    return List.of(getNodeA(), getNodeB(), nodeC);
   }
 
   /**

@@ -122,8 +122,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   @Override
   public <T extends UniqueEntity> void persist(T entity) {
     /* Distinguish between "regular" input / result models and time series */
-    if (entity instanceof InputEntity) {
-      persistIncludeNested((InputEntity) entity);
+    if (entity instanceof InputEntity inputEntity) {
+      persistIncludeNested(inputEntity);
     } else if (entity instanceof ResultEntity) {
       write(entity);
     } else if (entity instanceof TimeSeries<?, ?> timeSeries) {
@@ -210,13 +210,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 storages,
                 wecPlants)
             .flatMap(Collection::stream)
-            .map(
-                entityWithType ->
-                    Extractor.extractType(
-                        entityWithType)) // DON'T TOUCH THIS! NO, not even, if your editor suggests
-            // to replace lambda with method reference!
-            // This will break the sink! Due to a bug in java 8 this *CANNOT* be replaced with
-            // method reference!
+            .map(Extractor::extractType)
             .collect(Collectors.toSet());
 
     // extract operators
@@ -240,8 +234,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 wecPlants)
             .flatMap(Collection::stream)
             .map(Extractor::extractOperator)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
+            .flatMap(Optional::stream)
             .collect(Collectors.toSet());
 
     // persist all entities

@@ -73,22 +73,23 @@ public abstract class EntityProcessor<T extends UniqueEntity> extends Processor<
   @Override
   protected Optional<String> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
-    Optional<String> normalizedQuantityValue = Optional.empty();
-    switch (fieldName) {
-      case "energy", "eConsAnnual", "eStorage" -> normalizedQuantityValue =
-          quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
-      case "q" -> normalizedQuantityValue =
-          quantityValToOptionalString(
-              quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
-      case "p", "pMax", "pOwn", "pThermal" -> normalizedQuantityValue =
-          quantityValToOptionalString(
-              quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
-      default -> log.error(
-          "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
-          quantity,
-          fieldName);
-    }
-    return normalizedQuantityValue;
+    return switch (fieldName) {
+      case "energy", "eConsAnnual", "eStorage":
+        yield quantityValToOptionalString(
+            quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN));
+      case "q":
+        yield quantityValToOptionalString(
+            quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN));
+      case "p", "pMax", "pOwn", "pThermal":
+        yield quantityValToOptionalString(
+            quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN));
+      default:
+        log.error(
+            "Cannot process quantity with value '{}' for field with name {} in input entity processing!",
+            quantity,
+            fieldName);
+        yield Optional.empty();
+    };
   }
 
   @Override
