@@ -29,30 +29,28 @@ public class TimeSeriesProcessor<
    * able to handle
    */
   public static final List<TimeSeriesProcessorKey> eligibleKeys =
-      Collections.unmodifiableList(
-          Arrays.asList(
-              new TimeSeriesProcessorKey(
-                  IndividualTimeSeries.class, TimeBasedValue.class, EnergyPriceValue.class),
-              new TimeSeriesProcessorKey(
-                  IndividualTimeSeries.class, TimeBasedValue.class, TemperatureValue.class),
-              new TimeSeriesProcessorKey(
-                  IndividualTimeSeries.class, TimeBasedValue.class, WindValue.class),
-              new TimeSeriesProcessorKey(
-                  IndividualTimeSeries.class, TimeBasedValue.class, SolarIrradianceValue.class),
-              new TimeSeriesProcessorKey(
-                  IndividualTimeSeries.class, TimeBasedValue.class, WeatherValue.class),
-              new TimeSeriesProcessorKey(
-                  IndividualTimeSeries.class, TimeBasedValue.class, HeatDemandValue.class),
-              new TimeSeriesProcessorKey(
-                  IndividualTimeSeries.class, TimeBasedValue.class, PValue.class),
-              new TimeSeriesProcessorKey(
-                  IndividualTimeSeries.class, TimeBasedValue.class, HeatAndPValue.class),
-              new TimeSeriesProcessorKey(
-                  IndividualTimeSeries.class, TimeBasedValue.class, SValue.class),
-              new TimeSeriesProcessorKey(
-                  IndividualTimeSeries.class, TimeBasedValue.class, HeatAndSValue.class),
-              new TimeSeriesProcessorKey(
-                  LoadProfileInput.class, LoadProfileEntry.class, PValue.class)));
+      List.of(
+          new TimeSeriesProcessorKey(
+              IndividualTimeSeries.class, TimeBasedValue.class, EnergyPriceValue.class),
+          new TimeSeriesProcessorKey(
+              IndividualTimeSeries.class, TimeBasedValue.class, TemperatureValue.class),
+          new TimeSeriesProcessorKey(
+              IndividualTimeSeries.class, TimeBasedValue.class, WindValue.class),
+          new TimeSeriesProcessorKey(
+              IndividualTimeSeries.class, TimeBasedValue.class, SolarIrradianceValue.class),
+          new TimeSeriesProcessorKey(
+              IndividualTimeSeries.class, TimeBasedValue.class, WeatherValue.class),
+          new TimeSeriesProcessorKey(
+              IndividualTimeSeries.class, TimeBasedValue.class, HeatDemandValue.class),
+          new TimeSeriesProcessorKey(
+              IndividualTimeSeries.class, TimeBasedValue.class, PValue.class),
+          new TimeSeriesProcessorKey(
+              IndividualTimeSeries.class, TimeBasedValue.class, HeatAndPValue.class),
+          new TimeSeriesProcessorKey(
+              IndividualTimeSeries.class, TimeBasedValue.class, SValue.class),
+          new TimeSeriesProcessorKey(
+              IndividualTimeSeries.class, TimeBasedValue.class, HeatAndSValue.class),
+          new TimeSeriesProcessorKey(LoadProfileInput.class, LoadProfileEntry.class, PValue.class));
 
   /**
    * Specific combination of time series class, entry class and value class, this processor is
@@ -174,7 +172,7 @@ public class TimeSeriesProcessor<
     jointMapping.putAll(valueMapping);
 
     /* Let uuid be the first entry */
-    return Collections.unmodifiableSortedMap(putUuidFirst(jointMapping));
+    return putUuidFirst(jointMapping);
   }
 
   @Override
@@ -262,8 +260,8 @@ public class TimeSeriesProcessor<
    */
   private Map<String, Method> extractFieldToMethod(FieldSourceToMethod.FieldSource source) {
     return fieldToSource.entrySet().stream()
-        .filter(entry -> entry.getValue().getSource().equals(source))
-        .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getMethod()));
+        .filter(entry -> entry.getValue().source().equals(source))
+        .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().method()));
   }
 
   @Override

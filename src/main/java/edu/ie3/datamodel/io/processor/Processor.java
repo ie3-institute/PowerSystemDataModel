@@ -43,10 +43,7 @@ public abstract class Processor<T> {
   /* Quantities associated to those fields must be treated differently (e.g. input and result), all other quantity /
    * field combinations can be treated on a common basis and therefore need no further distinction */
   private static final Set<String> specificQuantityFieldNames =
-      Collections.unmodifiableSet(
-          new HashSet<>(
-              Arrays.asList(
-                  "eConsAnnual", "energy", "eStorage", "q", "p", "pMax", "pOwn", "pThermal")));
+      Set.of("eConsAnnual", "energy", "eStorage", "q", "p", "pMax", "pOwn", "pThermal");
 
   private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
 
