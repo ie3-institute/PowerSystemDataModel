@@ -366,6 +366,7 @@ public class ContainerUtils {
     Set<PvInput> pvs = filterParticipants(input.getPvPlants(), subnet);
     Set<StorageInput> storages = filterParticipants(input.getStorages(), subnet);
     Set<WecInput> wecPlants = filterParticipants(input.getWecPlants(), subnet);
+    Set<EmInput> emSystems = filterParticipants(input.getEmSystems(), subnet);
 
     return new SystemParticipants(
         bmPlants,
@@ -377,7 +378,8 @@ public class ContainerUtils {
         loads,
         pvs,
         storages,
-        wecPlants);
+        wecPlants,
+        emSystems);
   }
 
   /**

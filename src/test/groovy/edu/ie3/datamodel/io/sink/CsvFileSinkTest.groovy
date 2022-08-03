@@ -5,10 +5,11 @@
  */
 package edu.ie3.datamodel.io.sink
 
-import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static tech.units.indriya.unit.Units.PERCENT
-
+import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
+import edu.ie3.datamodel.models.input.system.EmInput
+import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.processor.ProcessorProvider
 import edu.ie3.datamodel.io.processor.input.InputEntityProcessor
@@ -139,27 +140,29 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 	def "A valid CsvFileSink without 'initFiles' should only persist provided elements correctly but not init all files"() {
 		given:
 		CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
-				new ProcessorProvider([
-					new ResultEntityProcessor(PvResult),
-					new ResultEntityProcessor(WecResult),
-					new ResultEntityProcessor(EvResult),
-					new ResultEntityProcessor(EvcsResult),
-					new InputEntityProcessor(Transformer2WInput),
-					new InputEntityProcessor(NodeInput),
-					new InputEntityProcessor(EvcsInput),
-					new InputEntityProcessor(Transformer2WTypeInput),
-					new InputEntityProcessor(LineGraphicInput),
-					new InputEntityProcessor(NodeGraphicInput),
-					new InputEntityProcessor(CylindricalStorageInput),
-					new InputEntityProcessor(ThermalHouseInput),
-					new InputEntityProcessor(OperatorInput),
-					new InputEntityProcessor(LineInput),
-					new InputEntityProcessor(ThermalBusInput),
-					new InputEntityProcessor(LineTypeInput)
-				], [] as Map),
-				new FileNamingStrategy(),
-				false,
-				",")
+		new ProcessorProvider([
+			new ResultEntityProcessor(PvResult),
+			new ResultEntityProcessor(WecResult),
+			new ResultEntityProcessor(EvResult),
+			new ResultEntityProcessor(EvcsResult),
+			new InputEntityProcessor(Transformer2WInput),
+			new InputEntityProcessor(NodeInput),
+			new InputEntityProcessor(EvcsInput),
+			new InputEntityProcessor(Transformer2WTypeInput),
+			new InputEntityProcessor(LineGraphicInput),
+			new InputEntityProcessor(NodeGraphicInput),
+			new InputEntityProcessor(CylindricalStorageInput),
+			new InputEntityProcessor(ThermalHouseInput),
+			new InputEntityProcessor(OperatorInput),
+			new InputEntityProcessor(LineInput),
+			new InputEntityProcessor(ThermalBusInput),
+			new InputEntityProcessor(LineTypeInput),
+			new InputEntityProcessor(LoadInput),
+			new InputEntityProcessor(EmInput)
+		], [] as Map),
+		new FileNamingStrategy(),
+		false,
+		",")
 
 		UUID uuid = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
 		UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
@@ -179,7 +182,9 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 			GridTestData.nodeGraphicC,
 			ThermalUnitInputTestData.cylindricStorageInput,
 			ThermalUnitInputTestData.thermalHouseInput,
-			SystemParticipantTestData.evcsInput
+			SystemParticipantTestData.evcsInput,
+			SystemParticipantTestData.loadInput,
+			SystemParticipantTestData.emInput
 		])
 		csvFileSink.shutdown()
 
@@ -199,6 +204,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
 		new File(testBaseFolderPath + File.separator + "node_graphic_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "thermal_bus_input.csv").exists()
 		new File(testBaseFolderPath + File.separator + "thermal_house_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "load_input.csv").exists()
+		new File(testBaseFolderPath + File.separator + "em_input.csv").exists()
 
 		!new File(testBaseFolderPath + File.separator + "ev_res.csv").exists()
 	}
