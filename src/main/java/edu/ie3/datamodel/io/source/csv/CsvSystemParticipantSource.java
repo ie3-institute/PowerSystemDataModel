@@ -645,7 +645,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
     // if the requested entity is not present we return an empty element and
     // log a warning
-    if (!hpInputEntityDataOpt.isPresent()) {
+    if (hpInputEntityDataOpt.isEmpty()) {
       logSkippingWarning(
           typedEntityData.getTargetClass().getSimpleName(),
           saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP),
@@ -761,8 +761,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<EmInput> getEmSystems(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return filterEmptyOptionals(
-            nodeAssetEntityStream(EmInput.class, emInputFactory, nodes, operators))
+    return nodeAssetEntityStream(EmInput.class, emInputFactory, nodes, operators)
+        .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
 }
