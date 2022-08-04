@@ -159,9 +159,9 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
     for (CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
       // we need a reader for each file
       try (BufferedReader reader = connector.initReader(data.getFullFilePath())) {
-        filterEmptyOptionals(
-                buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-                    .map(fieldToValueFunction))
+        buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+            .map(fieldToValueFunction)
+            .flatMap(Optional::stream)
             .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
             .forEach(
                 (point, timeBasedValues) -> {

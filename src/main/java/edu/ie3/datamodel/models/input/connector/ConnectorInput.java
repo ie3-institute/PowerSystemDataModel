@@ -78,7 +78,7 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
 
   @Override
   public List<NodeInput> allNodes() {
-    return Collections.unmodifiableList(Arrays.asList(getNodeA(), getNodeB()));
+    return List.of(getNodeA(), getNodeB());
   }
 
   public int getParallelDevices() {

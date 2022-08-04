@@ -110,7 +110,7 @@ public class InfluxDbSink implements OutputDataSink {
   private Optional<Point> transformToPoint(ResultEntity entity) {
     Optional<String> measurementName =
         entityPersistenceNamingStrategy.getResultEntityName(entity.getClass());
-    if (!measurementName.isPresent())
+    if (measurementName.isEmpty())
       log.warn(
           "I could not get a measurement name for class {}. I am using its simple name instead.",
           entity.getClass().getSimpleName());
@@ -169,7 +169,7 @@ public class InfluxDbSink implements OutputDataSink {
       TimeSeries<E, V> timeSeries) {
     if (timeSeries.getEntries().isEmpty()) return Collections.emptySet();
     Optional<String> measurementName = entityPersistenceNamingStrategy.getEntityName(timeSeries);
-    if (!measurementName.isPresent()) {
+    if (measurementName.isEmpty()) {
       String valueClassName =
           timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName();
       log.warn(

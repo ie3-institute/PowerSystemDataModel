@@ -26,14 +26,14 @@ public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSer
 
     /* Build the map */
     mapping =
-        filterEmptyOptionals(
-                buildStreamWithFieldsToAttributesMap(MappingEntry.class, connector)
-                    .map(
-                        fieldToValues -> {
-                          SimpleEntityData entityData =
-                              new SimpleEntityData(fieldToValues, MappingEntry.class);
-                          return mappingFactory.get(entityData);
-                        }))
+        buildStreamWithFieldsToAttributesMap(MappingEntry.class, connector)
+            .map(
+                fieldToValues -> {
+                  SimpleEntityData entityData =
+                      new SimpleEntityData(fieldToValues, MappingEntry.class);
+                  return mappingFactory.get(entityData);
+                })
+            .flatMap(Optional::stream)
             .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
   }
 

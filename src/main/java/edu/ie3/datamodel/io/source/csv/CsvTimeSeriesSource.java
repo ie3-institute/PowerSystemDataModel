@@ -190,9 +190,9 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
       throws SourceException {
     try (BufferedReader reader = connector.initReader(filePath)) {
       Set<TimeBasedValue<V>> timeBasedValues =
-          filterEmptyOptionals(
-                  buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-                      .map(fieldToValueFunction))
+          buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+              .map(fieldToValueFunction)
+              .flatMap(Optional::stream)
               .collect(Collectors.toSet());
 
       return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);

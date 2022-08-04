@@ -169,7 +169,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   private static void checkTransformer3W(Transformer3WInput transformer3W) {
     checkTransformer3WType(transformer3W.getType());
-    checkIfTapPositionIsWithinBounds((transformer3W));
+    checkIfTapPositionIsWithinBounds(transformer3W);
     // Check if transformer connects different voltage levels
     if (transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeB().getVoltLvl()
         || transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeC().getVoltLvl()
