@@ -55,7 +55,7 @@ public class GraphicElements implements InputContainer<GraphicInput> {
     this.lineGraphics =
         graphics.parallelStream()
             .filter(LineGraphicInput.class::isInstance)
-            .map(graphic -> (LineGraphicInput) graphic)
+            .map(LineGraphicInput.class::cast)
             .collect(Collectors.toSet());
   }
 

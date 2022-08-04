@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.utils;
 
 import static edu.ie3.datamodel.io.naming.timeseries.ColumnScheme.*;
-import static edu.ie3.datamodel.io.naming.timeseries.ColumnScheme.HEAT_DEMAND;
 
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;

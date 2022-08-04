@@ -82,6 +82,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 			PvInput,
 			StorageInput,
 			WecInput,
+			EmInput,
 			/* -- ThermalUnitInput */
 			ThermalHouseInput,
 			CylindricalStorageInput,

@@ -63,8 +63,8 @@ public class BufferedCsvWriter extends BufferedWriter {
       throws IOException {
     this(
         baseFolder + File.separator + fileDefinition.getFilePath(),
-        fileDefinition.getHeadLineElements(),
-        fileDefinition.getCsvSep(),
+        fileDefinition.headLineElements(),
+        fileDefinition.csvSep(),
         append);
   }
 

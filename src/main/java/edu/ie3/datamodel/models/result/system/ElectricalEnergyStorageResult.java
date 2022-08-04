@@ -47,9 +47,8 @@ public abstract class ElectricalEnergyStorageResult extends SystemParticipantRes
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof ElectricalEnergyStorageResult)) return false;
+    if (!(o instanceof ElectricalEnergyStorageResult that)) return false;
     if (!super.equals(o)) return false;
-    ElectricalEnergyStorageResult that = (ElectricalEnergyStorageResult) o;
     return soc.equals(that.soc);
   }
 

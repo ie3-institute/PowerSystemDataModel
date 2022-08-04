@@ -6,40 +6,23 @@
 package edu.ie3.datamodel.io.processor.timeseries;
 
 import java.lang.reflect.Method;
-import java.util.Objects;
 
 /**
  * Represent a tuple of {@link FieldSource} to {@link Method} to highlight, where information of a
  * time series can be obtained from
  */
-public class FieldSourceToMethod {
-  private final FieldSource source;
-  private final Method method;
+public record FieldSourceToMethod(FieldSource source, Method method) {
 
-  public FieldSourceToMethod(FieldSource source, Method method) {
-    this.source = source;
-    this.method = method;
-  }
-
+  /** @deprecated since 3.0. Use {@link #source()} instead */
+  @Deprecated(since = "3.0")
   public FieldSource getSource() {
     return source;
   }
 
+  /** @deprecated since 3.0. Use {@link #method()} instead */
+  @Deprecated(since = "3.0")
   public Method getMethod() {
     return method;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    FieldSourceToMethod that = (FieldSourceToMethod) o;
-    return source == that.source && method.equals(that.method);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(source, method);
   }
 
   @Override
