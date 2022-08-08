@@ -8,7 +8,7 @@ If you feel, something is missing, please contact us!
 ************
 Requirements
 ************
-Java > v 1.8
+Java > v 17
 
 ************
 Where to get
@@ -25,7 +25,7 @@ On `Maven central <https://search.maven.org/artifact/com.github.ie3-institute/Po
    <dependency>
      <groupId>com.github.ie3-institute</groupId>
      <artifactId>PowerSystemDataModel</artifactId>
-     <version>2.0.0</version>
+     <version>2.1.0</version>
    </dependency>
 
 Snapshot releases
@@ -46,5 +46,5 @@ and add the dependency:
    <dependency>
      <groupId>com.github.ie3-institute</groupId>
      <artifactId>PowerSystemDataModel</artifactId>
-     <version>2.0-SNAPSHOT</version>
+     <version>3.0-SNAPSHOT</version>
    </dependency>
