@@ -14,19 +14,15 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CsvFileDefinition {
+public record CsvFileDefinition(
+    String fileName, String directoryPath, String[] headLineElements, String csvSep) {
   private static final Logger logger = LoggerFactory.getLogger(CsvFileDefinition.class);
 
   private static final Pattern FILE_NAME_PATTERN =
       Pattern.compile(
           "^(?<fileName>[^\\\\/\\s.]{0,255})(?:\\.(?<extension>[a-zA-Z0-9]{0,10}(?:\\.[a-zA-Z0-9]{0,10})?))?$");
 
-  protected static final String FILE_EXTENSION = "csv";
-
-  private final String directoryPath;
-  private final String fileName;
-  private final String[] headLineElements;
-  private final String csvSep;
+  private static final String FILE_EXTENSION = "csv";
 
   public CsvFileDefinition(
       String fileName, String directoryPath, String[] headLineElements, String csvSep) {
@@ -60,11 +56,17 @@ public class CsvFileDefinition {
     this.csvSep = csvSep;
   }
 
+  /** @deprecated since 3.0. Use {@link #directoryPath()} instead */
+  @Deprecated(since = "3.0")
   public String getDirectoryPath() {
     return directoryPath;
   }
 
-  /** @return The file name including extension */
+  /**
+   * @return The file name including extension
+   * @deprecated since 3.0. Use {@link #fileName()} instead
+   */
+  @Deprecated(since = "3.0")
   public String getFileName() {
     return fileName;
   }
@@ -77,19 +79,24 @@ public class CsvFileDefinition {
     return !directoryPath.isEmpty() ? FilenameUtils.concat(directoryPath, fileName) : fileName;
   }
 
+  /** @deprecated since 3.0. Use {@link #headLineElements()} instead */
+  @Deprecated(since = "3.0")
   public String[] getHeadLineElements() {
     return headLineElements;
   }
 
+  /** @deprecated since 3.0. Use {@link #csvSep()} instead */
+  @Deprecated(since = "3.0")
   public String getCsvSep() {
     return csvSep;
   }
 
   @Override
   public boolean equals(Object o) {
+    // equals implementation is required here because
+    // records' equals method and array fields don't play together nicely
     if (this == o) return true;
-    if (!(o instanceof CsvFileDefinition)) return false;
-    CsvFileDefinition that = (CsvFileDefinition) o;
+    if (!(o instanceof CsvFileDefinition that)) return false;
     return directoryPath.equals(that.directoryPath)
         && fileName.equals(that.fileName)
         && Arrays.equals(headLineElements, that.headLineElements)

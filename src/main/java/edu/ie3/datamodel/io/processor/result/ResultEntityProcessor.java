@@ -35,25 +35,24 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
 
   /** The entities that can be used within this processor */
   public static final List<Class<? extends ResultEntity>> eligibleEntityClasses =
-      Collections.unmodifiableList(
-          Arrays.asList(
-              LoadResult.class,
-              FixedFeedInResult.class,
-              BmResult.class,
-              PvResult.class,
-              ChpResult.class,
-              WecResult.class,
-              StorageResult.class,
-              EvcsResult.class,
-              EvResult.class,
-              HpResult.class,
-              Transformer2WResult.class,
-              Transformer3WResult.class,
-              LineResult.class,
-              SwitchResult.class,
-              NodeResult.class,
-              ThermalHouseResult.class,
-              CylindricalStorageResult.class));
+      List.of(
+          LoadResult.class,
+          FixedFeedInResult.class,
+          BmResult.class,
+          PvResult.class,
+          ChpResult.class,
+          WecResult.class,
+          StorageResult.class,
+          EvcsResult.class,
+          EvResult.class,
+          HpResult.class,
+          Transformer2WResult.class,
+          Transformer3WResult.class,
+          LineResult.class,
+          SwitchResult.class,
+          NodeResult.class,
+          ThermalHouseResult.class,
+          CylindricalStorageResult.class);
 
   public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass) {
     super(registeredClass);
@@ -62,23 +61,23 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
   @Override
   protected Optional<String> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
-    Optional<String> normalizedQuantityValue = Optional.empty();
-    switch (fieldName) {
-      case "energy", "eConsAnnual", "eStorage" -> normalizedQuantityValue =
-          quantityValToOptionalString(
-              quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
-      case "q" -> normalizedQuantityValue =
-          quantityValToOptionalString(
-              quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT));
-      case "p", "pMax", "pOwn", "pThermal" -> normalizedQuantityValue =
-          quantityValToOptionalString(
-              quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT));
-      default -> log.error(
-          "Cannot process quantity with value '{}' for field with name {} in result entity processing!",
-          quantity,
-          fieldName);
-    }
-    return normalizedQuantityValue;
+    return switch (fieldName) {
+      case "energy", "eConsAnnual", "eStorage":
+        yield quantityValToOptionalString(
+            quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT));
+      case "q":
+        yield quantityValToOptionalString(
+            quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT));
+      case "p", "pMax", "pOwn", "pThermal":
+        yield quantityValToOptionalString(
+            quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT));
+      default:
+        log.error(
+            "Cannot process quantity with value '{}' for field with name {} in result entity processing!",
+            quantity,
+            fieldName);
+        yield Optional.empty();
+    };
   }
 
   @Override

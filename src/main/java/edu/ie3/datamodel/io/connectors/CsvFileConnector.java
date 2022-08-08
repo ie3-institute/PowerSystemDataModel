@@ -111,7 +111,7 @@ public class CsvFileConnector implements DataConnector {
     /* Join the full DIRECTORY path (excluding file name) */
     String baseDirectoryHarmonized = IoUtil.harmonizeFileSeparator(baseDirectory);
     String fullDirectoryPath =
-        FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getDirectoryPath());
+        FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.directoryPath());
     String fullPath = FilenameUtils.concat(baseDirectoryHarmonized, fileDefinition.getFilePath());
 
     /* Create missing directories */
@@ -125,13 +125,13 @@ public class CsvFileConnector implements DataConnector {
     boolean append = pathFile.exists();
     BufferedCsvWriter writer =
         new BufferedCsvWriter(
-            fullPath, fileDefinition.getHeadLineElements(), fileDefinition.getCsvSep(), append);
+            fullPath, fileDefinition.headLineElements(), fileDefinition.csvSep(), append);
     if (!append) {
       writer.writeFileHeader();
     } else {
       log.warn(
           "File '{}' already exist. Will append new content WITHOUT new header! Full path: {}",
-          fileDefinition.getFileName(),
+          fileDefinition.fileName(),
           pathFile.getAbsolutePath());
     }
     return writer;
@@ -161,7 +161,7 @@ public class CsvFileConnector implements DataConnector {
    * @param <C> Type of class
    * @throws IOException If closing of writer fails.
    */
-  public synchronized <C extends Class<? extends UniqueEntity>> void closeEntityWriter(C clz)
+  public synchronized <C extends UniqueEntity> void closeEntityWriter(Class<C> clz)
       throws IOException {
     Optional<BufferedCsvWriter> maybeWriter = Optional.ofNullable(entityWriters.get(clz));
     if (maybeWriter.isPresent()) {

@@ -390,4 +390,35 @@ public interface SystemParticipantSource extends DataSource {
       Set<OperatorInput> operators,
       Set<HpTypeInput> types,
       Set<ThermalBusInput> thermalBuses);
+
+  /**
+   * Returns a unique set of {@link EmInput} instances.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link EmInput} which has to be checked manually, as
+   * {@link EmInput#equals(Object)} is NOT restricted on the uuid of {@link EmInput}.
+   *
+   * @return a set of object and uuid unique {@link EmInput} entities
+   */
+  Set<EmInput> getEmSystems();
+
+  /**
+   * This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * java.util.UUID} uniqueness of the provided {@link EmInput} which has to be checked manually, as
+   * {@link EmInput#equals(Object)} is NOT restricted on the uuid of {@link EmInput}.
+   *
+   * <p>In contrast to {@link #getHeatPumps()} this interface provides the ability to pass in an
+   * already existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
+   * EmInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
+   * performance and prevent unnecessary loading operations.
+   *
+   * <p>If something fails during the creation process it's up to the concrete implementation of an
+   * empty set or a set with all entities that has been able to be build is returned.
+   *
+   * @param operators a set of object and uuid unique {@link OperatorInput} that should be used for
+   *     the returning instances
+   * @param nodes a set of object and uuid unique {@link NodeInput} entities
+   * @return a set of object and uuid unique {@link EmInput} entities
+   */
+  Set<EmInput> getEmSystems(Set<NodeInput> nodes, Set<OperatorInput> operators);
 }

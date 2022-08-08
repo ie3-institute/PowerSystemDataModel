@@ -28,7 +28,7 @@ class OperationTimeBuilderTest {
   private static final OperationTime NOT_LIMITED_OPERATION = new OperationTime(null, null, false);
 
   @Test
-  protected void builder() {
+  void builder() {
     // Test empty build
     OperationTime.OperationTimeBuilder builder = new OperationTime.OperationTimeBuilder();
     assertEquals(NOT_LIMITED_OPERATION, builder.build());

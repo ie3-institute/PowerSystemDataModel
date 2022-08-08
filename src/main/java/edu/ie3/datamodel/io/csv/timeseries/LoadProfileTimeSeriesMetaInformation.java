@@ -37,9 +37,8 @@ public class LoadProfileTimeSeriesMetaInformation extends FileNameMetaInformatio
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof LoadProfileTimeSeriesMetaInformation)) return false;
+    if (!(o instanceof LoadProfileTimeSeriesMetaInformation that)) return false;
     if (!super.equals(o)) return false;
-    LoadProfileTimeSeriesMetaInformation that = (LoadProfileTimeSeriesMetaInformation) o;
     return profile.equals(that.profile);
   }
 

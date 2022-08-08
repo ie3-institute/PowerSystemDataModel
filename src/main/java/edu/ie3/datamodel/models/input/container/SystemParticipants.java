@@ -24,6 +24,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   private final Set<PvInput> pvPlants;
   private final Set<StorageInput> storages;
   private final Set<WecInput> wecPlants;
+  private final Set<EmInput> emSystems;
 
   public SystemParticipants(
       Set<BmInput> bmPlants,
@@ -35,7 +36,8 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
       Set<LoadInput> loads,
       Set<PvInput> pvPlants,
       Set<StorageInput> storages,
-      Set<WecInput> wecPlants) {
+      Set<WecInput> wecPlants,
+      Set<EmInput> emSystems) {
     this.bmPlants = bmPlants;
     this.chpPlants = chpPlants;
     this.evCS = evCS;
@@ -46,6 +48,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     this.pvPlants = pvPlants;
     this.storages = storages;
     this.wecPlants = wecPlants;
+    this.emSystems = emSystems;
   }
 
   /**
@@ -93,6 +96,10 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     this.wecPlants =
         systemParticipants.stream()
             .flatMap(participants -> participants.wecPlants.stream())
+            .collect(Collectors.toSet());
+    this.emSystems =
+        systemParticipants.stream()
+            .flatMap(participants -> participants.emSystems.stream())
             .collect(Collectors.toSet());
   }
 
@@ -154,6 +161,11 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
         systemParticipants.parallelStream()
             .filter(WecInput.class::isInstance)
             .map(WecInput.class::cast)
+            .collect(Collectors.toSet());
+    this.emSystems =
+        systemParticipants.parallelStream()
+            .filter(EmInput.class::isInstance)
+            .map(EmInput.class::cast)
             .collect(Collectors.toSet());
   }
 
@@ -221,6 +233,10 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   /** @return unmodifiable Set of all WECs in this grid */
   public Set<WecInput> getWecPlants() {
     return Collections.unmodifiableSet(wecPlants);
+  }
+
+  public Set<EmInput> getEmSystems() {
+    return Collections.unmodifiableSet(emSystems);
   }
 
   @Override
