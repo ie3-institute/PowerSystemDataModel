@@ -104,6 +104,7 @@ Container Concept
 """""""""""""""""
    .. figure:: ../../../_static/figures/uml/ModelContainerConcept.png
       :align: center
+      :width: 650
       :alt: Model container concept
 
 Caveats
