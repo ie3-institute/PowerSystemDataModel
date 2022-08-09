@@ -11,19 +11,19 @@ import spock.lang.Specification
 
 class NodeGraphicInputTest extends Specification {
 
-	def "A LineGraphicInput copy method should work as expected"() {
-		given:
-		def nodeGraphic = GridTestData.nodeGraphicC
+  def "A LineGraphicInput copy method should work as expected"() {
+    given:
+    def nodeGraphic = GridTestData.nodeGraphicC
 
-		when:
-		def alteredUnit = nodeGraphic.copy().node(GridTestData.nodeG).path(null).graphicLayer("second").build()
+    when:
+    def alteredUnit = nodeGraphic.copy().node(GridTestData.nodeG).path(null).graphicLayer("second").build()
 
-		then:
-		alteredUnit.with {
-			assert uuid == nodeGraphic.uuid
-			assert graphicLayer == "second"
-			assert path == null
-			assert node == GridTestData.nodeG
-		}
-	}
+    then:
+    alteredUnit.with {
+      assert uuid == nodeGraphic.uuid
+      assert graphicLayer == "second"
+      assert path == null
+      assert node == GridTestData.nodeG
+    }
+  }
 }

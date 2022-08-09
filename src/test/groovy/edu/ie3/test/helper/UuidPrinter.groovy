@@ -9,11 +9,11 @@ package edu.ie3.test.helper
  * Simple class to print a bunch of uuids for later static usage in code
  */
 class UuidPrinter {
-	static void main(String[] args) {
-		new File('./','src/test/resources/uuids.txt').withWriter('utf-8') { writer ->
-			for ( int cnt = 0; cnt < 199 ; cnt++ ) {
-				writer.writeLine "UUID.fromString(\"" + UUID.randomUUID() + "\"),"
-			}
-		}
-	}
+  static void main(String[] args) {
+    new File('./','src/test/resources/uuids.txt').withWriter('utf-8') { writer ->
+      for ( int cnt = 0; cnt < 199 ; cnt++ ) {
+        writer.writeLine "UUID.fromString(\"" + UUID.randomUUID() + "\"),"
+      }
+    }
+  }
 }

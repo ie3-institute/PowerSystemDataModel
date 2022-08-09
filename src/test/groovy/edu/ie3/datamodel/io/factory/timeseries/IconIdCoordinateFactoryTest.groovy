@@ -14,68 +14,68 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 class IconIdCoordinateFactoryTest extends Specification {
-	@Shared
-	IconIdCoordinateFactory factory
+  @Shared
+  IconIdCoordinateFactory factory
 
-	def setupSpec() {
-		factory = new IconIdCoordinateFactory()
-	}
+  def setupSpec() {
+    factory = new IconIdCoordinateFactory()
+  }
 
-	def "A COSMO id to coordinate factory returns correct fields"() {
-		given:
-		def expectedFields = [
-			"id",
-			"latitude",
-			"longitude",
-			"coordinatetype"
-		] as Set
-		def validSimpleFactoryData = new SimpleFactoryData([
-			"id":"477295",
-			"latitude":"52.312",
-			"longitude":"12.812",
-			"coordinatetype":"ICON"] as Map<String, String>, Pair)
+  def "A COSMO id to coordinate factory returns correct fields"() {
+    given:
+    def expectedFields = [
+      "id",
+      "latitude",
+      "longitude",
+      "coordinatetype"
+    ] as Set
+    def validSimpleFactoryData = new SimpleFactoryData([
+      "id":"477295",
+      "latitude":"52.312",
+      "longitude":"12.812",
+      "coordinatetype":"ICON"] as Map<String, String>, Pair)
 
-		when:
-		def actual = factory.getFields(validSimpleFactoryData)
+    when:
+    def actual = factory.getFields(validSimpleFactoryData)
 
-		then:
-		actual.size() == 1
-		actual.head() == expectedFields
-	}
+    then:
+    actual.size() == 1
+    actual.head() == expectedFields
+  }
 
-	def "A COSMO id to coordinate factory refuses to build from invalid data"() {
-		given:
-		def invalidSimpleFactoryData = new SimpleFactoryData([
-			"id":"477295",
-			"latitude":"52.312",
-			"coordinatetype":"ICON"] as Map<String, String>, Pair)
+  def "A COSMO id to coordinate factory refuses to build from invalid data"() {
+    given:
+    def invalidSimpleFactoryData = new SimpleFactoryData([
+      "id":"477295",
+      "latitude":"52.312",
+      "coordinatetype":"ICON"] as Map<String, String>, Pair)
 
-		when:
-		factory.get(invalidSimpleFactoryData)
+    when:
+    factory.get(invalidSimpleFactoryData)
 
-		then:
-		def e = thrown(FactoryException)
-		e.message.startsWith("The provided fields [coordinatetype, id, latitude] with data \n{coordinatetype -> " +
-				"ICON,\nid -> 477295,\nlatitude -> 52.312} are invalid for instance of Pair. ")
-	}
+    then:
+    def e = thrown(FactoryException)
+    e.message.startsWith("The provided fields [coordinatetype, id, latitude] with data \n{coordinatetype -> " +
+        "ICON,\nid -> 477295,\nlatitude -> 52.312} are invalid for instance of Pair. ")
+  }
 
-	def "A COSMO id to coordinate factory builds model from valid data"() {
-		given:
-		def validSimpleFactoryData = new SimpleFactoryData([
-			"id":"477295",
-			"latitude":"52.312",
-			"longitude":"12.812",
-			"coordinatetype":"ICON"] as Map<String, String>, Pair)
-		Pair<Integer, Point> expectedPair = Pair.of(477295, GeoUtils.buildPoint(52.312, 12.812))
+  def "A COSMO id to coordinate factory builds model from valid data"() {
+    given:
+    def validSimpleFactoryData = new SimpleFactoryData([
+      "id":"477295",
+      "latitude":"52.312",
+      "longitude":"12.812",
+      "coordinatetype":"ICON"] as Map<String, String>, Pair)
+    Pair<Integer, Point> expectedPair = Pair.of(477295, GeoUtils.buildPoint(52.312, 12.812))
 
-		when:
-		def actual = factory.get(validSimpleFactoryData)
+    when:
+    def actual = factory.get(validSimpleFactoryData)
 
-		then:
-		actual.present
-		actual.get().with {
-			assert it.key == expectedPair.key
-			assert it.value.equalsExact(expectedPair.value, 1E-6)
-		}
-	}
+    then:
+    actual.present
+    actual.get().with {
+      assert it.key == expectedPair.key
+      assert it.value.equalsExact(expectedPair.value, 1E-6)
+    }
+  }
 }

@@ -11,22 +11,22 @@ import spock.lang.Specification
 
 class WecInputTest extends Specification {
 
-	def "A WecInput copy method should work as expected"() {
-		given:
-		def wec = SystemParticipantTestData.wecInput
+  def "A WecInput copy method should work as expected"() {
+    given:
+    def wec = SystemParticipantTestData.wecInput
 
-		when:
-		def alteredUnit = wec.copy().type(SystemParticipantTestData.wecType).marketReaction(true).build()
+    when:
+    def alteredUnit = wec.copy().type(SystemParticipantTestData.wecType).marketReaction(true).build()
 
-		then:
-		alteredUnit.with {
-			assert uuid == wec.uuid
-			assert operationTime == wec.operationTime
-			assert operator == wec.operator
-			assert id == wec.id
-			assert qCharacteristics == wec.qCharacteristics
-			assert type == SystemParticipantTestData.wecType
-			assert marketReaction
-		}
-	}
+    then:
+    alteredUnit.with {
+      assert uuid == wec.uuid
+      assert operationTime == wec.operationTime
+      assert operator == wec.operator
+      assert id == wec.id
+      assert qCharacteristics == wec.qCharacteristics
+      assert type == SystemParticipantTestData.wecType
+      assert marketReaction
+    }
+  }
 }

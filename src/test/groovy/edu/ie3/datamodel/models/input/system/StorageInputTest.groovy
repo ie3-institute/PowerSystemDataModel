@@ -11,21 +11,21 @@ import spock.lang.Specification
 
 class StorageInputTest extends Specification {
 
-	def "A StorageInput copy method should work as expected"() {
-		given:
-		def storageInput = SystemParticipantTestData.storageInput
+  def "A StorageInput copy method should work as expected"() {
+    given:
+    def storageInput = SystemParticipantTestData.storageInput
 
-		when:
-		def alteredUnit = storageInput.copy().type(SystemParticipantTestData.storageTypeInput).build()
+    when:
+    def alteredUnit = storageInput.copy().type(SystemParticipantTestData.storageTypeInput).build()
 
-		then:
-		alteredUnit.with {
-			assert uuid == storageInput.uuid
-			assert operationTime == storageInput.operationTime
-			assert operator == storageInput.operator
-			assert id == storageInput.id
-			assert qCharacteristics == storageInput.qCharacteristics
-			assert type == SystemParticipantTestData.storageTypeInput
-		}
-	}
+    then:
+    alteredUnit.with {
+      assert uuid == storageInput.uuid
+      assert operationTime == storageInput.operationTime
+      assert operator == storageInput.operator
+      assert id == storageInput.id
+      assert qCharacteristics == storageInput.qCharacteristics
+      assert type == SystemParticipantTestData.storageTypeInput
+    }
+  }
 }

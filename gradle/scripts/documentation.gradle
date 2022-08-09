@@ -9,25 +9,25 @@ def docBaseDirPath = project.projectDir.toString() + File.separator + project.do
  * Configuring the sphinx plugin
  */
 sphinx {
-	description 'Generate high level HTML documentation output.'
-	group 'Documentation'
+  description 'Generate high level HTML documentation output.'
+  group 'Documentation'
 
-	sourceDirectory = "${docBaseDirPath}/readthedocs"
-	outputDirectory = "${project.buildDir}/docs/readthedocs"
+  sourceDirectory = "${docBaseDirPath}/readthedocs"
+  outputDirectory = "${project.buildDir}/docs/readthedocs"
 }
 
 /**
  * Task to generate the JavaDoc incl. build failure on warning (build always fails on JavaDoc error by default)
  */
 javadoc() {
-	description 'Generates java API doc at the correct place.'
-	group 'Documentation'
+  description 'Generates java API doc at the correct place.'
+  group 'Documentation'
 
-	source = sourceSets.main.allJava
-	classpath = project.sourceSets.main.compileClasspath
+  source = sourceSets.main.allJava
+  classpath = project.sourceSets.main.compileClasspath
 
-	// sanity check, break on warnings
-	options.addStringOption('Xwerror', '-quiet')
+  // sanity check, break on warnings
+  options.addStringOption('Xwerror', '-quiet')
 }
 
 /**
@@ -36,27 +36,27 @@ javadoc() {
  * Important note: you have to install GraphViz Manually before being able to execute this task! -> https://graphviz.org
  */
 task puml2png() {
-	description 'Converts plantUML diagrams to png files.'
-	group 'Documentation'
+  description 'Converts plantUML diagrams to png files.'
+  group 'Documentation'
 
-	doLast {
-		/* Get the PlantUML-jar or download it, if it is not available */
-		def pumlJarFile = project.file("${project.buildDir}/plantuml.jar")
-		if (!pumlJarFile.exists() || !pumlJarFile.isFile()) {
-			download {
-				src 'https://downloads.sourceforge.net/project/plantuml/plantuml.jar'
-				dest buildDir
-			}
-		}
-		javaexec {
-			main = "-jar"
-			args = [
-				"build/plantuml.jar",
-				"-psvg",
-				"-o",
-				"${docBaseDirPath}readthedocs/_static/figures/uml/",
-				"${docBaseDirPath}uml/**/*.puml"
-			]
-		}
-	}
+  doLast {
+    /* Get the PlantUML-jar or download it, if it is not available */
+    def pumlJarFile = project.file("${project.buildDir}/plantuml.jar")
+    if (!pumlJarFile.exists() || !pumlJarFile.isFile()) {
+      download {
+        src 'https://downloads.sourceforge.net/project/plantuml/plantuml.jar'
+        dest buildDir
+      }
+    }
+    javaexec {
+      main = "-jar"
+      args = [
+        "build/plantuml.jar",
+        "-psvg",
+        "-o",
+        "${docBaseDirPath}readthedocs/_static/figures/uml/",
+        "${docBaseDirPath}uml/**/*.puml"
+      ]
+    }
+  }
 }

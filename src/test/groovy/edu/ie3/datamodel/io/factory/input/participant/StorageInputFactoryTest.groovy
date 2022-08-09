@@ -20,53 +20,53 @@ import java.time.ZonedDateTime
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 class StorageInputFactoryTest extends Specification implements FactoryTestHelper {
-	def "A StorageInputFactory should contain exactly the expected class for parsing"() {
-		given:
-		def inputFactory = new StorageInputFactory()
-		def expectedClasses = [StorageInput]
+  def "A StorageInputFactory should contain exactly the expected class for parsing"() {
+    given:
+    def inputFactory = new StorageInputFactory()
+    def expectedClasses = [StorageInput]
 
-		expect:
-		inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
-	}
+    expect:
+    inputFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
+  }
 
-	def "A StorageInputFactory should parse a valid StorageInput correctly"() {
-		given: "a system participant input type factory and model data"
-		def inputFactory = new StorageInputFactory()
-		Map<String, String> parameter = [
-			"uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-			"operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-			"operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
-			"id"              : "TestID",
-			"qcharacteristics": "cosPhiFixed:{(0.0,1.0)}"
-		]
-		def inputClass = StorageInput
-		def nodeInput = Mock(NodeInput)
-		def operatorInput = Mock(OperatorInput)
-		def typeInput = Mock(StorageTypeInput)
+  def "A StorageInputFactory should parse a valid StorageInput correctly"() {
+    given: "a system participant input type factory and model data"
+    def inputFactory = new StorageInputFactory()
+    Map<String, String> parameter = [
+      "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
+      "id"              : "TestID",
+      "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}"
+    ]
+    def inputClass = StorageInput
+    def nodeInput = Mock(NodeInput)
+    def operatorInput = Mock(OperatorInput)
+    def typeInput = Mock(StorageTypeInput)
 
-		when:
-		Optional<StorageInput> input = inputFactory.get(
-				new SystemParticipantTypedEntityData<StorageTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
+    when:
+    Optional<StorageInput> input = inputFactory.get(
+        new SystemParticipantTypedEntityData<StorageTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
 
-		then:
-		input.present
-		input.get().getClass() == inputClass
-		((StorageInput) input.get()).with {
-			assert uuid == UUID.fromString(parameter["uuid"])
-			assert operationTime.startDate.present
-			assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-			assert operationTime.endDate.present
-			assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-			assert operator == operatorInput
-			assert id == parameter["id"]
-			assert node == nodeInput
-			assert qCharacteristics.with {
-				assert uuid != null
-				assert points == Collections.unmodifiableSortedSet([
-					new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
-				] as TreeSet)
-			}
-			assert type == typeInput
-		}
-	}
+    then:
+    input.present
+    input.get().getClass() == inputClass
+    ((StorageInput) input.get()).with {
+      assert uuid == UUID.fromString(parameter["uuid"])
+      assert operationTime.startDate.present
+      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      assert operationTime.endDate.present
+      assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      assert operator == operatorInput
+      assert id == parameter["id"]
+      assert node == nodeInput
+      assert qCharacteristics.with {
+        assert uuid != null
+        assert points == Collections.unmodifiableSortedSet([
+          new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
+        ] as TreeSet)
+      }
+      assert type == typeInput
+    }
+  }
 }
