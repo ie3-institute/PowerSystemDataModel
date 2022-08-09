@@ -1,124 +1,124 @@
 /* Maven publish - start */
 task sourcesJar(type: Jar) {
-	classifier "sources"
-	from sourceSets.main.allJava
+  classifier "sources"
+  from sourceSets.main.allJava
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-	classifier "javadoc"
-	from javadoc.destinationDir
+  classifier "javadoc"
+  from javadoc.destinationDir
 }
 
 
 if (project.hasProperty('user') && project.hasProperty('password') && project.hasProperty('deployVersion')) {
 
-	// snapshot version differs from normal version
-	String versionString = project.getProperty('deployVersion')
+  // snapshot version differs from normal version
+  String versionString = project.getProperty('deployVersion')
 
-	signing {
-		required { !versionString.endsWith('SNAPSHOT') }
-		if (required)
-			sign(publishing.publications)
-	}
+  signing {
+    required { !versionString.endsWith('SNAPSHOT') }
+    if (required)
+      sign(publishing.publications)
+  }
 
-	publishing {
-		publications {
-			mavenJava(MavenPublication) {
+  publishing {
+    publications {
+      mavenJava(MavenPublication) {
 
-				versionMapping {
-					// resolves dynamic versioning to current version number
-					usage('java-api') {
-						fromResolutionOf('runtimeClasspath')
-					}
-					usage('java-runtime') {
-						fromResolutionResult()
-					}
-				}
-				pom {
-					description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
-					name = 'Power System Data Model'
-					url = 'https:github.com/ie3-institute/PowerSystemDatamodel'
-					organization {
-						name = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
-						url = 'http:www.ie3.tu-dortmund.de/'
-					}
-					issueManagement {
-						system = 'GitHub'
-						url = 'https:github.com/ie3-institute/PowerSystemDataModel/issues'
-					}
-					licenses {
-						license {
-							name = 'BSD 3-Clause License'
-							url = 'https:github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
-						}
-						scm {
-							connection = 'scm:git:git:github.com/ie3-institute/PowerSystemDataModel.git'
-							developerConnection = 'scm:git:ssh:github.com:ie3-institute/PowerSystemDataModel.git'
-							url = 'https:github.com/ie3-institute/PowerSystemDataModel'
-						}
-						developers {
-							[
-								developer {
-									id = 'johanneshiry'
-									name = 'Johannes Hiry'
-									email = 'johannes.hiry@tu-dortmund.de'
-								},
-								developer {
-									id = 'ckittl'
-									name = 'Chris Kittl'
-									email = 'chris.kittl@tu-dortmund.de'
-								},
-								developer {
-									id = 'sensarmad'
-									name = 'Debopama Sen Sarma'
-									email = 'debopama-sen.sarma@tu-dortmund.de'
-								}
-							]
-						}
-					}
-				}
+        versionMapping {
+          // resolves dynamic versioning to current version number
+          usage('java-api') {
+            fromResolutionOf('runtimeClasspath')
+          }
+          usage('java-runtime') {
+            fromResolutionResult()
+          }
+        }
+        pom {
+          description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
+          name = 'Power System Data Model'
+          url = 'https:github.com/ie3-institute/PowerSystemDatamodel'
+          organization {
+            name = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
+            url = 'http:www.ie3.tu-dortmund.de/'
+          }
+          issueManagement {
+            system = 'GitHub'
+            url = 'https:github.com/ie3-institute/PowerSystemDataModel/issues'
+          }
+          licenses {
+            license {
+              name = 'BSD 3-Clause License'
+              url = 'https:github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
+            }
+            scm {
+              connection = 'scm:git:git:github.com/ie3-institute/PowerSystemDataModel.git'
+              developerConnection = 'scm:git:ssh:github.com:ie3-institute/PowerSystemDataModel.git'
+              url = 'https:github.com/ie3-institute/PowerSystemDataModel'
+            }
+            developers {
+              [
+                developer {
+                  id = 'johanneshiry'
+                  name = 'Johannes Hiry'
+                  email = 'johannes.hiry@tu-dortmund.de'
+                },
+                developer {
+                  id = 'ckittl'
+                  name = 'Chris Kittl'
+                  email = 'chris.kittl@tu-dortmund.de'
+                },
+                developer {
+                  id = 'sensarmad'
+                  name = 'Debopama Sen Sarma'
+                  email = 'debopama-sen.sarma@tu-dortmund.de'
+                }
+              ]
+            }
+          }
+        }
 
-				removeTestDependenciesFromPom(pom)
-				groupId group
-				artifactId 'PowerSystemDataModel'
-				version versionString
+        removeTestDependenciesFromPom(pom)
+        groupId group
+        artifactId 'PowerSystemDataModel'
+        version versionString
 
-				from components.java
-				artifact sourcesJar
-				artifact javadocJar
+        from components.java
+        artifact sourcesJar
+        artifact javadocJar
 
-			}
-		}
-		repositories {
-			maven {
-				def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-				def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-				url = versionString.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-				credentials {
-					username project.getProperty('user')
-					password project.getProperty('password')
-				}
-			}
-		}
-	}
+      }
+    }
+    repositories {
+      maven {
+        def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+        url = versionString.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        credentials {
+          username project.getProperty('user')
+          password project.getProperty('password')
+        }
+      }
+    }
+  }
 
 
-	model {
-		tasks.generatePomFileForMavenJavaPublication {
-			destination = file("$buildDir/generated-pom.xml")
-		}
-	}
+  model {
+    tasks.generatePomFileForMavenJavaPublication {
+      destination = file("$buildDir/generated-pom.xml")
+    }
+  }
 }
 
 def removeTestDependenciesFromPom(pom) {
 
-	pom.withXml {
-		def root = asNode()
-		// eliminate test-scoped dependencies (no need in maven central POMs)
-		root.dependencies.removeAll { dep ->
-			dep.scope == "test"
-		}
-	}
+  pom.withXml {
+    def root = asNode()
+    // eliminate test-scoped dependencies (no need in maven central POMs)
+    root.dependencies.removeAll { dep ->
+      dep.scope == "test"
+    }
+  }
 }
 
 /* Maven publish - end */

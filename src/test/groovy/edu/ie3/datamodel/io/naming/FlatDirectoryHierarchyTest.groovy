@@ -16,33 +16,33 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 class FlatDirectoryHierarchyTest extends Specification {
-	@Shared
-	Path tmpDirectory
+  @Shared
+  Path tmpDirectory
 
-	def setup() {
-		tmpDirectory = Files.createTempDirectory("psdm_flat_input_hierarchy")
-	}
+  def setup() {
+    tmpDirectory = Files.createTempDirectory("psdm_flat_input_hierarchy")
+  }
 
-	def basePathString() {
-		tmpDirectory.toString()
-	}
+  def basePathString() {
+    tmpDirectory.toString()
+  }
 
-	def cleanup() {
-		FileIOUtils.deleteRecursively(tmpDirectory)
-	}
+  def cleanup() {
+    FileIOUtils.deleteRecursively(tmpDirectory)
+  }
 
-	def "A FlatDirectoryHierarchy is set up correctly"() {
-		given:
-		def basePath = Paths.get(basePathString())
+  def "A FlatDirectoryHierarchy is set up correctly"() {
+    given:
+    def basePath = Paths.get(basePathString())
 
-		when:
-		def fdh = new FlatDirectoryHierarchy()
+    when:
+    def fdh = new FlatDirectoryHierarchy()
 
-		then:
-		println(basePath)
-		Files.exists(basePath)
-		Files.isDirectory(basePath)
+    then:
+    println(basePath)
+    Files.exists(basePath)
+    Files.isDirectory(basePath)
 
-		fdh.getSubDirectory(BmInput) == Optional.empty()
-	}
+    fdh.getSubDirectory(BmInput) == Optional.empty()
+  }
 }

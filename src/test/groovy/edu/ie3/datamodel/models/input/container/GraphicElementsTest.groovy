@@ -11,15 +11,15 @@ import spock.lang.Specification
 
 class GraphicElementsTest extends Specification {
 
-	def "A valid collection of asset entities can be used to build a valid instance of GraphicElements"() {
-		given:
-		def graphicElements = new GraphicElements(Collections.singleton(GridTestData.nodeGraphicC),
-				Collections.singleton(GridTestData.lineGraphicCtoD))
+  def "A valid collection of asset entities can be used to build a valid instance of GraphicElements"() {
+    given:
+    def graphicElements = new GraphicElements(Collections.singleton(GridTestData.nodeGraphicC),
+        Collections.singleton(GridTestData.lineGraphicCtoD))
 
-		when:
-		def newlyCreatedGraphicElements = new GraphicElements(graphicElements.allEntitiesAsList())
+    when:
+    def newlyCreatedGraphicElements = new GraphicElements(graphicElements.allEntitiesAsList())
 
-		then:
-		newlyCreatedGraphicElements == graphicElements
-	}
+    then:
+    newlyCreatedGraphicElements == graphicElements
+  }
 }

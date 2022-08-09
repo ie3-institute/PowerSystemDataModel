@@ -18,52 +18,52 @@ import spock.lang.Specification
 @Testcontainers
 class SqlTimeSeriesMappingSourceIT extends Specification implements TestContainerHelper {
 
-	@Shared
-	PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
+  @Shared
+  PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
 
-	@Shared
-	SqlConnector connector
+  @Shared
+  SqlConnector connector
 
-	@Shared
-	SqlTimeSeriesMappingSource source
+  @Shared
+  SqlTimeSeriesMappingSource source
 
-	def setupSpec() {
-		// Copy sql import script into docker
-		MountableFile sqlImportFile = getMountableFile("_timeseries/")
-		postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/")
+  def setupSpec() {
+    // Copy sql import script into docker
+    MountableFile sqlImportFile = getMountableFile("_timeseries/")
+    postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/")
 
-		// Execute import script
-		Iterable<String> importFiles = Arrays.asList("time_series_mapping.sql")
-		for (String file: importFiles) {
-			Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/" + file)
-			assert res.stderr.empty
-		}
+    // Execute import script
+    Iterable<String> importFiles = Arrays.asList("time_series_mapping.sql")
+    for (String file: importFiles) {
+      Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/" + file)
+      assert res.stderr.empty
+    }
 
-		connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
-		source = new SqlTimeSeriesMappingSource(connector, "public", new EntityPersistenceNamingStrategy())
-	}
+    connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
+    source = new SqlTimeSeriesMappingSource(connector, "public", new EntityPersistenceNamingStrategy())
+  }
 
-	def "The sql time series mapping source returns empty optional on not covered model"() {
-		given:
-		def modelUuid = UUID.fromString("60b9a3da-e56c-40ff-ace7-8060cea84baf")
+  def "The sql time series mapping source returns empty optional on not covered model"() {
+    given:
+    def modelUuid = UUID.fromString("60b9a3da-e56c-40ff-ace7-8060cea84baf")
 
-		when:
-		def actual = source.getTimeSeriesUuid(modelUuid)
+    when:
+    def actual = source.getTimeSeriesUuid(modelUuid)
 
-		then:
-		!actual.present
-	}
+    then:
+    !actual.present
+  }
 
-	def "The sql time series mapping source is able to return the correct time series uuid"() {
-		given:
-		def modelUuid = UUID.fromString("c7ebcc6c-55fc-479b-aa6b-6fa82ccac6b8")
-		def expectedUuid = UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26")
+  def "The sql time series mapping source is able to return the correct time series uuid"() {
+    given:
+    def modelUuid = UUID.fromString("c7ebcc6c-55fc-479b-aa6b-6fa82ccac6b8")
+    def expectedUuid = UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26")
 
-		when:
-		def actual = source.getTimeSeriesUuid(modelUuid)
+    when:
+    def actual = source.getTimeSeriesUuid(modelUuid)
 
-		then:
-		actual.present
-		actual.get() == expectedUuid
-	}
+    then:
+    actual.present
+    actual.get() == expectedUuid
+  }
 }

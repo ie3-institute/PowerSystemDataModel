@@ -12,21 +12,21 @@ import spock.lang.Specification
 
 class SwitchInputTest extends Specification {
 
-	def "A SwitchInput copy method should work as expected"() {
-		given:
-		def switchInput = GridTestData.switchAtoB
+  def "A SwitchInput copy method should work as expected"() {
+    given:
+    def switchInput = GridTestData.switchAtoB
 
-		when:
-		def alteredUnit = switchInput.copy().id("switch_A_C").operator(OperatorInput.NO_OPERATOR_ASSIGNED)
-				.closed(false).build()
+    when:
+    def alteredUnit = switchInput.copy().id("switch_A_C").operator(OperatorInput.NO_OPERATOR_ASSIGNED)
+        .closed(false).build()
 
-		then:
-		alteredUnit.with {
-			assert uuid == switchInput.uuid
-			assert operationTime == switchInput.operationTime
-			assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
-			assert id == "switch_A_C"
-			assert !closed
-		}
-	}
+    then:
+    alteredUnit.with {
+      assert uuid == switchInput.uuid
+      assert operationTime == switchInput.operationTime
+      assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
+      assert id == "switch_A_C"
+      assert !closed
+    }
+  }
 }

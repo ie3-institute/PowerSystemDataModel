@@ -11,20 +11,20 @@ import spock.lang.Specification
 
 class ThermalBusInputTest extends Specification {
 
-	def "A ThermalBusInput copy method should work as expected"() {
-		given:
-		def thermalBusInput = ThermalUnitInputTestData.thermalBus
+  def "A ThermalBusInput copy method should work as expected"() {
+    given:
+    def thermalBusInput = ThermalUnitInputTestData.thermalBus
 
-		when:
-		def alteredUnit = thermalBusInput.copy().build()
+    when:
+    def alteredUnit = thermalBusInput.copy().build()
 
 
-		then:
-		alteredUnit.with {
-			assert uuid == thermalBusInput.uuid
-			assert id == thermalBusInput.id
-			assert operator == thermalBusInput.operator
-			assert operationTime == thermalBusInput.operationTime
-		}
-	}
+    then:
+    alteredUnit.with {
+      assert uuid == thermalBusInput.uuid
+      assert id == thermalBusInput.id
+      assert operator == thermalBusInput.operator
+      assert operationTime == thermalBusInput.operationTime
+    }
+  }
 }
