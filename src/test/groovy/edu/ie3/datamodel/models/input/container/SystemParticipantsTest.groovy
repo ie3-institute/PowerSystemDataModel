@@ -5,28 +5,26 @@
  */
 package edu.ie3.datamodel.models.input.container
 
-import edu.ie3.datamodel.models.input.system.BmInput
-import edu.ie3.test.common.ComplexTopology
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
-
 
 class SystemParticipantsTest extends Specification {
 
 	def "A valid collection of asset entities can be used to build a valid instance of SystemParticipants"() {
 		given:
 		def systemParticipants = new SystemParticipants(
-				Collections.singleton(SystemParticipantTestData.bmInput),
-				Collections.singleton(SystemParticipantTestData.chpInput),
-				Collections.emptySet(),
-				Collections.singleton(SystemParticipantTestData.evInput),
-				Collections.singleton(SystemParticipantTestData.fixedFeedInInput),
-				Collections.singleton(SystemParticipantTestData.hpInput),
-				Collections.singleton(SystemParticipantTestData.loadInput),
-				Collections.singleton(SystemParticipantTestData.pvInput),
-				Collections.singleton(SystemParticipantTestData.storageInput),
-				Collections.singleton(SystemParticipantTestData.wecInput)
-				)
+			Collections.singleton(SystemParticipantTestData.bmInput),
+			Collections.singleton(SystemParticipantTestData.chpInput),
+			Collections.emptySet(),
+			Collections.singleton(SystemParticipantTestData.evInput),
+			Collections.singleton(SystemParticipantTestData.fixedFeedInInput),
+			Collections.singleton(SystemParticipantTestData.hpInput),
+			Collections.singleton(SystemParticipantTestData.loadInput),
+			Collections.singleton(SystemParticipantTestData.pvInput),
+			Collections.singleton(SystemParticipantTestData.storageInput),
+			Collections.singleton(SystemParticipantTestData.wecInput),
+			Collections.singleton(SystemParticipantTestData.emInput)
+		)
 
 		when:
 		def newlyCreatedSystemParticipants = new SystemParticipants(systemParticipants.allEntitiesAsList())

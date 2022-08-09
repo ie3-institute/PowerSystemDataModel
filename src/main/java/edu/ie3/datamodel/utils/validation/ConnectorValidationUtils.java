@@ -169,7 +169,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    */
   private static void checkTransformer3W(Transformer3WInput transformer3W) {
     checkTransformer3WType(transformer3W.getType());
-    checkIfTapPositionIsWithinBounds((transformer3W));
+    checkIfTapPositionIsWithinBounds(transformer3W);
     // Check if transformer connects different voltage levels
     if (transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeB().getVoltLvl()
         || transformer3W.getNodeA().getVoltLvl() == transformer3W.getNodeC().getVoltLvl()
@@ -333,9 +333,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     if ((line.getNodeA().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION
             || line.getNodeB().getGeoPosition() != NodeInput.DEFAULT_GEO_POSITION)
         && !QuantityUtil.isEquivalentAbs(
-            line.getLength(),
-            GeoUtils.totalLengthOfLineString(line.getGeoPosition()),
-            ALLOWED_LENGTH_ERROR))
+            line.getLength(), GeoUtils.calcHaversine(line.getGeoPosition()), ALLOWED_LENGTH_ERROR))
       throw new InvalidEntityException(
           "Line length does not equal calculated distances between points building the line", line);
   }

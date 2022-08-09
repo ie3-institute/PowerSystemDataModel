@@ -95,14 +95,10 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    */
   private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries() {
     /* Get only weather time series meta information */
-    Map<ColumnScheme, Set<CsvIndividualTimeSeriesMetaInformation>> colTypeToMetaData =
-        connector.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER);
+    Collection<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
+        connector.getCsvIndividualTimeSeriesMetaInformation(ColumnScheme.WEATHER).values();
 
-    /* Reading in weather time series */
-    Set<CsvIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
-        colTypeToMetaData.get(ColumnScheme.WEATHER);
-
-    return readWeatherTimeSeries(weatherCsvMetaInformation, connector);
+    return readWeatherTimeSeries(Set.copyOf(weatherCsvMetaInformation), connector);
   }
 
   @Override
@@ -163,9 +159,9 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
     for (CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
       // we need a reader for each file
       try (BufferedReader reader = connector.initReader(data.getFullFilePath())) {
-        filterEmptyOptionals(
-                buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
-                    .map(fieldToValueFunction))
+        buildStreamWithFieldsToAttributesMap(TimeBasedValue.class, reader)
+            .map(fieldToValueFunction)
+            .flatMap(Optional::stream)
             .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
             .forEach(
                 (point, timeBasedValues) -> {

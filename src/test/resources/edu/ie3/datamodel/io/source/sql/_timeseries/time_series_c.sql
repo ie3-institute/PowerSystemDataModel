@@ -10,6 +10,9 @@ CREATE TABLE public.time_series_c
 
 CREATE INDEX time_series_c_series_id ON time_series_c USING hash (time_series);
 
+-- Order of columns is important when using btree: https://www.postgresql.org/docs/14/indexes-multicolumn.html
+-- Column time_series needs to placed as the first argument since we at most use an equality constraint on
+-- time_series and a range query on time.
 CREATE UNIQUE INDEX time_series_c_series_time ON time_series_c USING btree (time_series, time);
 
 INSERT INTO
@@ -17,4 +20,3 @@ INSERT INTO
 VALUES
 ('45bd936f-524a-4d59-8978-31ccf37fa230', '2fcb3e53-b94a-4b96-bea4-c469e499f1a1', '2020-01-01 00:00:00+0', 100.0),
 ('41b8dbf6-3e75-4073-8359-89d015777dd6', '2fcb3e53-b94a-4b96-bea4-c469e499f1a1', '2020-01-01 00:15:00+0', 125.0);
-

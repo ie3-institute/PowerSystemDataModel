@@ -36,7 +36,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 			assert processor.fieldToSource.size() == expectedSourceMapping.size()
 			processor.fieldToSource.each { key, value ->
 				assert expectedSourceMapping.containsKey(key)
-				assert expectedSourceMapping.get(key) == value.source
+				assert expectedSourceMapping.get(key) == value.source()
 			}
 			/* Also test the logic of TimeSeriesProcessor#buildFieldToSource, because it is invoked during instantiation */
 			assert processor.headerElements == [

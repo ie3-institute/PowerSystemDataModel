@@ -26,14 +26,14 @@ public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSer
 
     /* Build the map */
     mapping =
-        filterEmptyOptionals(
-                buildStreamWithFieldsToAttributesMap(MappingEntry.class, connector)
-                    .map(
-                        fieldToValues -> {
-                          SimpleEntityData entityData =
-                              new SimpleEntityData(fieldToValues, MappingEntry.class);
-                          return mappingFactory.get(entityData);
-                        }))
+        buildStreamWithFieldsToAttributesMap(MappingEntry.class, connector)
+            .map(
+                fieldToValues -> {
+                  SimpleEntityData entityData =
+                      new SimpleEntityData(fieldToValues, MappingEntry.class);
+                  return mappingFactory.get(entityData);
+                })
+            .flatMap(Optional::stream)
             .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
   }
 
@@ -43,8 +43,8 @@ public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSer
   }
 
   /**
-   * @deprecated since 3.0. Use {@link CsvTimeSeriesTypeSource#getTimeSeriesMetaInformation()}
-   *     instead
+   * @deprecated since 3.0. Use {@link
+   *     CsvTimeSeriesMetaInformationSource#getTimeSeriesMetaInformation()} instead
    */
   @Override
   @Deprecated(since = "3.0", forRemoval = true)

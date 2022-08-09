@@ -55,6 +55,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 			assert (systemParticipants.getWecPlants().first().uuid == sptd.wecInput.uuid)
 			assert (systemParticipants.getStorages().first().uuid == sptd.storageInput.uuid)
 			assert (systemParticipants.getEvCS().first().uuid == sptd.evcsInput.uuid)
+			assert (systemParticipants.getEmSystems().first().uuid == sptd.emInput.uuid)
 		})
 	}
 
@@ -333,7 +334,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 		nodes                 | operators                 || resultingSize || resultingSet
 		[sptd.loadInput.node]| [sptd.loadInput.operator]|| 1             || [sptd.loadInput]
 		[sptd.loadInput.node]| []|| 1             || [
-			new LoadInput(sptd.loadInput.uuid, sptd.loadInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.loadInput.operationTime, sptd.loadInput.node, sptd.loadInput.qCharacteristics, sptd.loadInput.standardLoadProfile, sptd.loadInput.dsm, sptd.loadInput.eConsAnnual, sptd.loadInput.sRated, sptd.loadInput.cosPhiRated)
+			new LoadInput(sptd.loadInput.uuid, sptd.loadInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.loadInput.operationTime, sptd.loadInput.node, sptd.loadInput.qCharacteristics, sptd.loadInput.loadProfile, sptd.loadInput.dsm, sptd.loadInput.eConsAnnual, sptd.loadInput.sRated, sptd.loadInput.cosPhiRated)
 		]
 		[]| [sptd.loadInput.operator]|| 0             || []
 		[]| []|| 0             || []
@@ -381,5 +382,22 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 			sptd.fixedFeedInInput.operator
 		] as List || 0             || []
 		[]| [] as List       || 0             || []
+	}
+
+	def "A CsvSystemParticipantSource should return data from valid em input file as expected"() {
+		given:
+		def csvSystemParticipantSource = new CsvSystemParticipantSource(csvSep, participantsFolderPath,
+				fileNamingStrategy, Mock(CsvTypeSource), Mock(CsvThermalSource), Mock(CsvRawGridSource))
+
+		expect:
+		def sysParts = csvSystemParticipantSource.getEmSystems(nodes as Set, operators as Set)
+		sysParts.size() == resultingSize
+		sysParts == resultingSet as Set
+
+		where:
+		nodes               | operators               || resultingSize || resultingSet
+		[sptd.emInput.node] | [sptd.emInput.operator] || 1             || [sptd.emInput]
+		[]                  | [sptd.pvInput.operator] || 0             || []
+		[]					| []					  || 0             || []
 	}
 }

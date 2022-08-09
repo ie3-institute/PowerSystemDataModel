@@ -35,10 +35,10 @@ class CsvFileDefinitionTest extends Specification {
 
 		then:
 		actual.with {
-			assert it.fileName == fileName
-			assert it.directoryPath == directory
-			assert it.headLineElements == headLineElements
-			assert it.csvSep == csvSep
+			assert it.fileName() == this.fileName
+			assert it.directoryPath() == this.directory
+			assert it.headLineElements() == this.headLineElements
+			assert it.csvSep() == this.csvSep
 		}
 
 		where:
@@ -54,10 +54,10 @@ class CsvFileDefinitionTest extends Specification {
 
 		then:
 		actual.with {
-			assert it.fileName == fileName
-			assert it.directoryPath == ""
-			assert it.headLineElements == headLineElements
-			assert it.csvSep == csvSep
+			assert it.fileName() == this.fileName
+			assert it.directoryPath() == ""
+			assert it.headLineElements() == this.headLineElements
+			assert it.csvSep() == this.csvSep
 		}
 	}
 
@@ -82,10 +82,10 @@ class CsvFileDefinitionTest extends Specification {
 
 		then:
 		actual.with {
-			assert it.fileName == this.fileName
-			assert it.directoryPath == directory
-			assert it.headLineElements == headLineElements
-			assert it.csvSep == csvSep
+			assert it.fileName() == this.fileName
+			assert it.directoryPath() == this.directory
+			assert it.headLineElements() == this.headLineElements
+			assert it.csvSep() == this.csvSep
 		}
 	}
 
@@ -98,10 +98,10 @@ class CsvFileDefinitionTest extends Specification {
 
 		then:
 		actual.with {
-			assert it.fileName == this.fileName
-			assert it.directoryPath == directory
-			assert it.headLineElements == headLineElements
-			assert it.csvSep == csvSep
+			assert it.fileName() == this.fileName
+			assert it.directoryPath() == directory
+			assert it.headLineElements() == this.headLineElements
+			assert it.csvSep() == this.csvSep
 		}
 	}
 

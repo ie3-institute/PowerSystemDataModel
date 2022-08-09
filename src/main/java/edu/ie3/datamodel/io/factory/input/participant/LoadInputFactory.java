@@ -8,12 +8,12 @@ package edu.ie3.datamodel.io.factory.input.participant;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.StandardLoadProfile;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.LoadInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import edu.ie3.datamodel.models.profile.LoadProfile;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public class LoadInputFactory
     extends SystemParticipantInputEntityFactory<LoadInput, NodeAssetInputEntityData> {
   private static final Logger logger = LoggerFactory.getLogger(LoadInputFactory.class);
 
-  private static final String SLP = "standardloadprofile";
+  private static final String LOAD_PROFILE = "loadprofile";
   private static final String DSM = "dsm";
   private static final String E_CONS_ANNUAL = "econsannual";
   private static final String S_RATED = "srated";
@@ -36,7 +36,7 @@ public class LoadInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {SLP, DSM, E_CONS_ANNUAL, S_RATED, COS_PHI};
+    return new String[] {LOAD_PROFILE, DSM, E_CONS_ANNUAL, S_RATED, COS_PHI};
   }
 
   @Override
@@ -48,15 +48,15 @@ public class LoadInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    StandardLoadProfile slp;
+    LoadProfile loadProfile;
     try {
-      slp = StandardLoadProfile.parse(data.getField(SLP));
+      loadProfile = LoadProfile.parse(data.getField(LOAD_PROFILE));
     } catch (ParsingException e) {
       logger.warn(
           "Cannot parse the standard load profile \"{}\" of load \"{}\". Assign no load profile instead.",
-          data.getField(SLP),
+          data.getField(LOAD_PROFILE),
           id);
-      slp = StandardLoadProfile.DefaultLoadProfiles.NO_STANDARD_LOAD_PROFILE;
+      loadProfile = LoadProfile.DefaultLoadProfiles.NO_LOAD_PROFILE;
     }
     final boolean dsm = data.getBoolean(DSM);
     final ComparableQuantity<Energy> eConsAnnual =
@@ -71,7 +71,7 @@ public class LoadInputFactory
         operationTime,
         node,
         qCharacteristics,
-        slp,
+        loadProfile,
         dsm,
         eConsAnnual,
         sRated,

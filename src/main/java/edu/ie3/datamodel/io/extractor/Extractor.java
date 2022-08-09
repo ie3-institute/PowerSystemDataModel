@@ -34,7 +34,7 @@ public final class Extractor {
       throws ExtractorException {
     CopyOnWriteArrayList<InputEntity> resultingList = new CopyOnWriteArrayList<>();
     if (nestedEntity instanceof HasNodes nestedHasNode) {
-      resultingList.addAll((nestedHasNode).allNodes());
+      resultingList.addAll(nestedHasNode.allNodes());
     }
     if (nestedEntity instanceof Operable nestedOperable) {
       extractOperator(nestedOperable).ifPresent(resultingList::add);
@@ -43,13 +43,13 @@ public final class Extractor {
       resultingList.add(extractType(nestedHasType));
     }
     if (nestedEntity instanceof HasThermalBus nestedHasThermalBus) {
-      resultingList.add((nestedHasThermalBus).getThermalBus());
+      resultingList.add(nestedHasThermalBus.getThermalBus());
     }
     if (nestedEntity instanceof HasThermalStorage nestedHasThermalStorage) {
-      resultingList.add((nestedHasThermalStorage).getThermalStorage());
+      resultingList.add(nestedHasThermalStorage.getThermalStorage());
     }
     if (nestedEntity instanceof HasLine nestedHasLine) {
-      resultingList.add((nestedHasLine).getLine());
+      resultingList.add(nestedHasLine.getLine());
     }
 
     if (resultingList.contains(null)) {

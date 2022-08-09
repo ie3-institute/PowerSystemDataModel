@@ -52,9 +52,8 @@ public class ChpInputEntityData extends SystemParticipantTypedEntityData<ChpType
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof ChpInputEntityData)) return false;
+    if (!(o instanceof ChpInputEntityData that)) return false;
     if (!super.equals(o)) return false;
-    ChpInputEntityData that = (ChpInputEntityData) o;
     return thermalBusInput.equals(that.thermalBusInput)
         && thermalStorageInput.equals(that.thermalStorageInput);
   }
