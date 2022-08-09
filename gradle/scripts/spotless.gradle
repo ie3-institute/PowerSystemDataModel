@@ -1,40 +1,41 @@
 // spotless is a code formatter
 
 spotless {
-	def ie3LicHead = '/*\n' +
-			' * © $YEAR. TU Dortmund University,\n' +
-			' * Institute of Energy Systems, Energy Efficiency and Energy Economics,\n' +
-			' * Research group Distribution grid planning and operation\n' +
-			'*/'
+  def ie3LicHead = '/*\n' +
+      ' * © $YEAR. TU Dortmund University,\n' +
+      ' * Institute of Energy Systems, Energy Efficiency and Energy Economics,\n' +
+      ' * Research group Distribution grid planning and operation\n' +
+      '*/'
 
-	//sets a license header, removes unused imports and formats conforming to the google java format
-	java {
-		removeUnusedImports() // removes any unused imports
-		googleJavaFormat('1.13.0')
-		licenseHeader ie3LicHead
-	}
+  //sets a license header, removes unused imports and formats conforming to the google java format
+  java {
+    removeUnusedImports() // removes any unused imports
+    googleJavaFormat('1.13.0')
+    licenseHeader ie3LicHead
+  }
 
 
-	/* cf. https://github.com/diffplug/spotless/tree/master/plugin-gradle */
-	groovy {
-		licenseHeader ie3LicHead
-		// the Groovy Eclipse formatter extends the Java Eclipse formatter,
-		// so it formats Java files by default (unless `excludeJava` is used).
-		greclipse().configFile('greclipse.properties')
-		indentWithSpaces 2
-	}
+  /* cf. https://github.com/diffplug/spotless/tree/master/plugin-gradle */
+  groovy {
+    licenseHeader ie3LicHead
+    // the Groovy Eclipse formatter extends the Java Eclipse formatter,
+    // so it formats Java files by default (unless `excludeJava` is used).
+    greclipse().configFile('greclipse.properties')
+    indentWithSpaces 2
+  }
 
-	groovyGradle {
-		// same as groovy, but for .gradle (defaults to '*.gradle')
-		target '*.gradle', 'gradle/scripts/*.gradle'
-		greclipse()
-	}
+  groovyGradle {
+    // same as groovy, but for .gradle (defaults to '*.gradle')
+    target '*.gradle', 'gradle/scripts/*.gradle'
+    greclipse()
+    indentWithSpaces 2
+  }
 
-	// removes unnecessary whitespace, indents with tabs and ends on new line for gradle, md and gitignore files and config-XMLs
-	format 'misc', {
-		target '**/.gitignore', 'configs/**'
-		trimTrailingWhitespace()
-		indentWithTabs()
-		endWithNewline()
-	}
+  // removes unnecessary whitespace, indents with tabs and ends on new line for gradle, md and gitignore files and config-XMLs
+  format 'misc', {
+    target '**/.gitignore', 'configs/**'
+    trimTrailingWhitespace()
+    indentWithTabs()
+    endWithNewline()
+  }
 }
