@@ -6,11 +6,14 @@
 package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import org.apache.commons.lang3.stream.Streams;
+
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.print.StreamPrintService;
 
 /**
  * Describes characteristics of assets
@@ -118,11 +121,12 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
    *
    * @return the characteristic as de-serialized string
    */
-  public String deSerialize() {
+  public String deSerialize() { // Auslesen ohne dezimal Kürzung
     return characteristicPrefix
         + ":{"
         + points.stream()
-            .map(point -> point.deSerialize(decimalPlaces))
+            //.map(point -> point.deSerialize(decimalPlaces))
+            .map(point -> point.toString())
             .collect(Collectors.joining(","))
         + "}";
   }
@@ -131,9 +135,12 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof CharacteristicInput<?, ?> that)) return false;
+
+    points.iterator();
+
     return decimalPlaces == that.decimalPlaces
         && characteristicPrefix.equals(that.characteristicPrefix)
-        && points.equals(that.points);
+        && points.equals(that.points);      // hier Streams erstellen mit zip und dann equals With Tolerence für jeden Punkt aufrufen --> Ergebnis Stream von booleans
   }
 
   @Override

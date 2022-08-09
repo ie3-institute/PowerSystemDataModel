@@ -11,6 +11,8 @@ import java.util.Locale;
 import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.Unit;
+
+import edu.ie3.util.quantities.QuantityUtil;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
@@ -102,7 +104,8 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
    * @return The de-serialized point
    */
   public String deSerialize(int decimalPlaces) {
-    String formattingString = String.format("(%%.%sf,%%.%sf)", decimalPlaces, decimalPlaces);
+    String formattingString = String.format("(%%.%sf,%%.%sf)", decimalPlaces, decimalPlaces); // double to string damit nicht mehr gekürzt wird
+    // warum %Sf?? es sollen doch die decimal places als Anzahl für die Float Nachkommastellen eingesetzt werden? --> %%.%if ??
     return String.format(
         Locale.ENGLISH, formattingString, x.getValue().doubleValue(), y.getValue().doubleValue());
   }
@@ -112,6 +115,12 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
     if (this == o) return true;
     if (!(o instanceof CharacteristicPoint<?, ?> that)) return false;
     return Objects.equals(x, that.x) && Objects.equals(y, that.y);
+  }
+
+  public boolean equalsWithTolerance(CharacteristicPoint<A,O> p, int decimalPlaces) {
+    double tolerance = Math.pow(10,-decimalPlaces);
+    return QuantityUtil.isEquivalentAbs(this.x, p.x, tolerance)
+    && QuantityUtil.isEquivalentAbs(this.y, p.y, tolerance);
   }
 
   @Override
