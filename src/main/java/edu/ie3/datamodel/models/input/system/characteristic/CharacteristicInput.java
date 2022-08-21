@@ -118,7 +118,7 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
    *
    * @return the characteristic as de-serialized string
    */
-  public String deSerialize() { // Auslesen ohne dezimal Kürzung double to String
+  public String deSerialize() {
     return characteristicPrefix
         + ":{"
         + points.stream()
@@ -136,9 +136,7 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
 
     return decimalPlaces == that.decimalPlaces
         && characteristicPrefix.equals(that.characteristicPrefix)
-        && points.equals(
-            that.points); // hier Streams erstellen mit zip und dann equals With Tolerence für jeden
-    // Punkt aufrufen --> Ergebnis Stream von booleans
+        && points.equals(that.points);
   }
 
   @Override

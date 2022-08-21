@@ -103,11 +103,8 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
    * @return The de-serialized point
    */
   public String deSerialize(int decimalPlaces) {
-    String formattingString = String.format("(%%.%sf,%%.%sf)", decimalPlaces, decimalPlaces);
-    // warum %Sf?? es sollen doch die decimal places als Anzahl für die Float Nachkommastellen
-    // eingesetzt werden? --> %%.%if ??
     return String.format(
-        Locale.ENGLISH, formattingString, x.getValue().doubleValue(), y.getValue().doubleValue());
+        Locale.ENGLISH, "(%s,%s)", x.getValue().doubleValue(), y.getValue().doubleValue());
   }
 
   @Override

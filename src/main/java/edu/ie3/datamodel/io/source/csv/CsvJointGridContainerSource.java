@@ -14,10 +14,7 @@ import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
 
 public class CsvJointGridContainerSource {
-  private CsvJointGridContainerSource() {
-    // vllt mit Exception werfen
-    // bei utils Klassen suchen (ohne INstanziierung)
-  }
+  private CsvJointGridContainerSource() {}
 
   public static JointGridContainer read(String gridName, String csvSep, String directoryPath)
       throws SourceException {
