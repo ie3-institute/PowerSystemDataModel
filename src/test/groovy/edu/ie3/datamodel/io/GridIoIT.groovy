@@ -12,14 +12,6 @@ import spock.lang.Specification
 
 class GridIoIT extends Specification implements CsvTestDataMeta {
 
-  def setup(){
-    println "setup in progress..."
-  }
-
-  def cleanup(){
-    println "cleanup in progress..."
-  }
-
   def "Input JointGridContainer equals Output JointGridContainer."(){
 
     given:
@@ -49,21 +41,19 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
     then:
     //compare input and output grid container participants
 
-    println("Input and output parameters of the joint grid container are identical for:")
+    firstGridContainer.getGridName().equals(secondGridContainer.getGridName())
+    firstGridContainer.getRawGrid().equals(secondGridContainer.getRawGrid())
+    firstGridContainer.getSystemParticipants().equals(secondGridContainer.getSystemParticipants())
+    firstGridContainer.getGraphics().equals(secondGridContainer.getGraphics())
 
-    println("Grid Name: " + firstGridContainer.getGridName().equals(secondGridContainer.getGridName()))
-    println("RawGrid: " + firstGridContainer.getRawGrid().equals(secondGridContainer.getRawGrid()))
-    println("System Participants: " + firstGridContainer.getSystemParticipants().equals(secondGridContainer.getSystemParticipants()))
-    println("Graphics: " + firstGridContainer.getGraphics().equals(secondGridContainer.getGraphics()))
+    firstGridContainer.getSystemParticipants().getFixedFeedIns().equals(secondGridContainer.getSystemParticipants().getFixedFeedIns())
+    firstGridContainer.getSystemParticipants().getBmPlants().equals(secondGridContainer.getSystemParticipants().getBmPlants())
+    firstGridContainer.getSystemParticipants().getPvPlants().equals(secondGridContainer.getSystemParticipants().getPvPlants())
+    firstGridContainer.getSystemParticipants().getLoads().equals(secondGridContainer.getSystemParticipants().getLoads())
+    firstGridContainer.getSystemParticipants().getEvCS().equals(secondGridContainer.getSystemParticipants().getEvCS())
+    firstGridContainer.getSystemParticipants().getStorages().equals(secondGridContainer.getSystemParticipants().getStorages())
 
-    println("System Participants - Fixed Feed Ins: " + firstGridContainer.getSystemParticipants().getFixedFeedIns().equals(secondGridContainer.getSystemParticipants().getFixedFeedIns()))
-    println("System Participants - BM Plants: " + firstGridContainer.getSystemParticipants().getBmPlants().equals(secondGridContainer.getSystemParticipants().getBmPlants()))
-    println("System Participants - PV Plants: " + firstGridContainer.getSystemParticipants().getPvPlants().equals(secondGridContainer.getSystemParticipants().getPvPlants()))
-    println("System Participants - Loads: " + firstGridContainer.getSystemParticipants().getLoads().equals(secondGridContainer.getSystemParticipants().getLoads()))
-    println("System Participants - EvCS: " + firstGridContainer.getSystemParticipants().getEvCS().equals(secondGridContainer.getSystemParticipants().getEvCS()))
-    println("System Participants - Storages: " + firstGridContainer.getSystemParticipants().getStorages().equals(secondGridContainer.getSystemParticipants().getStorages()))
-
-    println("System Participants - wec Plants: " + firstGridContainer.getSystemParticipants().getWecPlants().equals(secondGridContainer.getSystemParticipants().getWecPlants()))
+    firstGridContainer.getSystemParticipants().getWecPlants().equals(secondGridContainer.getSystemParticipants().getWecPlants())
 
   }
 
