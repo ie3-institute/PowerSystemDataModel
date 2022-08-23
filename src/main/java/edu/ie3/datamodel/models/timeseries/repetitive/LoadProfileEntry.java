@@ -49,6 +49,7 @@ public class LoadProfileEntry extends TimeSeriesEntry<PValue> {
   }
 
   @Override
+  /** This is a to string method. */
   public String toString() {
     return "LoadProfileEntry{"
         + "uuid="
