@@ -41,9 +41,9 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     result.present
     result.get().getClass() == FlexOptionsResult
     ((FlexOptionsResult) result.get()).with {
-      assert pReference == getQuant(parameter["preference"], StandardUnits.ACTIVE_POWER_IN)
-      assert pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_IN)
-      assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
+      assert pReference == getQuant(parameter["preference"], StandardUnits.ACTIVE_POWER_RESULT)
+      assert pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_RESULT)
+      assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_RESULT)
       assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
       assert inputModel == UUID.fromString(parameter["inputModel"])
     }
