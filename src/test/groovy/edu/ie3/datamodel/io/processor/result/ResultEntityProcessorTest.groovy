@@ -88,6 +88,7 @@ class ResultEntityProcessorTest extends Specification {
     WecResult         | new WecResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
     StorageResult     | new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, soc) || expectedSocResults
     HpResult          | new HpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, qDot)     || expectedQDotResults
+    EmResult          | new EmResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)           || expectedStandardResults
 
   }
 
@@ -118,6 +119,34 @@ class ResultEntityProcessorTest extends Specification {
       vAng      : '45.0',
       vMag      : '0.95',
       time      : '2020-01-30T17:26:44Z[UTC]']
+
+    when:
+    def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
+
+    then:
+    validProcessedElement.present
+    validProcessedElement.get() == expectedResults
+
+  }
+
+  def "A ResultEntityProcessor should de-serialize a FlexOptionsResult correctly"() {
+    given:
+    def sysPartResProcessor = new ResultEntityProcessor(FlexOptionsResult)
+
+    Quantity<Power> pReference = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
+    Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
+    Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
+
+    def validResult = new FlexOptionsResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, pReference, pMin, pMax)
+
+    def expectedResults = [
+      uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+      inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+      time      : '2020-01-30T17:26:44Z[UTC]',
+      pMax      : '6.0',
+      pMin      : '-6.0',
+      pReference: '5.1',
+    ]
 
     when:
     def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
@@ -251,7 +280,7 @@ class ResultEntityProcessorTest extends Specification {
 
   def "The list of eligible entity classes for a ResultEntityProcessor should be valid"() {
     given:
-    int noOfElements = 17 // number of all currently implemented entity results
+    int noOfElements = 19 // number of all currently implemented entity results
 
     expect:
     ResultEntityProcessor.eligibleEntityClasses.size() == noOfElements

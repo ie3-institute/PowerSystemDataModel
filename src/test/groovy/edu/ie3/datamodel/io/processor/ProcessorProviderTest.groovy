@@ -109,6 +109,8 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       StorageResult,
       EvcsResult,
       EvResult,
+      EmResult,
+      FlexOptionsResult,
       Transformer2WResult,
       Transformer3WResult,
       LineResult,
