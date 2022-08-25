@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.result.system;
 
 import edu.ie3.datamodel.models.result.ResultEntity;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -105,5 +106,23 @@ public class FlexOptionsResult extends ResultEntity {
         + ", pMax="
         + getpMax()
         + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+
+    FlexOptionsResult that = (FlexOptionsResult) o;
+
+    if (!pReference.equals(that.pReference)) return false;
+    if (!pMin.equals(that.pMin)) return false;
+    return pMax.equals(that.pMax);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), pReference, pMax, pMax);
   }
 }
