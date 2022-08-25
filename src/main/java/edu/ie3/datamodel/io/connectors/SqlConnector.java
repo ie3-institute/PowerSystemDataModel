@@ -74,13 +74,14 @@ public class SqlConnector implements DataConnector {
   }
 
   /**
-   * Establishes and returns a new database connection
+   * Establishes and returns a database connection. If a connection has not been established yet, a
+   * new one is created.
    *
    * @return the connection object
    * @throws SQLException if the connection could not be established
    */
   public Connection getConnection() throws SQLException {
-    return getConnection(false);
+    return getConnection(true);
   }
 
   /**
@@ -92,12 +93,15 @@ public class SqlConnector implements DataConnector {
    * @throws SQLException if the connection could not be established
    */
   public Connection getConnection(boolean reuseConnection) throws SQLException {
-    if (!reuseConnection || connection == null || connection.isClosed())
+    if (!reuseConnection || connection == null || connection.isClosed()) {
       try {
+        if (connection != null) connection.close();
+
         connection = DriverManager.getConnection(jdbcUrl, connectionProps);
       } catch (SQLException e) {
         throw new SQLException("Could not establish connection: ", e);
       }
+    }
     return connection;
   }
 
