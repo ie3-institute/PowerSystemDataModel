@@ -19,7 +19,7 @@ public class FlexOptionsResult extends ResultEntity {
    * Active power (might be negative, thus feed-in) that was suggested for regular usage by the
    * system participant connected to the EmAgent
    */
-  private final ComparableQuantity<Power> pReference;
+  private final ComparableQuantity<Power> pRef;
 
   /**
    * Minimal active power to which the system participant can be reduced (might be negative, thus
@@ -40,18 +40,18 @@ public class FlexOptionsResult extends ResultEntity {
    *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
-   * @param pReference active power that was suggested for regular usage by the system participant
+   * @param pRef active power that was suggested for regular usage by the system participant
    * @param pMin active minimal power that was determined by the system participant
    * @param pMax active maximum power that was determined by the system participant
    */
   public FlexOptionsResult(
       ZonedDateTime time,
       UUID inputModel,
-      ComparableQuantity<Power> pReference,
+      ComparableQuantity<Power> pRef,
       ComparableQuantity<Power> pMin,
       ComparableQuantity<Power> pMax) {
     super(time, inputModel);
-    this.pReference = pReference;
+    this.pRef = pRef;
     this.pMin = pMin;
     this.pMax = pMax;
   }
@@ -63,7 +63,7 @@ public class FlexOptionsResult extends ResultEntity {
    *     above
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
-   * @param pReference active power that was suggested for regular usage by the system participant
+   * @param pRef active power that was suggested for regular usage by the system participant
    * @param pMin active minimal power that was determined by the system participant
    * @param pMax active maximum power that was determined by the system participant
    */
@@ -71,17 +71,17 @@ public class FlexOptionsResult extends ResultEntity {
       UUID uuid,
       ZonedDateTime time,
       UUID inputModel,
-      ComparableQuantity<Power> pReference,
+      ComparableQuantity<Power> pRef,
       ComparableQuantity<Power> pMin,
       ComparableQuantity<Power> pMax) {
     super(uuid, time, inputModel);
-    this.pReference = pReference;
+    this.pRef = pRef;
     this.pMin = pMin;
     this.pMax = pMax;
   }
 
-  public ComparableQuantity<Power> getpReference() {
-    return pReference;
+  public ComparableQuantity<Power> getpRef() {
+    return pRef;
   }
 
   public ComparableQuantity<Power> getpMin() {
@@ -101,8 +101,8 @@ public class FlexOptionsResult extends ResultEntity {
         + getTime()
         + ", inputModel="
         + getInputModel()
-        + ", pReference="
-        + getpReference()
+        + ", pRef="
+        + getpRef()
         + ", pMin="
         + getpMin()
         + ", pMax="
@@ -118,13 +118,13 @@ public class FlexOptionsResult extends ResultEntity {
 
     FlexOptionsResult that = (FlexOptionsResult) o;
 
-    if (!pReference.equals(that.pReference)) return false;
+    if (!pRef.equals(that.pRef)) return false;
     if (!pMin.equals(that.pMin)) return false;
     return pMax.equals(that.pMax);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), pReference, pMax, pMax);
+    return Objects.hash(super.hashCode(), pRef, pMax, pMax);
   }
 }

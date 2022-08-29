@@ -29,7 +29,7 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     Map<String, String> parameter = [
       "time"      : "2020-01-30 17:26:44",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
-      "preference": "2",
+      "pref"      : "2",
       "pmin"      : "-1",
       "pmax"      : "10",
     ]
@@ -41,7 +41,7 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     result.present
     result.get().getClass() == FlexOptionsResult
     ((FlexOptionsResult) result.get()).with {
-      assert pReference == getQuant(parameter["preference"], StandardUnits.ACTIVE_POWER_RESULT)
+      assert pRef == getQuant(parameter["pref"], StandardUnits.ACTIVE_POWER_RESULT)
       assert pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_RESULT)
       assert pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_RESULT)
       assert time == TIME_UTIL.toZonedDateTime(parameter["time"])
@@ -55,7 +55,7 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
     Map<String, String> parameter = [
       "time"      : "2020-01-30 17:26:44",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
-      "preference": "2",
+      "pref"      : "2",
       "pmin"      : "-1",
     ]
 
@@ -64,13 +64,13 @@ class FlexOptionsResultFactoryTest extends Specification implements FactoryTestH
 
     then:
     FactoryException ex = thrown()
-    ex.message == "The provided fields [inputModel, pmin, preference, time] with data \n" +
+    ex.message == "The provided fields [inputModel, pmin, pref, time] with data \n" +
         "{inputModel -> 91ec3bcf-1897-4d38-af67-0bf7c9fa73c7,\n" +
         "pmin -> -1,\n" +
-        "preference -> 2,\n" +
+        "pref -> 2,\n" +
         "time -> 2020-01-30 17:26:44} are invalid for instance of FlexOptionsResult. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'FlexOptionsResult' are possible (NOT case-sensitive!):\n" +
-        "0: [inputModel, pmax, pmin, preference, time]\n" +
-        "1: [inputModel, pmax, pmin, preference, time, uuid]\n"
+        "0: [inputModel, pmax, pmin, pref, time]\n" +
+        "1: [inputModel, pmax, pmin, pref, time, uuid]\n"
   }
 }

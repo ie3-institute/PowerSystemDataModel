@@ -15,7 +15,7 @@ import tech.units.indriya.ComparableQuantity;
 
 public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsResult> {
 
-  private static final String P_REFERENCE = "preference";
+  private static final String P_REF = "pref";
   private static final String P_MIN = "pmin";
   private static final String P_MAX = "pmax";
 
@@ -35,7 +35,7 @@ public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsRes
 
   @Override
   protected List<Set<String>> getFields(SimpleEntityData data) {
-    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, P_REFERENCE, P_MIN, P_MAX);
+    Set<String> minConstructorParams = newSet(TIME, INPUT_MODEL, P_REF, P_MIN, P_MAX);
     Set<String> optionalFields = expandSet(minConstructorParams, ENTITY_UUID);
 
     return Arrays.asList(minConstructorParams, optionalFields);
@@ -45,8 +45,7 @@ public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsRes
   protected FlexOptionsResult buildModel(SimpleEntityData data) {
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
-    ComparableQuantity<Power> pReference =
-        data.getQuantity(P_REFERENCE, StandardUnits.ACTIVE_POWER_RESULT);
+    ComparableQuantity<Power> pRef = data.getQuantity(P_REF, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> pMin = data.getQuantity(P_MIN, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_RESULT);
 
@@ -54,7 +53,7 @@ public class FlexOptionsResultFactory extends ResultEntityFactory<FlexOptionsRes
         data.containsKey(ENTITY_UUID) ? Optional.of(data.getUUID(ENTITY_UUID)) : Optional.empty();
 
     return uuidOpt
-        .map(uuid -> new FlexOptionsResult(uuid, zdtTime, inputModelUuid, pReference, pMin, pMax))
-        .orElseGet(() -> new FlexOptionsResult(zdtTime, inputModelUuid, pReference, pMin, pMax));
+        .map(uuid -> new FlexOptionsResult(uuid, zdtTime, inputModelUuid, pRef, pMin, pMax))
+        .orElseGet(() -> new FlexOptionsResult(zdtTime, inputModelUuid, pRef, pMin, pMax));
   }
 }

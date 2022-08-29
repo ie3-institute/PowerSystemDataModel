@@ -133,11 +133,11 @@ class ResultEntityProcessorTest extends Specification {
     given:
     def sysPartResProcessor = new ResultEntityProcessor(FlexOptionsResult)
 
-    Quantity<Power> pReference = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
+    Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
 
-    def validResult = new FlexOptionsResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, pReference, pMin, pMax)
+    def validResult = new FlexOptionsResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, pRef, pMin, pMax)
 
     def expectedResults = [
       uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
@@ -145,7 +145,7 @@ class ResultEntityProcessorTest extends Specification {
       time      : '2020-01-30T17:26:44Z[UTC]',
       pMax      : '6.0',
       pMin      : '-6.0',
-      pReference: '5.1',
+      pRef      : '5.1',
     ]
 
     when:
@@ -158,7 +158,8 @@ class ResultEntityProcessorTest extends Specification {
   }
 
   @Shared
-  def expectedLineResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+  def expectedLineResults = [
+    uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     iAMag     : '100.0',
     iAAng     : '45.0',
@@ -167,7 +168,8 @@ class ResultEntityProcessorTest extends Specification {
     time      : '2020-01-30T17:26:44Z[UTC]']
 
   @Shared
-  def expectedTrafo2WResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+  def expectedTrafo2WResults = [
+    uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     iAMag     : '100.0',
     iAAng     : '45.0',
@@ -178,7 +180,8 @@ class ResultEntityProcessorTest extends Specification {
 
 
   @Shared
-  def expectedTrafo3WResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+  def expectedTrafo3WResults = [
+    uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     iAMag     : '100.0',
     iAAng     : '45.0',
@@ -190,7 +193,8 @@ class ResultEntityProcessorTest extends Specification {
     time      : '2020-01-30T17:26:44Z[UTC]']
 
   @Shared
-  def expectedSwitchResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+  def expectedSwitchResults = [
+    uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     closed    : 'true',
     time      : '2020-01-30T17:26:44Z[UTC]']
