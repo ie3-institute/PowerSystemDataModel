@@ -125,6 +125,6 @@ public class FlexOptionsResult extends ResultEntity {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), pRef, pMax, pMax);
+    return Objects.hash(super.hashCode(), pRef, pMin, pMax);
   }
 }
