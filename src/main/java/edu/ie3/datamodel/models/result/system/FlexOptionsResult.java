@@ -12,7 +12,7 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Represents results of flexibility */
+/** Represents results of flexibility request*/
 public class FlexOptionsResult extends ResultEntity {
 
   /**
@@ -22,13 +22,13 @@ public class FlexOptionsResult extends ResultEntity {
   private final ComparableQuantity<Power> pReference;
 
   /**
-   * Minimal active power (might be negative, thus feed-in) that was determined by the system
+   * Minimal active power to which the system participant can be reduced (might be negative, thus feed-in) that was determined by the system. Therefore equates to lower bound of possible flexibility provision.
    * participant connected to the EmAgent
    */
   private final ComparableQuantity<Power> pMin;
 
   /**
-   * Maximum active power (might be negative, thus feed-in) that was determined by the system
+   * Maximum active power to which the system participant can be increased (might be negative, thus feed-in) that was determined by the system. Therefore equates to upper bound of possible flexibility provision.
    * participant connected to the EmAgent
    */
   private final ComparableQuantity<Power> pMax;
