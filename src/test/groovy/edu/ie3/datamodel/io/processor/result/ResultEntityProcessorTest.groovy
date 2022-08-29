@@ -133,7 +133,8 @@ class ResultEntityProcessorTest extends Specification {
     given:
     def sysPartResProcessor = new ResultEntityProcessor(FlexOptionsResult)
 
-    Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
+    // take wrong unit for pRef on purpose, should get converted
+    Quantity<Power> pRef = Quantities.getQuantity(5100, PowerSystemUnits.KILOWATT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
 
