@@ -28,7 +28,8 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       StorageResult,
       EvcsResult,
       EvResult,
-      HpResult
+      HpResult,
+      EmResult
     ]
 
     expect:
@@ -92,8 +93,9 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     EvcsResult        || EvcsResult
     ChpResult         || ChpResult
     WecResult         || WecResult
-    HpResult || HpResult
-    StorageResult || StorageResult
+    HpResult          || HpResult
+    StorageResult     || StorageResult
+    EmResult          || EmResult
   }
 
   def "A SystemParticipantResultFactory should parse a StorageResult correctly"() {
