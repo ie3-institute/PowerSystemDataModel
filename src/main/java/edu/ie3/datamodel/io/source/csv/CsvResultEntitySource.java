@@ -41,6 +41,7 @@ public class CsvResultEntitySource extends CsvDataSource implements ResultEntity
   private final SwitchResultFactory switchResultFactory;
   private final NodeResultFactory nodeResultFactory;
   private final ConnectorResultFactory connectorResultFactory;
+  private final FlexOptionsResultFactory flexOptionsResultFactory;
 
   public CsvResultEntitySource(
       String csvSep, String folderPath, FileNamingStrategy fileNamingStrategy) {
@@ -52,6 +53,7 @@ public class CsvResultEntitySource extends CsvDataSource implements ResultEntity
     this.switchResultFactory = new SwitchResultFactory();
     this.nodeResultFactory = new NodeResultFactory();
     this.connectorResultFactory = new ConnectorResultFactory();
+    this.flexOptionsResultFactory = new FlexOptionsResultFactory();
   }
 
   public CsvResultEntitySource(
@@ -64,6 +66,7 @@ public class CsvResultEntitySource extends CsvDataSource implements ResultEntity
     this.switchResultFactory = new SwitchResultFactory(dtfPattern);
     this.nodeResultFactory = new NodeResultFactory(dtfPattern);
     this.connectorResultFactory = new ConnectorResultFactory(dtfPattern);
+    this.flexOptionsResultFactory = new FlexOptionsResultFactory(dtfPattern);
   }
 
   // Grid
@@ -151,6 +154,16 @@ public class CsvResultEntitySource extends CsvDataSource implements ResultEntity
   @Override
   public Set<CylindricalStorageResult> getCylindricalStorageResult() {
     return getResultEntities(CylindricalStorageResult.class, thermalResultFactory);
+  }
+
+  @Override
+  public Set<EmResult> getEmResults() {
+    return getResultEntities(EmResult.class, systemParticipantResultFactory);
+  }
+
+  @Override
+  public Set<FlexOptionsResult> getFlexOptionsResults() {
+    return getResultEntities(FlexOptionsResult.class, flexOptionsResultFactory);
   }
 
   private <T extends ResultEntity> Set<T> getResultEntities(

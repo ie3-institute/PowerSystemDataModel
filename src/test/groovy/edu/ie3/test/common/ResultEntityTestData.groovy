@@ -18,7 +18,8 @@ class ResultEntityTestData {
   public static final int WEC_RESULT_SIZE = 1000
   public static final int PV_RESULT_SIZE = 1000
   public static final int BM_RESULT_SIZE = 1
-  public static final int FIXED_FEED_IN_SIZE = 1
+  public static final int FIXED_FEED_IN_RESULT_SIZE = 1
+  public static final int EM_RESULT_SIZE = 1
 
   public static final UUID BM_UUID = UUID.fromString("44b9be7a-af97-4c2a-bb84-9d21abba442f")
   public static final UUID BM_INPUT_MODEL = UUID.fromString("66df67d0-c789-4393-b0a5-897a3bc821a2")

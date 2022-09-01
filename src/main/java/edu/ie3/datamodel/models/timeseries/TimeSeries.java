@@ -22,7 +22,6 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value>
   private final Set<E> entries;
 
   protected TimeSeries(Set<E> entries) {
-    super();
     this.entries = Collections.unmodifiableSet(entries);
   }
 
