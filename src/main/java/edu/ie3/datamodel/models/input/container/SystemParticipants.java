@@ -206,7 +206,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return evs;
   }
 
-  /** @return unmodifiable Set of all fixed feed in this grid */
+  /** Returns unmodifiable Set of all fixed feed in this grid.
   public Set<FixedFeedInInput> getFixedFeedIns() {
     return Collections.unmodifiableSet(fixedFeedIns);
   }
