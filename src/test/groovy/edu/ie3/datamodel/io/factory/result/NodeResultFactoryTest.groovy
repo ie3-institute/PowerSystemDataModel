@@ -23,7 +23,7 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
     resultFactory.supportedClasses == Arrays.asList(expectedClasses.toArray())
   }
 
-  def "A NodeResultFactory should parse a WecResult correctly"() {
+  def "A NodeResultFactory should parse a NodeResult correctly"() {
     given: "a system participant factory and model data"
     def resultFactory = new NodeResultFactory()
     Map<String, String> parameter = [

@@ -25,7 +25,6 @@ public abstract class ResultEntity extends UniqueEntity {
    * @param inputModel uuid of the input model that produces the result
    */
   protected ResultEntity(ZonedDateTime time, UUID inputModel) {
-    super();
     this.time = time;
     this.inputModel = inputModel;
   }

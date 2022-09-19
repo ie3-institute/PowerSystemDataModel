@@ -45,9 +45,11 @@ import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.datamodel.models.result.system.BmResult
 import edu.ie3.datamodel.models.result.system.ChpResult
+import edu.ie3.datamodel.models.result.system.EmResult
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.EvcsResult
 import edu.ie3.datamodel.models.result.system.FixedFeedInResult
+import edu.ie3.datamodel.models.result.system.FlexOptionsResult
 import edu.ie3.datamodel.models.result.system.LoadResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.StorageResult
@@ -239,6 +241,8 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     StorageResult            || "storage_res"
     EvcsResult               || "evcs_res"
     EvResult                 || "ev_res"
+    EmResult                 || "em_res"
+    FlexOptionsResult        || "flex_options_res"
     Transformer2WResult      || "transformer_2_w_res"
     Transformer3WResult      || "transformer_3_w_res"
     LineResult               || "line_res"
@@ -270,6 +274,8 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     StorageResult            || "prefix_storage_res_suffix"
     EvcsResult               || "prefix_evcs_res_suffix"
     EvResult                 || "prefix_ev_res_suffix"
+    EmResult                 || "prefix_em_res_suffix"
+    FlexOptionsResult        || "prefix_flex_options_res_suffix"
     Transformer2WResult      || "prefix_transformer_2_w_res_suffix"
     Transformer3WResult      || "prefix_transformer_3_w_res_suffix"
     LineResult               || "prefix_line_res_suffix"

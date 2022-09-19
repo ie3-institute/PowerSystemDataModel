@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ThermalUnits` as a container to hold all thermal units [#134](https://github.com/ie3-institute/PowerSystemDataModel/issues/134)
 - `ThermalInput` as a distinct abstract class for all thermal models
 - `ThermalGrid` as a container for a completely connected thermal grid
+- `EmResult` and `FlexOptionsResult` for Energy Management Systems [#651](https://github.com/ie3-institute/PowerSystemDataModel/issues/651)
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)

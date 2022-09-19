@@ -88,6 +88,7 @@ class ResultEntityProcessorTest extends Specification {
     WecResult         | new WecResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)          || expectedStandardResults
     StorageResult     | new StorageResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, soc) || expectedSocResults
     HpResult          | new HpResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q, qDot)     || expectedQDotResults
+    EmResult          | new EmResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, p, q)           || expectedStandardResults
 
   }
 
@@ -128,8 +129,38 @@ class ResultEntityProcessorTest extends Specification {
 
   }
 
+  def "A ResultEntityProcessor should de-serialize a FlexOptionsResult correctly"() {
+    given:
+    def sysPartResProcessor = new ResultEntityProcessor(FlexOptionsResult)
+
+    // take wrong unit for pRef on purpose, should get converted
+    Quantity<Power> pRef = Quantities.getQuantity(5100, PowerSystemUnits.KILOWATT)
+    Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
+    Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
+
+    def validResult = new FlexOptionsResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, pRef, pMin, pMax)
+
+    def expectedResults = [
+      uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+      inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+      time      : '2020-01-30T17:26:44Z[UTC]',
+      pMax      : '6.0',
+      pMin      : '-6.0',
+      pRef      : '5.1',
+    ]
+
+    when:
+    def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
+
+    then:
+    validProcessedElement.present
+    validProcessedElement.get() == expectedResults
+
+  }
+
   @Shared
-  def expectedLineResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+  def expectedLineResults = [
+    uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     iAMag     : '100.0',
     iAAng     : '45.0',
@@ -138,7 +169,8 @@ class ResultEntityProcessorTest extends Specification {
     time      : '2020-01-30T17:26:44Z[UTC]']
 
   @Shared
-  def expectedTrafo2WResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+  def expectedTrafo2WResults = [
+    uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     iAMag     : '100.0',
     iAAng     : '45.0',
@@ -149,7 +181,8 @@ class ResultEntityProcessorTest extends Specification {
 
 
   @Shared
-  def expectedTrafo3WResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+  def expectedTrafo3WResults = [
+    uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     iAMag     : '100.0',
     iAAng     : '45.0',
@@ -161,7 +194,8 @@ class ResultEntityProcessorTest extends Specification {
     time      : '2020-01-30T17:26:44Z[UTC]']
 
   @Shared
-  def expectedSwitchResults = [uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+  def expectedSwitchResults = [
+    uuid      : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
     closed    : 'true',
     time      : '2020-01-30T17:26:44Z[UTC]']
@@ -251,7 +285,7 @@ class ResultEntityProcessorTest extends Specification {
 
   def "The list of eligible entity classes for a ResultEntityProcessor should be valid"() {
     given:
-    int noOfElements = 17 // number of all currently implemented entity results
+    int noOfElements = 19 // number of all currently implemented entity results
 
     expect:
     ResultEntityProcessor.eligibleEntityClasses.size() == noOfElements
