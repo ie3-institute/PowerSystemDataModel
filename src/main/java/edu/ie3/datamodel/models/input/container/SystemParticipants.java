@@ -206,12 +206,12 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return evs;
   }
 
-  /** Returns unmodifiable Set of all fixed feed in this grid.
-  public Set<FixedFeedInInput> getFixedFeedIns() {
-    return Collections.unmodifiableSet(fixedFeedIns);
-  }
-
-  /** @return unmodifiable Set of all heat pumps in this grid */
+  /**
+   * Returns unmodifiable Set of all fixed feed in this grid. public Set<FixedFeedInInput>
+   * getFixedFeedIns() { return Collections.unmodifiableSet(fixedFeedIns); }
+   *
+   * <p>/** @return unmodifiable Set of all heat pumps in this grid
+   */
   public Set<HpInput> getHeatPumps() {
     return Collections.unmodifiableSet(heatPumps);
   }
