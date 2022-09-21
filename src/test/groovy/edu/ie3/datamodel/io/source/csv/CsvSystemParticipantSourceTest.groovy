@@ -44,7 +44,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     then:
     systemParticipantsOpt.present
     systemParticipantsOpt.ifPresent({ systemParticipants ->
-      assert (systemParticipants.allEntitiesAsList().size() == 10)
+      assert (systemParticipants.allEntitiesAsList().size() == 11)
       assert (systemParticipants.getPvPlants().first().uuid == sptd.pvInput.uuid)
       assert (systemParticipants.getBmPlants().first().uuid == sptd.bmInput.uuid)
       assert (systemParticipants.getChpPlants().first().uuid == sptd.chpInput.uuid)
