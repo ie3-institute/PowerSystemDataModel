@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cleaned up `IndividualTimeSeriesMetaInformation`-related methods in `CsvFileConnector` [#544](https://github.com/ie3-institute/PowerSystemDataModel/issues/544)
 - Fixed spotlessApply handling for `.groovy` files [#637](https://github.com/ie3-institute/PowerSystemDataModel/issues/637)
 - Re-using SQL connection per default [#653](https://github.com/ie3-institute/PowerSystemDataModel/issues/653)
+- Persisting EmInputs [#665](https://github.com/ie3-institute/PowerSystemDataModel/issues/665)
 
 ### Changed
 - BREAKING: PvInput Model parameter name height changed to elevationAngle [#393](https://github.com/ie3-institute/PowerSystemDataModel/issues/393) :warning:
