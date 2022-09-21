@@ -106,7 +106,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   /**
    * Create an instance based on a list of {@link SystemParticipantInput} entities
    *
-   * @param systemParticipants list of system participants this container instance should created
+   * @param systemParticipants list of system participants this container instance should be created
    *     from
    */
   public SystemParticipants(List<SystemParticipantInput> systemParticipants) {
@@ -182,6 +182,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     allEntities.addAll(pvPlants);
     allEntities.addAll(storages);
     allEntities.addAll(wecPlants);
+    allEntities.addAll(emSystems);
     return Collections.unmodifiableList(allEntities);
   }
 
@@ -205,7 +206,7 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return evs;
   }
 
-  /** @return unmodifiable Set of all fixed feed in in this grid */
+  /** @return unmodifiable Set of all fixed feed in this grid */
   public Set<FixedFeedInInput> getFixedFeedIns() {
     return Collections.unmodifiableSet(fixedFeedIns);
   }
