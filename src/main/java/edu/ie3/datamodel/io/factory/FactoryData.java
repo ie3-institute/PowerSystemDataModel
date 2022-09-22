@@ -146,7 +146,7 @@ public abstract class FactoryData {
    */
   public UUID[] getUUIDs(String field) {
     try {
-      String[] uuidFields = field.split(" ");
+      String[] uuidFields = getField(field).split(" ");
       return Arrays.stream(uuidFields).map(UUID::fromString).toArray(UUID[]::new);
     } catch (IllegalArgumentException iae) {
       throw new FactoryException(
