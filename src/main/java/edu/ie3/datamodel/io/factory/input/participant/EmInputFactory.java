@@ -54,6 +54,10 @@ public class EmInputFactory
       controlStrategy = ControlStrategy.DefaultControlStrategies.NO_CONTROL_STRATEGY;
     }
     final UUID[] connectedAssets = data.getUUIDs(CONNECTED_ASSETS);
+
+    if (connectedAssets.length == 0)
+      logger.warn("There are no connected assets for energy management system \"{}\".", id);
+
     return new EmInput(
         uuid,
         id,
