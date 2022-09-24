@@ -93,8 +93,10 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             "sobsrad",
             "t131m");
     Set<String> allParametersWithUuid = expandSet(allParameters, UUID);
+    Set<String> parametersMinWithUuid = expandSet(constructorParamsMin, UUID);
 
-    return Arrays.asList(constructorParamsMin, allParameters, allParametersWithUuid);
+    return Arrays.asList(
+        constructorParamsMin, allParameters, allParametersWithUuid, parametersMinWithUuid);
   }
 
   @Override
