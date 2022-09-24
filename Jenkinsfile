@@ -25,7 +25,6 @@ String sshCredentialsId = '19f16959-8a0d-4a60-bd1f-5adb4572b702' // id that matc
 
 /* ci configuration */
 String sonarqubeProjectKey = 'edu.ie3:PowerSystemDataModel' // sonarqube project key, case-sensitive
-String codeCovTokenId = 'psdm-codecov-token' // id that matches the code coverage token set as jenkins property
 
 /* maven central configuration */
 String mavenCentralCredentialsId = '87bfb2d4-7613-4816-9fe1-70dfd7e6dec2' // id that matches the maven central credentials set as jenkins property
@@ -191,12 +190,6 @@ node {
         // publish reports
         publishReports(projectName)
 
-        // call codecov.io
-        withCredentials([
-          string(credentialsId: codeCovTokenId, variable: 'codeCovToken')
-        ]) {
-          sh "curl -s https://codecov.io/bash | bash -s - -t ${env.codeCovToken} -C ${commitHash}"
-        }
       }
 
     } catch (Exception e) {
