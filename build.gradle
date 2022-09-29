@@ -74,7 +74,7 @@ dependencies {
 
   // testing
   testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
-  testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
+  testImplementation 'org.spockframework:spock-core:2.2-groovy-4.0'
   testImplementation 'org.objenesis:objenesis:3.3' // Mock creation with constructor parameters
 
   // testcontainers (docker framework for testing)
