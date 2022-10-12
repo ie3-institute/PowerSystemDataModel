@@ -211,6 +211,8 @@ public class EvcsInput extends SystemParticipantInput {
         + ", node="
         + getNode()
         + "} "
+        + ", v2gSupport="
+        + getV2gSupport()
         + super.toString();
   }
 
