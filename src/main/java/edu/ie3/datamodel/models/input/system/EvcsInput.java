@@ -184,7 +184,8 @@ public class EvcsInput extends SystemParticipantInput {
     return chargingPoints == evcsInput.chargingPoints
         && Double.compare(evcsInput.cosPhiRated, cosPhiRated) == 0
         && type.equals(evcsInput.type)
-        && locationType.equals(evcsInput.locationType);
+        && locationType.equals(evcsInput.locationType)
+        && v2gSupport == evcsInput.v2gSupport;
   }
 
   @Override

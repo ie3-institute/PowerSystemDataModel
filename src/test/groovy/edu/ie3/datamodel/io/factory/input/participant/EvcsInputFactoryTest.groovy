@@ -80,7 +80,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       assert chargingPoints == Integer.parseInt(parameter["chargingpoints"])
       assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
       assert locationType == EvcsLocationType.CHARGING_HUB_TOWN
-      assert v2gSupport == false
+      assert !v2gSupport
     }
   }
 
