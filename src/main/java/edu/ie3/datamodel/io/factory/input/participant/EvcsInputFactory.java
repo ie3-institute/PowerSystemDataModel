@@ -33,6 +33,7 @@ public class EvcsInputFactory
   private static final String CHARGING_POINTS = "chargingpoints";
   private static final String COS_PHI_RATED = "cosphirated";
   private static final String LOCATION_TYPE = "locationtype";
+  private static final String V2G_SUPPORT = "v2gsupport";
 
   public EvcsInputFactory() {
     super(EvcsInput.class);
@@ -40,7 +41,7 @@ public class EvcsInputFactory
 
   @Override
   protected String[] getAdditionalFields() {
-    return new String[] {TYPE, CHARGING_POINTS, COS_PHI_RATED, LOCATION_TYPE};
+    return new String[] {TYPE, CHARGING_POINTS, COS_PHI_RATED, LOCATION_TYPE, V2G_SUPPORT};
   }
 
   @Override
@@ -77,6 +78,8 @@ public class EvcsInputFactory
           e);
     }
 
+    final boolean v2gSupport = data.getBoolean(V2G_SUPPORT);
+
     return new EvcsInput(
         uuid,
         id,
@@ -87,6 +90,7 @@ public class EvcsInputFactory
         type,
         chargingPoints,
         cosPhi,
-        locationType);
+        locationType,
+        v2gSupport);
   }
 }
