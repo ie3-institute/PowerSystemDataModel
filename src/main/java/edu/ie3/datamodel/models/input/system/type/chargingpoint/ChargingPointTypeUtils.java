@@ -169,7 +169,7 @@ public class ChargingPointTypeUtils {
 
     // valid regex for either custom or pre-defined types
     String validCustomRegex =
-        "([\\w \\-_]+)\\s*\\(\\s*(\\d+\\.?\\d+(?:E-?\\d+)?)\\s*\\|\\s*(AC|DC)\\s*\\)";
+        "([\\w \\-]+)\\s*\\(\\s*(\\d+\\.?\\d+(?:E-?\\d+)?)\\s*\\|\\s*(AC|DC)\\s*\\)";
 
     // does it match the valid regex?
     Pattern pattern = Pattern.compile(validCustomRegex);
