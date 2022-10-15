@@ -38,24 +38,25 @@ class ChargingPointTypeUtilsTest extends Specification {
     actual.toString() == expectedString
 
     where:
-    parsableString                 || expectedObj                                                                                               || expectedString
-    "household"                    || HouseholdSocket                                                                                           || "HouseholdSocket"
-    "HouseholdSocket"              || HouseholdSocket                                                                                           || "HouseholdSocket"
-    "BlueHouseholdSocket"          || BlueHouseholdSocket                                                                                       || "BlueHouseholdSocket"
-    "Cee16ASocket"                 || Cee16ASocket                                                                                              || "Cee16ASocket"
-    "cee32"                        || Cee32ASocket                                                                                              || "Cee32ASocket"
-    "CEE63"                        || Cee63ASocket                                                                                              || "Cee63ASocket"
-    "csT1"                         || ChargingStationType1                                                                                      || "ChargingStationType1"
-    "stationtype2"                 || ChargingStationType2                                                                                      || "ChargingStationType2"
-    "ChargingStationCcsComboType1" || ChargingStationCcsComboType1                                                                              || "ChargingStationCcsComboType1"
-    "csccs2"                       || ChargingStationCcsComboType2                                                                              || "ChargingStationCcsComboType2"
-    "TeslaSuperChargerV1"          || TeslaSuperChargerV1                                                                                       || "TeslaSuperChargerV1"
-    "tesla2"                       || TeslaSuperChargerV2                                                                                       || "TeslaSuperChargerV2"
-    "supercharger3"                || TeslaSuperChargerV3                                                                                       || "TeslaSuperChargerV3"
-    "FastCharger(50|DC)"           || new ChargingPointType("FastCharger", Quantities.getQuantity(50d, KILOVOLTAMPERE), ElectricCurrentType.DC) || "FastCharger(50.0|DC)"
-    "household(1.8|DC)"            || new ChargingPointType("household", Quantities.getQuantity(1.8d, KILOVOLTAMPERE), ElectricCurrentType.DC)  || "household(1.8|DC)"
-    "Household(2.3|AC)"            || HouseholdSocket                                                                                           || "HouseholdSocket"
-    "household(2.3|AC)"            || HouseholdSocket                                                                                           || "HouseholdSocket"
+    parsableString                  || expectedObj                                                                                                         || expectedString
+    "household"                     || HouseholdSocket                                                                                                     || "HouseholdSocket"
+    "HouseholdSocket"               || HouseholdSocket                                                                                                     || "HouseholdSocket"
+    "BlueHouseholdSocket"           || BlueHouseholdSocket                                                                                                 || "BlueHouseholdSocket"
+    "Cee16ASocket"                  || Cee16ASocket                                                                                                        || "Cee16ASocket"
+    "cee32"                         || Cee32ASocket                                                                                                        || "Cee32ASocket"
+    "CEE63"                         || Cee63ASocket                                                                                                        || "Cee63ASocket"
+    "csT1"                          || ChargingStationType1                                                                                                || "ChargingStationType1"
+    "stationtype2"                  || ChargingStationType2                                                                                                || "ChargingStationType2"
+    "ChargingStationCcsComboType1"  || ChargingStationCcsComboType1                                                                                        || "ChargingStationCcsComboType1"
+    "csccs2"                        || ChargingStationCcsComboType2                                                                                        || "ChargingStationCcsComboType2"
+    "TeslaSuperChargerV1"           || TeslaSuperChargerV1                                                                                                 || "TeslaSuperChargerV1"
+    "tesla2"                        || TeslaSuperChargerV2                                                                                                 || "TeslaSuperChargerV2"
+    "supercharger3"                 || TeslaSuperChargerV3                                                                                                 || "TeslaSuperChargerV3"
+    "FastCharger(50|DC)"            || new ChargingPointType("FastCharger", Quantities.getQuantity(50d, KILOVOLTAMPERE), ElectricCurrentType.DC)           || "FastCharger(50.0|DC)"
+    "household(1.8|DC)"             || new ChargingPointType("household", Quantities.getQuantity(1.8d, KILOVOLTAMPERE), ElectricCurrentType.DC)            || "household(1.8|DC)"
+    "Household(2.3|AC)"             || HouseholdSocket                                                                                                     || "HouseholdSocket"
+    "household(2.3|AC)"             || HouseholdSocket                                                                                                     || "HouseholdSocket"
+    "Homecharger - 11kW(4.8E-4|AC)" || new ChargingPointType("Homecharger - 11kW", Quantities.getQuantity(4.8E-4d, KILOVOLTAMPERE), ElectricCurrentType.AC) || "Homecharger - 11kW(4.8E-4|AC)"
   }
 
   def "The ChargingPointTypeUtils should throw exceptions as expected when invalid charging point type strings are provided"() {
