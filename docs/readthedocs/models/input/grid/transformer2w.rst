@@ -47,6 +47,9 @@ As obvious, the parameter can be used in T- as in 𝜋-equivalent circuit repres
 | tapMax    |      | Maximum tap position                                    |
 +-----------+------+---------------------------------------------------------+
 
+A list with some standard transformer types can be found here: :doc:`standardgridassettypes`
+
+
 Entity Model
 """"""""""""
 

@@ -30,6 +30,9 @@ Type Model
 | vRated    | kV      | Rated voltage                               |
 +-----------+---------+---------------------------------------------+
 
+A list with some standard line types can be found here: :doc:`standardgridassettypes`
+
+
 Entity Model
 """"""""""""
 
