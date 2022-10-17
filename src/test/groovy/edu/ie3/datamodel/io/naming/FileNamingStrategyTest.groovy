@@ -48,9 +48,11 @@ import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.datamodel.models.result.system.BmResult
 import edu.ie3.datamodel.models.result.system.ChpResult
+import edu.ie3.datamodel.models.result.system.EmResult
 import edu.ie3.datamodel.models.result.system.EvResult
 import edu.ie3.datamodel.models.result.system.EvcsResult
 import edu.ie3.datamodel.models.result.system.FixedFeedInResult
+import edu.ie3.datamodel.models.result.system.FlexOptionsResult
 import edu.ie3.datamodel.models.result.system.LoadResult
 import edu.ie3.datamodel.models.result.system.PvResult
 import edu.ie3.datamodel.models.result.system.StorageResult
@@ -71,7 +73,6 @@ import java.nio.file.Paths
 import java.time.ZonedDateTime
 
 class FileNamingStrategyTest extends Specification {
-
 
   @Shared
   DefaultDirectoryHierarchy defaultHierarchy
@@ -110,6 +111,8 @@ class FileNamingStrategyTest extends Specification {
     StorageResult            || "test_grid" + File.separator + "results" + File.separator + "participants"
     EvcsResult               || "test_grid" + File.separator + "results" + File.separator + "participants"
     EvResult                 || "test_grid" + File.separator + "results" + File.separator + "participants"
+    EmResult                 || "test_grid" + File.separator + "results" + File.separator + "participants"
+    FlexOptionsResult        || "test_grid" + File.separator + "results" + File.separator + "participants"
     Transformer2WResult      || "test_grid" + File.separator + "results" + File.separator + "grid"
     Transformer3WResult      || "test_grid" + File.separator + "results" + File.separator + "grid"
     LineResult               || "test_grid" + File.separator + "results" + File.separator + "grid"
@@ -249,6 +252,8 @@ class FileNamingStrategyTest extends Specification {
     StorageResult            || "test_grid" + File.separator + "results" + File.separator + "participants" + File.separator + "storage_res"
     EvcsResult               || "test_grid" + File.separator + "results" + File.separator + "participants" + File.separator + "evcs_res"
     EvResult                 || "test_grid" + File.separator + "results" + File.separator + "participants" + File.separator + "ev_res"
+    EmResult                 || "test_grid" + File.separator + "results" + File.separator + "participants" + File.separator + "em_res"
+    FlexOptionsResult        || "test_grid" + File.separator + "results" + File.separator + "participants" + File.separator + "flex_options_res"
     Transformer2WResult      || "test_grid" + File.separator + "results" + File.separator + "grid" + File.separator + "transformer_2_w_res"
     Transformer3WResult      || "test_grid" + File.separator + "results" + File.separator + "grid" + File.separator + "transformer_3_w_res"
     LineResult               || "test_grid" + File.separator + "results" + File.separator + "grid" + File.separator + "line_res"
@@ -502,6 +507,8 @@ class FileNamingStrategyTest extends Specification {
     StorageResult            || Optional.empty()
     EvcsResult               || Optional.empty()
     EvResult                 || Optional.empty()
+    EmResult                 || Optional.empty()
+    FlexOptionsResult        || Optional.empty()
     Transformer2WResult      || Optional.empty()
     Transformer3WResult      || Optional.empty()
     LineResult               || Optional.empty()
@@ -644,6 +651,8 @@ class FileNamingStrategyTest extends Specification {
     StorageResult            || "storage_res"
     EvcsResult               || "evcs_res"
     EvResult                 || "ev_res"
+    EmResult                 || "em_res"
+    FlexOptionsResult        || "flex_options_res"
     Transformer2WResult      || "transformer_2_w_res"
     Transformer3WResult      || "transformer_3_w_res"
     LineResult               || "line_res"

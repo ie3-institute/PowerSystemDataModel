@@ -297,6 +297,7 @@ class SystemParticipantTestData {
   )
 
   // charging station
+  public static final boolean v2gSupport = false
   public static final evcsInput = new EvcsInput(
   UUID.fromString("798028b5-caff-4da7-bcd9-1750fdd8742c"),
   "test_csInput",
@@ -307,7 +308,8 @@ class SystemParticipantTestData {
   ChargingPointTypeUtils.HouseholdSocket,
   4,
   cosPhiRated,
-  EvcsLocationType.HOME
+  EvcsLocationType.HOME,
+  v2gSupport
   )
 
   // Energy Management

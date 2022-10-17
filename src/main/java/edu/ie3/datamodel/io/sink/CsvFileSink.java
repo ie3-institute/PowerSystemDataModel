@@ -192,6 +192,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     Set<PvInput> pvPlants = systemParticipants.getPvPlants();
     Set<StorageInput> storages = systemParticipants.getStorages();
     Set<WecInput> wecPlants = systemParticipants.getWecPlants();
+    Set<EmInput> emSystems = systemParticipants.getEmSystems();
 
     // get graphic elements (just for better readability, we could also just get them directly
     // below)
@@ -231,7 +232,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 loads,
                 pvPlants,
                 storages,
-                wecPlants)
+                wecPlants,
+                emSystems)
             .flatMap(Collection::stream)
             .map(Extractor::extractOperator)
             .flatMap(Optional::stream)

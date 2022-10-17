@@ -44,7 +44,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     then:
     systemParticipantsOpt.present
     systemParticipantsOpt.ifPresent({ systemParticipants ->
-      assert (systemParticipants.allEntitiesAsList().size() == 10)
+      assert (systemParticipants.allEntitiesAsList().size() == 11)
       assert (systemParticipants.getPvPlants().first().uuid == sptd.pvInput.uuid)
       assert (systemParticipants.getBmPlants().first().uuid == sptd.bmInput.uuid)
       assert (systemParticipants.getChpPlants().first().uuid == sptd.chpInput.uuid)
@@ -314,7 +314,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     nodes                 | operators                 || resultingSize || resultingSet
     [sptd.evcsInput.node] | [sptd.evcsInput.operator] || 1             || [sptd.evcsInput]
     [sptd.evcsInput.node] | []                        || 1             || [
-      new EvcsInput(sptd.evcsInput.uuid, sptd.evcsInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.evcsInput.operationTime, sptd.evcsInput.node, sptd.evcsInput.qCharacteristics, sptd.evcsInput.type, sptd.evcsInput.chargingPoints, sptd.evcsInput.cosPhiRated, sptd.evcsInput.locationType)
+      new EvcsInput(sptd.evcsInput.uuid, sptd.evcsInput.id, OperatorInput.NO_OPERATOR_ASSIGNED, sptd.evcsInput.operationTime, sptd.evcsInput.node, sptd.evcsInput.qCharacteristics, sptd.evcsInput.type, sptd.evcsInput.chargingPoints, sptd.evcsInput.cosPhiRated, sptd.evcsInput.locationType, sptd.evcsInput.v2gSupport)
     ]
     []| [sptd.evcsInput.operator]|| 0             || []
     []| []|| 0             || []

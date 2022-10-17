@@ -5,6 +5,9 @@
  */
 package edu.ie3.datamodel.io.sink
 
+import edu.ie3.datamodel.models.result.system.EmResult
+import edu.ie3.datamodel.models.result.system.FlexOptionsResult
+
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
 import static tech.units.indriya.unit.Units.PERCENT
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
@@ -145,6 +148,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new ResultEntityProcessor(WecResult),
           new ResultEntityProcessor(EvResult),
           new ResultEntityProcessor(EvcsResult),
+          new ResultEntityProcessor(EmResult),
+          new ResultEntityProcessor(FlexOptionsResult),
           new InputEntityProcessor(Transformer2WInput),
           new InputEntityProcessor(NodeInput),
           new InputEntityProcessor(EvcsInput),
@@ -171,12 +176,20 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     PvResult pvResult = new PvResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
     WecResult wecResult = new WecResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
     EvcsResult evcsResult = new EvcsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+    EmResult emResult = new EmResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, p, q)
+
+    Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
+    Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
+    Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
+    FlexOptionsResult flexOptionsResult = new FlexOptionsResult(uuid, TimeUtil.withDefaults.toZonedDateTime("2020-01-30 17:26:44"), inputModel, pRef, pMin, pMax)
 
     when:
     csvFileSink.persistAll([
       pvResult,
       wecResult,
       evcsResult,
+      emResult,
+      flexOptionsResult,
       GridTestData.transformerCtoG,
       GridTestData.lineGraphicCtoD,
       GridTestData.nodeGraphicC,
@@ -193,6 +206,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     new File(testBaseFolderPath + File.separator + "wec_res.csv").exists()
     new File(testBaseFolderPath + File.separator + "pv_res.csv").exists()
     new File(testBaseFolderPath + File.separator + "evcs_res.csv").exists()
+    new File(testBaseFolderPath + File.separator + "em_res.csv").exists()
+    new File(testBaseFolderPath + File.separator + "flex_options_res.csv").exists()
     new File(testBaseFolderPath + File.separator + "transformer_2_w_type_input.csv").exists()
     new File(testBaseFolderPath + File.separator + "node_input.csv").exists()
     new File(testBaseFolderPath + File.separator + "transformer_2_w_input.csv").exists()

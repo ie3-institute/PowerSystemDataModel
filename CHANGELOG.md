@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ThermalUnits` as a container to hold all thermal units [#134](https://github.com/ie3-institute/PowerSystemDataModel/issues/134)
 - `ThermalInput` as a distinct abstract class for all thermal models
 - `ThermalGrid` as a container for a completely connected thermal grid
+- `EmResult` and `FlexOptionsResult` for Energy Management Systems [#651](https://github.com/ie3-institute/PowerSystemDataModel/issues/651)
+- `EvcsInput` now has a parameter for enabling and disabling vehicle to grid support [#681](https://github.com/ie3-institute/PowerSystemDataModel/issues/681)
 
 ### Fixed
 - Reduced code smells [#492](https://github.com/ie3-institute/PowerSystemDataModel/issues/492)
@@ -41,6 +43,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `BufferedCsvWriter` writes columns in the order, that the headline elements are defined [#434](https://github.com/ie3-institute/PowerSystemDataModel/issues/393)
 - Cleaned up `IndividualTimeSeriesMetaInformation`-related methods in `CsvFileConnector` [#544](https://github.com/ie3-institute/PowerSystemDataModel/issues/544)
 - Fixed spotlessApply handling for `.groovy` files [#637](https://github.com/ie3-institute/PowerSystemDataModel/issues/637)
+- Re-using SQL connection per default [#653](https://github.com/ie3-institute/PowerSystemDataModel/issues/653)
+- Persisting EmInputs [#665](https://github.com/ie3-institute/PowerSystemDataModel/issues/665)
+- Charging point type parsing now works with more id definitions [#686](https://github.com/ie3-institute/PowerSystemDataModel/issues/685)
 
 ### Changed
 - BREAKING: PvInput Model parameter name height changed to elevationAngle [#393](https://github.com/ie3-institute/PowerSystemDataModel/issues/393) :warning:

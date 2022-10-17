@@ -21,6 +21,7 @@ class EvcsInputTest extends Specification {
         .type(ChargingPointTypeUtils.TeslaSuperChargerV3)
         .cosPhiRated(0.7d).chargingPoints(1)
         .locationType(EvcsLocationType.CHARGING_HUB_HIGHWAY)
+        .v2gSupport(true)
         .build()
 
     then:
@@ -34,6 +35,7 @@ class EvcsInputTest extends Specification {
       assert cosPhiRated == 0.7d
       assert chargingPoints == 1
       assert locationType == EvcsLocationType.CHARGING_HUB_HIGHWAY
+      assert v2gSupport
     }
   }
 }

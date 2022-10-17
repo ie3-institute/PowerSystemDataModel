@@ -302,7 +302,9 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 LoadResult.class,
                 PvResult.class,
                 StorageResult.class,
-                WecResult.class)
+                WecResult.class,
+                EmResult.class,
+                FlexOptionsResult.class)
             .collect(Collectors.toSet())),
     TIME_SERIES(
         PARTICIPANTS_INPUT.relPath + "time_series" + FILE_SEPARATOR,
