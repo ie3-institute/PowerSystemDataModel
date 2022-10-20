@@ -111,7 +111,6 @@ Grid Related Models
    input/grid/transformer3w
    input/grid/measurementunit
    input/grid/gridcontainer
-   input/grid/standardgridassettypes
 
 Participant Related Models
 ==========================
