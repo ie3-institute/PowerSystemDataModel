@@ -65,7 +65,7 @@ public class EvResult extends ElectricalEnergyStorageResult {
         + getP()
         + ", q="
         + getQ()
-        + "soc="
+        + ", soc="
         + getSoc()
         + '}';
   }
