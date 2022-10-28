@@ -22,7 +22,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   private static final String WHERE = " WHERE ";
   private final IdCoordinateFactory factory;
   private final double maxDistance;
-  private static final double earthRadiusMeter = 6378137.0;
+  private static final double earthRadius = 6378137.0;
 
   /**
    * Queries that are available within this source. Motivation to have them as field value is to
@@ -172,6 +172,14 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     return IdCoordinateSource.super.getNearestCoordinates(coordinate, n, coordinates);
   }
 
+  /**
+   * Method for evaluating the found points and returning the n corner points of the bounding box.
+   *
+   * @param coordinate at the center of the bounding box
+   * @param distances list of found points with their distances
+   * @param numberOfPoints that should be returned
+   * @return list of distances
+   */
   private List<CoordinateDistance> checkForBoundingBox(
       Point coordinate, List<CoordinateDistance> distances, int numberOfPoints) {
     boolean topLeft = false;
@@ -227,7 +235,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
    */
   private double[] calculateXYDelta(Point coordinate) {
     // calculate y-delta
-    double deltaY = maxDistance / earthRadiusMeter;
+    double deltaY = maxDistance / earthRadius;
 
     // calculate some functions
     double sinus = Math.sin(deltaY / 2);
