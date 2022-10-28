@@ -22,14 +22,13 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   private static final String WHERE = " WHERE ";
   private final IdCoordinateFactory factory;
   private final double maxDistance;
-  private final double earthRadiusMeter = 6378137.0;
+  private static final double earthRadiusMeter = 6378137.0;
 
   /**
    * Queries that are available within this source. Motivation to have them as field value is to
    * avoid creating a new string each time, bc they're always the same.
    */
   private final String basicQuery;
-
   private final String queryForPoint;
   private final String queryForId;
   private final String queryForBoundingBox;
@@ -71,8 +70,8 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
   @Override
   protected Optional<CoordinateValue> createEntity(Map<String, String> fieldToValues) {
-    SimpleFactoryData SFD = new SimpleFactoryData(fieldToValues, Pair.class);
-    Optional<Pair<Integer, Point>> option = factory.get(SFD);
+    SimpleFactoryData factoryData = new SimpleFactoryData(fieldToValues, Pair.class);
+    Optional<Pair<Integer, Point>> option = factory.get(factoryData);
 
     if (option.isEmpty()) return Optional.empty();
 
@@ -90,17 +89,13 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
   @Override
   public Collection<Point> getCoordinates(int... ids) {
-    Set<Integer> idSet = new HashSet<>();
-
-    for (Integer id : ids) {
-      idSet.add(id);
-    }
+    Object[] idSet = Arrays.asList(ids, ids.length).toArray();
 
     List<CoordinateValue> values =
         executeQuery(
             queryForPoint,
             ps -> {
-              Array sqlArray = ps.getConnection().createArrayOf("integer", idSet.toArray());
+              Array sqlArray = ps.getConnection().createArrayOf("integer", idSet);
               ps.setArray(1, sqlArray);
             });
 
@@ -149,20 +144,14 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     double longitude = coordinate.getX();
     double latitude = coordinate.getY();
 
-    // calculating longitude and latitude range
-    double longitudeMin = longitude - xyDeltas[0];
-    double longitudeMax = longitude - xyDeltas[0];
-    double latitudeMin = latitude - xyDeltas[1];
-    double latitudeMax = latitude - xyDeltas[1];
-
     List<CoordinateValue> values =
         executeQuery(
             queryForBoundingBox,
             ps -> {
-              ps.setDouble(1, longitudeMin);
-              ps.setDouble(2, longitudeMax);
-              ps.setDouble(3, latitudeMin);
-              ps.setDouble(4, latitudeMax);
+              ps.setDouble(1, longitude - xyDeltas[0]);
+              ps.setDouble(2, longitude + xyDeltas[0]);
+              ps.setDouble(3, latitude - xyDeltas[1]);
+              ps.setDouble(4, latitude + xyDeltas[1]);
             });
 
     ArrayList<Point> points = new ArrayList<>();
@@ -173,6 +162,17 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
     List<CoordinateDistance> distances = getNearestCoordinates(coordinate, 2 * n, points);
 
+    return checkForBoundingBox(coordinate, distances, n);
+  }
+
+  @Override
+  public List<CoordinateDistance> getNearestCoordinates(
+      Point coordinate, int n, Collection<Point> coordinates) {
+    return IdCoordinateSource.super.getNearestCoordinates(coordinate, n, coordinates);
+  }
+
+  private List<CoordinateDistance> checkForBoundingBox(
+      Point coordinate, List<CoordinateDistance> distances, int numberOfPoints) {
     boolean topLeft = false;
     boolean topRight = false;
     boolean bottomLeft = false;
@@ -185,43 +185,37 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     for (CoordinateDistance distance : distances) {
       Point point = distance.getCoordinateB();
 
-      if (!topLeft) {
-        if (point.getX() < coordinate.getX() && point.getY() > coordinate.getY()) {
-          resultingDistances.add(distance);
-        }
-      } else if (!topRight) {
-        if (point.getX() > coordinate.getX() && point.getY() > coordinate.getY()) {
-          resultingDistances.add(distance);
-        }
-      } else if (!bottomLeft) {
-        if (point.getX() < coordinate.getX() && point.getY() < coordinate.getY()) {
-          resultingDistances.add(distance);
-        }
-      } else if (!bottomRight) {
-        if (point.getX() > coordinate.getX() && point.getY() < coordinate.getY()) {
-          resultingDistances.add(distance);
-        }
+      // check for bounding box
+      if (!topLeft && (point.getX() < coordinate.getX() && point.getY() > coordinate.getY())) {
+        resultingDistances.add(distance);
+        topLeft = true;
+      } else if (!topRight
+          && (point.getX() > coordinate.getX() && point.getY() > coordinate.getY())) {
+        resultingDistances.add(distance);
+        topRight = true;
+      } else if (!bottomLeft
+          && (point.getX() < coordinate.getX() && point.getY() < coordinate.getY())) {
+        resultingDistances.add(distance);
+        bottomLeft = true;
+      } else if (!bottomRight
+          && (point.getX() > coordinate.getX() && point.getY() < coordinate.getY())) {
+        resultingDistances.add(distance);
+        bottomRight = true;
       } else {
         other.add(distance);
       }
     }
 
     // check if n distances are found
-    int diff = n - resultingDistances.size();
+    int diff = numberOfPoints - resultingDistances.size();
 
     if (diff > 0) {
       resultingDistances.addAll(other.stream().limit(diff).toList());
     } else if (diff < 0) {
-      return resultingDistances.stream().limit(n).toList();
+      return resultingDistances.stream().limit(numberOfPoints).toList();
     }
 
     return resultingDistances;
-  }
-
-  @Override
-  public List<CoordinateDistance> getNearestCoordinates(
-      Point coordinate, int n, Collection<Point> coordinates) {
-    return IdCoordinateSource.super.getNearestCoordinates(coordinate, n, coordinates);
   }
 
   /**
