@@ -29,6 +29,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
    * avoid creating a new string each time, bc they're always the same.
    */
   private final String basicQuery;
+
   private final String queryForPoint;
   private final String queryForId;
   private final String queryForBoundingBox;
