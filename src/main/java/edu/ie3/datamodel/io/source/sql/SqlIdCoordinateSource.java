@@ -59,7 +59,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     String dbLongitudeColumnName = getDbColumnName(factory.getLonField(), coordinateTableName);
 
     // setup queries
-    this.basicQuery = "SELECT * FROM " + schemaName + ".\"" + coordinateTableName + " ?;";
+    this.basicQuery = createBaseQueryString(schemaName, coordinateTableName) + " ?;";
     this.queryForPoint = createQueryForPoint(schemaName, coordinateTableName, dbIdColumnName);
     this.queryForId =
         createQueryForId(
@@ -163,13 +163,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
     List<CoordinateDistance> distances = getNearestCoordinates(coordinate, 2 * n, points);
 
-    return checkForBoundingBox(coordinate, distances, n);
-  }
-
-  @Override
-  public List<CoordinateDistance> getNearestCoordinates(
-      Point coordinate, int n, Collection<Point> coordinates) {
-    return IdCoordinateSource.super.getNearestCoordinates(coordinate, n, coordinates);
+    return restrictToBoundingBoxWithSetNumberOfCorner(coordinate, distances, n);
   }
 
   /**
@@ -180,7 +174,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
    * @param numberOfPoints that should be returned
    * @return list of distances
    */
-  private List<CoordinateDistance> checkForBoundingBox(
+  private List<CoordinateDistance> restrictToBoundingBoxWithSetNumberOfCorner(
       Point coordinate, List<CoordinateDistance> distances, int numberOfPoints) {
     boolean topLeft = false;
     boolean topRight = false;
@@ -228,26 +222,29 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   }
 
   /**
-   * Method to calculate a bounding box around a point with a defined radius.
+   * Method to turn a distance into a latitude and longitude deltas. The methode can be found here:
+   * <a href="https://math.stackexchange.com/questions/474602/reverse-use-of-haversine-formula">
    *
    * @param coordinate the coordinate at the center of the bounding box.
-   * @return x- and y-delta
+   * @return x- and y-delta in degree
    */
   private double[] calculateXYDelta(Point coordinate) {
-    // calculate y-delta
+    // y-degrees are evenly spaced, so we can just divide a distance
+    // by the earth's radius to get a y-delta in radians
     double deltaY = maxDistance / earthRadius;
 
-    // calculate some functions
+    // because the spacing between x-degrees change between the equator
+    // and the poles, we need to calculate the x-delta using the inverse
+    // haversine formula
     double sinus = Math.sin(deltaY / 2);
     double squaredSinus = sinus * sinus;
-
     double cosine = Math.cos(Math.toRadians(coordinate.getY()));
     double squaredCosine = cosine * cosine;
 
-    // calculate x-delta
     double deltaX = 2 * Math.asin(Math.sqrt(squaredSinus / squaredCosine));
 
-    return new double[] {deltaX, deltaY};
+    // converting the deltas to degree and returning them
+    return new double[] {Math.toDegrees(deltaX), Math.toDegrees(deltaY)};
   }
 
   /**
