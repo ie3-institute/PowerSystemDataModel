@@ -3,7 +3,7 @@ CREATE TABLE public.coordinates
     id integer,
     latitude double precision,
     longitude double precision,
-    coordinate_type varchar(4)
+    coordinate_type text
 );
 
 
