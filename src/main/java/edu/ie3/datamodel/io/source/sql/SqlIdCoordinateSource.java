@@ -140,7 +140,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
   @Override
   public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
-    double[] xyDeltas = calculateXYDelta(coordinate);
+    double[] xyDeltas = calculateXYDelta(coordinate, maxDistance, earthRadius);
 
     double longitude = coordinate.getX();
     double latitude = coordinate.getY();
@@ -164,87 +164,6 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     List<CoordinateDistance> distances = getNearestCoordinates(coordinate, 2 * n, points);
 
     return restrictToBoundingBoxWithSetNumberOfCorner(coordinate, distances, n);
-  }
-
-  /**
-   * Method for evaluating the found points and returning the n corner points of the bounding box.
-   *
-   * @param coordinate at the center of the bounding box
-   * @param distances list of found points with their distances
-   * @param numberOfPoints that should be returned
-   * @return list of distances
-   */
-  private List<CoordinateDistance> restrictToBoundingBoxWithSetNumberOfCorner(
-      Point coordinate, List<CoordinateDistance> distances, int numberOfPoints) {
-    boolean topLeft = false;
-    boolean topRight = false;
-    boolean bottomLeft = false;
-    boolean bottomRight = false;
-
-    List<CoordinateDistance> resultingDistances = new ArrayList<>();
-    List<CoordinateDistance> other = new ArrayList<>();
-
-    // search for smallest bounding box
-    for (CoordinateDistance distance : distances) {
-      Point point = distance.getCoordinateB();
-
-      // check for bounding box
-      if (!topLeft && (point.getX() < coordinate.getX() && point.getY() > coordinate.getY())) {
-        resultingDistances.add(distance);
-        topLeft = true;
-      } else if (!topRight
-          && (point.getX() > coordinate.getX() && point.getY() > coordinate.getY())) {
-        resultingDistances.add(distance);
-        topRight = true;
-      } else if (!bottomLeft
-          && (point.getX() < coordinate.getX() && point.getY() < coordinate.getY())) {
-        resultingDistances.add(distance);
-        bottomLeft = true;
-      } else if (!bottomRight
-          && (point.getX() > coordinate.getX() && point.getY() < coordinate.getY())) {
-        resultingDistances.add(distance);
-        bottomRight = true;
-      } else {
-        other.add(distance);
-      }
-    }
-
-    // check if n distances are found
-    int diff = numberOfPoints - resultingDistances.size();
-
-    if (diff > 0) {
-      resultingDistances.addAll(other.stream().limit(diff).toList());
-    } else if (diff < 0) {
-      return resultingDistances.stream().limit(numberOfPoints).toList();
-    }
-
-    return resultingDistances;
-  }
-
-  /**
-   * Method to turn a distance into a latitude and longitude deltas. The methode can be found here:
-   * <a href="https://math.stackexchange.com/questions/474602/reverse-use-of-haversine-formula">
-   *
-   * @param coordinate the coordinate at the center of the bounding box.
-   * @return x- and y-delta in degree
-   */
-  private double[] calculateXYDelta(Point coordinate) {
-    // y-degrees are evenly spaced, so we can just divide a distance
-    // by the earth's radius to get a y-delta in radians
-    double deltaY = maxDistance / earthRadius;
-
-    // because the spacing between x-degrees change between the equator
-    // and the poles, we need to calculate the x-delta using the inverse
-    // haversine formula
-    double sinus = Math.sin(deltaY / 2);
-    double squaredSinus = sinus * sinus;
-    double cosine = Math.cos(Math.toRadians(coordinate.getY()));
-    double squaredCosine = cosine * cosine;
-
-    double deltaX = 2 * Math.asin(Math.sqrt(squaredSinus / squaredCosine));
-
-    // converting the deltas to degree and returning them
-    return new double[] {Math.toDegrees(deltaX), Math.toDegrees(deltaY)};
   }
 
   /**
