@@ -34,7 +34,6 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
   point9
   )
 
-  private double earthRadius = 6378137.0
   private Point coordinate = GeoUtils.buildPoint(50, 7)
 
   def "IdCoordinateSource should calculate y-delta correctly"() {
@@ -42,7 +41,7 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
     double distance = GeoUtils.calcHaversine(52, 7, 51, 7).getValue().doubleValue()
 
     when:
-    double[] deltas = calculateXYDelta(coordinate, distance, earthRadius)
+    double[] deltas = calculateXYDelta(coordinate, distance)
 
     then:
     deltas[1] == 1
@@ -52,7 +51,7 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
     given:
     double distance = GeoUtils.calcHaversine(50, 6, 50, 5).getValue().doubleValue()
     when:
-    double[] deltas = calculateXYDelta(coordinate, distance, earthRadius)
+    double[] deltas = calculateXYDelta(coordinate, distance)
 
     then:
     deltas[0] == 1
@@ -70,8 +69,8 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
         )
 
     when:
-    List<CoordinateDistance> distances = getNearestCoordinates(point0, 9, points)
-    List<CoordinateDistance> result = restrictToBoundingBoxWithSetNumberOfCorner(point0, distances, 4)
+    SortedSet<CoordinateDistance> distances = getNearestCoordinates(point0, 9, points)
+    SortedSet<CoordinateDistance> result = restrictToBoundingBoxWithSetNumberOfCorner(point0, distances, 4)
 
     then:
     for(CoordinateDistance value : result){
@@ -84,7 +83,7 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
     Point matchingPoint = GeoUtils.buildPoint(52.5, 7.5)
 
     when:
-    ArrayList<Point> withExactMatch = new ArrayList<>(points)
+    List<Point> withExactMatch = new ArrayList<>(points)
     withExactMatch.addAll(matchingPoint)
 
     List<CoordinateDistance> distances = getNearestCoordinates(point0, 9, withExactMatch)
@@ -112,6 +111,15 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
 
   @Override
   Collection<Point> getAllCoordinates() {
+    return null
+  }
+
+  @Override
+  void setSearchRadius(double maxDistance) {
+  }
+
+  @Override
+  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
     return null
   }
 }

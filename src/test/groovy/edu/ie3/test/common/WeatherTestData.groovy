@@ -6,6 +6,7 @@
 package edu.ie3.test.common
 
 import edu.ie3.datamodel.io.source.IdCoordinateSource
+import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Point
 
@@ -15,6 +16,8 @@ import java.util.stream.Stream
 abstract class WeatherTestData {
 
   protected static final class DummyIdCoordinateSource implements IdCoordinateSource {
+    protected double maxDistance
+
     @Override
     Optional<Point> getCoordinate(int id) {
       switch (id) {
@@ -59,6 +62,16 @@ abstract class WeatherTestData {
         GeoUtils.buildPoint(8d, 50d),
         GeoUtils.buildPoint(7d, 51d)
       ]
+    }
+
+    @Override
+    void setSearchRadius(double maxDistance) {
+      this.maxDistance = maxDistance
+    }
+
+    @Override
+    List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+      return null
     }
   }
 

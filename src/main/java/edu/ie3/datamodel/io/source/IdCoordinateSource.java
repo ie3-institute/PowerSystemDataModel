@@ -16,6 +16,7 @@ import org.locationtech.jts.geom.Point;
  * combined primary or foreign keys.
  */
 public interface IdCoordinateSource extends DataSource {
+  double earthRadius = 6378137.0;
 
   /**
    * Get the matching coordinate for the given ID
@@ -49,6 +50,13 @@ public interface IdCoordinateSource extends DataSource {
   Collection<Point> getAllCoordinates();
 
   /**
+   * Method for setting the search radius for coordinates.
+   *
+   * @param maxDistance maximal distance for the search in meter
+   */
+  void setSearchRadius(double maxDistance);
+
+  /**
    * Returns the nearest n coordinate points to the given coordinate from a collection of all
    * available points
    *
@@ -56,9 +64,7 @@ public interface IdCoordinateSource extends DataSource {
    * @param n how many neighbours to look up
    * @return the n nearest coordinates to the given point
    */
-  default List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
-    return getNearestCoordinates(coordinate, n, getAllCoordinates());
-  }
+  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n);
 
   /**
    * Returns the nearest n coordinate points to the given coordinate from a given collection of
@@ -75,7 +81,7 @@ public interface IdCoordinateSource extends DataSource {
         GeoUtils.calcOrderedCoordinateDistances(
             coordinate,
             (coordinates != null && !coordinates.isEmpty()) ? coordinates : getAllCoordinates());
-    return sortedDistances.stream().limit(n).toList();
+    return restrictToBoundingBoxWithSetNumberOfCorner(coordinate, sortedDistances, n);
   }
 
   /**
@@ -85,7 +91,7 @@ public interface IdCoordinateSource extends DataSource {
    * @param coordinate the coordinate at the center of the bounding box.
    * @return x- and y-delta in degree
    */
-  default double[] calculateXYDelta(Point coordinate, double maxDistance, double earthRadius) {
+  default double[] calculateXYDelta(Point coordinate, double maxDistance) {
     // y-degrees are evenly spaced, so we can just divide a distance
     // by the earth's radius to get a y-delta in radians
     double deltaY = maxDistance / earthRadius;
@@ -113,7 +119,7 @@ public interface IdCoordinateSource extends DataSource {
    * @return list of distances
    */
   default List<CoordinateDistance> restrictToBoundingBoxWithSetNumberOfCorner(
-      Point coordinate, List<CoordinateDistance> distances, int numberOfPoints) {
+      Point coordinate, Collection<CoordinateDistance> distances, int numberOfPoints) {
     boolean topLeft = false;
     boolean topRight = false;
     boolean bottomLeft = false;

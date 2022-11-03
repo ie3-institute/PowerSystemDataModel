@@ -39,7 +39,8 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
 
     def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
     def coordinatesFactory = new IconIdCoordinateFactory()
-    source = new SqlIdCoordinateSource(connector, schemaName, weatherTableName, coordinatesFactory, 1000)
+    source = new SqlIdCoordinateSource(connector, schemaName, weatherTableName, coordinatesFactory)
+    source.setSearchRadius(1000)
   }
 
   def "A SqlIdCoordinateSource can read a single coordinate"(){

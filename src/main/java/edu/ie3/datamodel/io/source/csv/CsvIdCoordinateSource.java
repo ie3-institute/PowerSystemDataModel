@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
+import edu.ie3.util.geo.CoordinateDistance;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
@@ -28,6 +29,7 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
   private final Map<Integer, Point> idToCoordinate;
 
   private final Map<Point, Integer> coordinateToId;
+  private double maxDistance;
 
   public CsvIdCoordinateSource(
       String csvSep,
@@ -37,8 +39,9 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
     super(csvSep, folderPath, fileNamingStrategy);
 
     this.factory = factory;
+    this.maxDistance = 1000;
 
-    /* setup the coordinate id to lat/long mapping */
+    /* set up the coordinate id to lat/long mapping */
     idToCoordinate = setupIdToCoordinateMap();
     coordinateToId = invert(idToCoordinate);
   }
@@ -91,6 +94,36 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
   @Override
   public Collection<Point> getAllCoordinates() {
     return coordinateToId.keySet();
+  }
+
+  @Override
+  public void setSearchRadius(double maxDistance) {
+    this.maxDistance = maxDistance;
+  }
+
+  @Override
+  public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+    Set<Point> points = coordinateToId.keySet();
+
+    double[] deltas = calculateXYDelta(coordinate, maxDistance);
+
+    double xMin = coordinate.getX() - deltas[0];
+    double xMax = coordinate.getX() + deltas[0];
+    double yMin = coordinate.getY() - deltas[1];
+    double yMax = coordinate.getY() + deltas[1];
+
+    Set<Point> reducedPoints = new HashSet<>();
+
+    for (Point point : points) {
+      double x = point.getX();
+      double y = point.getY();
+
+      if (xMin <= x && x <= xMax && yMin <= y && y <= yMax) {
+        reducedPoints.add(point);
+      }
+    }
+
+    return getNearestCoordinates(coordinate, n, reducedPoints);
   }
 
   public int getCoordinateCount() {

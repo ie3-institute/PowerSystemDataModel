@@ -21,8 +21,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     implements IdCoordinateSource {
   private static final String WHERE = " WHERE ";
   private final IdCoordinateFactory factory;
-  private final double maxDistance;
-  private static final double earthRadius = 6378137.0;
+  private double maxDistance;
 
   /**
    * Queries that are available within this source. Motivation to have them as field value is to
@@ -41,18 +40,16 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
    * @param schemaName the database schema to use
    * @param coordinateTableName the name of the table containing coordinate data
    * @param factory instance of a coordinate factory
-   * @param maxDistance maximal search distance for points
    */
   public SqlIdCoordinateSource(
       SqlConnector connector,
       String schemaName,
       String coordinateTableName,
-      IdCoordinateFactory factory,
-      double maxDistance) {
+      IdCoordinateFactory factory) {
     super(connector);
 
     this.factory = factory;
-    this.maxDistance = maxDistance;
+    this.maxDistance = 1000;
 
     String dbIdColumnName = getDbColumnName(factory.getIdField(), coordinateTableName);
     String dbLatitudeColumnName = getDbColumnName(factory.getLatField(), coordinateTableName);
@@ -139,8 +136,13 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   }
 
   @Override
+  public void setSearchRadius(double maxDistance) {
+    this.maxDistance = maxDistance;
+  }
+
+  @Override
   public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
-    double[] xyDeltas = calculateXYDelta(coordinate, maxDistance, earthRadius);
+    double[] xyDeltas = calculateXYDelta(coordinate, maxDistance);
 
     double longitude = coordinate.getX();
     double latitude = coordinate.getY();
@@ -155,15 +157,13 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
               ps.setDouble(4, latitude + xyDeltas[1]);
             });
 
-    ArrayList<Point> points = new ArrayList<>();
+    ArrayList<Point> reducedPoints = new ArrayList<>();
 
     for (CoordinateValue value : values) {
-      points.add(value.coordinate);
+      reducedPoints.add(value.coordinate);
     }
 
-    List<CoordinateDistance> distances = getNearestCoordinates(coordinate, 2 * n, points);
-
-    return restrictToBoundingBoxWithSetNumberOfCorner(coordinate, distances, n);
+    return getNearestCoordinates(coordinate, n, reducedPoints);
   }
 
   /**
