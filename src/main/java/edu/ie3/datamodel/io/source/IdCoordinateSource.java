@@ -50,13 +50,6 @@ public interface IdCoordinateSource extends DataSource {
   Collection<Point> getAllCoordinates();
 
   /**
-   * Method for setting the search radius for coordinates.
-   *
-   * @param maxDistance maximal distance for the search in meter
-   */
-  void setSearchRadius(double maxDistance);
-
-  /**
    * Returns the nearest n coordinate points to the given coordinate from a collection of all
    * available points
    *
@@ -64,7 +57,7 @@ public interface IdCoordinateSource extends DataSource {
    * @param n how many neighbours to look up
    * @return the n nearest coordinates to the given point
    */
-  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n);
+  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, double maxDistance);
 
   /**
    * Returns the nearest n coordinate points to the given coordinate from a given collection of

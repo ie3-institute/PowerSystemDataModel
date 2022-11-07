@@ -69,8 +69,8 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
         )
 
     when:
-    SortedSet<CoordinateDistance> distances = getNearestCoordinates(point0, 9, points)
-    SortedSet<CoordinateDistance> result = restrictToBoundingBoxWithSetNumberOfCorner(point0, distances, 4)
+    List<CoordinateDistance> distances = getNearestCoordinates(point0, 9, points)
+    List<CoordinateDistance> result = restrictToBoundingBoxWithSetNumberOfCorner(point0, distances, 4)
 
     then:
     for(CoordinateDistance value : result){
@@ -115,11 +115,7 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
   }
 
   @Override
-  void setSearchRadius(double maxDistance) {
-  }
-
-  @Override
-  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, double maxDistance) {
     return null
   }
 }

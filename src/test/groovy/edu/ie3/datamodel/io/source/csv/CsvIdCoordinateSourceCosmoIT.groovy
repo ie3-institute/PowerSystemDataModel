@@ -138,17 +138,38 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
     actualDistances == expectedDistances
   }
 
-  def "If no collection is given, the CsvIdCoordinateSource is able to return the nearest n coordinates of all available coordinates" () {
+  def "If the given maximal search distance is to small, the CsvIdCoordinateSource will return the nearest n coordinates of all available coordinates" () {
     given:
     def n = 2
-    def allCoordinates = source.allCoordinates
     def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
-    def expectedDistances = source.getNearestCoordinates(basePoint, n, allCoordinates)
+    def expectedDistances = source.getNearestCoordinates(basePoint, n, source.allCoordinates)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, n)
+    def actualDistances = source.getNearestCoordinates(basePoint, n, 10000)
 
     then:
     actualDistances == expectedDistances
+  }
+
+  def "The CsvIdCoordinateSource will return the nearest n coordinates if n coordinates are in the search radius"(){
+    given:
+    def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
+
+    when:
+    def actualDistances = source.getNearestCoordinates(basePoint, 3, 10000)
+
+    then:
+    actualDistances.size() == 3
+  }
+
+  def "The CsvIdCoordinateSource will return the nearest m coordinates if less than n coordinates are in the given radius"() {
+    given:
+    def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
+
+    when:
+    def actualDistances = source.getNearestCoordinates(basePoint, 2, 1000)
+
+    then:
+    actualDistances.size() == 1
   }
 }

@@ -29,7 +29,6 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
   private final Map<Integer, Point> idToCoordinate;
 
   private final Map<Point, Integer> coordinateToId;
-  private double maxDistance;
 
   public CsvIdCoordinateSource(
       String csvSep,
@@ -39,7 +38,6 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
     super(csvSep, folderPath, fileNamingStrategy);
 
     this.factory = factory;
-    this.maxDistance = 1000;
 
     /* set up the coordinate id to lat/long mapping */
     idToCoordinate = setupIdToCoordinateMap();
@@ -97,12 +95,8 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
   }
 
   @Override
-  public void setSearchRadius(double maxDistance) {
-    this.maxDistance = maxDistance;
-  }
-
-  @Override
-  public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+  public List<CoordinateDistance> getNearestCoordinates(
+      Point coordinate, int n, double maxDistance) {
     Set<Point> points = coordinateToId.keySet();
 
     double[] deltas = calculateXYDelta(coordinate, maxDistance);

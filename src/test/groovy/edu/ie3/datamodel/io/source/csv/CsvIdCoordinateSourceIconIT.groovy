@@ -21,7 +21,6 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
 
   def setupSpec() {
     source = new CsvIdCoordinateSource(csvSep, coordinatesIconFolderPath, fileNamingStrategy, new IconIdCoordinateFactory())
-    source.setSearchRadius(1000)
   }
 
   def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {
@@ -140,42 +139,38 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
     actualDistances == expectedDistances
   }
 
-  def "If the given maximal search distance is to small, the CsvIdCoordinateSource will return the nearest n coordinates of all available coordinates" () {
+  def "The CsvIdCoordinateSource will return the nearest n coordinates of all available coordinates if no coordinates are in the given radius" () {
     given:
     def n = 2
     def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
     def expectedDistances = source.getNearestCoordinates(basePoint, n, source.allCoordinates)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, n)
+    def actualDistances = source.getNearestCoordinates(basePoint, n, 10000)
 
     then:
     actualDistances == expectedDistances
   }
 
-  def "The CsvIdCoordinateSource will return the nearest n coordinates if n coordinates are in the search radius"(){
+  def "The CsvIdCoordinateSource will return the nearest n coordinates if n coordinates are in the given radius"(){
     given:
     def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
 
-    source.setSearchRadius(200000)
-
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, 3)
+    def actualDistances = source.getNearestCoordinates(basePoint, 3, 200000)
 
     then:
     actualDistances.size() == 3
   }
 
-  def "If less than n coordinates are in the search radius, the CsvIdCoordinateSource will return the nearest n coordinate that are in the radius"() {
+  def "The CsvIdCoordinateSource will return the nearest m coordinates if less than n coordinates are in the given radius"() {
     given:
-    def basePoint = GeoUtils.buildPoint(52.438, 6.5)
-
-    source.setSearchRadius(111000)
+    def basePoint = GeoUtils.buildPoint(51.5, 7.38)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, 3)
+    def actualDistances = source.getNearestCoordinates(basePoint, 3, 1000)
 
     then:
-    actualDistances.size() == 2
+    actualDistances.size() == 1
   }
 }

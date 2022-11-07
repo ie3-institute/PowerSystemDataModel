@@ -16,7 +16,6 @@ import java.util.stream.Stream
 abstract class WeatherTestData {
 
   protected static final class DummyIdCoordinateSource implements IdCoordinateSource {
-    protected double maxDistance
 
     @Override
     Optional<Point> getCoordinate(int id) {
@@ -65,12 +64,7 @@ abstract class WeatherTestData {
     }
 
     @Override
-    void setSearchRadius(double maxDistance) {
-      this.maxDistance = maxDistance
-    }
-
-    @Override
-    List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+    List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, double maxDistance) {
       return null
     }
   }
