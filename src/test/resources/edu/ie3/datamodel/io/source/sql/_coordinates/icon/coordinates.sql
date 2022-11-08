@@ -9,11 +9,6 @@ CREATE TABLE public.coordinates
     )
     TABLESPACE pg_default;
 
-create INDEX id_idx
-    ON public.coordinates USING btree
-        (id ASC NULLS LAST)
-    TABLESPACE pg_default;
-
 create INDEX coordinate_idx
     ON public.coordinates USING btree
         (latitude ASC NULLS LAST, longitude ASC NULLS LAST)
