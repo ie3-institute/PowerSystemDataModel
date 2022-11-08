@@ -57,7 +57,7 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
     deltas[0] == 1
   }
 
-  def "IdCoordinateSource should return correct number of corner points"() {
+  def "IdCoordinateSource should return correct number of corner points restricted to the bounding box"() {
     given:
     ArrayList<Point> expectedPoints = new ArrayList<>()
     expectedPoints.addAll(
@@ -78,7 +78,7 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
     }
   }
 
-  def "IdCoordinateSource should return exactly matched point"() {
+  def "IdCoordinateSource should return only one point of the bounding box if the starting coordinate exactly matched the found coordinate"() {
     given:
     Point matchingPoint = GeoUtils.buildPoint(52.5, 7.5)
 
