@@ -10,6 +10,8 @@ import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import spock.lang.Shared
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
 
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -143,9 +145,10 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
     def n = 2
     def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
     def expectedDistances = source.getNearestCoordinates(basePoint, n, source.allCoordinates)
+    def distance = Quantities.getQuantity(10000, Units.METRE)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, n, 10000)
+    def actualDistances = source.getNearestCoordinates(basePoint, n, distance)
 
     then:
     actualDistances == expectedDistances
@@ -154,9 +157,10 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
   def "The CsvIdCoordinateSource will return the nearest n coordinates if n coordinates are in the search radius"(){
     given:
     def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
+    def distance = Quantities.getQuantity(10000, Units.METRE)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, 3, 10000)
+    def actualDistances = source.getNearestCoordinates(basePoint, 3, distance)
 
     then:
     actualDistances.size() == 3
@@ -165,9 +169,10 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
   def "The CsvIdCoordinateSource will return the nearest m coordinates if less than n coordinates are in the given radius"() {
     given:
     def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
+    def distance = Quantities.getQuantity(1000, Units.METRE)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, 2, 1000)
+    def actualDistances = source.getNearestCoordinates(basePoint, 2, distance)
 
     then:
     actualDistances.size() == 1
