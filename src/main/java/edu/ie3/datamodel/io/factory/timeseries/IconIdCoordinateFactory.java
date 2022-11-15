@@ -22,6 +22,7 @@ public class IconIdCoordinateFactory extends IdCoordinateFactory {
   private static final String LONG = "longitude";
   private static final String LAT = "latitude";
   private static final String TYPE = "coordinatetype";
+  private static final String Point = "point";
 
   @Override
   protected Pair<Integer, Point> buildModel(SimpleFactoryData data) {
@@ -49,5 +50,10 @@ public class IconIdCoordinateFactory extends IdCoordinateFactory {
   @Override
   public String getLonField() {
     return LONG;
+  }
+
+  @Override
+  public String getPointField() {
+    return Point;
   }
 }

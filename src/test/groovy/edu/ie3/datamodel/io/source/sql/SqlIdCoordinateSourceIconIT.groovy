@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.sql
 
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.factory.timeseries.IconIdCoordinateFactory
+
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
@@ -15,15 +16,20 @@ import org.locationtech.jts.geom.Point
 import org.testcontainers.containers.Container
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
+import org.testcontainers.utility.DockerImageName
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
+
+import javax.measure.quantity.Length
 
 @Testcontainers
 class SqlIdCoordinateSourceIconIT extends Specification implements TestContainerHelper {
 
   @Shared
-  PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
+  PostgreSQLContainer postgisSQLContainer = new PostgreSQLContainer(DockerImageName.parse("postgis/postgis:14-3.3").asCompatibleSubstituteFor("postgres"))
 
   @Shared
   SqlIdCoordinateSource source
@@ -34,12 +40,12 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
   def setupSpec() {
     // Copy sql import script into docker
     MountableFile sqlImportFile = getMountableFile("_coordinates/icon/coordinates.sql")
-    postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/coordinates_icon.sql")
+    postgisSQLContainer.copyFileToContainer(sqlImportFile, "/home/coordinates_icon.sql")
     // Execute import script
-    Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/coordinates_icon.sql")
+    Container.ExecResult res = postgisSQLContainer.execInContainer("psql", "-Utest", "-f/home/coordinates_icon.sql")
     assert res.stderr.empty
 
-    def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
+    def connector = new SqlConnector(postgisSQLContainer.jdbcUrl, postgisSQLContainer.username, postgisSQLContainer.password)
     def coordinatesFactory = new IconIdCoordinateFactory()
     source = new SqlIdCoordinateSource(connector, schemaName, coordinateTableName, coordinatesFactory)
   }
@@ -81,7 +87,7 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
     int id = 67775
 
     when:
-    def receivedValue = source.getId(GeoUtils.buildPoint(7.438, 51.5))
+    def receivedValue = source.getId(GeoUtils.buildPoint(51.5, 7.438))
 
     then:
     receivedValue.get() == id
@@ -109,9 +115,10 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
   def "A SqlIdCoordinateSource can return the nearest n coordinates if n coordinates are in the given radius"(){
     given:
     def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
+    def distance = Quantities.getQuantity(200000, Units.METRE)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, 3, 200000)
+    def actualDistances = source.getNearestCoordinates(basePoint, 3, distance)
 
     then:
     actualDistances.size() == 3
@@ -120,9 +127,10 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
   def "A SqlIdCoordinateSource will return the nearest m coordinates if less than n coordinates are in the given radius"(){
     given:
     def basePoint = GeoUtils.buildPoint(51.5, 7.38)
+    def distance = Quantities.getQuantity(1000, Units.METRE)
 
     when:
-    def actualDistances = source.getNearestCoordinates(basePoint, 2, 1000)
+    def actualDistances = source.getNearestCoordinates(basePoint, 2, distance)
 
     then:
     actualDistances.size() == 1
@@ -137,13 +145,14 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
       GeoUtils.buildPoint(51.438,7.438),
       GeoUtils.buildPoint(51.438,7.375)
     ]
+    def distance = Quantities.getQuantity(1000, Units.METRE)
 
     when:
-    def receivedValues = source.getNearestCoordinates(basePoint, 3, 1000)
+    def receivedValues = source.getNearestCoordinates(basePoint, 3, distance)
 
     then:
-    for(CoordinateDistance distance : receivedValues){
-      expectedValues.contains(distance.coordinateB)
+    for(CoordinateDistance coordinateDistance : receivedValues){
+      expectedValues.contains(coordinateDistance.coordinateB)
     }
   }
 }

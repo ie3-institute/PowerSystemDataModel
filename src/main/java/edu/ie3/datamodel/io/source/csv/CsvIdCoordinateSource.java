@@ -16,8 +16,10 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.measure.quantity.Length;
 import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * Implementation of {@link IdCoordinateSource} to read the mapping between coordinate id and actual
@@ -96,10 +98,10 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
 
   @Override
   public List<CoordinateDistance> getNearestCoordinates(
-      Point coordinate, int n, double maxDistance) {
+      Point coordinate, int n, ComparableQuantity<Length> distance) {
     Set<Point> points = coordinateToId.keySet();
 
-    double[] deltas = calculateXYDelta(coordinate, maxDistance);
+    double[] deltas = calculateXYDelta(coordinate, distance);
 
     double xMin = coordinate.getX() - deltas[0];
     double xMax = coordinate.getX() + deltas[0];

@@ -28,4 +28,7 @@ public abstract class IdCoordinateFactory
 
   /** @return the field id for the coordinate longitude */
   public abstract String getLonField();
+
+  /** @return the filed id for the coordinate point */
+  public abstract String getPointField();
 }

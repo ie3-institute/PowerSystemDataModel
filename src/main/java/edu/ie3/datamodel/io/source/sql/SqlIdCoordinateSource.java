@@ -14,7 +14,9 @@ import edu.ie3.util.geo.GeoUtils;
 import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.util.*;
+import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.Point;
+import tech.units.indriya.ComparableQuantity;
 
 /** SQL source for coordinate data */
 public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
@@ -47,36 +49,33 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     super(connector);
 
     String dbIdColumnName = getDbColumnName(factory.getIdField(), coordinateTableName);
-    String dbLatitudeColumnName = getDbColumnName(factory.getLatField(), coordinateTableName);
-    String dbLongitudeColumnName = getDbColumnName(factory.getLonField(), coordinateTableName);
+    String dbPointColumnName = getDbColumnName(factory.getPointField(), coordinateTableName);
 
     // setup queries
-    this.basicQuery = createBaseQueryString(schemaName, coordinateTableName) + ";";
-    this.queryForPoint = createQueryForPoint(schemaName, coordinateTableName, dbIdColumnName);
-    this.queryForPoints = createQueryForPoints(schemaName, coordinateTableName, dbIdColumnName);
-    this.queryForId =
-        createQueryForId(
-            schemaName, coordinateTableName, dbLatitudeColumnName, dbLongitudeColumnName);
-    this.queryForBoundingBox =
-        createQueryForBoundingBox(
-            schemaName, coordinateTableName, dbLatitudeColumnName, dbLongitudeColumnName);
+    this.basicQuery =
+        createBaseGisQueryString(
+            schemaName, coordinateTableName, dbIdColumnName, dbPointColumnName);
+    this.queryForPoint = createQueryForPoint(dbIdColumnName);
+    this.queryForPoints = createQueryForPoints(dbIdColumnName);
+    this.queryForId = createQueryForId(dbPointColumnName);
+    this.queryForBoundingBox = createQueryForBoundingBox(dbPointColumnName);
   }
 
   @Override
   protected Optional<CoordinateValue> createEntity(Map<String, String> fieldToValues) {
     int id;
-    double latitude;
-    double longitude;
+    Point point;
 
     try {
       id = Integer.parseInt(fieldToValues.get("id"));
-      latitude = Double.parseDouble(fieldToValues.get("latitude"));
-      longitude = Double.parseDouble(fieldToValues.get("longitude"));
+      double longitude = Double.parseDouble(fieldToValues.get("stX"));
+      double latitude = Double.parseDouble(fieldToValues.get("stY"));
+
+      point = GeoUtils.buildPoint(latitude, longitude);
     } catch (Exception e) {
       return Optional.empty();
     }
 
-    Point point = GeoUtils.buildPoint(latitude, longitude);
     return Optional.of(new CoordinateValue(id, point));
   }
 
@@ -110,15 +109,15 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
   @Override
   public Optional<Integer> getId(Point coordinate) {
-    double latitude = coordinate.getX();
-    double longitude = coordinate.getY();
+    double latitude = coordinate.getY();
+    double longitude = coordinate.getX();
 
     List<CoordinateValue> values =
         executeQuery(
             queryForId,
             ps -> {
-              ps.setDouble(1, latitude);
-              ps.setDouble(2, longitude);
+              ps.setDouble(1, longitude);
+              ps.setDouble(2, latitude);
             });
 
     return Optional.of(values.get(0).id);
@@ -126,7 +125,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
   @Override
   public Collection<Point> getAllCoordinates() {
-    List<CoordinateValue> values = executeQuery(basicQuery, PreparedStatement::execute);
+    List<CoordinateValue> values = executeQuery(basicQuery + ";", PreparedStatement::execute);
 
     ArrayList<Point> points = new ArrayList<>();
 
@@ -139,8 +138,8 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
   @Override
   public List<CoordinateDistance> getNearestCoordinates(
-      Point coordinate, int n, double maxDistance) {
-    double[] xyDeltas = calculateXYDelta(coordinate, maxDistance);
+      Point coordinate, int n, ComparableQuantity<Length> distance) {
+    double[] xyDeltas = calculateXYDelta(coordinate, distance);
 
     double longitude = coordinate.getX();
     double latitude = coordinate.getY();
@@ -149,10 +148,10 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
         executeQuery(
             queryForBoundingBox,
             ps -> {
-              ps.setDouble(1, latitude - xyDeltas[1]);
-              ps.setDouble(2, latitude + xyDeltas[1]);
-              ps.setDouble(3, longitude - xyDeltas[0]);
-              ps.setDouble(4, longitude + xyDeltas[0]);
+              ps.setDouble(1, longitude - xyDeltas[0]);
+              ps.setDouble(2, latitude - xyDeltas[1]);
+              ps.setDouble(3, longitude + xyDeltas[0]);
+              ps.setDouble(4, latitude + xyDeltas[1]);
             });
 
     ArrayList<Point> reducedPoints = new ArrayList<>();
@@ -166,47 +165,35 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
   /**
    * Creates a basic query to retrieve entries for given ids with the following pattern: <br>
-   * {@code <base query> WHERE <id column>= ANY (?);}
+   * {@code <base query> WHERE <id column>=?;}
    *
-   * @param schemaName the name of the database schema
-   * @param coordinateTableName the name of the database table
    * @param idColumn the name of the column holding the id info
    * @return the query string
    */
-  private String createQueryForPoint(
-      String schemaName, String coordinateTableName, String idColumn) {
-    return createBaseQueryString(schemaName, coordinateTableName) + WHERE + idColumn + " =?; ";
+  private String createQueryForPoint(String idColumn) {
+    return basicQuery + WHERE + idColumn + " =?; ";
   }
 
-  private String createQueryForPoints(
-      String schemaName, String coordinateTableName, String idColumn) {
-    return createBaseQueryString(schemaName, coordinateTableName)
-        + WHERE
-        + idColumn
-        + " = ANY (?); ";
+  /**
+   * Creates a basic query to retrieve entries for given ids with the following pattern: <br>
+   * {@code <base query> WHERE <id column>= ANY (?);}
+   *
+   * @param idColumn the name of the column holding the id info
+   * @return the query string
+   */
+  private String createQueryForPoints(String idColumn) {
+    return basicQuery + WHERE + idColumn + " = ANY (?); ";
   }
 
   /**
    * Creates a basic query to retrieve an id for a given point with the following pattern: <br>
    * {@code <base query> WHERE <latitude column>=? AND <longitude column>=?;}
    *
-   * @param schemaName the name of the database schema
-   * @param coordinateTableName the name of the database table
-   * @param latitudeColumnName the name of the latitude column
-   * @param longitudeColumnName the name of the longitude column
+   * @param pointColumn the name of the column holding the geometry information
    * @return the query string
    */
-  private String createQueryForId(
-      String schemaName,
-      String coordinateTableName,
-      String latitudeColumnName,
-      String longitudeColumnName) {
-    return createBaseQueryString(schemaName, coordinateTableName)
-        + WHERE
-        + latitudeColumnName
-        + " =? AND "
-        + longitudeColumnName
-        + " =?; ";
+  private String createQueryForId(String pointColumn) {
+    return basicQuery + WHERE + pointColumn + " ~= ST_Point( ?, ?); ";
   }
 
   /**
@@ -215,23 +202,14 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
    * {@code <base query> WHERE <latitude column> BETWEEN ? AND ? AND <longitude column> BETWEEN ?
    * AND ?;}
    *
-   * @param schemaName the name of the database
-   * @param coordinateTableName the name of the database table
-   * @param latitudeColumnName the name of the first column
-   * @param longitudeColumnName the name of the second column
+   * @param pointColumn the name of the column holding the geometry information
    * @return the query string
    */
-  private String createQueryForBoundingBox(
-      String schemaName,
-      String coordinateTableName,
-      String latitudeColumnName,
-      String longitudeColumnName) {
-    return createBaseQueryString(schemaName, coordinateTableName)
+  private String createQueryForBoundingBox(String pointColumn) {
+    return basicQuery
         + WHERE
-        + latitudeColumnName
-        + " BETWEEN ? AND ?"
-        + " AND "
-        + longitudeColumnName
-        + " BETWEEN ? AND ?; ";
+        + " ST_Contains(ST_MakeEnvelope(?, ?, ?, ?, 4326 ) , "
+        + pointColumn
+        + ")";
   }
 }

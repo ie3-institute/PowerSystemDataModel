@@ -9,7 +9,9 @@ import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Point
+import tech.units.indriya.ComparableQuantity
 
+import javax.measure.quantity.Length
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
@@ -64,7 +66,7 @@ abstract class WeatherTestData {
     }
 
     @Override
-    List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, double maxDistance) {
+    List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
       return null
     }
   }

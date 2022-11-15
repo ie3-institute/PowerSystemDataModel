@@ -22,6 +22,7 @@ public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
   private static final String LAT_GEO = "latgeo";
   private static final String LONG_ROT = "longrot";
   private static final String LAT_ROT = "latrot";
+  private static final String Point = "point";
 
   @Override
   protected Pair<Integer, Point> buildModel(SimpleFactoryData data) {
@@ -50,5 +51,10 @@ public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
   @Override
   public String getLonField() {
     return LONG_GEO;
+  }
+
+  @Override
+  public String getPointField() {
+    return Point;
   }
 }

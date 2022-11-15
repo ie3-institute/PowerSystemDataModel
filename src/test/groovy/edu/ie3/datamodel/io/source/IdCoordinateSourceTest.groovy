@@ -9,6 +9,10 @@ import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Point
 import spock.lang.Specification
+import tech.units.indriya.ComparableQuantity
+import tech.units.indriya.quantity.Quantities
+
+import javax.measure.quantity.Length
 
 class IdCoordinateSourceTest extends Specification implements IdCoordinateSource {
   private Point point0 = GeoUtils.buildPoint(52.5, 7.5)
@@ -38,7 +42,7 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
 
   def "IdCoordinateSource should calculate y-delta correctly"() {
     given:
-    double distance = GeoUtils.calcHaversine(52, 7, 51, 7).getValue().doubleValue()
+    ComparableQuantity<Length> distance = GeoUtils.calcHaversine(52, 7, 51, 7)
 
     when:
     double[] deltas = calculateXYDelta(coordinate, distance)
@@ -49,7 +53,7 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
 
   def "IdCoordinateSource should calculate x-delta correctly"() {
     given:
-    double distance = GeoUtils.calcHaversine(50, 6, 50, 5).getValue().doubleValue()
+    ComparableQuantity<Length> distance = GeoUtils.calcHaversine(50, 6, 50, 5)
     when:
     double[] deltas = calculateXYDelta(coordinate, distance)
 
@@ -115,7 +119,7 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
   }
 
   @Override
-  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, double maxDistance) {
+  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
     return null
   }
 }

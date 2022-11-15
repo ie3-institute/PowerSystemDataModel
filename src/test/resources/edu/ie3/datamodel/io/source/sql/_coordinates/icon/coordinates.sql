@@ -1,23 +1,19 @@
 CREATE TABLE public.coordinates
 (
     id integer,
-    latitude double precision,
-    longitude double precision
+    point GEOMETRY
 )
     WITH (
         OIDS = FALSE
     )
     TABLESPACE pg_default;
 
-create INDEX coordinate_idx
-    ON public.coordinates USING btree
-        (latitude ASC NULLS LAST, longitude ASC NULLS LAST)
-    TABLESPACE pg_default;
+CREATE INDEX idx ON public.coordinates USING gist (point);
 
 INSERT INTO
-    public.coordinates(id, latitude, longitude)
+    public.coordinates(id, point)
 VALUES
-(67775,51.5,7.438),
-(531137,51.5,7.375),
-(551525,51.438,7.438),
-(278150,51.438,7.375)
+(67775, ST_POINT(7.438, 51.5, 4326)),
+(531137, ST_POINT(7.375, 51.5, 4326)),
+(551525, ST_POINT(7.438, 51.438, 4326)),
+(278150, ST_POINT(7.375, 51.438, 4326))

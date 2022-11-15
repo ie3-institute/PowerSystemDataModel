@@ -8,7 +8,9 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.*;
+import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.Point;
+import tech.units.indriya.ComparableQuantity;
 
 /**
  * This class serves mapping purposes between the ID of a coordinate and the actual coordinate with
@@ -57,7 +59,8 @@ public interface IdCoordinateSource extends DataSource {
    * @param n how many neighbours to look up
    * @return the n nearest coordinates to the given point
    */
-  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, double maxDistance);
+  List<CoordinateDistance> getNearestCoordinates(
+      Point coordinate, int n, ComparableQuantity<Length> distance);
 
   /**
    * Returns the nearest n coordinate points to the given coordinate from a given collection of
@@ -84,10 +87,10 @@ public interface IdCoordinateSource extends DataSource {
    * @param coordinate the coordinate at the center of the bounding box.
    * @return x- and y-delta in degree
    */
-  default double[] calculateXYDelta(Point coordinate, double maxDistance) {
+  default double[] calculateXYDelta(Point coordinate, ComparableQuantity<Length> distance) {
     // y-degrees are evenly spaced, so we can just divide a distance
     // by the earth's radius to get a y-delta in radians
-    double deltaY = maxDistance / earthRadius;
+    double deltaY = distance.getValue().doubleValue() / earthRadius;
 
     // because the spacing between x-degrees change between the equator
     // and the poles, we need to calculate the x-delta using the inverse

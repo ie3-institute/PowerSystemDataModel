@@ -38,6 +38,33 @@ public abstract class SqlDataSource<T> {
   }
 
   /**
+   * Creates a base query string without closing semicolon of the following pattern: <br>
+   * {@code SELECT 'idColumnName', ST_X('geomColumnName'), ST_Y('geomColumnName') FROM
+   * <schema>.<table>}
+   *
+   * @param schemaName the name of the database schema
+   * @param tableName the name of the database table
+   * @param idColumnName the name of the id column
+   * @param geomColumnName the name of the geometry column
+   * @return basic query string without semicolon
+   */
+  protected static String createBaseGisQueryString(
+      String schemaName, String tableName, String idColumnName, String geomColumnName) {
+    return "SELECT "
+        + idColumnName
+        + ", ST_X("
+        + geomColumnName
+        + "), ST_Y("
+        + geomColumnName
+        + ")"
+        + " FROM "
+        + schemaName
+        + ".\""
+        + tableName
+        + "\"";
+  }
+
+  /**
    * Determine the corresponding database column name based on the provided factory field parameter
    * name. Needed to support camel as well as snake case database column names.
    *
