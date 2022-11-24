@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Collections;
@@ -22,20 +23,19 @@ public class SqlCoordinateFactory extends IdCoordinateFactory {
 
   @Override
   protected Pair<Integer, Point> buildModel(SimpleFactoryData data) {
-    int coordinateId = data.getInt(COORDINATE_ID);
-    byte[] arr = WKBReader.hexToBytes(data.getField(COORDINATE));
-
-    Coordinate coordinate;
-
     try {
-      WKBReader reader = new WKBReader();
-      coordinate = reader.read(arr).getCoordinate();
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
-    }
+      int coordinateId = data.getInt(COORDINATE_ID);
+      byte[] byteArr = WKBReader.hexToBytes(data.getField(COORDINATE));
 
-    Point point = GeoUtils.buildPoint(coordinate);
-    return Pair.of(coordinateId, point);
+      WKBReader reader = new WKBReader();
+      Coordinate coordinate = reader.read(byteArr).getCoordinate();
+
+      Point point = GeoUtils.buildPoint(coordinate);
+      return Pair.of(coordinateId, point);
+
+    } catch (ParseException e) {
+      throw new FactoryException(e);
+    }
   }
 
   @Override
