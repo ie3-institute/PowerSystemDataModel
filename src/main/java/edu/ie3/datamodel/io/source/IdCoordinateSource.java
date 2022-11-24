@@ -87,6 +87,7 @@ public interface IdCoordinateSource extends DataSource {
    * @param coordinate the coordinate at the center of the bounding box.
    * @return x- and y-delta in degree
    */
+  @Deprecated
   default double[] calculateXYDelta(Point coordinate, ComparableQuantity<Length> distance) {
     // y-degrees are evenly spaced, so we can just divide a distance
     // by the earth's radius to get a y-delta in radians

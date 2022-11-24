@@ -6,15 +6,16 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
+import edu.ie3.datamodel.io.factory.SimpleFactoryData;
+import edu.ie3.datamodel.io.factory.timeseries.SqlCoordinateFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.models.value.CoordinateValue;
 import edu.ie3.util.geo.CoordinateDistance;
-import edu.ie3.util.geo.GeoUtils;
 import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.util.*;
 import javax.measure.quantity.Length;
+import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
@@ -22,6 +23,7 @@ import tech.units.indriya.ComparableQuantity;
 public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     implements IdCoordinateSource {
   private static final String WHERE = " WHERE ";
+  private final SqlCoordinateFactory factory;
   /**
    * Queries that are available within this source. Motivation to have them as field value is to
    * avoid creating a new string each time, bc they're always the same.
@@ -45,16 +47,16 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
       SqlConnector connector,
       String schemaName,
       String coordinateTableName,
-      IdCoordinateFactory factory) {
+      SqlCoordinateFactory factory) {
     super(connector);
 
     String dbIdColumnName = getDbColumnName(factory.getIdField(), coordinateTableName);
-    String dbPointColumnName = getDbColumnName(factory.getPointField(), coordinateTableName);
+    String dbPointColumnName = getDbColumnName(factory.getCoordinateField(), coordinateTableName);
+
+    this.factory = factory;
 
     // setup queries
-    this.basicQuery =
-        createBaseGisQueryString(
-            schemaName, coordinateTableName, dbIdColumnName, dbPointColumnName);
+    this.basicQuery = createBaseQueryString(schemaName, coordinateTableName);
     this.queryForPoint = createQueryForPoint(dbIdColumnName);
     this.queryForPoints = createQueryForPoints(dbIdColumnName);
     this.queryForId = createQueryForId(dbPointColumnName);
@@ -63,27 +65,26 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
   @Override
   protected Optional<CoordinateValue> createEntity(Map<String, String> fieldToValues) {
-    int id;
-    Point point;
+    SimpleFactoryData simpleFactoryData = new SimpleFactoryData(fieldToValues, Pair.class);
+    Optional<Pair<Integer, Point>> pair = factory.get(simpleFactoryData);
 
-    try {
-      id = Integer.parseInt(fieldToValues.get("id"));
-      double longitude = Double.parseDouble(fieldToValues.get("stX"));
-      double latitude = Double.parseDouble(fieldToValues.get("stY"));
-
-      point = GeoUtils.buildPoint(latitude, longitude);
-    } catch (Exception e) {
+    if (pair.isEmpty()) {
       return Optional.empty();
+    } else {
+      Pair<Integer, Point> data = pair.get();
+      return Optional.of(new CoordinateValue(data.getKey(), data.getValue()));
     }
-
-    return Optional.of(new CoordinateValue(id, point));
   }
 
   @Override
   public Optional<Point> getCoordinate(int id) {
     List<CoordinateValue> values = executeQuery(queryForPoint, ps -> ps.setInt(1, id));
 
-    return Optional.of(values.get(0).coordinate);
+    if (values.isEmpty()) {
+      return Optional.empty();
+    } else {
+      return Optional.of(values.get(0).coordinate);
+    }
   }
 
   @Override
@@ -98,13 +99,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
               ps.setArray(1, sqlArray);
             });
 
-    List<Point> points = new ArrayList<>();
-
-    for (CoordinateValue value : values) {
-      points.add(value.coordinate);
-    }
-
-    return points;
+    return values.stream().map(value -> value.coordinate).toList();
   }
 
   @Override
@@ -120,20 +115,18 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
               ps.setDouble(2, latitude);
             });
 
-    return Optional.of(values.get(0).id);
+    if (values.isEmpty()) {
+      return Optional.empty();
+    } else {
+      return Optional.of(values.get(0).id);
+    }
   }
 
   @Override
   public Collection<Point> getAllCoordinates() {
     List<CoordinateValue> values = executeQuery(basicQuery + ";", PreparedStatement::execute);
 
-    ArrayList<Point> points = new ArrayList<>();
-
-    for (CoordinateValue value : values) {
-      points.add(value.coordinate);
-    }
-
-    return points;
+    return values.stream().map(value -> value.coordinate).toList();
   }
 
   @Override

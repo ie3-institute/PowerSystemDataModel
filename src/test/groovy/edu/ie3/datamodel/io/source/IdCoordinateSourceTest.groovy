@@ -10,7 +10,6 @@ import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Point
 import spock.lang.Specification
 import tech.units.indriya.ComparableQuantity
-import tech.units.indriya.quantity.Quantities
 
 import javax.measure.quantity.Length
 
@@ -37,29 +36,6 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
   point8,
   point9
   )
-
-  private Point coordinate = GeoUtils.buildPoint(50, 7)
-
-  def "IdCoordinateSource should calculate y-delta correctly"() {
-    given:
-    ComparableQuantity<Length> distance = GeoUtils.calcHaversine(52, 7, 51, 7)
-
-    when:
-    double[] deltas = calculateXYDelta(coordinate, distance)
-
-    then:
-    deltas[1] == 1
-  }
-
-  def "IdCoordinateSource should calculate x-delta correctly"() {
-    given:
-    ComparableQuantity<Length> distance = GeoUtils.calcHaversine(50, 6, 50, 5)
-    when:
-    double[] deltas = calculateXYDelta(coordinate, distance)
-
-    then:
-    deltas[0] == 1
-  }
 
   def "IdCoordinateSource should return correct number of corner points restricted to the bounding box"() {
     given:

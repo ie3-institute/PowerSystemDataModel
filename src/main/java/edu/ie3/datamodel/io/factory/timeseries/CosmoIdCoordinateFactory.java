@@ -7,7 +7,9 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.util.geo.GeoUtils;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 
@@ -22,7 +24,6 @@ public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
   private static final String LAT_GEO = "latgeo";
   private static final String LONG_ROT = "longrot";
   private static final String LAT_ROT = "latrot";
-  private static final String Point = "point";
 
   @Override
   protected Pair<Integer, Point> buildModel(SimpleFactoryData data) {
@@ -51,10 +52,5 @@ public class CosmoIdCoordinateFactory extends IdCoordinateFactory {
   @Override
   public String getLonField() {
     return LONG_GEO;
-  }
-
-  @Override
-  public String getPointField() {
-    return Point;
   }
 }

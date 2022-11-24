@@ -6,8 +6,7 @@
 package edu.ie3.datamodel.io.source.sql
 
 import edu.ie3.datamodel.io.connectors.SqlConnector
-import edu.ie3.datamodel.io.factory.timeseries.IconIdCoordinateFactory
-
+import edu.ie3.datamodel.io.factory.timeseries.SqlCoordinateFactory
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
@@ -23,10 +22,8 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 import tech.units.indriya.unit.Units
 
-import javax.measure.quantity.Length
-
 @Testcontainers
-class SqlIdCoordinateSourceIconIT extends Specification implements TestContainerHelper {
+class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelper {
 
   @Shared
   PostgreSQLContainer postgisSQLContainer = new PostgreSQLContainer(DockerImageName.parse("postgis/postgis:14-3.3").asCompatibleSubstituteFor("postgres"))
@@ -39,14 +36,14 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
 
   def setupSpec() {
     // Copy sql import script into docker
-    MountableFile sqlImportFile = getMountableFile("_coordinates/icon/coordinates.sql")
-    postgisSQLContainer.copyFileToContainer(sqlImportFile, "/home/coordinates_icon.sql")
+    MountableFile sqlImportFile = getMountableFile("_coordinates/coordinates.sql")
+    postgisSQLContainer.copyFileToContainer(sqlImportFile, "/home/coordinates.sql")
     // Execute import script
-    Container.ExecResult res = postgisSQLContainer.execInContainer("psql", "-Utest", "-f/home/coordinates_icon.sql")
+    Container.ExecResult res = postgisSQLContainer.execInContainer("psql", "-Utest", "-f/home/coordinates.sql")
     assert res.stderr.empty
 
     def connector = new SqlConnector(postgisSQLContainer.jdbcUrl, postgisSQLContainer.username, postgisSQLContainer.password)
-    def coordinatesFactory = new IconIdCoordinateFactory()
+    def coordinatesFactory = new SqlCoordinateFactory()
     source = new SqlIdCoordinateSource(connector, schemaName, coordinateTableName, coordinatesFactory)
   }
 
@@ -60,6 +57,14 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
     then:
     def coordinate = receivedValue.get().coordinate
     coordinate == expectedValue
+  }
+
+  def "A SqlIdCoordinateSource will return nothing if an id is not present"(){
+    given:
+    def receivedValue = source.getCoordinate(0)
+
+    expect:
+    receivedValue.isEmpty()
   }
 
   def "A SqlIdCoordinateSource can read a list of coordinates"(){
@@ -91,6 +96,17 @@ class SqlIdCoordinateSourceIconIT extends Specification implements TestContainer
 
     then:
     receivedValue.get() == id
+  }
+
+  def "A SqlIdCoordinateSource will return nothing if a coordinate is not present"(){
+    given:
+    def coordinate = GeoUtils.buildPoint(0.0 ,0.0 )
+
+    when:
+    def receivedValue = source.getId(coordinate)
+
+    then:
+    receivedValue.isEmpty()
   }
 
   def "A SqlIdCoordinateSource can return all coordinates"() {
