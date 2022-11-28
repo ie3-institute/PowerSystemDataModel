@@ -11,11 +11,13 @@ import edu.ie3.datamodel.io.factory.timeseries.SqlCoordinateFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.models.value.CoordinateValue;
 import edu.ie3.util.geo.CoordinateDistance;
+import edu.ie3.util.geo.GeoUtils;
 import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.util.*;
 import javax.measure.quantity.Length;
 import org.apache.commons.lang3.tuple.Pair;
+import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
@@ -132,19 +134,16 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   @Override
   public List<CoordinateDistance> getNearestCoordinates(
       Point coordinate, int n, ComparableQuantity<Length> distance) {
-    double[] xyDeltas = calculateXYDelta(coordinate, distance);
-
-    double longitude = coordinate.getX();
-    double latitude = coordinate.getY();
+    Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
 
     List<CoordinateValue> values =
         executeQuery(
             queryForBoundingBox,
             ps -> {
-              ps.setDouble(1, longitude - xyDeltas[0]);
-              ps.setDouble(2, latitude - xyDeltas[1]);
-              ps.setDouble(3, longitude + xyDeltas[0]);
-              ps.setDouble(4, latitude + xyDeltas[1]);
+              ps.setDouble(1, envelope.getMinX());
+              ps.setDouble(2, envelope.getMinY());
+              ps.setDouble(3, envelope.getMaxX());
+              ps.setDouble(4, envelope.getMaxY());
             });
 
     ArrayList<Point> reducedPoints = new ArrayList<>();

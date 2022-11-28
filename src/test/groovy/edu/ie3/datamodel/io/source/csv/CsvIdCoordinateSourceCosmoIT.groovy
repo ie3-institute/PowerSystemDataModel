@@ -154,7 +154,7 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
     actualDistances == expectedDistances
   }
 
-  def "The CsvIdCoordinateSource will return the nearest n coordinates if n coordinates are in the search radius"(){
+  def "The CsvIdCoordinateSource will return the nearest n coordinates if n coordinates are in the search radius"() {
     given:
     def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
     def distance = Quantities.getQuantity(10000, Units.METRE)

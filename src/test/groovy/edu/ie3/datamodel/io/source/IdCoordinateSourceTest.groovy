@@ -14,46 +14,45 @@ import tech.units.indriya.ComparableQuantity
 import javax.measure.quantity.Length
 
 class IdCoordinateSourceTest extends Specification implements IdCoordinateSource {
-  private Point point0 = GeoUtils.buildPoint(52.5, 7.5)
-  private Point point1 = GeoUtils.buildPoint(53, 8)
-  private Point point2 = GeoUtils.buildPoint(53, 7)
-  private Point point3 = GeoUtils.buildPoint(53, 6)
-  private Point point4 = GeoUtils.buildPoint(52, 8)
-  private Point point5 = GeoUtils.buildPoint(52, 7)
-  private Point point6 = GeoUtils.buildPoint(52, 6)
-  private Point point7 = GeoUtils.buildPoint(51, 8)
-  private Point point8 = GeoUtils.buildPoint(51, 7)
-  private Point point9 = GeoUtils.buildPoint(51, 6)
+  private final Point point0 = GeoUtils.buildPoint(52.5, 7.5)
+  private final Point point1 = GeoUtils.buildPoint(53, 8)
+  private final Point point2 = GeoUtils.buildPoint(53, 7)
+  private final Point point3 = GeoUtils.buildPoint(53, 6)
+  private final Point point4 = GeoUtils.buildPoint(52, 8)
+  private final Point point5 = GeoUtils.buildPoint(52, 7)
+  private final Point point6 = GeoUtils.buildPoint(52, 6)
+  private final Point point7 = GeoUtils.buildPoint(51, 8)
+  private final Point point8 = GeoUtils.buildPoint(51, 7)
+  private final Point point9 = GeoUtils.buildPoint(51, 6)
 
-  private ArrayList<Point> points = List.of(
-  point1,
-  point2,
-  point3,
-  point4,
-  point5,
-  point6,
-  point7,
-  point8,
-  point9
-  )
+  private final List<Point> points = [
+    point1,
+    point2,
+    point3,
+    point4,
+    point5,
+    point6,
+    point7,
+    point8,
+    point9
+  ]
 
   def "IdCoordinateSource should return correct number of corner points restricted to the bounding box"() {
     given:
-    ArrayList<Point> expectedPoints = new ArrayList<>()
-    expectedPoints.addAll(
-        point2,
-        point4,
-        point5,
-        point6,
-        point8
-        )
+    List<Point> expectedPoints = [
+      point2,
+      point4,
+      point5,
+      point6,
+      point8
+    ]
 
     when:
     List<CoordinateDistance> distances = getNearestCoordinates(point0, 9, points)
     List<CoordinateDistance> result = restrictToBoundingBoxWithSetNumberOfCorner(point0, distances, 4)
 
     then:
-    for(CoordinateDistance value : result){
+    for(CoordinateDistance value: result) {
       expectedPoints.contains(value.coordinateB)
     }
   }

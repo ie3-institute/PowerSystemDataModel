@@ -18,8 +18,6 @@ import tech.units.indriya.ComparableQuantity;
  * combined primary or foreign keys.
  */
 public interface IdCoordinateSource extends DataSource {
-  double earthRadius = 6378137.0;
-
   /**
    * Get the matching coordinate for the given ID
    *
@@ -78,33 +76,6 @@ public interface IdCoordinateSource extends DataSource {
             coordinate,
             (coordinates != null && !coordinates.isEmpty()) ? coordinates : getAllCoordinates());
     return restrictToBoundingBoxWithSetNumberOfCorner(coordinate, sortedDistances, n);
-  }
-
-  /**
-   * Method to turn a distance into a latitude and longitude deltas. The methode can be found here:
-   * <a href="https://math.stackexchange.com/questions/474602/reverse-use-of-haversine-formula">
-   *
-   * @param coordinate the coordinate at the center of the bounding box.
-   * @return x- and y-delta in degree
-   */
-  @Deprecated
-  default double[] calculateXYDelta(Point coordinate, ComparableQuantity<Length> distance) {
-    // y-degrees are evenly spaced, so we can just divide a distance
-    // by the earth's radius to get a y-delta in radians
-    double deltaY = distance.getValue().doubleValue() / earthRadius;
-
-    // because the spacing between x-degrees change between the equator
-    // and the poles, we need to calculate the x-delta using the inverse
-    // haversine formula
-    double sinus = Math.sin(deltaY / 2);
-    double squaredSinus = sinus * sinus;
-    double cosine = Math.cos(Math.toRadians(coordinate.getY()));
-    double squaredCosine = cosine * cosine;
-
-    double deltaX = 2 * Math.asin(Math.sqrt(squaredSinus / squaredCosine));
-
-    // converting the deltas to degree and returning them
-    return new double[] {Math.toDegrees(deltaX), Math.toDegrees(deltaY)};
   }
 
   /**

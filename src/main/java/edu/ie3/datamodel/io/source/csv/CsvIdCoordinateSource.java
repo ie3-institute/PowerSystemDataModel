@@ -10,6 +10,7 @@ import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.util.geo.CoordinateDistance;
+import edu.ie3.util.geo.GeoUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.measure.quantity.Length;
 import org.apache.commons.lang3.tuple.Pair;
+import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
@@ -101,12 +103,12 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
       Point coordinate, int n, ComparableQuantity<Length> distance) {
     Set<Point> points = coordinateToId.keySet();
 
-    double[] deltas = calculateXYDelta(coordinate, distance);
+    Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
 
-    double xMin = coordinate.getX() - deltas[0];
-    double xMax = coordinate.getX() + deltas[0];
-    double yMin = coordinate.getY() - deltas[1];
-    double yMax = coordinate.getY() + deltas[1];
+    double xMin = envelope.getMinX();
+    double xMax = envelope.getMaxX();
+    double yMin = envelope.getMinY();
+    double yMax = envelope.getMaxY();
 
     Set<Point> reducedPoints = new HashSet<>();
 
