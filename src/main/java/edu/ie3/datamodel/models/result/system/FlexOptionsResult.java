@@ -94,7 +94,7 @@ public class FlexOptionsResult extends ResultEntity {
 
   @Override
   public String toString() {
-    return "EmResult{"
+    return "FlexOptionsResult{"
         + "uuid="
         + getUuid()
         + ", time="
