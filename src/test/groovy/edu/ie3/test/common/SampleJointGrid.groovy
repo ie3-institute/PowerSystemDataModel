@@ -23,7 +23,6 @@ import edu.ie3.datamodel.models.input.system.StorageInput
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.datamodel.utils.GridAndGeoUtils
-import edu.ie3.util.quantities.MetricPrefixDouble
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.io.ParseException
 import org.locationtech.jts.io.geojson.GeoJsonReader
@@ -32,7 +31,6 @@ import tech.units.indriya.quantity.Quantities
 import java.util.stream.Collectors
 
 import static edu.ie3.util.quantities.PowerSystemUnits.*
-import static javax.measure.MetricPrefix.MICRO
 
 /**
  * //ToDo: Class Description
@@ -359,8 +357,8 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(630d, KILOVOLTAMPERE),
   Quantities.getQuantity(10d, KILOVOLT),
   Quantities.getQuantity(0.4, KILOVOLT),
-  Quantities.getQuantity(0d, MetricPrefixDouble.prefix(MICRO, SIEMENS)),
-  Quantities.getQuantity(0d, MetricPrefixDouble.prefix(MICRO, SIEMENS)),
+  Quantities.getQuantity(0d, MICROSIEMENS),
+  Quantities.getQuantity(0d, MICROSIEMENS),
   Quantities.getQuantity(0.5, PERCENT),
   Quantities.getQuantity(0d, DEGREE_GEOM),
   false,
@@ -390,8 +388,8 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(800d, KILOVOLTAMPERE),
   Quantities.getQuantity(110d, KILOVOLT),
   Quantities.getQuantity(10d, KILOVOLT),
-  Quantities.getQuantity(0d, MetricPrefixDouble.prefix(MICRO, SIEMENS)),
-  Quantities.getQuantity(0d, MetricPrefixDouble.prefix(MICRO, SIEMENS)),
+  Quantities.getQuantity(0d, MICROSIEMENS),
+  Quantities.getQuantity(0d, MICROSIEMENS),
   Quantities.getQuantity(0.5, PERCENT),
   Quantities.getQuantity(0d, DEGREE_GEOM),
   false,
