@@ -71,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Force user to provide time stamp pattern to `CouchbaseWeatherSource` to ensure harmonized querying
 - BREAKING: Updating PowerSystemUtils dependency to 2.0-SNAPSHOT [#595](https://github.com/ie3-institute/PowerSystemDataModel/issues/595)
 - BREAKING: Generified the `LoadInput` attribute `standardLoadProfile` to `loadProfile` as it should also address the newly added `TemperatureDependantLoadProfile`s [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
+- Adapted to new double converters in PSU [#705](https://github.com/ie3-institute/PowerSystemDataModel/issues/705)
 
 ## [2.1.0] - 2022-01-05
 
