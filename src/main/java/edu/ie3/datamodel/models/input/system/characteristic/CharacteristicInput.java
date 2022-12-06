@@ -131,6 +131,9 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof CharacteristicInput<?, ?> that)) return false;
+
+    points.iterator();
+
     return decimalPlaces == that.decimalPlaces
         && characteristicPrefix.equals(that.characteristicPrefix)
         && points.equals(that.points);
