@@ -171,7 +171,7 @@ class ValidationUtilsTest extends Specification {
 
     then:
     InvalidEntityException ex = thrown()
-    ex.message == "Entity is invalid because of: The following quantities have to be zero or positive: -1 μS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=-1 μS/km, g=0 μS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
+    ex.message == "Entity is invalid because of: The following quantities have to be zero or positive: -1 µS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=-1 µS/km, g=0 µS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
   }
 
   def "The check for zero or negative entities should work as expected"() {
@@ -208,7 +208,7 @@ class ValidationUtilsTest extends Specification {
 
     then:
     InvalidEntityException ex = thrown()
-    ex.message == "Entity is invalid because of: The following quantities have to be positive: 0 μS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0 μS/km, g=0 μS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
+    ex.message == "Entity is invalid because of: The following quantities have to be positive: 0 µS/km [LineTypeInput{uuid=3bed3eb3-9790-4874-89b5-a5434d408088, id=lineType_AtoB, b=0 µS/km, g=0 µS/km, r=0.437 Ω/km, x=0.356 Ω/km, iMax=300 A, vRated=20 kV}]"
   }
 
   def "Checking an unsupported asset leads to an exception"() {
