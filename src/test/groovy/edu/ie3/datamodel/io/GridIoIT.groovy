@@ -41,21 +41,10 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
     }
 
     then:
-    //compare input and output grid container participants
+    //compare input and output joint grid container
 
-    firstGridContainer.getGridName().equals(secondGridContainer.getGridName())
-    firstGridContainer.getRawGrid().equals(secondGridContainer.getRawGrid())
-    firstGridContainer.getSystemParticipants().equals(secondGridContainer.getSystemParticipants())
-    firstGridContainer.getGraphics().equals(secondGridContainer.getGraphics())
+    firstGridContainer.getProperties().equals(secondGridContainer.getProperties())
 
-    firstGridContainer.getSystemParticipants().getFixedFeedIns().equals(secondGridContainer.getSystemParticipants().getFixedFeedIns())
-    firstGridContainer.getSystemParticipants().getBmPlants().equals(secondGridContainer.getSystemParticipants().getBmPlants())
-    firstGridContainer.getSystemParticipants().getPvPlants().equals(secondGridContainer.getSystemParticipants().getPvPlants())
-    firstGridContainer.getSystemParticipants().getLoads().equals(secondGridContainer.getSystemParticipants().getLoads())
-    firstGridContainer.getSystemParticipants().getEvCS().equals(secondGridContainer.getSystemParticipants().getEvCS())
-    firstGridContainer.getSystemParticipants().getStorages().equals(secondGridContainer.getSystemParticipants().getStorages())
-
-    firstGridContainer.getSystemParticipants().getWecPlants().equals(secondGridContainer.getSystemParticipants().getWecPlants())
 
   }
 
