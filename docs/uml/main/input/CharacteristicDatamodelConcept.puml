@@ -41,7 +41,6 @@ package models {
 
                 abstract class CharacteristicInput <A extends Quantity<A>, O extends Quantity<O>> {
                     # characteristicPrefix: String
-                    # decimalPlaces: int
                     # points: SortedSet<CharacteristicPoint<A,O>>
                     + deSerialize(): String
                     + {static} buildStartingRegex(String): String

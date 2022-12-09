@@ -98,11 +98,10 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
   /**
    * De-serializes the given point to a string
    *
-   * @param decimalPlaces Desired amount of decimal places
    * @return The de-serialized point
    */
-  public String deSerialize(int decimalPlaces) {
-    String formattingString = String.format("(%%.%sf,%%.%sf)", decimalPlaces, decimalPlaces);
+  public String deSerialize() {
+    String formattingString = String.format("(%%.%sf,%%.%sf)");
     return String.format(
         Locale.ENGLISH, formattingString, x.getValue().doubleValue(), y.getValue().doubleValue());
   }
