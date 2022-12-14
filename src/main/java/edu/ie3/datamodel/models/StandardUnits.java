@@ -8,7 +8,6 @@ package edu.ie3.datamodel.models;
 import static edu.ie3.util.quantities.PowerSystemUnits.*;
 
 import edu.ie3.util.quantities.interfaces.*;
-import javax.measure.MetricPrefix;
 import javax.measure.Unit;
 import javax.measure.quantity.*;
 
@@ -31,7 +30,7 @@ public class StandardUnits {
   /** Energy for input purposes in kWh */
   public static final Unit<Energy> ENERGY_IN = KILOWATTHOUR;
   /** Energy for result purposes in MWh */
-  public static final Unit<Energy> ENERGY_RESULT = MetricPrefix.MEGA(WATTHOUR);
+  public static final Unit<Energy> ENERGY_RESULT = MEGAWATTHOUR;
   /** Rated voltage magnitude (mainly for input purposes) in kV */
   public static final Unit<ElectricPotential> RATED_VOLTAGE_MAGNITUDE = KILOVOLT;
   /** Magnitude of an electric current in A */
@@ -51,11 +50,11 @@ public class StandardUnits {
   /** Reactance per length (mainly for lines) in Ω/km */
   public static final Unit<SpecificResistance> REACTANCE_PER_LENGTH = OHM_PER_KILOMETRE;
   /** Admittance in nS */
-  public static final Unit<ElectricConductance> CONDUCTANCE = MetricPrefix.NANO(SIEMENS);
+  public static final Unit<ElectricConductance> CONDUCTANCE = NANOSIEMENS;
   /** Conductance in nS */
-  public static final Unit<ElectricConductance> SUSCEPTANCE = MetricPrefix.NANO(SIEMENS);
+  public static final Unit<ElectricConductance> SUSCEPTANCE = NANOSIEMENS;
   /** Susceptance in nS */
-  public static final Unit<ElectricConductance> ADMITTANCE = MetricPrefix.NANO(SIEMENS);
+  public static final Unit<ElectricConductance> ADMITTANCE = NANOSIEMENS;
   /** Admittance per length (mainly for lines) in µS/km */
   public static final Unit<SpecificConductance> ADMITTANCE_PER_LENGTH = MICRO_SIEMENS_PER_KILOMETRE;
   /** Conductance per length (mainly for lines) in µS/km */

@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Re-using SQL connection per default [#653](https://github.com/ie3-institute/PowerSystemDataModel/issues/653)
 - Persisting EmInputs [#665](https://github.com/ie3-institute/PowerSystemDataModel/issues/665)
 - Charging point type parsing now works with more id definitions [#686](https://github.com/ie3-institute/PowerSystemDataModel/issues/685)
+- Fix `EvResult.toString` [#690](https://github.com/ie3-institute/PowerSystemDataModel/issues/690)
 
 ### Changed
 - BREAKING: PvInput Model parameter name height changed to elevationAngle [#393](https://github.com/ie3-institute/PowerSystemDataModel/issues/393) :warning:
@@ -70,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Force user to provide time stamp pattern to `CouchbaseWeatherSource` to ensure harmonized querying
 - BREAKING: Updating PowerSystemUtils dependency to 2.0-SNAPSHOT [#595](https://github.com/ie3-institute/PowerSystemDataModel/issues/595)
 - BREAKING: Generified the `LoadInput` attribute `standardLoadProfile` to `loadProfile` as it should also address the newly added `TemperatureDependantLoadProfile`s [#601](https://github.com/ie3-institute/PowerSystemDataModel/issues/601)
+- Adapted to new double converters in PSU [#705](https://github.com/ie3-institute/PowerSystemDataModel/issues/705)
 
 ## [2.1.0] - 2022-01-05
 
@@ -83,6 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Writers used to write time series are closed right away
+- Changed class name in FlexOptionsResult.toString [#693](https://github.com/ie3-institute/PowerSystemDataModel/issues/693)
 
 ## [2.0.1] - 2021-07-08
 
