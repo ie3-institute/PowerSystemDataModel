@@ -6,6 +6,9 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.utils.options.Failure;
+import edu.ie3.datamodel.utils.options.Success;
+import edu.ie3.datamodel.utils.options.Try;
 import java.util.*;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
@@ -41,7 +44,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
    * @param data EntityData (or subclass) containing the data
    * @return An entity wrapped in Option if successful, an empty option otherwise
    */
-  public Optional<R> get(D data) {
+  public Try<R, FactoryException> get(D data) {
     isSupportedClass(data.getTargetClass());
 
     // magic: case-insensitive get/set calls on set strings
@@ -51,15 +54,15 @@ public abstract class Factory<C, D extends FactoryData, R> {
 
     try {
       // build the model
-      return Optional.of(buildModel(data));
+      return new Success<>(buildModel(data));
     } catch (FactoryException e) {
       // only catch FactoryExceptions, as more serious exceptions should be handled elsewhere
       log.error(
           "An error occurred when creating instance of {}.class.",
           data.getTargetClass().getSimpleName(),
           e);
+      return new Failure<>(e);
     }
-    return Optional.empty();
   }
 
   /**

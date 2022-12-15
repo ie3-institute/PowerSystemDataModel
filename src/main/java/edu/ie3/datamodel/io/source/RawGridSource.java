@@ -46,7 +46,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return either a valid, complete {@link RawGridElements} optional or {@link Optional#empty()}
    */
-  Optional<RawGridElements> getGridData();
+  RawGridElements getGridData();
 
   /**
    * Returns a unique set of {@link NodeInput} instances.

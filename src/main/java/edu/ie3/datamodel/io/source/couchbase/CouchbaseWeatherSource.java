@@ -10,6 +10,7 @@ import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -18,6 +19,7 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.datamodel.utils.options.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -294,7 +296,14 @@ public class CouchbaseWeatherSource implements WeatherSource {
       logger.debug("The following json could not be parsed:\n{}", jsonObj);
       return Optional.empty();
     }
-    TimeBasedValue<WeatherValue> timeBasedValue = weatherFactory.get(data.get()).orElse(null);
-    return Optional.ofNullable(timeBasedValue);
+
+    Try<TimeBasedValue<WeatherValue>, FactoryException> timeBasedValue =
+        weatherFactory.get(data.get());
+
+    if (timeBasedValue.isSuccess()) {
+      return Optional.of(timeBasedValue.getData());
+    } else {
+      return Optional.empty();
+    }
   }
 }

@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
+import edu.ie3.datamodel.utils.options.Try;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,7 +34,7 @@ public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSer
                       new SimpleEntityData(fieldToValues, MappingEntry.class);
                   return mappingFactory.get(entityData);
                 })
-            .flatMap(Optional::stream)
+            .map(Try::getOrThrowException)
             .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
   }
 

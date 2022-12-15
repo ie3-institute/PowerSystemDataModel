@@ -10,6 +10,7 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
+import edu.ie3.datamodel.utils.options.Try;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -60,6 +61,6 @@ public class SqlTimeSeriesMappingSource
   @Override
   protected Optional<MappingEntry> createEntity(Map<String, String> fieldToValues) {
     SimpleEntityData entityData = new SimpleEntityData(fieldToValues, MappingEntry.class);
-    return mappingFactory.get(entityData);
+    return Optional.of(mappingFactory.get(entityData)).map(Try::getOrThrowException);
   }
 }

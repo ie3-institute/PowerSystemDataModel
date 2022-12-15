@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
@@ -13,7 +14,6 @@ import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.SystemParticipantSource;
 import edu.ie3.datamodel.io.source.ThermalSource;
 import edu.ie3.datamodel.io.source.TypeSource;
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
@@ -21,9 +21,8 @@ import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
+import edu.ie3.datamodel.utils.options.Try;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -93,7 +92,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
   /** {@inheritDoc} */
   @Override
-  public Optional<SystemParticipants> getSystemParticipants() {
+  public SystemParticipants getSystemParticipants() {
 
     // read all needed entities
     /// start with types and operators
@@ -113,89 +112,32 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
     /// go on with the nodes
     Set<NodeInput> nodes = rawGridSource.getNodes(operators);
 
-    // start with the entities needed for SystemParticipants container
-    /// as we want to return a working grid, keep an eye on empty optionals which is equal to
-    // elements that
-    /// have been unable to be built e.g. due to missing elements they depend on
-    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities =
-        new ConcurrentHashMap<>();
-
-    Set<FixedFeedInInput> fixedFeedInInputs =
-        nodeAssetEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators)
-            .filter(isPresentCollectIfNot(FixedFeedInInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-    Set<PvInput> pvInputs =
-        nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators)
-            .filter(isPresentCollectIfNot(PvInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-    Set<LoadInput> loads =
-        nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators)
-            .filter(isPresentCollectIfNot(LoadInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-    Set<BmInput> bmInputs =
-        typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, bmTypes)
-            .filter(isPresentCollectIfNot(BmInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-    Set<StorageInput> storages =
-        typedEntityStream(StorageInput.class, storageInputFactory, nodes, operators, storageTypes)
-            .filter(isPresentCollectIfNot(StorageInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-    Set<WecInput> wecInputs =
-        typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, wecTypes)
-            .filter(isPresentCollectIfNot(WecInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-    Set<EvInput> evs =
-        typedEntityStream(EvInput.class, evInputFactory, nodes, operators, evTypes)
-            .filter(isPresentCollectIfNot(EvInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-    Set<EvcsInput> evcs =
-        nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators)
-            .filter(isPresentCollectIfNot(EvcsInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
+    Set<FixedFeedInInput> fixedFeedInInputs = getFixedFeedIns(nodes, operators);
+    Set<PvInput> pvInputs = getPvPlants(nodes, operators);
+    Set<LoadInput> loads = getLoads(nodes, operators);
+    Set<BmInput> bmInputs = getBmPlants(nodes, operators, bmTypes);
+    Set<StorageInput> storages = getStorages(nodes, operators, storageTypes);
+    Set<WecInput> wecInputs = getWecPlants(nodes, operators, wecTypes);
+    Set<EvInput> evs = getEvs(nodes, operators, evTypes);
+    Set<EvcsInput> evcs = getEvCS(nodes, operators);
     Set<ChpInput> chpInputs =
-        chpInputStream(nodes, operators, chpTypes, thermalBuses, thermalStorages)
-            .filter(isPresentCollectIfNot(ChpInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-    Set<HpInput> hpInputs =
-        hpInputStream(nodes, operators, hpTypes, thermalBuses)
-            .filter(isPresentCollectIfNot(HpInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-    Set<EmInput> emInputs =
-        nodeAssetEntityStream(EmInput.class, emInputFactory, nodes, operators)
-            .filter(isPresentCollectIfNot(EmInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-
-    // if we found invalid elements return an empty optional and log the problems
-    if (!nonBuildEntities.isEmpty()) {
-      nonBuildEntities.forEach(this::printInvalidElementInformation);
-      return Optional.empty();
-    }
+        getChpPlants(nodes, operators, chpTypes, thermalBuses, thermalStorages);
+    Set<HpInput> hpInputs = getHeatPumps(nodes, operators, hpTypes, thermalBuses);
+    Set<EmInput> emInputs = getEmSystems(nodes, operators);
 
     // if everything is fine, return a system participants container
-    return Optional.of(
-        new SystemParticipants(
-            bmInputs,
-            chpInputs,
-            evcs,
-            evs,
-            fixedFeedInInputs,
-            hpInputs,
-            loads,
-            pvInputs,
-            storages,
-            wecInputs,
-            emInputs));
+    return new SystemParticipants(
+        bmInputs,
+        chpInputs,
+        evcs,
+        evs,
+        fixedFeedInInputs,
+        hpInputs,
+        loads,
+        pvInputs,
+        storages,
+        wecInputs,
+        emInputs);
   }
 
   /** {@inheritDoc} */
@@ -218,9 +160,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return nodeAssetEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            nodeAssetEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators)
+                .collect(Collectors.toSet()),
+            FixedFeedInInput.class));
   }
 
   /** {@inheritDoc} */
@@ -244,9 +188,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<PvInput> getPvPlants(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators)
+                .collect(Collectors.toSet()),
+            PvInput.class));
   }
 
   /** {@inheritDoc} */
@@ -270,9 +216,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<LoadInput> getLoads(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators)
+                .collect(Collectors.toSet()),
+            LoadInput.class));
   }
   /** {@inheritDoc} */
   @Override
@@ -295,9 +243,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators)
+                .collect(Collectors.toSet()),
+            EvcsInput.class));
   }
 
   /** {@inheritDoc} */
@@ -323,9 +273,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<BmInput> getBmPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<BmTypeInput> types) {
-    return typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, types)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, types)
+                .collect(Collectors.toSet()),
+            BmInput.class));
   }
   /** {@inheritDoc} */
   @Override
@@ -350,9 +302,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<StorageInput> getStorages(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<StorageTypeInput> types) {
-    return typedEntityStream(StorageInput.class, storageInputFactory, nodes, operators, types)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            typedEntityStream(StorageInput.class, storageInputFactory, nodes, operators, types)
+                .collect(Collectors.toSet()),
+            StorageInput.class));
   }
   /** {@inheritDoc} */
   @Override
@@ -377,9 +331,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<WecInput> getWecPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types) {
-    return typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, types)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, types)
+                .collect(Collectors.toSet()),
+            WecInput.class));
   }
   /** {@inheritDoc} */
   @Override
@@ -404,9 +360,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<EvInput> getEvs(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types) {
-    return typedEntityStream(EvInput.class, evInputFactory, nodes, operators, types)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            typedEntityStream(EvInput.class, evInputFactory, nodes, operators, types)
+                .collect(Collectors.toSet()),
+            EvInput.class));
   }
 
   /**
@@ -423,7 +381,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    *     SystemParticipantInput} of the requested entity class
    */
   private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
-      Stream<Optional<T>> typedEntityStream(
+      Stream<Try<T, FactoryException>> typedEntityStream(
           Class<T> entityClass,
           EntityFactory<T, SystemParticipantTypedEntityData<A>> factory,
           Set<NodeInput> nodes,
@@ -433,7 +391,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             nodeAssetInputEntityDataStream(
                 assetInputEntityDataStream(entityClass, operators), nodes),
             types)
-        .map(dataOpt -> dataOpt.flatMap(factory::get));
+        .map(dataOpt -> factory.get(dataOpt.get()));
   }
   /** {@inheritDoc} */
   @Override
@@ -469,12 +427,14 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       Set<ThermalBusInput> thermalBuses,
       Set<ThermalStorageInput> thermalStorages) {
 
-    return chpInputStream(nodes, operators, types, thermalBuses, thermalStorages)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            chpInputStream(nodes, operators, types, thermalBuses, thermalStorages)
+                .collect(Collectors.toSet()),
+            ChpInput.class));
   }
 
-  private Stream<Optional<ChpInput>> chpInputStream(
+  private Stream<Try<ChpInput, FactoryException>> chpInputStream(
       Set<NodeInput> nodes,
       Set<OperatorInput> operators,
       Set<ChpTypeInput> types,
@@ -487,7 +447,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                 types),
             thermalStorages,
             thermalBuses)
-        .map(dataOpt -> dataOpt.flatMap(chpInputFactory::get));
+        .map(dataOpt -> chpInputFactory.get(dataOpt.get()));
   }
   /** {@inheritDoc} */
   @Override
@@ -519,12 +479,13 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       Set<OperatorInput> operators,
       Set<HpTypeInput> types,
       Set<ThermalBusInput> thermalBuses) {
-    return hpInputStream(nodes, operators, types, thermalBuses)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            hpInputStream(nodes, operators, types, thermalBuses).collect(Collectors.toSet()),
+            HpInput.class));
   }
 
-  private Stream<Optional<HpInput>> hpInputStream(
+  private Stream<Try<HpInput, FactoryException>> hpInputStream(
       Set<NodeInput> nodes,
       Set<OperatorInput> operators,
       Set<HpTypeInput> types,
@@ -535,7 +496,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                     assetInputEntityDataStream(HpInput.class, operators), nodes),
                 types),
             thermalBuses)
-        .map(dataOpt -> dataOpt.flatMap(hpInputFactory::get));
+        .map(dataOpt -> hpInputFactory.get(dataOpt.get()));
   }
 
   /**
@@ -761,8 +722,10 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<EmInput> getEmSystems(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return nodeAssetEntityStream(EmInput.class, emInputFactory, nodes, operators)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            nodeAssetEntityStream(EmInput.class, emInputFactory, nodes, operators)
+                .collect(Collectors.toSet()),
+            EmInput.class));
   }
 }

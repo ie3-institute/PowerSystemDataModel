@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.sql;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
@@ -17,6 +18,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.datamodel.utils.options.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
@@ -151,7 +153,14 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
     fieldToValues.remove("timeSeries");
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
-    return valueFactory.get(factoryData);
+
+    Try<TimeBasedValue<V>, FactoryException> timeBasedValue = valueFactory.get(factoryData);
+
+    if (timeBasedValue.isSuccess()) {
+      return Optional.of(timeBasedValue.getData());
+    } else {
+      return Optional.empty();
+    }
   }
 
   /**

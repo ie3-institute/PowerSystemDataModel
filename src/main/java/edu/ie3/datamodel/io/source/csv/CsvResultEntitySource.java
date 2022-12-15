@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
+import edu.ie3.datamodel.utils.options.Try;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -169,9 +170,9 @@ public class CsvResultEntitySource extends CsvDataSource implements ResultEntity
   private <T extends ResultEntity> Set<T> getResultEntities(
       Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory) {
     return simpleEntityDataStream(entityClass)
-        .map(
-            entityData ->
-                factory.get(entityData).flatMap(loadResult -> cast(entityClass, loadResult)))
+        .map(factory::get)
+        .map(Try::getOrThrowException)
+        .map(loadResult -> cast(entityClass, loadResult))
         .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.RawInputDataException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
@@ -40,7 +41,7 @@ public interface GraphicSource extends DataSource {
    *
    * @return either a valid, complete {@link GraphicElements} optional or {@link Optional#empty()}
    */
-  Optional<GraphicElements> getGraphicElements();
+  GraphicElements getGraphicElements() throws RawInputDataException;
 
   /**
    * Returns a set of {@link NodeGraphicInput} instances. This set has to be unique in the sense of
@@ -50,7 +51,7 @@ public interface GraphicSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link NodeGraphicInput} entities
    */
-  Set<NodeGraphicInput> getNodeGraphicInput();
+  Set<NodeGraphicInput> getNodeGraphicInput() throws RawInputDataException;
 
   /**
    * Returns a set of {@link NodeGraphicInput} instances. This set has to be unique in the sense of
@@ -70,7 +71,7 @@ public interface GraphicSource extends DataSource {
    *     instances
    * @return a set of object and uuid unique {@link NodeGraphicInput} entities
    */
-  Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes);
+  Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) throws RawInputDataException;
 
   /**
    * Returns a set of {@link LineGraphicInput} instances. This set has to be unique in the sense of
@@ -80,7 +81,7 @@ public interface GraphicSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link LineGraphicInput} entities
    */
-  Set<LineGraphicInput> getLineGraphicInput();
+  Set<LineGraphicInput> getLineGraphicInput() throws RawInputDataException;
 
   /**
    * Returns a set of {@link LineGraphicInput} instances. This set has to be unique in the sense of
@@ -100,5 +101,5 @@ public interface GraphicSource extends DataSource {
    *     instances
    * @return a set of object and uuid unique {@link LineGraphicInput} entities
    */
-  Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines);
+  Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) throws RawInputDataException;
 }

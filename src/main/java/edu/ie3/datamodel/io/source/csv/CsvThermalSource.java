@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
+import edu.ie3.datamodel.utils.options.Try;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -61,7 +62,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<ThermalBusInput> getThermalBuses() {
     return assetInputEntityDataStream(ThermalBusInput.class, typeSource.getOperators())
         .map(thermalBusInputFactory::get)
-        .flatMap(Optional::stream)
+        .map(Try::getOrThrowException)
         .collect(Collectors.toSet());
   }
 
@@ -75,7 +76,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<ThermalBusInput> getThermalBuses(Set<OperatorInput> operators) {
     return assetInputEntityDataStream(ThermalBusInput.class, operators)
         .map(thermalBusInputFactory::get)
-        .flatMap(Optional::stream)
+        .map(Try::getOrThrowException)
         .collect(Collectors.toSet());
   }
   /** {@inheritDoc} */
@@ -108,8 +109,8 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .flatMap(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
-                    .map(dataOpt -> dataOpt.flatMap(thermalHouseInputFactory::get))
-                    .flatMap(Optional::stream))
+                    .map(dataOpt -> thermalHouseInputFactory.get(dataOpt.get()))
+                    .map(Try::getOrThrowException))
         .collect(Collectors.toSet());
   }
 
@@ -130,11 +131,11 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
       Set<OperatorInput> operators, Set<ThermalBusInput> thermalBuses) {
 
     return assetInputEntityDataStream(ThermalHouseInput.class, operators)
-        .map(
+        .flatMap(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
-                    .map(dataOpt -> dataOpt.flatMap(thermalHouseInputFactory::get)))
-        .flatMap(elements -> elements.flatMap(Optional::stream))
+                    .map(dataOpt -> thermalHouseInputFactory.get(dataOpt.get()))
+                    .map(Try::getOrThrowException))
         .collect(Collectors.toSet());
   }
   /** {@inheritDoc} */
@@ -142,11 +143,11 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<CylindricalStorageInput> getCylindricStorages() {
 
     return assetInputEntityDataStream(CylindricalStorageInput.class, typeSource.getOperators())
-        .map(
+        .flatMap(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
-                    .map(dataOpt -> dataOpt.flatMap(cylindricalStorageInputFactory::get)))
-        .flatMap(elements -> elements.flatMap(Optional::stream))
+                    .map(dataOpt -> cylindricalStorageInputFactory.get(dataOpt.get()))
+                    .map(Try::getOrThrowException))
         .collect(Collectors.toSet());
   }
 
@@ -167,11 +168,11 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
       Set<OperatorInput> operators, Set<ThermalBusInput> thermalBuses) {
 
     return assetInputEntityDataStream(CylindricalStorageInput.class, operators)
-        .map(
+        .flatMap(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
-                    .map(dataOpt -> dataOpt.flatMap(cylindricalStorageInputFactory::get)))
-        .flatMap(elements -> elements.flatMap(Optional::stream))
+                    .map(dataOpt -> cylindricalStorageInputFactory.get(dataOpt.get()))
+                    .map(Try::getOrThrowException))
         .collect(Collectors.toSet());
   }
 

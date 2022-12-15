@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.RawInputDataException;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData;
@@ -13,7 +14,6 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.GraphicSource;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
@@ -21,11 +21,10 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
+import edu.ie3.datamodel.utils.options.Try;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -63,7 +62,7 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
 
   /** {@inheritDoc} */
   @Override
-  public Optional<GraphicElements> getGraphicElements() {
+  public GraphicElements getGraphicElements() throws RawInputDataException {
 
     // read all needed entities
     /// start with types and operators
@@ -73,37 +72,28 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
     Set<NodeInput> nodes = rawGridSource.getNodes(operators);
     Set<LineInput> lines = rawGridSource.getLines(nodes, lineTypes, operators);
 
-    // start with the entities needed for a GraphicElements entity
-    /// as we want to return a working grid, keep an eye on empty optionals
-    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities =
-        new ConcurrentHashMap<>();
-
     Set<NodeGraphicInput> nodeGraphics =
-        buildNodeGraphicEntityData(nodes)
-            .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get))
-            .filter(isPresentCollectIfNot(NodeGraphicInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
+        Try.getOrThrowException(
+            Try.scanForExceptions(
+                buildNodeGraphicEntityData(nodes)
+                    .map(dataOpt -> nodeGraphicInputFactory.get(dataOpt.get()))
+                    .collect(Collectors.toSet()),
+                NodeGraphicInput.class));
 
     Set<LineGraphicInput> lineGraphics =
-        buildLineGraphicEntityData(lines)
-            .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get))
-            .filter(isPresentCollectIfNot(LineGraphicInput.class, nonBuildEntities))
-            .map(Optional::get)
-            .collect(Collectors.toSet());
-
-    // if we found invalid elements return an empty optional and log the problems
-    if (!nonBuildEntities.isEmpty()) {
-      nonBuildEntities.forEach(this::printInvalidElementInformation);
-      return Optional.empty();
-    }
+        Try.getOrThrowException(
+            Try.scanForExceptions(
+                buildLineGraphicEntityData(lines)
+                    .map(dataOpt -> lineGraphicInputFactory.get(dataOpt.get()))
+                    .collect(Collectors.toSet()),
+                LineGraphicInput.class));
 
     // if everything is fine, return a GraphicElements instance
-    return Optional.of(new GraphicElements(nodeGraphics, lineGraphics));
+    return new GraphicElements(nodeGraphics, lineGraphics);
   }
   /** {@inheritDoc} */
   @Override
-  public Set<NodeGraphicInput> getNodeGraphicInput() {
+  public Set<NodeGraphicInput> getNodeGraphicInput() throws RawInputDataException {
     return getNodeGraphicInput(rawGridSource.getNodes(typeSource.getOperators()));
   }
 
@@ -115,16 +105,19 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
    * has been able to be built are returned and the not-built ones are ignored (= filtered out).
    */
   @Override
-  public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes) {
-    return buildNodeGraphicEntityData(nodes)
-        .map(dataOpt -> dataOpt.flatMap(nodeGraphicInputFactory::get))
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+  public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes)
+      throws RawInputDataException {
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            buildNodeGraphicEntityData(nodes)
+                .map(dataOpt -> nodeGraphicInputFactory.get(dataOpt.get()))
+                .collect(Collectors.toSet()),
+            NodeGraphicInput.class));
   }
 
   /** {@inheritDoc} */
   @Override
-  public Set<LineGraphicInput> getLineGraphicInput() {
+  public Set<LineGraphicInput> getLineGraphicInput() throws RawInputDataException {
     Set<OperatorInput> operators = typeSource.getOperators();
     return getLineGraphicInput(
         rawGridSource.getLines(
@@ -139,11 +132,14 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
    * has been able to be built are returned and the not-built ones are ignored (= filtered out).
    */
   @Override
-  public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines) {
-    return buildLineGraphicEntityData(lines)
-        .map(dataOpt -> dataOpt.flatMap(lineGraphicInputFactory::get))
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+  public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines)
+      throws RawInputDataException {
+    return Try.getOrThrowException(
+        Try.scanForExceptions(
+            buildLineGraphicEntityData(lines)
+                .map(dataOpt -> lineGraphicInputFactory.get(dataOpt.get()))
+                .collect(Collectors.toSet()),
+            LineGraphicInput.class));
   }
 
   /**

@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.datamodel.utils.options.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -218,6 +219,6 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
       TimeBasedSimpleValueFactory<V> factory) {
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
-    return factory.get(factoryData);
+    return Optional.of(Try.getOrThrowException(factory.get(factoryData)));
   }
 }

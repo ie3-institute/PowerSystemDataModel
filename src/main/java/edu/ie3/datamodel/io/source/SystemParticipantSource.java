@@ -44,7 +44,7 @@ public interface SystemParticipantSource extends DataSource {
    * @return either a valid, complete {@link SystemParticipants} optional or {@link
    *     Optional#empty()}
    */
-  Optional<SystemParticipants> getSystemParticipants();
+  SystemParticipants getSystemParticipants();
 
   /**
    * Returns a unique set of {@link FixedFeedInInput} instances.

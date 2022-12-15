@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
@@ -18,6 +19,7 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.utils.options.Try;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
 import java.io.BufferedReader;
@@ -606,13 +608,13 @@ public abstract class CsvDataSource {
    * @return stream of optionals of the entities that has been built by the factor or empty
    *     optionals if the entity could not have been build
    */
-  protected <T extends AssetInput> Stream<Optional<T>> nodeAssetEntityStream(
+  protected <T extends AssetInput> Stream<Try<T, FactoryException>> nodeAssetEntityStream(
       Class<T> entityClass,
       EntityFactory<T, NodeAssetInputEntityData> factory,
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators) {
     return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
-        .map(dataOpt -> dataOpt.flatMap(factory::get));
+        .map(dataOpt -> factory.get(dataOpt.get()));
   }
 
   /**
