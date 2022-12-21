@@ -15,19 +15,17 @@ public abstract class ReactivePowerCharacteristic
     extends CharacteristicInput<Dimensionless, Dimensionless> {
   protected ReactivePowerCharacteristic(
       SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>> characteristicPoints,
-      String prefix,
-      int decimalPlaces) {
-    super(characteristicPoints, prefix, decimalPlaces);
+      String prefix) {
+    super(characteristicPoints, prefix);
   }
 
   protected ReactivePowerCharacteristic(
       String input,
       Unit<Dimensionless> abscissaUnit,
       Unit<Dimensionless> ordinateUnit,
-      String prefix,
-      int decimalPlaces)
+      String prefix)
       throws ParsingException {
-    super(input, abscissaUnit, ordinateUnit, prefix, decimalPlaces);
+    super(input, abscissaUnit, ordinateUnit, prefix);
   }
 
   /**

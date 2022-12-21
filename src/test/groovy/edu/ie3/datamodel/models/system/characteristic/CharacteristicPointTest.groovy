@@ -66,12 +66,10 @@ class CharacteristicPointTest extends Specification {
         Quantities.getQuantity(4d, PERCENT))
 
     when: "de-serialized"
-    String twoPlaces = point.deSerialize(2)
-    String noPlace = point.deSerialize(0)
+    String result = point.deSerialize()
 
     then: "the result is correct"
-    twoPlaces == "(3.00,4.00)"
-    noPlace == "(3,4)"
+    result == "(3.0,4.0)"
   }
 
   def "The CharacteristicCoordinate is able to parse a String to itself"(String input, double x, double y) {
