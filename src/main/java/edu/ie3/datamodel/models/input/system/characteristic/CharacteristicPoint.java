@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input.system.characteristic;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.util.quantities.QuantityUtil;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.Objects;
@@ -111,12 +110,6 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
     if (this == o) return true;
     if (!(o instanceof CharacteristicPoint<?, ?> that)) return false;
     return Objects.equals(x, that.x) && Objects.equals(y, that.y);
-  }
-
-  public boolean equalsWithTolerance(CharacteristicPoint<A, O> p) {
-    double tolerance = Math.pow(10, -2);
-    return QuantityUtil.isEquivalentAbs(this.x, p.x, tolerance)
-        && QuantityUtil.isEquivalentAbs(this.y, p.y, tolerance);
   }
 
   @Override
