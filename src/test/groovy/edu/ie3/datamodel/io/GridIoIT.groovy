@@ -43,7 +43,8 @@ class GridIoIT extends Specification implements CsvTestDataMeta {
     then:
     //compare input and output joint grid container
 
-    firstGridContainer.getProperties().equals(secondGridContainer.getProperties())
+    firstGridContainer.equals(secondGridContainer)
+
 
 
   }
