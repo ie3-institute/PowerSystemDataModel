@@ -67,7 +67,6 @@ class InputEntityProcessorTest extends Specification {
     processingResult.get() == expectedResults
   }
 
-
   def "A InputEntityProcessor should de-serialize a provided ConnectorInput correctly"() {
     given:
     def processor = new InputEntityProcessor(modelClass)
@@ -87,27 +86,27 @@ class InputEntityProcessorTest extends Specification {
       "uuid"           : "cc327469-7d56-472b-a0df-edbb64f90e8f",
       "autoTap"        : "true",
       "id"             : "3w_test",
-      "parallelDevices": "1",
       "nodeA"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
       "nodeB"          : "47d29df0-ba2d-4d23-8e75-c82229c5c758",
       "nodeC"          : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
-      "operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
       "operatesFrom"   : "2020-03-24T15:11:31Z[UTC]",
+      "operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
       "operator"       : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
       "tapPos"         : "0",
+      "parallelDevices": "1",
       "type"           : "5b0ee546-21fb-4a7f-a801-5dbd3d7bb356"
     ]
     Transformer2WInput | GridTestData.transformerCtoG    || [
       "uuid"           : "5dc88077-aeb6-4711-9142-db57292640b1",
       "autoTap"        : "true",
       "id"             : "2w_parallel_2",
-      "parallelDevices": "1",
       "nodeA"          : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
       "nodeB"          : "aaa74c1a-d07e-4615-99a5-e991f1d81cc4",
-      "operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
       "operatesFrom"   : "2020-03-24T15:11:31Z[UTC]",
+      "operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
       "operator"       : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
       "tapPos"         : "0",
+      "parallelDevices": "1",
       "type"           : "08559390-d7c0-4427-a2dc-97ba312ae0ac"
     ]
 
@@ -117,8 +116,8 @@ class InputEntityProcessorTest extends Specification {
       "id"           : "test_switch_AtoB",
       "nodeA"        : "4ca90220-74c2-4369-9afa-a18bf068840d",
       "nodeB"        : "47d29df0-ba2d-4d23-8e75-c82229c5c758",
-      "operatesUntil": "2020-03-25T15:11:31Z[UTC]",
       "operatesFrom" : "2020-03-24T15:11:31Z[UTC]",
+      "operatesUntil": "2020-03-25T15:11:31Z[UTC]",
       "operator"     : "f15105c4-a2de-4ab8-a621-4bc98e372d92"
     ]
 
@@ -127,13 +126,13 @@ class InputEntityProcessorTest extends Specification {
       "geoPosition"      : "{\"type\":\"LineString\",\"coordinates\":[[7.411111,51.492528],[7.414116,51.484136]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "id"               : "test_line_CtoD",
       "length"           : "0.003",
-      "parallelDevices"  : "2",
       "nodeA"            : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
       "nodeB"            : "6e0980e0-10f2-4e18-862b-eb2b7c90509b",
-      "olmCharacteristic": "olm:{(0.00,1.00)}",
-      "operatesUntil"    : "2020-03-25T15:11:31Z[UTC]",
+      "olmCharacteristic": "olm:{(0.0,1.0)}",
       "operatesFrom"     : "2020-03-24T15:11:31Z[UTC]",
+      "operatesUntil"    : "2020-03-25T15:11:31Z[UTC]",
       "operator"         : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
+      "parallelDevices"   : "2",
       "type"             : "3bed3eb3-9790-4874-89b5-a5434d408088"
     ]
   }
@@ -408,7 +407,7 @@ class InputEntityProcessorTest extends Specification {
       "capex"           : "100.0",
       "opex"            : "101.0",
       "cosPhiRated"     : "0.95",
-      "cpCharacteristic": "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",
+      "cpCharacteristic": "cP:{(10.0,0.05),(15.0,0.1),(20.0,0.2)}",
       "etaConv"         : "90.0",
       "sRated"          : "2500.0",
       "rotorArea"       : "2000.0",

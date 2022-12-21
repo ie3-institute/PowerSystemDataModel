@@ -20,19 +20,19 @@ class ReactivePowerCharacteristicTest extends Specification {
   CosPhiFixed validCosPhiFixed
 
   @Shared
-  String validCosPhiFixedDeSerialized = "cosPhiFixed:{(0.00,0.95)}"
+  String validCosPhiFixedDeSerialized = "cosPhiFixed:{(0.0,0.95)}"
 
   @Shared
   CosPhiP validCosPhiP
 
   @Shared
-  String validCosPhiPDeSerialized = "cosPhiP:{(0.00,1.00),(0.90,1.00),(1.20,-0.30)}"
+  String validCosPhiPDeSerialized = "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
 
   @Shared
   QV validQV
 
   @Shared
-  String validQVDeSerialized = "qV:{(0.90,-0.30),(0.95,0.00),(1.05,0.00),(1.10,0.30)}"
+  String validQVDeSerialized = "qV:{(0.9,-0.3),(0.95,0.0),(1.05,0.0),(1.1,0.3)}"
 
   def setupSpec() {
     validCosPhiFixed = new CosPhiFixed(

@@ -99,10 +99,9 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
   /**
    * De-serializes the given point to a string
    *
-   * @param decimalPlaces Desired amount of decimal places
    * @return The de-serialized point
    */
-  public String deSerialize(int decimalPlaces) {
+  public String deSerialize() {
     return String.format(
         Locale.ENGLISH, "(%s,%s)", x.getValue().doubleValue(), y.getValue().doubleValue());
   }
@@ -112,12 +111,6 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
     if (this == o) return true;
     if (!(o instanceof CharacteristicPoint<?, ?> that)) return false;
     return Objects.equals(x, that.x) && Objects.equals(y, that.y);
-  }
-
-  public boolean equalsWithTolerance(CharacteristicPoint<A, O> p, int decimalPlaces) {
-    double tolerance = Math.pow(10, -decimalPlaces);
-    return QuantityUtil.isEquivalentAbs(this.x, p.x, tolerance)
-        && QuantityUtil.isEquivalentAbs(this.y, p.y, tolerance);
   }
 
   @Override
