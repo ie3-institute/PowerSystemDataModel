@@ -122,8 +122,6 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
     if (this == o) return true;
     if (!(o instanceof CharacteristicInput<?, ?> that)) return false;
 
-    points.iterator();
-
     return characteristicPrefix.equals(that.characteristicPrefix) && points.equals(that.points);
   }
 
