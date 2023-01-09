@@ -26,6 +26,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     implements IdCoordinateSource {
   private static final String WHERE = " WHERE ";
   private final SqlCoordinateFactory factory;
+
   /**
    * Queries that are available within this source. Motivation to have them as field value is to
    * avoid creating a new string each time, bc they're always the same.
@@ -36,6 +37,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   private final String queryForPoints;
   private final String queryForId;
   private final String queryForBoundingBox;
+  private final String queryForNearestPoints;
 
   /**
    * Initializes a new SqlIdCoordinateSource
@@ -63,10 +65,15 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
     this.queryForPoints = createQueryForPoints(dbIdColumnName);
     this.queryForId = createQueryForId(dbPointColumnName);
     this.queryForBoundingBox = createQueryForBoundingBox(dbPointColumnName);
+    this.queryForNearestPoints =
+        createQueryForNearestPoints(
+            schemaName, coordinateTableName, dbIdColumnName, dbPointColumnName);
   }
 
   @Override
   protected Optional<CoordinateValue> createEntity(Map<String, String> fieldToValues) {
+    fieldToValues.remove("distance");
+
     SimpleFactoryData simpleFactoryData = new SimpleFactoryData(fieldToValues, Pair.class);
     Optional<Pair<Integer, Point>> pair = factory.get(simpleFactoryData);
 
@@ -132,6 +139,22 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
   }
 
   @Override
+  public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+    List<CoordinateValue> values =
+        executeQuery(
+            queryForNearestPoints,
+            ps -> {
+              ps.setDouble(1, coordinate.getX());
+              ps.setDouble(2, coordinate.getY());
+              ps.setInt(3, n);
+            });
+
+    List<Point> points = values.stream().map(value -> value.coordinate).toList();
+
+    return getNearestCoordinates(coordinate, n, points);
+  }
+
+  @Override
   public List<CoordinateDistance> getNearestCoordinates(
       Point coordinate, int n, ComparableQuantity<Length> distance) {
     Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
@@ -146,13 +169,9 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
               ps.setDouble(4, envelope.getMaxY());
             });
 
-    ArrayList<Point> reducedPoints = new ArrayList<>();
+    List<Point> points = values.stream().map(value -> value.coordinate).toList();
 
-    for (CoordinateValue value : values) {
-      reducedPoints.add(value.coordinate);
-    }
-
-    return getNearestCoordinates(coordinate, n, reducedPoints);
+    return getNearestCoordinates(coordinate, n, points);
   }
 
   /**
@@ -179,7 +198,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
   /**
    * Creates a basic query to retrieve an id for a given point with the following pattern: <br>
-   * {@code <base query> WHERE <latitude column>=? AND <longitude column>=?;}
+   * {@code <base query> WHERE <point column> ~= ST_Point( ?, ?);}
    *
    * @param pointColumn the name of the column holding the geometry information
    * @return the query string
@@ -190,9 +209,9 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
   /**
    * Creates a basic query to retrieve all entries in a given box. The box is defines by a latitude
-   * interval and a longitude interval. The pattern looks like this: <br>
-   * {@code <base query> WHERE <latitude column> BETWEEN ? AND ? AND <longitude column> BETWEEN ?
-   * AND ?;}
+   * interval and a longitude interval. The intervals are provided via an envelope. The pattern
+   * looks like this: <br>
+   * {@code <base query> WHERE ST_Contains(ST_MakeEnvelope(?, ?, ?, ?, 4326 ) , <point column> ) ;}
    *
    * @param pointColumn the name of the column holding the geometry information
    * @return the query string
@@ -202,6 +221,35 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
         + WHERE
         + " ST_Contains(ST_MakeEnvelope(?, ?, ?, ?, 4326 ) , "
         + pointColumn
-        + ")";
+        + ");";
+  }
+
+  /**
+   * Creates a query to retrieve the nearest n entries. The pattern looks like this: <br>
+   * {@code SELECT <id column> AS id, <coordinate column> AS coordinate, <coordinate column> <->
+   * ST_SetSRID(ST_MakePoint( ?, ?),4326) AS distance FROM <schema>.<table> ORDER BY distance LIMIT
+   * ?;}
+   *
+   * @param schemaName the name of the database schema
+   * @param tableName the name of the database table
+   * @param idColumn the name of the column holding the id information
+   * @param pointColumn the name of the column holding the geometry information
+   * @return the query string
+   */
+  private String createQueryForNearestPoints(
+      String schemaName, String tableName, String idColumn, String pointColumn) {
+    return "SELECT "
+        + idColumn
+        + " AS id , "
+        + pointColumn
+        + " AS coordinate, "
+        + pointColumn
+        + " <-> ST_SetSRID(ST_MakePoint( ?, ?),4326) AS distance "
+        + "FROM "
+        + schemaName
+        + ".\""
+        + tableName
+        + "\""
+        + " ORDER BY distance LIMIT ?;";
   }
 }

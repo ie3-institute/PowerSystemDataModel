@@ -50,36 +50,54 @@ public interface IdCoordinateSource extends DataSource {
   Collection<Point> getAllCoordinates();
 
   /**
+   * Returns the nearest n coordinate points..
+   *
+   * @param coordinate the coordinate to look up
+   * @param n number of searched points
+   * @return the nearest n coordinates or all coordinates if n is less than all available points
+   */
+  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n);
+
+  /**
    * Returns the nearest n coordinate points to the given coordinate from a collection of all
    * available points
    *
    * @param coordinate the coordinate to look up the nearest neighbours for
    * @param n how many neighbours to look up
-   * @return the n nearest coordinates to the given point
+   * @param distance to the borders of the envelope that contains the coordinates
+   * @return the nearest n coordinates to the given point
    */
   List<CoordinateDistance> getNearestCoordinates(
       Point coordinate, int n, ComparableQuantity<Length> distance);
 
   /**
    * Returns the nearest n coordinate points to the given coordinate from a given collection of
-   * points. If the set is empty or null we look through all coordinates.
+   * points. If the set is empty or null we find the nearest n coordinates instead.
    *
    * @param coordinate the coordinate to look up the nearest neighbours for
    * @param n how many neighbours to look up
    * @param coordinates the collection of points
-   * @return the n nearest coordinates to the given point
+   * @return the nearest c coordinates to the given point
    */
   default List<CoordinateDistance> getNearestCoordinates(
       Point coordinate, int n, Collection<Point> coordinates) {
-    SortedSet<CoordinateDistance> sortedDistances =
-        GeoUtils.calcOrderedCoordinateDistances(
-            coordinate,
-            (coordinates != null && !coordinates.isEmpty()) ? coordinates : getAllCoordinates());
-    return restrictToBoundingBoxWithSetNumberOfCorner(coordinate, sortedDistances, n);
+
+    if (coordinates != null && !coordinates.isEmpty()) {
+      SortedSet<CoordinateDistance> sortedDistances =
+          GeoUtils.calcOrderedCoordinateDistances(coordinate, coordinates);
+      return restrictToBoundingBoxWithSetNumberOfCorner(coordinate, sortedDistances, n);
+    } else {
+      return getNearestCoordinates(coordinate, n);
+    }
   }
 
   /**
-   * Method for evaluating the found points and returning the n corner points of the bounding box.
+   * Method for evaluating the found points. This method tries to return the four corner points of
+   * the bounding box of the given coordinate. If one of the found points matches the given
+   * coordinate, only this point is returned. If the given number of searched points is less than
+   * four, this method will only return the nearest n corner points. IF the given number of searched
+   * points is greater than four, this method will return the four corner points plus the nearest n
+   * points to match the number of searched points
    *
    * @param coordinate at the center of the bounding box
    * @param distances list of found points with their distances

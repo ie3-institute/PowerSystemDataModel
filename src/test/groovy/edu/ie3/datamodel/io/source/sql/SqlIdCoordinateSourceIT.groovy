@@ -83,8 +83,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
     then:
     ArrayList<Coordinate> points = receivedValues.coordinate
 
-    points.get(0) == expectedValues.get(0)
-    points.get(1) == expectedValues.get(1)
+    points == expectedValues
   }
 
   def "A SqlIdCoordinateSource can return the id of a point"(){
@@ -123,9 +122,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
 
     then:
 
-    for(Point point : receivedValues){
-      expectedValues.contains(point.coordinate)
-    }
+    receivedValues == expectedValues
   }
 
   def "A SqlIdCoordinateSource can return the nearest n coordinates if n coordinates are in the given radius"(){
@@ -152,7 +149,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
     actualDistances.size() == 1
   }
 
-  def "A SqlIdCoordinateSource will return the nearest n coordinates of all coordinates if no coordinates are in the given radius"(){
+  def "A SqlIdCoordinateSource will return the nearest n coordinates of the nearest n neighbours if no coordinates are in the given radius" () {
     given:
     def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
     def expectedValues = [
@@ -164,7 +161,27 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
     def distance = Quantities.getQuantity(1000, Units.METRE)
 
     when:
-    def receivedValues = source.getNearestCoordinates(basePoint, 3, distance)
+    def receivedValues = source.getNearestCoordinates(basePoint, 2, distance)
+
+    then:
+    for(CoordinateDistance coordinateDistance : receivedValues){
+      expectedValues.contains(coordinateDistance.coordinateB)
+    }
+  }
+
+  def "A SqlIdCoordinateSource will return the nearest n coordinates of all available coordinates if no coordinates are in the given radius and n is greater than the number of all coordinates"(){
+    given:
+    def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
+    def expectedValues = [
+      GeoUtils.buildPoint(51.5,7.438),
+      GeoUtils.buildPoint(51.5,7.375),
+      GeoUtils.buildPoint(51.438,7.438),
+      GeoUtils.buildPoint(51.438,7.375)
+    ]
+    def distance = Quantities.getQuantity(1000, Units.METRE)
+
+    when:
+    def receivedValues = source.getNearestCoordinates(basePoint, 5, distance)
 
     then:
     for(CoordinateDistance coordinateDistance : receivedValues){

@@ -13,7 +13,9 @@ import tech.units.indriya.ComparableQuantity
 
 import javax.measure.quantity.Length
 
-class IdCoordinateSourceTest extends Specification implements IdCoordinateSource {
+class IdCoordinateSourceTest extends Specification {
+  private final IdCoordinateSourceMock coordinateSourceMock = new IdCoordinateSourceMock()
+
   private final Point point0 = GeoUtils.buildPoint(52.5, 7.5)
   private final Point point1 = GeoUtils.buildPoint(53, 8)
   private final Point point2 = GeoUtils.buildPoint(53, 7)
@@ -48,8 +50,8 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
     ]
 
     when:
-    List<CoordinateDistance> distances = getNearestCoordinates(point0, 9, points)
-    List<CoordinateDistance> result = restrictToBoundingBoxWithSetNumberOfCorner(point0, distances, 4)
+    List<CoordinateDistance> distances = coordinateSourceMock.getNearestCoordinates(point0, 9, points)
+    List<CoordinateDistance> result = coordinateSourceMock.restrictToBoundingBoxWithSetNumberOfCorner(point0, distances, 4)
 
     then:
     for(CoordinateDistance value: result) {
@@ -65,36 +67,11 @@ class IdCoordinateSourceTest extends Specification implements IdCoordinateSource
     List<Point> withExactMatch = new ArrayList<>(points)
     withExactMatch.addAll(matchingPoint)
 
-    List<CoordinateDistance> distances = getNearestCoordinates(point0, 9, withExactMatch)
-    List<CoordinateDistance> result = restrictToBoundingBoxWithSetNumberOfCorner(point0, distances, 4)
+    List<CoordinateDistance> distances = coordinateSourceMock.getNearestCoordinates(point0, 9, withExactMatch)
+    List<CoordinateDistance> result = coordinateSourceMock.restrictToBoundingBoxWithSetNumberOfCorner(point0, distances, 4)
 
     then:
     result.size() == 1
     result.get(0).coordinateB == matchingPoint
-  }
-
-  @Override
-  Optional<Point> getCoordinate(int id) {
-    return null
-  }
-
-  @Override
-  Collection<Point> getCoordinates(int ... ids) {
-    return null
-  }
-
-  @Override
-  Optional<Integer> getId(Point coordinate) {
-    return null
-  }
-
-  @Override
-  Collection<Point> getAllCoordinates() {
-    return null
-  }
-
-  @Override
-  List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n, ComparableQuantity<Length> distance) {
-    return null
   }
 }

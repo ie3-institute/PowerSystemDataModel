@@ -22,6 +22,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.Units;
 
 /**
  * Implementation of {@link IdCoordinateSource} to read the mapping between coordinate id and actual
@@ -99,24 +101,42 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
   }
 
   @Override
+  public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+    if (idToCoordinate.size() < n) {
+      return getNearestCoordinates(coordinate, n, coordinateToId.keySet());
+    }
+    Set<Point> points = coordinateToId.keySet();
+
+    ArrayList<Point> foundPoints = new ArrayList<>();
+    ComparableQuantity<Length> distance = Quantities.getQuantity(50000, Units.METRE);
+
+    // extends the search radius until n points are found
+    while (foundPoints.size() < n) {
+      foundPoints.clear();
+      distance = distance.multiply(2);
+
+      Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
+
+      for (Point point : points) {
+        if (envelope.contains(point.getCoordinate())) {
+          foundPoints.add(point);
+        }
+      }
+    }
+
+    return getNearestCoordinates(coordinate, n, foundPoints);
+  }
+
+  @Override
   public List<CoordinateDistance> getNearestCoordinates(
       Point coordinate, int n, ComparableQuantity<Length> distance) {
     Set<Point> points = coordinateToId.keySet();
 
     Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
-
-    double xMin = envelope.getMinX();
-    double xMax = envelope.getMaxX();
-    double yMin = envelope.getMinY();
-    double yMax = envelope.getMaxY();
-
     Set<Point> reducedPoints = new HashSet<>();
 
     for (Point point : points) {
-      double x = point.getX();
-      double y = point.getY();
-
-      if (xMin <= x && x <= xMax && yMin <= y && y <= yMax) {
+      if (envelope.contains(point.getCoordinate())) {
         reducedPoints.add(point);
       }
     }

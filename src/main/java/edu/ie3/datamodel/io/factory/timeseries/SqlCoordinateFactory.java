@@ -20,6 +20,7 @@ import org.locationtech.jts.io.WKBReader;
 public class SqlCoordinateFactory extends IdCoordinateFactory {
   private static final String COORDINATE_ID = "id";
   private static final String COORDINATE = "coordinate";
+  private final WKBReader reader = new WKBReader();
 
   @Override
   protected Pair<Integer, Point> buildModel(SimpleFactoryData data) {
@@ -27,7 +28,6 @@ public class SqlCoordinateFactory extends IdCoordinateFactory {
       int coordinateId = data.getInt(COORDINATE_ID);
       byte[] byteArr = WKBReader.hexToBytes(data.getField(COORDINATE));
 
-      WKBReader reader = new WKBReader();
       Coordinate coordinate = reader.read(byteArr).getCoordinate();
 
       Point point = GeoUtils.buildPoint(coordinate);
