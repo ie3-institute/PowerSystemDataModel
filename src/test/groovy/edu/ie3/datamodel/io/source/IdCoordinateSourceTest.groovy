@@ -9,9 +9,6 @@ import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
 import org.locationtech.jts.geom.Point
 import spock.lang.Specification
-import tech.units.indriya.ComparableQuantity
-
-import javax.measure.quantity.Length
 
 class IdCoordinateSourceTest extends Specification {
   private final IdCoordinateSourceMock coordinateSourceMock = new IdCoordinateSourceMock()
