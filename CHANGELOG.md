@@ -87,6 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Writers used to write time series are closed right away
 - Changed class name in FlexOptionsResult.toString [#693](https://github.com/ie3-institute/PowerSystemDataModel/issues/693)
 - Deleted parameter decimalPlaces [#710](https://github.com/ie3-institute/PowerSystemDataModel/issues/710)
+- Created convenience function JointGridContainer [#502](https://github.com/ie3-institute/PowerSystemDataModel/issues/502)
 - Completion of CSVJointGridContainer test [#586](https://github.com/ie3-institute/PowerSystemDataModel/issues/586)
 
 ## [2.0.1] - 2021-07-08
