@@ -7,22 +7,35 @@ package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
+import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.util.StringUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SqlDataSource<T> {
+public abstract class SqlDataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 
   private final SqlConnector connector;
 
-  protected SqlDataSource(SqlConnector connector) {
-    this.connector = connector;
+  private String baseQuery;
+
+  protected SqlDataSource(
+          String jdbcUrl,
+          String userName,
+          String password,
+          String schemaName
+  ) {
+    this.connector = new SqlConnector(jdbcUrl, userName, password);
   }
 
   /**
@@ -116,6 +129,27 @@ public abstract class SqlDataSource<T> {
     void addParams(PreparedStatement ps) throws SQLException;
   }
 
+  protected Stream<Map<String, String>> buildStreamByQuery(
+          Class<? extends UniqueEntity> entityClass,
+          String query,
+          AddParams addParams
+  ) {
+    try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
+      addParams.addParams(ps);
+
+      ResultSet resultSet = ps.executeQuery();
+      List<Map<String, String>> fieldMaps = connector.extractFieldMaps(resultSet);
+
+      return fieldMaps.stream();
+    } catch (SQLException e) {
+      log.error("Error during execution of query {}", query, e);
+    }
+
+    return null;
+  }
+
+
+
   /**
    * Executes the prepared statement after possibly adding parameters to the query using the given
    * function. Finally, processes the results and creates a list of time based values via field map
@@ -125,7 +159,9 @@ public abstract class SqlDataSource<T> {
    * @param addParams function that possibly adds parameters to query
    * @return a list of resulting entities
    */
-  protected List<T> executeQuery(String query, AddParams addParams) {
+
+  //protected List<T> executeQuery(String query, AddParams addParams) {
+    /*
     try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
       addParams.addParams(ps);
 
@@ -138,7 +174,10 @@ public abstract class SqlDataSource<T> {
     }
 
     return Collections.emptyList();
-  }
+
+     */
+  //  return null;
+  //}
 
   /**
    * Instantiates an entity produced by this source given the required field value map.
@@ -146,5 +185,11 @@ public abstract class SqlDataSource<T> {
    * @param fieldToValues map of fields to their respective values
    * @return the entity if instantiation succeeds
    */
-  protected abstract Optional<T> createEntity(Map<String, String> fieldToValues);
+  //protected abstract Optional<T> createEntity(Map<String, String> fieldToValues);
+
+  protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
+          Class<T> entityClass) {
+    return buildStreamByQuery(entityClass, baseQuery, ps -> {})
+            .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
+  }
 }

@@ -5,12 +5,26 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.Transformer3WTypeInputFactory;
+import edu.ie3.datamodel.io.source.TypeSourceFactories;
+import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
+
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link
@@ -31,7 +45,9 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link Transformer2WTypeInput} entities
    */
-  Set<Transformer2WTypeInput> getTransformer2WTypes();
+  default Set<Transformer2WTypeInput> getTransformer2WTypes() {
+    return buildEntities(Transformer2WTypeInput.class, TypeSourceFactories.getTransformer2WTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link OperatorInput} instances. This set has to be unique in the sense of
@@ -41,7 +57,9 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link OperatorInput} entities
    */
-  Set<OperatorInput> getOperators();
+  default Set<OperatorInput> getOperators() {
+    return buildEntities(OperatorInput.class, TypeSourceFactories.getOperatorInputFactory());
+  }
 
   /**
    * Returns a set of {@link LineTypeInput} instances. This set has to be unique in the sense of
@@ -51,7 +69,9 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link LineTypeInput} entities
    */
-  Set<LineTypeInput> getLineTypes();
+  default Set<LineTypeInput> getLineTypes() {
+    return buildEntities(LineTypeInput.class, TypeSourceFactories.getLineTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link Transformer3WTypeInput} instances. This set has to be unique in the
@@ -62,7 +82,9 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link Transformer3WTypeInput} entities
    */
-  Set<Transformer3WTypeInput> getTransformer3WTypes();
+  default Set<Transformer3WTypeInput> getTransformer3WTypes() {
+    return buildEntities(Transformer3WTypeInput.class, TypeSourceFactories.getTransformer3WTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link BmTypeInput} instances. This set has to be unique in the sense of
@@ -72,7 +94,9 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link BmTypeInput} entities
    */
-  Set<BmTypeInput> getBmTypes();
+  default Set<BmTypeInput> getBmTypes() {
+    return buildEntities(BmTypeInput.class, TypeSourceFactories.getSystemParticipantTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link ChpTypeInput} instances. This set has to be unique in the sense of
@@ -82,7 +106,9 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link ChpTypeInput} entities
    */
-  Set<ChpTypeInput> getChpTypes();
+  default Set<ChpTypeInput> getChpTypes() {
+    return buildEntities(ChpTypeInput.class, TypeSourceFactories.getSystemParticipantTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link HpTypeInput} instances. This set has to be unique in the sense of
@@ -92,7 +118,9 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link HpTypeInput} entities
    */
-  Set<HpTypeInput> getHpTypes();
+  default Set<HpTypeInput> getHpTypes() {
+    return buildEntities(HpTypeInput.class, TypeSourceFactories.getSystemParticipantTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link StorageTypeInput} instances. This set has to be unique in the sense of
@@ -102,7 +130,9 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link StorageTypeInput} entities
    */
-  Set<StorageTypeInput> getStorageTypes();
+  default Set<StorageTypeInput> getStorageTypes() {
+    return buildEntities(StorageTypeInput.class, TypeSourceFactories.getSystemParticipantTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link WecTypeInput} instances. This set has to be unique in the sense of
@@ -112,7 +142,9 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link WecTypeInput} entities
    */
-  Set<WecTypeInput> getWecTypes();
+  default Set<WecTypeInput> getWecTypes() {
+    return buildEntities(WecTypeInput.class, TypeSourceFactories.getSystemParticipantTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link EvTypeInput} instances. This set has to be unique in the sense of
@@ -122,5 +154,23 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link EvTypeInput} entities
    */
-  Set<EvTypeInput> getEvTypes();
+  default Set<EvTypeInput> getEvTypes() {
+    return buildEntities(EvTypeInput.class, TypeSourceFactories.getSystemParticipantTypeInputFactory());
+  }
+
+  <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass);
+
+  default <T extends InputEntity> Set<T> buildEntities(
+          Class<T> entityClass,
+          EntityFactory<? extends InputEntity, SimpleEntityData> factory
+  ) {
+    return getSourceData(entityClass)
+            .map(
+                    fieldsToAttributes -> {
+                      SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
+                      return (Optional<T>) factory.get(data);
+                    })
+            .flatMap(Optional::stream)
+            .collect(Collectors.toSet());
+  }
 }

@@ -20,9 +20,12 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
+
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Source that provides the capability to build entities of type {@link SystemParticipantTypeInput}
@@ -33,73 +36,9 @@ import java.util.stream.Collectors;
  */
 public class CsvTypeSource extends CsvDataSource implements TypeSource {
 
-  // factories
-  private final OperatorInputFactory operatorInputFactory;
-  private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
-  private final LineTypeInputFactory lineTypeInputFactory;
-  private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
-  private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
-
   public CsvTypeSource(
       String csvSep, String typeFolderPath, FileNamingStrategy fileNamingStrategy) {
     super(csvSep, typeFolderPath, fileNamingStrategy);
-
-    // init factories
-    operatorInputFactory = new OperatorInputFactory();
-    transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();
-    lineTypeInputFactory = new LineTypeInputFactory();
-    transformer3WTypeInputFactory = new Transformer3WTypeInputFactory();
-    systemParticipantTypeInputFactory = new SystemParticipantTypeInputFactory();
-  }
-  /** {@inheritDoc} */
-  @Override
-  public Set<Transformer2WTypeInput> getTransformer2WTypes() {
-    return buildSimpleEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory);
-  }
-  /** {@inheritDoc} */
-  @Override
-  public Set<OperatorInput> getOperators() {
-    return buildSimpleEntities(OperatorInput.class, operatorInputFactory);
-  }
-  /** {@inheritDoc} */
-  @Override
-  public Set<LineTypeInput> getLineTypes() {
-    return buildSimpleEntities(LineTypeInput.class, lineTypeInputFactory);
-  }
-  /** {@inheritDoc} */
-  @Override
-  public Set<Transformer3WTypeInput> getTransformer3WTypes() {
-    return buildSimpleEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory);
-  }
-  /** {@inheritDoc} */
-  @Override
-  public Set<BmTypeInput> getBmTypes() {
-    return buildSimpleEntities(BmTypeInput.class, systemParticipantTypeInputFactory);
-  }
-  /** {@inheritDoc} */
-  @Override
-  public Set<ChpTypeInput> getChpTypes() {
-    return buildSimpleEntities(ChpTypeInput.class, systemParticipantTypeInputFactory);
-  }
-  /** {@inheritDoc} */
-  @Override
-  public Set<HpTypeInput> getHpTypes() {
-    return buildSimpleEntities(HpTypeInput.class, systemParticipantTypeInputFactory);
-  }
-  /** {@inheritDoc} */
-  @Override
-  public Set<StorageTypeInput> getStorageTypes() {
-    return buildSimpleEntities(StorageTypeInput.class, systemParticipantTypeInputFactory);
-  }
-  /** {@inheritDoc} */
-  @Override
-  public Set<WecTypeInput> getWecTypes() {
-    return buildSimpleEntities(WecTypeInput.class, systemParticipantTypeInputFactory);
-  }
-  /** {@inheritDoc} */
-  @Override
-  public Set<EvTypeInput> getEvTypes() {
-    return buildSimpleEntities(EvTypeInput.class, systemParticipantTypeInputFactory);
   }
 
   /**
@@ -118,7 +57,9 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
    *     could been built
    */
   private <T extends InputEntity> Set<T> buildSimpleEntities(
-      Class<T> entityClass, EntityFactory<? extends InputEntity, SimpleEntityData> factory) {
+      Class<T> entityClass,
+      EntityFactory<? extends InputEntity, SimpleEntityData> factory
+  ) {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector)
         .map(
             fieldsToAttributes -> {
@@ -128,4 +69,9 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
         .flatMap(Optional::stream)
         .collect(Collectors.toSet());
   }
+
+  public <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector);
+  }
+
 }
