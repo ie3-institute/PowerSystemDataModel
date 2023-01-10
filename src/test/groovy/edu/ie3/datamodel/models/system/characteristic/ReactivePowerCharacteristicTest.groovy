@@ -69,7 +69,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 
   def "A valid CosPhiFixed is correctly de-serialized"() {
     when: "De-serializing a valid input"
-    String actual = validCosPhiFixed.deSerialize()
+    String actual = validCosPhiFixed.Serialize()
 
     then: "it returns the correct string"
     actual == validCosPhiFixedDeSerialized
@@ -94,7 +94,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 
   def "A valid CosPhiP is correctly de-serialized"() {
     when: "De-serializing a valid input"
-    String actual = validCosPhiP.deSerialize()
+    String actual = validCosPhiP.Serialize()
 
     then: "it returns the correct string"
     actual == validCosPhiPDeSerialized
@@ -119,7 +119,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 
   def "A valid QV is correctly de-serialized"() {
     when: "De-serializing a valid input"
-    String actual = validQV.deSerialize()
+    String actual = validQV.Serialize()
 
     then: "it returns the correct string"
     actual == validQVDeSerialized
