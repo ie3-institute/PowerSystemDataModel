@@ -157,9 +157,9 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
   def "The CsvIdCoordinateSource will return the nearest n coordinates of all available coordinates if no coordinates are in the given radius and n is greater than the number of all coordinates" () {
     given:
     def n = 5
-    def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
+    def basePoint = GeoUtils.buildPoint(37.617162, 1.438029)
     def expectedDistances = source.getNearestCoordinates(basePoint, n, source.allCoordinates)
-    def distance = Quantities.getQuantity(10000, Units.METRE)
+    def distance = Quantities.getQuantity(100, Units.METRE)
 
     when:
     def actualDistances = source.getNearestCoordinates(basePoint, n, distance)
