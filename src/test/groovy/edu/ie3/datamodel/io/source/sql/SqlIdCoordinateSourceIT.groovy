@@ -127,7 +127,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
 
   def "A SqlIdCoordinateSource can return the nearest n coordinates if n coordinates are in the given radius"(){
     given:
-    def basePoint = GeoUtils.buildPoint(39.617162, 1.438029)
+    def basePoint = GeoUtils.buildPoint(51.5, 7.38)
     def distance = Quantities.getQuantity(200000, Units.METRE)
 
     when:
