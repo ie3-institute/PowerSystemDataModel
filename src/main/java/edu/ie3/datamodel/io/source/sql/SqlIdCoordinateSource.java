@@ -151,7 +151,7 @@ public class SqlIdCoordinateSource extends SqlDataSource<CoordinateValue>
 
     List<Point> points = values.stream().map(value -> value.coordinate).toList();
     SortedSet<CoordinateDistance> sortedDistances =
-            GeoUtils.calcOrderedCoordinateDistances(coordinate, points);
+        GeoUtils.calcOrderedCoordinateDistances(coordinate, points);
     return restrictToBoundingBoxWithSetNumberOfCorner(coordinate, sortedDistances, n);
   }
 
