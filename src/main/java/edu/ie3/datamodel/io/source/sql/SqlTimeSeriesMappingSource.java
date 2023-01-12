@@ -14,28 +14,29 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+//SqlTimeSeriesMappingSource.MappingEntry
 public class SqlTimeSeriesMappingSource
-    extends SqlDataSource<SqlTimeSeriesMappingSource.MappingEntry>
+    extends SqlDataSource
     implements TimeSeriesMappingSource {
   private static final TimeSeriesMappingFactory mappingFactory = new TimeSeriesMappingFactory();
 
   private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
   private final String queryFull;
-  private final String schemaName;
+  //private final String schemaName;
 
   public SqlTimeSeriesMappingSource(
       SqlConnector connector,
       String schemaName,
-      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy) {
-    super(connector);
+      EntityPersistenceNamingStrategy entityPersistenceNamingStrategy
+  ) {
+    super(connector, schemaName);
     this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
 
     final String tableName =
         entityPersistenceNamingStrategy.getEntityName(MappingEntry.class).orElseThrow();
     this.queryFull = createBaseQueryString(schemaName, tableName);
 
-    this.schemaName = schemaName;
+    //this.schemaName = schemaName;
   }
 
   @Override
@@ -52,7 +53,7 @@ public class SqlTimeSeriesMappingSource
   @Deprecated(since = "3.0", forRemoval = true)
   public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
       getTimeSeriesMetaInformation(UUID timeSeriesUuid) {
-    return getDbTables(schemaName, "%" + timeSeriesUuid.toString()).stream()
+    return getDbTables(getSchemaName(), "%" + timeSeriesUuid.toString()).stream()
         .findFirst()
         .map(entityPersistenceNamingStrategy::extractIndividualTimesSeriesMetaInformation);
   }

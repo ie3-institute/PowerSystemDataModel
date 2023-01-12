@@ -21,18 +21,19 @@ import java.util.stream.Collectors;
 
 /** SQL implementation for retrieving {@link TimeSeriesMetaInformationSource} from the SQL scheme */
 public class SqlTimeSeriesMetaInformationSource
-    extends SqlDataSource<IndividualTimeSeriesMetaInformation>
+    extends SqlDataSource
     implements TimeSeriesMetaInformationSource {
+  //T = IndividualTimeSeriesMetaInformation
 
   private static final TimeSeriesMetaInformationFactory mappingFactory =
       new TimeSeriesMetaInformationFactory();
 
   private final DatabaseNamingStrategy namingStrategy;
-  private final Map<UUID, IndividualTimeSeriesMetaInformation> mapping;
+  private final Map<UUID, IndividualTimeSeriesMetaInformation> mapping; //timeSeriesMetaInformation
 
   public SqlTimeSeriesMetaInformationSource(
       SqlConnector connector, String schemaName, DatabaseNamingStrategy namingStrategy) {
-    super(connector);
+    super(connector, schemaName);
     this.namingStrategy = namingStrategy;
 
     String queryComplete = createQueryComplete(schemaName);

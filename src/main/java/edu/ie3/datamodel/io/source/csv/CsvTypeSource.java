@@ -56,19 +56,6 @@ public class CsvTypeSource extends CsvDataSource implements TypeSource {
    * @return a set containing all entities that could have been built or an empty set if no entity
    *     could been built
    */
-  private <T extends InputEntity> Set<T> buildSimpleEntities(
-      Class<T> entityClass,
-      EntityFactory<? extends InputEntity, SimpleEntityData> factory
-  ) {
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector)
-        .map(
-            fieldsToAttributes -> {
-              SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
-              return (Optional<T>) factory.get(data);
-            })
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
-  }
 
   public <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
     return buildStreamWithFieldsToAttributesMap(entityClass, connector);

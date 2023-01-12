@@ -21,8 +21,9 @@ import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Point;
 
 /** SQL source for weather data */
-public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>>
+public class SqlWeatherSource extends SqlDataSource
     implements WeatherSource {
+  // T = TimeBasedValue<WeatherValue>
   private static final String WHERE = " WHERE ";
 
   private final IdCoordinateSource idCoordinateSource;

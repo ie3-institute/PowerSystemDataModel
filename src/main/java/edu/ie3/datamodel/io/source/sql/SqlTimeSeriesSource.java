@@ -18,11 +18,16 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBasedValue<V>>
+public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
     implements TimeSeriesSource<V> {
   private static final String WHERE = " WHERE ";
   private static final String TIME_SERIES = "time_series";
@@ -98,7 +103,7 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
       UUID timeSeriesUuid,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
-    super(connector);
+    super(connector, schemaName);
     this.timeSeriesUuid = timeSeriesUuid;
     this.valueClass = valueClass;
     this.valueFactory = factory;
@@ -113,31 +118,66 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
   }
 
   @Override
-  public IndividualTimeSeries<V> getTimeSeries() {
-    List<TimeBasedValue<V>> timeBasedValues = executeQuery(queryFull, ps -> {});
-    return new IndividualTimeSeries<>(timeSeriesUuid, new HashSet<>(timeBasedValues));
+  public IndividualTimeSeries<V> getTimeSeries()  {
+    try {
+      return buildIndividualTimeSeries(
+              timeSeriesUuid,
+              fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, valueFactory),
+              queryFull,
+              ps -> {}
+              );
+    } catch (SourceException e) {
+      return null;
+    }
   }
 
   @Override
   public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
-    List<TimeBasedValue<V>> timeBasedValues =
-        executeQuery(
-            queryTimeInterval,
-            ps -> {
-              ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
-              ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
-            });
-    return new IndividualTimeSeries<>(timeSeriesUuid, new HashSet<>(timeBasedValues));
+    try {
+      return buildIndividualTimeSeries(
+              timeSeriesUuid,
+              fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, valueFactory),
+              queryTime,
+              ps -> {
+                ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
+                ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
+              });
+    } catch (SourceException e) {
+      return null;
+    }
+  }
+
+  private IndividualTimeSeries<V> buildIndividualTimeSeries(
+          UUID timeSeriesUuid,
+          Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction,
+          String query,
+          AddParams addParams)
+          throws SourceException {
+    try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
+      Set<TimeBasedValue<V>> timeBasedValues =
+              buildStreamByQuery(TimeBasedValue.class, addParams, ps)
+                      .map(fieldToValueFunction)
+                      .flatMap(Optional::stream)
+                      .collect(Collectors.toSet());
+
+      return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
+    } catch (SQLException e) {
+      log.warn("SQL", e);
+    }
+    return null;
   }
 
   @Override
   public Optional<V> getValue(ZonedDateTime time) {
+    return null;
+    /*
     List<TimeBasedValue<V>> timeBasedValues =
         executeQuery(queryTime, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())));
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.get(0).getValue());
+    */
   }
 
   /**
@@ -147,11 +187,31 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
    * @param fieldToValues Mapping from field id to values
    * @return Optional simple time based value
    */
+  /*
   protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("timeSeries");
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
     return valueFactory.get(factoryData);
+  }
+  */
+
+  /**
+   * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
+   * need any additional information.
+   *
+   * @param fieldToValues Mapping from field id to values
+   * @param valueClass Class of the desired underlying value
+   * @param factory Factory to process the "flat" information
+   * @return Optional simple time based value
+   */
+  private Optional<TimeBasedValue<V>> buildTimeBasedValue(
+          Map<String, String> fieldToValues,
+          Class<V> valueClass,
+          TimeBasedSimpleValueFactory<V> factory) {
+    SimpleTimeBasedValueData<V> factoryData =
+            new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
+    return factory.get(factoryData);
   }
 
   /**
@@ -213,4 +273,6 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
         + timeColumnName
         + "=?;";
   }
+
+
 }

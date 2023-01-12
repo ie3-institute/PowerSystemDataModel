@@ -14,7 +14,6 @@ import edu.ie3.util.StringUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -25,18 +24,21 @@ public abstract class SqlDataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 
-  private final SqlConnector connector;
+  protected final SqlConnector connector;
+
+  private String schemaName;
 
   private String baseQuery;
 
   protected SqlDataSource(
-          String jdbcUrl,
-          String userName,
-          String password,
+          SqlConnector connector,
           String schemaName
   ) {
-    this.connector = new SqlConnector(jdbcUrl, userName, password);
+    this.connector = connector;
+    this.schemaName = schemaName;
   }
+
+  protected String getSchemaName() { return schemaName; }
 
   /**
    * Creates a base query string without closing semicolon of the following pattern: <br>
@@ -131,10 +133,24 @@ public abstract class SqlDataSource {
 
   protected Stream<Map<String, String>> buildStreamByQuery(
           Class<? extends UniqueEntity> entityClass,
-          String query,
-          AddParams addParams
+          SqlConnector sqlConnector,
+          String query
   ) {
-    try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
+    try {
+      return buildStreamByQuery(entityClass, ps-> {}, sqlConnector.getConnection().prepareStatement(query));
+    } catch (SQLException e) {
+      log.error("Error during execution of query {}", query, e);
+    }
+    return Stream.empty();
+  }
+
+  protected Stream<Map<String, String>> buildStreamByQuery(
+          Class<? extends UniqueEntity> entityClass,
+          AddParams addParams,
+          PreparedStatement preparedStatement
+  ) {
+    String query = createBaseQueryString(schemaName, entityClass.getSimpleName());
+    try (PreparedStatement ps = preparedStatement) {
       addParams.addParams(ps);
 
       ResultSet resultSet = ps.executeQuery();
@@ -144,11 +160,8 @@ public abstract class SqlDataSource {
     } catch (SQLException e) {
       log.error("Error during execution of query {}", query, e);
     }
-
-    return null;
+    return Stream.empty();
   }
-
-
 
   /**
    * Executes the prepared statement after possibly adding parameters to the query using the given
@@ -160,24 +173,38 @@ public abstract class SqlDataSource {
    * @return a list of resulting entities
    */
 
-  //protected List<T> executeQuery(String query, AddParams addParams) {
-    /*
+  /*
+
+  protected<T extends UniqueEntity> List<T> executeQuery(String query, AddParams addParams) {
     try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
       addParams.addParams(ps);
 
       ResultSet resultSet = ps.executeQuery();
       List<Map<String, String>> fieldMaps = connector.extractFieldMaps(resultSet);
 
-      return fieldMaps.stream().map(this::createEntity).flatMap(Optional::stream).toList();
+      return fieldMaps.stream()
+              .map(this::createEntity)
+              .flatMap(Optional::stream)
+              .toList();
     } catch (SQLException e) {
       log.error("Error during execution of query {}", query, e);
     }
 
     return Collections.emptyList();
+  }
+ */
 
-     */
-  //  return null;
-  //}
+  protected List<Map<String, String>> queryMapping(String query, AddParams addParams) {
+    try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
+      addParams.addParams(ps);
+
+      ResultSet resultSet = ps.executeQuery();
+      return connector.extractFieldMaps(resultSet);
+    } catch (SQLException e) {
+      log.error("Error during execution of query {}", query, e);
+    }
+    return Collections.emptyList();
+  }
 
   /**
    * Instantiates an entity produced by this source given the required field value map.
@@ -189,7 +216,8 @@ public abstract class SqlDataSource {
 
   protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
           Class<T> entityClass) {
-    return buildStreamByQuery(entityClass, baseQuery, ps -> {})
+    return buildStreamByQuery(entityClass, ps -> {})
             .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
   }
+
 }
