@@ -124,7 +124,9 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
       }
     }
 
-    return getNearestCoordinates(coordinate, n, foundPoints);
+    SortedSet<CoordinateDistance> sortedDistances =
+        GeoUtils.calcOrderedCoordinateDistances(coordinate, foundPoints);
+    return restrictToBoundingBoxWithSetNumberOfCorner(coordinate, sortedDistances, n);
   }
 
   @Override

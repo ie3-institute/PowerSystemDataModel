@@ -51,7 +51,7 @@ class IdCoordinateSourceTest extends Specification {
     List<CoordinateDistance> result = coordinateSourceMock.restrictToBoundingBoxWithSetNumberOfCorner(point0, distances, 4)
 
     then:
-    for(CoordinateDistance value: result) {
+    for (CoordinateDistance value: result) {
       expectedPoints.contains(value.coordinateB)
     }
   }
