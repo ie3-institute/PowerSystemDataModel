@@ -38,8 +38,12 @@ public class SqlTimeSeriesMetaInformationSource
 
     String queryComplete = createQueryComplete(schemaName);
 
-    this.mapping =
-        executeQuery(queryComplete, ps -> {}).stream()
+    this.mapping = queryMapping(queryComplete, ps -> {})
+            .stream()
+            .map(this::createEntity)
+            .flatMap(Optional::stream)
+            .toList()
+            .stream()
             .collect(
                 Collectors.toMap(
                     IndividualTimeSeriesMetaInformation::getUuid, Function.identity()));
@@ -88,7 +92,6 @@ public class SqlTimeSeriesMetaInformationSource
     return Optional.ofNullable(this.mapping.get(timeSeriesUuid));
   }
 
-  @Override
   protected Optional<IndividualTimeSeriesMetaInformation> createEntity(
       Map<String, String> fieldToValues) {
     SimpleEntityData entityData =

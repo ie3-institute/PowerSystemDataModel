@@ -114,7 +114,7 @@ public abstract class SqlDataSource {
   }
 
   /**
-   * Interface for anonymous functions that are used as a parameter for {@link #executeQuery}.
+   * Interface for anonymous functions that are used as a parameter for {@link #buildStreamByQuery}.
    *
    * <p>For example, it can be defined this way: {@code ps -> ps.setInt(1, 2)}
    *
@@ -173,26 +173,13 @@ public abstract class SqlDataSource {
    * @return a list of resulting entities
    */
 
-  /*
-
   protected<T extends UniqueEntity> List<T> executeQuery(String query, AddParams addParams) {
-    try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
-      addParams.addParams(ps);
-
-      ResultSet resultSet = ps.executeQuery();
-      List<Map<String, String>> fieldMaps = connector.extractFieldMaps(resultSet);
-
-      return fieldMaps.stream()
-              .map(this::createEntity)
-              .flatMap(Optional::stream)
-              .toList();
-    } catch (SQLException e) {
-      log.error("Error during execution of query {}", query, e);
-    }
-
-    return Collections.emptyList();
+    return queryMapping(query, addParams)
+          .stream()
+          .map(this::createEntity)
+          .flatMap(Optional::stream)
+          .toList();
   }
- */
 
   protected List<Map<String, String>> queryMapping(String query, AddParams addParams) {
     try (PreparedStatement ps = connector.getConnection().prepareStatement(query)) {
@@ -212,12 +199,15 @@ public abstract class SqlDataSource {
    * @param fieldToValues map of fields to their respective values
    * @return the entity if instantiation succeeds
    */
-  //protected abstract Optional<T> createEntity(Map<String, String> fieldToValues);
+  protected abstract Optional createEntity(Map<String, String> fieldToValues);
 
+  /*
   protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
           Class<T> entityClass) {
     return buildStreamByQuery(entityClass, ps -> {})
             .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
   }
+
+   */
 
 }

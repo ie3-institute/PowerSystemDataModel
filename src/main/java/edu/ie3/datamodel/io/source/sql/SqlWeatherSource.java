@@ -54,7 +54,7 @@ public class SqlWeatherSource extends SqlDataSource
       String schemaName,
       String weatherTableName,
       TimeBasedWeatherValueFactory weatherFactory) {
-    super(connector);
+    super(connector,schemaName);
     this.idCoordinateSource = idCoordinateSource;
     this.weatherFactory = weatherFactory;
     this.factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
@@ -76,14 +76,18 @@ public class SqlWeatherSource extends SqlDataSource
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) {
+      ClosedInterval<ZonedDateTime> timeInterval
+  ) {
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
-        executeQuery(
-            queryTimeInterval,
-            ps -> {
-              ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
-              ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
-            });
+            queryMapping(queryTimeInterval,
+              ps -> {
+                    ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
+                    ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
+            })
+            .stream()
+            .map(this::createEntity)
+            .flatMap(Optional::stream)
+            .toList();
     return mapWeatherValuesToPoints(timeBasedValues);
   }
 
@@ -208,7 +212,7 @@ public class SqlWeatherSource extends SqlDataSource
    * @param fieldMap the field to value map for one TimeBasedValue
    * @return an Optional of that TimeBasedValue
    */
-  @Override
+
   protected Optional<TimeBasedValue<WeatherValue>> createEntity(Map<String, String> fieldMap) {
     fieldMap.remove("tid");
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);

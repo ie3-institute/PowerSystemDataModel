@@ -41,8 +41,13 @@ public class SqlTimeSeriesMappingSource
 
   @Override
   public Map<UUID, UUID> getMapping() {
-    return executeQuery(queryFull, ps -> {}).stream()
-        .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
+    return queryMapping(queryFull, ps -> {})
+            .stream()
+            .map(this::createEntity)
+            .flatMap(Optional::stream)
+            .toList()
+            .stream()
+            .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
   }
 
   /**
@@ -53,12 +58,10 @@ public class SqlTimeSeriesMappingSource
   @Deprecated(since = "3.0", forRemoval = true)
   public Optional<edu.ie3.datamodel.io.csv.timeseries.IndividualTimeSeriesMetaInformation>
       getTimeSeriesMetaInformation(UUID timeSeriesUuid) {
-    return getDbTables(getSchemaName(), "%" + timeSeriesUuid.toString()).stream()
-        .findFirst()
-        .map(entityPersistenceNamingStrategy::extractIndividualTimesSeriesMetaInformation);
+    return null;
   }
 
-  @Override
+
   protected Optional<MappingEntry> createEntity(Map<String, String> fieldToValues) {
     SimpleEntityData entityData = new SimpleEntityData(fieldToValues, MappingEntry.class);
     return mappingFactory.get(entityData);

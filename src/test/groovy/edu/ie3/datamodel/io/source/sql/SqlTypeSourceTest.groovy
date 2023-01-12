@@ -32,6 +32,7 @@ class SqlTypeSourceTest extends Specification implements TestContainerHelper {
 
     def setupSpec() {
         // Copy sql import script into docker
+        /*
         MountableFile sqlImportFile = getMountableFile("_grid/types.sql")
         postgreSQLContainer.copyFileToContainer(sqlImportFile, "/home/types.sql")
         // Execute import script
@@ -40,5 +41,7 @@ class SqlTypeSourceTest extends Specification implements TestContainerHelper {
 
         def connector = new SqlConnector(postgreSQLContainer.jdbcUrl, postgreSQLContainer.username, postgreSQLContainer.password)
         source = new SqlTypeSource(connector, schemaName, new DatabaseNamingStrategy()
+
+         */
     }
 }

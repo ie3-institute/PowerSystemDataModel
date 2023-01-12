@@ -187,14 +187,14 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
    * @param fieldToValues Mapping from field id to values
    * @return Optional simple time based value
    */
-  /*
+
   protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("timeSeries");
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
     return valueFactory.get(factoryData);
   }
-  */
+
 
   /**
    * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not

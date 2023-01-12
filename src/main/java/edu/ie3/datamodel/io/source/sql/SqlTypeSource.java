@@ -10,19 +10,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class SqlTypeSource extends SqlDataSource implements TypeSource {
+public class SqlTypeSource {
     public SqlTypeSource(
             SqlConnector connector,
             String schemaName,
             DatabaseNamingStrategy databaseNamingStrategy
     ) {
-        super(connector, schemaName);
+
     }
     public <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
-        return buildStreamByQuery(entityClass, ps -> {});
-    }
-
-    protected Optional<T> createEntity(Map<String, String> fieldToValues) {
         return null;
     }
 }
