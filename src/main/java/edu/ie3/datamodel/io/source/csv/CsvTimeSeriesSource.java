@@ -10,11 +10,8 @@ import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
-import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
-import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.util.interval.ClosedInterval;
@@ -209,21 +206,4 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
     }
   }
 
-  /**
-   * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
-   * need any additional information.
-   *
-   * @param fieldToValues Mapping from field id to values
-   * @param valueClass Class of the desired underlying value
-   * @param factory Factory to process the "flat" information
-   * @return Optional simple time based value
-   */
-  private Optional<TimeBasedValue<V>> buildTimeBasedValue(
-      Map<String, String> fieldToValues,
-      Class<V> valueClass,
-      TimeBasedSimpleValueFactory<V> factory) {
-    SimpleTimeBasedValueData<V> factoryData =
-        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
-    return factory.get(factoryData);
-  }
 }

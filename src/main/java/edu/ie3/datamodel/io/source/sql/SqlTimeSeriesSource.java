@@ -122,7 +122,7 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
     try {
       return buildIndividualTimeSeries(
               timeSeriesUuid,
-              fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, valueFactory),
+              fieldToValue -> this.buildTimeBasedValueReduced(fieldToValue, valueClass, valueFactory),
               queryFull,
               ps -> {}
               );
@@ -136,8 +136,8 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
     try {
       return buildIndividualTimeSeries(
               timeSeriesUuid,
-              fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, valueFactory),
-              queryTime,
+              fieldToValue -> this.buildTimeBasedValueReduced(fieldToValue, valueClass, valueFactory),
+              queryTimeInterval,
               ps -> {
                 ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
                 ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
@@ -177,15 +177,7 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
     return Optional.of(timeBasedValues.get(0).getValue());
   }
 
-  /**
-   * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
-   * need any additional information.
-   *
-   * @param fieldToValues Mapping from field id to values
-   * @return Optional simple time based value
-   */
-
-  protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
+   protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("timeSeries");
     SimpleTimeBasedValueData<V> factoryData =
         new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
@@ -202,13 +194,13 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
    * @param factory Factory to process the "flat" information
    * @return Optional simple time based value
    */
-  private Optional<TimeBasedValue<V>> buildTimeBasedValue(
+
+  public Optional<TimeBasedValue<V>> buildTimeBasedValueReduced(
           Map<String, String> fieldToValues,
           Class<V> valueClass,
           TimeBasedSimpleValueFactory<V> factory) {
-    SimpleTimeBasedValueData<V> factoryData =
-            new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
-    return factory.get(factoryData);
+    fieldToValues.remove("timeSeries");
+    return buildTimeBasedValue(fieldToValues, valueClass, factory);
   }
 
   /**

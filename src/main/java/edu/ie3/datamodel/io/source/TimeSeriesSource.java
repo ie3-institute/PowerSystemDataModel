@@ -5,11 +5,15 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
+import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
+import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -24,7 +28,7 @@ public interface TimeSeriesSource<V extends Value> extends DataSource {
    * @param scheme the column scheme to check
    * @return whether the scheme is accepted or not
    * @deprecated since 3.0. Use {@link
-   *     TimeSeriesUtils#isSchemeAccepted(edu.ie3.datamodel.io.naming.timeseries.ColumnScheme)}
+   *     TimeSeriesUtils#isSchemeAccepted(edu.ie3.datamodel)}
    *     instead.
    */
   @Deprecated(since = "3.0", forRemoval = true)
@@ -62,4 +66,14 @@ public interface TimeSeriesSource<V extends Value> extends DataSource {
    * @return Option on a value for that time
    */
   Optional<V> getValue(ZonedDateTime time);
+
+  default Optional<TimeBasedValue<V>> buildTimeBasedValue(
+          Map<String, String> fieldToValues,
+          Class<V> valueClass,
+          TimeBasedSimpleValueFactory<V> factory) {
+    SimpleTimeBasedValueData<V> factoryData =
+            new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
+    return factory.get(factoryData);
+  }
+
 }
