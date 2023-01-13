@@ -28,8 +28,6 @@ public abstract class SqlDataSource {
 
   private String schemaName;
 
-  private String baseQuery;
-
   protected SqlDataSource(
           SqlConnector connector,
           String schemaName
@@ -200,14 +198,4 @@ public abstract class SqlDataSource {
    * @return the entity if instantiation succeeds
    */
   protected abstract Optional createEntity(Map<String, String> fieldToValues);
-
-  /*
-  protected <T extends ResultEntity> Stream<SimpleEntityData> simpleEntityDataStream(
-          Class<T> entityClass) {
-    return buildStreamByQuery(entityClass, ps -> {})
-            .map(fieldsToAttributes -> new SimpleEntityData(fieldsToAttributes, entityClass));
-  }
-
-   */
-
 }

@@ -169,15 +169,12 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource
 
   @Override
   public Optional<V> getValue(ZonedDateTime time) {
-    return null;
-    /*
     List<TimeBasedValue<V>> timeBasedValues =
         executeQuery(queryTime, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())));
     if (timeBasedValues.isEmpty()) return Optional.empty();
     if (timeBasedValues.size() > 1)
       log.warn("Retrieved more than one result value, using the first");
     return Optional.of(timeBasedValues.get(0).getValue());
-    */
   }
 
   /**
