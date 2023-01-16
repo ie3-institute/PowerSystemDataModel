@@ -5,12 +5,15 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.BmInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput
+import edu.ie3.datamodel.utils.options.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -49,13 +52,13 @@ class BmInputFactoryTest extends Specification implements FactoryTestHelper {
     def typeInput = Mock(BmTypeInput)
 
     when:
-    Optional<BmInput> input = inputFactory.get(
-        new SystemParticipantTypedEntityData<BmTypeInput>(parameter, inputClass,operatorInput, nodeInput, typeInput))
+    Try<BmInput, FactoryException> input = inputFactory.get(
+        new SystemParticipantTypedEntityData<BmTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass,operatorInput, nodeInput, typeInput))
 
     then:
-    input.present
-    input.get().getClass() == inputClass
-    ((BmInput) input.get()).with {
+    input.success
+    input.data.getClass() == inputClass
+    input.data.with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])

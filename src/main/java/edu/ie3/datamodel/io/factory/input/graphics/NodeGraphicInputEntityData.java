@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.input.graphics;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -23,11 +22,11 @@ public class NodeGraphicInputEntityData extends EntityData {
   /**
    * Creates a new NodeGraphicInputentityData object for an a NodeGraphicInput
    *
-   * @param fieldsToAttributes attribute map: field name to value
+   * @param mapWithRowIndex object containing an attribute map: field name to value and a row index
    * @param node node input element of this graphic
    */
-  public NodeGraphicInputEntityData(Map<String, String> fieldsToAttributes, NodeInput node) {
-    super(fieldsToAttributes, NodeGraphicInput.class);
+  public NodeGraphicInputEntityData(MapWithRowIndex mapWithRowIndex, NodeInput node) {
+    super(mapWithRowIndex, NodeGraphicInput.class);
     this.node = node;
   }
 

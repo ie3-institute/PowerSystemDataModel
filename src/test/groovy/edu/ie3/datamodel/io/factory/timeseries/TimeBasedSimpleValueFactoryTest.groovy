@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
+import edu.ie3.datamodel.io.factory.FactoryData
+
 import static edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory.*
 
 import edu.ie3.datamodel.exceptions.FactoryException
@@ -109,11 +111,11 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     given:
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
-    def data = new SimpleTimeBasedValueData([
+    def data = new SimpleTimeBasedValueData(new FactoryData.MapWithRowIndex("-1", [
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "price": "52.4"
-    ], EnergyPriceValue)
+    ], EnergyPriceValue))
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
@@ -128,13 +130,13 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     given:
     def factory = new TimeBasedSimpleValueFactory(HeatAndSValue)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
-    def data = new SimpleTimeBasedValueData([
+    def data = new SimpleTimeBasedValueData(new FactoryData.MapWithRowIndex("-1", [
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "p": "500.0",
       "q": "165.0",
       "heatdemand": "8.0"
-    ], HeatAndSValue)
+    ], HeatAndSValue))
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
@@ -149,12 +151,12 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     given:
     def factory = new TimeBasedSimpleValueFactory(HeatAndPValue)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
-    def data = new SimpleTimeBasedValueData([
+    def data = new SimpleTimeBasedValueData(new FactoryData.MapWithRowIndex("-1", [
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "p": "500.0",
       "heatdemand": "8.0"
-    ], HeatAndPValue)
+    ], HeatAndPValue))
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
@@ -169,11 +171,11 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     given:
     def factory = new TimeBasedSimpleValueFactory(HeatDemandValue)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
-    def data = new SimpleTimeBasedValueData([
+    def data = new SimpleTimeBasedValueData(new FactoryData.MapWithRowIndex("-1", [
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "heatdemand": "8.0"
-    ], HeatDemandValue)
+    ], HeatDemandValue))
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
@@ -188,12 +190,12 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     given:
     def factory = new TimeBasedSimpleValueFactory(SValue)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
-    def data = new SimpleTimeBasedValueData([
+    def data = new SimpleTimeBasedValueData(new FactoryData.MapWithRowIndex("-1", [
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "p": "500.0",
       "q": "165.0"
-    ], SValue)
+    ], SValue))
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
@@ -208,11 +210,11 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     given:
     def factory = new TimeBasedSimpleValueFactory(PValue)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
-    def data = new SimpleTimeBasedValueData([
+    def data = new SimpleTimeBasedValueData(new FactoryData.MapWithRowIndex("-1", [
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "p": "500.0"
-    ], PValue)
+    ], PValue))
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
@@ -227,10 +229,10 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     given:
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01 00:00:00")
-    def data = new SimpleTimeBasedValueData([
+    def data = new SimpleTimeBasedValueData(new FactoryData.MapWithRowIndex("-1", [
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time)
-    ], NodeInput)
+    ], NodeInput))
 
     when:
     factory.buildModel(data)

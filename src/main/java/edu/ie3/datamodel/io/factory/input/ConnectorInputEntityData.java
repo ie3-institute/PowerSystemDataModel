@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.input;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -22,22 +21,22 @@ public class ConnectorInputEntityData extends AssetInputEntityData {
   private final NodeInput nodeB;
 
   public ConnectorInputEntityData(
-      Map<String, String> fieldsToAttributes,
+      MapWithRowIndex mapWithRowIndex,
       Class<? extends UniqueEntity> entityClass,
       NodeInput nodeA,
       NodeInput nodeB) {
-    super(fieldsToAttributes, entityClass);
+    super(mapWithRowIndex, entityClass);
     this.nodeA = nodeA;
     this.nodeB = nodeB;
   }
 
   public ConnectorInputEntityData(
-      Map<String, String> fieldsToAttributes,
+      MapWithRowIndex mapWithRowIndex,
       Class<? extends UniqueEntity> entityClass,
       OperatorInput operator,
       NodeInput nodeA,
       NodeInput nodeB) {
-    super(fieldsToAttributes, entityClass, operator);
+    super(mapWithRowIndex, entityClass, operator);
     this.nodeA = nodeA;
     this.nodeB = nodeB;
   }

@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
@@ -148,7 +149,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
           buildIndividualTimeSeries(
               timeSeriesUuid,
               filePath,
-              fieldToValue -> this.buildTimeBasedValue(fieldToValue, valueClass, factory));
+              mapWithRowIndex -> this.buildTimeBasedValue(mapWithRowIndex, valueClass, factory));
     } catch (SourceException e) {
       throw new IllegalArgumentException(
           "Unable to obtain time series with UUID '"
@@ -187,7 +188,7 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
   private IndividualTimeSeries<V> buildIndividualTimeSeries(
       UUID timeSeriesUuid,
       String filePath,
-      Function<Map<String, String>, Optional<TimeBasedValue<V>>> fieldToValueFunction)
+      Function<FactoryData.MapWithRowIndex, Optional<TimeBasedValue<V>>> fieldToValueFunction)
       throws SourceException {
     try (BufferedReader reader = connector.initReader(filePath)) {
       Set<TimeBasedValue<V>> timeBasedValues =
@@ -208,17 +209,17 @@ public class CsvTimeSeriesSource<V extends Value> extends CsvDataSource
    * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
    * need any additional information.
    *
-   * @param fieldToValues Mapping from field id to values
+   * @param mapWithRowIndex object containing an attribute map: field name to value and an row index
    * @param valueClass Class of the desired underlying value
    * @param factory Factory to process the "flat" information
    * @return Optional simple time based value
    */
   private Optional<TimeBasedValue<V>> buildTimeBasedValue(
-      Map<String, String> fieldToValues,
+      FactoryData.MapWithRowIndex mapWithRowIndex,
       Class<V> valueClass,
       TimeBasedSimpleValueFactory<V> factory) {
     SimpleTimeBasedValueData<V> factoryData =
-        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
+        new SimpleTimeBasedValueData<>(mapWithRowIndex, valueClass);
     return Optional.of(Try.getOrThrowException(factory.get(factoryData)));
   }
 }

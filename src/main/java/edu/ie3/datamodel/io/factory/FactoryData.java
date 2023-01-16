@@ -14,16 +14,20 @@ import tech.units.indriya.quantity.Quantities;
 
 public abstract class FactoryData {
   private final Map<String, String> fieldsToAttributes;
+  private final String rowIndex;
   private final Class<?> targetClass;
 
-  protected FactoryData(Map<String, String> fieldsToAttributes, Class<?> targetClass) {
+  protected FactoryData(MapWithRowIndex mapWithRowIndex, Class<?> targetClass) {
     // this does the magic: case-insensitive get/set calls on keys
     TreeMap<String, String> insensitiveFieldsToAttributes =
         new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    insensitiveFieldsToAttributes.putAll(fieldsToAttributes);
+    insensitiveFieldsToAttributes.putAll(mapWithRowIndex.fieldsToAttribute());
     this.fieldsToAttributes = insensitiveFieldsToAttributes;
+    this.rowIndex = mapWithRowIndex.index();
     this.targetClass = targetClass;
   }
+
+  public record MapWithRowIndex(String index, Map<String, String> fieldsToAttribute) {}
 
   public Map<String, String> getFieldsToValues() {
     return fieldsToAttributes;
@@ -55,6 +59,15 @@ public abstract class FactoryData {
       throw new FactoryException(String.format("Field \"%s\" not found in EntityData", field));
 
     return fieldsToAttributes.get(field);
+  }
+
+  /**
+   * Method to get the row index of the data.
+   *
+   * @return the row index
+   */
+  public String getRowIndex() {
+    return rowIndex;
   }
 
   /**

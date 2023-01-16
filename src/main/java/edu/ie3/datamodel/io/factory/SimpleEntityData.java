@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.models.UniqueEntity;
-import java.util.Map;
 
 /**
  * Data used by {@link SimpleEntityFactory} to create an instance of an entity than can be created
@@ -19,8 +18,7 @@ import java.util.Map;
  */
 public final class SimpleEntityData extends EntityData {
 
-  public SimpleEntityData(
-      Map<String, String> fieldsToAttributes, Class<? extends UniqueEntity> clazz) {
-    super(fieldsToAttributes, clazz);
+  public SimpleEntityData(MapWithRowIndex mapWithRowIndex, Class<? extends UniqueEntity> clazz) {
+    super(mapWithRowIndex, clazz);
   }
 }

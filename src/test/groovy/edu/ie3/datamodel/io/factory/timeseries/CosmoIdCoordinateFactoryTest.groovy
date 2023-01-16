@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleFactoryData
 import edu.ie3.util.geo.GeoUtils
 import org.apache.commons.lang3.tuple.Pair
@@ -31,14 +32,14 @@ class CosmoIdCoordinateFactoryTest extends Specification {
       "latgeo",
       "longgeo"
     ] as Set
-    def validSimpleFactoryData = new SimpleFactoryData([
+    def validSimpleFactoryData = new SimpleFactoryData(new FactoryData.MapWithRowIndex("-1", [
       "tid": "1",
       "id": "106580",
       "latgeo": "39.602772",
       "longgeo": "1.279336",
       "latrot": "-10",
       "longrot": "-6.8125"
-    ] as Map<String, String>, Pair)
+    ] as Map<String, String>, Pair))
 
 
     when:
@@ -51,12 +52,12 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 
   def "A COSMO id to coordinate factory refuses to build from invalid data"() {
     given:
-    def invalidSimpleFactoryData = new SimpleFactoryData([
+    def invalidSimpleFactoryData = new SimpleFactoryData(new FactoryData.MapWithRowIndex("-1", [
       "tid": "1",
       "id": "106580",
       "latrot": "-10",
       "longrot": "-6.8125"
-    ] as Map<String, String>, Pair)
+    ] as Map<String, String>, Pair))
 
     when:
     factory.get(invalidSimpleFactoryData)
@@ -69,14 +70,14 @@ class CosmoIdCoordinateFactoryTest extends Specification {
 
   def "A COSMO id to coordinate factory builds model from valid data"() {
     given:
-    def validSimpleFactoryData = new SimpleFactoryData([
+    def validSimpleFactoryData = new SimpleFactoryData(new FactoryData.MapWithRowIndex("-1", [
       "tid": "1",
       "id": "106580",
       "latgeo": "39.602772",
       "longgeo": "1.279336",
       "latrot": "-10",
       "longrot": "-6.8125"
-    ] as Map<String, String>, Pair)
+    ] as Map<String, String>, Pair))
     Pair<Integer, Point> expectedPair = Pair.of(106580, GeoUtils.buildPoint(39.602772, 1.279336))
 
     when:

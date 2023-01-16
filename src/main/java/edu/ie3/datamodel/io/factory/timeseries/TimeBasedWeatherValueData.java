@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.models.value.WeatherValue;
-import java.util.Map;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import org.locationtech.jts.geom.Point;
@@ -19,11 +18,11 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
   /**
    * Creates a new TimeBasedEntryData object
    *
-   * @param fieldsToAttributes attribute map: field name to value
+   * @param mapWithRowIndex object containing an attribute map: field name to value and a row index
    * @param coordinate coordinate for this WeatherValue
    */
-  public TimeBasedWeatherValueData(Map<String, String> fieldsToAttributes, Point coordinate) {
-    super(fieldsToAttributes, WeatherValue.class);
+  public TimeBasedWeatherValueData(MapWithRowIndex mapWithRowIndex, Point coordinate) {
+    super(mapWithRowIndex, WeatherValue.class);
     this.coordinate = coordinate;
   }
 

@@ -5,11 +5,14 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
+import edu.ie3.datamodel.utils.options.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
@@ -39,12 +42,12 @@ class CylindricalStorageInputFactoryTest  extends Specification implements Facto
     def thermalBusInput = Mock(ThermalBusInput)
 
     when:
-    Optional<CylindricalStorageInput> input = inputFactory.get(new ThermalUnitInputEntityData(parameter, inputClass, thermalBusInput))
+    Try<CylindricalStorageInput, FactoryException> input = inputFactory.get(new ThermalUnitInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, thermalBusInput))
 
     then:
-    input.present
-    input.get().getClass() == inputClass
-    ((CylindricalStorageInput) input.get()).with {
+    input.success
+    input.data.getClass() == inputClass
+    input.data.with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime == OperationTime.notLimited()
       assert operator == OperatorInput.NO_OPERATOR_ASSIGNED

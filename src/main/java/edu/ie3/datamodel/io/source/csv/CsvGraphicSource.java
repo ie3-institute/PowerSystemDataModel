@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.RawInputDataException;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputEntityData;
 import edu.ie3.datamodel.io.factory.input.graphics.LineGraphicInputFactory;
 import edu.ie3.datamodel.io.factory.input.graphics.NodeGraphicInputEntityData;
@@ -22,7 +23,6 @@ import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
 import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.utils.options.Try;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -160,14 +160,14 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
   private Stream<Optional<NodeGraphicInputEntityData>> buildNodeGraphicEntityData(
       Set<NodeInput> nodes) {
     return buildStreamWithFieldsToAttributesMap(NodeGraphicInput.class, connector)
-        .map(fieldsToAttributes -> buildNodeGraphicEntityData(fieldsToAttributes, nodes));
+        .map(mapWithRowIndex -> buildNodeGraphicEntityData(mapWithRowIndex, nodes));
   }
 
   private Optional<NodeGraphicInputEntityData> buildNodeGraphicEntityData(
-      Map<String, String> fieldsToAttributes, Set<NodeInput> nodes) {
+      FactoryData.MapWithRowIndex mapWithRowIndex, Set<NodeInput> nodes) {
 
     // get the node of the entity
-    String nodeUuid = fieldsToAttributes.get(NODE);
+    String nodeUuid = mapWithRowIndex.fieldsToAttribute().get(NODE);
     Optional<NodeInput> node = findFirstEntityByUuid(nodeUuid, nodes);
 
     // if the node is not present we return an empty element and
@@ -175,16 +175,16 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
     if (node.isEmpty()) {
       logSkippingWarning(
           NodeGraphicInput.class.getSimpleName(),
-          fieldsToAttributes.get("uuid"),
+          mapWithRowIndex.fieldsToAttribute().get("uuid"),
           "no id (graphic entities don't have one)",
           NODE + ": " + nodeUuid);
       return Optional.empty();
     }
 
     // remove fields that are passed as objects to constructor
-    fieldsToAttributes.keySet().remove(NODE);
+    mapWithRowIndex.fieldsToAttribute().keySet().remove(NODE);
 
-    return Optional.of(new NodeGraphicInputEntityData(fieldsToAttributes, node.get()));
+    return Optional.of(new NodeGraphicInputEntityData(mapWithRowIndex, node.get()));
   }
 
   /**
@@ -205,14 +205,14 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
   private Stream<Optional<LineGraphicInputEntityData>> buildLineGraphicEntityData(
       Set<LineInput> lines) {
     return buildStreamWithFieldsToAttributesMap(LineGraphicInput.class, connector)
-        .map(fieldsToAttributes -> buildLineGraphicEntityData(fieldsToAttributes, lines));
+        .map(mapWithRowIndex -> buildLineGraphicEntityData(mapWithRowIndex, lines));
   }
 
   private Optional<LineGraphicInputEntityData> buildLineGraphicEntityData(
-      Map<String, String> fieldsToAttributes, Set<LineInput> lines) {
+      FactoryData.MapWithRowIndex mapWithRowIndex, Set<LineInput> lines) {
 
     // get the node of the entity
-    String lineUuid = fieldsToAttributes.get("line");
+    String lineUuid = mapWithRowIndex.fieldsToAttribute().get("line");
     Optional<LineInput> line = findFirstEntityByUuid(lineUuid, lines);
 
     // if the node is not present we return an empty element and
@@ -220,15 +220,15 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
     if (line.isEmpty()) {
       logSkippingWarning(
           LineGraphicInput.class.getSimpleName(),
-          fieldsToAttributes.get("uuid"),
+          mapWithRowIndex.fieldsToAttribute().get("uuid"),
           "no id (graphic entities don't have one)",
           "line: " + lineUuid);
       return Optional.empty();
     }
 
     // remove fields that are passed as objects to constructor
-    fieldsToAttributes.keySet().remove("line");
+    mapWithRowIndex.fieldsToAttribute().keySet().remove("line");
 
-    return Optional.of(new LineGraphicInputEntityData(fieldsToAttributes, line.get()));
+    return Optional.of(new LineGraphicInputEntityData(mapWithRowIndex, line.get()));
   }
 }

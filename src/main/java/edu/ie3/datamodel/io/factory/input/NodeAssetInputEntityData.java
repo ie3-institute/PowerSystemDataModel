@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.factory.input;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -24,32 +23,30 @@ public class NodeAssetInputEntityData extends AssetInputEntityData {
    * Creates a new UntypedSingleNodeEntityData object for an operated, always on system participant
    * input
    *
-   * @param fieldsToAttributes attribute map: field name to value
+   * @param mapWithRowIndex object containing an attribute map: field name to value and a row index
    * @param entityClass class of the entity to be created with this data
    * @param node input node
    */
   public NodeAssetInputEntityData(
-      Map<String, String> fieldsToAttributes,
-      Class<? extends UniqueEntity> entityClass,
-      NodeInput node) {
-    super(fieldsToAttributes, entityClass);
+      MapWithRowIndex mapWithRowIndex, Class<? extends UniqueEntity> entityClass, NodeInput node) {
+    super(mapWithRowIndex, entityClass);
     this.node = node;
   }
 
   /**
    * Creates a new UntypedSingleNodeEntityData object for an operable system participant input
    *
-   * @param fieldsToAttributes attribute map: field name to value
+   * @param mapWithRowIndex object containing an attribute map: field name to value and a row index
    * @param entityClass class of the entity to be created with this data
    * @param node input node
    * @param operator operator input
    */
   public NodeAssetInputEntityData(
-      Map<String, String> fieldsToAttributes,
+      MapWithRowIndex mapWithRowIndex,
       Class<? extends UniqueEntity> entityClass,
       OperatorInput operator,
       NodeInput node) {
-    super(fieldsToAttributes, entityClass, operator);
+    super(mapWithRowIndex, entityClass, operator);
     this.node = node;
   }
 

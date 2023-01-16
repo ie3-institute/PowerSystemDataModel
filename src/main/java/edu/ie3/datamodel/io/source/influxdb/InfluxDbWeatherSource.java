@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.influxdb;
 
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
@@ -171,7 +172,10 @@ public class InfluxDbWeatherSource implements WeatherSource {
               int coordinateId = Integer.parseInt(flatCaseFields.remove(coordinateIdFieldName));
               return coordinateSource
                   .getCoordinate(coordinateId)
-                  .map(point -> new TimeBasedWeatherValueData(flatCaseFields, point))
+                  .map(
+                      point ->
+                          new TimeBasedWeatherValueData(
+                              new FactoryData.MapWithRowIndex("-1", flatCaseFields), point))
                   .map(weatherValueFactory::get)
                   .map(Try::getOrThrowException);
             });

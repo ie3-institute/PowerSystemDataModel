@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
@@ -19,6 +20,7 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
+import edu.ie3.datamodel.utils.StreamUtils;
 import edu.ie3.datamodel.utils.options.Try;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
@@ -349,10 +351,10 @@ public abstract class CsvDataSource {
    * @param entityClass the entity class that should be build and that is used to get the
    *     corresponding reader
    * @param connector the connector that should be used to get the reader from
-   * @return a parallel stream of maps, where each map represents one row of the csv file with the
-   *     mapping (fieldName to fieldValue)
+   * @return a parallel stream of maps with row indexes, where each map represents one row of the
+   *     csv file with the mapping (fieldName to fieldValue)
    */
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+  protected Stream<FactoryData.MapWithRowIndex> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, CsvFileConnector connector) {
     try {
       return buildStreamWithFieldsToAttributesMap(entityClass, connector.initReader(entityClass));
@@ -370,10 +372,10 @@ public abstract class CsvDataSource {
    *
    * @param entityClass the entity class that should be build
    * @param bufferedReader the reader to use
-   * @return a parallel stream of maps, where each map represents one row of the csv file with the
-   *     mapping (fieldName to fieldValue)
+   * @return a parallel stream of maps with row indexes, where each map represents one row of the
+   *     csv file with the mapping (fieldName to fieldValue)
    */
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+  protected Stream<FactoryData.MapWithRowIndex> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
@@ -389,10 +391,13 @@ public abstract class CsvDataSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
+      Collection<FactoryData.MapWithRowIndex> allRows = csvRowFieldValueMapping(reader, headline);
 
       return distinctRowsWithLog(
-          allRows, fieldToValues -> fieldToValues.get("uuid"), entityClass.getSimpleName(), "UUID")
+          allRows,
+          mapWithRowIndex -> mapWithRowIndex.fieldsToAttribute().get("uuid"),
+          entityClass.getSimpleName(),
+          "UUID")
           .parallelStream();
     } catch (IOException e) {
       log.warn(
@@ -405,24 +410,25 @@ public abstract class CsvDataSource {
     return Stream.empty();
   }
 
-  protected List<Map<String, String>> csvRowFieldValueMapping(
+  protected List<FactoryData.MapWithRowIndex> csvRowFieldValueMapping(
       BufferedReader reader, String[] headline) {
-    return reader
-        .lines()
-        .parallel()
-        .map(csvRow -> buildFieldsToAttributes(csvRow, headline))
-        .filter(map -> !map.isEmpty())
+    Stream<Map<String, String>> rowContentStream =
+        reader.lines().map(csvRow -> buildFieldsToAttributes(csvRow, headline));
+    return StreamUtils.zipWithRowIndex(rowContentStream)
+        .map(
+            pairStream ->
+                new FactoryData.MapWithRowIndex(String.valueOf(pairStream.b()), pairStream.a()))
         .toList();
   }
 
   /**
-   * Returns a collection of maps each representing a row in csv file that can be used to built one
-   * entity. The uniqueness of each row is doubled checked by a) that no duplicated rows are
-   * returned that are full (1:1) matches and b) that no rows are returned that have the same
-   * composite key, which gets extracted by the provided extractor. As both cases destroy uniqueness
-   * constraints, an empty set is returned to indicate that these data cannot be processed safely
-   * and the error is logged. For case a), only the duplicates are filtered out and a set with
-   * unique rows is returned.
+   * Returns a collection of maps with row indexes each representing a row in csv file that can be
+   * used to built one entity. The uniqueness of each row is doubled checked by a) that no
+   * duplicated rows are returned that are full (1:1) matches and b) that no rows are returned that
+   * have the same composite key, which gets extracted by the provided extractor. As both cases
+   * destroy uniqueness constraints, an empty set is returned to indicate that these data cannot be
+   * processed safely and the error is logged. For case a), only the duplicates are filtered out and
+   * a set with unique rows is returned.
    *
    * @param allRows collection of rows of a csv file an entity should be built from
    * @param keyExtractor Function, that extracts the key from field to value mapping, that is meant
@@ -434,12 +440,12 @@ public abstract class CsvDataSource {
    * @return either a set containing only unique rows or an empty set if at least two rows with the
    *     same UUID but different field values exist
    */
-  protected Set<Map<String, String>> distinctRowsWithLog(
-      Collection<Map<String, String>> allRows,
-      final Function<Map<String, String>, String> keyExtractor,
+  protected Set<FactoryData.MapWithRowIndex> distinctRowsWithLog(
+      Collection<FactoryData.MapWithRowIndex> allRows,
+      final Function<FactoryData.MapWithRowIndex, String> keyExtractor,
       String entityDescriptor,
       String keyDescriptor) {
-    Set<Map<String, String>> allRowsSet = new HashSet<>(allRows);
+    Set<FactoryData.MapWithRowIndex> allRowsSet = new HashSet<>(allRows);
     // check for duplicated rows that match exactly (full duplicates) -> sanity only, not crucial -
     // case a)
     if (allRows.size() != allRowsSet.size()) {
@@ -450,7 +456,7 @@ public abstract class CsvDataSource {
     }
 
     /* Check for rows with the same key based on the provided key extractor function */
-    Set<Map<String, String>> distinctIdSet =
+    Set<FactoryData.MapWithRowIndex> distinctIdSet =
         allRowsSet.parallelStream()
             .filter(ValidationUtils.distinctByKey(keyExtractor))
             .collect(Collectors.toSet());
@@ -527,22 +533,25 @@ public abstract class CsvDataSource {
 
   protected <T extends AssetInput> AssetInputEntityData assetInputEntityDataStream(
       Class<T> entityClass,
-      Map<String, String> fieldsToAttributes,
+      FactoryData.MapWithRowIndex mapWithRowIndex,
       Collection<OperatorInput> operators) {
 
     // get the operator of the entity
-    String operatorUuid = fieldsToAttributes.get(OPERATOR);
+    String operatorUuid = mapWithRowIndex.fieldsToAttribute().get(OPERATOR);
     OperatorInput operator =
         getFirstOrDefaultOperator(
             operators,
             operatorUuid,
             entityClass.getSimpleName(),
-            saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP));
+            saveMapGet(mapWithRowIndex.fieldsToAttribute(), "uuid", FIELDS_TO_VALUES_MAP));
 
     // remove fields that are passed as objects to constructor
-    fieldsToAttributes.keySet().removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
+    mapWithRowIndex
+        .fieldsToAttribute()
+        .keySet()
+        .removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
 
-    return new AssetInputEntityData(fieldsToAttributes, entityClass, operator);
+    return new AssetInputEntityData(mapWithRowIndex, entityClass, operator);
   }
 
   /**
@@ -587,7 +596,8 @@ public abstract class CsvDataSource {
 
               return Optional.of(
                   new NodeAssetInputEntityData(
-                      fieldsToAttributes,
+                      new FactoryData.MapWithRowIndex(
+                          assetInputEntityData.getRowIndex(), fieldsToAttributes),
                       assetInputEntityData.getTargetClass(),
                       assetInputEntityData.getOperatorInput(),
                       node.get()));

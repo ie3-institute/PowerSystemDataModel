@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -542,7 +543,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
               fieldsToAttributes.keySet().remove(TYPE);
 
               return new SystemParticipantTypedEntityData<>(
-                  fieldsToAttributes,
+                  new FactoryData.MapWithRowIndex(
+                      nodeAssetInputEntityData.getRowIndex(), fieldsToAttributes),
                   nodeAssetInputEntityData.getTargetClass(),
                   nodeAssetInputEntityData.getOperatorInput(),
                   nodeAssetInputEntityData.getNode(),
@@ -597,7 +599,8 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                               fieldsToAttributes.keySet().remove(THERMAL_BUS);
 
                               return new HpInputEntityData(
-                                  fieldsToAttributes,
+                                  new FactoryData.MapWithRowIndex(
+                                      typedEntityData.getRowIndex(), fieldsToAttributes),
                                   typedEntityData.getOperatorInput(),
                                   typedEntityData.getNode(),
                                   typedEntityData.getTypeInput(),
@@ -694,7 +697,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
 
     return Optional.of(
         new ChpInputEntityData(
-            fieldsToAttributes,
+            new FactoryData.MapWithRowIndex(typedEntityData.getRowIndex(), fieldsToAttributes),
             typedEntityData.getOperatorInput(),
             typedEntityData.getNode(),
             typedEntityData.getTypeInput(),

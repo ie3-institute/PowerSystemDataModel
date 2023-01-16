@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.sql;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
@@ -146,13 +147,13 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
    * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
    * need any additional information.
    *
-   * @param fieldToValues Mapping from field id to values
+   * @param mapWithRowIndex object containing an attribute map: field name to value and a row index
    * @return Optional simple time based value
    */
-  protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
-    fieldToValues.remove("timeSeries");
+  protected Optional<TimeBasedValue<V>> createEntity(FactoryData.MapWithRowIndex mapWithRowIndex) {
+    mapWithRowIndex.fieldsToAttribute().remove("timeSeries");
     SimpleTimeBasedValueData<V> factoryData =
-        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
+        new SimpleTimeBasedValueData<>(mapWithRowIndex, valueClass);
 
     Try<TimeBasedValue<V>, FactoryException> timeBasedValue = valueFactory.get(factoryData);
 
@@ -221,5 +222,10 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
         + "' AND "
         + timeColumnName
         + "=?;";
+  }
+
+  @Override
+  protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
+    return Optional.empty();
   }
 }

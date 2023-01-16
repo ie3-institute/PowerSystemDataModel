@@ -14,9 +14,15 @@ import java.util.stream.StreamSupport;
 public class StreamUtils {
   private StreamUtils() {}
 
+  private static final Stream<Integer> intStream = Stream.iterate(0, i -> i + 1);
+
   public record Pair<A, B>(A a, B b) {}
 
-  public static <A, B, C> Stream<Pair<A, B>> zip(Stream<A> a, Stream<B> b) {
+  public static <A> Stream<Pair<A, Integer>> zipWithRowIndex(Stream<A> a) {
+    return zip(a, intStream);
+  }
+
+  public static <A, B> Stream<Pair<A, B>> zip(Stream<A> a, Stream<B> b) {
     return StreamSupport.stream(
         Spliterators.spliteratorUnknownSize(
             zip(a.iterator(), b.iterator()), Spliterator.ORDERED | Spliterator.NONNULL),
@@ -24,13 +30,13 @@ public class StreamUtils {
   }
 
   public static <A, B> Iterator<Pair<A, B>> zip(Iterator<A> a, Iterator<B> b) {
-    return new Iterator<Pair<A, B>>() {
+    return new Iterator<>() {
       public boolean hasNext() {
         return a.hasNext() && b.hasNext(); // This uses the shorter of the two `Iterator`s.
       }
 
       public Pair<A, B> next() {
-        return new Pair(a.next(), b.next());
+        return new Pair<>(a.next(), b.next());
       }
     };
   }

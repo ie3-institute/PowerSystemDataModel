@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.csv;
 
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.ThermalSource;
@@ -206,7 +207,8 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
     return Stream.of(
         Optional.of(
             new ThermalUnitInputEntityData(
-                assetInputEntityData.getFieldsToValues(),
+                new FactoryData.MapWithRowIndex(
+                    assetInputEntityData.getRowIndex(), assetInputEntityData.getFieldsToValues()),
                 assetInputEntityData.getTargetClass(),
                 assetInputEntityData.getOperatorInput(),
                 thermalBus.get())));

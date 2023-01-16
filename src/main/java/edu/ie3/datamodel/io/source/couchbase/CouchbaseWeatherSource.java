@@ -12,6 +12,7 @@ import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.query.QueryResult;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
@@ -278,7 +279,9 @@ public class CouchbaseWeatherSource implements WeatherSource {
             .collect(
                 Collectors.toMap(Map.Entry::getKey, entry -> String.valueOf(entry.getValue())));
     fieldToValueMap.putIfAbsent("uuid", UUID.randomUUID().toString());
-    return Optional.of(new TimeBasedWeatherValueData(fieldToValueMap, coordinate.get()));
+    return Optional.of(
+        new TimeBasedWeatherValueData(
+            new FactoryData.MapWithRowIndex("-1", fieldToValueMap), coordinate.get()));
   }
 
   /**

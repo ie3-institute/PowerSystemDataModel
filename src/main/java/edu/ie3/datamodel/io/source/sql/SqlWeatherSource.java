@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.io.connectors.SqlConnector;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
@@ -233,7 +234,9 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
       log.warn("Unable to match coordinate ID {} to a point", coordinateId);
       return Optional.empty();
     }
-    return Optional.of(new TimeBasedWeatherValueData(fieldMap, coordinate.get()));
+    return Optional.of(
+        new TimeBasedWeatherValueData(
+            new FactoryData.MapWithRowIndex("-1", fieldMap), coordinate.get()));
   }
 
   /**

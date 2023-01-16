@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -154,8 +155,8 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
       Set<CsvIndividualTimeSeriesMetaInformation> weatherMetaInformation,
       CsvFileConnector connector) {
     final Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
-    Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> fieldToValueFunction =
-        this::buildWeatherValue;
+    Function<FactoryData.MapWithRowIndex, Optional<TimeBasedValue<WeatherValue>>>
+        fieldToValueFunction = this::buildWeatherValue;
     /* Reading in weather time series */
     for (CsvIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
       // we need a reader for each file
@@ -192,11 +193,14 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    * Builds a {@link TimeBasedValue} of type {@link WeatherValue} from given "flat " input
    * information. If the single model cannot be built, an empty optional is handed back.
    *
-   * @param fieldToValues "flat " input information as a mapping from field to value
+   * @param mapWithRowIndex "flat " input information as a mapping from field to value with their
+   *     row index
    * @return Optional time based weather value
    */
   private Optional<TimeBasedValue<WeatherValue>> buildWeatherValue(
-      Map<String, String> fieldToValues) {
+      FactoryData.MapWithRowIndex mapWithRowIndex) {
+    Map<String, String> fieldToValues = mapWithRowIndex.fieldsToAttribute();
+
     /* Try to get the coordinate from entries */
     Optional<Point> maybeCoordinate = extractCoordinate(fieldToValues);
     return maybeCoordinate
@@ -207,7 +211,7 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
 
               /* Build factory data */
               TimeBasedWeatherValueData factoryData =
-                  new TimeBasedWeatherValueData(fieldToValues, coordinate);
+                  new TimeBasedWeatherValueData(mapWithRowIndex, coordinate);
               return Optional.of(weatherFactory.get(factoryData));
             })
         .orElseGet(
@@ -220,8 +224,9 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
 
   /**
    * Reads the first line (considered to be the headline with headline fields) and returns a stream
-   * of (fieldName to fieldValue) mapping where each map represents one row of the .csv file. Since
-   * the returning stream is a parallel stream, the order of the elements cannot be guaranteed.
+   * of (fieldName to fieldValue) mapping with their row index where each map represents one row of
+   * the .csv file. Since the returning stream is a parallel stream, the order of the elements
+   * cannot be guaranteed.
    *
    * <p>This method overrides {@link CsvDataSource#buildStreamWithFieldsToAttributesMap(Class,
    * BufferedReader)} to not do sanity check for available UUID. This is because the weather source
@@ -230,11 +235,11 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
    *
    * @param entityClass the entity class that should be build
    * @param bufferedReader the reader to use
-   * @return a parallel stream of maps, where each map represents one row of the csv file with the
-   *     mapping (fieldName to fieldValue)
+   * @return a parallel stream of maps with row indexes, where each map represents one row of the
+   *     csv file with the mapping (fieldName to fieldValue)
    */
   @Override
-  protected Stream<Map<String, String>> buildStreamWithFieldsToAttributesMap(
+  protected Stream<FactoryData.MapWithRowIndex> buildStreamWithFieldsToAttributesMap(
       Class<? extends UniqueEntity> entityClass, BufferedReader bufferedReader) {
     try (BufferedReader reader = bufferedReader) {
       final String[] headline = parseCsvRow(reader.readLine(), csvSep);
@@ -243,13 +248,17 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
       // is wanted to avoid a lock on the file), but this causes a closing of the stream as well.
       // As we still want to consume the data at other places, we start a new stream instead of
       // returning the original one
-      Collection<Map<String, String>> allRows = csvRowFieldValueMapping(reader, headline);
+      Collection<FactoryData.MapWithRowIndex> allRows = csvRowFieldValueMapping(reader, headline);
 
-      Function<Map<String, String>, String> timeCoordinateIdExtractor =
-          fieldToValues ->
-              fieldToValues
+      Function<FactoryData.MapWithRowIndex, String> timeCoordinateIdExtractor =
+          mapWithRowIndex ->
+              mapWithRowIndex
+                  .fieldsToAttribute()
                   .get(weatherFactory.getTimeFieldString())
-                  .concat(fieldToValues.get(weatherFactory.getCoordinateIdFieldString()));
+                  .concat(
+                      mapWithRowIndex
+                          .fieldsToAttribute()
+                          .get(weatherFactory.getCoordinateIdFieldString()));
       return distinctRowsWithLog(
           allRows, timeCoordinateIdExtractor, entityClass.getSimpleName(), "UUID")
           .parallelStream();

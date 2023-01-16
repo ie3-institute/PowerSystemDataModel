@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.io.connectors.SqlConnector;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
@@ -60,7 +61,9 @@ public class SqlTimeSeriesMappingSource
 
   @Override
   protected Optional<MappingEntry> createEntity(Map<String, String> fieldToValues) {
-    SimpleEntityData entityData = new SimpleEntityData(fieldToValues, MappingEntry.class);
+    SimpleEntityData entityData =
+        new SimpleEntityData(
+            new FactoryData.MapWithRowIndex("-1", fieldToValues), MappingEntry.class);
     return Optional.of(mappingFactory.get(entityData)).map(Try::getOrThrowException);
   }
 }

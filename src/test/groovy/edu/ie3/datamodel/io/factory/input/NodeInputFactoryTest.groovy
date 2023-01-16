@@ -5,10 +5,13 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
+import edu.ie3.datamodel.utils.options.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.ComparableQuantity
@@ -45,12 +48,12 @@ class NodeInputFactoryTest extends Specification implements FactoryTestHelper {
     def operatorInput = Mock(OperatorInput)
 
     when:
-    Optional<NodeInput> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
+    Try<NodeInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput))
 
     then:
-    input.present
-    input.get().getClass() == inputClass
-    ((NodeInput) input.get()).with {
+    input.success
+    input.data.getClass() == inputClass
+    ((NodeInput) input.data).with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert operationTime.startDate.present
       assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])

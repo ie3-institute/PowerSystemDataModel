@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.FactoryData;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.RawGridSource;
@@ -374,7 +375,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
     return Optional.of(
         new ConnectorInputEntityData(
-            fieldsToAttributes,
+            new FactoryData.MapWithRowIndex(assetInputEntityData.getRowIndex(), fieldsToAttributes),
             assetInputEntityData.getTargetClass(),
             assetInputEntityData.getOperatorInput(),
             nodeA.get(),
@@ -437,7 +438,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
     // build result object
     return new TypedConnectorInputEntityData<>(
-        fieldsToAttributes,
+        new FactoryData.MapWithRowIndex(untypedEntityData.getRowIndex(), fieldsToAttributes),
         untypedEntityData.getTargetClass(),
         untypedEntityData.getOperatorInput(),
         untypedEntityData.getNodeA(),
@@ -499,7 +500,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
     return Optional.of(
         new Transformer3WInputEntityData(
-            fieldsToAttributes,
+            new FactoryData.MapWithRowIndex(typeEntityData.getRowIndex(), fieldsToAttributes),
             typeEntityData.getTargetClass(),
             typeEntityData.getOperatorInput(),
             typeEntityData.getNodeA(),

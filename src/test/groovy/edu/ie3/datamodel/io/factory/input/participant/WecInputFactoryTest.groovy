@@ -5,11 +5,14 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.input.system.type.WecTypeInput
+import edu.ie3.datamodel.utils.options.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -46,13 +49,13 @@ class WecInputFactoryTest extends Specification implements FactoryTestHelper {
     def typeInput = Mock(WecTypeInput)
 
     when:
-    Optional<WecInput> input = inputFactory.get(
-        new SystemParticipantTypedEntityData<WecTypeInput>(parameter, inputClass, operatorInput, nodeInput, typeInput))
+    Try<WecInput, FactoryException> input = inputFactory.get(
+        new SystemParticipantTypedEntityData<WecTypeInput>(new FactoryData.MapWithRowIndex("-1", parameter), inputClass, operatorInput, nodeInput, typeInput))
 
     then:
-    input.present
-    input.get().getClass() == inputClass
-    ((WecInput) input.get()).with {
+    input.success
+    input.data.getClass() == inputClass
+    input.data.with {
       assert uuid == UUID.fromString(parameter["uuid"])
       assert !operationTime.startDate.present
       assert operationTime.endDate.present
