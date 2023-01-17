@@ -20,19 +20,19 @@ class ReactivePowerCharacteristicTest extends Specification {
   CosPhiFixed validCosPhiFixed
 
   @Shared
-  String validCosPhiFixedDeSerialized = "cosPhiFixed:{(0.0,0.95)}"
+  String validCosPhiFixedSerialized = "cosPhiFixed:{(0.0,0.95)}"
 
   @Shared
   CosPhiP validCosPhiP
 
   @Shared
-  String validCosPhiPDeSerialized = "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+  String validCosPhiPSerialized = "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
 
   @Shared
   QV validQV
 
   @Shared
-  String validQVDeSerialized = "qV:{(0.9,-0.3),(0.95,0.0),(1.05,0.0),(1.1,0.3)}"
+  String validQVSerialized = "qV:{(0.9,-0.3),(0.95,0.0),(1.05,0.0),(1.1,0.3)}"
 
   def setupSpec() {
     validCosPhiFixed = new CosPhiFixed(
@@ -69,15 +69,15 @@ class ReactivePowerCharacteristicTest extends Specification {
 
   def "A valid CosPhiFixed is correctly de-serialized"() {
     when: "De-serializing a valid input"
-    String actual = validCosPhiFixed.Serialize()
+    String actual = validCosPhiFixed.serialize()
 
     then: "it returns the correct string"
-    actual == validCosPhiFixedDeSerialized
+    actual == validCosPhiFixedSerialized
   }
 
   def "A CosPhiFixed is correctly set up from a correctly formatted string"() {
     when:
-    CosPhiFixed actual = new CosPhiFixed(validCosPhiFixedDeSerialized)
+    CosPhiFixed actual = new CosPhiFixed(validCosPhiFixedSerialized)
 
     then:
     actual.points == validCosPhiFixed.points
@@ -94,15 +94,15 @@ class ReactivePowerCharacteristicTest extends Specification {
 
   def "A valid CosPhiP is correctly de-serialized"() {
     when: "De-serializing a valid input"
-    String actual = validCosPhiP.Serialize()
+    String actual = validCosPhiP.serialize()
 
     then: "it returns the correct string"
-    actual == validCosPhiPDeSerialized
+    actual == validCosPhiPSerialized
   }
 
   def "A CosPhiP is correctly set up from a correctly formatted string"() {
     when:
-    CosPhiP actual = new CosPhiP(validCosPhiPDeSerialized)
+    CosPhiP actual = new CosPhiP(validCosPhiPSerialized)
 
     then:
     actual.points == validCosPhiP.points
@@ -119,15 +119,15 @@ class ReactivePowerCharacteristicTest extends Specification {
 
   def "A valid QV is correctly de-serialized"() {
     when: "De-serializing a valid input"
-    String actual = validQV.Serialize()
+    String actual = validQV.serialize()
 
     then: "it returns the correct string"
-    actual == validQVDeSerialized
+    actual == validQVSerialized
   }
 
   def "A QV is correctly set up from a correctly formatted string"() {
     when:
-    QV actual = new QV(validQVDeSerialized)
+    QV actual = new QV(validQVSerialized)
 
     then:
     actual.points == validQV.points
@@ -144,7 +144,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 
   def "The ReactivePowerCharacteristic is able to parse a fixed power factor correctly from string"() {
     when:
-    ReactivePowerCharacteristic actual = ReactivePowerCharacteristic.parse(validCosPhiFixedDeSerialized)
+    ReactivePowerCharacteristic actual = ReactivePowerCharacteristic.parse(validCosPhiFixedSerialized)
 
     then:
     actual instanceof CosPhiFixed
@@ -153,7 +153,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 
   def "The ReactivePowerCharacteristic is able to parse a power dependent power factor correctly from string"() {
     when:
-    ReactivePowerCharacteristic actual = ReactivePowerCharacteristic.parse(validCosPhiPDeSerialized)
+    ReactivePowerCharacteristic actual = ReactivePowerCharacteristic.parse(validCosPhiPSerialized)
 
     then:
     actual instanceof CosPhiP
@@ -162,7 +162,7 @@ class ReactivePowerCharacteristicTest extends Specification {
 
   def "The ReactivePowerCharacteristic is able to parse voltage dependent reactive power correctly from string"() {
     when:
-    ReactivePowerCharacteristic actual = ReactivePowerCharacteristic.parse(validQVDeSerialized)
+    ReactivePowerCharacteristic actual = ReactivePowerCharacteristic.parse(validQVSerialized)
 
     then:
     actual instanceof QV

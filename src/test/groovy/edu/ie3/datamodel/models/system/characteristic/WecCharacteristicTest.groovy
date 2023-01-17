@@ -37,7 +37,7 @@ class WecCharacteristicTest extends Specification {
 
   def "A WecCharacteristicInput is correctly de-serialized"() {
     when:
-    String actual = validInput.Serialize()
+    String actual = validInput.serialize()
 
     then:
     actual == "cP:{(10.0,0.05),(15.0,0.1),(20.0,0.2)}"

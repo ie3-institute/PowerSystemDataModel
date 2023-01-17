@@ -100,7 +100,7 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
    *
    * @return The de-serialized point
    */
-  public String deSerialize() {
+  public String serialize() {
     return String.format(
         Locale.ENGLISH, "(%s,%s)", x.getValue().doubleValue(), y.getValue().doubleValue());
   }

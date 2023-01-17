@@ -66,7 +66,7 @@ class CharacteristicPointTest extends Specification {
         Quantities.getQuantity(4d, PERCENT))
 
     when: "de-serialized"
-    String result = point.deSerialize()
+    String result = point.serialize()
 
     then: "the result is correct"
     result == "(3.0,4.0)"

@@ -110,10 +110,10 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
    *
    * @return the characteristic as de-serialized string
    */
-  public String Serialize() {
+  public String serialize() {
     return characteristicPrefix
         + ":{"
-        + points.stream().map(CharacteristicPoint::deSerialize).collect(Collectors.joining(","))
+        + points.stream().map(CharacteristicPoint::serialize).collect(Collectors.joining(","))
         + "}";
   }
 

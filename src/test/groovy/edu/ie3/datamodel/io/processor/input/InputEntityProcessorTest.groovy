@@ -163,7 +163,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.fixedFeedInInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.fixedFeedInInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.fixedFeedInInput.operator.getUuid().toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "sRated"          : SystemParticipantTestData.fixedFeedInInput.sRated.to(StandardUnits.S_RATED).getValue().doubleValue().toString()
     ]
     PvInput          | SystemParticipantTestData.pvInput          || [
@@ -181,7 +181,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.pvInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.pvInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.pvInput.operator.getUuid().toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "sRated"          : SystemParticipantTestData.pvInput.sRated.to(StandardUnits.S_RATED).getValue().doubleValue().toString()
     ]
     WecInput         | SystemParticipantTestData.wecInput         || [
@@ -192,7 +192,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.wecInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.wecInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.wecInput.operator.uuid.toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiPDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiPSerialized,
       "type"            : SystemParticipantTestData.wecInput.type.uuid.toString()
     ]
     ChpInput         | SystemParticipantTestData.chpInput         || [
@@ -203,7 +203,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.chpInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.chpInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.chpInput.operator.uuid.toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "thermalBus"      : SystemParticipantTestData.chpInput.thermalBus.uuid.toString(),
       "thermalStorage"  : SystemParticipantTestData.chpInput.thermalStorage.uuid.toString(),
       "type"            : SystemParticipantTestData.chpInput.type.uuid.toString(),
@@ -218,7 +218,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.bmInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.bmInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.bmInput.operator.uuid.toString(),
-      "qCharacteristics": SystemParticipantTestData.qVDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.qVSerialized,
       "type"            : SystemParticipantTestData.bmInput.type.uuid.toString()
     ]
     EvInput          | SystemParticipantTestData.evInput          || [
@@ -228,7 +228,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.evInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.evInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.evInput.operator.getUuid().toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "type"            : SystemParticipantTestData.evInput.type.getUuid().toString()
     ]
 
@@ -242,7 +242,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"      : SystemParticipantTestData.loadInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"       : SystemParticipantTestData.loadInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"           : SystemParticipantTestData.loadInput.operator.uuid.toString(),
-      "qCharacteristics"   : SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics"   : SystemParticipantTestData.cosPhiFixedSerialized,
       "sRated"             : SystemParticipantTestData.loadInput.sRated.getValue().doubleValue().toString(),
       "loadProfile"		 : SystemParticipantTestData.loadInput.loadProfile.key
     ]
@@ -253,7 +253,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.storageInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.storageInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.storageInput.operator.uuid.toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "type"            : SystemParticipantTestData.storageInput.type.uuid.toString()
     ]
     HpInput          | SystemParticipantTestData.hpInput          || [
@@ -263,7 +263,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.hpInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.hpInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.hpInput.operator.uuid.toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "thermalBus"      : SystemParticipantTestData.hpInput.thermalBus.uuid.toString(),
       "type"            : SystemParticipantTestData.hpInput.type.uuid.toString()
     ]
@@ -274,7 +274,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.evcsInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.evcsInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.evcsInput.operator.uuid.toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "type"            : SystemParticipantTestData.evcsInput.type.toString(),
       "cosPhiRated"     : SystemParticipantTestData.evcsInput.cosPhiRated.toString(),
       "chargingPoints"  : SystemParticipantTestData.evcsInput.chargingPoints.toString(),
@@ -632,7 +632,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should deserialize an entity but ignore the operator field when OperatorInput is equal to NO_OPERATOR_ASSIGNED"() {
+  def "The InputEntityProcessor should serialize an entity but ignore the operator field when OperatorInput is equal to NO_OPERATOR_ASSIGNED"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(NodeInput)
     def nodeWithOutOperator = new NodeInput(
