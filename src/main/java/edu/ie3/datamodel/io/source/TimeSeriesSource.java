@@ -28,7 +28,7 @@ public interface TimeSeriesSource<V extends Value> extends DataSource {
    * @param scheme the column scheme to check
    * @return whether the scheme is accepted or not
    * @deprecated since 3.0. Use {@link
-   *     TimeSeriesUtils#isSchemeAccepted(edu.ie3.datamodel)}
+   *     TimeSeriesUtils#isSchemeAccepted(edu.ie3.datamodel.io.naming.timeseries.ColumnScheme)}
    *     instead.
    */
   @Deprecated(since = "3.0", forRemoval = true)
@@ -55,7 +55,7 @@ public interface TimeSeriesSource<V extends Value> extends DataSource {
    * itself, only the parts of the time series within the interval are handed back.
    *
    * @param timeInterval Desired time interval to cover
-   * @return The parts of of interest of the time series
+   * @return The parts of interest of the time series
    */
   IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval);
 

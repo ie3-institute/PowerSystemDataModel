@@ -376,7 +376,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    * @param nodes A collection of known nodes
    * @return An option to matching {@link ConnectorInputEntityData}
    */
-  private Optional<ConnectorInputEntityData> buildUntypedConnectorInputEntityData(
+  private Optional<ConnectorInputEntityData> buildUntypedConnectotyrInputEntityData(
       AssetInputEntityData assetInputEntityData, Collection<NodeInput> nodes) {
     // get the raw data
     Map<String, String> fieldsToAttributes = assetInputEntityData.getFieldsToValues();

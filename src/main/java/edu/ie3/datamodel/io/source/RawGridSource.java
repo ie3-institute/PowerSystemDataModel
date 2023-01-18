@@ -5,6 +5,9 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -16,8 +19,14 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
+import edu.ie3.datamodel.models.input.system.type.EvTypeInput;
+
+import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities that are hold by a {@link
@@ -28,6 +37,9 @@ import java.util.Set;
  * @since 08.04.20
  */
 public interface RawGridSource extends DataSource {
+
+  TypeSource typeSource;
+
   /**
    * Should return either a consistent instance of {@link RawGridElements} wrapped in {@link
    * Optional} or an empty {@link Optional}. The decision to use {@link Optional} instead of
@@ -57,7 +69,9 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link NodeInput} entities
    */
-  Set<NodeInput> getNodes();
+  default Set<NodeInput> getNodes() {
+    return getNodes(typeSource.getOperators());
+  }
 
   /**
    * Returns a set of {@link NodeInput} instances. This set has to be unique in the sense of object
@@ -77,7 +91,9 @@ public interface RawGridSource extends DataSource {
    *     the returning instances
    * @return a set of object and uuid unique {@link NodeInput} entities
    */
-  Set<NodeInput> getNodes(Set<OperatorInput> operators);
+  default Set<NodeInput> getNodes(Set<OperatorInput> operators) {
+    return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getNodeInputFactory());
+  }
 
   /**
    * Returns a unique set of {@link LineInput} instances.
@@ -88,7 +104,9 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link LineInput} entities
    */
-  Set<LineInput> getLines();
+  default Set<LineInput> getLines() {
+    return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link LineInput} instances. This set has to be unique in the sense of object
@@ -110,8 +128,10 @@ public interface RawGridSource extends DataSource {
    * @param lineTypeInputs a set of object and uuid unique {@link LineTypeInput} entities
    * @return a set of object and uuid unique {@link LineInput} entities
    */
-  Set<LineInput> getLines(
-      Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators);
+  default Set<LineInput> getLines(
+      Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators) {
+    return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+  }
 
   /**
    * Returns a unique set of {@link Transformer2WInput} instances.
@@ -123,7 +143,9 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link Transformer2WInput} entities
    */
-  Set<Transformer2WInput> get2WTransformers();
+  default Set<Transformer2WInput> get2WTransformers() {
+    return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link Transformer2WInput} instances. This set has to be unique in the sense
@@ -147,10 +169,12 @@ public interface RawGridSource extends DataSource {
    *     entities
    * @return a set of object and uuid unique {@link Transformer2WInput} entities
    */
-  Set<Transformer2WInput> get2WTransformers(
+  default Set<Transformer2WInput> get2WTransformers(
       Set<NodeInput> nodes,
       Set<Transformer2WTypeInput> transformer2WTypes,
-      Set<OperatorInput> operators);
+      Set<OperatorInput> operators) {
+    return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+  }
 
   /**
    * Returns a unique set of {@link Transformer3WInput} instances.
@@ -162,7 +186,9 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link Transformer3WInput} entities
    */
-  Set<Transformer3WInput> get3WTransformers();
+  default Set<Transformer3WInput> get3WTransformers() {
+    return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link Transformer3WInput} instances. This set has to be unique in the sense
@@ -186,10 +212,12 @@ public interface RawGridSource extends DataSource {
    *     entities
    * @return a set of object and uuid unique {@link Transformer3WInput} entities
    */
-  Set<Transformer3WInput> get3WTransformers(
+  default Set<Transformer3WInput> get3WTransformers(
       Set<NodeInput> nodes,
       Set<Transformer3WTypeInput> transformer3WTypeInputs,
-      Set<OperatorInput> operators);
+      Set<OperatorInput> operators) {
+    return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+  }
 
   /**
    * Returns a unique set of {@link SwitchInput} instances.
@@ -201,7 +229,9 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link SwitchInput} entities
    */
-  Set<SwitchInput> getSwitches();
+  default Set<SwitchInput> getSwitches() {
+    return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link SwitchInput} instances. This set has to be unique in the sense of
@@ -222,7 +252,9 @@ public interface RawGridSource extends DataSource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link SwitchInput} entities
    */
-  Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators);
+  default Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators) {
+    return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+  }
 
   /**
    * Returns a unique set of {@link MeasurementUnitInput} instances.
@@ -234,7 +266,9 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link MeasurementUnitInput} entities
    */
-  Set<MeasurementUnitInput> getMeasurementUnits();
+  default Set<MeasurementUnitInput> getMeasurementUnits() {
+    return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+  }
 
   /**
    * Returns a set of {@link MeasurementUnitInput} instances. This set has to be unique in the sense
@@ -256,5 +290,24 @@ public interface RawGridSource extends DataSource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link MeasurementUnitInput} entities
    */
-  Set<MeasurementUnitInput> getMeasurementUnits(Set<NodeInput> nodes, Set<OperatorInput> operators);
+  default Set<MeasurementUnitInput> getMeasurementUnits(Set<NodeInput> nodes, Set<OperatorInput> operators) {
+    return buildEntities(EvTypeInput.class, RawGridSourceFactories.getSystemParticipantTypeInputFactory());
+  }
+
+  <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass);
+
+  default <T extends InputEntity> Set<T> buildEntities(
+          Class<T> entityClass,
+          EntityFactory<? extends InputEntity, SimpleEntityData> factory
+  ) {
+    return getSourceData(entityClass)
+            .map(
+                    fieldsToAttributes -> {
+                      SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
+                      return (Optional<T>) factory.get(data);
+                    })
+            .flatMap(Optional::stream)
+            .collect(Collectors.toSet());
+  }
+
 }
