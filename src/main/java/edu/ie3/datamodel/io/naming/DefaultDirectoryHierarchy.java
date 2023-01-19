@@ -140,8 +140,8 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
   }
 
   /**
-   * Checks the elements, that are further available underneath the {@link this#projectDirectory}.
-   * If there is a directory, that is neither mandatory, nor optional, raise an Exception.
+   * Checks the elements, that are further available underneath the {@link #projectDirectory}. If
+   * there is a directory, that is neither mandatory, nor optional, raise an Exception.
    *
    * @throws FileException if there is an unexpected directory
    */
