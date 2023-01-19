@@ -25,16 +25,16 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
 
   def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {
     def expectedStream = Stream.of(
-        ["id": "106580", "latgeo": "39.602772", "latrot": "-10", "longgeo": "1.279336", "longrot": "-6.8125", "tid": "1"],
-        ["id": "106581", "latgeo": "39.610001", "latrot": "-10", "longgeo": "1.358673", "longrot": "-6.75", "tid": "2"],
-        ["id": "106582", "latgeo": "39.617161", "latrot": "-10", "longgeo": "1.438028", "longrot": "-6.6875", "tid": "3"],
-        ["id": "106583", "latgeo": "39.624249", "latrot": "-10", "longgeo": "1.5174021", "longrot": "-6.625", "tid": "4"])
+    ["id": "106580", "latgeo": "39.602772", "latrot": "-10", "longgeo": "1.279336", "longrot": "-6.8125", "tid": "1"],
+    ["id": "106581", "latgeo": "39.610001", "latrot": "-10", "longgeo": "1.358673", "longrot": "-6.75", "tid": "2"],
+    ["id": "106582", "latgeo": "39.617161", "latrot": "-10", "longgeo": "1.438028", "longrot": "-6.6875", "tid": "3"],
+    ["id": "106583", "latgeo": "39.624249", "latrot": "-10", "longgeo": "1.5174021", "longrot": "-6.625", "tid": "4"])
 
     when:
     def actualStream = source.buildStreamWithFieldsToAttributesMap()
 
     then:
-    actualStream.collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))
+    actualStream.map(mapWithRowIndex -> mapWithRowIndex.fieldsToAttribute()).collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))
   }
 
   def "The CsvIdCoordinateSource is able to look up a specific point or an empty Optional otherwise" () {

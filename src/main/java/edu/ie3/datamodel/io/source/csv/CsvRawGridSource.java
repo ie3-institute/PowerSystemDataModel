@@ -107,12 +107,12 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    */
   @Override
   public Set<NodeInput> getNodes(Set<OperatorInput> operators) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             assetInputEntityDataStream(NodeInput.class, operators)
                 .map(nodeInputFactory::get)
                 .collect(Collectors.toSet()),
-            NodeInput.class));
+            NodeInput.class)
+        .get();
   }
 
   /** {@inheritDoc} */
@@ -138,11 +138,11 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   @Override
   public Set<LineInput> getLines(
       Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             typedEntityStream(LineInput.class, lineInputFactory, nodes, operators, lineTypeInputs)
                 .collect(Collectors.toSet()),
-            LineInput.class));
+            LineInput.class)
+        .get();
   }
 
   /** {@inheritDoc} */
@@ -170,8 +170,7 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Set<NodeInput> nodes,
       Set<Transformer2WTypeInput> transformer2WTypes,
       Set<OperatorInput> operators) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             typedEntityStream(
                     Transformer2WInput.class,
                     transformer2WInputFactory,
@@ -179,7 +178,8 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                     operators,
                     transformer2WTypes)
                 .collect(Collectors.toSet()),
-            Transformer2WInput.class));
+            Transformer2WInput.class)
+        .get();
   }
 
   /** {@inheritDoc} */
@@ -207,11 +207,11 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
       Set<NodeInput> nodes,
       Set<Transformer3WTypeInput> transformer3WTypeInputs,
       Set<OperatorInput> operators) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             transformer3WEntityStream(nodes, transformer3WTypeInputs, operators)
                 .collect(Collectors.toSet()),
-            Transformer3WInput.class));
+            Transformer3WInput.class)
+        .get();
   }
 
   private Stream<Try<Transformer3WInput, FactoryException>> transformer3WEntityStream(
@@ -225,7 +225,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
                     assetInputEntityDataStream(Transformer3WInput.class, operators), nodes),
                 transformer3WTypeInputs),
             nodes)
-        .map(dataOpt -> transformer3WInputFactory.get(dataOpt.get()));
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(transformer3WInputFactory::get);
   }
 
   /** {@inheritDoc} */
@@ -249,12 +251,12 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
    */
   @Override
   public Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             untypedConnectorInputEntityStream(
                     SwitchInput.class, switchInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
-            SwitchInput.class));
+            SwitchInput.class)
+        .get();
   }
 
   private <T extends ConnectorInput>
@@ -266,7 +268,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
 
     return buildUntypedConnectorInputEntityData(
             assetInputEntityDataStream(entityClass, operators), nodes)
-        .map(dataOpt -> factory.get(dataOpt.get()));
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(factory::get);
   }
 
   /** {@inheritDoc} */
@@ -291,12 +295,12 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
   @Override
   public Set<MeasurementUnitInput> getMeasurementUnits(
       Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             nodeAssetEntityStream(
                     MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
-            MeasurementUnitInput.class));
+            MeasurementUnitInput.class)
+        .get();
   }
 
   private <T extends ConnectorInput, A extends AssetTypeInput>
@@ -311,7 +315,9 @@ public class CsvRawGridSource extends CsvDataSource implements RawGridSource {
             buildUntypedConnectorInputEntityData(
                 assetInputEntityDataStream(entityClass, operators), nodes),
             types)
-        .map(dataOpt -> factory.get(dataOpt.get()));
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(factory::get);
   }
 
   /**

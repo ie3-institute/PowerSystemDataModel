@@ -171,7 +171,7 @@ public class CsvResultEntitySource extends CsvDataSource implements ResultEntity
       Class<T> entityClass, SimpleEntityFactory<? extends ResultEntity> factory) {
     return simpleEntityDataStream(entityClass)
         .map(factory::get)
-        .map(Try::getOrThrowException)
+        .map(Try::get)
         .map(loadResult -> cast(entityClass, loadResult))
         .flatMap(Optional::stream)
         .collect(Collectors.toSet());

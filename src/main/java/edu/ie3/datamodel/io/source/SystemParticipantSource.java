@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.RawInputDataException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
@@ -41,10 +42,10 @@ public interface SystemParticipantSource extends DataSource {
    * validity e.g. in the sense that not duplicate UUIDs exist within all entities contained in the
    * returning instance.
    *
-   * @return either a valid, complete {@link SystemParticipants} optional or {@link
-   *     Optional#empty()}
+   * @return either a valid, complete {@link SystemParticipants} or throws a {@link
+   *     edu.ie3.datamodel.exceptions.RawInputDataException}
    */
-  SystemParticipants getSystemParticipants();
+  SystemParticipants getSystemParticipants() throws RawInputDataException;
 
   /**
    * Returns a unique set of {@link FixedFeedInInput} instances.

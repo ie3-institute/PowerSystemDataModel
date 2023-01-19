@@ -177,7 +177,7 @@ public class InfluxDbWeatherSource implements WeatherSource {
                           new TimeBasedWeatherValueData(
                               new FactoryData.MapWithRowIndex("-1", flatCaseFields), point))
                   .map(weatherValueFactory::get)
-                  .map(Try::getOrThrowException);
+                  .map(Try::get);
             });
   }
 
@@ -230,6 +230,6 @@ public class InfluxDbWeatherSource implements WeatherSource {
    */
   protected Stream<TimeBasedValue<WeatherValue>> filterEmptyOptionals(
       Stream<Optional<TimeBasedValue<WeatherValue>>> elements) {
-    return elements.flatMap(Optional::stream).map(TimeBasedValue.class::cast);
+    return elements.filter(Optional::isPresent).map(Optional::get).map(TimeBasedValue.class::cast);
   }
 }

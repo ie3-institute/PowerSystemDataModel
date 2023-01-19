@@ -63,7 +63,7 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.failure
-    input.exception.message == "The provided fields [inputModel, time, vmag] with data \n" +
+    input.exception.cause.message == "The provided fields [inputModel, time, vmag] with data \n" +
         "{inputModel -> 91ec3bcf-1897-4d38-af67-0bf7c9fa73c7,\n" +
         "time -> 2020-01-30 17:26:44,\n" +
         "vmag -> 2} are invalid for instance of NodeResult. \n" +

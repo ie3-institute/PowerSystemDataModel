@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.RawInputDataException;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -44,9 +45,10 @@ public interface RawGridSource extends DataSource {
    * e.g. in the sense that not duplicate UUIDs exist within all entities contained in the returning
    * instance.
    *
-   * @return either a valid, complete {@link RawGridElements} optional or {@link Optional#empty()}
+   * @return either a valid, complete {@link RawGridElements} or throws a {@link
+   *     edu.ie3.datamodel.exceptions.RawInputDataException}
    */
-  RawGridElements getGridData();
+  RawGridElements getGridData() throws RawInputDataException;
 
   /**
    * Returns a unique set of {@link NodeInput} instances.
@@ -57,7 +59,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link NodeInput} entities
    */
-  Set<NodeInput> getNodes();
+  Set<NodeInput> getNodes() throws RawInputDataException;
 
   /**
    * Returns a set of {@link NodeInput} instances. This set has to be unique in the sense of object
@@ -77,7 +79,7 @@ public interface RawGridSource extends DataSource {
    *     the returning instances
    * @return a set of object and uuid unique {@link NodeInput} entities
    */
-  Set<NodeInput> getNodes(Set<OperatorInput> operators);
+  Set<NodeInput> getNodes(Set<OperatorInput> operators) throws RawInputDataException;
 
   /**
    * Returns a unique set of {@link LineInput} instances.
@@ -88,7 +90,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link LineInput} entities
    */
-  Set<LineInput> getLines();
+  Set<LineInput> getLines() throws RawInputDataException;
 
   /**
    * Returns a set of {@link LineInput} instances. This set has to be unique in the sense of object
@@ -111,7 +113,8 @@ public interface RawGridSource extends DataSource {
    * @return a set of object and uuid unique {@link LineInput} entities
    */
   Set<LineInput> getLines(
-      Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators);
+      Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators)
+      throws RawInputDataException;
 
   /**
    * Returns a unique set of {@link Transformer2WInput} instances.
@@ -123,7 +126,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link Transformer2WInput} entities
    */
-  Set<Transformer2WInput> get2WTransformers();
+  Set<Transformer2WInput> get2WTransformers() throws RawInputDataException;
 
   /**
    * Returns a set of {@link Transformer2WInput} instances. This set has to be unique in the sense
@@ -150,7 +153,8 @@ public interface RawGridSource extends DataSource {
   Set<Transformer2WInput> get2WTransformers(
       Set<NodeInput> nodes,
       Set<Transformer2WTypeInput> transformer2WTypes,
-      Set<OperatorInput> operators);
+      Set<OperatorInput> operators)
+      throws RawInputDataException;
 
   /**
    * Returns a unique set of {@link Transformer3WInput} instances.
@@ -162,7 +166,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link Transformer3WInput} entities
    */
-  Set<Transformer3WInput> get3WTransformers();
+  Set<Transformer3WInput> get3WTransformers() throws RawInputDataException;
 
   /**
    * Returns a set of {@link Transformer3WInput} instances. This set has to be unique in the sense
@@ -189,7 +193,8 @@ public interface RawGridSource extends DataSource {
   Set<Transformer3WInput> get3WTransformers(
       Set<NodeInput> nodes,
       Set<Transformer3WTypeInput> transformer3WTypeInputs,
-      Set<OperatorInput> operators);
+      Set<OperatorInput> operators)
+      throws RawInputDataException;
 
   /**
    * Returns a unique set of {@link SwitchInput} instances.
@@ -201,7 +206,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link SwitchInput} entities
    */
-  Set<SwitchInput> getSwitches();
+  Set<SwitchInput> getSwitches() throws RawInputDataException;
 
   /**
    * Returns a set of {@link SwitchInput} instances. This set has to be unique in the sense of
@@ -222,7 +227,8 @@ public interface RawGridSource extends DataSource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link SwitchInput} entities
    */
-  Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators);
+  Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws RawInputDataException;
 
   /**
    * Returns a unique set of {@link MeasurementUnitInput} instances.
@@ -234,7 +240,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link MeasurementUnitInput} entities
    */
-  Set<MeasurementUnitInput> getMeasurementUnits();
+  Set<MeasurementUnitInput> getMeasurementUnits() throws RawInputDataException;
 
   /**
    * Returns a set of {@link MeasurementUnitInput} instances. This set has to be unique in the sense
@@ -256,5 +262,6 @@ public interface RawGridSource extends DataSource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link MeasurementUnitInput} entities
    */
-  Set<MeasurementUnitInput> getMeasurementUnits(Set<NodeInput> nodes, Set<OperatorInput> operators);
+  Set<MeasurementUnitInput> getMeasurementUnits(Set<NodeInput> nodes, Set<OperatorInput> operators)
+      throws RawInputDataException;
 }

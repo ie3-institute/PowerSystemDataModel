@@ -22,7 +22,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
     def data = new TimeBasedWeatherValueData(new FactoryData.MapWithRowIndex("-1", [
       "u131m": u.toString(),
       "v131m": v.toString(),
-    ], Mock(Point)))
+    ]), Mock(Point))
     def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.DEGREE_GEOM)
 
     when:
@@ -49,7 +49,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
     def data = new TimeBasedWeatherValueData(new FactoryData.MapWithRowIndex("-1", [
       "u131m": u.toString(),
       "v131m": v.toString(),
-    ], Mock(Point)))
+    ]), Mock(Point))
     def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.METRE_PER_SECOND)
 
     when:

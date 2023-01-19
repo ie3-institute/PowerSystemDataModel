@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.input.ThermalBusInputFactory
 import edu.ie3.datamodel.models.UniqueEntity
@@ -530,12 +531,12 @@ class CsvDataSourceTest extends Specification {
     ]
 
     when:
-    def thermalBusInputEntity = new ThermalBusInputFactory().get(dummyCsvSource.assetInputEntityDataStream(ThermalBusInput, thermalBusInputFieldsToAttributesMap, Collections.emptyList()))
+    def thermalBusInputEntity = new ThermalBusInputFactory().get(dummyCsvSource.assetInputEntityDataStream(ThermalBusInput, new FactoryData.MapWithRowIndex("-1", thermalBusInputFieldsToAttributesMap), Collections.emptyList()))
 
     then:
     noExceptionThrown() // no NPE should be thrown
-    thermalBusInputEntity.present
-    thermalBusInputEntity.get().operator.id == OperatorInput.NO_OPERATOR_ASSIGNED.id // operator id should be set accordingly
+    thermalBusInputEntity.success
+    thermalBusInputEntity.data.operator.id == OperatorInput.NO_OPERATOR_ASSIGNED.id // operator id should be set accordingly
   }
 
 }

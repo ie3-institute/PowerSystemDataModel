@@ -39,7 +39,8 @@ public interface GraphicSource extends DataSource {
    * e.g. in the sense that not duplicate UUIDs exist within all entities contained in the returning
    * instance.
    *
-   * @return either a valid, complete {@link GraphicElements} optional or {@link Optional#empty()}
+   * @return either a valid, complete {@link GraphicElements} or throws a {@link
+   *     RawInputDataException}
    */
   GraphicElements getGraphicElements() throws RawInputDataException;
 

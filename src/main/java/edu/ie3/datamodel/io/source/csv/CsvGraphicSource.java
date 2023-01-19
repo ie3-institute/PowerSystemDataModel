@@ -73,20 +73,24 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
     Set<LineInput> lines = rawGridSource.getLines(nodes, lineTypes, operators);
 
     Set<NodeGraphicInput> nodeGraphics =
-        Try.getOrThrowException(
-            Try.scanForExceptions(
+        Try.scanForExceptions(
                 buildNodeGraphicEntityData(nodes)
-                    .map(dataOpt -> nodeGraphicInputFactory.get(dataOpt.get()))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(nodeGraphicInputFactory::get)
                     .collect(Collectors.toSet()),
-                NodeGraphicInput.class));
+                NodeGraphicInput.class)
+            .get();
 
     Set<LineGraphicInput> lineGraphics =
-        Try.getOrThrowException(
-            Try.scanForExceptions(
+        Try.scanForExceptions(
                 buildLineGraphicEntityData(lines)
-                    .map(dataOpt -> lineGraphicInputFactory.get(dataOpt.get()))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(lineGraphicInputFactory::get)
                     .collect(Collectors.toSet()),
-                LineGraphicInput.class));
+                LineGraphicInput.class)
+            .get();
 
     // if everything is fine, return a GraphicElements instance
     return new GraphicElements(nodeGraphics, lineGraphics);
@@ -107,12 +111,14 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
   @Override
   public Set<NodeGraphicInput> getNodeGraphicInput(Set<NodeInput> nodes)
       throws RawInputDataException {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             buildNodeGraphicEntityData(nodes)
-                .map(dataOpt -> nodeGraphicInputFactory.get(dataOpt.get()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(nodeGraphicInputFactory::get)
                 .collect(Collectors.toSet()),
-            NodeGraphicInput.class));
+            NodeGraphicInput.class)
+        .get();
   }
 
   /** {@inheritDoc} */
@@ -134,12 +140,14 @@ public class CsvGraphicSource extends CsvDataSource implements GraphicSource {
   @Override
   public Set<LineGraphicInput> getLineGraphicInput(Set<LineInput> lines)
       throws RawInputDataException {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             buildLineGraphicEntityData(lines)
-                .map(dataOpt -> lineGraphicInputFactory.get(dataOpt.get()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(lineGraphicInputFactory::get)
                 .collect(Collectors.toSet()),
-            LineGraphicInput.class));
+            LineGraphicInput.class)
+        .get();
   }
 
   /**

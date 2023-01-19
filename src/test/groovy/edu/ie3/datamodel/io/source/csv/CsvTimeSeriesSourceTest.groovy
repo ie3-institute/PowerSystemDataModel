@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.io.csv.CsvIndividualTimeSeriesMetaInformation
+import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme
 
@@ -41,7 +42,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
         )
 
     when:
-    def actual = source.buildTimeBasedValue(fieldToValue, EnergyPriceValue, factory)
+    def actual = source.buildTimeBasedValue(new FactoryData.MapWithRowIndex("-1", fieldToValue), EnergyPriceValue, factory)
 
     then:
     actual.present

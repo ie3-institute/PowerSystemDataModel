@@ -115,7 +115,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "price": "52.4"
-    ], EnergyPriceValue))
+    ]), EnergyPriceValue)
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
@@ -136,7 +136,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "p": "500.0",
       "q": "165.0",
       "heatdemand": "8.0"
-    ], HeatAndSValue))
+    ]), HeatAndSValue)
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
@@ -156,7 +156,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "time": defaultTimeUtil.toString(time),
       "p": "500.0",
       "heatdemand": "8.0"
-    ], HeatAndPValue))
+    ]), HeatAndPValue)
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
@@ -175,7 +175,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "heatdemand": "8.0"
-    ], HeatDemandValue))
+    ]), HeatDemandValue)
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
@@ -195,7 +195,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "time": defaultTimeUtil.toString(time),
       "p": "500.0",
       "q": "165.0"
-    ], SValue))
+    ]), SValue)
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
@@ -214,7 +214,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "p": "500.0"
-    ], PValue))
+    ]), PValue)
     def expected = new TimeBasedValue(
         UUID.fromString("78ca078a-e6e9-4972-a58d-b2cadbc2df2c"),
         time,
@@ -232,7 +232,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def data = new SimpleTimeBasedValueData(new FactoryData.MapWithRowIndex("-1", [
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time)
-    ], NodeInput))
+    ]), NodeInput)
 
     when:
     factory.buildModel(data)

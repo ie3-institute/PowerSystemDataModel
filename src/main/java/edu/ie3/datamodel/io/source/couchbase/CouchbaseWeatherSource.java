@@ -304,7 +304,7 @@ public class CouchbaseWeatherSource implements WeatherSource {
         weatherFactory.get(data.get());
 
     if (timeBasedValue.isSuccess()) {
-      return Optional.of(timeBasedValue.getData());
+      return Optional.of(timeBasedValue.get());
     } else {
       return Optional.empty();
     }

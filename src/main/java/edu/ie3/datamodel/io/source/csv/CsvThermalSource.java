@@ -63,7 +63,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<ThermalBusInput> getThermalBuses() {
     return assetInputEntityDataStream(ThermalBusInput.class, typeSource.getOperators())
         .map(thermalBusInputFactory::get)
-        .map(Try::getOrThrowException)
+        .map(Try::get)
         .collect(Collectors.toSet());
   }
 
@@ -77,7 +77,7 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
   public Set<ThermalBusInput> getThermalBuses(Set<OperatorInput> operators) {
     return assetInputEntityDataStream(ThermalBusInput.class, operators)
         .map(thermalBusInputFactory::get)
-        .map(Try::getOrThrowException)
+        .map(Try::get)
         .collect(Collectors.toSet());
   }
   /** {@inheritDoc} */
@@ -110,8 +110,10 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .flatMap(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
-                    .map(dataOpt -> thermalHouseInputFactory.get(dataOpt.get()))
-                    .map(Try::getOrThrowException))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(thermalHouseInputFactory::get)
+                    .map(Try::get))
         .collect(Collectors.toSet());
   }
 
@@ -135,8 +137,10 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .flatMap(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
-                    .map(dataOpt -> thermalHouseInputFactory.get(dataOpt.get()))
-                    .map(Try::getOrThrowException))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(thermalHouseInputFactory::get)
+                    .map(Try::get))
         .collect(Collectors.toSet());
   }
   /** {@inheritDoc} */
@@ -147,8 +151,10 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .flatMap(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, getThermalBuses())
-                    .map(dataOpt -> cylindricalStorageInputFactory.get(dataOpt.get()))
-                    .map(Try::getOrThrowException))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(cylindricalStorageInputFactory::get)
+                    .map(Try::get))
         .collect(Collectors.toSet());
   }
 
@@ -172,8 +178,10 @@ public class CsvThermalSource extends CsvDataSource implements ThermalSource {
         .flatMap(
             assetInputEntityData ->
                 buildThermalUnitInputEntityData(assetInputEntityData, thermalBuses)
-                    .map(dataOpt -> cylindricalStorageInputFactory.get(dataOpt.get()))
-                    .map(Try::getOrThrowException))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(cylindricalStorageInputFactory::get)
+                    .map(Try::get))
         .collect(Collectors.toSet());
   }
 

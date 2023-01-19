@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.timeseries.IconIdCoordinateFactory
 import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
@@ -25,17 +26,17 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
 
   def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {
     def expectedStream = Stream.of(
-        ["id": "67775", "latitude": "51.5", "longitude": "7.438", "coordinatetype": "ICON"],
-        ["id": "531137", "latitude": "51.5", "longitude": "7.375", "coordinatetype": "ICON"],
-        ["id": "551525", "latitude": "51.438", "longitude": "7.438", "coordinatetype": "ICON"],
-        ["id": "278150", "latitude": "51.438", "longitude": "7.375", "coordinatetype": "ICON"]
-        )
+    ["id": "67775", "latitude": "51.5", "longitude": "7.438", "coordinatetype": "ICON"],
+    ["id": "531137", "latitude": "51.5", "longitude": "7.375", "coordinatetype": "ICON"],
+    ["id": "551525", "latitude": "51.438", "longitude": "7.438", "coordinatetype": "ICON"],
+    ["id": "278150", "latitude": "51.438", "longitude": "7.375", "coordinatetype": "ICON"]
+    )
 
     when:
     def actualStream = source.buildStreamWithFieldsToAttributesMap()
 
     then:
-    actualStream.collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))
+    actualStream.map(mapWithRowIndex -> mapWithRowIndex.fieldsToAttribute()).collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))
   }
 
   def "The CsvIdCoordinateSource is able to look up a specific point or an empty Optional otherwise" () {

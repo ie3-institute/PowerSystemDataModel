@@ -161,11 +161,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<FixedFeedInInput> getFixedFeedIns(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             nodeAssetEntityStream(FixedFeedInInput.class, fixedFeedInInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
-            FixedFeedInInput.class));
+            FixedFeedInInput.class)
+        .get();
   }
 
   /** {@inheritDoc} */
@@ -189,11 +189,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<PvInput> getPvPlants(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             nodeAssetEntityStream(PvInput.class, pvInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
-            PvInput.class));
+            PvInput.class)
+        .get();
   }
 
   /** {@inheritDoc} */
@@ -217,11 +217,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<LoadInput> getLoads(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             nodeAssetEntityStream(LoadInput.class, loadInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
-            LoadInput.class));
+            LoadInput.class)
+        .get();
   }
   /** {@inheritDoc} */
   @Override
@@ -244,11 +244,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<EvcsInput> getEvCS(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             nodeAssetEntityStream(EvcsInput.class, evcsInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
-            EvcsInput.class));
+            EvcsInput.class)
+        .get();
   }
 
   /** {@inheritDoc} */
@@ -274,11 +274,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<BmInput> getBmPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<BmTypeInput> types) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             typedEntityStream(BmInput.class, bmInputFactory, nodes, operators, types)
                 .collect(Collectors.toSet()),
-            BmInput.class));
+            BmInput.class)
+        .get();
   }
   /** {@inheritDoc} */
   @Override
@@ -303,11 +303,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<StorageInput> getStorages(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<StorageTypeInput> types) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             typedEntityStream(StorageInput.class, storageInputFactory, nodes, operators, types)
                 .collect(Collectors.toSet()),
-            StorageInput.class));
+            StorageInput.class)
+        .get();
   }
   /** {@inheritDoc} */
   @Override
@@ -332,11 +332,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<WecInput> getWecPlants(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<WecTypeInput> types) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             typedEntityStream(WecInput.class, wecInputFactory, nodes, operators, types)
                 .collect(Collectors.toSet()),
-            WecInput.class));
+            WecInput.class)
+        .get();
   }
   /** {@inheritDoc} */
   @Override
@@ -361,11 +361,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
   @Override
   public Set<EvInput> getEvs(
       Set<NodeInput> nodes, Set<OperatorInput> operators, Set<EvTypeInput> types) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             typedEntityStream(EvInput.class, evInputFactory, nodes, operators, types)
                 .collect(Collectors.toSet()),
-            EvInput.class));
+            EvInput.class)
+        .get();
   }
 
   /**
@@ -378,8 +378,7 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    * @param types the types that should be considered for these entities
    * @param <T> the type of the resulting entity
    * @param <A> the type of the type model of the resulting entity
-   * @return a stream of optionals being either empty or holding an instance of a {@link
-   *     SystemParticipantInput} of the requested entity class
+   * @return a stream of entity types holding an instance of a {@link SystemParticipantInput}
    */
   private <T extends SystemParticipantInput, A extends SystemParticipantTypeInput>
       Stream<Try<T, FactoryException>> typedEntityStream(
@@ -392,7 +391,9 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
             nodeAssetInputEntityDataStream(
                 assetInputEntityDataStream(entityClass, operators), nodes),
             types)
-        .map(dataOpt -> factory.get(dataOpt.get()));
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(factory::get);
   }
   /** {@inheritDoc} */
   @Override
@@ -428,11 +429,11 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       Set<ThermalBusInput> thermalBuses,
       Set<ThermalStorageInput> thermalStorages) {
 
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             chpInputStream(nodes, operators, types, thermalBuses, thermalStorages)
                 .collect(Collectors.toSet()),
-            ChpInput.class));
+            ChpInput.class)
+        .get();
   }
 
   private Stream<Try<ChpInput, FactoryException>> chpInputStream(
@@ -448,7 +449,9 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                 types),
             thermalStorages,
             thermalBuses)
-        .map(dataOpt -> chpInputFactory.get(dataOpt.get()));
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(chpInputFactory::get);
   }
   /** {@inheritDoc} */
   @Override
@@ -480,10 +483,10 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
       Set<OperatorInput> operators,
       Set<HpTypeInput> types,
       Set<ThermalBusInput> thermalBuses) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             hpInputStream(nodes, operators, types, thermalBuses).collect(Collectors.toSet()),
-            HpInput.class));
+            HpInput.class)
+        .get();
   }
 
   private Stream<Try<HpInput, FactoryException>> hpInputStream(
@@ -497,7 +500,9 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
                     assetInputEntityDataStream(HpInput.class, operators), nodes),
                 types),
             thermalBuses)
-        .map(dataOpt -> hpInputFactory.get(dataOpt.get()));
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(hpInputFactory::get);
   }
 
   /**
@@ -725,10 +730,10 @@ public class CsvSystemParticipantSource extends CsvDataSource implements SystemP
    */
   @Override
   public Set<EmInput> getEmSystems(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return Try.getOrThrowException(
-        Try.scanForExceptions(
+    return Try.scanForExceptions(
             nodeAssetEntityStream(EmInput.class, emInputFactory, nodes, operators)
                 .collect(Collectors.toSet()),
-            EmInput.class));
+            EmInput.class)
+        .get();
   }
 }

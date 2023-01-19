@@ -297,11 +297,11 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     ]
 
     when:
-    typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), StorageTypeInput))
+    Try<SystemParticipantTypeInput, FactoryException> input = typeInputFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), StorageTypeInput))
 
     then:
-    FactoryException ex = thrown()
-    ex.message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data \n" +
+    input.failure
+    input.exception.cause.message == "The provided fields [capex, cosPhiRated, dod, estorage, eta, id, lifetime, opex, pmax, pmin, srated, uuid] with data \n" +
         "{capex -> 3,\n" +
         "cosPhiRated -> 6,\n" +
         "dod -> 10,\n" +

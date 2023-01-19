@@ -219,7 +219,7 @@ public class CsvWeatherSource extends CsvDataSource implements WeatherSource {
               log.error("Unable to find coordinate for entry '{}'.", fieldToValues);
               return Optional.empty();
             })
-        .map(Try::getOrThrowException);
+        .map(Try::get);
   }
 
   /**

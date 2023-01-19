@@ -91,7 +91,7 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 
     then:
     input.failure
-    input.exception.message == "The provided fields [cosphirated, id, srated, uuid] with data \n" +
+    input.exception.cause.message == "The provided fields [cosphirated, id, srated, uuid] with data \n" +
         "{cosphirated -> 4,\n" +
         "id -> TestID,\n" +
         "srated -> 3,\n" +

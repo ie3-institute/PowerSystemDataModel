@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleFactoryData
 import edu.ie3.util.geo.GeoUtils
 import org.apache.commons.lang3.tuple.Pair
@@ -29,11 +30,13 @@ class IconIdCoordinateFactoryTest extends Specification {
       "longitude",
       "coordinatetype"
     ] as Set
-    def validSimpleFactoryData = new SimpleFactoryData([
+    Map<String, String> parameter = [
       "id":"477295",
       "latitude":"52.312",
       "longitude":"12.812",
-      "coordinatetype":"ICON"] as Map<String, String>, Pair)
+      "coordinatetype":"ICON"]
+
+    def validSimpleFactoryData = new SimpleFactoryData(new FactoryData.MapWithRowIndex("-1", parameter), Pair)
 
     when:
     def actual = factory.getFields(validSimpleFactoryData)
@@ -45,35 +48,38 @@ class IconIdCoordinateFactoryTest extends Specification {
 
   def "A COSMO id to coordinate factory refuses to build from invalid data"() {
     given:
-    def invalidSimpleFactoryData = new SimpleFactoryData([
+    Map<String, String> parameter = [
       "id":"477295",
       "latitude":"52.312",
-      "coordinatetype":"ICON"] as Map<String, String>, Pair)
+      "coordinatetype":"ICON"]
+
+    def invalidSimpleFactoryData = new SimpleFactoryData(new FactoryData.MapWithRowIndex("-1", parameter), Pair)
 
     when:
-    factory.get(invalidSimpleFactoryData)
+    def actual = factory.get(invalidSimpleFactoryData)
 
     then:
-    def e = thrown(FactoryException)
-    e.message.startsWith("The provided fields [coordinatetype, id, latitude] with data \n{coordinatetype -> " +
+    actual.failure
+    actual.exception.cause.message.startsWith("The provided fields [coordinatetype, id, latitude] with data \n{coordinatetype -> " +
         "ICON,\nid -> 477295,\nlatitude -> 52.312} are invalid for instance of Pair. ")
   }
 
   def "A COSMO id to coordinate factory builds model from valid data"() {
     given:
-    def validSimpleFactoryData = new SimpleFactoryData([
+    Map<String, String> parameter = [
       "id":"477295",
       "latitude":"52.312",
       "longitude":"12.812",
-      "coordinatetype":"ICON"] as Map<String, String>, Pair)
+      "coordinatetype":"ICON"]
+    def validSimpleFactoryData = new SimpleFactoryData(new FactoryData.MapWithRowIndex("-1", parameter), Pair)
     Pair<Integer, Point> expectedPair = Pair.of(477295, GeoUtils.buildPoint(52.312, 12.812))
 
     when:
     def actual = factory.get(validSimpleFactoryData)
 
     then:
-    actual.present
-    actual.get().with {
+    actual.success
+    actual.data.with {
       assert it.key == expectedPair.key
       assert it.value.equalsExact(expectedPair.value, 1E-6)
     }

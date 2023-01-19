@@ -147,18 +147,19 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
    * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
    * need any additional information.
    *
-   * @param mapWithRowIndex object containing an attribute map: field name to value and a row index
+   * @param fieldToValues attribute map: field name to value
    * @return Optional simple time based value
    */
-  protected Optional<TimeBasedValue<V>> createEntity(FactoryData.MapWithRowIndex mapWithRowIndex) {
-    mapWithRowIndex.fieldsToAttribute().remove("timeSeries");
+  protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
+    fieldToValues.remove("timeSeries");
     SimpleTimeBasedValueData<V> factoryData =
-        new SimpleTimeBasedValueData<>(mapWithRowIndex, valueClass);
+        new SimpleTimeBasedValueData<>(
+            new FactoryData.MapWithRowIndex("-1", fieldToValues), valueClass);
 
     Try<TimeBasedValue<V>, FactoryException> timeBasedValue = valueFactory.get(factoryData);
 
     if (timeBasedValue.isSuccess()) {
-      return Optional.of(timeBasedValue.getData());
+      return Optional.of(timeBasedValue.get());
     } else {
       return Optional.empty();
     }
@@ -222,10 +223,5 @@ public class SqlTimeSeriesSource<V extends Value> extends SqlDataSource<TimeBase
         + "' AND "
         + timeColumnName
         + "=?;";
-  }
-
-  @Override
-  protected Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
-    return Optional.empty();
   }
 }

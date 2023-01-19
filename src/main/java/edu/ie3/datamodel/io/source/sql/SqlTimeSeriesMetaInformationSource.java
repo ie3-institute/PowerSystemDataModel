@@ -96,6 +96,6 @@ public class SqlTimeSeriesMetaInformationSource
         new SimpleEntityData(
             new FactoryData.MapWithRowIndex("-1", fieldToValues),
             IndividualTimeSeriesMetaInformation.class);
-    return Optional.of(mappingFactory.get(entityData)).map(Try::getOrThrowException);
+    return Optional.of(mappingFactory.get(entityData)).map(Try::get);
   }
 }

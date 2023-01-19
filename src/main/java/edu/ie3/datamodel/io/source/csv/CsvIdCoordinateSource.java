@@ -54,7 +54,7 @@ public class CsvIdCoordinateSource extends CsvDataSource implements IdCoordinate
     return buildStreamWithFieldsToAttributesMap()
         .map(mapWithRowIndex -> new SimpleFactoryData(mapWithRowIndex, Pair.class))
         .map(factory::get)
-        .map(Try::getOrThrowException)
+        .map(Try::get)
         .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
   }
 

@@ -112,7 +112,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.failure
-    input.exception == new FactoryException("x")
+    input.exception.cause.message == "Exception while trying to parse field \"type\" with supposed int value \"-- invalid --\""
   }
 
   def "A EvcsInputFactory should fail when passing an invalid EvcsLocationType"() {
@@ -140,6 +140,6 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.failure
-    input.exception == new FactoryException("x")
+    input.exception.cause.message == "Exception while trying to parse field \"locationtype\" with supposed int value \"-- invalid --\""
   }
 }

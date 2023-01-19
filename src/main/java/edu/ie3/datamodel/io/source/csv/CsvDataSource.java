@@ -605,8 +605,8 @@ public abstract class CsvDataSource {
   }
 
   /**
-   * Returns a stream of optional entities that can be build by using {@link
-   * NodeAssetInputEntityData} and their corresponding factory.
+   * Returns a stream of entities that can be build by using {@link NodeAssetInputEntityData} and
+   * their corresponding factory.
    *
    * @param entityClass the entity class that should be build
    * @param factory the factory that should be used for the building process
@@ -615,8 +615,7 @@ public abstract class CsvDataSource {
    * @param operators a collection of {@link OperatorInput} entities should be used to build the
    *     entities
    * @param <T> Type of the {@link AssetInput} to expect
-   * @return stream of optionals of the entities that has been built by the factor or empty
-   *     optionals if the entity could not have been build
+   * @return stream of the entities that could and have been built by the factor
    */
   protected <T extends AssetInput> Stream<Try<T, FactoryException>> nodeAssetEntityStream(
       Class<T> entityClass,
@@ -624,7 +623,9 @@ public abstract class CsvDataSource {
       Collection<NodeInput> nodes,
       Collection<OperatorInput> operators) {
     return nodeAssetInputEntityDataStream(assetInputEntityDataStream(entityClass, operators), nodes)
-        .map(dataOpt -> factory.get(dataOpt.get()));
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(factory::get);
   }
 
   /**

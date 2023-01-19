@@ -214,7 +214,7 @@ public class SqlWeatherSource extends SqlDataSource<TimeBasedValue<WeatherValue>
     fieldMap.remove("tid");
     Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(fieldMap);
     if (data.isEmpty()) return Optional.empty();
-    return Optional.of(weatherFactory.get(data.get())).map(Try::getOrThrowException);
+    return Optional.of(weatherFactory.get(data.get())).map(Try::get);
   }
 
   /**

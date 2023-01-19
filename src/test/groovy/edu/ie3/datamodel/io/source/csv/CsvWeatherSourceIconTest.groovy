@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.source.IdCoordinateSource
@@ -186,7 +187,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     ]
 
     when:
-    def actual = source.buildWeatherValue(fieldToValues)
+    def actual = source.buildWeatherValue(new FactoryData.MapWithRowIndex("-1", fieldToValues))
 
     then:
     actual.empty
@@ -229,7 +230,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     ]
 
     when:
-    def actual = source.buildWeatherValue(fieldToValues)
+    def actual = source.buildWeatherValue(new FactoryData.MapWithRowIndex("-1", fieldToValues))
 
     then:
     actual.empty
@@ -273,7 +274,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     ]
 
     when:
-    def actual = source.buildWeatherValue(fieldToValues)
+    def actual = source.buildWeatherValue(new FactoryData.MapWithRowIndex("-1", fieldToValues))
 
     then:
     actual.empty

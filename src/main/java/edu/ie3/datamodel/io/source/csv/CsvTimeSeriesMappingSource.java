@@ -34,7 +34,7 @@ public class CsvTimeSeriesMappingSource extends CsvDataSource implements TimeSer
                       new SimpleEntityData(fieldToValues, MappingEntry.class);
                   return mappingFactory.get(entityData);
                 })
-            .map(Try::getOrThrowException)
+            .map(Try::get)
             .collect(Collectors.toMap(MappingEntry::getParticipant, MappingEntry::getTimeSeries));
   }
 

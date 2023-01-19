@@ -64,6 +64,6 @@ public class SqlTimeSeriesMappingSource
     SimpleEntityData entityData =
         new SimpleEntityData(
             new FactoryData.MapWithRowIndex("-1", fieldToValues), MappingEntry.class);
-    return Optional.of(mappingFactory.get(entityData)).map(Try::getOrThrowException);
+    return Optional.of(mappingFactory.get(entityData)).map(Try::get);
   }
 }

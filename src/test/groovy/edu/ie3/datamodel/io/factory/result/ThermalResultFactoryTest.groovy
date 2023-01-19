@@ -5,11 +5,14 @@
  */
 package edu.ie3.datamodel.io.factory.result
 
+import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FactoryData
 import edu.ie3.datamodel.io.factory.SimpleEntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult
+import edu.ie3.datamodel.utils.options.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -39,12 +42,12 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
       "fillLevel" : "20"
     ]
     when:
-    Optional<? extends ThermalUnitResult> result = resultFactory.get(new SimpleEntityData(parameter, CylindricalStorageResult))
+    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), CylindricalStorageResult))
 
     then:
-    result.present
-    result.get().getClass() == CylindricalStorageResult
-    ((CylindricalStorageResult) result.get()).with {
+    result.success
+    result.data.getClass() == CylindricalStorageResult
+    ((CylindricalStorageResult) result.data).with {
       assert time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
       assert inputModel == UUID.fromString(parameter.get("inputModel"))
       assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)
@@ -63,12 +66,12 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
       "indoorTemperature": "21"
     ]
     when:
-    Optional<? extends ThermalUnitResult> result = resultFactory.get(new SimpleEntityData(parameter, ThermalHouseResult))
+    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new SimpleEntityData(new FactoryData.MapWithRowIndex("-1", parameter), ThermalHouseResult))
 
     then:
-    result.present
-    result.get().getClass() == ThermalHouseResult
-    ((ThermalHouseResult) result.get()).with {
+    result.success
+    result.data.getClass() == ThermalHouseResult
+    ((ThermalHouseResult) result.data).with {
       assert time == TIME_UTIL.toZonedDateTime(parameter.get("time"))
       assert inputModel == UUID.fromString(parameter.get("inputModel"))
       assert qDot == Quantities.getQuantity(Double.parseDouble(parameter.get("qDot")), StandardUnits.HEAT_DEMAND)

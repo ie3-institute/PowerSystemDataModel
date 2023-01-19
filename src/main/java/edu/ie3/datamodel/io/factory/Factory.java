@@ -42,7 +42,8 @@ public abstract class Factory<C, D extends FactoryData, R> {
    * data
    *
    * @param data EntityData (or subclass) containing the data
-   * @return An entity wrapped in Option if successful, an empty option otherwise
+   * @return An entity wrapped in a {@link Success} if successful, or an exception wrapped in a
+   *     {@link Failure}
    */
   public Try<R, FactoryException> get(D data) {
     isSupportedClass(data.getTargetClass());
@@ -50,9 +51,9 @@ public abstract class Factory<C, D extends FactoryData, R> {
     // magic: case-insensitive get/set calls on set strings
     final List<Set<String>> allFields = getFields(data);
 
-    validateParameters(data, allFields.toArray((IntFunction<Set<String>[]>) Set[]::new));
-
     try {
+      validateParameters(data, allFields.toArray((IntFunction<Set<String>[]>) Set[]::new));
+
       // build the model
       return new Success<>(buildModel(data));
     } catch (FactoryException e) {
@@ -61,7 +62,8 @@ public abstract class Factory<C, D extends FactoryData, R> {
           "An error occurred when creating instance of {}.class.",
           data.getTargetClass().getSimpleName(),
           e);
-      return new Failure<>(e);
+      return new Failure<>(
+          new FactoryException("An error occurred in row " + data.getRowIndex() + ".", e));
     }
   }
 

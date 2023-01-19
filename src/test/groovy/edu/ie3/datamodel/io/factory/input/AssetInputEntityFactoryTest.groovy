@@ -286,11 +286,11 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputClass = TestAssetInput
 
     when:
-    inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
+    Try<AssetInput, FactoryException> input =  inputFactory.get(new AssetInputEntityData(new FactoryData.MapWithRowIndex("-1", parameter), inputClass))
 
     then:
-    FactoryException ex = thrown()
-    ex.message ==
+    input.failure
+    input.exception.cause.message ==
         "The provided fields [operatesfrom, operatesuntil, uuid] with data \n" +
         "{operatesfrom -> 2019-01-01T00:00:00+01:00[Europe/Berlin],\n" +
         "operatesuntil -> 2019-12-31T00:00:00+01:00[Europe/Berlin],\n" +
