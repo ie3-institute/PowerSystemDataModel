@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.sql;
 import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
+import edu.ie3.datamodel.io.source.ExtraDataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.util.StringUtils;
@@ -20,7 +21,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SqlDataSource {
+public abstract class SqlDataSource implements ExtraDataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 

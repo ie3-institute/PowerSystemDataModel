@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @version 0.1
  * @since 05.04.20
  */
-public abstract class CsvDataSource extends ExtraDataSource {
+public abstract class CsvDataSource implements ExtraDataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(CsvDataSource.class);
 

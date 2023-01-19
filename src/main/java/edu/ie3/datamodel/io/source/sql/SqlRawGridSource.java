@@ -3,6 +3,7 @@ package edu.ie3.datamodel.io.source.sql;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
+import edu.ie3.datamodel.io.source.ExtraDataSource;
 import edu.ie3.datamodel.io.source.RawGridSource;
 import edu.ie3.datamodel.io.source.TypeSource;
 import edu.ie3.datamodel.models.input.InputEntity;
@@ -26,7 +27,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class SqlRawGridSource extends SqlDataSource implements RawGridSource {
+public class SqlRawGridSource extends RawGridSource {
+
+    private final SqlDataSource sqlDataSource;
+
+
+
     // general fields
     private final TypeSource typeSource;
 

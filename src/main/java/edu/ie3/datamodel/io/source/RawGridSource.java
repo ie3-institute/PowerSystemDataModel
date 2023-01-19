@@ -21,6 +21,7 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput;
 
+import javax.xml.crypto.Data;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Optional;
@@ -36,9 +37,13 @@ import java.util.stream.Stream;
  * @version 0.1
  * @since 08.04.20
  */
-public interface RawGridSource extends DataSource {
+public class RawGridSource {
 
   TypeSource typeSource;
+
+  public RawGridSource(TypeSource _typeSource) {
+    this.typeSource = _typeSource;
+  }
 
   /**
    * Should return either a consistent instance of {@link RawGridElements} wrapped in {@link
@@ -58,7 +63,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return either a valid, complete {@link RawGridElements} optional or {@link Optional#empty()}
    */
-  Optional<RawGridElements> getGridData();
+  public Optional<RawGridElements> getGridData() { return null; }
 
   /**
    * Returns a unique set of {@link NodeInput} instances.
@@ -69,7 +74,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link NodeInput} entities
    */
-  default Set<NodeInput> getNodes() {
+  public Set<NodeInput> getNodes() {
     return getNodes(typeSource.getOperators());
   }
 
@@ -91,7 +96,7 @@ public interface RawGridSource extends DataSource {
    *     the returning instances
    * @return a set of object and uuid unique {@link NodeInput} entities
    */
-  default Set<NodeInput> getNodes(Set<OperatorInput> operators) {
+  public Set<NodeInput> getNodes(Set<OperatorInput> operators) {
     return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getNodeInputFactory());
   }
 
@@ -104,7 +109,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link LineInput} entities
    */
-  default Set<LineInput> getLines() {
+  public Set<LineInput> getLines() {
     return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
   }
 
@@ -128,7 +133,7 @@ public interface RawGridSource extends DataSource {
    * @param lineTypeInputs a set of object and uuid unique {@link LineTypeInput} entities
    * @return a set of object and uuid unique {@link LineInput} entities
    */
-  default Set<LineInput> getLines(
+  public Set<LineInput> getLines(
       Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators) {
     return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
   }
@@ -143,7 +148,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link Transformer2WInput} entities
    */
-  default Set<Transformer2WInput> get2WTransformers() {
+  public Set<Transformer2WInput> get2WTransformers() {
     return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
   }
 
@@ -169,7 +174,7 @@ public interface RawGridSource extends DataSource {
    *     entities
    * @return a set of object and uuid unique {@link Transformer2WInput} entities
    */
-  default Set<Transformer2WInput> get2WTransformers(
+  public Set<Transformer2WInput> get2WTransformers(
       Set<NodeInput> nodes,
       Set<Transformer2WTypeInput> transformer2WTypes,
       Set<OperatorInput> operators) {
@@ -186,7 +191,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link Transformer3WInput} entities
    */
-  default Set<Transformer3WInput> get3WTransformers() {
+  public Set<Transformer3WInput> get3WTransformers() {
     return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
   }
 
@@ -212,7 +217,7 @@ public interface RawGridSource extends DataSource {
    *     entities
    * @return a set of object and uuid unique {@link Transformer3WInput} entities
    */
-  default Set<Transformer3WInput> get3WTransformers(
+  public Set<Transformer3WInput> get3WTransformers(
       Set<NodeInput> nodes,
       Set<Transformer3WTypeInput> transformer3WTypeInputs,
       Set<OperatorInput> operators) {
@@ -229,7 +234,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link SwitchInput} entities
    */
-  default Set<SwitchInput> getSwitches() {
+  public Set<SwitchInput> getSwitches() {
     return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
   }
 
@@ -252,7 +257,7 @@ public interface RawGridSource extends DataSource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link SwitchInput} entities
    */
-  default Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators) {
+  public Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
   }
 
@@ -266,7 +271,7 @@ public interface RawGridSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link MeasurementUnitInput} entities
    */
-  default Set<MeasurementUnitInput> getMeasurementUnits() {
+  public Set<MeasurementUnitInput> getMeasurementUnits() {
     return buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
   }
 
@@ -290,13 +295,13 @@ public interface RawGridSource extends DataSource {
    * @param nodes a set of object and uuid unique {@link NodeInput} entities
    * @return a set of object and uuid unique {@link MeasurementUnitInput} entities
    */
-  default Set<MeasurementUnitInput> getMeasurementUnits(Set<NodeInput> nodes, Set<OperatorInput> operators) {
+  public Set<MeasurementUnitInput> getMeasurementUnits(Set<NodeInput> nodes, Set<OperatorInput> operators) {
     return buildEntities(EvTypeInput.class, RawGridSourceFactories.getSystemParticipantTypeInputFactory());
   }
 
-  <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass);
+  //public abstract <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass);
 
-  default <T extends InputEntity> Set<T> buildEntities(
+  public <T extends InputEntity> Set<T> buildEntities(
           Class<T> entityClass,
           EntityFactory<? extends InputEntity, SimpleEntityData> factory
   ) {
