@@ -5,26 +5,19 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.io.factory.EntityFactory;
-import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
 import edu.ie3.datamodel.io.factory.typeinput.Transformer3WTypeInputFactory;
-import edu.ie3.datamodel.io.source.TypeSourceFactories;
-import edu.ie3.datamodel.models.input.InputEntity;
+
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Interface that provides the capability to build entities of type {@link
@@ -34,7 +27,27 @@ import java.util.stream.Stream;
  * @version 0.1
  * @since 08.04.20
  */
-public interface TypeSource extends DataSource {
+public class TypeSource implements DataSource {
+
+    //general fields
+    FunctionalDataSource dataSource;
+
+    //factories
+    private final OperatorInputFactory operatorInputFactory;
+    private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
+    private final LineTypeInputFactory lineTypeInputFactory;
+    private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
+    private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
+
+  public TypeSource(FunctionalDataSource _dataSource) {
+    this.dataSource = _dataSource;
+
+    this.operatorInputFactory = new OperatorInputFactory();
+    this.transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();
+    this.lineTypeInputFactory = new LineTypeInputFactory();
+    this.transformer3WTypeInputFactory = new Transformer3WTypeInputFactory();
+    this.systemParticipantTypeInputFactory = new SystemParticipantTypeInputFactory();
+  }
 
   /**
    * Returns a set of {@link Transformer2WTypeInput} instances. This set has to be unique in the
@@ -45,8 +58,8 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link Transformer2WTypeInput} entities
    */
-  default Set<Transformer2WTypeInput> getTransformer2WTypes() {
-    return buildEntities(Transformer2WTypeInput.class, TypeSourceFactories.getTransformer2WTypeInputFactory());
+  public Set<Transformer2WTypeInput> getTransformer2WTypes() {
+    return dataSource.buildEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory);
   }
 
   /**
@@ -57,8 +70,8 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link OperatorInput} entities
    */
-  default Set<OperatorInput> getOperators() {
-    return buildEntities(OperatorInput.class, TypeSourceFactories.getOperatorInputFactory());
+  public Set<OperatorInput> getOperators() {
+    return dataSource.buildEntities(OperatorInput.class, operatorInputFactory);
   }
 
   /**
@@ -69,8 +82,8 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link LineTypeInput} entities
    */
-  default Set<LineTypeInput> getLineTypes() {
-    return buildEntities(LineTypeInput.class, TypeSourceFactories.getLineTypeInputFactory());
+  public Set<LineTypeInput> getLineTypes() {
+    return dataSource.buildEntities(LineTypeInput.class, lineTypeInputFactory);
   }
 
   /**
@@ -82,8 +95,8 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link Transformer3WTypeInput} entities
    */
-  default Set<Transformer3WTypeInput> getTransformer3WTypes() {
-    return buildEntities(Transformer3WTypeInput.class, TypeSourceFactories.getTransformer3WTypeInputFactory());
+  public Set<Transformer3WTypeInput> getTransformer3WTypes() {
+    return dataSource.buildEntities(Transformer3WTypeInput.class, transformer3WTypeInputFactory);
   }
 
   /**
@@ -94,8 +107,8 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link BmTypeInput} entities
    */
-  default Set<BmTypeInput> getBmTypes() {
-    return buildEntities(BmTypeInput.class, TypeSourceFactories.getSystemParticipantTypeInputFactory());
+  public Set<BmTypeInput> getBmTypes() {
+    return dataSource.buildEntities(BmTypeInput.class, systemParticipantTypeInputFactory);
   }
 
   /**
@@ -106,8 +119,8 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link ChpTypeInput} entities
    */
-  default Set<ChpTypeInput> getChpTypes() {
-    return buildEntities(ChpTypeInput.class, TypeSourceFactories.getSystemParticipantTypeInputFactory());
+  public Set<ChpTypeInput> getChpTypes() {
+    return dataSource.buildEntities(ChpTypeInput.class, systemParticipantTypeInputFactory);
   }
 
   /**
@@ -118,8 +131,8 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link HpTypeInput} entities
    */
-  default Set<HpTypeInput> getHpTypes() {
-    return buildEntities(HpTypeInput.class, TypeSourceFactories.getSystemParticipantTypeInputFactory());
+  public Set<HpTypeInput> getHpTypes() {
+    return dataSource.buildEntities(HpTypeInput.class, systemParticipantTypeInputFactory);
   }
 
   /**
@@ -130,8 +143,8 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link StorageTypeInput} entities
    */
-  default Set<StorageTypeInput> getStorageTypes() {
-    return buildEntities(StorageTypeInput.class, TypeSourceFactories.getSystemParticipantTypeInputFactory());
+  public Set<StorageTypeInput> getStorageTypes() {
+    return dataSource.buildEntities(StorageTypeInput.class, systemParticipantTypeInputFactory);
   }
 
   /**
@@ -142,8 +155,8 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link WecTypeInput} entities
    */
-  default Set<WecTypeInput> getWecTypes() {
-    return buildEntities(WecTypeInput.class, TypeSourceFactories.getSystemParticipantTypeInputFactory());
+  public Set<WecTypeInput> getWecTypes() {
+    return dataSource.buildEntities(WecTypeInput.class, systemParticipantTypeInputFactory);
   }
 
   /**
@@ -154,23 +167,7 @@ public interface TypeSource extends DataSource {
    *
    * @return a set of object and uuid unique {@link EvTypeInput} entities
    */
-  default Set<EvTypeInput> getEvTypes() {
-    return buildEntities(EvTypeInput.class, TypeSourceFactories.getSystemParticipantTypeInputFactory());
-  }
-
-  <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass);
-
-  default <T extends InputEntity> Set<T> buildEntities(
-          Class<T> entityClass,
-          EntityFactory<? extends InputEntity, SimpleEntityData> factory
-  ) {
-    return getSourceData(entityClass)
-            .map(
-                    fieldsToAttributes -> {
-                      SimpleEntityData data = new SimpleEntityData(fieldsToAttributes, entityClass);
-                      return (Optional<T>) factory.get(data);
-                    })
-            .flatMap(Optional::stream)
-            .collect(Collectors.toSet());
+  public Set<EvTypeInput> getEvTypes() {
+    return dataSource.buildEntities(EvTypeInput.class, systemParticipantTypeInputFactory);
   }
 }

@@ -1,24 +1,56 @@
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.io.connectors.DataConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData;
 import edu.ie3.datamodel.io.factory.input.TypedConnectorInputEntityData;
-import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.datamodel.models.input.InputEntity;
-import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 
+import java.sql.PreparedStatement;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public interface FunctionalDataSource {
-    <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass);
+public abstract class FunctionalDataSource {
 
-    default <T extends InputEntity> Set<T> buildEntities(
+    DataConnector connector;
+
+    /**
+     * Extract data from source to stream
+     * @param entityClass
+     * @return
+     * @param <T>
+     */
+    public abstract <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass);
+
+
+
+    //--------------------------------------------------------------------------------------
+
+    /**
+     * Returns a stream of optional {@link AssetInputEntityData} that can be used to build instances
+     * of several subtypes of {@link UniqueEntity} by a corresponding {@link EntityFactory} that
+     * consumes this data.
+     *
+     * @param entityClass the entity class that should be build
+     * @param operators a collection of {@link OperatorInput} entities that should be used to build
+     *     the data
+     * @param <T> type of the entity that should be build
+     * @return stream of optionals of the entity data or empty optionals of the operator required for
+     *     the data cannot be found
+     */
+    protected <T extends AssetInput> Stream<AssetInputEntityData> assetInputEntityDataStream(
+            Class<T> entityClass, Collection<OperatorInput> operators
+    ) {
+        return getSourceData(entityClass)
+                .map(fieldsToAttributes -> assetInputEntityDataStream(entityClass, fieldsToAttributes, operators));
+    }
+
+    public <T extends InputEntity> Set<T> buildEntities(
             Class<T> entityClass,
             EntityFactory<? extends InputEntity, SimpleEntityData> factory
     ) {
@@ -32,7 +64,75 @@ public interface FunctionalDataSource {
                 .collect(Collectors.toSet());
     }
 
-    default <T extends InputEntity> Set<T> buildUntypedEntities() { return null; }
+    public <T extends InputEntity, A extends AssetTypeInput> Set <T> buildTypedEntities(
+            Class<T> entityClass,
+            EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
+            Collection<NodeInput> nodes,
+            Collection<OperatorInput> operators,
+            Collection<A> types
+    ) {
+        return buildTypedConnectorEntities().map(dataOpt -> dataOpt.flatMap(factory::get));
+    }
+
+
+/*
+    private <T extends ConnectorInput, A extends AssetTypeInput>
+    Stream<Optional<T>> typedEntityStream(
+            Class<T> entityClass,
+            EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
+            Collection<NodeInput> nodes,
+            Collection<OperatorInput> operators,
+            Collection<A> types) {
+
+        return buildTypedConnectorEntityData(
+                buildUntypedConnectorInputEntityData(
+                        assetInputEntityDataStream(entityClass, operators), nodes),
+                types)
+                .map(dataOpt -> dataOpt.flatMap(factory::get));
+    }
+
+ */
+
+    public <T extends AssetTypeInput> Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntities(
+            Stream<Optional<ConnectorInputEntityData>> noTypeConnectorEntityDataStream,
+            Collection<T> availableTypes) {
+        return noTypeConnectorEntityDataStream
+                .parallel()
+                .map(
+                        noTypeEntityDataOpt ->
+                                noTypeEntityDataOpt.flatMap(
+                                        noTypeEntityData -> findAndAddType(noTypeEntityData, availableTypes)));
+
+
+
+
+
+    /**
+     * Enriches the given untyped entity data with the equivalent asset type. If this is not possible,
+     * an empty Optional is returned
+     *
+     * @param noTypeConnectorEntityDataStream Stream of untyped entity data
+     * @param availableTypes Yet available asset types
+     * @param <T> Type of the asset type
+     * @return Stream of option to enhanced data
+     */
+
+    /* s.o.
+    private <T extends AssetTypeInput>
+    Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntityData(
+            Stream<Optional<ConnectorInputEntityData>> noTypeConnectorEntityDataStream,
+            Collection<T> availableTypes) {
+        return noTypeConnectorEntityDataStream
+                .parallel()
+                .map(
+                        noTypeEntityDataOpt ->
+                                noTypeEntityDataOpt.flatMap(
+                                        noTypeEntityData -> findAndAddType(noTypeEntityData, availableTypes)));
+    }
+
+     */
+
+    public <T extends InputEntity> Set<T> buildUntypedEntities() { return null; }
 
     private <T extends ConnectorInput> Stream<Optional<T>> untypedConnectorInputEntityStream(
             Class<T> entityClass,
@@ -62,20 +162,6 @@ public interface FunctionalDataSource {
                                 buildUntypedConnectorInputEntityData(assetInputEntityData, nodes));
     }
 
-    private <T extends ConnectorInput, A extends AssetTypeInput>
-    Stream<Optional<T>> typedEntityStream(
-            Class<T> entityClass,
-            EntityFactory<T, TypedConnectorInputEntityData<A>> factory,
-            Collection<NodeInput> nodes,
-            Collection<OperatorInput> operators,
-            Collection<A> types) {
-
-        return buildTypedConnectorEntityData(
-                buildUntypedConnectorInputEntityData(
-                        assetInputEntityDataStream(entityClass, operators), nodes),
-                types)
-                .map(dataOpt -> dataOpt.flatMap(factory::get));
-    }
 
 
 
@@ -129,29 +215,6 @@ public interface FunctionalDataSource {
                         nodeA.get(),
                         nodeB.get()));
     }
-
-
-    /**
-     * Enriches the given untyped entity data with the equivalent asset type. If this is not possible,
-     * an empty Optional is returned
-     *
-     * @param noTypeConnectorEntityDataStream Stream of untyped entity data
-     * @param availableTypes Yet available asset types
-     * @param <T> Type of the asset type
-     * @return Stream of option to enhanced data
-     */
-    private <T extends AssetTypeInput>
-    Stream<Optional<TypedConnectorInputEntityData<T>>> buildTypedConnectorEntityData(
-            Stream<Optional<ConnectorInputEntityData>> noTypeConnectorEntityDataStream,
-            Collection<T> availableTypes) {
-        return noTypeConnectorEntityDataStream
-                .parallel()
-                .map(
-                        noTypeEntityDataOpt ->
-                                noTypeEntityDataOpt.flatMap(
-                                        noTypeEntityData -> findAndAddType(noTypeEntityData, availableTypes)));
-    }
-
 
     /**
      * Finds the required asset type and if present, adds it to the untyped entity data
