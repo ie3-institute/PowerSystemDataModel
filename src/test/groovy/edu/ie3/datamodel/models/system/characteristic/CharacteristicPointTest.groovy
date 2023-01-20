@@ -58,14 +58,14 @@ class CharacteristicPointTest extends Specification {
     }
   }
 
-  def "An CharacteristicCoordinate is de-serialized correctly"() {
+  def "An CharacteristicCoordinate is serialized correctly"() {
     given: "A point"
     CharacteristicPoint<Power, Dimensionless> point =
         new CharacteristicPoint<Power, Dimensionless>(
         Quantities.getQuantity(3d, KILOWATT),
         Quantities.getQuantity(4d, PERCENT))
 
-    when: "de-serialized"
+    when: "serialized"
     String result = point.serialize()
 
     then: "the result is correct"

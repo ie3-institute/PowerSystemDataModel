@@ -15,13 +15,13 @@ Currently we offer two different, pre-defined naming strategies, which you might
    An extended version of the EntityPersistenceNamingStrategy. Additionally, the `Default directory hierarchy`_ is taken
    into account. Please note, that this directory hierarchy is only meant to be used in conjunction with input models.
 
-However, you can control the behaviour of serialization and de-serialization of models by injecting the desired naming
+However, you can control the behaviour of serialization and serialization of models by injecting the desired naming
 strategy you like into :code:`CsvDataSource` and :code:`CsvFileSink`.
 
 Default naming strategy
 =======================
 There is a default mapping from model class to naming of entities in the case you would like to use csv files for
-(de-)serialization of models.
+serialization of models.
 You may extend / alter the naming with pre- or suffix by calling :code:`new EntityPersistenceNamingStrategy("prefix","suffix")`.
 
 Input
@@ -194,7 +194,7 @@ However, note that this hierarchy is only meant to be used in conjunction with i
 The class :code:`DefaultInputHierarchy` offers some helpful methods to validate and create a default input file
 hierarchy.
 
-De-Serialization (loading models)
+Serialization (loading models)
 =================================
 Having an instance of :ref:`Grid Container<grid_container_model>` is most of the time the target whenever you load your
 grid. It consists of the three main blocks:

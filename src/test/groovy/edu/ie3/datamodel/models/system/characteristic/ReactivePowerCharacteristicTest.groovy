@@ -67,8 +67,8 @@ class ReactivePowerCharacteristicTest extends Specification {
         )
   }
 
-  def "A valid CosPhiFixed is correctly de-serialized"() {
-    when: "De-serializing a valid input"
+  def "A valid CosPhiFixed is correctly serialized"() {
+    when: "Serializing a valid input"
     String actual = validCosPhiFixed.serialize()
 
     then: "it returns the correct string"
@@ -92,8 +92,8 @@ class ReactivePowerCharacteristicTest extends Specification {
     exception.message == "Cannot parse '(10.00)' to Set of points as it contains a malformed point."
   }
 
-  def "A valid CosPhiP is correctly de-serialized"() {
-    when: "De-serializing a valid input"
+  def "A valid CosPhiP is correctly serialized"() {
+    when: "Serializing a valid input"
     String actual = validCosPhiP.serialize()
 
     then: "it returns the correct string"
@@ -117,8 +117,8 @@ class ReactivePowerCharacteristicTest extends Specification {
     exception.message == "Cannot parse 'cosPhiP:{(0.00),(0.90),(1.20)}' to characteristic. It has to be of the form 'cosPhiFixed:{(%d,%d),...}'"
   }
 
-  def "A valid QV is correctly de-serialized"() {
-    when: "De-serializing a valid input"
+  def "A valid QV is correctly serialized"() {
+    when: "Serializing a valid input"
     String actual = validQV.serialize()
 
     then: "it returns the correct string"

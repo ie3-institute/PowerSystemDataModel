@@ -40,7 +40,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
  */
 class InputEntityProcessorTest extends Specification {
 
-  def "A InputEntityProcessor should de-serialize a provided NodeInput correctly"() {
+  def "A InputEntityProcessor should serialize a provided NodeInput correctly"() {
     given:
     def processor = new InputEntityProcessor(NodeInput)
     def validResult = GridTestData.nodeA
@@ -67,7 +67,7 @@ class InputEntityProcessorTest extends Specification {
     processingResult.get() == expectedResults
   }
 
-  def "A InputEntityProcessor should de-serialize a provided ConnectorInput correctly"() {
+  def "A InputEntityProcessor should serialize a provided ConnectorInput correctly"() {
     given:
     def processor = new InputEntityProcessor(modelClass)
     def validInput = modelInstance
@@ -137,7 +137,7 @@ class InputEntityProcessorTest extends Specification {
     ]
   }
 
-  def "A InputEntityProcessor should de-serialize a provided SystemParticipantInput correctly"() {
+  def "A InputEntityProcessor should serialize a provided SystemParticipantInput correctly"() {
     given:
     def processor = new InputEntityProcessor(modelClass)
     def validInput = modelInstance
@@ -283,7 +283,7 @@ class InputEntityProcessorTest extends Specification {
     ]
   }
 
-  def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with point correctly"() {
+  def "The InputEntityProcessor should serialize a provided NodeGraphicInput with point correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput)
     NodeGraphicInput validNode = GridTestData.nodeGraphicC
@@ -303,7 +303,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with path correctly"() {
+  def "The InputEntityProcessor should serialize a provided NodeGraphicInput with path correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput)
     NodeGraphicInput validNode = GridTestData.nodeGraphicD
@@ -323,7 +323,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided LineGraphicInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided LineGraphicInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(LineGraphicInput)
     LineGraphicInput validNode = GridTestData.lineGraphicCtoD
@@ -342,7 +342,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided OperatorInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided OperatorInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(OperatorInput)
     OperatorInput operator = new OperatorInput(UUID.fromString("420ee39c-dd5a-4d9c-9156-23dbdef13e5e"), "Prof. Brokkoli")
@@ -359,7 +359,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided RandomLoadParameters correctly"() {
+  def "The InputEntityProcessor should serialize a provided RandomLoadParameters correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(RandomLoadParameters)
     RandomLoadParameters parameters = new RandomLoadParameters(
@@ -397,7 +397,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided WecTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided WecTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(WecTypeInput)
     WecTypeInput type = TypeTestData.wecType
@@ -422,7 +422,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided Transformer2WTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided Transformer2WTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(Transformer2WTypeInput)
     Transformer2WTypeInput type = GridTestData.transformerTypeBtoD
@@ -452,7 +452,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided Transformer3WTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided Transformer3WTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(Transformer3WTypeInput)
     Transformer3WTypeInput type = GridTestData.transformerTypeAtoBtoC
@@ -488,7 +488,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided LineTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided LineTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(LineTypeInput)
     LineTypeInput type = GridTestData.lineTypeInputCtoD
@@ -511,7 +511,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided EvTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided EvTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(EvTypeInput)
     EvTypeInput type = TypeTestData.evType
@@ -534,7 +534,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided ChpTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided ChpTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(ChpTypeInput)
     ChpTypeInput type = TypeTestData.chpType
@@ -559,7 +559,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided HpTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided HpTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(HpTypeInput)
     HpTypeInput type = TypeTestData.hpType
@@ -581,7 +581,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided BmTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided BmTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(BmTypeInput)
     BmTypeInput type = TypeTestData.bmType
@@ -604,7 +604,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided StorageTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided StorageTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(StorageTypeInput)
     StorageTypeInput type = TypeTestData.storageType

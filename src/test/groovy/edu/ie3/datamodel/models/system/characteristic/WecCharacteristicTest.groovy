@@ -35,7 +35,7 @@ class WecCharacteristicTest extends Specification {
     validInput = new WecCharacteristicInput(points)
   }
 
-  def "A WecCharacteristicInput is correctly de-serialized"() {
+  def "A WecCharacteristicInput is correctly serialized"() {
     when:
     String actual = validInput.serialize()
 
