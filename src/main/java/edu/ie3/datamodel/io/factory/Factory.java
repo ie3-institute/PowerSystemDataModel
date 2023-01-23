@@ -63,7 +63,7 @@ public abstract class Factory<C, D extends FactoryData, R> {
           data.getTargetClass().getSimpleName(),
           e);
       return new Failure<>(
-          new FactoryException("An error occurred in row " + data.getRowIndex() + ".", e));
+          new FactoryException("Error occurred in row " + data.getRowIndex() + ".", e));
     }
   }
 
