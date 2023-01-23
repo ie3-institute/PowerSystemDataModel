@@ -34,32 +34,10 @@ import java.util.stream.Stream;
  * @version 0.1
  * @since 05.04.20
  */
-public class CsvTypeSource extends CsvDataSource implements TypeSource {
-
+public class CsvTypeSource extends TypeSource {
   public CsvTypeSource(
-      String csvSep, String typeFolderPath, FileNamingStrategy fileNamingStrategy) {
-    super(csvSep, typeFolderPath, fileNamingStrategy);
+      String csvSep, String typeFolderPath, FileNamingStrategy fileNamingStrategy
+  ) {
+    super(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy));
   }
-
-  /**
-   * Tries to build a set of {@link InputEntity}s of the provided entity class based on the provided
-   * factory. To do so, first entity data of type {@link SimpleEntityData} is constructed based on
-   * the input .csv file that can be derived from the entity class. This data is than passed to the
-   * factory and used to build the corresponding entities.
-   *
-   * <p>Be careful, that always a factory that is able to produce an entity of type <T> is passed
-   * into as argument. Otherwise, a casting exception will be thrown.
-   *
-   * @param entityClass the concrete class of the {@link InputEntity} that should be built
-   * @param factory the entity factory that should be used
-   * @param <T> the type of the resulting entity
-   * @return a set containing all entities that could have been built or an empty set if no entity
-   *     could been built
-   */
-
-  public <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
-    return buildStreamWithFieldsToAttributesMap(entityClass, connector);
-  }
-
-
 }

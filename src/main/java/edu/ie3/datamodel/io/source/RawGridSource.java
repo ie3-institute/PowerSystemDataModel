@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.io.factory.input.*;
+import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -17,10 +18,11 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
-import edu.ie3.datamodel.models.input.system.type.EvTypeInput;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * Interface that provides the capability to build entities that are hold by a {@link
@@ -75,7 +77,47 @@ public class RawGridSource implements DataSource {
    *
    * @return either a valid, complete {@link RawGridElements} optional or {@link Optional#empty()}
    */
-  public Optional<RawGridElements> getGridData() { return null; }
+  public Optional<RawGridElements> getGridData() {
+    /* read all needed entities start with the types and operators */
+    Set<OperatorInput> operators = typeSource.getOperators();
+    Set<LineTypeInput> lineTypes = typeSource.getLineTypes();
+    Set<Transformer2WTypeInput> transformer2WTypeInputs = typeSource.getTransformer2WTypes();
+    Set<Transformer3WTypeInput> transformer3WTypeInputs = typeSource.getTransformer3WTypes();
+
+    /* assets */
+    Set<NodeInput> nodes = getNodes(operators);
+
+    /* start with the entities needed for a RawGridElement as we want to return a working grid, keep an eye on empty
+     * optionals which is equal to elements that have been unable to be built e.g. due to missing elements they depend
+     * on
+     */
+    ConcurrentHashMap<Class<? extends UniqueEntity>, LongAdder> nonBuildEntities =
+            new ConcurrentHashMap<>();
+
+    /*
+
+     */
+
+    /* build the grid
+    RawGridElements gridElements =
+            new RawGridElements(
+                    nodes,
+                    lineInputs,
+                    transformer2WInputs,
+                    transformer3WInputs,
+                    switches,
+                    measurementUnits);
+
+
+
+     */
+    /* return the grid if it is not empty
+    return gridElements.allEntitiesAsList().isEmpty()
+            ? Optional.empty()
+            : Optional.of(gridElements);
+    */
+    return null;
+  }
 
   /**
    * Returns a unique set of {@link NodeInput} instances.
@@ -109,7 +151,7 @@ public class RawGridSource implements DataSource {
    * @return a set of object and uuid unique {@link NodeInput} entities
    */
   public Set<NodeInput> getNodes(Set<OperatorInput> operators) {
-    return dataSource.buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getNodeInputFactory());
+    return dataSource.buildAssetInputEntities(NodeInput.class, nodeInputFactory, operators);
   }
 
   /**
@@ -122,7 +164,8 @@ public class RawGridSource implements DataSource {
    * @return a set of object and uuid unique {@link LineInput} entities
    */
   public Set<LineInput> getLines() {
-    return dataSource.buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+    Set<OperatorInput> operators = typeSource.getOperators();
+    return getLines(getNodes(operators), typeSource.getLineTypes(), operators);
   }
 
   /**
@@ -147,7 +190,7 @@ public class RawGridSource implements DataSource {
    */
   public Set<LineInput> getLines(
       Set<NodeInput> nodes, Set<LineTypeInput> lineTypeInputs, Set<OperatorInput> operators) {
-    return dataSource.buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+    return dataSource.buildTypedEntities(LineInput.class, lineInputFactory, nodes, operators, lineTypeInputs);
   }
 
   /**
@@ -161,7 +204,8 @@ public class RawGridSource implements DataSource {
    * @return a set of object and uuid unique {@link Transformer2WInput} entities
    */
   public Set<Transformer2WInput> get2WTransformers() {
-    return dataSource.buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+    Set<OperatorInput> operators = typeSource.getOperators();
+    return get2WTransformers(getNodes(operators), typeSource.getTransformer2WTypes(), operators);
   }
 
   /**
@@ -190,7 +234,12 @@ public class RawGridSource implements DataSource {
       Set<NodeInput> nodes,
       Set<Transformer2WTypeInput> transformer2WTypes,
       Set<OperatorInput> operators) {
-    return dataSource.buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+    return dataSource.buildTypedEntities(
+            Transformer2WInput.class,
+            transformer2WInputFactory,
+            nodes,
+            operators,
+            transformer2WTypes);
   }
 
   /**
@@ -204,7 +253,8 @@ public class RawGridSource implements DataSource {
    * @return a set of object and uuid unique {@link Transformer3WInput} entities
    */
   public Set<Transformer3WInput> get3WTransformers() {
-    return dataSource.buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+    Set<OperatorInput> operators = typeSource.getOperators();
+    return get3WTransformers(getNodes(operators), typeSource.getTransformer3WTypes(), operators);
   }
 
   /**
@@ -233,7 +283,7 @@ public class RawGridSource implements DataSource {
       Set<NodeInput> nodes,
       Set<Transformer3WTypeInput> transformer3WTypeInputs,
       Set<OperatorInput> operators) {
-    return dataSource.buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+    return dataSource.buildTransformer3WEntities(transformer3WInputFactory, nodes, transformer3WTypeInputs, operators);
   }
 
   /**
@@ -247,7 +297,8 @@ public class RawGridSource implements DataSource {
    * @return a set of object and uuid unique {@link SwitchInput} entities
    */
   public Set<SwitchInput> getSwitches() {
-    return dataSource.buildEntities(Transformer2WTypeInput.class, RawGridSourceFactories.getTransformer2WTypeInputFactory());
+    Set<OperatorInput> operators = typeSource.getOperators();
+    return getSwitches(getNodes(operators), operators);
   }
 
   /**
@@ -270,7 +321,7 @@ public class RawGridSource implements DataSource {
    * @return a set of object and uuid unique {@link SwitchInput} entities
    */
   public Set<SwitchInput> getSwitches(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return dataSource.buildEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory);
+    return dataSource.buildUntypedConnectorInputEntities(SwitchInput.class, switchInputFactory, nodes, operators);
   }
 
   /**
@@ -284,7 +335,8 @@ public class RawGridSource implements DataSource {
    * @return a set of object and uuid unique {@link MeasurementUnitInput} entities
    */
   public Set<MeasurementUnitInput> getMeasurementUnits() {
-    return dataSource.buildEntities(Transformer2WTypeInput.class, transformer2WTypeInputFactory);
+    Set<OperatorInput> operators = typeSource.getOperators();
+    return getMeasurementUnits(getNodes(operators), operators);
   }
 
   /**
@@ -308,6 +360,6 @@ public class RawGridSource implements DataSource {
    * @return a set of object and uuid unique {@link MeasurementUnitInput} entities
    */
   public Set<MeasurementUnitInput> getMeasurementUnits(Set<NodeInput> nodes, Set<OperatorInput> operators) {
-    return dataSource.buildEntities(EvTypeInput.class, RawGridSourceFactories.getSystemParticipantTypeInputFactory());
+    return dataSource.buildNodeAssetEntities(MeasurementUnitInput.class, measurementUnitInputFactory, nodes, operators);
   }
 }

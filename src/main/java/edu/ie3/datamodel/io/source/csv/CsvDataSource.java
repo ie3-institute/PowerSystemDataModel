@@ -12,13 +12,9 @@ import edu.ie3.datamodel.io.factory.SimpleEntityData;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
-import edu.ie3.datamodel.io.source.ExtraDataSource;
 import edu.ie3.datamodel.io.source.FunctionalDataSource;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.datamodel.models.input.NodeInput;
-import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.utils.validation.ValidationUtils;
 import edu.ie3.util.StringUtils;
@@ -46,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @version 0.1
  * @since 05.04.20
  */
-public abstract class CsvDataSource extends FunctionalDataSource {
+public class CsvDataSource extends FunctionalDataSource {
 
   protected static final Logger log = LoggerFactory.getLogger(CsvDataSource.class);
 
@@ -73,6 +69,8 @@ public abstract class CsvDataSource extends FunctionalDataSource {
     this.csvSep = csvSep;
     this.connector = new CsvFileConnector(folderPath, fileNamingStrategy);
   }
+
+
 
   /**
    * Takes a row string of a .csv file and a string array of the csv file headline, tries to split
@@ -324,6 +322,11 @@ public abstract class CsvDataSource extends FunctionalDataSource {
         missingElementsString);
   }
 
+  @Override
+  public <T extends InputEntity> Stream<Map<String, String>> getSourceData(Class<T> entityClass) {
+    return buildStreamWithFieldsToAttributesMap(entityClass, connector);
+  }
+
   /**
    * Returns an {@link Optional} of the first {@link UniqueEntity} element of this collection
    * matching the provided UUID or an empty {@code Optional} if no matching entity can be found.
@@ -540,7 +543,9 @@ public abstract class CsvDataSource extends FunctionalDataSource {
             saveMapGet(fieldsToAttributes, "uuid", FIELDS_TO_VALUES_MAP));
 
     // remove fields that are passed as objects to constructor
-    fieldsToAttributes.keySet().removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
+    fieldsToAttributes
+            .keySet()
+            .removeAll(new HashSet<>(Collections.singletonList(OPERATOR)));
 
     return new AssetInputEntityData(fieldsToAttributes, entityClass, operator);
   }
