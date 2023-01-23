@@ -97,7 +97,7 @@ public abstract class Try<R, E extends Exception> {
               countExceptions
                   + " errors occurred within \""
                   + typeOfData.getSimpleName()
-                  + "\" data, first "
+                  + "\" data, one "
                   + firstException.getMessage().toLowerCase(),
               firstException.getCause()));
     } else {
