@@ -15,11 +15,11 @@ import javax.measure.quantity.Speed;
 public class WecCharacteristicInput extends CharacteristicInput<Speed, Dimensionless> {
   public WecCharacteristicInput(
       SortedSet<CharacteristicPoint<Speed, Dimensionless>> characteristicPoints) {
-    super(characteristicPoints, "cP", 2);
+    super(characteristicPoints, "cP");
   }
 
   public WecCharacteristicInput(String input) throws ParsingException {
-    super(input, StandardUnits.WIND_VELOCITY, StandardUnits.CP_CHARACTERISTIC, "cP", 2);
+    super(input, StandardUnits.WIND_VELOCITY, StandardUnits.CP_CHARACTERISTIC, "cP");
   }
 
   @Override

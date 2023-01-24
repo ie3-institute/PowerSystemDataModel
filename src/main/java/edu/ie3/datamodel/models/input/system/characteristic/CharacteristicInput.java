@@ -21,7 +21,6 @@ import javax.measure.Unit;
 public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quantity<O>>
     implements Serializable {
   protected final String characteristicPrefix;
-  protected final int decimalPlaces;
 
   private final SortedSet<CharacteristicPoint<A, O>> points;
 
@@ -30,24 +29,17 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
    *
    * @param points Set of points that describe the characteristic
    * @param characteristicPrefix Prefix, that prepends the actual characteristic
-   * @param decimalPlaces Desired amount of decimal places when de-serializing the characteristic
    */
   protected CharacteristicInput(
-      SortedSet<CharacteristicPoint<A, O>> points, String characteristicPrefix, int decimalPlaces) {
+      SortedSet<CharacteristicPoint<A, O>> points, String characteristicPrefix) {
     this.points = Collections.unmodifiableSortedSet(points);
     this.characteristicPrefix = characteristicPrefix;
-    this.decimalPlaces = decimalPlaces;
   }
 
   protected CharacteristicInput(
-      String input,
-      Unit<A> abscissaUnit,
-      Unit<O> ordinateUnit,
-      String characteristicPrefix,
-      int decimalPlaces)
+      String input, Unit<A> abscissaUnit, Unit<O> ordinateUnit, String characteristicPrefix)
       throws ParsingException {
     this.characteristicPrefix = characteristicPrefix;
-    this.decimalPlaces = decimalPlaces;
 
     if (!input.startsWith(characteristicPrefix + ":{") || !input.endsWith("}"))
       throw new ParsingException(
@@ -114,16 +106,14 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
   }
 
   /**
-   * De-serialize the characteristic to a commonly understood string
+   * Serialize the characteristic to a commonly understood string
    *
-   * @return the characteristic as de-serialized string
+   * @return the characteristic as serialized string
    */
-  public String deSerialize() {
+  public String serialize() {
     return characteristicPrefix
         + ":{"
-        + points.stream()
-            .map(point -> point.deSerialize(decimalPlaces))
-            .collect(Collectors.joining(","))
+        + points.stream().map(CharacteristicPoint::serialize).collect(Collectors.joining(","))
         + "}";
   }
 
@@ -131,14 +121,13 @@ public abstract class CharacteristicInput<A extends Quantity<A>, O extends Quant
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof CharacteristicInput<?, ?> that)) return false;
-    return decimalPlaces == that.decimalPlaces
-        && characteristicPrefix.equals(that.characteristicPrefix)
-        && points.equals(that.points);
+
+    return characteristicPrefix.equals(that.characteristicPrefix) && points.equals(that.points);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(characteristicPrefix, decimalPlaces, points);
+    return Objects.hash(characteristicPrefix, points);
   }
 
   @Override
