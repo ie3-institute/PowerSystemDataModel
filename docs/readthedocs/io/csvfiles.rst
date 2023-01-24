@@ -194,7 +194,7 @@ However, note that this hierarchy is only meant to be used in conjunction with i
 The class :code:`DefaultInputHierarchy` offers some helpful methods to validate and create a default input file
 hierarchy.
 
-De-Serialization (loading models)
+De-serialization (loading models)
 =================================
 Having an instance of :ref:`Grid Container<grid_container_model>` is most of the time the target whenever you load your
 grid. It consists of the three main blocks:

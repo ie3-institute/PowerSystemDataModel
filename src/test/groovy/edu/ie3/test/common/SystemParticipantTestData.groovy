@@ -45,9 +45,9 @@ class SystemParticipantTestData {
   static final CosPhiFixed cosPhiFixed = new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}")
   private static final CosPhiP cosPhiP = new CosPhiP("cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}")
   private static final QV qV = new QV("qV:{(0.9,-0.3),(0.95,0.0),(1.05,0.0),(1.1,0.3)}")
-  public static final String cosPhiFixedDeSerialized = "cosPhiFixed:{(0.00,0.95)}"
-  public static final String cosPhiPDeSerialized = "cosPhiP:{(0.00,1.00),(0.90,1.00),(1.20,-0.30)}"
-  public static final String qVDeSerialized = "qV:{(0.90,-0.30),(0.95,0.00),(1.05,0.00),(1.10,0.30)}"
+  public static final String cosPhiFixedSerialized = "cosPhiFixed:{(0.0,0.95)}"
+  public static final String cosPhiPSerialized = "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
+  public static final String qVSerialized = "qV:{(0.9,-0.3),(0.95,0.0),(1.05,0.0),(1.1,0.3)}"
   static final ComparableQuantity<Power> sRated = Quantities.getQuantity(25d, ACTIVE_POWER_IN)
   static final double cosPhiRated = 0.95
   private static final UUID typeUuid = UUID.fromString("5ebd8f7e-dedb-4017-bb86-6373c4b68eb8")

@@ -40,7 +40,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
  */
 class InputEntityProcessorTest extends Specification {
 
-  def "A InputEntityProcessor should de-serialize a provided NodeInput correctly"() {
+  def "A InputEntityProcessor should serialize a provided NodeInput correctly"() {
     given:
     def processor = new InputEntityProcessor(NodeInput)
     def validResult = GridTestData.nodeA
@@ -67,8 +67,7 @@ class InputEntityProcessorTest extends Specification {
     processingResult.get() == expectedResults
   }
 
-
-  def "A InputEntityProcessor should de-serialize a provided ConnectorInput correctly"() {
+  def "A InputEntityProcessor should serialize a provided ConnectorInput correctly"() {
     given:
     def processor = new InputEntityProcessor(modelClass)
     def validInput = modelInstance
@@ -87,27 +86,27 @@ class InputEntityProcessorTest extends Specification {
       "uuid"           : "cc327469-7d56-472b-a0df-edbb64f90e8f",
       "autoTap"        : "true",
       "id"             : "3w_test",
-      "parallelDevices": "1",
       "nodeA"          : "4ca90220-74c2-4369-9afa-a18bf068840d",
       "nodeB"          : "47d29df0-ba2d-4d23-8e75-c82229c5c758",
       "nodeC"          : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
-      "operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
       "operatesFrom"   : "2020-03-24T15:11:31Z[UTC]",
+      "operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
       "operator"       : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
       "tapPos"         : "0",
+      "parallelDevices": "1",
       "type"           : "5b0ee546-21fb-4a7f-a801-5dbd3d7bb356"
     ]
     Transformer2WInput | GridTestData.transformerCtoG    || [
       "uuid"           : "5dc88077-aeb6-4711-9142-db57292640b1",
       "autoTap"        : "true",
       "id"             : "2w_parallel_2",
-      "parallelDevices": "1",
       "nodeA"          : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
       "nodeB"          : "aaa74c1a-d07e-4615-99a5-e991f1d81cc4",
-      "operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
       "operatesFrom"   : "2020-03-24T15:11:31Z[UTC]",
+      "operatesUntil"  : "2020-03-25T15:11:31Z[UTC]",
       "operator"       : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
       "tapPos"         : "0",
+      "parallelDevices": "1",
       "type"           : "08559390-d7c0-4427-a2dc-97ba312ae0ac"
     ]
 
@@ -117,8 +116,8 @@ class InputEntityProcessorTest extends Specification {
       "id"           : "test_switch_AtoB",
       "nodeA"        : "4ca90220-74c2-4369-9afa-a18bf068840d",
       "nodeB"        : "47d29df0-ba2d-4d23-8e75-c82229c5c758",
-      "operatesUntil": "2020-03-25T15:11:31Z[UTC]",
       "operatesFrom" : "2020-03-24T15:11:31Z[UTC]",
+      "operatesUntil": "2020-03-25T15:11:31Z[UTC]",
       "operator"     : "f15105c4-a2de-4ab8-a621-4bc98e372d92"
     ]
 
@@ -127,18 +126,18 @@ class InputEntityProcessorTest extends Specification {
       "geoPosition"      : "{\"type\":\"LineString\",\"coordinates\":[[7.411111,51.492528],[7.414116,51.484136]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "id"               : "test_line_CtoD",
       "length"           : "0.003",
-      "parallelDevices"  : "2",
       "nodeA"            : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2",
       "nodeB"            : "6e0980e0-10f2-4e18-862b-eb2b7c90509b",
-      "olmCharacteristic": "olm:{(0.00,1.00)}",
-      "operatesUntil"    : "2020-03-25T15:11:31Z[UTC]",
+      "olmCharacteristic": "olm:{(0.0,1.0)}",
       "operatesFrom"     : "2020-03-24T15:11:31Z[UTC]",
+      "operatesUntil"    : "2020-03-25T15:11:31Z[UTC]",
       "operator"         : "f15105c4-a2de-4ab8-a621-4bc98e372d92",
+      "parallelDevices"   : "2",
       "type"             : "3bed3eb3-9790-4874-89b5-a5434d408088"
     ]
   }
 
-  def "A InputEntityProcessor should de-serialize a provided SystemParticipantInput correctly"() {
+  def "A InputEntityProcessor should serialize a provided SystemParticipantInput correctly"() {
     given:
     def processor = new InputEntityProcessor(modelClass)
     def validInput = modelInstance
@@ -164,7 +163,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.fixedFeedInInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.fixedFeedInInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.fixedFeedInInput.operator.getUuid().toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "sRated"          : SystemParticipantTestData.fixedFeedInInput.sRated.to(StandardUnits.S_RATED).getValue().doubleValue().toString()
     ]
     PvInput          | SystemParticipantTestData.pvInput          || [
@@ -182,7 +181,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.pvInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.pvInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.pvInput.operator.getUuid().toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "sRated"          : SystemParticipantTestData.pvInput.sRated.to(StandardUnits.S_RATED).getValue().doubleValue().toString()
     ]
     WecInput         | SystemParticipantTestData.wecInput         || [
@@ -193,7 +192,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.wecInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.wecInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.wecInput.operator.uuid.toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiPDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiPSerialized,
       "type"            : SystemParticipantTestData.wecInput.type.uuid.toString()
     ]
     ChpInput         | SystemParticipantTestData.chpInput         || [
@@ -204,7 +203,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.chpInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.chpInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.chpInput.operator.uuid.toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "thermalBus"      : SystemParticipantTestData.chpInput.thermalBus.uuid.toString(),
       "thermalStorage"  : SystemParticipantTestData.chpInput.thermalStorage.uuid.toString(),
       "type"            : SystemParticipantTestData.chpInput.type.uuid.toString(),
@@ -219,7 +218,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.bmInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.bmInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.bmInput.operator.uuid.toString(),
-      "qCharacteristics": SystemParticipantTestData.qVDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.qVSerialized,
       "type"            : SystemParticipantTestData.bmInput.type.uuid.toString()
     ]
     EvInput          | SystemParticipantTestData.evInput          || [
@@ -229,7 +228,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.evInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.evInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.evInput.operator.getUuid().toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "type"            : SystemParticipantTestData.evInput.type.getUuid().toString()
     ]
 
@@ -243,7 +242,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"      : SystemParticipantTestData.loadInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"       : SystemParticipantTestData.loadInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"           : SystemParticipantTestData.loadInput.operator.uuid.toString(),
-      "qCharacteristics"   : SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics"   : SystemParticipantTestData.cosPhiFixedSerialized,
       "sRated"             : SystemParticipantTestData.loadInput.sRated.getValue().doubleValue().toString(),
       "loadProfile"		 : SystemParticipantTestData.loadInput.loadProfile.key
     ]
@@ -254,7 +253,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.storageInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.storageInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.storageInput.operator.uuid.toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "type"            : SystemParticipantTestData.storageInput.type.uuid.toString()
     ]
     HpInput          | SystemParticipantTestData.hpInput          || [
@@ -264,7 +263,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.hpInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.hpInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.hpInput.operator.uuid.toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "thermalBus"      : SystemParticipantTestData.hpInput.thermalBus.uuid.toString(),
       "type"            : SystemParticipantTestData.hpInput.type.uuid.toString()
     ]
@@ -275,7 +274,7 @@ class InputEntityProcessorTest extends Specification {
       "operatesUntil"   : SystemParticipantTestData.evcsInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom"    : SystemParticipantTestData.evcsInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator"        : SystemParticipantTestData.evcsInput.operator.uuid.toString(),
-      "qCharacteristics": SystemParticipantTestData.cosPhiFixedDeSerialized,
+      "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
       "type"            : SystemParticipantTestData.evcsInput.type.toString(),
       "cosPhiRated"     : SystemParticipantTestData.evcsInput.cosPhiRated.toString(),
       "chargingPoints"  : SystemParticipantTestData.evcsInput.chargingPoints.toString(),
@@ -284,7 +283,7 @@ class InputEntityProcessorTest extends Specification {
     ]
   }
 
-  def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with point correctly"() {
+  def "The InputEntityProcessor should serialize a provided NodeGraphicInput with point correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput)
     NodeGraphicInput validNode = GridTestData.nodeGraphicC
@@ -304,7 +303,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided NodeGraphicInput with path correctly"() {
+  def "The InputEntityProcessor should serialize a provided NodeGraphicInput with path correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput)
     NodeGraphicInput validNode = GridTestData.nodeGraphicD
@@ -324,7 +323,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided LineGraphicInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided LineGraphicInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(LineGraphicInput)
     LineGraphicInput validNode = GridTestData.lineGraphicCtoD
@@ -343,7 +342,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided OperatorInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided OperatorInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(OperatorInput)
     OperatorInput operator = new OperatorInput(UUID.fromString("420ee39c-dd5a-4d9c-9156-23dbdef13e5e"), "Prof. Brokkoli")
@@ -360,7 +359,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided RandomLoadParameters correctly"() {
+  def "The InputEntityProcessor should serialize a provided RandomLoadParameters correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(RandomLoadParameters)
     RandomLoadParameters parameters = new RandomLoadParameters(
@@ -398,7 +397,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided WecTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided WecTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(WecTypeInput)
     WecTypeInput type = TypeTestData.wecType
@@ -408,7 +407,7 @@ class InputEntityProcessorTest extends Specification {
       "capex"           : "100.0",
       "opex"            : "101.0",
       "cosPhiRated"     : "0.95",
-      "cpCharacteristic": "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",
+      "cpCharacteristic": "cP:{(10.0,0.05),(15.0,0.1),(20.0,0.2)}",
       "etaConv"         : "90.0",
       "sRated"          : "2500.0",
       "rotorArea"       : "2000.0",
@@ -423,7 +422,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided Transformer2WTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided Transformer2WTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(Transformer2WTypeInput)
     Transformer2WTypeInput type = GridTestData.transformerTypeBtoD
@@ -453,7 +452,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided Transformer3WTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided Transformer3WTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(Transformer3WTypeInput)
     Transformer3WTypeInput type = GridTestData.transformerTypeAtoBtoC
@@ -489,7 +488,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided LineTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided LineTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(LineTypeInput)
     LineTypeInput type = GridTestData.lineTypeInputCtoD
@@ -512,7 +511,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided EvTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided EvTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(EvTypeInput)
     EvTypeInput type = TypeTestData.evType
@@ -535,7 +534,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided ChpTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided ChpTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(ChpTypeInput)
     ChpTypeInput type = TypeTestData.chpType
@@ -560,7 +559,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided HpTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided HpTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(HpTypeInput)
     HpTypeInput type = TypeTestData.hpType
@@ -582,7 +581,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided BmTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided BmTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(BmTypeInput)
     BmTypeInput type = TypeTestData.bmType
@@ -605,7 +604,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should de-serialize a provided StorageTypeInput correctly"() {
+  def "The InputEntityProcessor should serialize a provided StorageTypeInput correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(StorageTypeInput)
     StorageTypeInput type = TypeTestData.storageType
@@ -633,7 +632,7 @@ class InputEntityProcessorTest extends Specification {
     actual.get() == expected
   }
 
-  def "The InputEntityProcessor should deserialize an entity but ignore the operator field when OperatorInput is equal to NO_OPERATOR_ASSIGNED"() {
+  def "The InputEntityProcessor should serialize an entity but ignore the operator field when OperatorInput is equal to NO_OPERATOR_ASSIGNED"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(NodeInput)
     def nodeWithOutOperator = new NodeInput(

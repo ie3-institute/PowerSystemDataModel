@@ -64,7 +64,7 @@ class ResultEntityProcessorTest extends Specification {
     qDot      : '1.0']
 
 
-  def "A ResultEntityProcessor should de-serialize a provided SystemParticipantResult correctly"() {
+  def "A ResultEntityProcessor should serialize a provided SystemParticipantResult correctly"() {
     given:
     def sysPartResProcessor = new ResultEntityProcessor(modelClass)
     def validResult = validSystemParticipantResult
@@ -105,7 +105,7 @@ class ResultEntityProcessorTest extends Specification {
     ex.message == "Cannot process StorageResult.class with this EntityProcessor. Please either provide an element of LoadResult.class or create a new processor for StorageResult.class!"
   }
 
-  def "A ResultEntityProcessor should de-serialize a NodeResult correctly"() {
+  def "A ResultEntityProcessor should serialize a NodeResult correctly"() {
     given:
     def sysPartResProcessor = new ResultEntityProcessor(NodeResult)
 
@@ -129,7 +129,7 @@ class ResultEntityProcessorTest extends Specification {
 
   }
 
-  def "A ResultEntityProcessor should de-serialize a FlexOptionsResult correctly"() {
+  def "A ResultEntityProcessor should serialize a FlexOptionsResult correctly"() {
     given:
     def sysPartResProcessor = new ResultEntityProcessor(FlexOptionsResult)
 
@@ -219,7 +219,7 @@ class ResultEntityProcessorTest extends Specification {
   boolean closed = true
 
 
-  def "A ResultEntityProcessor should de-serialize all ConnectorResults correctly"() {
+  def "A ResultEntityProcessor should serialize all ConnectorResults correctly"() {
     given:
     def sysPartResProcessor = new ResultEntityProcessor(modelClass)
 
@@ -240,7 +240,7 @@ class ResultEntityProcessorTest extends Specification {
     Transformer3WResult | new Transformer3WResult(uuid, ZonedDateTime.parse("2020-01-30T17:26:44Z[UTC]"), inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos) || expectedTrafo3WResults
   }
 
-  def "A ResultEntityProcessor should de-serialize a CylindricalStorageResult correctly"() {
+  def "A ResultEntityProcessor should serialize a CylindricalStorageResult correctly"() {
     given:
     def sysPartResProcessor = new ResultEntityProcessor(CylindricalStorageResult)
 
