@@ -33,7 +33,7 @@ package models {
                     + {static} REQUIRED_FORMAT: String
                     - x: ComparableQuantity<A>
                     - y: ComparableQuantity<O>
-                    + serialize(int): String
+                    + serialize(): String
                     - {static} buildExceptionMessage(String): String
                     - {static} buildExceptionMessage(String, String): String
                 }
