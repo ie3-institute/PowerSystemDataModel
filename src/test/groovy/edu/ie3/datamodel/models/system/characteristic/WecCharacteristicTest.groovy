@@ -35,9 +35,9 @@ class WecCharacteristicTest extends Specification {
     validInput = new WecCharacteristicInput(points)
   }
 
-  def "A WecCharacteristicInput is correctly de-serialized"() {
+  def "A WecCharacteristicInput is correctly serialized"() {
     when:
-    String actual = validInput.deSerialize()
+    String actual = validInput.serialize()
 
     then:
     actual == "cP:{(10.0,0.05),(15.0,0.1),(20.0,0.2)}"

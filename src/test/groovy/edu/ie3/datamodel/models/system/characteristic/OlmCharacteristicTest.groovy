@@ -35,9 +35,9 @@ class OlmCharacteristicTest extends Specification {
     validInput = new OlmCharacteristicInput(points)
   }
 
-  def "A OlmCharacteristicInput is correctly de-serialized"() {
+  def "A OlmCharacteristicInput is correctly serialized"() {
     when:
-    String actual = validInput.deSerialize()
+    String actual = validInput.serialize()
 
     then:
     actual == "olm:{(10.0,0.05),(15.0,0.1),(20.0,0.2)}"
