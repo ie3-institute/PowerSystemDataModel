@@ -35,17 +35,17 @@ class WecCharacteristicTest extends Specification {
     validInput = new WecCharacteristicInput(points)
   }
 
-  def "A WecCharacteristicInput is correctly de-serialized"() {
+  def "A WecCharacteristicInput is correctly serialized"() {
     when:
-    String actual = validInput.deSerialize()
+    String actual = validInput.serialize()
 
     then:
-    actual == "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}"
+    actual == "cP:{(10.0,0.05),(15.0,0.1),(20.0,0.2)}"
   }
 
   def "A WecCharacteristicInput is correctly set up from a correctly formatted string"() {
     when:
-    WecCharacteristicInput actual = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
+    WecCharacteristicInput actual = new WecCharacteristicInput("cP:{(10.0,0.05),(15.0,0.10),(20.0,0.2)}")
 
     then:
     actual.points == validInput.points

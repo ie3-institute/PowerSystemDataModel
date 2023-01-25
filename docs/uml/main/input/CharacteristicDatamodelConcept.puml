@@ -33,7 +33,7 @@ package models {
                     + {static} REQUIRED_FORMAT: String
                     - x: ComparableQuantity<A>
                     - y: ComparableQuantity<O>
-                    + deSerialize(int): String
+                    + serialize(): String
                     - {static} buildExceptionMessage(String): String
                     - {static} buildExceptionMessage(String, String): String
                 }
@@ -43,7 +43,7 @@ package models {
                     # characteristicPrefix: String
                     # decimalPlaces: int
                     # points: SortedSet<CharacteristicPoint<A,O>>
-                    + deSerialize(): String
+                    + serialize(): String
                     + {static} buildStartingRegex(String): String
                     - extractCoordinateList(String): String
                     - buildCoordinatesFromString(String, Unit<A>, Unit<O>): SortedSet<CharacteristicPoint<A, O>>

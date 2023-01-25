@@ -24,11 +24,11 @@ public class OlmCharacteristicInput extends CharacteristicInput<Speed, Dimension
 
   public OlmCharacteristicInput(
       SortedSet<CharacteristicPoint<Speed, Dimensionless>> characteristicPoints) {
-    super(characteristicPoints, "olm", 2);
+    super(characteristicPoints, "olm");
   }
 
   public OlmCharacteristicInput(String input) throws ParsingException {
-    super(input, StandardUnits.WIND_VELOCITY, StandardUnits.OLM_CHARACTERISTIC, "olm", 2);
+    super(input, StandardUnits.WIND_VELOCITY, StandardUnits.OLM_CHARACTERISTIC, "olm");
   }
 
   private static OlmCharacteristicInput buildConstantCharacteristic() {
